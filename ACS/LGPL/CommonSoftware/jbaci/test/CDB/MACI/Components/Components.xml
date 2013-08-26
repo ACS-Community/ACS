@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <_ Name="PBEND_B_01"	Code="alma.PS.PowerSupplyImplHelper"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="frodoContainer" ImplLang="java" />
+  <_ Name="JBACI_ENUM_PROP" Code="alma.ACS.jbaci.enumProp.test.EnumTestComponentImplHelper" Type="IDL:jbaciEnumPropTest/jbaciEnumTestComponent:1.0" Container="frodoContainer" ImplLang="java" />
+  <_ Name="PRIMTESTING"	Code="alma.TT.PrimComponentImplHelper"	Type="IDL:alma/TT/PrimComponent:1.0"	Container="frodoContainer" ImplLang="java" />
+  <_ Name="BUILDING1"	Code="alma.acsexmplBuilding.BuildingImplHelper"	Type="IDL:alma/acsexmplBuilding/Building:1.0"	Container="frodoContainer" ImplLang="java" />
+  <_ Name="SEQTESTING"	Code="alma.TT.SeqComponentImplHelper"	Type="IDL:alma/TT/SeqComponent:1.0"	Container="frodoContainer" ImplLang="java" />
+</Components>

@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+$Id: DTX.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/acsGUIs/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/DTX/DTX.xml,v $
+-->
+<fault-family name="DTX"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="ATF Support Team"/>
+    <fault-code value="1">
+        <priority>3</priority>
+        <cause>PSD could be powered OFF, the AMB cable disconnected or a hardware problem</cause>
+        <action>Check PSD is ON</action>
+        <consequence>test</consequence>
+        <problem-description>CAN BUS Communication Error.</problem-description>
+    </fault-code>
+    <fault-code value="2">
+        <priority>3</priority>
+        <cause>FR Status Monitor Executed at incorrect time.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>FR TE Status Monitor Executed at incorrect time.</problem-description>
+    </fault-code>
+    <fault-code value="3">
+        <priority>3</priority>
+        <cause>OverPower not set => Keep Alive signal not present.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>OverPower not set =&gt; Keep Alive signal not present.</problem-description>
+    </fault-code>
+    <fault-code value="4">
+        <priority>3</priority>
+        <cause>REFLCK not set => TE out of sync.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>REFLCK not set =&gt; TE out of sync.</problem-description>
+    </fault-code>
+    <fault-code value="5">
+        <priority>3</priority>
+        <cause>250MHZ PLL not in lock for CH1.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>250MHZ PLL not in lock for CH1.</problem-description>
+    </fault-code>
+    <fault-code value="6">
+        <priority>3</priority>
+        <cause>125MHZ PLL not in lock for CH1.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>125MHZ PLL not in lock for CH1.</problem-description>
+    </fault-code>
+    <fault-code value="7">
+        <priority>3</priority>
+        <cause>250MHZ PLL not in lock for CH2.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>250MHZ PLL not in lock for CH2.</problem-description>
+    </fault-code>
+    <fault-code value="8">
+        <priority>3</priority>
+        <cause>125MHZ PLL not in lock for CH2.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>125MHZ PLL not in lock for CH2.</problem-description>
+    </fault-code>
+    <fault-code value="9">
+        <priority>3</priority>
+        <cause>250MHZ PLL not in lock for CH3.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>250MHZ PLL not in lock for CH3.</problem-description>
+    </fault-code>
+    <fault-code value="10">
+        <priority>3</priority>
+        <cause>125MHZ PLL not in lock for CH3.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>125MHZ PLL not in lock for CH3</problem-description>
+    </fault-code>
+    <fault-code value="14">
+        <priority>3</priority>
+        <cause>Ch1 TTX Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Ch1 TTX Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="15">
+        <priority>3</priority>
+        <cause>Ch2 TTX Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Ch2 TTX Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="16">
+        <priority>3</priority>
+        <cause>Ch3 TTX Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Ch3 TTX Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="17">
+        <priority>3</priority>
+        <cause>TTX Alarm Active (CH1|CH2|CH3).</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>TTX Alarm Active (CH1|CH2|CH3).</problem-description>
+    </fault-code>
+    <fault-code value="18">
+        <priority>3</priority>
+        <cause>FR TE STATUS: TE error triggered.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>FR TE STATUS: TE error triggered.</problem-description>
+    </fault-code>
+    <fault-code value="19">
+        <priority>3</priority>
+        <cause>CH1 Laser End Of Life Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH1 Laser End Of Life Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="20">
+        <priority>3</priority>
+        <cause>CH1 Modulator Temperature Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH1 Modulator Temperature Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="21">
+        <priority>3</priority>
+        <cause>CH1 Laser Wavelength Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH1 Laser Wavelength Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="22">
+        <priority>3</priority>
+        <cause>CH1 Tx Summary Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH1 Tx Summary Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="23">
+        <priority>3</priority>
+        <cause>CH1 Laser Bias Current Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH1 Laser Bias Current Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="24">
+        <priority>3</priority>
+        <cause>CH1 Laser Temperature Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH1 Laser Temperature Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="25">
+        <priority>3</priority>
+        <cause>CH1 Loss of TxPLL Lock Indicator.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH1 Loss of TxPLL Lock Indicator.</problem-description>
+    </fault-code>
+    <fault-code value="26">
+        <priority>3</priority>
+        <cause>CH1 Laser Power Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH1 Laser Power Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="27">
+        <priority>3</priority>
+        <cause>CH1 Modulator Bias Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH1 Modulator Bias Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="28">
+        <priority>3</priority>
+        <cause>CH1 Mux FIFO Error Indicator.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH1 Mux FIFO Error Indicator.</problem-description>
+    </fault-code>
+    <fault-code value="29">
+        <priority>3</priority>
+        <cause>CH2 Laser End Of Life Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH2 Laser End Of Life Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="30">
+        <priority>3</priority>
+        <cause>CH2 Modulator Temperature Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH2 Modulator Temperature Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="31">
+        <priority>3</priority>
+        <cause>CH2 Laser Wavelength Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH2 Laser Wavelength Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="32">
+        <priority>3</priority>
+        <cause>CH2 Tx Summary Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH2 Tx Summary Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="33">
+        <priority>3</priority>
+        <cause>CH2 Laser Bias Current Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH2 Laser Bias Current Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="34">
+        <priority>3</priority>
+        <cause>CH2 Laser Temperature Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH2 Laser Temperature Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="35">
+        <priority>3</priority>
+        <cause>CH2 Loss of TxPLL Lock Indicator.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH2 Loss of TxPLL Lock Indicator.</problem-description>
+    </fault-code>
+    <fault-code value="36">
+        <priority>3</priority>
+        <cause>CH2 Laser Power Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH2 Laser Power Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="37">
+        <priority>3</priority>
+        <cause>CH2 Modulator Bias Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH2 Modulator Bias Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="38">
+        <priority>3</priority>
+        <cause>CH2 Mux FIFO Error Indicator.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH2 Mux FIFO Error Indicator.</problem-description>
+    </fault-code>
+    <fault-code value="39">
+        <priority>3</priority>
+        <cause>CH3 Laser End Of Life Alarm.</cause>
+        <action>NOT DEFINED</action> 
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH3 Laser End Of Life Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="40">
+        <priority>3</priority>
+        <cause>CH3 Modulator Temperature Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH3 Modulator Temperature Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="41">
+        <priority>3</priority>
+        <cause>CH3 Laser Wavelength Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH3 Laser Wavelength Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="42">
+        <priority>3</priority>
+        <cause>CH3 Tx Summary Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH3 Tx Summary Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="43">
+        <priority>3</priority>
+        <cause>CH3 Laser Bias Current Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH3 Laser Bias Current Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="44">
+        <priority>3</priority>
+        <cause>CH3 Laser Temperature Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH3 Laser Temperature Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="45">
+        <priority>3</priority>
+        <cause>CH3 Loss of TxPLL Lock Indicator.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH3 Loss of TxPLL Lock Indicator.</problem-description>
+    </fault-code>
+    <fault-code value="46">
+        <priority>3</priority>
+        <cause>CH3 Laser Power Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH3 Laser Power Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="47">
+        <priority>3</priority>
+        <cause>CH3 Modulator Bias Alarm.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH3 Modulator Bias Alarm.</problem-description>
+    </fault-code>
+    <fault-code value="48">
+        <priority>3</priority>
+        <cause>CH3 Mux FIFO Error Indicator.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CH3 Mux FIFO Error Indicator.</problem-description>
+    </fault-code>
+    <fault-member name="CONTROL/LA02/DTXBBpr0"></fault-member>
+    <fault-member name="CONTROL/LA02/DTXBBpr1"></fault-member>
+    <fault-member name="CONTROL/LA02/DTXBBpr2"></fault-member>
+    <fault-member name="CONTROL/LA02/DTXBBpr3"></fault-member>
+    <fault-member name="CONTROL/DV01/DTXBBpr0"></fault-member>
+    <fault-member name="CONTROL/DV01/DTXBBpr1"></fault-member>
+    <fault-member name="CONTROL/DV01/DTXBBpr2"></fault-member>
+    <fault-member name="CONTROL/DV01/DTXBBpr3"></fault-member>
+    <fault-member name="CONTROL/DV02/DTXBBpr0"></fault-member>
+    <fault-member name="CONTROL/DV02/DTXBBpr1"></fault-member>
+    <fault-member name="CONTROL/DV02/DTXBBpr2"></fault-member>
+    <fault-member name="CONTROL/DV02/DTXBBpr3"></fault-member>
+    <fault-member name="CONTROL/PM03/DTXBBpr0"></fault-member>
+    <fault-member name="CONTROL/PM03/DTXBBpr1"></fault-member>
+    <fault-member name="CONTROL/PM03/DTXBBpr2"></fault-member>
+    <fault-member name="CONTROL/PM03/DTXBBpr3"></fault-member>
+</fault-family>

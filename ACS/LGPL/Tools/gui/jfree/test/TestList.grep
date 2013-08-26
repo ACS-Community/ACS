@@ -1,0 +1,15 @@
+Time:
+1 - .*@.*
+1 - java -classpath* 
+1 - ACS Interface Repository: corbaloc::*
+1 - ACS Manager: corbaloc::*
+1 - ACS Name Service: corbaloc::*
+1 - exported ACS_INTERFACE_REPOSITORY=corbaloc::*
+1 - exported ACS_NAME_SERVICE=corbaloc::*
+1 - exported MANAGER_COMPUTER_NAME=*
+1 - exported MANAGER_REFERENCE=corbaloc::*
+1 - INFO:*
+1 - DEBUG:*
+1 - exported ACS_TMP=*
+1 -  --addToClasspath 
+1 -  --noDirectory

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+	<head>
+		<title>GP Functionality</title>
+		<section>AB/CO/AP</section>
+      <author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+		<reviewers>TBD</reviewers>
+		<currentVersion>0.1 (2002/11)</currentVersion>
+		<history>
+    0.1 (2002/11) : First Draft<br/>
+		</history>
+	</head>
+	<!--
+
+	SECTION 1
+	
+  -->
+	<section>
+		<title>Abstract</title>
+		<description>
+			<p>This section gives an overview of the GUI Platform (GP) Functionality and points
+                        to other documents with more detailed information</p>
+		</description>
+	</section>
+        <section>
+            <title>The Functionality Provided by the GUI Platform</title>
+            <description>
+  The GUI platform provides the following facilities for building GUIs:
+  <ul>
+    <li><strong>Windowing</strong>: you can create windows (so-called >>>TopComponents), group them 
+    in tabbed panes (so-called >>>Modes), and put several tabbed panes into >>>workspaces. 
+    The GP adds utility classes that facilitate some of the common tasks. More information 
+    about Windowing can be found in the Section on <a href="./windowing/Windowing_howto.html"> Windowing</a>.</li>
+    <li><strong>Explorers/Tables</strong>: There are some general purpose GUI components, grouped under the 
+    general name "Explorer". >>>TreeExplorers display a hierarchy of Nodes >>>ListExplorers 
+    display a list of Nodes. TreeExplorers look like Swing JTrees, ListExplorers look like JLists. 
+    [>>>Image]. GP provides an additional Explorer called a >>> MultiListExplorer which represents 
+    a hierarchical view as multiple side-by-side lists.
+    <p align="center">
+      <img src="./images/functionality-tree.jpg" width="158" height="236"/>
+      <img src="./images/functionality-list.jpg" width="130" height="176"/>
+      <img src="./images/functionality-multilist.jpg" width="231" height="105"/>
+    </p>
+    </li>
+    <li>
+    <strong>TreeTables and ListTables</strong>. NetBeans has further GUI components that combine a Tree or a List with a Table. A tree explorer, has 
+    on the left hand side a Tree and on the right side a table. A TreeTableExplorer provides for each Node 
+    displayed in the tree, a corresponding row in the table. [=> Image ]. Nodes and their tables are 
+    coordinated: if a sub-branch of the tree is opened, the Table automatically grows and adds rows 
+    corresponding to the newly appeared Nodes. You can see more about the nodes in the <a href="./explorer/explorers.html">
+    section "Getting Started with Explorer Components"</a>.
+    <p align="center">
+    <img src="./images/functionality-treetable.jpg" width="248" height="236"/>
+    </p>
+    </li>
+    <li>
+    <strong>Property sheets</strong>: A property sheet is a small table used to display property-value pairs. It is 
+    typically used to show the properties of a JavaBean and to give the GUI user the possibility to modify 
+    the values of those properties. An example of a property sheet is shown in [>>>Image]. 
+    [>>>Section PropertySheets Vito] contains detailed information and example code regarding Property Sheets.
+    </li>
+    <li>
+    <strong>Menus, toolbars, Popup Menus and Keyboard short-cuts</strong>. NetBeans/GP provides facilities to create different 
+    kinds of Menus in a clean way that separates GUI code from application specific code. The menu items 
+    (GUI-specific code) are linked to so-called Actions (. When the user executes a Menu item, the 
+    corresponding action is invoked. [>>>Section Actions/Capabilities Lionel] explains Actions and how to 
+    use them in Menus and as Pop-up Menus. [>>>Section Modules Katarina] explains how to declare Menus and 
+    Toolbars.
+    </li>
+    <li>
+    <strong>Logging API</strong>. The GP specifies a Logging API. This API shall cover the needs of the programmer to report 
+    unexpected error conditions or simply specify debugging (tracing) information. This is explained in 
+    [>>>Section Logging Katarina]    
+    </li>
+    <li>
+    <strong>Pluggable Modules</strong>. Modules are the mechanism NetBeans/GP uses to package a set of classes that belong 
+    together and that fulfill a specific purpose. An example of a module could be an Alarm screen that 
+    displays current alarm states in a Window. A module is a Jar with additional information in the Manifest 
+    and an XML file. The XML file contains, amongst others, the description of the Menus, toolbars and 
+    keyboard shortcuts. This is further described in [>>>section Modules Katarina]    
+    </li>
+    </ul>
+  </description>
+  </section>
+</document>
+

@@ -1,0 +1,60 @@
+#! /bin/bash
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+
+CDB_DIR=`pwd`/CDB-OLD
+#acsStart > logStart.log 2>&1 
+#cdbjDALClearCache
+cdbTATPrologue $CDB_DIR
+
+#
+echo "1 - OLD FASHION Components"
+#
+diff CDB-OLD/CDB/MACI/Components/Components.xml Components_before.xml
+cdbSetDefaultComponent IDL:alma/PS/PowerSupply:1.0 TEST_PS_2
+diff CDB-OLD/CDB/MACI/Components/Components.xml Components_after.xml
+
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+cp Components_before.xml CDB-OLD/CDB/MACI/Components/Components.xml
+
+#
+echo "2 - NEW Fashion Components"
+#
+CDB_DIR=`pwd`/CDB-NEW
+
+cdbTATPrologue $CDB_DIR
+diff CDB-NEW/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml Generic_before.xml
+cdbSetDefaultComponent IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic
+diff CDB-NEW/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml Generic_after.xml
+
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+cp Generic_before.xml CDB-NEW/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml
+
+#
+echo "3 - MIX Components"
+#
+CDB_DIR=`pwd`/CDB-MIX
+
+cdbTATPrologue $CDB_DIR
+
+diff CDB-MIX/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml Generic_before.xml
+cdbSetDefaultComponent IDL:alma/Control/CRD:1.0 CONTROL/CRD/Node0x20/Generic
+diff CDB-MIX/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml Generic_after.xml
+#
+echo "4 - MIX Components second example"
+#
+diff CDB-MIX/CDB/MACI/Components/Components.xml Components_before.xml
+cdbSetDefaultComponent IDL:alma/PS/PowerSupply:1.0 TEST_PS_2
+diff CDB-MIX/CDB/MACI/Components/Components.xml Components_after.xml
+
+
+#
+# Put back everything to status before the test
+#
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+
+cp Components_before.xml CDB-MIX/CDB/MACI/Components/Components.xml
+cp Generic_before.xml CDB-MIX/CDB/MACI/Components/CONTROL/CRD/Node0x20/Generic/Generic.xml
+
+cdbTATPrologue > cdbTATPrologue.log 2>&1
+
+# __oOo__

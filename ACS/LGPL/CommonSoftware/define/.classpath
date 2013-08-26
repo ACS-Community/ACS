@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
+	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/xmljbind.jar"/>
+	<classpathentry kind="lib" path="ws/lib/archive_xmlstore_if.jar"/>
+	<classpathentry sourcepath="ws/lib/systementities.jar" kind="lib" path="ws/lib/systementities.jar"/>
+	<classpathentry kind="lib" path="ws/lib/xmlentity.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

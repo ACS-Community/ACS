@@ -1,0 +1,126 @@
+#ifndef _ACSNC_IDL_
+#define _ACSNC_IDL_
+/*******************************************************************************
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) Associated Universities Inc., 2002
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *    and Cosylab 2002, All rights reserved
+ * 
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *
+ * who       when      what
+ * --------  --------  ----------------------------------------------
+ * david 2003-03-03 contains strings common to all implementation languages
+ * david 2002-09-26 added more comments
+ */
+#include <CosNotification.idl>
+#include <CosNotifyComm.idl>
+#include <NotifyExt.idl>
+#include <acscommon.idl>
+#include <baci.idl>
+
+#pragma prefix "alma"
+
+/** @file acsnc.idl
+ *  acsnc IDL File
+ */
+module acsnc
+{
+    /**
+     *  The following structure defines the description of an event. Each
+     *  structured event published onto a notification channel by the various
+     *  ACS APIs have an instance of this structure packed into it (in the 
+     *  remainder_of_body CORBA any field).
+     */
+    struct EventDescription
+    {
+	/**
+	 *  Defines the name of the publisher of this specific event. It
+	 *  could be the name of a component, subsystem, etc.
+	 */
+	string name;
+
+	/**
+	 *  Defines the epoch in time just before the event was sent across 
+	 *  the network to a channel.  In the case of real-time suppliers this 
+	 *  value is the time the event was stored in the queue.
+	 */
+	ACS::Time timestamp;
+
+	/**
+	 *  This value is the number of events of the current event type
+	 *  that have been published by the supplier instance.  It's absolutely
+	 *  vital to note this is not necessarily the total number of (current 
+	 *  event type) events sent (e.g., what if there are more than one 
+	 *  suppliers for this particular channel?).
+	 */
+	unsigned long long count;
+    };
+
+
+    /**
+     * This is the sequence holding the Channel, Domain, and Type Names.
+     * Not valid for all language mappings.
+     */
+    typedef sequence<string> NCSeq;
+
+
+    ////////////////////////////////////////////////////////////////////////
+    //The following definitions are used internally by all language mappings.
+    ////////////////////////////////////////////////////////////////////////
+    
+    /**
+     * FILTER_LANGUAGE_NAME is the default filtering language used by the addFilter
+     * consumer (API) method.
+     * TODO: Rename this from "ETCL" to "EXTENDED_TCL", as stated in the Corba Notification Service spec,
+     *       chapter 3.2.1.1 constraint_grammar. The "ETCL" was a mistake by TAO, fixed in 2002, but still 
+     *       supported for backward compatibility (see orbsvcs/Notify/ETCL_FilterFactory.cpp)
+     */
+    const string FILTER_LANGUAGE_NAME = "ETCL";
+
+
+    /**
+     * The prefix used to derive the event type from the IDL struct name
+     * in (the only partially supported) cases where the event data is not a single struct 
+     * but instead a sequence of such structs.
+     */
+    const string SEQUENCE_EVENT_TYPE_PREFIX = "_SequenceOf_";
+
+
+    ////////////////////////////////////////////////////////////////////////
+
+    /**
+     * The only reason this interface is being defined is because the ACS Java implementation
+     * ensures that only IDL interface implementations derived from ACS::OffShoots
+     * can be activated as CORBA objects by the ContainerServices.
+     */
+    interface OSPushSupplier : CosNotifyComm::StructuredPushSupplier, ACS::OffShoot {};
+
+    /**
+     * The only reason this interface is being defined is because the ACS Java implementation
+     * ensures that only IDL interface implementations derived from ACS::OffShoots
+     * can be activated as CORBA objects by the ContainerServices.
+     */
+    interface OSPushConsumer : CosNotifyComm::StructuredPushConsumer, ACS::OffShoot {};
+
+    /**
+     * The only reason this interface is being defined is because the ACS Java implementation
+     * ensures that only IDL interface implementations derived from ACS::OffShoots
+     * can be activated as CORBA objects by the ContainerServices.
+     */
+    interface OSReconnectionCallback : NotifyExt::ReconnectionCallback, ACS::OffShoot {};
+};
+#endif

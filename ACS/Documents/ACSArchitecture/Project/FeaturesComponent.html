@@ -1,0 +1,483 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>FeaturesComponent</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="20080603;17345100">
+	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<STYLE TYPE="text/css">
+	<!--
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<H2><A NAME="DistributedObjectConcept"></A>ACS Component</H2>
+<P>The requirements document <A HREF="ReferenceDocuments.html#RD01">[RD01]</A>
+specifies as a basic design requirement the adoption of an Object
+Oriented architecture based on distributed objects <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 13.1.1 Distributed Objects and commands]</A>. 
+</P>
+<P>The Technical Architecture in the ALMA Software Architecture
+document <A HREF="ReferenceDocuments.html#RD33">[RD33]</A>&nbsp;
+identifies a Container-Component model for software organization and
+development as our primary instrument for achieving separation of
+functional from technical concerns.</P>
+<P>This concept is the basis for the architecture and all services
+provided by ACS are designed around Components. 
+</P>
+<H3>Every Component must implement the ComponentLifeCycle interface.
+This interface foresees the following basic lifecycle operations:</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">initialize – called to give the
+	component time to initialize itself, e.g. retrieve connections, read
+	configuration parameters, build up in-memory tables….. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">execute – called after
+	initialize() to tell the component that it has to be ready to accept
+	incoming functional calls any time 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">cleanup – the component should
+	release resources in an orderly manner, because shutdown is imminent
+		</P>
+	<LI><P>aboutToAbort – the component will be forcibly removed due
+	to some error condition. 
+	</P>
+</UL>
+<H3>The Container passes to each Component a ContainerServices object
+(in C++ this occurs at construction time, while in Java at
+initialize() time, because of the different traditional ways of using
+constructors and destructors in the two languages). At that point,
+the Component can assume that all infrastuctural services it may need
+have been properly set up by the Container and are available via the
+ContainerServices object.</H3>
+<H3>The architecture of the system is based on CORBA. Component and
+Container interfaces are described in IDL, and Components and
+Container are implemented as CORBA objects. The impact of CORBA on
+component implementation classes is very low or none, varying among
+languages. 
+</H3>
+<H3>For exceptional cases, a component can explicitly ask the
+container to create an associated CORBA object (called an &quot;OffShoot&quot;)
+and then pass it around in the system. 
+</H3>
+<H3>ORB independence and interoperability <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 10.4.2 ORB Independence]</A> is ensured by basing the Distributed
+Object implementation on CORBA Inter-ORB Protocol (IIOP) and Portable
+Object Adapter (POA) and by not allowing the use of any ORB-specific
+feature. Interoperability between ORBs has been demonstrated with the
+the Kitt Peak Test and with the previous releases of ACS, where we
+have changed ORBs a number of times. The selection of the final ORBs
+needed for ACS is not part of this Architecture document. The current
+baseline includes TAO<A HREF="ReferenceDocuments.html#RD07">[RD07]</A>
+for C/C++, JacORB<A HREF="ReferenceDocuments.html#RD34">[RD34]</A>
+for Java, omniORB<A HREF="ReferenceDocuments.html#RD15">[RD15]</A>
+for Python bindings, OpenOrb <A HREF="ReferenceDocuments.html#RD16">[RD16]</A>for
+some code generation tools.</H3>
+<H3>ACS provides a C++, a Java, and a Python Container
+Implementation. The three implementations differ in the features
+offered because C++, Java and Python applications have different
+requirements, as described in <A HREF="ReferenceDocuments.html#RD33">[RD33]</A>.
+Features from one type of component can be implemented also for the
+other type, if the requirement arises. 
+</H3>
+<H3>ContainerSercices and ComponentLifeCycle interfaces are NOT
+defined as IDL interfaces, since they are used only in the internal
+communication between Components and Containers and there are
+language specific differences.</H3>
+<H3>Basic functionality provided by ContainerServices is:</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">getName() 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">getComponent(name) 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">findComponent(type) 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">releaseComponent(name) 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">getCDB() 
+	</P>
+	<LI><P>getThreadManager() 
+	</P>
+</UL>
+<P>For more details see the implementation and detailed design
+documentation. In particular there are various flavours of the
+getComponent() interface, some described here after.</P>
+<H3>Specific Containers can provide specialised subclasses of
+ContainerServices with additional features. Components aware of this
+additional functionality can make use of it, while other Components
+would ignore it transparently.</H3>
+<H3>Normally a Container will provide each Component with a specific
+instance of ContainerServices that contains specific context
+information, but this is left to the responsibility of the Container.
+Therefore the life cycle of the ContainerServices objects is left to
+the complete control of the Container.</H3>
+<P>--------------------------------------------------</P>
+<H3>Characteristic Components are a subclass of Components tailored
+to the implementation of objects that describe collections of
+numerical (typically physical) quantities. They have been designed in
+particular to represent Control System objects with monitor and
+control points or objects with state and configurable parameters. In
+particular Characteristic Components are described using a 3 tier
+naming for the logical model <A HREF="ReferenceDocuments.html#RD03">[RD03]</A>
+<A HREF="ReferenceDocuments.html#RD04">[RD04]</A> <A HREF="ReferenceDocuments.html#RD05">[RD05]</A>:
+</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">Characteristic Component 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Property 
+	</P>
+	<LI><P>Characteristic 
+	</P>
+</UL>
+<H4>Characteristic Component - Instances of classes identified at
+design level in the ALMA system, with which other components of the
+system interact, are implemented as Characteristic Components. In
+particular, at control system level, Characteristic Component is the
+base class used for the representation of any physical (a temperature
+sensor, a motor) or logical device in the control system. Higher
+level applications can use Characteristic Components to implement any
+Component that has configurable values representing numerical
+quantities.</H4>
+<H4>Property - Each Characteristic Component has 0..n Properties that
+are monitored and controlled, for example status, position, velocity
+and electric current. 
+</H4>
+<H5>Properties can be read-only or read/write. If a read/write
+property cannot read its value back (for example it is associated
+with a write-only physical device), it caches the last written value
+and returns this upon read request. This implementation is mandatory
+and must be documented in the property documentation. 
+</H5>
+<H5>Properties can represent values using a limited set of basic data
+types: 
+</H5>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in"><I>long</I>, <I>longLong</I> and
+	<I>uLongLong</I> for integers 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><I>double</I> for floating point
+	numbers 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><I>string</I> for strings. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><I>pattern</I> to handle patterns
+	of bits, typically from hardware devices 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><I>enum</I> for enumerations like
+	states. This includes a boolean TRUE/FALSE enumeration. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><I>sequence&lt;scalar property&gt;</I>
+	of one of the previously defined scalar property types. A
+	Sequence&lt;scalar property&gt; is a sequence (in CORBA IDL terms)
+	of properties of a given scalar type, i.e. each item in the sequence
+	is a complete property of the given scalar type. It is implemented
+	as an IDL Sequence of the scalar property type. For example a
+	<I>sequence&lt;long&gt;</I> allows manipulating a group of
+	properties of type long. Each item in the list can be assigned to a
+	long property object and manipulated (reading characteristics and
+	value) independently from the others. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><I>scalarTypeSeq</I> of one of the
+	previously defined scalar types. A <I>scalarTypeSeq</I>is a property
+	type that contains as value an array of values handled by the
+	corresponding scalar type. For example, a <I>longSeq</I> is a
+	property type with a single set of characteristics that apply to an
+	array of integers. It is a single property and its value is an array
+	of values. With respect to <I>sequence&lt;scalar property&gt;</I>,
+	<I>scalarTypeSeq</I> is much more efficient for transporting big
+	tables of data. <FONT COLOR="#0000ff"><I><B>(Not all types
+	implemented for ALMA)</B></I></FONT> 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>complex
+	for handling complex numbers </FONT></FONT></FONT><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><I><B>(Implementation
+	not foreseen for ALMA)</B></I></FONT></FONT></FONT> 
+	</P>
+	<LI><P><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>structures
+	built with properties of the other basic types. Since structures
+	introduce a significant increase of complexity in the handling
+	libraries, they will be implemented last and only if a clear need
+	arises.</FONT></FONT></FONT><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><I><B>(Implementation
+	not foreseen for ALMA)</B></I></FONT></FONT></FONT> 
+	</P>
+</UL>
+<H5>The selection of a limited set of type is motivated by the need
+of avoiding implementing the same code for many different types and
+conversion problems between similar types (like short, int and long).
+Also, nowadays saving a couple of bytes using a short instead of a
+long usually introduces performance problems (CPUs now always works
+with longs and every operation on a short requires a conversion to
+long)</H5>
+<H4>Characteristic - Static data associated with a Characteristic
+Component or with a Property, including meta-data such as <I>name,
+description, version </I>and <I>dimensions</I>, and other data such
+as <I>units, range</I> or <I>resolution. </I>Each Characteristic
+Component or each Property has 0..n Characteristics.<BR>An initial
+list of Characteristics for Characteristic Components and Properties
+has been agreed&nbsp; and more details are given in the design
+documentation: 
+</H4>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">Characteristic Components and
+	Properties: Name, Description, Version and URI of extended
+	documentation, where the last is optional and would point to
+	documentation generated automatically from the source code. 
+	</P>
+	<LI><P>Read-only and Read/Write Properties: default values, range,
+	units, format, resolution 
+	</P>
+</UL>
+<H4>The following diagram shows an architectural class diagram for
+the Characteristic Component - Property - Characteristic pattern</H4>
+<P><A NAME="_x0000_i1025"></A><IMG SRC="Images/ACS_Component-Container_model__ACS_Component__Distributed_Object__ACS_Simple_CharacteristicComponent-Property-Characteristic_model.png" WIDTH="562" HEIGHT="458"  NAME="graphics1" ALIGN=BOTTOM BORDER=0></P>
+<P ALIGN=CENTER><I>Figure 3.1: Characteristic Component - Property -
+Characteristic class diagram</I></P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">The diagram shows the classes that
+	have an IDL public interface and is not concerned with actual
+	implementation of the servants that realize these interfaces. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">A <B>CharacteristicModel</B> base
+	interface class groups methods and attributes common to both
+	Property and Characteristic Component. In particular, both have a
+	common set of Characteristics and provide the related access
+	methods. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">A <B>Characteristic Component</B>
+	can reference other <B>Characteristic Components</B>, to build a
+	hierarchical structure 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><B>Properties</B> are always
+	contained into a <B>Characteristic Component</B>. This means that a
+	<B>Characteristic Component</B> can contain 0 or many <B>Property</B>
+	instances, while a property is always contained in one and only one
+	<B>Characteristic Component</B>. The <B>Property</B> class provides
+	a method to retrieve the reference to the Characteristic Component
+	that contains it. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">From the base <B>Property</B>
+	class, subclasses for each read only and read/write types are
+	derived. This is represented in the diagram by the ROProperty&lt;type&gt;
+	and RWProperty&lt;type&gt; parametrized classes. From an
+	architectural point of view, RWProperty&lt;type&gt; classes are
+	subclasses of the corresponding ROProperty&lt;type&gt;. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">The lower part of the diagram
+	(white class boxes) shows how applications will inherit from the
+	base classes provided by ACS. The example shows classes used for the
+	implementation of the control system. 
+	</P>
+	<LI><P>This diagram is sufficient and correct at architecture level.
+	At design level, we have introduced some intermediate class levels
+	to improve the modularity of the code. These intermediate classes
+	are in any case hidden to the users, making the actual structure
+	between the Property class and the implementation of RO and RW
+	properties an implementation detail. 
+	</P>
+</UL>
+<H4>At the servant’s implementation level, the classes implementing
+the Property interfaces are responsible for the actual interfacing
+with the hardware or, more in general, to retrieve/calculate the
+value for the numerical entities. In order to decouple as much as
+possible the implementation of Property classes and the access to
+different kinds of data sources, we have parametrized the default
+Property implementation provided by ACS with a DevIO parameter, as
+shown in the following class diagram. A DevIO implementation is
+responsible only for reading/writing the Property’s value from a
+specific device (memory location, CAN bus, Socket connection, serial
+port, database….), therefore in most cases access to a new kind of
+device can be implemented just by implementing a new DevIO class. In
+more complex cases or for performance optimization it may be
+necessary to re-implement the entire Property interface. 
+</H4>
+<P><A NAME="_x0000_i1026"></A><IMG SRC="Images/ACS_Component-Container_model__ACS_Component__Distributed_Object__Property_Servant_Implementation.png" WIDTH="562" HEIGHT="446"  NAME="graphics2" ALIGN=BOTTOM BORDER=0></P>
+<P ALIGN=CENTER><I>Figure 3.2: Property Servant Implementation class
+diagram</I></P>
+<H4>Another common strategy to handle the case where a data source
+produces simultaneously the values for many Properties consist in
+mapping the Properties onto memory-based DevIOs and let a parallel
+execution thread update all memory locations from the data collected
+with one single access to the data source.</H4>
+<H4>The Characteristic Components - Properties - Characteristics 3
+tier logical model is very well established in the community of
+Control Systems for Physics Experiments <A HREF="ReferenceDocuments.html#RD03">[RD03]</A>
+<A HREF="ReferenceDocuments.html#RD04">[RD04]</A> <A HREF="ReferenceDocuments.html#RD05">[RD05]</A>,
+where the name Device is used to identify what we call here
+Characteristic Component. We prefer to adopt the more generic name,
+as specified in <A HREF="ReferenceDocuments.html#RD01">[RD01 - 13.1.1
+Characteristic Components and Commands]</A>, because the usage of the
+ACS is not limited to the realm of the Control System, as in the case
+of the mentioned references. It provides instead generic services for
+the development of the whole ALMA software. Proper Device classes are
+implemented by the Control System development team based on
+Characteristic Components. 
+</H4>
+<H3>The Characteristic Component model is based on CORBA: 
+</H3>
+<H4>A Characteristic Component is a CORBA object 
+</H4>
+<H4>A Property is a CORBA object. A class hierarchy with Property
+class as root implements the basic read-only and read/write versions
+for the predefined types. This hierarchy provides standard IDL
+interfaces that shall be used by all clients to access Properties. On
+the implementation (servant) side, specific subclasses will provide
+polymorphic access to specific implementations like 'logical',
+'simulated', 'CAN', 'RS232', 'Digital IO' and so on. 
+</H4>
+<H4>Public interfaces to Characteristic Components and Properties are
+defined as CORBA IDL.</H4>
+<H4>Characteristics of Characteristic Components and Properties can
+be accessed through access methods (as shown in figure) and through a
+generic value = get_characteristic_by_name(name) type of interface at
+run time. The interface of properties is defined by their IDL and the
+IDL is the same independently from the implementation (logical,
+CAN...). But specific implementations will have also specific
+characteristics. For example a CANLong property has a CANID
+characteristic. This means that from the property's IDL there is no
+way to retrieve the CANID using CORBA calls. We provide then a
+generic interface that can be used to retrieve any characteristic
+just querying by name. This allows accessing specific
+Characteristics, like the CAN ID for properties related to CAN
+monitor points that are not defined in the generic property IDL but
+are instead implementation specific.</H4>
+<H3>The configuration parameters for all Characteristic Components,
+i.e. the initial values for Properties control values and all
+Characteristics for Properties, are persistently stored in the
+Configuration Database <A HREF="ReferenceDocuments.html#RD01">[RD01 -
+4.2.1. Configuration Database]</A>. See the section on Configuration
+Database architecture.</H3>
+<H3>Characteristic Components may have a state. Specific
+Characteristic Components can have additional sub-states. <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 13.1.2 Standard Methods]</A> <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 14.1.13 States]</A>. 
+</H3>
+<H3><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><B>Note:
+</B></FONT></FONT></FONT><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>A
+standard state machine and standard state transition commands could
+be defined. </FONT></FONT></FONT><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><I><B>(Implementation
+not foreseen for ALMA).</B></I></FONT></FONT></FONT></H3>
+<H3>JavaBeans wrap CORBA objects on the client side. Standard Rapid
+Application Development (RAD) tools like Eclipse<A HREF="ReferenceDocuments.html#RD35">[RD35]</A>
+are used to handle them. Given the IDL interface of a Characteristic
+Component, a code generator automatically produces the corresponding
+JavaBean. In this way the developer has libraries that provide him
+direct support for ACS concepts like Characteristic
+Component/Property/Characteristic, Monitors, and Event and
+Notification System.</H3>
+<H3>ACS also provides a generic IDL simulator (see section IDL
+Simulator) to simulate an entire Component.</H3>
+<H3>If an application wants to provide a more sophisticated level of
+simulation (for example simulating interrelations between the values
+of properties), a specific simulated device should be implemented in
+parallel to the real device. Switching from the real to the simulated
+device is handled in the configuration of the Manager (see Management
+and Access Control section), telling it to start a different
+implementation of the same device's CORBA interface.</H3>
+<H3><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><B>Note:
+</B></FONT></FONT></FONT><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>As
+an extension, ACS could provide support for simulation<A HREF="ReferenceDocuments.html#RD01">[RD01
+- 3.3.4. Simulation]</A> at Property level. All properties that
+access hardware can be switched in simulation by setting TRUE a
+simulation characteristic in the configuration database. After this,
+they behave like &quot;logical properties&quot;. This provides basic
+simulation capabilities. </FONT></FONT></FONT><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><I>(Implementation
+not foreseen for ALMA).</I></FONT></FONT></FONT></H3>
+<H3><A NAME="CommandHandling"></A>Direct Value Retrieval</H3>
+<H4>The Property classes provide get() and, in case of writeable
+Properties, set() methods that can be used to directly access the
+value of the property from clients <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 4.1.1 Direct value retrieval]</A>. Both synchronous and
+asynchronous get() and set() methods are provided.</H4>
+<H4>Value setting is done using set() property methods. These methods
+can be called by applications or by specifically designed GUIs. CORBA
+Dynamic Invocation Interface allows to write generic applications and
+GUIs (like the <I>Object Explorer</I>) that are capable of resolving
+dynamically at run time the structure of Characteristic Components
+and call set() methods to set the value of Properties <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 3.2.3. Value setting]</A>.</H4>
+<H4>DevIO specialization is used to implement properties accessing
+specific hardware devices, like CAN, RS232, GPIB. CAN properties will
+always directly access the hardware on the CAN bus at direct value
+retrieval and not use cached values.</H4>
+<H3><A NAME="Events"></A>Value Retrieval by Event</H3>
+<H4>The Characteristic Component provides a method to create a
+monitor object for a Property, able to trigger events on Property
+change or periodically. A callback will be connected to the event and
+will be called by the monitor object when the specified event
+occurs<A HREF="ReferenceDocuments.html#RD01">[RD01 - 13.1.4. Events]</A>.
+Triggered events are delivered directly to the registered object via
+the callback mechanism in a point-to-point fashion. The value
+retrieval by event is then very well suited for providing timely
+feedback to control applications.</H4>
+<H4>Events can be generated on any change of value<A HREF="ReferenceDocuments.html#RD01">[RD01
+- 4.1.3 Rate]</A>. 
+</H4>
+<H4><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><B>Note:</B></FONT></FONT></FONT>
+<FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>Other
+conditions, for example any write, value increase/decrease, value
+less or greater than set-point could also be included at a later
+stage. </FONT></FONT></FONT><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><I>(Implementation
+not foreseen for ALMA)</I></FONT></FONT></FONT></H4>
+<H4>Timed or periodic events can be generated as follows:</H4>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">Periodic, at a specific interval
+	rate <A HREF="ReferenceDocuments.html#RD01">[RD01 - 4.1.3 Rate]</A> 
+	</P>
+	<LI><P>Periodic, at a specific interval rate, synchronized with an
+	absolute array time <A HREF="ReferenceDocuments.html#RD01">[RD01 -
+	4.1.5 Values at given time]</A>. This also allows periodic events
+	aligned with the monitoring rate. For example, a 1-second rate
+	generates events on the 1-second mark, 5-second rate on the 5-second
+	mark and so on. 
+	</P>
+</UL>
+<P ALIGN=CENTER><A NAME="_x0000_i1027"></A><IMG SRC="Images/ACS_Component-Container_model__ACS_Component__Distributed_Object__Event_System__Event_Architecture.png" WIDTH="562" HEIGHT="452"  NAME="graphics3" ALIGN=BOTTOM BORDER=0></P>
+<P ALIGN=CENTER><I>Figure 3.3: Value Retrieval by Event: ACS Monitors</I></P>
+<H4>All events will be time stamped with the time at which the value
+has been acquired (as opposed to the time of delivery of the event).
+Timed events will be triggered &quot;timers&quot; such that the
+requested time is the time of acquisition of the value, and not the
+time of delivery which depends on the network characteristics.</H4>
+<H4>The monitor class provides methods to suspend, resume and destroy
+the monitor itself. 
+</H4>
+<H4><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><B>Note:
+</B></FONT></FONT></FONT><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>CAN-Properties
+will have to implement notification on change also for CAN monitor
+points although CAN monitor points do not provide a specific support
+via HW or in the drivers. This can/should be done via polling. If
+there are clients registered on events on change, an ACS monitor is
+used to poll and to generate events in case of change of the value of
+the monitor point. The poll rate is defined by the characteristic
+change frequency. The polling frequency determines the time
+resolution of the event-on-change. </FONT></FONT></FONT><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><I>(implementation
+not foreseen for ALMA)</I></FONT></FONT></FONT></H4>
+<H4><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><B>Note:
+</B>For performance optimization, the final implementation will not
+leave to the single Characteristic Component Properties the
+responsibility of managing timers, but a local centralized manager
+will take care of that, transparently to client applications. More
+details will be given in the ACS design. <I>(implementation not
+foreseen for ALMA)</I></FONT></FONT></FONT></H4>
+<H4><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><B>Note:
+</B>A particular case is a Characteristic Component State Machine. A
+State Machine class is a Characteristic Component and the current
+state is represented by a State Property. This State Property can
+fire events whenever the state changes to allow external objects to
+monitor it. <I>(implementation not foreseen for ALMA)</I></FONT></FONT></FONT></H4>
+<H3>Supported implementation languages</H3>
+<P>&nbsp;The Characteristic Component / Property /characteristic
+pattern is implemented in C++ and in Java and Python</P>
+<P><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2><I><B>Note:
+Java and Python implementations are not complete and contain now all
+and only the features used in ALMA.</B></I></FONT></FONT></FONT></P>
+<P>--------------------------------------------------</P>
+<H3>ACS Java Components provide explicit support for the transparent
+serialization of instances of entity classes <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 3.3.2. Serialization]</A>. See the section on “Serialization”.</H3>
+</BODY>
+</HTML>
+

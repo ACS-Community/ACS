@@ -1,0 +1,74 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+echo "Started:"
+sleep 30
+echo "Stopping containers"
+acsStopContainer cppContainer
+acsStopContainer javaContainer
+acsStopContainer pyContainer
+echo "Containers stopped"
+
+sleep 15
+
+echo "Restarting containers"
+acsutilAwaitContainerStart -java javaContainer
+acsutilAwaitContainerStart -py pyContainer
+acsutilAwaitContainerStart -cpp cppContainer
+echo "Containers restarted"
+
+sleep 60
+
+echo "Killing java container"
+ps -o pid= --ppid `cat $ACS_TMP/javaContainer.out.pid` >$ACS_TMP/acsStartJavaContainer.pid
+ps -o pid= --ppid `cat $ACS_TMP/acsStartJavaContainer.pid` >$ACS_TMP/acsStartJava.pid
+ps -o pid= --ppid `cat $ACS_TMP/acsStartJava.pid` >$ACS_TMP/acsStartJava_java.pid
+ps -o pid= --ppid `cat $ACS_TMP/acsStartJava_java.pid` >$ACS_TMP/java.pid 
+kill -9 `cat $ACS_TMP/java.pid`
+echo Process `cat $ACS_TMP/java.pid` killed
+
+echo "Killing py container"
+ps >$ACS_TMP/tmp.txt
+awk '/python/ {print $1}' $ACS_TMP/tmp.txt >$ACS_TMP/awk.tmp
+kill -9 `cat $ACS_TMP/awk.tmp`
+echo Process `cat $ACS_TMP/awk.tmp` killed
+
+echo "Killing C++ container"
+ps >$ACS_TMP/tmp.txt
+awk '/maciContainer/ {print $1}' $ACS_TMP/tmp.txt >$ACS_TMP/awk.tmp
+kill -9 `cat $ACS_TMP/awk.tmp`
+echo Process `cat $ACS_TMP/awk.tmp` killed
+
+sleep 60
+
+echo "Restarting C++ container"
+acsutilAwaitContainerStart -cpp cppContainer
+
+echo "Restarting java container"
+acsutilAwaitContainerStart -java javaContainer
+
+echo "Restarting py container"
+acsutilAwaitContainerStart -py pyContainer
+
+sleep 60
+
+echo "Done"

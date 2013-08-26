@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>Cleaning up lib/ext</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+    <reviewers>TBD</reviewers>
+    <currentVersion>0.1 (2002/12)</currentVersion>
+    <history>
+    0.1 (2002/12) : First Draft<br/>
+    </history>
+  </head>
+<section><title>Instructions for cleaning up lib/ext</title>
+<description>
+<p>This document describes how to clean up the lib/ext directory, to remove any Jars that do not belong to NetBeans. You might have added your own jars to the <code>lib/ext</code> directory following the temporary instructions given in the GP course. Now that the GP code and libraries is packaged in NetBeans modules, you need to clean the <code>lib/ext</code> directory up again. After you have done this clean up, you can proceed by installing the GP layer and other libraries as Modules.</p>
+<p>You have two options:</p>
+<ul>
+<li>re-install GP/NetBeans</li>
+<li>clean up an existing installation of GP/NetBeans</li>
+</ul>
+<p>The following description will focus on the second option.</p>
+</description>
+<section><title>Cleaning up an existing installation of NetBeans</title>
+<description>
+<p>First make sure you are not running NetBeans (otherwise the jars will be locked). 
+Then remove all jars you have added to <code>lib</code> and <code>lib/ext</code>. <code>lib/ext</code> should contain roughly the following jars:</p>
+<ul>
+<li><code>crimson.jar</code></li>
+<li><code>regexp.jar</code></li>
+<li><code>rmi-ext.jar</code></li>
+<li><code>terminalemulator.jar</code></li>
+<li><code>xerces.jar</code></li>
+<li><code>xml-apis.jar</code></li>
+</ul>
+
+<p>and<code>lib</code> should contain files like:</p>
+<ul>
+<li><code>core-XXX.jar</code></li> (where XXX is something like <code>windows</code> or <code>ui</code>)
+<li><code>openide.jar</code></li>
+<li><code>updater.jar</code></li>
+<li><code>ide.ks</code></li>
+</ul>
+<p>Now you are ready for installing the GP and Logging modules.</p>
+</description>
+</section></section>
+</document>
+

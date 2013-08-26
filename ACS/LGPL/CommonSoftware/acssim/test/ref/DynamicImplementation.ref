@@ -1,0 +1,15 @@
+1 - -----------------------------------------------------------------
+1 - DynamicImplementation.invoke( ('onewayOn',) {'context': None} )
+1 - DynamicImplementation.invoke( ('on',) {'context': None} )
+1 - DynamicImplementation.invoke( ('_set_charplainAttribute', 'a') {'context': None} )
+1 - DynamicImplementation.invoke( ('_set_charplainSeqAttribute', ('a', 'b', 'c')) {'context': None} )
+1 - DynamicImplementation.invoke( ('_set_charplainArrayAttribute', ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l')) {'context': None} )
+1 - -----------------------------------------------------------------
+1 - PowerSupply dict: ['_DynamicImplementation__interf', '_DynamicImplementation__ir_id', '_DynamicImplementation__real_class', '_DynamicImplementation__real_mod', '_NP_RepositoryId', '__doc__', '__init__', '__module__', '_default_POA', '_get_componentState', '_get_current', '_get_interface', '_get_name', '_get_readback', '_get_status', '_non_existent', '_omni_op_d', '_omni_skeleton', '_this', 'descriptor', 'find_characteristic', 'get_all_characteristics', 'get_characteristic_by_name', 'invoke', 'off', 'on', 'reset']
+1 - -----------------------------------------------------------------
+1 - PowerSupply dict: ['_DynamicImplementation__interf', '_DynamicImplementation__ir_id', '_DynamicImplementation__real_class', '_DynamicImplementation__real_mod', '_NP_RepositoryId', '__doc__', '__init__', '__module__', '_default_POA', '_get_componentState', '_get_current', '_get_interface', '_get_name', '_get_rampingStatus', '_get_rampingStep', '_get_readback', '_get_status', '_non_existent', '_omni_op_d', '_omni_skeleton', '_this', 'descriptor', 'find_characteristic', 'get_all_characteristics', 'get_characteristic_by_name', 'invoke', 'off', 'on', 'reset', 'startRamping', 'stopRamping']
+1 - -----------------------------------------------------------------
+1 - Good...ImportError when trying to create 'DL:alma/doesnt/Exist:1.0'
+1 - Good...ImportError when trying to create 'DL:alma/doesnt/Exist:1.0'
+1 - -----------------------------------------------------------------
+1 - Done...

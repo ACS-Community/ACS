@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.15.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/mail.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acsjms.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jms.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/alarmsysteminterface.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/laserutil.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acslog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar" sourcepath="/ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsalarmSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AlarmSystem.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AcsAlarmSystem.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsAlarmService.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar" sourcepath="ACSROOT/lib/acstime.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AlarmSourceSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cmwmom.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar" sourcepath="/ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar" sourcepath="ACSROOT/lib/junit-dep-4.10.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/laserclient.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/laserconsole.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
+	<classpathentry kind="output" path="src"/>
+</classpath>

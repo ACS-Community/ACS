@@ -1,0 +1,86 @@
+#! VxWorks
+#******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: userScript.temp,v 1.9 2008/07/02 08:17:10 bjeram Exp $"
+#
+# Generic VxWorks user-script
+#
+#------------------------------------------------------------------------------
+# See userScript(5) for a detailed explanation on how to fill this file
+#------------------------------------------------------------------------------
+#tooSetLCUTime() DWF-commented out...does not work on Socorro machines.
+#tooBootTime("update") DWF-commented out...does not work on Socorro machines.
+
+LDString=calloc(1,200)
+sprintf(LDString,"LD_LIBRARY_PATH=%s/vw/bin/PPC604:%s/vw/bin/PPC604",getenv("INTROOT"),getenv("ACSROOT"))
+putenv LDString
+
+LDString=calloc(1,200)
+sprintf(LDString,"LD_LIBRARY_PATH=%s:%s/bin",getenv("LD_LIBRARY_PATH"),getenv("MODROOT"))
+putenv LDString
+
+lcubootAutoLoad 1,"libACE.so"
+lcubootAutoLoad 1,"libTAO.so"
+lcubootAutoLoad 1,"libTAO_AnyTypeCode.so"
+lcubootAutoLoad 1,"libTAO_CodecFactory.so"
+lcubootAutoLoad 1,"libTAO_Valuetype.so"
+lcubootAutoLoad 1,"libTAO_PortableServer.so"
+lcubootAutoLoad 1,"libTAO_ObjRefTemplate.so"
+#lcubootAutoLoad 1,"libTAO_IORInterceptor.so"
+lcubootAutoLoad 1,"libTAO_PI.so"
+lcubootAutoLoad 1,"libTAO_CosProperty.so"
+lcubootAutoLoad 1,"libTAO_Svc_Utils.so"
+lcubootAutoLoad 1,"libTAO_Messaging.so"
+lcubootAutoLoad 1,"libTAO_CosNaming.so"
+lcubootAutoLoad 1,"libTAO_DynamicAny.so"
+#lcubootAutoLoad 1,"libTAO_ETCL.so"
+lcubootAutoLoad 1,"libTAO_DsLogAdmin.so"
+lcubootAutoLoad 1,"libTAO_CosEvent.so"
+lcubootAutoLoad 1,"libTAO_CosEvent_Skel.so"
+lcubootAutoLoad 1,"libTAO_CosNotification.so"
+lcubootAutoLoad 1,"libTAO_CosNotification_Skel.so"
+lcubootAutoLoad 1,"libTAO_IFR_Client.so"
+lcubootAutoLoad 1,"libTAO_Codeset.so"
+lcubootAutoLoad 1,"libTAO_CosProperty_Skel.so"
+lcubootAutoLoad 1,"libTAO_CosProperty_Serv.so"
+lcubootAutoLoad 1,"loki"
+lcubootAutoLoad 1,"expat"
+# ACS modules
+lcubootAutoLoad 1,"acscommonStubs"
+lcubootAutoLoad 1,"acsutil"
+lcubootAutoLoad 1,"logging_idlStubs"
+lcubootAutoLoad 1,"loggingService"
+lcubootAutoLoad 1,"acserr"
+lcubootAutoLoad 1,"acserrTypes"
+lcubootAutoLoad 1,"acsQoSErrType"
+lcubootAutoLoad 1,"acsQoS"
+lcubootAutoLoad 1,"acsthreadErrType"
+lcubootAutoLoad 1,"acsThread"
+lcubootAutoLoad 1,"RepeatGuard"
+lcubootAutoLoad 1,"acscomponentStubs"
+lcubootAutoLoad 1,"acsErrTypeContainerServices"
+lcubootAutoLoad 1,"acsContainerServices"
+lcubootAutoLoad 1,"acsErrTypeLifeCycle"
+lcubootAutoLoad 1,"acsErrTypeComponent"
+lcubootAutoLoad 1,"acscomponent"
+lcubootAutoLoad 1,"baciStubs"
+lcubootAutoLoad 1,"acsncStubs"
+lcubootAutoLoad 1,"cdbErrType"
+lcubootAutoLoad 1,"cdbDALStubs"
+lcubootAutoLoad 1,"ACSTimeError"
+lcubootAutoLoad 1,"acstime"
+lcubootAutoLoad 1,"basenc"
+lcubootAutoLoad 1,"archiveevents"
+lcubootAutoLoad 1,"cdb"
+lcubootAutoLoad 1,"recovery"
+lcubootAutoLoad 1,"maciErrType"
+lcubootAutoLoad 1,"maciStubs"
+lcubootAutoLoad 1,"Container"
+lcubootAutoLoad 1,"baciErrTypeDevIO"
+lcubootAutoLoad 1,"baciErrTypeProperty"
+
+
+putenv "ACS_LOG_STDOUT=4"
+putenv "ACS_LOG_FILE=logFile"
+

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AcsCommandCenterProject xmlns="Alma/Acs/AcsCommandCenterProject"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    creator="acc-v4.1" xsi:type="AcsCommandCenterProject">
+    <mode>local</mode>
+    <servicesLocalJavaRoot>/u/dfugate/WORK/CVS/HEAD/ACS/Benchmark/components/test</servicesLocalJavaRoot>
+    <scriptBase>0</scriptBase>
+    <remoteHost></remoteHost>
+    <remoteAccount></remoteAccount>
+    <remotePassword></remotePassword>
+    <toolRunAgainstDedicatedSettings>false</toolRunAgainstDedicatedSettings>
+    <toolAgainstManagerHost></toolAgainstManagerHost>
+    <toolAgainstManagerPort></toolAgainstManagerPort>
+    <toolAgainstInterfaceRepository></toolAgainstInterfaceRepository>
+    <toolAgainstNameService></toolAgainstNameService>
+    <containers>
+        <select>3</select>
+        <againstManagerHost></againstManagerHost>
+        <againstManagerPort></againstManagerPort>
+        <againstCDB></againstCDB>
+        <againstInterfaceRepository></againstInterfaceRepository>
+        <container>
+            <name>bilboContainer</name>
+            <type>cpp</type>
+            <remotePassword></remotePassword>
+        </container>
+        <container>
+            <name>frodoContainer</name>
+            <type>java</type>
+            <remotePassword></remotePassword>
+        </container>
+        <container>
+            <name>aragornContainer</name>
+            <type>py</type>
+            <remotePassword></remotePassword>
+        </container>
+        <container>
+            <name>anotherCppContainer</name>
+            <type>cpp</type>
+            <remotePassword></remotePassword>
+        </container>
+    </containers>
+</AcsCommandCenterProject>

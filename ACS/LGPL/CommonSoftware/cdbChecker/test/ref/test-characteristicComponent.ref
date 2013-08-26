@@ -1,0 +1,3 @@
+1 - *** XML path not specified; defaulting to $ACS_CDB/PATH/characteristicComponent/CDB
+1 - /PATH/characteristicComponent/CDB/schemas/CLOCK.xsd: illegal use of baci properties in xsd elements that are not derived from baci:CharacteristicComponent. Offending element(s): CLOCK
+1 - [Error] CDBChecker exiting. Errors were found

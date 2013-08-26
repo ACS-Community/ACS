@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+CLASS CharacteristicComponent CLOCK
+BEGIN
+    ATTRIBUTE RWlong array2TAI
+    BEGIN
+        ATTRIBUTE int32  default_value  0
+    END
+
+    ATTRIBUTE RWlong TAI2UTC
+    BEGIN
+        // UTC = TAI - this value
+        // N.B. This value will change whenever there's a leap second
+        ATTRIBUTE int32  default_value  32
+    END
+END   
+  -->
+<!--#########################################-->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:CLOCK:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:CLOCK:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!--#########################################-->
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="../../../../../schemas/CDB.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="../../../../../schemas/BACI.xsd"/>
+	<!--ACSDO####################################-->
+	<xs:complexType name="CLOCK">
+		<xs:sequence>
+			<xs:element name="array2TAI">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:restriction base="baci:RWlong">
+							<xs:attribute name="default_value" type="xs:int" use="optional" default="0"/>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TAI2UTC">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:restriction base="baci:RWlong">
+							<xs:attribute name="default_value" type="xs:int" use="optional" default="19"/>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="now">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:restriction base="baci:ROuLongLong">
+							<xs:attribute name="default_value" type="xs:int" use="optional" default="0"/>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<!--#########################################-->
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CLOCK" type="CLOCK"/>
+</xs:schema>
+

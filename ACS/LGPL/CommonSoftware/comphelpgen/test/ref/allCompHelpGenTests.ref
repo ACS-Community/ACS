@@ -1,0 +1,20 @@
+.start generating helper classes 
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ComponentInterface componentClassName="PrimaryComponent" idlPackage="alma.exmplCompHelpGen"/>
+done generating helper classes 
+start generating helper classes 
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ComponentInterface componentClassName="PrimaryXmlComponent" idlPackage="alma.exmplCompHelpGen" internalInterface="PrimaryXmlComponentJ"/>
+done generating helper classes 
+start generating helper classes 
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ComponentInterface componentClassName="PrimaryXmlComponent" idlPackage="alma.exmplCompHelpGen" internalInterface="PrimaryXmlComponentJ"/>
+done generating helper classes 
+start generating helper classes 
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ComponentInterface componentClassName="SecondaryComponent" idlPackage="alma.exmplCompHelpGen"/>
+<ComponentInterface componentClassName="SecondaryXmlComponent" idlPackage="alma.exmplCompHelpGen" internalInterface="SecondaryXmlComponentJ"/>
+done generating helper classes 
+
+
+

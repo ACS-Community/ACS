@@ -1,0 +1,163 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ *    MA 02111-1307  USA
+ */
+
+#ifndef _XMLTEST_IDL_
+#define _XMLTEST_IDL_
+
+#include <acscommon.idl>
+#include <acscomponent.idl>
+
+#pragma prefix "alma"
+
+
+module xmltest
+{
+
+	/*********************************************************
+	 * XmlEntityStruct is defined in the module
+	 * ACS/CommonSoftware/define, file xmlentity.idl,
+	 * which we can't include here because of module built order.
+	 *
+	 * For testing this module, it does not matter that we simply define
+	 * the struct below instead of #including xmlentity.idl.
+	 * Currently even the content of XmlEntityStruct does not matter,
+	 * it just has to exist as a struct.
+	 *********************************************************/
+
+	struct XmlEntityStruct
+	{
+		string xmlString;		// works only for Latin-1 characters; otherwise use wstring!
+//    string entityId;		// unique ID, same as inside the xml, but easier to access
+//    string entityTypeName;	// unique name like "SchedBlock" (should be the schema name w/o ".xsd")
+//    string schemaVersion;	// the schema version that the entity complies with
+	};
+
+
+	/*********************************************************
+	 * typedefs for our entity objects
+	 *********************************************************/
+
+	typedef XmlEntityStruct ObsProposal;
+	typedef XmlEntityStruct SchedBlock;
+
+	typedef sequence <SchedBlock> SchedBlockSeq;
+
+	typedef SchedBlockSeq EvenMoreHiddenEntityClass;
+
+	/*********************************************************
+	 * example component
+	 *********************************************************/
+
+	interface NonXMLAcsComponent : ACS::ACSComponent
+	{
+		string sayHello();
+	};
+
+	interface NonXMLIndirectAcsComponent : NonXMLAcsComponent
+	{
+	};
+
+	interface XMLAcsComponent : ACS::ACSComponent
+	{
+		string sayHello();
+		ObsProposal createObsProposal();
+	};
+
+	interface XMLNonAcsComponent
+	{
+		string sayHello();
+		ObsProposal createObsProposal();
+	};
+
+
+	struct ObsProjectTree
+	{
+		ObsProposal prop;
+		SchedBlockSeq schedBlocks;
+	};
+
+	interface MyBaseInterface;
+
+	interface ReturnInterface : ACS::ACSComponent
+	{
+		ObsProposal createObsProposal();
+		MyBaseInterface createBaseInterface(in long pippo);
+	};
+
+	interface MyBaseInterface
+	{
+		attribute float radius;
+		void someDumbMethod(in string stupidArg);
+	};
+
+
+	interface IFWithIndirectEntityUsage : ACS::ACSComponent
+	{
+		SchedBlockSeq methodWithEntitySequence();
+		void methodWithHiddenEntitySequence(out EvenMoreHiddenEntityClass outThing);
+	};
+
+
+	/* ------------- */
+	/* | Offshoots | */
+	/* ------------- */
+	interface NoXmlOffshoot : ACS::OffShoot
+	{
+		void getNothing();
+	};
+
+	interface XmlOffshoot : ACS::OffShoot
+	{
+		ObsProposal getObsProposal();
+		void setPreferedProposal(in ObsProposal proposal);
+	};
+
+	/* ------------------------------------ */
+	/* | Non-AcsComponent using Offshoots | */
+	/* ------------------------------------ */
+	interface NonComponentUsingXmlOffshoot {
+		XmlOffshoot getOffshoot();
+	};
+
+	/* --------------------------------- */
+	/* | AcsComponents using Offshoots | */
+	/* --------------------------------- */
+	interface NormalComponentUsingXmlOffshoot : ACS::ACSComponent {
+		XmlOffshoot getOffshoot();
+	};
+
+	interface XmlComponentUsingXmlOffshoot : ACS::ACSComponent {
+		ObsProposal createObsProposal();
+		XmlOffshoot getOffshoot();
+	};
+
+	interface NormalComponentUsingNormalOffshoot : ACS::ACSComponent {
+		NoXmlOffshoot getOffshoot();
+	};
+
+	interface XmlComponentUsingNormalOffshoot : ACS::ACSComponent {
+		ObsProposal createObsProposal();
+		NoXmlOffshoot getOffshoot();
+	};
+};
+
+#endif

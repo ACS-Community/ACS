@@ -1,0 +1,15 @@
+3 - Naming Service: 
+5 - Naming Service: 
+3 - ---------------
+5 - ---------------
+3 - + TESTNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+3 - + MC_TESTNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TESTNotifyEventChannelFactory Notify Service
+2 - ReBound ID: MC_TESTNotifyEventChannelFactory
+4 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+6 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+      <_ Name="BulkDataReceiver"  Code="bulkDataReceiverLibEx1"	
+                                  Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                                  Container="Container"/>
+      <_ Name="BulkDataReceiverEx2"  Code="bulkDataReceiverLibEx2"	
+                                     Type="IDL:alma/bulkdata/BulkDataReceiverEx2:1.0"
+                                     Container="Container"/>
+      <_ Name="BulkDataSenderEx1"     Code="bulkDataSenderLibEx1"	
+                                      Type="IDL:alma/bulkdata/BulkDataSenderEx1:1.0"
+                                      Container="Container"/>
+      <_ Name="BulkDataSendRecv"   Code="bulkDataSendRecvLib"	
+                                   Type="IDL:alma/bulkdata/BulkDataSendRecv:1.0"
+                                   Container="Container"/>
+
+
+      <_ Name="BulkDataReceiver"  Code="bulkDataReceiverLibEx1"	
+                                  Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                                  Container="ContainerEx1"/>
+      <_ Name="BulkDataSenderEx1"    Code="bulkDataSenderLibEx1"	
+                                     Type="IDL:alma/bulkdata/BulkDataSenderEx1:1.0"
+                                     Container="ContainerEx1"/>
+
+
+      <_ Name="BulkDataReceiver"  Code="bulkDataReceiverLibEx1"	
+                                  Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                                  Container="ContainerSendRecv"/>
+      <_ Name="BulkDataSenderEx1"    Code="bulkDataSenderLibEx1"	
+                                  Type="IDL:alma/bulkdata/BulkDataSenderEx1:1.0"
+                                  Container="ContainerSendRecv"/>
+     <_ Name="BulkDataSendRecv"   Code="bulkDataSendRecvLib"	
+                                  Type="IDL:alma/bulkdata/BulkDataSendRecv:1.0"
+                                  Container="ContainerSendRecv"/>
+
+				 
+     <_ Name="BulkDataReceiverEx2"  Code="bulkDataReceiverLibEx2"	
+                                    Type="IDL:alma/bulkdata/BulkDataReceiverEx2:1.0"
+                                    Container="ContainerEx2"/>
+     <_ Name="BulkDataSenderEx2"    Code="bulkDataSenderLibEx2"	
+                                    Type="IDL:alma/bulkdata/BulkDataSenderEx2:1.0"
+                                    Container="ContainerEx2"/>
+
+     <_ Name="BulkDataDistributer"     Code="bulkDataDistributerLib"	
+                                       Type="IDL:alma/bulkdata/BulkDataDistributer:1.0"
+                                       Container="ContainerDistr"/>
+     <_ Name="BulkDataSenderDistr"     Code="bulkDataSenderDistrLib"	
+                                       Type="IDL:alma/bulkdatadistr/BulkDataSenderDistr:1.0"
+                                       Container="ContainerDistr"/>
+     <_ Name="BulkDataReceiverDistr1"  Code="bulkDataReceiverDistr1Lib"	
+                                       Type="IDL:alma/bulkdatadistr/BulkDataReceiverDistr1:1.0"
+                                       Container="ContainerDistr"/>
+     <_ Name="BulkDataReceiverDistr2"  Code="bulkDataReceiverDistr2Lib"	
+                                       Type="IDL:alma/bulkdatadistr/BulkDataReceiverDistr2:1.0"
+                                       Container="ContainerDistr"/>
+
+
+      <_ Name="BulkDataSenderPerf"    Code="bulkDataSenderLibPerf"	
+                                      Type="IDL:alma/bulkdata/BulkDataSenderPerf:1.0"
+                                      Container="Container1"/>
+      <_ Name="BulkDataReceiver1Perf"  Code="bulkDataReceiver1LibPerf"	
+                                       Type="IDL:alma/bulkdata/BulkDataReceiver1Perf:1.0"
+                                       Container="Container2"/>
+
+
+
+      <_ Name="BulkDataReceiverEx3"  Code="bulkDataReceiverLibEx3"	
+                                     Type="IDL:alma/bulkdata/BulkDataReceiverEx3:1.0"
+                                     Container="Container2"/>
+      <_ Name="BulkDataSenderEx3"    Code="bulkDataSenderLibEx3"	
+                                     Type="IDL:alma/bulkdata/BulkDataSenderEx3:1.0"
+                                     Container="Container1"/>
+
+</Components>		     
+

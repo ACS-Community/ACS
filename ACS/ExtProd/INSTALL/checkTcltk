@@ -1,0 +1,247 @@
+#!/bin/ksh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: checkTcltk,v 1.15 2013/02/04 09:03:35 eallaert Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# wpirani   31/08/99    Created for OCT99 (New Tcl/Tk baseline)
+# eallaert  2007-09-03  updated for ACS 7.0
+# eallaert  2011-06-03  updated for ACS 10.0
+# eallaert  2012-10-09  updated for use with RH5.5 and RH6.3; clean-up
+
+#************************************************************************
+#   NAME
+#
+#   checkTcltk
+#
+#   SYNOPSIS
+#
+#   checkTcltk
+# 
+#   DESCRIPTION
+#
+#   Check installed Tcl/Tk by comparing the content of $TCLTK_ROOT
+#   with a reference file
+#
+#   BUGS     
+#   None, just features!
+#
+#------------------------------------------------------------------------
+#
+
+##########################################################################################
+# Function definitions used later in this script.
+##########################################################################################
+# definition of a function to print the usage statement for this script
+printUsageAndExit ()
+{
+    echo ""
+    echo "Usage: $0 [-h] [-m]";
+    echo "Options: "
+    echo "   -h | --help: print this usage message and exit."
+    echo "   -m | --msql: check for the msql stuff as well"
+    echo ""
+    exit $1;
+}
+
+##########################################################################################
+# Script logic starts here...                                                            #
+##########################################################################################
+MY_NAME=`basename $0`
+
+#
+# These will contain the command line arguments and/or options
+#
+HELP=
+MSQL=
+MSQL_NAME=NO_MSQL
+
+#
+# These options can be recognized (longopts comma-separated. Colon means 1 argument is required)
+#
+LONGOPTS=help,msql
+SHORTOPTS=h,m
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness.
+# Second run is does the real work and sets execution flags for this script,
+# as appropriate.
+export POSIXLY_CORRECT=1
+
+getopt -n $MY_NAME -a -l $LONGOPTS $SHORTOPTS "$@" > /dev/null
+if [ $? -ne 0 ] 
+    then 
+    printUsageAndExit 1;
+fi
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+# Some programs behave differently if POSIXLY_CORRECT is set. In particular
+# the configure/build of TclX and Itcl may fail ...
+unset POSIXLY_CORRECT
+
+#
+# Iterate over getopt's output and set variables accordingly
+#
+while :
+  do
+  case "$1" in
+      -h|--help)       HELP=true ;;
+      -m|--msql)       MSQL=true; MSQL_NAME=WITH_MSQL ;;
+      --) break ;;
+  esac
+  shift
+done
+shift
+
+if [ "$HELP" ] ; 
+then
+    printUsageAndExit 0
+fi
+
+# first, verify that the script was invoked without any command-line arguments 
+if [ $# -ne 0 ] ;
+then 
+    printUsageAndExit 1
+fi
+
+if [ "$DEBUG" ]
+then
+    set -x
+fi
+
+#
+# print header
+#
+if [ "$TCLTK_ROOT" = "" ]
+then
+    TCLTK_ROOT=/usr/local
+fi
+PREFIX=$TCLTK_ROOT
+export PREFIX
+
+TCLTK_VERSION=`echo "puts \\$tcl_patchLevel; exit" | $PREFIX/bin/tclsh`
+TITLE="Checking Tcl/Tk ${TCLTK_VERSION} installation"
+echo "             ${TITLE}"
+BUILD_NAME="Tcltk"
+##. ./standardPrologue
+
+CWD=`pwd`
+INSTALL_ROOT=`dirname $CWD`
+TCLTK=${INSTALL_ROOT}/PRODUCTS/tcltk
+
+#
+# get current operating system
+#
+build_OS=`uname -s`
+build_OSV=`uname -r`
+
+if [ ${build_OS} = "Linux" ]
+then
+     distro=`cat /etc/redhat-release | awk '{ print $1 $2 }'`
+     if [ "X${distro}" = "XRedHat" ] ; then
+          build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $3 $7 }'`
+     elif [ "X${distro}" = "XScientificLinux" ] ; then
+          build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $(NF-1) }'`
+     elif [ "X${distro}" = "XFedoraCore" ] ; then 
+          build_OSV=${distro}`cat /etc/redhat-release | awk '{ print $4 }'`
+     fi   
+elif [ ${build_OS} = ${CYGWIN_VER} ]; then
+    build_OSV=`echo ${build_OSV} | awk ' { split($0, v, "("); print v[1] } '`
+fi
+
+echo $SEPARATOR
+echo "Checking on $build_OS version $build_OSV:"
+echo ""
+
+# Add here the opsys versions this has been tested on in its current version
+if [     ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.5"  \
+     -a  ${build_OS}-${build_OSV} != "Linux-ScientificLinux6.2"  \
+     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise6.3"  \
+   ]
+then
+    echo ""
+    echo "WARNING: this procedure has not been tested on this system"
+    echo ""
+fi
+
+
+#-------------------
+# check that ACSDATA is defined as directory (needed by msql)
+#
+if [ "$MSQL" ]
+then 
+    echo -n "ACSDATA . . ."
+    if [ "$ACSDATA" = "" ]
+    then	
+        echo "ACSDATA not defined, cannot continue."
+        exit 1
+    fi
+
+    echo "defined as: $ACSDATA"
+fi
+
+#
+# setup and check target directory
+#
+
+echo "Install directory defined as: $PREFIX"
+
+# 
+# Check that all expected files have been created.
+# Whether or not msql is included is indicated by the first argument 
+# passed to this script.
+#
+SRC=${TCLTK}/${build_OS}-${build_OSV}
+reference=${TCLTK}/TclTk${TCLTK_VERSION}-${build_OS}-${build_OSV}-$MSQL_NAME
+
+cd $PREFIX
+echo ""
+echo "Checking that all expected files have been created"
+echo "(reference list: $reference) "
+cat  $reference | grep -v "###" | xargs -i ${INSTALL_ROOT}/INSTALL/buildCheckFileExist $PREFIX/\{\}
+echo ""
+
+#
+# test that each shell has the expected
+# set of commands. This cannot be done with tkman and tkinspect
+# because they are are interactive programs.
+#
+# Make sure the newly built Tcl/Tk binaries and shared libs are found first.
+PATH=${TCLTK_ROOT}/bin:$PATH
+LD_LIBRARY_PATH=${TCLTK_ROOT}/lib:$LD_LIBRARY_PATH
+
+echo $SEPARATOR
+echo "verify:"
+rm -f test.tcl
+for shell in bltwish expect tcl tclsh wish wishx
+do
+    echo -n "    ${shell} . . ."
+    out=${SRC}/${shell}.out
+    ref=${TCLTK}/ref/${shell}.ref
+    if [ -x $PREFIX/bin/$shell ] 
+    then
+	echo 'puts [lsort "[info commands] [info commands blt::*]"]; exit'  | $PREFIX/bin/$shell > $out
+        diff $out $ref
+        if [ $? -ne 0 ] 
+        then	
+            echo " FAILED"
+        else
+            echo " ok"
+        fi
+    else
+        echo " FAILED: $PREFIX/bin/$shell does not exist!"
+    fi
+done
+
+echo $SEPARATOR
+echo -e "\007"; sleep 1;echo -e "\007"; sleep 1;echo -e "\007"; sleep 1
+echo "Check completed. Please check the output for possible errors."
+echo ""
+echo ""
+
+
+#
+#___oOo___

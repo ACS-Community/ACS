@@ -1,0 +1,151 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: buildMico,v 1.15 2012/01/09 14:39:47 tstaig Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# almamgr 2004-03-24 created
+# lopatin 2010-06-30 ported to mico 2.3.13 and gcc version 4.4.1 
+# lopatin 2010-06-30 now putting only "make install" files into MICO home, to cut down the distribution size
+
+#************************************************************************
+#   NAME
+#   buildMico
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#   This script is used to build Mico and install it in the proper
+#   ACS place ($ALMASW_ROOTDIR/$ALMASW_RELEASE/mico). 
+#   The script assumes that:
+#   - The environment variables 
+#     $ALMASW_ROOTDIR and $ALMASW_RELEASE
+#     are set.
+#   - The user has write permission in the installation directory
+#   Any previous installation of Mico will be erased.
+#
+#   To download Mico go to the home page:
+#    
+#       http://www.mico.org/
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+
+LOG=buildMico.log
+#
+exec > $LOG 2>&1
+
+date
+
+
+ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
+MICO_SOURCES=`pwd`/../PRODUCTS
+CUR_DIR=`pwd`
+
+#MICO_FINAL_DEST=$ALMASW_ROOTDIR/$ALMASW_RELEASE/mico
+
+if [ "X$MICO_HOME" = X ]
+then
+   MICO_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/mico
+   echo "==== Setting MICO_HOME to $MICO_HOME"
+   unset CLASSPATH
+fi
+
+echo ==== Building MICO from: $MICO_SOURCES    into:   $ALMASW_INSTDIR
+
+if [ -d $MICO_HOME ]
+then
+   echo ==== mico build Directory exists. Removing it
+   rm -rf $MICO_HOME
+   if [ $? -ne 0 ]
+   then
+        echo "========= FAILED =========="
+	exit 1
+   fi
+fi
+
+echo ==== Extracting mico package
+cd $MICO_SOURCES
+tar xfzp mico-2.3.13.tar.gz
+echo "done Extracting package ===="
+echo ""
+
+echo "==== Patching mico (needed for gcc >= 4.3)"
+patch -p0 < mico-2.3.13-limits.patch
+patch -p0 < mico-2.3.13-tk_recursive.patch
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  patch mico/include/mico/os-misc.h < mico-2.3.13-gettimeofday.patch
+fi
+echo "done Patching mico ===="
+echo ""
+
+echo ==== Configuring mico
+cd mico
+# Use this command line if you want to build also CORBA CCM support
+#./configure --prefix=$MICO_HOME --enable-ccm
+./configure --prefix=$MICO_HOME --disable-optimize
+
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED configure =========="
+	exit 1
+fi
+echo "done Configuring mico ===="
+echo ""
+
+echo ==== Building mico
+make
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED make all =========="
+	exit 1
+fi
+echo "done Building mico ===="
+echo ""
+
+echo "==== Installing mico as non-root user, without running ldconfig" 2>&1
+make install-cd
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED make install =========="
+     exit 1
+fi
+
+echo "done Installing mico ===="
+echo ""
+
+echo ==== Stripping mico
+for alib in $MICO_HOME/lib/libmico*
+do
+  chmod u+w $alib
+  strip $alib
+  chmod u-w $alib
+done
+echo "done Stripping mico ===="
+echo ""
+
+echo "==== MICO fully built   =========="
+echo ""
+echo "Make sure that the following environment variables"
+echo "are set before using MICO:"
+echo " - MICO_HOME=$MICO_HOME"
+echo "========= DONE   =========="
+
+echo MICO installation done!
+date
+

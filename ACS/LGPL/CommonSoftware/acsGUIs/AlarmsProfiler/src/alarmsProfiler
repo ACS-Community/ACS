@@ -1,0 +1,58 @@
+#!/bin/bash
+# -*- ksh -*-
+# $Id: alarmsProfiler,v 1.4 2011/05/08 20:07:29 acaproni Exp $
+#
+# DESCRIPTION
+#    Starts the Tmcdb Explorer
+#
+#
+# OPTIONS
+#    No options
+#
+#
+# AUTHOR
+#    Rodrigo Tobar, Dec 9th, 2010
+
+. acsstartupAcsPorts
+. acsstartupConstants
+. acsstartupAcsInstance
+
+if [ X"$MANAGER_REFERENCE" = X ]; then
+   ACS_MANAGER_PORT=`getManagerPort`
+   ACS_NAMING_SERVICE_PORT=`getNamingServicePort`
+   export HOST=`getIP`
+   export MANAGER_REFERENCE=corbaloc::$HOST:$ACS_MANAGER_PORT/Manager
+   export ACS_NAME_SERVICE=corbaloc::$HOST:$ACS_NAMING_SERVICE_PORT/NameService
+fi
+ACS_LOG_DEBUG "alarmsProfiler" "ACS Manager: $MANAGER_REFERENCE"
+
+echo $MANAGER_REFERENCE
+echo $ACS_NAME_SERVICE
+
+dir=$(searchFile bin/alarmsProfiler)
+echo $dir
+
+# Find a directory to store the workspace
+candidateDirs="${HOME} ${ACSDATA}/tmp /tmp"
+for i in $candidateDirs;
+do
+	if [ -w $i ]
+	then
+		workspace_dir=${i}/.alarmsprofiler-workspace-$(whoami)
+		break;
+	fi
+done
+
+if [ -d ${workspace_dir} ]; then
+    rm -rf  ${workspace_dir} 
+fi
+
+$dir/lib/AlarmsProfiler/alarmsProfiler \
+	-data ${workspace_dir} \
+	-configuration ${workspace_dir} \
+	-vm ${JAVA_HOME}/bin \
+	-vmargs \
+	-DACS.data=${ACSDATA} \
+	-DACS.tmp=$ACS_TMP \
+	-DACS.manager=${MANAGER_REFERENCE} \
+	-DORBInitRef.NameService=${ACS_NAME_SERVICE}

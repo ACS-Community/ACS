@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="standard_stylesheet.xsl"?>
+<document location="">
+  <head>
+    <title visible="false">Gui Platform project home page</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+  </head>
+	<customHeader>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" BACKGROUND="images/sky.jpg">
+<tr>
+   <td HEIGHT="182" WIDTH="100%">
+       <FONT SIZE="+3" COLOR="#EFF8FF">&#x00A0;&#x00A0;<B><FONT COLOR="#FFFFFF">G</FONT></B>ui <B><FONT COLOR="#FFFFFF">P</FONT></B>latform project homepage</FONT>
+   </td>
+</tr>
+</table>
+	</customHeader>
+	<section>
+	<description>
+	<p>
+	<center>
+	<b>
+	<a href="download/index.html">
+	<font color="red">
+	New version of GP with new installation procedure using NetBeans Modules is available
+	</font>
+	</a>
+	</b>
+	</center>
+	</p>
+	</description>
+	</section>
+	<section>
+		<title>Missions</title>
+		<description>
+      <p>
+   This is the home page of the <B>G</B>ui <B>P</B>latform Project. <BR/>
+   The purpose of this project is to provide a standard GUI development platform for the future Controls GUI software needed for the SPS and the LHC.
+   It shall enable teams to contribute modules to a common controls GUI, and provide common GUI components that can be shared and re-used. 
+      </p>
+      <p>
+      These pages are still being updated and enhanced. <a href="mailto:eric.roux@cern.ch">Suggestions and comments</a> are welcome. Thanks in advance for your participation/help. <a href="http://consult.cern.ch/xwho/people/13644">E.R.</a>
+      </p>
+   </description>
+	</section>
+  
+</document>
+

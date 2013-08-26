@@ -1,0 +1,9 @@
+SUP.
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+Grep me out
+Local file logger
+Logging to log file
+Running the container with these arguments
+Waiting for the container to really shutdown
+This report was generated

@@ -1,0 +1,150 @@
+#!/bin/bash
+#
+# A wrapper for calling Javadoc from Cygwin
+# Author: Igor Peshansky <pechtcha@cs.nyu.edu>
+# Version: 0.96
+#
+# $Id: javadoc,v 1.2 2012/01/09 14:39:47 tstaig Exp $ 
+#
+
+ME="`basename $0`"
+EXEC_NAME="javadoc.exe"
+declare -a EXEC_PATH=("bin")
+
+# KLUDGE
+[ -z "$JAVA_HOME" ] && JAVA_HOME="/cygdrive/c/Program Files/IBM/Java14"
+
+function DEBUG() { false; }
+
+function find_exec() {
+   local path="$1"; shift
+   local name="$1"; shift
+   for D in "$@"; do
+      DEBUG && echo "Trying '$path/$D/$name'" >&2
+      if [ -x "$path/$D/$name" ]; then
+         DEBUG && echo "Found '$path/$D/$name'" >&2
+         echo "$path/$D/$name"
+         return 0
+      fi
+   done
+   return 1
+}
+
+if [ -z "$JAVA_HOME" ]; then
+   echo "JAVA_HOME is not set"
+   exit 1
+else
+   EXEC_CMD="`find_exec "$JAVA_HOME" "$EXEC_NAME" "${EXEC_PATH[@]}"`"
+   if [ -z "$EXEC_CMD" ]; then
+      echo "JAVA_HOME ($JAVA_HOME) is not pointing to a JDK"
+      exit 1
+   fi
+fi
+
+#EXEC_CMD="/cygdrive/c/Program Files/IBM/Java14/bin/$EXEC_NAME"
+[ -n "$CLASSPATH" ] && export CLASSPATH="`cygpath -p -w "$CLASSPATH"`"
+ARGS=""
+while [ -n "$1" ]; do
+   arg="$1"
+   arg="$(echo "$arg"|sed "s,','\"'\"',g")"
+   shift
+   case "$arg" in
+      # Generic options
+      -overview)
+         arg="$arg' '`cygpath -w "$1"`"
+         shift
+         ;;
+      -public | \
+      -protected | \
+      -package | \
+      -private | \
+      -help | \
+      -1.1 | \
+      -verbose)
+         ;;
+      -doclet | \
+      -locale | \
+      -encoding)
+         arg="$arg' '$1"
+         shift
+         ;;
+      -docletpath | \
+      -sourcepath | \
+      -classpath | \
+      -bootclasspath | \
+      -extdirs)
+         arg="$arg' '`cygpath -p -w "$1"`"
+         shift
+         ;;
+
+      # Java flags option
+      -Jcp | -Jclasspath)
+         arg="$arg' '`cygpath -p -w "$1"`"
+         shift
+         ;;
+      -JXbootclasspath*:*)
+         arg="${arg%%:*}:`cygpath -p -w "${arg#*:}"`"
+         ;;
+      -J*)
+         ;;
+
+      # Doclet options
+      -d | \
+      -helpfile | \
+      -stylesheetfile)
+         arg="$arg' '`cygpath -w "$1"`"
+         shift
+         ;;
+      -use | \
+      -version | \
+      -author | \
+      -splitindex | \
+      -nodeprecated | \
+      -nodeprecatedlist | \
+      -nosince | \
+      -notree | \
+      -noindex | \
+      -nohelp | \
+      -nonavbar | \
+      -serialwarn)
+         ;;
+      -windowtitle | \
+      -doctitle | \
+      -title)
+         arg="$arg' '$1"
+         shift
+         ;;
+      -header | \
+      -footer | \
+      -bottom)
+         # Quote single quotes
+         arg="$arg' '`echo "$1" | sed "s/'/'"'"'"'"'"'"'/g"`"
+         shift
+         ;;
+      -link)
+         arg="$arg' '$1"
+         shift
+         ;;
+      -link)
+         arg="$arg' '$1' '$2"
+         shift
+         shift
+         ;;
+      -group)
+         arg="$arg' '$1' '$2"
+         shift
+         shift
+         ;;
+      -charset | \
+      -docencoding)
+         arg="$arg' '$1"
+         shift
+         ;;
+   esac
+   ARGS="$ARGS '$arg'"
+done
+
+eval "set -- $ARGS"
+
+exec -a "$ME" "$EXEC_CMD" "$@"
+

@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+
+<head>
+
+  <meta http-equiv="Content-Type"
+
+ content="text/html; charset=iso-8859-1">
+
+  <meta name="Template"
+
+ content="C:\Program Files\MSOffice\Office\html.dot">
+
+  <meta name="GENERATOR"
+
+ content="Mozilla/4.79 [en] (Windows NT 5.0; U) [Netscape]">
+
+  <title>FeaturesArchiving</title>
+
+  <link rel="Edit-Time-Data" href="FeaturesArchiving_files/editdata.mso">
+
+  <style><!--
+
+
+
+.Normal
+
+
+
+	{font-size:12.0pt;
+
+
+
+	font-family:"Times New Roman";}
+
+
+
+.SpellE
+
+
+
+	{}
+
+
+
+.GramE
+
+
+
+	{}
+
+
+
+-->
+
+
+
+  </style>
+
+</head>
+
+<body class="Normal" bgcolor="#ffffff" lang="EN-US" link="#0000ff"
+
+ vlink="#800080">
+
+<h2> <a name="Archiving_System"></a>Archiving System</h2>
+
+<h3> The archiving system provides archiving of monitor point
+
+values.&nbsp;<span class="GramE"><b>ACS provides only the data
+
+collection mechanism and not the storage of data.</b></span> Data are
+
+made available from the archiving event channel.</h3>
+
+<h3> The value of each Property of Characteristic Components can be
+
+archived. Archiving is enabled/disabled and configured on a
+
+per-Property basis.</h3>
+
+<h3> ACS Properties publish their value on a specific&nbsp;<span
+
+ class="SpellE">ArchivingChannel</span> notification channel, by using
+
+the ACS Logging System.</h3>
+
+<h3> The parameters for data publishing are defined using the following Characteristics 
+  defined for all Properties:</h3>
+
+<blockquote>
+
+  <p><span class="SpellE"><span style="font-family: &quot;Courier New&quot;;"><b>archive_priority</b></span></span>:
+
+The priority of the log entry that will carry the information required
+
+for archiving the parameter's value. If the priority exceeds the value
+
+specified in the&nbsp;<span class="SpellE"><span
+
+ style="font-family: &quot;Courier New&quot;;">MaxCachePriority</span></span>,
+
+the archiving data will be transmitted immediately. If it is below&nbsp;<span
+
+ class="SpellE"><span style="font-family: &quot;Courier New&quot;;">MinCachePriority</span></span>,
+
+the data will be ignored. If it is somewhere in-between, it will be
+
+cached locally until a sufficient amount of log entries is collected
+
+for transmission. </p>
+
+  <p><span class="SpellE"><span style="font-family: &quot;Courier New&quot;;"><b>archive_max_int</b></span></span>: 
+    The maximum amount of time allowed passing between two consecutive submissions 
+    to the channel. If the time exceeds the value specified here, the entry should 
+    be submitted even though the value of the parameter has not changed sufficiently. 
+    Publishing the value of the property at least once in a while allows to check 
+    that the property is really available and monitored.</p>
+
+  <p><span class="SpellE"><span style="font-family: &quot;Courier New&quot;;"><b>archive_min_int</b></span></span>: 
+    The minimum amount of time allowed passing between two consecutive submissions 
+    to the log. If the time is smaller than the value specified here, the value 
+    is not submitted, even though the value of the parameter has changed. Definining 
+    a minimum time interval allows to filter out quick oscillations and avoids 
+    flooding the system.</p>
+
+  <p><span class="SpellE"><span style="font-family: &quot;Courier New&quot;;"><b>archive_delta</b></span></span> 
+    (same type as parameter): Defines what change in parameter value is needed 
+    to trigger publishing the value. If the value changes for less than the amount 
+    specified here, no value is submitted. For Pattern and String properties, 
+    this Characteristic is irrelevant. That is, any change in the Property's value 
+    will trigger the Monitor.<br>
+
+  </p>
+
+</blockquote>
+
+<h3> Whenever the Characteristics of a Property are such that archive
+
+values have to be submitted, a BACI Monitor is created to periodically
+
+submit the values to the Logging System.</h3>
+
+<center> <img
+
+ src="Images/Archiving_System__Property_Monitoring_and_Archiving__Property_Monitoring_and_Archiving.png" WIDTH="562" HEIGHT="221"    
+
+ id="_x0000_i1025" > <br>
+
+  <i>Figure 3.17: Archiving System sequence diagram</i> 
+
+</center>
+
+<h3>It is possible to switch archiving on/off using an API, to make sure that 
+  no values are published when the Property is in a state where values are not 
+  meaningful</h3>
+<p>For example, a Component might want to switch off archiving if it is not initialized, 
+  in an error state or disconnected form the hardware it is controlling.</p>
+<h3>The entries pushed into the&nbsp;<span class="SpellE">ArchivingChannel</span> 
+  are structured events with the following structure:</h3>
+
+<table class="MsoTableGrid" border="1" cellpadding="0" cellspacing="0">
+
+  <tbody>
+
+    <tr>
+
+      <td class="Normal" bgcolor="silver" valign="top" width="197">
+
+      <div class="MsoNormal"></div>
+
+      <br>
+
+      </td>
+
+      <td class="Normal" bgcolor="silver" valign="top" width="197">
+
+      <div class="MsoNormal">Name</div>
+
+      </td>
+
+      <td class="Normal" bgcolor="silver" valign="top" width="197">
+
+      <div class="MsoNormal">Value</div>
+
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td rowspan="2" class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">Event Header</div>
+
+      </td>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal"><span class="SpellE">domain_name</span></div>
+
+      </td>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">Archiving</div>
+
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal"><span class="SpellE">type_name</span></div>
+
+      </td>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">Type of parameter</div>
+
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td rowspan="4" class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">Filterable data</div>
+
+      </td>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal"><span class="SpellE">time_stamp</span></div>
+
+      </td>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">Time when the parameter had this value,
+
+i.e. when the data for the log entry was sampled</div>
+
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">object</div>
+
+      </td>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">The object whose properties value is being
+
+reported</div>
+
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">parameter</div>
+
+      </td>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">The name of the parameter within the object</div>
+
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">value</div>
+
+      </td>
+
+      <td class="Normal" valign="top" width="197">
+
+      <div class="MsoNormal">The value of the parameter. The type of
+
+this field is the same as specified in&nbsp;<span class="SpellE">type_name</span>.</div>
+
+      </td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
+<p>&nbsp; </p>
+
+<h3> Clients can subscribe to the Archiving Notification Channel using
+
+filters to get events when archiving data is available. ACS provides an
+
+API that allows parsing the Notification Channel messages containing
+
+monitor point archiving data.</h3>
+
+<center> <img
+
+ src="Images/Archiving_System__Archiving_Architecture.png" WIDTH="562" HEIGHT="265"    
+
+ id="_x0000_i1026" width="640"> <br>
+
+  <i>Figure 3.18: Archiving System architecture</i> 
+
+</center>
+
+<h3> Individual Properties data are cached locally before they are sent
+
+to the central archive</h3>
+
+<h3> Each Property can be uniquely identified by a name, composed of
+
+the Characteristic Component name followed by the Property name.</h3>
+
+<h3> The Archiving API can be used also to send to the archiving system data that 
+  does not fit in the Property design pattern. </h3>
+<h3><font color="#0000FF">Archiving of monitor point values is currently only 
+  supported in C++.</font><br>
+</h3>
+
+</body>
+
+</html>
+

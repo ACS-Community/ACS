@@ -1,0 +1,335 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupAcsInstance
+. acsstartupPids
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: acsStart,v 1.50 2012/03/29 15:58:00 hsommer Exp $"
+#
+# who       when      what
+# -------- ---------- ----------------------------------------------
+# sharring 2004-06-24 redirect output to a file
+# mschilli 2004-04-16 added proper command line parsing
+# msekoran 2003-05-09 Created.
+#
+
+#************************************************************************
+#   NAME	acsStart
+#
+#   SYNOPSIS    starts up all ACS services
+#
+#   DESCRIPTION starts up all ACS services
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+#
+#ACS_LOG_COMMAND $@
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_BASEPORT=
+CL_HELP=
+CL_TIMEOUT=
+CL_VERBOSE=
+CL_WAITIFR=true
+CL_LOADIFR=true
+CL_LOG=
+CL_RECOVER=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,recoverClientConnections,baseport:,timeout:,verbose,nowaitifr,noloadifr,log
+SHORTOPTS=hrb:t:vl
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Starts an Acs instance"
+   echo ""
+   echo "Usage: `basename $0` [OPTIONS]  "
+   echo "Options: "
+   echo "   -b | -baseport INSTANCE          the acs instance (0-9) you want to use"
+   echo "   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1"
+   echo "        -nowaitifr                  does not wait for the CORBA Interface Repository to load before returning"
+   echo "        -noloadifr                  does not load IDL files into the CORBA Interface Repository (but still uses IFR cache if available)"
+   echo "   -l | -log                        automatically starts a loggingClient process writing XML logs to"
+   echo "                                    \$ACS_TMP/ACS_INSTANCE.\$ACS_INSTANCE/"
+   echo "   -r | -recoverClientConnections   force services to recover client connections"
+   echo "   -v | -verbose                    print subprocess output to console (additionally to regular logfile)"
+   echo "   -h | -help                       prints this help and exits"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--baseport)                   CL_BASEPORT=$2 ; shift ;;
+	-b)                           CL_BASEPORT=$2 ; shift ;;
+	--timeout)                    CL_TIMEOUT=$2 ; shift ;;
+	-t)                           CL_TIMEOUT=$2 ; shift ;;
+	--nowaitifr)                  CL_WAITIFR=false ;;
+	--noloadifr)                  CL_LOADIFR=false ;;
+	--log)                        CL_LOG=true ;;
+	-l)                           CL_LOG=true ;;
+	--recoverClientConnections)   CL_RECOVER=true ;; 
+	-r)                           CL_RECOVER=true ;; 
+	--verbose)                    CL_VERBOSE=true ;;
+	-v)                           CL_VERBOSE=true ;;
+	--help)                       CL_HELP=true ;; 
+	-h)                           CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+#warn them if they're using the typical NRAO /etc/hosts file
+if [ "`getIP`" = "127.0.0.1" ]
+then
+    echo "WARNING: this script has detected that your PC is incorrectly configured"
+    echo "         for CORBA communications. The IP address (i.e., $HOST)"
+    echo "         found is what is normally used with DHCP. In other words, forget"
+    echo "         about connecting any CORBA client/servant residing on this machine" 
+    echo "         to a CORBA object residing on another host. Also, do not use this"
+    echo "         PC to generate TAT reference files involving Python as the reference"
+    echo "         files will be different from those generated under a 'normal'"
+    echo "         PC. For information on resolving this issue, please see:"
+    echo "             http://almasw.hq.eso.org/almasw/bin/view/ACS/FAQGeneralDevelopmentEnvironmentBadEtcHosts"
+    echo ""
+    sleep 5
+fi
+
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+    export ACS_INSTANCE=$CL_BASEPORT
+fi
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+INSTANCES_DIR=`dirname $INSTANCE_DIR`
+
+# Make sure that the directory for temporary ACS_INSTANCE files exists.
+# This is to ensure that logs will go to the ACS_INSTANCE directory
+if [ ! -d $INSTANCES_DIR ] ; then
+    if ! mkdir $INSTANCES_DIR
+    then
+        exit $EC_CANNOTCREATE
+    fi
+	chmod 775 $INSTANCES_DIR
+fi
+ACS_LOG_COMMAND $@
+if ! createInstanceDirectory $ACS_INSTANCE
+then
+    ACS_LOG_ERROR "$COMMAND" "Cannot create $INSTANCE_DIR"
+    exit $EC_CANNOTCREATE
+fi
+
+###If there's a corrupted $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE, attempt
+###to fix it
+if ! checkDeadACS
+then
+    ACS_LOG_ERROR "acsStart" "Unable to continue as the ACS_INSTANCE, $ACS_INSTANCE, is currently in use!"
+    exit $EC_FAILURE
+fi
+
+#start the ORB services
+if [ "$CL_VERBOSE" ] ; then
+   export ACS_LOG_STDOUT=0
+fi
+
+### Handle TIME_OUT argument
+
+#Makes sure there is an initial value
+if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+ then
+   ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+fi
+
+if [ "$CL_TIMEOUT" ] ; then 
+   export ACS_STARTUP_TIMEOUT_MULTIPLIER=$CL_TIMEOUT
+fi
+
+#maximum timeout for anything in this script to finish executing...
+MAX_TIMEOUT=$(( 36 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+
+#...except acsIrFeed. This requires more time
+MAX_IRFEED_TIMEOUT=$(( $MAX_TIMEOUT * 5 ))
+
+#output from the orb services is stored here to figure out which ACS
+#instance to use.
+
+export ACSSTARTLOG=$ACS_INSTANCES_DIR/.acsStart.$$
+#------------------------------------------------------
+
+SRVCS_RECOVER_OPT=
+if [ "$CL_RECOVER" ] ; then
+	SRVCS_RECOVER_OPT=-r
+fi
+
+IFR_OPT=
+if [ "$CL_LOADIFR" = "false" ] ; then
+        IFR_OPT=-noloadIFR
+fi
+
+#Print version message
+VERSION=`cat $ACSROOT/ACS_VERSION`
+PATCH=`cat $ACSROOT/ACS_PATCH_LEVEL`
+TAG=`cat $ACSROOT/ACS_TAG`
+if [ $PATCH -eq $PATCH 2> /dev/null ]; then
+VERSION="$VERSION.$PATCH"
+else
+VERSION="$VERSION.0"
+fi
+
+ACS_LOG_INFO "acsStart" "Starting ACS version $VERSION"
+ACS_LOG_INFO "acsStart" "Using ALMA Base Software tag $TAG"
+#start the ORB services
+acsStartORBSRVC $SRVCS_RECOVER_OPT $IFR_OPT 2>&1 | tee -a $ACSSTARTLOG &
+ORBSRVC_PID=$!
+
+if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "acsStartORBSRVC script has now completed" -c "ERROR" -p $ORBSRVC_PID
+then
+    # GCH 2006.10.25
+    # Even if there is an error, we need to wait for the completion
+    # or the parallel startup processes.
+    # At this point we want to be sure that everything is clean
+    # and we try a stop to kill any leftover.
+    #
+    acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "acsStartORBSRVC script has now completed" -p $ORBSRVC_PID
+    ACS_LOG_ERROR "acsStart" "Detected the acsStartORBSRVC process has exited with an error! Cleaning up."
+    acsStopORBSRVC 2>&1 | tee -a $ACSSTARTLOG
+    ACS_LOG_ERROR "acsStart" "acsStart aborted because of error in acsStartORBSRVC."
+    exit $EC_FAILURE
+fi
+#------------------------------------------------------
+#to ensure manager uses the same ACS_INSTANCE
+export ACS_INSTANCE=`grep "For this ACS session, please do an" $ACSSTARTLOG | cut -d\' -f2 | cut -d= -f2`
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+#------------------------------------------------------
+
+MANAGER_RECOVER_OPT=
+if [ "$CL_RECOVER" ] ; then
+	MANAGER_RECOVER_OPT=-r
+fi
+
+#start the Manager
+acsManager -s -w $MANAGER_RECOVER_OPT 2>&1 | tee -a $ACSSTARTLOG &
+TEE_PID=$!
+
+# Block until the expected output shows up
+if ! acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "Manager Application initialized" -p $TEE_PID
+then
+  exit $EC_TIMEOUT
+fi
+
+#------------------------------------------------------
+#block until the interface repository has fully loaded
+IRFEED_PIDFILE=$INSTANCE_DIR/$ACS_IRFEED_PIDFILE
+
+if [ "$CL_LOADIFR" = "true" ] && [ "$CL_WAITIFR" = "true" ]
+then
+  acsInterfaceRepository -w
+  if [ $? -ne 0 ]
+  then
+    ACS_LOG_ERROR "acsStart" "The acsstartupLoadIFR script is still loading IDLs into the interface repository after $MAX_IRFEED_TIMEOUT seconds."
+    ACS_LOG_INFO "acsStart" "There could be something genuinely wrong here or maybe your machine is just slow."
+    ACS_LOG_INFO "acsStart" "Try increasing \$ACS_STARTUP_TIMEOUT_MULTIPLIER next time (was $ACS_STARTUP_TIMEOUT_MULTIPLIER)."
+    IRFEED_PID=`cat $IRFEED_PIDFILE`
+    kill -9 $IRFEED_PID
+  else
+    ACS_LOG_DEBUG "acsStart" "The interface repository has finished loading."
+  fi
+fi
+
+rm -f $IRFEED_PIDFILE
+
+#--------------------------------------------------------------------------------------------------------------------------
+#--Starts up the logging client
+if [ "$CL_LOG" = "true" ]
+then
+    export LOGFILE=$INSTANCE_DIR/$ACS_LOGFILE
+    export LC_PIDFILE=$INSTANCE_DIR/$ACS_LOGCLIENT_PIDFILE
+    export LOGGING_CHANNEL=Logging
+    ACS_LOG_INFO "acsStart" "Sending all future CORBA-based logs to $LOGFILE."
+    loggingClient -f $LOGFILE $LOGGING_CHANNEL > $INSTANCE_DIR/logstdfile.out  2>1  &
+    echo $! > $LC_PIDFILE
+fi
+
+#--------------------------------------------------------------------------------------------------------------------------
+ACS_LOG_FORCED "acsStart" "INFO" "For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
+ACS_LOG_FORCED "acsStart" "INFO" "ACS is up and running"
+rm $ACSSTARTLOG
+

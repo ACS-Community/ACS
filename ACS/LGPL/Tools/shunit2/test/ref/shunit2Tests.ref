@@ -1,0 +1,67 @@
+1 - #------------------------------------------------------------------------------
+1 - # System data
+1 - #
+1 - 
+1 - # test run info
+1 - shells="/bin/bash"
+1 - tests=" shunit2_test_asserts.sh shunit2_test_failures.sh shunit2_test_macros.sh shunit2_test_misc.sh"
+1 - 
+1 - # system info
+1 - $ date
+1 - $ uname -mprsv
+1 - 
+1 - 
+1 - #------------------------------------------------------------------------------
+1 - # Running the test suite with /bin/bash
+1 - #
+1 - shell name: bash
+1 - shell version: 3.2.25(1)-release
+1 - 
+1 - --- Executing the 'asserts' test suite ---
+1 - testAssertEquals
+1 - testAssertNotEquals
+1 - testAssertSame
+1 - testAssertNotSame
+1 - testAssertNull
+1 - testAssertNotNull
+1 - testAssertTrue
+1 - testAssertFalse
+1 - 
+1 - Ran 8 tests.
+1 - 
+1 - OK
+1 - 
+1 - --- Executing the 'failures' test suite ---
+1 - testFail
+1 - testFailNotEquals
+1 - testFailSame
+1 - 
+1 - Ran 3 tests.
+1 - 
+1 - OK
+1 - 
+1 - --- Executing the 'macros' test suite ---
+1 - testAssertEquals
+1 - testAssertNotEquals
+1 - testSame
+1 - testNotSame
+1 - testNull
+1 - testNotNull
+1 - testAssertTrue
+1 - testAssertFalse
+1 - testFail
+1 - testFailNotEquals
+1 - testFailSame
+1 - testFailNotSame
+1 - 
+1 - Ran 12 tests.
+1 - 
+1 - OK
+1 - 
+1 - --- Executing the 'misc' test suite ---
+1 - testUnboundVariable
+1 - testIssue7
+1 - 
+1 - Ran 2 tests.
+1 - 
+1 - OK

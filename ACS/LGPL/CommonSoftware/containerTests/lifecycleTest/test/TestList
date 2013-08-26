@@ -1,0 +1,102 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList,v 1.3 2008/04/25 05:49:45 cparedes Exp $"
+#
+# TestList
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+#
+
+# NOTE: if running individual tests (e.g. "tat -v -nc 1 3 ..."), the following
+# SOURCE and PROLOGUE directives are not taken into account. In this case,
+# run "tat makeEnv" first (and "tat cleanEnv" after) , or give the command 
+# "export ACS_CDB=`pwd`" from this directory, and then start up ACS "by hand". 
+SOURCE setupTatEnvironment.tcl
+PROLOGUE acsutilTATPrologue -l
+
+########################################################
+# JAVA
+########################################################
+1 PROLOGUE "acsutilAwaitContainerStart -java javaTestContainer" \
+    javaMultipleSimpleComponents1 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTJAVASIMPLE 1 SIMPLE" \
+    EPILOGUE "acsStopContainer javaTestContainer"
+    
+2 PROLOGUE "acsutilAwaitContainerStart -java javaTestContainer" \
+    javaMultipleSimpleComponents10 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTJAVASIMPLE 10 SIMPLE" \
+    EPILOGUE "acsStopContainer javaTestContainer"
+
+3 PROLOGUE "acsutilAwaitContainerStart -java javaTestContainer" \
+    javaMultipleSimpleComponents50 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTJAVASIMPLE 50 SIMPLE" \
+    EPILOGUE "acsStopContainer javaTestContainer"
+    
+#4 PROLOGUE "acsutilAwaitContainerStart -java javaTestContainer" \
+#    javaMultipleCharComponents1 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTJAVACHAR 1 CHAR" \
+#    EPILOGUE "acsStopContainer javaTestContainer"
+    
+#5 PROLOGUE "acsutilAwaitContainerStart -java javaTestContainer" \
+#    javaMultipleCharComponents10 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTJAVACHAR 10 CHAR" \
+#    EPILOGUE "acsStopContainer javaTestContainer"
+
+#6 PROLOGUE "acsutilAwaitContainerStart -java javaTestContainer" \
+#    javaMultipleCharComponents50 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTJAVACHAR 50" \
+#    EPILOGUE "acsStopContainer javaTestContainer"
+    
+7 javaMultipleAutoCharComponents50 "runMultipleComponents.sh autostartJavaTestContainer TESTAUTOJAVA 50 SIMPLE java"
+########################################################
+# CPP
+########################################################
+    
+31 PROLOGUE "acsutilAwaitContainerStart -cpp cppTestContainer" \
+    cppMultipleSimpleComponents1 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTCPPSIMPLE 1 SIMPLE" \
+    EPILOGUE "acsStopContainer cppTestContainer"
+
+32 PROLOGUE "acsutilAwaitContainerStart -cpp cppTestContainer" \
+    cppMultipleSimpleComponents10 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTCPPSIMPLE 10 SIMPLE" \
+    EPILOGUE "acsStopContainer cppTestContainer"
+
+33 PROLOGUE "acsutilAwaitContainerStart -cpp cppTestContainer" \
+    cppMultipleSimpleComponents50 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTCPPSIMPLE 50 SIMPLE" \
+    EPILOGUE "acsStopContainer cppTestContainer"
+    
+34 PROLOGUE "acsutilAwaitContainerStart -cpp cppTestContainer" \
+    cppMultipleCharComponents1 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTCPPCHAR 1 CHAR" \
+    EPILOGUE "acsStopContainer cppTestContainer"
+
+35 PROLOGUE "acsutilAwaitContainerStart -cpp cppTestContainer" \
+    cppMultipleCharComponents10 "acsStartJava alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTCPPCHAR 10 CHAR" \
+    EPILOGUE "acsStopContainer cppTestContainer"
+
+36 cppMultipleCharComponents50 "runMultipleComponents.sh cppTestContainer TESTCPPCHAR 50 CHAR cpp"
+
+37 cppMultipleAutoCharComponents50 "runMultipleComponents.sh autostartCppCharTestContainer TESTAUTOCPPCHAR 50 CHAR cpp"
+38 cppMultipleAutoComponents50 "runMultipleComponents.sh autostartCppTestContainer TESTAUTOCPP 50 SIMPLE cpp"
+
+
+########################################################
+# PYTHON
+########################################################
+
+67 pyMultipleAutoComponents50 "runMultipleComponents.sh autostartPyTestContainer TESTAUTOPY 50 SIMPLE py"
+
+################# finito ##################	
+EPILOGUE acsutilTATEpilogue

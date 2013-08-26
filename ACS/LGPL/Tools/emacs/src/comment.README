@@ -1,0 +1,18 @@
+Article: 3983 of gnu.emacs.sources
+Path: eso.org!Munich.Germany.EU.net!Germany.EU.net!howland.reston.ans.net!math.ohio-state.edu!cis.ohio-state.edu!gnu.ai.mit.edu!friedman
+From: friedman@gnu.ai.mit.edu (Noah Friedman)
+Newsgroups: gnu.emacs.sources
+Subject: comment.el --- comment out regions of buffers
+Date: 12 Feb 1995 21:59:53 -0500
+Organization: Source only  Discussion and requests in gnu.emacs.help.
+Lines: 301
+Sender: daemon@cis.ohio-state.edu
+Distribution: gnu
+Message-ID: <9502130256.AA10870@tepui.cli.com>
+Reply-To: friedman@gnu.ai.mit.edu
+
+Here's another set of functions of dubious value (in fact, I'm not even
+certain what the return values are), but it does do more precisely what I
+want than the `comment-region' function in emacs 19.
+
+

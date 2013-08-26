@@ -1,0 +1,83 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: c++-class-file.template,v 1.23 2013/03/14 11:59:17 mpasquat Exp $"
+#%# 
+#%# Template for c++ class documentation header include files         
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gchiozzi   26/04/95  created
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN c++class_file(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+/*******************************************************************************
+* PPPPPPPP
+*
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* NNNNNNNN  dd/mm/yy  created 
+*/
+
+/************************************************************************
+*   NAME
+*   
+* 
+*   SYNOPSIS
+*
+*   
+*   PARENT CLASS
+*
+* 
+*   DESCRIPTION
+*
+*
+*   PUBLIC METHODS
+*
+*
+*   PUBLIC DATA MEMBERS
+*
+*
+*   PROTECTED METHODS
+*
+*
+*   PROTECTED DATA MEMBERS
+*
+*
+*   PRIVATE METHODS
+*
+*
+*   PRIVATE DATA MEMBERS
+*
+*
+*   FILES
+*
+*   ENVIRONMENT
+*
+*   COMMANDS
+*
+*   RETURN VALUES
+*
+*   CAUTIONS 
+*
+*   EXAMPLES
+*
+*   SEE ALSO
+*
+*   BUGS   
+* 
+*------------------------------------------------------------------------
+*/
+
+
+
+/*___oOo___*/

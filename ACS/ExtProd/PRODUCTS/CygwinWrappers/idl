@@ -1,0 +1,24 @@
+#!/bin/sh
+
+: ${JACORB_HOME:="C:\cygwin\alma\ACS-9.0\JacORB"}
+export JACORB_HOME
+
+ARGS=""
+while [ -n "$1" ]; do
+   arg="$1"
+   arg="$(echo "$arg"|sed "s,','\"'\"',g")"
+   shift
+   case "$arg" in
+      -I*)
+			arg="$(echo "$arg"|sed "s,-I,,g")"
+         arg="-I`cygpath -p -w "$arg"`"
+         ;;
+      /*)
+         arg="`cygpath -p -w "$arg"`"
+         ;;
+   esac
+   ARGS="$ARGS '$arg'"
+done
+eval "set -- $ARGS"
+java -classpath ${JACORB_HOME}/lib/idl.jar:${JACORB_HOME}/lib/logkit-1.2.jar:${CLASSPATH} org.jacorb.idl.parser "$@"
+

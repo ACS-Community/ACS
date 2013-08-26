@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>Setup instructions for GP courses</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Katarina" lastname="Sigerud" ccid="73162"/>
+  </head>
+	<!-- 
+	
+	SECTION 1
+	
+	-->
+  <section>
+    <title>Abstract</title>
+    <description>
+      <p>This document describes how/what to prepare for the two GP courses.
+    	</p>
+    </description>
+  </section>
+	<!--
+	
+	SECTION 2
+	
+	-->
+	<section>
+		<title>Course 1</title>
+		<description>
+			<p>
+			<ul>
+				<li>Create a directory <code>C:\GPCourse</code></li>
+				<li>In this directory, create a <code>src</code> subdirectory and copy the <i>gp.example</i> sources here</li>
+				<li>Create also a <code>bin</code> subdirectory and a <code>doc</code> subdirectory and copy the <i>GP API</i> javadoc to the latter</li>
+				<li>Unzip the <i>NetBeans IDE</i> into this directory (creating a directory <code>netbeans</code>)</li>
+				<li>If the computer is to be run without network connection during the course, the <i>OpenAPI</i> javadoc should be installed in the <i>netbeans</i> directory as well (e.g. in a subdirectory named <code>docs</code>)</li>
+				<li>Install the <i>GP.jar</i> and the <i>logging.jar</i> in the <i>C:\GPCourse\modules</i> directory</li>
+				<li>Add a gif-file (to be used as icon) to the <i>C:\GPCourse</i> directory and call it <code>exampleIcon.gif</code></li>
+				<li>Make sure there is a java installation</li>
+			</ul>
+			</p>
+		</description>
+	</section>
+	<!--
+  
+	SECTION 3
+	
+	-->
+	<section>
+		<title>Course 2</title>
+		<description>
+			<p>The second course continues where the first left off, but some preparations are necessary.
+			<ul>
+				<li>The <i>C:\GPCourse</i> directory should be prepared as for the first course. Make sure the API support module for the NetBeans IDE has been installed</li>
+				<li>The <i>gpcourse</i> package is provided in a zip-file and should be added to <i>C:\GPCourse\src</i> directory.</li>
+				<li>A <i>netbeans_platform</i> directory has also been prepared in a zip-file, this should be unzipped in the <i>C:\GPCourse</i> directory. Make sure that the <i>C:\GPCourse\netbeans_platform\nb.bat</i> file runs</li>
+			</ul>
+			</p>
+		</description>
+</section>
+</document>
+

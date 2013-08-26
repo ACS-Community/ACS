@@ -1,0 +1,10 @@
+import tmcdbTables;
+
+String columnNameAsJavaAttribute(Column this):
+
+	// If the first three characters are uppercase, then leave it as it is
+	// Examples: IDL, URN, XMLDoc
+	if( name.length >= 2 && (name.subString(0,2).toUpperCase() == name.subString(0,2)) )
+		then name
+	else
+		this.name.toFirstLower();

@@ -1,0 +1,82 @@
+/*************************************************************************
+* E.S.O. - VLT project
+*
+* "@(#) $Id: vltPort.h_previous,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+*
+* vltPort.h
+*
+* who        when      what
+* --------  --------  ----------------------------------------------
+* awalland  11/05/93  First version
+* gfilippi  01/05/94  included into vltMake module
+* pforstma  22/08/94  Deleted Sun OS 4.1.1 dependant external definitions
+* gfilippi  07/09/94  REMARK added in the header
+* gfilippi  09/02/94  move #ifndef VLTPORT_H at the beginning (SPR940300)
+* gfilippi  09/02/94  removed old Solaris 1 stuff
+* gfilippi  22/05/96  saved into vltPort.h._previous. DO NOT MODIFY THIS FILE!!!!
+*
+*/
+
+/************************************************************************
+*  vltPort.h - Include file to mask differences between platforms.
+*              This file should be included in all source files.
+*              It relies on macro definitions preceeding the
+*              inclusion of this file.
+*                
+*  REMARK: This file belongs to the "vltMake" module.
+*------------------------------------------------------------------------
+*/
+
+#ifndef VLTPORT_H
+#define VLTPORT_H
+
+/*
+* When it is used, vltPort.h MUST be the very first file included
+* in ANSI ".c" files.
+* Cause a syntax error if we detect that any other include file has been
+* included before vltPort.h in an ANSI ".c" file.
+*/
+#if defined(__STDC__) && \
+                         (defined(_H_STANDARDS) || \
+                          defined(_SYS_STDSYMS_INCLUDED) || \
+                          defined(_STANDARDS_H_))
+#    error "vltPort.h MUST BE THE VERY FIRST FILE INCLUDED IN ANSI '.c' FILES"
+#endif
+
+#ifdef __hp9000s700
+#    define HP_COMP
+#    if __STDC__
+#        define SELCAST(X)  ((int *) (X))
+#    else
+#        define SELCAST(X)  (X)
+#    endif
+#else
+#    define SUN_COMP
+#endif
+
+/*
+ * Adjust name-space information.
+ */
+#if defined(_ALL_SOURCE)
+#    if defined(HP_COMP) && !defined(_HPUX_SOURCE)
+#        define _HPUX_SOURCE
+#    endif
+#    if defined(SUN_COMP)
+#        undef _POSIX_C_SOURCE
+#    endif
+#endif
+
+#if defined(_XOPEN_SOURCE)
+#    if defined(HP_COMP) && !defined(_XOPEN_SOURCE)
+#        define _XOPEN_SOURCE
+#    endif
+#    if defined(SUN_COMP)
+#        undef _POSIX_C_SOURCE
+#    endif
+#endif
+  
+#if defined(HP_COMP)
+#    include <sys/stdsyms.h>
+#endif
+
+#endif /*!VLTPORT_H*/

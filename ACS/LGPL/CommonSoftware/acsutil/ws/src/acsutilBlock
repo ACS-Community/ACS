@@ -1,0 +1,225 @@
+#!/bin/bash
+. acsstartupConstants
+. acsstartupAcsInstance
+
+### ----------- Command Line Parsing ---------------------
+# These will contain the parsing results (CL_XXX, CL = command line)
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+if [ ! -d $INSTANCE_DIR ]; then
+   INSTANCE_DIR=$ACS_TMP
+fi
+
+CL_STRING=
+CL_TIMEOUT=30
+CL_CMD=
+CL_PID=
+CL_TAT=no
+CL_FILE=
+CL_KILL=no
+CL_SHOW=no
+CL_CRAP=
+
+#----------------------------------------------------------
+# Usage info. Be nice and keep this up-to-date!
+#acsutilBlock -f fileToCreate -c "some command producing output"
+
+#if -c exists, -p cannot be used
+#-b, -t always valid
+function printUsage 
+{
+   echo "Waits for an executable to emit some specific output or disappear."
+   echo "This script can either be passed some file containing output from"
+   echo "an executable or be passed a command to run, but not both."
+   echo ""
+   echo "This has a few implications for options supplied:"
+   echo " * [COMMAND] and -p cannot be used together"
+   echo " * "
+   echo ""
+   echo "Usage: `basename $0` [OPTIONS] [COMMAND] "
+   echo "Options: "
+   echo "  -f filename                (Optional) Full name of the file where the output will be sent or already is."
+   echo "  -b \"completion string\"     (Optional) Output to be found within filename signifying completion."
+   echo "  -t timeout                 (Optional) timeout in seconds (i.e., amount"
+   echo "                             of time to wait for the specified string to be emitted or command to finish before giving up)."
+   echo "                             Default value is $CL_TIMEOUT seconds."
+   echo "  [COMMAND]                  (Optional) Command for this script to run to get the output. Cannot be used with '-p'."
+   echo "  -p process_id              (Optional) Process ID we're looking for. Cannot be used with [COMMAND]."
+   echo "  -x                         (Optional) Prepends 'acsutilTATTestRunner' to command specifified by [COMMAND]."
+   echo "  -k                         (Optional) Kills [COMMAND] or process_id if the process does not emit the desired output or disappear."
+   echo "                                        Turned off by default."
+   echo "  -s                         (Optional) Shows the output of [COMMAND]. By default this is only sent to filename."
+   echo "  -c \"error message\"         (Optional) Some error message string signifying that something bad has happened"
+   echo "                             and there is no point in blocking any more."
+   echo "  -h                         Prints this message and exits."
+}
+
+
+while getopts f:b:t:p:xksc:h OPT; do
+	case $OPT in
+	        f) CL_FILE=$OPTARG ;;
+       		b) CL_STRING=$OPTARG ;;
+		t) CL_TIMEOUT=$OPTARG ;;
+	        p) CL_PID=$OPTARG ;;
+	        x) CL_TAT="yes" ;;
+                k) CL_KILL="yes" ;;
+	        s) CL_SHOW="yes" ;;
+ 	        c) CL_CRAP=$OPTARG ;;
+	        h) printUsage; exit 0 ;;
+		--) break ;;
+   esac
+done
+
+shift `expr $OPTIND - 1`
+
+CL_CMD=$@
+
+#-----------------------------------------------------------------
+#sanity checks
+#simply put, you cannot use commands and pid options together
+if [ "$CL_CMD" != "" ] && [ "$CL_PID" != "" ]
+then
+    echo "Cannot execute a command and periodically check for the existence of some other process!"
+    printUsage
+    exit 1
+fi
+
+#cannot use tat without a command
+if [ "$CL_CMD" = "" ] && [ "$CL_TAT" = "yes" ]
+then
+    echo "Cannot use acsutilTATTestRunner with non-existant command!"
+    printUsage
+    exit 2
+fi
+
+#cannot specify no command, process ID, and string to search for
+if [ "$CL_CMD" = "" ] && [ "$CL_PID" = "" ] && [ "$CL_STRING" = "" ]
+then
+    echo "Need a command, process ID, or a string in a file to search for!"
+    printUsage
+    exit 3
+fi
+
+#must specify a real file
+if [ "$CL_CMD" = "" ] && [ "$CL_PID" = "" ] && [ "$CL_STRING" != "" ] && [ "$CL_FILE" = "" ]
+then
+    echo "Must specify a file to search for '$CL_STRING' within!"
+    printUsage
+    exit 4
+fi
+
+
+#-----------------------------------------------------------------
+#--If there's a command to be run, execute it.
+
+#set the file to save output to
+if [ "$CL_FILE" = "" ] 
+then
+    CL_FILE=$INSTANCE_DIR/`basename $0`.$$
+fi
+
+#first we check to see if this is being run under tat and there's 
+#a command that needs to be executed.
+if [ "$CL_TAT" = "yes" ] && [ "$CL_CMD" != "" ]
+then
+    CL_CMD="acsutilTATTestRunner $CL_CMD"
+fi
+
+#next just a simple check on CL_CMD
+if [ "$CL_CMD" != "" ]
+then
+    #must run the command as a background process
+    if [ "$CL_SHOW" != "yes" ]
+    then
+	($CL_CMD > $CL_FILE 2>& 1) &
+    else
+	($CL_CMD 2>& 1) | tee -a $CL_FILE &
+    fi
+
+    #save the process ID
+    CL_PID=$!
+    echo $CL_PID > $CL_FILE.pid
+fi
+
+#-----------------------------------------------------------------
+#maximum timeout for anything in this script to finish executing.
+MAX_TIMEOUT=$CL_TIMEOUT
+STD_SLEEP=1
+
+i="1"
+while true
+do
+  sleep $STD_SLEEP
+
+  #check to see if the process ID is still around if the end-user
+  #cares about it
+  if [ "$CL_PID" != "" ]
+  then
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+      pidExists=`ps h -p $CL_PID |grep -v PID`
+    else
+      pidExists=`ps h --pid $CL_PID`
+    fi
+  else
+      pidExists="sure"
+  fi
+
+  #if they care about some expected output, search for it
+  if [ "$CL_STRING" != "" ]
+  then
+      completed=`grep "$CL_STRING" $CL_FILE 2> /dev/null`
+  else
+      completed=""
+  fi
+
+  #if they're looking for bad output as well.
+  if [ "$CL_CRAP" != "" ]
+  then
+      something_bad=`grep "$CL_CRAP" $CL_FILE 2> /dev/null`
+  else
+      something_bad=""
+  fi
+  
+  #got the output string we expected.
+  #in this case, there's no need to check the process ID
+  if [ "X$completed" != "X" ] 
+  then
+      break
+  
+  elif [ "$something_bad" != "" ]
+  then
+      echo "Detected the process emitted '$CL_CRAP' which implies"
+      echo "some sort of error condition!"
+      echo "Bailing without making any attempt to stop the process."
+      exit 5
+ 
+  #process is gone and it never emitted the correct output
+  elif [ "$pidExists" = "" ] && [ "$CL_STRING" != "" ]
+  then
+      echo "Detected the process has disappeared without ever emitting the expected string!"
+      echo "Will continue waiting any ways..."
+      
+  #process is gone and we never expected any string
+  elif [ "$pidExists" = "" ]
+  then
+      break
+
+ fi
+
+  #check if we've waited too long.
+  if [ "$i" = "$MAX_TIMEOUT" ]
+  then
+      echo "Max timeout exceeded!"
+      
+      #if we know the process ID and the developer wants to kill 
+      #it when this script fails...KILL IT!
+      if [ "$CL_PID" != "" ] && [ "$CL_KILL" = "yes" ]
+	  then
+	  acsKillProc $CL_PID 2> /dev/null
+      fi
+      exit 6
+
+  #sleep some more
+  else
+      i=$(( $i + 1 ))
+  fi
+done

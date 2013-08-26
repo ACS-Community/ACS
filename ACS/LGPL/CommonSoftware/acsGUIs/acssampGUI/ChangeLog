@@ -1,0 +1,318 @@
+2009-06-09 15:11  ntroncos
+
+	* .: Recreating branch 2.0
+
+2009-06-08 21:18  jareyes
+
+	* Stop Button don't delete the plot now ;)
+
+2009-06-08 20:57  jareyes
+
+	* Pause Button complete implementation
+
+2009-06-06 22:00  jareyes
+
+	* Adding a dummy implementation of the Pause Button
+
+2009-06-05 00:13  jareyes
+
+	* Bug fixed: Adding the same property in different Sampling Groups,
+	  ends badly
+
+2009-06-05 00:12  jareyes
+
+	* Bug Fixed: Adding the same property in different Sampling Groups,
+	  ends badly
+
+2009-05-27 18:37  ntroncos
+
+	* Modified Version. Now 2.0
+
+2009-05-18 14:28  rtobar
+
+	* Fixing Eclipse's automatic imports
+
+2009-05-18 03:18  ntroncos
+
+	* Added "el TONTO" window decorator.
+
+2009-05-18 02:52  ntroncos
+
+	* Added method that clean the data points in all traces.
+	  A reset :)
+
+2009-05-17 18:40  ahoffsta
+
+	* Complete implementation of Script Executor.
+
+2009-05-17 15:19  ntroncos
+
+	* Adding preliminary support for script executor
+
+2009-05-16 22:28  ahoffsta
+
+	* Adding the capacity to save and load Frequency, TimeWindow, and
+	  SamplingTime.
+	  Now the saving of configuration data, is delgated to each
+	  responsible.
+	  Beangrouper and DataPrinter each has a new method
+	  getSerializableProperty()
+	  which creates and returns the necesary Serializable Property.
+
+2009-05-16 21:40  ntroncos
+
+	* Added Scripting Menu to the bean grouper.
+	  It does nothing at all by the moment.
+
+2009-05-16 21:20  ntroncos
+
+	* Added core support for script execution
+
+2009-05-16 19:48  ahoffsta
+
+	* Adding images for start and stop buttons.
+
+2009-05-16 19:04  ahoffsta
+
+	* Adding icon for optional file dumping.
+
+2009-05-16 16:45  ahoffsta
+
+	* Adding optional file dumping.
+
+2009-05-16 02:15  ahoffsta
+
+	* Uploading jchart2d libraries.
+
+2009-05-16 00:21  ahoffsta
+
+	* New version of the SSG, now uses Jchart2d
+	  Also implemented timewindows, change of freq using the new
+	  library.
+
+2009-05-15 21:17  ahoffsta
+
+	* Opening new branch, version 1.9.
+	  Trunk is now on porting to jchart2d.
+
+2009-05-15 18:43  jareyes
+
+	* statusLabel reemplaced by statusComboBox
+
+2009-05-07 23:18  cmaureir
+
+	* Adding the button and the implementation to change the frequency
+	  dinamically
+
+2009-05-05 18:18  rtobar
+
+	* Deleted old unused constructor in BeanGrouper
+	  Status is passed to plotting windows when a sampling manager is
+	  selected
+
+2009-05-05 18:00  rtobar
+
+	* Added missing image for StatusIcon
+	  There was a JPanel inside another, which was unnecessary. Deleted
+	  external one,
+	  and using directly the internal
+
+2009-05-05 00:10  rtobar
+
+	* Status Icon in Plotting Window
+
+2009-05-04 23:40  rtobar
+
+	* Filename given to user corresponds to the actual filename where
+	  the data is dumped
+
+2009-05-04 23:21  rtobar
+
+	* On SamplingManager, one singleton is held for each remote
+	  sampling manager
+	  Added tests to check the good behaviour of this schema
+	  Added non-existen sampling manager, test added for this case
+
+2009-05-04 19:20  rtobar
+
+	* Check if the Sampling Manager is available, and notify it with
+	  the StatusIcon icon.
+	  This is done in a separate thread, so no delay is percibed in the
+	  GUI
+
+2009-05-04 04:53  rtobar
+
+	* Organizing imports
+
+2009-05-04 04:44  rtobar
+
+	* Handling cases when Interface definition is not present in IR,
+	  or when IR is not running
+
+2009-05-04 04:07  rtobar
+
+	* Added StatusIcon, which should be used in all windows to reflect
+	  the actual status of the system.
+
+2009-05-04 03:12  rtobar
+
+	* Properties cannot be added to running Sampling Groups. Fixes
+	  FS#141
+
+2009-05-04 02:58  rtobar
+
+	* One more column, alignment to the right
+
+2009-05-04 02:50  rtobar
+
+	* Text fields are 3 columns wide
+
+2009-05-02 01:50  ntroncos
+
+	* Fix problem when starting a sample in an unreachable acssampl
+	  component.
+	  The issues if by any chance the acssamp componen is no longer
+	  available
+	  the gui would just spit out a back trace "start" and empty plot
+	  and
+	  give no feeback to the user.
+	  Fixes:
+	  samplingSystemUI/core/SamplingManager.java
+	  The problem was in this file. I was doing a catch (Exception)
+	  printing out and doing nothing else. I must have been insane
+	  when i wrote this.
+	  Now it does proper handling and throwing. This triggered a
+	  cascade of fixes in other files.
+
+2009-04-30 23:20  jareyes
+
+	* 
+
+2009-04-30 23:18  jareyes
+
+	* status label added to ploting window
+
+2009-04-30 03:22  rtobar
+
+	* Fail gracefully if Manager cannot be reached
+	  Deleted dummy System.out.println()
+
+2009-04-30 01:51  rtobar
+
+	* Deleted /VERY/ outdated README file
+
+2009-04-23 23:11  ahoffsta
+
+	* Uploading changes in Makefile
+
+2009-04-06 16:38  rtobar
+
+	* Plot is resized when windows is resized
+
+2009-04-06 15:11  rtobar
+
+	* Automatic packing of main window
+
+2009-04-06 15:04  rtobar
+
+	* Almost nothing :)
+
+2009-04-03 18:40  rtobar
+
+	* Now it is totally free from miglayout
+
+2009-04-03 18:27  rtobar
+
+	* Getting rid of miglayout
+
+2009-02-16 22:51  ahoffsta
+
+	* Fixing compilation problems and bug #140.
+
+2009-02-13 08:34  ahoffsta
+
+	* Fixing the whole redefinition of the IGraphicarUpdate Interface.
+	  Adding the Time Window selector interface.
+
+2009-02-13 06:11  ahoffsta
+
+	* - The close button was replased by an windowListener in the
+	  BeanGrouper.
+	  - UI Beatuficiation
+	  - Antialias turned off on graphics (performance issue)
+
+2009-02-12 20:52  ahoffsta
+
+	* Plotting from various properties already supported.
+	  Can be added dinamically.
+
+2009-02-12 06:58  ahoffsta
+
+	* Refactoring of BeanGrouper to accomodate the modifications to the
+	  GUI.
+
+2009-01-29 02:35  rtobar
+
+	* Changing lines on sampTool
+
+2009-01-29 02:28  rtobar
+
+	* About window in the center of screen
+
+2009-01-29 02:18  rtobar
+
+	* Little code cleanup (stripped some warnings here and there...)
+
+2009-01-21 03:39  rtobar
+
+	* Deleted unnecessary old package
+
+2009-01-21 03:39  rtobar
+
+	* SamplingSystemUI was using deprecated API / adding call to
+	  dispose() on BeanGrouper's
+
+2009-01-21 03:31  rtobar
+
+	* Added close button for "About" window / resized it
+
+2009-01-20 15:19  rtobar
+
+	* About window with ALMA-UTFSM image :)
+
+2009-01-16 20:43  ahoffsta
+
+	* Makeup of the SSG main window
+
+2009-01-16 01:14  rtobar
+
+	* - Just a little customization of the About panel
+
+2009-01-15 22:37  ahoffsta
+
+	* First approach to plotting.
+	  * Added the JFreeChart Dependency
+	  * PlotPrinter is the handler for the Plotting. It passes the data
+	  to PlotWidget.
+	  * PlotWidget is the Graphical Presentation of this mode of GUI.
+	  In this case, it includes a graphic.
+	  At the time, this is functional only for one property. Still
+	  always dump to file.
+
+2009-01-14 09:40  ahoffsta
+
+	* Initial Modifications for the new GUI.
+	  * The SSG window has now only the necessary to add
+	  SamplingGroups.
+	  * BeanGroupers are now JFrame (and separate windows).
+	  * Still has the same funcionality.
+
+2008-12-27 15:10  ahoffsta
+
+	* Adding the diagram class to the trunk
+
+2008-12-26 20:54  ahoffsta
+
+	* Creating the trunk/tags structure. Inmediately created the 1.0
+	  tag.
+

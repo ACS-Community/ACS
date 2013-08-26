@@ -1,0 +1,22 @@
+Fri Feb  8 15:20:43 2002  Birger Gustafsson  <bgustafs@te37>
+
+	* ws/src/recoveryStore.cpp: removed chmod for VxWorks
+
+Fri Feb 08 14:44:55 2002 <bgustafs@te13.hq.eso.org>  recovery version: 1.6 
+Thu Dec 27 19:23:30 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* ws/src/recoveryStore.cpp: file permissions set to 0644, 'load' switch
+	* ws/header/recoveryStore.h: added additional parameter in
+	constructor - 'load' switch
+
+Thu Dec 27 19:04:53 2001 <msekoran@te13.hq.eso.org>  recovery version: 1.5 
+Thu Jul 12 09:03:48 2001 <bgustafs@te13.hq.eso.org>  recovery version: 1.4 
+Thu Jul  5 16:39:48 2001  Matej Sekoranja  <matej.sekoranja@ijs.si>
+
+	* removed recovertyGuard (direct usage of ACE_Guard instead)
+
+Thu Jul 05 13:57:22 2001 <msekoran@te13.hq.eso.org>  recovery version: 1.3 
+Tue Jun 26 11:13:24 2001 <bgustafs@te13.hq.eso.org>  recovery version: 1.2 
+	* created
+Fri May 25 17:22:08 2001 <msekoran@te13.hq.eso.org>  recovery version: 1.1 
+"@(#) $Id: ChangeLog,v 1.6 2002/02/08 14:21:46 vltsccm Exp $"

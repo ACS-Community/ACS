@@ -1,0 +1,86 @@
+1 - ----------T--:--:--.--- [GlobalLogger - ] ----- Running test with skipValueParsing==1 -----
+1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Failed to parse XML test case #0: ''.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Failed to parse XML test case #1: 'error'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #2: '<error'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #3: '<entry/>'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #4: '<entry />'.
+1 - 		Element name : ''
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #5: '<entry></entry>'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #6: '< entry   ><  /   entry  >'.
+1 - 		Element name : 'entry'
+1 - 		Element name : 'entry'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #7: '< entry   ><  /entry     >'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #8: '<entry>some value here</entry>'.
+1 - 		Element name : 'entry'
+1 - 		Element name : 'entry'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #10: '<entry>some value 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #9: '<entry>some value here!</entry>'.
+1 - 		Element name : 'entry'
+1 - 		Element name : 'entry'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #11: '<entry>these < and > should not be here at all !!! CDATA block should be used</entry>'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #12: '<entry>preData <![CDATA[this is a CDATA section and all < and > are allowed here]]> postData</entry>'.
+1 - 	 and also here</entry>'.
+1 - 		Element name : 'entry'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #13: '<entry>some "quoted" 'values' '::'""";;{{'!!!...32879532&232*422*34*2</entry>'.
+1 - 		Element name : 'entry'
+1 - 		Element name : 'entry'
+1 - 		Element name : 'entry'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #14: '<Info TimeStamp="----------T--:--:--.---" Routine="routineName" Host="csl01" Process="loggingXMLParserTest" Thread="main" Context="">This is typical log XML.</Info>'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #15: '<node>preData1<subnode/>preData2<subnode attribute=""/>innerData<subnode>with value</subnode>postData</node>'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] ----- Running test with skipValueParsing==0 -----
+1 - 		Element name : 'entry'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Failed to parse XML test case #0: ''.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Failed to parse XML test case #1: 'error'.
+1 - 		Element name : 'Info'
+1 - 		Element name : 'node'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #2: '<error'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #3: '<entry/>'.
+1 - 		Attribute: 'Process' = 'loggingXMLParserTest'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #4: '<entry />'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #5: '<entry></entry>'.
+1 - 		Attribute: 'TimeStamp' = '----------T--:--:--.---'
+1 - 		Element name : ''
+1 - 		Element name : 'entry'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #6: '< entry   ><  /   entry  >'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #7: '< entry   ><  /entry     >'.
+1 - 		Attribute: 'Thread' = 'main'
+1 - 		Element name : 'entry'
+1 - 		Element name : 'entry'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #8: '<entry>some value here</entry>'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #9: '<entry>some value here!</entry>'.
+1 - 		Attribute: 'Host' = 'csl01'
+1 - 		Element name : 'entry'
+1 - 		Element name : 'entry'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #10: '<entry>some value 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #11: '<entry>these < and > should not be here at all !!! CDATA block should be used</entry>'.
+1 - 		Attribute: 'Routine' = 'routineName'
+1 - 		Element name : 'entry'
+1 - 		Element name : 'entry'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #12: '<entry>preData <![CDATA[this is a CDATA section and all < and > are allowed here]]> postData</entry>'.
+1 - 	 and also here</entry>'.
+1 - 		Attribute: 'Context' = ''
+1 - 		Element name : 'entry'
+1 - 		Element value: 'some value here!'
+1 - 		Element value: 'some value here'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #13: '<entry>some "quoted" 'values' '::'""";;{{'!!!...32879532&232*422*34*2</entry>'.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #14: '<Info TimeStamp="----------T--:--:--.---" Routine="routineName" Host="csl01" Process="loggingXMLParserTest" Thread="main" Context="">This is typical log XML.</Info>'.
+1 - 		Element name : 'entry'
+1 - 		Element name : 'entry'
+1 - 		Element value: 'these < and > should not be here at all !!! CDATA block should be used'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Parsed XML test case #15: '<node>preData1<subnode/>preData2<subnode attribute=""/>innerData<subnode>with value</subnode>postData</node>'.
+1 - 		Element name : 'entry'
+1 - 		Element name : 'Info'
+1 - 		Element value: 'preData this is a CDATA section and all < and > are allowed here postData'
+1 - 		Element value: 'some value 
+1 - 	 and also here'
+1 - 		Element name : 'node'
+1 - 		Element value: 'some "quoted" 'values' '::'""";;{{'!!!...32879532&232*422*34*2'
+1 - 		Element value: 'This is typical log XML.'
+1 - 		Attribute: 'Process' = 'loggingXMLParserTest'
+1 - 		Element value: 'preData1<subnode/>preData2<subnode attribute=""/>innerData<subnode>with value</subnode>postData'
+1 - 		Attribute: 'TimeStamp' = '----------T--:--:--.---'
+1 - 		Attribute: 'Thread' = 'main'
+1 - 		Attribute: 'Host' = 'csl01'
+1 - 		Attribute: 'Routine' = 'routineName'
+1 - 		Attribute: 'Context' = ''

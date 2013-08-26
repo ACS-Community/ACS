@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- This XML file provides the partial implementation -->
+<!-- of the IDL:alma/RampedPS/RampedPowerSupply:1.0    -->
+<!-- interface.                                        -->
+<!-- Because of this XML's location within the ACS CDB -->
+<!-- (i.e., $ACS_CDB/CDB/alma/simulated/interfaces/*), -->
+<!-- this simulated behavior description is generic    -->
+<!-- and does not tie into any specific component.     -->
+<!-- This makes it useful for defining the behavior of -->
+<!-- simulated dynamic components. Also, it is very    -->
+<!-- useful when one wants to define a component(s)    -->
+<!-- method only once for all occurences of the        -->
+<!-- component's type.                                 -->
+<!--                                                   -->
+<!-- There are several things to take note of here:    -->
+<!--   1. Everything defined within XML elements       -->
+<!--      consists of Python code. You must obey the   -->
+<!--      whitespace rules of Python within these      -->
+<!--      elements.                                    -->
+<!--   2. Not all methods and BACI properties defined  -->
+<!--      in IDL for this component are defined here.  -->
+<!--      This is unnecessary as the simulator         -->
+<!--      framework will dynamically generate methods  -->
+<!--      and properties that have not been defined by -->
+<!--      some means available to the end-user.        -->
+<!--   3. Implementations of inherited methods defined -->
+<!--      in other parts of the CDB will be used where -->
+<!--      applicable. In this specific case, see       -->
+<!--      $ACS_CDB/CDB/alma/simulated/interfaces/alma/ -->
+<!--      PS/PowerSupply/1.0                           -->
+<!--   4. With respect to 3., one should also note that-->
+<!--      it's perfectly acceptable to override methods-->
+<!--      defined within $ACS_CDB/CDB/alma/simulated/  -->
+<!--      PS/PowerSupply/1.0                           -->
+
+<!-- All simulated components should be derived from   -->
+<!-- the SimulatedComponent XML element                -->
+<SimulatedComponent xmlns="urn:schemas-cosylab-com:SimulatedComponent:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+<!-- Section where normal Python imports are performed.-->
+<!-- By importing modules/packages here, they will be  -->
+<!-- accessible throughout the rest of the XML.        -->
+        <pythonImports>
+import ACSErr
+import ACS
+        </pythonImports>
+
+<!-- A CORBA method is implemented. This particular   -->
+<!-- method, stopRamping, accepts as its first        -->
+<!-- parameter a CallbackVoid object. We in turn play -->
+<!-- around with the callback before returning.       -->
+	<_corbaMethod Name="startRamping" Timeout="0">
+print "Simulated startRamping (alma/simulated/interfaces CDB section):"
+print "    simply invoking the callback's 'done' method."
+parameters[1].done(getGlobalData("compl"), 
+                   getGlobalData("cbdo"))
+print
+return
+        </_corbaMethod>
+</SimulatedComponent>
+

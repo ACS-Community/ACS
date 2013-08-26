@@ -1,0 +1,11 @@
+1 - dir(TEST_RPS_1): ['_BehaviorProxy__setupCases', '__doc__', '__init__', '__module__', 'api_handler', 'attachNewHandler', 'cdb_handler', 'compname', 'comptype', 'dynamic_handler', 'getMethod', 'gui_handler', 'handlers', 'logger', 'server_handler']
+1 - 
+1 - bp.getMethod('on'): {'Timeout': 0.20000000000000001, 'Value': [None]}
+1 - Good!
+1 - 
+1 - bp.getMethod('nonexistentMethod'):----------T--:--:--.--- Servants.Representations.Dynamic.Dynamic(TEST_RPS_1) getMethod - Failed to dynamically generate 'nonexistentMethod' because the IFR was missing information on the method!
+1 - Good...got a NO_RESOURCES exception for a nonexistent method
+1 - 
+1 - Good...could not create a 'NON_EXISTENT' proxy
+1 - 
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

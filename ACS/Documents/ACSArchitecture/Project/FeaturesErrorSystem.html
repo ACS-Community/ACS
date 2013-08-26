@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>FeaturesErrorSystem</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="20080604;11413600">
+	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<STYLE TYPE="text/css">
+	<!--
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<H2><A NAME="LoggingSystem"></A><A NAME="ErrorSystem"></A>Error
+System</H2>
+<P>The Error System provides the basic mechanism for applications to
+handle internal errors and to propagate from server to client
+information related to the failure of a request. An error can be
+notified to the final user and appear in a GUI window if an action
+initiated by the user fails (for example a command activated from a
+GUI fails).</P>
+<H3>The architecture of the ACS Error System is based on the
+architecture and design patterns described in details in <A HREF="ReferenceDocuments.html#RD44">[RD44
+- <B>ARCUS Error Handling for Business Information Systems</B>]</A>.</H3>
+<H3>The Error System propagates error messages making use of OO
+technology. The basic error reporting mechanism is to throw an
+exception.</H3>
+<H3>The error reporting procedure must be the same regardless of
+whether the communication is intra-process (local) or inter-process
+(remote), synchronous or asynchronous.</H3>
+<H3>Errors can be propagated through the call chain as an ACS
+Exception or an ACS Completion to be reported to the action requester
+<A HREF="ReferenceDocuments.html#RD01">[RD01 - 6.3.6 Scope]</A>.</H3>
+<H3>An ACS Completion is used to report both successful and
+unsuccessful completion of asynchronous calls. More in general, ACS
+Completions are used as return value or out-parameter in any case
+where it is not possible/meaningful to throw an ACS Exception.</H3>
+<H3>The ACS Error System provides a mean to chain consecutive error
+conditions into a linked list of error objects. This linked list is
+also called an Error Trace <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 6.3.2 Tracing]</A>. It is not required that all levels add an entry
+in the trace, but only the ones that provide useful information.</H3>
+<H3>Both ACS Exceptions and ACS Completion contain an Error Trace.
+The Completion can contain no Error Trace in case of successful
+completion.</H3>
+<H3>Representation (see class diagram for details):</H3>
+<H4>ACS Error Trace is represented as a recursive CORBA structure,
+i.e. as a structure that contains information about the error and a
+reference to another structure of the same type (the previous Error
+Trace), to build the linked list. The Error Trace contains all
+information necessary to describe the error and identify uniquely the
+place where it occurred. In particular it contains an error message
+and context specific information as list of (name, value) pairs. For
+example, in the typical case of impossibility of opening a file:</H4>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">the error message would be: “File
+	not found” 
+	</P>
+	<LI><P>the context information would be: (“filename”, “&lt;name
+	of non existing file&gt;”) 
+	</P>
+</UL>
+<H4>ACS Exceptions are represented as CORBA Exceptions and contain an
+Error Trace member</H4>
+<H4>ACS Completion is represented as a CORBA structure and contain an
+Error Trace member, that can be NULL in case of successful completion</H4>
+<P ALIGN=CENTER><A NAME="_x0000_i1025"></A><IMG
+SRC="Images/Error_System__CORBA_Structures.png" WIDTH="562" HEIGHT="520"  NAME="graphics1"
+ALIGN=BOTTOM WIDTH=602 HEIGHT=612 BORDER=0></P>
+<P ALIGN=CENTER><I>Figure 3.7: Error System data entities</I></P>
+<H3>Inside a process, an ErrorTrace,&nbsp; ACSException and
+Completion are typically encapsulated into an instance of a Helper
+class, in the native language used for the implementation of the
+process (C++, Java and Python helper classes are provided directly by
+the ACS Error System). This class implements all operations necessary
+to manipulate respectively Error Trace and ACSException and a
+Completion CORBA structure.</H3>
+<H3>For inter-process CORBA communication, the ACSException and
+Completion Helper classes transparently serialize the corresponding
+CORBA structure and transfer it to the calling process <A HREF="/G:%5CEso%5CAlma%5CAcs%5CAcs%5Cacsdoc%5CModel%5CProject%5CReferenceDocuments.html#RD01">[RD01
+- 6.3.1 Definition]</A>. There it is de-serialized into a new Helper
+class, if available. 
+</H3>
+<H3>Using this approach only CORBA Structures are transferred between
+servants and clients and it is not necessary to use Object by Value
+to transfer a full-fletched object. For languages where a Helper
+class is available, the encapsulation of the Error Trace structure
+into the Helper is equivalent to the use of Object by Value. On the
+other hand, languages where no Helper class is available can still
+manipulate directly the Error Trace structure. Also, Object by Value
+support from the ORB is not required. 
+</H3>
+<H3>In a distributed and concurrent environment, an error condition
+is propagated as an Error Trace over a series of processes until it
+reaches a client application, which either fixes the problem or logs
+it. At any level it is possible to: 
+</H3>
+<H4><B>Fully recover the error</B>. The Error Trace is destroyed and
+no trace remains in the system. 
+</H4>
+<H4><B>Close the Error Trace, logging the whole Trace in the Logging
+System and then destroying the Error Trace</B>. The error could not
+be recovered at the higher level responsible for handling it and it
+goes in the log of anomalous conditions for operator notification and
+later analysis. This typically happens for unrecoverable errors or
+when an error has to be recorded for maintenance/debugging purposes.
+This option is used also to log errors that have been recovered but
+that we want to record in the log system, for example to perform
+statistical analysis on the occurrence of certain recoverable
+anomalous conditions.</H4>
+<H4><B>Propagate the error to the higher level,</B> adding local
+context-specific details to the Error Trace (including object and
+line of code where the error occurred). The higher level gets
+delegated the responsibility of handling the error condition. This
+strategy implies that we might lose important error logs if the
+higher level application does not or cannot fulfill its own
+obligation to log error messages (for example because it crashes). It
+is therefore allowed at any time to log an important error trace
+(typically at debug level) as a precautionary measure to make sure it
+does not get lost. Logging it at Debug level ensures that the
+redundant information is not visible unless we are looking at logs in
+debug mode.</H4>
+<P ALIGN=CENTER><A NAME="_x0000_i1026"></A><IMG
+SRC="Images/Error_System__Synchronous_calls____Synchronous_calls.png" WIDTH="562" HEIGHT="347" 
+NAME="graphics2" ALIGN=BOTTOM WIDTH=511 HEIGHT=347 BORDER=0></P>
+<P ALIGN=CENTER><I>Figure 3.8: propagation of Error Trace</I></P>
+<H3>Error Trace, Completion and Exception Helper classes offer
+operations for&nbsp;</H3>
+<H4 STYLE="margin-left: 0.39in; margin-right: 0.39in; margin-top: 0in">
+handling the addition of new error levels to the Error Trace while an
+instance is passed from one application layer to the higher one or
+from a servant to its client.</H4>
+<H4 STYLE="margin-left: 0.39in; margin-right: 0.39in; margin-top: 0in">
+converting to/from Error Trace, Completion and Exception</H4>
+<H4 STYLE="margin-left: 0.39in; margin-right: 0.39in; margin-top: 0in">
+navigating the elements of the Error Trace, i.e. querying for a
+specific error in the chain or for error details 
+</H4>
+<H3>Each Completion and Error Trace are identified uniquely by a pair
+(Completion/Error Type, Error Code). If a Completion contains an
+Error Trace, it represents and error and therefore its Completion
+Type is the same as the Error Type of the top level Error Trace
+structure.</H3>
+<H3>Error and Completion specification is done through XML
+specification files.</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">The XML specification files allow
+	defining context value pairs. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Code generation is used generate
+	type safe helper classes in all supported languages from the XML
+	specification files. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Getters and setters are generated
+	for all context value pairs. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Each&nbsp; (Completion/Error Type,
+	Error Code) pair is associated in the XML specification files to
+	documentation providing help description of the error and of the
+	recovery procedures to be taken<A HREF="/G:%5CEso%5CAlma%5CAcs%5CAcs%5Cacsdoc%5CModel%5CProject%5CReferenceDocuments.html#RD01">[RD01
+	- 6.3.5 Configuration]</A>. 
+	</P>
+	<LI><P>Help handling is implemented as links to XML help pages. 
+	</P>
+</UL>
+<H3>The Error System provides an API to access error documentation.
+<I>(Not implemented yet)</I></H3>
+<H3>An Error Editor GUI tool is used by application developers
+defining new (Completion/Error Type, Error Code) pairs and to manage
+them (insert, delete, edit the description) without having to edit by
+hand XML specification files. The tool ensures that (Completion/Error
+Type, Error Code) pairs are unique in the system and generates one
+XML specification file for each Completion/Error Type.&nbsp;<I>(Partially
+implemented)</I></H3>
+<H3>User interface tools allow navigating through the error logs and
+through the levels of the Error Trace <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 6.3.4 Presentation]</A>. The logging display GUI is used to browse
+errors and a specific Error display tools is used to browse the Error
+Trace corresponding to a single error. <I>(Partially implemented)</I></H3>
+<H3>Errors have a severity attribute<A HREF="ReferenceDocuments.html#RD01">[RD01
+- 6.3.3 Severity]</A></H3>
+<H3>It is important to take into account that exceptions can skip
+several layers in the call tree if there is no adequate catch clause.
+In this case the error stack will not have a complete trace of the
+call stack. 
+</H3>
+<H3>Particular attention must go into properly declaring exceptions
+in the signature of methods and in catching them; in C++, specifying
+exceptions  in the signature of a method which then throws an
+exception not included in that specification can cause the process to
+abort at run time. The alternative approach, <I>i.e.</I>, not
+specifying any exceptions at all in the signature, cannot be used for
+CORBA methods. Therefore the ACS error system documentation contains
+guidelines to follow in implementing proper and safe error/exception
+handling, in particular in C++.</H3>
+</BODY>
+</HTML>
+

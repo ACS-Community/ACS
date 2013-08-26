@@ -1,0 +1,21 @@
+#
+#	"@(#) $Id: tat111,v 1.76 2003/01/09 17:51:22 vltsccm Exp $"
+#
+
+# tatDummy should be installed only under ../bin
+
+msgSchedule $ws "tatDummy"
+if [ $? -eq 0 ]
+then
+	echo "msgSchedule $ws succeeded"
+else
+	echo "msgSchedule $ws failed"
+fi
+
+msgSchedule $rws "tatDummy"
+if [ $? -eq 0 ]
+then
+	echo "msgSchedule $rws succeeded"
+else
+	echo "msgSchedule $rws failed"
+fi

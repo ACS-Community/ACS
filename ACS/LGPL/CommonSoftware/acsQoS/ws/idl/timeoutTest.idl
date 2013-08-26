@@ -1,0 +1,14 @@
+#ifndef _timeout_test_idl_
+#define _timeout_test_idl_
+
+interface TimeOutTest
+{
+ // Returns <x>, but sleep for <msecs> milliseconds before returning
+ long echo (in long x, in long msecs);
+
+ // used to terminate the orb so that we don't have processes 
+ // hanging around after the tat test ends
+ void shutdownOrb();
+};
+
+#endif

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<EntitybuilderSettings>
+	<EntitySchema schemaName="EventChannel.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:EventChannel:1.0"/>
+
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:EventChannel:1.0" jPackage="alma.acs.ncconfig"/>
+
+</EntitybuilderSettings>
+

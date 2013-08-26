@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<HierarchicalComponent  xmlns="urn:schemas-cosylab-com:HierarchicalComponent:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       Name="TOWER_H"
+       Code="acsexmplBuildingImpl"
+       Type="IDL:alma/acsexmplBuilding/Building:1.0"
+       Container="Container"  ImplLang="cpp" >
+      <_ Name="FRONTDOOR"    Code="acsexmplDoorImpl"       Type="IDL:alma/acsexmplBuilding/Door:1.0"             Container="Container" ImplLang="cpp" />
+</HierarchicalComponent>
+

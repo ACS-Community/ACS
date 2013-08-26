@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/toc_1_0.dtd">
+<toc version="1.0" categoryclosedimage="chapter" topicimage="topic">
+	<tocitem text="Command Center User Guide" image="toplevelfolder">
+		<tocitem text="Overview">
+			<tocitem text="Launching Command Center" target="launching_acc"/>
+			<tocitem text="Starting Acs" target="starting_acs"/>
+			<tocitem text="Running Clients" target="running_clients"/>
+			<tocitem text="Stopping Acs" target="stopping_acs"/>
+		</tocitem>
+		<tocitem text="Running Acs">
+			<tocitem text="Deployment Scenario A" target="scenario_a"/>
+			<tocitem text="Deployment Scenario B" target="scenario_b"/>
+		</tocitem>
+		<tocitem text="Managing Projects">
+			<tocitem text="Managing Projects" target="managing_projects"/>
+		</tocitem>
+		<tocitem text="Tools">
+			<tocitem text="Tools Menu" target="tools_menu"/>
+			<tocitem text="Tool Definitions" target="tool_definitions"/>
+		</tocitem>
+		<tocitem text="Glossary">
+			<tocitem text="Progress Panel" target="progress_panel"/>
+			<tocitem text="Deployment Info View" target="deployment_info"/>
+			<tocitem text="Log Area" target="log_area"/>
+			<tocitem text="Acs Instance" target="acs_instance"/>
+			<tocitem text="Cdb, Cdb-Root" target="cdb_root"/>
+		</tocitem>
+		<tocitem text="Other resources">
+			<tocitem text="What's New?" target="whats_new"/>
+		</tocitem>
+	</tocitem>
+</toc>

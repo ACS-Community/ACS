@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+
+<project name="CastorPatch" default="extractOriginalCastorXmlSources" basedir="..">
+
+	<!-- ACSROOT etc. taken from env variables unless given explicitly as an ANT property -->
+	<property environment="env"/>  
+	<property name="ACSROOT" value="${env.ACSROOT}" />
+	<property name="INTROOT" value="${env.INTROOT}" />
+
+	<property name="acslib" value="${ACSROOT}/lib" />
+	<property name="intlib" value="${INTROOT}/lib" />
+	<property name="mod.lib" value="${basedir}/lib" />
+	<property name="mod.src" value="${basedir}/src" />
+
+
+	<property name="castor.zipname" value="castor-0.9.6-src.zip" />
+	<property name="castor.zipsrc" value="castor-0.9.6/src/main" />
+	<property name="castor.patchfile" value="${mod.src}/castor.patch" />
+
+
+	<property name="build.home" value="${basedir}/config/antbuild" />
+	
+	<!-- directory names without path, needed for correct diff'ing in target createPatchfile -->
+	<property name="src.original.dirname" value="src_original" />   
+	<property name="src.patched.dirname" value="src_patched" />
+	
+	<property name="build.src.original" value="${build.home}/${src.original.dirname}" />
+	<property name="build.src.patched" value="${build.home}/${src.patched.dirname}" />
+	<property name="build.tmp" value="${build.home}/tmp" />
+
+
+
+	<!-- =================================================
+      Basic targets
+     ================================================= -->
+
+	<target name="clean">
+		<echo message="ANT clean: will delete build products..." level="info"/>
+		<delete failonerror="false" includeEmptyDirs="true">
+			<fileset dir="${build.src.original}" />
+			<fileset dir="${mod.src}/org" />
+		</delete>
+	</target>
+
+
+	<target name="extractOriginalCastorXmlSources" 
+			description="Extracts all castor source files used for the 'xml-only' castor jar; fixes CRLF w/o changing access date."
+		>
+
+		<unzip src="${mod.lib}/${castor.zipname}" dest="${build.tmp}" />
+
+		<copy todir="${build.src.original}" includeEmptyDirs="false" preservelastmodified="true">
+			<fileset dir="${build.tmp}/${castor.zipsrc}" 
+				includes="
+				org/exolab/castor/*,
+				org/exolab/castor/builder/**,
+				org/exolab/castor/core/**,
+				org/exolab/castor/mapping/**,
+				org/exolab/castor/net/**,
+				org/exolab/castor/tools/**,
+				org/exolab/castor/types/**,
+				org/exolab/castor/util/**,
+				org/exolab/castor/xml/**,
+				org/exolab/javasource/**"
+				excludes="
+				org/exolab/castor/util/SqlBindParser.java
+				org/exolab/castor/util/JdoConfFactory.java"
+			/>
+			<!-- Unfortunatley, FixCrLfFilter does currently (Ant 1.7) not support the preservelastmodified
+				attribute of the stand-alone fixcrlf task, which would allow the elegant
+				integration via a filterchain child task.  -->
+		</copy>
+
+		<fixcrlf 
+		    srcdir="${build.src.original}"
+		    eol="unix" eof="remove" fixlast="false"
+		    preservelastmodified="true">
+		</fixcrlf>
+
+		<delete dir="${build.tmp}" />
+
+	</target>
+
+
+	<target name="createPatchfile" depends="extractOriginalCastorXmlSources"> <!-- depends="extractOriginalCastorXmlSources" -->
+		<!-- from patch man page, about diff options
+			NOTES FOR PATCH SENDERS
+			There  are  several  things you should bear in mind if you are going to be sending out patches.
+			Create your patch systematically.  A good  method  is  the command  
+			diff -Naur old new 
+			where old and new identify the old and new directories.  The names old and new should not
+			contain  any  slashes.   
+			The diff command's headers should have dates and times in Universal Time  using  traditional
+			Unix  format,  so  that patch recipients can use the -Z option.   
+			Here  is  an  example  command,  using Bourne shell syntax:
+          LC_ALL=C TZ=UTC0 diff -Naur gcc-2.7 gcc-2.8
+
+			-N  				Treat absent files as empty.
+			-a  				Treat all files as text.
+			-u  -U NUM  Output NUM (default 3) lines of unified context.
+			-r 					Recursively compare any subdirectories found.			
+		-->
+		<exec dir="${build.home}" executable="diff" output="${castor.patchfile}">
+			<env key="LC_ALL" value="C"/>
+			<env key="TZ" value="UTC0"/>
+			<arg value="-Naur"/>
+			<arg value="${src.original.dirname}"/>
+			<arg value="${src.patched.dirname}"/>
+		</exec>		
+	</target>
+
+
+	<target name="applyPatch" depends="extractOriginalCastorXmlSources">  <!-- depends="extractOriginalCastorXmlSources" -->
+		<!-- patching will be done in place. Thus first rename a possibly existing patch dir, and then copy original files for patching -->
+		<tempfile property="src.patched.backup" destDir="${build.home}"/>
+		<move todir="${src.patched.backup}_${src.patched.dirname}" failonerror="false" >
+		    <fileset dir="${build.src.patched}"/>
+		</move>
+
+		<copy todir="${build.src.patched}" preservelastmodified="true">
+	    <fileset dir="${build.src.original}"/>
+	  </copy>
+
+		<patch patchfile="${castor.patchfile}" dir="${build.src.patched}" strip="1" quiet="false" />
+        <delete file="${build.src.patched}/org/exolab/castor/util/XercesRegExpEvaluator.java" />
+		
+	</target>
+	
+
+
+	<target name="resurrectPatchedSource" depends="applyPatch">
+		<copy todir="${mod.src}">
+	    <fileset dir="${build.src.patched}"/>
+	  </copy>
+
+	</target>
+	
+</project>

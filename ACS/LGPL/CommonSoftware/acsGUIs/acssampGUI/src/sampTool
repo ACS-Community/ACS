@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [[ $1 == "-f" && $2 != "" ]];then
+	acsStartJava cl.utfsm.samplingSystemUI.SampTool $1 $2
+elif [[ $1 -eq "" ]];then
+	acsStartJava cl.utfsm.samplingSystemUI.SampTool
+else
+	echo "Bad syntax"
+	echo "Use:"
+	echo -e "\tsampTool -f <file>.ssgst" 
+fi

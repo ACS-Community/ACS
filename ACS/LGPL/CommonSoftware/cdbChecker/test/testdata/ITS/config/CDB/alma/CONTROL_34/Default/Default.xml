@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+@(#) $Id: Default.xml,v 1.2 2006/11/20 05:40:14 cparedes Exp $
+
+Copyright (C) 2004
+Associated Universities, Inc. Washington DC, USA.
+
+Produced for the ALMA project
+
+This library is free software; you can redistribute it and/or modify
+it it under the terms of the GNU Library General Public License as
+published by the Free Software Foundation; either version 2 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 675 Massachusetts Ave, Cambridge, MA, 02139, USA.
+
+Correspondence concerning ALMA should be addressed as follows:
+Internet email: alma-sw-admin@nrao.edu
+-->
+
+<!--
+Note if you edit this please do not stuff up the formatting! Many
+automated tools, like the CDB browser or XMLSpy will want to convert
+all indents to tabs. As I use a text editor I then find I need an
+extremely widescreen window. - Ralph Marson. 
+-->
+
+<LORR xmlns="urn:schemas-cosylab-com:LORR:1.0" 
+      xsi:schemaLocation="urn:schemas-cosylab-com:LORR:1.0"  
+      xmlns:amb="urn:schemas-cosylab-com:AmbDevice:1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EFC_25_MHZ
+    archive_priority="15"
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0.0"
+    alarm_high_on="9.0"
+    alarm_high_off="9.0"
+    alarm_low_on="1.0"
+    alarm_low_off="1.0"
+    default_value="0.0"
+    graph_min="0.0"
+    graph_max="10.0"
+    format="%8.3f"
+    description="25MHz Electronic Frequency Control Voltage"
+    units="V"
+    min_timer_trig="0.048"
+    min_delta_trig="0.004884004884"
+    default_timer_trig="60.0"
+    resolution="4095"
+    min_step="0.004884004884"
+    alarm_timer_trig="1.0"
+    >
+    <amb:rcaMap relative_address="2" data_length="2">
+      <amb:doubleBitMap numberOfBits="16" fieldWidth="16" 
+                        scale= "0.004884004884"/>
+    </amb:rcaMap>
+  </EFC_25_MHZ>
+  <EFC_2_GHZ
+    archive_priority="15"
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0.0"
+    alarm_high_on="9.0"
+    alarm_high_off="9.0"
+    alarm_low_on="1.0"
+    alarm_low_off="1.0"
+    default_value="0.0"
+    graph_min="0.0"
+    graph_max="10.0"
+    format="%8.3f"
+    description="2GHz Electronic Frequency Control Voltage"
+    units="V"
+    min_timer_trig="0.048"
+    min_delta_trig="0.004884004884"
+    default_timer_trig="60.0"
+    resolution="4095"
+    min_step="0.004884004884"
+    alarm_timer_trig="1.0"
+    >
+    <amb:rcaMap relative_address="3" data_length="2">
+      <amb:doubleBitMap numberOfBits="16" fieldWidth="16" scale= "0.004884004884"/>
+    </amb:rcaMap>
+  </EFC_2_GHZ>
+  <PWR_25_MHZ 
+    archive_priority="15"
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0.0"
+    alarm_high_on="10.0"
+    alarm_high_off="10.0"
+    alarm_low_on="0.0"
+    alarm_low_off="0.0"
+    default_value="-0.01"
+    graph_min="-1.0"
+    graph_max="11.0"
+    format="%8.3f"
+    description="25MHz RF output power"
+    units="V"
+    min_timer_trig="0.048"
+    min_delta_trig="0.004884004884"
+    default_timer_trig="60.0"
+    resolution="4095"
+    min_step="0.004884004884"
+    alarm_timer_trig="1.0"
+    >
+    <amb:rcaMap relative_address="4" data_length="2">
+      <amb:doubleBitMap numberOfBits="16" fieldWidth="16" scale= "0.004884004884"/>
+    </amb:rcaMap>
+  </PWR_25_MHZ>
+  <PWR_125_MHZ 
+    archive_priority="15"
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0.0"
+    alarm_high_on="10.0"
+    alarm_high_off="10.0"
+    alarm_low_on="0.0"
+    alarm_low_off="0.0"
+    default_value="-0.01"
+    graph_min="-1.0"
+    graph_max="11.0"
+    format="%8.3f"
+    description="125MHz RF output power"
+    units="V"
+    min_timer_trig="0.048"
+    min_delta_trig="0.004884004884"
+    default_timer_trig="60.0"
+    resolution="4095"
+    min_step="0.004884004884"
+    alarm_timer_trig="1.0"
+    >
+    <amb:rcaMap relative_address="5" data_length="2">
+      <amb:doubleBitMap numberOfBits="16" fieldWidth="16" scale= "0.004884004884"/>
+    </amb:rcaMap>
+  </PWR_125_MHZ>
+  <PWR_2_GHZ
+    archive_priority="15"
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0.0"
+    alarm_high_on="10.0"
+    alarm_high_off="10.0"
+    alarm_low_on="0.0"
+    alarm_low_off="0.0"
+    default_value="-0.01"
+    graph_min="-1.0"
+    graph_max="11.0"
+    format="%8.3f"
+    description="2GHz RF output power"
+    units="V"
+    min_timer_trig="0.048"
+    min_delta_trig="0.004884004884"
+    default_timer_trig="60.0"
+    resolution="4095"
+    min_step="0.004884004884"
+    alarm_timer_trig="1.0"
+    >
+    <amb:rcaMap relative_address="6" data_length="2">
+      <amb:doubleBitMap numberOfBits="16" fieldWidth="16" scale= "0.004884004884"/>
+    </amb:rcaMap>
+  </PWR_2_GHZ>
+  <RX_OPT_PWR
+    archive_priority="15"
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0.0"
+    alarm_high_on="1.0"
+    alarm_high_off="1.0"
+    alarm_low_on="0.025"
+    alarm_low_off="0.025"
+    default_value="0.0"
+    graph_min="1.0"
+    graph_max="10.0"
+    format="%8.3f"
+    description="Received optical power"
+    units="mW"
+    min_timer_trig="0.048"
+    min_delta_trig="0.004884004884"
+    default_timer_trig="60.0"
+    resolution="4095"
+    min_step="0.004884004884"
+    alarm_timer_trig="1.0"
+    >
+    <amb:rcaMap relative_address="7" data_length="2">
+      <amb:doubleBitMap numberOfBits="16" fieldWidth="16" scale= "0.004884004884"/>
+    </amb:rcaMap>
+  </RX_OPT_PWR>
+  <VDC_12 
+    archive_priority="15"
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0.0"
+    alarm_high_on="12.5"
+    alarm_high_off="12.5"
+    alarm_low_on="11.5"
+    alarm_low_off="11.5"
+    default_value="0.0"
+    graph_min="0.0"
+    graph_max="20.0"
+    format="%7.2f"
+    description="12V power supply voltage"
+    units="V"
+    min_timer_trig="0.048"
+    min_delta_trig="0.039072039"
+    default_timer_trig="60.0"
+    resolution="4095"
+    min_step="0.039072039"
+    alarm_timer_trig="1.0"
+    >
+    <amb:rcaMap relative_address="9" data_length="2">
+      <amb:doubleBitMap numberOfBits="16" fieldWidth="16" scale= "0.009768009768"/>
+    </amb:rcaMap>
+  </VDC_12>
+
+  <VDC_15 
+    archive_priority="15"
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0.0"
+    alarm_high_on="15.5"
+    alarm_high_off="15.5"
+    alarm_low_on="14.5"
+    alarm_low_off="14.5"
+    default_value="0.0"
+    graph_min="0.0"
+    graph_max="20.0"
+    format="%7.2f"
+    description="15V power supply voltage"
+    units="V"
+    min_timer_trig="0.048"
+    min_delta_trig="0.009768009768"
+    default_timer_trig="60.0"
+    resolution="4095"
+    min_step="0.009768009768"
+    alarm_timer_trig="1.0"
+    >
+    <amb:rcaMap relative_address="10" data_length="2">
+      <amb:doubleBitMap numberOfBits="16" fieldWidth="16" scale= "0.009768009768"/>
+    </amb:rcaMap>
+  </VDC_15>
+
+  <Address/>
+  <errors
+    archive_priority="15"
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0"
+    graph_min="0"
+    graph_max="10000000"
+    format="%d"
+    description="Number of AMB errors since last reset"
+    units="counts"
+    min_timer_trig="0.048"
+    min_delta_trig="1"
+    default_timer_trig="60.0"
+    min_step="1"
+    alarm_timer_trig="1.0"
+  />
+  <transactions
+    archive_priority="15"
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0"
+    graph_min="0"
+    graph_max="10000000"
+    format="%d"
+    description="Number of AMB transactions since last reset"
+    units="transactions"
+    min_timer_trig="0.048"
+    min_delta_trig="1"
+    default_timer_trig="60.0"
+    min_step="1"
+    alarm_timer_trig="1.0"
+  />
+  <temperature
+    archive_priority="15" 
+    archive_min_int="60.0"
+    archive_max_int="60.0"
+    archive_delta="0.0"
+    alarm_high_on="30.0"
+    alarm_high_off="28.0"
+    alarm_low_on="0.0"
+    alarm_low_off="2.0"
+    default_value="-1.0"
+    graph_min="-10.0"
+    graph_max="40.0"
+    format="%6.1f"
+    description="Ambient Temperature on the AMBSI"
+    units="degrees C"
+    min_timer_trig="0.048"
+    min_delta_trig="0.5"
+    default_timer_trig="60.0"
+    resolution="65535"
+    min_step="0.5"
+    alarm_timer_trig="1.0"
+  />
+</LORR>
+

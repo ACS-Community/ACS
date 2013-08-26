@@ -1,0 +1,54 @@
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: README,v 1.2 2006/05/04 15:43:08 gchiozzi Exp $"
+#
+#  ACS CVS Archive README  
+#
+#  This file describes the basic contents of the 
+#  ACS CVS Archive
+# 
+#*******************************************************************************
+
+README    
+   This file
+
+README-new-release
+   Instructions to prepare a new release of ACS
+
+Makefile
+   The main Makefile to extract ACS from the archive,
+   build, install and test it
+
+ACS_VERSION
+   The current ACS version
+
+ACS_PATH_LEVEL
+   The current ACS patch level
+
+Benchmark
+   ACS Benchmarking suite and tests
+
+Documents
+   Documentation tree
+
+ExtProd
+   External products pre-requisite for ACS build
+
+LGPL
+   Core ACS packages available as LGPL licence
+
+NO-LGPL
+   ACS packages not availalbe as LGPL licence
+
+RPM
+   RPM packaging tools and scripts to generate an ACS
+   distribution based on RPM
+
+VmwareFactory
+   Configuration files used to configure the ACS VmWare Factory.
+   This machine is used for automatic builds and tests and for the
+   automatic generation of releases.
+
+Web   
+   ACS Web pages and web-start applications

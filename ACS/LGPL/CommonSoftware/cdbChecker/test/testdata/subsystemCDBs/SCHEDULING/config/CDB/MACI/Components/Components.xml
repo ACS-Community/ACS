@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<!-- 
+    NOTE:
+        All the below components might rely on other components I do not know of
+        I usually use the IDL Simulator for the components I rely on. Hence some of the
+        Code/Type declarations below might be incorrect.
+-->
+        
+<!-- ************ ARCHIVE *********** -->
+      
+      <_ Name="ARCHIVE_MASTER_COMP"
+            Code="alma.archive.manager.ArchiveSubsystemMasterHelper"
+            Type="IDL:alma/archive/ArchiveSubsystemMasterIF:1.0"
+            Container="java"
+            Default="true" ImplLang="java" />
+      <_ Name="ARCHIVE_IDENTIFIER"
+            Code="alma.archive.helpers.IdentifierHelper"
+            Type="IDL:alma/xmlstore/Identifier:1.0"
+            Container="java"
+            Default="true" ImplLang="java" />
+      <_ Name="ARCHIVE_CONNECTION"
+            Code="alma.archive.helpers.ArchiveConnectionHelper"
+            Type="IDL:alma/xmlstore/ArchiveConnection:1.0"
+            Container="java"
+            Default="true" ImplLang="java" />
+      <_ Name="ARCHIVE_BULKSTORE"
+            Code="alma.archive.bulkstream.BulkStreamHelper"
+            Type="IDL:alma/bulkstream/BulkStreamListener:1.0"
+            Container="java" ImplLang="java" />
+      <_ Name="ARCHIVE_MONITORSTORE"
+            Code="alma.archive.monitorstream.MonitorStreamHelper"
+            Type="IDL:alma/monitorstream/MonitorStreamListener:1.0"
+            Container="java" ImplLang="java" />
+
+<!-- ************ PIPELINE *************** -->
+      <_ Name="SCIENCE_PIPELINE" 
+            Code="alma.pipelinescience.components.SciencePipelineHelper"
+            Type="IDL:alma/pipelinescience/SciencePipeline:1.0"
+            Container="java" ImplLang="java" />
+
+<!-- ************ CONTROL **************** -->
+      <_ Name="CONTROL_ControlStatus1" 
+            Code="alma.Control.masterController.ControlStatusHelper"
+            Type="IDL:alma/Control/ControlStatus:1.0"
+            Container="java"  ImplLang="java" />
+
+      <_ Name="CONTROL_ArrayController1"            
+            Code="alma.Control.arrayInterfaces.ArrayControllerHelper"
+            Type="IDL:alma/Control/ArrayController:1.0"
+            Container="java"  ImplLang="java" />
+
+      <_ Name="CONTROL_DelayServer"
+            Code="alma.Control.DelayServerImpl.DelayServerHelper"
+            Type="IDL:alma/Control/DelayServer:1.0"
+            Container="java" ImplLang="java" />
+           
+<!-- ************ DATACAPTURER *********** -->
+      <_ Name="OFFLINE_DATACAP1"   
+            Code="alma.offline.DataCapturerImpl.DataCapturerHelper" 
+            Type="IDL:alma/offline/DataCapturer:1.0" 
+            Container="java" ImplLang="java" />
+<!-- ************ OBSPREP **************** -->
+      <_ Name="OBSPREP_PROJECT_REPOSITORY"
+            Code="alma.ProjectRepositoryIF.LightweightProjectRepositoryImpl.LightweightProjectRepositoryHelper"
+            Type="IDL:alma/ProjectRepositoryIF/LightweightProjectRepository:1.0"
+            Container="java" ImplLang="java" />
+<!-- ************ CORRELATOR ************* -->
+     <_ Name="CORR_OBSERVATION_CONTROL"
+            Code="alma.Correlator.ObservationControl"
+            Type="IDL:alma/Correlator/ObservationControl:1.0"
+            Container="java" ImplLang="java" /> 
+
+</Components>
+

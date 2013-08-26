@@ -1,0 +1,220 @@
+#! /bin/bash
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupAcsInstance
+. acsstartupAcsPorts
+#*************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+
+
+if [ "`uname`" = "Linux" ]; then enable -n echo; fi
+
+THIS=`basename $0`
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_BASEPORT=
+CL_MANAGERREF=
+CL_HELP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,baseport:,timeout:,managerReference:
+SHORTOPTS=hb:t:m:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Stops one or more Acs containers; note that acsStop is an alternative for this"
+   echo ""
+   echo "Usage: $THIS [OPTIONS]  container_name_wildcard"
+   echo "Options: "
+   echo "   -b | -baseport INSTANCE      the acs instance (0-9) you want to use"
+   echo "   -m | -managerReference MGR   the corbaloc of your favorite manager"
+   echo "   -t | -timeout MULTIPLIER     the maximum timeout can be increased by specifying an integer value greater than 1"
+   echo "   -h | -help                   prints this help and exits"
+}
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n $THIS -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--baseport)         CL_BASEPORT=$2 ; shift ;;
+	-b)                 CL_BASEPORT=$2 ; shift ;;
+	--timeout)          ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+	-t)                 ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+	--managerReference) CL_MANAGERREF=$2 ; shift ;;
+	-m)                 CL_MANAGERREF=$2 ; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+if [ "$1" = "" ]; then
+   printUsage
+	exit $EC_BADARGS;
+fi
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+
+if [ "$CL_MANAGERREF" ] 
+then
+    export MANAGER_REFERENCE="$CL_MANAGERREF"
+fi
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+    export ACS_INSTANCE="$CL_BASEPORT"
+fi
+
+ACS_LOG_COMMAND $@
+
+#Cannot do much if the directory doesn't exist
+if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
+then
+    ACS_LOG_DEBUG "acsStopContainer" "The directory '`getInstanceDirName $ACS_INSTANCE`' does not exist!"
+    ACS_LOG_DEBUG "acsStopContainer" "This implies an ACS instance with ACS_INSTANCE=$ACS_INSTANCE is not really running!"
+
+#Stop user A from interfering with user B
+elif [ ! -w `getInstanceDirName $ACS_INSTANCE` ]
+then
+    ACS_LOG_ERROR "acsStopContainer" "The directory '`getInstanceDirName $ACS_INSTANCE`' is not owned by $USER!"
+    exit $EC_CANNOTUSE
+fi
+
+#Makes sure there is an initial value
+if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+ then
+   ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+fi
+
+#------------------------------------------------------------------
+#maximum timeout for anything in this script to finish executing.
+MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+
+#------------------------------------------------------------------
+#finally we check to see if the container itself has really gone
+CONTAINER_PID_FILE=`getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/`echo $1 | sed s/"\/"/:/g`_PID
+CONTAINER_PID_FILES=`ls $CONTAINER_PID_FILE 2> /dev/null| tr '\n' ' '`
+
+#try maciContainerShutdown command. 15 seconds should be more than
+#sufficient for this oneway command to run
+acsutilBlock -t $(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER )) -k maciContainerShutdown $@
+
+for i in $CONTAINER_PID_FILES; do
+    if [ -e $i ]; then
+        #get the PID
+        ACS_CONTAINER_PID=`cat $i`
+        #remove the file containing the PID
+        rm $i
+
+        #block until the container really goes away 
+        #or it times out. in the event of a timeout, let
+        #acsutilBlock kill the container
+        acsutilBlock -p $ACS_CONTAINER_PID -t $MAX_TIMEOUT -k
+        if [ "$?" = "6" ]; then
+        	ACS_LOG_INFO "acsStopContainer" "After $MAX_TIMEOUT s container($1)'s PID ($ACS_CONTAINER_PID) was still around, so it was tried to kill it."
+        fi
+    fi
+done
+# we can skip sanity check
+exit 0
+
+#------------------------------------------------------------------
+CONTAINER_TCP_FILE=`getInstanceDirName $ACS_INSTANCE`/USED_CONTAINER_PORTS
+CONTAINER_NAMES=`echo $1 |sed s/\*/.*/g |sed "s/\?/.\\\\\{1\\\\\}/g"`
+LINES=`cat $CONTAINER_TCP_FILE 2> /dev/null | grep "^$CONTAINER_NAMES "`
+
+#sanity check
+if [ "$LINES" = "" ]; then
+    if [ "$CONTAINER_PID_FILES" = "" ]; then
+        ACS_LOG_DEBUG "acsStopContainer" "There was no mention of the container name, $1, in $CONTAINER_TCP_FILE."
+        ACS_LOG_DEBUG "acsStopContainer" "As a result, no attempt to forcefully shutdown this container will be made."
+    fi
+    exit 1
+fi
+IFS=$'\n'
+for LINE in $LINES; do
+    IFS=$' '
+    CONTAINER_NAME=`echo $LINE | awk '{print $1}'`
+    KILLED_CONTAINER=`echo $CONTAINER_PID_FILES |sed s/:/"\/"/g |grep "\/${CONTAINER_NAME}_PID"`
+    if [ "$KILLED_CONTAINER" = "" ]; then
+        CONTAINER_TCP=`echo $LINE | awk '{print $2}'`
+        CONTAINER_HOST=`echo $LINE | awk '{print $3}'`
+        THIS_HOST=`getIP`
+
+        #command used to kill the container
+        COMMAND="acsKillProc --port $CONTAINER_TCP"
+
+        if [ "$THIS_HOST" != "$CONTAINER_HOST" ] 
+        then
+            COMMAND="ssh $USER@$CONTAINER_HOST $COMMAND"
+        fi
+        
+        #sleep $MAX_TIMEOUT
+        if $COMMAND
+        then
+            ACS_LOG_ERROR "acsStopContainer" "The container, $CONTAINER_NAME, hung and had to be killed. Please investigate!"
+        fi
+    fi
+    IFS=$'\n'
+done
+#fi

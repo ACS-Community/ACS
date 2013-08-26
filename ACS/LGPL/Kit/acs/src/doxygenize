@@ -1,0 +1,462 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# "@(#) $Id: doxygenize,v 1.75 2007/12/12 13:44:48 mpasquat Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# david 2002-08-13 added a missing space to "if [ -d ../doc]" that was causing problems
+# mzampare  09/01/02  created
+# mzampare  28-02-2002 changed to bash
+# mzampare  29-04-2002 revision number obtained from Makefile, no cmmLast
+# mzampare  26-06-2002 more fault tolerance when no idl directory present
+
+#************************************************************************
+#   NAME		doxygenize
+# 
+#   SYNOPSIS		doxygenize [ clean ] 
+# 
+#   DESCRIPTION		calls doxygen onto a modules, modifying a 
+#			standard all-purpose template for IDL and API,
+#			and generating both html and RTF documentation
+#			This script is meant to be called by the 
+#			make command when executing make doc
+#
+#   FILES		${ACSROOT|last of INTLIST}/templates/forDoxygen/generic-alma-doxygen
+#			${ACSROOT|last of INTLIST}/templates/forDoxygen/doxygen-footer.html
+#			${ACSROOT|last of INTLIST}/templates/forDoxygen/doxygen-header.html
+#			${ACSROOT|last of INTLIST}/templates/forDoxygen/almapic.jpg
+#			${ACSROOT|last of INTLIST}/templates/forDoxygen/alma_logo.jpg
+#
+#   ENVIRONMENT		
+#
+#   RETURN VALUES	0  for success
+#			-1 for no template file
+#
+#   CAUTIONS		It assumes to be launched in the src of a CMM module
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+# signal trap (if any)
+#
+# ___oOo___
+#
+# error conditions:
+# doxygen not found, configuration file not found
+# cannot create directories
+# current location is src
+
+if [ "X$ACSROOT" != "X" -a  -d ${ACSROOT}/templates/forDoxygen ]
+then
+   T_DIR=${ACSROOT}/templates/forDoxygen
+else
+   if  [ "X$INTLIST" != "X" ]
+   then
+      # Looking for in the last dir that acts as ACSROOT
+      numberFields=`echo $INTLIST | awk 'BEGIN {FS=":"} {print NF}'`
+      last_dir=`echo $INTLIST | awk 'BEGIN {FS=":"} {print $'$numberFields'}'`
+      if [ -d $last_dir/templates/forDoxygen ]
+      then
+         T_DIR=$last_dir/templates/forDoxygen
+      else
+         echo "Could not find template directory"
+      fi
+   else
+      echo "Could not find template directory"
+   fi
+fi
+
+BASELINE=${T_DIR}/generic-alma-doxygen
+HEADER=${T_DIR}/doxygen-header.html
+FOOTER=${T_DIR}/doxygen-footer.html
+IMAGE=${T_DIR}/almapic.jpg
+IMAGE2=${T_DIR}/alma_logo.jpg
+#
+BASECAMP=`\pwd`
+#
+FILE=/tmp/doxygenize$$
+#
+# determine the module name
+#
+MODULE_NAME=`\pwd`
+MODULE_NAME=${MODULE_NAME%%/src}
+if  [ "${MODULE_NAME##*/}" = "ws" -o  "${MODULE_NAME##*/}" = "lcu" ]
+then
+	prelim=${MODULE_NAME}
+	prelim=${prelim%%/ws}
+	prelim=${prelim%%/lcu}
+	prelim=${prelim##*/}
+	MODULE_NAME=$prelim
+else
+	MODULE_NAME=${MODULE_NAME##*/}
+fi
+#
+# determine the revision
+#
+REVISION=`grep Makefile,v Makefile | awk '{print $5}'`
+#
+if [ "${1}" = "pdf" ] 
+then
+    PDF=1
+else
+    PDF=0
+fi
+#
+
+###################################################
+
+# Default API IDL INPUT OUTPUT directories
+INPUT_IDL=" ../idl"
+INPUT_API=". ../include"
+OUTPUT_IDL=../doc/idl 
+OUTPUT_API=../doc/api
+
+# By default IDL and API document generation is enabled 
+SKIP_IDL="NO"
+SKIP_API="NO"
+
+#
+#
+if [ "${1}" = "clean" ] 
+then
+    echo "Cleaning doxygen files..."
+
+    # Remotion of char "
+    echo $OUTPUT_API > /tmp/mytmp$$
+    cat /tmp/mytmp$$ | sed s/\"//g  > /tmp/mytmp2$$
+    OUTPUT_API=$(< /tmp/mytmp2$$)
+      
+    # Remotion of char "
+    echo $OUTPUT_IDL > /tmp/mytmp$$
+    cat /tmp/mytmp$$ | sed s/\"//g  > /tmp/mytmp2$$
+    OUTPUT_IDL=$(< /tmp/mytmp2$$)
+
+    rm -fr $OUTPUT_IDL $OUTPUT_API
+
+    # Remotion of temporary files
+    if [ -f /tmp/mytmp$$ ]
+    then
+       rm /tmp/mytmp$$
+    fi
+    if [ -f /tmp/mytmp2$$ ]
+    then
+       rm /tmp/mytmp2$$
+    fi
+    rm -f $FILE
+
+    exit 0
+fi
+#
+
+if [ ! -f $BASELINE ] 
+then
+	echo "Could not find template"
+	exit -1
+fi
+
+# Weed out comments and blank lines
+egrep -v '^#|^$'  $BASELINE > $FILE
+if [ $PDF = 1 ]
+then
+    sed -e "s/^GENERATE_LATEX.*/GENERATE_LATEX = YES/" $FILE > $FILE.tmp
+    mv $FILE.tmp $FILE
+fi
+
+# Adding doxygen customizations 
+if [ -f $BASECAMP/../config/doxyfile ]
+then
+
+    # Creation of a copy of doxyfile called doxyfile_clean
+    cp $BASECAMP/../config/doxyfile /tmp/doxyfile_clean
+    chmod 644 /tmp/doxyfile_clean
+
+    # Remotion of comments in the customer customized file
+    egrep -v '^#|^$'  /tmp/doxyfile_clean > /tmp/doxyfile.old
+    mv /tmp/doxyfile.old /tmp/doxyfile_clean
+
+    # Cautional remotion
+    if [ -f /tmp/doxyfile.old ]
+    then
+       rm /tmp/doxyfile.old
+    fi
+
+    # Remotion of all spaces before and after char "=" in the customized file
+    cat /tmp/doxyfile_clean | sed s/\ .*=/=/g >> /tmp/doxyfile.old
+    mv /tmp/doxyfile.old /tmp/doxyfile_clean
+    cat /tmp/doxyfile_clean | sed s/=\ */=/g >> /tmp/doxyfile.old
+    mv /tmp/doxyfile.old /tmp/doxyfile_clean
+    
+    # Trick: spaces converted in #
+    cat /tmp/doxyfile_clean | sed s/\ /#/g >> /tmp/doxyfile.old
+    mv /tmp/doxyfile.old /tmp/doxyfile_clean   
+
+    # Storing eventually new INPUT OUTPUT settings for IDL and API
+    for myline in $(cat  /tmp/doxyfile_clean) 
+    do
+      VARIABLE=$myline
+      VALUE=$myline
+      VARIABLE=${VARIABLE%%=*}
+      VALUE=${VALUE##*=}
+
+      case $VARIABLE in
+	  INPUT_IDL )
+	      echo $VALUE > /tmp/mytmp$$
+	      cat /tmp/mytmp$$ | sed s/#/\ /g > /tmp/mytmp2$$
+	      INPUT_IDL=$(< /tmp/mytmp2$$);;
+	  INPUT_API )
+	      echo $VALUE > /tmp/mytmp$$
+	      cat /tmp/mytmp$$ | sed s/#/\ /g > /tmp/mytmp2$$
+	      INPUT_API=$(< /tmp/mytmp2$$);;
+	  OUTPUT_IDL )
+	      echo $VALUE > /tmp/mytmp$$
+	      cat /tmp/mytmp$$ | sed s/#/\ /g > /tmp/mytmp2$$
+	      OUTPUT_IDL=$(< /tmp/mytmp2$$);;
+	  OUTPUT_API )
+	      echo $VALUE > /tmp/mytmp$$
+	      cat /tmp/mytmp$$ | sed s/#/\ /g > /tmp/mytmp2$$
+	      OUTPUT_API=$(< /tmp/mytmp2$$);;
+	  SKIP_IDL )
+	      echo $VALUE > /tmp/mytmp$$
+	      cat /tmp/mytmp$$ | sed s/#/\ /g > /tmp/mytmp2$$
+	      SKIP_IDL=$(< /tmp/mytmp2$$);;
+	  SKIP_API )
+	      echo $VALUE > /tmp/mytmp$$
+	      cat /tmp/mytmp$$ | sed s/#/\ /g > /tmp/mytmp2$$
+	      SKIP_API=$(< /tmp/mytmp2$$);;
+      esac
+    done
+
+    # Remotion of each INPUT OUTPUT IDL API info
+    sed -e "s/INPUT_IDL.*//" /tmp/doxyfile_clean > /tmp/doxyfile.old
+    mv /tmp/doxyfile.old /tmp/doxyfile_clean
+    sed -e "s/INPUT_API.*//" /tmp/doxyfile_clean > /tmp/doxyfile.old
+    mv /tmp/doxyfile.old /tmp/doxyfile_clean
+    sed -e "s/OUTPUT_IDL.*//" /tmp/doxyfile_clean > /tmp/doxyfile.old
+    mv /tmp/doxyfile.old /tmp/doxyfile_clean
+    sed -e "s/OUTPUT_API.*//" /tmp/doxyfile_clean > /tmp/doxyfile.old
+    mv /tmp/doxyfile.old /tmp/doxyfile_clean
+    sed -e "s/SKIP_IDL.*//" /tmp/doxyfile_clean > /tmp/doxyfile.old
+    mv /tmp/doxyfile.old /tmp/doxyfile_clean
+    sed -e "s/SKIP_API.*//" /tmp/doxyfile_clean > /tmp/doxyfile.old
+    mv /tmp/doxyfile.old /tmp/doxyfile_clean
+
+    # Update of the generic-alma-doxygen file with the info in doxyfile_clean
+    for myline in $(cat  /tmp/doxyfile_clean) 
+    do
+        
+        VARIABLE=$myline
+        VARIABLE=${VARIABLE%%=*}
+         
+        if grep -e "^$VARIABLE " $FILE > /tmp/to_be_removed
+        then
+	    # Substitution of the variable with the customized value
+            echo $myline > /tmp/mytmp$$
+            cat /tmp/mytmp$$ | sed s/#/\ /g > /tmp/mytmp2$$
+            origin_line=$(< /tmp/mytmp2$$)
+            sed -e "s!^$VARIABLE .*!$origin_line !" $FILE > $FILE.tmp
+            mv $FILE.tmp $FILE
+        else
+            # Addition of a new variable
+            echo $myline > /tmp/mytmp$$
+            cat /tmp/mytmp$$ | sed s/#/\ /g > /tmp/mytmp2$$
+            origin_line=$(< /tmp/mytmp2$$)
+            echo $myline >> $FILE
+        fi
+    done
+
+    # Remotion of temporary files
+    if [ -f /tmp/to_be_removed ]
+    then
+       rm /tmp/to_be_removed
+    fi
+    if [ -f /tmp/mytmp$$ ]
+    then
+       rm /tmp/mytmp$$
+    fi
+    if [ -f /tmp/mytmp2$$ ]
+    then
+       rm /tmp/mytmp2$$
+    fi
+    if [ -f /tmp/doxyfile_clean ]
+    then
+       rm /tmp/doxyfile_clean
+    fi
+    if [ -f /tmp/doxyfile.old ]
+    then
+       rm /tmp/doxyfile.old
+    fi
+fi
+
+
+#
+# calling doxygen for IDL
+#
+if [ "$SKIP_IDL" = "NO" ]
+then
+ 
+   OUTPUT=$OUTPUT_IDL
+   INPUT=$INPUT_IDL
+
+   PROCEED="YES"
+
+   # Remotion of char "
+   echo $INPUT > /tmp/mytmp$$
+   cat /tmp/mytmp$$ | sed s/\"//g  > /tmp/mytmp2$$
+   INPUT=$(< /tmp/mytmp2$$)
+     
+   # Remotion of char "
+   echo $OUTPUT > /tmp/mytmp$$
+   cat /tmp/mytmp$$ | sed s/\"//g  > /tmp/mytmp2$$
+   OUTPUT=$(< /tmp/mytmp2$$)
+
+   # checking about the list of input direcory/ies
+   for dir_name in $(echo $INPUT)
+   do
+     if [ ! -d $dir_name ]
+     then
+        PROCEED="NO"
+     fi
+   done
+   
+   # Removal of empty directory called object
+   find ../ -type d -name object -empty -exec rmdir {} \;
+
+   # Adding object directory if not empty
+   if [ -d "../object" ]
+   then
+      INPUT="$INPUT ../object"
+   fi
+
+   # Proceed if all input directories exist
+   if [ "$PROCEED" = "YES" ] 
+   then 
+
+       # Creation of output directories
+       for dir_name in $(echo $OUTPUT)
+       do 
+         if [ ! -d $dir_name ]
+         then
+            mkdir -p $dir_name
+         fi
+       done
+
+       echo "calling doxygen for IDL"
+       sed -e "s#^OUTPUT_DIRECTORY.*#OUTPUT_DIRECTORY  = $OUTPUT#g;s#^INPUT .*#INPUT = $INPUT#;s#^HTML_HEADER.*#HTML_HEADER = $HEADER#;s/^PROJECT_NAME.*/PROJECT_NAME = \"$MODULE_NAME IDL\"/;s/^PROJECT_NUMBER.*/PROJECT_NUMBER = $REVISION/;s#^HTML_FOOTER.*#HTML_FOOTER = $FOOTER#" $FILE | doxygen -
+
+      # Restore the emty directory object
+      if [ ! -d "../object" ]
+      then
+         mkdir object
+      fi
+
+      # copy the nice picture. To be re-thought!
+      cp -f $IMAGE $OUTPUT/html
+      cp -f $IMAGE2 $OUTPUT/html
+      #
+      # make the pdf file
+      if [ $PDF = 1 ]
+      then    
+	cd $OUTPUT/pdf
+	make pdf > /dev/null 2>&1
+	if [ $? = 0 ]
+	then
+	    mv refman.pdf .refman.pdf
+	    rm -f * 
+	    mv .refman.pdf refman.pdf
+	else
+	    echo "Compilation of PDF file failed"
+	fi
+      fi
+   fi
+fi
+cd $BASECAMP
+
+#
+# calling doxygen for API
+#
+#if [ `ls ../include | grep -c ".h"` != 0 ]
+if [ "$SKIP_API" = "NO" ]
+then
+ 
+   OUTPUT=$OUTPUT_API
+   INPUT=$INPUT_API
+
+   PROCEED="YES"
+
+   # Remotion of char "
+   echo $INPUT > /tmp/mytmp$$
+   cat /tmp/mytmp$$ | sed s/\"//g  > /tmp/mytmp2$$
+   INPUT=$(< /tmp/mytmp2$$)
+     
+   # Remotion of char "
+   echo $OUTPUT > /tmp/mytmp$$
+   cat /tmp/mytmp$$ | sed s/\"//g  > /tmp/mytmp2$$
+   OUTPUT=$(< /tmp/mytmp2$$)
+
+   # checking about the list of input direcory/ies
+   for dir_name in $(echo $INPUT)
+   do
+     if [ ! -d $dir_name ]
+     then
+        PROCEED="NO"
+     fi
+   done
+
+   # Proceed if all input directories exist
+   if [ "$PROCEED" = "YES" ] 
+   then 
+
+       # Creation of output directories
+       for dir_name in $(echo $OUTPUT)
+       do 
+         if [ ! -d $dir_name ]
+         then
+            mkdir -p $dir_name
+         fi
+       done
+
+      echo "calling doxygen for API"
+      sed -e "s#^OUTPUT_DIRECTORY.*#OUTPUT_DIRECTORY  = $OUTPUT#g;s#^INPUT .*#INPUT = $INPUT#;s#^HTML_HEADER.*#HTML_HEADER = $HEADER#;s/^PROJECT_NAME.*/PROJECT_NAME = \"$MODULE_NAME API\"/;s/^PROJECT_NUMBER.*/PROJECT_NUMBER = $REVISION/;s#^HTML_FOOTER.*#HTML_FOOTER = $FOOTER#" $FILE | doxygen -
+      #
+      # copy the nice picture. To be re-thought!
+
+      cp -f $IMAGE $OUTPUT/html
+      cp -f $IMAGE2 $OUTPUT/html
+      #
+      # make the pdf file
+      if [ $PDF = 1 ]
+      then    
+	cd $OUTPUT/pdf
+	make pdf > /dev/null 2>&1
+	if [ $? = 0 ]
+	then
+	    mv refman.pdf .refman.pdf
+	    rm -f * 
+	    mv .refman.pdf refman.pdf
+	else
+	    echo "Compilation of PDF file failed"
+	fi
+      fi
+   fi
+fi 
+   
+# Remotion of temporary files
+if [ -f /tmp/mytmp$$ ]
+then
+   rm /tmp/mytmp$$
+fi
+if [ -f /tmp/mytmp2$$ ]
+then
+   rm /tmp/mytmp2$$
+fi
+
+cd $BASECAMP
+# cleanup all the mess
+rm -f $FILE

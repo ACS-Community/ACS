@@ -1,0 +1,256 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeLogInstallation,v 1.2 2010/07/09 15:15:24 rtobar Exp $" 
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  04/08/94  created
+# gfilippi  07/09/94  makeXxxx utility renamed into vltMakeXxxx
+# gfilippi  07/09/94  handle existing makeInstall.log files
+# gfilippi  17/11/95  record module and version in vltMakeInstall.config
+# gfilippi  21/11/95  set PWD really to the current directory
+# gfilippi  10/04/97  SPR960726 vltMakeInstall set group writable
+# rschmutz 1999-04-03 if Linux: disable bash builtin command 'echo'.
+# psivera   23/01/02  SPR VLTSW20010466: in the vltMakeInstall.config
+#                     *all* the modules installations are recorded. 
+# psivera   01/03/02  changed the sort command (added a blank after
+#		      -k option) to make it work on Solaris
+
+#************************************************************************
+#   NAME
+#   vltMakeLogInstallation - record make install in VLTTOP.
+# 
+#   SYNOPSIS
+#
+#   vltMakeLogInstallation <VLTTOP>
+#
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to record at every "make install":
+# 
+#     - in $VLTTOP/vltMakeInstall.config  
+#         - module name   (the directory name)
+#         - module number (<version> <data> <user>
+#         - username that is installing
+#         - current date
+# 
+#     - in $VLTTOP/vltMakeInstall.log
+#         - username
+#         - pwd
+#         - date
+#
+#   It is not intended to be used as a standalone command.
+#
+#   <VLTTOP>   directory target of the install operation
+#
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   is using this
+#   $VLTTOP/vltMakeInstall.log     where to log
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile, Makefile
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+
+# if Linux: disable the bash builtin command 'echo'.
+if [ "`uname`" = "Linux" ]
+then
+    enable -n echo
+elif [ "`uname`" = "$CYGWIN_VER" ]
+then
+    alias echo="echo -e"
+fi
+
+#
+# check input parameter
+#
+if [ ! -d "$1" ]
+then
+    echo "" >&2
+    echo " ERROR: vltMakeLogInstallation: the first parameter is not a directory." >&2
+    echo "" >&2
+    exit 1
+else 
+    VLTTOP=$1
+    LOGFILE=$VLTTOP/vltMakeInstall.log
+    CONFIGFILE=$VLTTOP/vltMakeInstall.config
+    LOCKFILE=$VLTTOP/vltMakeInstall.lock
+fi
+
+
+#
+# retrive identification of the current module
+#
+
+#
+#   - module name
+#        There are two cases:
+#          - normal modules: the module name is the parent directory
+#          - multiplatform modules: the module is structured as more than one 
+#                     submodules. Each submodule has the normal module
+#                     directory tree but fixed names are used:
+#                        <mod>/lcu    for the LCU part
+#                        <mod>/ws     for the ws  part
+PWD=`pwd`
+PARENT_DIR=`dirname $PWD`
+MODULE_NAME=`basename $PARENT_DIR`
+if [ "$MODULE_NAME" = "lcu" -o "$MODULE_NAME" = "ws" ]
+then
+    GRANDPARENT_DIR=`dirname $PARENT_DIR`
+    MODULE_NAME="`basename $GRANDPARENT_DIR`-`basename $PARENT_DIR`"
+fi
+
+#
+#   - module version 
+#       I take it from the $ID in the Makefile, that should be always present
+if [ -f Makefile ]
+then 
+    MODULE_VERSION=`grep Makefile,v Makefile | \
+                    awk '{ if ( $4 == "Makefile,v" ) \
+                               printf("%s %s %s %s\n", $5, $6, $7, $8);\
+                           else \
+                               print "0.0 the Makefile does not contain the standard configuration string (see Makefile template)"\
+                         } '`
+else
+    MODULE_VERSION="0.0 the module does not contain a Makefile file"
+fi
+
+
+#
+# Check the lock, if nobody is Set a lock file (if currently locked, allows a 5 sec delay)
+#
+if [ -f $LOCKFILE ]
+then 
+    sleep 5
+fi
+
+if [ -f $LOCKFILE ]
+then 
+    echo "\n ERROR: vltMakeLogInstallation: files currently locked by: `cat $LOCKFILE`" >&2
+    echo "          Lock file is $LOCKFILE" >&2
+    echo "          Probably a make install operation was interrupted while recording the operatiom." >&2
+    echo "          Check with the person and remove the lock file." >&2
+    echo "\n        ---> installation NOT recorded\n" >&2
+    echo "" >&2
+    exit 1
+else
+    echo "`whoami` since `date '+%y/%m/%d-%H:%M'` while was installing: ${MODULE_NAME} ${MODULE_VERSION}" > $LOCKFILE
+fi
+
+
+#
+# if not already existing, create the log file
+#
+if [ ! -f $LOGFILE ]
+then 
+    if touch $LOGFILE
+    then 
+        chmod 664 $LOGFILE
+        echo "# E.S.O. - VLT project - INSTALLATION LOG - created by vltMakeLogInstallation `date '+%y/%m/%d-%H:%M'`" >> $LOGFILE
+    else
+        echo "" >&2
+        echo "ERROR: vltMakeLogInstallation: cannot create $LOGFILE." >&2
+        echo "" >&2
+        rm  $LOCKFILE
+        exit 1    
+    fi
+fi
+
+#
+# record date, username, current directory ...
+#
+if [ -w $LOGFILE ]
+then 
+
+    # ... in the file ...
+    echo "`date '+%y/%m/%d-%H:%M'` module: ${MODULE_NAME} ${MODULE_VERSION}, installed by:`whoami`\t from:`pwd`" >> $LOGFILE
+
+else
+    echo "\n ERROR: vltMakeLogInstallation: cannot write into $LOGFILE." >&2
+    echo "\n        cannot write into $LOGFILE." >&2
+    echo "\n        ---> installation NOT recorded\n" >&2
+    echo "" >&2
+    rm  $LOCKFILE
+    exit 1
+fi
+
+
+#
+# if not already existing, create the configuration file
+#
+if [ ! -f $CONFIGFILE ]
+then 
+    if touch $CONFIGFILE
+    then 
+        chmod 664 $CONFIGFILE
+        echo "# E.S.O. - VLT project - INSTALLED MODULES  - created by vltMakeLogInstallation `date '+%y/%m/%d-%H:%M'`" >> $CONFIGFILE
+    else
+        echo "" >&2
+        echo "ERROR: vltMakeLogInstallation: cannot create $CONFIGFILE." >&2
+        echo "" >&2
+        rm  $LOCKFILE
+        exit 1    
+    fi
+fi
+
+
+#
+# record module name, version, etc. ...
+#
+if [ -w $CONFIGFILE ]
+then 
+
+    # ... at the end of the file ...
+    cat $CONFIGFILE | grep -v "^$MODULE_NAME " > $CONFIGFILE.tmp
+    if [ -f ${CONFIGFILE}.tmp ]
+    then 
+        mv ${CONFIGFILE}.tmp ${CONFIGFILE}
+        chmod 664 $CONFIGFILE
+    fi
+    
+    echo "$MODULE_NAME $MODULE_VERSION    \t installed by: `whoami` (`date '+%y/%m/%d-%H:%M'`)" >> $CONFIGFILE
+
+    # ... sort the file and eliminate duplication:
+    
+    sort -r -k 1,1  ${CONFIGFILE} | awk '{ if ( $1 == "#" ) \
+                                                        { print $0 ; last = $1 } \
+                                                    else \
+                                                                { current= $1 ; \
+                                                          if ( current != last)\
+                                                                       print $0;\
+                                                                       last = current } \
+                                                                } ' | sort -k 1,1 > ${CONFIGFILE}.BCK
+
+   if [ -f ${CONFIGFILE}.BCK ]
+    then 
+        mv ${CONFIGFILE}.BCK ${CONFIGFILE}
+        chmod 664 $CONFIGFILE
+    fi
+else
+    echo "\n ERROR: vltMakeLogInstallation: cannot write into $CONFIGFILE." >&2
+    echo "\n        cannot write into $CONFIGFILE." >&2
+    echo "\n        ---> installation NOT recorded\n" >&2
+    echo "" >&2
+    rm  $LOCKFILE
+    exit 1
+fi
+
+# remove the lock ...
+rm  $LOCKFILE
+
+# ... and notify the user 
+echo "\n\n        ---> installation recorded in $VLTTOP\n"
+
+#
+# ___oOo___
+

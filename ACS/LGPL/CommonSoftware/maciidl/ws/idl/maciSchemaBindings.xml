@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<EntitybuilderSettings>
+	<!-- xml.xsd is currently required as a local copy from ACSROOT/config/CDB/schemas/, which the Makefile takes care of. The xml.xsd file is installed from ACS/LGPL/Tools/xercesj/config/CDB/schemas/ -->
+	<EntitySchema schemaName="xml.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="http://www.w3.org/XML/1998/namespace"/>
+
+	<EntitySchema schemaName="LoggingConfig.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:LoggingConfig:1.0"/>
+	<EntitySchema schemaName="Container.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:Container:1.0"/>
+	<EntitySchema schemaName="Component.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:Component:1.0"/>
+	<EntitySchema schemaName="Components.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:Components:1.0"/>
+	<EntitySchema schemaName="HierarchicalComponent.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:HierarchicalComponent:1.0"/>
+	<EntitySchema schemaName="Manager.xsd" relativePathSchemafile="../config/CDB/schemas" xmlNamespace="urn:schemas-cosylab-com:Manager:1.0"/>
+
+	<XmlNamespace2JPackage xmlNamespace="http://www.w3.org/XML/1998/namespace" jPackage="alma.xmlxsd"/>
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:LoggingConfig:1.0" jPackage="alma.maci.loggingconfig"/>
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:Container:1.0" jPackage="alma.maci.containerconfig"/>	
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:Component:1.0" jPackage="alma.maci.componentconfig.component"/>
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:Components:1.0" jPackage="alma.maci.componentconfig.components"/>
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:HierarchicalComponent:1.0" jPackage="alma.maci.componentconfig.hierarchicalcomponent"/>
+	<XmlNamespace2JPackage xmlNamespace="urn:schemas-cosylab-com:Manager:1.0" jPackage="alma.maci.managerconfig"/>
+
+</EntitybuilderSettings>
+

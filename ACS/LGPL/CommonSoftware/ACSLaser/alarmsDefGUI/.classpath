@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="CDB/" kind="src" path="test"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/alma.acs.rcp.jars"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/acsalarmSchemaBindings.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/acsASsources.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/acsContainerServices.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/acserr.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/acserrj.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/acsjlog.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/alarmsysteminterface.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/avalon-framework.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/castor.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/CDB.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/cdbDAL.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/cdbErrType.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/cdbjDAL.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/cmwmom.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/commons-logging.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/jacorb.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/jACSUtil.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/JavaContainerError.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/jcont.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/jms.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/junit.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/lasercore.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/logging_idl.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/logkit.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/maci.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/maciErrType.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/maciSchemaBindings.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/xercesImpl.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

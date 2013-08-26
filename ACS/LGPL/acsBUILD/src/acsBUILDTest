@@ -1,0 +1,165 @@
+#!/bin/ksh
+#***********************************************************************
+# E.S.O. - VLT project
+#
+# buildTestCCS
+#
+# "@(#) $Id: acsBUILDTest,v 1.124 2012/11/05 09:37:29 eallaert Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gchiozzi 2002-04-05 Added 'make all' before 'tat -v -nc'
+# gchiozzi 2002-01-17 New for acs. Derived from vltsw main build module
+
+#************************************************************************
+#   NAME
+#   acsBUILDTest - execute automatic test for all ACS software
+#
+#   SYNOPSIS
+#   acsBUILDTest
+#
+#   DESCRIPTION
+#   Jacket script to call the Makefile of a set of modules and to
+#   clean, make, install them. Development areas are cleaned at the end.
+#
+#   NOTES
+#   SPR VLTSW20010706 request that the pkgin tool is extended to
+#   automatically handle execution of modular tests.
+#   This script will be used until that has been implemented.
+#
+#------------------------------------------------------------------------
+
+TITLE="Automatic test for ACS modules"
+BUILD_NAME="acsBUILDTest"
+RELEASE_TITLE="               - - -  ALMA COMMON SOFTWARE 1.1 MAR2002-   - - - "
+
+#
+# ---- Standard Prologue Common functions 
+#
+
+#  get OS and cache it (prevent running uname multiple times)
+THIS_OS=${THIS_OS:-`uname -s`}
+case $THIS_OS in
+    HP-UX) echo()
+           {
+               /bin/echo "$@"
+           }
+           ;;
+    Linux) echo()
+           {
+               /bin/echo "$@"
+           }
+           ;;
+    $CYGWIN_VER) echo()
+           {
+               /bin/echo "$@"
+           }
+           ;;
+    SunOS) alias echo=/bin/echo ;;
+    *)     echo "INTERNAL ERROR: echo() doesn't know how to handle $THIS_OS" 
+           exit 1 ;;
+esac
+
+# to have all separators of the same lenght:
+SEPARATOR="----------------------------------------------------------------------------"
+
+# set up common definitions:
+CWD=`pwd`
+HOST=`hostname`
+
+INSTALL_ROOT=$PWD/ACS
+echo "Build root directory is: $INSTALL_ROOT"
+
+if [ ! -d $INSTALL_ROOT ] || [ ! -d $PWD/INSTALL ]
+then 
+    echo ""
+    echo " Not a standard ACS build directory structure "
+    echo " Directory $PWD/INSTALL or $INSTALL_ROOT not esistent "
+    echo ""
+    exit 1
+fi
+
+LOGFILE=$CWD/INSTALL/build${BUILD_NAME}Output.$HOST
+ERRFILE=$CWD/INSTALL/build${BUILD_NAME}Error.$HOST
+
+#
+# disable additional warnings:
+MAKE_NO_WARNINGS=on
+export MAKE_NO_WARNINGS
+
+echo ""
+echo "============================================================================"
+echo "$RELEASE_TITLE"
+echo ""
+echo "                    $TITLE"
+echo ""
+echo "$SEPARATOR"
+echo "build${BUILD_NAME} started at `date`"
+echo ""
+echo "output > build${BUILD_NAME}Output.$HOST"
+echo " error > build${BUILD_NAME}Error.$HOST"
+
+if [ "$INTROOT" != "" ]
+then 
+    echo ""
+    echo " WARNING: INTROOT is defined as >$INTROOT<"
+    echo "     This may affect the procedure."
+    echo ""
+fi
+
+for file in $LOGFILE $ERRFILE 
+do
+    if [ -f $file ]
+    then
+        rm $file 
+    fi
+    echo "$LOGFILE  - created `date`\n\n" >$file
+done
+
+# ---- end of Standard Prologue Common functions 
+
+
+
+#
+# ACS modules actually with automated test.
+#
+# Checks is the LCU part has to be tested as well or not
+# depending on the availability of the VxWorks cross development
+# environment
+if [ "X$WIND_BASE" = X ]; then
+    echo "Testing only Workstation"
+    MODULES="acserr/ws baci/ws enumprop/ws maci/ws acsexmpl/ws"
+else
+    echo "Testing both Workstation and LCU"
+    MODULES="acserr/ws baci/ws baci/lcu enumprop/ws enumprop/lcu maci/ws acsexmpl/ws acsexmpl/lcu"
+fi
+
+for module in $MODULES
+do
+    echo "$SEPARATOR"                   | tee -a $LOGFILE
+    echo "module: $module           test started at `date` . . ." | tee -a $LOGFILE
+    echo " .\c"; cd $INSTALL_ROOT/$module
+    echo " .\c"; $VLTROOT/bin/vltSetmod.csh
+    echo $INSTALL_ROOT/$module/test
+    echo " .\c"; cd $INSTALL_ROOT/$module/test
+    # For the time being I do a 'make all' before starting tat, since
+    # otherwise there are problems selecting the right TestList file
+    echo " .\c"; make all
+    echo " .\c"; tat -v -nc
+    echo " .\c"; echo " . . . done" | tee -a $LOGFILE
+done
+
+#------------------------------------------------------------------------
+# Standar Epilogue
+
+echo "$SEPARATOR"
+echo "build${BUILD_NAME} - test ended at `date`"
+echo "build${BUILD_NAME} - test ended at `date`" >>$LOGFILE
+echo "build${BUILD_NAME} - test ended at `date`" >>$ERRFILE
+echo "============================================================================"
+echo ""
+
+# end of Standard Epilogue
+
+#___oOo___
+

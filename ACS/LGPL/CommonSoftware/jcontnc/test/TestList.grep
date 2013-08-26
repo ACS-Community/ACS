@@ -1,0 +1,19 @@
+ping received, container alive
+Local file logger: Cache saved to
+	at 
+AcsContainerRunner
+-- alma.demo.test.client.ArchiveConsumerTest
+Using endorsed jar files in
+LogConfig was initialized, but not from CDB settings
+frodoContainer
+Starting Java
+FINE \[alma.demo.test.client.ArchiveConsumerTest\]
+Time: 
+Logging proxy successfully created
+ManagerReference generated using localhost
+Took too long to handle an 'alma.acsnc.EventDescription' event
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+object is activated
+object is deactivated
+servant is etherealized
+Logger jacorb@.* created with custom log levels local=Info, remote=Info

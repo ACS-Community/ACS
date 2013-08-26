@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+
+<SCRIPT LANGUAGE="Javascript">
+               var javawsInstalled = 0;
+               isIE = "false";
+
+               if (navigator.mimeTypes && navigator.mimeTypes.length) {
+                  x = navigator.mimeTypes['application/x-java-jnlp-file'];
+                  if (x) javawsInstalled = 1;
+               } else {
+                  isIE = "true";
+               }
+
+               function insertLink(url, name) {
+                if (javawsInstalled) {
+                     document.write("<a href=" + url + ">"  + name + "</a>");
+                  } else {
+                     document.write(name + " (Need to download Java Web Start at <a href=http://java.sun.com/products/javawebstart/download-windows.html>Web Start Download Page</a> or <a href=http://fracalde.home.cern.ch/fracalde/cmw/javaws-1_0_1_01-win-int.exe>locally</a>)");
+                  }
+               }
+</SCRIPT>
+
+<SCRIPT LANGUAGE="VBScript">
+               on error resume next
+               If isIE = "true" Then
+                 If Not(IsObject(CreateObject("JavaWebStart.IsInstalled"))) Then
+                       javawsInstalled = 0
+                 Else
+                       javawsInstalled = 1
+                 End If
+               End If
+</SCRIPT>
+
+<html>
+  <head>
+    <title>Remote Apps Webpage</title>
+  </head>
+
+  <body>
+      <h1>Remote Apps Webpage</h1>
+<ul>
+<a target="Info" href="http://fracalde.home.cern.ch/fracalde/cmw/chat.jnlp"><img alt="CMW chat demo application" src="jws-dukeonly.gif" width="40" height="40" border="0" align="absmiddle"></a>
+<SCRIPT LANGUAGE="Javascript">
+
+             insertLink("http://fracalde.home.cern.ch/fracalde/cmw/chat.jnlp",
+                        "CMW chat demo application");
+
+</SCRIPT>
+<!--<li><a href="chat.jnlp">CMW chat demo</a>-->
+</ul>
+      <hr>
+      <address><a href="mailto:francesco.calderini@cern.ch">Francesco Calderini</a></address>
+<!-- Created: Mon Sep 18 18:01:23 PDT 2000 -->
+<!-- hhmts start -->
+Last modified: Fri Feb 23 10:18:13 EST
+<!-- hhmts end -->
+  </body>
+</html>

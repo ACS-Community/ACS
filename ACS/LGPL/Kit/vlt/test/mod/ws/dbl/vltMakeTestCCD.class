@@ -1,0 +1,187 @@
+// "@(#) $Id: vltMakeTestCCD.class,v 2.170.1.9 2003/02/20 10:34:30 vltsccm Exp $"
+//++ Class for vltMake test
+//
+CLASS BASE_CLASS ACE
+BEGIN
+	ATTRIBUTE   bytes16    devName
+        ATTRIBUTE   uint8      devTimeout
+        ATTRIBUTE   Table      imageLink(16,
+                                         rtBYTES16 devName,
+                                         rtUINT8   devTimeout       )
+        ATTRIBUTE   bytes128   msgSent
+        ATTRIBUTE   bytes128   msgReceived
+END
+
+
+CLASS BASE_CLASS CAMERA
+BEGIN 
+        ATTRIBUTE   uint8      xChip   
+        ATTRIBUTE   uint8      yChip
+        ATTRIBUTE   Table      chip    (16,
+                                        rtUINT8   xLocation,
+                                        rtUINT8   yLocation,
+                                        rtUINT8   id,
+                                        rtLOGICAL enabled,
+                                        rtBYTES16 serialNumber,
+                                        rtUINT16  esoNumber,
+                                        rtBYTES8  date,
+                                        rtFLOAT   xGap,
+                                        rtFLOAT   yGap           )
+        ATTRIBUTE   rtBYTES8 rtBYTES8
+        ATTRIBUTE   rtUINT8  lcuMinImages
+        ATTRIBUTE   rtUINT8  operationalMode
+        ATTRIBUTE   rtUINT16 status
+END
+
+
+CLASS BASE_CLASS CHIP
+BEGIN
+        ATTRIBUTE   rtBYTES16   description
+        ATTRIBUTE   rtUINT16    type
+        ATTRIBUTE   rtLOGICAL   rtLOGICAL
+        ATTRIBUTE   rtLOGICAL   mpp
+        ATTRIBUTE   rtUINT16    xPixels
+        ATTRIBUTE   rtUINT16    yPixels
+        ATTRIBUTE   rtFLOAT     xPixelSize
+        ATTRIBUTE   rtFLOAT     yPixelSize
+        ATTRIBUTE   rtFLOAT     nOutputs
+        ATTRIBUTE   Table       output   (16,
+                                          rtUINT16    xLocation
+                                          rtUINT16    yLocation
+                                          rtLOGICAL   direction
+                                          rtBYTES8    id
+                                          rtUINT16    xPrescan
+                                          rtUINT16    yPrescan
+                                          rtUINT16    xPix
+                                          rtUINT16    yPix
+                                          rtUINT16    xOverscan
+                                          rtUINT16    yOverscan  )
+END
+
+
+CLASS BASE_CLASS EXPOSURE
+BEGIN
+           // This class must be filled: too big for the test
+END
+
+
+CLASS BASE_CLASS CRYOSTAT
+BEGIN
+        ATTRIBUTE   rtBYTES16   description
+        ATTRIBUTE   rtUINT8     esoNumber
+END
+
+
+
+// Basic class for hardware dependent data
+CLASS BASE_CLASS    HW_DEP_DATA
+BEGIN
+        ATTRIBUTE   rtLOGICAL   simulation     
+END
+
+CLASS BASE_CLASS    PROCESS
+BEGIN
+
+END
+
+CLASS BASE_CLASS    TRANSFER
+BEGIN
+
+END
+
+CLASS BASE_CLASS    IMAGE
+BEGIN
+	ATTRIBUTE   PROCESS	process
+	ATTRIBUTE   TRANSFER    transfer
+END
+
+CLASS BASE_CLASS    OBSERVATION
+BEGIN
+
+END
+
+
+
+
+// Class for hardware dependent data of a readout
+CLASS HW_DEP_DATA   HW_DEP_READOUT
+BEGIN
+        ATTRIBUTE   Table       video     (16,
+                                           rtUINT16  output1,
+                                           rtUINT16  output2,
+                                           rtUINT16  output3,
+                                           rtUINT16  output4,
+                                           rtUINT16  optionalLink )
+END
+
+// Basic class for ccd component
+CLASS BASE_CLASS    CCD_COMPONENT
+BEGIN
+	ATTRIBUTE   rtLOGICAL     available
+	ATTRIBUTE   rtBYTES16     description
+        ATTRIBUTE   rtBYTES8      hwDescription
+        ATTRIBUTE   rtUINT8       operationalMode
+        ATTRIBUTE   rtUINT8       status
+	ATTRIBUTE   HW_DEP_DATA   hwDep
+END
+
+CLASS CCD_COMPONENT CCD_SENSOR
+BEGIN
+        ATTRIBUTE   Table         sensor  (10,
+					   rtBYTES16  description,
+                                           rtLOGICAL  available,
+                                           rtLOGICAL  enabled,
+			                   rtBYTES16  units,
+                                           rtFLOAT    reference,
+                                           rtFLOAT    tolerance,
+                                           rtFLOAT    current       )
+
+
+END
+
+
+CLASS CCD_COMPONENT SHUTTER
+BEGIN
+        ATTRIBUTE   rtBYTES16     type
+        ATTRIBUTE   rtDOUBLE      timeout
+        ATTRIBUTE   rtDOUBLE      openStarted
+        ATTRIBUTE   rtDOUBLE      openTime
+        ATTRIBUTE   rtDOUBLE      closeStarted
+        ATTRIBUTE   rtDOUBLE      closeTime
+END
+
+
+CLASS CCD_COMPONENT READOUT
+BEGIN
+	ATTRIBUTE   HW_DEP_READOUT  hwDep     // Overloaded from base class
+END
+
+
+CLASS CCD_SENSOR TELEMETRY
+BEGIN
+
+END
+
+
+CLASS CCD_SENSOR TEMPERATURE
+BEGIN
+
+END
+
+
+
+
+CLASS BASE_CLASS CCD
+BEGIN
+	ATTRIBUTE	ACE 	    ace
+	ATTRIBUTE	CAMERA	    camera
+	ATTRIBUTE	CHIP	    chip
+	ATTRIBUTE	CRYOSTAT    cryostat
+	ATTRIBUTE	EXPOSURE    exposure
+	ATTRIBUTE	IMAGE	    image
+	ATTRIBUTE	OBSERVATION observation
+	ATTRIBUTE	READOUT     readout
+	ATTRIBUTE	SHUTTER     shutter
+	ATTRIBUTE	TELEMETRY   telemetry
+	ATTRIBUTE       TEMPERATURE temperature
+END

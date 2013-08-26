@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+    <head>
+        <title>Explorers and TableExplorers</title>
+        <section>AB/CO/AP</section>
+        <author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+    </head>
+    <!--
+
+    SECTION 1
+    
+  -->
+    <section>
+        <title>Abstract<description>
+                <p>
+  This document gives an overview of the GP Explorer components. The GP Explorers are used to visualize a domain-specific data (e.g. Alarm states), and to allow the GUI user to execute commands on them. This document gives an overview of their features and functionality and refers the reader to more detailed documents.</p>
+            </description>
+        </title>
+    </section>
+    <section>
+        <title>GP Explorers and TableExplorers</title>
+        <description>
+            <p>There are several explorer components in GP/NetBeans, which can be divided into two categories: Simple Explorers and TableExplorers. TableExplorers combine simple Explorers with Tables, as illustrated by the two images below: the image on the left side is a (simple) TreeExplorer, and the one on the right side a TreeTableExplorer. The TreeExplorer visualizes a hierarchy of numbered "children" nodes and the TreeTableExplorer adds a Table with the properties of associated with each node: a <code>name</code> property and a <code>value</code> property. These properties are contained in domain classes (so-called "domain beans") associated with each node.</p>
+            <p align="center">
+                <img src="images/TreeExplorer.jpg" width="158" height="236"/>
+                <img src="images/TreeTableExplorer.jpg" width="248" height="236"/>
+            </p>
+            <p>Similarly, a (simple) ListExplorer shows a list of nodes, and a ListTableExplorer adds a table with the properties of the domain beans:</p>
+            <p align="center">
+                <img src="images/ListExplorer.jpg" width="114" height="132"/>
+                <img src="images/ListTableExplorer.jpg" width="263" height="134"/>
+            </p>
+            <p>Finally the GP also provides a so-called "MultiListExplorer" (c.f. below), for which no Table variant exists.</p>
+            <p align="center">
+                <img src="images/MultiListExplorer.jpg" width="249" height="113"/>
+            </p>
+        </description>
+    </section>
+    <section>
+        <anchor>simple_explorers</anchor>
+        <title>Features of Simple Explorers</title>
+        <description>
+            <p>Lets look at a TreeExplorer (shown above) in more detail. The nodes visualized by the TreeExplorer have a number of visual features, namely:</p>
+            <ul>
+                <li>a <strong>name</strong> displayed in the text label, called "child XY" above,</li>
+                <li>an <strong>icon</strong>(in the images above the default icon for nodes),</li>
+                <li>a <strong>tool tip</strong> or ShortDescription (not shown above),</li>
+                <li>a <strong>popup menu</strong>, also called "contextual menu".</li>
+            </ul>
+            <p>As you would expect, you can configure all these features programmatically. You can specify a user-friendly name, a customized icon and a tooltip for each node displayed. This is done in the domain class ("domain bean") that the explorer visualizes, and further explained in section 
+<a href="beans/beans_howto.html">"How to add information and behavior to domain beans"</a>. Similarly, you can specify the actions to be shown in the pop-up menu, and the "default action" that is executed when the user double-clicks on a node. How to do this is explained in more detail below and in the reference section [>>>Actions Howto].</p>
+            <p>All these features can also change dynamically, to reflect changes in the state of the domain bean. For instance, a tree node representing an equipment could have an icon that changes color: it could be gray if the equipment it is not active, green if it is operational and orange or red to signal an error condition.
+</p>
+            <p>Also the actions displayed in the Pop-up menus change dynamically. A pop-up menu provides only those actions that are actually available at a given time. The actions that do not make any sense at a given moment are grayed out or not shown at all. For instance, if an alarm displayed in an Alarm GUI has already been acknowledged, it does not make sense to acknowledge it again, so the "acknowledge" menu item will be grayed out. A similar thing happens with pop-up menus when a user selects several nodes in an explorer and right-clicks. In this case, the pop-up menu only contains actions applicable to all selected nodes, (and hides all the other actions not all the node declare). For example, lets admit the user selects a Magnet and a Collimator node in a Tree that displays the equipment of a beamline. The corresponding pop-up menu only shows actions that make sense for both collimators and magnets, such as "reset" or "show status". It will not contain menu items such as "set current", because this action makes sense only for a magnet, not for a collimator. [=> Example popup menu].</p>
+        </description>
+    </section>
+    <section>
+        <anchor>table_explorers</anchor>
+        <title>Features of Table Explorers</title>
+        <description>
+            <p>As described above, a TableExplorer is an explorer with an associated Table (c.f. ListTableExplorer below). This section only describes the features added by the Table part, because the features of the Explorer part have already been described in the previous section.
+</p>
+            <p>The table is used to visualize the properties of domain beans. It has a row for each instance of the domain bean and a columns for each property of the bean. The header displays the name of the properties.
+</p>
+            <p>The table distinguishes between read-write properties and read-only properties: Read-Write  ("editable") properties are shown in a different color and enable the user to change the value: when the user clicks on an read-write cell, the cell becomes editable, as shown in the image below. The user can either directly type in a value, or s/he can click on the little button with the three dots ("..."), which opens a custom property editor panel, as described <A href="#custom_editors">below</A>.</p>
+            <p align="center">
+                <img src="images/EditingListTableExplorer.jpg" width="263" height="134"/>
+            </p>
+            <p>Please note that only the two columns called "name" and "value" represent the table part. The left-most column of the ListTableExplorer above is actually the ListExplorer part. Pop-up menus only appear when the user right-clicks on the nodes of the explorer part.</p>
+            <p>Lets now look at the features of the Table part of the TableExplorers, and how the can be configured. A few things can be configured regarding the table columns:</p>
+            <ul>
+                <li>Hide/unhide table columns. The programmer can specify which properties shall be displayed in the table and which ones shall be hidden. This is done using a <A href="/howto/beans/beans_howto.html#PropertyInfoProperty">PropertyInfo</A>. </li>
+                <li>Column names. The headers of the table columns can be configured with user friendly display names. This is also done using a PropertyInfo.</li>
+            </ul>
+            <p>You can also configure settings of the table cells: how property values are displayed, and how the user can change (edit) the property values.
+</p>
+            <ul>
+                <li>
+                    <strong>String output format</strong>. The format used to display property values in the table cells can be configured as well. This is necessary, for example, when displaying a calendar date as contained in a java.util.Date object in a cell. The default string produced by Date.toString() might not be suitable, users may have different representations, according to regional and user preferences. Conversion between the object representation of data and its string representation is done using a <A href="http://java.sun.com/j2se/1.3/docs/api/java/beans/PropertyEditor.html">JavaBeans PropertyEditor.</A>
+                </li>
+                <li>
+                    <strong>String input format</strong>. By default, the user just types a new value into the table cell to change the property value. Of course, s/he has to respect a well-defined format that can be parsed and translated to the object format. For instance, a date may be entered as dd/mm/yy or yy/mm/dd. This is done using the same PropertyEditor just explained above. </li>
+                <li>
+                    <strong>Background color</strong>. It is possible to configure the background color of the table cells. This is useful, e.g. to highlight values that have just been updated, or values that bear an error. This can also be done using an >>>appropriate PropertyEditor</li>
+                <li>
+                    <strong>Pull-down list of values</strong>. As an alternative to directly typing in a String, it is possible to present a pull-down list of acceptable values to the user let him/her choose. This is useful to keep the user from entering invalid values or making typing mistakes. This can be used, for instance, to position a target with several positions (e.g. "beryllium", "copper", "lead" or "air"). Again, this is done with an >>>appropriate PropertyEditor.</li>
+                <li>
+                    <anchor>custom_editors</anchor>
+                    <strong>Custom property editor panels</strong>. If neither typing in values nor a pull-down list are suitable, it is possible to pop up a custom panel that has more elaborate input mechanisms. For instance, to enter a date, a custom panel similar to the one used in Windows (c.f. image) could be used. Such a panel should be implemented based on the <A href="http://java.sun.com/j2se/1.3/docs/api/java/beans/PropertyEditorSupport.html#getCustomEditor()">JavaBeans CustomEditor mechanism</A>.</li>
+            </ul>
+            <p align="center">
+                <img src="images/WindowsDateEditor.jpg" width="287" height="243"/>
+            </p>
+            <p>Please note that all the mechanisms used for configuration are provided by the JavaBeans standard.</p>
+        </description>
+    </section>
+    <section>
+        <anchor>adding_your_panels</anchor>
+        <title>Adding your own Panels to the Explorer components</title>
+        <description>
+            <p>The Explorer components provided by GP use a BorderLayout manager and place the Explorer Panel in the middle. This allows you to add panels on all sides using a line like </p>
+            <p align="center">
+                <code>explorer.add(otherPanel, BorderLayout.SOUTH);</code>
+            </p>
+            <p>For an example on how to do this, please refer to 
+            <A href="dev/src_html/gp_example/gp/example/explorer/ExplorerWithActionButtonsDemo.java.html">TreeExplorerWithButtons</A>.</p>
+        </description>
+    </section>
+    <section>
+        <anchor>examples</anchor>
+        <title>Examples</title>
+        <description>
+            <p>A simple example of the tree explorer shown above can be found in the gp.example.explorer package of the 
+            <A href="/GP-Examples/javasrc/index.html">example sources</A>, such as:
+            </p>
+            <ul>
+                <li>
+                    <A href="dev/src_html/gp_example/gp/example/explorer/TreeExplorerDemo.java.html">gp.examples.explorer.TreeExplorerDemo.java</A>,</li>
+                <li>
+                    <A href="dev/src_html/gp_example/gp/example/explorer/ListExplorerDemo.java.html">gp.examples.explorer.ListExplorerDemo.java</A>,</li>
+                <li>
+                    <A href="dev/src_html/gp_example/gp/example/explorer/MultiListExplorerDemo.java.html">gp.examples.explorer.MultiListExplorerDemo.java</A>,</li>
+                <li>
+                    <A href="dev/src_html/gp_example/gp/example/explorer/ListTableExplorerDemo.java.html">gp.examples.explorer.ListTableExplorerDemo.java</A>,</li>
+                <li>
+                    <A href="dev/src_html/gp_example/gp/example/explorer/TreeTableExplorerDemo.java.html">gp.examples.explorer.TreeTableExplorerDemo.java</A>,</li>
+            </ul>
+        </description>
+    </section>
+</document>
+

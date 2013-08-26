@@ -1,0 +1,239 @@
+#ifndef _BENCHMARK_CORBANOTIFY_IDL_
+#define _BENCHMARK_CORBANOTIFY_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*
+*    (c) European Southern Observatory, 2011
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2011, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* hsommer 2011-11-04 created
+*
+* This file comes from module ACS/Benchmark/corbaNotify
+*/
+
+#include <acscomponent.idl>
+#include <maci.idl>
+
+#pragma prefix "alma"
+
+
+module benchmark 
+{
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////// Event Types and NC names ////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    /** 
+     *  Snapshot from CONTROL/Device/HardwareDevice/MOUNT/Mount/idl/Mount.idl
+     *  Motivated by http://jira.alma.cl/browse/AIV-6299
+     */
+    struct MountStatusData {
+        string    antennaName;   // The name of the antenna e.g., "DV01"
+        ACS::Time timestamp;     // The timestamp of the current value 
+        boolean   onSource; // true if the commanded and measured positions are close
+        double    azCommanded;   // The commanded Az position
+        double    elCommanded;   // The commanded El position
+        boolean   azCommandedValid; // true if there is a az command at this time
+        boolean   elCommandedValid; // true if there is a el command at this time
+        double    azPrePosition; // The measured az position 24 ms before timestamp
+        double    azPosition;    // The measured Az position at the timestamp
+        double    elPrePosition; // The measured el position 24 ms before timestamp
+        double    elPosition;    // The measured el position at teh timestamp
+        boolean   azPositionsValid; // true if there is a measured az position at this time
+        boolean   elPositionsValid; // true if there is a measured el position at this time
+        double    azPointingModelCorrection; // The correction in az applied by the pointing model
+        double    elPointingModelCorrection; // The correction in el applied by the pointing model
+        boolean   pointingModel; // true if a pointing model is being used
+        double    azAuxPointingModelCorrection; // The correction in az applied by the aux pointing model
+        double    elAuxPointingModelCorrection; // The correction in el applied by the aux pointing model
+        boolean   auxPointingModel; // true if a aux pointing model is being used
+        double    azEncoder;     // The az encoder reading at this time. 
+        double    elEncoder;     // The el encoder reading at this time
+        boolean   azEncoderValid; // true if the az encoder reading is valid
+        boolean   elEncoderValid; // true if the el encoder reading is valid
+        double    subrefX; // Measured X position of the subreflector
+        double    subrefY; // Measured Y position of the subreflector
+        double    subrefZ; // Measured Z position of the subreflector
+        boolean   subrefPositionValid; // true if the subreflector position was measured
+        double    subrefTip; // Measured tip of the subreflector
+        double    subrefTilt; // Measured tilt of the subreflector
+        boolean   subrefRotationValid; // true if the subreflector rotation was measured
+        double    subrefCmdX; // Commanded X position of the subreflector
+        double    subrefCmdY; // Commanded Y position of the subreflector
+        double    subrefCmdZ; // Commanded Z position of the subreflector
+        boolean   subrefPositionCmdValid; // true if a command was sent to position the subreflector
+        double    subrefCmdTip; // Commanded tip of the subreflector
+        double    subrefCmdTilt; // Commanded tilt of the subreflector
+        boolean   subrefRotationCmdValid; // true if a command was sent to rotate the subreflector
+    };
+
+    /** 
+     *  Small struct, to check how much the struct size affects throughput, and to use as an additional event type. 
+     */
+    struct LightweightMountStatusData {
+        string    antennaName;
+    };
+    
+    /** 
+     *  Event type not related to mount status
+     */
+    struct SomeOtherEventType {
+        double    someData;
+    };
+
+    
+    const string CHANNELNAME_CONTROL_REALTIME = "CONTROL_REALTIME";
+        
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////// Test comp API /////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    
+    /** 
+     * Describes one NC and the event types that should be sent or received on this NC.
+     */
+    struct NcEventSpec {
+        /** 
+         * Name of the NC
+         */
+        string          ncName;
+        
+        /** 
+         * eventNames must be recognized names of event types, e.g. "MountStatusData", "LightweightMountStatusData".
+         * The idea is to fire either only one type of event per NC, or different types alternatingly.
+         */
+        maci::stringSeq eventNames;
+        
+        /** 
+         * Only applicable to events "MountStatusData" and "LightweightMountStatusData".
+         * Used to send events of the same type but with different data, on which we may filter the events.
+         */
+        string          antennaName;
+    };
+    
+    
+    typedef sequence <NcEventSpec> NcEventSpecSeq;
+    
+    
+    
+    interface CorbaNotifyCompBase : ACS::ACSComponent
+    {
+        /** 
+         * Connect to the given NCs, for later use.
+         * This method should normally be called for all NCs before sending or receiving events. 
+         * For special tests it should also allow to be called again later, adding more NCs.
+         * 
+         * If connection to any one of the given NCs fails, this method attempts to disconnect from all NCs previously connected
+         * as part of this call (while NCs that were already connected from previous calls to this method will not be disconnected).
+         */
+        void ncConnect(in maci::stringSeq ncNames) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+
+        /** 
+         * Configures the logging of events sent or received.
+         * With multiplesOfEventCount <= 0, event logging is disabled.
+         * With multiplesOfEventCount == 1, all events are logged.
+         * With multiplesOfEventCount > 1, only every multiplesOfEventCount-th event gets logged. 
+         * Default is 100.
+         * Log level is DEBUG.
+         * This method can be called at any time.
+         */
+        void setEventLogging(in long multiplesOfEventCount);
+
+        /** 
+         * Interrupt a running series of sending/receiving NC events. 
+         * If nothing is running, returns silently.
+         */
+        void interrupt();
+
+        /** 
+         * Disconnect from all NCs. Internally calls interrupt() before disconnecting the NC lib classes from the NC.
+         * 
+         * If a problem occurs with one of the NCs, the other NCs still get disconnected from. The returned exception 
+         * represents the last problem from the loop over all connected NCs.
+         */
+        void ncDisconnect() raises (ACSErrTypeCommon::CouldntPerformActionEx);
+
+    };
+
+
+    /** 
+     *  Performance tests will use multiple dynamic supplier components in one or many containers and hosts.
+     */
+    interface CorbaNotifySupplier : CorbaNotifyCompBase
+    {
+        /** 
+         * Start sending events on one or more NCs, using one publisher thread per NC.
+         * If a fixed number of events are specified in "numberOfEvents" then the call will return only when that many events 
+         * have been fired on every NC.
+         * (TODO: Introduce callback notification back to client if we have corba timeout problems.)
+         * Without defined number of events, this call will return immediately, and the supplier component
+         * will keep sending events until interrupt() gets called.
+         * This method may be called multiple times, but only before "interrupt" or "ncDisconnect" are called.
+         * 
+         * @return The time it took (in ms) to send the specified number of events. 
+         *         This may be a bit shorter than the time experienced by the client for the call.
+         *         Undefined if numberOfEvents is <= 0.
+         */
+    	long sendEvents(
+    	        // Sends events filled with dummy data on the specified NCs.
+    	        // If more than one event type is given for any NC, then these event types will be used alternatingly.
+    	        // A prior call to "ncConnect" is required for any of the NCs referenced in "ncEventSpec". Otherwise CouldntPerformActionEx.
+    	        in NcEventSpecSeq ncEventSpecs,
+    	        // Optional period for sending events, e.g. every 48 ms. If eventPeriodMillis<=0 then the supplier will fire as fast as possible.
+    	        in long eventPeriodMillis, 
+    	        // Optional number of events to fire. If <=0 then fire indefinitely.
+    	        in long numberOfEvents
+            ) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+    	
+    };
+
+    /** 
+     *  Performance tests will use multiple dynamic consumer components in one or many containers and hosts.
+     */
+    interface CorbaNotifyConsumer : CorbaNotifyCompBase
+    {
+        /** 
+         * Subscribe to the given events and start receiving events.
+         * If a fixed number of events are specified in "numberOfEvents" then the call will return only when all of these events have been received.
+         * (TODO: Introduce callback notification back to client if we have corba timeout problems.)
+         * Without defined number of events, this call will return immediately.
+         * ??? This method should be called exactly once, after ncConnect and before interrupt/ncDisconnect.
+         * 
+         * @return The time it took (in ms) to receive the specified number of events, starting to count when the first event arrives. 
+         *         This time may be shorter than the time experienced by the client for the call.
+         *         Undefined if numberOfEvents is not specified.
+         */
+    	long receiveEvents(
+    	        // Subscribes to the specified NCs / events.
+    	        // A prior call to "ncConnect" is required for any of the NCs referenced in "ncEventSpec". Otherwise CouldntPerformActionEx.
+    	        in NcEventSpecSeq ncEventSpecs,
+    	        // optional delay in ms for processing an event, to simulate slow receivers.
+    	        in long processingDelayMillis, 
+    	        // optional number of expected events. This refers to the total count over all subscribed NCs and event types.
+    	        in long numberOfEvents
+            ) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+    };
+
+
+};
+
+#endif

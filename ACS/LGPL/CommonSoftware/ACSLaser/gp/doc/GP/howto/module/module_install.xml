@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+	<head>
+		<title>Installing the GP and logging modules</title>
+		<section>AB/CO/AP</section>
+		<author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+		<reviewers>TBD</reviewers>
+		<currentVersion>0.1 (2002/12)</currentVersion>
+		<history>
+    0.1 (2002/12) : First Draft<br/>
+		</history>
+	</head>
+	<section>
+		<title>Installing the GP and logging modules</title>
+		<description>
+			<p>This document describes how to install the GP and logging modules in NetBeans. 
+			You might have to <A href="CleaningUpLibExt.html">clean up the lib/ext directory</A>, 
+			if you have added your own jars to the <code>lib/ext</code> directory following the 
+			temporary instructions given in the GP course. </p>
+			<p>The GP.jar and logging.jar are now contained in NetBeans modules, so-called <code>.nbm</code> files </p>
+			<p>To install them, please proceed as follows:</p>
+			<ul>
+				<li>Download both the GP.nbm and logging.nbm files from the GP <a href="../../proj-gp/download/index.html">download page</a> 
+				and store them somewhere e.g. in your <code>c:\temp\</code> directory. (Please note that you cannot install GP.nbm without logging.nbm)</li>
+				<li>Start the NetBeans IDE. If you are already running NetBeans, make sure you have saved all your work.</li>
+				<li>Open the menu <code>"Tools=>Update Center"</code>. In the Wizard Window that opens select the Radio button corresponding to 
+				"Install Manually downloaded Modules", as shown below. Click the "next" button of the Wizard<p>
+						<img border="0" src="images/module_install_wizard1.jpg" width="783" height="536"/>
+					</p>
+				</li>
+				<li>Use the "Add" button to select the two nbm files <code>GP.nbm</code> and <code>logging.nbm</code> to the list of modules. 
+				Click on "next".</li>
+				<li>Now you should see the two modules listed in the upper right Window "Include in Install", as shown below. Click on "next".<p>
+						<img border="0" src="images/module_install_wizard3.jpg" width="781" height="538"/>
+					</p>
+				</li>
+				<li>The 3rd window shows the download process, which is immediate, given the fact that the files are already on your hard disk. 
+				Click "next".</li>
+				<li>On the last window (c.f. below), tick the checkbox "Include" for both modules, do <em>not</em> tick the checkbox "global". 
+				NetBeans will warn you about "unsigned modules" and ask you whether you want to install them anyway. Click on "Yes". 
+				Your window should then look as shown below. <p>
+						<img border="0" src="images/module_install_wizard5.jpg" width="780" height="535"/>
+					</p>
+					<p>Click on "Finish" to install the modules. NetBeans asks you if you want to restart the IDE, or install later. 
+					Tick the "restart" checkbox and click on "OK". </p>
+				</li>
+				<li>Once NetBeans has started up again, you can check whether the Modules have really been installed. 
+				Use the "Tools=>Options" menu, and in the options window open the branch "Options=>IDE configuration=>System=>Modules". 
+				You should see, among many other modules, the two entries "GP Layer" and "CERN Logging".</li>
+			</ul>
+		</description>
+	</section>
+</document>
+

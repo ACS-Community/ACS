@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="/JACORB_HOME/src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ACS_acsContainerServices"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar" sourcepath="/ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeJavaNative.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar" sourcepath="/ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCORBA.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/EventComponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsexmplFridge.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AcsNCTraceLogLTS.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/NotificationServiceMC.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/NotifyExt.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/NotifyMonitoringExt.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/repeatGuard.jar"/>
+	<classpathentry kind="lib" path="lib/adminTest1.jar"/>
+	<classpathentry kind="lib" path="lib/adminTest2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/Monitor_Types.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsncSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-scxml-0.9.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsCallbacksSupport.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hamcrest-library-1.3.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="output" path="object/eclipseOut"/>
+</classpath>

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="ACS/AlarmSource/Configuration" xmlns:asicnfg="ACS/AlarmSource/Configuration">
+
+    <xsd:annotation>
+        <xsd:documentation>
+            XML schema definition for LASER alarm source configuration 
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="ASI-configuration">
+        <xsd:complexType>
+            <xsd:all>
+              <xsd:element name="ASI-version" type="xsd:string"/>
+            	<xsd:element name="alarms-topic" type="xsd:string"/>
+            	<xsd:element name="backup-delivery-mode" type="xsd:integer"/>
+            	<xsd:element name="backup-priority" type="xsd:integer"/>
+            	<xsd:element name="backup-time-to-live" type="xsd:long"/>
+            	<xsd:element name="changes-delivery-mode" type="xsd:integer"/>
+            	<xsd:element name="changes-priority" type="xsd:integer"/>
+            	<xsd:element name="changes-time-to-live" type="xsd:long"/>
+            	<xsd:element name="channel-pool-size" type="xsd:integer"/>
+            	<xsd:element name="source-name-property" type="xsd:string"/>
+            	<xsd:element name="source-hostname-property" type="xsd:string"/>
+            	<xsd:element name="backup-property" type="xsd:string"/>
+            	<xsd:element name="alarms-number-property" type="xsd:string"/>
+            	<xsd:element name="channel-property" type="xsd:string"/>
+            </xsd:all>
+   	</xsd:complexType>
+    </xsd:element>   	
+   
+</xsd:schema>

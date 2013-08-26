@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ComponentHelperInfo outputRootDirectory="<will_be_adjusted_dynamically>"/>
+<ComponentInterface componentClassName="SecondaryComponent" idlPackage="alma.exmplCompHelpGen"/>
+<ComponentInterface componentClassName="SecondaryXmlComponent" idlPackage="alma.exmplCompHelpGen" internalInterface="SecondaryXmlComponentJ"/>
+</ComponentHelperInfo>

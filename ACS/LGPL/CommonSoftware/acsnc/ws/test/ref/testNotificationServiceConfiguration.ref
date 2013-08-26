@@ -1,0 +1,24 @@
+1 - Starting Container...
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+1 - Resolving reference: 'corbaloc::---:----/Manager'
+1 - Manager reference narrowed.
+1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
+1 - Configuration information for container 'bilboContainer' not available.
+1 - Starting as dynamic container.
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - default: NotifyEventChannelFactory
+1 - particular1: Particular1NotifyEventChannelFactory
+1 - particular2: Particular2NotifyEventChannelFactory
+1 - wildcard: ControlNotifyEventChannelFactory
+1 - domain: AlarmNotifyEventChannelFactory
+1 - non-existing domain: NotifyEventChannelFactory
+1 - /----/libbaci.so
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'bilboContainer' exited with code: 0.

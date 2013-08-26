@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<psetdef:pset xmlns:psetdef="urn:schemas-cosylab-com:psetdef:1.0" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="urn:schemas-cosylab-com:psetdef:1.0 psetdef.xsd">
+	<!-- This is a sample parameter set for vla filler -->
+	<name>vlafillertest</name>
+	<comment>using vla filler as an example</comment>	
+	<param xsi:type="psetdef:string">
+		<name>msname</name>
+		<required>true</required>
+		<prompt>e.g. myvladata.ms</prompt>
+		<help>name of output ms</help>
+	</param>
+	<param xsi:type="psetdef:string">
+		<name>inputfile</name>
+		<required>true</required>
+		<prompt>e.g. c477_040502.xpl</prompt>
+		<help>name of vla archive</help>
+	</param>
+	<param xsi:type="psetdef:string">
+		<name>project</name>
+		<required>false</required>
+		<prompt>e.g. ad577</prompt>
+		<help>name of project to extract, defaults to all projects in input</help>
+		<default>all</default>
+	</param>
+	<param xsi:type="psetdef:string">
+		<name>start</name>
+		<required>false</required>
+		<prompt>e.g. 2004/05/02/18:30:00</prompt>
+		<help>start time to extract</help>
+		<default>beginning of input file</default>
+	</param>
+	<param xsi:type="psetdef:string">
+		<name>stop</name>
+		<required>false</required>
+		<prompt>e.g. 2004/05/02/19:00:00</prompt>
+		<help>end time of extracted data</help>
+		<default>end of input file</default>
+	</param>
+	<param xsi:type="psetdef:double">
+		<name>centerfreq</name>
+		<required>false</required>
+		<prompt>e.g. 1.489 GHz</prompt>
+		<help>frequency of data to extract (used along with bandwidth parameter)</help>
+		<stringdefault>all</stringdefault>
+	</param>			
+	<param xsi:type="psetdef:double">
+		<name>bandwidth</name>
+		<required>false</required>
+		<prompt>e.g. 10.01 Mhz</prompt>
+		<help>data around centerfreq to get out</help>
+		<stringdefault>all</stringdefault>
+	</param>			
+	<param xsi:type="psetdef:string">
+		<name>bandname</name>
+		<required>false</required>
+		<prompt>e.g. P</prompt>
+		<help>name of band to extract</help>
+		<default>all</default>
+		<length>10</length>
+	</param>
+	<param xsi:type="psetdef:string">
+		<name>source</name>
+		<required>false</required>
+		<prompt>e.g. 3C49 or 1338+4995</prompt>
+		<help>name of source</help>
+		<default>all</default>
+	</param>
+	<param xsi:type="psetdef:bool">
+		<name>overwrite</name>
+		<required>false</required>
+		<prompt>e.g. true or false</prompt>
+		<help>overwrite or append</help>
+		<default>false</default>
+	</param>
+	<param xsi:type="psetdef:bool">
+		<name>testMissing</name>
+		<required>false</required>
+		<prompt>e.g. true or false</prompt>
+		<help>overwrite or append</help>
+		<default>false</default>
+	</param>
+	<param xsi:type="psetdef:int">
+		<name>testInt</name>
+		<required>false</required>
+		<prompt>testing 123</prompt>
+		<help>help testing 123</help>
+		<default>10</default>
+		<max>12</max>
+		<validValues>
+			<value>-12</value>
+			<value>10</value>
+			<value>11</value>
+			<value>12</value>
+		</validValues>
+	</param>	
+	<param xsi:type="psetdef:string">
+		<name>testString</name>
+		<required>true</required>
+		<prompt>e.g. 3C49 or 1338+4995</prompt>
+		<help>name of source</help>
+		<validValues>
+			<value>testingBoy</value>
+			<value>testingGirl</value>
+			<value>testingWoman</value>
+			<value>changeme</value>
+		</validValues>
+	</param>
+	<param xsi:type="psetdef:stringArray">
+		<name>testStringArray</name>
+		<required>false</required>
+		<prompt>e.g. myvladata.ms</prompt>
+		<help>name of output ms</help>
+		<maxlen>10</maxlen>
+		<default>default str1</default>
+		<default>default str2</default>
+		<default>default str3</default>
+	</param>
+	<param xsi:type="psetdef:intArray">
+		<name>testIntArray</name>
+		<required>false</required>
+		<prompt>e.g. myvladata.ms</prompt>
+		<help>name of output ms</help>
+		<maxlen>10</maxlen>
+		<default>1</default>
+		<default>2</default>
+		<default>3</default>
+	</param>
+	<param xsi:type="psetdef:doubleArray">
+		<name>testDoubleArray</name>
+		<required>false</required>
+		<prompt>e.g. myvladata.ms</prompt>
+		<help>name of output ms</help>
+		<maxlen>10</maxlen>
+		<default>1.4</default>
+		<default>1.5</default>
+		<default>1.6</default>
+	</param>
+</psetdef:pset>
+

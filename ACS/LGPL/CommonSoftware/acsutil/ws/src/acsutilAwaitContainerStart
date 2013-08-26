@@ -1,0 +1,57 @@
+#!/bin/bash
+#--------------------------------------------------
+
+# A helpful message describing how this command works
+function printUsage
+{
+	echo "Usage: `basename $0` [OPTIONS] type_of_container name_of_container [extra_parameters]"
+	echo "Wait for the named container to start."
+	echo ""
+	echo "Options:"
+	echo "-h, --help      Prints this message and exits"
+	echo "-C, --casa      Incorporate CASA paths in container environment"
+	
+}
+
+CONTAINERSTARTCMD="acsStartContainer"
+
+if [ "$1" = "-h" -o "$1" = "--help" ] ; then
+    printUsage;
+    exit 0;
+elif [ "$1" = "-C" -o "$1" = "--casa" ] ; then
+    CONTAINERSTARTCMD="acsStartContainerWithCASA"
+    shift
+fi
+
+if [ "$#" -lt "2" ] ; then
+    echo "Error: wrong number of parameters provided"
+    printUsage;
+    exit 1;
+fi
+
+# Now the actual work gets done
+#first need to figure out $ACS_TMP
+if [ "$ACS_TMP" = "" ]
+then 
+  if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+    export ACS_TMP=$ACSDATA/tmp/`hostname`
+  else
+    export ACS_TMP=$ACSDATA/tmp/`hostname -s`
+  fi
+fi
+INSTANCE_DIR=$ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+
+#replace /'s with _'s in the container name
+FILE=`echo "${!#}.out" | sed 's/\//_/g'`
+
+#params that go to acsutilBlock
+EXTRA_PARAMS=
+
+#if this is being used from tat, make sure acsutilTATTestRunner is used
+if [ -e $ACS_TMP/acs_instance ]
+then
+    EXTRA_PARAMS="$EXTRA_PARAMS -x"
+fi
+
+#Just delegate to helper script
+acsutilBlock -f $INSTANCE_DIR/$FILE -c "ERROR \[acsStartContainer\]" -b "ContainerStatusMsg: Ready" $EXTRA_PARAMS $CONTAINERSTARTCMD $@

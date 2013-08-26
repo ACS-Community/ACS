@@ -1,0 +1,3 @@
+#!/bin/bash
+
+netstat -putan 2> /dev/null | grep $(ps auxf | grep com.cosylab.acs.maci.manager.app.Manager | grep 'java -classpath' | awk '{print $2}')

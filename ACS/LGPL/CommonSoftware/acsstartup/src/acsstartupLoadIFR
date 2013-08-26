@@ -1,0 +1,165 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupLogging.sh
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: acsstartupLoadIFR,v 1.10 2012/05/31 09:57:46 jschwarz Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# psivera  2004-07-28 added option -c[heck]
+# bjeram 2004-03-16   added support for MICO
+# david 2003-05-14 now bash for tat
+# psivera  2002-12-12 removed -e option for echo
+# gchiozzi 2001-11-16 created
+#
+
+#************************************************************************
+#   NAME
+#   acsstartupLoadIFR - Loads/checks IDL files for interface repository.
+# 
+#   SYNOPSIS
+#   acsstartupLoadIFR [-IRcorbaloc corbaloc::<HOST>:<port>/DefaultRepository] [files.idl]
+#             [-c[heck]]
+#
+#   DESCRIPTION
+#   acsstartupLoadIFR loads all/checks idl files found in ../idl $INTROOT/idl and $ACSROOT.idl
+#   into the interface repository or just the files passed on the command line.
+#   If no file names are passed on the command line, it:
+#       - goes in all ../idl $INTROOT/idl and $ACSROOT.idl directories
+#       - collects all names of idl files (removing any path)
+#       - generates a temporary unique idl file (/tmp/acsIrfeedDyn.$$.idl)
+#       - calls the IR loader with this file as argument
+#       - removes the temporary file when done
+#   If file names are passed on the command line, only that files are loaded.
+#   By default looks for the InterfaceRepository at:
+#       corbaloc::<HOST>:xxxx/DefaultRepository
+#   but the -IRcorbaloc command line option allows to override this value.
+#   It is possible to pass on the command line extra file names.
+#   If the option -c[heck] is passed from command line, it simply checks 
+#   the loadable idl files reporting errors or duplications, if any.
+#
+#   FILES
+#     /tmp/acsIrfeedDyn.$$.idl is a temporary file
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#   0    if OK
+#   !=0  if FAILED
+#
+#   CAUTIONS
+#   The path of files passed on the command line is ignored.
+#   IDL Files are always searched in ../idl + $IDL_PATH
+#   in the standard search order.
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+ACS_LOG_COMMAND $@
+
+export HOST=`getIP`
+#Find the port number of the IR
+ACS_IR_PORT=`getIRPort`
+IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/DefaultRepository"
+
+while [ $# -gt 0 ]
+do
+   case "$1" in
+    -c*) CHECK=on
+    ;;
+    -IRcorbaloc) IRcorbaloc=$2
+    shift
+    ;;
+    *) files="$files $1";;
+   esac
+   shift
+
+done
+ORBInitRef="InterfaceRepository=$IRcorbaloc"
+
+if [ "$CHECK" = "on" ]
+then
+    FUNCTION_STRING="Checking"
+else
+    FUNCTION_STRING="Loading"
+fi
+
+if [ "X" != "X$files" ]
+    then
+    ACS_LOG_INFO "acsstartupLoadIFR" "Loading files passed on the command line: $files"
+fi
+#***************************************************************
+# Creates dynamically the IDL file to include everything
+#***************************************************************
+
+# Build a unique file name
+ACS_IDL_IRFEED_FILE=/tmp/acsIrfeedDyn.$$.idl
+PERSISTENCE_FILE=$ACS_TMP/ifr_cache.$ACS_INSTANCE
+
+# Build the file
+acsstartupIrFeed $ACS_IDL_IRFEED_FILE $$ $files
+
+
+ACS_LOG_DEBUG "acsstartupLoadIFR" "            loading: $ACS_IDL_IRFEED_FILE"
+# This is the line that loads interface repository
+LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
+PATH=$MICO_HOME/bin:$PATH
+# jagonzal: Add USER_IDL to IDL_PATH
+IDL_PATH="$USER_IDL $IDL_PATH"
+
+if [ "$CHECK" = "on" ]
+then
+#    rm -f result.idl
+    IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --codegen-idl --name=result.idl $ACS_IDL_IRFEED_FILE"
+else
+    #IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --feed-ir -ORBIfaceRepoAddr inet:$HOST:$ACS_IR_PORT $ACS_IDL_IRFEED_FILE"
+    IRFEED_CMD="$ACE_ROOT/bin/tao_ifr -I../idl $IDL_PATH -ORBInitRef InterfaceRepository=corbaloc:iiop:$HOST:$ACS_IR_PORT/InterfaceRepository $ACS_IDL_IRFEED_FILE"
+fi
+
+$IRFEED_CMD
+RET_CODE=$?
+
+# Now deletes the file
+rm $ACS_IDL_IRFEED_FILE
+
+# One final check
+if [ "$RET_CODE" = "0" ]
+then
+    ACS_LOG_INFO "acsstartupLoadIFR" "$FUNCTION_STRING of IDL interfaces in Interface Repository completed OK"
+else
+    ACS_LOG_ERROR "acsstartupLoadIFR" "$FUNCTION_STRING of IDL interfaces in Interface Repository FAILED"
+    if [ "$CHECK" != "on" ]
+    then
+        rm -f $PERSISTENCE_FILE
+    fi
+fi
+
+exit $RET_CODE
+
+#
+# ___oOo___

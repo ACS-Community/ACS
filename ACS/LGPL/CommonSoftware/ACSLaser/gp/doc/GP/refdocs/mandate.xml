@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP project Mandate</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<description>
+          <li><a href="projdescription.html">Project description</a> <a href="projdescription.doc"><IMG BORDER="0" SRC="../images/word.gif" ALT="MS word document" width="18" height="18"/></a></li>
+          <li><a href="../../_notgenerated/presentations/kickoff/">Project Kickoff</a> <a href="../presentations/kickoff/kickoff.ppt"><IMG BORDER="0" SRC="../images/ppt.gif" ALT="MS powerpoint document" width="18" height="18"/></a></li>
+
+		</description>
+	</section>
+  
+</document>
+

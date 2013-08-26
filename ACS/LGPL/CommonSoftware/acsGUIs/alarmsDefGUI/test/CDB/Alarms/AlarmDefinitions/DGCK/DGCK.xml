@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+$Id: DGCK.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/acsGUIs/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/DGCK/DGCK.xml,v $
+-->
+<fault-family name="DGCK"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="ATF Support Team"/>
+    <fault-code value="1">
+        <priority>3</priority>
+        <cause>No Valid Delay Events found for Device.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>No Valid Delay Events found for Device.</problem-description>
+    </fault-code>
+    <fault-code value="2">
+        <priority>3</priority>
+        <cause>Failure Communicating with Hardware.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Failure Communicating with Hardware.</problem-description>
+    </fault-code>
+    <fault-code value="4">
+        <priority>3</priority>
+        <cause>At least one 48 ms Tick did not have a command associated with it.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>At least one 48 ms Tick did not have a command associated with it.</problem-description>
+    </fault-code>
+    <fault-code value="8">
+        <priority>3</priority>
+        <cause>Phase Lock Loop is out of Lock.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Phase Lock Loop is out of Lock.</problem-description>
+    </fault-code>
+    <fault-code value="16">
+        <priority>3</priority>
+        <cause>Delay Command Executed at incorrect time.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Delay Command Executed at incorrect time.</problem-description>
+    </fault-code>
+    <fault-code value="32">
+        <priority>3</priority>
+        <cause>Status Monitor Executed at incorrect time.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Status Monitor Executed at incorrect time.</problem-description>
+    </fault-code>
+    <fault-member-default>
+    </fault-member-default>
+</fault-family>

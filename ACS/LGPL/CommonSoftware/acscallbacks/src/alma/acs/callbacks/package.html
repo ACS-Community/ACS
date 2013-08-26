@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+<body>
+
+<h2><code>Sample code for the acs-callbacks support package</code></h2>
+
+The following examples show how to use the helper classes
+<ul>
+  <li>RequesterUtil</li>
+  <li>ResponderUtil</li>
+  <li>ResponseReceiver<br>
+  </li>
+</ul>
+
+
+<h3>I. The client requesting the server to call it back later</h3>
+
+<p>
+<span style="font-style: italic;">Class DemoRequester wants to invoke
+method revertString(), which demands a String, a CBstring, and a DescIn
+as its arguments. The latter two can/should be created using the
+RequesterUtil class. For CBstring to be created, a ResponseReceiver is
+necessary. A simple but in many cases sufficient example of an
+ResponseReceiver instance is shown below. When the Responder implementation
+calls the client back, the specified ResponseReceiver will be executed.</span>
+</p>
+
+<p>&nbsp;</p>
+
+<pre style="font-size:80%;">
+import java.util.logging.Logger;
+
+import alma.acs.callbacks.RequesterUtil;
+import alma.acs.callbacks.ResponseReceiver;
+import alma.acs.commandcenter.meta.Firestarter;
+import alma.acs.container.ContainerServicesBase;
+
+import alma.mysubsystem.Responder;
+
+
+public class DemoRequester {
+
+    void go () throws Exception {
+
+        // --- connect to component
+
+        Firestarter.configure(null, "te1.hq.eso.org", "3500");
+        Firestarter.prepare();
+        ContainerServicesBase cs = Firestarter.giveContainerServices();
+        Logger logger = cs.getLogger();
+
+        Responder responder = ResponderHelper.narrow(cs.getComponent("RESPONDER"));
+
+        // --- activate callback object
+        <span style="color: rgb(204, 102, 0);">
+        ResponseReceiver <span style="font-weight: bold;">rere </span> =  <span style="font-weight: bold;">new ResponseReceiver()</span> {
+        
+              public void <span style="font-weight: bold;">incomingResponse</span>(Object x) {
+                 System.out.println("Incoming Response: "+x);
+              }
+              public void <span style="font-weight: bold;">incomingException</span>(Exception x) {
+                 System.out.println("Responding failed: "+x);}
+         
+        };</span>
+        
+        responder.<span style="font-weight: bold; color: rgb(51, 102, 255);">revertString</span>(  "Hallo",
+                                 <span style="font-weight: bold;">RequesterUtil.giveCBString(cs, </span><span style="font-weight: bold; color: rgb(204, 102, 0);">rere</span><span style="font-weight: bold;">)</span>, 
+                                 <span style="font-weight: bold;">RequesterUtil.giveDescIn()</span>  );
+
+
+        // --- do something else until response comes in
+        
+        System.out.println("--&gt; press enter to exit &lt;--");
+        while (System.in.read() != 13)
+            ;
+
+        
+        // --- clean up and quit
+        
+        Firestarter.godown();
+
+    }
+}
+</pre>
+
+
+<h3>II. The server processing the request and afterwards calling back the client</h3>
+
+<p>
+<span style="font-style: italic;">Class EasyResponderImpl implements
+the revertString() method: after calculating the return value, it uses
+ResponderUtil to call the client back.</span>
+</p>
+
+
+<p>&nbsp;</p>
+
+
+<pre style="font-size:80%;">
+import alma.ACS.CBDescIn;
+import alma.ACS.CBstring;
+import alma.acs.component.ComponentImplBase;
+import alma.acs.callbacks.ResponderUtil;
+
+import alma.mysubsystem.ResponderOperations;
+
+
+public class EasyResponderImpl extends ComponentImplBase implements ResponderOperations {
+
+
+  public void <span style="color: rgb(51, 102, 255); font-weight: bold;">revertString</span> (String text, <span style="font-weight: bold;">CBstring cb, CBDescIn descIn</span>)  {
+
+      try {
+
+         // --- calculate returnvalue
+
+         int length = text.length();
+         char[] res = new char[length];
+         for (int i=0; i&lt;length; res[i] = text.charAt(length-1-i++));
+         String returnValue = new String(res);
+
+  
+         // --- invoke callback
+      <span style="font-weight: bold; color: rgb(0, 0, 0);">   
+         ResponderUtil.respond</span> (<span style="color: rgb(204, 102, 0); font-weight: bold;">returnValue</span>, <span style="font-weight: bold;">cb, descIn</span>);
+
+
+      } catch (Exception exc) {
+     <span style="font-weight: bold; color: rgb(0, 0, 0);">
+         ResponderUtil.respond</span> (<span style="color: rgb(204, 102, 0); font-weight: bold;">exc</span>, <span style="font-weight: bold;">cb, descIn</span>);
+      }
+  
+  }
+ 
+}
+</pre>
+
+
+
+<div style="text-align: right;">M.Schilling, 2004-10-26<code></code><br></div>
+<code><br>
+<br>
+<br>
+</code><br>
+</body>
+</html>

@@ -1,0 +1,41 @@
+#!/bin/bash
+#A general purpose script designed to be used as the epilogue
+#for most tat modular tests
+
+if [ "`uname`" = "Linux" ]; then enable -n echo; fi
+
+export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
+if [ "$ACS_INSTANCE" = "" ]
+then
+    echo "Could not determine the ACS_INSTANCE!"
+    echo "Exiting!"
+    exit 1
+fi
+
+# check if we need to stop logging client process(es) that may have been started in acsutilTATPrologue
+INSTANCE_DIR=$ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+pidfile=$INSTANCE_DIR/loggingClient.pid
+if [ -r $pidfile ] ; then
+	echo going about $pidfile...
+	pids=`cat $pidfile`
+	failed=      
+	for pid in $pids ; do        
+		if [ ! "`ps -u $USER | grep $pid`" ] ; then
+			echo "  $USER doesn't run logging client with ID $pid"
+		else     
+			echo "  bringing down logging client with ID $pid..."
+			kill $pid
+		fi        
+		if [ ! $? == 0 ] ; then
+			failed="$failed $pid"
+		fi      
+	done      
+	#echo Failed: $failed
+	echo -n $failed > $pidfile
+fi
+
+
+#stop everything except clients
+echo " Stopping containers, manager, and the services"
+acsStop -b $ACS_INSTANCE >& $ACS_TMP/acsStop.log
+

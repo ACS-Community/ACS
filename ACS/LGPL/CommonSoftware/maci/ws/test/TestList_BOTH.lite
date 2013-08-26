@@ -1,0 +1,17 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: TestList_BOTH.lite,v 1.82 2005/02/21 09:42:17 bjeram Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gchiozzi 2002-10-17 Commented out ENVIRONMENT
+# bjeram 2001-08-22 created
+ENVIRONMENT lcuTat LCU
+SOURCE maciTATEnvironment
+PROLOGUE acsutilTATPrologue
+1 maciTestClient "startContainerWS.sh Container01 3060" "@SLEEP 20" "startMaciTest.sh Container02 3061" "@SLEEP 180" "startContainerWS.sh Container03 3062" "@SLEEP 20" "startMaciTestClient.sh @maciTest.mts"
+2 maciTestRegistrar maciTestRegistrar
+EPILOGUE acsutilTATEpilogue

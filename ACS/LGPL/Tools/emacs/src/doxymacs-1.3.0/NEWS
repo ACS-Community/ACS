@@ -1,0 +1,49 @@
+$Id: NEWS,v 1.26 2002/02/27 10:32:29 vltsccm Exp $
+
+04/11/2001 Version 1.3.0 released.
+	Implement new grouping command (C-c d @) which inserts Doxygen
+	grouping comments around the current region.
+
+15/09/2001 Version 1.2.1 released.
+	Fix a bug in Qt style comments.
+
+26/08/2001 Version 1.2.0 released.
+	Better on-line documentation.  New "member comment" command which
+	works much like M-; (indent-for-comment).
+
+23/08/2001 Version 1.1.4 released.
+	minor bugfixes.
+
+08/07/2001 Version 1.1.3 released.
+	The external XML parser now requires libxml2 version 2.3.4 or
+	greater.
+
+04/07/2001 Version 1.1.2 released.
+	GNU Emacs doesn't understand ?: in regexps, so take them out.
+
+20/06/2001 Version 1.1.1 released.
+	Fix bug #432837 missing @see keyword and fix bug #432836 Font
+	lock for @ingroup not correct.
+
+12/06/2001 Version 1.1.0 released.
+	New feature: font lock for Doxygen keywords.
+
+06/06/2001 Version 1.0.0 released.
+	The first stable release.  There are still some bugs left (see
+	the FIXMEs in lisp/doxymacs.el), but they are both sufficiently
+	rare and hard to fix that they don't warrant holding up a stable
+	release.
+
+26/05/2001 Version 0.2.1 released.
+	Er... forgot to update this file the past few releases.
+	Oh well.  Look at the ChangeLog if you really care.
+
+09/05/2001 Version 0.1.1 released.
+	Bug fix: C-? is a bad choice for "look up", since it causes the	
+	DEL key to be mapped to "look up"... changed it to C-c d ?.
+	Feature add: Progress info as it parses XML tag file.
+
+07/05/2001 Version 0.1.0 (Alpha) released.
+	This represents the first public release of doxymacs.  It works for us,
+	now let's see if it works for other people too.
+

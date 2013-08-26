@@ -1,0 +1,223 @@
+#ifndef _ACS_SAMP_IDL_
+#define _ACS_SAMP_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: acssamp.idl,v 1.15 2006/10/19 15:19:58 rcirami Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* oat       07/04/03  created
+* oat       03/10/06  update following C++ coding standard
+*/
+
+#include <baci.idl>
+#include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
+
+/** @file acssamp.idl
+ *  Sampling System's IDL File.
+ */
+
+module acssamp
+{
+
+  /**
+   * Forward declaration.
+   */
+  interface SampObj;
+
+
+  /** @interface Samp
+   *  Defines the interface for sampling COBs.
+   */
+  interface Samp : ACS::CharacteristicComponent
+  {
+    
+    /**
+     *
+     * Activate a new CORBA object; it allows to sample a specific
+     * property with a user-defined frequency. Collected data are then sent
+     * to the Notification channel (ready to be consumed).
+     *
+     * @param name          component to be sampled (e.g. LAMP1)
+     * @param property      property to be sampled (e.g brightness)
+     * @param frequency     sampling frequency: period between two consecutive
+     *                      sampling
+     *                      (units are 100ns; e.g. 1000000 means 0.1 sec i.e.
+     *                       10 sample per second)
+     * @param reportRate    number of second the process should buffer 
+     *                      before actually sending (notifying) data
+     *                      (units are 100ns; e.g. 10000000 means collect data
+     *                       for 1 second)
+     * @return SampObj_ptr  returns a pointer to the activated sampling object.
+     *                      This pointer must be used for subsequent 
+     *                      start/stop/destroy of the actual sampling.
+     * @htmlonly
+     * <br><hr>
+     * @endhtmlonly
+     */
+    SampObj initSampObj (in string name,
+			 in string property,
+			 in ACS::TimeInterval frequency,
+			 in ACS::TimeInterval reportRate) 
+	raises (ACSErrTypeCommon::OutOfBoundsEx,
+		ACSErrTypeCommon::MemoryFaultEx,
+		ACSErrTypeCommon::CORBAProblemEx,
+		ACSErrTypeCommon::TypeNotSupportedEx,
+		ACSErrTypeCommon::CouldntAccessPropertyEx,
+		ACSErrTypeCommon::CouldntAccessComponentEx,
+		ACSErrTypeCommon::CouldntCreateObjectEx);
+    
+  };
+
+
+  interface SampObj : ACS::Subscription
+  {
+
+    
+    /** 
+     *  Once the sampling object is activated, simply starts the sampling.
+     *  @return void
+     *  @htmlonly
+     *  <br><hr>
+     *  @endhtmlonly
+     */
+    void start();
+
+    
+    /** 
+     *  Simply stops an already started sampling.
+     *  @return void
+     *  @htmlonly
+     *  <br><hr>
+     *  @endhtmlonly
+     */
+    void stop();
+
+
+    /** 
+     * These methods are already inherited from the ACS::Subscription 
+     * interface.
+     */
+ 
+    /*    
+	  void suspend();
+	  void resume();
+	  void destroy();
+    */
+    
+
+    /** 
+     * Sets the sampling frequency of an already activated 
+     * sampling object.
+     *
+     * @param sFrequency   a new sampling frequency
+     *                     (units are 100ns; e.g. 1000000 means 10 sample 
+     *                      per second)
+     * @return void
+     * @htmlonly
+     * <br><hr>
+     * @endhtmlonly
+     */
+    void setFrequency (in ACS::TimeInterval sFrequency);
+
+
+    /**      
+     * Gets the sampling frequency of an already activated 
+     * sampling object.
+     *
+     * @param sFrequency   the current sampling frequency
+     *                     (units are 100ns; e.g. 1000000 means 10 sample 
+     *                      per second)
+     * @return void
+     * @htmlonly
+     * <br><hr>
+     * @endhtmlonly
+     */
+    void getFrequency (out ACS::TimeInterval sFrequency);
+
+
+
+    /**
+     * Sets the report rate of an already activated 
+     * sampling object.
+     *
+     * @param sFrequency   a new report rate
+     *                     (units are 100ns; e.g. 10000000 means collect data
+     *                      for 1 second) 
+     * @return void
+     * @htmlonly
+     * <br><hr>
+     * @endhtmlonly
+     */
+    void setRate (in ACS::TimeInterval rRate);
+
+
+    /**
+     * Gets the report rate of an already activated 
+     * sampling object.
+     *
+     * @param sFrequency   the current report rate report rate
+     *                     (units are 100ns; e.g. 10000000 means collect data
+     *                      for 1 second) 
+     * @return void
+     * @htmlonly
+     * <br><hr>
+     * @endhtmlonly
+     */
+    void getRate (out ACS::TimeInterval rRate);
+
+
+    /** 
+     * Data structure delivered to the notification channel.
+     * Every sample is composed by two values: a timestamp (time when
+     * the sample occured) and a value.
+     */
+    struct SampDataBlock
+    {
+      ACS::Time sampTime;
+      any sampVal;
+    };
+    typedef sequence<SampDataBlock> SampDataBlockSeq;
+
+
+    
+    /** 
+     *  Returns the channel name to be used with all NC consumers.
+     *
+     *  @return string  current channel name on which data are published.
+     *  @htmlonly
+     *  <br><hr>
+     *  @endhtmlonly
+     */
+    string getChannelName ();
+
+  };
+
+
+};
+
+
+#endif

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+
+<xs:schema xmlns:ent="Alma/CommonEntity" xmlns:ran="Alma/Archive/ArchiveRange" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="Alma/Archive/ArchiveRange" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="Alma/CommonEntity" schemaLocation="CommonEntity.xsd"/>
+
+    <xs:element name="IdentifierRange" type="ran:IdentifierRange">
+        <xs:annotation>
+            <xs:documentation>Entity that acts as a pool for unique IDs (UID).
+archiveID: unique ID for the archive installation where the range was created. This archiveID becomes part of the UIDs.
+isLocked: true if the range is retrieved from the archive; false if the range has been freshly created.
+createdTimeStamp:</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="IdentifierRange">
+        <xs:sequence>
+            <xs:element name="IdentifierRangeEntity" type="ran:IdentifierRangeEntityT"/>
+            <xs:element name="Range" type="ran:RangeT"/>
+        </xs:sequence>
+        <xs:attribute name="createdTimeStamp" type="xs:string" use="required"/>
+        <xs:attribute name="isLocked" type="xs:boolean" use="required"/>
+        <xs:attribute name="archiveID" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="IdentifierRangeEntityT">
+        <xs:complexContent>
+            <xs:restriction base="ent:EntityT">
+                <xs:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="IdentifierRange"/>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="RangeT">
+        <xs:annotation>
+            <xs:documentation>Describes the values that a range can hold.
+rangeID: the global (middle) part of the created UIDs.
+</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="BaseDocumentID" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>A hex string that holds the minimum document id. This refers to the local (rightmost) part of the created UIDs.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="MaxDocumentID" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>A hex string that holds the maximum document id, if it is not present then the range is  effectively infinite.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="rangeID" type="xs:string" use="required"/>
+    </xs:complexType>
+    
+</xs:schema>
+

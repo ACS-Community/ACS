@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+from Acspy.Clients.SimpleClient import PySimpleClient
+
+# Total test
+total=4
+
+print "Starting Client"
+simpleClient = PySimpleClient.getInstance()
+
+print "Getting Component"
+cdbTest = simpleClient.getComponent("CDB_PROPS")
+if cdbTest == None:
+   print "Failed to obtain the CDB_PROPS component"
+
+else:
+   print "Running Test"
+   a = cdbTest.runTest()
+   print "Test Result: ("+str(a)+"/"+str(total)+")"
+   if a == total:
+      print "PASSED"
+   else:
+      print "FAILED"
+   print "Releasing Component"
+   simpleClient.releaseComponent("CDB_PROPS")
+
+simpleClient.disconnect()
+

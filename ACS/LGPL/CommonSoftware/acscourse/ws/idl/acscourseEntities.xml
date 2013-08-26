@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<EntitybuilderSettings>
+    
+    <!-- declares the relevant xml schema file(s), and which xml namespaces they use --> 
+    <EntitySchema schemaName="MyXmlConfigData.xsd" xmlNamespace="AlmaTest/MyXmlConfigData"/>
+    
+    <!-- assigns a Java package for the binding classes generated from schemas of a certain namespace --> 
+    <XmlNamespace2JPackage xmlNamespace="AlmaTest/MyXmlConfigData" jPackage="alma.acscourse.xmlbinding.myxmlconfigdata"/>
+    
+</EntitybuilderSettings>
+

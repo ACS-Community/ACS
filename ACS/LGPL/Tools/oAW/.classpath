@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/com.google.collect_0.8.0.v200908120607.jar"/>
+	<classpathentry kind="lib" path="lib/com.ibm.icu_4.0.1.v20090822.jar"/>
+	<classpathentry kind="lib" path="lib/de.itemis.xtext.antlr_0.7.2.200908121408.jar"/>
+	<classpathentry kind="lib" path="lib/guice-1.0_patched.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.codegen_2.5.0.v200906151043.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.codegen.ecore_2.5.0.v200906151043.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.5.0.v200906151043.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore_2.5.0.v200906151043.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore.xmi_2.5.0.v200906151043.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.mapping.ecore2xml_2.5.0.v200906151043.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.mwe.core_0.7.2.v200908120417.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.mwe.utils_0.7.2.v200908120417.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.5.1.R35x_v20090807-1100.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jdt.core_3.5.1.v_972_R35x.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.text_3.5.0.v20090513-2000.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.uml2.common_1.5.0.v200905041045.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.uml2.uml_3.0.1.v200908281330.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.uml2.uml.resources_3.0.0.v200906011111.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xpand_0.7.2.v200908120436.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtend_0.7.2.v200908120436.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtend.typesystem.emf_0.7.2.v200908120436.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtend.typesystem.uml2_0.7.2.v200908120436.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtend.util.stdlib_0.7.2.v200908120436.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtext_0.7.2.v200908120607.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtext.generator_0.7.2.v200908120607.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtext.util_0.7.2.v200908120607.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.xtext.xtend_0.7.2.v200908120607.jar"/>
+	<classpathentry kind="lib" path="lib/stringtemplate-3.1b1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/antlr-3.2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

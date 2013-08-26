@@ -1,0 +1,44 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList.lite,v 1.11 2007/02/21 09:02:16 nbarriga Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dave 2003-08-13 converted to eccs test driver
+# 
+SOURCE acspyexmplTATEnvironment
+PROLOGUE acspyexmplTATPrologue
+1  MountClient      "acsutilTATTestRunner acspyexmplMountClient"
+2  MountCallback    "acsutilTATTestRunner acspyexmplMountCallback"
+3  HelloWorldError  "acsutilTATTestRunner acspyexmplHelloWorldError"
+4  PythonComp       "acsutilTATTestRunner acsStartContainer -py pyContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplTestPyContainer" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer pyContainer"  "@SLEEP 15"
+5  FridgeChannel  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplFridgeNCSupplier"
+6  HelloWorldDynamic "acsutilTATTestRunner acspyexmplDynamicHelloWorld TestContainer"
+7  FridgeNCClient "acsutilTATTestRunner acspyexmplFridgeNCClient"
+8  TimeoutHandler "acsutilTATTestRunner acspyexmplTimeoutHandler"
+9  ClientErrorComponentPy "acsutilTATTestRunner acsStartContainer -py pyErrContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplClientErrorComponent ERRORCOMP_PY" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer pyErrContainer"  "@SLEEP 15"
+10  ClientErrorComponentCpp "acsutilTATTestRunner acsStartContainer -cpp cppContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplClientErrorComponent ERRORCOMP_CPP" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer cppContainer"  "@SLEEP 15"
+11  ClientErrorComponentJava "acsutilTATTestRunner acsStartContainer -java javaContainer" "@SLEEP 15" "acsutilTATTestRunner acspyexmplClientErrorComponent ERRORCOMP_JAVA" "@SLEEP 15" "acsutilTATTestRunner acsStopContainer javaContainer"  "@SLEEP 15"
+EPILOGUE acsutilTATEpilogue

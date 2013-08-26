@@ -1,0 +1,96 @@
+«IMPORT tmcdbTables»
+
+«EXTENSION alma::acs::tmcdb::grammardef::util»
+«EXTENSION alma::acs::tmcdb::generator::templates::sqlutil»
+«EXTENSION alma::acs::tmcdb::generator::templates::oracleutil»
+
+«DEFINE Root FOR TMCDBModel»
+«FILE "oracle/CreateOracleTables.sql"-»
+-- TMCDB SQL TABLE DEFINITIONS Version «header.version» «header.versionTS»
+--
+-- /////////////////////////////////////////////////////////////////
+-- // WARNING!  DO NOT MODIFY THIS FILE!                          //
+-- //  ---------------------------------------------------------  //
+-- // | This is generated code!  Do not modify this file.       | //
+-- // | Any changes will be lost when the file is re-generated. | //
+-- //  ---------------------------------------------------------  //
+-- /////////////////////////////////////////////////////////////////
+«REM»We add all the table definitions«ENDREM»
+«EXPAND TableDefinition FOREACH tables» 
+
+«REM»And we populate the TMCDBVersion table«ENDREM»
+«IF tables.select(e|e.name == "TMCDBVersion").size != 0»
+INSERT INTO TMCDBVersion VALUES ( 'TMCDB', '«header.version»', '«header.versionTS»' );
+
+COMMIT;
+«ENDIF-»
+«ENDFILE»
+«ENDDEFINE»
+
+«REM»
+Expansion for each of the tables.
+For each table, we generate the following, in this order:
+
+ 0) If is a child table, the column that will be used as PK and FK
+ 1) Each of the columns of the table
+     1.5) For the boolean types, we generate a constraint check in '0','1'
+ 2) The FOREIGN KEY constraints (these are not mandatory)
+ 3) The CHECK constraints (these are not mandatory)
+ 4) The UNIQUE constraint (depending if the key is GENERATED FROM)
+ 5) The PRIMARY KEY constraint
+ 
+ 6) The sequence and trigger for the generated keys, if needed
+«ENDREM»
+«DEFINE TableDefinition FOR Table-»
+CREATE TABLE «this.name» (
+«IF isChild && finalKey().isGeneratedFrom-»
+	«LET finalKey().columns.first() AS c-»
+	«c.name» «c.type.getOracleType()»«c.type.getOracleLength()»,
+	«ENDLET-»
+«ENDIF-»
+«FOREACH this.getColumns() AS c ITERATOR iter-»
+	«c.name» «c.type.getOracleType()»«c.type.getOracleLength()» «c.specifier.getOracleSpecifier()»,
+«ENDFOREACH-»
+«FOREACH getBooleanColumns() AS c-»
+	CONSTRAINT «shortTableName()»«c.shortColName()» CHECK («c.name» IN ('0', '1')),
+«ENDFOREACH-»
+«IF finalKey().pieces.size > 0 && !isChild-»
+	CONSTRAINT «shortTableName()»AltKey UNIQUE («finalKey().pieces.name.toString(", ")»),
+«ENDIF-»
+«FOREACH getForeignKeyConstraints() AS const-»
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» FOREIGN KEY («const.columns.name.toString(", ")») REFERENCES «const.finalReferencedTable().name»«IF const.foreignColumn!= null»(«const.foreignColumn.name»)«ENDIF»,
+«ENDFOREACH-»
+«FOREACH getCheckConstraints() AS const-»
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» CHECK («const.column.name» IN («const.possibleValues.getPossibleValuesAsSQL()»)),
+«ENDFOREACH-»
+«FOREACH getUniquenessConstraints() AS const-»
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» UNIQUE («const.columns.name.toString(", ")»),
+«ENDFOREACH-»
+«IF isChild-»
+	CONSTRAINT «shortTableName()»«superTable.shortTableName()»FKey FOREIGN KEY («finalKey().columns.name.toString(",")») REFERENCES «superTable.name»,
+«ENDIF-»
+	CONSTRAINT «this.shortTableName()»Key PRIMARY KEY («finalKey().columns.name.toString(", ")»)
+)«EXPAND XmlStorage FOR this»;
+«EXPAND SequenceDefinition FOR this-»
+
+«ENDDEFINE»
+
+
+«DEFINE XmlStorage FOR Table-»
+«IF this.hasXmlClobTypeColumn()-»
+«FOREACH this.getXmlClobTypeColumns() AS c-» XMLTYPE COLUMN «c.name» STORE AS CLOB«ENDFOREACH-»
+«ENDIF-»
+«ENDDEFINE»
+
+
+«REM»
+This is the definition of a sequence for generated keys,
+as well as the needed trigger on the database for using this sequence
+for each new row that is added into the DB.
+«ENDREM»
+«DEFINE SequenceDefinition FOR Table»
+«IF finalKey().isGenerated && !isChild-»
+CREATE SEQUENCE «shortTableName()»_seq;
+«ENDIF-»
+«ENDDEFINE»
+«ENDFOREACH-»

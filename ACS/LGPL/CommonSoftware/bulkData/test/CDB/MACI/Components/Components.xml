@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+
+      <_ Name="BulkDataReceiver"  Code="bulkDataReceiverLibEx1"	
+                                  Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                                  Container="ContainerEx1" ImplLang="cpp" />
+      <_ Name="BulkDataSenderEx1"    Code="bulkDataSenderLibEx1"	
+                                     Type="IDL:alma/bulkdata/BulkDataSenderEx1:1.0"
+                                     Container="ContainerEx1" ImplLang="cpp" />
+
+     <_ Name="BulkDataDistributer"     Code="bulkDataDistributerLib"	
+                                       Type="IDL:alma/bulkdata/BulkDataDistributer:1.0"
+                                       Container="Container1" ImplLang="cpp" />
+     <_ Name="BulkDataSenderDistr"     Code="bulkDataSenderDistrLib"	
+                                       Type="IDL:alma/bulkdatadistr/BulkDataSenderDistr:1.0"
+                                       Container="Container1" ImplLang="cpp" />
+     <_ Name="BulkDataReceiverDistr1"  Code="bulkDataReceiverDistr1Lib"	
+                                       Type="IDL:alma/bulkdatadistr/BulkDataReceiverDistr1:1.0"
+                                       Container="Container1" ImplLang="cpp" />
+     <_ Name="BulkDataReceiverDistr2"  Code="bulkDataReceiverDistr2Lib"	
+                                       Type="IDL:alma/bulkdatadistr/BulkDataReceiverDistr2:1.0"
+                                       Container="Container1" ImplLang="cpp" />
+
+     <_ Name="BulkDataNotifDistributer"  Code="bulkDataDistributerLib"	
+                                         Type="IDL:alma/bulkdata/BulkDataDistributer:1.0"
+                                         Container="ContainerNotifTest" ImplLang="cpp" />
+     <_ Name="BulkDataNotifReceiver"     Code="bulkDataReceiverLibNotif"	
+                                         Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                                         Container="ContainerNotifTest" ImplLang="cpp" />
+     <_ Name="BulkDataNotifReceiver1"    Code="bulkDataReceiver1LibNotif"	
+                                         Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                                         Container="ContainerNotifTest" ImplLang="cpp" />
+     <_ Name="BulkDataNotifSender"       Code="bulkDataSenderLibNotif"	
+                                         Type="IDL:alma/bulkdata/BulkDataSender:1.0"
+                                         Container="ContainerNotifTest" ImplLang="cpp" />
+
+     <_ Name="BulkDataThreadSender"      Code="bulkDataSenderLibThread"	
+                                         Type="IDL:alma/bulkdatadistr/BulkDataSenderDistr:1.0"
+                                         Container="ContainerThreadTest" ImplLang="cpp" />
+     <_ Name="BulkDataThreadDistributer" Code="bulkDataDistributerLib"	
+                                         Type="IDL:alma/bulkdata/BulkDataDistributer:1.0"
+                                         Container="ContainerThreadTest" ImplLang="cpp" />
+     <_ Name="BulkDataThreadReceiver"    Code="bulkDataReceiverLibThread"	
+                                         Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                                         Container="ContainerThreadTest" ImplLang="cpp" />
+
+</Components>		     
+

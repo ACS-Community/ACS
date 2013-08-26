@@ -1,0 +1,8 @@
+1 - Running acsexmplClientComponentIOR MOUNT1
+1 - Welcome to acsexmplClientComponentIOR!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Looking for Object 'MOUNT1' 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Getting stringified IOR
+1 - ----------T--:--:--.--- [GlobalLogger - ] IOR for MOUNT1 is: IOR:xxxxxxxxxxxxxx
+1 - IOR:xxxxxxxxxxxxxx----------T--:--:--.--- [GlobalLogger - ] The end!
+1 - All done!

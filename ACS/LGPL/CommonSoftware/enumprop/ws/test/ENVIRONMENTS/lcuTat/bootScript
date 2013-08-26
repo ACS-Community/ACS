@@ -1,0 +1,129 @@
+#! VxWorks
+#******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: bootScript,v 1.28 2002/12/08 07:40:18 vltsccm Exp $"
+#
+# THIS IS A GENERATED FILE - DO NOT EDIT (unless you know how)
+#
+# Created by
+#   User: bgustafs
+#   Host: te37
+#   Date: Tue Apr  9 14:40:24 MEST 2002
+#   Tool: vccEnvCreate
+#   Proc: vccConfigLcuGenerateBootScript 2.65
+#
+
+#:::   VCCDATA   :::
+# vLcuEnv:	lte39
+# vLcuHost:	te39
+# vLcuIPaddr:	134.171.12.82
+# vLcuHost0:	te39
+# vLcuIPaddr0:	134.171.12.82
+# vLcuHost1:	
+# vLcuIPaddr1:	
+# vLcuHost2:	
+# vLcuIPaddr2:	
+# vLcuTCPport:	2160
+# vLcuCpu:	PPC604
+# vLcuType:	ppc
+# vLcuBsp:	mv2700
+# vBwsEnv:	wte37b
+# vBwsHost:	te37
+# vBwsIPaddr:	134.171.12.204
+# vBwsTCPport:	2241
+# vBwsCpu:	sparc
+# vBwsType:	solaris
+# vGateway:	
+# BOOTROOT:	/diska/vltdata
+# BOOTHOME:	/diska/vltdata/ENVIRONMENTS/lte39
+# VXROOT:	/diska/alma/MAR2002/vw5.4/target
+# vVltHost:	te37
+# vVltIPaddr:	134.171.12.204
+# VLTROOT:	/diska/vlt/OCT2001/CCSLite
+# ACSROOT:	/diska/alma/MAR2002/ACSSW
+# ACE_ROOT_VW:	/diska/alma/MAR2002/TAO/ACE_wrappers/build/vxworks
+# vIntHost:	te37
+# vIntIPaddr:	134.171.12.204
+# INTROOT:	/diska/introot/bgustafs
+# vModHost:	te13
+# vModIPaddr:	134.171.12.222
+# MODROOT:	/export/raid0/home/dev/bgustafs/alma/ACS/acsexmpl/lcu
+# vSysmodlist:	lqs lcc
+# vUsrmodlist:	too
+# vDevlist:	
+#
+
+#:::   ROOT   :::
+putenv "BOOTROOT=/diska/vltdata"
+putenv "BOOTHOME=/diska/vltdata/ENVIRONMENTS/lte39"
+putenv "VLTROOT=/VLTROOT"
+putenv "INTROOT=/diska/introot/bgustafs"
+putenv "MODROOT=/MODROOT"
+putenv "ACSROOT=/ACSROOT"
+putenv "ACE_ROOT_VW=/ACE_ROOT_VW"
+
+#:::   LCUBOOT   :::
+cd "/diska/vlt/OCT2001/CCSLite"
+ld 0,1,"vw/bin/PPC604/lcuboot"
+lcubootLogInit
+
+#:::   NETWORK   :::
+nfsIdSet 138 /* vx */
+nfsAuthUnixSet "te37",138,300 /* vx,vlt */
+lcubootNfsMount "te37","/diska/vltdata",0
+hostAdd "te37","134.171.12.204"
+nfsAuthUnixSet "te37",138,300 /* vx,vlt */
+lcubootNfsMount "te37","/diska/vlt/OCT2001/CCSLite","/VLTROOT"
+hostAdd "te37","134.171.12.204"
+nfsAuthUnixSet "te37",138,300 /* vx,vlt */
+lcubootNfsMount "te37","/diska/introot/bgustafs"
+hostAdd "te13","134.171.12.222"
+nfsAuthUnixSet "te13",138,300 /* vx,vlt */
+lcubootNfsMount "te13","/export/raid0/home/dev/bgustafs/alma/ACS/acsexmpl/lcu","/MODROOT"
+lcubootNfsMount "te37","/diska/alma/MAR2002/ACSSW","/ACSROOT"
+lcubootNfsMount "te37","/diska/alma/MAR2002/TAO/ACE_wrappers/build/vxworks","/ACE_ROOT_VW"
+
+#:::   ENVIRONMENT   :::
+putenv "CPU=PPC604"
+putenv "LOCALENV=lte39"
+putenv "LOCALTCPPORT=2160"
+putenv "HOSTENV=wte37b"
+putenv "HOSTTCPPORT=2241"
+putenv "LOCALHOST=te39"
+putenv "LOCALIPADDRESS=134.171.12.82"
+#putenv "LOCALHOST_1="
+#putenv "LOCALIPADDRESS_1="
+#putenv "LOCALHOST_2="
+#putenv "LOCALIPADDRESS_2="
+lcubootAutoEnvInit /* set rest of variables automatically */
+
+#:::   MODULES   :::
+lcubootAutoLoadNoAbort 1,"lqs",0
+lcubootAutoLoadNoAbort 1,"lcc",0
+lcubootAutoLoadNoAbort 1,"too",0
+# Initialize System-Modules:
+lcubootAutoCdBoot 1,"lqs.boot"
+< lqs.boot
+lcubootAutoCdBoot 1,"lcc.boot"
+< lcc.boot
+
+#:::   DEVICES   :::
+
+#:::   USER   :::
+# Initialize User-Modules:
+lcubootAutoCdBoot 1,"too.boot"
+< too.boot
+
+# Execute User-Script:
+cd getenv("BOOTHOME")
+< userScript
+
+#:::   TERMINATION   :::
+taskDelay 100
+lcubootAutoSpawn 1,"tLccResumeInit",80,0x18,40000,"lccResumeInit"
+lcubootAutoExec 1,"lccWaitInit"
+lcubootLogFinish
+
+# ___END_OF_BOOT_SCRIPT___
+

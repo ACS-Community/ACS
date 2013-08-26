@@ -1,0 +1,235 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupAcsInstance
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsStop,v 1.27 2012/05/30 16:34:04 acaproni Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# mschilli 2004-04-16 added proper command line parsing
+# david 2003-05-14 changed to bash for tat tests
+# gchiozzi 2002-12-12 acsLogSvc was missing for SunOS
+# gchiozzi 2002-11-22 Added stopping CDB
+# gchiozzi 2002-09-30 Removed CDB Server. Not needed any more.
+# bjeram 2002-04-10 added kill acslogsvc
+# psivera  2002-03-18 ported to SUN Solaris
+# gchiozzi 2001-09-19 created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# The following LOG has been delayed because acsStop tests if an instance is running checking if
+# the folder $ACSDATA/<hostName>./ACS_INSTANCE.$ACS_INSTANCE exists.
+#
+# The problem having ACS_LOG_COMMAND at the beginning of this script is that it creates the folder
+# so that the script fails (or better it believes that 
+# $ACSDATA/<hostName>./ACS_INSTANCE.$ACS_INSTANCE has been created by a running ACS)
+#ACS_LOG_COMMAND $@
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_BASEPORT=
+CL_HELP=
+CL_NOCONTSHUTDOWN=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,baseport:,noShutdownLocalContainers
+SHORTOPTS=hb:n
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Stops an Acs instance"
+   echo ""
+	echo "Usage: `basename $0` [OPTIONS]  "
+	echo "Options: "
+	echo "   -b | -baseport INSTANCE          the acs instance (0-9) you want to use"
+	echo "   -h | -help                       prints this help and exits"
+	echo "   -n | -noShutdownLocalContainers  skip shutting down the local containers"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+# -noShutdownLocalContainers
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--baseport)                  CL_BASEPORT=$2 ; shift ;;
+	-b)                          CL_BASEPORT=$2 ; shift ;;
+	--help)                      CL_HELP=true ;; 
+	-h)                          CL_HELP=true ;; 
+	--noShutdownLocalContainers) CL_NOCONTSHUTDOWN=true ;; 
+	-n)                          CL_NOCONTSHUTDOWN=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_BADARGS
+fi
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+export HOST=`getIP`INSTANCE_DIR
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+    export ACS_INSTANCE=$CL_BASEPORT
+fi
+
+# Check if an ACS_INSTANCE or a base port have been set
+# and aborts with error in case they have not.
+#
+# The rationale behind this tests is that without ACS_INSTANCE or a base port
+# the script could potentially stop a wrong instance.
+# Another problem is that it writes the logs in a wrong folder named  
+# "$ACSDATA/<hostName>./ACS_INSTANCE.".
+if [ "X$ACS_INSTANCE" == "X" ]
+then
+	echo "acsStop can't run when neither \$ACS_INSTANCE nor the base port have been properly set!"
+	printUsage
+	exit $EC_BADARGS
+fi
+
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+########################################################################
+#SANITY CHECKS----------------------------------------------------------
+#Cannot shutdown everything if we don't know the process IDs.
+if [ ! -d $INSTANCE_DIR ]
+then
+	ACS_LOG_COMMAND $@
+    ACS_LOG_ERROR "acsStop" "The lock directory '$ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
+    ACS_LOG_INFO "acsStop" "Will continue trying to shutdown ACS although containers cannot be stopped."
+
+#Cannot shutdown everything if this user does not own the processes.
+elif [ ! -w $INSTANCE_DIR ]
+then
+	ACS_LOG_COMMAND $@
+    ACS_LOG_ERROR "acsStop" "Unable to shutdown because the lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
+    exit $EC_CANNOTUSE
+
+#instance directory exists
+else
+	ACS_LOG_COMMAND $@
+    #Lock file specifically for the acsStop script
+    if [ -e $INSTANCE_DIR/.stoplock ]
+    then
+	ACS_LOG_ERROR "acsStop" "Unable to shutdown because another process is attempting to stop the '$ACS_INSTANCE' instance of ACS!"
+	ACS_LOG_ERROR "acsStop" "    Please be patient (or try removing $INSTANCE_DIR/.stoplock)."
+	exit $EC_CANNOTUSE
+    else
+	touch $INSTANCE_DIR/.stoplock
+    fi
+fi
+
+ACS_LOG_INFO "acsStop" "Stopping all ACS processes using 'ACS_INSTANCE=$ACS_INSTANCE'"
+
+########################################################################
+#SHUTDOWN CONTAINERS----------------------------------------------------
+if [ ! "$CL_NOCONTSHUTDOWN" ]
+then
+	ACS_LOG_INFO "acsStop" "Shutting down containers..."
+
+	file=`getLocalContainerNames`
+
+	for line in $file
+	do
+	  ACS_LOG_INFO "acsStop" "Shutting down $line container"
+	  acsStopContainer $line &> /dev/null
+	done
+fi
+
+#-----------------------------------------------------------------------
+#--Stops the logging client
+export LC_PIDFILE=$INSTANCE_DIR/$ACS_LOGCLIENT_PIDFILE
+if [ -e $LC_PIDFILE ]
+then
+    export LC_PID=`cat $LC_PIDFILE`
+    ACS_LOG_INFO "acsStop"  "Stopping file-based logging client."
+    kill $LC_PID &> /dev/null
+fi
+
+########################################################################
+#SHUTDOWN MANAGER-------------------------------------------------------
+ACS_LOG_INFO "acsStop" "Stopping Manager"
+acsManager -k
+
+########################################################################
+#SHUTDOWN NON-STANDARD NOTIFY SERVICES----------------------------------
+#if [ "true" ]
+#then
+#        ACS_LOG_INFO "acsStop" "Shutting down non-standard notify services..."
+
+        file=`getLocalNotifyServiceNames`
+
+        for line in $file
+        do
+          ACS_LOG_INFO "acsStop" "Shutting down $line notify service"
+          acsNotifyService -k -w -n $line &> /dev/null
+        done
+#fi
+
+########################################################################
+#SHUTDOWN ORB SERVICES--------------------------------------------------
+acsStopORBSRVC
+
+# ___oOo___

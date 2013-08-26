@@ -1,0 +1,215 @@
+#ifndef _CDBDAL_IDL_
+#define _CDBDAL_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: cdbDAL.idl,v 1.8 2011/03/16 15:51:39 bjeram Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* almamgr 2003-08-29 Replaced acsutil.idl with acscomponent.idl
+* gchiozzi 2003-05-15 jDAL interface taken out in separate IDL file
+* gchiozzi 2003-05-15 DAO extends ACS:OffShoot interface
+* gchiozzi 2003-05-15 Added include of acsutil.idl
+*/
+
+
+#include <acscommon.idl>
+#include <logging_idl.idl>
+#include "cdbErrType.idl"
+
+#pragma prefix "cosylab.com"
+
+module CDB { 
+
+	// sequences
+	typedef sequence <string> stringSeq;
+	typedef sequence <long> longSeq;
+	typedef sequence <double> doubleSeq;
+
+	/**
+	 * Interface to manipulate xml
+	 * 
+	*/
+	interface DAO : ACS::OffShoot {
+		/*
+		 * Give a long value for a specific property of the Node
+		 */
+		long		get_long( in string propertyName )		raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
+		/*
+		 * Give a double value for a specific property of the Node
+		 */
+		double		get_double( in string propertyName )	raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
+		/*
+		 * Give a string value for a specific property of the Node
+		 */
+		string		get_string( in string propertyName )	raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
+		string		get_field_data( in string propertyName )raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
+		/*
+		 * Give a string seq of the value of specific property of the Node
+		*/
+		stringSeq	get_string_seq( in string propertyName )raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
+		/*
+		 * Give a long seq of the value of specific property of the Node
+		 */
+		longSeq		get_long_seq( in string propertyName )	raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
+		/*
+		 * Give a double seq of the value of specific property of the Node
+		 */
+		doubleSeq	get_double_seq( in string propertyName )raises (cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx);
+
+		void 		destroy();
+	};
+	/*
+	 * Interface of the listener of changes of DAL
+	 */
+	interface DALChangeListener : ACS::OffShoot {
+		/*
+		 * Inform that the object is changed and reconnect/reload it
+		 */
+		oneway void object_changed( in string curl );
+	};
+
+	/**
+	 * DAL Interface
+	 */
+	interface DAL : Logging::LoggingConfigurable {
+		/**
+		 * Name of used configuration, such as "XML" for the XML-based implementation.
+		 */
+		readonly attribute string configuration_name;
+
+		/**
+		 * Gives an xml string of a given curl  
+		 */
+		string	get_DAO( in string curl ) raises (cdbErrType::CDBRecordDoesNotExistEx,cdbErrType::CDBXMLErrorEx);
+		/**
+		 * Gives a DAO node of a given curl
+		 */
+		DAO get_DAO_Servant( in string curl )	raises (cdbErrType::CDBRecordDoesNotExistEx, cdbErrType::CDBXMLErrorEx);
+		oneway 	void 	shutdown();
+
+		//data change handling
+		/**
+		 * Add a listener to the DAL
+ 		 * \param the listener to add
+		 * \return ID of the listener added 
+		 */
+		long	add_change_listener(  in DALChangeListener listener );
+		/**
+		 * Said to that listener to listen that curl for changes
+		 * \param the curl listened
+		 * \param the id of the listener
+		 */
+		void	listen_for_changes( in string curl, in long listenerID );
+		/**
+		 * Remove the listener
+		 * \param the id of the listener to remove
+		 */
+		void	remove_change_listener( in long listenerID );
+
+		// listing
+		/**
+		 * Give a list of the nodes' (non-DAOs) names
+		 * \param curl to list
+		 * \return string list of the nodes' names
+		 */
+		string	list_nodes( in string name );
+
+		/**
+		 * Give a list of nodes' (DAOs) names
+		 * \param curl to list
+		 * \param string list of nodes' names
+		 */
+		string  list_daos( in string name );
+	};
+
+	/**
+	 * Interface of writable DAO
+	 */
+	interface WDAO : DAO {
+		/**
+		 * Set a long value in the given property of the current Node
+		 * \param property name to set the value
+		 * \param the value to write
+		 */
+		void set_long(in string propertyName, in long value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
+		/**
+		 * Set a double value in the given property of the current Node
+		 * \param property name to set the value
+		 * \param the value to write
+		 */
+		void set_double(in string propertyName, in double value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
+		/**
+		 * Set a string value in the given property of the current Node
+		 * \param property name to set the value
+		 * \param the value to write
+		 */
+		void set_string(in string propertyName, in string value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
+		void set_field_data(in string propertyName, in string value) raises(cdbErrType::WrongCDBDataTypeEx, cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
+		/**
+		 * Set a string sequence value in the given property of the current Node
+		 * \param property name to set the value
+		 * \param the value to write
+		 */
+		void set_string_seq(in string propertyName, in stringSeq value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
+		void set_long_seq(in string propertyName, in longSeq value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
+		/**
+		 * Set a double sequence value in the given property of the current Node
+		 * \param property name to set the value
+		 * \param the value to write
+		 */
+		void set_double_seq(in string propertyName, in doubleSeq value) raises(cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBFieldIsReadOnlyEx);
+	};
+	
+	/**
+	 * Interface of writable DAL
+	 */
+	interface WDAL : DAL {
+		/**
+		 * Gives a Writable DAO Node of the given curl
+		 * \param curl of the root node to return
+		 * \return WDAO Node of the given curl
+		 */
+		WDAO get_WDAO_Servant(in string curl) raises(cdbErrType::CDBRecordDoesNotExistEx, cdbErrType::CDBRecordIsReadOnlyEx, cdbErrType::CDBXMLErrorEx);
+		/**
+		 * Create node in that curl given a xml string. It fails if the record on that curl aleady exist.
+		 * \param curl where the new node is going to be in the tree
+		 * \param the string xml to create the node
+		 */
+		void add_node(in string curl, in string xml) raises(cdbErrType::CDBRecordAlreadyExistsEx, cdbErrType::CDBXMLErrorEx, cdbErrType::CDBExceptionEx);
+		/**
+		 * Remove the node of the given curl
+		 * \param curl of the node to remove
+		 */
+		void remove_node(in string curl) raises(cdbErrType::CDBRecordDoesNotExistEx, cdbErrType::CDBRecordIsReadOnlyEx);
+		/**
+		 * Change content of a node identified by curl so given xml is scanned for differences which are applied.
+		 * \param curl of the node to change
+		 * \param the string of the xml
+		 */
+		void set_DAO(in string curl, in string xml) raises(cdbErrType::CDBRecordDoesNotExistEx, cdbErrType::CDBFieldDoesNotExistEx, cdbErrType::CDBRecordIsReadOnlyEx, cdbErrType::CDBXMLErrorEx, cdbErrType::CDBExceptionEx);
+	};
+
+};
+
+#endif /* _CDBDAL_IDL_ */

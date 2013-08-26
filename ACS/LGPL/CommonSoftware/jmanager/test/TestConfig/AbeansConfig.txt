@@ -1,0 +1,3 @@
+#model.Channel=abeans.models.channel.ChannelLibrary
+#plug.Simulator=abeans.pluggable.simulator.SimulatorPlug
+#plug.CDBDAL=abeans.pluggable.acs.cdb.dal.CDBDALPlug

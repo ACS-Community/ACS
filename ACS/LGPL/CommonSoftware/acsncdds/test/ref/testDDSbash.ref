@@ -1,0 +1,14 @@
+1 - 1
+1 - yyyy-mm-ddThh:mm:ss.mmm PySingletonClient disconnect - Shutdown called for client
+1 - Processing results of test:  1
+1 - >>>DONE
+1 - 10
+1 - yyyy-mm-ddThh:mm:ss.mmm PySingletonClient disconnect - Shutdown called for client
+1 - Processing results of test:  10
+1 - >>>DONE
+1 - 20
+1 - yyyy-mm-ddThh:mm:ss.mmm PySingletonClient disconnect - Shutdown called for client
+1 - Processing results of test:  20
+1 - >>>DONE
+1 - ===
+1 - Finished (3/3 test done properly)

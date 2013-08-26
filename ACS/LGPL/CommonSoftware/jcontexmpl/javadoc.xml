@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="jcontexmpl" default="javadoc">
+    <target name="javadoc">
+        <javadoc destdir="doc\api" access="private" source="1.4"
+            use="true" notree="false" nonavbar="false" noindex="false"
+            splitindex="true" author="true" version="true"
+            nodeprecatedlist="false" nodeprecated="false"
+            packagenames="alma.demo.EventSupplierImpl,alma.demo.client,alma.demo.HelloDemoImpl,alma.demo.LampAccessImpl,alma.acs.component.dynwrapper,alma.acs.component.client,alma.demo.EventConsumerImpl,alma.demo.client.guiapps,alma.demo.XmlComponentImpl,alma.demo.LampCallbackImpl"
+            sourcepath="src;test" classpath="bin;lib\XmlComponent.jar;Y:\alma\ACS-3.0\ACSSW\lib\endorsed\xercesImpl.jar;Y:\alma\ACS-3.0\ACSSW\lib\endorsed\xmlParserAPIs.jar;Y:\alma\ACS-3.0\ACSSW\lib\junit.jar;Y:\alma\ACS-3.0\JacORB\lib\jacorb.jar;Y:\alma\ACS-3.0\ACSSW\lib\xmljbind.jar;Y:\alma\ACS-3.0\ACSSW\lib\acsjlog.jar;Y:\alma\ACS-3.0\ACSSW\lib\acsTestEntities.jar;Y:\alma\ACS-3.0\ACSSW\lib\systementities.jar;Y:\alma\ACS-3.0\ACSSW\lib\xmlentity.jar;Z:\introot\lib\jcont.jar;Y:\alma\ACS-3.0\ACSSW\lib\acscomponent.jar;Y:\alma\ACS-3.0\ACSSW\lib\baci.jar;Y:\alma\ACS-3.0\ACSSW\lib\acserr.jar;Y:\alma\ACS-3.0\ACSSW\lib\ACSErrType.jar;Y:\alma\ACS-3.0\ACSSW\lib\acserrj.jar;Y:\alma\ACS-3.0\ACSSW\lib\maci.jar;Y:\alma\ACS-3.0\ACSSW\lib\acsexmplLamp.jar;Y:\alma\ACS-3.0\ACSSW\lib\cdbDAL.jar;Z:\introot\lib\archive_database.jar;Z:\introot\lib\archive_internal_if.jar;Z:\introot\lib\archive.jar;Z:\introot\lib\xmldb-common.jar;Z:\introot\lib\xmldb-api-sdk-20021118.jar;Z:\introot\lib\xmldb-api-20021118.jar;Z:\introot\lib\xindice-1.1b.jar;Z:\introot\lib\jdom.jar;Z:\introot\lib\commons-logging-1.0.1.jar;Z:\introot\lib\LampAccess.jar;Z:\introot\lib\LampCallback.jar;lib\HelloDemo.jar;Y:\alma\ACS-3.0\ACSSW\lib\jACSUtil.jar;lib\EventComponent.jar;lib\LampAccess.jar;lib\LampCallback.jar;Y:\alma\ACS-3.0\ACSSW\lib\acsnc.jar;Y:\alma\ACS-3.0\ACSSW\lib\acsexmplFridge.jar;Y:\alma\ACS-3.0\ACSSW\lib\jcontnc.jar"/>
+    </target>
+</project>
+

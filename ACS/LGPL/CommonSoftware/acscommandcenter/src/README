@@ -1,0 +1,69 @@
+
+1) accEnableVars 
+
+  deals with what is apparently a bash problem
+
+
+  -scenario-
+  
+  we want to start the loggingClient as a commandcenter tool, the output should be
+  redirected to some file in the user's home. to have redirection operator and environment
+  variables available, we want to run bash.
+
+  the desirable tool definition for the loggingClient would be:
+        <command>bash -c "loggingClient ? -ORBInitRef NameService=? > $HOME/? "</command>
+
+  the quotes around the argument to -c are necessary. on the command line this works well.
+
+
+  -problem-
+
+  when issuing this command through java's Runtime.exec(), bash fails to parse the
+  positional parameters. it seems to detect an EOF as soon as it encounters the first blank.
+
+  this can be verified with something as easy as 
+  <command>bash -c "echo bla"</command>
+
+    bla": -c: line 1: unexpected EOF while looking for matching `"'
+    bla": -c: line 2: syntax error: unexpected end of file
+
+
+  -investigations-
+
+   neither of the following attempts solved the problem
+   - adding "exec": bash -c exec "echo bla"
+   - escaping " and blanks with back-slashes
+   - replacing " with &quot;
+
+
+  -solution-
+
+  provide a trivial script that wraps the invokation of the loggingClient executable:
+  bash -c "loggingClient $2 $3 $4 $5 $6 $7 $8 $9 > $1"
+
+
+  this works quite nicely but the command's output won't be written to the console.
+  the eval command does the job:
+  
+  eval "loggingClient $2 $3 $4 $5 $6 $7 $8 $9 > $1"
+  
+  
+2) accStarter
+
+   encapsulates shell features like redirection (redirection target can be specified as an option).
+   but this feature could be achieved through accEnableVars as well. more important is:
+   it cares for putting the process-id of started processes into pid-files where accStopper can get them
+   
+   to be able to store the pid-files in the user's home, variable resolution needs to be available.
+   in other words, accEnableVars must precede the invokation of accStarter.
+
+
+3) accStopper
+   
+   stops processes whose process-ids are stored in one or more files (accStarter does put them there)
+
+   to be able to read the pid-files from the user's home, variable resolution needs to be available.
+   in other words, accEnableVars must precede the invokation of accStopper.
+
+
+

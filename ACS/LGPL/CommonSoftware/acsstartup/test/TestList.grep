@@ -1,0 +1,31 @@
+SUP.
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+Grep me out
+name service error resolving
+class CosNaming.NotFound
+==> An alternative is to use the 'killACS' command
+ERROR - the temporary file
+Info - waiting for manager to shutdown
+acsstartupGenericProcess.sh
+sleep 
+Killed
+Thread to run the ORB
+service as:
+priority:
+warning, got duplicate tcp line
+Bound ID: InterfaceRepository
+CDB data is in:
+acserr.idl: No such file or directory
+Starting ACS version
+Using ALMA Base Software tag
+processing /tmp/acsIrfeedDyn.[0-9]*\.idl
+XML_TopologyFactory
+TAO_MonitorManager
+TAO ([0-9]*|[0-9]*)
+Using 1 threads for each Consumer.
+Using 1 threads for each ConsumerAdmin
+Using 1 threads for each Supplier.
+Using reactive client control.
+ORB status
+^1 - 1[0-9][0-9][0-9]$

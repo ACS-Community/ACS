@@ -1,0 +1,164 @@
+#***********************************************************************
+# E.S.O. - VLT project
+#
+# buildTestCCS
+#
+# "@(#) $Id: acsDHCPBoot,v 1.127 2006/01/12 23:53:54 sharring Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# almamgr 2003-08-31 If host name unknown, use 'alma'
+# dave 2003-08-26 get rid of extra "." in the fully qualified hostname on NRAO machines
+# dave 2003-08-26 now check for multiple addresses in $IP.  the first IP that passes an nslookup inspection is used.
+#                 this is not necessarily etho0 though!
+# dave 2003-08-26 removed most of the output statements, but added checks on everything that print error messages 
+#                 and exit the script on any error condition
+# david 2002-10-23 added a '-' in regular expression and made backups of network config in /tmp
+# gchiozzi 2002-06-28 Added more diagnostic. Made $NETWORKING env var not compulsory
+# rle/jib 2002-04-10  Created
+#
+
+#************************************************************************
+#   NAME
+#   acsDHCPBoot - Root script to configure dhcp networking for ACS
+#
+#   SYNOPSIS
+#   acsDHCPBoot
+# 
+#   DESCRIPTION
+#   acsDHCPBoot should be should only be executed if the station 
+#   is recognized as a networked station (the NETWORKING 
+#   variable defined under /etc/sysconfig/network is used). 
+#   Currently only a WARNING is issued if this is not the case, bacause
+#   NRAO Laptop installation does not set the NETWORKING variable.
+#
+#   acsDHCPBoot detects if the station is using DHCP by looking at the BOOTPROTO
+#   variable under /etc/sysconfig/network-scripts/ifcfg-eth0 and if it is the
+#   case it retrieves the IP, hostname, and fully qualified hostname to set
+#   the correct hostname and to replace the network configuration files by
+#   correct ones (/etc/hosts, /etc/sysconfig/network, /etc/HOSTNAME).
+#
+#   If the host name of the machine is unknown/undefined, 'alma' in 'localdomain'
+#   is used and a warning is issued
+#
+#   In order to have this script executed automatically at boot time:
+#   - login as root
+#   - put the init configuration file acsDHCPConfig that you find
+#     $ACSROOT/config/rc.d/init.d/ into /etc/rc.d/init.d and make it executable.
+#   - Create the following links:
+#     cd /etc/rc.d/rc3.d; ln -s ../init.d/acsDHCPConfig S99ZacsDHCPConfig
+#     cd /etc/rc.d/rc4.d; ln -s ../init.d/acsDHCPConfig S99ZacsDHCPConfig
+#     cd /etc/rc.d/rc5.d; ln -s ../init.d/acsDHCPConfig S99ZacsDHCPConfig
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+echo "acsDHCPBoot: Configuring for dhcp"
+
+#Used to ensure backup file names are unique
+MYTIME=`/bin/date -Iseconds`
+
+# Determine the active ethernet interface
+cd /etc/sysconfig/network-scripts
+
+ethernet_config_files=`ls -1r ifcfg-*`
+
+for file in $ethernet_config_files
+do
+	interface=`echo $file | cut -d"-" -f2`
+	/sbin/ifconfig $interface 2> /dev/null | grep -q "UP BROADCAST RUNNING" && export ETHERNET_INTERFACE=$interface
+done 
+
+if [ XX"$ETHERNET_INTERFACE" = XX ]; then
+	echo "WARNING!: No active ethernet interface found!"
+	echo "Terminating this script"
+	exit 1
+fi
+
+cd -
+
+# if we've made it this far without exiting, then we have found an active ethernet interface
+# which we will now configure. We will make backups of the files that we modify and place them in /tmp.
+if [ -f /etc/sysconfig/network ]; then
+
+	echo "Backups of files modified by this script can be found in /tmp/ with \".$MYTIME\" appended to them..."
+	echo ""
+
+	# sourcing /etc/sysconfig/network
+	. /etc/sysconfig/network
+
+	if [ "$NETWORKING" != "yes" ]; then
+		echo "WARNING!: Networking=\"$NETWORKING\"!"
+	fi
+
+	# make a backup
+	cp /etc/sysconfig/network /tmp/network.$MYTIME
+
+	if [ -f /etc/sysconfig/network-scripts/ifcfg-$ETHERNET_INTERFACE ]; then
+
+		# sourcing /etc/sysconfig/network-scripts/ifcfg-$ETHERNET_INTERFACE
+		.  /etc/sysconfig/network-scripts/ifcfg-$ETHERNET_INTERFACE
+
+		if [ "$BOOTPROTO" = "dhcp" ]; then
+
+			IP=`/sbin/ifconfig $ETHERNET_INTERFACE | grep inet | grep Bcast | cut -d: -f2 |   cut -d' ' -f1`
+
+			FQHNAME=`nslookup $IP 2>/dev/null 2>/dev/null | grep "name ="   | cut -d= -f2 | sed 's/ //g' | sed 's/[.]$//g'`
+
+			if [ XX"$FQHNAME" = XX ]; then
+				echo "WARNING!: I have no idea what the name of this host is!"
+				echo "          Using 'alma'!"
+				echo "IP=\"$IP\""
+				#echo "Terminating this script"
+				#exit 1
+				FQHNAME=`echo alma.localdomain`
+			fi
+
+			HNAME=`echo $FQHNAME | cut -d. -f1`
+			cat /etc/sysconfig/network | sed   s/HOSTNAME=[\",a-z,A-Z,0-9,-,_]*/HOSTNAME=$HNAME/g > /etc/sysconfig/network
+			# make a backup
+			cp /etc/HOSTNAME /tmp/HOSTNAME.$MYTIME
+			echo $HNAME > /etc/HOSTNAME
+			/bin/hostname $HNAME
+
+			# make a backup
+			cp /etc/hosts /tmp/hosts.$MYTIME
+			echo "#Generated by the acsDHCPBoot script" >  /etc/hosts
+			echo "127.0.0.1    localhost.localdomain localhost" >>  /etc/hosts
+			echo "IP=\"$IP\" Fully Qualified Hostname=\"$FQHNAME\" Hostname=\"$HNAME\""
+			echo "$IP  $FQHNAME        $HNAME" >> /etc/hosts
+		else
+			echo "WARNING!: The boot protocol is \"$BOOTPROTO\"!"
+			echo "This script cannot use anything other than \"dhcp\"!"
+			echo "Terminating this script"
+			exit 1
+		fi
+	else
+		echo "WARNING!: Could not find /etc/sysconfig/network-scripts/ifcfg-$ETHERNET_INTERFACE"
+		echo "Terminating this script"
+		exit 1
+	fi
+else
+	echo "WARNING!: /etc/sysconfig/network does not exist!"
+	echo "Terminating this script"
+	exit 1
+fi
+
+echo "acsDHCPBoot Done!"
+
+#
+# ___oOo___

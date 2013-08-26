@@ -1,0 +1,212 @@
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# sturolla  2005-09-07  created
+#
+
+#************************************************************************
+#   NAME
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#   The function os_discovery returns, for linux distributions
+#   the distribution name and the release number
+#   These are the distribution covered, return value in $DISTRO
+#   RedHat Linux 	- RHLX
+#   Redhat Enterprise	- RHEL
+#   Scientific Linux    - SL
+#   Fedorca Core	- FC
+#   Gentoo		- GENTOO
+#   Debian		- DEBIAN
+#   Mandrake Linux	- MDRK
+# 
+#   The release number is returned in variable $REL
+#
+#   FILES
+#   depending on distributions, normally all the /etc/*release files
+#   For example:
+#   RedHat     : /etc/redhat-release
+#   Fedora     : /etc/redhat-release
+#   Debian     : /etc/debian-version
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#   Two variables $DISTRO and $REL containing Linux Distribution name and release number
+#
+#   CAUTIONS AND LIMITATIONS
+#
+#   EXAMPLES
+#   % os_discovery
+#   % echo "$DISTRO - $REL"
+#   RHLX - 9
+#
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+
+setup_colors() {
+  if [ "$OS" == "LINUX" ]; then
+      BOOTUP=color
+  else
+      BOOTUP=none
+  fi
+  RES_COL=60
+  MOVE_TO_COL="echo -en \\033[${RES_COL}G"
+  SETCOLOR_SUCCESS="echo -en \\033[1;32m"
+  SETCOLOR_FAILURE="echo -en \\033[1;31m"
+  SETCOLOR_WARNING="echo -en \\033[1;33m"
+  SETCOLOR_NORMAL="echo -en \\033[0;39m"
+}
+
+echo_success() {
+  [ "$BOOTUP" = "color" ] && $MOVE_TO_COL
+  echo -n "["
+  [ "$BOOTUP" = "color" ] && $SETCOLOR_SUCCESS
+  echo -n $"  OK  "
+  [ "$BOOTUP" = "color" ] && $SETCOLOR_NORMAL
+  echo -n "]"
+  echo -ne "\r\n"
+  return 0
+}
+
+echo_failure() {
+  [ "$BOOTUP" = "color" ] && $MOVE_TO_COL
+  echo -n "["
+  [ "$BOOTUP" = "color" ] && $SETCOLOR_FAILURE
+  echo -n $"FAILED"
+  [ "$BOOTUP" = "color" ] && $SETCOLOR_NORMAL
+  echo -n "]"
+  echo -ne "\r\n"
+  return 1
+}
+
+os_discovery ()
+{
+	#   Solaris: uname command is enough
+	#
+	#   Linux
+	# RedHat     : /etc/redhat-release
+	# Fedora     : /etc/redhat-release
+	# Debian     : /etc/debian-version
+	# Slackware  : /etc/slackware-version
+	#
+	# RHEL
+	# Red Hat Enterprise Linux WS release 4 (Nahant Update 1)
+	######################################################
+	# SL
+	# Scientific Linux SL release 4.1 (Beryllium)
+	######################################################
+	# RH
+	# Red Hat Linux release 9 (Shrike)
+	######################################################
+	# Fedora
+	# Fedora Core release 4 (Stentz)
+	######################################################
+	# Mandrake
+	# Mandrakelinux release 10.1 (Cooker) for i586
+	######################################################
+	# Gentoo
+	# Gentoo Base System version 1.6.12
+
+	# By Default the OS/Release are unknown
+	DISTRO='UNKNOWN'
+	REL='UNKNOWN'
+
+	# Here start the research
+	OS=`uname -s`
+
+
+	# First RedHat and connected distributions (Scientific Linux, Fedora)
+	case $OS in
+		'Linux'   )     # Need to know what distribution and get release number
+				check_linux;;
+		'SunOS' )	# Much easier, uname command is enough
+				check_solaris;;
+	esac
+}
+
+check_solaris ()
+{
+	OS='SOLARIS'
+	DISTRO='SOLARIS'
+	REL=`uname -r`
+}
+
+check_linux ()
+{
+	
+	OS='LINUX'
+	# Standard release files for different distributions
+	RH=/etc/redhat-release
+	DB=/etc/debian-version
+	SL=/etc/slackware-version
+	SU=/etc/SuSE-release
+	GT=/etc/gentoo-release
+	MD=/etc/mandrake-release
+
+	if [ -f $RH ] 
+   	then
+		INFO=`cat $RH`
+		# It can be Redhat, Scientific Linux or Fedora
+		# Check with first word
+		DUMMY=`cat $RH | cut -d' ' -f1`
+
+		case $DUMMY 
+		in
+			'Red') 		# It can be Redhat standard or RedHat Enterprise
+					case `cat $RH | cut -d' ' -f3` 
+					in
+						'Linux') # Old RedHat Free distribution (7.3, 8.0 or 9)
+					 		DISTRO='RHLX'
+					 		REL=`cat $RH | cut -d' ' -f5` ;;
+						'Enterprise') # RedHat Enterprise
+					 		DISTRO='RHEL'
+					 		REL=`cat $RH | cut -d' ' -f7` ;;
+					esac;;
+			'Scientific') 	# Scientific Linux
+					DISTRO='SL'
+					REL=`cat $RH | cut -d' ' -f5` ;;
+			'Fedora') 	# Fedora Core 
+					DISTRO='FEDORA'
+					REL=`cat $RH | cut -d' ' -f4` ;;
+		esac
+	fi
+
+	# then let's check other distributions, first SuSe
+	if [ -f $SU ]
+	then
+		# SuSe 
+		DISTRO=SUSE
+		REL=`grep -i SuSe $SU |  cut -d' ' -f3` 
+	fi
+
+	# Then Mandrake
+	if [ -f $MD ] 
+	then
+		DISTRO='MDRK'
+		REL=`cat $MD | cut -d' ' -f3` 
+	fi
+
+	# Debian
+	if [ -f $DB ] 
+	then
+		DISTRO='DEBIAN'
+		REL=""
+	fi
+	
+	if [ -f $GT ] 
+	then
+		DISTRO='GENTOO'
+		REL=`cat $GT` 
+	fi
+}

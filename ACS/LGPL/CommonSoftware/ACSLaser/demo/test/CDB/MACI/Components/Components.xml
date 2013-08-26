@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!--
+  - Configuration for alarm system test.
+  -
+  - Author:
+  -    Klemen Zagar (Cosylab)
+  -
+  - History:
+  -   2005-06-13  KZ  Created
+ -->
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0"
+            xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+            xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<_ Name="ALARM_SOURCE_PS"
+	   Type="IDL:alma/alarmsystemdemo/PS:1.0"
+	   Code="alma.alarmsystemdemo.PSImpl.PSHelper" 
+	   Container="frodoContainer"  ImplLang="java" />
+	<_ Name="ALARM_SOURCE_MOUNT"
+	   Type="IDL:alma/alarmsystemdemo/Mount:1.0"
+	   Code="alma.alarmsystemdemo.MountImpl.MountHelper" 
+	   Container="frodoContainer"  ImplLang="java" />
+	<_ Name="ALARM_SOURCE_ANTENNA"
+	   Type="IDL:alma/alarmsystemdemo/Antenna:1.0"
+	   Code="alma.alarmsystemdemo.AntennaImpl.AntennaHelper" 
+	   Container="javaContainer"  ImplLang="java" />
+        <_ Name="ALARM_SOURCE_MOUNTCPP"
+	   Type="IDL:alma/alarmsystemdemo/Mount:1.0"
+	   Code="alsysMountImpl" 
+	   Container="bilboContainer"  ImplLang="cpp" />
+        <_ Name="ALARM_SOURCE_MOUNTPY"
+	   Type="IDL:alma/alarmsystemdemo/Mount:1.0"
+	   Code="AlSysDemo.alSysDemo" 
+	   Container="aragornContainer"  ImplLang="py" />
+	<_ Name="MULTIPLE_FAILURES"
+	   Type="IDL:alma/alarmsystemdemo/MF:1.0"
+	   Code="alma.alarmsystemdemo.MFImpl.MFHelper" 
+	   Container="javaContainer"  ImplLang="java" />
+</Components>
+

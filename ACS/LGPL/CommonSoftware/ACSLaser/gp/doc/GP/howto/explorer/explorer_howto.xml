@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+	<head>
+		<title>Using GP Explorers</title>
+		<section>AB/CO/AP</section>
+      <author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+	</head>
+	<!--
+
+	SECTION 1
+	
+  -->
+	<section>
+		<title>Using Explorers</title>
+		<description>
+			<p>This section describes the functionality provided by GP to build full-fledged explorer.</p>
+		</description>
+	</section>
+</document>
+

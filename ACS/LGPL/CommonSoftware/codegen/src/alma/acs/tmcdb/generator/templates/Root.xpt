@@ -1,0 +1,9 @@
+«IMPORT tmcdbTables»
+
+«DEFINE Root FOR TMCDBModel»
+«EXPAND DropTablesSQL::Root»
+«EXPAND CreateOracleSQL::Root»
+«EXPAND DropOracleSequencesSQL::Root»
+«EXPAND CreateHsqldbSQL::Root»
+«EXPAND HibernateMappingList::Root»
+«ENDDEFINE»

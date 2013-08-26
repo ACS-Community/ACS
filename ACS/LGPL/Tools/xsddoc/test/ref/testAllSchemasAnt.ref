@@ -1,0 +1,144 @@
+1 - === Processing
+1 - Buildfile: build.xml
+1 - 
+1 - xsddoc:
+1 -    [xsddoc] found schema testBACI.xsd
+1 -    [xsddoc] found schema testCDB.xsd
+1 -    [xsddoc] found schema testLAMP.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:CDB:1.0}ArrayElement from file .../schemas/testCDB.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:CDB:1.0}Array from file .../schemas/testCDB.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}CharacteristicModel from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}CharacteristicComponent from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}Property from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}TypelessProperty from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}Ppattern_ from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}Ppattern from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}ROpattern from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}Pdouble_ from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}Pdouble from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}ROdouble from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}RWdouble from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}Pstring_ from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}Pstring from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}ROstring from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}RWstring from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}Plong_ from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}Plong from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}ROlong from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}RWlong from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PuLongLong_ from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PlongLong_ from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PuLongLong from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PlongLong from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}ROuLongLong from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}ROlongLong from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}RWuLongLong from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}RWlongLong from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}RWpattern from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PEnum_ from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PEnum from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}ROEnum from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}RWEnum from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PdoubleSeq_ from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PdoubleSeq from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}ROdoubleSeq from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}RWdoubleSeq from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PlongSeq_ from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PlongSeq from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}ROlongSeq from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}RWlongSeq from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PstringSeq_ from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}PstringSeq from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:BACI:1.0}ROstringSeq from file .../schemas/testBACI.xsd
+1 -    [xsddoc] process complexType {urn:schemas-cosylab-com:LAMP:1.0}LAMP from file .../schemas/testLAMP.xsd
+1 -    [xsddoc] process element {urn:schemas-cosylab-com:LAMP:1.0}LAMP from file .../schemas/testLAMP.xsd
+1 - 
+1 - BUILD SUCCESSFUL
+1 - === Generated documentation listing
+1 - doc2:
+1 - help-doc.html
+1 - index-all.html
+1 - index.html
+1 - noNamespace
+1 - overview-all.html
+1 - overview-namespaces.html
+1 - schema-summary.html
+1 - stylesheet.css
+1 - urn_schemas-cosylab-com_BACI_1.0
+1 - urn_schemas-cosylab-com_CDB_1.0
+1 - urn_schemas-cosylab-com_LAMP_1.0
+1 - 
+1 - doc2/noNamespace:
+1 - index.html
+1 - overview-namespace.html
+1 - 
+1 - doc2/urn_schemas-cosylab-com_BACI_1.0:
+1 - complexType
+1 - index.html
+1 - overview-namespace.html
+1 - 
+1 - doc2/urn_schemas-cosylab-com_BACI_1.0/complexType:
+1 - CharacteristicComponent.html
+1 - CharacteristicModel.html
+1 - Pdouble_.html
+1 - Pdouble.html
+1 - PdoubleSeq_.html
+1 - PdoubleSeq.html
+1 - PEnum_.html
+1 - PEnum.html
+1 - Plong_.html
+1 - Plong.html
+1 - PlongLong_.html
+1 - PlongLong.html
+1 - PlongSeq_.html
+1 - PlongSeq.html
+1 - Ppattern_.html
+1 - Ppattern.html
+1 - Property.html
+1 - Pstring_.html
+1 - Pstring.html
+1 - PstringSeq_.html
+1 - PstringSeq.html
+1 - PuLongLong_.html
+1 - PuLongLong.html
+1 - ROdouble.html
+1 - ROdoubleSeq.html
+1 - ROEnum.html
+1 - ROlong.html
+1 - ROlongLong.html
+1 - ROlongSeq.html
+1 - ROpattern.html
+1 - ROstring.html
+1 - ROstringSeq.html
+1 - ROuLongLong.html
+1 - RWdouble.html
+1 - RWdoubleSeq.html
+1 - RWEnum.html
+1 - RWlong.html
+1 - RWlongLong.html
+1 - RWlongSeq.html
+1 - RWpattern.html
+1 - RWstring.html
+1 - RWuLongLong.html
+1 - TypelessProperty.html
+1 - 
+1 - doc2/urn_schemas-cosylab-com_CDB_1.0:
+1 - complexType
+1 - index.html
+1 - overview-namespace.html
+1 - 
+1 - doc2/urn_schemas-cosylab-com_CDB_1.0/complexType:
+1 - ArrayElement.html
+1 - Array.html
+1 - 
+1 - doc2/urn_schemas-cosylab-com_LAMP_1.0:
+1 - complexType
+1 - element
+1 - index.html
+1 - overview-namespace.html
+1 - 
+1 - doc2/urn_schemas-cosylab-com_LAMP_1.0/complexType:
+1 - LAMP.html
+1 - 
+1 - doc2/urn_schemas-cosylab-com_LAMP_1.0/element:
+1 - LAMP.html

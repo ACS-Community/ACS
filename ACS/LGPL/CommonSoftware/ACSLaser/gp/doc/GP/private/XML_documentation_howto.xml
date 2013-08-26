@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+	<head>
+		<title>Guidelines and template to write XML documentation</title>
+		<section>AB/CO/AP</section>
+      <author firstname="Lionel" lastname="Mestre" ccid="97307"/>
+		<reviewers>TBD</reviewers>
+		<currentVersion>0.1 (2002/08)</currentVersion>
+		<history>
+    0.1 (2002/07) : First Draft<br/>
+		</history>
+	</head>
+	<!--
+
+	SECTION 1
+	
+  -->
+	<section>
+		<title>Abstract</title>
+		<description>
+			<p>This document gives you the guidelines and is a template to help you to produce documentation in XML/HTML.</p>
+		</description>
+	</section>
+	<!--
+  
+	SECTION 2
+	
+	-->
+	<section>
+		<title>HTML basic</title>
+		<description>
+			<p>We give here the minimum you need to know in HTML to start.</p>
+		</description>
+		<!--
+    
+        Sub Section
+                
+    -->
+		<section>
+			<title>Use of CSS with the class attribute</title>
+			<description>
+				<p>Some styles are defined in the XLST stylesheet that is applied to the XML documents you write. You use them throught the <code>class</code> attribute in HTML tags such as <code>&lt;p></code>, <code>&lt;li></code> or <code>&lt;td></code>. By default, if no style is defined through <code>class</code>, the style normal is applied.
+        </p>
+				<p>The following style are available. More can be made available if needed :
+        </p>
+				<table border="1" cellpadding="6">
+					<tr class="cellHeader">
+						<td>style name</td>
+						<td>description</td>
+						<td>example</td>
+					</tr>
+					<tr>
+						<td>
+							<code>normal</code>
+						</td>
+						<td>the normal style to use with all regular text.</td>
+						<td class="normal">example</td>
+					</tr>
+					<tr>
+						<td>
+							<code>small</code>
+						</td>
+						<td>the small style to use with small text.</td>
+						<td class="small">example</td>
+					</tr>
+					<tr>
+						<td>
+							<code>big</code>
+						</td>
+						<td>the big style to use with big text.</td>
+						<td class="big">example</td>
+					</tr>
+					<tr>
+						<td>
+							<code>cellHeader</code>
+						</td>
+						<td>header style to use in table.</td>
+						<td class="cellHeader">example</td>
+					</tr>
+				</table>
+			</description>
+		</section>
+		<!--
+    
+        Sub Section
+        
+    -->
+		<section>
+			<title>Useful tags</title>
+			<description>
+				<table border="1" cellpadding="3" width="90%">
+					<tr class="cellHeader">
+						<td>tag name</td>
+						<td>description</td>
+						<td>example</td>
+						<td>result</td>
+					</tr>
+					<tr>
+						<td>
+							<code>&lt;p></code>
+						</td>
+						<td>Defines a paragraph. Should be used with a <code>class</code> attribute.</td>
+						<td>
+							<code>&lt;p>blah blah&lt;/p></code>
+						</td>
+						<td>
+							<p>blah blah</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>&lt;br></code>
+						</td>
+						<td>Defines a return. Must be used as a proper XML tag that opens and closes.</td>
+						<td>
+							<code>line 1&lt;br/>line 2</code>
+							<br/>
+							<br/>or<br/>
+							<br/>
+							<code>&lt;br>line 1&lt;/br>&lt;br>line 2&lt;/br></code>
+						</td>
+						<td>line 1<br/>line 2<br/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>&lt;pre></code>
+						</td>
+						<td>Defines a preformatted portion of text. Everything in between the tags is taken as it is.</td>
+						<td>
+							<pre>&lt;pre>public static void main(String[] args) {
+  System.out.println("Hello");
+}&lt;pre></pre>
+						</td>
+						<td>
+							<pre>public static void main(String[] args) {
+  System.out.println("Hello");
+}</pre>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>&lt;code></code>
+						</td>
+						<td>Defines a portion of text that is a code sample or that is not plain English.</td>
+						<td>
+							<code>&lt;code>Attributes.java&lt;/code></code>
+						</td>
+						<td>
+							<code>Attributes.java</code>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>&lt;b></code>
+						</td>
+						<td>Defines a portion of text that is bold.</td>
+						<td>
+							<code>&lt;b>Warning&lt;/b></code>
+						</td>
+						<td>
+							<b>Warning</b>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>&lt;i></code>
+						</td>
+						<td>Defines a portion of text that is italique.</td>
+						<td>
+							<code>&lt;i>special&lt;/i></code>
+						</td>
+						<td>
+							<i>special</i>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<code>&lt;a></code>
+						</td>
+						<td>Defines a link using the attribute <code>href</code>.</td>
+						<td>
+							<code>&lt;a href="http://www.google.com">The best search engine&lt;/a></code>
+						</td>
+						<td>
+							<a href="http://www.google.com">The best search engine</a>
+						</td>
+					</tr>
+				</table>
+			</description>
+		</section>
+		<!--
+    
+        Sub Section
+        
+    -->
+		<section>
+			<title>Enumeration</title>
+			<description>
+				<p>Two types of enumeration are mainly used : bullet and numbered.</p>
+				<table border="1" cellpadding="3">
+					<tr class="cellHeader">
+						<td>type</td>
+						<td>example</td>
+						<td>result</td>
+					</tr>
+					<tr>
+						<td>bullet</td>
+						<td>
+							<pre>&lt;ul>
+  &lt;li>first&lt;/li>
+  &lt;li>second&lt;/li>
+&lt;/ul></pre>
+						</td>
+						<td>
+							<ul>
+								<li>first</li>
+								<li>second</li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td>numbered</td>
+						<td>
+							<pre>&lt;ol>
+  &lt;li>first&lt;/li>
+  &lt;li>second&lt;/li>
+&lt;/ol></pre>
+						</td>
+						<td>
+							<ol>
+								<li>first</li>
+								<li>second</li>
+							</ol>
+						</td>
+					</tr>
+				</table>
+			</description>
+		</section>
+		<!--
+    
+        Sub Section
+        
+    -->
+		<section>
+			<title>Table</title>
+			<description>
+				<p>Tables are declared with the tag <code>&lt;table></code>. Rows are created with <code>&lt;tr></code> and columns with <code>&lt;td></code>. This document is full of table examples.</p>
+			</description>
+		</section>
+		<!--
+    
+        Sub Section
+        
+    -->
+		<section>
+			<title>Forbidden Tag</title>
+			<description>
+				<p>Some HTML tags <b>must not</b> be used because they are either deprecated in XHTML definition or defeat the purpose of having styles using CSS. Below is a to be completed list.</p>
+				<table border="1" cellpadding="3">
+					<tr class="cellHeader">
+						<td>tag</td>
+						<td>replacement</td>
+					</tr>
+					<tr>
+						<td>
+							<code>font</code>
+						</td>
+						<td>deprecated, use <code>class</code> attribute instead</td>
+					</tr>
+					<tr>
+						<td>
+							<code>h1, h2, ...</code>
+						</td>
+						<td>define sections and nested sections with a title instead</td>
+					</tr>
+				</table>
+			</description>
+		</section>
+	</section>
+	<!--
+    
+        Section 3
+        
+    -->
+	<section>
+		<title>Structure of the XML document</title>
+		<description>
+			<p>The XML document for the documentation follows a very simple structure. The root of the document is the <code>&lt;document></code> element. A document is made of one header [<code>&lt;head></code>] and of one or several section(s) [<code>&lt;section></code>]. Sections are made of a title [<code>&lt;title></code>], zero or more description [<code>&lt;description></code>], zero or more codeDescription [<code>&lt;codeDescription></code>] and of zero or more sections [<code>&lt;section></code>]. Sections can be nested as deep as it is needed.
+Below we describe each of those element.</p>
+		</description>
+		<section>
+			<title>head</title>
+			<description>
+				<p>The <code>&lt;head></code> element define various information about the document. It should at least contain the title of the document. The rest of the information is optional altough useful. Below is a complete example defining all recognized sub-elements.</p>
+			</description>
+			<codeDescription>
+				<title>The header of the XML document</title>
+				<code>
+   &lt;head>
+      &lt;title>Guidelines and template to write XML documentation&lt;/title>
+      &lt;section>AB/CO/AP&lt;/section>
+      &lt;authors>Lionel Mestre&lt;/authors>
+      &lt;reviewers>TBD&lt;/reviewers>
+      &lt;currentVersion>0.1 (2002/08)&lt;/currentVersion>
+      &lt;history>
+      0.1 (2002/07) : First Draft&lt;br/>
+      &lt;/history>
+   &lt;/head></code>
+			</codeDescription>
+		</section>
+		<section>
+			<title>description</title>
+			<description>
+				<p>The <code>&lt;description></code> element is where you put the content of the documentation in HTML (or more precisely XHTML). Anything inside the description element will not be analysed and placed as it is in the resulting HTML document. You can have more than one <code>&lt;description></code> element in a given section which can be useful when used in conjunction with the <code>&lt;codeDescription></code> element.</p>
+			</description>
+			<codeDescription>
+				<title>Use of the description element</title>
+				<code>
+   &lt;decription>
+      &lt;p>Any XHTML stuff you want.&lt;/p>
+   &lt;/decription></code>
+			</codeDescription>
+		</section>
+		<section>
+			<title>codeDescription</title>
+			<description>
+				<p>The <code>&lt;codeDescription></code> element should be used to output any code whether java or any other language. It is used for instance to define the XML example in this document. The <code>&lt;codeDescription></code> element can contain the following elements : </p>
+				<ul>
+					<li>
+						<code>&lt;title></code> : (optional) define the title of the code excerpt</li>
+					<li>
+						<code>&lt;comment></code> :(optional) a free form comment on the code describing any aspect of it written in HTML</li>
+					<li>
+						<code>&lt;code></code> : the code itself</li>
+				</ul>
+			</description>
+			<codeDescription>
+				<title>Example of a very simple codeDescription with title and code element</title>
+				<code>
+   &lt;codeDescription>
+     &lt;title>Example of creating a node without children&lt;/title>
+     &lt;code>Node leaf = NodeFactory.createNode(beanProcess);&lt;/code>
+   &lt;/codeDescription></code>
+			</codeDescription>
+			<description>
+				<p>Here is the resulting HTML :</p>
+			</description>
+			<codeDescription>
+				<title>Example of creating a node without children</title>
+				<code>Node leaf = NodeFactory.createNode(beanProcess);</code>
+			</codeDescription>
+			<codeDescription>
+				<title>Example the same codeDescription with a comment</title>
+				<code>
+   &lt;codeDescription>
+     &lt;title>Example of creating a node without children&lt;/title>
+     &lt;comment>This code is used in the GP layer to create a node.&lt;/comment>
+     &lt;code>Node leaf = NodeFactory.createNode(beanProcess);&lt;/code>
+   &lt;/codeDescription></code>
+			</codeDescription>
+			<description>
+				<p>Here is the resulting HTML :</p>
+			</description>
+			<codeDescription>
+				<title>Example of creating a node without children</title>
+				<comment>This code is used in the GP layer to create a node.</comment>
+				<code>Node leaf = NodeFactory.createNode(beanProcess);</code>
+			</codeDescription>
+		</section>
+		<section>
+			<title>Sections</title>
+			<description>
+				<p>The <code>&lt;section></code> element is used to define the sections of the document and the sub-section of any section. The <code>&lt;section></code> element can contain the following elements : </p>
+				<ul>
+					<li>
+						<code>&lt;title></code> : define the title of the section</li>
+					<li>
+						<code>&lt;description></code> :(0 or more) the content of the section in XHTML</li>
+					<li>
+						<code>&lt;codeDescription></code> : (0 or more) code excerpts that are used to illustrate the section</li>
+				</ul>
+			</description>
+			<codeDescription>
+				<title>Example of a section with a description, a codeDescription and a sub-section</title>
+				<code>
+   &lt;section>
+     &lt;title>Example&lt;/title>
+     &lt;description>blah blah&lt;/description>
+     &lt;codeDescription>
+       &lt;title>code title&lt;/title>
+       &lt;code>System.out.println();&lt;/code>
+     &lt;/codeDescription>
+     &lt;section>
+       &lt;title>sub section example&lt;/title>
+     &lt;/section>
+   &lt;/section>
+   </code>
+			</codeDescription>
+		</section>
+	</section>
+	<!--
+    
+        Section 4
+        
+  -->
+	<section>
+		<title>Integration with the build</title>
+		<description>
+			<p>The XML documents you produce can be located in two different places. If they are additional documentation of code and integrate with Javadoc, they must be placed in a directory <code>doc-files</code> in any sub-directory of the source tree. In this case, when the target <code>javadoc</code> of the build is invoked, all those documents will automatically be rendered to HTML in the resulting Javadoc located in <code>doc/output/api</code>.</p>
+			<p>If they are documents not related directly with code they should be located in the <code>doc</code> directory or in one sub-directory. A special target of the build named <code>doc</code> will trigger the rendering of those XML document. The resulting HTML document will be located in the directory <code>doc/output</code>.
+    </p>
+		</description>
+	</section>
+</document>
+

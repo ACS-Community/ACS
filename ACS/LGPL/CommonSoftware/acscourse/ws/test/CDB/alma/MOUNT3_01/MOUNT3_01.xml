@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Example Configuration Database Entry for a ACSCourseMount
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<ACSCourseMount xmlns="urn:schemas-cosylab-com:ACSCourseMount:1.0"
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+	   xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <cmdAz
+	description="Commanded Az"
+	units="deg"
+	alarm_low_on="-110.0"
+	alarm_low_off="-120.0"
+	alarm_high_on="360.0"
+	alarm_high_off="350.0"
+	min_timer_trig="0.001"
+	min_delta_trig="0.01526"
+	graph_min="-120"
+	graph_max="360"
+	min_step="0.01526"
+	/>
+  <cmdEl
+	description="Commanded El"
+	units="deg"
+	alarm_low_on="2.0"
+	alarm_low_off="3.0"
+	alarm_high_on="109.0"
+	alarm_high_off="105.0"
+	min_timer_trig="0.001"
+	min_delta_trig="0.01526"
+	graph_min="-0"
+	graph_max="110"
+	min_step="0.01526"
+	/>
+  <actAz
+	description="Actual Az"
+	units="deg"
+	alarm_low_on="-110.0"
+	alarm_low_off="-120.0"
+	alarm_high_on="360.0"
+	alarm_high_off="350.0"
+	min_timer_trig="0.001"
+	min_delta_trig="0.01526"
+	graph_min="-120"
+	graph_max="360"
+	min_step="0.01526"
+	/>
+  <actEl
+	description="Actual El"
+	units="deg"
+	alarm_low_on="2.0"
+	alarm_low_off="3.0"
+	alarm_high_on="109.0"
+	alarm_high_off="105.0"
+	min_timer_trig="0.001"
+	min_delta_trig="0.01526"
+	graph_min="-0"
+	graph_max="110"
+	min_step="0.01526"
+	/>
+</ACSCourseMount>
+

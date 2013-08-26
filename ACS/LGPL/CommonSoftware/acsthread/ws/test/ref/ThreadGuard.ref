@@ -1,0 +1,53 @@
+1 - ----------T--:--:--.--- [GlobalLogger - main] Creating thread
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestA - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::TestThreadGuard] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::testGuard] enter TestThreadGuard::testGuard
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestA - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [TestA - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (0)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (1)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (2)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (3)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (4)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (5)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::testGuard] set loopCounter_m to (3)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (3)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (4)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (5)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (6)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (7)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (8)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::testGuard] set loopCounter_m to (6)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (6)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (7)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (8)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (9)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (10)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (11)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::testGuard] exit TestThreadGuard::testGuard
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (12)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (13)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (14)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (15)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (16)
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::runLoop] runLoop (17)
+1 - ----------T--:--:--.--- [GlobalLogger - main] Done
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestA - ThreadBase::stop] Thread TestA
+1 - ----------T--:--:--.--- [TestA - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:TestA
+1 - ----------T--:--:--.--- [TestA - TestThreadGuard::~TestThreadGuard] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestA - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestA - ACS::ThreadBase::terminate] 

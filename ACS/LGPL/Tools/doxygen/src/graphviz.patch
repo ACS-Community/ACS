@@ -1,0 +1,81 @@
+--- graphviz-2.26.0.orig/configure	2011-01-19 12:38:43.487540000 +0000
++++ graphviz-2.26.0/configure	2011-01-19 13:13:21.293076000 +0000
+@@ -33189,37 +33189,51 @@
+ with_gnu_ld=$acl_cv_prog_gnu_ld
+ 
+ 
++case "${host_os}" in
++  *linux* )
++    case "${host_cpu}" in
++      powerpc64 | s390x | x86_64 )
++        # Do not check for shared library run path origin on 64 bits systems
++        # because of a bug in config/config.rpath for 64 bits machines
++        # This is a workaround that will have to be removed as soon as the bug in
++        # config/config.rpath will be fixed
++        ;;
++      *)
++         { $as_echo "$as_me:$LINENO: checking for shared library run path origin" >&5
++            $as_echo_n "checking for shared library run path origin... " >&6; }
++           if test "${acl_cv_rpath+set}" = set; then
++               $as_echo_n "(cached) " >&6
++           else
++
++               CC="$CC" GCC="$GCC" LDFLAGS="$LDFLAGS" LD="$LD" with_gnu_ld="$with_gnu_ld" \
++               ${CONFIG_SHELL-/bin/sh} "$ac_aux_dir/config.rpath" "$host" > conftest.sh
++               . ./conftest.sh
++               rm -f ./conftest.sh
++               acl_cv_rpath=done
++
++           fi
++         { $as_echo "$as_me:$LINENO: result: $acl_cv_rpath" >&5
++            $as_echo "$acl_cv_rpath" >&6; }
++         wl="$acl_cv_wl"
++         libext="$acl_cv_libext"
++         shlibext="$acl_cv_shlibext"
++         hardcode_libdir_flag_spec="$acl_cv_hardcode_libdir_flag_spec"
++         hardcode_libdir_separator="$acl_cv_hardcode_libdir_separator"
++         hardcode_direct="$acl_cv_hardcode_direct"
++         hardcode_minus_L="$acl_cv_hardcode_minus_L"
++         sys_lib_search_path_spec="$acl_cv_sys_lib_search_path_spec"
++         sys_lib_dlsearch_path_spec="$acl_cv_sys_lib_dlsearch_path_spec"
++         # Check whether --enable-rpath was given.
++         if test "${enable_rpath+set}" = set; then
++            enableval=$enable_rpath; :
++         else
++            enable_rpath=yes
++         fi
++         ;;
++    esac
++    ;;
++esac
+ 
+-                                                { $as_echo "$as_me:$LINENO: checking for shared library run path origin" >&5
+-$as_echo_n "checking for shared library run path origin... " >&6; }
+-if test "${acl_cv_rpath+set}" = set; then
+-  $as_echo_n "(cached) " >&6
+-else
+-
+-    CC="$CC" GCC="$GCC" LDFLAGS="$LDFLAGS" LD="$LD" with_gnu_ld="$with_gnu_ld" \
+-    ${CONFIG_SHELL-/bin/sh} "$ac_aux_dir/config.rpath" "$host" > conftest.sh
+-    . ./conftest.sh
+-    rm -f ./conftest.sh
+-    acl_cv_rpath=done
+-
+-fi
+-{ $as_echo "$as_me:$LINENO: result: $acl_cv_rpath" >&5
+-$as_echo "$acl_cv_rpath" >&6; }
+-  wl="$acl_cv_wl"
+-  libext="$acl_cv_libext"
+-  shlibext="$acl_cv_shlibext"
+-  hardcode_libdir_flag_spec="$acl_cv_hardcode_libdir_flag_spec"
+-  hardcode_libdir_separator="$acl_cv_hardcode_libdir_separator"
+-  hardcode_direct="$acl_cv_hardcode_direct"
+-  hardcode_minus_L="$acl_cv_hardcode_minus_L"
+-  sys_lib_search_path_spec="$acl_cv_sys_lib_search_path_spec"
+-  sys_lib_dlsearch_path_spec="$acl_cv_sys_lib_dlsearch_path_spec"
+-    # Check whether --enable-rpath was given.
+-if test "${enable_rpath+set}" = set; then
+-  enableval=$enable_rpath; :
+-else
+-  enable_rpath=yes
+-fi

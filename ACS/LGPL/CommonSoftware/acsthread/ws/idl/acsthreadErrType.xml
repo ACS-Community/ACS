@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
+      name="acsthreadErrType"
+      type="37"
+      _prefix="alma"
+>
+  <ErrorCode name="CanNotSpawnThread"
+             shortDescription="Thread could not be spawned"
+            description="Thread could not be spawned"
+  >
+	<Member name="ThreadName" type="string" description="Name of the thread that could not be spawned"/>	
+  </ErrorCode>
+ <ErrorCode name="CanNotCreateThread"
+             shortDescription="Thread could not be created"
+            description="Thread could not be created"
+  />
+ <ErrorCode name="ThreadAlreadyExist"
+             shortDescription="Thread already exists"
+            description="Thread with this name already exists"
+ >
+	<Member name="ThreadName" type="string" description="Name of the thread that already exsists."/>	
+ </ErrorCode>
+ <ErrorCode name="CanNotStartThread"
+           shortDescription="Thread could not be started"
+           description="Thread could not be started">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread that could not be started."/>
+</ErrorCode>
+<ErrorCode name="CanNotSuspendThread"
+           shortDescription="Thread could not be suspended"
+           description="Thread could not be suspended">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread that could not be suspended."/>
+</ErrorCode>
+<ErrorCode name="CanNotResumeThread"
+           shortDescription="Thread could not be resumed"
+           description="Thread could not be resumed">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread that could not be resumed."/>
+</ErrorCode>
+<ErrorCode name="ExceptionInOnStart"
+           shortDescription="Exception in OnStart method"
+           description="An exception was thrown and not caught in ACS::Thread::onStart">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread."/>
+</ErrorCode>
+<ErrorCode name="ExceptionInOnStop"
+           shortDescription="Exception in OnStop method"
+           description="An exception was thrown and not caught in ACS::Thread::onStop">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread."/>
+</ErrorCode>
+
+<ErrorCode name="ExceptionInRunLoop"
+           shortDescription="Exception in runLoop method"
+           description="An exception was thrown and not caught in ACS::Thread::runLoop">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread."/>
+</ErrorCode>
+
+<ErrorCode name="ThreadExecutionProblem"
+           shortDescription="Problem in Thread Execution"
+           description="There was problem in execution of the thread - including commonStart/commonStop">
+           <Member name="ThreadName"
+                   type="string"
+                   description="Name of the thread."/>
+</ErrorCode>
+</Type>
+

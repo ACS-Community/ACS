@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSErrTypeCORBA" type="15" _prefix="alma">
+	<ErrorCode name="FailedToResolveService"
+		shortDescription="Failed to resolve service reference."
+		description="Failed to resolve service reference."
+	/>
+	<ErrorCode name="CORBAReferenceNil"
+			shortDescription="CORBA reference is nil"
+			description="Value of the CORBA reference is nil">
+			<Member name="Variable"
+				type="string"
+				description="Name of varable / reference whose value is nil"/>
+			<Member name="Context"
+				type="string"
+				description="Free text context description."/>
+	</ErrorCode>
+	
+	<ErrorCode name="NarrowFailed"
+			shortDescription="Narrow failed"
+			description="Reference narrow failed">
+			<Member name="NarrowType"
+				type="string"
+				description="Narrow type"/>
+	</ErrorCode>
+</Type>
+

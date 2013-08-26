@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+
+<xsd:schema xmlns:ent="Alma/CommonEntity" xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="Alma/CommonEntity" version="1">
+	
+	<!-- globally unique id for entity objects (formatted hex string such as "uid://X1/Xa023/X1111111111111111111111") 
+	     Note that by the spec any of the three parts of the UID can be larger than a 64 bit variable if turned into numerical presentation,
+	     even though at the moment (2007-04) the archive does not generate such UIDs. -->
+	<xsd:simpleType name="EntityIdT">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="(fake)?[uU][iI][dD]://[0-9a-zA-Z]+(/[xX][0-9a-fA-F]+){2}(#\\w{1,}){0,}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- locally unique id for subnodes of entity objects (integer numbers);
+	     application schemas of entities in which parts (=subnodes) should be addressable by ID
+	     must define an attribute of type "EntityPartIdT" for the respective node, 
+	     by convention using the attribute name "entityPartId". 
+	     The format of the ID can be chosen freely as long as it complies with the 
+	     requirements for xsd:ID (see http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/datatypes#ID).
+	     As a recommendation, chose either the "X00000000" hex format known from the uid, 
+	     or a semantic name like "topLevelObsUnitSet".
+	     Since the OT creates fake UIDs in documents and these need to be validated, the schema now allows
+ 	     also for UIDs of the form fakeuid://.... Note that the Archive code will reject to store documents 
+	     with UIDs like this in the XMLstore.
+	     -->
+	<xsd:simpleType name="EntityPartIdT">
+		<xsd:restriction base="xsd:ID">
+			<xsd:whiteSpace value="collapse"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- reference to an element with an attribute of type "EntityPartIdT".
+	     Can't be of type ID because we may want to reference the same node more than once per document,
+	     and also can't be of type IDREF because the referenced node is usually in a different document -->
+	<xsd:simpleType name="EntityPartIdRefT">
+		<xsd:restriction base="xsd:NCName">
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- unique name for entity objects, like "SchedBlock" -->
+	<xsd:simpleType name="EntityTypeNameT">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="15"/>
+			<xsd:minLength value="3"/>
+			<xsd:whiteSpace value="collapse"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- EntityRefT describes a reference to
+	     (1) another entity (only entityId required), or 
+	     (2) a subnode of another entity (both entityId and partId required) -->
+	<xsd:complexType name="EntityRefT">
+		<xsd:attribute name="entityId" type="ent:EntityIdT" use="required"/>
+		<xsd:attribute name="partId" type="ent:EntityPartIdRefT" use="optional"/>
+		<!-- name of the root element of the entity, usually same as schema name -->
+		<xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required"/>
+		<!-- version -->
+		<xsd:attribute name="documentVersion" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<!-- common to all entities -->
+	<xsd:complexType name="EntityT">
+		<xsd:attribute name="entityId" type="ent:EntityIdT" use="required"/>
+		<!-- used by container and archive to make messing with IDs harder -->
+		<xsd:attribute name="entityIdEncrypted" type="xsd:string" use="required"/>
+		<!-- name of the root element of the entity, usually same as schema name -->
+		<xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required"/>
+		<!-- version of the schema that the entity object complies with -->
+		<xsd:attribute name="schemaVersion" type="xsd:string" use="required"/>
+		<!-- version, managed by the archive on "store/update" -->
+		<xsd:attribute name="documentVersion" type="xsd:string"/>
+		<!-- timestamp for optimistic locking. The archive uses the timestamp
+		     in the XmlEntityStruct that contains the XML entity, rather than 
+		     this timestamp attribute. This attribute is therefore optional, and can
+		     be used (e.g. by the ACS framework) to temporarily convert an 
+		     XmlEntityStruct to a tree of binding classes w/o losing information. -->
+		<xsd:attribute name="timestamp" type="xsd:string" use="optional"/>
+		<!-- Version of the APDM or ASDM data model, currently equal to the CVS revision number. 
+		     Introduced with ACS 5.0.5, we make this attribute optional at first so that existing XML documents are still valid. 
+		     TODO: make it "required" with ACS 6.0. -->
+		<xsd:attribute name="datamodelVersion" type="xsd:string" use="optional"/>		
+	</xsd:complexType>
+</xsd:schema>

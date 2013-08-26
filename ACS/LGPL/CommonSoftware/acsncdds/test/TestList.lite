@@ -1,0 +1,6 @@
+SOURCE TATEnvironment
+PROLOGUE TATPrologue
+1 testDDSbash testDDS
+2 testCDBpython testCDB
+EPILOGUE TATEpilogue
+

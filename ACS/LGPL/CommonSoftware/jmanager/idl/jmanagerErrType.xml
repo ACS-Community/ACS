@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="jmanagerErrType" type="26" _prefix="alma">
+
+	<ErrorCode name="CyclicDependencyDetected"
+	    shortDescription="Detected a cyclic dependency between components."
+	    description="A cyclic dependency between components has
+	    been detected this makes it impossible to properly
+	    deactivate components automatically and therefore is not allowed.">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Requestor"
+			type="long"
+			description="Requestor for the component."
+		/>
+	</ErrorCode>
+	
+	<ErrorCode name="SyncLockFailed"
+	    shortDescription="Failed to obtain synchronisation lock for component."
+	    description="Failed to obtain synchronization lock for component.
+	                 Unexpected concurrent activities are taking
+	                 place and there is the possibility of a deadlock">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Requestor"
+			type="long"
+			description="Requestor for the component."
+		/>
+	</ErrorCode>
+
+</Type>
+

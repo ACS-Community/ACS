@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+ 
+ <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
+      name="cdbErrType"
+      type="51"
+      _prefix="alma"
+>
+	<ErrorCode name="CouldntReadCDB"
+	           shortDescription="CDB data couldn't be read"
+		   description="CDB data couldn't be read"
+	/>
+	<ErrorCode name="CouldntWriteCDB"
+	           shortDescription="CDB data couldn't be written"
+		   description="CDB data couldn't be written"
+	/>
+	<ErrorCode name="CDBRecordIsReadOnly"
+	           shortDescription="CDB record is readonly"
+		   description="CDB record is readonly"	>
+		<Member name="Curl" 
+			type="string"
+			description="Curl of the record"
+		/>
+	</ErrorCode>
+	<ErrorCode name="CDBFieldIsReadOnly"
+	           shortDescription="CDB field is readonly"
+		   description="CDB field is readonly"	>
+		<Member name="FieldName" 
+			type="string"
+			description="Field name"
+		/>
+	</ErrorCode>
+	<ErrorCode name="CDBReadoOnlyData"
+	           shortDescription="CDB data are readonly"
+		   description="CDB data are readonly"
+	/>
+	<ErrorCode name="WrongCDBDataType"
+	           shortDescription="Wrong CDB data type"
+		   description="Wrong CDB data type"	>
+		<Member name="Value"
+			type="string"
+			description="Value to transform to that data type"
+		/>
+		<Member name="DataType"
+			type="string"
+			description="Data type to want to convert"
+		/>
+	</ErrorCode>
+	<ErrorCode name="CDBRecordAlreadyExists"
+	           shortDescription="CDB record already exists"
+		   description="CDB record already exists">
+		<Member name="Curl" 
+			type="string"
+			description="Curl of the record"
+		/>
+	</ErrorCode>
+	<ErrorCode name="CDBException"
+	           shortDescription="Unknow exception"
+		   description="Unknow exception"
+	/>
+	<ErrorCode name="CDBFieldDoesNotExist"
+	           shortDescription="CDB field does not exist"
+		   description="CDB field does not exist" >
+		<Member name="FieldName" 
+			type="string"
+			description="Field name"
+		/>
+	</ErrorCode>
+	<ErrorCode name="CDBRecordDoesNotExist"
+	           shortDescription="CDB record does not exist"
+		   description="CDB record does not exist">
+		<Member name="Curl" 
+			type="string"
+			description="Curl of the record"
+		/>
+	</ErrorCode>
+	<ErrorCode name="CDBXMLError"
+	           shortDescription="CDB XML error"
+		   description="CDB XML error"
+	>
+		<Member name="Filename" 
+			type="string"
+			description="Name of the file that fail"
+		/>
+
+		<Member name="Curl" 
+			type="string"
+			description="Finded curl"
+		/>
+		
+		<Member name="Nodename" 
+			type="string"
+			description="Node name"
+		/>
+				
+		<Member name="ErrorString" 
+			type="string"
+			description="Message, just for old versions"
+		/>
+
+	</ErrorCode>
+</Type>
+

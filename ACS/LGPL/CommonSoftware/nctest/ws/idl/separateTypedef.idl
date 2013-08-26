@@ -1,0 +1,12 @@
+#ifndef _SEPARATE_TYPEDEF_IDL_
+#define _SEPARATE_TYPEDEF_IDL_
+
+
+#pragma prefix "alma"
+
+module simpleAcsTest {
+
+	typedef string myString;
+	
+};
+#endif

@@ -1,0 +1,135 @@
+#ifndef _BUILDING_IDL_
+#define _BUILDING_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: acsexmplBuilding.idl,v 1.85 2004/01/27 21:13:23 dfugate Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* dave 2003-08-26 removed the Door from acsexmplDoor.idl and put it in this file
+* jib/blo   02/04/02  Created
+*/
+
+#include <baci.idl>
+#include <acserr.idl>
+
+#pragma prefix "alma"
+
+/** @file acsexmplBuilding.idl
+ *  Building and Door's IDL File
+ */
+
+module acsexmplBuilding 
+{
+    
+    /** @interface Door
+     *  This interface belongs to the example device "Door". It represents
+     *  simple position control and is used within an hierarchical device (i.e., 
+     *  a door that isn't attached to a building isn't very useful).
+     */
+    interface Door : ACS::CharacteristicComponent
+	{
+	/** Opens the door by setting the corresponding reference position. This 
+	 *  is an asynchronous method.
+	 *  @param cb callback when the door has been opened.
+	 *  @param desc is used to negotiate timeouts between client and sever.
+	 *  See the BACI specifications for more details.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void open(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	
+	/** Closes the door by setting the corresponding reference position. This 
+	 *  is an asynchronous method.
+	 *  @param cb callback when the door has been closed.
+	 *  @param desc is used to negotiate timeouts between client and sever.
+	 *  See the BACI specifications for more details.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void close(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	
+	/** Moves the door by setting the new reference position.
+	 *  @param pos New reference position
+	 *  @raises An ACSException if the position is out of range.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */    
+	void move(in double pos) raises (ACSErr::ACSException);
+	
+	/** Reference position - where we want the door to move to.
+	 */
+	readonly attribute ACS::RWdouble ref_position;
+	
+	/** Real position - where the door really is.
+	 */
+	readonly attribute ACS::ROdouble position;
+	
+	/** Substate - DWF...this should be replaced by an enum.
+	 */
+	readonly attribute ACS::ROlong substate;
+	
+	/** Version - the version of the implementation of this
+	 *  IDL interface.
+	 */
+	readonly attribute ACS::ROstring version;
+	};
+    
+
+    /** @interface Building
+     *  This interface belongs to the example device "Building". The
+     *  purpose is to show the implementation of hierarchical devices.
+     */
+    interface Building : ACS::CharacteristicComponent
+	{
+   
+	/** Opens the FRONTDOOR of the building.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void openFrontDoor();
+	
+	/** Closes the FRONTDOOR of the building.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void closeFrontDoor();
+	
+	/** Version is merely a string containing the version of the 
+	 *  implementation of this interface..
+	 */
+	readonly attribute ACS::ROstring version;
+	};
+};
+
+#endif

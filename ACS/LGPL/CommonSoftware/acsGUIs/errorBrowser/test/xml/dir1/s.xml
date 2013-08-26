@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="Alma/ACSError" 
+	xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	name="verySimple"
+	type="2"
+	 _prefix="alma">
+
+	<ErrorCode name="Error1"
+	    shortDescription="The Error 1"
+	    description="The Error number 1">
+	</ErrorCode>
+</Type>
+

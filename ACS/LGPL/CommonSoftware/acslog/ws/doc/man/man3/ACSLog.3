@@ -1,0 +1,83 @@
+.TH "ACSLog" 3 "19 Sep 2001" "ACSLogService" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ACSLog \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Compounds"
+
+.in +1c
+.ti -1c
+.RI "struct \fBACSLog::NVPair\fP"
+.br
+.ti -1c
+.RI "struct \fBACSLog::RTContext\fP"
+.br
+.ti -1c
+.RI "struct \fBACSLog::SourceInfo\fP"
+.br
+.ti -1c
+.RI "interface \fBACSLog::LogSvc\fP"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef unsigned long long \fBTimeStamp\fP"
+.br
+.ti -1c
+.RI "typedef sequence< \fBNVPair\fP > \fBNVPairSeq\fP"
+.br
+.ti -1c
+.RI "typedef string \fBXMLstring\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBPriorties\fP { \fBACS_LOG_TRACE\fP, \fBACS_LOG_DEBUG\fP, \fBACS_LOG_INFO\fP, \fBACS_LOG_NOTICE\fP, \fBACS_LOG_WARNING\fP, \fBACS_LOG_ERROR\fP, \fBACS_LOG_CRITICAL\fP, \fBACS_LOG_ALERT\fP, \fBACS_LOG_EMERGENCY\fP }"
+.br
+.in -1c
+.SH "TYPEDEF DOCUMENTATION"
+.PP 
+.SS "typedef unsigned long long ACSLog::TimeStamp"
+.PP
+.SS "typedef sequence<\fBNVPair\fP> ACSLog::NVPairSeq"
+.PP
+sequence of name-value pairs 
+.SS "typedef string ACSLog::XMLstring"
+.PP
+.SH "ENUMERATION TYPE DOCUMENTATION"
+.PP 
+.SS "enum ACSLog::Priorties"
+.PP
+Log messages priorities 
+.PP
+\fBEnumeration values:\fP
+.in +1c
+.TP
+\fB\fI\fIACS_LOG_TRACE\fP \fP\fP
+.TP
+\fB\fI\fIACS_LOG_DEBUG\fP \fP\fP
+.TP
+\fB\fI\fIACS_LOG_INFO\fP \fP\fP
+.TP
+\fB\fI\fIACS_LOG_NOTICE\fP \fP\fP
+.TP
+\fB\fI\fIACS_LOG_WARNING\fP \fP\fP
+.TP
+\fB\fI\fIACS_LOG_ERROR\fP \fP\fP
+.TP
+\fB\fI\fIACS_LOG_CRITICAL\fP \fP\fP
+.TP
+\fB\fI\fIACS_LOG_ALERT\fP \fP\fP
+.TP
+\fB\fI\fIACS_LOG_EMERGENCY\fP \fP\fP
+
+.SH "AUTHOR"
+.PP 
+Generated automatically by Doxygen for ACSLogService from the source code.

@@ -1,0 +1,45 @@
+1 -  -m 2 -l java --csv tmp/javaReport.csv -- 40000 1 0
+1 -  Starting ORB Services and Manager
+1 - started ACS_INSTANCE <N>
+1 -  Starting Container 1
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] 
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] 
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::<IP address>:<port>/Manager'
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - <timestamp> [GlobalLogger - ] Container: javaContainer1
+1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'default':
+1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
+1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 2
+1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 2
+1 - <timestamp> [GlobalLogger - ] 	... done.
+1 - <timestamp> [GlobalLogger - ] Done all.
+1 -  Resetting/starting chronometer 1
+1 -  Sending logs
+1 -  Waiting for all logs to be sent...
+1 -  Needed <time1>s to send all logs / <time2>s after first <number> logs came to all_logs.xml
+1 -  Sleeping (at most) 30 seconds to allow logs to be processed...
+1 -  Last log digested within <number>s after generating process stopped.
+1 -  SUCCESS - all logs accounted for.
+1 -  Stopping the monitoring
+1 - 
+1 -  NOTE: some 'process terminated' messages are normal here...
+1 - 
+1 - <components_dir>/bin/genLoggingProcessesReport: line <lineNr>: <pid> Terminated              ./monitorProcess ${publisherPid[${i}]} 1 $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i
+1 - <components_dir>/bin/genLoggingProcessesReport: line <lineNr>: <pid> Terminated              ./monitorProcess $logSvcPid 1 $ACS_TMP/$ACS_LOG_SVC_LOG_FILE-memory
+1 - <components_dir>/bin/genLoggingProcessesReport: line <lineNr>: <pid> Terminated              ./monitorProcess $loggingServicePid 1 $ACS_TMP/$LOGGING_SERVICE_LOG_FILE-memory
+1 - <components_dir>/bin/genLoggingProcessesReport: line <lineNr>: <pid> Terminated              ./monitorProcess $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory
+1 - <components_dir>/bin/genLoggingProcessesReport: line <lineNr>: <pid> Terminated              ./monitorProcess $loggingClientPid 1 $ACS_TMP/$LOGGING_CLIENT_LOG_FILE-memory
+1 - 
+1 - <components_dir>/bin/genLoggingProcessesReport: line <lineNr>: <pid> Terminated              sar -x $logSvcPid 1 9999 >&$ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log
+1 - <components_dir>/bin/genLoggingProcessesReport: line <lineNr>: <pid> Terminated              sar -x $loggingServicePid 1 9999 >&$ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log
+1 - <components_dir>/bin/genLoggingProcessesReport: line <lineNr>: <pid> Terminated              sar -x $loggingNotifyServicePid 1 9999 >&$ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log
+1 - <components_dir>/bin/genLoggingProcessesReport: line <lineNr>: <pid> Terminated              sar -x $loggingClientPid 1 9999 >&$ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log
+1 -  Stopping Container 1
+1 -  Stopping ACS
+1 - going about <components_dir>/test/tmp/ACS_INSTANCE.N/loggingClient.pid...
+1 -   bringing down logging client with ID <pid>...
+1 -  Stopping containers, manager, and the services
+1 -  Preparing the sar log files
+1 -  Generating the plots
+1 -  Generating the html file

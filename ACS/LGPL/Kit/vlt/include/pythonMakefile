@@ -1,0 +1,180 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: pythonMakefile,v 1.2 2010/07/09 12:48:42 alopatin Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# psivera  05/06/02  created
+#
+
+#************************************************************************
+#   NAME
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+SHELL=/bin/bash
+
+######################################
+# phony section
+######################################
+.PHONY : clean_python
+.PHONY : install_python
+.PHONY : install_python_modules
+.PHONY : install_python_packages
+.PHONY : do_pythonscripts
+.PHONY : do_pythonmod
+.PHONY : do_pythonpack
+
+######################################
+# incrementing tasks
+######################################
+ifneq ($(strip $(PY_SCRIPTS)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_python_scripts
+endif
+
+ifneq ($(strip $(PY_MODULES)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_python_modules 
+endif
+
+ifneq ($(strip $(PY_PACKAGES)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_python_packages
+endif
+
+ifneq ($(strip $(join $(PY_SCRIPTS), $(PY_SCRIPTS_L) ) ),)
+    CLEAN_TARGET := $(CLEAN_TARGET) clean_python
+endif
+
+ifneq ($(strip $(join $(PY_SCRIPTS), $(PY_SCRIPTS_L) ) ),)
+    ALL_TARGET := $(ALL_TARGET) do_pythonscripts
+endif
+
+ifneq ($(strip $(PY_MODULES)),)
+    ALL_TARGET := $(ALL_TARGET) do_pythonmod 
+endif
+
+ifneq ($(strip $(PY_PACKAGES)),)
+    ALL_TARGET := $(ALL_TARGET) do_pythonpack 
+endif
+######################################
+# targets specification
+######################################
+
+##  clean
+##
+clean_python:
+	-$(AT)$(RM) vltMake_clean_scripts      $(foreach member, $(PY_SCRIPTS) $(PY_SCRIPTS_L), ../bin/$(member) ../object/$(member).ds ) ../object/vltMakeScriptDependencies.ds  $(OUTPUT)
+	-@$(ECHO) " .\c"
+	-$(AT)$(RM) vltMake_clean_python_mod   $(foreach member, $(PY_MODULES) $(PY_MODULES_L), ../lib/python/site-packages/$(member).py ../object/$(member).dpms )   $(OUTPUT)
+	-@$(ECHO) " .\c"
+	-$(AT)$(RM) vltMake_clean_python_pack   $(foreach member, $(PY_PACKAGES), ../lib/python/site-packages/$(member) ../object/$(member).dpps ) $(OUTPUT)
+	-@$(ECHO) " .\c"
+
+## install
+##
+install_python_scripts:
+ifneq ($(strip $(PY_SCRIPTS)),)
+	-@$(ECHO) "install_python_scripts: python_scripts_begin $(foreach member, $(PY_SCRIPTS), $(BIN)/$(member)  )" >>$(FILE)
+	-@$(ECHO) "python_scripts_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......python scripts:\"" >>$(FILE)
+	-$(AT) for member in $(foreach name, $(PY_SCRIPTS), $(name) ); \
+		do \
+		    $(ECHO) "$(BIN)/$${member}: ../bin/$${member}" >>$(FILE);\
+		    $(ECHO) "	-\$$(AT)echo \"\t$${member}\";\\" >>$(FILE);\
+		    $(ECHO) "	cp ../bin/$${member} $(BIN)/$${member};\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P755) $(BIN)/$${member}" >>$(FILE);\
+		done
+endif
+
+install_python_modules:
+ifneq ($(strip $(PY_MODULES)),)
+	-@$(ECHO) "install_python_modules: python_modules_begin $(foreach member, $(PY_MODULES), $(LIB)/python/site-packages/$(member).py  )" >>$(FILE)
+	-@$(ECHO) "python_modules_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......python_modules:\"" >>$(FILE)
+	-$(AT) for member in $(foreach name, $(PY_MODULES), $(name) ); \
+		do \
+		    $(ECHO) "$(LIB)/python/site-packages/$${member}.py: ../lib/python/site-packages/$${member}.py" >>$(FILE);\
+		    $(ECHO) "	-\$$(AT)echo \"\t$${member}.py\";\\" >>$(FILE);\
+		    $(ECHO) "	cp ../lib/python/site-packages/$${member}.py $(LIB)/python/site-packages;\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P644) $(LIB)/python/site-packages/$${member}.py" >>$(FILE);\
+		done
+endif
+
+install_python_packages:
+ifneq ($(strip $(PY_PACKAGES)),)
+	-@$(ECHO) "install_python_packages: python_packages_begin $(foreach member, $(PY_PACKAGES), $(LIB)/python/site-packages/$(member)  )" >>$(FILE)
+	-@$(ECHO) "python_packages_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......python_packages:\"" >>$(FILE)
+	-$(AT) for member in $(foreach name, $(PY_PACKAGES), $(name) ); \
+		do \
+		    $(ECHO) "$(LIB)/python/site-packages/$${member}: ../lib/python/site-packages/$${member}" >>$(FILE);\
+		    $(ECHO) "	-\$$(AT)echo \"\t$${member}\";\\" >>$(FILE);\
+		    $(ECHO) "	cp -pr ../lib/python/site-packages/$${member} $(LIB)/python/site-packages;\\" >>$(FILE);\
+		    $(ECHO) "	chmod $(P644) $(LIB)/python/site-packages/$${member}/*" >>$(FILE);\
+		done
+endif
+
+
+## all
+##
+# - for Automatic Dependencies for Python modules
+#
+../object/%.ds:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeScriptDependencies $(*F)  >../object/$*.ds
+#
+../object/%.dpms:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakePythonModDependencies $(*F)  >../object/$*.dpms
+
+# - for Automatic Dependencies for Python Packages
+#
+../object/%.dpps:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakePythonPackDependencies $(*F) "$($(*F)_MODULES)"  >../object/$*.dpps
+
+#
+PY_MOD_LIST = $(PY_MODULES) $(PY_MODULES_L)  
+TMP_DEP_PYMOD := $(addprefix ../object/, $(addsuffix .dpms, $(PY_MOD_LIST)))
+PY_PACK_LIST = $(PY_PACKAGES) $(PY_PACKAGES_L)  
+TMP_DEP_PYPACK := $(addprefix ../object/, $(addsuffix .dpps, $(PY_PACK_LIST)))
+PY_SCRIPT_LIST = $(PY_SCRIPTS) $(PY_SCRIPTS_L)
+TMP_DEP_PYSCRIPTS := $(addprefix ../object/, $(addsuffix .ds, $(PY_SCRIPT_LIST)))
+
+
+do_pythonscripts: $(TMP_DEP_PYSCRIPTS)
+	$(AT) for member in $(foreach name, $(PY_SCRIPT_LIST), $(name) ); \
+		do \
+		make -f ../object/$${member}.ds ../bin/$${member};\
+		done
+
+do_pythonmod: $(TMP_DEP_PYMOD)
+	$(AT) for member in $(foreach name, $(PY_MOD_LIST), $(name) ); \
+		do \
+		make -f ../object/$${member}.dpms ../lib/python/site-packages/$${member}.py;\
+		done
+
+do_pythonpack: $(TMP_DEP_PYPACK)
+	$(AT) for member in $(foreach name, $(PY_PACK_LIST), $(name) ); \
+		do \
+		make -f ../object/$${member}.dpps ../lib/python/site-packages/$${member};\
+		done

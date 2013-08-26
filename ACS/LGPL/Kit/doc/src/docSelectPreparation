@@ -1,0 +1,87 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docSelectPreparation,v 1.31 2002/06/08 17:20:45 vltsccm Exp $" 
+#
+# who        when        what
+# ---------  ----------  ----------------------------------------------
+# G.Filippi  23-12-1993  created 
+# G.Filippi  30-05-1994  ACCESS removed
+#
+
+#************************************************************************
+#   NAME
+#   docSelectPreparation - select the issue.
+# 
+#   SYNOPSIS
+#       docSelectPreparation <docRootDirectory> <accessMode> <docIssueNumber> 
+# 
+#   DESCRIPTION
+# 
+#   See doc.
+#
+#*******************************************************************************
+
+DOC_NUMBER=$1
+ISSUE_NUMBER=$2
+# set the document issue
+cd $ISSUE_NUMBER
+#
+while clear
+do
+#
+   REVIEW=NONE
+   TEXT=NONE
+   echo "----- Current data on $DOC_NUMBER $ISSUE_NUMBER \n"
+   echo ""
+   echo "- review binder(s):"
+   echo ""
+   if ls -ld prep* 2>/dev/null
+   then
+      REVIEW=YES
+   else 
+       echo "                   ...... none."
+   fi
+
+   echo ""
+   echo "- final version binder: "
+   echo ""
+   if ls -ld text 2>/dev/null
+   then
+      TEXT=YES
+   else 
+       echo "                   ...... none."
+   fi
+
+   if [ $REVIEW = "YES" -o $TEXT = "YES" ]
+   then 
+      echo "-----------------------------------------"
+      echo "using the mouse cut&paste, select a binder or <Enter> to go up...."
+      read REVIEW_NUMBER
+      if test -n "$REVIEW_NUMBER"
+      then
+         if test -d $REVIEW_NUMBER
+         then 
+#           a valid binder was selected --> activate option selection
+            docSelectOption $DOC_NUMBER $ISSUE_NUMBER $REVIEW_NUMBER
+         else
+#           an invalid directory was selected --> signal error and loop
+            echo ""
+            echo " Wrong review number. Press <Enter> to continue . . ."
+            read a
+         fi
+      else
+#        <Enter> was pressed --> exit, go to issue level
+         exit
+      fi
+   else
+      echo " "
+      echo "-------------------------------------------------------------------------------"
+      echo " Press <Enter> to continue . . ."
+      read a
+      exit
+   fi
+done
+#
+#end-of-procedure

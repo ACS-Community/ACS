@@ -1,0 +1,66 @@
+#ifndef _ENUM_PROP_ALMASW2003048_IDL
+#define _ENUM_PROP_ALMASW2003048_IDL
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: enumpropALMASW2003048.idl,v 1.1 2003/07/14 12:07:53 gchiozzi Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* gchiozzi 2003-07-14 created
+*/
+
+#include <baci.idl>
+
+/*
+ * JacORB has problems when including twice a file with macros inside,
+ * since it tries to parse also preprocessor directives that should
+ * be excluded by the include guards, probably because it searches
+ * for the #endif preprocessor directive. Weird !!!!!
+ * See SPR ALMASW2003048 for details.
+ * This test IDL file will fail to compile if enumpropMACRO.idl
+ * contains directly the code for the macros.
+ * As a workaround, we have "added one layer" so that
+ * enumpropMACRO includes the code from an external
+ * file only the first time it passes.
+ * The second time guards are scanned properly.
+ */
+ 
+#include <enumpropMACRO.idl>
+#include <enumpropMACRO.idl>
+
+module ENUMPROP_TEST_ALMASW2003048 {
+
+  enum States { ON, OFF};
+  ACS_ENUM(States);
+
+
+  };
+
+#endif
+
+
+
+
+
+
+

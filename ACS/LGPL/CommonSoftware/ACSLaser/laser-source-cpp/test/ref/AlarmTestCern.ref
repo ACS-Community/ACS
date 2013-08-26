@@ -1,0 +1,192 @@
+1 - Detected notification channel event: 1
+1 - Event text was: <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
+1 -    <source-hostname></source-hostname>
+1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <fault-states>
+1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
+1 -          <descriptor>ACTIVE</descriptor>
+1 -          <user-properties>
+1 -             <property name="ASI_PREFIX_PROPERTY" value="prefix"/>
+1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
+1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+1 -          </user-properties>
+1 -          <user-timestamp seconds="" seconds=""/>
+1 -       </fault-state>
+1 -    </fault-states>
+1 - </ASI-message>
+1 - 
+1 - Detected notification channel event: 2
+1 - Event text was: <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
+1 -    <source-hostname></source-hostname>
+1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <fault-states>
+1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
+1 -          <descriptor>ACTIVE</descriptor>
+1 -          <user-properties>
+1 -             <property name="ASI_PREFIX_PROPERTY" value="prefix"/>
+1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
+1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+1 -          </user-properties>
+1 -          <user-timestamp seconds="" seconds=""/>
+1 -       </fault-state>
+1 -    </fault-states>
+1 - </ASI-message>
+1 - 
+1 - Detected notification channel event: 3
+1 - Event text was: <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
+1 -    <source-hostname></source-hostname>
+1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <fault-states>
+1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
+1 -          <descriptor>ACTIVE</descriptor>
+1 -          <user-properties>
+1 -             <property name="ASI_PREFIX_PROPERTY" value="prefix"/>
+1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
+1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+1 -          </user-properties>
+1 -          <user-timestamp seconds="" seconds=""/>
+1 -       </fault-state>
+1 -    </fault-states>
+1 - </ASI-message>
+1 - 
+1 - Detected notification channel event: 4
+1 - Event text was: <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
+1 -    <source-hostname></source-hostname>
+1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <fault-states>
+1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
+1 -          <descriptor>ACTIVE</descriptor>
+1 -          <user-properties>
+1 -             <property name="ASI_PREFIX_PROPERTY" value="prefix"/>
+1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
+1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+1 -          </user-properties>
+1 -          <user-timestamp seconds="" seconds=""/>
+1 -       </fault-state>
+1 -    </fault-states>
+1 - </ASI-message>
+1 - 
+1 - Detected notification channel event: 5
+1 - Event text was: <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
+1 -    <source-hostname></source-hostname>
+1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <fault-states>
+1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
+1 -          <descriptor>ACTIVE</descriptor>
+1 -          <user-properties>
+1 -             <property name="ASI_PREFIX_PROPERTY" value="prefix"/>
+1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
+1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+1 -          </user-properties>
+1 -          <user-timestamp seconds="" seconds=""/>
+1 -       </fault-state>
+1 -    </fault-states>
+1 - </ASI-message>
+1 - 
+1 - Detected notification channel event: 6
+1 - Event text was: <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
+1 -    <source-hostname></source-hostname>
+1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <fault-states>
+1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
+1 -          <descriptor>ACTIVE</descriptor>
+1 -          <user-properties>
+1 -             <property name="ASI_PREFIX_PROPERTY" value="prefix"/>
+1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
+1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+1 -          </user-properties>
+1 -          <user-timestamp seconds="" seconds=""/>
+1 -       </fault-state>
+1 -    </fault-states>
+1 - </ASI-message>
+1 - 
+1 - Detected notification channel event: 7
+1 - Event text was: <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
+1 -    <source-hostname></source-hostname>
+1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <fault-states>
+1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
+1 -          <descriptor>ACTIVE</descriptor>
+1 -          <user-properties>
+1 -             <property name="ASI_PREFIX_PROPERTY" value="prefix"/>
+1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
+1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+1 -          </user-properties>
+1 -          <user-timestamp seconds="" seconds=""/>
+1 -       </fault-state>
+1 -    </fault-states>
+1 - </ASI-message>
+1 - 
+1 - Detected notification channel event: 8
+1 - Event text was: <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
+1 -    <source-hostname></source-hostname>
+1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <fault-states>
+1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
+1 -          <descriptor>ACTIVE</descriptor>
+1 -          <user-properties>
+1 -             <property name="ASI_PREFIX_PROPERTY" value="prefix"/>
+1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
+1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+1 -          </user-properties>
+1 -          <user-timestamp seconds="" seconds=""/>
+1 -       </fault-state>
+1 -    </fault-states>
+1 - </ASI-message>
+1 - 
+1 - Detected notification channel event: 9
+1 - Event text was: <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
+1 -    <source-hostname></source-hostname>
+1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <fault-states>
+1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
+1 -          <descriptor>ACTIVE</descriptor>
+1 -          <user-properties>
+1 -             <property name="ASI_PREFIX_PROPERTY" value="prefix"/>
+1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
+1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+1 -          </user-properties>
+1 -          <user-timestamp seconds="" seconds=""/>
+1 -       </fault-state>
+1 -    </fault-states>
+1 - </ASI-message>
+1 - 
+1 - Detected notification channel event: 10
+1 - Event text was: <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
+1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
+1 -    <source-hostname></source-hostname>
+1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <fault-states>
+1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
+1 -          <descriptor>ACTIVE</descriptor>
+1 -          <user-properties>
+1 -             <property name="ASI_PREFIX_PROPERTY" value="prefix"/>
+1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
+1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
+1 -          </user-properties>
+1 -          <user-timestamp seconds="" seconds=""/>
+1 -       </fault-state>
+1 -    </fault-states>
+1 - </ASI-message>
+1 - 
+1 - disconnecting consumer
+1 - received: 10 events, and sent: 10 events

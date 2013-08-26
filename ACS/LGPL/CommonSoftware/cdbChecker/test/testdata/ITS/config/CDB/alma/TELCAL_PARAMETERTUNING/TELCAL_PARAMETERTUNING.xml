@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Configuration Database Entry for ParameterTuning
+   -
+   - Author: Fanny Corset
+   -
+   - History:
+   -   2003-01-28  FC  Created
+  -->
+<ParameterTuning xmlns="urn:schemas-cosylab-com:ParameterTuning:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	    <logLevel description="level of messaging" default_value="0" units="A"/>
+	    <NPAE description="NPAE coefficient for tpoint" default_value="0" units="A"/>
+	    <ACES description="ACES coefficient for tpoint" default_value="0" units="A"/>
+	    <ACEC description="ACEC coefficient for tpoint" default_value="0" units="A"/>
+	    <ECES description="ECES coefficient for tpoint" default_value="0" units="A"/>
+	    <ECEC description="ECEC coefficient for tpoint" default_value="0" units="A"/>
+	    <nbBaselineBin description="number of Baseline bins for Phase Calibration" default_value="3" units="A"/>
+	    <bSubstractThermalPhaseNoise description="bSubstractThermalPhaseNoise" statesDescription="YES,NO" default_value="0" units="w/o"/>
+	    <dataMode description="dataMode" statesDescription="DATACAPTURER,FITS,VOTABLE" default_value="0" units="w/o"/>
+	    <metaDataFileName description="metaDataFileName" default_value="" units="A"/>
+	    <corrDataFileName description="corrDataFileName" default_value="" units="A"/>
+	    <polynomDegree description="degree of polynomial for Phase Calibration Curve" default_value="2" units="A"/>
+	    <timeRange description="time range" default_value="0" units="A"/>
+</ParameterTuning>

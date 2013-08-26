@@ -1,0 +1,42 @@
+ #! /bin/bash
+#rm ../doc/testDBM || die "Could not remove previous test DBM file"
+
+##some trivial tests------------------------------------------------------
+acsutilProfiler -r 1 -m "Test running the ls command" -d ../doc/testDBM ls
+acsutilProfiler -r 2 -m "Test running the ls command" -d ../doc/testDBM ls
+acsutilProfiler -r 3 -m "Test running the ls command" -d ../doc/testDBM ls
+acsutilProfiler -r 4 -m "Test running the ls command" -d ../doc/testDBM ls
+acsutilProfiler -r 5 -m "Test running the ls command" -d ../doc/testDBM ls
+acsutilProfiler -r 1 -m "Same test...different msg" -d ../doc/testDBM ls
+acsutilProfiler -r 2 -m "Same test...different msg" -d ../doc/testDBM ls
+acsutilProfiler -r 3 -m "Same test...different msg" -d ../doc/testDBM ls
+acsutilProfiler -r 4 -m "Same test...different msg" -d ../doc/testDBM ls
+acsutilProfiler -r 5 -m "Same test...different msg" -d ../doc/testDBM ls
+acsutilProfiler -r 5 -d ../doc/testDBM sleep 0.1
+acsutilProfiler -r 4 -d ../doc/testDBM sleep 0.1
+acsutilProfiler -r 3 -d ../doc/testDBM sleep 0.1
+acsutilProfiler -r 2 -d ../doc/testDBM sleep 0.1
+acsutilProfiler -r 1 -d ../doc/testDBM sleep 0.1
+acsutilProfiler -r 5 -d ../doc/testDBM sleep 0.2
+acsutilProfiler -r 5 -d ../doc/testDBM sleep 0.3
+acsutilProfiler -r 10 -d ../doc/testDBM sleep 0.3
+acsutilProfiler -r 10 -d ../doc/testDBM sleep 0.3
+acsutilProfiler -r 10 -m "Arbitrary key values" -a myKey=3.14 -a myOtherKey=aString -d ../doc/testDBM sleep 0.01
+acsutilProfiler -r 10 -m "Arbitrary key values" -a myKey=3.14 -a myOtherKey=aString -d ../doc/testDBM sleep 0.01
+acsutilProfiler -r 10 -m "Arbitrary key values" -a myKey=3.14 -a myOtherKey=aString -d ../doc/testDBM sleep 0.01
+acsutilProfiler -r 10 -m "Arbitrary key values" -a myKey=3.14 -a myOtherKey=aString -d ../doc/testDBM sleep 0.01
+
+##now real tests---------------------------------------------------------
+#setup some things first
+acsutilProfiler -r 1 -f "acsStop -b 7" -d ../doc/testDBM acsStart -b 7
+acsutilProfiler -r 3 -f "acsStop -b 7" -d ../doc/testDBM acsStart -b 7
+
+acsStart -b 7
+
+acsutilProfiler -r 3 -f "acsStopContainer -b 7 aragornContainer" -b "Startup statistics" -d ../doc/testDBM acsStartContainer -b 7 -py aragornContainer
+acsutilProfiler -r 3 -f "acsStopContainer -b 7 frodoContainer" -b "Startup statistics" -d ../doc/testDBM acsStartContainer -b 7 -java frodoContainer
+acsutilProfiler -r 3 -f "acsStopContainer -b 7 bilboContainer" -b "Startup statistics" -d ../doc/testDBM acsStartContainer -b 7 -cpp bilboContainer
+
+acsStop -b 7 > /dev/null
+
+ACSPerfReportGen ../doc/testDBM > ../doc/lsSleepPerf.html

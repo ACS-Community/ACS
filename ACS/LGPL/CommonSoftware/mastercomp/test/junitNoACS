@@ -1,0 +1,2 @@
+acsutilTATTestRunner acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.ACS.MasterComponentImpl.statemachine.StateMachineTest
+acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.TATJUnitRunner alma.ACS.MasterComponentImpl.SubsysResourceMonitorTest

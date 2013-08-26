@@ -1,0 +1,9 @@
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - This is a simple test which just makes sure an ISO-8601
+1 - can be converted to an ACS Epoch and be changed back into
+1 - a string.
+1 - 
+1 - The value we will be working with is: 2003-3-11T5:36:10.955161!
+1 - The ACS epoch value is then: 132666537709551610!
+1 - Finally this is converted back to a string: 2003-03-11T05:36:10!

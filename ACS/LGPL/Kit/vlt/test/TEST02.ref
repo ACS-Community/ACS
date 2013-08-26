@@ -1,0 +1,52 @@
+TEST02: UNIX application test
+VLTMAKE/test/mod/ws/test
+
+Cleaning up . . . . . . . .
+ . . . clean done
+/usr/local/bin/make MAKEDIR=VLTMAKE/src -f VLTMAKE/src/vltMakefile.all --no-print-directory do_all
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestClibrary.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestProcedure1.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestProcedure2.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:224: ../object/vltMakeTestClibrary.dx: No such file or directory
+VLTMAKE/src/vltMakefile.all:233: ../object/vltMakeTest.da: No such file or directory
+== Dependencies: ../object/vltMakeTest.da
+== Dependencies: ../object/vltMakeTestClibrary.dx
+== Dependencies: ../object/vltMakeTestProcedure2.d
+== Dependencies: ../object/vltMakeTestProcedure1.d
+== Dependencies: ../object/vltMakeTestClibrary.d
+== C Compiling: vltMakeTestProcedure1.c
+== C Compiling: vltMakeTestProcedure2.c
+== Making library:  ../lib/libvltMakeTest.a
+
+== C Compiling: vltMakeTestClibrary.c
+== Building executable: ../bin/vltMakeTestClibrary
+
+ . . . 'all' done
+
+man-pages...
+  local pages:
+ ASCII to MIF:
+ . . . man page(s) done
+
+Installing into target: INTROOT
+
+.....binaries:
+......scripts:
+.....includes:  ERROR files
+              
+....libraries:
+...TCLscripts:
+.TCLlibraries:
+....man-pages:
+
+        ---> installation recorded in INTROOT/vltMakeInstall.log
+
+
+ Copying source files 
+        from: VLTMAKE/test/mod/ws/test
+        to: INTROOT/test/mod-ws
+                                               . . . done 
+
+ . . . installation done
+vltMakeTestClibrary - PASS
+ . . . execute done

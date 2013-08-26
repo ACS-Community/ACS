@@ -1,0 +1,236 @@
+. acsstartupConstants
+. acsstartupLogging.sh
+#############################################################
+function getInstanceDirName
+{
+local ACS_INSTANCE
+
+ACS_INSTANCE=$1
+
+echo "$ACS_INSTANCES_DIR/ACS_INSTANCE.$ACS_INSTANCE"
+}
+
+export getInstanceDirName
+
+#------------------------------------------------------------------------------------
+#--Checks the base port which should be from zero to nine.
+#--The base port is the sole parameter to this script.
+#--If the baseport is valid, the return value is EC_OK.
+#--If the baseport is invalid, the return value is EC_BADARGS.
+#---------------------
+function checkBasePort
+{
+local ACS_INSTANCE
+local compressedAI
+
+ACS_INSTANCE=$1
+
+#sanity check to ensure the $ACS_INSTANCE is between 0-9
+compressedAI=`echo $ACS_INSTANCE | sed -e 's/[^[:digit:]]//g'`
+
+#first check for non-integers
+if [ "X$ACS_INSTANCE" != "X$compressedAI" ]
+then
+	ACS_SILENT_LOG "ERROR The ACS_INSTANCE to use, '$ACS_INSTANCE', is not between 0-9!"
+	return $EC_BADARGS
+
+#next check for values out of range
+elif [ $ACS_INSTANCE -gt 9 ]
+then
+	ACS_SILENT_LOG "ERROR The ACS_INSTANCE to use, '$ACS_INSTANCE', is greater than 9!"
+	return $EC_BADARGS
+
+elif [ $ACS_INSTANCE -lt 0 ]
+then
+	ACS_SILENT_LOG "ERROR The ACS_INSTANCE to use, '$ACS_INSTANCE', is less than 0!"
+	return $EC_BADARGS
+
+#it's OK
+else
+	return $EC_OK
+fi
+}
+#---------------------
+function checkTCPPort
+{
+local TCP_PORT
+local compressedAI
+local item
+local t_item
+
+TCP_PORT=$1
+
+#compressed AI contains a list where each element contains some TCP info
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+  compressedAI=`netstat -p TCP -a -n | grep "LISTENING" | grep ":$TCP_PORT " | awk '{print $2}'| sed 's/:/ /g' | awk '{print $2}' 2> /dev/null`
+else
+  compressedAI=`netstat -l -t -n | grep ":$TCP_PORT " | awk '{print $4}'| sed 's/:/ /g' | awk '{print $2}' 2> /dev/null`
+fi
+
+if [ "$compressedAI" = "" ] 
+then
+  return $EC_OK
+
+elif [ "$compressedAI" = "$TCP_PORT" ] 
+then
+  ACS_LOG_ERROR "acsstartupAcsInstance" "The TCP_PORT to use, '$TCP_PORT', is taken already - $compressedAI !"
+  ACS_LOG_ERROR "acsstartupAcsInstance" "`netstat -n -t -p -e -e -l 2> /dev/null | grep $TCP_PORT | awk '{printf("%s %s %s", $4, $7, $9)}'`"
+  return $EC_BADARGS
+fi
+
+return $EC_OK
+}
+
+export checkTCPPort
+#------------------------------------------------------------------------------------
+#--Creates an ACS INSTANCE directory.
+#--Sole parameter is 0-9 corresponding to the ACS_INSTANCE to use.
+#--If the instance has already been created, this script prints warning messages
+#--but will not bail.
+
+function createInstanceDirectory
+{
+
+local ACS_INSTANCE
+local ACS_INSTANCE_DIR
+local PORTS_FILENAME
+
+ACS_INSTANCE=$1
+ACS_INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+PORTS_FILENAME=$ACS_INSTANCE_DIR/USED_CONTAINER_PORTS
+NOTIFY_PORTS_FILENAME=$ACS_INSTANCE_DIR/USED_NOTIFY_PORTS
+
+#sanity check to make sure we were given a port to work with
+if [ "X$ACS_INSTANCE" == "X" ]
+then
+	ACS_SILENT_LOG "ERROR The ACS_INSTANCE directory to use was not passed to this script!"
+	ACS_SILENT_LOG "      Must be from 0-9"
+	return $EC_BADARGS
+fi
+
+#sanity check to ensure the baseport is OK
+if ! checkBasePort $ACS_INSTANCE
+then
+	return $EC_BADARGS
+fi
+
+#sanity check to make sure $ACSDATA is defined
+if [ "X$ACSDATA" == "X" ]
+then
+	ACS_SILENT_LOG "ERROR ACSDATA environment variable is not defined!"
+	return $EC_FAILURE
+fi
+
+#sanity check to make sure $ACS_INSTANCES_DIR has been created.
+if [ ! -d $ACS_INSTANCES_DIR ]
+then
+	ACS_SILENT_LOG "ERROR $ACS_INSTANCES_DIR does not exist!"
+	return $EC_FAILURE
+fi
+
+#sanity check to make sure $ACS_INSTANCES_DIR is writeable.
+if [ ! -w $ACS_INSTANCES_DIR ]
+then
+	ACS_SILENT_LOG "ERROR $ACS_INSTANCES_DIR is not writeable by '$USER'!"
+	return $EC_CANNOTUSE
+fi
+
+#sanity check to make sure the instance directory has not already been created
+if [ -d $ACS_INSTANCE_DIR ]
+then
+	ACS_SILENT_LOG "WARNING $ACS_INSTANCE_DIR already exists!"
+	#If the user is not the owner there are problems with this. (Multi-user machines)
+	#If it already exists ensure 775 privileges.
+	#chmod 775 $ACS_INSTANCE_DIR
+
+#OK to create the ACS INSTANCE directory
+else
+	mkdir -p $ACS_INSTANCE_DIR
+	chmod 775 $ACS_INSTANCE_DIR
+fi
+
+#now create USED_CONTAINER_PORTS
+if [ -e $PORTS_FILENAME ]
+then
+	ACS_SILENT_LOG "WARNING $PORTS_FILENAME already exists!"
+
+elif [ ! -w $ACS_INSTANCE_DIR ]
+then
+	ACS_SILENT_LOG "WARNING cannot create $PORTS_FILENAME because $ACS_INSTANCE_DIR is not writeable by $USER!"
+
+else
+	touch $PORTS_FILENAME
+	chmod 774 $PORTS_FILENAME
+fi
+
+#now create USED_NOTIFY_PORTS
+if [ -e $NOTIFY_PORTS_FILENAME ]
+then
+        ACS_SILENT_LOG "WARNING $NOTIFY_PORTS_FILENAME already exists!"
+
+elif [ ! -w $ACS_INSTANCE_DIR ]
+then
+        ACS_SILENT_LOG "WARNING cannot create $NOFITY_PORTS_FILENAME because $ACS_INSTANCE_DIR is not writeable by $USER!"
+
+else
+        touch $NOTIFY_PORTS_FILENAME
+        chmod 774 $NOTIFY_PORTS_FILENAME
+fi
+
+#create the pids directory
+if [ -e $ACS_INSTANCE_DIR/$ACS_PID_DIR ]
+then
+	ACS_SILENT_LOG "WARNING $ACS_INSTANCE_DIR/$ACS_PID_DIR already exists!"
+
+elif [ ! -w $ACS_INSTANCE_DIR ]
+then
+	ACS_SILENT_LOG "WARNING cannot create $ACS_INSTANCE_DIR/$ACS_PID_DIR because $ACS_INSTANCE_DIR is not writeable by $USER!"
+
+else
+	mkdir $ACS_INSTANCE_DIR/$ACS_PID_DIR
+	chmod 774 $ACS_INSTANCE_DIR/$ACS_PID_DIR
+fi
+
+}
+export createInstanceDirectory
+
+#--------------------------------------------------------------
+function getLocalContainerNames
+{
+local FILE
+local FILE_NAME
+
+
+FILE_NAME=`getInstanceDirName $ACS_INSTANCE`/USED_CONTAINER_PORTS
+FILE=`(cat $FILE_NAME | cut -d' ' -f1) 2> /dev/null`
+
+#handle the good case that the ports file contains what we expect
+if [ "$FILE" != "" ]
+then
+    echo "$FILE"
+    return 0
+fi
+
+return 1
+}
+#--------------------------------------------------------------
+function getLocalNotifyServiceNames
+{
+local FILE
+local FILE_NAME
+
+
+FILE_NAME=`getInstanceDirName $ACS_INSTANCE`/USED_NOTIFY_PORTS
+FILE=`(cat $FILE_NAME | cut -d' ' -f1) 2> /dev/null`
+
+#handle the good case that the ports file contains what we expect
+if [ "$FILE" != "" ]
+then
+    echo "$FILE"
+    return 0
+fi
+
+return 1
+}
+

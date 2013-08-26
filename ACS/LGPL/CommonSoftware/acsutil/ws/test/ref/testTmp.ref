@@ -1,0 +1,17 @@
+1 - 
+1 - TEST: Empty string should be returned.
+1 - Empty result returned.
+1 - 
+1 - TEST: '/tmp/fileName' should be returned.
+1 - FileName: '/tmp/fileName'.
+1 - 
+1 - TEST: '/tmp/fileName' should be returned.
+1 - FileName: '/tmp/fileName'.
+1 - 
+1 - TEST: Comparison of getTmpFileName(someFileName) with $ACSDATA/tmp/$HOST/ACS_INSTANCE.$ACS_INSTANCE/filename is OK
+1 - 
+1 - TEST: '/tmp/HOST/ACS_INSTANCE.X/someFileName' should be returned.
+1 - FileName: '/tmp/HOST/ACS_INSTANCE.X/someFileName'.
+1 - 
+1 - TEST: '/acs/tmp/ACS_INSTANCE.X/someFileName' should be returned.
+1 - FileName: '/acs/tmp/ACS_INSTANCE.X/someFileName'.

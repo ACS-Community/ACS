@@ -1,0 +1,50 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+
+acsStartJava  -noDirectory alma.acs.JVMSettingsTest.ConsumeHeap return > heapDumpOnOutOfMemoryErrorTest.out 2>&1 
+
+DUMP_FILENAME=`sed -n 's/Dumping heap to .*\(java_pid[0-9]*.hprof\) .../\1/p' heapDumpOnOutOfMemoryErrorTest.out`
+
+if [ X"$DUMP_FILENAME" != X ]
+then
+    echo "Heap dump created successfully."
+    
+#   Seeing the line "OutOfMemoryError was thrown as expected." last in the test output guarantees that the JVM 
+#   created the heap dump before entering the catch block of the test class.
+#   This in turn means that the mechanism works also for applications which don't catch the OutOfMemoryError.
+#   An alternative and more direct verification would be to repeat the test, running "ConsumeHeap throw".
+    tail -n 1 heapDumpOnOutOfMemoryErrorTest.out
+    
+# TODO "jhat $DUMP_FILENAME", check for output "Server is ready", possibly run a query, then kill jhat.
+# This would verify that the dump was indeed readable.
+
+    DUMP_FILE=`grep Dumping heapDumpOnOutOfMemoryErrorTest.out | cut -d \  -f 4`
+    echo "Removing dump file $DUMP_FILENAME"
+    rm $DUMP_FILE
+
+else
+    echo "ERROR: Heap dump was not created correctly by the test."
+fi
+
+
+# TODO use jhat to analyze the heap dump.
+

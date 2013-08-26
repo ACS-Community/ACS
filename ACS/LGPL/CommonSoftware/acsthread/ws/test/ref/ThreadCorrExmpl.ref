@@ -1,0 +1,74 @@
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== Creating thread as was done in example component.
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Spawning CorrSimThread thread....
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [CorrSimThread - CorrSimThread::CorrSimThread] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] CorrSimThread thread created.
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [CorrSimThread - ] CorrSimThread thread started.
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [CorrSimThread - ] Just passing the time...
+1 - ----------T--:--:--.--- [GlobalLogger - ] Waiting
+1 - ----------T--:--:--.--- [CorrSimThread - ] Just passing the time...
+1 - ----------T--:--:--.--- [CorrSimThread - ] Just passing the time...
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== Cleaning up thread as was done in example component
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::isAlive] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] CorrSimThread state: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stop] 
+1 - ----------T--:--:--.--- [CorrSimThread - ThreadBase::stop] Thread CorrSimThread
+1 - ----------T--:--:--.--- [CorrSimThread - ] Just passing the time...
+1 - ----------T--:--:--.--- [CorrSimThread - ] Exiting CorrSimThread::run()
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:CorrSimThread
+1 - ----------T--:--:--.--- [GlobalLogger - ] Trying to shut down CorrSimThread
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::isAlive] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] End of cleanup
+1 - ----------T--:--:--.--- [GlobalLogger - ] Destroy thread
+1 - ----------T--:--:--.--- [CorrSimThread - CorrSimThread::~CorrSimThread] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== Creating thread as was done in example component. Compact class
+1 - ----------T--:--:--.--- [GlobalLogger - ] Spawning CorrSimThread thread....
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [CorrSimThread - CorrSimThread::CorrSimThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Spawning CorrSimThread thread....
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] CorrSimThread thread created.
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [CorrSimThread - ] This is an iteration for doing something.
+1 - ----------T--:--:--.--- [CorrSimThread - ] This is an iteration for doing something.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Waiting
+1 - ----------T--:--:--.--- [CorrSimThread - ] This is an iteration for doing something.
+1 - ----------T--:--:--.--- [CorrSimThread - ] This is an iteration for doing something.
+1 - ----------T--:--:--.--- [CorrSimThread - ] This is an iteration for doing something.
+1 - ----------T--:--:--.--- [CorrSimThread - ] This is an iteration for doing something.
+1 - ----------T--:--:--.--- [CorrSimThread - ] This is an iteration for doing something.
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== Cleaning up thread as was done in example component
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminate] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [CorrSimThread - ThreadBase::stop] Thread CorrSimThread
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [CorrSimThread - CorrSimThread::~CorrSimThread] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [CorrSimThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:CorrSimThread
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::isAlive] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] End of cleanup
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== The end
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 

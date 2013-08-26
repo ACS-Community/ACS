@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!--
+   - History:
+   -   Wed Dec 06 15:52:55 UTC 2006 modified by jDAL
+-->
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<_ Name="EPTESTDEVICE1" Code="enumpropTestDevice" Type="IDL:ENUMPROP_TEST/enumpropTestDevice:1.0" Container="enumTest"  ImplLang="cpp" />
+</Components>

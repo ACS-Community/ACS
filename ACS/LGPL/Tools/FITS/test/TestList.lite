@@ -1,0 +1,2 @@
+1 JavaLibTest "testJavaFits  GIRAF.2002-12-22T16_37_58.731.fits <test.txt"
+2 PythonLibTest "testFITS GIRAF.2002-12-22T16_37_58.731.fits <test.txt"

@@ -1,0 +1,123 @@
+1 - Test EH(registerMonitoredDevice): RegisteringDeviceProblem
+1 - ErrorTrace (TimeStamp=XXXX,
+1 -             Line=XXXX,
+1 -             Routine=<module>,
+1 -             Host=xxxxxxxxx
+1 -             Process=xxxxxxxxx,
+1 -             Thread=MainThread,
+1 -             Type=60200,
+1 -             Code=1,
+1 -             ShortDescrip=Registering Device Problem.,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=XXXX,
+1 -                 Line=XXXX,
+1 -                 Routine=MonitorCollectorImpl::registerMonitoredComponentWithSerial,
+1 -                 Host=xxxxxxxxx
+1 -                 Process=monColTestCont,
+1 -                 Thread=ORBTask,
+1 -                 Type=60200,
+1 -                 Code=1,
+1 -                 ShortDescrip=Registering Device Problem.,
+1 -                 Severity=Error,
+1 -                 Data: Name=Device, Value=FAKE_DEVICE; )
+1 - 
+1 -         ErrorTrace (TimeStamp=XXXX,
+1 -                     Line=XXXX,
+1 -                     Routine=ContainerServices::getComponentNonSticky,
+1 -                     Host=xxxxxxxxx
+1 -                     Process=monColTestCont,
+1 -                     Thread=ORBTask,
+1 -                     Type=25,
+1 -                     Code=1,
+1 -                     ShortDescrip=Error retrieving component,
+1 -                     Severity=Error,
+1 -                     Data: Name=CURL, Value=FAKE_DEVICE; )
+1 - 
+1 -             ErrorTrace (TimeStamp=XXXX,
+1 -                         Line=XXXX,
+1 -                         Routine=MACIContainerServices::getCORBAComponentNonSticky,
+1 -                         Host=xxxxxxxxx
+1 -                         Process=monColTestCont,
+1 -                         Thread=ORBTask,
+1 -                         Type=25,
+1 -                         Code=1,
+1 -                         ShortDescrip=Error retrieving component,
+1 -                         Severity=Error,
+1 -                         Data: Name=CURL, Value=FAKE_DEVICE; )
+1 - 
+1 -                 ErrorTrace (TimeStamp=XXXX,
+1 -                             Line=XXXX,
+1 -                             Routine=get_component_non_sticky,
+1 -                             Host=xxxxxxxxx
+1 -                             Process=,
+1 -                             Thread=RequestProcessor-XX,
+1 -                             Type=25,
+1 -                             Code=2,
+1 -                             ShortDescrip=The requested Component had not been already activated at request time,
+1 -                             Severity=Error,
+1 -                             Data: Name=javaex.class, Value=alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx; )
+1 - 
+1 - Test EH(registerMonitoredDevice): DeviceAlreadyRegistered
+1 - ErrorTrace (TimeStamp=XXXX,
+1 -             Line=XXXX,
+1 -             Routine=<module>,
+1 -             Host=xxxxxxxxx
+1 -             Process=xxxxxxxxx,
+1 -             Thread=MainThread,
+1 -             Type=60200,
+1 -             Code=1,
+1 -             ShortDescrip=Registering Device Problem.,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=XXXX,
+1 -                 Line=XXXX,
+1 -                 Routine=MonitorCollectorImpl::registerMonitoredComponentWithSerial,
+1 -                 Host=xxxxxxxxx
+1 -                 Process=monColTestCont,
+1 -                 Thread=ORBTask,
+1 -                 Type=60200,
+1 -                 Code=1,
+1 -                 ShortDescrip=Registering Device Problem.,
+1 -                 Severity=Error,
+1 -                 Data: Name=Device, Value=TEST_PS_1; )
+1 - 
+1 -         ErrorTrace (TimeStamp=XXXX,
+1 -                     Line=XXXX,
+1 -                     Routine=MonitorCollectorImpl::registerMonitoredDevice,
+1 -                     Host=xxxxxxxxx
+1 -                     Process=monColTestCont,
+1 -                     Thread=ORBTask,
+1 -                     Type=60200,
+1 -                     Code=0,
+1 -                     ShortDescrip=Device already registered.,
+1 -                     Severity=Error,
+1 -                     Data: Name=Device, Value=TEST_PS_1; )
+1 - 
+1 - Test EH(deregisterMonitoredDevice): DeviceNotRegisteredEx
+1 - ErrorTrace (TimeStamp=XXXX,
+1 -             Line=XXXX,
+1 -             Routine=<module>,
+1 -             Host=xxxxxxxxx
+1 -             Process=xxxxxxxxx,
+1 -             Thread=MainThread,
+1 -             Type=60200,
+1 -             Code=2,
+1 -             ShortDescrip=Device has not been registered.,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=XXXX,
+1 -                 Line=XXXX,
+1 -                 Routine=MonitorCollectorImpl::deregisterMonitoredDevice,
+1 -                 Host=xxxxxxxxx
+1 -                 Process=monColTestCont,
+1 -                 Thread=ORBTask,
+1 -                 Type=60200,
+1 -                 Code=2,
+1 -                 ShortDescrip=Device has not been registered.,
+1 -                 Severity=Error,
+1 -                 Data: Name=Device, Value=FAKE_DEVICE; )
+1 - 

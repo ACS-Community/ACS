@@ -1,0 +1,17 @@
+Tue Oct 21 10:45:23 2003  Roberto Cirami  <oat@pykon.oat.ts.astro.it>
+
+	* ws: added Life Cycle methods
+
+Thu Oct 02 15:45:23 2003  Roberto Cirami  <oat@pykon.oat.ts.astro.it>
+
+	* test: tat test modified
+
+Fri Sep 19 15:45:23 2003  Roberto Cirami  <oat@pykon.oat.ts.astro.it>
+
+	* test: tat test added
+
+Thu Aug 28 15:45:23 2003  Roberto Cirami  <oat@pykon.oat.ts.astro.it>
+
+	* ws: implementation of acscomponent
+
+"@(#) $Id: ChangeLog,v 1.5 2003/10/21 08:57:49 rcirami Exp $"

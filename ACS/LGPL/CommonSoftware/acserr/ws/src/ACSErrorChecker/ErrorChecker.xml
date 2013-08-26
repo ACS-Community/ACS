@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<ErrorChecker>
+	<!-- The directory where the reports are stored -->
+	<ReportDir path="."/>
+	<!-- The directory that contains the definitions of the errors -->
+	<SearchDir DirName="idl"/>
+	<!-- The directories that cannot contain errors
+		We can specify more ExcludeDir tag to exclude more than just CVS.
+	-->
+	<ExcludeDir DirName="CVS"/>
+	
+	<!-- The range of the errors allocated for examples and tests
+		They are here because are common to all the subsystem
+		The error definitions in that range are always valid (even if
+		duplicated) -->
+	<ExampleAndTestRange Min="900000" Max="909999" />
+	<!-- 
+		There is one entry per each subsystem
+		Name is the name of the subsystem
+		ReportFormat is the type of report to generate (html or txt)
+		Min is the lowest error number for the subsystem
+		Max is the highest error number for the subsystem
+		BaseDir is the base directory of the subsystem
+	-->
+	<SubSystem Name="ACS" ReportFormat="html" Min="0" Max="9999" BaseDir="/diska/home/almadev/CVSWORK/ACS/LGPL/CommonSoftware"/>
+	<!--SubSystem Name="ARCHIVE" ReportFormat="html" Min="60000" Max="69999" BaseDir="/home/acaproni/CVSWORK/ARCHIVE"/-->
+</ErrorChecker>
+

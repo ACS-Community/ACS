@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="abeansvep/" kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/cosyframework-core.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    name="ACS_DDS_Errors" 
+    type="56" _prefix="alma"
+    xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
+>
+    <ErrorCode name="DDSQoSSetProblem" shortDescription="Problem to set DDS QoS" description="Problem to set DDS QoS">
+        <Member name="QoS" type="string" description="QoS name" />
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSQoSGetProblem" shortDescription="Problem to sgt DDS QoS" description="Problem to get DDS QoS">
+        <Member name="QoS" type="string" description="QoS name" />
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSTopicCreateProblem" shortDescription="Problem to create DDS topic" description="Problem to create DDS topic">
+        <Member name="Topic" type="string" description="Topic name" />
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSTopicEnableProblem" shortDescription="Problem to enable DDS Topic" description="Problem to enable DDS Topic">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSTopicDeleteProblem" shortDescription="Problem to delete DDS topic" description="Problem to delete DDS topic">
+        <Member name="Topic" type="string" description="Topic name" />
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSPublisherCreateProblem" shortDescription="Problem to create DDS publisher" description="Problem to create DDS publisher">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSPublisherEnableProblem" shortDescription="Problem to enable DDS Publisher" description="Problem to enable DDS publisher">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSPublisherDestroyProblem" shortDescription="Problem to destroy  DDS publisher" description="Problem to destroy  DDS publisher">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSDWCreateProblem" shortDescription="Problem to create DDS data writer" description="Problem to create DDS data writer">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSDWEnableProblem" shortDescription="Problem to enable DDS DW" description="Problem to enable DDS data writer">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSRegisterTypeProblem" shortDescription="Problem to register type" description="Problem to register type">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+        <Member name="TypeName" type="string" description="Type name" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSUnregisterTypeProblem" shortDescription="Problem to unregister type" description="Problem to unregister type">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+        <Member name="TypeName" type="string" description="Type name" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSSubscriberCreateProblem" shortDescription="Problem to create DDS subscriber" description="Problem to create DDS subscriber">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSSubscriberDestroyProblem" shortDescription="Problem to destroy  DDS subscriber" description="Problem to destroy  DDS subscriber">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSSubscriberEnableProblem" shortDescription="Problem to enable DDS Subscriber" description="Problem to enable DDS Subscriber">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSDRCreateProblem" shortDescription="Problem to create DDS data reader" description="Problem to create DDS data reader">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSDRDestroyProblem" shortDescription="Problem to destroy DDS data reader" description="Problem to destroy DDS data reader">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSDREnableProblem" shortDescription="Problem to enable DDS DR" description="Problem to enable DDS data reader">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSParticipantCreateProblem" shortDescription="Problem to create DDS participant" description="Problem to create DDS participant">
+        <Member name="DomainID" type="long" description="Domain ID" />
+    </ErrorCode>
+    <ErrorCode name="DDSParticipantDestroyProblem" shortDescription="Problem to destroy DDS participant" description="Problem to destroy DDS participant">
+    </ErrorCode>
+    
+    <ErrorCode name="DDSParticipantEnableProblem" shortDescription="Problem to enable DDS participant" description="Problem to enable DDS participant">
+        <Member name="DomainID" type="long" description="Domain ID" />
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSCreateDataProblem" shortDescription="Problem to create Data" description="Problem to create Data">
+        <Member name="DataType" type="string" description="Domain ID" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSDeleteDataProblem" shortDescription="Problem to delete Data" description="Problem to delete Data">
+        <Member name="DataType" type="string" description="Domain ID" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSReturnError" shortDescription="DDS Return Error" description="Mapping for DDS return code error">
+        <Member name="RetCode" type="long" description="Return (error) code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSNarrowFailed" shortDescription="DDS Narrow failed" description="DDS failed to narrow an object">
+        <Member name="Variable" type="string" description="Variable name" />
+        <Member name="NarrowType" type="string" description="Narrow Type" />
+    </ErrorCode>
+     
+    <ErrorCode name="DDSRequestedIncompatibleQoS" shortDescription="Incompatible QoS" description="Requested incompatible QoS">
+    </ErrorCode>
+    
+    <ErrorCode name="DDSOfferedIncompatibleQoS" shortDescription="Incompatible QoS" description="Requested incompatible QoS">
+    </ErrorCode>
+    
+    <ErrorCode name="DDSRequestedDeadlineMissed" shortDescription="Deadline missed." description="Requested deadline missed">
+    </ErrorCode>
+    
+    <ErrorCode name="DDSOffeeredDeadlineMissed" shortDescription="Deadline missed." description="Requested deadline missed">
+    </ErrorCode>
+    
+    <ErrorCode name="DDSSampleStateError" shortDescription="DDS Sample State  Error" description="Sample state error">
+        <Member name="SampleState" type="long" description="Sample state" />
+        <Member name="ViewState" type="long" description="View state" />
+        <Member name="InstanceState" type="long" description="Instance state" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSLivelinesLost" shortDescription="Livelines lost." description="Livelines lost.">
+    </ErrorCode>
+    
+    <ErrorCode name="DDSDestinationUnreachable" shortDescription="Destination Unreachable." description="Destination Unreachable.">
+    </ErrorCode>
+ 
+</Type>

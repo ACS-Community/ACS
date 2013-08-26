@@ -1,0 +1,276 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList,v 1.3 2010/09/21 18:10:36 tstaig Exp $"
+#
+# TestList
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# eallaert  2008-01-18  initial version (derived from nctest)
+# 
+# NOTE: if running individual tests (e.g. "tat -v -nc 1 3 ..."), the following
+# SOURCE and PROLOGUE directives are not taken into account. In this case,
+# run "tat makeEnv" first (and "tat cleanEnv" after) , or give the command 
+# "export ACS_CDB=`pwd`" from this directory, and then start up ACS "by hand". 
+SOURCE setupTatEnvironment.tcl
+PROLOGUE contNcTestTATPrologue
+
+# NOTE: for some of the tests below, we have multiple consumers, and for java
+# we need to pass them grouped as a single value to the property COUNTER_CONSUMERS.
+# Tat will first assign the string passed as foreground process (including its 
+# arguments) to a variable, and then Tcl-eval that variable. We need to avoid that
+# these spaces are seen by Tcl as word separators. Valid alternatives:
+#   a. testName "process .... -D {COUNTER_CONSUMERS=CONS1 CONS2 CONS3} ..."
+#      (the braces survive the assignment and serve to group as single arg for eval)
+#   b. testName {process .... -D "COUNTER_CONSUMERS=CONS1 CONS2 CONS3" ...}
+#      (the quotes survive the assignment and serve to group as single arg for eval;
+#      note that this (without the braces) can be cut-and-pasted into bash)
+#   c. testName {process .... -D {COUNTER_CONSUMERS=CONS1 CONS2 CONS3} ...}
+#   d. testName "process .... -D \"COUNTER_CONSUMERS=CONS1 CONS2 CONS3\" ..."
+#   e. testName {process .... -D COUNTER_CONSUMERS=CONS1\ CONS2\ CONS3 ...}
+#   f. testName "process .... -D COUNTER_CONSUMERS=CONS1\\ CONS2\\ CONS3 ..."
+#      (the first assignment by tat will leave single backslashes before the
+#      spaces, which serve then to prevent word-splitting by eval)
+# Note that the following are wrong:
+#   x. testName {process .... -D COUNTER_CONSUMERS="CONS1 CONS2 CONS3" ...}
+#      (the quotes are part of the arg as they do not appear after a blank,
+#      for Tcl; for bash this would be OK)
+#   y. testName "process .... -D COUNTER_CONSUMERS=CONS1\ CONS2\ CONS3 ..."
+#      (the backslashes are already removed before the eval takes place)
+
+
+###################################################################
+# PYTHON SUPPLIERS
+###################################################################
+#Tests a Python Client Supplier against a Python Consumer Client
+1 pythonToPython1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_PYTHON \
+                    -D COUNTER_CONSUMERS=CONSUMER1_PYTHON \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+2 pythonToPython2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_PYTHON \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_PYTHON CONSUMER2_PYTHON CONSUMER3_PYTHON CONSUMER4_PYTHON CONSUMER5_PYTHON CONSUMER6_PYTHON" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+3 pythonToJava1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_PYTHON \
+                    -D COUNTER_CONSUMERS=CONSUMER1_JAVA \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+4 pythonToJava2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_PYTHON \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_JAVA CONSUMER2_JAVA CONSUMER3_JAVA CONSUMER4_JAVA CONSUMER5_JAVA CONSUMER6_JAVA" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+5 pythonToCpp1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_PYTHON \
+                    -D COUNTER_CONSUMERS=CONSUMER1_CPP \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+6 pythonToCpp2 \
+     {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_PYTHON \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_CPP CONSUMER2_CPP CONSUMER3_CPP CONSUMER4_CPP CONSUMER5_CPP CONSUMER6_CPP" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+7 pythonToPython&Java&Cpp1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_PYTHON \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_PYTHON CONSUMER1_JAVA CONSUMER1_CPP" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+8 pythonToPython&Java&Cpp2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_PYTHON \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_PYTHON CONSUMER1_JAVA CONSUMER1_CPP CONSUMER2_PYTHON CONSUMER2_JAVA CONSUMER2_CPP CONSUMER3_PYTHON CONSUMER3_JAVA CONSUMER3_CPP" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+###################################################################
+# JAVA SUPPLIERS
+###################################################################
+11 javaToPython1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D COUNTER_CONSUMERS=CONSUMER1_PYTHON \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+12 javaToPython2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_PYTHON CONSUMER2_PYTHON CONSUMER3_PYTHON CONSUMER4_PYTHON CONSUMER5_PYTHON CONSUMER6_PYTHON" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+13 javaToJava1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D COUNTER_CONSUMERS=CONSUMER1_JAVA \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+14 javaToJava2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_JAVA CONSUMER2_JAVA CONSUMER3_JAVA CONSUMER4_JAVA CONSUMER5_JAVA CONSUMER6_JAVA" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+
+15 javaToCpp1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D COUNTER_CONSUMERS=CONSUMER1_CPP \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+16 javaToCpp2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_CPP CONSUMER2_CPP CONSUMER3_CPP CONSUMER4_CPP CONSUMER5_CPP CONSUMER6_CPP" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+17 javaToPython&Java&Cpp1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_PYTHON CONSUMER1_JAVA CONSUMER1_CPP" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+18 javaToPython&Java&Cpp2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_PYTHON CONSUMER1_JAVA CONSUMER1_CPP CONSUMER2_PYTHON CONSUMER2_JAVA CONSUMER2_CPP CONSUMER3_PYTHON CONSUMER3_JAVA CONSUMER3_CPP" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+				alma.COUNTER.CounterTestImpl.CounterTest }
+	
+###################################################################
+# CPP SUPPLIERS
+###################################################################
+21 cppToPython1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D COUNTER_CONSUMERS=CONSUMER1_PYTHON \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+22 cppToPython2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_PYTHON CONSUMER2_PYTHON CONSUMER3_PYTHON CONSUMER4_PYTHON CONSUMER5_PYTHON CONSUMER6_PYTHON" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+23 cppToJava1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D COUNTER_CONSUMERS=CONSUMER1_JAVA \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+24 cppToJava2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_JAVA CONSUMER2_JAVA CONSUMER3_JAVA CONSUMER4_JAVA CONSUMER5_JAVA CONSUMER6_JAVA" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+
+25 cppToCpp1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D COUNTER_CONSUMERS=CONSUMER1_CPP \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+26 cppToCpp2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_CPP CONSUMER2_CPP CONSUMER3_CPP CONSUMER4_CPP CONSUMER5_CPP CONSUMER6_CPP" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+27 cppToPython&Java&Cpp1 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_PYTHON CONSUMER1_JAVA CONSUMER1_CPP" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+    
+28 cppToPython&Java&Cpp2 \
+      {acsStartJava -D COUNTER_SUPPLIER=SUPPLIER_JAVA \
+                    -D "COUNTER_CONSUMERS=CONSUMER1_PYTHON CONSUMER1_JAVA CONSUMER1_CPP CONSUMER2_PYTHON CONSUMER2_JAVA CONSUMER2_CPP CONSUMER3_PYTHON CONSUMER3_JAVA CONSUMER3_CPP" \
+                    -D COUNTER_INIT_VALUE=1 \
+                    -D COUNTER_LAST_VALUE=15 \
+                    -D COUNTER_PERIOD=0.25 \
+                alma.COUNTER.CounterTestImpl.CounterTest }
+
+###################################################################
+# LOGS and AUXILIARY FILES
+###################################################################
+# Running the following  tests makes only sense after running ALL of the above tests,
+# from a *CLEAN* ACS system, i.e. do a "tat cleanEnv; tat makeEnv" before launching this suite.
+51 pythonContainerStdout "/bin/cat tmp/ACS_INSTANCE.$env(ACS_INSTANCE)/pythonContainer.out"
+52 javaContainerStdout "/bin/cat tmp/ACS_INSTANCE.$env(ACS_INSTANCE)/javaContainer.out"
+53 cppContainerStdout "/bin/cat tmp/ACS_INSTANCE.$env(ACS_INSTANCE)/cppContainer.out"
+
+
+EPILOGUE acsutilTATEpilogue

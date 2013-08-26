@@ -1,0 +1,4 @@
+SOURCE TATEnvironment
+PROLOGUE prologue.sh 
+1 doTest "acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.managertest.client.managerClientTest"
+EPILOGUE epilogue.sh

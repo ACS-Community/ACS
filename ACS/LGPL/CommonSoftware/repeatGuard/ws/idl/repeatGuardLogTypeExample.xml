@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<LogDefinitionType 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="Alma/ACSLogTS"
+	name="repeatGuardLogTypeExample" 
+	type="10"
+	shortDescription="Example LogDefinitionType"
+	description="Longer description of the sample LogDefinitionType"
+	URL="http://someurl.org"
+	_prefix="alma"
+        xsi:schemaLocation="Alma/ACSLogTS ACSLogTS.xsd">
+        
+	
+	<!--xsi:noNamespaceSchemaLocation="ACSLogTS.xsd"-->
+	<LogDefinition
+		logName="simpleLog"
+		shortDescription="Simple Log"
+		description="This is a simple log without members"
+		URL="http://someurl.org"
+		priority="INFO"
+		audience="Curious people">
+	</LogDefinition>
+	<LogDefinition
+		logName="complexLog"
+		shortDescription="Complex Log"
+		description="This is a somewhat more complex log using members"
+		URL="http://someurl.org"
+		priority="WARNING"
+		audience="People with too much time on their hands">
+		<Member name="someDoubleMember"
+			type="double"
+			description="member description"/>
+		<Member name="someStringMember"
+			type="string"
+			description="member description"/>
+		<Member name="someLongMember"
+			type="long"
+			description="member description"/>
+	</LogDefinition>
+</LogDefinitionType>
+

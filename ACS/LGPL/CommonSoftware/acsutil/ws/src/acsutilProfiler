@@ -1,0 +1,168 @@
+#! /bin/bash
+. acsstartupAcsPorts  #Import functions like this in bash=(
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: acsutilProfiler,v 1.5 2006/01/10 23:17:40 dfugate Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dfugate 2004-09-10 created
+#
+
+### ----------- Command Line Parsing ---------------------
+# These will contain the parsing results (CL_XXX, CL = command line)
+CL_RUNS=1
+CL_BGROUND=
+CL_FINISH=
+CL_TIMEOUT=100
+CL_MSG=
+CL_DATABASE=
+CL_ARBITR=
+
+# Usage info. Be nice and keep this up-to-date!
+function printUsage 
+{
+   echo "Profiles an executable"
+   echo ""
+   echo "Usage: `basename $0` [OPTIONS]  command_to_be_timed  main_args"
+   echo "Options: "
+   echo "  -r N                                Number of times the command should be executed."
+   echo "  -f \"finish command\"                 Optional command executed after each completion"
+   echo "                                      of the command being timed."
+   echo "  -b \"output signifying completion\"   Optionally forces the command to be run as a background"
+   echo "                                      process and this script waits until the specified string" 
+   echo "                                      is sent to STDOUT before executing the 'finish command'."
+   echo "  -t timeout                          Optional timeout (seconds) used with the -b option (i.e., amount"
+   echo "                                      of time to wait for the specified string before giving up)."
+   echo "  -m \"some useful message\"            Optional message to be used in place of the command name" 
+   echo "                                      with respect to the ACS Profiler output."
+   echo "  -d databaseLocation                 Optionally sends this program's output directly to an ACS"
+   echo "                                      profiler database instead of STDOUT."
+   echo "  -a key=value [ -a key=value ]       A mechanism for adding arbitrary key/value pairs to the output"
+   echo "                                      of this script."
+   echo "  -h                                  Prints this message and exits."
+}
+
+while getopts hr:b:f:t:m:d:a: OPT; do
+	case $OPT in
+       		h) printUsage; exit 0 ;;
+		r) CL_RUNS=$OPTARG ;;
+       		b) CL_BGROUND=$OPTARG ;;
+		f) CL_FINISH=$OPTARG ;;
+		t) CL_TIMEOUT=$OPTARG ;;
+	        m) CL_MSG=$OPTARG ;;
+	        d) CL_DATABASE=$OPTARG ;;
+	        a) CL_ARBITR=$CL_ARBITR,\ $OPTARG ;;
+		--) break ;;
+   esac
+done
+
+shift `expr $OPTIND - 1`
+
+
+### ---------- Nice, informative messages for the user ------------------
+echo "The '$@' command will now run $CL_RUNS times."
+if [ "$CL_FINISH" ]
+then
+	echo "After each run, the '$CL_FINISH' command will be executed."
+fi
+
+if [ "$CL_BGROUND" ]
+then
+	echo "The '$@' command will be run as a background process and this script will"
+	echo "assume the command has completed once the '$CL_BGROUND' string has been detected"
+	echo "in '$@' output."
+	echo "If the '$@' command does not finish executing in $CL_TIMEOUT seconds on any given"
+	echo "run, it will be terminated and the ACS executable profiler will terminate abruptly!"
+fi
+
+### ---------- Start with some initialization ---------------------------
+totalTime="0"
+minDuration="99999999999999999"
+maxDuration="0"
+
+### ---------- Run it a maximum of $CL_RUNS times -----------------------
+i=0
+while [ $i != $CL_RUNS ]
+do
+	start=`date +FORMAT=\ %s.%N| awk '{print $2}'`	
+
+	#if it need not be run as a background process
+	if [ ! "$CL_BGROUND" ]
+	then	
+		$@ > /tmp/acsutilProfiler.$$.$i
+
+	else
+		j=0
+		$@ > /tmp/acsutilProfiler.$$.$i &
+		processID=$!
+		while [ $j ]
+		do
+			okToExit=`grep "$CL_BGROUND" /tmp/acsutilProfiler.$$.$i 2> /dev/null`
+
+			if [ "$j" = "$CL_TIMEOUT" ]
+  			then
+      				echo "==> Error - process failed to emit '$CL_BGROUND' in allocated time" 1>&2
+      				acsKillProc $processID || echo "==> Warning - cannot kill the process" 1>&2
+      				exit 45
+  			#got the output we need
+  			elif [ "X$okToExit" != "X" ] 
+  			then
+      				break
+  			else
+      				j=$(( $j + 1 ))
+				sleep 1
+  			fi
+		done
+	fi
+
+	stop=`date +FORMAT=\ %s.%N| awk '{print $2}'`
+
+	##perform some final calculations########################
+	#looks like bash cannot do decimal arithmetic??? for now use Python
+	elapsed=`python -c "print $stop - $start"`
+	totalTime=`python -c "print $elapsed + $totalTime"`
+
+	minDuration="`python -c "print min($minDuration,$elapsed)"`"
+	maxDuration="`python -c "print max($maxDuration,$elapsed)"`"
+
+	##cleanup if needed######################################
+	if [ "$CL_FINISH" ]
+	then
+		$CL_FINISH > /tmp/acsutilProfiler.$$.$i.finish
+	fi	
+
+	i=$(( $i + 1 ))
+done
+
+
+###Statistical analysis here######################################
+averageTime=`python -c "print $totalTime / $CL_RUNS"`
+
+###Host info retrieved here#######################################
+procSpeed=`dmesg | grep "MHz processor." | awk '{print $2}'`MHz
+memSize=`dmesg | grep "Memory:" | awk '{print $2}'`
+currentDate=`date -u +%FT%T.%3N`
+localIP=`getIP`
+
+if [ ! "$CL_MSG" ]
+then
+    CL_MSG=$@
+fi
+
+
+OUTPUT="#ACS PROFILER# msg=$CL_MSG, avg=$averageTime, runs=$CL_RUNS, mindur=$minDuration, maxdur=$maxDuration, cpu=$procSpeed, mem=$memSize, date=$currentDate, ip=$localIP, lang=Unknown, units=seconds $CL_ARBITR"
+
+if [ ! $CL_DATABASE ]
+then
+    #just send it to standard out
+    echo $OUTPUT
+else
+    TMP_PERF_FILE=/tmp/acsutilProfiler.output.$$
+    echo "Writing performance analysis data to temporary file '$TMP_PERF_FILE'"
+    echo $OUTPUT > $TMP_PERF_FILE
+    
+    echo "Importing performance analysis data into the '$CL_DATABASE' database"
+    ACSPerfAnalyzer $CL_DATABASE $TMP_PERF_FILE
+fi

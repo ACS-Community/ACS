@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+
+	ACS error system definitions for identifier archive exceptions.
+	See http://almasw.hq.eso.org/almasw/bin/view/HLA/CompletionErrorTypes 
+	
+	TODO: add Member child elements for parameters, so that free-text with embedded parameters can be replaced in the code.
+-->
+
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	  xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	  name="ArchiveIdentifierError"
+	  type="8000"
+	  _prefix="alma">
+	  
+	<ErrorCode name="IdentifierUnexpected" 
+			shortDescription="An unexpected error occured in the identifier archive or UID-related classes." 
+			description="Any otherwise uncaught exception should be converted to (or wrapped by) this type, to ensure proper transport over CORBA.">
+			<Member name="ContextInfo" type="string" description="Some text explaining what has happened."/>
+	</ErrorCode>
+	
+	<ErrorCode name="IdentifierUnavailable" 
+			shortDescription="The identifier archive is not available." 
+			description="The identifier archive is not available, e.g. because of problems in the database, the identifier component itself, the network, or the client side access mechanism.">
+			<Member name="ContextInfo" type="string" description="Some text explaining what has happened."/>
+	</ErrorCode>
+	
+	<ErrorCode name="UidAlreadyExists" 
+			shortDescription="Cannot replace an existing UID." 
+			description="An object already has a UID which cannot be replaced.">
+			<Member name="ObjectDesc" type="string" description="The name or type (or other description) of the object that already has a UID."/>
+			<Member name="Uid" type="string" description="The already existing Uid."/>
+	</ErrorCode>	
+
+	<ErrorCode name="RangeUnavailable" 
+			shortDescription="UID range not available." 
+        	description="The requested UID range is not available (from the archive or locally, depending on the calling context)" >
+			<Member name="Range" type="string" description="URI or name of the unavailable range."/>
+	</ErrorCode>
+
+	<ErrorCode name="RangeLocked" 
+			shortDescription="The requested operation cannot be performed with a locked range of UIDs." 
+			description="The requested operation cannot be performed with a locked range of UIDs." >
+			<Member name="Range" type="string" description="The locked range."/>
+	</ErrorCode>
+		
+	<ErrorCode name="RangeUnlocked" 
+			shortDescription="The requested operation cannot be performed with an unlocked range of UIDs." 
+			description="The requested operation cannot be performed with an unlocked (previously: non-serialized) range of UIDs.">
+			<Member name="Range" type="string" description="The unlocked range."/>
+	</ErrorCode>
+		
+	<ErrorCode name="RangeExhausted" 
+			shortDescription="No more UIDs can be extracted from the Range." 
+			description="No more UIDs can be extracted from the Range. Note that R">
+			<Member name="Range" type="string" description="The exhausted range."/>
+			<!-- The RangeMaxDocumentId is a 64 bit number. Type "long" only yields a 32 bit number, thus we need to use "string" -->
+			<Member name="RangeMaxDocumentId" type="string" description="The maximum document (local) ID that could be used to derive a UID from this range."/>
+	</ErrorCode>
+		
+</Type>
+
+

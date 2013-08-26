@@ -1,0 +1,40 @@
+2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
+2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+2 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
+2 - ----------T--:--:--.--- [GlobalLogger - ] Device narrowed.
+3 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
+3 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+3 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
+3 - ----------T--:--:--.--- [GlobalLogger - ] Device narrowed.
+2 - ----------T--:--:--.--- [GlobalLogger - ] (BACIClient main thread) Going in main loop sleep...
+3 - ----------T--:--:--.--- [GlobalLogger - ] States (7) for "currentState" are: 
+3 - ----------T--:--:--.--- [GlobalLogger - ] 0 DISABLED     alarm_on
+3 - ----------T--:--:--.--- [GlobalLogger - ] 1 ENABLED     alarm_on
+3 - ----------T--:--:--.--- [GlobalLogger - ] 2 DIAGNOSE
+3 - ----------T--:--:--.--- [GlobalLogger - ] 3 SHUTDOWN
+3 - ----------T--:--:--.--- [GlobalLogger - ] 4 INITIALIZE
+3 - ----------T--:--:--.--- [GlobalLogger - ] 5 ON     alarm_on
+3 - ----------T--:--:--.--- [GlobalLogger - ] 6 OFF
+3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): DISABLED (0)
+3 - ----------T--:--:--.--- [GlobalLogger - ] Setting current state to: DISABLED
+3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): DISABLED (0)
+3 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: DISABLED (0)
+2 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::working) Value: DISABLED (0) Completion type: 0 code: 1
+4 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
+4 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+4 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
+4 - ----------T--:--:--.--- [GlobalLogger - ] Device narrowed.
+4 - ----------T--:--:--.--- [GlobalLogger - ] States (7) for "currentState" are: 
+4 - ----------T--:--:--.--- [GlobalLogger - ] 0 DISABLED     alarm_on
+4 - ----------T--:--:--.--- [GlobalLogger - ] 1 ENABLED     alarm_on
+4 - ----------T--:--:--.--- [GlobalLogger - ] 2 DIAGNOSE
+4 - ----------T--:--:--.--- [GlobalLogger - ] 3 SHUTDOWN
+4 - ----------T--:--:--.--- [GlobalLogger - ] 4 INITIALIZE
+4 - ----------T--:--:--.--- [GlobalLogger - ] 5 ON     alarm_on
+4 - ----------T--:--:--.--- [GlobalLogger - ] 6 OFF
+4 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): DISABLED (0)
+4 - ----------T--:--:--.--- [GlobalLogger - ] Setting current state to: ENABLED
+4 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): ENABLED (1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::working) Value: ENABLED (1) Completion type: 0 code: 1
+4 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: ENABLED (1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: ENABLED (1)

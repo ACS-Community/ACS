@@ -1,0 +1,100 @@
+Thu May 11 17:14:07 CEST 2006
+---001--------------------------------------------------------------------------
+(GianniRaffi)
+General.
+Thank you for explicitly commenting on CDR3 actions.
+
+Possibly missing: Is there any ACA development work, apart from support?
+
+REPLY
+Not that I am aware of.
+
+---002--------------------------------------------------------------------------
+(GianniRaffi)
+p.9 Version in EDM seems old.
+Please look for the document in the IPT Level Documents under Computing at:
+http://edm.alma.cl/forums/alma/dispatch.cgi/f.iptlevelrel/docProfile/100181/d20050929140520 (2005-09
+-29).  Please indicate if modified (EVLA) detailed requirements have been considered, and in particu
+lar if/where they had an impact at all.
+
+REPLY
+OK, I will retrieve this document and check if there are relevant 
+changes with respect to the version I have been using. 
+EVLA requirements are referenced in the Architecture document, but I have not created any 
+specific table in the planning document.
+Shall I do it?
+
+---003--------------------------------------------------------------------------
+(GianniRaffi)
+p.11 Under Japan A. Caproni at 50%  is missing
+
+REPLY
+OK. Caproni was reported in the ESO section.
+I will move him under Japan.
+
+---004--------------------------------------------------------------------------
+(KenTatematsu)
+p. 11, 2.2
+K. Abe (0.3 in 2005)
+C. Paredes (0.5 from 2006)
+Do we need to discuss the percentage and job description
+of C. Paredes?
+
+2.3
+K. Abe 2005 only at 30%
+C. Paredes starting 2006 at 50%. 
+
+REPLY
+This means that Abe will not work any more as Japanese support for ACS
+and that he will be replaced by Paredes at 50%?
+I was not aware of this change.
+I will updated the table.
+Gianni: do you confirm?
+
+---005--------------------------------------------------------------------------
+(GianniRaffi)
+p.16 Total 23.5 FTE-y (up to mid 2007).
+Given that 29.4 FTE-y are planned for ACS up to 2011, of which 4.5 after mid 2007, there is a small 
+mismatch of 1.4 FTEs here. But also what is the activity foreseen for the remaining period? I would 
+suggest some kind of upgrades, not possible to plan now.
+
+REPLY
+OK, will do in this way.
+
+---006--------------------------------------------------------------------------
+(GianniRaffi)
+p.20 .1 minor releases.
+I would skip them from now on, meaning that ACS should try to introduce big changes once per year. B
+ackw. compatible patches worked well during the R3.1 period and gave time to do re-engineering with 
+Control. Something which could be repeated after ACS6.0
+
+REPLY
+OK, will do in this way.
+
+---007--------------------------------------------------------------------------
+(GianniRaffi)
+p.21 the dates for RR, PAR etc are wrong. Please check Computing Milestones under CDR4 Issues and co
+rrect.
+
+REPLY
+OK, will do in this way.
+
+---008--------------------------------------------------------------------------
+(GianniRaffi)
+p.31 http .. 5.1. Presumably this should become 6.0
+Is this the same as what asked for CDR4, namely to consider use of CORBA trough firewalls, http for 
+use by OT?
+
+REPLY
+Yes, it is the same.
+OK, will do in this way.
+
+---009--------------------------------------------------------------------------
+(GianniRaffi)
+p.36-37 Thank you for having created an explicit section with Ops Reqts. All ops. reqs. Have been ad
+dressed.
+
+REPLY
+You are welcome.
+
+                              _____oOo_____

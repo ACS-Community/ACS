@@ -1,0 +1,41 @@
+2 - Testing HELLODEMO1 (i.e., immortal components)
+2 - hello
+2 - ('hello', 3.1400000000000001, 23)
+2 - 
+2 - Now test HELLODEMO2 (i.e., non-immortal components)
+2 - hello
+2 - ('hello', 3.1400000000000001, 23)
+2 - 
+2 - Now test getting HELLODEMO2 non sticky
+2 - hello
+2 - ('hello', 3.1400000000000001, 23)
+2 - The end __oOo__
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ----------T--:--:--.--- pyContainer taggedmessage - Info message from the manager: Startup statistics: 1 components queued to be activated.
+1 - ----------T--:--:--.--- pyContainer __init__ - Container pyContainer waiting for requests
+1 - ContainerStatusMsg: Startup ends
+1 - ----------T--:--:--.--- HELLODEMO1 initialize - called...
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: HELLODEMO1
+1 - ----------T--:--:--.--- pyContainer taggedmessage - Info message from the manager: Startup statistics: 1 of 1 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - ----------T--:--:--.--- HELLODEMO1 sayHello - called...
+1 - ----------T--:--:--.--- HELLODEMO1 sayHelloWithParameters - called with arguments inString=I'm an 'inString'; inoutDouble=3.14. Will return 'hello'...
+1 - ----------T--:--:--.--- HELLODEMO2 initialize - called...
+1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: HELLODEMO2
+1 - ----------T--:--:--.--- HELLODEMO2 sayHello - called...
+1 - ----------T--:--:--.--- HELLODEMO2 sayHelloWithParameters - called with arguments inString=I'm an 'inString'; inoutDouble=3.14. Will return 'hello'...
+1 - ----------T--:--:--.--- HELLODEMO2 sayHello - called...
+1 - ----------T--:--:--.--- HELLODEMO2 sayHelloWithParameters - called with arguments inString=I'm an 'inString'; inoutDouble=3.14. Will return 'hello'...
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: HELLODEMO2
+1 - ----------T--:--:--.--- HELLODEMO2 cleanUp - called...
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'pyContainer' exited with code: 0.
+1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: HELLODEMO1
+1 - ----------T--:--:--.--- HELLODEMO1 cleanUp - called...
+1 - Goodbye

@@ -1,0 +1,6 @@
+archive.configFile=archiveConfig.properties.blobberTest
+ACS.log.minlevel.namedloggers=hibernateSQL=2,2:hibernate=2,2
+Set named logger levels from property
+Logging configuration has been initialized
+JUnit version
+1 - Time:

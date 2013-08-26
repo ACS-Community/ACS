@@ -1,0 +1,42 @@
+1 - *** Reading required schema files
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
+1 - *** Reading given schema files
+1 - *** Reading given XML files
+1 - *** Getting TargetNamespaces from schema files
+1 - *** Validating Schemas
+1 -     /PATH/basic/good/reqSchemas.xsd[OK]
+1 - *** Validating XML files
+1 -     /PATH/basic/bad/reqSchemas.xml:12:110 [Error]
+1 - 	 cvc-complex-type.3.2.2: Attribute 'Error' is not allowed to appear in element 'SchemaLocation'.
+1 - [Error] CDBChecker exiting. Errors were found
+1 - return code is: 1
+1 - *** Reading required schema files
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
+1 - *** Reading given schema files
+1 - *** Reading given XML files
+1 - *** Getting TargetNamespaces from schema files
+1 - *** Validating Schemas
+1 -     /PATH/basic/bad/reqSchemas.xsd:13:64 [Error]
+1 - 	 cvc-complex-type.2.4.a: Invalid content was found starting with element 'xs:attribut'. One of '{"http://www.w3.org/2001/XMLSchema":annotation, "http://www.w3.org/2001/XMLSchema":simpleContent, "http://www.w3.org/2001/XMLSchema":complexContent, "http://www.w3.org/2001/XMLSchema":group, "http://www.w3.org/2001/XMLSchema":all, "http://www.w3.org/2001/XMLSchema":choice, "http://www.w3.org/2001/XMLSchema":sequence, "http://www.w3.org/2001/XMLSchema":attribute, "http://www.w3.org/2001/XMLSchema":attributeGroup, "http://www.w3.org/2001/XMLSchema":anyAttribute}' is expected.
+1 - file:/PATH/basic/bad/reqSchemas.xsd:13:64 [Fatal Error]
+1 - 	 Unexpected <xs:attribut> appears at line 13 column 64
+1 - ************Unrecoverable error, please don't trust any messages after this one.***********
+1 - *** Validating XML files
+1 -     /PATH/basic/good/reqSchemas.xml:13:64 [Error]
+1 - 	 s4s-elt-invalid-content.1: The content of 'SchemaInfo' is invalid.  Element 'attribut' is invalid, misplaced, or occurs too often.
+1 - [Error] CDBChecker exiting. Errors were found
+1 - return code is: 1
+1 - *** Reading required schema files
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
+1 - *** Reading given schema files
+1 - *** Reading given XML files
+1 - *** Getting TargetNamespaces from schema files
+1 - *** Validating Schemas
+1 -     /PATH/basic/good/reqSchemas.xsd[OK]
+1 - *** Validating XML files
+1 -     /PATH/basic/good/reqSchemas.xml[OK]
+1 - CDBChecker exiting. No errors found
+1 - return code is: 0

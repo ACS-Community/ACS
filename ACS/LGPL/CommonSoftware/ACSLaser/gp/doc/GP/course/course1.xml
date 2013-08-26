@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP Course 1</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Katarina" lastname="Sigerud" ccid="73162"/>
+    <reviewers>TBD</reviewers>
+    <currentVersion>0.1 (2002/08)</currentVersion>
+    <history>
+    0.1 (2002/10) : First Draft<br/>
+    </history>
+  </head>
+  <!-- 
+
+	SECTION 1
+	
+  -->
+  <section>
+    <title>Abstract</title>
+    <description>
+      <p class="normal">This document describes the excercises performed for the first GP course.
+    	</p>
+    </description>
+  </section>
+	<!--
+  
+	SECTION 2
+	
+	-->
+	<section>
+		<title>The NetBeans IDE</title>
+		<!--
+	  
+		SUBSECTION 1
+		
+		-->
+		<section>
+		<title>Exercise 1: Before starting NetBeans IDE</title>
+		<description> 
+			<p class="normal">
+			<ul>
+				<li>Set user directory</li>
+				<ul>
+					<li>Defaults to <i>C:\Documents and Settings\extdev\.netbeans\3.4</i></li>
+					<li>Edit <i>C:\GPCourse\netbeans\bin\ide.cfg</i> and add <code>userdir C:\GPCourse</code></li>
+				</ul>
+			</ul>
+			</p>
+		</description>
+	 </section>
+		<!--
+	  
+		SUBSECTION 2
+		
+		-->
+		<section>
+		<title>Exercise 2: After starting NetBeans IDE</title>
+		<description> 
+	 		<p>
+	 		<ul>
+	 			<li>Mount directories and jars</li>
+				<ul>
+					<li>Right-click on <i>Filesystems</i></li>
+					<li>Select <i>Mount-&gt;Local directory</i> or <i>Archive files</i></li>
+					<li>Mount
+					<ul>
+						<li><code>C:\GPCourse\src</code></li>
+						<li><code>C:\GPCourse\bin</code></li>
+						<li><code>C:\GPCourse\modules\GP.jar</code></li>
+						<li><code>C:\GPCourse\modules\logging.jar</code></li>
+						<li><code>C:\GPCourse\netbeans\lib\openide.jar</code></li>
+					</ul>
+					</li>
+				</ul>
+				<ul>
+					<li>Set <i>Internal execution</i> as default</li>
+					<ul>
+						<li>Select <i>Tools-&gt;Options</i></li>
+						<li>In the <i>Options</i> dialog, select <i>Editing-&gt;Java source</i></li>
+						<li>In the properties sheet, set <i>Default execution</i> to <code>Internal execution</code></li>
+					</ul>
+				</ul>		
+				<ul>
+					<li>To set output directory for class files</li>
+					<ul>
+						<li>Select <i>Tools-&gt;Options</i></li>
+						<li>In the <i>Options</i> dialog, select <i>Building-&gt;Compiler types-&gt;External compilation</i></li>
+						<li>In the properties sheet, set <i>Target</i> to <code>C:\GPCourse\bin</code></li>
+					</ul>
+				</ul>		
+				<ul>
+					<li>The <i>system</i> directory</li>
+					<ul>
+						<li>In <i>C:\GPCourse\system</i> the <i>ide.log</i></li>
+						<li>In <i>Projects</i> directory, a <i>Default</i> folder.</li>
+						<li>The directory <i>C:\GPCourse\system\Projects\Windows</i> contains save-on-exit information about your windows. Its contents can be deleted to restore the default window settings.</li>
+					</ul>
+				</ul>		
+				<ul>
+					<li>Shortcuts for compiling (F11), building (F9), and executing files (F6). Shift-F11 and Shift-F9 builds or compiles all files in a directory tree.</li>
+				</ul>		
+			</ul>
+			</p>
+			</description>
+		</section>
+	</section>
+	<!--
+  
+	SECTION 3
+	
+	-->
+	<section>
+		<title>The GP platform</title>
+		<description>
+		<p class="normal">As a preparation for the exercises, do <i>Compile All</i> on the <i>gp.example</i> package.</p>
+		</description>
+		<!--
+	  
+		SUBSECTION 1
+		
+		-->
+		<section>
+		<title>Exercise 3: Create TreeExplorer</title>
+		<description> 
+	 		<p>
+	 		<ul>
+	 			<li>Create a new package folder</li>
+				<ul>
+					<li>Right-click on <i>C:\GPCourse\src</i></li>
+					<li>Select <i>New-&gt;Folder</i> and name the new package (e.g. <code>gpcourse</code>)</li>
+				</ul>
+			</ul>
+	 		<ul>
+	 			<li>Create a new class</li>
+				<ul>
+					<li>Right-click on the new folder and select <i>New-&gt;Java classes-&gt;Main</i></li>
+					<li>Name the new class (e.g. <code>TreeExplorerExample</code>)</li>
+				</ul>
+			</ul>
+	 		<ul>
+	 			<li>In the <i>main</i> method of the newly created class</li>
+				<ul>
+					<li>Create a new <i>cern.gp.explorer.TreeExplorer</i> object <i>(Hint: Place the cursor on or after a class name and press </i>Shift+Alt+i<i> to create the import statement for that class)</i>
+					<p>
+					<code>TreeExplorer myExplorer = new TreeExplorer();</code>
+					</p>
+					</li>
+					<li>Create a <i>cern.gp.nodes.GPNode</i> using the <i>cern.gp.nodes.NodeFactory</i> class, giving it a <i>gp.examples.beans.SimpleDemoBean</i> as JavaBean <i>(Hint: Press </i>Ctrl+space<i> to see possible completions for an object)</i>
+					<p><code>GPNode myRootNode = NodeFactory.createNode(new SimpleDemoBean());</code>
+					</p>
+					</li>
+					<li>Set the explorers root node to this node
+					<p><code>myExplorer.setRootNode(myRootNode);</code>
+					</p>
+					</li>
+					<li>To show the explorer in a window, use the utility method <i>openInMode(String)</i> in the <i>cern.gp.windows.WindowUtils</i> class
+					<p><code>WindowUtils.openInMode(myExplorer, &quot;MyTreeTableExplorerExample&quot;);</code>
+					</p>
+					</li>
+					<li>Run (F6) (You might have to catch an exception)
+					</li>
+				</ul>
+			</ul>
+			</p>
+			<p>A window should pop up with one node named <i>hello</i>.
+			</p>
+		</description>
+	</section>
+		<!--
+	  
+		SUBSECTION 2
+		
+		-->
+		<section>
+		<title>Exercise 4: Add children to node</title>
+		<description> 
+	 		<p>
+	 		<ul>
+	 			<li>Add a <i>ChildrenManager</i> that handles a static list of children (i.e. a list where no children are added/removed dynamically). We will use <i>gp.examples.nodes.children.SimpleChildrenListManager</i>, which adds three child nodes to every node.
+	 			</li>
+	 			<li>In our explorer example, we need to modify how we create the <i>GPNode</i> to indicate what <i>ChildrenManager</i> to use
+	 			<p><code>GPNode myRootNode = NodeFactory.createNode(new SimpleDemoBean(), new SimpleChildrenListManager());</code>
+	 			</p>
+	 			</li>
+	 			<li>Run
+	 			<p>The explorer should be displayed, and you should be able to browse a tree that just gets deeper and deeper (i.e. you never reach a leaf node).
+	 			</p>
+	 			</li>
+	 			<li>Create your own <i>ChildrenListManager</i> <i>(Hint: A nice example can be found in </i>gp.example.sps<i>)</i>
+	 			<ul>
+	 				<li>Copy <i>gp.example.nodes.children.SimpleChildrenListManager</i> to your package and rename it (e.g. <code>ExampleChildrenListManager</code>)</li>
+	 				<li>In the <i>initChildrenList</i> method just create a node without a children manager
+	 				<p><code>GPNode node = NodeFactory.createNode(new SimpleDemoBean(BEAN_NAME_PREFIX + ix));</code>
+	 				</p>
+	 				</li>
+	 			</ul>
+	 			</li>
+	 			<li>Modify the explorer example to use this children manager instead
+	 			<p><code>GPNode myRootNode = NodeFactory.createNode(new SimpleDemoBean(), new ExampleChildrenListManager());</code>
+	 			</p>
+	 			</li>
+	 			<li>Run
+	 			<p>The same tree is displayed but this time it should only be two levels deep.
+	 			</p>
+	 			</li>
+	 		</ul>
+	 		</p>
+	 	</description>
+	 </section>
+		<!--
+	  
+		SUBSECTION 3
+		
+		-->
+		<section>
+		<title>Exercise 5: Customize bean information</title>
+		<description> 
+	 		<p>
+	 		<ul>
+	 			<li>Create a new class that extends <i>SimpleDemoBean</i> (e.g. <code>ExampleBean</code>)
+	 			</li>
+	 			<li>To customize the node icon, tooltip and display name, you have to override the corresponding method in the <i>cern.gp.nodes.BeanSupport</i> class (look at API description)
+	 			<ul>
+	 				<li>To change the icon, override the method <i>getNodeIcon</i> (copy the <i>exampleIcon.gif</i> icon image found in <i>C:\GPCourse</i> to the <i>gpcourse</i> package)</li>
+	 			</ul>
+	 			</li>
+	 		</ul>
+	 		</p>
+	 	</description>
+		<codeDescription>
+		<title>Customize the icon</title>
+			<code>
+public Image getNodeIcon() {
+  return getNodeIconFromPathname(&quot;exampleIcon.gif&quot;);
+}	 					
+		</code>
+		</codeDescription>
+		<description>
+			<p>
+			<ul>
+				<ul>
+	 				<li>To change the display name, override the method <i>getDisplayName</i></li>
+	 			</ul>
+	 		</ul>
+	 		</p>
+	 	</description>
+		<codeDescription>
+		<title>Customize the display name</title>
+			<code>
+public String getDisplayName() {
+  return My example  + getName();
+}	 					
+			</code>
+		</codeDescription>
+		<description>
+			<p>
+			<ul>
+				<ul>
+	 				<li>To change the tooltip, override the method <i>getShortDescription</i></li>
+	 			</ul>
+	 		</ul>
+	 		</p>
+	 	</description>
+		<codeDescription>
+		<title>Customize the tooltip</title>
+			<code>
+public String getShortDescription() {
+  return This is an example bean for the GP course;	
+}			
+			</code>
+		</codeDescription>
+		<description>
+			<p>
+			<ul>
+	 			<li>Modify the explorer example and give the <i>NodeFactory</i> an object of this bean class instead
+	 			<p><code>GPNode myRootNode = NodeFactory.createNode(new ExampleBean(), new ExampleChildrenListManager());</code>
+	 			</p>
+	 			</li>
+	 			<li>Run
+	 			<p>Instead of being named <i>hello</i> the parent node should be named whatever you have set the display name to be (e.g. <i>My example hello</i>). The children are still named the same as before, since we have not changed the <i>ChildrenListManager</i>. Try to update the <i>ExampleChildrenListManager</i> to handle beans of our newly created type.
+				</p>
+	 			</li>
+	 		</ul>
+	 		</p>
+	 	</description>
+	 </section>
+		<!--
+	  
+		SUBSECTION 4
+		
+		-->
+		<section>
+		<title>Exercise 6: Actions</title>
+		<description> 
+	 		<p>
+	 		<ul>
+	 			<li>To add actions to a node representing a bean, you override the method <i>getNodeActions</i> in <i>cern.gp.nodes.BeanSupport</i>. In this example we will add two actions, <i>cern.gp.actions.PropertiesAction</i> and <i>cern.gp.OpenLocalExplorerAction</i>
+				<ul>
+					<li>In our <i>ExampleBean</i> add the method <i>getNodeActions</i> (<i>null</i> adds a separator)</li>
+				</ul>
+				</li>
+			</ul>
+			</p>
+		</description>
+		<codeDescription>
+		<title>Action example</title>
+			<code>
+public String[] getNodeActions() {
+  return new String[] {
+    &quot;cern.gp.actions.PropertiesAction&quot;,
+    null,
+    &quot;cern.gp.actions.OpenLocalExplorerAction&quot;,
+  };
+}
+			</code>
+		</codeDescription>
+		<description>
+			<p>
+			<ul>
+	 			<li>To add a default action (i.e. the action to perform when double-clicking on a node) to a node representing a bean, you override the method <i>getDefaultNodeAction</i> in <i>cern.gp.nodes.BeanSupport</i>
+				<ul>
+					<li>In our <i>ExampleBean</i> add the method <i>getDefaultNodeAction</i></li>
+				</ul>
+				</li>
+			</ul>
+			</p>
+		</description>
+		<codeDescription>
+		<title>Default action example</title>
+			<code>
+public String getNodeDefaultAction() {
+  return &quot;cern.gp.actions.OpenLocalExplorerAction&quot;;
+} 						
+			</code>
+		</codeDescription>
+		<description>
+			<p>
+			<ul>
+	 			<li>Run
+	 			<p>When you right-click on a node you should see the actions youve added in the pop-up menu. And when you double-click the action youve chosen as the default action should be
+performed.
+	 			</p>
+	 			</li>
+	 		</ul>
+	 		</p>
+	 	</description>
+	 </section>
+		<!--
+	  
+		SUBSECTION 5
+		
+		-->
+		<section>
+		<title>Exercise 7: Capabilities</title>
+		<description> 
+	 		<p>
+	 		<ul>
+	 			<li>Add the <i>gp.example.actions.SmileAction</i> to the other actions in our <i>ExampleBean</i> (in the <i>getNodeActions()</i> method)</li>
+	 			<li>Run
+	 			<p>The <i>Smile</i> action should be present in your menu, but disabled.</p>
+	 			</li>
+	 			<li>Make the <i>ExampleBean</i> implement the <i>gp.example.actions.SmileCapability</i>, which means implementing the <i>smile</i> method (e.g. displaying an information dialog. See the NetBeans API documentation on the <i>NotifyDescriptor</i> class and the examples in the <i>gp.example.windowing.Windowing</i> class)</li>
+			</ul>
+			</p>
+		</description>
+		<codeDescription>
+		<title>Capability example</title>
+			<code>
+public void smile() {
+  NotifyDescriptor dialog = new NotifyDescriptor.Message(&quot;Smiling! :)&quot;,
+                                                         NotifyDescriptor.INFORMATION_MESSAGE);
+  GPManager.notify(dialog);
+}
+			</code>
+		</codeDescription>
+		<description>
+			<p>
+			<ul>
+				<li>Run
+				<p>The <i>Smile</i> action should be enabled. Try to create your own action, following the <i>Smile</i> example.</p>
+				</li>
+	 		</ul>
+	 		</p>
+	 	</description>
+	 </section>
+		<!--
+	  
+		SUBSECTION 6
+		
+		-->
+		<section>
+		<title>Exercise 8: TreeTableExplorer</title>
+		<description> 
+	 		<p>Another type of explorer is the <i>TreeTableExplorer</i> that shows the properties and their values for every node in a table
+	 		</p><p>
+	 		<ul>
+	 			<li>In our explorer example create an <i>cern.gp.explorer.TreeTableExplorer</i> instead of a <i>TreeExplorer</i>
+	 			<p><code>TreeTableExplorer myExplorer = new TreeTableExplorer();</code>
+	 			</p>
+	 			</li>
+	 			<li>Before showing it, set the column headers (and what properties to show) by calling the method <i>setTableColumns</i>, giving it the <i>ExampleBean</i> class object
+	 			<p><code>myExplorer.setTableColumns(ExampleBean.class);</code>
+	 			</p>
+	 			</li>
+	 			<li>Run
+	 			<p>You will see all the properties of the bean displayed as columns.
+	 			</p>
+	 			</li>
+	 			<li>To customize what properties that are shown, call the method <i>setTableColumns</i> but give it not only the bean class object, but also an array of properties names
+	 			<p><code>myExplorer.setTableColumns(ExampleBean.class, new String[]{ &quot;name&quot;, &quot;value&quot; });</code>
+	 			</p>
+	 			</li>
+	 			<li>Run
+	 			<p>Only the properties in the list given to the method should be shown as columns.
+	 			</p>
+	 			</li>
+	 		</ul>
+	 		</p>
+	 	</description>
+	 </section>
+</section>
+</document>
+

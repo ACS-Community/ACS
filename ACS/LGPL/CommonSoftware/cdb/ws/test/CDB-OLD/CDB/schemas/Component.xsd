@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Component:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" targetNamespace="urn:schemas-cosylab-com:Component:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="urn:schemas-cosylab-com:LoggingConfig:1.0" schemaLocation="LoggingConfig.xsd"/>
+    <xs:annotation>
+        <xs:documentation>This schema file describes ACS CDB 
+entries to specify Components to be instantiated. 
+It is used to place a component in its own XML 
+file in the directory hierarchy of the ACS CDB based on files.  
+For more details, in particular with respect to the 
+various option to describe Components configuration,  
+see the ACS CDB documentation and the FAQ 
+FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType name="ComponentInfo">
+        <xs:annotation>
+            <xs:documentation>Specification for a Component to be instantiated in the system.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="ComponentLogger" type="log:UnnamedLogger" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>See the description of the identical element in Components.xsd</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Name of the component being defined. The hierarchical name of the component can be build using the / separator or nodes hierarchy in the XML file. The hierarchical name of a component must be unituqe in the system.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Code" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Code with the implementation of the Component. What code means depends on the implementation language: in CPP it is the name of a Dynamically Linked Library (DLL) containing the implementation, in Java it is the name of a class ocntaining the implementation and in Python it is the name of a Python module.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Type" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>This is the complete IDL specification for the interface implemented by the component. For example: IDL:alma/TestDevice:1.0</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Container" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>This is the name of the Container where the component will be instantiated on request.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ImplLang" use="required">
+            <xs:annotation>
+                <xs:documentation>The programming language the component is implemented in.</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="java"/>
+                    <xs:enumeration value="cpp"/>
+                    <xs:enumeration value="py"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Default" type="xs:boolean" use="optional" default="false">
+            <xs:annotation>
+                <xs:documentation>'true' if the Component shall be the default Component for the specified IDL interface. ACS allows to ask for a component just by the IDL interface. With such a request the Manager will look for a component marked as default and declaring to implement the requested interfaces.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Autostart" type="xs:boolean" use="optional" default="false">
+            <xs:annotation>
+                <xs:documentation>'true' if the component has to be started automatically whenever its container become alive. This is a 'Component centric' way to specify autostrart components. Another alternative way, more "Manager-centric' is to list the component by name in the startup section of the Manager CDB.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="KeepAliveTime" type="xs:int" use="optional" default="0">
+            <xs:annotation>
+                <xs:documentation>Time in seconds the Manager should wait to deactivate a Component after all clients have released it.  If the time is bigger than 0, the Manager will wait the specified number of seconds, giving therefore the system another chance to request again the component before it is de-activated, avoiding activation/deactivation that would make the system oscillate beween activating and deactivating components. A value = 0 means that the Manager should not wait and deactivate the Component immediately. This is the default and is backward compatible. A value  lowed than 0 means that the Component will never be de-activated after the first activation. This implements the concept of immortal component,</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:element name="Component" type="ComponentInfo"/>
+</xs:schema>

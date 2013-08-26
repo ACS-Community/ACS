@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            name="ACS_eventGUI product"
+            application="org.eclipse.e4.ui.workbench.swt.E4Application">
+         <property
+               name="clearPersistedState"
+               value="true">
+         </property>
+         <property
+               name="applicationCSS"
+               value="platform:/plugin/ACS_eventGUI/css/default.css">
+         </property>
+         <property
+               name="appName"
+               value="ACS_eventGUI product">
+         </property>
+         <property
+               name="lifeCycleURI"
+               value="bundleclass://ACS_eventGUI/alma.acs.eventbrowser.lifecycle.E4LifecycleHandler">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <!-- The Eclipse 3 help facility (see http://www.vogella.com/articles/EclipseRCPHelpSystem/article.html)
+           has not yet been ported to eclipse 4. 
+           See http://stackoverflow.com/questions/12115862/eclipse-e4-and-org-eclipse-help-ui,
+           
+       -->
+      <toc
+         file="toc.xml"
+         primary="true">
+      </toc>
+   </extension>
+
+</plugin>

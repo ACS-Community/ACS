@@ -1,0 +1,12 @@
+1 - --TEST_RPS_1--
+1 - cdb.getMethod('startRamping'): 0.0
+1 - cdb.getMethod('_get_readback'): None
+1 - 
+1 - --HELLOWORLD1--
+1 - cdb.getMethod('displayMessage'): 3.0
+1 - cdb.getMethod('nonexistentMethod'): None
+1 - 
+1 - --BADCOMPONENT--
+1 - ----------T--:--:--.--- Servants.Representations.CDB.CDB(BADCOMPONENT) handleInterfaces - Cannot parse 'crap' to a CDB location!
+1 - ----------T--:--:--.--- Servants.Representations.CDB.CDB(BADCOMPONENT) handleInterfaces - Cannot parse 'morecrap' to a CDB location!
+1 - ['_BaseRepresentation__checkCompRef', '_CDB__logger', '__doc__', '__init__', '__module__', 'comp_ref', 'compname', 'exists', 'getCorbaAttributes', 'getCorbaMethods', 'getMethod', 'handleCDB', 'handleInterfaces', 'logger', 'methods', 'setMethod', 'setupLifecyleMethods']

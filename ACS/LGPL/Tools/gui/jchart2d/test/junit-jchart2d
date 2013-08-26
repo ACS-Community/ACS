@@ -1,0 +1,41 @@
+###############################################
+# Runs the java test building automatically
+# the classpath.
+# Since acsStartJava is not jet available when 
+# this module is built, the logic for searching 
+# for the jar files is embedded in the script.
+################################################
+
+if [ "$OSYSTEM" = "cygwin" ]
+then
+    CPSEP=";"
+else
+    CPSEP=":"
+fi
+
+# setup jar file search path that will be fed to 
+# ACS class loader or to the acsGetSpecificJars seach script
+if [ -d ../lib ] ; then
+	CL_JARPATH="../lib:"
+fi
+
+if [ -d $INTROOT ] && [ $INTROOT ] ; then
+	CL_JARPATH="$CL_JARPATH$INTROOT/lib:"
+fi
+
+# Separation of dirs
+item_list=`echo $INTLIST | sed s/:/\ /g`
+for item in $item_list
+do
+  if [ -d $item ] && [ $item ] ; then
+	  CL_JARPATH="$CL_JARPATH$item/lib:"
+  fi
+done
+
+if [ -d $ACSROOT ] && [ $ACSROOT ] ; then
+	CL_JARPATH="$CL_JARPATH$ACSROOT/lib"
+fi
+
+CLASSPATH=`acsGetAllJars $CPSEP $CL_JARPATH`$CLASSPATH
+
+java -classpath $CLASSPATH alma.acs.testsupport.tat.TATJUnitRunner info.monitorenter.gui.chart.AllTests

@@ -1,0 +1,6 @@
+1 -  --endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.PS.PropertyDoubleTest
+1 - === Starting PropertyDoubleTest JUnit test
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.acs.testsupport.tat.TATJUnitRunner alma.PS.PropertyDoubleTest
+1 - TEST_RUNNER_REPORT success/total: 12/12
+1 - JUnit test run succeeded
+1 - === dispatchAction PropertyDouble test completed

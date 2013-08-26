@@ -1,0 +1,35 @@
+.mainbody { color: black, background: lightgray }
+.almalogo { text-align: left; color: black; border: 4px solid; background:lightgray; font-size: 300% }
+img.almalogo { border: 0px solid ; height: 105px; width: 152px}
+
+.overview { text-align: left; border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt; background:lightgray; color:black; font-size:12.0pt}
+h2.overview { font-weight: bold;}
+p.overview { border:none;padding:0cm;}
+
+.briefexample   { text-align: left; border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt; background:lightgray; color:black; font-size:12.0pt}
+h2.briefexample { font-weight: bold;}
+p..briefexample { border:none;padding:0cm;}
+
+.specialnotes { text-align: left; border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt; background:lightgray; color:black; font-size:12.0pt}
+h2.specialnotes {font-weight: bold;}
+p.specialnotes { border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color windowtext; border-width: medium medium 0.5pt; padding: 1pt 0cm; text-align: left; }
+
+.examples { text-align: left; border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt; background:lightgray; color:black; font-size:12.0pt}
+h2.examples {font-weight: bold;}
+p.examples { border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color windowtext; border-width: medium medium 0.5pt; padding: 1pt 0cm; text-align: left; }
+table.examples {  text-align: left; width: 100%; }
+td.examples { background:white; color: black }
+
+.relateddocuments { text-align: left; border:solid windowtext 1.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt; background:lightgray; color:black; font-size:12.0pt}
+.doclink { color: blue }
+
+h2.relateddocuments {font-weight: bold;}
+p.relateddocuments { border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color windowtext; border-width: medium medium 0.5pt; padding: 1pt 0cm; text-align: left; }
+table.relateddocuments {  text-align: left; width: 100%; }
+td.relateddocuments { background:white; color: black }
+
+.keywords {}
+
+.index {  text-align: left; width: 100%; background:lightgray; color:black; font-size: 16.0pt}
+.indexheading { color: black}
+.indexsubtopic { font-size:10pt ; padding-left:60px; font-style:italic; }

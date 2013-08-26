@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BulkDataNTReceiverTEST
+   xmlns="urn:schemas-cosylab-com:BulkDataNTReceiverTEST:1.0"
+   xmlns:bdNT="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<bdNT:ReceiverStream Name="Name7">
+		<bdNT:ReceiverFlow Name="Name3">
+			<bdNT:DDSReceiverFlowQoS>
+				<bdNT:datareader_qos name="name1">
+				</bdNT:datareader_qos>
+			</bdNT:DDSReceiverFlowQoS>
+		</bdNT:ReceiverFlow>
+		<bdNT:ReceiverFlow Name="Name5">
+			<bdNT:DDSReceiverFlowQoS>
+				<bdNT:datareader_qos name="name3">
+				</bdNT:datareader_qos>
+			</bdNT:DDSReceiverFlowQoS>
+		</bdNT:ReceiverFlow>
+		<bdNT:DDSReceiverStreamQoS>
+			<bdNT:participant_qos name="name5">
+			</bdNT:participant_qos>
+		</bdNT:DDSReceiverStreamQoS>
+	</bdNT:ReceiverStream>
+	<bdNT:ReceiverStream Name="Name1">
+		<bdNT:ReceiverFlow Name="Name3">
+			<bdNT:DDSReceiverFlowQoS>
+				<bdNT:datareader_qos name="name1">
+				</bdNT:datareader_qos>
+			</bdNT:DDSReceiverFlowQoS>
+		</bdNT:ReceiverFlow>
+		<bdNT:ReceiverFlow Name="Name5">
+			<bdNT:DDSReceiverFlowQoS>
+				<bdNT:datareader_qos name="name3">
+				</bdNT:datareader_qos>
+			</bdNT:DDSReceiverFlowQoS>
+		</bdNT:ReceiverFlow>
+	</bdNT:ReceiverStream>
+
+</BulkDataNTReceiverTEST>

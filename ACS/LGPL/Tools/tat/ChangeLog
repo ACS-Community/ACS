@@ -1,0 +1,182 @@
+Wed Jan 26 08:14:22 2011 <sfeyrin@te13.134.171.15.11>  tat version: 1.104 
+        * merge with tat 1.102.1.2 for SVN Support
+	 changed check of empty ENVIRONMENTS/$envName in
+         src/tatMakeRTAPEnv.tcl, src/tatMakeQsemuEnv.tcl, src/tatMakeLCUEnv.tcl
+Thu Sep 16 11:35:57 2010 <sfeyrin@te13.134.171.15.11>  tat version: 1.103 
+        *src/tat.tcl, Makefile: merge with tat.tcl 1.111 from ALMA CVS
+	*src/eccsTestDriver.tcl, eccsTestSpawner.tcl deleted
+Tue Apr 28 14:40:57 2009 <sfeyrin@te13.134.171.15.11>  tat version: 1.102 
+        * src/tat.tcl: added catch when doing the copy of ENVIRONMENTS
+Thu Feb 05 11:32:49 2009 <sfeyrin@te13.134.171.15.11>  tat version: 1.101 
+        * src/tatMakeLCUEnv : added catch when trying the cat reboot.log 
+Tue Dec 23 16:21:43 2008 <sfeyrin@te13.134.171.15.11>  tat version: 1.100
+        * src/tat.tcl: fixed bug when using -r option 
+	* src/tatGetLCUEnv.tcl: vccCheckLcuIsAlive used to check if LCU is alive
+Thu Dec 18 14:23:09 2008 <sfeyrin@te13.134.171.15.11>  tat version: 1.99 
+        * src/tat.tcl: added check of the presence of sessionFile before 
+	  doing the copy of ENVIRONMENT directories
+	* src/Makefile: Remove -f from expect in *_TCLSH   
+Thu Nov 06 17:31:45 2008 <sfeyrin@te13.134.171.15.11>  tat version: 1.98 
+	* Added copy of ENVIRONMENT directories into tatlogs (SPR VLTSW20080252)
+Mon Nov 20 10:29:15 2006 <sfeyrin@te13.134.171.15.11>  tat version: 1.97 
+	* SPR 20050148 Check lockFile owner before env stop :
+	  src/tatGetLCUEnv.tcl,src/tatCleanQsemuEnv.tcl, src/tatCleanRTAPEnv.tcl 	  
+	* src/tat.tcl : SPR20060088, change /tmp/make.log.<pid> to make.log.<pid>.<user> 
+Mon Oct 09 15:12:09 2006 <sfeyrin@te13.134.171.15.11>  tat version: 1.96 
+	* src/tatGetLCUEnv.tcl :
+	  SPR 20060231 added rlogin check before LCU allocation
+Wed Aug 10 11:51:00 2005 <sfeyrin@te13.hq.eso.org>  tat version: 1.95 
+        * SPR 20050196 : 
+	  src/tat.tcl : take into account .TestList.sed in sedFilterx
+	* SPR 20050148 :
+	  src/tatCleanLCUEnv : check LOCK.lcu file owner before deleting 
+Fri Feb 25 17:41:02 2005 <sfeyrin@te13.hq.eso.org>  tat version: 1.94 
+        merged with branch 1.93.1.1:
+        * src/tat.tcl:
+        SPR 20050042: the while-loop in runTest checking if the test
+        process is still active should include a sleep between 2 successive
+        checks (otherwise the CPU is fully occupied with these checks).
+Thu Jul 22 09:25:35 2004 <psivera@te13.hq.eso.org>  tat version: 1.93 
+	* src/tat.tcl: SPR 20030343: SOURCE is called in any case before 
+	running the actual test
+Mon Jun 21 10:14:27 2004 <psivera@te13.hq.eso.org>  tat version: 1.92 
+	* src/tat.tcl: SPR 20040140: the outputFile is saved in .orig before being processed with sed and grep
+Wed Feb 11 18:54:45 2004 <psivera@te13.hq.eso.org>  tat version: 1.91 
+	* src/tat.tcl: corrected bug when parsing the keyword "all" 
+        passed from command line. 
+	* src/ many different files: fixed the tcl procheck warnings
+Mon Jan 19 13:49:12 2004 <psivera@te13.hq.eso.org>  tat version: 1.90 
+	* src/tat.tcl:
+	added [pwd] to some printings when failure is detected
+Wed Dec 03 18:56:44 2003 <psivera@te13.hq.eso.org>  tat version: 1.89 
+	* src/tat.tcl: corrected bug for NOCCS, made documentation, 
+        restored chmod of scripts under test dir
+Wed Oct 22 16:25:15 2003 <psivera@te13.hq.eso.org>  tat version: 1.88 
+	* src/tat.tcl: merged with eccsTestDriver (SPR 20030363)
+Wed Oct 22 16:19:27 2003 <psivera@te13.hq.eso.org>  tat version: 1.87 
+	* src/tat.tcl (proc preparePath): added module's lib/python/site-packages to PYTHONPATH if exists
+Wed Sep 10 15:50:29 2003 <psivera@te13.hq.eso.org>  tat version: 1.86 
+	* src/tatMakeLCUEnv.tcl: added check on size of logLCU.config and on existence of LCU envs
+Wed Aug 20 11:10:22 2003 <psivera@te13.hq.eso.org>  tat version: 1.85 
+	* src/eccsTestDriver.tcl: added "-force" to all the "file copy" instructions
+Fri Aug 08 10:43:30 2003 <psivera@te13.hq.eso.org>  tat version: 1.84 
+	* src/tat.tcl: SPR 20030339 bit moved back to tatMakeLCUEnv.tcl
+	* src/tatMakeLCUEnv.tcl: SPR 20030339 and 990447: handling if 
+	logLCU.config file is done just after vccEnvCreate
+Wed Aug 06 17:06:35 2003 <psivera@te13.hq.eso.org>  tat version: 1.83 
+	* src/tat.tcl: SPR 990481: added module include dir to the search path
+Wed Aug 06 14:09:23 2003 <psivera@te13.hq.eso.org>  tat version: 1.82 
+	* src/tat.tcl: SPR 990447 and 20030339: handling of logLCU.config file
+	* src/tatMakeLCUEnv.tcl: SPR 20030339 bit moved to tat.tcl 
+Wed Jul 30 17:55:06 2003 <psivera@te13.hq.eso.org>  tat version: 1.81 
+	* src/tatMakeLCUEnv.tcl and tatMakeQsemuEnv.tcl:
+	SPR 990447, handling of configuration file for logMonitor
+Mon Jul 21 16:47:26 2003 <psivera@te13.hq.eso.org>  tat version: 1.80 
+	* src/tatMakeLCUEnv.tcl and tatMakeQsemuEnv.tcl: 
+	If Warnings are produced during "make Env" they are printed 
+	to the standard output  (SPR 20030324)
+Mon Jul 07 17:16:46 2003 <psivera@te13.hq.eso.org>  tat version: 1.79 
+	* src/tatMakeQsemuEnv.tcl: adjusted number of parenthesis in commented line
+Mon Jun 30 10:52:02 2003 <psivera@te13.hq.eso.org>  tat version: 1.78 
+	* src/tatMakeQsemuEnv.tcl: spr 20030137: check on the output of vccRemExec
+Wed Jun 11 15:41:43 2003 <eallaert@te13.hq.eso.org>  tat version: 1.77 
+	* src/Makefile:
+	Removed "-f" from *_TCLSH (if the shell used is seqSh or tcl,
+	i.e. not for expect)
+
+	* src/tatClean*Env.tcl, tatGet*Env.tcl, tat.tcl,
+	eccsTestDriver.tcl :
+	replaced various exec calls to do file operations by internal
+	Tcl commands (e.g. "exec rm" -> "file delete")
+
+Thu Jan 09 17:33:30 2003 <psivera@te13.hq.eso.org>  tat version: 1.76 
+	* src/tatMakeQsemuEnv.tcl and tatMakeRTAPEnv.tcl
+	SPR 20020703: for the host where the templates are, 
+	the local host is used
+Tue Dec 10 11:25:31 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+	* src/Makefile (TCL_SCRIPTS): 
+	Added eccsTestDriver and eccsTestSpawner sripts.
+	They come from the accs module and have not been renamed
+	for backward compatibility and since we expect to have 
+	them merged inside tat main script.
+
+Tue Dec 10 11:20:06 2002 <gchiozzi@te13.hq.eso.org>  tat version: 1.75 
+Thu Dec 05 22:19:17 2002 <psivera@te13.hq.eso.org>  tat version: 1.74 
+	* src/tat.tcl: fixed bug when cleaning LCU env without WS env
+Thu Nov 07 17:46:02 2002 <psivera@te13.hq.eso.org>  tat version: 1.73 
+	* src/tat.tcl: changed BEGIN and END to PROLOGUE and resp. EPILOGUE
+Wed Nov 06 15:45:07 2002 <psivera@te13.hq.eso.org>  tat version: 1.72 
+	* src/tat.tcl: added SOURCE directive
+Fri Sep 13 23:14:51 2002 <psivera@te13.hq.eso.org>  tat version: 1.71 
+	* src/tat.tcl: added BEGIN and END directives
+Tue Jul 09 17:44:25 2002 <psivera@te13.hq.eso.org>  tat version: 1.70 
+	* tat.tcl: added prepareTestList proc to cleanEnv proc
+Tue Jul 09 11:02:08 2002 <psivera@te13.hq.eso.org>  tat version: 1.69 
+	* tat.tcl:
+	VLTSW20020160: make all is executed before preparing the TestList
+Thu May 24 15:57:44 2001 <psivera@te13.hq.eso.org>  tat version: 1.68 
+	* implemented SPR 20000203: tat supports now RQS and RWS creation, 
+	                            from WS and/or QS
+Tue Oct 05 17:30:23 1999 <fcarbogn@te13.hq.eso.org>  tat version: 1.67 
+Mon Aug 23 15:13:42 1999 <fcarbogn@te13.hq.eso.org>  tat version: 1.66 
+	* tatCleanQsemuEnv.tcl, tatCleanRTAPEnv.tcl
+	  make use of -f option of vccEnvStop to wait for complete 
+	  environment shutdown
+
+Tue Aug 10 14:30:46 1999 <fcarbogn@te13.hq.eso.org>  tat version: 1.65 
+	* tatMakeRTAPEnv.tcl, tat.tcl
+	  bug fixing for make possible RWS from CCSLite Workstation
+
+Fri Jul 23 11:08:02 1999 <fcarbogn@te13.hq.eso.org>  tat version: 1.64 
+	* tatMakeLCUEnv.tcl Eliminated testDirHost search, currently done by vcc
+	  (SPRs 960308 and 960055)
+
+Tue Jun 01 11:53:59 1999 <fcarbogn@te13.hq.eso.org>  tat version: 1.63 
+	* tat.tcl, tatMakeLCUEnv.tcl 
+	  Eliminated vcc timeout settings (SPR 990194)
+
+Wed Oct 21 19:03:14 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.62 
+	* tat.tcl Sobstituded exec echo "..." with open, puts, close
+	  when tatMakeEnv failing
+
+Thu Sep 17 11:37:20 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.61 
+	* tat.tcl Set ./tatlog for .out, .diff and TatCreateEnv (SPR960627)
+
+Thu Aug 27 14:49:36 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.60 
+	* tat.tcl $LCUROOT check only if LCU Env. is specified on Testlist
+	(SPR980249)
+
+Mon Aug 10 10:22:01 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.59 
+	* tatMakeLcuEnv.tat modification to nfs host search  to consider 
+        "localhost"
+
+Thu Aug 06 09:31:59 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.58 
+	* tatMakeLcuEnv.tat use of pwd, ypcat -k auto.home and /etc/auti_home
+	to search for the nfs server in case of automounted directory
+
+Fri Jul 31 14:50:46 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.57 
+	* tatCleanRTAPEnv.tcl Eliminated puts "Stopping $envName..."
+	* tatCleanQsemuEnv.tcl Trapped error from vccEnvStop and vccEnvDelete
+	* tatMakeQsemuEnv.tcl Added the merging with user-defined template
+
+Wed Jul 22 18:00:03 1998 <fcarbogn@te13.hq.eso.org>  tat version: 1.56 
+	* tatMakeLCUEnv.tcl -m template option only if <src>/bootScript exist
+	* tat.tcl, tatCleanLCUEnv.tcl Added  WSEnv to tatCleanLCUEnv parameters
+	to solve not removed LCU environment during tat cleanup
+
+Tue Apr 15 17:15:27 1997  Pierre Forstmann  <pforstma@te67.hq.eso.org>
+
+	* tat.tcl (proc allocEnv): fixed CCS lite environment naming bug.
+
+Wed Mar  5 14:05:47 1997  Pierre Forstmann  <pforstma@te67.hq.eso.org>
+
+	* tat.tcl 1.50: fixed compatibility with make 3.75
+	 make '' fails with 
+	 make: *** empty string invalid as file name.  Stop.
+
+Tue Feb 25 08:23:41 1997  Pierre Forstmann  <pforstma@te67.hq.eso.org>
+
+	* tatGetLCUEnv.tcl 1.49 :  use vccInfo to get LCU host name
+	from lcu environment name ('l' prefix is a convention not
+	always applied).
+

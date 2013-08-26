@@ -1,0 +1,62 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: Makefile.tat5,v 1.76 2003/01/09 17:51:12 vltsccm Exp $"
+#
+# Makefile of "tat5"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# pforstma  11/07/95  created
+#
+
+
+#
+# Scripts (public and local)
+# ----------------------------
+SCRIPTS         = tat51
+SCRIPTS_L       =
+
+
+#
+# list of all possible C-sources (used to create automatic dependencies)
+# ------------------------------
+CSOURCENAMES = \
+	$(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
+	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
+
+#
+#>>>>> END OF standard rules
+
+#
+# CHOSE PLATFORM
+# --------------
+# Default is UNIX, for VxVorks application next line MUST BE UNCOMMENTED
+#MAKE_VXWORKS = on   
+
+#
+# INCLUDE STANDARDS
+# -----------------
+MAKEDIR = $(VLTROOT)/include
+include $(MAKEDIR)/vltMakefile
+
+#
+# TARGETS
+# -------
+all:	do_all
+	@echo " . . . 'all' done" 
+
+clean : clean_all 
+	@echo " . . . clean done"
+
+man   : do_man 
+	@echo " . . . man page(s) done"
+
+install : install_all
+	@echo " . . . installation done"
+
+db : db_all
+	@echo " . . . ../DB done"
+
+
+#___oOo___

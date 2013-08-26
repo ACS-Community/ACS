@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="maciErrType" type="25" _prefix="alma">
+
+	<ErrorCode name="ComponentCreation"
+	    shortDescription="Error creating component"
+	    description="Error creating the component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotGetComponent"
+	    shortDescription="Error retrieving component"
+	    description="Error retrieving component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentNotAlreadyActivated"
+	    shortDescription="The requested Component had not been already activated at request time"
+	    description="The requested Component had not been already
+	    activated at request time. This was a precondition for the request to succeed">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentConfigurationNotFound"
+	    shortDescription="The configuration for the requested Component could not be found"
+	    description="The configuration for the requested Component could not be found">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="IncompleteComponentSpec"
+	           shortDescription="Thrown if the resulting structure is not complete."
+	           description="Thrown if the resulting structure is not complete.">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="ComponentType"
+			type="string"
+			description="IDL interface implemented by the component."
+		/>
+		<Member name="ComponentCode"
+			type="string"
+			description="Executable code for the component (e.g. DLL, Java class)."
+		/>
+		<Member name="ContainerName"
+			type="string"
+			description="Container where the component is deployed."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentSpecIncompatibleWithActiveComponent"
+	    shortDescription="Thrown if the resulting structure is incompatible with a component of the same name already active."
+	     description="Thrown if the resulting structure is incompatible with a component of the same name already active. Additional data describes the active component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="ComponentType"
+			type="string"
+			description="IDL interface implemented by the component."
+		/>
+		<Member name="ComponentCode"
+			type="string"
+			description="Executable code for the component (e.g. DLL, Java class)."
+		/>
+		<Member name="ContainerName"
+			type="string"
+			description="Container where the component is deployed."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="InvalidComponentSpec"
+	           shortDescription="Thrown if there is no valid dynamic component found for given resulting structure."
+	           description="Thrown if there is no valid dynamic component found for given resulting structure.">
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="NoDefaultComponent"
+		shortDescription="Thrown if no default component is found."
+		description="Thrown if no default component is found.">
+		<Member name="IDLType"
+			type="string"
+			description="The requested IDL type of the default component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotGetService"
+	    shortDescription="Error retrieving service"
+	    description="Error retrieving service">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the sevice."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotActivateComponent"
+	    shortDescription="Error activating component"
+	    description="Error activating component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="ComponentType"
+			type="string"
+			description="IDL interface implemented by the component."
+		/>
+		<Member name="ComponentCode"
+			type="string"
+			description="Executable code for the component (e.g. DLL, Java class)."
+		/>
+		<Member name="DetailedReason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotDeactivateComponent"
+	    shortDescription="Error deactivating component"
+	    description="Error deactivating component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotRestartComponent"
+	    shortDescription="Error restarting component"
+	    description="Error restarting component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotRegisterComponent"
+	    shortDescription="Error registering component"
+	    description="Error registering component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="ComponentType"
+			type="string"
+			description="IDL interface implemented by the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotUnregisterComponent"
+	    shortDescription="Error unregistering component"
+	    description="Error unregistering component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="CannotReleaseComponent"
+	    shortDescription="Error releasing component"
+	    description="Error releasing component">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentNotInUse"
+	    shortDescription="Component is not in use"
+	    description="Component is not in use">
+	         <Member name="CURL"
+		         type="string"
+		         description="CURL/Name of the component not in use."
+		 />
+	</ErrorCode>
+
+        <ErrorCode name="NoPermission"
+            shortDescription="No permission"
+            description="No permission for attempted operation">
+                <Member name="ID"
+                        type="string"
+                        description="Identification (handle) of a caller."
+                />
+                <Member name="ProtectedResource"
+                        type="string"
+                        description="Name of a protected resource."
+                />
+                <Member name="Reason"
+                        type="string"
+                        description="Description of a reason causing no permission exception."
+                />
+        </ErrorCode>
+	
+	
+	<ErrorCode name="ComponentCleanUp"
+			shortDescription="May be thrown by the component lifecycle method 'cleanUp'."
+			description="May be thrown by the component lifecycle method 'cleanUp', to propagate error information to the client whose releaseComponent call caused the component deactivation that failed to clean up.">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentDeactivationUnclean"
+			shortDescription="Component deactivation was unclean but finished nonetheless."
+			description="Thrown by the container if the component lifecycle method 'cleanUp' threw an exception and yet the component was successfully deactivated from the container's point of view. Usually a 'ComponentCleanUpEx' will be linked.">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (useful especially if there is no causing exception)"
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentDeactivationFailed"
+			shortDescription="Component deactivation failed."
+			description="Thrown if the container failed to deactivate a component in time (e.g. because a long-lasting running call prevented deactivation, or the manager timed out waiting for deactivation).">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+		<Member name="IsPermanentFailure"
+			type="boolean"
+			description="'true' if there is no indication that another deactivation attempt might succeed, or that the problem would resolve by itself; a true value could imply that the container may not be able to activate another component instance of the same name, or container resources may still be used for the old component instance."
+		/>
+	</ErrorCode>
+
+</Type>
+

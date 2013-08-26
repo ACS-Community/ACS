@@ -1,0 +1,66 @@
+#! /bin/sh
+#************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docExPcTest,v 1.31 2002/06/08 17:20:37 vltsccm Exp $" 
+#
+# docExPc
+#
+# who       when      what
+# --------  --------  --------------------------------------------------
+# pforstma  21/01/95  created
+#
+#************************************************************************
+#   NAME
+#   docExPc - test docExPc
+# 
+#   SYNOPSIS
+#   doExDbPc
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   docExPc.out         write
+#   docExPc.ref	       	read 
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#------------------------------------------------------------------------
+#
+
+# delete previous test report
+rm -rf docExPc.out
+
+docExPc code > docExPc.out
+
+#
+# compare test report with tst reference
+#
+diff docExPc.out docExPcTest.ref
+if [ $? -eq 0 ]
+then echo "docDoExPcTest succeeded. "
+else echo "docDoExPcTest failed. "
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+

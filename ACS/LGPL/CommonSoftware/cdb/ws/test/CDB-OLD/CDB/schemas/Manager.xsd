@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) -->
+<!--
+   - Configuration Database Schema for MACI Manager
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" targetNamespace="urn:schemas-cosylab-com:Manager:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="urn:schemas-cosylab-com:LoggingConfig:1.0" schemaLocation="LoggingConfig.xsd"/>
+	<xs:annotation>
+		<xs:documentation>This schema file describes the configuration for a Manager. 
+There might be slight differences in the meaning of some attributes 
+depending on the specific implementation of the Manager, 
+in particular depending on the implementation language. 
+See also the documentation of the specific implementation of 
+Manager for a list of supported and un-supported 
+configuration parameters.</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:element name="Manager" type="Manager"/>
+	<xs:complexType name="Manager">
+		<xs:sequence>
+			<xs:element name="Startup" type="cdb:Array">
+				<xs:annotation>
+					<xs:documentation>This is a list of components to be activated automatically by the Manager as soon as their Container becomes available. This is a 'Manager centric' way to specify autostrart components. Another alternative way, more "Component-centric' is to set true the Autostrart attribute in the specification of the single component.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ServiceComponents" type="cdb:Array">
+				<xs:annotation>
+					<xs:documentation>This is a list of names that have be handle by the Manager as services. When a request for a Component with this name is given, the meneger will try first to see if there is already a service with that name registered in the Naming Service. Only if it fails it will treat it as a real component.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+            <xs:element name="LoggingConfig" type="log:LoggingConfig" minOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="Timeout" type="xs:double" use="optional" default="50.0">
+			<xs:annotation>
+				<xs:documentation>Standard timeout in seconds for remote (CORBA) calls. Every call will timeout after this period of time, ensuring protection from deadlock. Notice that ACS QoS features can be used to trim specific calls.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ClientPingInterval" type="xs:double" use="optional" default="60.0">
+			<xs:annotation>
+				<xs:documentation>The Manager pings periodically clients to check they are healthy. This is an heartbeat checking. The time interval for the heartbeat check is specified here in seconds.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AdministratorPingInterval" type="xs:double" use="optional" default="45.0">
+			<xs:annotation>
+				<xs:documentation>The Manager pings periodically administrator clients to check they are healthy. This is an heartbeat checking. The time interval for the heartbeat check is specified here in seconds.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ContainerPingInterval" type="xs:double" use="optional" default="30.0">
+			<xs:annotation>
+				<xs:documentation>The Manager pings periodically containers to check they are healthy. This is an heartbeat checking. The time interval for the heartbeat check is specified here in seconds.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ServerThreads" type="xs:int" use="optional" default="10">
+			<xs:annotation>
+				<xs:documentation>This is the number of threads allocate to the CORBA infrastructure for the handling of concurrent invocations.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DeadlockTimeout" type="xs:double" use="optional" default="180.0">
+			<xs:annotation>
+				<xs:documentation>The Manager internally monitors all component synchronization locks. If a lock is not released after specified amount of time and exception is thrown and lock released. The time for the deadlock timeout check is specified here in seconds.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>
+

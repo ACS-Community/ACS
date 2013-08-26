@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF<!--#########################################-->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:TIMER:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:TIMER:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!--#########################################-->
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="../../../../../schemas/CDB.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="../../../../../schemas/BACI.xsd"/>
+	<!--ACSDO####################################-->
+	<xs:complexType name="TIMER">
+	</xs:complexType>
+	<xs:element name="TIMER" type="TIMER"/>
+</xs:schema>
+<!--#########################################-->

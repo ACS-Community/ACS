@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>Customizing an explorer</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Katarina" lastname="Sigerud" ccid="97307"/>
+    <reviewers>
+      <a href="mailto:Vito.Baggiolini@cern.ch">Vito Baggiolini</a>, 
+      <a href="mailto:Lionel.Mestre@cern.ch">Lionel Mestre</a>
+    </reviewers>
+    <currentVersion>0.1 (2003/01)</currentVersion>
+    <history>
+    0.1 (2003/01) : First Draft<br/>
+    </history>
+  </head>
+  <section>
+  <title>Abstract</title>
+  <description>
+  <p>An explorer uses a view to actually display the nodes. This view can be customized to suit your needs. In the <code><a href="/proj-gp/_notgenerated/tools/netbeans/openapi/org/openide/explorer/view/package-summary.html">org.openide.explorer.view</a></code> package you find all the different views already available, but you can also create your own. This document will provide a simple example of how this can be done. More information can be found in the NetBeans OpenIDE documentation of the <a href="/proj-gp/_notgenerated/tools/netbeans/openapi/org/openide/explorer/doc-files/api.html#cust-expl">Explorer API</a>.
+  </p>  
+  </description>
+  </section>
+  <!--
+  
+      Section 1        
+  -->
+  <section>
+    <title>An example of a customized explorer tree</title>
+   <description>
+   <p>In this example we will look at how you can customize the <code><a href="/proj-gp/api/cern/gp/explorer/TreeExplorer.html">TreeExplorer</a></code> to allow you to show your nodes in a tree, but there are also views that allow you to show your nodes in a combo box, a menu, or a list.
+   </p><p>We will start by creating a subclass of the <code>TreeExplorer</code> class. One reason for doing this is that the constructor that takes a <code><a href="/proj-gp/_notgenerated/tools/netbeans/openapi/org/openide/explorer/view/TreeView.html">TreeView</a></code> object in the TreeExplorer class is not public. We need to subclass it to be able to give our tree a different view.
+   </p>
+   </description>
+   <codeDescription>
+    <title>Example of a customized explorer tree</title>
+      <code>
+public class MyTreeExplorer extends TreeExplorer {
+  public MyTreeExplorer() {
+    super(new MyTreeView());
+  }
+  
+  ...
+  
+  // Inner class definition
+}
+   </code>
+   </codeDescription>
+   <description>
+   <p>The customized tree view will be added as an inner class to our tree explorer class. It will extend the <code><a href="/proj-gp/_notgenerated/tools/netbeans/openapi/org/openide/explorer/view/BeanTreeView.html">BeanTreeView</a></code> class and not the <code><a href="/proj-gp/_notgenerated/tools/netbeans/openapi/org/openide/explorer/view/TreeView.html">TreeView</a></code> class directly. The <code>BeanTreeView</code> class is a complete implementation of the abstract class <code>TreeView</code>, which means we just have to override the methods we want to change and we don't need to implement all of the abstract methods in the abstract superclass.
+   </p><p>In the following example we've used the superclass implementation to configure the view to not show the root node and only allow one node to be selected at a time. We've only overidden one method, <code><a href="/proj-gp/_notgenerated/tools/netbeans/openapi/org/openide/explorer/view/BeanTreeView.html#selectionChanged(org.openide.nodes.Node[], org.openide.explorer.ExplorerManager)">selectionChanged</a></code>, to specify what should happen when the selected node changes in our tree.
+   </p>
+   </description>
+   <codeDescription>
+    <title>Example of a customized tree view</title>
+      <code>
+ //
+ // -- INNER CLASS -----------------------------------------------
+ //
+
+  private static class MyTreeView extends BeanTreeView {
+    public MyTreeView() {
+      super.setRootVisible(false);
+      super.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    }
+
+    /* (non-Javadoc)
+     * @see org.openide.explorer.view.TreeView#selectionChanged(org.openide.nodes.Node, org.openide.explorer.ExplorerManager)
+     */
+    protected void selectionChanged(Node[] nodes, ExplorerManager explorerManager) throws PropertyVetoException {
+      super.selectionChanged(nodes, explorerManager);
+      
+      if (nodes[0] instanceof GPNode) {
+        GPNode node = (GPNode) nodes[0];
+        Object bean = node.getBean();
+        if (bean instanceof CycleBean) {
+          // Do something
+        }
+      }
+    }
+  }
+      </code>
+      </codeDescription>
+      </section>
+</document>
+

@@ -1,0 +1,16 @@
+SUP.
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+Grep me out
+Local file logger
+Logging to log file
+Running the container with these arguments
+python/site-packages/Acspy/Servants/ContainerServices.py
+Segmentation fault
+File "./__init__.py", line 805, in __init__
+omniORB: Exception trying to create worker thread.
+Traceback \(most recent call last\)
+TypeError: 'NoneType' object is not callable
+Aborted
+terminate called after throwing an instance of 'omni_thread_fatal'
+got duplicate tcp line

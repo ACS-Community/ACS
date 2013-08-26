@@ -1,0 +1,31 @@
+1 - rlogin LCU
+2 - Running acscomponentTestClient
+1 - 
+2 - Initialising ORB ... 
+1 - LCU->putenv "MANAGER_REFERENCE=corbaloc::---:----/Manager"
+2 - ORB initialised !
+1 - value = xx
+2 - ****** Test Block *****
+1 - LCU->putenv "DAL_REFERENCE=corbaloc::---:----/CDB"
+2 - Getting object reference ... 
+1 - value = xx
+2 - Narrowing it .... 
+1 - LCU->sp acscomponentTestServer 
+2 - Test performed.
+1 - task spawned
+2 - All done!
+1 - value = xx
+1 - LCU->Initialising ORB ... 
+1 - ORB initialised !
+1 - 
+1 - 
+1 - ::ACSComponentTestClassImpl::ACSComponentTestClassImpl
+1 - POA Manager -> activate
+1 - Writing ior to the file: ACSCOMPONENTTEST1
+1 - Waiting for requests ...
+1 - acscomponentTestImpl Shutdown
+1 - ::ACSComponentTestClassImpl::~ACSComponentTestClassImpl
+1 - 
+1 - 
+1 - 
+1 - 

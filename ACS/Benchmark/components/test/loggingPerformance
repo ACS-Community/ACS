@@ -1,0 +1,150 @@
+#!/bin/bash
+
+#################################################################################
+#
+# This script is used to produce timing info into a CSV-file, iterating over
+# genLoggingProcessesReport. The iteration nesting is as follows:
+#   for each language
+#       for each minLogLevelLocal
+#           for each delay
+#               run genLoggingProcessesReport (append a line to the CSV-file)
+#           done
+#       done
+#   done
+#
+# @author Erik Allaert
+# @date 2007-07-24
+#################################################################################
+
+##########################################################################################
+# Function definitions used later in this script.
+##########################################################################################
+
+# definition of a function to print the usage statement for this script
+printUsageAndExit ()
+{
+    echo ""
+    echo "Usage: $0 [OPTIONS] <startNumLogsToSend> <numLogsIncrement> <nrLoops> <csvFile>";
+    echo "  where: "
+    echo "";
+    echo "   <startNumLogsToSend> is the initial number of logs to publish per component.";
+    echo "   <numLogsIncrement> is the increment for <startNumLogsToSend> for the next loop.";
+    echo "   <nrLoops> is the number of loops.";
+    echo "   <csvFile> is the pathname of the CSV-file to create."
+    echo "             Note: genLoggingProcessReport removes the tmp subdir at each iteration!"
+    echo "Options: "
+    echo "   -h | --help: print this usage message and exit."
+    echo "   -d | --debug: print additional debugging info about this script to stdout."
+    echo "          This flag will also be passed to genLoggingProcessReport"
+    echo "   -l | --language(s) <cpp | java | py>: list of the implementation languages"
+    echo "          of the publishing component (cpp, java, python). Default: coo"
+    echo "   -m | --minLogLevelLocal <level>: list of the local log levels to set. Default: 2"
+    echo "   -w | --wait: list of delays between sending logs. Default: 0"
+    echo ""
+    exit -1;
+}
+
+# definition of a function to echo (print to stdout) based on debug settings
+debugPrint ()
+{
+    if [ "$DEBUG_MODE" ] ;
+	then
+	echo " $MY_NAME DEBUG: $1"
+    fi;
+}
+
+##########################################################################################
+# Script logic starts here...                                                            #
+##########################################################################################
+
+MY_NAME=`basename $0`
+
+#
+# These will contain the command line arguments and/or options
+#
+HELP=
+DEBUG_MODE=
+DEBUG_FLAG=
+LANGUAGES=cpp
+LEVELS=2
+DELAYS=0
+
+#
+# These options can be recognized (longopts comma-separated. Colon means 1 argument is required)
+#
+LONGOPTS=help,debug,language:,minLogLevelLocal:,wait:
+SHORTOPTS=h,d,l:,m:,w:
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is does the real work and sets execution flags for this script, as appropriate
+export POSIXLY_CORRECT=1
+
+getopt -n $MY_NAME -a -l $LONGOPTS $SHORTOPTS "$@" || printUsageAndExit;
+
+# Note that as some options can be lists, we cannot use getopt's "--unquoted" option.
+# This means also that all parameters will be enclosed by single quotes, that
+# need to be removed by e.g. "eval".
+temp=`getopt -a -l $LONGOPTS $SHORTOPTS "$@"`
+# Note the quotes around '$temp': they are essential!
+eval set -- "$temp" 
+
+#
+# Iterate over getopt's output and set variables accordingly
+#
+while : 
+  do
+  case "$1" in
+      -h|--help)       HELP=true ;;
+      -d|--debug)      DEBUG_MODE=true; DEBUG_FLAG=-d ;;
+      -l|--language)   LANGUAGES=$2 ; shift ;;
+      -m|--minLogLevelLocal)  LEVELS=$2 ; shift ;;
+      -w|--wait)       DELAYS=$2 ; shift ;;
+      --) break ;;
+  esac
+  shift
+done
+shift
+
+if [ "$HELP" ] ; 
+then
+    printUsageAndExit
+fi
+
+# first, verify that the script was invoked w/ the proper number of command-line arguments 
+if [ $# -ne 4 ] ;
+then 
+    printUsageAndExit
+fi
+
+
+NUM_LOGS_MIN=$1
+NUM_LOGS_STEP=$2
+NUM_LOOPS=$3
+# don't put csv-file under components/test/tmp - genLoggingProcessesReports cleans this subdir
+CSV_FILE=$4
+
+# Initialize CSV-file with column headers
+echo "Language,#Logs sent,#Logs received,minLogLevelLocal,Delay,System performance,Time from start,Time to send,Time to receive" > $CSV_FILE 
+
+# collect data
+for language in $LANGUAGES
+    do
+
+    for level in $LEVELS
+    do
+        for delay in $DELAYS
+        do
+            step=0
+            while [ "$step" -lt "$NUM_LOOPS" ]
+            do
+                nrLogs=`expr $NUM_LOGS_MIN + $step \* $NUM_LOGS_STEP`
+                echo "=====================loggingPerformace=========================="
+                debugPrint "./genLoggingProcessesReport $DEBUG_FLAG -c $CSV_FILE -m $level -l $language $nrLogs 1 $delay"
+                ./genLoggingProcessesReport $DEBUG_FLAG -c $CSV_FILE -m $level -l $language $nrLogs 1 $delay
+                step=`expr $step + 1`
+            done
+        done 
+    done
+done

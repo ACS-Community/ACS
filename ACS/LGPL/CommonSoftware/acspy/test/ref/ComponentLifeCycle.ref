@@ -1,0 +1,6 @@
+1 - Creating ComponentLifecycle
+1 - Invoking initialize
+1 - Invoking execute
+1 - Invoking cleanUp
+1 - Invoking aboutToAbort
+1 - Goodbye

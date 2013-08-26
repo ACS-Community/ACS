@@ -1,0 +1,329 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *    and Cosylab 2002, All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */ 
+#ifndef _LOGGING_IDL
+#define _LOGGING_IDL
+
+#include <DsLogAdmin.idl>
+
+#pragma prefix "alma"
+
+
+
+/**
+ * The log levels (numbers and names) defined here are used both to create log messages
+ * as well as to set filtering thresholds for log messages.
+ * <p>
+ * Note that the ACS logging architecture document defines "priorities" for log messages
+ * which have the meaning of the levels here, while the actual ACS levels ("Log entry type")
+ * follow the 2^n numbering scheme from $(ACE_ROOT)/ace/Log_Priority.h but don't seem
+ * to be used anywhere outside of the C++ container's internal log classes...
+ * <p>
+ * The constant values and strings defined here should be used to define enum classes in the 
+ * various languages. That way we have one central definition, but convenient classes 
+ * to work with that are guaranteed to use the correct numbers.
+ *
+ * Note that these values are redundantly defined in an XML schema (LoggingConfig.xsd in module maciidl)
+ * because we cannot reuse the IDL definition in the xsd. 
+ * ANY CHANGES TO THE LOG LEVELS HERE MUST BE SYNC'D WITH THE XSD! 
+ */
+module AcsLogLevels {
+
+	typedef short logLevelValue;
+	
+	const logLevelValue TRACE_VAL = 1;
+	const string TRACE_NAME = "Trace";
+
+	// see COMP-3749 which describes this introduction of a new level between TRACE and DEBUG after ACS 8.1.0
+	const logLevelValue DELOUSE_VAL = 2; 
+	const string DELOUSE_NAME = "Delouse";
+
+	const logLevelValue DEBUG_VAL = 3;
+	const string DEBUG_NAME = "Debug";
+
+	const logLevelValue INFO_VAL = 4;
+	const string INFO_NAME = "Info";
+
+	const logLevelValue NOTICE_VAL = 5;
+	const string NOTICE_NAME = "Notice";
+
+	const logLevelValue WARNING_VAL = 6;
+	const string WARNING_NAME = "Warning";
+	
+	// anomaly: value 7 is not defined! 
+
+	const logLevelValue ERROR_VAL = 8;
+	const string ERROR_NAME = "Error";
+	
+	const logLevelValue CRITICAL_VAL = 9;
+	const string CRITICAL_NAME = "Critical";
+	
+	const logLevelValue ALERT_VAL = 10;
+	const string ALERT_NAME = "Alert";
+	
+	const logLevelValue EMERGENCY_VAL = 11;
+	const string EMERGENCY_NAME = "Emergency";
+	
+	// The OFF value of 99 is more human friendly. Technically it would make more sense
+	// to define OFF_VAL as the maximum allowed value (2^15 - 1).
+	const logLevelValue OFF_VAL = 99;
+	const string OFF_NAME = "Off";
+};
+
+
+/**
+ * @TODO: consider renaming this module to something like "AcsLogging".
+ */
+module ACSLoggingLog {
+
+    struct NameValue {
+	string name;
+	string value; // any ? -> use than Property from Property Service
+    };
+
+    typedef sequence<NameValue> NameValueSeq;
+
+    /**
+     * @TODO: revisit the use of these enum values, with the general IDL enum issues in mind.
+     * Probably LogBinaryRecord should use instead a logLevelValue from LogLevels,
+     * and this definition should be removed.
+     */
+    /*
+    enum LogType {
+	Unknown,
+	Shutdown,
+	Trace,
+ 	Debug,
+ 	Info,
+	Notice,
+	Warning,
+	Startup,
+	Error,
+	Critical,
+	Alert,
+	Emergency,
+	Archive
+    };
+    */
+/*
+Header,
+ 	Description,
+	History,
+	Meta,
+	Data,
+	Alarm,
+*/
+
+    /**
+     *
+     */
+    struct LogBinaryRecord {
+	AcsLogLevels::logLevelValue type;
+	string TimeStamp;
+	string File;
+	unsigned long Line;
+	string Routine;
+	string SourceObject;
+	string Host;
+	string Process;
+	string LogContext;
+	string Thread;
+	string StackId;
+	long StackLevel;
+    string LogId;
+	long Priority;
+	string Uri;
+    string Audience;
+    string Array;
+    string Antenna;
+	string MsgData;
+	
+	/**
+	 *  container for pair(s) name-value
+	 */
+    NameValueSeq attributes;
+	NameValueSeq log_data;
+
+    };
+
+};
+
+
+module Logging
+{
+
+    /** 
+        Convenience typedef for sequences of strings. 
+    */
+    typedef sequence <string> stringSeq;
+
+    exception LoggerDoesNotExistEx
+    {
+        string LoggerName; /// Name of the non-existing logger.
+    };
+    
+    exception IllegalLogLevelsEx
+    {
+        string ErrorDesc; /// Optional description.
+    };
+    
+    /**
+       Interface through which the logging settings of a process can be configured at runtime. 
+       <p>
+       Note that the logging configuration should always be done
+       persistently in the CDB, from where it is read at process
+       startup, 
+       or re-read later when refresh_logging_config is called.
+       The additional logger configuration that can be done
+       directly using this interface only allows temporary changes
+       of log levels. 
+       These log level changes are not written to the CDB, so that
+       when the process is restarted, the old values
+       from the CDB will be used again. 
+       <p>
+       To keep this interface simple, advanced changes of log queue
+       size, dispatch packet size and so forth are not supported
+       in this interface; they must be done in the CDB instead. 
+     */
+    interface LoggingConfigurable {
+    
+        /*
+         * Struct that represents log level thresholds used for filtering log records.
+         */
+        struct LogLevels {
+            /** 
+             * This flag is only relevant in the context of a named logger configuration. 
+             * If true, then the fields minLogLevel and minLogLevelLocal are undefined, 
+             * and default values apply. 
+             */
+            boolean useDefault;
+            /** min log level for logging to the central log service */
+            AcsLogLevels::logLevelValue minLogLevel;
+            /** min log level for printing logs to stdout */
+            AcsLogLevels::logLevelValue minLogLevelLocal;
+        };
+    
+        /**
+         * Gets the log levels of the default logging configuration.
+         * These levels "belong" to the entire process and are used by all loggers 
+         * that have not been configured individually.
+         */
+        LogLevels get_default_logLevels();
+       
+        /**
+         * Sets the log levels of the default logging configuration.
+         * These levels are used by all loggers that have not been configured individually.
+         */
+        void set_default_logLevels(in LogLevels levels)
+            raises (IllegalLogLevelsEx);
+       
+        /** 
+         * Gets the names of all loggers, to allow configuring their levels individually.
+         * The names are those that appear in the log records in the field "SourceObject".
+         * This includes the container logger, ORB logger, component loggers, 
+         * and (only C++) "GlobalLogger"s which get treated as one named logger. 
+         */
+        stringSeq get_logger_names();
+       
+        /**
+         * Gets log levels for a particular named logger.
+         * If the returned field LogLevels.useDefault is true, then the
+         * logger uses the default levels (see get_default_logLevels())
+         * and the local and remote levels have no meaning;       
+         * otherwise the returned local and remote levels apply.
+         */
+        LogLevels get_logLevels(in string logger_name)
+            raises (LoggerDoesNotExistEx);
+       
+        /**
+         * Sets log levels for a particular named logger.
+         * If levels.useDefault is true, then the logger will be reset to
+         * using default levels;       
+         * otherwise it will use the supplied local and remote levels.
+         * Throws IllegalLogLevelsEx if a provided level is invalid. 
+         * <p>
+         * @TODO: Define if/when LoggerDoesNotExistEx should be thrown. It could make sense to allow 
+         *        setting levels for a component logger even before that component gets loaded in the container.
+         */
+        void set_logLevels(in string logger_name, in LogLevels levels)
+            raises (LoggerDoesNotExistEx, IllegalLogLevelsEx);
+    
+        /**
+         * Commands the container or manager to read in again the logging
+         * configuration from the CDB and to reconfigure the loggers
+         * accordingly. 
+         * This allows for persistent changes in the logging
+         * configuration to become effective, and also for changes of more
+         * advanced parameters. 
+         *
+         * Notice that this is a oneway method and therefore there cannot be return values or user exceptions.
+         * Only CORBA runtime exceptions due to communication issues can be thrown.
+         */
+        oneway void refresh_logging_config();
+    };
+
+	/**
+	  * Struct used to send Log Records through ACS Custom Log Service
+	  */
+	struct XmlLogRecord{
+		// xml string that represents the Log
+		string xml;
+
+		// Log level of the log record
+		AcsLogLevels::logLevelValue logLevel;
+	};
+
+	/**
+	  * Struct used to retrive statistics of the ACS Custom Log Service
+	  */
+	struct LogStatistics{
+		/**
+		  * Number of the Logs received by the ACS custon log service
+		  */
+		unsigned long long receivedLogs;
+	};
+
+	typedef sequence<XmlLogRecord> XmlLogRecordSeq;
+
+
+	interface AcsLogService : DsLogAdmin::BasicLog
+	{
+		/**
+		 * Write a record as XML string format
+		 */
+		void writeRecords(in XmlLogRecordSeq xmlLogRecords);
+
+		/**
+		  * return a struct containing statistics of 
+		  * ACS Custom Log Service. <br>
+		  * @see LogStatistics
+		  */ 
+		LogStatistics getStatistics();
+		
+	};
+
+	interface ACSLogFactory : DsLogAdmin::BasicLogFactory
+	{
+	};
+};
+
+
+#endif

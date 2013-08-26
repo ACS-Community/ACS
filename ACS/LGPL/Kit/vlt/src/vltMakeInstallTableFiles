@@ -1,0 +1,162 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeInstallTableFiles,v 1.2 2010/07/09 15:15:24 rtobar Exp $" 
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  04/03/95  created
+# gfilippi  23/11/95  completely changed to produce a makefile
+# gfilippi  27/01/96  removed a left over from previous version
+# gfilippi  29/01/96  corrected several mistakes
+# gfilippi  29/04/96  install .icdt as well
+# gfilippi  11/05/96  fixed $ --> \$  for HP-UX10
+# rschmutz 1999-04-03 if Linux: disable bash builtin command 'echo'.
+
+#************************************************************************
+#   NAME
+#   vltMakeInstallTableFiles - copy the CDT and CIT files into target area.
+# 
+#   SYNOPSIS
+#
+#   vltMakeInstallTableFiles <CDT_DIR> <CIT_DIR> <protectionMask>
+#
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to copy the Error files into target area.
+#   It is not intended to be used as a standalone command.
+#
+#    file are copied into:
+#
+#           ../CDT/*.cdt     --->   <CDT_DIR>
+#           ../CDT/*.icdt    --->   <CDT_DIR>
+#           ../CIT/*.cit     --->   <CIT_DIR>
+#
+#   <CDT_DIR>   where to copy ".cdt" and ".icdt" files
+#
+#   <CIT_DIR>   where to copy ".cit" files
+#
+#   <protectionMask>  how to set the protection of created file
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+
+# if Linux: disable the bash builtin command 'echo'.
+if [ "`uname`" = "Linux" ]
+then
+    enable -n echo
+elif [ "`uname`" = "$CYGWIN_VER" ]
+then
+    alias echo="echo -e"
+fi
+
+if [ $# != 3 ]
+then
+    echo "" >&2
+    echo " ERROR: vltMakeInstallTableFiles: $*" >&2
+    echo " Usage: vltMakeInstallTableFiles <CDT_DIR> <CIT_DIR> <protectionMask>" >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# check correctness of destination directory
+#
+CDT_DIR=$1
+if [ "${CDT_DIR}" != ""  -a  ! -d $CDT_DIR ]
+then 
+    echo "" >&2
+    echo " ERROR: vltMakeInstallErrorFiles: " >&2
+    echo "          Internal error: >>$CDT_DIR<< not a valid directory " >&2
+    echo "" >&2
+    exit 1
+fi
+
+CIT_DIR=$2
+if [ "${CIT_DIR}" != ""  -a  ! -d $CIT_DIR ]
+then
+    echo "" >&2
+    echo " ERROR: vltMakeInstallErrorFiles: " >&2
+    echo "          Internal error: >>$CIT_DIR<< not a valid directory " >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# get protection mask
+#
+MASK=$3
+
+
+#
+# set initial (empty) makefile target. If any, tables will be added to it.
+#
+target="tables: "
+
+#
+# Command definition Table
+#
+if [ -d ../CDT  -a  "`ls ../CDT/*.*cdt ../CDT/*.icdt 2>/dev/null`" != "" ]
+then 
+    target="$target CDTs_begin "
+
+    echo "CDTs_begin:"
+    echo "\t-@echo \"\"; echo \"....CDT files:\""
+
+    for file in `ls ../CDT/*.cdt ../CDT/*.icdt 2>/dev/null`
+    do
+        FILE=`basename $file`
+        echo "$CDT_DIR/$FILE: ../CDT/$FILE"
+        echo "\t-\$(AT)echo \"\t$FILE\";\\"
+        echo "\t      cp ../CDT/$FILE  $CDT_DIR/$FILE; \\"
+        echo "\t      chmod $MASK  $CDT_DIR/$FILE"
+        target="$target $CDT_DIR/$FILE"
+    done
+fi
+
+#
+# Command Interpreter Table
+#
+if [ -d ../CIT  -a  "`ls ../CIT/*.cit 2>/dev/null`" != "" ]
+then 
+    target="$target CITs_begin "
+
+    echo "CITs_begin:"
+    echo "\t-@echo \"\"; echo \"....CIT files\""
+
+    for file in `ls ../CIT/*.cit 2>/dev/null`
+    do
+        FILE=`basename $file`
+        echo "$CIT_DIR/$FILE: ../CIT/$FILE"
+        echo "\t-\$(AT)echo \"\t$FILE\";\\"
+        echo "\t      cp ../CIT/$FILE  $CIT_DIR/$FILE; \\"
+        echo "\t      chmod $MASK  $CIT_DIR/$FILE"
+        target="$target $CIT_DIR/$FILE"
+    done
+    echo $target
+fi
+
+
+#
+# output the complete target
+#
+echo $target
+echo "\t-@echo \"\""
+
+exit 0
+
+#
+# ___oOo___

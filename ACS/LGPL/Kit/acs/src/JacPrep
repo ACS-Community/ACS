@@ -1,0 +1,125 @@
+#!/usr/bin/env perl
+#************************************************************************
+#   NAME 
+#   JacPrep 
+# 
+#   SYNOPSIS
+#   JacPrep input_file.idl [idl_paths and options] 
+# 
+#   DESCRIPTION
+#   JacPrep preprocesses a .idl file expanding macros and preserving
+#   all the lines starting with #include and #pragma.
+#   The output(standard) is in a suitable format to be processed by JacORB.
+#   After the name of the input file, pass cpp options like, typically,
+#   IDL path and define arguments as one single parameter string.
+#
+#   AUTHOR
+#   Michele Zamparelli, Moreno Pasquato
+#
+#   FILES
+#   ACS/kit/acs/src/JacPrep
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#   JacPrep alpha.idl "-I/alma/ACS-2.0/ACSSW/idl"
+#   JacPrep ../idl/tdemTOPICS.midl " -I/alma/ACS-8.0/JacORB/idl/jacorb -DDDS_USE -DDDS_USE_OPENDDS"
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+
+$rcsId = '$Id: JacPrep,v 1.13 2010/01/04 15:34:48 gchiozzi Exp $';
+
+# Check for idl file argument
+die "supply an IDL filename \n" if ($#ARGV < 0);
+
+# Variable setting
+$inputFile = $ARGV[0];
+$CPP_OPTIONS = $ARGV[1];
+
+$namespace = $ARGV[0];
+$namespace =~ 	s/.*\///g;
+$namespace =~ 	s/[\.-]/_/g;
+
+# File type verification
+warn "filename does not end with .idl nor .midl\n" unless ( $inputFile =~ /\.idl$/ || $inputFile =~ /\.midl$/);
+
+# File existence/permission verification
+die "File $inputFile not found or not readable\n" if ( ! -f $inputFile || ! -r $inputFile);
+chop($dirname = `dirname $inputFile`);
+
+# File Parsing:
+# all the lines starting with #include  
+# and/or #pragma are stored in a temporary array
+open(rfd, "$inputFile");
+foreach (grep (/^#/, <rfd>) ) {  
+   
+    # Looking for patterns: #include or #prefix
+    if (/^#include/  ) { 
+       push(@newFile,$_);
+    }
+}
+close(rfd);
+
+# File preprocessed using cpp and output stored in array @lines 
+open( nfd, "cpp $CPP_OPTIONS -E $inputFile |");
+	 if ($?) { 
+	     die "JacPrep: failed to cpp $INCLUDE_PATH -E $inputFile\n";
+	 }
+@lines = <nfd>;
+
+# Preprocessed file parsing
+foreach $line (@lines) { 
+
+    if ( $line =~ /^#/) {  ##
+	 if  ($line !~ /^#pragma/ ) {   ##
+	      # we assume it's an include
+	      # The line starting with # contain the name of the input file
+	      # This output part requires to be stored
+	      if ($line =~ /\"$inputFile\"/  ) { #"
+		  $record = 1;
+		  next;
+	      } else { 
+		  $record = 0;     
+	      }
+	  }
+     }
+    if ( $record) {
+        # Output stored in array @newFile 
+	$line=~ s/};/};\n/g;
+	push(@newFile, $line);
+    }
+}
+	 
+	 
+close(nfd);
+	 
+print "/". "*" x 79;
+print "* $rcsId\n";
+print "* DO NOT EDIT\n";
+print "* Automatically generated from $inputFile\n";
+print "* on ".localtime()."\n";	 
+print "*" x 79 . "/\n";
+
+# guard condition
+print "#ifndef _$namespace\_\n";
+print "#define _$namespace\_\n";
+
+# preprocessing marker define
+print "#ifndef _ACS_PREPROCESSED\_\n";
+print "#define _ACS_PREPROCESSED\_\n";
+print "#endif\n";
+
+# Sending to standard output the preprocessed file    
+foreach(@newFile) { 
+     print;
+}
+print "#endif\n";
+

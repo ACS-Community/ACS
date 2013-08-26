@@ -1,0 +1,8 @@
+the buildTcltk prepares and creates the directory acsdata
+(as pointed to by the environment variable ACSDATA). 
+
+There is a problem when installing msql on SUN. 
+It seems a problem with the  native command "install" 
+on SUN. Note that there are two: 
+/usr/ucb/install and /usr/sbin/install.
+

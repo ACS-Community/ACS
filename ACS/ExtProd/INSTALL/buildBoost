@@ -1,0 +1,55 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: buildBoost,v 1.1 2011/09/07 20:57:52 javarias Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# jschwarz    02/10/2009
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+LOG=buildBoost.log
+exec > $LOG 2>&1
+
+date
+
+CURR_DIR=`pwd`
+
+echo "Installing Boost for $OSTAG"
+echo 
+
+INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE/boost
+if [ -d $INSTDIR ]
+then
+  echo $INSTDIR directory exists already. I clean it up.
+  rm -rf $INSTDIR
+fi
+mkdir $INSTDIR
+
+#
+# Unpack the tar file
+# put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/Eclipse
+#
+VERSION=1_41_0
+echo "unpacking the archives for Boost "$VERSION
+SRCFILE=$CURR_DIR/../PRODUCTS/boost_$VERSION.tar.bz2
+cd $CURR_DIR/../PRODUCTS
+tar jxf $SRCFILE
+cd boost_$VERSION
+./bootstrap.sh
+./bjam --prefix=$INSTDIR -a install
+echo "done"
+echo ""
+
+
+cd $CURR_DIR
+echo Boost installation done
+date
+

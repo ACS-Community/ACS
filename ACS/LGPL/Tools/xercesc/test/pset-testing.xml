@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<parameterset xmlns="http://www.aoc.nrao.edu/~sharring/psetTypes.html" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://www.aoc.nrao.edu/~sharring/psetTypes.html pset.xsd">
+	<psetdef>psetdef-testing.xml</psetdef>
+	<name>VLAFillerTestValues</name>
+	<parameter xsi:type="StringParamType">
+		<name>msname</name>
+		<value>myvladata.ms</value>
+	</parameter>
+	<parameter xsi:type="StringParamType">
+		<name>inputfile</name>
+		<value>c477_040502.xpl</value>
+	</parameter>
+	<parameter xsi:type="StringParamType">
+		<name>project</name>
+		<value>ad577</value>
+	</parameter>	
+	<parameter xsi:type="StringParamType">
+		<name>start</name>
+		<value>2004/05/02/18:30:00</value>
+	</parameter>	
+	<parameter xsi:type="StringParamType">
+		<name>stop</name>
+		<value>2004/05/02/19:00:00</value>
+	</parameter>	
+	<parameter xsi:type="DoubleParamType">
+		<name>centerfreq</name>
+		<units>GHz</units>
+		<value>1.489</value>
+	</parameter>	
+	<parameter xsi:type="DoubleParamType">
+		<name>bandwidth</name>
+		<units>MHz</units>
+		<value>10.01</value>
+	</parameter>	
+	<parameter xsi:type="StringParamType">
+		<name>bandname</name>
+		<value>P</value>
+	</parameter>
+	<parameter xsi:type="StringParamType">
+		<name>source</name>
+		<value>3C49</value>
+	</parameter>
+	<parameter xsi:type="BoolParamType">
+		<name>overwrite</name>
+		<value>true</value>
+	</parameter>
+	<parameter xsi:type="StringParamType">
+		<name>testString</name>
+		<value>testingGirl</value>
+	</parameter>
+	<parameter xsi:type="IntParamType">
+		<name>testInt</name>
+		<units>GHz</units>
+		<value>13</value>
+	</parameter>	
+	<parameter xsi:type="StringArrayParamType">
+		<name>testStringArray</name>
+		<value>str1</value>
+		<value>str2</value>
+		<value>str3</value>
+	</parameter>	
+	<parameter xsi:type="IntArrayParamType">
+		<name>testIntArray</name>
+		<value>1</value>
+		<value>2</value>
+		<value>3</value>
+	</parameter>	
+	<parameter xsi:type="DoubleArrayParamType">
+		<name>testDoubleArray</name>
+		<value>1.1</value>
+		<value>2.2</value>
+		<value>3.3</value>
+	</parameter>	
+</parameterset>

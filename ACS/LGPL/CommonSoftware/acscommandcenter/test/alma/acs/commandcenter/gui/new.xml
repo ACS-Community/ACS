@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<suite name="Suite">
+    <test name="Login" robot="false">
+        <!--  started recording Tue Nov 09 17:47:08 CET 2004  -->
+
+        <find finder="FrameFinder" id="JFrame1" index="0" operation="equals" title=""/>
+        <find class="javax.swing.JTextField" container="JFrame1" finder="ComponentFinder" id="Component2" index="0" operation="equals"/>
+        <key refid="Component2" string="myHost"/>
+
+        <find class="javax.swing.JTextField" container="JFrame1" finder="ComponentFinder" id="Component3" index="1" operation="equals"/>
+        <key refid="Component3" string="3"/>
+
+        <find class="javax.swing.JButton" container="JFrame1" finder="AbstractButtonFinder" id="Component4" index="0" label="Add to View" operation="equals"/>
+        <key refid="Component4" string=" "/>
+
+        <find finder="DialogFinder" id="JDialog5" index="0" operation="equals" title="Message"/>
+        <find class="javax.swing.JButton" container="JDialog5" finder="AbstractButtonFinder" id="Component6" index="0" label="OK" operation="equals"/>
+        <key code="10" refid="Component6"/>
+
+        <key code="9" modifiers="Shift" refid="Component4"/>
+        <key refid="Component3" string="000"/>
+        
+        <assertenabled enabled="true" message="Component is not enabled" refid="Component4"/>
+        
+
+        <record file="testcases.xml"/>
+    </test>
+
+    <test name="Login" robot="false">
+        <save file="new.xml"/>
+    </test>
+</suite>

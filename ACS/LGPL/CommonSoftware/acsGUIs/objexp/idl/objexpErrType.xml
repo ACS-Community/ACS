@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="objexpErrType" type="43" _prefix="alma">
+	<ErrorCode name="ObjectExplorerReport"
+		shortDescription="Object explorer reports an exception."
+		description="Object explorer reports an exception
+                performing some operation. This exception is put on
+		top of an error trace logged by the Object Explorer
+                to make clear in the logs that the error trace comes
+		from an action initiated by Object explorer.
+		More details on the actual exception are in the lower
+		levels of the error trace">
+		<Member name="Context"
+			type="string"
+			description="Optional additional information providing context to the exception"/>
+	</ErrorCode>
+	<ErrorCode name="ObjectExplorerInterfaceRepositoryAccess"
+		shortDescription="Object explorer reports problems with Interface Repository."
+		description="Object explorer reports problems
+                accessing the interface repository: or it cannot
+		contact the Interface reporitory or it could not
+		retrieved the information requested.">
+		<Member name="Curl"
+			type="string"
+			description="Curl of the remote entity"/>
+		<Member name="IRid"
+			type="string"
+			description="Interface Repository ID requested"/>
+	</ErrorCode>
+	<ErrorCode name="ObjectExplorerConnect"
+		shortDescription="Object explorer reports problems connecting to remote entity"
+		description="Object explorer reports problems connecting
+                to remote entity. The error trace provides more
+		details on the actual failure.">
+		<Member name="Reason"
+			type="string"
+			description="Optional information describing the reason for the failure"/>
+		<Member name="Curl"
+			type="string"
+			description="Curl of the remote entity"/>
+	</ErrorCode>
+</Type>
+

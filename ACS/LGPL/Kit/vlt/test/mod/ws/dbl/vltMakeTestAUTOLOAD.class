@@ -1,0 +1,11 @@
+// "@(#) $Id: vltMakeTestAUTOLOAD.class,v 2.170.1.9 2003/02/20 10:34:29 vltsccm Exp $"
+//++ Class for vltMake test
+//
+
+#include "vltMakeTestCPU_CLASS.class"
+
+CLASS CPU_CLASS vltMakeTestAUTOLOAD
+BEGIN
+	ATTRIBUTE NULL_CLASS	file
+	ATTRIBUTE int		fileId
+END

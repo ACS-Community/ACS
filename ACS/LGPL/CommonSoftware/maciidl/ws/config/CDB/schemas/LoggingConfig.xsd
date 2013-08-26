@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns="urn:schemas-cosylab-com:LoggingConfig:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:schemas-cosylab-com:LoggingConfig:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:complexType name="LoggingConfig">
+        <xs:annotation>
+            <xs:documentation>Configuration for the log production of an entire process, e.g. a container or manager. This includes shared settings for the communication with the central log service, as well as settings for individual loggers.
+The inherited 'minLogLevel' and 'minLogLevelLocal' are the default log levels for all loggers in the container or other process. They can be overridden for specific loggers using 'log:_' XML child elements.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="UnnamedLogger">
+                <xs:sequence>
+                    <xs:element name="_" type="NamedLogger" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>!!! CONFIGURATION OF NAMED LOGGERS NOT YET SUPPORTED IN ACS 6.0!!! Optional configuration for specific loggers that should use different log levels than the default values from 'LoggingConfig'. The odd name '_' follows the CDB convention for 'map attributes' and allows easy access without iterating over a list of loggers.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="centralizedLogger" type="xs:string" use="optional" default="Log">
+                    <xs:annotation>
+                        <xs:documentation>Name of the service representing the logging service. This is the name used to query the Manager for the reference to the logging service. In the current installations the default value is normally used. The value can be changed to distribute logs to different instances of the service in order to improve performance and scalability of the system. In the future it will be possible to federate instances of the logging service, but this is not implemented yet.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="dispatchPacketSize" type="xs:int" use="optional" default="100">
+                    <xs:annotation>
+                        <xs:documentation>In order to improve performance and reduce network traffic, containers do not send immediately logs to the logging system. This parameter specifies how many logs are packaged together and sent to the logging system in one call. Note that the real package size may be smaller if sending off the records is also triggered by a timer and /or by the log level. 
+For debugging purposes it may be convenient to set the cache to 0, to avoid losing logs when a Container crashes. 
+This value was called "CacheSize" prior to ACS 6.0.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="immediateDispatchLevel" type="logLevel" use="optional" default="10">
+                    <xs:annotation>
+                        <xs:documentation>Normally a number of log records are sent together to the logging system, as described for "dispatchPacketSize". The "immediateDispatchLevel" triggers sending all cached log records immediately once a record with the given (or higher) log level appears, even before the specified packet size has been reached.
+This value was called "MaxCachePriority" prior to ACS 6.0</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="flushPeriodSeconds" type="xs:nonNegativeInteger" use="optional" default="10">
+                    <xs:annotation>
+                        <xs:documentation>If log records are queued locally in order to send a bunch of them together to the remote log service, we still may want to send packages with fewer records after a certain time. This makes sure that log receivers see the messages in time, even if very few records get produced. 
+This value sets the time period in seconds after which the log record queue should be flushed if it contains log records, regardless of the resulting 'dispatchPacketSize'.  A value "0" turns off the time-triggered flushing.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="maxLogQueueSize" type="xs:int" use="optional" default="1000">
+                    <xs:annotation>
+                        <xs:documentation>Log records are stored in a queue not only to send them in a packet over the wire (see dispatchPacketSize), but also to not lose any records in times when the log service is not available (e.g. during container start, or any kind of network and service failure). Thus they get stored in a queue, which gets drained once the log service becomes available. However, logging should not compete for memory with the functional parts of the software, so we limit this queue. Values below "dispatchPacketSize" will be ignored, as we first must queue the records that should be sent together.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="maxLogsPerSecond" type="xs:int" use="optional" default="-1">
+                    <xs:annotation>
+                        <xs:documentation>Optional log throttle to be applied on the process (container) level, giving the max number of logs per second that the process can output.
+The throttle applies not only to remote logs, but also local/stdout logs, since the latter may be sent over the network as well (diskless+NFS). 
+Negative values mean that no log rate throttle is applied. Since ACS 9.0, see COMP-4541.</xs:documentation>
+                    </xs:annotation></xs:attribute>
+            </xs:extension>
+            <!-- The following two attributes are not included in ACS yet.
+     As discussed at http://almasw.hq.eso.org/almasw/bin/view/ACS/LoggingArchitectureEnhancementsACS60,
+     we first would like to be sure whether the log queue handling done in Java is really the role model for the other languages.
+                <xs:attribute name="logQueueOverflowDiscardLevel" type="logLevel" use="optional" default="3">
+                    <xs:annotation>
+                        <xs:documentation>If the log service is unavailable for an extended time, the queue defined by "maxLogQueueSize" will fill up. Then it becomes important to keep the high level messages, while throwing away the low level ones. 
+This value sets the log level, so that log records with that priority or less will not be inserted into the queue any more once the queue has reached "logQueueOverflowDiscardThresholdPercent".</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="logQueueOverflowDiscardThresholdPercent" type="xs:int" use="optional" default="70">
+                    <xs:annotation>
+                        <xs:documentation>Percentage of the log queue size above which the less important log messages will be discarded instead of being inserted. See "logQueueOverflowDiscardLevel".</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+-->
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="UnnamedLogger">
+        <xs:annotation>
+            <xs:documentation>Configuration for a logger or group of loggers that can be identified from the context. This can be a logger used by the container, by a particular component, by the container and all components, by the ORB, and so on.</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="minLogLevel" type="logLevel" use="optional" default="2">
+            <xs:annotation>
+                <xs:documentation>All logs with priority lower than this value will be discarded and never sent to the logging system. On a normally running system, priority is kept to INFO level (4) or higher to avoid flooding the logging system. While debugging, it might be useful to increase the verbosity of the system by reducing the priority down to the lowest value 2.
+This value was called "MinCachePriority" prior to ACS 6.0.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="minLogLevelLocal" type="logLevel" use="optional" default="2">
+            <xs:annotation>
+                <xs:documentation>Same as "minLogLevel", but controlling the printing of the log to stdout independently of sending the log to the log service.
+Note that printing logs on the command line degrades performance much more than sending them to the log service.
+This value can be overridden by the env variable "ACS_LOG_STDOUT"</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="NamedLogger">
+        <xs:annotation>
+            <xs:documentation>Configuration for an individual logger.
+This allows to optionally configure certain loggers differently than the default logger. 
+For example, one may choose to use the default logging config for all component loggers, but to set higher log levels for the container and ORB loggers. Note that components can also configure the log levels for their loggers, and that the log levels there have preference over any component logger config given here.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="UnnamedLogger">
+                <xs:attribute name="Name" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation>The logger's name as it appears in the log record in the 'SourceObject' field. Note that this attribute must be called 'Name' with uppercase to allow easy access to it using the CDB's support for 'map attributes'.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:simpleType name="logLevel">
+        <xs:annotation>
+            <xs:documentation>Legal log level. These enumerations must be synchronized with the definitions in logging_idl.idl (module loggingidl)!</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:enumeration value="1"/>
+            <xs:enumeration value="2"/>
+            <xs:enumeration value="3"/>
+            <xs:enumeration value="4"/>
+            <xs:enumeration value="5"/>
+            <xs:enumeration value="6"/>
+            <xs:enumeration value="8"/>
+            <xs:enumeration value="9"/>
+            <xs:enumeration value="10"/>
+            <xs:enumeration value="11"/>
+            <xs:enumeration value="99"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

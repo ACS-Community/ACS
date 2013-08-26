@@ -1,0 +1,25 @@
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner alma.demo.test.client.ArchiveConsumerTest
+2 -  -- alma.demo.test.client.ArchiveSupplierTest
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] -------------------------------
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] component 'alma.demo.test.client.ArchiveConsumerTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger scxml@ArchiveConsumerTest#testReceiveFor15Seconds created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchiveConsumerTest is receiving archive events for the next 15 seconds.
+2 - ----------T--:--:--.--- INFO [ArchiveSupplierTest] component 'ArchiveSupplierTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] Event subscriber 'ArchiveTweakedNCSubscriber' handles one or more raw NC events itself, bypassing base class 'alma.acs.nc.NCSubscriber'. This non-standard behavior will not be logged again by this NCSubscriber.
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=Double
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=Float
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=Long
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=String
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=Long
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=Long
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=String
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=double[]
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=float[]
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=int[]
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] ArchivingChannel data received: timeStamp=----------T--:--:--.---, device=no_device, property=no_param, value(type)=String[]
+1 - ----------T--:--:--.--- INFO [ArchiveConsumerTest#testReceiveFor15Seconds] Test passed, got the expected 11 archive events.
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 

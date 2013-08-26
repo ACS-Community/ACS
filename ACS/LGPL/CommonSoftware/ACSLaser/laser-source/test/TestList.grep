@@ -1,0 +1,24 @@
+ACS Manager:
+ACS Interface Repository:
+java -classpath
+Time:
+export
+Starting Java application
+-D user.dir=
+Jlog will use cache for
+JacORB
+Gerald Brose
+Connected
+INFO
+WARN
+POA RootPOA - ready
+POA offshootPoa - ready
+POA RootPOA - destroyed
+POA offshootPoa - destroyed
+almaacscontainerContainerServicesImpl getAdvancedContainerServices
+SynchroBuffer
+FINER: LogConfig was initialized, but not from CDB settings
+object is deactivated
+object is activated
+.. .. .. .. .. .. .. .. .. .. .. .. .*
+[jacorb.poa]

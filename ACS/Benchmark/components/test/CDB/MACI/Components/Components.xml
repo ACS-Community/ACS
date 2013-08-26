@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <_ Name="SBC00"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC01"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC02"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC03"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC04"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC05"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC06"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC07"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC08"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC09"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC10"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC11"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC12"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC13"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC14"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC15"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBC16"        Code="SimpleBACIComponentImpl" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC01"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC02"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC03"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC04"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC05"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC06"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC07"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC08"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC09"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC10"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC11"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC12"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC13"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC14"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC15"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CBC16"        Code="ComplexBACIComponentImpl" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="LOG01"        Code="LogTestComponentImpl" 
+                             Type="IDL:alma/perftest/BasePerfComp:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="ERR01"        Code="ErrTestComponentImpl" 
+                             Type="IDL:alma/perftest/ErrTestComponent:1.0" 
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="MTC01"        Code="MethodTestComponentImpl" 
+                             Type="IDL:alma/perftest/MethodTestComponent:1.0" 
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SUP01"        Code="SupplierTestComponentImpl" 
+                             Type="IDL:alma/perftest/BasePerfComp:1.0" 
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="SBCPY01"      Code="perftestImpl.SimpleBACIComponent" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="aragornContainer" ImplLang="py" />
+      <_ Name="CBCPY01"      Code="perftestImpl.ComplexBACIComponent" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="aragornContainer" ImplLang="py" />
+      <_ Name="LOGPY01"      Code="perftestImpl.LogTestComponent" 
+                             Type="IDL:alma/perftest/BasePerfComp:1.0"
+                             Container="aragornContainer" ImplLang="py" />
+      <_ Name="ERRPY01"      Code="perftestImpl.ErrTestComponent" 
+                             Type="IDL:alma/perftest/ErrTestComponent:1.0"
+                             Container="aragornContainer" ImplLang="py" />
+      <_ Name="SUPPY01"      Code="perftestImpl.SupplierTestComponent" 
+                             Type="IDL:alma/perftest/BasePerfComp:1.0"
+                             Container="aragornContainer" ImplLang="py" />
+      <_ Name="MTCPY01"      Code="perftestImpl.MethodTestComponent" 
+                             Type="IDL:alma/perftest/MethodTestComponent:1.0" 
+                             Container="aragornContainer" ImplLang="py" />
+
+      <_ Name="SBCJAVA01"    Code="alma.perftest.SimpleBACIComponentImpl.SimpleBACIComponentImplHelper" 
+                             Type="IDL:alma/perftest/SimpleBACIComponent:1.0"
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="CBCJAVA01"    Code="alma.perftest.ComplexBACIComponentImpl.ComplexBACIComponentImplHelper" 
+                             Type="IDL:alma/perftest/ComplexBACIComponent:1.0"
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="LOGJAVA01"    Code="alma.perftest.LogTestComponent.LogTestComponentHelper"
+                             Type="IDL:alma/perftest/BasePerfComp:1.0"
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="ERRJAVA01"    Code="alma.perftest.ErrTestComponentImpl.ErrTestComponentImplHelper" 
+                             Type="IDL:alma/perftest/ErrTestComponent:1.0"
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="SUPJAVA01"    Code="alma.perftest.SupplierTestComponent.SupplierTestComponentHelper" 
+                             Type="IDL:alma/perftest/BasePerfComp:1.0"
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="MTCJAVA01"    Code="alma.perftest.MethodTestComponentImpl.MethodTestComponentImplHelper" 
+                             Type="IDL:alma/perftest/MethodTestComponent:1.0" 
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="BDSCPP01"     Code="componentsBulkSender"
+                             Type="IDL:alma/perftestBD/BulkDataSenderEx1:1.0"
+                             Container="anotherCppContainer" ImplLang="cpp" />
+      <_ Name="BDCPP01"      Code="componentsBulkReceiver"	
+                             Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="LOGSTRESSCPP1" 	    
+         Code="LogStressImpl" 
+         Type="IDL:alma/perftest/LogStressWithDelay:1.0" 	
+         Container="cppContainer1" ImplLang="cpp" />
+      <_ Name="LOGSTRESSCPP2" 	    
+         Code="LogStressImpl" 
+         Type="IDL:alma/perftest/LogStressWithDelay:1.0" 	
+         Container="cppContainer2" ImplLang="cpp" />
+      <_ Name="LOGSTRESSCPP3" 	    
+         Code="LogStressImpl" 
+         Type="IDL:alma/perftest/LogStressWithDelay:1.0" 	
+         Container="cppContainer3" ImplLang="cpp" />
+      <_ Name="LOGSTRESSJAVA1"   
+         Code="alma.perftest.LogStressImpl.LogStressHelper" 
+         Type="IDL:alma/perftest/LogStressWithDelay:1.0" 
+         Container="javaContainer1" ImplLang="java" />
+      <_ Name="LOGSTRESSJAVA2"   
+         Code="alma.perftest.LogStressImpl.LogStressHelper" 
+         Type="IDL:alma/perftest/LogStressWithDelay:1.0" 
+         Container="javaContainer2" ImplLang="java" />
+      <_ Name="LOGSTRESSJAVA3"   
+         Code="alma.perftest.LogStressImpl.LogStressHelper" 
+         Type="IDL:alma/perftest/LogStressWithDelay:1.0" 
+         Container="javaContainer3" ImplLang="java" />
+      <_ Name="LOGSTRESSPYTHON1"   
+         Code="perftestImpl.LogStressImpl" 
+         Type="IDL:alma/perftest/LogStressWithDelay:1.0" 
+         Container="pyContainer1" ImplLang="py" />
+      <_ Name="LOGSTRESSPYTHON2"   
+         Code="perftestImpl.LogStressImpl" 
+         Type="IDL:alma/perftest/LogStressWithDelay:1.0" 
+         Container="pyContainer2" ImplLang="py" />
+      <_ Name="LOGSTRESSPYTHON3"   
+         Code="perftestImpl.LogStressImpl" 
+         Type="IDL:alma/perftest/LogStressWithDelay:1.0" 
+         Container="pyContainer3" ImplLang="py" />
+</Components>

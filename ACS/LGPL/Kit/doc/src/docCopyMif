@@ -1,0 +1,121 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docCopyMif,v 1.31 2002/06/08 17:20:46 vltsccm Exp $" 
+#
+# docCopyMif
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# fcarbogn  24/07/97  created
+# fcarbogn  24/10/97  Introduced listing of new mif files
+# psivera   02/05/02  ported to Solaris
+
+
+#************************************************************************
+#   NAME
+#   docCopyMif - copy MIF files in the book directory
+# 
+#   SYNOPSIS
+#   docCopyMif <bookDirectory>
+# 
+#   DESCRIPTION
+#   This utility copies only the MIF files that are different from those
+#   present in the book directory. This will cause change bars only 
+#   on modified text.
+#   
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   REMEMBER: 
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#------------------------------------------------------------------------
+echo \
+"------------------------------------------------------------------------------"
+echo "docCopyMif\n"
+
+if [ $# -ne 1 ]
+then
+    echo ""
+    echo "docCopyMif <bookDirectory> "
+    echo ""
+    exit 1
+else
+    book_dir=$1
+fi
+
+if [ ! -d ../doc/ ]
+then
+   echo "Must be in <mod>/src or <mod>/doc directory"
+   exit 1
+fi
+
+cd ../doc
+
+new_file=1
+FILELIST=`ls *.mif`
+
+OS=`uname -s`
+
+# If the local MIF file and the one in the book directory differ only for the creation date
+# and the Formatter used the local file will not be copied
+
+for document in $FILELIST
+do
+   if [ -f $document ] && [ -w $book_dir/$document ]
+   then
+	diff $document $book_dir/$document > $$_diff
+	if [ "$OS" != SunOS ]
+	then
+	    grep -E -v '<String .Last change|@\(#\) .Id|^[0-9]*c[0-9]|^---' $$_diff > $$_temp
+	else
+	    egrep -v '<String .Last change|@\(#\) .Id|^[0-9]*c[0-9]|^---' $$_diff > $$_temp
+	fi
+
+	if [  -s  $$_temp ]
+	then
+	   echo "        --> copying $document \n"
+           cp $document $book_dir
+	fi
+   else
+	if [ -f $document ] && [ -f $book_dir/$document ]
+	then
+	   echo "     --> $book_dir/$document <--   wrong permissions \n"
+	else
+	   NEWFILESLIST="$NEWFILESLIST \n $document"
+	   new_file=0
+	fi
+   fi
+done
+
+if [ $new_file -eq 0 ]
+then
+  echo "The following files were not already" 
+  echo "present on $book_dir" 
+  echo "If they are new mif files belonging to the"
+  echo "document you need to copy them manually"
+  echo $NEWFILESLIST
+  echo "\n\n"
+fi
+
+
+if [ -f $$_* ]
+then
+   rm $$_*
+fi
+
+echo "done \n\n"
+
+#___oOo___

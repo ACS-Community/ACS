@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  -->
+<CCC_Monitor xmlns="urn:schemas-cosylab-com:CCC_Monitor:1.0"
+             xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+             xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- Correlator Cards monitor points -->
+	<voltage_corrCard_1_8v  description="corr card 1.8v power supply voltage" units="V"/>
+	<voltage_corrCard_3_3v  description="corr card 3.3v power supply voltage" units="V"/>
+	<voltage_corrCard_5v    description="corr card 5v power supply voltage" units="V"/>
+	<voltage_corrCard_48v   description="corr card 48v power supply voltage" units="V"/>
+	<current0_corrCard_1_8v description="corr card 1.8v power supply current0" units="A"/>
+	<current1_corrCard_1_8v description="corr card 1.8v power supply current1" units="A"/>
+	<current2_corrCard_1_8v description="corr card 1.8v power supply current2" units="A"/>
+	<temp_corrCard          description="corr card temperature" units="C"/>
+
+	<!-- 9U bin power supplies -->
+	<voltage_9U_1_5v  description="9U bin 1.5v power supply voltage" units="V"/>
+	<voltage_9U_1_8v  description="9U bin 1.8v power supply voltage" units="V"/>
+	<voltage_9U_3_3v  description="9U bin 3.3v power supply voltage" units="V"/>
+	<voltage_9U_5v    description="9U bin 5v power supply voltage" units="V"/>
+	<voltage_9U_48v   description="9U bin 48v power supply voltage" units="V"/>
+	<current_9U_1_5v  description="9U bin 1.5v power supply current" units="A"/>
+	<current0_9U_1_8v description="9U bin 1.8v power supply current0" units="A"/>
+	<current1_9U_1_8v description="9U bin 1.8v power supply current1" units="A"/>
+	<current2_9U_1_8v description="9U bin 1.8v power supply current2" units="A"/>
+	<current0_9U_3_3v description="9U bin 3.3v power supply current0" units="A"/>
+	<current1_9U_3_3v description="9U bin 3.3v power supply current1" units="A"/>
+	<current_9U_5v    description="9U bin 5v power supply current" units="A"/>
+	<temp_9U          description="9U bin temperature" units="C"/>
+
+	<!-- 6U bin power supplies -->
+	<voltage_6U_1_5v  description="6U bin 1.5v power supply voltage" units="V"/>
+	<voltage_6U_1_8v  description="6U bin 1.8v power supply voltage" units="V"/>
+	<voltage_6U_3_3v  description="6U bin 3.3v power supply voltage" units="V"/>
+	<voltage_6U_5v    description="6U bin 5v power supply voltage" units="V"/>
+	<current_6U_1_5v  description="6U bin 1.5v power supply current" units="A"/>
+	<current0_6U_1_8v description="6U bin 1.8v power supply current0" units="A"/>
+	<current1_6U_1_8v description="6U bin 1.8v power supply current1" units="A"/>
+	<current2_6U_1_8v description="6U bin 1.8v power supply current2" units="A"/>
+	<current0_6U_3_3v description="6U bin 3.3v power supply current0" units="A"/>
+	<current1_6U_3_3v description="6U bin 3.3v power supply current1" units="A"/>
+	<current_6U_5v    description="6U bin 5v power supply current" units="A"/>
+	<temp_6U          description="6U bin temperature" units="C"/>
+
+	<!-- Power Control Card Bin monitor points -->
+	<ground_PCC           description="PCC ground" units="V"/>
+	<voltage_PCC_5v       description="PCC 5v power supply voltage" units="V"/>
+	<voltage_PCC_12v      description="PCC +-12v power supply voltage (+)" units="V"/>
+	<voltage_PCC_minus12v description="PCC +-12v power supply voltage (-)" units="V"/>
+	<current0_PCC         description="PCC current0" units="A"/>
+	<current1_PCC         description="PCC current1" units="A"/>
+	<current2_PCC         description="PCC current2" units="A"/>
+	<temp_PCC             description="PCC temperature" units="C"/>
+
+	<!-- CCC-related monitor points -->
+	<voltage_CCC_5v description="CCC 5v power supply voltage" units="V"/>
+	<temp_CCC       description="CCC temperature" units="C"/>
+	<fanSpeed_CCC   description="CCC fan speed" units="rpm"/>
+
+	<!-- absolute CAN error counts -->
+	<LTA_CAN_ErrorCount description="LTA CAN bus errors count" units=""/>
+	<SCC_CAN_ErrorCount description="SCC CAN bus errors count" units=""/>
+	<QCC_CAN_ErrorCount description="QCC CAN bus errors count" units=""/>
+
+	<!-- Missed any timing events -->
+	<missedTECount description="Missed Time Events count" units=""/>
+
+</CCC_Monitor>
+

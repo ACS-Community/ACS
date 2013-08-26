@@ -1,0 +1,147 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupProcesses
+. acsstartupPids
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: acsKillProc,v 1.19 2008/04/10 05:24:41 cparedes Exp $"
+#
+# who       when      what
+# -------- ---------- ----------------------------------------------
+
+### (2004-12-17)msc: this script only deals with a single pid, either from a pid-file
+### or literally. investigating how to enhance it to deal with a list of pids,
+### i found that, among other things, the invokation of "pgrep -P $TEMP_PID" below will
+### need to be modified: "pgrep -P 123 456" doesn't work, it must be "pgrep -P 123,456"
+### i'm writing this down so this result doesn't get lost.
+
+########################################################################################
+# These will contain the parsing results (CL_XXX, CL = command line)
+CL_HELP=
+CL_COMMAND=
+CL_PID=
+CL_PORT=
+
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+LONGOPTS=help,command:,pid:,port:
+SHORTOPTS=hC:p
+
+# Usage info. Be nice and keep this up-to-date!
+function printUsage 
+{
+    echo "This script is designed to kill a process specified from the command-line"
+    echo "and any children processes it may have started. The sole command-line parameter"
+    echo "to this script is either a process ID or the name of a temporary file which"
+    echo "contains a process ID."
+    echo ""
+    echo "Sample usage could be:"
+    echo "       $0 12345"
+    echo "or:"
+    echo "       $0 $PWD/someTempFile.pid"
+    exit $EC_OK
+}
+
+
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--command)          CL_COMMAND=$2 ; shift ;;
+	-C)                 CL_COMMAND=$2 ; shift ;;
+	--port)             CL_PORT=$2 ; shift ;;
+	--pid)              CL_PID=$2 ; shift ;;
+	-p)                 CL_PID=$2 ; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+fi
+
+########################################################################################
+#User wants to kill all commands of a certain type.
+if [ "$CL_COMMAND" ]
+then
+    killCommand $CL_COMMAND
+    exit 0
+
+elif [ "$CL_PID" ]
+then
+    #Save the PID
+    export TEMP_PID=$CL_PID
+
+elif [ "$CL_PORT" ]
+then
+    killPort $CL_PORT
+    exit $?
+
+elif [ "$1" ]
+then
+    #Save the PID
+    export TEMP_PID=$1
+else
+    #No PID or command passed!
+    exit $EC_BADARGS
+fi
+########################################################################################
+#Check to see if the PID is really the name of a temporary file containing
+#the PID
+if [ -r $TEMP_PID ]
+then
+    #The file exists and is readable...but does it contain anything???
+    if [ -s $TEMP_PID ]
+    then
+        #so far so good. get the PID now.
+	TEMP_PID=`cat $TEMP_PID`
+    else
+	ACS_LOG_ERROR "acsKillProc" "The file specified from the command-line '$TEMP_PID' is empty and does not contain a process ID"
+	exit $EC_BADARGS
+    fi
+fi
+
+killProc $TEMP_PID

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>Building up a node hierarchy</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Lionel" lastname="Mestre" ccid="97307"/>
+    <reviewers>
+      <a href="mailto:Vito.Baggiolini@cern.ch">Vito Baggiolini</a>, 
+      <a href="mailto:Katarina.Sigerud@cern.ch">Katarina Sigerud</a>
+    </reviewers>
+  </head>
+  <section>
+  <anchor>ConceptOfNode</anchor>
+  <title>The concept of node</title>
+  <description>
+  <p>
+  A node is an extension of a domain bean. A domain bean holds methods related to the domain it is used for. A node represents a given domain beans and allows a seamless integration in a standard GUI environment. Nodes are hierachical which means that they can have children nodes which are dependent nodes representing dependent domain beans. Organizing information in a hierarchal way is completely natural. For instance, files are contained in directories which are themselves contained in other directories in a hierarchical way. Equipments in the accelerator can themselves be organized in groups of similar equipments and then grouped together in geographical zones, again making a hierachy of object organizing the information. The fact that organizing the information hierarchically is so convenient is the reason that makes the explorer an almost universal GUI component to display data in a organized way.
+  </p><p>
+  The domain beans is where we start from. Domain beans are dependent of your application and are the entities you want to use to build up the GUI. Nodes will represent your domains beans and will allow you to interact with the platform throught the GP Layer. You need to create one node per domain bean you want to use with the GP Layer.
+  </p>
+  </description>
+  </section>
+    <!--
+    
+        Section Creating Node and Children
+        
+    -->
+    <section>
+      <anchor>CreatingNodes</anchor>
+      <title>Creating Nodes</title>
+      <description>
+        <p>Nodes are created from a domain bean using a factory (<code><a href="/proj-gp/api/cern/gp/nodes/NodeFactory.html">NodeFactory</a></code>). As a node can have children, hildren of the node are controlled using an interface called <code><a href="/proj-gp/api/cern/gp/nodes/children/ChildrenManager.html">ChildrenManager</a></code>. Children are optional. A node without children is a leaf. The idea, when creating a node, is that you give a regular domain bean and a <code>ChildrenManager</code> (that specify the way you handle dependent beans of that bean) to the <code>NodeFactory</code> and get back a node.</p>
+      </description>
+      <section>
+          <anchor>NodeFactory</anchor>
+        <title>NodeFactory</title>
+        <description>
+          <p>          
+          The class <code><a href="/proj-gp/api/cern/gp/nodes/NodeFactory.html">cern.gp.nodes.NodeFactory</a></code> allows you to create nodes from a given JavaBean. Three methods are available. The first one takes a JavaBean and a <code><a href="/proj-gp/api/cern/gp/nodes/children/ChildrenManager.html">ChildrenManager</a></code> for creating a node with children. The two other ones take only a JavaBean or an array of JavaBeans for creating nodes without children.
+          </p>
+        </description>
+        <codeDescription>
+          <title>Example of creating a node with children</title>
+          <comment>
+          In this example, <code>equipmentGroup</code> represents a domain bean and the given manager is described in an example below.
+          </comment>
+          <code>GPNode node = NodeFactory.createNode(equipmentGroup, 
+    new EquipmentChildrenListManager(equipmentGroup));</code>
+        </codeDescription>
+        <codeDescription>
+          <title>Example of creating a node without children</title>
+          <code>GPNode leaf = NodeFactory.createNode(myDomainBean);</code>
+        </codeDescription>
+      </section>
+      <section>
+          <anchor>ChildrenManager</anchor>
+        <title>ChildrenManager</title>
+        <description>
+          <p>
+          When creating a node with children, you have to pass as a second argument to the method <code>createNode</code> of the class <code>NodeFactory</code> an object of type <code>ChildrenManager</code>. The role of <code>ChildrenManager</code> is to control and create the children of the node. As such, a domain bean cannot specify its children, but the data model behind your application knows the dependant entities of that domain bean. The manager you provide for the domain bean will create the children of the node representing that domain bean.
+</p>
+<p>
+Note that children <b>are always lazily created</b>. It is only when the children are needed to be displayed in the GUI that the code creating them will actually be invoked. That allows you to have virtual hierarchy of objects that would never fit fully in memory but that can be explored using a regular explorer. Only the visible part in the explorer would ever be loaded in memory.
+</p>
+<p>Let know see how, for instance, you would create a <i>ChildrenManager</i> if you have a domain bean representing a group of equipments that contains a collection of those equipments. The node representing that group of equipment should have children that represent each individual equipement of the group. Therefore, you would create a <code>ChildrenListManager</code> that creates one node per equipment found in the collection as shown in the example below.</p>
+        </description>
+        <codeDescription>
+          <title>Example of a static ChildrenListManager</title>
+          <comment>
+          This example shows a children manager, that does not sort the children and that is static meaning that children do not change once displayed. <code>EquipmentGroup</code> and <code>Equipment</code> are classes from the domain and could be replaced by anything else.
+          </comment>
+          <code>
+  import cern.gp.nodes.children.ChildrenListManager;
+  import cern.gp.nodes.children.NodeList;
+  import cern.gp.nodes.NodeFactory;
+            
+  public class EquipmentChildrenListManager implements ChildrenListManager {    
+    private EquipmentGroup equipmentGroup;    
+    public SequenceNodeManager(EquipmentGroup equipmentGroup) {
+      this.equipmentGroup = equipmentGroup;
+    }
+    public Comparator getComparator() {
+      return null; // no sorting
+    }
+    public void initChildrenList(NodeList nodeList) {
+      Equipment[] equipments = equipmentGroup.getEquipments();
+      for (int i=0; i &lt; equipments.length; i++) {
+        try {
+          nodeList.addNode(NodeFactory.createNode(equipments[i]);
+        } catch (IntrospectionException e) {
+          // do some logging
+        }
+      }
+    }
+  }</code>
+        </codeDescription>
+        <description>
+          <p>There are two types of <code>ChildrenManager</code> that define the type of children the node will have either based on a list (<code><a href="/proj-gp/api/cern/gp/nodes/children/ChildrenListManager.html">ChildrenListManager</a></code>) or on a map (<code><a href="/proj-gp/api/cern/gp/nodes/children/ChildrenMapManager.html">ChildrenMapManager</a></code>). You have to implement the two methods defined by one of the two interfaces <code>ChildrenListManager</code> (resp. <code>ChildrenMapManager</code>). One method returns a <code>Comparator</code> able to sort the children on a given criteria. The other method receives a <code>NodeList</code> (resp. a <code>NodeMap</code>) that is the view on the children of the node. That view lets you add or remove nodes.
+          </p>
+        </description>
+        <codeDescription>
+          <title>Example of a dynamic ChildrenMapManager</title>
+          <comment>
+          This example shows a children manager that is dynamic, children being added or removed based on some events. <code>AlarmEventProducer</code>, <code>AlarmListener</code> and <code>AlarmEvent</code> are classes from the domain and could be replaced by anything else. This example also shows how to sort the children based on a <code>Comparator</code>.
+          </comment>
+          <code>
+import cern.gp.nodes.NodeFactory;
+import cern.gp.nodes.children.BeanComparatorAdapter;
+import cern.gp.nodes.children.ChildrenMapManager;
+import cern.gp.nodes.children.NodeMap;
+
+public class AlarmManager implements ChildrenMapManager, AlarmListener {
+
+  private NodeMap nodeMap;
+  private AlarmProducer alarmProducer;
+
+  public AlarmManager(AlarmProducer alarmProducer) {
+    this.alarmProducer = alarmProducer;
+  }
+
+  // -- implements ChildrenMapManager ----------------------------------------------
+
+  public java.util.Comparator getComparator() {
+    return new BeanComparatorAdapter(new AlarmComparator());
+  }
+
+  public void initChildrenMap(NodeMap nodeMap) {
+    this.nodeMap = nodeMap;
+    alarmProducer.addAlarmListener(this);
+  }
+
+  // -- implements AlarmListener ----------------------------------------------
+
+  public void alarmAdded(Alarm alarm) {
+    try {
+      nodeMap.addNode(alarm.getIdentifier(), NodeFactory.createNode(alarm));
+    } catch (java.beans.IntrospectionException e) {
+      //@PENDING log the error
+      System.out.println(getClass().getName()+".alarmAdded() : " + e);
+    }
+  }
+
+  public void alarmRemoved(String identifier) {
+    nodeMap.removeNode(identifier);
+  }
+
+  /**
+   * Example of a Comparator that compares two alarms on several criteria,
+   * first the priority, then the date they occured and last their identifier
+   */
+  public class AlarmComparator implements java.util.Comparator {
+      
+    public int compare(Object obj1, Object obj2) {
+      Alarm alarm1 = (Alarm) obj1;
+      Alarm alarm2 = (Alarm) obj2;
+      if (alarm1.getPriority() > alarm2.getPriority()) return 1;
+      if (alarm1.getPriority() &lt; alarm2.getPriority()) return -1;
+      // the two priority are equals, now sort on date
+      if (alarm1.getDate() > alarm2.getDate()) return 1;
+      if (alarm1.getDate() &lt; alarm2.getDate()) return -1;
+      // date and priority are equals sort on id
+      return alarm1.getIdentifier().compareTo(alarm2.getIdentifier());
+    }
+  }
+}</code>
+        </codeDescription>
+      </section>
+      <section>
+      <title>Sorting the children</title>
+      <anchor>SortingChildren</anchor>
+      <description>
+      <p>
+      The <code>ChildrenManager</code> has the possibility to sort the children it controls by returning a <code>Comparator</code> with the method <code>getComparator()</code> that is invoked the first time the <code>ChildrenManager</code> get used. As the comparator is associated to the children of the node, it has to sort nodes (the children). Most of the time, sorting nodes is not exactly what the developer wants to do. Instead he or she wants to sort the beans that are represented by these nodes. We make that possible by providing an adapter (<code><a href="/proj-gp/api/cern/gp/nodes/children/BeanComparatorAdapter.html">BeanComparatorAdapter</a></code>) that can sort nodes based on a comparator that sorts beans.
+      </p>
+      <p>
+      Therefore you just have to write your own comparator able to sort beans represented by the children managed by your <code>ChildrenManager</code> in order to sort the children. See the code of the <code>AlarmManager</code>above for an example.
+      </p>
+      </description>
+      </section>
+    </section> 
+
+</document>
+

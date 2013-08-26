@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<!-- This XML file provides the partial implementation -->
+<!-- of the TEST_RPS_1 component.                      -->
+<!--                                                   -->
+<!-- Because of this XML's location within the ACS CDB -->
+<!-- (i.e., $ACS_CDB/CDB/alma/simulated/.),            -->
+<!-- this simulated behavior description is            -->
+<!-- tied into the TEST_RPS_1 component and in no way  -->
+<!-- affects the behavior of other simulated           -->
+<!-- components implementing the                       -->
+<!-- IDL:alma/RampedPS/RampedPowerSupply:1.0 interface -->
+<!--                                                   -->
+<!-- There are several things to take note of here:    -->
+<!--   1. Everything defined within XML elements       -->
+<!--      consists of Python code. You must obey the   -->
+<!--      whitespace rules of Python within these.      -->
+<!--   2. Not all methods and BACI properties defined  -->
+<!--      in IDL for this component are defined here.  -->
+<!--      This is unnecessary as the simulator         -->
+<!--      framework will dynamically generate methods  -->
+<!--      and properties that have not been defined by -->
+<!--      some means available to the end-user.        -->
+<!--   3. Implementations of inherited methods defined -->
+<!--      in other parts of the CDB will be used where -->
+<!--      applicable. In this specific case, see       -->
+<!--      $ACS_CDB/CDB/alma/simulated/interfaces/alma/ -->
+<!--      PS/PowerSupply/1.0 and also $ACS_CDB/CDB/    -->
+<!--      alma/simulated/interfaces/alma/RampedPS/     -->
+<!--      RampedPowerSupply/1.0                        -->
+<!--   4. With respect to 3., one should also note that-->
+<!--      it's perfectly acceptable to override methods-->
+<!--      defined within $ACS_CDB/CDB/alma/simulated/  -->
+<!--      alma/*                                       -->
+
+<!-- All simulated components should be derived from   -->
+<!-- the SimulatedComponent XML element.               -->
+<!-- Pay close attention to the fact we set the        -->
+<!-- AllowInheritance attribute to true. This means    -->
+<!-- we want the simulator to search through other     -->
+<!-- sections of the $ACS_CDB for (inclusive) supers   -->
+<!-- of the RampedPowerSupply IDL interface which also -->
+<!-- specify simulated behavior.                       -->
+<SimulatedComponent xmlns="urn:schemas-cosylab-com:SimulatedComponent:1.0" 
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    AllowInheritance="true">
+
+<!-- Section where normal Python imports are performed.-->
+<!-- By importing modules/packages here, they will be  -->
+<!-- accessible throughout the rest of the XML.        -->
+        <pythonImports>
+import acstime
+        </pythonImports>
+
+<!-- Here we override a lifecycle method. This is being-->
+<!-- done so that we only have to create a Completion  -->
+<!-- and Callback descriptor a single time rather than -->
+<!-- with each invocation of the startRamping method   -->
+<!-- to invoke the "done" method of the Callback param -->        
+		<initialize>
+#the lifecycle and component methods defined within IDL
+#are not actual instance methods of the simulated component.
+#instead, they are actually proxy functions which get indirectly
+#called by the simulated component. because of this, the 
+#simulator framework provides a reference to the raw component
+#as the final param within the parameters list. using this 
+#gives us access to the container services!!!
+logger = parameters[0].getLogger()
+logger.logInfo("logging directly from XML using a nice trick!!!")
+
+#create both of the objects
+compl = ACSErr.Completion(0L, 0L, 0L, ())
+cbdo  = ACS.CBDescOut(0L, 0L)
+
+#now use some special API functions defined within Acssim.Goodies
+#to store these local objects globally
+setGlobalData("compl", compl)
+setGlobalData("cbdo", cbdo)
+
+#get a reference to the power supply component
+ps = parameters[0].getComponent("TEST_PS_1")
+
+#get a reference to the readback property
+readback_prop = ps._get_readback() 
+
+#attach a new member to the simulated component to 
+#provide easy access to the readback property
+parameters[0].readback_prop = readback_prop
+        </initialize>
+
+<!-- Another lifecycle method                          -->
+        <cleanUp>
+#be sure to cleanUp everything!
+parameters[0].releaseComponent("TEST_PS_1")
+        </cleanUp>
+
+
+<!-- A CORBA method is implemented. This particular   -->
+<!-- method, stopRamping, accepts as its first        -->
+<!-- parameter a CallbackVoid object. We in turn play -->
+<!-- around with the callback before returning.       -->
+	<_corbaMethod Name="stopRamping" Timeout="0">
+print "Simulated stopRamping (alma/simulated/TEST_RPS_1 CDB section):"
+print "    messing with another component and invoking the callback's done method."
+print
+
+#get the readback property's value
+readback_prop = parameters[len(parameters)-1].readback_prop
+readback_value = readback_prop.get_sync()[0]
+
+print "Value of TEST_PS_1's readback property is:", readback_value
+parameters[0].done(getGlobalData("compl"), 
+                   getGlobalData("cbdo"))
+print
+return
+        </_corbaMethod>
+
+        <_almaEventResponse IncomingChannel="fridge" 
+                            IncomingID="IDL:alma/FRIDGE/temperatureDataBlockEvent:1.0"
+                            OutgoingChannel="TIME_CHANNEL" 
+                            OutgoingID="IDL:alma/acstime/Duration:1.0"
+                            Delay="0.123"
+                            MissedEventChance="0.43">
+print "Simulated almaEventResponse(temperatureDataBlockEvent):", parameters
+
+#create a duration to be sent as an event. it doesn't matter
+#that this isn't technically an event - all that matters is 
+#that Duration is an IDL struct
+my_event = acstime.Duration(345L)
+return my_event
+		</_almaEventResponse>
+
+</SimulatedComponent>
+

@@ -1,0 +1,212 @@
+<?xml version="1.0"?> 
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping package="alma.TMCDB.maci" auto-import="false"> 
+
+  <class name="LoggingConfig" table="LoggingConfig" dynamic-update="true">
+
+    <id name="LoggingConfigId" access="field"><!--generator class="native"/--></id>
+    <property name="minLogLevel" column="MinLogLevelDefault" />
+    <property name="minLogLevelLocal" column="MinLogLevelLocalDefault" />
+    <property name="centralizedLogger" column="CentralizedLogger" />
+    <property name="dispatchPacketSize" column="DispatchPacketSize" />
+    <property name="immediateDispatchLevel" column="ImmediateDispatchLevel" />
+    <property name="flushPeriodSeconds" column="FlushPeriodSeconds" />
+    <property name="maxLogQueueSize" column="MaxLogQueueSize" />
+    <property name="maxLogsPerSecond" column="MaxLogsPerSecond" />
+
+    <map name="MAP_" access="field" lazy="false">
+      <key column="LoggingConfigId" />
+      <map-key column="Name" type="string" />
+      <one-to-many class="NamedLoggerConfig" />
+    </map>
+    
+  </class>
+
+
+  <class name="NamedLoggerConfig" table="NamedLoggerConfig" dynamic-update="true">
+
+    <id name="NamedLoggerConfigId" access="field"><generator class="native"/></id>
+    
+    <property name="Name" column="Name" />
+    <property name="minLogLevel" column="MinLogLevel" />
+    <property name="minLogLevelLocal" column="MinLogLevelLocal" />
+
+  </class>
+
+  <class name="Manager" table="Manager" dynamic-update="true">
+
+    <id name="ManagerId" access="field"><!--generator class="native"/--></id>
+    <property name="ConfigurationId" access="field" />
+    
+    <property name="Startup" column="Startup" />
+    <property name="ServiceComponents" column="ServiceComponents" />
+    <property name="ServiceDaemons" column="ServiceDaemons" />
+    <property name="Timeout" column="Timeout" />
+    <property name="ClientPingInterval" column="ClientPingInterval" />
+    <property name="AdministratorPingInterval" column="AdministratorPingInterval" />
+    <property name="ContainerPingInterval" column="ContainerPingInterval" />
+    <property name="ServerThreads" column="ServerThreads" />
+ 
+    <many-to-one name="LoggingConfig" column="LoggingConfigId" class="LoggingConfig" lazy="false"/>
+    
+   </class>
+
+  <class name="Container" table="Container" dynamic-update="true">
+
+    <id name="ContainerId" access="field"><generator class="native"/></id>
+    <property name="ConfigurationId" access="field" />
+    <property name="Name" column="ContainerName" access="field" />
+    
+    <property name="ImplLang" column="ImplLang" />
+    <property name="Timeout" column="CallTimeout" />
+    <property name="ManagerRetry" column="ManagerRetry" />
+    <property name="ServerThreads" column="ServerThreads" />
+    <property name="Recovery" column="Recovery" />
+    <property name="Autoload" column="AutoloadSharedLibs" />
+    <property name="PingInterval" column="PingInterval" />
+
+    <many-to-one name="LoggingConfig" column="LoggingConfigId" class="LoggingConfig" lazy="false"/>
+    
+    <component name="DeployInfo" class="DeployInfo"> 
+        <property name="Type" column="ImplLang" insert="false" update="false" />
+        <property name="TypeModifiers" column="TypeModifiers" />
+
+        <many-to-one name="Computer" column="ComputerId" class="Computer" not-found="ignore" access="field" lazy="false"/>
+ 
+        <property name="KeepAliveTime" column="KeepAliveTime" />
+	<property name="StartOnDemand" column="StartOnDemand" />
+
+	    <set name="ContainerStartupOption" access="field" lazy="false">
+	      <key column="ContainerId" />
+	      <one-to-many class="alma.acs.tmcdb.ContainerStartupOption" />
+	    </set>
+
+    </component>
+    
+    <property name="Path" column="Path" access="field" />
+
+	<!-- missing in DB
+        <xs:attribute name="UseIFR" type="xs:boolean" use="optional" default="true">
+        <xs:attribute name="DALtype" type="xs:string" use="optional" default="DAL">
+	-->
+
+  </class>
+
+  <class name="ComponentType" table="ComponentType" dynamic-update="true">
+    <id name="ComponentTypeId" access="field"><generator class="native"/></id>
+    <property name="Type" column="IDL" />
+  </class>
+
+
+  <class name="Component" table="Component" dynamic-update="true">
+
+    <id name="ComponentId" access="field"><generator class="native"/></id>
+    <property name="ConfigurationId" access="field" />
+    <property name="Name" column="ComponentName" />
+    <property name="Code" column="Code" />
+
+    <many-to-one name="ContainerInstance" column="ContainerId" class="Container" not-found="ignore" access="field" lazy="false"/>
+    <many-to-one name="ComponentTypeInstance" column="ComponentTypeId" class="ComponentType" access="field" lazy="false"/>
+
+    <property name="ImplLang" column="ImplLang" />
+
+	<!-- mapping to true/false -->
+    <property name="Default" column="IsDefault" />
+    <property name="Autostart" column="IsAutostart" />
+    <property name="Control" column="IsControl" access="field" />
+
+    <property name="KeepAliveTime" column="KeepAliveTime" />
+
+    <component name="ComponentLogger" class="ComponentLogger"> 
+	    <property name="minLogLevel" column="MinLogLevel" />
+    	<property name="minLogLevelLocal" column="MinLogLevelLocal" />
+    </component>
+
+    <property name="Path" column="Path" access="field" />
+
+    <property name="XMLDoc" column="XMLDoc" access="field" type="alma.hibernate.util.HibernateXmlType"/>
+    <property name="URN" column="URN" access="field" />
+  </class>
+
+  <!-- NetworkDevice table is being actually used... -->
+  <class name="Computer" table="NetworkDevice" dynamic-update="true">
+
+    <id name="ComputerId" column="NetworkDeviceId" access="field"><generator class="native"/></id>
+    <property name="HostName" column="NetworkName" />
+
+	<!-- not fully mapped -->
+  </class>
+  
+  <class name="EventChannel" table="EventChannel" dynamic-update="true">
+
+    <id name="EventChannelId" access="field"><generator class="native"/></id>
+    
+    <property name="ConfigurationId" column="ConfigurationId" access="field" />
+    <property name="Name" column="Name" />
+    <property name="IntegrationLogs" column="IntegrationLogs" />
+    <property name="MaxQueueLength" column="MaxQueueLength" />
+    <property name="MaxConsumers" column="MaxConsumers" />
+    <property name="MaxSuppliers" column="MaxSuppliers" />
+    <property name="RejectNewEvents" column="RejectNewEvents" />
+    <property name="DiscardPolicy" column="DiscardPolicy" />
+    <property name="EventReliability" column="EventReliability" />
+    <property name="ConnectionReliability" column="ConnectionReliability" />
+    <property name="Priority" column="Priority" />
+    <property name="Timeout" column="Timeout" />
+    <property name="OrderPolicy" column="OrderPolicy" />
+    <property name="StartTimeSupported" column="StartTimeSupported" />
+    <property name="StopTimeSupported" column="StopTimeSupported" />
+    <property name="MaxEventsPerConsumer" column="MaxEventsPerConsumer" />
+
+    <property name="Path" column="Path" access="field" />
+
+    <map name="Events" access="field" lazy="false">
+      <key column="EventChannelId" />
+      <map-key column="Name" type="string" />
+      <one-to-many class="Event" />
+    </map>
+
+  </class>
+  
+  <class name="Event" table="Event" dynamic-update="true">
+    <id name="EventId" access="field"><generator class="native"/></id>
+    <property name="Name" column="Name" />
+    <property name="MaxProcessTime" column="MaxProcessTime" />
+  </class>
+  
+  <class name="NotificationServiceMapping" table="NotificationServiceMapping" dynamic-update="true">
+    <id name="NotificationServiceMappingId" access="field"><generator class="native"/></id>
+    <property name="ConfigurationId" column="ConfigurationId" access="field" />
+    <property name="DefaultNotificationService" column="DefaultNotificationService" />
+
+    <map name="Domains" access="field" lazy="false">
+      <key column="NotificationServiceMappingId" />
+      <map-key column="Name" type="string" />
+      <one-to-many class="DomainsMapping" />
+    </map>
+    
+    <map name="Channels_" access="field" lazy="false">
+      <key column="NotificationServiceMappingId" />
+      <map-key column="Name" type="string" />
+      <one-to-many class="ChannelMapping" />
+    </map>
+
+  </class>
+
+  <class name="DomainsMapping" table="DomainsMapping" dynamic-update="true">
+    <id name="DomainsMappingId" access="field"><generator class="native"/></id>
+    <property name="Name" column="Name" />
+    <property name="NotificationService" column="NotificationService" />
+  </class>
+
+  <class name="ChannelMapping" table="ChannelMapping" dynamic-update="true">
+    <id name="ChannelMappingId" access="field"><generator class="native"/></id>
+    <property name="Name" column="Name" />
+    <property name="NotificationService" column="NotificationService" />
+  </class>
+
+</hibernate-mapping> 

@@ -1,0 +1,87 @@
+<?xml	version="1.0" encoding="ISO-8859-1"?>
+<xsd:schema	version="4.1"
+ targetNamespace="Alma/Acs/AcsCommandCenterProject"
+ xmlns:accprj="Alma/Acs/AcsCommandCenterProject"
+ xmlns:ent="Alma/CommonEntity"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+
+ <xsd:element name="AcsCommandCenterProject">
+  <xsd:complexType>
+	<xsd:sequence>
+
+	<xsd:element name="mode">																		<!-- new in Acs4.1 -->
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="local"/>
+			<xsd:enumeration value="remote"/>  <!--  means "remote via built-in shh" -->
+			<xsd:enumeration value="remote_daemon"/>
+			<xsd:enumeration value="remote_native"/>
+			<xsd:enumeration value="java"/>
+			</xsd:restriction>
+		</xsd:simpleType>	 
+	 </xsd:element>       
+	
+	 <xsd:element name="servicesLocalJavaPort"				type="xsd:string"/>
+	 <xsd:element name="servicesLocalJavaRoot"				type="xsd:string"/>
+	
+	 <xsd:element name="managerLocalJavaPort"					type="xsd:string"/>
+	 <xsd:element name="managerLocalJavaAgainstCDBHost"	type="xsd:string"/>
+	 <xsd:element name="managerLocalJavaAgainstCDBPort"	type="xsd:string"/>
+	
+	 <xsd:element name="scriptBase"								type="xsd:string"/>
+	 <xsd:element name="remoteHost"								type="xsd:string"/>
+	 <xsd:element name="remoteAccount"							type="xsd:string"/>
+	 <xsd:element name="remotePassword"							type="xsd:string"/>
+
+	 <xsd:element name="toolRunAgainstDedicatedSettings"	type="xsd:boolean"/>       <!-- new in Acs4.1 -->
+	 <xsd:element name="toolAgainstManagerHost"				type="xsd:string"/>
+	 <xsd:element name="toolAgainstManagerPort"				type="xsd:string"/>
+	 <xsd:element name="toolAgainstInterfaceRepository"	type="xsd:string"/>
+	 <xsd:element name="toolAgainstNameService"				type="xsd:string"/>
+
+	 <xsd:element name="containers"								type="accprj:ContainersT"/>
+	</xsd:sequence>
+
+    <xsd:attribute name="creator" type="xsd:string"/>
+	
+  </xsd:complexType>
+ </xsd:element>
+
+
+
+ <xsd:complexType	name="ContainersT">
+  <xsd:sequence>
+	<xsd:element name="select"								type="xsd:integer"/>
+
+	<xsd:element name="runAgainstDedicatedSettings"	type="xsd:boolean"/>       <!-- new in Acs4.1 -->
+	<xsd:element name="againstManagerHost"				type="xsd:string"/>
+	<xsd:element name="againstManagerPort"				type="xsd:string"/>
+	<xsd:element name="againstCDB"						type="xsd:string"/>
+	<xsd:element name="againstInterfaceRepository"	type="xsd:string"/>
+
+	<xsd:element name="container"							type="accprj:ContainerT" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
+
+
+
+
+ <xsd:complexType	name="ContainerT">
+  <xsd:sequence>
+	<xsd:element name="name"								type="xsd:string"/>
+	<xsd:element name="type"								type="xsd:string"/>
+	<xsd:element name="typeModifier"						type="xsd:string"  minOccurs="0" maxOccurs="unbounded"/>  <!-- new in Acs7.1 -->  
+	<xsd:element name="heapSizeMB"						type="xsd:string"  minOccurs="0" maxOccurs="1"/>  <!-- new in Acs8.1 -->  
+
+	<xsd:element name="useDedicatedSettings"			type="xsd:boolean"/>
+	<xsd:element name="scriptBase"						type="xsd:string"/>
+	<xsd:element name="remoteHost"						type="xsd:string"/>
+	<xsd:element name="remoteAccount"					type="xsd:string"/>
+	<xsd:element name="remotePassword"					type="xsd:string"/>
+  </xsd:sequence>
+ </xsd:complexType>
+
+ 
+</xsd:schema>

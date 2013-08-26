@@ -1,0 +1,102 @@
+1 - ----------T--:--:----- INFO [acsStartJava] Using endorsed jar files
+1 - 
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap' and updated logger names
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] -------------------------------
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] POA activated
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] Manager login done ...
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] Alarm system type: ACS
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - testClearMap
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] [alarm_timer] task finished within the specified 1 seconds
+1 - testClearMap done
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] about to log out from manager
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] logged out from manager
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testClearMap] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval' and updated logger names
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] -------------------------------
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] POA activated
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] Manager login done ...
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] Alarm system type: ACS
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - testAutoRemoval
+1 - testAutoRemoval done
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] about to log out from manager
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] logged out from manager
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testAutoRemoval] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise' and updated logger names
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] -------------------------------
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] POA activated
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] Manager login done ...
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] Alarm system type: ACS
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] [alarm_timer] task finished within the specified 1 seconds
+1 - testRaise
+1 - testRaise done
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] about to log out from manager
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] logged out from manager
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testRaise] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmsMapTest#testClear' and updated logger names
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] -------------------------------
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmsMapTest#testClear created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] POA activated
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] Manager login done ...
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] Alarm system type: ACS
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] [alarm_timer] task finished within the specified 1 seconds
+1 - testClear
+1 - testClear done
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] about to log out from manager
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] logged out from manager
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testClear] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate' and updated logger names
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] -------------------------------
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] POA activated
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] Manager login done ...
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] Alarm system type: ACS
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - testAlarmUpdate
+1 - testAlarmUpdate done
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] about to log out from manager
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] logged out from manager
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmUpdate] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement' and updated logger names
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] -------------------------------
+1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] POA activated
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] Manager login done ...
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] Alarm system type: ACS
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] [alarm_timer] task finished within the specified 1 seconds
+1 - testAlarmReplacement
+1 - testAlarmReplacement done
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] about to log out from manager
+1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] logged out from manager
+1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmsMapTest#testAlarmReplacement] AlarmSourceFactory closed
+1 - 
+1 - 
+1 - OK (6 tests)
+1 - 

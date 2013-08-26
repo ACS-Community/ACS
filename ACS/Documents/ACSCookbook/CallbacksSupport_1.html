@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>ACS Cookbook - CallbacksSupport</title>
+
+</head>
+<!--============================================================================-->
+
+
+<h3>I. The client requesting the server to call it back later</h3>
+
+<p>
+<span style="font-style: italic;">Class DemoRequester wants to invoke
+Responder.revertString(), which demands a String, a CBstring, and a DescIn
+as its arguments. The latter two can/should be created using the
+RequesterUtil class. For CBstring to be created, a ResponseReceiver is
+necessary. A simple but in many cases sufficient example of a
+ResponseReceiver is shown below. When the Responder implementation
+calls the client back, the specified ResponseReceiver will be executed.</span>
+</p>
+
+
+<pre class="codeblock">
+
+import alma.acs.callbacks.RequesterUtil;
+import alma.acs.callbacks.ResponseReceiver;
+import alma.acs.commandcenter.meta.Firestarter;
+import alma.acs.container.ContainerServices;
+
+import alma.mysubsystem.Responder;
+
+
+public class DemoRequester {
+
+    void go () throws Exception {
+
+        // --- connect to component
+
+        Firestarter.configure(null, "te1.hq.eso.org", "3500");
+        Firestarter.prepare();
+        ContainerServices cs = Firestarter.giveContainerServices();
+
+        Responder responder = ResponderHelper.narrow(cs.getComponent("RESPONDER"));
+
+
+        // --- activate callback object
+        <span style="color: rgb(204, 102, 0);">
+        ResponseReceiver <span style="font-weight: bold;">rere </span> =  <span style="font-weight: bold;">new ResponseReceiver()</span> {
+        
+              public void <span style="font-weight: bold;">incomingResponse</span>(Object x) {
+                 System.out.println("Incoming Response: "+x);
+              }
+              public void <span style="font-weight: bold;">incomingException</span>(Exception x) {
+                 System.out.println("Responding failed: "+x);}
+         
+        };</span>
+        
+        responder.<span style="font-weight: bold; color: rgb(51, 102, 255);">revertString</span>(  "Hallo",
+                                 <span style="font-weight: bold;">RequesterUtil.giveCBString(cs, </span><span style="font-weight: bold; color: rgb(204, 102, 0);">rere</span><span style="font-weight: bold;">)</span>, 
+                                 <span style="font-weight: bold;">RequesterUtil.giveDescIn()</span>  );
+
+
+        // --- do something else until response comes in
+        
+        System.out.println("--&gt; press exit to enter &lt;--");
+        while (System.in.read() != 13)
+            ;
+
+        
+        // --- clean up and quit
+        
+        Firestarter.godown();
+
+    }
+}
+</pre>
+
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+import uml;
+import ecore;
+  
+stateMachineName( StateMachine this ): name;
+
+// List of Actions in the StateMachine: Creates a collection of Entry, Exit, and Do of all states.
+// TODO: Add the actions in transitions
+List[Action] listActions( StateMachine this ): 
+	listStates().entry.union( listStates().exit ).union( listStates().doActivity ).select(e|e != null);
+
+State getTopState( StateMachine this ):
+	this.region.state.get(0);
+
+// Get the State that contains this state. In case of the topmost, returns null
+State parentState( State this ): 
+	if( this.container != null) then
+		this.container.state
+	else
+		null;
+State parentState( Pseudostate this ): 
+	if( this.container != null) then
+		this.container.state
+	else
+		null;
+			
+// Return true if it has a parent state. False in other cases
+boolean hasParentState( State this ):
+	if( this.container != null )
+		then true
+	else
+		false;
+
+// Lists States, including final
+List[State] listStates( State this ): 
+	allOwnedElements().typeSelect(State).select(e|!(e.name == "Unavailable"));
+List[State] listStates( StateMachine this ): 
+	allOwnedElements().typeSelect(State).select(e|!(e.name == "Unavailable"));
+	
+// Lists Initial States, recursively
+List[Pseudostate] listInitialStates( State this ):
+	allOwnedElements().typeSelect(Pseudostate).select(e|e.kind.toString() == "initial");
+List[Pseudostate] listInitialStates( StateMachine this ): 
+	allOwnedElements().typeSelect(Pseudostate).select(e|e.kind.toString() == "initial");
+	
+// Get the first Initial state, that is inside this state.
+boolean hasInitialState( State this ): 
+	if( !isComposite() ) 
+		then false 
+	else 
+		if( ownedElement.typeSelect(Pseudostate).select(e|e.kind.toString() == "initial").get(0) == null ) 
+			then false 
+		else true;
+Pseudostate getInitialState( State this ): 
+	if( !isComposite() ) 
+		then null 
+	else 
+		if( allOwnedElements().typeSelect(Pseudostate).select(e|e.kind.toString() == "initial").isEmpty ) 
+			then null 
+		else allOwnedElements().typeSelect(Pseudostate).select(e|e.kind.toString() == "initial").get(0).outgoing.target.get(0);
+Pseudostate getInitialState( StateMachine this ): 
+	if( allOwnedElements().typeSelect(Pseudostate).select(e|e.kind.toString() == "initial").isEmpty ) 
+		then null 
+	else allOwnedElements().typeSelect(Pseudostate).select(e|e.kind.toString() == "initial").get(0).outgoing.target.get(0);
+
+// Lists composite states from the "this" point, no including the TopMost.
+List[State] listMiddleStates( StateMachine this): 
+	allOwnedElements().typeSelect(State).select(e| e.isComposite && !e.isTopState() );
+List[State] listMiddleStates( State this): 
+	allOwnedElements().typeSelect(State).select(e| e.isComposite && !e.isTopState() );
+
+// Lists leaf states from the "this" point.
+List[State] listLeafStates( StateMachine this): 
+	allOwnedElements().typeSelect(State).select(e|!e.isComposite);
+List[State] listLeafStates( State this): 
+	allOwnedElements().typeSelect(State).select(e|!e.isComposite);
+
+// Lists all State, including initial (pseudostates)
+List[State] listAllStates( State this): 
+	allOwnedElements().typeSelect(State).union(allOwnedElements().typeSelect(Pseudostate));
+List[State] listAllStates( StateMachine this): 
+	allOwnedElements().typeSelect(State).union(allOwnedElements().typeSelect(Pseudostate));
+
+// Get all Transition owned by this State
+List[Transition] getTransitions( State this ): 
+	allOwnedElements().typeSelect(Transition);
+
+// Get all Transition owned by this State
+List[Action] listActions( State this ): 
+	allOwnedElements().typeSelect(Action);
+
+// If this State is the topmost, returns true.
+boolean isTopState( State this ): 
+	if( ((Region)this.container).owner == containingStateMachine() ) 
+		then true 
+	else false;
+//boolean isTopState( Pseudostate this ): 
+//	if( ((Region)this.container).owner == containingStateMachine() ) 
+//		then true 
+//	else false;
+
+// If this is a Composiite States, and is not the topmost state (Is a Compositie Substate), return true.
+boolean isCompositeSubState( State this ): 
+	if (!isTopState() && this.isComposite() ) 
+		then true 
+	else false;
+
+// Get the name for the superContext class
+string getContextName( State this ): parentState().name;
+string getContextName( Pseudostate this ): parentState().name;
+
+// Get the hiercharchy string for constructor of the states
+string getHierarcharchyString( State this ) : 
+	if isTopState() then
+		"this"
+	else 
+		if isComposite() || parentState().isTopState() then
+		"this, m_state" + this.getContextName()
+		else
+			"this, m_state" + this.getContextName() + ", m_logger";
+string getHierarcharchyString( Pseudostate this ) : 
+	if state.isTopState() then
+		"this"
+	else 
+		"this, m_state" + this.getContextName() + ", m_logger";
+		
+string getSignalName( Transition this ):
+	((SignalEvent)this.trigger.event.get(0)).signal.name;
+	
+List[string] getSignalsNames( State this ):
+	((List[SignalEvent])containingStateMachine().allOwnedElements().typeSelect(Transition).trigger.event).signal.name.select(e|e != "Unavailable" );
+List[string] getSignalsNames( StateMachine this ):
+	((List[SignalEvent])allOwnedElements().typeSelect(Transition).trigger.event).signal.name.select(e|e != "disaster" );
+
+List[SignalEvent] getSignals( State this ):
+	((List[SignalEvent])containingStateMachine().allOwnedElements().typeSelect(Transition).trigger.event).signal;
+
+List[Transition] getTransitions( StateMachine this ):
+	this.allOwnedElements().typeSelect(Transition);
+	
+boolean hasTrigger( Transition this ):
+	!this.trigger.isEmpty;
+
+List[string] getUniqueSignalsNames( State this ):
+	let l = (List[string]){} :
+		getSignalsNames().collect(e|if !l.contains(e) then l.add(e)) ->
+		l;
+List[string] getUniqueSignalsNames( StateMachine this ):
+	let l = (List[string]){} :
+		getSignalsNames().collect(e|if !l.contains(e) then l.add(e)) ->
+		l;
+		
+List[SignalEvent] getUniqueSignals( State this ):
+	let l = (List[SignalEvent]){} : let n = (List[string]){} :
+			getSignals().collect(e|if !n.contains(e.name) then (n.add(e.name) -> l.add(e)) ) ->
+			l;
+		
+List[Transition] getUniqueTransitions( State this ):
+	let l = (List[Transition]){} : let n = (List[string]){} :
+			getTransitions().collect(e|if ( e.hasTrigger()  ) then ( n.add(getSignalName(e)) -> l.add(e)) ) ->
+			l;
+
+List[string] getMySignalsNames( State this ):
+	((List[SignalEvent])this.allOwnedElements().typeSelect(Transition).trigger.event).signal.name;
+	
+List[SignalEvent] getMySignals( State this ):
+	((List[SignalEvent])this.allOwnedElements().typeSelect(Transition).trigger.event).signal;
+	
+List[Transition] getMyTransitions( State this ):
+	this.allOwnedElements().typeSelect(Transition);
+
+List[string] getOthersSignalsNames( State this ):
+	getUniqueSignalsNames().removeAll( getMySignalsNames() ).select(e|e != "disaster");
+	
+List[SignalEvent] getOthersSignals( State this ):
+	getUniqueSignals().removeAll( getMySignals() );
+	
+List[Transition] getOthersTransitions( State this ):
+	getUniqueTransitions().removeAll( getMyTransitions() );
+		
+		
+//List[Transition] getUniqueOthersTransitions( State this ):
+//	let l = (List[Transition])( containingStateMachine().allOwnedElements().typeSelect(Transition) ) :
+//			l.;
+//		l;	

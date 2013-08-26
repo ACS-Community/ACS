@@ -1,0 +1,527 @@
+#ifndef _ARCHIVE_XMLSTORE_IF_IDL_
+#define _ARCHIVE_XMLSTORE_IF_IDL_
+
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+
+#include <xmlentity.idl> 
+#include <acscommon.idl>
+#include <acscomponent.idl>
+
+// HSO 2006-09-15: it seems that after a year of freedom from this bug, 
+// we must again put the pragma after the includes. Otherwise a unit test in ARCHIVE/Archive failed,
+// in which a C++ client accesses a Java component.
+#pragma prefix "alma"
+
+
+module xmlstore
+{
+    /** 
+     * Used for identifying entities. 
+     * A URI is of the form "uid://X0123456789abcdef/X01234567"
+     */
+	typedef string URI;
+	/** 
+	 * A sequence of URIs.
+	 */
+	typedef sequence <URI> URISeq;
+	/**
+	 * Used for identifying entities. 
+     * A UniqueIdentifier is of the form "uid://X0123456789abcdef/X01234567"
+	 */	
+	typedef string UniqueIdentifier;
+		
+	/** 
+	 * A sequence of UniqueIdentifiers. 
+	 */		
+	typedef sequence <UniqueIdentifier> UniqueIdentifierSeq;
+	
+	/** 
+	 * A Range xml entity
+	 */
+	 typedef xmlentity::XmlEntityStruct IdentifierRange;
+	 
+	/** 
+	 * A sequence of strings.
+	 * Used for returning sequences of XML (fragments).
+	 */
+	typedef sequence <string> StringSeq;
+	
+	/**
+	 * Thrown if some internal problem occurs.
+	 */
+	exception ArchiveInternalError{};
+
+	/**
+	 * Type used in events published by xmlstore describing success of data storage.
+	 * 
+	 */
+	enum operationType {STORED_XML, UPDATED_XML, DELETED_XML}; // TODO add schema operations 
+
+	/** 
+	 * Event published by xmlstore. This event is published when a stream is received and describes success of storage or deletion.
+	 */
+	struct XmlStoreNotificationEvent {
+/**	   the UID of the data  */
+	   string uid;       
+	   /** performed operation */
+	   operationType operation;
+	};
+	
+	/** Channel where xmlstore events are published.  */
+	const string CHANNELNAME = "xmlstore";
+	/**
+ 	* The interface that returns UniqueIdentifiers. 
+ 	* Shall only be used by the Container, other subsystems should use the 
+ 	* method provided by the ContainerServices. 
+ 	*/
+	interface Identifier : ACS::ACSComponent
+	{
+		/** 
+		 * Thrown if something is wrong in the Archive.
+		 */
+		exception NotAvailable{};
+
+		/**
+		 * Thrown if the range in question can't be found
+		 */
+		exception NotFound{};
+
+		/**
+		 * 
+		 * Returns an array of new UniqueIdentifiers. The number of UniqueIdentifiers is
+		 * specified by the input parameter number
+		 */
+		UniqueIdentifierSeq getUIDs(in short number) 
+			raises (NotAvailable);
+			
+		/**
+		 * 
+		 * RESTRICTED USE: Only the Container may call this, other subsystems use
+		 * the method getUIDs().
+		 * 
+		 * Returns a new UniqueIdentifier. Its local part (the hex number following
+		 * the second X) will always be "00000000". Should only be used by the 
+		 * Container.  
+		 */
+		UniqueIdentifier getIdNamespace() 
+			raises (NotAvailable);
+			
+		IdentifierRange getNewRange()
+			raises (NotAvailable);
+			
+		IdentifierRange getNewRestrictedRange(in long number, in string user)
+			raises (NotAvailable);
+			
+		IdentifierRange getExistingRange(in URI identifier, in string user)
+			raises (NotFound);
+
+		/**
+		 * returns true if identifier is a syntactically correct UID, else false.
+		 */
+		boolean checkUIDsyntax(in URI identifier);
+	};
+	
+	/** 
+	 * This interface provides a cursor functionality for query results. A Cursor 
+	 * holds all query results that can be retrieved from the cursor one by one
+	 * or in blocks.
+	 * A cursor lives in the database and must be closed when it is no longer used. 
+	 */	
+	interface Cursor : ACS::OffShoot
+	{
+		/** 
+		 * A query result is one document matching a query together with its 
+		 * UniqueIdentifier
+		 */
+		struct QueryResult 
+		{
+			URI identifier;
+			string xml;
+		};
+		
+		/** 
+		 * A sequence of QueryResults. 
+		 */		
+		typedef sequence <QueryResult> QueryResultSeq;
+		
+		// might need to add some exceptions
+
+		/** 
+		 * Returns true if there are more results in the cursor.
+		 */
+		boolean hasNext()
+			raises (ArchiveInternalError);
+			
+		/** 
+		 * Fetches the next result from the cursor.
+		 */
+		QueryResult next()
+			raises (ArchiveInternalError);
+			
+		/**
+		 * Fetches the next block of query results from the cursor. 
+		 */
+		QueryResultSeq nextBlock(in short size)
+			raises (ArchiveInternalError);
+		
+		/**
+		 * Closes the cursor to free resources. It is obligatory to call this method 
+		 * when the cursor object is no longer needed.
+		 */
+		oneway void close(); 
+	};
+
+	/**
+	 * This interface contains the core functionality of the XMLstore: store, 
+	 * query and retrieve XML documents (entities). 
+	 * An entity is a set of XML
+	 * documents: In this way, versioning is implemented. The normal behaviour 
+	 * is that only the latest document is referenced. Some methods also allow 
+	 * access to older versions.
+	 * XML entities are also associated with meta data.      
+	 */ 
+	interface Operational : ACS::OffShoot
+	{	
+		/**
+		 * The meta data associated with an XML entity.
+		 */
+		struct StatusStruct
+		{
+			/** The schema the entity obeys. */
+			URI schema;
+			/** The owner of the entity. Important for permission handling. */
+			string owner;
+			/** Not used. */
+			string locks;
+			/** Whether an entity is deleted (i.e. invisible for normal users). */
+			boolean deleted;
+			/** When an entity is retrieved with the purpose of updating it, the
+			 * dirty flag is set. After the next update operation, the dirty flag 
+			 * is unset. 
+			 */
+			boolean dirty;
+			/** The document is invisible, similar to deleted. */
+			boolean hidden;
+		};
+		/**
+                * @TODO: need to change this exceptions to ACS exceptions urgently!!!
+                */
+                
+		/** An entity does already exist (eg when trying to store an entity). 
+		 * Not used in the moment...
+		 */
+		exception AlreadyThere{};
+		/** An entity does not yet exist (eg when trying to update an entity). 
+		 * Not used in the moment...
+		 */
+		exception NotYetThere{};
+		/** An entity given to the Archive does not obey the syntactic 
+		 * requirements. */ 
+		exception IllegalEntity{};
+		/** An entity is tried to retrieve, which is flagged as dirty. */
+		exception DirtyEntity{};
+		/** A UniqueIdentifier is handed to the Archive that is not of the form 
+		 * "uid://X0123456789abcdef/X01234567".
+		 */
+		exception MalformedURI{};
+		/** An entity is requested that does not exist in the Archive. */
+		exception NotFound{};
+		
+		/**
+		 * Some methods are only implemented for an Oracle backend, this exception 
+		 * is thrown if a method is not implemented for the used backend.
+		 */
+		exception NotImplemented{};
+
+		/**
+		* An entity is tried to update, but a timestamp mismatch detected
+		**/
+		exception TimestampInconsistency{};
+
+		/** Checks whether an entity with given UID already exists in Archive. 
+		 * Returns true, if this is the case.
+		 */
+		boolean exists(in URI identifier)
+			raises (ArchiveInternalError, NotFound, MalformedURI, DirtyEntity);
+		
+		/** Stores a new entity. */
+		void store(in xmlentity::XmlEntityStruct entity)
+			raises (ArchiveInternalError, IllegalEntity);
+			
+		/** Updates an existing entity. The timestamp that is part of the 
+		 * XmlEntityStruct is compared to the latest timestamp of that entity
+		 * in the Archive. If the timestamps mismatch an exception is thrown.  */
+		void update(in xmlentity::XmlEntityStruct entity)
+			raises (ArchiveInternalError, IllegalEntity, TimestampInconsistency);
+		
+		/** Updates an existing entity. No timestamp consistency check is
+		 * performed. 
+		 */
+		void forceUpdate(in xmlentity::XmlEntityStruct entity)
+			raises (ArchiveInternalError, IllegalEntity, TimestampInconsistency);
+			
+		/**
+		 * Performs an incremental update on the XML document stored under uid belonging to schema schema:
+		 * The XML string newChild as appended as the last child of the root element in the database.
+		 * No history information is maintained in this case for this update operation (as opposed to the normal update). 
+		 */
+		void updateXML(in URI uid, in string schema, in wstring newChild) raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere); 
+		
+		/** Retrieves an entity (latest version) from the Archive. If the entity
+		 * is marked as dirty an exception is thrown. 
+		 */
+		xmlentity::XmlEntityStruct retrieve(in URI identifier)
+			raises (ArchiveInternalError, NotFound, MalformedURI, DirtyEntity);
+				
+		/** Retrieves part of an entity (latest version). The part is specified 
+		 * by the XPath expression handed over in the parameter id.
+		 */
+		StringSeq retrieveFragment(in URI identifier, in string id)
+			raises (ArchiveInternalError, NotFound, MalformedURI, DirtyEntity);
+			
+		/** Retrieves an entity and flags it as dirty for updating it. */
+		xmlentity::XmlEntityStruct updateRetrieve(in URI identifier)
+			raises (ArchiveInternalError, NotFound, MalformedURI, DirtyEntity);
+			
+		/** retrieves an entity even if it flagged as dirty. */
+		xmlentity::XmlEntityStruct retrieveDirty(in URI identifier)
+			raises (ArchiveInternalError, NotFound, MalformedURI);
+			
+		/** Flags an entity as deleted. Deleted entities can not be updated,
+		 * retrieved, or queried. 
+		 */  
+		void delete(in URI identifier)
+			raises (ArchiveInternalError, NotFound, MalformedURI);
+			
+		/** Flags an entity as undeleted */
+		void undelete(in URI identifier)
+			raises (ArchiveInternalError, NotFound, MalformedURI);
+		
+		/** Retrieves meta information about an entity. */
+		StatusStruct status(in URI identifier)
+			raises (ArchiveInternalError, NotFound, MalformedURI);
+		
+		/** Returns a cursor containing all entities (latest version)
+		 * matching the XPath query passed over in the parameter query.
+		 * Only entities associated with the schema name handed over in parameter
+		 * schema are returned.  Entities flagged as dirty are not returned.
+		 * 
+		 * Due to a problem in Oracle XPath handling, this method does not handle
+		 * XPath expressions querying for content (eg. a/attribute::b) as query *result*
+		 * correctly. For these queries you'll have to use the dedicated queryContent method.
+		 */
+		Cursor query( in wstring query, in string schema)
+		raises (ArchiveInternalError);
+/**
+ * Same as query, but is able to handle content queries (eg. a/b/text() ) correctly. 
+ * Do not use this method for non-content queries (eg. a[@b]/c ). 
+ */
+		Cursor queryContent( in wstring query, in string schema)
+			raises (ArchiveInternalError);
+			
+		/** Same as query, but entities flagged as dirty are returned, too. */
+		Cursor queryDirty( in wstring query, in string schema)
+			raises (ArchiveInternalError);
+
+		/** Same as query, but returns a sequence of UniqueIdentifiers for 
+		 * the matching documents instead of a cursor (which contains the 
+		 * documents itself). Entities flagged as dirty are not returned.  
+		 */			
+		URISeq queryUIDs( in wstring query, in string schema)
+			raises (ArchiveInternalError);		
+
+		/** Same as queryUIDs, but entities flagged dirty are returned, too. */
+		URISeq queryUIDsDirty( in wstring query, in string schema)
+			raises (ArchiveInternalError);
+		
+		/** Returns UIDs of all documents belonging to specified schema 
+		 *  which are newer (latest version) then timestamp.
+		 *  Entities flagged as dirty are not returned.  
+		 */			
+		URISeq queryRecent( in string schemaname, in string timestamp)
+			raises (ArchiveInternalError);
+
+
+		/**
+		 * custom method for OT submission queries, accessing relational data.
+		 * Returns key data of projects matching the search string for the specified
+		 * field (fieldID). As fieldId, use one of the following values OTfield_... explained below and 
+		 * defined in (alma.archive.database.interfaces.InternalIF).
+		 * 
+		 * caseSensitive defines whether query should be evaluated in case-sensitive
+		 * mode. If containsQuery is true, every UID containing the searchString
+		 * will be returned, otherwise only exact matches. In addition, if PiCoIfilter 
+	     * is not the empty string, it has to match exactly the userid field.
+		 * 
+		 * 
+         *  Projects where domain_entity_state ="Cancelled" will never be returned.
+         *  
+		 * Each matching data set is one element in the returned Array and
+		 * represented again as an array, whose elements you can access using the values 
+		 * OTout_... explained below and defined in (alma.archive.database.interfaces.InternalIF).
+		 * 
+		 * These constants have to be used for fieldId (OTfield...) and for accessing the returned arrays (OTout...):
+		 * They are defined in the class alma.archive.database.interfaces.InternalIF, so for searching for 
+		 * project name for example, you should use alma.archive.database.interfaces.InternalIF.OTfield_projName
+		 * If you have one element out (of type Array) of the returned array, and want to get the UID, 
+		 * you should use: out[alma.archive.database.interfaces.InternalIF.OTout_archive_uid]
+		 * 
+		 * The class alma.archive.database.interfaces.InternalIF containing these definitions is part of
+		 * the file archive_database.jar and part of the basic ACS/Archive distribution.
+		 * 
+		 * 
+	public static final short OTfield_PI=0;       # PI only
+    public static final short OTfield_CoI_PI=1;   # PI or CoI
+    public static final short OTfield_projName=2;
+    public static final short OTfield_projCode=3;
+	public static final short OTfield_entityState=4;
+
+	public static final short OTout_archive_uid=0;
+	public static final short OTout_title=1;
+	public static final short OTout_prj_code=2;
+	public static final short OTout_pi_userid=3;
+	public static final short OTout_PRJ_TIME_OF_CREATION=4;
+	public static final short OTout_datereceived=5;
+	public static final short OTout_domain_entity_state=6;
+		 * 
+		 */
+		typedef sequence <StringSeq> stringSeqSeq;
+		stringSeqSeq querySubmissions(in short fieldID, in string searchString,
+				in boolean caseSensitive, in boolean containsQuery, in string PiCoIfilter)
+				raises (ArchiveInternalError, NotImplemented);
+			
+		
+		/**
+		 * Adds xmlElement as last child of the (first) element found by xPath in document uid (belonging to schema schema)
+		 */	
+		void addElement(in URI uid, in string schema, in wstring xPath, in wstring xmlElement)
+		    	raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere);
+	
+		/**
+		 * The (first) element pointed at by xPath in document uid (belonging to schema schema) will be replaced by element xmlElement.
+		 */	
+		void updateElement(in URI uid, in string schema, in wstring xPath, in wstring xmlElement)
+		    	raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere);
+
+			
+		/**
+		 * The (first) element pointed at by xPath in document uid (belonging to schema schema) will be deleted.
+		 */	
+		void deleteElement(in URI uid, in string schema, in wstring xPath)
+		    	raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere);
+
+		
+		/**
+		 * Archive usage only. Shuts down Archive subsystem.
+		 * Password must be provided to avoid abuse by other subsystems
+		 */			
+		void close(in string password)
+			raises (ArchiveInternalError);
+			
+	};
+
+	/** 
+	 * This interface contains advanced methods not to be used in normal 
+	 * circumstances.
+	 */
+	interface Administrative : ACS::OffShoot, ACS::PingableResource
+	{
+		/** If an entity does not exist in the Archive. */
+		exception NotFound{};
+		/** If an UniqueIdentifier does not obey the format for UniqueIdentifiers.*/
+		exception MalformedURI{};
+
+		/** tests whether database backend is alive and xmlStore functional. can be called without calling init() before.  
+		 * Commented out because the ping() method now comes from IF ArchivePingableResource
+		 */
+		// boolean ping();
+
+		/** 
+		 * Initialize Archive (XML store). Must be called by Archive master component only!
+		 * Password must be provided to avoid abuse by other subsystems
+		 */		
+		void init(in string password)
+			raises (ArchiveInternalError);
+
+		/** 
+		 * Re-Initialize Archive (XML store). Adapts to changes eg. in config file.
+		 * Not to be used by other subsystems than Archive.
+		 * Password must be provided to avoid abuse by other subsystems
+		 */		
+		void reinit(in string password)
+			raises (ArchiveInternalError);
+
+		/** Physically removes an entity. This operation is irrecoverable, in 
+		 * contrast to delete in the Operational interface.
+		 */		
+		void remove(in URI identifier, in boolean deep)
+			raises (NotFound,MalformedURI,ArchiveInternalError);
+
+		/** 
+		 * Removes all entities whose UniqueIdentifiers belong to the test area.
+		 * The test area is defined in the Archive configuration file and is by 
+		 * default anything between uid://0000000000000000/X00000000 and 
+		 * uid://0000000000000063/Xffffffff. 
+		 */			
+		void cleanTestArea()
+			raises (ArchiveInternalError);
+		
+		/**
+		 * Returns configuration from the archive properties file
+		 */
+		string config(in string name);
+		
+		/** Shuts down the Archive. Internal Archive use only, not for other subsystems!
+		 * Password must be provided to avoid abuse by other subsystems
+		 */
+		void close(in string password)
+			raises (ArchiveInternalError);
+	};
+	
+	/** 
+	 * An ArchiveConnection is the layer where the user identity is stored. 
+	 * Only using ArchiveConnection Operational and Administrative components 
+	 * can be retrieved.
+	 */
+	interface ArchiveConnection : ACS::ACSComponent
+	{
+		/** If a user is not registered. */
+		exception UserDoesNotExistException{};
+		/** If a user has not the permission to get the required component. */
+		exception PermissionException{};
+		/** if an internal error occcurs. */
+		exception ArchiveException{};
+		
+		/** gets the Operational component. */ 
+		Operational getOperational(in string user) 
+			raises (UserDoesNotExistException,ArchiveException,PermissionException);
+
+		/** gets the Administrative component. */
+		Administrative getAdministrative(in string user) 
+			raises (UserDoesNotExistException,ArchiveException,PermissionException);
+	
+	};
+};
+
+
+#endif /* _ARCHIVE_XMLSTORE_IF_IDL_ */

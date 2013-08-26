@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" targetNamespace="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" elementFormDefault="qualified">
+	<xs:element name="fault-family">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="alarm-source" type="xs:string" fixed="ALARM_SYSTEM_SOURCES"/>
+				<xs:element name="help-url" type="xs:anyURI" minOccurs="0"/>
+				<xs:element name="contact" type="contact"/>
+				<xs:element name="fault-code" type="fault-code" maxOccurs="unbounded"/>
+				<xs:element name="fault-member-default" type="fault-member-default" minOccurs="0"/>
+				<xs:element name="fault-member" type="fault-member" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="contact">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="email" type="xs:string" use="optional"/>
+		<xs:attribute name="gsm" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="fault-code">
+		<xs:sequence>
+			<xs:element name="priority">
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="cause" type="xs:string" minOccurs="0"/>
+			<xs:element name="action" type="xs:string" minOccurs="0"/>
+			<xs:element name="consequence" type="xs:string" minOccurs="0"/>
+			<xs:element name="problem-description" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="value" type="xs:integer" use="required"/>
+		<xs:attribute name="instant" type="xs:boolean" fixed="false">
+			<xs:annotation>
+				<xs:documentation>Fixed to false after rewrite of schema. The meaning of this flag should be understood later...</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>					
+	</xs:complexType>
+	<xs:complexType name="fault-member-default">
+		<xs:sequence>
+			<xs:element name="location" type="location" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="fault-member">
+		<xs:complexContent>
+			<xs:extension base="fault-member-default">
+				<xs:attribute name="name" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="location">
+		<xs:sequence>
+			<xs:element name="building" type="xs:string" minOccurs="0"/>
+			<xs:element name="floor" type="xs:string" minOccurs="0"/>
+			<xs:element name="room" type="xs:string" minOccurs="0"/>
+			<xs:element name="mnemonic" type="xs:string" minOccurs="0"/>
+			<xs:element name="position" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

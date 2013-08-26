@@ -1,0 +1,169 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeInstallFiles,v 1.3 2010/07/09 15:15:24 rtobar Exp $" 
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  16/12/95  created
+# gfilippi  21/09/96  target name changed to install_files
+# rschmutz 1999-04-03 if Linux: disable bash builtin command 'echo'.
+
+#************************************************************************
+#   NAME
+#   vltMakeInstallFiles - copy the files into target area.
+# 
+#   SYNOPSIS
+#
+#   vltMakeInstallFiles <fileList> <VLTTOP> <VLTTARGET> <protectionMask>
+#
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to generate the vltMakefile.install section
+#   in charge to copy the files into target area.
+#   For every file in <fileList>:
+#
+#      - get "name" and "dir", i.e.: the filename and the parent directory
+#
+#      - the rule to copy the file into VLTTOP/<dir> or in VLTTARGET/<dir>
+#        is generated. As for any installed file, the rule is executed only if
+#        the file is newer. The protection mask is applied to leave the file 
+#        overwritable by the next installation
+#
+#
+#   It is not intended to be used as a standalone command.
+#
+#   <fileList>        file to be copied
+#   <VLTTOP>          starting point for bin, include, etc (VLT|INT-ROOT[/vw])
+#   <VLTTARGET>       starting point for other directories (VLT|INT-ROOT)
+#   <protectionMask>  how to set the protection of created file
+#
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+
+# if Linux: disable the bash builtin command 'echo'.
+if [ "`uname`" = "Linux" ]
+then
+    enable -n echo
+elif [ "`uname`" = "$CYGWIN_VER" ]
+then
+    alias echo="echo -e"
+fi
+
+if [ $# != 4 ]
+then
+    echo "" >&2
+    echo " ERROR:  vltMakeInstallFiles: $*" >&2
+    echo " Usage:  vltMakeInstallFiles <fileList> <VLTTOP> <VLTTARGET> <protectionMask>" >&2
+    echo "" >&2
+    exit 1
+fi
+
+fileList=${1}
+VLTTOP=$2
+VLTTARGET=$3
+MASK=$4
+
+
+if [ ! -d $VLTTOP ]
+then 
+    echo "" >&2
+    echo " ERROR: vltMakeInstallFiles: " >&2
+    echo "          >>$VLTTOP<< not a valid directory " >&2
+    echo "" >&2
+    exit 1
+fi
+
+if [ ! -d $VLTTARGET ]
+then 
+    echo "" >&2
+    echo " ERROR: vltMakeInstallFiles: " >&2
+    echo "          >>$VLTTARGET<< not a valid directory " >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# according to the file currently under ERRORS, if any, produce
+# the needed targets:
+
+if [ "$fileList" != "" ]
+then     
+    target="install_files: files_begin "
+
+    echo "files_begin:"
+    echo "\t-@echo \"\"; echo \"..other files:\""
+
+    for FILE in $fileList
+    do
+        if [ ! -f $FILE ]
+        then 
+            echo "" >&2
+            echo " ERROR: vltMakeInstallFiles: " >&2
+            echo "          >>$FILE<< file not found " >&2
+            echo "" >&2
+            exit 1
+        fi
+
+        # Extract the filename and the directory relative to the
+        # root of the installation point.
+        name=`basename $FILE`
+        fulldir=`dirname $FILE`
+
+	case "$FILE" in
+        ../*) dir=`expr $fulldir : '\.\./\(.*\)'`
+              ;;
+        *)    dir=`basename $fulldir`
+              ;;
+        esac
+
+        if [ -d $VLTTOP/$dir ]
+        then 
+            TOFILE=$VLTTOP/$dir/$name
+        else
+            if [ -d $VLTTARGET/$dir ]
+            then 
+                TOFILE=$VLTTARGET/$dir/$name
+            else
+                echo "" >&2
+                echo " ERROR: vltMakeInstallFiles: " >&2
+                echo "          >>$dir<< not a standard directory" >&2
+                echo "" >&2
+                exit 1
+            fi
+        fi  
+
+        echo "$TOFILE: $FILE"
+	echo "\t-\$(AT)echo \"\t$name\"; \\"
+        echo "\t      cp $FILE  $TOFILE; \\"  
+        echo "\t      chmod $MASK $TOFILE"
+        target="$target $TOFILE"
+    done
+
+    echo $target
+
+else
+
+    echo "files:"
+    echo "\t-@echo \"\""
+
+fi
+
+exit 0
+#
+# ___oOo___
+

@@ -1,0 +1,367 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupPids
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsNotifyService,v 1.33 2013/03/13 08:23:17 msekoran Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# azagar   2008-08-06 Extracted from acsStartORBSRVC and acsStopORBSRVC
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+PID=$$
+export HOST=`getIP`
+COMMAND=`basename $0`
+#LOGPOSTFIX=" using 'ACS_INSTANCE=$ACS_INSTANCE'"
+LOGPOSTFIX=
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_START=false
+CL_STOP=false
+CL_WAIT=false
+CL_BASEPORT=
+CL_HELP=
+CL_NS_TYPE=
+CL_NS_TYPE_SP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+# Intentionally includes all options supported by acsStartORBSRVC
+#
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,nstype:,nameService:
+SHORTOPTS=hskwrb:t:n:x:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+  cat << EOF
+Starts or stops a Notify Service for Acs
+
+Usage: $COMMAND [OPTIONS]
+Options:
+   -s | --start                      start service
+   -k | --kill                       stop service
+   -w | --wait                       wait for service to get started and create the notify event channel
+   -b | --baseport INSTANCE          the acs instance (0-9) you want to use
+   -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
+   -n | --nstype TYPE                type of notify service (i.e. Logging, Archive, Alarm)
+   -x | --nameService REF            set name service reference via command-line
+   -h | --help                       prints this help and exits
+EOF
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n $COMMAND -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+  printUsage
+  exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+  case "$1" in
+    --baseport)                   CL_BASEPORT=$2 ; shift ;;
+    -b)                           CL_BASEPORT=$2 ; shift ;;
+    --timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    -t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    --help)                       CL_HELP=true ;; 
+    -h)                           CL_HELP=true ;; 
+    --start)                      CL_START=true ;; 
+    -s)                           CL_START=true ;; 
+    --kill)                       CL_STOP=true ;; 
+    -k)                           CL_STOP=true ;; 
+    --wait)                       CL_WAIT=true ;; 
+    -w)                           CL_WAIT=true ;; 
+    --type)                       CL_NS_TYPE=$2; CL_NS_TYPE_SP="$2 " ; shift ;;
+    -n)                           CL_NS_TYPE=$2; CL_NS_TYPE_SP="$2 " ; shift ;;
+    --nameService)                export ACS_NAME_SERVICE=$2 ; shift ;;
+    -x)                           export ACS_NAME_SERVICE=$2 ; shift ;;
+    --)                           if [ X"$2" != X ] ; then printUsage ; exit $EC_BADARGS ; fi ; break ;;
+  esac
+  shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+if [ "$CL_HELP" ] ; then
+  printUsage
+  exit $EC_OK
+fi
+
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+################################
+#Set variables
+################################
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+  export ACS_INSTANCE="$CL_BASEPORT"
+fi
+
+ACS_LOG_COMMAND $@
+
+#Makes shure there is an initial value
+if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+then
+  ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+fi
+
+#maximum timeout for any given process to complete
+MAX_TIMEOUT=$(( 10 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+
+export STD_SLEEP=3
+
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+#use the instance directory to get the complete names of the 
+#files where process IDs are stored in.
+#set the filenames where binaries' output will be sent
+#IOR locations
+#determine the TCP ports to be used
+NAMING_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_NAMING_SERVICE_PIDFILE
+export ACS_NAME_SERVICE=`acsstartupNSRef`
+case $CL_NS_TYPE in
+  ""|"NotifyEventChannelFactory")
+    CL_NS_TYPE=""
+    NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_NOTIFY_SERVICE_PIDFILE
+    NOTIFY_OUT=$INSTANCE_DIR/$ACS_NOTIFY_OUT
+    NOTIFY_IOR=$INSTANCE_DIR/$ACS_NOTIFY_SERVICE_IORFILE
+    NOTIFY_SERVICE_PORT=`getNotifyServicePort`
+  ;; "Logging"|"LoggingNotifyEventChannelFactory")
+    CL_NS_TYPE="Logging"
+    NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_PIDFILE
+    NOTIFY_OUT=$INSTANCE_DIR/$ACS_LOG_NOTIFY_OUT
+    NOTIFY_IOR=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_IORFILE
+    NOTIFY_SERVICE_PORT=`getLoggingNotifyServicePort`
+    if [ "$ACS_LOG_BIN" = "true" ]
+    then 
+      export LOGGING_CHANNEL=LoggingChannelBin   # must match LOGGING_CHANNEL_NAME from acscommon.idl
+    else
+      export LOGGING_CHANNEL=LoggingChannel      # must match LOGGING_CHANNEL_XML_NAME from acscommon.idl
+    fi
+    NOTIFY_EVENT_CHANNEL=$LOGGING_CHANNEL
+    NOTIFY_EVENT_CHANNEL_DOMAIN=LOGGING          # must match ACS_NC_DOMAIN_LOGGING from acscommon.idl
+    NOTIFY_EVENT_CHANNEL_FACTORY=LoggingNotifyEventChannelFactory
+  ;; "Archive"|"ArchiveNotifyEventChannelFactory")
+    CL_NS_TYPE="Archive"
+    NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_PIDFILE
+    NOTIFY_OUT=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_OUT
+    NOTIFY_IOR=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_IORFILE
+    NOTIFY_SERVICE_PORT=`getArchiveNotifyServicePort`
+    NOTIFY_EVENT_CHANNEL=ArchivingChannel   # must match ARCHIVING_CHANNEL_NAME from acscommon.idl
+    NOTIFY_EVENT_CHANNEL_DOMAIN=ARCHIVING   # must match ACS_NC_DOMAIN_ARCHIVING from acscommon.idl
+    NOTIFY_EVENT_CHANNEL_FACTORY=ArchiveNotifyEventChannelFactory
+  ;; "Alarm"|"AlarmNotifyEventChannelFactory")
+    CL_NS_TYPE="Alarm"
+    NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_SERVICE_PIDFILE
+    NOTIFY_OUT=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_OUT
+    NOTIFY_IOR=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_SERVICE_IORFILE
+    NOTIFY_SERVICE_PORT=`getAlarmNotifyServicePort`
+    NOTIFY_EVENT_CHANNEL=
+    NOTIFY_EVENT_CHANNEL_DOMAIN=
+    NOTIFY_EVENT_CHANNEL_FACTORY=AlarmNotifyEventChannelFactory
+  ;; *)
+    CL_NS_TYPE=`echo $CL_NS_TYPE | sed s/NotifyEventChannelFactory$//g`
+    NOTIFY_SERVICE_PIDFILE="$INSTANCE_DIR/$ACS_PID_DIR/${CL_NS_TYPE}_NotifyService_PID"
+    NOTIFY_OUT="$INSTANCE_DIR/$ACS_OUT_DIR/${CL_NS_TYPE}_NotifyService.out"
+    NOTIFY_IOR="$INSTANCE_DIR/$ACS_IOR_DIR/${CL_NS_TYPE}_NotifyServiceIOR"
+    NOTIFY_SERVICE_PORT=`acsstartupNotifyPort $CL_NS_TYPE`
+    NOTIFY_EVENT_CHANNEL=
+    NOTIFY_EVENT_CHANNEL_DOMAIN=
+    NOTIFY_EVENT_CHANNEL_FACTORY="${CL_NS_TYPE}NotifyEventChannelFactory"
+  ;;
+esac
+
+# Always use -ORBDottedDecimalAddresses=1
+if [ "X$ORBOPTS" = "X" ]
+then
+  ORBOPTS="-ORBDottedDecimalAddresses 1"
+fi
+
+
+
+
+################################
+# Notify Service
+################################
+# Note - this must be started after the naming service is running.
+
+if [ "$CL_STOP" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  if [ ! -d $INSTANCE_DIR ]
+  then
+    ACS_LOG_DEBUG "$COMMAND" "Lock directory '$INSTANCE_DIR' does not exist!"
+  elif [ ! -w $INSTANCE_DIR ]
+  then
+    ACS_LOG_ERROR "$COMMAND" "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
+    exit $EC_CANNOTUSE
+  fi
+
+  ACS_NAME_SERVICE=`acsstartupNSRef`
+  if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
+  then
+    $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name $NOTIFY_EVENT_CHANNEL -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+  fi
+  
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name ${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name MC_${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+
+  # SERVICE SHUTDOWN
+  # --------------------------------------------------------------------------
+  ACS_LOG_INFO "$COMMAND" "Stopping the CORBA ${CL_NS_TYPE_SP}Notification Service${LOGPOSTFIX}"
+  if NOTIFY_SERVICE_PID=`getServicePid "${CL_NS_TYPE} notification service" $NOTIFY_SERVICE_PIDFILE $NOTIFY_SERVICE_PORT`
+  then
+    acsKillProc $NOTIFY_SERVICE_PID 2> /dev/null && rm -f $NOTIFY_SERVICE_PIDFILE || ACS_LOG_ERROR "$COMMAND" "Cannot kill the ${CL_NS_TYPE_SP}Notification Service"
+  fi 
+fi
+
+if [ "$CL_START" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  # Check if Naming Service is running
+  if [ ! -e $NAMING_SERVICE_PIDFILE ]
+  then
+    if [ "X$ACS_NAME_SERVICE" = "X" ]
+    then
+      ACS_LOG_ERROR "$COMMAND" "Naming Service must be running before starting a Notify Service!"
+      exit $EC_FAILURE
+    else
+      ACS_LOG_INFO "$COMMAND" "Naming Service is not running locally, assuming remote Naming Service!"
+    fi
+  fi
+
+  # Prevent from having the service started more than once on the same baseport
+  if [ -e $NOTIFY_SERVICE_PIDFILE ]
+  then
+    ACS_LOG_ERROR "$COMMAND" "It appears as if you're trying to run the `basename $0` command twice"
+    ACS_LOG_ERROR "$COMMAND" "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
+    exit $EC_FAILURE
+  fi
+
+  # Make sure that the directory for temporary ACS_INSTANCE files exists.
+  if ! createInstanceDirectory $ACS_INSTANCE
+  then
+     ACS_LOG_ERROR "$COMMAND" "Cannot create $INSTANCE_DIR"
+     exit $EC_CANNOTCREATE
+  fi
+  mkdir -p $INSTANCE_DIR/$ACS_PID_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_OUT_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_IOR_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_CNF_DIR
+
+  # Ensure the port numbers are actually free
+  if ! checkTCPPort $NOTIFY_SERVICE_PORT
+  then
+    ACS_LOG_ERROR "$COMMAND" "${CL_NS_TYPE_SP}Notify Service port is being used by another process. Cannot continue!"
+    exit $EC_NOPORT
+  fi
+
+  # SERVICE STARTUP
+  # --------------------------------------------------------------------------
+  ACS_LOG_INFO "$COMMAND" "Starting ${CL_NS_TYPE_SP}Notify Service${LOGPOSTFIX}"
+
+  if [ "X" = "X$CL_NS_TYPE" ]
+  then
+    ORBOPTS="$ORBOPTS"
+  else
+    ORBOPTS="$ORBOPTS -Factory $NOTIFY_EVENT_CHANNEL_FACTORY"
+  fi
+
+  # Let's create configuration file
+  # we replace slashes(/) with \/ which can be used in sed
+  NOTIFY_MC_IOR=`echo $INSTANCE_DIR | sed 's/\//\\\\\//g'`"\/iors\/${CL_NS_TYPE}NotifyMCIOR"
+  INSTANCE_DIR_REG=`echo $INSTANCE_DIR | sed 's/\//\\\\\//g'`
+  sed -e "s/MC_IOR/$NOTIFY_MC_IOR/" -e "s/INS_DIR/$INSTANCE_DIR_REG/" -e "s/NS_TYPE/${CL_NS_TYPE}/" $ACSROOT/config/svc.conf/defaultNotify.svc.conf > $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf
+  ORBOPTS="$ORBOPTS -ORBSvcConf $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf"
+
+  # Start notification as another script including Naming Service registration
+  # "export" first (to avoid passing lots of parameters) and then call the script
+  export HOST
+  export ORBOPTS
+  export INSTANCE_DIR
+  export ACS_NAME_SERVICE
+  export CL_NS_TYPE
+  export NOTIFY_EVENT_CHANNEL_FACTORY
+  export NOTIFY_EVENT_CHANNEL_DOMAIN
+  export NOTIFY_EVENT_CHANNEL
+  export NOTIFY_SERVICE_PORT
+  export NOTIFY_SERVICE_PIDFILE
+  export NOTIFY_IOR
+  export NOTIFY_OUT
+  export MAX_TIMEOUT
+
+  acsstartupNotifyServiceStart &
+  
+fi
+
+if [ "$CL_WAIT" = "true" ]
+then
+  # Block until the IOR shows up in the the correct file
+  if ! acsutilBlock -t $MAX_TIMEOUT -f $NOTIFY_IOR -b "IOR:"
+  then
+    ACS_LOG_ERROR "$COMMAND" "The IOR of the notify service was never emitted!"
+    ACS_LOG_ERROR "$COMMAND" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
+    exit $EC_TIMEOUT
+  fi
+fi
+
+#
+# ___oOo___

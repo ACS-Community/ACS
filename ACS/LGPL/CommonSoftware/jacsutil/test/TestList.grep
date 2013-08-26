@@ -1,0 +1,11 @@
+Running the following command:
+Starting Java application
+Using endorsed jar files in: -Djava.endorsed.dirs=
+ACS Manager: corbaloc::
+ACS Name Service: corbaloc::
+ACS Interface Repository: corbaloc::
+java -classpath
+export
+Time: 
+INTROOT = 
+ACSROOT = 

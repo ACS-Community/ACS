@@ -1,0 +1,28 @@
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC factory name for 'singleChannel4@ALARMSYSTEM' = 'AlarmNotifyEventChannelFactory' as created for thread 'Test_get_or_creation_with_domain_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC factory name for 'singleChannel4@ALARMSYSTEM' = 'AlarmNotifyEventChannelFactory' as created for thread 'Test_get_or_creation_with_domain_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC factory name for 'singleChannel4@ALARMSYSTEM' = 'AlarmNotifyEventChannelFactory' as created for thread 'Test_get_or_creation_with_domain_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC factory name for 'singleChannel4@ALARMSYSTEM' = 'AlarmNotifyEventChannelFactory' as created for thread 'Test_get_or_creation_with_domain_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel1' was created for thread 'Test_creation_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel1' couldn't be created for thread 'Test_creation_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel3@domainName1' was created for thread 'Test_creation_with_domain_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel3@domainName1' couldn't be created for thread 'Test_creation_with_domain_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel1' couldn't be created for thread 'Test_creation_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel1' couldn't be created for thread 'Test_creation_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel3@domainName1' couldn't be created for thread 'Test_creation_with_domain_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel3@domainName1' couldn't be created for thread 'Test_creation_with_domain_thread_XX'
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel2' was created/resolved for thread Test_get_or_creation_thread_XX
+1 - ----------T--:--:--.--- [GlobalLogger - ] Thread 'Test_get_or_creation_thread_XX' got the channel 'singleChannel2' properly
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel4@ALARMSYSTEM' was created/resolved for thread Test_get_or_creation_with_domain_thread_XX
+1 - ----------T--:--:--.--- [GlobalLogger - ] Thread 'Test_get_or_creation_with_domain_thread_XX' got the channel 'singleChannel4@ALARMSYSTEM' properly
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel4@ALARMSYSTEM' was created/resolved for thread Test_get_or_creation_with_domain_thread_XX
+1 - ----------T--:--:--.--- [GlobalLogger - ] Thread 'Test_get_or_creation_with_domain_thread_XX' got the channel 'singleChannel4@ALARMSYSTEM' properly
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel4@ALARMSYSTEM' was created/resolved for thread Test_get_or_creation_with_domain_thread_XX
+1 - ----------T--:--:--.--- [GlobalLogger - ] Thread 'Test_get_or_creation_with_domain_thread_XX' got the channel 'singleChannel4@ALARMSYSTEM' properly
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel2' was created/resolved for thread Test_get_or_creation_thread_XX
+1 - ----------T--:--:--.--- [GlobalLogger - ] Thread 'Test_get_or_creation_thread_XX' got the channel 'singleChannel2' properly
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel4@ALARMSYSTEM' was created/resolved for thread Test_get_or_creation_with_domain_thread_XX
+1 - ----------T--:--:--.--- [GlobalLogger - ] Thread 'Test_get_or_creation_with_domain_thread_XX' got the channel 'singleChannel4@ALARMSYSTEM' properly
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel2' was created/resolved for thread Test_get_or_creation_thread_XX
+1 - ----------T--:--:--.--- [GlobalLogger - ] Thread 'Test_get_or_creation_thread_XX' got the channel 'singleChannel2' properly
+1 - ----------T--:--:--.--- [GlobalLogger - ] NC 'singleChannel2' was created/resolved for thread Test_get_or_creation_thread_XX
+1 - ----------T--:--:--.--- [GlobalLogger - ] Thread 'Test_get_or_creation_thread_XX' got the channel 'singleChannel2' properly

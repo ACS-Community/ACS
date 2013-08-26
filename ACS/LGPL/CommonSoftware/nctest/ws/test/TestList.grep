@@ -1,0 +1,54 @@
+SUP.
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+Grep me out
+name service error resolving
+class CosNaming.NotFound
+Running the following command:
+Starting Java application
+Using endorsed jar files in: -Djava.endorsed.dirs=
+ACS Manager: corbaloc::
+ACS Name Service: corbaloc::
+ACS Interface Repository: corbaloc::
+LogConfig was initialized, but not from CDB settings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\[jacorb@
+java -classpath
+Logging to ACS log server.
+RTContext:
+SourceInfo:
+local manager from
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+^$
+SUP.
+Log outputed to the local file
+lcuboot: open
+DAL root is
+java -classpath
+Time:
+Connected to
+Using naming reference
+Retrying to connect to
+Abnormal connection termination
+Disconnected.
+export
+Local file logger
+offshoot
+StaticMethodLogger
+alma.nctest.FridgeConsumer
+File "./__init__.py", line 805, in __init__
+omniORB: Exception trying to create worker thread.
+Traceback \(most recent call last\)
+TypeError: 'NoneType' object is not callable
+Aborted
+terminate called after throwing an instance of 'omni_thread_fatal'
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+object is activated
+object is deactivated
+servant is etherealized
+name service error resolving
+Logger scxml
+Loaded SCXML file jar
+Started SM execution
+Logger jacorb@.* created with custom log levels local=Info, remote=Info

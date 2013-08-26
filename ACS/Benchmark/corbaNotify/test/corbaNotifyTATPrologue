@@ -1,0 +1,15 @@
+#! /bin/bash
+
+# Capture all output from this script to a file. TAT otherwise loses the prologue output.
+LOGFILE=$ACS_TMP/corbaNotifyTATPrologue.out
+exec > $LOGFILE 2>&1
+
+echo "Will run 'acscontainerdaemonSmartStart'..."
+acscontainerdaemonSmartStart &> $ACS_TMP/containerdaemon.out
+echo "Container daemon is running."
+
+acsutilTATPrologue --noloadifr -l
+echo "ACS services are running, xml logs get captured."
+
+acsNotifyService -s -w -n RealtimeNc
+echo "RealtimeNc notify service is running, where NC 'CONTROL_REALTIME' should be hosted."

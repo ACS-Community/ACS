@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP project F.A.Q.</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<description>
+      <UL><BR/>
+      <B>What is the GP layer ?</B><BR/>
+      [ short answer needed here ]<BR/>
+      If you need to know more about the GP layer architecture click <A HREF="../dev/GP_Layer_architecture.html">here</A>.<BR/>
+      <BR/>
+      <B>What a node is (in the Netbeans platform context) ?</B><BR/>
+      [ short answer needed here ]<BR/>
+      <BR/>
+      <B>What is a Netbeans workspace ?</B><BR/>
+      [ short answer needed here ]<BR/>
+      <BR/>
+      <B>What is the difference between a <I>java bean</I> and a Netbeans <I>Module</I> ?</B><BR/>
+      [ short answer needed here ]<BR/>
+      <BR/>
+      <BR/>
+      </UL>       
+		</description>
+	</section>
+  
+</document>
+

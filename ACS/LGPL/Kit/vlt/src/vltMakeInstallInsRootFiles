@@ -1,0 +1,250 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeInstallInsRootFiles,v 1.2 2010/07/09 15:15:24 rtobar Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# rschmutz  30/09/99  install to VLTTARGET/config/INS_ROOT and $INS_ROOT.
+# rschmutz  19/08/99  created
+#
+
+#************************************************************************
+#   NAME
+#   vltMakeInstallInsRootFile - install files in INS_ROOT.
+# 
+#   SYNOPSIS
+#   vltMakeInstallInsRootFile <fileList> <VLTTARGET> <protectionMask>
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to generate the vltMakefile.install
+#   section in charge to copy files to the INS_ROOT directory area.
+#   For every file in <fileList>:
+#
+#   - get "name" and "dir", i.e.: the filename and the target
+#     directory inside INS_ROOT where the file has to be copied.
+#     The target directory is set according to "name":
+#
+#	ESO-VLT-*:	$INS_ROOT/SYSTEM/Dictionary
+#	*.alias:	$INS_ROOT/SYSTEM/Alias
+#	*.obd:		$INS_ROOT/SYSTEM/COMMON/TEMPLATES/OBD
+#	*.seq:		$INS_ROOT/SYSTEM/COMMON/TEMPLATES/SEQ
+#	*.tsf:		$INS_ROOT/SYSTEM/COMMON/TEMPLATES/TSF
+#	*.det:		$INS_ROOT/SYSTEM/COMMON/SETUPFILES/DET
+#	*.ins:		$INS_ROOT/SYSTEM/COMMON/SETUPFILES/INS
+#	*.ref:		$INS_ROOT/SYSTEM/COMMON/SETUPFILES/REF
+#	*.targ:		$INS_ROOT/SYSTEM/COMMON/SETUPFILES/TARG
+#	*.fits:		$INS_ROOT/SYSTEM/COMMON/MIDAS/REF
+#	*.prg:		$INS_ROOT/SYSTEM/COMMON/MIDAS/PROCS
+#	<other files>:	$INS_ROOT/SYSTEM/COMMON/CONFIGFILES
+#
+#   - the rule to copy the file into INS_ROOT/<target_dir> and
+#     into VLTTARGET/config/INS_ROOT/<target_dir> is generated.
+#     As for any installed file, the rule is executed only if
+#     the is newer. The protection mask is applied to leave the
+#     file overwritable by the next installation.
+#
+#
+#   It is not intended to be used as a standalone command.
+#
+#   <fileList>		file to be copied
+#   <VLTTARGET>		installation target (VLTROOT or INTROOT)
+#   <protectionMask>	how to set the protection of created file
+#
+#
+#   FILE
+#   $VLTROOT/include/vltMakefile
+#
+#   ESO-VLT-DIC.*:	FITS dictionary
+#   *.alias:		FITS alias
+#   *.obd:		BOB observation block
+#   *.seq:		BOB sequencer script
+#   *.tsf:		BOB template signature file
+#   *.det:		detector setup file
+#   *.ins:		instrument setup file
+#   *.ref:		reference setup file
+#   *.targ:		target setup file
+#   *.fits:		FITS image file (MIDAS reference frame)
+#   *.prg:		MIDAS procedure
+#
+#   ENVIRONMENT
+#   INS_ROOT		instrument directory area
+#
+#   RETURN VALUES
+#
+#   SEE ALSO
+#   vltMakefile
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# if Linux: disable the bash builtin command 'echo'.
+if [ "`uname`" = "Linux" ]
+then
+    enable -n echo
+elif [ "`uname`" = "$CYGWIN_VER" ]
+then
+    alias echo="echo -e"
+fi
+
+#
+# 1. retrieve parameters
+#
+if [ $# != 3 ]
+then
+    echo "" >&2
+    echo " ERROR:  vltMakeInstallInsRootFiles: $*" >&2
+    echo " Usage:  vltMakeInstallInsRootFiles <fileList> <VLTTARGET> <protectionMask>" >&2
+    echo "" >&2
+    exit 1
+fi
+
+fileList=${1}
+VLTTARGET=$2
+MASK=$3
+
+
+if [ ! -d $VLTTARGET ]
+then 
+    echo "" >&2
+    echo " ERROR: vltMakeInstallFiles: " >&2
+    echo "          >>$VLTTARGET<< not a valid directory " >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# 2. build target directories
+#
+#    insroot1 = $INTROOT/config/INS_ROOT
+#    insroot2 = $INS_ROOT (if it exists)
+#
+insroot1=$VLTTARGET/config/INS_ROOT
+if [ "$INS_ROOT" != "" -a "$INS_ROOT" != "$insroot1" ]
+then
+    insroot2=$INS_ROOT
+    if [ ! -d "$insroot2" ]
+    then 
+	echo "" >&2
+	echo " ERROR: vltMakeInstallInsRootDir: " >&2
+	echo "          >>$INS_ROOT<< not a valid directory " >&2
+	echo "" >&2
+	exit 1
+    fi
+else
+    insroot2=""
+fi
+
+
+#
+# 2. produce the needed targets:
+#
+if [ "$fileList" != "" ]
+then
+    target="install_insrootfiles: insrootfiles_begin "
+    echo "insrootfiles_begin:"
+    echo "\t-@echo \"\"; echo \"..INS_ROOT files:\""
+
+    for filename in $fileList
+    do
+    	FILE=$filename
+	if [ ! -f $FILE ]
+	then
+	    FILE=`find .. -name $filename | head -1`
+	    if [ "$FILE" = "" ]
+	    then
+                echo "" >&2
+                echo " ERROR: vltMakeInstallInsRootFiles: " >&2
+                echo "          >>$filename<< file not found " >&2
+                echo "" >&2
+                exit 1
+	    fi
+	    if [ ! -f $FILE ]
+	    then
+                echo "" >&2
+                echo " ERROR: vltMakeInstallInsRootFiles: " >&2
+                echo "          >>$filename<< file not found " >&2
+                echo "" >&2
+                exit 1
+	    fi
+        fi
+
+	name=`basename $FILE`
+	parent=`dirname $FILE`
+	dir=SYSTEM/COMMON/CONFIGFILES
+	case $name in
+	    ESO-VLT-*)
+		dir=SYSTEM/Dictionary
+		;;
+	    *.alias)
+		dir=SYSTEM/Alias
+		;;
+	    *.obd)
+		dir=SYSTEM/COMMON/TEMPLATES/OBD
+		;;
+	    *.seq)
+		dir=SYSTEM/COMMON/TEMPLATES/SEQ
+		;;
+	    *.tsf)
+		dir=SYSTEM/COMMON/TEMPLATES/TSF
+		;;
+	    *.det)
+		dir=SYSTEM/COMMON/SETUPFILES/DET
+		;;
+	    *.ins)
+		dir=SYSTEM/COMMON/SETUPFILES/INS
+		;;
+	    *.ref)
+		dir=SYSTEM/COMMON/SETUPFILES/REF
+		;;
+	    *.targ)
+		dir=SYSTEM/COMMON/SETUPFILES/TARG
+		;;
+	    *.fits)
+		dir=SYSTEM/COMMON/MIDAS/REF
+		;;
+	    *.prg)
+		dir=SYSTEM/COMMON/MIDAS/PROCS
+		;;
+	    *)
+		dir=SYSTEM/COMMON/CONFIGFILES
+		;;
+	esac
+
+        TOFILE1=$insroot1/$dir/$name
+        echo "$TOFILE1: $FILE"
+        echo "\t-\$(AT)echo \"\t$name\""
+    	echo "\t-\$(AT)if [ ! -d $insroot1/$dir ]; then mkdir -p $insroot1/$dir; fi"
+        echo "\t-\$(AT)cp $FILE $TOFILE1; \\"
+        echo "\t      chmod $MASK $TOFILE1"
+        target="$target $TOFILE1"
+	if [ "$insroot2" != "" ]
+	then
+            TOFILE2=$insroot2/$dir/$name
+            echo "$TOFILE2: $FILE"
+    	    echo "\t-\$(AT)if [ ! -d $insroot2/$dir ]; then mkdir -p $insroot2/$dir; fi"
+            echo "\t-\$(AT)cp $FILE $TOFILE2; \\"
+	    # MASK is set to 664 when INTROOT is defined.
+	    # We do not want the e.g. instrument user account to be
+	    # able to delete files installed by the instrument manager
+	    # account, therefore we always use permissions 644 for INS_ROOT.
+            echo "\t      chmod 644 $TOFILE2"
+            target="$target $TOFILE2"
+	fi
+    done
+
+    echo $target
+
+else
+
+    echo "insrootfiles:"
+    echo "\t-@echo \"\""
+
+fi
+
+exit 0
+#
+# ___oOo___

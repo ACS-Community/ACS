@@ -1,0 +1,56 @@
+
+		
+/*   (msc:) These style definitions taken from the following file and        */
+/*   purged from any Microsoft-specific definitions:                         */
+/*   http://www.eso.org/~gchiozzi/AlmaAcs/Releases/ACS_3_0_Docs/index.html   */
+
+a:link {color:blue; text-decoration:underline; text-underline:single;}
+a:visited {color:purple; text-decoration:underline; text-underline:single;}
+tt{font-family:"Courier New"; mso-ascii-font-family:"Courier New"; mso-fareast-
+font-family:"Times New Roman"; mso-hansi-font-family:"Courier New"; mso-bidi-
+font-family:"Courier New";}
+div.Section1{page:Section1;}
+ol{margin-bottom:0cm;}
+ul{margin-bottom:0cm;}
+
+
+/* (msc:) our own style definitions */
+
+.indent1 {
+	padding-left:40px
+}
+
+.indent2 {
+	padding-left:60px
+}
+
+p.caution {
+	border-color:cornflowerblue;
+	border-style:solid;
+	border-width:2px;
+	margin-right:140px;
+	padding:3px;
+}
+
+div.hint {
+	color:gainsboro; 
+	border-color:gainsboro;
+	border-style:solid;
+	border-width:2px;
+	margin-right:140px;
+	padding:3px;
+}
+
+div.hilite {color:black;
+	background-color:ghostwhite;
+	font-weight:bold;
+}
+
+h2 {font-weight:bold;
+	font-style:italic;
+	background-color:whitesmoke;
+}
+
+h3 {font-weight:bold;
+	font-style:italic;
+}

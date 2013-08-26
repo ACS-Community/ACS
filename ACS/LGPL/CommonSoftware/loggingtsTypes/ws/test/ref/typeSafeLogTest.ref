@@ -1,0 +1,22 @@
+1 - === Starting TypeSafeLogTest
+1 -  --endorsed -- alma.acs.testsupport.tat.NoDotJUnitRunner alma.AcsNCTraceLog.TypeSafeLogTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.acs.testsupport.tat.NoDotJUnitRunner alma.AcsNCTraceLog.TypeSafeLogTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=---
+1 - 
+1 - ----------T--:--:--.--- TRACE [alma.acs.logging.config.LogConfig] ACS.log.minlevel.namedloggers not defined.
+1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'testSimpleLog' and updated logger names.
+1 - ----------T--:--:--.--- INFO [testSimpleLog] -------------------------------
+1 - ----------T--:--:--.--- INFO [testSimpleLog] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- TRACE [testSimpleLog] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ]
+1 - ----------T--:--:--.--- INFO [testSimpleLog] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ]
+1 - ----------T--:--:--.--- INFO [testSimpleLog] Successfully destroyed a notification channel [ logName='LOG_NC_ChannelDestroyed_OK' ]
+1 - ----------T--:--:--.--- DEBUG [testSimpleLog] Failed connecting to a notification channel [ logName='LOG_NC_SubscriptionConnect_FAIL' ]
+1 - ----------T--:--:--.--- DEBUG [testSimpleLog] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ]
+1 - ----------T--:--:--.--- DEBUG [testSimpleLog] Failed to disconnect from a notification channel [ logName='LOG_NC_SubscriptionDisconnect_FAIL' ]
+1 - ----------T--:--:--.--- DEBUG [testSimpleLog] Disconnected from a notification channel [ logName='LOG_NC_SubscriptionDisconnect_OK' ]
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 
+1 - === TypeSafeLogTest test completed

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:acsalarm-categories:1.0" targetNamespace="urn:schemas-cosylab-com:acsalarm-categories:1.0"   elementFormDefault="qualified">
+
+	<xs:element name="categories">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="category" type="category" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+		<xs:complexType name="category">
+			<xs:sequence>
+				<xs:element name="description" type="xs:string"/>
+				<xs:element name="alarms" type="alarms" />
+			</xs:sequence>
+			<xs:attribute name="is-default" type="xs:boolean" use="required"/>
+			<xs:attribute name="path" type="xs:NMTOKEN" use="required"/>
+		</xs:complexType>
+		
+		<xs:complexType name="alarms">
+			<xs:sequence>
+				<xs:element name="FaultFamily" type="xs:string" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+		
+</xs:schema>

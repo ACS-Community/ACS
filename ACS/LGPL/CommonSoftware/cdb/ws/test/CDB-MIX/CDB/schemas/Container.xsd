@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) -->
+<!--
+   - Configuration Database Schema for MACI Container
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" targetNamespace="urn:schemas-cosylab-com:Container:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:LoggingConfig:1.0" schemaLocation="LoggingConfig.xsd"/>
+	<xs:annotation>
+		<xs:documentation>This schema file describes the configuration for a Container. 
+There might be slight differences in the meaning of some 
+attributes depending on the specific implementation of the Container, 
+in particular depending on the implementation language. 
+See also the documentation of the specific implementation 
+of Container for a list of supported and un-supported 
+configuration parameters.</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="DeployInfo">
+		<xs:attribute name="TypeModifiers" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Space-separated list of modifies for the container type. While Container.ImplLang specifies the programming language type of the container (e.g. "java"), the modifiers may select a special mode (such as "debug", "single_threaded") or whatever else. 
+The ACS daemon that starts the container must understand the modifiers in order for them to become effective.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Host" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The computer on which the container will be started.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Instance" type="xs:int" use="optional" default="0">
+			<xs:annotation>
+				<xs:documentation>The ACS instance. Note that the instance should only be used when sharing developer machines, but not for the integrated system.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Flags" type="xs:string" use="optional" default="">
+			<xs:annotation>
+				<xs:documentation>Optional command line flags for starting the container. For example, an alternative container implementation can be used with --executable=myContainerImpl</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="KeepAliveTime" type="xs:int" use="optional" default="-1">
+			<xs:annotation>
+				<xs:documentation>Time in seconds for which the manager will not shut down an idle container, i.e. one that no longer runs components. Negative values mean indefinite.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="Container" type="Container"/>
+	<xs:complexType name="Container">
+		<xs:sequence>
+			<xs:element name="Autoload" type="cdb:Array">
+				<xs:annotation>
+					<xs:documentation>Set of libraries that will be automatically loaded at Container startup time. Used by the CPP Containers to automatically load shared libraries that will be used by many Components. It also allow to resolve dynamically linking problems. The arguments are names of shared libraries.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DeployInfo" type="DeployInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional deployment information. Used by Manager to automatically startup/shutdown containers.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LoggingConfig" type="log:LoggingConfig"/>
+		</xs:sequence>
+		<xs:attribute name="ImplLang" use="required">
+			<xs:annotation>
+				<xs:documentation>The programming language the container is implemented in.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="java"/>
+					<xs:enumeration value="cpp"/>
+					<xs:enumeration value="py"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Timeout" type="xs:double" use="optional" default="30">
+			<xs:annotation>
+				<xs:documentation>Timeout in seconds for remote (CORBA) calls originating from this container or any of its components. This timeout will be implemented in this container, which means on the client side of the CORBA call. 
+				Timeouts ensure protection from deadlock. Notice that some ACS QoS features can be used to trim specific calls, support for which varies among the different container/ORB types.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UseIFR" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>At least the C++ container accesses the Interface Repository to retrieve information about the interfaces implemented by Components. In some very special situations, for example during debugging, it might be useful to disable the usage of the Interface Repository.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ManagerRetry" type="xs:int" use="optional" default="10">
+			<xs:annotation>
+				<xs:documentation>How many times the Container shall try to contact the Manager upon startup before bailing out. 0 means forever. In a stable system, the Manager is normally already available when Containers are started up. Specific needs might trigger the necessity to trim this parameter.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DALtype" type="xs:string" use="optional" default="DAL">
+			<xs:annotation>
+				<xs:documentation>ACS provides a plugin mechanism to use different implementations of configuration database. This attribute allows to specify the name of the desired implementation. All applications and systems using the standard ACS CDB do not have to change the attribute. Special systems with the need of integrating a different configuration database might use this feature.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ServerThreads" type="xs:int" use="optional" default="5">
+			<xs:annotation>
+				<xs:documentation>This is the number of threads allocate to the CORBA infrastructure for the handling of concurrent invocations. This value is normally sufficient, but it myght necessary to increase it for Containers with very many Components or when methods of Components take long time and build up complex chains of invocations. A typical manifestation of an insufficient number of threads is the deadlock followed by timeouts of actions in the Container.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Recovery" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>By default when a Container that crashes is restarted the system tries to reload all the same Components that where active at the time of the crash. This can lead to problems, for example, trying to debug a compont that causes the crash of the container just at activation time. Therefore it is possible to set this options to prevent reloading the components and getting into a deadlock situation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

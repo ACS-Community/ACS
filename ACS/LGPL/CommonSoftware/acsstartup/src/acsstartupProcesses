@@ -1,0 +1,261 @@
+#!/bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: acsstartupProcesses,v 1.13 2012/10/24 14:22:36 bjeram Exp $"
+#
+# who       when      what
+# -------- ---------- ----------------------------------------------
+
+#---------------------------------------------------------------------------------------
+#this represents a list of all commands which should not be killed by functions
+#defined within this script. also child processes started by these commands will not
+#be killed
+SAFE_LIST="killACS"
+SAFE_LIST_REGEX="killACS\|acsKillProc\|vim\|emacs\|eclipse"
+
+#function returns a list of all "safe" process IDs that should not be terminated
+function getSafePids
+{
+local PID
+local PID_LIST
+
+PID=
+PID_LIST=
+
+#create a list of safe process IDs
+for PID in $SAFE_LIST
+do
+  PID_LIST=$PID_LIST`ps --no-headers -C $PID | awk '{print $1}'`
+done
+
+echo $PID_LIST
+}
+export getSafePids
+
+
+#checks to see if $1 is a child process of $2
+#this is recursive and can take quite some time
+function isParent
+{
+local PID      #child pid
+local TPID     #temp pid
+local PARENT   #supposed parent
+local CHILDREN #all children of parent
+
+PID=$1
+TPID=
+PARENT=$2
+CHILDREN=`pgrep -P $PARENT`
+
+#basecase
+if [ "$CHILDREN" == "" ]
+then
+    return 1
+fi
+
+#if this grep returns anything at all
+#we know that the child really did come from 
+#the parent
+if [ "`echo $CHILDREN | grep $PID`" != "" ]
+then
+    return 0
+
+#see if the child comes from any of the parent's
+#children
+else
+    for TPID in $CHILDREN
+    do
+      if `isParent $PID $TPID`
+      then
+	  return 0
+      fi
+    done
+fi
+
+#if we've gotten this far, child was not spawned
+#from the parent
+return 1
+}
+export isParent
+
+
+#This function shows whether the process ID, $1,  is safe to kill or not
+function pidSafeToKill
+{
+local PID
+local TPID
+
+PID=$1
+
+for TPID in `getSafePids`
+do
+  #if we ever encounter a safe process and the process to destroy is 
+  #a child of that parent, bail!
+  if `isParent $PID $TPID`
+  then
+      return 1
+
+  #if the process to kill is a safe process, bail!
+  elif [ "$PID" == "$TPID" ]
+  then
+      return 1
+  fi
+
+done
+
+return 0
+}
+export pidSafeToKill
+
+#move me to acsstartup/test/
+function testSafeToKill
+{
+if pidSafeToKill $1
+then
+echo "Safe to kill $1"
+
+else
+echo "Not safe to kill $1"
+fi
+}
+export testSafeToKill
+
+
+#-----------------------------------------------------------------------------
+
+#function used to kill a process ID, $1, and all of its children
+function killProc
+{
+local CHILD_PID  #temp pid var
+local PARENT_PID #process to be killed
+local CHILDREN   #children of parent
+
+CHILD_PID=
+PARENT_PID=$1
+CHILDREN=`pgrep -P $PARENT_PID 2> /dev/null`
+
+#if the process to kill is spawned by some script which is unkillable
+#or the process itself is deemed unkillable, bail!
+if ! pidSafeToKill $PARENT_PID
+then
+  return 1
+fi
+
+for CHILD_PID in $CHILDREN
+do
+  killProc $CHILD_PID
+done
+
+
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+    #immediately kill the parent
+    /bin/kill -f -9 $PARENT_PID 2> /dev/null
+    #check if it is dead
+    PID=`ps h -p $PARENT_PID|grep -v PID`
+    if [ "$PID" != "" ]
+    then
+        echo "Process with PID $PARENT_PID cannot be killed."
+        return -1
+    fi
+else
+    #immediately kill the parent
+    kill -9 $PARENT_PID 2> /dev/null
+    #check if it is dead
+    if kill -9 $PARENT_PID 2> /dev/null
+    then
+        sleep 0.25
+        if kill -9 $PARENT_PID 2> /dev/null
+        then
+            echo "Process with PID $PARENT_PID cannot be killed."
+            return -1
+        fi
+    fi
+fi
+
+return 0
+}
+export killProc
+
+
+#kills all processes created by a command, $1
+function killCommand
+{
+local COMMAND      #command to be killed
+local COMMAND_PIDS #list of all process IDs corresponding to the command
+local PID          #temp pid var
+
+COMMAND=$1
+PID=
+
+#Get a list containing all the process IDs of the command
+COMMAND_PIDS=`pgrep  -f -l $COMMAND |grep -w $COMMAND | grep -v $SAFE_LIST_REGEX | awk '{print $1}'`
+
+#cycle through the list killing each pid
+for PID in $COMMAND_PIDS
+do
+  killProc $PID
+done
+
+return 0
+}
+
+export killCommand
+
+#--------------------------------------------------------
+function killPort
+{
+local PORT
+local PID
+
+PORT=$1
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+    #Windows PID
+    PID=`netstat -p tcp -o -a -n 2> /dev/nul |grep "TCP \+[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:$TCP" |awk '{printf("%s\n",$5)}' |sort -u |awk '{printf("%s",$1)}'`
+    #Cygwin PID
+    if [ "$PID" = "" ]; then
+        #unable to kill a process using the port...error condition
+        return 1
+    else
+        PID=`ps h |sed s/I/" "/ |awk '{printf("%s %s\n", $1, $4)}' |grep "[0-9]* $PID" |awk '{printf("%s",$1)}'`
+    fi
+else
+    PID=`netstat -t -p -e -e -n -a 2> /dev/null|  awk '{printf("%s %s\n", $4, $9)}'  | grep "maciCo" | grep ":$PORT"`
+    if [ "$PID" = "" ]; then
+        #unable to kill a process using the port...error condition
+        return 1
+    else
+        PID=`echo $PID | awk '{printf("%s", $2)}'| sed s/"\/"/" "/g | awk '{printf("%s", $1)}'`
+    fi
+fi
+
+if [ "$PID" != "" ] && [ "$PID" != "-" ]
+then
+    killProc $PID
+    return 0
+
+else
+    return 1
+fi
+}
+
+export killPort

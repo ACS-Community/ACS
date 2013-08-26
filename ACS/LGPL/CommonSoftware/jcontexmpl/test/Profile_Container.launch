@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<launchConfiguration type="ru.nlmk.eclipse.plugin.profiler.launch.image">
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="alma.acs.container.AcsContainerRunner"/>
+    <booleanAttribute
+        key="ru.nlmk.eclipse.plugins.profiler.pauseOnMethod" value="false"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-containerName frodoContainer -OAPort 3077"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DACS.manager=corbaloc::te1:3000/Manager -Dalma.MicroArchive.DbDir=Y:\alma\ACS-2.1\acsdata\config\MicroArchive"/>
+    <intAttribute
+        key="ru.nlmk.eclipse.plugins.profiler.instrumentMethod" value="0"/>
+    <intAttribute key="ru.nlmk.eclipse.plugins.profiler.refreshRate" value="5"/>
+    <stringAttribute
+        key="ru.nlmk.eclipse.plugins.profiler.CHECKED_FILTERS" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;filters&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;java.&quot;/&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;javax.&quot;/&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;sun.&quot;/&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;com.sun.&quot;/&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;org.omg.&quot;/&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;org.jacorb.&quot;/&gt;&lt;/filters&gt;"/>
+    <stringAttribute key="ru.nlmk.eclipse.plugins.profiler.FILTERS" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;filters&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;java.&quot;/&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;javax.&quot;/&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;sun.&quot;/&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;com.sun.&quot;/&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;org.omg.&quot;/&gt;&lt;filter class=&quot;ru.nlmk.eclipse.plugins.profiler.launch.filters.ExclusivePackageFilter&quot; package=&quot;org.jacorb.&quot;/&gt;&lt;/filters&gt;"/>
+    <booleanAttribute key="ru.nlmk.eclipse.plugins.profiler.autoStart" value="true"/>
+    <intAttribute key="ru.nlmk.eclipse.plugins.profiler.PROFILE_MODE" value="0"/>
+    <booleanAttribute
+        key="ru.nlmk.eclipse.plugins.profiler.instrumentFinal" value="true"/>
+    <stringAttribute key="ru.nlmk.eclipse.plugins.profiler.startMethod" value=""/>
+    <booleanAttribute
+        key="org.eclipse.jdt.debug.ui.INCLUDE_EXTERNAL_JARS" value="true"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="jcontexmpl"/>
+    <stringAttribute key="ru.nlmk.eclipse.plugins.profiler.startClass" value=""/>
+    <booleanAttribute
+        key="ru.nlmk.eclipse.plugins.profiler.profilerSystemClasses" value="false"/>
+    <stringAttribute key="org.eclipse.debug.core.source_locator_id" value="org.eclipse.jdt.debug.ui.javaSourceLocator"/>
+    <intAttribute key="ru.nlmk.eclipse.plugins.profiler.timingMethod" value="1"/>
+</launchConfiguration>
+

@@ -1,0 +1,77 @@
+### 
+### Defines constants that can be imported from other scripts
+###
+
+
+### Exit Codes 
+### See http://almasw.hq.eso.org/almasw/bin/view/ACS/ScriptInteractionAndCodes
+###
+EC_OK=0               # all fine
+EC_CANNOTCREATE=40    # can't create requested acs instance: already exists
+EC_CANNOTUSE=41       # can't use requested acs instance: doesn't exist or is owned by somebody else
+EC_FAILURE=42         # general failure, no details known
+EC_BADARGS=43         # command line arguments wrong or missing
+EC_NOPORT=44          # can't run requested servant: no port available
+EC_TIMEOUT=45         # can't run requested servant: launch attempt timed out
+
+### Logging priorities
+ACS_DEBUG_PRIORITY=4
+ACS_INFO_PRIORITY=16
+ACS_ERROR_PRIORITY=258
+
+### Instance directories
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    DEFAULT_ACS_TMP=$ACSDATA/tmp/`hostname`
+else
+    DEFAULT_ACS_TMP=$ACSDATA/tmp/`hostname -s`
+fi
+ACS_TMP=${ACS_TMP:-$DEFAULT_ACS_TMP}
+## Identical to ACS_TMP, in absolute path
+ACS_INSTANCES_DIR=$(cd $ACS_TMP 2> /dev/null && pwd)
+## if ACS_TMP is not a directory
+ACS_INSTANCES_DIR=${ACS_INSTANCES_DIR:-$DEFAULT_ACS_TMP}
+unset DEFAULT_ACS_TMP
+
+ACS_PID_DIR=pids
+ACS_OUT_DIR=out
+ACS_IOR_DIR=iors
+ACS_CNF_DIR=conf
+
+### Instance files
+ACS_NOTIFY_OUT=$ACS_OUT_DIR/notify.out
+ACS_LOG_NOTIFY_OUT=$ACS_OUT_DIR/logNotify.out
+ACS_ARCHIVE_NOTIFY_OUT=$ACS_OUT_DIR/archiveNotify.out
+ACS_ALARM_NOTIFY_OUT=$ACS_OUT_DIR/alarmNotify.out
+ACS_LOG_SERVICE_OUT=$ACS_OUT_DIR/acsLogService.out
+ACS_CDB_OUT=$ACS_OUT_DIR/cdb.out
+ACS_ALARM_SERVICE_OUT=$ACS_OUT_DIR/alarmService.out
+ACS_LOGGING_OUT=$ACS_OUT_DIR/logging.out
+ACS_MANAGER_OUT=$ACS_OUT_DIR/manager.out
+
+ACS_LOGFILE=CompleteAcsLog.xml
+
+ACS_PIDSFILE=$ACS_PID_DIR/ACS_PIDS
+ACS_IR_PIDFILE=$ACS_PID_DIR/ACS_IR_PID
+ACS_NAMING_SERVICE_PIDFILE=$ACS_PID_DIR/ACS_NAMING_SERVICE_PID
+ACS_NOTIFY_SERVICE_PIDFILE=$ACS_PID_DIR/ACS_NOTIFY_SERVICE_PID
+ACS_LOGGING_NOTIFY_SERVICE_PIDFILE=$ACS_PID_DIR/ACS_LOGGING_NOTIFY_SERVICE_PID
+ACS_ARCHIVE_NOTIFY_SERVICE_PIDFILE=$ACS_PID_DIR/ACS_ARCHIVE_NOTIFY_SERVICE_PID
+ACS_ALARM_NOTIFY_SERVICE_PIDFILE=$ACS_PID_DIR/ACS_ALARM_NOTIFY_SERVICE_PID
+ACS_LOGGING_SERVICE_PIDFILE=$ACS_PID_DIR/ACS_LOGGING_SERVICE_PID
+ACS_LOG_SERVICE_PIDFILE=$ACS_PID_DIR/ACS_LOG_SERVICE_PID
+ACS_MANAGER_PIDFILE=$ACS_PID_DIR/ACS_MANAGER_PID
+ACS_CDB_PIDFILE=$ACS_PID_DIR/ACS_CDB_PID
+ACS_ALARM_SERVICE_PIDFILE=$ACS_PID_DIR/ACS_ALARM_SERVICE_PID
+ACS_IRFEED_PIDFILE=$ACS_PID_DIR/ACS_IRFEED_PID
+ACS_LOGCLIENT_PIDFILE=$ACS_PID_DIR/ACS_LOGCLIENT_PID
+
+ACS_NAMING_SERVICE_IORFILE=$ACS_IOR_DIR/NameServiceIOR
+ACS_NOTIFY_SERVICE_IORFILE=$ACS_IOR_DIR/NotifyServiceIOR
+ACS_LOGGING_NOTIFY_SERVICE_IORFILE=$ACS_IOR_DIR/LoggingNotifyServiceIOR
+ACS_ARCHIVE_NOTIFY_SERVICE_IORFILE=$ACS_IOR_DIR/ArchiveNotifyServiceIOR
+ACS_ALARM_NOTIFY_SERVICE_IORFILE=$ACS_IOR_DIR/AlarmNotifyServiceIOR
+ACS_IR_IORFILE=$ACS_IOR_DIR/InterfaceRepositoryIOR
+
+#command history file
+ACS_COMMAND_HISTORY_FILE=.acs_command_history

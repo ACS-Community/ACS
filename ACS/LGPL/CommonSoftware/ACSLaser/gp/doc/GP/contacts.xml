@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="standard_stylesheet.xsl"?>
+<document location="">
+  <head>
+    <title>GP project contacts and mailing list</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+  </head>
+	<section>
+	<description>
+<table cellSpacing="0" cellPadding="10" width="100%" border="0">
+  <TR>
+    <TD ID="CellLeft">
+    <p>
+    The project member list can be found <A HREF="members/index.html">here</A>.
+    </p>
+    <p>
+   <B>Mailing lists</B>
+   </p>
+   <table WIDTH="80%" BORDER="0" CELLSPACING="0" CELLPADDING="2" BGCOLOR="#EEEEEE">
+    <tr>
+        <td ID="CellLeftTop10" WIDTH="250"><a href="mailto:project-gp-announce@cern.ch">project-gp-announce@cern.ch</a></td>
+        <td ROWSPAN="4" ID="CellLeftTop8">
+        This listbox is intended to <B>announcements</B> of A&amp;B/CO Gui Platform project.<br/>
+        <font color="#ff0000">[ need more detail on usage here ]</font>
+        </td>
+    </tr>
+    <tr><td ID="CellLeftTop10"><A href="https://wwwlistbox.cern.ch/earchive/project-gp-announce/"> Archives </A> - <a href="https://wwwlistbox.cern.ch/admin-cgi/listbox-admin?operation=viewlist&amp;mail=project-gp-announce@cern.ch"> (un) register </a> - <A href="https://wwwlistbox.cern.ch/admin-cgi/listbox-admin?operation=editlist&amp;mail=project-gp-announce@cern.ch"> Admin </A></td></tr>
+    </table>
+    <br/>
+   <table WIDTH="80%" BORDER="0" CELLSPACING="0" CELLPADDING="2" BGCOLOR="#EEEEEE">
+    <tr>
+        <td ID="CellLeftTop10" WIDTH="250"><a href="mailto:project-gp-users@cern.ch">project-gp-users@cern.ch</a></td>
+        <td ROWSPAN="4" ID="CellLeftTop8">
+        This listbox is intended to <B>users</B> of the A&amp;B/CO Gui Platform project.<br/>
+        <font color="#ff0000">[ need more detail on usage here ]</font>
+        </td>
+    </tr>
+    <tr><td ID="CellLeftTop10"><A href="https://wwwlistbox.cern.ch/earchive/project-gp-users/"> Archives </A> - <a href="https://wwwlistbox.cern.ch/admin-cgi/listbox-admin?operation=viewlist&amp;mail=project-gp-users@cern.ch"> (un) register </a> - <A href="https://wwwlistbox.cern.ch/admin-cgi/listbox-admin?operation=editlist&amp;mail=project-gp-users@cern.ch"> Admin </A></td></tr>
+    </table>
+<br/>
+   <table WIDTH="80%" BORDER="0" CELLSPACING="0" CELLPADDING="2" BGCOLOR="#EEEEEE">
+    <tr>
+        <td ID="CellLeftTop10" WIDTH="250"><a href="mailto:project-gp-dev@cern.ch">project-gp-dev@cern.ch</a></td>
+        <td ROWSPAN="4" ID="CellLeftTop8">
+        This listbox is intended to <B>developers</B> of the A&amp;B/CO Gui Platform project.<br/>
+        <font color="#ff0000">[ need more detail on usage here ]</font>
+        </td>
+    </tr>
+    <tr><td ID="CellLeftTop10"><A href="https://wwwlistbox.cern.ch/earchive/project-gp-dev/"> Archives </A> - <a href="https://wwwlistbox.cern.ch/admin-cgi/listbox-admin?operation=viewlist&amp;mail=project-gp-dev@cern.ch"> (un) register </a> - <A href="https://wwwlistbox.cern.ch/admin-cgi/listbox-admin?operation=editlist&amp;mail=project-gp-dev@cern.ch"> Admin </A></td></tr>
+    </table>
+    </TD>
+  </TR>
+</table>
+	</description>
+	</section>
+</document>
+

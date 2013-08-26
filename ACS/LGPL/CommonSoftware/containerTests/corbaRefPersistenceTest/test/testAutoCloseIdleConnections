@@ -1,0 +1,57 @@
+#!/bin/bash
+
+SECS=15
+
+# Restart the manager with the server timeout
+maciManagerShutdown &> $ACS_TMP/maciManagerShutdown.out
+
+export JAVA_OPTIONS="-Djacorb.connection.server.timeout=${SECS}000"
+
+echo "Restarting the Manager with ${JAVA_OPTIONS}"
+maciManagerJ &> $ACS_TMP/maciManagerJ.out &
+sleep 5 # give some time for the previous maciManagerJ proccess to finish, or ps will fail
+
+# pid is finally the PID of the java jvm that is running the manager
+pid=$(ps | grep maciManagerJ | grep -v grep | awk '{print $1}')
+pid=$(ps -o pid= --ppid $pid)
+pid=$(ps -o pid= --ppid $pid)
+
+echo "Starting containers"
+acsStartContainer -java frodoContainer   &> $ACS_TMP/frodoContainer.out &
+acsStartContainer -py   gandalfContainer &> $ACS_TMP/gandalfContainer.out &
+acsStartContainer -cpp  bilboContainer   &> $ACS_TMP/bilboContainer.out &
+acsStartContainer -cpp  bilboContainer2  &> $ACS_TMP/bilboContainer2.out &
+sleep 10
+
+OPENED_PORTS=$(netstat -putan 2> /dev/null | grep ":3000\>" | grep ${pid} | grep ESTABLISHED | wc -l)
+echo "There are $OPENED_PORTS opened connection to the Manager"
+
+# We sleep until the connection from the container to the
+# manager is automatically closed by the manager
+echo "Sleeping ${SECS} (+2) seconds"
+sleep ${SECS}
+sleep 2
+
+OPENED_PORTS=$(netstat -putan 2> /dev/null | grep ":3000\>" | grep ${pid} | grep ESTABLISHED | wc -l)
+echo "There are $OPENED_PORTS opened connection to the Manager"
+
+# Now let's ask for our components, and then
+# let's trigger a getComponent() on them, so the containers
+# re-open their connection to the manager
+echo "Triggering get_component() on Manager from all containers"
+simpleClient
+
+OPENED_PORTS=$(netstat -putan 2> /dev/null | grep ":3000\>" | grep ${pid} | grep ESTABLISHED | wc -l)
+echo "There are $OPENED_PORTS opened connection to the Manager"
+
+echo "Sleeping ${SECS} (+2) seconds"
+sleep ${SECS}
+sleep 2
+
+OPENED_PORTS=$(netstat -putan 2> /dev/null | grep ":3000\>" | grep ${pid} | grep ESTABLISHED | wc -l)
+echo "There are $OPENED_PORTS opened connection to the Manager"
+
+acsStopContainer frodoContainer
+acsStopContainer gandalfContainer
+acsStopContainer bilboContainer
+acsStopContainer bilboContainer2

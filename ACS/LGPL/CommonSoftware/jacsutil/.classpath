@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar" sourcepath="ACSROOT/lib/junit-dep-4.10.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/xalan.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="JAVA_HOME/lib/tools.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate3.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/jhall-2.0_05.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hamcrest-library-1.3.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="output" path="object"/>
+</classpath>

@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat13,v 1.76 2003/01/09 17:51:23 vltsccm Exp $"
+#
+# tat13: tat timeout
+# 
+
+rm -f .testSession
+rm -f .TestList.sed
+rm -f TestList.grep
+cp TestList.grep.tat13 TestList.grep
+rm -f TestList.sed
+
+rm -f Makefile
+rm -f TestList
+cp TestList.tat13 TestList
+
+TEST_WAIT=10
+export TEST_WAIT
+
+tat -v
+
+
+
+

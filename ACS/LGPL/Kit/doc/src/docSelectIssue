@@ -1,0 +1,85 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docSelectIssue,v 1.31 2002/06/08 17:20:45 vltsccm Exp $" 
+#
+# who        when        what
+# ---------  ----------  ----------------------------------------------
+# G.Filippi  23-12-1993  created 
+# G.Filippi  30-05-1994  ACCESS removed
+#
+
+#************************************************************************
+#   NAME
+#   docSelectIssue - select the issue.
+# 
+#   SYNOPSIS
+#       docSelectIssue <docRootDirectory>
+# 
+#   DESCRIPTION
+# 
+#   See doc.
+#
+#*******************************************************************************
+
+DOC_NUMBER=$1
+
+#
+# Check if the current user is the author or not:
+ME=`whoami`
+CHECK=`ls -ld $DOC_NUMBER | grep $ME`
+if [ "$CHECK" = "" ]
+then 
+    # give a WARNING to the user
+    #
+    clear
+    echo "-------------------------------------------------------------------------------"
+    echo "\n\n\n\n"
+    ls -ld $DOC_NUMBER
+    echo "\n\n\n\n You are not the owner of $DOC_NUMBER."
+    echo "\n Some actions may not be permitted to you.\n\n\n"
+    echo "  Press <Enter> to continue\c"; read a
+fi
+
+#
+# set the document directory 
+cd $DOC_NUMBER
+
+while clear
+do
+    echo "----- Current issue(s) of $DOC_NUMBER \n"
+    if ls -ld issue* 2>/dev/null
+    then    
+        echo "-------------------------------------------------------------------------------"
+        echo "using the mouse cut&paste, select an issue. <Enter> to go up to document choice."
+        read ISSUE_NUMBER
+        if test -n "$ISSUE_NUMBER"
+        then
+            if test -d $ISSUE_NUMBER
+            then 
+                # a valid issue_number(directory) was selected --> activate review selection
+                docSelectPreparation $DOC_NUMBER $ISSUE_NUMBER
+            else
+                # an invalid issue_number(directory) was selected --> signal error and loop
+                echo ""
+                echo " Wrong issue number. Press <Enter> to continue . . ."
+                read a
+            fi
+        else
+            # <Enter> was pressed --> exit (up to previous level)
+            clear
+            exit
+        fi
+    else
+        echo ""
+        echo " Sorry, nothing has been yet archived for this document."
+        echo " "
+        echo "-------------------------------------------------------------------------------"
+        echo " Press <Enter> to continue . . ."
+        read a
+        exit
+    fi
+done
+#
+#end-of-procedure

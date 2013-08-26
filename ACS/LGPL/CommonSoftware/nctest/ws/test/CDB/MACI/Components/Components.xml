@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+      <!--C++ components needed for various tests-->
+      <_ Name="FRIDGE1"	    Code="acsexmplFridgeImpl"      Type="IDL:alma/FRIDGE/FridgeControl:1.0"        Container="TestContainer" ImplLang="cpp" />
+      <!--C++ Consumer components needed...-->
+
+      <!--Java components needed for various tests-->
+      <_ Name="SUPPLIERCOMP1" Code="alma.demo.EventSupplierImpl.EventSupplierHelper" Type="IDL:alma/demo/SupplierComp:1.0" Container="hugoContainer" ImplLang="java" />
+      <_ Name="CONSUMERCOMP1" Code="alma.demo.EventConsumerImpl.EventConsumerHelper" Type="IDL:alma/demo/ConsumerComp:1.0" Container="hugoContainer" ImplLang="java" />
+
+      <_ Name="SUPPLIERSPR2005067" 
+         Code="alma.nctest.EventSupplierSpr2005067Impl.EventSupplierSpr2005067Helper" 
+	 Type="IDL:alma/demo/SupplierComp:1.0" 
+	 Container="hugoContainer" ImplLang="java" />
+
+      <!--Python components should go here...-->
+
+</Components>
+

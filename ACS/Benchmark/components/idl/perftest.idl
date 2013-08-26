@@ -1,0 +1,142 @@
+#ifndef _PERF_TEST_IDL_
+#define _PERF_TEST_IDL_
+
+#include <baci.idl>
+#include <BenchmarkErrType.idl>
+
+#pragma prefix "alma"
+
+module perftest
+{
+    //Generic definitions
+    typedef sequence<char> charSeq;
+
+    //Main use is for NC events.
+    struct charSeqStruct
+    {
+       charSeq aSequence;
+    };
+
+    ///Base performance test interface
+    interface BasePerfComp : ACS::CharacteristicComponent
+    {
+      /** 
+       * Simple synchronous method. What exactly this does is
+       * implementation dependent.
+       */
+       void method();
+   
+      /** 
+       * Setup CAN be used to setup data to be used within the "method" method
+       * implementations. The only reason this helper method exists is because in some
+       * implementations of SimpleBACIComponent it may take longer to generate data than
+       * it does to send the data via CORBA.
+       *  @param count is the number of times some action must be performed (by "method" implementation)
+       *  @param size is the size of the data to be utilized by the method implementation.
+       *  @param sleepTime amount of time to sleep between operations
+       *  @return void
+       *  @htmlonly
+       *  <br><hr>
+       *  @endhtmlonly
+       */
+       void setup(in unsigned long count, in unsigned long size, in ACS::TimeInterval sleepTime);
+    };
+    
+    ///Simple interface
+    interface SimpleBACIComponent : BasePerfComp
+    {
+      void action(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      readonly attribute ACS::RWlong property;
+    };
+
+    ///Tests error system performance
+    interface ErrTestComponent : BasePerfComp
+    {
+      void testExceptions(in long depth, in boolean err) raises (BenchmarkErrType::BenchmarkErr0Ex);
+    };
+
+    ///Tests size of method return values
+    interface MethodTestComponent : BasePerfComp
+    {
+      charSeq testReturnSize();
+   
+      void testInParam(in charSeq chars);
+    };
+
+    ///Complex interface
+    interface ComplexBACIComponent : BasePerfComp
+    {
+      void action01(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action02(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action03(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action04(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action05(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action06(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action07(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action08(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action09(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action10(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action11(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action12(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action13(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action14(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action15(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+      void action16(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+
+      readonly attribute ACS::RWlong property01;
+      readonly attribute ACS::RWlong property02;
+      readonly attribute ACS::RWlong property03;
+      readonly attribute ACS::RWlong property04;
+      readonly attribute ACS::RWlong property05;
+      readonly attribute ACS::RWlong property06;
+      readonly attribute ACS::RWlong property07;
+      readonly attribute ACS::RWlong property08;
+      readonly attribute ACS::RWlong property09;
+      readonly attribute ACS::RWlong property10;
+      readonly attribute ACS::RWlong property11;
+      readonly attribute ACS::RWlong property12;
+      readonly attribute ACS::RWlong property13;
+      readonly attribute ACS::RWlong property14;
+      readonly attribute ACS::RWlong property15;
+      readonly attribute ACS::RWlong property16;
+    };
+
+    /* TODO - delete this?
+     *
+
+    // a very simple component used to stress test the logging channel
+    interface LogStress : ACS::ACSComponent
+    {
+      string sendLogs();
+    };
+
+    *
+    */
+
+   /** @interface Interface LogStressPerformanceTest used to stress test the logging channel
+    */
+   interface LogStressWithDelay : ACS::ACSComponent
+   {
+      void logNumTimes(in long numTimes, in long delayBetweenLogs);
+      boolean getThreadDone();
+   };
+
+	/**
+ 	 * The name of the event channel our interface implementation will 
+	 * send events to.  
+	 */
+	const string NOTIFICATION_STRESS_CHANNEL_NAME = "stressNC";
+
+	interface NotificationServiceStress
+	{
+	   /**
+	    * This IDL structure defines an "event" type that will used to stress test the notification service.
+	    */
+	   struct NotificationServiceStressEvent
+	   {
+	   	charSeq valuesSequence;
+	   };
+	};
+};
+
+#endif

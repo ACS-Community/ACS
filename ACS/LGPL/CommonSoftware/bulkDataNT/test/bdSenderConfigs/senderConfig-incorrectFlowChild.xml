@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BulkDataNTSender
+   xmlns="urn:schemas-cosylab-com:BulkDataNTSender:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTSender:1.0 BulkDataNTSender.xsd">
+
+	<SenderStream Name="BLA">
+		<SenderFlow Name="BLA1">
+			<DDSSenderFlowQoS>
+				<datareader_qos name="BLA1">
+				</datareader_qos>
+			</DDSSenderFlowQoS>
+		</SenderFlow>
+		<SenderFlow Name="BLA2">
+			<DDSSenderFlowQoSUnknown> <!-- Incorrect child element -->
+				<datareader_qos name="BLA2">
+				</datareader_qos>
+			</DDSSenderFlowQoSUnknown>
+		</SenderFlow>
+		<DDSSenderStreamQoS>
+			<participant_qos name="BLA">
+			</participant_qos>
+		</DDSSenderStreamQoS>
+	</SenderStream>
+	<SenderStream Name="PIPO">
+		<SenderFlow Name="PIPO1">
+			<DDSSenderFlowQoS>
+				<datareader_qos name="PIPO1">
+				</datareader_qos>
+			</DDSSenderFlowQoS>
+		</SenderFlow>
+		<SenderFlow Name="PIPO3">
+			<DDSSenderFlowQoS>
+				<datareader_qos name="PIPO3">
+				</datareader_qos>
+			</DDSSenderFlowQoS>
+		</SenderFlow>
+	</SenderStream>
+
+</BulkDataNTSender>

@@ -1,0 +1,132 @@
+#!/bin/bash 
+#
+# Script to automatically install Ant
+#
+# who       when       what
+# --------  ---------  ----------------------------------------------
+# psivera   24/04/2003 created
+# sturolla  09/09/2005 ported to Bourne Shell and OS checks is done by an external subroutine
+# hsommer   08/07/2007 Update to ANT 1.7 for ACS 7.0
+#
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+# Some default values
+#
+
+Install_Ant()
+{
+    if [ -z "$ANT_HOME" ]
+    then
+	echo "ANT_HOME is not set, cannot continue.\n"
+	exit 1
+    fi
+
+#    case "${DISTRO}-${REL}" 
+#    in
+#	"SOLARIS-5.8") 	ARCHIVE=`pwd`/../PRODUCTS/apache-ant-1.7.0-bin.tar.gz ;;
+#	"RHLX-9") 	ARCHIVE=`pwd`/../PRODUCTS/apache-ant-1.7.0-bin.tar.gz ;;
+#	"SL-4.1")    	ARCHIVE=`pwd`/../PRODUCTS/apache-ant-1.7.0-bin.tar.gz ;;
+#	"RHEL-4")	ARCHIVE=`pwd`/../PRODUCTS/apache-ant-1.7.0-bin.tar.gz ;;
+#	*) 		echo "OS not supported. Proceeding as for RedHat Linux 9"
+#           		ARCHIVE=`pwd`/../PRODUCTS/apache-ant-1.7.0-bin.tar.gz ;;
+#    esac
+
+    VERSION=1.7.1
+    ARCHIVE=`pwd`/../PRODUCTS/apache-ant-$VERSION-src.tar.gz 
+    JAR_ARCHIVE=`pwd`/../PRODUCTS/apache-ant-jars 
+
+    BIN_DIR=apache-ant-$VERSION
+
+    if [ ! -d $ANT_HOME ]
+    then
+         mkdir -p $ANT_HOME
+         RET=$?
+         if [ $RET -ne 0 ]
+         then
+            echo "Failed to create $ANT_HOME, cannot continue..."
+            exit 1
+         fi
+    fi
+
+    echo "Now installing Ant $VERSION... \c"
+    cd $ANT_HOME
+    tar -xzf $ARCHIVE
+    cd $BIN_DIR
+    tar cf - . | (cd ..; tar xf -)
+    cd ..
+    rm -rf $BIN_DIR
+    export CLASSPATH=$CLASSPATH:$JAR_ARCHIVE/junit.jar
+    sh build.sh install-lite || exit 1
+# HSO 2007-07-08: The patch to suppress the system-wide ant config is no longer needed
+#                 with ANT 1.7, because it respects the ANT_HOME installation.
+# 
+#    echo "Patching Ant to work with a user installation"
+#
+#    patch -p0 <<'EOF'
+#--- bin.old/ant     2004-10-15 13:42:25.000000000 +0200
+#+++ bin/ant 2004-10-15 13:38:35.000000000 +0200
+#@@ -4,9 +4,12 @@
+# #   reserved.
+# 
+# # load system-wide ant configuration
+#-if [ -f "/etc/ant.conf" ] ; then
+#-  . /etc/ant.conf
+#-fi
+#+# G.Chiozzi - 2004-10-15
+#+# This must be commented out, because it makes impossible
+#+# to install locally a different version of ANT
+#+# if [ -f "/etc/ant.conf" ] ; then
+#+#  . /etc/ant.conf
+#+# fi
+# 
+# # provide default values for people who don't use RPMs
+# if [ -z "$rpm_mode" ] ; then
+#EOF
+    echo "done.\n"
+
+}
+
+
+
+######################################################################
+#                                                                    #
+# Execution starts here!                                             #
+#                                                                    #
+######################################################################
+
+LOG=buildAnt.log
+#
+exec > $LOG 2>&1
+
+date
+
+# Check OS
+#if [     ${DISTRO}-${REL} != "SOLARIS-5.8"       \
+#     -a  ${DISTRO}-${REL} != "RHLX-9"           \
+#     -a  ${DISTRO}-${REL} != "RHEL-4"           \
+#     -a  ${DISTRO}-${REL} != "SL-4.1"           \
+#   ]
+#then
+#    echo "\n\tWARNING: this procedure has not been tested on this system\n"
+#fi
+
+CURR_DIR=`pwd`
+
+#
+# It build and install the archive
+#
+Install_Ant
+
+#
+cd $CURR_DIR
+
+echo Ant installation done!
+date
+
+

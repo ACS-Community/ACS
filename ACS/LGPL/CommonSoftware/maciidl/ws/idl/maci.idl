@@ -1,0 +1,1379 @@
+#ifndef maci_IDL
+#define maci_IDL
+
+/** MACI Management and Access Control Interface. 
+    In abstract terms, a control system can be viewed as 
+    a collection of services that enable the interaction  
+    between the controlled entities and the clients.
+
+    The MACI module provides meta-services to manage 
+    the services themself. 
+    In particular it provides a uniform environment in 
+    which the services function and handles their life cycle.
+*/
+
+#include <acscommon.idl>
+#include <logging_idl.idl>
+#include <ACSErrTypeCommon.idl>
+#include <maciErrType.idl>
+
+#pragma prefix "ijs.si"
+module maci {
+
+        /** 
+	    A 32-bit integer representing access rights. It is used to describe
+	    access rights possessed by accessors and those required by objects
+	    being accessed). In order for access to be granted, bitwise <I>and</I>
+	    of <TT>POSSESED</TT> and <TT>REQUIRED</TT> must equal
+	    <TT>REQUIRED</TT>. 
+	*/
+	typedef unsigned long AccessDescriptor;
+
+	/** 
+	    Convenience typedef for sequences of strings. 
+	*/
+	typedef sequence <string> stringSeq;
+
+	/** 
+	    The Handle alias defines a universal handle used by MACI to uniquely
+	    tag the object instances. Handles optimize access and identifications
+	    of MACI components and replace the use of string identifiers. Handles
+	    are not unique globally and are not static. Manager guarantees only
+	    that they are unique in their scope and only for the duration of the
+	    object denoted by the handle.
+
+	    Upper 8 bits (24 to 31) of the handle denote the type of the
+	    object that the handle is representing. Possible values of the
+	    upper-most byte are:
+	    
+	    <UL>
+	    <LI>0 - the handle is reserved</LI>
+	    <LI>1 - the handle represents a component</LI>
+	    <LI>2 - the handle represents a client</LI>
+	    <LI>3 - the handle represents an administrator</LI>
+	    <LI>4 - the handle represents a container</LI>
+	    <LI>5 - the handle represents a Manager (for inter-domain communcation).</LI>
+	    </UL>
+
+	    Bits 0 thru 15 uniquely tag object instance. Bits 16 thru
+	    23 are reserved. 
+	*/
+	typedef unsigned long Handle;
+
+	/**
+	 * The internal structure of the handles assigned by the manager 
+	 * are usually an implementation secret of the manager.
+	 * However, we make the manager handle mask available so that tools such as the OMC
+	 * can show that it is the manager (and not some other client in the system)
+	 * who holds a component reference, for example in the case of immertal components.
+	 */
+	const Handle HANDLE_MANAGER_MASK = 0x05000000;
+
+	/** 
+	    Every component must have a unique designation, which clients use to
+	    identify that component. As a metaservice, MACI provides name
+	    resolution that from a well-formed component designation generates the
+	    component reference that can be returned to the client. Well-formed
+	    component designations are component URLs or CURLs.  CURL is a
+	    hierarchical name implemented as a string of arbitrary length that
+	    consists of a static prefix (curl:// ),	domain identifier and the
+	    component name. An example of a CURL might be
+	    "curl://antenna1.alma/mount/motor2", representing the 2nd motor of the
+	    mount component for ALMA antenna number 1.
+
+	    The syntax of the CURL is:
+
+	    <TT>curl://<I>subdomain.domain</I>/<I>object/subobject</I></TT>
+
+	    Both the domain and the object part form a
+	    hierarchy. Components of the domain name are separated by a
+	    dot, and parts of the object name are separated by a slash. 
+	*/
+	typedef string CURL;
+
+	/** 
+	    Convenience typedef for sequences of CURLs. 
+	*/
+	typedef sequence<string> CURLSeq;
+
+	/** 
+	    Convenience typedef for sequences of unsigned longs. 
+	*/
+	typedef sequence<unsigned long> ulongSeq;
+
+	/** 
+	    Convenience typedef for sequences of Handle 
+	*/
+	typedef ulongSeq HandleSeq;
+
+	/** 
+	    Convenience typedef for sequences of ExecutionId 
+	*/
+	typedef long long ExecutionId;
+
+
+    /** 
+        Structure in which the Manager stores information about a component. 
+    */
+    struct ComponentInfo {
+	    /** 
+		The type of the component. Uniquely identifies the code-base which the
+		component's servant is executing. Given the type name and
+		a hypothetical type library it is possible to infer
+		supported interfaces, version information, etc. 
+	    */
+	    string type;
+	    
+	    /** 
+		The code of the component, e.g. shread library name, java class name,
+		python code. 
+	    */
+	    string code;
+	    
+	    /** 
+		Reference to the component. nil if the component has not yet been
+		activated. 
+	    */
+	    Object reference;
+	    
+	    /** 
+		Name of the component (without the domain). The name of the component
+		must be unique within the domain, and can be used to identify the
+		component. The name can imply hierarchy, which it does by separating
+		name components with a '/' (slash). 
+	    */
+	    string name;
+
+	    /** 
+		Specifies the clients that have requested and successfuly obtained a
+		reference to this component from the Manager. If a client has done so
+		more than once, its handle is repeated.
+		
+		For immortal and startup components this list
+		always contains at least one handle: the
+		Manager. Thus, the only way to deactivate these
+		components is by deactivating the Manager. 
+	    */
+	    HandleSeq clients;
+	    
+	    /** 
+		Handle to the container which hosts the component. This handle is 0 if
+		the component has not been activated by an container, but by some
+		other means, and has only been registered with the Manager through
+		register_component. 
+	    */
+	    Handle container;
+	    
+	    /** 
+		Name of the container which hosts the component. 
+	    */
+	    string container_name;
+	    
+	    /** 
+		Component's handle. The handle is automatically assigned by the
+		Manager. 
+	    */
+	    Handle h;
+
+	    /** 
+		Required access rights to access this component. When a client
+		attempts to access the component (via Manager's
+		get_service), the bitwise AND of client's access and
+		component's access must yield component's access in
+		order for the client to have the permission to access
+		the component. 
+	    */
+	    AccessDescriptor access;
+
+	    /** 
+		A list of all interfaces supported by the component. The interface
+		names are in the CORBA repository_id format, and are
+		prefixed with "IDL". The first interface in the list
+		is the default interface. 
+	    */
+	    stringSeq interfaces;
+	};
+
+	/** 
+	    Convenience typedef for sequences of ComponentInfo 
+	*/
+	typedef sequence<ComponentInfo> ComponentInfoSeq;
+
+	enum ImplLangType { JAVA, CPP, PYTHON };
+	enum ClientType { CLIENT_TYPE, ADMINISTRATOR_TYPE, CONTAINER_TYPE };
+	struct AuthenticationData {
+		string answer;				///< Answer to authenticate question.
+		ClientType client_type;		///< Client type.
+		ImplLangType impl_lang;		///< Client implementation type.
+		boolean recover;			///< Flag indicating whether manager should try to recover client.
+		ACS::Time timestamp;		///< Timestamp of client start-up; there might be a significant time difference
+			///between login time and client start-up time.
+		ExecutionId execution_id;	///< Client should return execution ID passed via authenticate method,
+			///but if it already has been given an ID before (e.g. container relogin) returned ID will be used
+			///by the manager to notify administrators. If 0, this value will be ignored.
+	};
+	
+	/** 
+	    Every client of a component service that is not itself a component
+	    must implement an interface called Client. The interface allows the
+	    client to act as a secure party in the communication with the
+	    components, to receive general-purpose string messages from the MACI
+	    components and to be notified when any change happens to the
+	    components that the client utilizes. Each client logs in to the MACI
+	    system before any other requests are made, and in turn it obtains a
+	    security token, which it must use in every subsequent request to the
+	    MACI. 
+	*/
+	interface Client {
+  	   /** 
+	       Type constant identifying an error message. 
+	   */
+	   const short MSG_ERROR = 0;
+
+	   /** 
+	       Type constant identifying informational message. 
+	   */
+	   const short MSG_INFORMATION = 20;
+		
+	   /**
+	      Type constant identifying component autoload start message
+	    */
+	   const short MSGID_AUTOLOAD_START = 1;
+
+	   /**
+	      Type constant identifying component autoload end message
+	    */
+	   const short MSGID_AUTOLOAD_END = 2;
+
+           /** 
+            Client name 
+	   */ 
+	   readonly attribute string name;
+
+	   /** 
+	       Disconnect notification. The disconnect method is called by the
+	       Manager to notify the client that it will be unavailable and that the
+	       client should log off.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
+	   */
+	   oneway void disconnect ();
+
+	   /** 
+	       Authentication method. Method authenticate is the challenge issued to
+	       the client after it tries to login. The login will be successful if
+	       the client's authenticate() produces the expected result. Only in this
+	       case will the Manager's login method return a valid handle, which the
+	       client will later use as the id parameter with all calls to the Manager.
+
+	       @return Answer to the question. The first character of
+	       the answer identifies the type of the client, and can
+	       be one of:
+
+	       <UL>
+	       <LI><TT>C</TT> A regular client (implements just the Client interface).</LI>
+	       <LI><TT>A</TT> An container (implements the Container interface).</LI>
+	       <LI><TT>AR</TT> An container with recovery capability (implements the Container interface). </LI>
+	       <LI><TT>S</TT> Supervisor (implements the Administrator interface).</LI>
+	       </UL>
+	   */
+	   AuthenticationData authenticate (
+	       in ExecutionId execution_id, ///< Execution ID of the container logging in.
+	       in string question	///< The question posed by the Manager.
+	       );
+
+	   /** 
+	       The Manager and administrators use this method for sending textual
+	       messages to the client.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
+	   */
+	   oneway void message (
+	       in short type,	   ///< Can be either MSG_ERROR or MSG_INFORMATION.
+	       in string message   ///< Contents of the message. The contents are human readable.
+	       );
+
+	   /** 
+	       The Manager and administrators use this method for sending textual
+	       messages and status indicators to the client.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
+	   */
+	   oneway void taggedmessage (
+	       in short type,	   ///< Can be either MSG_ERROR or MSG_INFORMATION.
+	       in short messageID, ///< Type of message being sent.
+	       in string message   ///< Contents of the message. The contents are human readable.
+	       );
+
+	   /** 
+	       Manager pings its clients (both GUI clients, as well as containers)
+	       repeatedly to verify that they still exist.
+
+	       The return value can be either "true", indicating that everything is
+	       OK with the client, of "false", indicating that client is
+	       malfunctioning.
+
+	       If CORBA::TRANSIENT exception is thrown, the Manager
+	       should retry the ping several times, and only then
+	       shall the client be assumed to be malfunctioning.
+
+	       If another exception is thrown, the client may be
+	       immediately assumed to be malfunctioning.
+
+	       Once the client is found to be malfunctioning, the
+	       Manager makes an implicit logout of the client.
+	   */
+	   boolean ping ();
+
+	   /** 
+	       Notify client about the change (availability) of the components
+	       currently in use by this client. For administrative clients,
+	       notification is issued for the change of availability of any component
+	       in the domain.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
+	   */
+	   oneway void components_available (
+               /** 
+		   A sequence of ComponentInfo structures identifying the affected
+		   components. Regular clients receive the name, the type,
+		   the handle and the reference of the newly activated
+		   component. Administrative clients also receive the
+		   handle of the container where the component was
+		   activated. 
+	       */
+	       in ComponentInfoSeq components	
+	       );
+
+	   /** 
+	       Notify client that some of the components currently in use by client
+	       have become unavailable.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
+	   */
+	   oneway void components_unavailable (
+	       in stringSeq component_names	///< CURLs of the unavailable components.
+	       );
+	   
+	}; /* end interface Client */
+
+	/** 
+	    Structure in which the Manager stores information about a client. 
+	    Here, a client is any entity that accesses components, 
+	    and therefore a component can also act as a client. 
+	*/
+	struct ClientInfo {
+		/** 
+		    Client's handle. 
+		    The range depends on the class of the client 
+		    (a component, regular client, administrator, ...). 
+		*/
+		Handle h;
+		/** 
+		    Reference to the client's object. 
+		    If the client is a component, this is the 
+		    reference to the container which hosts the component. 
+		*/
+		Client reference;
+		/** 
+		    Specifies the components to which the client 
+		    has requested and successfuly obtained a 
+		    reference from the Manager. 
+		    If a client has done so more than once 
+		    for the same component, component's handle is repeated. 
+		*/
+		HandleSeq components;
+		/** 
+		    Client's name. 
+		    This is the same name as given by 
+		    Client::name for non-component clients, 
+		    and component's name for component clients. 
+		*/
+		string name;
+		/** 
+		    Specifies the access rights of the client. 
+		    These access rights are used by the Manager 
+		    in determining the client's access rights. 
+		*/
+		AccessDescriptor access;
+	}; /* 	struct ClientInfo */
+
+	/** 
+	 * CBComponentInfo objects are used to asynchronously execute an action which takes a large amount of
+	 * time to complete and returns ComponentInfo value.
+	 * 
+	 * When the callback is used for asynchronous notification in response to some action, the 
+	 * done method will be invoked when the action terminates, either with error condition or 
+	 * success (discovered by examining the Completion parameter). When the client processes the done 
+	 * invocation, it may discard the callback. The completion condition and the timestamp are reported 
+	 * through the Completion structure as a part of the callback notification. If the action is time 
+	 * consuming, i.e. it cannot be completed before the normal_timeout parameter found in the CBDescIn
+	 * structure, the server must issue a working notification periodically (the server works under 
+	 * presupposition that each invocation resets the client's timeout timer to the 
+	 * normal_timeout period). The client must not discard the callback before done notification is 
+	 * called or one of the notifications timeouts on the client side.
+	 * 
+	 * See the BACI specifications for a detailed discussion on timeouts. 
+	 */
+	interface CBComponentInfo : ACS::Callback {
+		/**
+		 * The working method can be invoked by the servant any number of times provided it sets
+		 * the appropriate timeout fields in the CBDescOut structure to inform the client. This is a 
+		 * oneway method so the developer need not be worried about how long it takes their implementation
+		 * of the method to complete.
+		 * @param value Current status of the activation.
+		 * @param c A completion structure containing a description of current operation status and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		void working (in ComponentInfo value,
+					in ACSErr::Completion c,
+					in ACS::CBDescOut desc);
+		
+		/** 
+		 * The done method is invoked only one time by the servant and signifies the end of future method
+		 * invocations on this particular callback instance. Once this method has been invoked, the instance
+		 * can be discarded.
+		 * @param value Result of the activation.
+		 * @param c A completion structure containing a description of how the operation completed (success
+		 *          or failure) and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		void done (in ComponentInfo value,
+					in ACSErr::Completion c,
+					in ACS::CBDescOut desc);
+	};
+	
+	/** 
+	    Convenience typedef for sequences of ClientInfo 
+	*/
+	typedef sequence <ClientInfo> ClientInfoSeq;
+
+	/** 
+	    Container is an agent of MACI that is installed on 
+	    every computer of the control system. 
+	    There can be more than one container living on the 
+	    same computer, but there can be only one container per process. 
+	    It has the following responsibilities:
+
+	    <OL>
+	    <LI>Constructs components when the Manager instructs it to
+	    (see activate_component and deactivate_component).</LI>
+	    <LI>Provides the components that it hosts with basic MACI services, such as:
+	    <UL>
+	    <LI>access to the Manager</LI>
+	    <LI>access to the Local Database</LI>
+	    <LI>access to other components (indirectly through the Manager)</LI>
+	    <LI>access to the ORB and POA</LI>
+	    </UL>
+	    <LI>Handles intricacies of working with the ORB and the
+	    POA, such as connecting the newly created components to
+	    the POA.</LI>
+	    <LI>Maintains code-base of components that can be
+	    instantiated on the computer (see get_executables,
+	    get_executable_info and put_executable_code.</LI> 
+	    <LI>Is responsive to a shutdown directive from the
+	    Manager, which can shutdown only the container's process,
+	    or reboot the computer (see shutdown).</LI> 
+	    </OL>
+	    
+	    The container assists the Manager in fault detection: the
+	    container responds to periodic pings issued by the
+	    Manager, and if the responses stop, the Manager may assume
+	    a failure of the container's computer (see the
+	    Client::ping method).
+
+	    Container may support recovery. If the container
+	    terminates unexpectedly, and then recovers (after a
+	    reboot, for example), it logs in to the Manager and
+	    notifies it that it supports recovery by responding with
+	    "AR" to the Client::authenticate method. The Manager then
+	    uses the activate_component method on the container to
+	    bring all the components the container used to have back
+	    to life.
+
+	    If the container does not support recovery, it should
+	    respond with "A" to the Client::authenticate method. In
+	    this case, the Manager will log off the previous instance
+	    of the container implicitly if it has not yet done so. 
+
+	*/
+	interface Container : Client, ::Logging::LoggingConfigurable{
+
+  	    /** 
+		Activate a component whose type (class) and name (instance) are given.
+		
+		In the process of activation, component's code-base is loaded into
+		memory if it is not there already. The code-base resides in an
+		executable file (usually a dynamic-link library or a shared library --
+		DLL). 
+		
+		On platforms that do not automatically load dependent executables
+		(e.g., VxWorks), the container identifies the dependancies
+		by querying the executable and loads them automatically.  
+		
+		Once the code is loaded, it is asked to construct a
+		servant of a given type. 
+		
+		The servant is then initialized with the Configuration
+		Database (CDB) and Persistance Database (PDB) data. The
+		servant is attached to the component, and a reference to
+		it is returned. 
+		
+		@return Returns the reference to the object that has just
+		been activated. If the component could not the activated, a
+		nil reference is returned. 
+	    */
+	    ComponentInfo activate_component (
+		in Handle h,	///< Handle of the component that is
+				///being activated. This handle is
+				///used by the component when it will
+				///present itself to the Manager. The
+				///component is expected to remember
+				///this handle for its entire
+				///life-time.
+				
+		in ExecutionId execution_id, ///< Execution ID of the component
+				///that is being activated.
+
+		in string name,	///< Name of the component to
+				///instantiate.
+
+		in string exe,	///< Path to the executable file (a
+				///DLL or a shared library) in which
+				///the component's code resides. The
+				///path is relative to the root
+				///directory in which all executable
+				///code is stored. The path must not
+				///contain dots, and uses slashes (not
+				///backslashes) to separate components
+				///of the path. The path must not
+				///include the extension, or any
+				///prefixes, so that it is platform
+				///independent.
+
+		in string type	///< The type of the component to
+				///instantiate. The interpretation of
+				///this field depends on the
+				///executable. Type should uniquely
+				///identify the code-base which the
+				///component will be
+				///executing. <B>Note:</B> Type name
+				///is <B>NOT</B> CORBA repository id. 
+		)
+		raises (maciErrType::CannotActivateComponentEx);
+
+
+  	    /** 
+		Asynchronously activate a component.
+		See activate_component. 
+	    */
+	    void activate_component_async (
+		in Handle h,	///< Handle of the component that is
+				///being activated. This handle is
+				///used by the component when it will
+				///present itself to the Manager. The
+				///component is expected to remember
+				///this handle for its entire
+				///life-time.
+				
+		in ExecutionId execution_id, ///< Execution ID of the component
+				///that is being activated.
+
+		in string name,	///< Name of the component to
+				///instantiate.
+
+		in string exe,	///< Path to the executable file (a
+				///DLL or a shared library) in which
+				///the component's code resides. The
+				///path is relative to the root
+				///directory in which all executable
+				///code is stored. The path must not
+				///contain dots, and uses slashes (not
+				///backslashes) to separate components
+				///of the path. The path must not
+				///include the extension, or any
+				///prefixes, so that it is platform
+				///independent.
+
+		in string type,	///< The type of the component to
+				///instantiate. The interpretation of
+				///this field depends on the
+				///executable. Type should uniquely
+				///identify the code-base which the
+				///component will be
+				///executing. <B>Note:</B> Type name
+				///is <B>NOT</B> CORBA repository id. 
+				
+		in CBComponentInfo callback,
+		in ACS::CBDescIn desc
+		)
+		;
+
+	    /** 
+		Deactivate a components whose handle is given. Deactivation is the
+		inverse process of activation: component is detached from the POA, and
+		thus made unavailable through CORBA, and its resources are freed. If
+		its code-base is no longer used, it is unloaded from memory.
+		For the time being the Containers implement this as a synchronous call,
+		but in the future we may change it to return before the component has been fully deactivated.
+		TODO: Remove CannotDeactivateComponentEx, see http://almasw.hq.eso.org/almasw/bin/view/ACS/ReleaseComponentRefactoring2010
+	    */
+	    void deactivate_component (
+		in Handle h	///< A handle identifying
+				///a component to be released.
+
+		)
+		raises (maciErrType::CannotDeactivateComponentEx, maciErrType::ComponentDeactivationUncleanEx, maciErrType::ComponentDeactivationFailedEx);
+
+
+	    /** 
+		Shutdown the container.
+	     
+	       Notice that this is a oneway method and therefore 
+	       there cannot be return values or user exceptions.
+	       Only CORBA runtime exceptions due to communication
+	       issues can be thrown
+	    */
+	    oneway void shutdown (
+		in unsigned long action	///< Action to take after
+					///shutting down. Bits 8 thru
+					///15 of this parameter denote
+					///the action, which can be
+					///one of: <UL><LI>0 -- reload
+					///the container</LI><LI>1 --
+					///reboot the
+					///computer</LI><LI>2 -- exit
+					///the container</LI></UL> The
+					///bits 0 thru 7 (values 0 to
+					///255) are the return value
+					///that the container will
+					///pass to the operating
+					///system.
+
+		);
+
+	    /** 
+		Returns information about a subset of components that 
+		are currently hosted by the container.
+		
+		<B>Note:</B> If the list of handles is empty, 
+		information about all components hosted by the container is returned!
+		
+		@return Information about the selected components.
+	    */
+	    ComponentInfoSeq get_component_info (
+		in HandleSeq h	///< Handles of the components whose
+				///information should be retrieved.
+
+		);
+
+	    /** 
+		Restarts an component. 
+		Returns a new reference of the restarted component. 
+	    */
+	    Object restart_component(
+		in Handle h		///< Handle of the component to be restarted.
+		)
+		raises (maciErrType::CannotRestartComponentEx);
+	    
+	    /** Set component shutdown order.*/
+	    void set_component_shutdown_order(
+		in HandleSeq h	///< Ordered sequence of component handles.
+		);
+
+	    const string ContainerStatusStartupBeginMsg = "ContainerStatusMsg: Startup begins";
+	    const string ContainerStatusStartupEndMsg = "ContainerStatusMsg: Startup ends";
+	    const string ContainerStatusORBInitBeginMsg = "ContainerStatusMsg: ORB initialization begins";
+	    const string ContainerStatusORBInitEndMsg = "ContainerStatusMsg: ORB initialization ends";
+	    const string ContainerStatusMgrInitBeginMsg = "ContainerStatusMsg: Manager access initialization begins";
+	    const string ContainerStatusMgrInitEndMsg = "ContainerStatusMsg: Manager access initialization ends";
+	    const string ContainerStatusCompAutoloadBeginMsg = "ContainerStatusMsg: Automatic component loading begins";
+	    const string ContainerStatusCompAutoloadEndMsg = "ContainerStatusMsg: Automatic component loading ends";
+	    const string ContainerStatusReadyMsg = "ContainerStatusMsg: Ready";
+
+	}; /* end interface Container */
+
+	/** 
+	    Structure in which the Manager stores information about a container. 
+	*/
+	struct ContainerInfo {
+	    /** Container's name. The name coincides with the name
+		of the machine where the container's ORB is
+		listening for incoming requests. The name of the machine
+		can be either an unresolved DNS name or a resolved
+		stringified IP address. 
+	    */
+	    string name;
+
+	    /** 
+		Container's handle (in the range 0x04000000 to 0x04FFFFFF). 
+	    */
+	    Handle h;
+
+	    /** 
+		Reference to the container. 
+	    */
+	    Container reference;
+
+	    /** 
+		Handles of all components hosted by the container. 
+	    */
+	    HandleSeq components;
+	};
+
+	/** 
+	    Convenience typedef for sequences of ContainerInfo. 
+	*/
+	typedef sequence<ContainerInfo> ContainerInfoSeq;
+
+	/** 
+	    Administrator is a special-purpose client that 
+	    can monitor the functioning of the domain that it administers. 
+	    Monitoring includes obtaining the status of the MACI components 
+	    (the Manager and containers) as well as notification 
+	    about the availability of the component components. 
+	    The command center client is granted special access 
+	    permissions (INTROSPECT_MANAGER). 
+	*/
+	interface Administrator : Client {
+
+		/** 
+		    Notification that a client has just logged in.
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void client_logged_in (
+			in ClientInfo info,			///< Information about the client that has just logged in. If the handle of the client (<TT>info.h</TT>) is 0, the Client failed to authenticate.
+			in ACS::Time timestamp,  	///< Time of this event.
+			in ExecutionId execution_id	///< Execution ID.
+			);
+
+		/** 
+		    Notification that a client has just logged out.
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void client_logged_out (
+			in Handle h,			///< Handle of the client that has logged out.
+			in ACS::Time timestamp  ///< Time of this event.
+			);
+
+		/** 
+		    Notification that a container has just logged in.
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void container_logged_in (
+			in ContainerInfo info,		///< Information about the container that has just logged in. If the handle of the container (<TT>info.h</TT>) is 0, the container failed to authenticate.
+			in ACS::Time timestamp,  	///< Time of this event.
+			in ExecutionId execution_id	///< Execution ID.
+			);
+
+		/** 
+		    Notification that a client has just logged out.
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void container_logged_out (
+			in Handle h,			///< Handle of the container that has logged out.
+			in ACS::Time timestamp  ///< Time of this event.
+			);
+
+		/** 
+		    Notification that some components have just been 
+		    requested (through get_component or get_components).
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void components_requested (
+			in HandleSeq clients,		///< Handles of clients requesting components.
+			in HandleSeq components,	///< Handles of requested components. component at the i-th place in the sequence was requested by the i-th client of sequence clients.
+			in ACS::Time timestamp  	///< Time of this event.
+			);
+
+		/** 
+		    Notification that some components have just been 
+		    released (through release_component).
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void components_released (
+			in HandleSeq clients,		///< Handles of clients requesting components.
+			in HandleSeq components,	///< Handles of requested components. component at the i-th place in the sequence was requested by the i-th client of sequence clients.
+			in ACS::Time timestamp  	///< Time of this event.
+			);
+
+		/** 
+		    Notification that some component has just been 
+		    activated (through Container::activate_component).
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void component_activated (
+			in ComponentInfo info,		///< Component info of activated component.
+			in ACS::Time timestamp,		///< Time of this event.
+			in ExecutionId execution_id	///< Execution ID.
+		);
+		
+		/** 
+		    Notification that some component has just been 
+		    deactivated (through Container::deactivate_component).
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void component_deactivated (
+			in Handle h,	 		///< Handle of deactivated component.
+			in ACS::Time timestamp  ///< Time of this event.
+		);
+	};
+
+	/** 
+	    Administrator to be notified in synchronous way. See Administrator.
+	*/
+	interface SynchronousAdministrator : Administrator {
+	};
+
+	/** 
+	    Convenience typedef for sequences of objects. 
+	*/
+	typedef sequence<Object> ObjectSeq;
+
+	/** 
+	    String constant denoting any entry in 
+	    the component specification, 
+	    the value will be determined by the Manager. 
+	*/
+	const string COMPONENT_SPEC_ANY = "*";
+
+	/** 
+	    This structure contains all fields necessary 
+	    to describe a component and its deployment information. 
+	*/
+	struct ComponentSpec
+	{
+		CURL component_name;	///< Name of the component.
+		string component_type;	///< IDL interface implemented by the component.
+		string component_code;	///< Executable code for the component (e.g. DLL, Java class).
+		string container_name;	///< Container where the component is deployed.
+	};
+
+	/** 
+	    Convenience typedef for sequences of ComponentSpec 
+	*/
+	typedef sequence<ComponentSpec> ComponentSpecSeq;
+
+	/** 
+	    Manager is the central point of interaction 
+	    between the components and the clients that 
+	    request MACI services. 
+	    A Manager is responsible for managing a domain.
+
+	    Manager has the following functionality:
+	    <UL>
+	    <LI>It is the communication entry point.</LI>
+	    <LI>It performs as a name service, resolving CURLs into component references.</LI>
+	    <LI>It delegates the component life cycle management to the container.</LI>
+	    <LI>It provides information about the whole domain.</LI>
+	    </UL> 
+	*/
+	interface Manager : ::Logging::LoggingConfigurable {
+	
+		/** The fully qualified name of the domain, e.g., "antenna1.alma.nrao". */
+		readonly attribute string domain_name;
+
+		/**
+		   Allows operator/monitoring tools to check the status of the manager.
+		   The required return value is "true" (it is not entierely clear why these ping methods don't usually just return void).
+		 */
+		boolean ping();
+
+		/** 
+		    Login to MACI. 
+		    Containers, Clients and Administrative clients call 
+		    this function first to identify themselves 
+		    with the Manager. 
+		    The Manager authenticates them (through the authenticate 
+		    function), and assigns them access rights and a handle, 
+		    through which they will identify themselves 
+		    at subsequent calls to the Manager.
+
+		    @return A ClientInfo structure with handle (h) 
+		    and access fields filled-in. 
+		    If the client with this name did not logout prior to 
+		    calling login, the components sequence in ClientInfo 
+		    contains the handles of all components that the 
+		    client was using. 
+		    (For containers, the components sequence contains 
+		    handles of all components previously hosted by the container.)
+		*/
+		ClientInfo login (
+			in Client reference	///< A reference to the Client.
+			)
+                    raises (maciErrType::NoPermissionEx);
+
+
+		/** 
+		    Logout from MACI.
+		 */
+		void logout (
+			in Handle id	///< Handle of the Client that is logging out.
+			)
+                    raises (maciErrType::NoPermissionEx);
+
+
+		/** 
+		    Register a CORBA object as a component, 
+		    assigning it a CURL and making it accessible 
+		    through the Manager. 
+		    The component is treated as an immortal component.
+
+		    @return Returns the handle of the newly created component.
+		 */
+		Handle register_component (
+			in Handle id,	///< Identification of the caller. The caller must have the REGISTER_COMPONENT access right to perform this operation.
+			in string component_url,	///< CURL that will be assigned to the object. The CURL must be in the Manager's domain, otherwise a fundamental property of domains that one computer belongs to only one domain would be too easy to violate.
+			in string type,
+			in Object c	///< Reference to the CORBA object (component).
+			)
+		    raises (maciErrType::NoPermissionEx,
+			    maciErrType::CannotRegisterComponentEx);
+
+		/** 
+		    Unregister a component from the Manager.
+		 */
+		void unregister_component (
+			in Handle id,	///< Identification of the caller. The caller must have the REGISTER_COMPONENT access right to perform this operation.
+			in Handle h	///< component's handle. The component must have been previously registered through the call to register_component. If there are clients still using this component, a components_unavailable notification is issued to all of them, and the component is unregistered.
+			)
+		    raises (maciErrType::NoPermissionEx,
+			    maciErrType::CannotUnregisterComponentEx);
+
+		/** 
+		    Get a service, activating it if necessary (components). 
+		    The client represented by id (the handle) 
+		    must have adequate access rights to access 
+		    the service. 
+		    NOTE: a component is also a service, i.e. a service activated by a container.
+		    
+		    @return Reference to the service. 
+		    If the service could not be activated, a nil 
+		    reference is returned, and the status contains 
+		    an error code detailing the cause of failure 
+		    (one of the COMPONENT_* constants).
+		 */
+		Object get_service (
+		        /**
+			   Identification of the caller. If this is an
+			   invalid handle, or if the caller does not have
+			   enough access rights, a maciErrType::NoPermissionEx
+			   exception is raised. 
+			*/
+			in Handle id,
+			/**
+			   CURL of the service whose reference is to be retrieved.
+			 */
+			in CURL service_url,
+                        /** 
+			    True if the service is to be activated in
+			    case it is not already active. If set to
+			    False, and the service is not already active, an
+			    maciErrType::ComponentNotAlreadyActivatedEx
+			    exception is thrown
+			*/
+			in boolean activate
+			)
+		    raises (maciErrType::NoPermissionEx, 
+			    maciErrType::CannotGetComponentEx,
+			    maciErrType::ComponentNotAlreadyActivatedEx,
+			    maciErrType::ComponentConfigurationNotFoundEx);
+
+		/** 
+		    Get a component, activating it if necessary. 
+		    The client represented by id (the handle) must 
+		    have adequate access rights to access the component.
+		    
+		    @return Reference to the component. 
+		    If the component could not be activated, 
+		    a nil reference is returned, and the status 
+		    contains an error code detailing the cause of 
+		    failure (one of the COMPONENT_* constants).
+		*/
+		Object get_component (
+		        /**
+			   Identification of the caller. If this is an
+			   invalid handle, or if the caller does not have
+			   enough access rights, a maciErrType::NoPermissionEx
+			   exception is raised. 
+			*/
+			in Handle id,
+			/**
+			   CURL of the component whose reference is to be retrieved.
+			 */
+			in CURL service_url,
+                        /** 
+			    True if the component is to be activated in case it does not
+			    exist. If set to False, and the component
+			    is not already active, an
+			    maciErrType::ComponentNotAlreadyActivatedEx
+			    exception is thrown
+			*/
+			in boolean activate
+			)
+		    raises (maciErrType::NoPermissionEx, 
+			    maciErrType::CannotGetComponentEx,
+			    maciErrType::ComponentNotAlreadyActivatedEx,
+			    maciErrType::ComponentConfigurationNotFoundEx);
+
+
+		/** 
+		    Gets a non-sticky reference to a component.
+
+		    A non-sticky reference does not bind the
+		    Manager to keep alive the Component, and 
+		    the Client requesting a non-sticky reference
+		    is not considered when checking for reference
+		    counts. 
+		    The Manager can deactivate Components
+		    independently of any non-sticky reference.
+
+		    This is typically used by "weak clients" like
+		    graphical user interfaces.
+
+		    Since a non-sticky reference is not considered in
+		    reference counting, it will also not activate
+		    the component if it is not already active.
+
+		    As a consequence, asking for a non-sticky reference
+		    to a not-active Component throws an exception.
+		    
+		    The client should not attempt to release 
+		    the non-sticky reference, which would yield an exception.
+  
+		    The client represented by id (the handle) must 
+		    have adequate access rights to access the component.
+		    
+		    @return Reference to the component. 
+		*/
+		Object get_component_non_sticky (
+			/**
+			   Identification of the caller. If this is an invalid handle, or if the
+			   caller does not have enough access rights, a
+			   maciErrType::NoPermissionEx exception is raised. 
+			 */
+			in Handle id,
+			/**
+			   CURL of the component whose reference is to be retrieved.
+			 */
+			in CURL component_url
+			)
+		    raises (maciErrType::NoPermissionEx, 
+			    maciErrType::CannotGetComponentEx,
+			    maciErrType::ComponentNotAlreadyActivatedEx);
+
+		/** Change mortality state of an component. 
+		    Component must be already active, otherwise 
+		    maciErrType::ComponentNotAlreadyActivatedEx exception will be thrown. 
+		    The caller must be an owner of an component or 
+		    have administator rights, otherwise maciErrType::NoPermissionEx 
+		    exception will be thrown. 
+		*/
+		void make_component_immortal (
+			in Handle id,	///< Identification of the caller. The caller must be an owner of an component or have administator rights.
+			in CURL component_url,	///< The CURL of the component whose mortality to change.
+			in boolean immortal_state	///< New mortality state.
+			)
+                    raises (maciErrType::NoPermissionEx,
+			    maciErrType::ComponentNotAlreadyActivatedEx);
+
+
+		/** 
+		    Asynchronously release a component. 
+		    In order for this operation to be possible, 
+		    the caller represented by the id must have 
+		    previously successfuly requested the 
+		    component via a call to get_component.
+
+		    Releasing a component more times than 
+		    requesting it should be avoided, 
+		    but it produces no errors.
+		    
+		    This method will return before the manager/target container have deactivated the component.
+		    If the caller wants to synchronize with component deactivation, it must supply
+		    the optional ComponentRequestCallback.
+
+		    @return Number of clients that are still using the 
+		    component after the operation completed. This is a useful debugging tool.
+		 */
+		void release_component_async (
+			in Handle id,	///< Identification of the caller. The caller must have previously gotten the component through get_component.
+			in CURL component_url,	///< The CURL of the component to be released.
+			in ACS::CBlong callback,
+			in ACS::CBDescIn desc
+			)
+			raises (maciErrType::NoPermissionEx);
+
+		/** 
+		    Release a component. 
+		    In order for this operation to be possible, 
+		    the caller represented by the id must have 
+		    previously successfuly requested the 
+		    component via a call to get_component.
+
+		    Releasing a component more times than 
+		    requesting it should be avoided, 
+		    but it produces no errors.
+
+		    @return Number of clients that are still using the 
+		    component after the operation completed. 
+		    This is a useful debugging tool.
+		 */
+		long release_component (
+			in Handle id,	///< Identification of the caller. The caller must have previously gotten the component through get_component.
+			in CURL component_url	///< The CURL of the component to be released.
+			)
+                    raises (maciErrType::NoPermissionEx, maciErrType::CannotDeactivateComponentEx,
+                    		maciErrType::ComponentDeactivationUncleanEx, maciErrType::ComponentDeactivationFailedEx);
+
+		/** 
+		    Releases a component also if still referenced by other components/clients.
+                    @return Number of clients that were still referencing the component 
+		    after the operation completed. This is a useful debugging tool.
+		 */
+		long force_release_component (
+			in Handle id,	///< Identification of the caller.  
+			in CURL component_url	///< The CURL of the component to be (forcefully) released.
+			)
+                    raises (maciErrType::NoPermissionEx);
+
+		/** 
+		    Shutdown the Manager.
+
+		    <B>Warning:</B> This call will also deactivate all
+		    components active in the system, including startup
+		    and immortal components. 
+	     
+		    Notice that this is a oneway method and therefore 
+		    there cannot be return values or user exceptions.
+		    Only CORBA runtime exceptions due to communication
+		    issues can be thrown
+		 */
+		oneway void shutdown (
+			in Handle id,	///< Identification of the caller. The caller must have the SHUTDOWN_SYSTEM access right.
+			in unsigned long containers	///< The code to send to shutdown methods of all containers. If 0, the container's shutdown methods are not called.
+			);
+
+		/** 
+		    Get all the information that the Manager has about its known
+		    containers. To invoke this method, the caller must have
+		    INTROSPECT_MANAGER access rights, or it must be the object whose info
+		    it is requesting.
+		    
+		    Calling this function does not affect the internal state of the Manager.
+		    
+		    @return A sequence of ContainerInfo structures
+		    containing the entire Manager's knowledge about the
+		    containers. If access is denied to a subset of
+		    objects, the handles to those objects are set to 0. 
+		*/
+		ContainerInfoSeq get_container_info (
+			in Handle id,	///< Identification of the caller.
+			in HandleSeq h,	///< Handles of the containers whose information is requested. If this is an empty sequence, the name_wc parameter is used.
+			in string name_wc	///< Wildcard that the container's name must match in order for its information to be returned.
+			)
+                    raises (maciErrType::NoPermissionEx);
+
+		/** 
+		    Get all the information that the Manager has about its current
+		    clients. To invoke this method, the caller must have
+		    INTROSPECT_MANAGER access rights, or it must be the object whose info
+		    it is requesting.
+
+		    Calling this function does not affect the internal state of the Manager.
+		    
+		    @return A sequence of ClientInfo structures
+		    containing the entire Manager's knowledge about the
+		    clients. If access is denied to a subset of objects,
+		    the handles to those objects are set to 0. 
+		*/
+		ClientInfoSeq get_client_info (
+			in Handle id,	///< Identification of the caller.
+			in HandleSeq h,	///< Handles of the clients whose information is requested. If this is an empty sequence, the name_wc parameter is used.
+			in string name_wc	///< Wildcard that the client's name must match in order for its information to be returned.
+			)
+                    raises (maciErrType::NoPermissionEx);
+
+		/** 
+		    Get all the information that the Manager has about components. To
+		    invoke this method, the caller must have INTROSPECT_MANAGER access
+		    rights, or it must have adequate privileges to access the component
+		    (the same as with the get_component method).
+
+		    Information about all components is returned,
+		    unless the active_only parameter is set to True,
+		    in which case only information about those
+		    components that are currently registered with the
+		    Manager and activated is returned. 
+
+		    Calling this function does not affect the internal
+		    state of the Manager. 
+
+		    @return A sequence of ComponentInfo structures
+		    containing the entire Manager's knowledge about
+		    the components. If access is denied to a subset of
+		    objects, the handles to those objects are set to
+		    0.
+
+		 */
+		ComponentInfoSeq get_component_info (
+			in Handle id,	///< Identification of the caller.
+			in HandleSeq h,	///< Handles of the components whose information is requested. If this is an empty sequence, the name_wc and type_wc parameters are used.
+			in string name_wc,	///< Wildcard that the component's name must match in order for its information to be returned.
+			in string type_wc,	///< Wildcard that the component's type must match in order for its information to be returned.
+			in boolean active_only
+			)
+                    raises (maciErrType::NoPermissionEx);
+
+		/** 
+		    Restarts a component. 
+		*/
+		Object restart_component(
+			in Handle client,	///< Identification of the caller.
+			in CURL component_url	///< CURL of the component to be restarted.
+			)
+		    raises (maciErrType::NoPermissionEx, 
+			    maciErrType::CannotGetComponentEx);
+
+		/** 
+		    Activation of dynamic component. 
+		*/
+		ComponentInfo get_dynamic_component(
+			in Handle client,	///< Identification of the caller.
+			in ComponentSpec c,	///< Component to be obtained.
+			in boolean mark_as_default	///< Mark component as default component of its type.
+			)
+			raises (maciErrType::NoPermissionEx, 
+				maciErrType::IncompleteComponentSpecEx, 
+				maciErrType::InvalidComponentSpecEx, 
+				maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
+				maciErrType::CannotGetComponentEx);
+
+		/** 
+		    Activation of a component so that it runs in the same process as
+		    another given component. 
+		*/
+		ComponentInfo get_collocated_component(
+			in Handle client,	///< Identification of the caller.
+			in ComponentSpec c,	///< Component to be obtained.
+			in boolean mark_as_default,	///< Mark component as default component of its type.
+			in CURL target_component	///< CURL of the target component (where to activate component).
+			)
+			raises (maciErrType::NoPermissionEx, 
+				maciErrType::IncompleteComponentSpecEx, 
+				maciErrType::InvalidComponentSpecEx, 
+				maciErrType::ComponentSpecIncompatibleWithActiveComponentEx, 
+				maciErrType::CannotGetComponentEx);
+
+		/** 
+		    Returns the default component of specific type. 
+		*/
+		ComponentInfo get_default_component(
+			in Handle client,	///< Identification of the caller.
+			in string component_type	///< Component IDL type (e.g. IDL:alma/PS/PowerSupply:1.0).
+			)
+			raises (maciErrType::NoPermissionEx, 
+				maciErrType::NoDefaultComponentEx, 
+				maciErrType::CannotGetComponentEx);
+
+		/** 
+		    Shutdown a container.
+		*/
+		void shutdown_container(
+			in Handle id,	///< Identification of the caller.
+			in string container_name,	///< Name of the container to be shutdown.
+			in unsigned long action         ///< The code to send to shutdown methods of the container. If 0, the container's disconnect method are is called instead.
+			)
+                    raises (maciErrType::NoPermissionEx);
+
+                /** 
+                    Enable/disable state persistence subsystem.                */
+                void set_state_persistence(
+                        in Handle id,   ///< Identification of the caller.
+                        in boolean enable       ///< Enable/disable flag.
+                        )
+                    raises (maciErrType::NoPermissionEx);
+
+	};
+
+};
+
+#pragma prefix "maci.ijs.si"
+
+/** 
+    Predefined access rights. 
+*/
+module AccessRights {
+
+    /**
+ 	Clients must have the INTROSPECT_MANAGER access right to be able to
+	gain access to Manager's internal state. This access is usually given
+	to administrator clients. 
+    */
+    const maci::AccessDescriptor INTROSPECT_MANAGER = 0x08000000;
+
+    /** 
+	Clients must have the SHUTDOWN_SYSTEM access right to be able to call
+	Manager's shutdown method, thus shutting down the entire control
+	system. 
+    */
+    const maci::AccessDescriptor SHUTDOWN_SYSTEM = 0x04000000;
+
+    /** 
+	Clients must have the REGISTER_COMPONENT access right to be able to
+	call Manager's register_component and unregister_component methods. 
+    */
+    const maci::AccessDescriptor REGISTER_COMPONENT = 0x02000000;
+};
+
+
+#endif /* maci_IDL */

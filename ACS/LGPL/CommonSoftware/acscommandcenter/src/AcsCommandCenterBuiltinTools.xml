@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<AcsCommandCenterBuiltin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../idl/AcsCommandCenterTools.xsd">
+
+
+<!-- ===================================================================================================
+
+This file defines the built-in tools that can be executed via AcsCommandCenter.
+This file is crucial for proper functioning of AcsCommandCenter. If it is found invalid by the
+XML parser, AcsCommandCenter will write a panic message and stop.
+
+The definition of a built-in tool is very similar to that of a "Tools"-menu tool.
+Please read the documentation in "AcsCommandCenterTools.xml" first. The differences are:
+
+   CAPTION
+   This text must match a predefined name. They are defined in the alma.acs.commandcenter.ExecuteXXX classes.
+
+   INSERTIONS
+   The attribute SOURCE of an INSERTION should always have the value MODEL.
+   Otherwise the insertion will resolve to the empty string.
+   
+   MAX STARTUP SECONDS
+   For built-in tools that are executed remotely (with the string "Remote" being part of their name)
+   this element is not applicable and will be ignored.
+
+   EXPECTED OUTPUT
+   A built-in-Tool definition can optionally have an element ExpectedOutput.
+   This is a piece of the command's output that AcsCommandCenter will wait for.
+   If this element is specified and the expected output appears in the output, AcsCommandCenter will assume
+   the tool has started successfully.
+   If this element is not specified, success is assumed instantly after the command has been issued.
+
+=================================================================================================== -->
+
+
+   <!-- ========================= ACS ========================== -->
+
+       <tool>
+            <caption>Acs_startLocalScript</caption>
+            <command>accEnableVars if [ ? ] ; then export ACS_CDB=? ; fi ; acsStart -b ? </command>
+            <insertion source="model">ServicesLocalJavaRoot</insertion>
+            <insertion source="model">ServicesLocalJavaRoot</insertion>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>up and running</expectedOutput>
+        </tool>
+       <tool>
+            <caption>Acs_stopLocalScript</caption>
+            <command>acsStop -b ?</command>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>Freeing</expectedOutput>
+        </tool>
+       <tool>
+            <caption>Acs_killLocalScript</caption>
+            <command>killACS</command>
+            <expectedOutput>Killed</expectedOutput>
+        </tool>
+       <tool>
+            <caption>Acs_startRemote</caption>
+            <command>if [ ? ] ; then export ACS_CDB=? ; fi ; accStarter2 3 - acsStart -b ?</command>
+            <insertion source="model">ServicesLocalJavaRoot</insertion>
+            <insertion source="model">ServicesLocalJavaRoot</insertion>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>up and running</expectedOutput>
+       </tool>
+      <tool>
+            <caption>Acs_stopRemote</caption>
+            <command>accStarter2 3 - acsStop -b ?</command>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>Freeing</expectedOutput>
+       </tool>
+       <tool>
+            <caption>Acs_killRemote</caption>
+            <command>accStarter2 3 - killACS</command>
+            <expectedOutput>Killed</expectedOutput>
+        </tool>
+
+
+   <!-- ========================= Container ========================== -->
+    <!-- Note: Container commands are defined separately by implementation language -->
+    <!--       Moreover there are special cases for the Cpp-Container               -->
+    
+      <tool>
+            <caption> Container_startLocalScript_java</caption>
+            <command>acsStartContainer -? -b ? ?</command>
+            <insertion source="model">ContainerType</insertion>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>components activated.</expectedOutput>
+      </tool>
+      <tool>
+            <caption> Container_startLocalScript_cpp</caption>
+            <command>acsStartContainer -? -b ? ?</command>
+            <insertion source="model">ContainerType</insertion>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>Container running...</expectedOutput>
+      </tool>
+      <tool>
+            <caption> Container_startLocalScript_py</caption>
+            <command>acsStartContainer -? -b ? ?</command>
+            <insertion source="model">ContainerType</insertion>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>waiting for requests</expectedOutput>
+      </tool>
+
+      <tool>
+            <caption> Container_stopLocalScript_java</caption>
+            <command>acsStopContainer -b ? ?</command>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>Done all.</expectedOutput>
+      </tool>
+      <tool>
+            <caption> Container_stopLocalScript_cpp</caption>
+            <command>acsStopContainer -b ? ?</command>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>Container stopped.</expectedOutput>
+      </tool>
+      <tool>
+            <caption> Container_stopLocalScript_py</caption>
+            <command>acsStopContainer -b ? ?</command>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>Done!</expectedOutput>
+      </tool>
+
+      <tool>
+            <caption> Container_startRemote_java</caption>
+            <command>nohup accStarter2 3 ? acsStartContainer -? -b ? -m corbaloc::?:?/Manager ?</command>
+            <insertion source="model">ContainerName</insertion>
+            <insertion source="model">ContainerType</insertion>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerAgainstManagerHost</insertion>
+            <insertion source="model">ContainerAgainstManagerPort</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>components activated.</expectedOutput>
+      </tool>
+      <tool>
+            <caption> Container_startRemote_cpp</caption>
+            <command>accStarter2 3 ? acsStartContainer -? -b ? -m corbaloc::?:?/Manager -d ? ?</command>
+            <insertion source="model">ContainerName</insertion>
+            <insertion source="model">ContainerType</insertion>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerAgainstManagerHost</insertion>
+            <insertion source="model">ContainerAgainstManagerPort</insertion>
+            <insertion source="model">ContainerAgainstCDB</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>Container running...</expectedOutput>
+      </tool>
+      <tool>
+            <caption> Container_startRemote_cpp_intrep</caption>
+            <command>accStarter2 3 ? acsStartContainer -? -b ? -m corbaloc::?:?/Manager -d ? ?</command>
+            <insertion source="model">ContainerName</insertion>            
+            <insertion source="model">ContainerType</insertion>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerAgainstManagerHost</insertion>
+            <insertion source="model">ContainerAgainstManagerPort</insertion>
+            <insertion source="model">ContainerAgainstCDB</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>Container running...</expectedOutput>
+      </tool>
+      <tool>
+            <caption> Container_startRemote_py</caption>
+            <command>accStarter2 3 ? acsStartContainer -? -b ? -m corbaloc::?:?/Manager ?</command>
+            <insertion source="model">ContainerName</insertion>
+            <insertion source="model">ContainerType</insertion>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerAgainstManagerHost</insertion>
+            <insertion source="model">ContainerAgainstManagerPort</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>waiting for requests</expectedOutput>
+      </tool>
+
+      <tool>
+            <caption> Container_stopRemote_java</caption>
+            <command>accStarter2 3 ? acsStopContainer -b ? -m corbaloc::?:?/Manager ?</command>
+            <insertion source="model">ContainerName</insertion>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerAgainstManagerHost</insertion>
+            <insertion source="model">ContainerAgainstManagerPort</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>Done all.</expectedOutput>
+      </tool>
+      <tool>
+            <caption> Container_stopRemote_cpp</caption>
+            <command>accStarter2 3 ? acsStopContainer -b ? -m corbaloc::?:?/Manager ?</command>
+            <insertion source="model">ContainerName</insertion>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerAgainstManagerHost</insertion>
+            <insertion source="model">ContainerAgainstManagerPort</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>Done all.</expectedOutput>
+      </tool>
+      <tool>
+            <caption> Container_stopRemote_py</caption>
+            <command>accStarter2 3 ? acsStopContainer -b ? -m corbaloc::?:?/Manager ?</command>
+            <insertion source="model">ContainerName</insertion>
+            <insertion source="model">ContainerScriptBase</insertion>
+            <insertion source="model">ContainerAgainstManagerHost</insertion>
+            <insertion source="model">ContainerAgainstManagerPort</insertion>
+            <insertion source="model">ContainerName</insertion>
+            <expectedOutput>Done!</expectedOutput>
+      </tool>
+
+   <!-- =================== Manager =================== -->
+   
+      <tool>
+            <caption>Manager_startLocalScript</caption>
+            <command>acsStartManager -b ?</command>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>Manager Application initialized</expectedOutput>
+      </tool>
+      <tool>
+            <caption>Manager_stopLocalScript</caption>
+            <command>acsStopManager -b ?</command>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>acsStopManager: done.</expectedOutput>
+      </tool>
+      <tool>
+            <caption>Manager_startRemote</caption>
+            <command>acsStartManager -b ? &amp;</command>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>Manager Application initialized</expectedOutput>
+      </tool>
+      <tool>
+            <caption>Manager_stopRemote</caption>
+            <command>accStarter2 3 - acsStopManager -b ?</command>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>acsStopManager: done.</expectedOutput>
+      </tool>
+
+
+   <!-- ================== Services ================== -->
+   
+      <tool>
+            <caption>Services_startLocalScript</caption>
+            <command>acsStartORBSRVC -b ?</command>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>ready and waiting ...</expectedOutput>
+      </tool>
+      <tool>
+            <caption>Services_stopLocalScript</caption>
+            <command>acsStopORBSRVC -b ?</command>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>Freeing</expectedOutput>
+      </tool>
+      <tool>
+            <caption>Services_startRemote</caption>
+            <command>mkdir -p ~/.acs/commandcenter ; export ACS_INSTANCE=? ; (nohup acsStartORBSRVC > ~/.acs/commandcenter/acsStartORBSRVC.log &amp;) ; tail -f ~/.acs/commandcenter/acsStartORBSRVC.log</command>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>ready and waiting ...</expectedOutput>
+      </tool>
+      <tool>
+            <caption>Services_stopRemote</caption>
+            <command>mkdir -p ~/.acs/commandcenter ; export ACS_INSTANCE=? ; acsStopORBSRVC > ~/.acs/commandcenter/acsStopORBSRVC.log ; tail -f ~/.acs/commandcenter/acsStopORBSRVC.log</command>
+            <insertion source="model">ScriptBase</insertion>
+            <expectedOutput>Logging Service</expectedOutput>
+      </tool>
+   
+</AcsCommandCenterBuiltin>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

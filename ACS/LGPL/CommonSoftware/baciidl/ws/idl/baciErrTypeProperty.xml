@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="baciErrTypeProperty"
+type="20" _prefix="alma">
+<ErrorCode name="PropertyStaticData"
+           shortDescription="Error reading static data"
+	   description="Error reading static data"
+/>
+<ErrorCode name="PropertyCreation"
+           shortDescription="Error creating property"
+	   description="Error creating the property"
+/>
+<ErrorCode name="PropertyActivation"
+           shortDescription="Error activating property"
+	   description="Error activating the property"
+/>
+<ErrorCode name="PropertySetInitValue"
+           shortDescription="Error setting initial value"
+	   description="Error setting the intial value of the
+	   	   property"
+/>
+<ErrorCode name="CanNotSetValue" 
+           shortDescription="Problem to set value"
+	   description="Problem to set value of the property">
+           <Member name="Property" 
+	           type="string" 
+		   description="Property Name."/>
+</ErrorCode>
+<ErrorCode name="CanNotGetValue" 
+           shortDescription="Problem to get value"
+	   description="Problem to get value of the property">
+	   <Member name="Property" 
+	           type="string" 
+		   description="Property Name."/>
+</ErrorCode>
+<ErrorCode name="InvokeActionError" 
+           shortDescription="Error in invokeAction"
+	   description="Error in invokeAction which performs
+	   asynchronous calls"
+/>
+<ErrorCode name="IncrementError" 
+           shortDescription="Increment value error"
+	   description="Increment value error"
+/>
+<ErrorCode name="DecrementError" 
+           shortDescription="Decrement value error"
+	   description="Decrement value error"
+/>
+<ErrorCode name="ArchiveMonitorProblem"
+           shortDescription="Problem to archive a value"
+	   description="Archive monitor could not archive a value of
+	   a property."
+/>
+<ErrorCode name="DisableAlarmsError"
+           shortDescription="Failed to disable propagation of Property Alarms"
+	   description="Failed to disable the propagation of Property Alarms to the ACS Alarm System because an alarm is already raised."
+/>
+</Type>
+

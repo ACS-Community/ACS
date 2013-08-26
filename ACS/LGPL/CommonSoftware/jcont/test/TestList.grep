@@ -1,0 +1,25 @@
+maci::MACIHelper::resolveManager
+endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.jconttest.ComponentTestclient
+--endorsed
+Starting Java application
+Using endorsed jar files in
+DEBUG \[acsStartJava\] ACS
+DEBUG \[acsStartJava\] exported
+ORB options -ORBInitRef 
+Running the following command
+Running the container with these arguments
+^. - [jJ]ava
+java -classpath
+Connected to
+elapsed time in ms to start the container
+manager corbaloc
+Manager login done
+logged out from manager
+about to exit the JVM...
+Local file logger: Cache saved to
+Waiting for the container to really shutdown
+^. - Time: [0-9]+.[0-9]+
+^. - $
+ACS.log.minlevel.namedloggers not defined.
+Thread shut down
+ORB status:

@@ -1,0 +1,34 @@
+ACS Manager:
+ACS Interface Repository:
+^. - [jJ]ava
+Time:
+export
+endorsed
+Starting Java application
+-D user.dir=
+Jlog will use cache for
+Connected
+TRACE
+FINEST
+DELOUSE
+FINER
+DEBUG
+FINE
+calling orb.resolve_initial_references
+Manager login done, handle
+get_component with client handle
+will try to find the manager first
+failed to flush logging queue because remote logging service has not been made available
+about to release component
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+activated
+Failed to get MACI/Channels DAO from CDB
+##
+component AlarmService retrieved
+DefaultSubscriberImpl
+ACSJMSTopicConnectionImpl
+HeartbeatHelper
+MomConfig
+ACS.log.minlevel.namedloggers not defined
+Logger jacorb@BACITest:[[:alpha:]]*#[[:alpha:]]* created with custom log levels local=Info, remote=Info
+Logger scxml@BACITest:[[:alpha:]]*#[[:alpha:]]* created with custom log levels local=Warning, remote=Warning

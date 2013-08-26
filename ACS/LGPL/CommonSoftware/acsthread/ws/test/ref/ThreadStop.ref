@@ -1,0 +1,29 @@
+1 - ----------T--:--:--.--- [GlobalLogger - main] Creating thread
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::TestACSThread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (0)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (1)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (2)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (3)
+1 - ----------T--:--:--.--- [GlobalLogger - main] Stopping thread
+1 - ----------T--:--:--.--- [TestThreadA - ThreadBase::stop] Thread TestThreadA
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::~TestACSThread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:TestThreadA
+1 - ----------T--:--:--.--- [GlobalLogger - main] Done
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 

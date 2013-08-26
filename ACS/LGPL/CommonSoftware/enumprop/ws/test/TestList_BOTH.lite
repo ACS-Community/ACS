@@ -1,0 +1,48 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList_BOTH.lite,v 1.32 2005/08/02 08:49:38 vwang Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# bjeram 2001-08-22 created
+
+PROLOGUE cdbTATPrologue
+SOURCE   enumpropTATEnvironment
+ENVIRONMENT lcuTat LCU
+
+1 enumTestENABLED	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 ENABLED"
+
+2 enumTestON         	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 ON" 
+
+3 enumTestDISABLED 	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 DISABLED" 
+
+4 enumRWTestENABLED	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testRWClient EPTESTDEVICE1 ENABLED"
+ 
+5 enumRWTestON		"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testRWClient EPTESTDEVICE1 ON"
+
+6 enumRWTestDISABLED	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testRWClient EPTESTDEVICE1 DISABLED"
+
+7 enumOnChangeTest   "startEnumpropTestServer" "@SLEEP 20" "onchangeMonitorTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 DISABLED noshutdown" "@SLEEP 10" "testClient EPTESTDEVICE1 ENABLED"
+
+EPILOGUE cdbTATEpilogue

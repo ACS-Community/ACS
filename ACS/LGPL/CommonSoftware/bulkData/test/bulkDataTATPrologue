@@ -1,0 +1,11 @@
+#! /bin/bash
+OLD_CDB=$ACS_CDB
+ACS_CDB=../test
+
+#Start the ORB services and manager.
+acsutilTATPrologue -noloadifr
+
+ACS_CDB=$OLD_CDB
+
+#
+# ___oOo___

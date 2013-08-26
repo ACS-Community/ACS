@@ -1,0 +1,102 @@
+AC_INIT(configure.in)
+AC_PREREQ(2.4)
+
+dnl Disable cache files:
+dnl This is controversial, but I am convinced this is the right way to go,
+dnl at least by default.  Otherwise there are too many surprises.
+define([AC_CACHE_LOAD], )dnl
+define([AC_CACHE_SAVE], )dnl
+define([AC_CACHE_VAL], [
+$2
+])dnl
+
+AC_PROG_INSTALL
+
+dnl
+dnl Apparently, if you run a shell window in Emacs, it sets the EMACS
+dnl environment variable to 't'.  Lets undo the damage.
+dnl
+if test "${EMACS}" = "t"; then
+   EMACS=""
+fi
+
+AC_ARG_WITH(xemacs,           --with-xemacs             Use XEmacs to build, [ if test "${withval}" = "yes"; then EMACS=xemacs; else EMACS=${withval}; fi ])
+AC_ARG_WITH(emacs,            --with-emacs              Use Emacs to build, [ if test "${withval}" = "yes"; then EMACS=emacs; else EMACS=${withval}; fi ])
+AC_ARG_WITH(makeinfo,         --with-makeinfo           Specify how to build info files, [ MAKEINFO="$withval" ])
+AC_ARG_ENABLE(site-install,   --enable-site-install     Perform a sitewide installation, [ DOTEMACS='$(prefix)/share/emacs/site-lisp/default.el' ], [ DOTEMACS=`( cd ; pwd)`/.emacs ])
+
+AC_CHECK_PROG(TEXI2HTML, texi2html, texi2html, echo Cannot create html version of)
+AC_CHECK_PROG(EMACS, xemacs, xemacs, emacs)
+AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, \$(EMACS) -batch -q -l texinfmt -f batch-texinfo-format)
+AC_CHECK_PROG(INSTALLINFO, install-info, install-info, true)
+
+AC_EMACS_PACKAGES
+AC_PATH_LISPDIR
+
+AC_EMACS_VERSION
+AC_CHECK_CUSTOM
+AC_CHECK_GNUS
+AC_CHECK_CUSTOMLOADS
+
+if test "${MAKEINFO}" = "no"; then
+   MAKEINFO='$(EMACS) -batch -q -l texinfmt -f batch-texinfo-format'
+fi
+
+if test "${TEXI2HTML}" = "texi2html"; then
+   TEXI2HTML_FLAGS="-menu -glossary -number -split_node"
+fi
+
+AC_SUBST(EMACS_PACKAGE_DIR)
+AC_SUBST(MAKEINFO)
+AC_SUBST(EMACS)
+AC_SUBST(INSTALL)
+AC_SUBST(INSTALLINFO)
+AC_SUBST(DOTEMACS)
+AC_SUBST(TEXI2HTML)
+AC_SUBST(TEXI2HTML_FLAGS)
+
+if test "${GNUS}" != "no"; then
+CIDFILE=url-cid.el
+AC_SUBST(CIDFILE)
+fi
+
+if test "${CUSTOM}" = "no"; then
+AC_MSG_WARN(" ")
+AC_MSG_WARN(No usable version of the widget/custom libraries have been)
+AC_MSG_WARN(detected on your system.  This version of Emacs/W3 requires)
+AC_MSG_WARN(features present in newer versions of the widget library.)
+AC_MSG_WARN(" ")
+AC_MSG_WARN(Please upgrade to the latest version of custom available.)
+AC_MSG_WARN(This package is included with Emacs 20.1 and XEmacs 20.3)
+AC_MSG_WARN(or from http://www.dina.kvl.dk/~abraham/custom/)
+AC_MSG_WARN(or /ftp.dina.kvl.dk:/pub/Staff/Per.Abrahamsen/custom/)
+AC_MSG_WARN(" ")
+AC_MSG_WARN([You may still continue, but you must modify lisp/Makefile])
+AC_MSG_WARN(to have the correct WIDGETDIR setting.)
+AC_MSG_WARN(" ")
+fi
+
+AC_OUTPUT(Makefile
+	  etc/Makefile
+	  texi/Makefile
+	  lisp/Makefile
+	  lisp/w3-cfg.el
+         )
+
+AC_MSG_RESULT(" ")
+AC_MSG_RESULT("Sucessfully configured Emacs/W3")
+if test -n "$EMACS_PACKAGE_DIR"; then
+   AC_MSG_RESULT("Using package root:                ${EMACS_PACKAGE_DIR}")
+fi
+AC_MSG_RESULT("Using custom package installed in: ${CUSTOM}")
+AC_MSG_RESULT("Emacs/W3 will be compiled with:    ${EMACS}")
+AC_MSG_RESULT(" ")
+AC_MSG_RESULT("To finish building Emacs/W3 type \'make\' now.")
+AC_MSG_RESULT("To install Emacs/W3 type \'make install\'.")
+AC_MSG_RESULT("To create autoloads in \'${DOTEMACS}\' type \'make dotemacs\'")
+
+dnl (aclocal.m4) Local variables:
+dnl (aclocal.m4) eval: (make-local-hook 'kill-buffer-hook)
+dnl (aclocal.m4) eval: (defun w3-rebuild-configure-files () (if (file-newer-than-file-p (buffer-file-name) (expand-file-name "configure" (file-name-directory (buffer-file-name)))) (shell-command "autoreconf")))
+dnl (aclocal.m4) eval: (add-hook 'kill-buffer-hook 'w3-rebuild-configure-files nil t)
+dnl (aclocal.m4) End: ***

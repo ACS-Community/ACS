@@ -1,0 +1,8 @@
+G.Chiozzi - 2005-09-30
+
+cout has different precision and slightly different
+rounding rules on different architectures and compilers.
+
+To make the test pass on the different platforms, we have
+added a sed filter to truncate the decimals in floating point numbers
+to a common number of digits.

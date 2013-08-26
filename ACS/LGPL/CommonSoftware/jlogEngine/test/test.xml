@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Log>
+<Header Name="NameForXmlDocument" Type="LOGFILE" />
+<Info TimeStamp="2005-02-01T15:33:09.592" Routine="maci::ContainerImpl::init" Host="te1" Process="maciContainer" Thread="main" Context=""><![CDATA[Connecting to the Centralized Logger...]]></Info>
+<Info TimeStamp="2005-02-01T15:33:09.599" Routine="maci::ContainerImpl::init" Host="te1" Process="maciContainer" Thread="main" Context=""><![CDATA[Connected to the Centralized Logger.]]></Info>
+<Info TimeStamp="2005-02-01T15:33:09.602" Routine="maci::ContainerImpl::init" Host="te1" Process="maciContainer" Thread="main" Context=""><![CDATA[Set Naming Context to Logger.]]></Info>
+<Info TimeStamp="2005-02-01T15:33:09.602" Routine="maci::ContainerImpl::init" Host="te1" Process="maciContainer" Thread="main" Context=""><![CDATA[Logging into the Manager...]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:09.618" File="maciContainerImpl.cpp" Line="2043" Routine="maci::ContainerImpl:::authenticate" Host="te1" Process="maciContainer" Thread="main" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:09.656" File="maciContainerImpl.cpp" Line="165" Routine="maci::ContainerImpl::getManager" Host="te1" Process="maciContainer" Thread="main" Context="" />
+<Info TimeStamp="2005-02-01T15:33:09.656" Routine="maci::ContainerImpl::init" Host="te1" Process="maciContainer" Thread="main" Context=""><![CDATA[Logged into the Manager.]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:09.657" File="maciContainerImpl.cpp" Line="1128" Routine="maci::ContainerImpl::run" Host="te1" Process="maciContainer" Thread="main" Context="" />
+<Info TimeStamp="2005-02-01T15:33:09.657" Routine="ContainerImpl::run" Host="te1" Process="maciContainer" Thread="main" Context=""><![CDATA[Container running...]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:12.877" File="maciContainerImpl.cpp" Line="1441" Routine="maci::ContainerImpl::activate_component" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:12.887" File="maciContainerImpl.cpp" Line="1256" Routine="maci::ContainerImpl::loadDLL" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:12.887" File="maciLibraryManager.cpp" Line="511" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:12.887" Routine="maci::LibraryManager::load"><![CDATA[Request to load 'acsclock'.]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:12.887" File="maciLibraryManager.cpp" Line="479" Routine="maci::LibraryManager::locateLibrary" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:12.887" File="maciLibraryManager.cpp" Line="117" Routine="maci::LibraryManager::ldfind" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:12.888" Routine="maci::LibraryManager::load"><![CDATA[Full path '/alma/ACS-4.0/ACSSW/lib/libacsclock.so']]></Info>
+<Debug TimeStamp="2005-02-01T15:33:12.888" File="maciLibraryManager.cpp" Line="534" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Loading '/alma/ACS-4.0/ACSSW/lib/libacsclock.so'.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:13.327" File="maciLibraryManager.cpp" Line="594" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Executing DLLOpen]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:13.328" File="maciLibraryManager.cpp" Line="606" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[DLLOpen executed.]]></Debug>
+<Info TimeStamp="2005-02-01T15:33:13.328" Routine="maci::LibraryManager::load"><![CDATA[Loaded '/alma/ACS-4.0/ACSSW/lib/libacsclock.so'.]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:13.454" File="maciLibraryManager.cpp" Line="759" Routine="maci::LibraryManager::getSymbol" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:13.454"><![CDATA[acscomponent::ACSComponentImpl::ACSComponentImpl]]></Info>
+<Info TimeStamp="2005-02-01T15:33:13.454"><![CDATA[acscomponent::ACS::COMPSTATE_NEW]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:13.454" File="baciCharacteristicModelImpl.cpp" Line="37" Routine="baci::CharacteristicModelImpl::CharacteristicModelImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.468" File="baci.cpp" Line="1009" Routine="baci::BACIComponent::BACIComponent" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:13.468" File="baci.cpp" Line="1010" Routine="baci::BACIComponent::BACIComponent" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Creating Component 'CLOCK1']]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:13.468" File="baci.cpp" Line="1106" Routine="baci::BACIComponent::setRTResponseTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.468" File="baci.cpp" Line="1114" Routine="baci::BACIComponent::setRTSleepTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.468" File="baci.cpp" Line="1122" Routine="baci::BACIComponent::setMTResponseTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.468" File="baci.cpp" Line="1130" Routine="baci::BACIComponent::setMTSleepTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.549" File="baciCDBPropertySet.cpp" Line="155" Routine="baci::CDBPropertySet::getPropertySet" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.550" File="baciCharacteristicModelImpl.cpp" Line="37" Routine="baci::CharacteristicModelImpl::CharacteristicModelImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.587" File="../include/baciPcommonImpl_T.i" Line="10" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.820" File="baci.cpp" Line="684" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:13.820" File="baci.cpp" Line="685" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Creating property 'CLOCK1:array2TAI']]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:13.842" File="baci.cpp" Line="1141" Routine="baci::BACIComponent::registerCallback" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.845" File="baci.cpp" Line="414" Routine="baci::BACIMonitor::BACIMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:13.845" File="baci.cpp" Line="418" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Creating monitor 'array2TAI' (archiving: 1, triggerTime: 0)]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:13.845" File="baci.cpp" Line="421" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Archiver monitor with priority 3]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:13.845" File="baci.cpp" Line="562" Routine="baci::BACIMonitor::setTriggerTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.883" File="baci.cpp" Line="644" Routine="baci::BACIMonitor::setTriggerValue" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.883" File="baci.cpp" Line="803" Routine="baci::BACIProperty::addMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.883" File="baci.cpp" Line="967" Routine="baci::BACIProperty::updateMonitorStates" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.883" File="baci.cpp" Line="943" Routine="baci::BACIProperty::GCD" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.883" File="baci.cpp" Line="1296" Routine="baci::BACIComponent::addProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.883" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::addProperty done" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:13.898" File="../include/baciPcommonImpl_T.i" Line="76" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[No DevIO provided - created DevIOMem.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:13.898" File="../include/baciPcommonImpl_T.i" Line="79" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:13.899" File="../include/baciRWcommonImpl_T.i" Line="7" Routine="baci::RWcommonImpl&lt;&gt;::RWcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:13.899" File="../include/baciRWcommonImpl_T.i" Line="35" Routine="baci::RWcommonImpl&lt;&gt;::RWcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[DevIO initial value set to the default value.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:13.940" File="../include/baciRWcommonImpl_T.i" Line="39" Routine="baci::RWcommonImpl&lt;&gt;::RWcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:13.940" File="../include/baciPcontImpl_T.i" Line="8" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:13.941" File="../include/baciPcontImpl_T.i" Line="17" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:13.941" File="../include/baciRWcontImpl_T.i" Line="10" Routine="baci::RWcontImpl&lt;&gt;::RWcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:13.941" File="../include/baciRWcontImpl_T.i" Line="26" Routine="baci::RWcontImpl&lt;&gt;::RWcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:13.969" File="baciCDBPropertySet.cpp" Line="155" Routine="baci::CDBPropertySet::getPropertySet" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.969" File="baciCharacteristicModelImpl.cpp" Line="37" Routine="baci::CharacteristicModelImpl::CharacteristicModelImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.969" File="../include/baciPcommonImpl_T.i" Line="10" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:13.971" File="baci.cpp" Line="684" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:13.971" File="baci.cpp" Line="685" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Creating property 'CLOCK1:TAI2UTC']]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.020" File="baci.cpp" Line="1141" Routine="baci::BACIComponent::registerCallback" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.020" File="baci.cpp" Line="414" Routine="baci::BACIMonitor::BACIMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.020" File="baci.cpp" Line="418" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Creating monitor 'TAI2UTC' (archiving: 1, triggerTime: 0)]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:14.020" File="baci.cpp" Line="421" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Archiver monitor with priority 3]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.020" File="baci.cpp" Line="562" Routine="baci::BACIMonitor::setTriggerTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.020" File="baci.cpp" Line="644" Routine="baci::BACIMonitor::setTriggerValue" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.020" File="baci.cpp" Line="803" Routine="baci::BACIProperty::addMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.022" File="baci.cpp" Line="967" Routine="baci::BACIProperty::updateMonitorStates" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.022" File="baci.cpp" Line="943" Routine="baci::BACIProperty::GCD" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.022" File="baci.cpp" Line="1296" Routine="baci::BACIComponent::addProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.059" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::addProperty done" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.060" File="../include/baciPcommonImpl_T.i" Line="76" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[No DevIO provided - created DevIOMem.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:14.060" File="../include/baciPcommonImpl_T.i" Line="79" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.060" File="../include/baciRWcommonImpl_T.i" Line="7" Routine="baci::RWcommonImpl&lt;&gt;::RWcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.060" File="../include/baciRWcommonImpl_T.i" Line="35" Routine="baci::RWcommonImpl&lt;&gt;::RWcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[DevIO initial value set to the default value.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:14.060" File="../include/baciRWcommonImpl_T.i" Line="39" Routine="baci::RWcommonImpl&lt;&gt;::RWcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.060" File="../include/baciPcontImpl_T.i" Line="8" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.061" File="../include/baciPcontImpl_T.i" Line="17" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.061" File="../include/baciRWcontImpl_T.i" Line="10" Routine="baci::RWcontImpl&lt;&gt;::RWcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.061" File="../include/baciRWcontImpl_T.i" Line="26" Routine="baci::RWcontImpl&lt;&gt;::RWcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.105" File="baciCDBPropertySet.cpp" Line="155" Routine="baci::CDBPropertySet::getPropertySet" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.110" File="baciCharacteristicModelImpl.cpp" Line="37" Routine="baci::CharacteristicModelImpl::CharacteristicModelImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.110" File="../include/baciPcommonImpl_T.i" Line="10" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.111" File="baci.cpp" Line="684" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.111" File="baci.cpp" Line="685" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Creating property 'CLOCK1:now']]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.111" File="baci.cpp" Line="1141" Routine="baci::BACIComponent::registerCallback" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.111" File="baci.cpp" Line="414" Routine="baci::BACIMonitor::BACIMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.111" File="baci.cpp" Line="418" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Creating monitor 'now' (archiving: 1, triggerTime: 0)]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:14.111" File="baci.cpp" Line="421" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Archiver monitor with priority 3]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.111" File="baci.cpp" Line="562" Routine="baci::BACIMonitor::setTriggerTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.160" File="baci.cpp" Line="644" Routine="baci::BACIMonitor::setTriggerValue" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.160" File="baci.cpp" Line="803" Routine="baci::BACIProperty::addMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.160" File="baci.cpp" Line="967" Routine="baci::BACIProperty::updateMonitorStates" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.160" File="baci.cpp" Line="943" Routine="baci::BACIProperty::GCD" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.160" File="baci.cpp" Line="1296" Routine="baci::BACIComponent::addProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.160" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::addProperty done" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.163" File="../include/baciPcommonImpl_T.i" Line="79" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.163" File="../include/baciROcommonImpl_T.i" Line="9" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.166" File="../include/baciROcommonImpl_T.i" Line="45" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[DevIO initial value set to the default value.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:14.166" File="../include/baciROcommonImpl_T.i" Line="49" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.196" File="../include/baciPcontImpl_T.i" Line="8" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.196" File="../include/baciPcontImpl_T.i" Line="17" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.196" File="../include/baciROcontImpl_T.i" Line="11" Routine="baci::ROcontImpl&lt;&gt;::ROcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.197" File="../include/baciROcontImpl_T.i" Line="22" Routine="baci::ROcontImpl&lt;&gt;::ROcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.199" File="baciCDBPropertySet.cpp" Line="155" Routine="baci::CDBPropertySet::getPropertySet" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.199" File="maciContainerImpl.cpp" Line="1273" Routine="maci::ContainerImpl::activateCORBAObject" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.199" File="maciContainerImpl.cpp" Line="165" Routine="maci::ContainerImpl::getManager" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:14.199"><![CDATA[baci::CharacteristicComponentImpl::initialize]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.199"><![CDATA[acscomponent::ACS::COMPSTATE_INITIALIZING]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.199"><![CDATA[acscomponent::ACS::COMPSTATE_INITIALIZED]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.250"><![CDATA[baci::CharacteristicComponentImpl::execute]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.250" File="baci.cpp" Line="1067" Routine="baci::BACIComponent::startAllThreads" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.250" File="baciThread.cpp" Line="62" Routine="baci::BACIThread::BACIThread" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.251" File="baciThread.cpp" Line="72" Routine="baci::BACIThread::create" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.251" File="baciThread.cpp" Line="62" Routine="baci::BACIThread::BACIThread" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.251" File="baciThread.cpp" Line="72" Routine="baci::BACIThread::create" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:14.251"><![CDATA[acscomponent::ACS::COMPSTATE_OPERATIONAL]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.251" Routine="maci::ContainerImpl::initThread" Host="te1" Process="maciContainer" Thread="CLOCK1::actionThread" Context=""><![CDATA[Thread name: 'CLOCK1::actionThread']]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.251" File="baci.cpp" Line="175" Routine="baci::actionThreadWorker" Host="te1" Process="maciContainer" Thread="CLOCK1::actionThread" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.251" File="baci.cpp" Line="185" Routine="baci::actionThreadWorker" Host="te1" Process="maciContainer" Thread="CLOCK1::actionThread" Context=""><![CDATA[CLOCK1]]></Debug>
+<Info TimeStamp="2005-02-01T15:33:14.298" Routine="maci::ContainerImpl::initThread" Host="te1" Process="maciContainer" Thread="CLOCK1::monitorThread" Context=""><![CDATA[Thread name: 'CLOCK1::monitorThread']]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.299" File="baci.cpp" Line="285" Routine="baci::monitorThreadWorker" Host="te1" Process="maciContainer" Thread="CLOCK1::monitorThread" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.299" File="baci.cpp" Line="293" Routine="baci::monitorThreadWorker" Host="te1" Process="maciContainer" Thread="CLOCK1::monitorThread" Context=""><![CDATA[CLOCK1]]></Debug>
+<Info TimeStamp="2005-02-01T15:33:14.341" Routine="maci::ContainerImpl::activate_component" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Component 'CLOCK1' activated.]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.455" File="maciContainerImpl.cpp" Line="1441" Routine="maci::ContainerImpl::activate_component" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.455" File="maciContainerImpl.cpp" Line="1256" Routine="maci::ContainerImpl::loadDLL" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.455" File="maciLibraryManager.cpp" Line="511" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:14.455" Routine="maci::LibraryManager::load"><![CDATA[Request to load 'acstimer'.]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.456" File="maciLibraryManager.cpp" Line="479" Routine="maci::LibraryManager::locateLibrary" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.456" File="maciLibraryManager.cpp" Line="117" Routine="maci::LibraryManager::ldfind" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:14.498" Routine="maci::LibraryManager::load"><![CDATA[Full path '/alma/ACS-4.0/ACSSW/lib/libacstimer.so']]></Info>
+<Debug TimeStamp="2005-02-01T15:33:14.499" File="maciLibraryManager.cpp" Line="534" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Loading '/alma/ACS-4.0/ACSSW/lib/libacstimer.so'.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:14.527" File="maciLibraryManager.cpp" Line="594" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Executing DLLOpen]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:14.527" File="maciLibraryManager.cpp" Line="606" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[DLLOpen executed.]]></Debug>
+<Info TimeStamp="2005-02-01T15:33:14.527" Routine="maci::LibraryManager::load"><![CDATA[Loaded '/alma/ACS-4.0/ACSSW/lib/libacstimer.so'.]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.527" File="maciLibraryManager.cpp" Line="759" Routine="maci::LibraryManager::getSymbol" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:14.528"><![CDATA[acscomponent::ACSComponentImpl::ACSComponentImpl]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.528"><![CDATA[acscomponent::ACS::COMPSTATE_NEW]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.528" File="maciContainerImpl.cpp" Line="1273" Routine="maci::ContainerImpl::activateCORBAObject" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.529" File="maciContainerImpl.cpp" Line="165" Routine="maci::ContainerImpl::getManager" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:14.564"><![CDATA[acscomponent::ACSComponentImpl::initialize]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.564"><![CDATA[acscomponent::ACS::COMPSTATE_INITIALIZING]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.565"><![CDATA[acscomponent::ACS::COMPSTATE_INITIALIZED]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.566"><![CDATA[acscomponent::ACSComponentImpl::execute]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.566"><![CDATA[acscomponent::ACS::COMPSTATE_OPERATIONAL]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.572" Routine="maci::ContainerImpl::activate_component" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Component 'TIMER1' activated.]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.646" File="maciContainerImpl.cpp" Line="1441" Routine="maci::ContainerImpl::activate_component" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.646" File="maciContainerImpl.cpp" Line="1256" Routine="maci::ContainerImpl::loadDLL" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.646" File="maciLibraryManager.cpp" Line="511" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:14.646" Routine="maci::LibraryManager::load"><![CDATA[Request to load 'acsexmplMountImpl'.]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.687" File="maciLibraryManager.cpp" Line="479" Routine="maci::LibraryManager::locateLibrary" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.687" File="maciLibraryManager.cpp" Line="117" Routine="maci::LibraryManager::ldfind" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:14.696" Routine="maci::LibraryManager::load"><![CDATA[Full path '/home/acaproni/introot/lib/libacsexmplMountImpl.so']]></Info>
+<Debug TimeStamp="2005-02-01T15:33:14.696" File="maciLibraryManager.cpp" Line="534" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Loading '/home/acaproni/introot/lib/libacsexmplMountImpl.so'.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:14.869" File="maciLibraryManager.cpp" Line="594" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Executing DLLOpen]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:14.870" File="maciLibraryManager.cpp" Line="606" Routine="maci::LibraryManager::load" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[DLLOpen executed.]]></Debug>
+<Info TimeStamp="2005-02-01T15:33:14.870" Routine="maci::LibraryManager::load"><![CDATA[Loaded '/home/acaproni/introot/lib/libacsexmplMountImpl.so'.]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.870" File="maciLibraryManager.cpp" Line="759" Routine="maci::LibraryManager::getSymbol" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:14.870"><![CDATA[acscomponent::ACSComponentImpl::ACSComponentImpl]]></Info>
+<Info TimeStamp="2005-02-01T15:33:14.870"><![CDATA[acscomponent::ACS::COMPSTATE_NEW]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:14.909" File="baciCharacteristicModelImpl.cpp" Line="37" Routine="baci::CharacteristicModelImpl::CharacteristicModelImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.909" File="baci.cpp" Line="1009" Routine="baci::BACIComponent::BACIComponent" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:14.909" File="baci.cpp" Line="1010" Routine="baci::BACIComponent::BACIComponent" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Creating Component 'MOUNT1']]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:14.910" File="baci.cpp" Line="1106" Routine="baci::BACIComponent::setRTResponseTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.910" File="baci.cpp" Line="1114" Routine="baci::BACIComponent::setRTSleepTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.910" File="baci.cpp" Line="1122" Routine="baci::BACIComponent::setMTResponseTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.910" File="baci.cpp" Line="1130" Routine="baci::BACIComponent::setMTSleepTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.910" File="baciCDBPropertySet.cpp" Line="155" Routine="baci::CDBPropertySet::getPropertySet" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.944" File="baciCharacteristicModelImpl.cpp" Line="37" Routine="baci::CharacteristicModelImpl::CharacteristicModelImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:14.944" File="../include/baciPcommonImpl_T.i" Line="10" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.192" File="baci.cpp" Line="684" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.192" File="baci.cpp" Line="685" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Creating property 'MOUNT1:cmdAz']]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.193" File="baci.cpp" Line="1141" Routine="baci::BACIComponent::registerCallback" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.193" File="baci.cpp" Line="414" Routine="baci::BACIMonitor::BACIMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.193" File="baci.cpp" Line="418" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Creating monitor 'cmdAz' (archiving: 1, triggerTime: 0)]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.193" File="baci.cpp" Line="421" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Archiver monitor with priority 3]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.193" File="baci.cpp" Line="562" Routine="baci::BACIMonitor::setTriggerTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.193" File="baci.cpp" Line="644" Routine="baci::BACIMonitor::setTriggerValue" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.193" File="baci.cpp" Line="803" Routine="baci::BACIProperty::addMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.193" File="baci.cpp" Line="967" Routine="baci::BACIProperty::updateMonitorStates" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.225" File="baci.cpp" Line="943" Routine="baci::BACIProperty::GCD" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.225" File="baci.cpp" Line="1296" Routine="baci::BACIComponent::addProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.225" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::addProperty done" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.226" File="../include/baciPcommonImpl_T.i" Line="76" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[No DevIO provided - created DevIOMem.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.226" File="../include/baciPcommonImpl_T.i" Line="79" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.226" File="../include/baciROcommonImpl_T.i" Line="9" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.226" File="../include/baciROcommonImpl_T.i" Line="45" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[DevIO initial value set to the default value.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.226" File="../include/baciROcommonImpl_T.i" Line="49" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.226" File="../include/baciPcontImpl_T.i" Line="8" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.226" File="../include/baciPcontImpl_T.i" Line="17" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.251" File="../include/baciROcontImpl_T.i" Line="11" Routine="baci::ROcontImpl&lt;&gt;::ROcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.251" File="../include/baciROcontImpl_T.i" Line="22" Routine="baci::ROcontImpl&lt;&gt;::ROcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.291" File="baciCDBPropertySet.cpp" Line="155" Routine="baci::CDBPropertySet::getPropertySet" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.292" File="baciCharacteristicModelImpl.cpp" Line="37" Routine="baci::CharacteristicModelImpl::CharacteristicModelImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.292" File="../include/baciPcommonImpl_T.i" Line="10" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.292" File="baci.cpp" Line="684" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.292" File="baci.cpp" Line="685" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Creating property 'MOUNT1:cmdEl']]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.293" File="baci.cpp" Line="1141" Routine="baci::BACIComponent::registerCallback" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.293" File="baci.cpp" Line="414" Routine="baci::BACIMonitor::BACIMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.293" File="baci.cpp" Line="418" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Creating monitor 'cmdEl' (archiving: 1, triggerTime: 0)]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.332" File="baci.cpp" Line="421" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Archiver monitor with priority 3]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.332" File="baci.cpp" Line="562" Routine="baci::BACIMonitor::setTriggerTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.332" File="baci.cpp" Line="644" Routine="baci::BACIMonitor::setTriggerValue" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.332" File="baci.cpp" Line="803" Routine="baci::BACIProperty::addMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.332" File="baci.cpp" Line="967" Routine="baci::BACIProperty::updateMonitorStates" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.332" File="baci.cpp" Line="943" Routine="baci::BACIProperty::GCD" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.332" File="baci.cpp" Line="1296" Routine="baci::BACIComponent::addProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.332" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::addProperty done" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.332" File="../include/baciPcommonImpl_T.i" Line="76" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[No DevIO provided - created DevIOMem.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.332" File="../include/baciPcommonImpl_T.i" Line="79" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.368" File="../include/baciROcommonImpl_T.i" Line="9" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.368" File="../include/baciROcommonImpl_T.i" Line="45" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[DevIO initial value set to the default value.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.368" File="../include/baciROcommonImpl_T.i" Line="49" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.369" File="../include/baciPcontImpl_T.i" Line="8" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.369" File="../include/baciPcontImpl_T.i" Line="17" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.369" File="../include/baciROcontImpl_T.i" Line="11" Routine="baci::ROcontImpl&lt;&gt;::ROcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.369" File="../include/baciROcontImpl_T.i" Line="22" Routine="baci::ROcontImpl&lt;&gt;::ROcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.370" File="baciCDBPropertySet.cpp" Line="155" Routine="baci::CDBPropertySet::getPropertySet" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.371" File="baciCharacteristicModelImpl.cpp" Line="37" Routine="baci::CharacteristicModelImpl::CharacteristicModelImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.371" File="../include/baciPcommonImpl_T.i" Line="10" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.427" File="baci.cpp" Line="684" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.427" File="baci.cpp" Line="685" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Creating property 'MOUNT1:actAz']]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.427" File="baci.cpp" Line="1141" Routine="baci::BACIComponent::registerCallback" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.427" File="baci.cpp" Line="414" Routine="baci::BACIMonitor::BACIMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.427" File="baci.cpp" Line="418" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Creating monitor 'actAz' (archiving: 1, triggerTime: 0)]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.427" File="baci.cpp" Line="421" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Archiver monitor with priority 3]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.427" File="baci.cpp" Line="562" Routine="baci::BACIMonitor::setTriggerTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.427" File="baci.cpp" Line="644" Routine="baci::BACIMonitor::setTriggerValue" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.427" File="baci.cpp" Line="803" Routine="baci::BACIProperty::addMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.427" File="baci.cpp" Line="967" Routine="baci::BACIProperty::updateMonitorStates" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.457" File="baci.cpp" Line="943" Routine="baci::BACIProperty::GCD" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.457" File="baci.cpp" Line="1296" Routine="baci::BACIComponent::addProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.457" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::addProperty done" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.458" File="../include/baciPcommonImpl_T.i" Line="76" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[No DevIO provided - created DevIOMem.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.458" File="../include/baciPcommonImpl_T.i" Line="79" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.458" File="../include/baciROcommonImpl_T.i" Line="9" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.458" File="../include/baciROcommonImpl_T.i" Line="45" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[DevIO initial value set to the default value.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.458" File="../include/baciROcommonImpl_T.i" Line="49" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.458" File="../include/baciPcontImpl_T.i" Line="8" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.459" File="../include/baciPcontImpl_T.i" Line="17" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.498" File="../include/baciROcontImpl_T.i" Line="11" Routine="baci::ROcontImpl&lt;&gt;::ROcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.498" File="../include/baciROcontImpl_T.i" Line="22" Routine="baci::ROcontImpl&lt;&gt;::ROcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.499" File="baciCDBPropertySet.cpp" Line="155" Routine="baci::CDBPropertySet::getPropertySet" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.500" File="baciCharacteristicModelImpl.cpp" Line="37" Routine="baci::CharacteristicModelImpl::CharacteristicModelImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.500" File="../include/baciPcommonImpl_T.i" Line="10" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.500" File="baci.cpp" Line="684" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.500" File="baci.cpp" Line="685" Routine="baci::BACIProperty::BACIProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Creating property 'MOUNT1:actEl']]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.500" File="baci.cpp" Line="1141" Routine="baci::BACIComponent::registerCallback" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.500" File="baci.cpp" Line="414" Routine="baci::BACIMonitor::BACIMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.500" File="baci.cpp" Line="418" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Creating monitor 'actEl' (archiving: 1, triggerTime: 0)]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.537" File="baci.cpp" Line="421" Routine="baci::BACIMonitor::BACIMonitor"><![CDATA[Archiver monitor with priority 3]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.537" File="baci.cpp" Line="562" Routine="baci::BACIMonitor::setTriggerTime" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.537" File="baci.cpp" Line="644" Routine="baci::BACIMonitor::setTriggerValue" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.537" File="baci.cpp" Line="803" Routine="baci::BACIProperty::addMonitor" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.537" File="baci.cpp" Line="967" Routine="baci::BACIProperty::updateMonitorStates" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.537" File="baci.cpp" Line="943" Routine="baci::BACIProperty::GCD" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.537" File="baci.cpp" Line="1296" Routine="baci::BACIComponent::addProperty" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.538" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::addProperty done" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.538" File="../include/baciPcommonImpl_T.i" Line="76" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[No DevIO provided - created DevIOMem.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.538" File="../include/baciPcommonImpl_T.i" Line="79" Routine="baci::PcommonImpl&lt;&gt;::PcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.566" File="../include/baciROcommonImpl_T.i" Line="9" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.566" File="../include/baciROcommonImpl_T.i" Line="45" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[DevIO initial value set to the default value.]]></Debug>
+<Debug TimeStamp="2005-02-01T15:33:15.566" File="../include/baciROcommonImpl_T.i" Line="49" Routine="baci::ROcommonImpl&lt;&gt;::ROcommonImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.567" File="../include/baciPcontImpl_T.i" Line="8" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.567" File="../include/baciPcontImpl_T.i" Line="17" Routine="baci::PcontImpl&lt;&gt;::PcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.567" File="../include/baciROcontImpl_T.i" Line="11" Routine="baci::ROcontImpl&lt;&gt;::ROcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.567" File="../include/baciROcontImpl_T.i" Line="22" Routine="baci::ROcontImpl&lt;&gt;::ROcontImpl" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Successfully created.]]></Debug>
+<Trace TimeStamp="2005-02-01T15:33:15.567" File="baciCDBPropertySet.cpp" Line="155" Routine="baci::CDBPropertySet::getPropertySet" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.568" File="acsexmplMountImpl.cpp" Line="82" Routine="::Mount::Mount" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.568" File="maciContainerImpl.cpp" Line="1273" Routine="maci::ContainerImpl::activateCORBAObject" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.575" File="maciContainerImpl.cpp" Line="165" Routine="maci::ContainerImpl::getManager" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Info TimeStamp="2005-02-01T15:33:15.575"><![CDATA[baci::CharacteristicComponentImpl::initialize]]></Info>
+<Info TimeStamp="2005-02-01T15:33:15.575"><![CDATA[acscomponent::ACS::COMPSTATE_INITIALIZING]]></Info>
+<Info TimeStamp="2005-02-01T15:33:15.575"><![CDATA[acscomponent::ACS::COMPSTATE_INITIALIZED]]></Info>
+<Info TimeStamp="2005-02-01T15:33:15.575"><![CDATA[baci::CharacteristicComponentImpl::execute]]></Info>
+<Trace TimeStamp="2005-02-01T15:33:15.575" File="baci.cpp" Line="1067" Routine="baci::BACIComponent::startAllThreads" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.575" File="baciThread.cpp" Line="62" Routine="baci::BACIThread::BACIThread" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.575" File="baciThread.cpp" Line="72" Routine="baci::BACIThread::create" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.575" File="baciThread.cpp" Line="62" Routine="baci::BACIThread::BACIThread" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Trace TimeStamp="2005-02-01T15:33:15.576" File="baciThread.cpp" Line="72" Routine="baci::BACIThread::create" Host="te1" Process="maciContainer" Thread="ORBTask" Context="" />
+<Warning TimeStamp="2005-02-01T15:29:45.383" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="initializeFederation" Host="te1.hq.eso.org" Thread="10" StackId="unknown" StackLevel="0" LogId="1851">No domain list given, manager federation disabled.</Warning>
+<Info TimeStamp="2005-02-01T15:29:45.383" File="com.cosylab.acs.maci.manager.app.ManagerEngine" Routine="userAllInitializationsDone" Host="te1.hq.eso.org" Thread="10" LogId="1852">All initializations done.</Info>
+<Info TimeStamp="2005-02-01T15:29:45.384" File="com.cosylab.acs.maci.manager.app.Manager" Routine="Manager" Host="te1.hq.eso.org" Thread="10" LogId="1853">Manager Application initialized.</Info>
+<Info TimeStamp="2005-02-01T15:32:04.303" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te1.hq.eso.org" Thread="38" LogId="1858">Getting component 'curl:///NameService'.</Info>
+<Info TimeStamp="2005-02-01T15:33:08.575" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te1.hq.eso.org" Thread="38" LogId="1865">Getting component 'curl:///CDB'.</Info>
+<Info TimeStamp="2005-02-01T15:33:09.592" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te1.hq.eso.org" Thread="38" LogId="1912">Getting component 'curl:///Log'.</Info>
+<Info TimeStamp="2005-02-01T15:33:09.599" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te1.hq.eso.org" Thread="38" LogId="1958">Getting component 'curl:///NameService'.</Info>
+<Info TimeStamp="2005-02-01T15:33:09.652" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="containerLogin" Host="te1.hq.eso.org" Thread="38" LogId="1970">Container 'bilboContainer' logged in.</Info>
+<Info TimeStamp="2005-02-01T15:33:12.846" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="containerPostLoginActivation" Host="te1.hq.eso.org" Thread="44" LogId="3486">Container 'bilboContainer' startup statistics: 3 components queued to be activated.</Info>
+<Info TimeStamp="2005-02-01T15:33:15.602" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="containerPostLoginActivation" Host="te1.hq.eso.org" Thread="44" LogId="3967">Container 'bilboContainer' startup statistics: 3 of 3 components activated.</Info>
+<Info TimeStamp="2005-02-01T15:33:15.581"><![CDATA[acscomponent::ACS::COMPSTATE_OPERATIONAL]]></Info>
+<Info TimeStamp="2005-02-01T15:33:15.580" Routine="maci::ContainerImpl::initThread" Host="te1" Process="maciContainer" Thread="MOUNT1::actionThread" Context=""><![CDATA[Thread name: 'MOUNT1::actionThread']]></Info>
+<Trace TimeStamp="2005-02-01T15:33:15.582" File="baci.cpp" Line="175" Routine="baci::actionThreadWorker" Host="te1" Process="maciContainer" Thread="MOUNT1::actionThread" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.582" File="baci.cpp" Line="185" Routine="baci::actionThreadWorker" Host="te1" Process="maciContainer" Thread="MOUNT1::actionThread" Context=""><![CDATA[MOUNT1]]></Debug>
+<Info TimeStamp="2005-02-01T15:33:15.582" Routine="maci::ContainerImpl::initThread" Host="te1" Process="maciContainer" Thread="MOUNT1::monitorThread" Context=""><![CDATA[Thread name: 'MOUNT1::monitorThread']]></Info>
+<Trace TimeStamp="2005-02-01T15:33:15.582" File="baci.cpp" Line="285" Routine="baci::monitorThreadWorker" Host="te1" Process="maciContainer" Thread="MOUNT1::monitorThread" Context="" />
+<Debug TimeStamp="2005-02-01T15:33:15.582" File="baci.cpp" Line="293" Routine="baci::monitorThreadWorker" Host="te1" Process="maciContainer" Thread="MOUNT1::monitorThread" Context=""><![CDATA[MOUNT1]]></Debug>
+<Info TimeStamp="2005-02-01T15:33:15.587" Routine="maci::ContainerImpl::activate_component" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Component 'MOUNT1' activated.]]></Info>
+<Info TimeStamp="2005-02-01T15:33:15.672" Routine="maci::ContainerImpl::message" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Message from manager received. Type: 20. Message: Startup statistics: 3 components queued to be activated.]]></Info>
+<Info TimeStamp="2005-02-01T15:33:15.673" Routine="maci::ContainerImpl::message" Host="te1" Process="maciContainer" Thread="ORBTask" Context=""><![CDATA[Message from manager received. Type: 20. Message: Startup statistics: 3 of 3 components activated.]]></Info>
+</Log>
+

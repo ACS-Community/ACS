@@ -1,0 +1,71 @@
+#ifndef _ACSTESTCOMP_IDL
+#define _ACSTESTCOMP_IDL
+
+#include <acscomponent.idl>
+#include <baci.idl>
+#include <acserr.idl>
+
+#pragma prefix "alma"
+
+/**
+ * This module contains components used for testing ACS features.
+ * The components are implemented in CPP, that is the first
+ * language available, but the idl interfaces are generic and will
+ * implemented also in the other languages, if deemed useful.
+ */
+module acstestcomp
+{
+    /** @interface TimingExplorer
+     * This interface defines a Component used
+     * to test timing issues in the communication 
+     * with clients.
+     * We specify here in addition that an instance 
+     * whose name is HangOnInit is supposed to 
+     * hang forever during initialisation.
+     * This allows to test special cases where
+     * the component never manages to complete
+     * properly its own initialisation.
+     */
+    interface TimingExplorer : ACS::ACSComponent
+	{
+	        /**
+	         * Sends a reply after the given time
+		 * @param waitTimeSec time to wait before
+		 *                    sending a reply.
+		 *                    Units are seconds.
+		 *                    0 means never reply.
+		 */
+	        void waitToReply( in long waitTimeSec);
+
+	        /**
+	         * Sends a number over replies evenly
+		 * distributed in time.
+		 * @param repetitions number of replies to send
+		 *                    0 means reply forever.
+                 * @param waitTimeSec time to wait before
+		 *                    sending a reply.
+		 *                    Units are seconds.
+		 *                    0 means never reply.
+		 * @param cb          Callback object for the replies
+		 * @param desc        Input parameters sent by the caller
+		 */
+		void multipleReplies(in long repetitions,
+				     in long waitTimeSec,
+				     in ACS::CBvoid cb, in ACS::CBDescIn desc);
+
+	};
+    /** @interface ErrorExplorer
+     *  This interface allows us to test a set of error conditions
+     *  when accessing a CharacteristicComponent.
+     *  For example problems accessing the CDB.
+     */
+    interface ErrorExplorer : ACS::CharacteristicComponent
+	{
+
+	/** This property is used to test error conditions.
+	 */
+	readonly attribute ACS::RWdouble explorerDoubleProperty;
+
+	};
+};
+#endif

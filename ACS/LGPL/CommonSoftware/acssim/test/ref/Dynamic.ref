@@ -1,0 +1,12 @@
+1 - --TEST_RPS_1--
+1 - dyn.getMethod('startRamping'): {'Timeout': 0.20000000000000001, 'Value': [None]}
+1 - dyn.getMethod('_get_readback'): {'Timeout': 0.20000000000000001, 'Value': [<Acssim.Servants.Simulator.BaseSimulator instance at 0xXXXX>]}
+1 - 
+1 - --HELLOWORLD1--
+1 - dyn.getMethod('displayMessage'): {'Timeout': 0.20000000000000001, 'Value': [None]}
+1 - dyn.getMethod('nonexistentMethod'):----------T--:--:--.--- Servants.Representations.Dynamic.Dynamic(HELLOWORLD1) getMethod - Failed to dynamically generate 'nonexistentMethod' because the IFR was missing information on the method!
+1 - Good...cannot invoke 'nonexistent' which does not exist in the IDL
+1 - 
+1 - --BADCOMPONENT--
+1 - ----------T--:--:--.--- Servants.Representations.Dynamic.Dynamic(BADCOMPONENT) __init__ - Cannot find a definition for 'crap' components!
+1 - Good...cannot create 'BADCOMPONENT' of no real type

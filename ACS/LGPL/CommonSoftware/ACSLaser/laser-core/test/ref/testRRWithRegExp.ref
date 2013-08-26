@@ -1,0 +1,103 @@
+1 - Test built
+1 - Category root topic=CMW.ALARM_SYSTEM.CATEGORIES
+1 - SynchroBuffer[minWindowSize=500,maxWindowSize=5000,windowGrowthFactor=100,duplicatePolicy=DUPLICATE_OK]
+1 - setUp done
+1 - testMultiplicity
+1 - Alarm received: MF_REGEXP:REGEXP1:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP2:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:MULTIPLE_MF_REGEXP:5 active=true, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP1:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP2:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP5:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP5:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP1:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP2:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:MULTIPLE_MF_REGEXP:5 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP1:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP2:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP5:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP3:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP4:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP5:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - testNode
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE1:1 active=true, nodeC=false, nodeP=true, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE1:1 active=false, nodeC=false, nodeP=true, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - testMultiplicity with regexp and default FM
+1 - Alarm received: NODE_DEFAULT:MULTIPLICITY_REG:2 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA41:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:MULTIPLICITY_REG:2 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA42:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:MULTIPLICITY_REG:2 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA43:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:MULTIPLICITY_REG:2 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA44:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:MULTIPLICITY_REG:2 active=true, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA44:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:DA41:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:*:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:DA43:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:MULTIPLICITY_REG:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:DA42:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE4:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE1:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:DA41:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:MULTIPLICITY_REG:2 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA44:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA41:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:*:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA43:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:MULTIPLICITY_REG:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA42:3 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE4:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE1:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA42:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA43:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:DA44:3 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - testMultiplicity with hierarchical FM, regexp and default FM
+1 - Alarm received: HIERARCHICAL:CONTROL/DA41/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:MULTIPLICITY_HIER:2 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA42/HIER:1 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA42/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:MULTIPLICITY_HIER:2 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA43/HIER:1 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA43/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:MULTIPLICITY_HIER:2 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA44/HIER:1 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA44/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:MULTIPLICITY_HIER:2 active=true, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA41/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA42/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA43/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA44/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA41/HIER:1 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: HIERARCHICAL:MULTIPLICITY_HIER:2 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA41/HIER:1 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA43/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA42/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA44/HIER:1 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA42/HIER:1 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA43/HIER:1 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: HIERARCHICAL:CONTROL/DA44/HIER:1 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - tearDown done
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 

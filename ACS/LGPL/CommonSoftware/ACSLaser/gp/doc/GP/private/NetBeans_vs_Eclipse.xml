@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>NetBeans vs Eclipse analysis</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Lionel" lastname="Mestre" ccid="97307"/>
+    <reviewers>TBD</reviewers>
+    <currentVersion>0.1 (2002/07)</currentVersion>
+    <history>
+    0.1 (2002/07) : First Draft<br/>
+    </history>
+  </head>
+  <!--
+
+	SECTION 1
+	
+  -->
+  <section>
+    <title>Abstract</title>
+    <description>
+      <p>As of today, two competitive open source application frameworks are available : NetBeans and Eclipse. This document presents the motivations behind the choice of NetBeans for the JCup application framework.</p>
+    </description>
+  </section>
+  <!--
+  
+	SECTION 2
+	
+	-->
+  <section>
+    <title>Requirements</title>
+    <description>
+      <p>The first requirement was to define a platform providing all basic functionality needed in a modern desktop application. Most desktop applications have common requirements - menus, document management, settings, windowing, logging, flexibility, extensibility and so forth. We don't want to write and maintain all that common code. With an Application Platform, we don't have to. We write modules to implement what we need, bundle them up with the chosen Platform, and we get a full features cross-platform application.</p>
+      <p>The second requirement is to support and integrate existing GUI code at CERN. All that code is based on Swing and some of the code makes use of StopMI.</p>
+    </description>
+  </section>
+  <!--
+    
+        Section 3
+        
+    -->
+  <section>
+    <title>Presentation</title>
+    <description>
+      <p>See JavaWorld article <a href="http://www.javaworld.com/javaworld/jw-02-2002/jw-0222-eclipse_p.html">"Will Big Blue eclipse the Java tools market?"</a>
+      </p>
+    </description>
+    <!--
+    
+        NetBeans
+                
+    -->
+    <section>
+      <title>NetBeans</title>
+      <description>
+        <p>NetBeans is an open source development tools platform on top of which vendors and open source projects can build Java tools. Sun's Forte product line is built on top of NetBeans. NetBeans is supported by Sun Microsystems and is open source since the year 2000.<br/>
+          <a href="http://www.netbeans.org/">http://www.netbeans.org/</a>
+        </p>
+      </description>
+      <section>
+        <title>Pros</title>
+        <description>
+          <ul>
+            <li>open source</li>
+            <li>mature platform</li>
+            <li>extensive support</li>
+            <li>well documented</li>
+            <li>very active user community</li>
+            <li>using standard Swing/AWT</li>
+          </ul>
+        </description>
+      </section>
+      <section>
+        <title>Cons</title>
+        <description>
+          <ul>
+            <li>poor performance due to Swing</li>
+            <li>poor integration with host OS</li>
+            <li>uncertainty of the platform in the long run</li>
+            <li>not a big consortium behind it as Eclipse</li>
+          </ul>
+        </description>
+      </section>
+    </section>
+    <!--
+    
+        Eclipse
+                
+    -->
+    <section>
+      <title>Eclipse</title>
+      <description>
+        <p>Eclipse is an ambitious attempt to create a modular development platform that all kinds of developer tools for all kinds of languages can eventually use. IBM is building all of its WebSphere development tools upon Eclipse, but the company aspires to build an ecology of products upon what it hopes to become an industry-standard platform. One big difference with NetBeans is that Eclipse uses its own graphics library and widget set, the SWT and JFace, which replaces Java standards Swing and AWT (Abstract Windowing Toolkit). It makes Eclipse fast but incompatible with existing Swing developments.<br/>
+          <a href="http://www.eclipse.org/">http://www.eclipse.org/</a>
+        </p>
+      </description>
+      <section>
+        <title>Pros</title>
+        <description>
+          <ul>
+            <li>open source</li>
+            <li>important consortium behind it</li>
+            <li>rich and active platform</li>
+            <li>well documented</li>
+            <li>rapidly growing user community</li>
+            <li>very fast, native look and feel</li>
+            <li>native integration on Win32</li>
+          </ul>
+        </description>
+      </section>
+      <section>
+        <title>Cons</title>
+        <description>
+          <ul>
+            <li>young, not yet polished</li>
+            <li>don't yet offer a good support for an Application Platform (but rather an open universal framework for building developer tools)</li>
+            <li>SWT/JFace is not (yet ?) a standard Java</li>
+            <li>not compatible with Swing</li>
+          </ul>
+        </description>
+      </section>
+    </section>
+  </section>
+  <!--
+    
+        Section 4
+        
+    -->
+  <section>
+    <title>Conclusion</title>
+    <description>
+      <p>Just looking at the pros and cons of the two platforms, it seems clear that Eclipse is a very promising challenger. Eclipse allows to create powerful applications responding as fast as native ones with the same native look and feel. The SWT/JFace API is smaller and more consistent than the AWT/Swing counterpart. The number of companies behind it is strong guarantee that Eclipse is here to stay. On the other hand, at the present time, Eclipse does not offer a good platform for generic application development. It is made to build developer tools as was NetBeans before it got splitted in two : the platform and the IDE.</p>
+      <p>We also have a strong investment in Swing, both in existing code and in skills set. Switching to a brand new API (as it would be the case with Eclipse) would require very significant investment in rewriting code, convincing and educating people.</p>
+      <p>We also need support for visual GUI development tools which Eclipse does not yet provide at the present time.</p>
+      <p>The conclusion at this point is that NetBeans is the best platform for our needs.</p>
+    </description>
+    <section>
+      <title>Risks</title>
+      <description>
+        <p>The two main concerns associated with the choice of NetBeans are the speed of the resulting applications and the success of the platform in the long term that we need to get support and updates.</p>
+        <p>Regarding the first concern we take into account that the NetBeans IDE is written on top of NetBeans Platform and is a bigger application than anything we will ever produce. As the IDE still run at a speed that makes it usable we expect out applications to be faster and usable.</p>
+        <p>Regarding the second concern we consider that the critical mass of user behind NetBeans is big enough that NetBeans will not vanish without a clear path to migrate toward another sustainable solution.</p>
+      </description>
+    </section>
+  </section>
+</document>
+

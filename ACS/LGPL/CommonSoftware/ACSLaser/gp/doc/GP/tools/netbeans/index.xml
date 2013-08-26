@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>GP project tools - Netbeans</title>
+    <section><a HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</a></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+ 	<section>
+		<title>Gui Platform developments</title>
+		<description>
+      <ul>
+        <li><a href="../../howto/netbeans/Getting_Started.html"> <B>Getting started with netbeans </B></a></li>
+        <li><a href="../../howto/index.html#NETBEANS"> GP Netbeans HOW TOs...</a></li>
+        <li><a href="/proj-gp/_notgenerated/tools/netbeans/openapi/index.html">OpenIDE <img SRC="../../images/apimenu.gif" ALT="Netbeans open api" BORDER="0"/> For the 3.4 version platform </a>(local)</li>
+        <li><a href="http://www.netbeans.org/download/apis/org/openide/doc-files/tips.html"> Tips for module authors </a></li>
+      </ul>
+      <br/>
+  	</description>
+	</section>
+ 	
+ 	<section>
+		<title>Books</title>
+		<description>
+      <ul>
+        <li><a href="http://www.netbeans.org/about/books/index.html"> netbeans.org book list</a></li>
+        <li><a href="/proj-gp/_notgenerated/tools/netbeans/api-whitepaper.pdf"> Netbeans API <IMG BORDER="0" SRC="../../images/pdf.gif" ALT="PDF document" width="18" height="18"/></a> (PDF-273kb)</li>
+        <li><a href="/proj-gp/_notgenerated/tools/netbeans/definitiveguide/tome.html">Netbeans: the definitive guide + Extending NetBeans</a> <a href="/proj-gp/_notgenerated/tools/netbeans/definitiveguide/OReilly-Book.pdf"><IMG BORDER="0" SRC="../../images/pdf.gif" ALT="PDF document" width="18" height="18"/></a> (PDF-<a HREF="http://www.oreilly.com/catalog/netbeans/">OReilly-Book</a>-8.2Mb)
+			<p>
+			The link above covers both the use of the NetBeans IDE and the use of the NetBeans Platform API in one HTML/PDF document. If only one of the two topics interests you, rather use one of the links below.
+			</p>
+			<ul>
+        <li>Using the NetBeans IDE : <a href="/proj-gp/_notgenerated/tools/netbeans/definitiveguide/NetBeansBook1.html">Netbeans: the definitive guide</a></li>
+        <li>Using the Platform API : <a href="/proj-gp/_notgenerated/tools/netbeans/definitiveguide/NetBeansBook2.html">Extending NetBeans</a></li>
+      	</ul>
+      	</li>
+      </ul>
+      <br/>
+  	</description>
+	</section>
+
+	<section>
+		<description>
+		<p>If you don't find enough information in the GP site, you can still have a look at the Netbeans website:</p>
+      <ul>
+        <a href="http://netbeans.org"> <IMG SRC="netbeanslogo.gif" ALT="netbeans.org" BORDER="0"/></a><BR/>
+        <li><a href="http://www.netbeans.org/about/index.html"> About</a></li>
+        <li><a href="http://www.netbeans.org/ide/index.html"> IDE </a> -  <a href="http://www.netbeans.org/ide/download.html"> Download </a></li>
+        <li><a href="http://www.netbeans.org/platform/index.html"> Platform </a> -  <a href="http://www.netbeans.org/platform/download.html"> Download </a></li>
+        <li><a href="http://www.netbeans.org/devhome/index.html"> Dev home </a></li>
+        <br/>
+        <li><a href="http://www.netbeans.org/devhome/faqs/index.html"> F.A.Q. </a></li>
+        <li><a href="http://www.netbeans.org/devhome/docs/howto.html"> HOW TOs... </a></li> 
+      </ul>
+      <BR/>
+  		</description>
+	</section>
+	
+</document>
+

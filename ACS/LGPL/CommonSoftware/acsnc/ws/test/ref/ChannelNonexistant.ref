@@ -1,0 +1,39 @@
+1 - Starting Container...
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+1 - Resolving reference: 'corbaloc::---:----/Manager'
+1 - Manager reference narrowed.
+1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
+1 - Configuration information for container 'bilboContainer' not available.
+1 - Starting as dynamic container.
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
+1 - ----------T--:--:--.--- [CON1 - ] An exception on addSubscription...OK.
+1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [CON1 - ] No exception on resume...OK.
+1 - ----------T--:--:--.--- [CON1 - ] No exception on suspend...OK.
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::addFilter failed for the 'blar' channel, 'EventDescription' event type, and 'hope to god this filter doesn't work' filter!
+1 - ----------T--:--:--.--- [CON1 - ] An exception on addFilter...OK.
+1 - /----/libbaci.so
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'bilboContainer' exited with code: 0.

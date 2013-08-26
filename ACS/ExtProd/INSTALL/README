@@ -1,0 +1,113 @@
+#############################################################
+#                                                           #
+# Instructions for building the basic tools used by ACS     #
+#                                                           #
+# "@(#) $Id: README,v 1.6 2008/09/04 02:40:05 cparedes Exp $"
+#                                                           #
+#############################################################
+
+#
+# WARNING:
+#
+# The build scripts rely on the assumption that 
+# the environment is aready configured according
+# to the release being built.
+# In particular ALMASW_RELEASE must be properly set.
+#
+# Some files need to be updated when a new release 
+# is prepared:
+#
+# - buildRTOS currently exports from CVS the Kernel sources
+#             using an hard coded tag.
+#             Always verify if there are updates.
+#
+
+# work as user almamgr
+
+# The installation procedure will take care of preparing the 
+# based as:
+#  $ALMASW_ROOTDIR/$ALMASW_RELEASE
+# The values for these variables as set by the standard
+# environemnt configuration scripts (see forward) are normally :
+
+ALMASW_ROOTDIR=/alma
+ALMASW_RELEASE=ACS-8.0
+
+# If the directory already exist, the installation will continue
+# there.
+
+# Normally /alma should be prepared when the machine is installed by the sys admin. 
+# It can also be created under a particular disk and then a symbolic link 
+# is made. Once /alma exists: 
+
+mkdir /alma/$ALMASW_RELEASE
+
+# Before starting any build, you should prepare the set of right environemnt 
+# variables for that ACS release. 
+# -> prepare pecs and/or .bash_profile.acs
+# For pecs: 
+# copy /etc/pecs, /alma/$PREVIOUS_REL/System and /alma/System from another machine 
+# or from the previous release directory on the same machine and change 
+# accordingly what is needed
+# ATTENTION:
+# if the OS version has changed, normally one will have to change the following 
+# pecs files adding the new OS version among the supported OSs: 
+# /etc/pecs/releases/000/bin/fosi
+# /etc/pecs/releases/000/lib/utils.sh.shpp
+# /etc/pecs/releases/000/etc/environment_loader
+# /alma/$ALMASW_RELEASE/System/environment_loader
+# Then change /alma/System/almasw_bootstrapping_release accordingly
+# and /alma/$ALMASW_RELEASE/System/environment_loader for the new versions of tools. 
+# The same changes should be archived in pecsrd and pecsalmasw modules in cmm
+
+# For .bash_profile.acs:
+# copy it from CVS or from another machine.
+
+#
+# A number of environment variables in .bash_profile.acs 
+# are evaluated at login time based on the existence of some
+# directories.
+# These variables are therefore not set when logging in
+# to build the tools.
+# 
+# In order to handle this situation the buildTools script
+# executes some sub-scripts opening a new loging
+# shell.
+# This ensures that hte environment variables are evaluated 
+# from scratch at any needed step.
+
+# On SUN only: 
+# In order to build the GNU tools we need a bootstrap gcc to build our
+# own gcc.
+# The distribution comes with its own gcc binaries for this purpose,
+# but this requires to prepare a directory /vlt (can also be a symlink to /alma)
+# where the gcc binaries to begin the gcc compilations are temporarily unpacked.
+# This is due to the facet that gcc binaries are not relocatable.
+# Alternatively and if you have already another gcc installed, set the
+# environment variable:
+
+export GCC_PATH=<absolute path where your gcc binaries are>
+
+# retrieve ACS/ExtProd from cvs:
+
+cvs export -r<your_tag> ACS/ExtProd
+
+# where <your_tag> is the tag you want to use to retrieve the builds. 
+# Typically, for ACS 4.0 release will be something like: ACS-4_0
+# go under ACS/ExtProd/INSTALL 
+
+cd ACS/ExtProd/INSTALL
+
+# Run:
+
+make all
+
+# Use 
+#  make all-vw
+# to force building VxWorks on Linux.
+# VxWorks is built automatically only on Sun.
+
+# Check the other README files, the Makefile and the scripts for
+# details.
+
+# __oOo__

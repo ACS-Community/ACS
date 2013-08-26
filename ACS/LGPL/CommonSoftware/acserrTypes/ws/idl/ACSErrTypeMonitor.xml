@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSErrTypeMonitor" type="1" _prefix="alma">
+	<Code name="ACSErrMonitorOnTimer" shortDescription="A regular timer monitor triggered the event." description="A regular timer monitor triggered the event."/>
+	<Code name="ACSErrMonitorOnValue" shortDescription="The value changed by a specified amount or more." description="The value changed by a specified amount or more."/>
+	  <ErrorCode name="ACSErrMonitorError"	
+		shortDescription="Error retreiving value for the monitor"
+		description="Error retreiving value for the monitor"/>	
+	<Code name="ACSErrMonitorOnValuePercent" shortDescription="The value changed by a specified percentual amount or more." description="The value changed by a specified percentual amount or more."/>
+	<Code name="ACSErrMonitorOnPush" shortDescription="A manual request triggered the event." description="A manual request triggered the event."/>
+</Type>

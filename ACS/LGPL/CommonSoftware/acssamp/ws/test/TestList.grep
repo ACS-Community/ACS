@@ -1,0 +1,33 @@
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+^$
+SUP.
+Log outputed to the local file
+Local file logger: Cache saved to
+lcuboot: open
+DAL root is
+java -classpath
+Time:
+XTRADYNE Technologies
+www.jacorb.org
+Connected to
+Using naming reference
+Retrying to connect to
+Abnormal connection termination
+POA RootPOA
+POA ManagerPOA
+Disconnected.
+TIME STAMP
+VALUE
+Event: domain
+STRUCT_LEN
+^2 - ALMA
+::SimpleSupplier::setData()
+Creating Notification Channel
+This container will run on
+Supplier::subscription_change subscription added for domain: ALMA!
+Running the container with these arguments
+cdbChannelConfigExists
+Manager hostname obtained via command line
+ManagerReference obtained via command line
+Bootstrap ORB

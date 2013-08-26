@@ -1,0 +1,158 @@
+1 - *** Reading required schema files
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
+1 - *** Reading given schema files
+1 - *** Reading given XML files
+1 - *** Getting TargetNamespaces from schema files
+1 - *** Validating Schemas
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/schemas/TestPowerSupplyACS.xsd[OK]
+1 -     /PATH/subsystemCDBs/OBSPREP/config/CDB/schemas/TestPowerSupplyACS.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/AmsSeq.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/LAMP.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/Manager.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/LoggingConfig.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/Components.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/Component.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/HierarchicalComponent.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/RampedPowerSupply.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/PowerSupply.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/MOUNT.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/SAMP.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/Door.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/MasterComponent.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/CLOCK.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/LAMPWHEEL.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/Calendar.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/xml.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/TestPowerSupplyACS.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/Container.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/SimulatedComponent.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/Building.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/Fridge.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/CDB.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/BACI.xsd[OK]
+1 -     /PATH/defaultCDB/CDB/schemas/Tower.xsd[OK]
+1 - *** Validating XML files
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Managers/Manager/Manager.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Components/Components.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Components/EXEC_OPERATOR_SERVER_PRIVILEGED/EXEC_OPERATOR_SERVER_PRIVILEGED.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Components/EXEC_USER_INFO/EXEC_USER_INFO.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Components/EXEC_ACCESS_AUTH/EXEC_ACCESS_AUTH.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Components/EXEC_OPERATOR_SERVER/EXEC_OPERATOR_SERVER.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Components/EXEC_OPERATOR/EXEC_OPERATOR.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Components/EXEC_MAILER/EXEC_MAILER.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Components/EXEC_SCHEDULE/EXEC_SCHEDULE.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Components/EXEC_USER_ADMIN_PRIVILEGED/EXEC_USER_ADMIN_PRIVILEGED.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Components/EXEC_USER_ADMIN/EXEC_USER_ADMIN.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/MACI/Containers/bilboContainer/bilboContainer.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/alma/TEST_PS_1/TEST_PS_1.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/alma/EXEC_MOCKUP_MC1/EXEC_MOCKUP_MC1.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/alma/EXEC_MOCKUP_MC2/EXEC_MOCKUP_MC2.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/alma/EXEC_MOCKUP_MC3/EXEC_MOCKUP_MC3.xml[OK]
+1 -     /PATH/subsystemCDBs/EXEC/config/CDB/alma/MOUNT1/MOUNT1.xml[OK]
+1 -     /PATH/subsystemCDBs/OFFLINE/config/CDB/MACI/Managers/Manager/Manager.xml[OK]
+1 -     /PATH/subsystemCDBs/OFFLINE/config/CDB/MACI/Components/Components.xml[OK]
+1 -     /PATH/subsystemCDBs/OFFLINE/config/CDB/MACI/Components/OFFLINE_DATACAP1/OFFLINE_DATACAP1.xml[OK]
+1 -     /PATH/subsystemCDBs/OBSPREP/config/CDB/MACI/Managers/Manager/Manager.xml[OK]
+1 -     /PATH/subsystemCDBs/OBSPREP/config/CDB/MACI/Components/Components.xml[OK]
+1 -     /PATH/subsystemCDBs/OBSPREP/config/CDB/MACI/Components/OBSPREP_PROJECT_REPOSITORY/OBSPREP_PROJECT_REPOSITORY.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Managers/Manager/Manager.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/Components.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_lkmLoader:ABM001/CONTROL_lkmLoader:ABM001.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_AmbManager:Test/CONTROL_AmbManager:Test.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_TIMESOURCE/CONTROL_TIMESOURCE.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_50:Default/CONTROL_50:Default.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_ControlSystem1/CONTROL_ControlSystem1.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_lkmLoader:ARTM/CONTROL_lkmLoader:ARTM.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_34:Default/CONTROL_34:Default.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_DelayServer/CONTROL_DelayServer.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_AmbManager:ABM001/CONTROL_AmbManager:ABM001.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_64:Default/CONTROL_64:Default.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_DeviceMonitoring/CONTROL_DeviceMonitoring.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_lkmLoader:Test/CONTROL_lkmLoader:Test.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_WeatherStation/CONTROL_WeatherStation.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_MASTER_COMP/CONTROL_MASTER_COMP.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_lkmLoader:ABM002/CONTROL_lkmLoader:ABM002.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_AmbManager:ARTM/CONTROL_AmbManager:ARTM.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_68:Default/CONTROL_68:Default.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_96:Default/CONTROL_96:Default.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_32:Default/CONTROL_32:Default.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_AmbManager:ABM002/CONTROL_AmbManager:ABM002.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_ControlStatus1/CONTROL_ControlStatus1.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_WeatherStationMC/CONTROL_WeatherStationMC.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Components/CONTROL_48:Default/CONTROL_48:Default.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Containers/CONTROL/ARTM/cppContainer/cppContainer.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Containers/CONTROL/ABM002/cppContainer/cppContainer.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Containers/CONTROL/Test/cppContainer/cppContainer.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/MACI/Containers/CONTROL/ABM001/cppContainer/cppContainer.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_96/Default/Default.xml:37:74 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'DCtoDCPowerSupply'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ARTM/ARTM.xml:14:55 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
+1 - /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ARTM/ARTM.xml:15:3 [Fatal Error]
+1 - 	 The content of elements must consist of well-formed character data or markup.
+1 - ************Unrecoverable error, please don't trust any messages after this one.***********
+1 - [SAXException] The content of elements must consist of well-formed character data or markup.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ABM002/ABM002.xml:14:55 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
+1 - /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ABM002/ABM002.xml:15:3 [Fatal Error]
+1 - 	 The content of elements must consist of well-formed character data or markup.
+1 - ************Unrecoverable error, please don't trust any messages after this one.***********
+1 - [SAXException] The content of elements must consist of well-formed character data or markup.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/Test/Test.xml:14:55 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ABM001/ABM001.xml:14:55 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'AmbManager'.
+1 - /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_AmbManager/ABM001/ABM001.xml:15:3 [Fatal Error]
+1 - 	 The content of elements must consist of well-formed character data or markup.
+1 - ************Unrecoverable error, please don't trust any messages after this one.***********
+1 - [SAXException] The content of elements must consist of well-formed character data or markup.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_lkmLoader/ARTM/ARTM.xml:31:51 [Warning]
+1 - 	 SchemaLocation: schemaLocation value = 'urn:schemas-cosylab-com:LkmLoader:1.0' must have even number of URI's.
+1 - :31:51 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'LkmLoader'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_lkmLoader/ABM002/ABM002.xml:31:51 [Warning]
+1 - 	 SchemaLocation: schemaLocation value = 'urn:schemas-cosylab-com:LkmLoader:1.0' must have even number of URI's.
+1 - :31:51 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'LkmLoader'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_lkmLoader/Test/Test.xml:31:47 [Warning]
+1 - 	 SchemaLocation: schemaLocation value = 'urn:schemas-cosylab-com:LkmLoader:1.0' must have even number of URI's.
+1 - :31:47 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'LkmLoader'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_lkmLoader/ABM001/ABM001.xml:31:51 [Warning]
+1 - 	 SchemaLocation: schemaLocation value = 'urn:schemas-cosylab-com:LkmLoader:1.0' must have even number of URI's.
+1 - :31:51 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'LkmLoader'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_TIMESOURCE/CONTROL_TIMESOURCE.xml:13:67 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'TimeSource'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_64/Default/Default.xml:6:65 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'SecondLO'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_34/Default/Default.xml:37:61 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'LORR'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_32/Default/Default.xml:32:60 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'CRD'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/ACS_CLOCK1/ACS_CLOCK1.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_WeatherStation/CONTROL_WeatherStation.xml:5:77 [Warning]
+1 - 	 SchemaLocation: schemaLocation value = 'urn:schemas-cosylab-com:CONTROL_WeatherStation:1.0' must have even number of URI's.
+1 - :5:77 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'CONTROL_WeatherStation'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_MASTER_COMP/CONTROL_MASTER_COMP.xml[OK]
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_68/Default/Default.xml:29:57 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'IFMC'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_48/Default/Default.xml:30:57 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'DigiClock'.
+1 -     /PATH/subsystemCDBs/CONTROL/config/CDB/alma/CONTROL_50/Default/Default.xml:6:60 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'FTS'.
+1 -     /PATH/subsystemCDBs/PIPELINE/config/CDB/MACI/Managers/Manager/Manager.xml[OK]
+1 -     /PATH/subsystemCDBs/PIPELINE/config/CDB/MACI/Components/Components.xml[OK]
+1 -     /PATH/subsystemCDBs/PIPELINE/config/CDB/MACI/Components/PIPELINE_SCIPIPEMANAGER/PIPELINE_SCIPIPEMANAGER.xml[OK]
+1 -     /PATH/subsystemCDBs/PIPELINE/config/CDB/MACI/Components/PIPELINE_QLDISPLAY/PIPELINE_QLDISPLAY.xml[OK]
+1 -     /PATH/subsystemCDBs/PIPELINE/config/CDB/MACI/Components/PIPELINE_SCIENCE_MASTER_COMP/PIPELINE_SCIENCE_MASTER_COMP.xml[OK]
+1 -     /PATH/subsystemCDBs/PIPELINE/config/CDB/MACI/Components/PIPELINE_QUICKLOOK_MASTER_COMP/PIPELINE_QUICKLOOK_MASTER_COMP.xml[OK]
+1 -     /PATH/subsystemCDBs/PIPELINE/config/CDB/alma/PIPELINE_SCIENCE_MASTER_COMP/PIPELINE_SCIENCE_MASTER_COMP.xml[OK]
+1 -     /PATH/subsystemCDBs/PIPELINE/config/CDB/alma/PIPELINE_QUICKLOOK_MASTER_COMP/PIPELINE_QUICKLOOK_MASTER_COMP.xml[OK]
+1 -     /PATH/subsystemCDBs/SCHEDULING/config/CDB/MACI/Components/Components.xml[OK]
+1 -     /PATH/subsystemCDBs/SCHEDULING/config/CDB/MACI/Components/SCHEDULING_MASTER_COMP/SCHEDULING_MASTER_COMP.xml[OK]
+1 -     /PATH/subsystemCDBs/SCHEDULING/config/CDB/MACI/Components/SCHEDULING_MASTERSCHEDULER/SCHEDULING_MASTERSCHEDULER.xml[OK]
+1 -     /PATH/subsystemCDBs/SCHEDULING/config/CDB/alma/SCHEDULING_MASTER_COMP/SCHEDULING_MASTER_COMP.xml[OK]
+1 - [Error] CDBChecker exiting. Errors were found

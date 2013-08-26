@@ -1,0 +1,8 @@
+ #! /bin/bash
+. acsstartupAcsPorts 
+
+CDB_PORT=`sed -n 1'p' $ACS_TMP/.cdbport`
+export DAL_REFERENCE=corbaloc\:\:$HOST\:$CDB_PORT/CDB
+export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
+
+$*

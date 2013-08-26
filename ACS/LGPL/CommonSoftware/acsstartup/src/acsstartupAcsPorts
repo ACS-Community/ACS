@@ -1,0 +1,99 @@
+#############################################################
+#Returns the "ACS Base Port".  This is just an integer ranging from 0-10.  In
+#case the ACS_INSTANCE environment variable is not set, this function
+#defaults to 0.
+function getBasePort
+{
+echo $ACS_INSTANCE
+}
+#############################################################
+#Returns the port manager is running on.
+function getManagerPort
+{
+echo $(( `getBasePort` * 100 + 3000 ))
+}
+#############################################################
+#Returns the port the CORBA Naming Service is running on.
+function getNamingServicePort
+{
+echo $(( `getBasePort` * 100 + 3000 + 1 ))
+}
+#############################################################
+#Returns the port the CORBA Notification Service is running on.
+function getNotifyServicePort
+{
+echo $(( `getBasePort` * 100 + 3000 + 2 ))
+}
+#############################################################
+#Returns the port the CORBA Logging Service is running on.
+function getLoggingServicePort
+{
+echo $(( `getBasePort` * 100 + 3000 + 3 ))
+}
+#############################################################
+#Returns the port the CORBA Interface Repository is running on.
+function getIRPort
+{
+echo $(( `getBasePort` * 100 + 3000 + 4 ))
+}
+#############################################################
+#Returns the port the CORBA (Logging) Notification Service is running on.
+function getLoggingNotifyServicePort
+{
+echo $(( `getBasePort` * 100 + 3000 + 5 ))
+}
+
+#############################################################
+#Returns the port the CORBA (BACI archive) Notification Service is running on.
+function getArchiveNotifyServicePort
+{
+echo $(( `getBasePort` * 100 + 3000 + 6 ))
+}
+
+#############################################################
+#Returns the port the CORBA (Alarm) Notification Service is running on.
+function getAlarmNotifyServicePort
+{
+echo $(( `getBasePort` * 100 + 3000 + 7 ))
+}
+
+#############################################################
+#Returns the port the ACS Logging Service is running on.
+function getLogPort
+{
+echo $(( `getBasePort` * 100 + 3000 + 11 ))
+}
+#############################################################
+#Returns the port the ACS CDB is running on.
+function getCDBPort
+{
+echo $(( `getBasePort` * 100 + 3000 + 12 ))
+}
+#############################################################
+#Returns the port the ACS alarm service is running on.
+function getAlarmServicePort
+{
+echo $(( `getBasePort` * 100 + 3000 + 13 ))
+}
+#############################################################
+#Returns the current IP address (or $HOST if an error occurs)
+function getIP
+{
+#perhaps not the nicest way of doing this but it looks like
+#the safest mechanism
+# TODO: figure out why $ACS_HOST is checked here. It is not set in any of the ACS scripts.
+if [ "$ACS_HOST" ] 
+then
+    python -c "import socket; import os;  print str(socket.gethostbyname(os.environ['ACS_HOST']))"
+else
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        python -c "import socket; print str(socket.gethostbyname(socket.getfqdn()))"
+    else
+        python -c "import socket; print str(socket.gethostbyname(socket.getfqdn().split('.')[0]))"
+    fi
+fi
+}
+#############################################################
+
+export getBasePort getManagerPort getNamingServicePort getNotifyServicePort getLoggingServicePort getIRPort getLogPort getCDBPort
+export getLoggingNotifyServicePort getArchiveNotifyServicePort getAlarmNotifyServicePort

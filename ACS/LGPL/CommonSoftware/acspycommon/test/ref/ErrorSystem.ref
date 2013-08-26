@@ -1,0 +1,371 @@
+1 - --main1-------------------------------------------------
+1 - --fakeClientFunction1-------------------------------------------------
+1 - --fakeCORBAMethod1-------------------------------------------------
+1 - Raising the local exception...
+1 - ErrorTrace (TimeStamp=xxxx,
+1 -             Line=xxx
+1 -             Routine=fakeCORBAMethod,
+1 -             Host=xxxx,
+1 -             Process=xxx,
+1 -             Thread=MainThread,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
+1 -             Severity=Error,
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
+1 - 
+1 - --fakeCORBAMethod2-------------------------------------------------
+1 - ErrorTrace (TimeStamp=xxxx,
+1 -             Line=xxx
+1 -             Routine=fakeCORBAMethod,
+1 -             Host=xxxx,
+1 -             Process=xxx,
+1 -             Thread=MainThread,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                 Line=xxx
+1 -                 Routine=fakeCORBAMethod,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -                 Thread=MainThread,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -                 ShortDescrip=A Python exception,
+1 -                 Severity=Error,
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
+1 - 
+1 - --fakeClientFunction2-------------------------------------------------
+1 - ErrorTrace (TimeStamp=xxxx,
+1 -             Line=xxx
+1 -             Routine=fakeClientFunction,
+1 -             Host=xxxx,
+1 -             Process=xxx,
+1 -             Thread=MainThread,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                 Line=xxx
+1 -                 Routine=fakeCORBAMethod,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -                 Thread=MainThread,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -                 ShortDescrip=A Python exception,
+1 -                 Severity=Error,
+1 -                 Data: )
+1 - 
+1 -         ErrorTrace (TimeStamp=xxxx,
+1 -                     Line=xxx
+1 -                     Routine=fakeCORBAMethod,
+1 -                     Host=xxxx,
+1 -                     Process=xxx,
+1 -                     Thread=MainThread,
+1 -                     Type=7,
+1 -                     Code=0,
+1 -                     ShortDescrip=A Python exception,
+1 -                     Severity=Error,
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
+1 - 
+1 - --main2-------------------------------------------------
+1 - ErrorTrace (TimeStamp=xxxx,
+1 -             Line=xxx
+1 -             Routine=<module>,
+1 -             Host=xxxx,
+1 -             Process=xxx,
+1 -             Thread=MainThread,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                 Line=xxx
+1 -                 Routine=fakeClientFunction,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -                 Thread=MainThread,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -                 ShortDescrip=A Python exception,
+1 -                 Severity=Error,
+1 -                 Data: )
+1 - 
+1 -         ErrorTrace (TimeStamp=xxxx,
+1 -                     Line=xxx
+1 -                     Routine=fakeCORBAMethod,
+1 -                     Host=xxxx,
+1 -                     Process=xxx,
+1 -                     Thread=MainThread,
+1 -                     Type=7,
+1 -                     Code=0,
+1 -                     ShortDescrip=A Python exception,
+1 -                     Severity=Error,
+1 -                     Data: )
+1 - 
+1 -             ErrorTrace (TimeStamp=xxxx,
+1 -                         Line=xxx
+1 -                         Routine=fakeCORBAMethod,
+1 -                         Host=xxxx,
+1 -                         Process=xxx,
+1 -                         Thread=MainThread,
+1 -                         Type=7,
+1 -                         Code=0,
+1 -                         ShortDescrip=A Python exception,
+1 -                         Severity=Error,
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
+1 - 
+1 - --main2-------------------------------------------------
+1 - Testing all public methods
+1 - 
+1 - ErrorTrace (TimeStamp=xxxx,
+1 -             Line=xxx
+1 -             Routine=<module>,
+1 -             Host=xxxx,
+1 -             Process=xxx,
+1 -             Thread=MainThread,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                 Line=xxx
+1 -                 Routine=fakeClientFunction,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -                 Thread=MainThread,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -                 ShortDescrip=A Python exception,
+1 -                 Severity=Error,
+1 -                 Data: )
+1 - 
+1 -         ErrorTrace (TimeStamp=xxxx,
+1 -                     Line=xxx
+1 -                     Routine=fakeCORBAMethod,
+1 -                     Host=xxxx,
+1 -                     Process=xxx,
+1 -                     Thread=MainThread,
+1 -                     Type=7,
+1 -                     Code=0,
+1 -                     ShortDescrip=A Python exception,
+1 -                     Severity=Error,
+1 -                     Data: )
+1 - 
+1 -             ErrorTrace (TimeStamp=xxxx,
+1 -                         Line=xxx
+1 -                         Routine=fakeCORBAMethod,
+1 -                         Host=xxxx,
+1 -                         Process=xxx,
+1 -                         Thread=MainThread,
+1 -                         Type=7,
+1 -                         Code=0,
+1 -                         ShortDescrip=A Python exception,
+1 -                         Severity=Error,
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
+1 - 
+1 - ----------T--:--:--.--- Error Test Error Trace
+1 - ----------T--:--:--.--- Error Test Error Trace
+1 - ErrorTrace (TimeStamp=xxxx,
+1 - getData('no data set'): []
+1 - getData('name'): ['value']
+1 -             Line=xxx
+1 -             Routine=<module>,
+1 -             Host=xxxx,
+1 -             Process=xxx,
+1 -             Thread=MainThread,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 - --mainNew1-------------------------------------------------
+1 - --fakeCORBAMethodNew1-------------------------------------------------
+1 -                 Line=xxx
+1 - Raising the local exception...
+1 -                 Routine=fakeClientFunction,
+1 - ErrorTrace (TimeStamp=xxxx,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -             Line=xxx
+1 -                 Thread=MainThread,
+1 -             Routine=fakeCORBAMethodNew,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -             Host=xxxx,
+1 -             Process=xxx,
+1 -                 ShortDescrip=A Python exception,
+1 -                 Severity=Error,
+1 -             Thread=MainThread,
+1 -                 Data: )
+1 -             Type=7,
+1 - 
+1 -             Code=0,
+1 -         ErrorTrace (TimeStamp=xxxx,
+1 -             ShortDescrip=A Python exception,
+1 -             Severity=Error,
+1 -             Data: )
+1 -                     Line=xxx
+1 - 
+1 -                     Routine=fakeCORBAMethod,
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                     Host=xxxx,
+1 -                     Process=xxx,
+1 -                 Line=xxx
+1 -                     Thread=MainThread,
+1 -                 Routine=fakeCORBAMethodNew,
+1 -                     Type=7,
+1 -                     Code=0,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -                     ShortDescrip=A Python exception,
+1 -                     Severity=Error,
+1 -                 Thread=MainThread,
+1 -                     Data: )
+1 -                 Type=7,
+1 - 
+1 -                 Code=0,
+1 -             ErrorTrace (TimeStamp=xxxx,
+1 -                 ShortDescrip=A Python exception,
+1 -                 Severity=Error,
+1 -                         Line=xxx
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethodNew
+1 -                         Routine=fakeCORBAMethod,
+1 -                         Host=xxxx,
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 -                         Process=xxx,
+1 - ; )
+1 -                         Thread=MainThread,
+1 - 
+1 -                         Type=7,
+1 -                         Code=0,
+1 - --fakeCORBAMethodNew2-------------------------------------------------
+1 - ErrorTrace (TimeStamp=xxxx,
+1 -                         ShortDescrip=A Python exception,
+1 -                         Severity=Error,
+1 -             Line=xxx
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethod
+1 -             Routine=fakeCORBAMethodNew,
+1 -             Host=xxxx,
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 -             Process=xxx,
+1 - ; )
+1 -             Thread=MainThread,
+1 - 
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                 Line=xxx
+1 -                 Routine=fakeCORBAMethodNew,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -                 Thread=MainThread,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -                 ShortDescrip=A Python exception,
+1 -                 Severity=Error,
+1 -                 Data: )
+1 - 
+1 -         ErrorTrace (TimeStamp=xxxx,
+1 -                     Line=xxx
+1 -                     Routine=fakeCORBAMethodNew,
+1 -                     Host=xxxx,
+1 -                     Process=xxx,
+1 -                     Thread=MainThread,
+1 -                     Type=7,
+1 -                     Code=0,
+1 -                     ShortDescrip=A Python exception,
+1 -                     Severity=Error,
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethodNew
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
+1 - 
+1 - --mainNew2-------------------------------------------------
+1 - ErrorTrace (TimeStamp=xxxx,
+1 -             Line=xxx
+1 -             Routine=<module>,
+1 -             Host=xxxx,
+1 -             Process=xxx,
+1 -             Thread=MainThread,
+1 -             Type=7,
+1 -             Code=0,
+1 -             ShortDescrip=A Python exception,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=xxxx,
+1 -                 Line=xxx
+1 -                 Routine=fakeCORBAMethodNew,
+1 -                 Host=xxxx,
+1 -                 Process=xxx,
+1 -                 Thread=MainThread,
+1 -                 Type=7,
+1 -                 Code=0,
+1 -                 ShortDescrip=A Python exception,
+1 -                 Severity=Error,
+1 -                 Data: )
+1 - 
+1 -         ErrorTrace (TimeStamp=xxxx,
+1 -                     Line=xxx
+1 -                     Routine=fakeCORBAMethodNew,
+1 -                     Host=xxxx,
+1 -                     Process=xxx,
+1 -                     Thread=MainThread,
+1 -                     Type=7,
+1 -                     Code=0,
+1 -                     ShortDescrip=A Python exception,
+1 -                     Severity=Error,
+1 -                     Data: )
+1 - 
+1 -             ErrorTrace (TimeStamp=xxxx,
+1 -                         Line=xxx
+1 -                         Routine=fakeCORBAMethodNew,
+1 -                         Host=xxxx,
+1 -                         Process=xxx,
+1 -                         Thread=MainThread,
+1 -                         Type=7,
+1 -                         Code=0,
+1 -                         ShortDescrip=A Python exception,
+1 -                         Severity=Error,
+1 -   File "acspyTestError", line xxx, in fakeCORBAMethodNew
+1 -     raise Exception("fake python exception")
+1 - Exception: fake python exception
+1 - ; )
+1 - 
+1 - The end __oOo__

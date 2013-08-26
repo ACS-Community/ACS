@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fault-family name="MF_REGEXP" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://tempuri.org</help-url>
+  <contact name="Alessandro" gsm="123456" email="test@eso.org" />
+  <fault-code value="0">
+  	<priority>0</priority>
+  	<problem-description>Regexp for 0</problem-description>
+  </fault-code>
+  <fault-code value="1">
+    <priority>0</priority>
+    <problem-description>Regexp 1</problem-description>
+  </fault-code>
+  <fault-code value="2">
+  	<priority>0</priority>
+  	<problem-description>Regexp for 2</problem-description>
+  </fault-code>
+  <fault-code value="3">
+  	<priority>0</priority>
+  	<problem-description>Regexp for 3</problem-description>
+  </fault-code>
+  <fault-code value="4">
+  	<priority>0</priority>
+  	<problem-description>Regexp for 4</problem-description>
+  </fault-code>
+  <fault-code value="5">
+  	<priority>1</priority>
+  	<cause>Multiplicity reduction generated</cause>
+  	<problem-description>MR alarm with regexp</problem-description>
+  </fault-code>
+  <fault-member-default>
+  </fault-member-default>
+  <fault-member name="MULTIPLE_MF_REGEXP"></fault-member>
+  <fault-member name="REGEXP1"></fault-member>
+  <fault-member name="REGEXP2"></fault-member>
+  <fault-member name="REGEXP3"></fault-member>
+  <fault-member name="REGEXP4"></fault-member>
+  <fault-member name="REGEXP5"></fault-member>
+</fault-family>

@@ -1,0 +1,367 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupPids
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsInterfaceRepository,v 1.16 2013/03/04 09:33:07 msekoran Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# azagar   2008-08-06 Extracted from acsStartORBSRVC and acsStopORBSRVC
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+PID=$$
+export HOST=`getIP`
+COMMAND=`basename $0`
+#LOGPOSTFIX=" using 'ACS_INSTANCE=$ACS_INSTANCE'"
+LOGPOSTFIX=
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_START=false
+CL_STOP=false
+CL_WAIT=false
+CL_BASEPORT=
+CL_HELP=
+CL_LOADIFR=true
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+# Intentionally includes all options supported by acsStartORBSRVC
+#
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,nameService:
+SHORTOPTS=hskwrb:t:x:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+  cat << EOF
+Starts or stops Interface Repository for Acs
+
+Usage: $COMMAND [OPTIONS]
+Options:
+   -s | --start                      start service
+   -k | --kill                       stop service
+   -w | --wait                       wait for IFR to get loaded (only without -noloadIFR)
+   -b | --baseport INSTANCE          the acs instance (0-9) you want to use
+   --noloadIFR                       start the IFR without loading it; it can be loaded manually afterwards using the command acsstartupLoadIFR
+   -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
+   -x | --nameService REF            set name service reference via command-line
+   -h | --help                       prints this help and exits
+EOF
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n $COMMAND -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+  printUsage
+  exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+  case "$1" in
+    --baseport)                   CL_BASEPORT=$2 ; shift ;;
+    -b)                           CL_BASEPORT=$2 ; shift ;;
+    --noloadIFR)                  CL_LOADIFR=false ;; 
+    --timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    -t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    --help)                       CL_HELP=true ;; 
+    -h)                           CL_HELP=true ;; 
+    --start)                      CL_START=true ;; 
+    -s)                           CL_START=true ;; 
+    --kill)                       CL_STOP=true ;; 
+    -k)                           CL_STOP=true ;; 
+    --wait)                       CL_WAIT=true ;; 
+    -w)                           CL_WAIT=true ;; 
+    --nameService)                export ACS_NAME_SERVICE=$2 ; shift ;;
+    -x)                           export ACS_NAME_SERVICE=$2 ; shift ;;
+    --) break ;;
+  esac
+  shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+if [ "$CL_HELP" ] ; then
+  printUsage
+  exit $EC_OK
+fi
+
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+################################
+#Set variables
+################################
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+  export ACS_INSTANCE="$CL_BASEPORT"
+fi
+
+ACS_LOG_COMMAND $@
+
+#Makes sure there is an initial value
+if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+then
+  ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+fi
+
+#maximum timeout for any given process to complete
+MAX_TIMEOUT=$(( 10 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+
+export STD_SLEEP=3
+
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+#use the instance directory to get the complete names of the 
+#files where process IDs are stored in.
+NAMING_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_NAMING_SERVICE_PIDFILE
+IR_PIDFILE=$INSTANCE_DIR/$ACS_IR_PIDFILE
+IRFEED_PIDFILE=$INSTANCE_DIR/$ACS_IRFEED_PIDFILE
+
+#IOR locations
+IR_IOR=$INSTANCE_DIR/$ACS_IR_IORFILE
+
+#determine the TCP port to be used
+IR_PORT=`getIRPort`
+NAMING_SERVICE_PORT=`getNamingServicePort`
+
+# Always use -ORBDottedDecimalAddresses=1
+if [ "X$ORBOPTS" = "X" ]
+then
+  ORBOPTS="-ORBDottedDecimalAddresses 1"
+fi
+
+
+
+
+################################
+# Interface Repository
+################################
+# The IOR is saved in $IR_IOR
+#
+# Note: this is started first, so that we can do the IFR loading (which depends on IR being started)
+#       immediately afterwards. IFR loading is a long-running process, so we want to start it ASAP.
+#
+
+if [ "$CL_STOP" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  if [ ! -d $INSTANCE_DIR ]
+  then
+    ACS_LOG_DEBUG "$COMMAND" "Lock directory '$INSTANCE_DIR' does not exist!"
+  elif [ ! -w $INSTANCE_DIR ]
+  then
+    ACS_LOG_ERROR "$COMMAND" "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
+    exit $EC_CANNOTUSE
+  fi
+
+  ACS_NAME_SERVICE=`acsstartupNSRef`
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name InterfaceRepository -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+
+  # SERVICE SHUTDOWN
+  # --------------------------------------------------------------------------
+  ACS_LOG_INFO "$COMMAND" "Stopping the CORBA Interface Repository${LOGPOSTFIX}"
+  if IRFEED_PID=`cat $IRFEED_PIDFILE 2> /dev/null`
+  then
+    acsKillProc $IRFEED_PID 2> /dev/null && rm -f $IRFEED_PIDFILE || ACS_LOG_ERROR "$COMMAND" "Cannot kill the Interface Repository loader"
+  fi 
+  if IR_PID=`getIRPid`
+  then
+    acsKillProc $IR_PID 2> /dev/null && rm -f $IR_PIDFILE || ACS_LOG_ERROR "$COMMAND" "Cannot kill the Interface Repository"
+  fi 
+fi
+
+if [ "$CL_START" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  # Check if Naming Service is running
+  if [ ! -e $NAMING_SERVICE_PIDFILE ]
+  then
+    if [ "X$ACS_NAME_SERVICE" = "X" ]
+    then
+      ACS_LOG_ERROR "$COMMAND" "Naming Service must be running before starting an Interface Repository!"
+      exit $EC_FAILURE
+    else
+      ACS_LOG_INFO "$COMMAND" "Naming Service is not running locally, assuming remote Naming Service!"
+    fi
+  fi
+
+  # Prevent from having the service started more than once on the same baseport
+  if [ -e $IR_PIDFILE ]
+  then
+    ACS_LOG_ERROR "$COMMAND" "It appears as if you're trying to run the $COMMAND command twice"
+    ACS_LOG_ERROR "$COMMAND" "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
+    exit $EC_FAILURE
+  fi
+
+  # Make sure that the directory for temporary ACS_INSTANCE files exists.
+  if ! createInstanceDirectory $ACS_INSTANCE
+  then
+    ACS_LOG_ERROR "$COMMAND" "Cannot create $INSTANCE_DIR"
+    exit $EC_CANNOTCREATE
+  fi
+  mkdir -p $INSTANCE_DIR/$ACS_PID_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_OUT_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_IOR_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_CNF_DIR
+
+  # Ensure the port number is actually free
+  if ! checkTCPPort $IR_PORT
+  then
+    ACS_LOG_ERROR "$COMMAND" "Interface Repository port is being used by another process. Cannot continue!"
+    exit $EC_NOPORT
+  fi
+
+  # SERVICE STARTUP
+  # --------------------------------------------------------------------------
+  ACS_LOG_INFO "$COMMAND" "Starting Interface Repository${LOGPOSTFIX}"
+
+  # This is TAO Interface Repository
+  PERSISTENCE_FILE=$ACS_TMP/ifr_cache.$ACS_INSTANCE
+  if [ -e $PERSISTENCE_FILE ]
+  then
+      #We check for idl files time and compare it with persistence file time
+      IDL_FILES=
+      X=0
+      t1=$(stat -c %Y $PERSISTENCE_FILE)
+      for i in $IDL_PATH $USER_IDL
+      do
+
+          # Check if the path really exists; otherwise 'find' will fail
+          j=$(echo $i |sed "s/-I//")
+          if [ ! -e $j ]
+          then
+              continue
+          fi
+
+          for k in $(find $j -name "*.idl")
+          do
+              t2=$(stat -c %Y $k)
+              if [ $t2 -ge $t1 ]
+              then
+                  IDL_FILES="$IDL_FILES$k "
+              fi
+              X=$(($X + 1))
+          done
+      done
+      echo $X
+      if [ "$IDL_FILES" = "" ]
+      then
+          #If all files are older than the persistence file we skip loading them.
+          ACS_LOG_INFO "acsInterfaceRepository" "Loading of IDL interfaces in Interface Repository is being skipped due to up-to-date persistence file"
+          CL_LOADIFR=false
+      else
+          rm -f $PERSISTENCE_FILE
+      fi
+  fi
+  $ACE_ROOT/TAO/orbsvcs/IFR_Service/IFR_Service -ORBEndpoint iiop://$HOST:$IR_PORT -p -b $PERSISTENCE_FILE -o $IR_IOR $ORBOPTS &
+
+  #This is MICO Interface Repository
+  LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
+  #$MICO_HOME/bin/ird -ORBNoResolve -ORBIIOPAddr inet:$HOST:$IR_PORT --ior $IR_IOR &
+
+  IR_PID=$!
+  echo $IR_PID > $IR_PIDFILE
+
+  # Block until the IOR shows up in the the correct file
+  if ! acsutilBlock -t $MAX_TIMEOUT -f $IR_IOR -b "IOR:"
+  then
+    ACS_LOG_ERROR "$COMMAND" "Unable to start the Interface Repository!"
+    ACS_LOG_ERROR "$COMMAND" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
+    exit $EC_TIMEOUT
+  fi
+
+  # Now that the Naming Service and Interface Repository are both running, 
+  # the Interface Repository is added to the Name Service
+  # using the temporary file, that is afterwards deleted.
+  ACS_NAME_SERVICE=`acsstartupNSRef`
+  $ACE_ROOT/TAO/utils/nslist/tao_nsadd --rebind --name InterfaceRepository --ior `cat $IR_IOR` -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS
+fi
+
+if [ -e $IR_PIDFILE -a \( "$CL_WAIT" = "true" -o "$CL_START" = "true" \) -a "$CL_LOADIFR" = "true" ]
+then
+  # Once Interface Repository is up and running, it is safe to feed it with IDL Interfaces.
+  if [ ! -e $IRFEED_PIDFILE -a "$CL_START" = "true" ]
+  then
+    #If we enter here it means we are creating the IFR_Service cache file, so we
+    #set appropriate permissions for it.
+    chmod 664 $PERSISTENCE_FILE
+    # Loading ACS IDL Interfaces in Interface Repository, as a background job, so processing can continue in parallel.
+    acsstartupLoadIFR & #this C++ based script is a couple of seconds faster than acsIrFeed.
+    #acsIrfeed  -IRcorbaloc corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository &
+    IRFEED_PID=$!
+    echo $IRFEED_PID > $IRFEED_PIDFILE
+  fi
+
+  if [ -e $IRFEED_PIDFILE -a "$CL_WAIT" = "true" ]
+  then
+    # Block until the Interface Repository loading is complete
+    IRFEED_PID=`cat $IRFEED_PIDFILE`
+    if ! acsutilBlock -t $((5*$MAX_TIMEOUT)) -p $IRFEED_PID
+    then
+      ACS_LOG_ERROR "$COMMAND" "Unable to load IDL Interfaces in Interface Repository!"
+      ACS_LOG_ERROR "$COMMAND" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
+      exit $EC_TIMEOUT
+    fi
+  fi
+fi
+
+
+#
+# ___oOo___

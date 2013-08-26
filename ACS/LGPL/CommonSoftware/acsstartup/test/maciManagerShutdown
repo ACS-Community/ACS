@@ -1,0 +1,3 @@
+#! /bin/bash
+
+acsstartupGenericProcess.sh -s 1 "Mock maciManagerShutdown"

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.openorb.compiler.IdlCompiler"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-d src_generated -I Z:/CVSPRJ/ACS/define/idl -verbose Z:/CVSPRJ/ACS/jcontexmpl/idl/XmlComponent.idl"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="XmlIdl"/>
+    <stringAttribute key="org.eclipse.debug.ui.target_debug_perspective" value="perspective_default"/>
+    <stringAttribute key="org.eclipse.debug.ui.target_run_perspective" value="perspective_default"/>
+    <stringAttribute key="org.eclipse.debug.core.source_locator_id" value="org.eclipse.jdt.debug.ui.javaSourceLocator"/>
+</launchConfiguration>

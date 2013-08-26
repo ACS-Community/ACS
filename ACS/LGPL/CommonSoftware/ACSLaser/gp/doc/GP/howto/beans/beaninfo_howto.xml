@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>Adding information and behavior with a BeanInfo</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Lionel" lastname="Mestre" ccid="97307"/>
+  </head>
+    <!--
+    
+        Section : Using BeanInfo
+        
+    -->
+    <section>
+      <title>Using BeanInfo</title>
+      <description>
+        <p>
+          A JavaBean can be any Java object that follows the JavaBeans specifications in the way it names its member variables and accessor methods. A JavaBean is always associated with a <i>BeanInfo</i> object that describes the <i>bean</i>. The <i>BeanInfo</i> can be implicit, made automatically by the <code>Introspector</code> using introspection, or explicit if you write it yourself. The point of writing it yourself is to provide information that cannot be inferred from introspection such as, which icon should be used to display the <i>bean</i>, which <i>PropertyEditor</i> should be used for a given property etc...</p>
+        <p>A mixed approach is also possible where you do provide an explicit <i>BeanInfo</i> but you do not provide all aspects of it. For instance you provide the <i>PropertyDescriptors</i> but you do not provide the <i>MethodDescriptor</i>. In this case, the <i>Introspector</i> will take the given <i>PropertyDescriptors</i> and will introspect the bean to find out the <i>MethodDescriptors</i>.</p>
+        <p>Using a <i>BeanInfo</i> to provide information has advantages and drawbacks. One advantage is that it provides specific GUI information in a separate class than the bean which can therefore be a business class. Drawbacks it that you have to maintain a separate class and that the information provided is static and common to all bean instances of the class described by the <i>BeanInfo</i>. It is a requirement to be able to dynamically update the visual representation of the bean (such as changing name, icon...). For those reasons we have developed <a href="beans_howto.html">another way</a> of providing information to the node based on the bean itself that complements or replace fully the use of the <i>BeanInfo</i>.</p>
+        <p>In this first section we look to the use of the <i>BeanInfo</i> to provide extra static information about the bean. In the next section we look how to provide the same information directly from the bean.</p>
+<p>
+We recommend NOT to use an explicit BeanInfo but rather complement the bean with the missing information that you would put in the BeanInfo. See <a href="beans_howto.html">Adding information and behavior to domain beans</a> for more information.
+</p>
+      </description>
+      <section>
+        <title>Using BeanInfoSupport to define a BeanInfo</title>
+        <description>
+          <p>In order to make a node from a given JavaBean, the GP layer needs extra information about the bean including the icon to use, the actions to associate, the default action... That information can be simply provided by an explicit <i>BeanInfo</i>. If no <i>BeanInfo</i> is provided, default values will be used.</p>
+          <p>We simplify the writing of <i>BeanInfos</i> by providing the class <code><a href="/proj-gp/api/cern/gp/beans/BeanInfoSupport.html">BeanInfoSupport</a></code> that could be used as a parent class of any <i>BeanInfo</i>. Note that it is not mandatory to use <code>BeanInfoSupport</code>, as any <i>BeanInfo</i> will work the same way, it is just easier to use it than inheriting from <code><a href="http://java.sun.com/j2se/1.4.1/docs/api/java/beans/SimpleBeanInfo.html">java.beans.SimpleBeanInfo</a></code>. <code>BeanInfoSupport</code> provides the standard implementation of a <i>BeanInfo</i> and you just need to overwrite few protected methods to return your specific information.</p>
+          <p>Most of the time you will want to override the following methods :</p>
+          <ul>
+            <li>
+              <code>protected abstract BeanDescriptor getBeanDescriptorLazy()</code> :
+            <br/>used to return the <code>BeanDescriptor</code> of the <i>bean</i>.
+          </li>
+            <li>
+              <code>protected PropertyDescriptor[] getPropertyDescriptorsLazy() throws IntrospectionException</code> :
+            <br/>used to return the descriptors of the properties of the <i>bean</i>.
+          </li>
+            <li>
+              <code>protected Class getSuperclass()</code> :
+            <br/>used to return the parent class of the class the BeanInfo is for in order to used the BeanInfo of the parent class to complete the information contained in this BeanInfo. Only overwrite this method if there is a parent class with an associated BeanInfo that you want to use.
+          </li>
+            <li>
+              <code>protected String getIconNameC16()</code> :
+            <br/>used to return the pathname to the gif file representing the color icon to use to display the <i>bean</i>.
+          </li>
+            <li>
+              <code>protected String getIconNameM16()</code> :
+            <br/>used to return the pathname to the gif file representing the monochrome icon to use to display the <i>bean</i>.
+          </li>
+          </ul>
+          <p>Two other methods will be used less often but could also be useful :</p>
+          <ul>
+            <li>
+              <code>protected EventSetDescriptor[] getEventSetDescriptorsLazy() throws IntrospectionException</code> :
+            <br/>used to return the descriptor of the supported EventSet of the <i>bean</i>.
+          </li>
+            <li>
+              <code>protected MethodDescriptor[] getMethodDescriptorsLazy() throws IntrospectionException</code> :
+            <br/>used to return descriptors of the exposed methods of the <i>bean</i>.
+          </li>
+          </ul>
+          <p>Note that if you do not override one method the default implementation returns <code>null</code> allowing the <code>Introspector</code> to perform the introspection for the aspect covered by the method. If you do not want the <code>Introspector</code> to perform the introspection and you do not want to return anything you can return the empty arrays defined in the class <code>BeanInfoSupport</code>. For instance if you do not want to have any method descriptors and do not want to perform the introspection you would override the method <code>getMethodDescriptorsLazy</code> like this :</p>
+        </description>
+        <codeDescription>
+          <title>Returning an empty array to prevent introspection</title>
+          <code>
+  protected MethodDescriptor[] getMethodDescriptorsLazy() throws IntrospectionException {
+    return EMPTY_METHOD_SET;
+  }</code>
+        </codeDescription>
+        <codeDescription>
+          <title>Example of a BeanInfo extending BeanInfoSupport</title>
+          <code>
+public class BeamProcessBeanInfo extends BeanInfoSupport {
+  
+  private static final String ICON16 = "resources/BeamProcessIcon16.gif";
+
+  protected String getIconNameM16() { return ICON16; }
+  protected String getIconNameC16() { return ICON16; }
+  protected Class getSuperclass() { return BeamProcess.class.getSuperclass(); }
+  
+  protected BeanDescriptor getBeanDescriptorLazy() {
+    BeanDescriptor beanDescriptor = new BeanDescriptor(BeamProcess.class, null);
+    beanDescriptor.setDisplayName("Beam Process");
+    beanDescriptor.setShortDescription("A Beam Process");
+    return beanDescriptor;
+  }
+  
+  protected PropertyDescriptor[] getPropertyDescriptorsLazy() throws IntrospectionException {
+    PropertyDescriptor p1 = new PropertyDescriptor("schedulingCycle", 
+                            BeamProcess.class, "getCycle", null);
+    PropertyDescriptor p2 = new PropertyDescriptor("startTime", 
+                            BeamProcess.class, "getStartTime", null);
+    p2.setPropertyEditorClass(TimeMillisecondsEditor.class);
+    return new PropertyDescriptor[] { p1, p2 };
+  } 
+}</code>
+        </codeDescription>
+      </section>
+      <section>
+        <title>PropertyEditor</title>
+        <description>
+          <p>One important feature of JavaBeans is the ability to display and edit their properties using a standard property sheet. For that it is necessary to provide an editor (so called <code>PropertyEditor</code> in JavaBeans specification) that can take the value of a given property and convert it to a <code>String</code> and take a <code>String</code> representing the property and convert it back to a specific value. For instance, different <i>PropertyEditors</i> could display a given boolean value as yes/no, on/off or true/false. We provide many property editors that you can reuse easily in your <i>BeanInfos</i>. You find them in the package <code>cern.gp.beans.editors</code>.</p>
+<p>There are three ways to associate a given editor to a property :
+<ul>
+<li>dynamically from the <i>BeanInfo</i>: this is the more general way as it works on a per property basis (and not a per type). For each <i>Property</i> you want to set a specific <i>PropertyEditor</i> for, you use the method <code>setPropertyEditorClass</code> in the <i>BeanInfo</i>. For instance : <br/><code>  myPropertyDescriptor.setPropertyEditorClass(TimeMillisecondsEditor.class)</code>.<br/><br/></li>
+<li>statically using the <code>java.beans.PropertyEditorManager</code>: if you want to associate the same editor to all properties of the same type you can register once for all the editor to the <code>java.beans.PropertyEditorManager</code> using the method <code>public static void registerEditor(Class targetType, Class editorClass)</code>.
+<br/><br/></li>
+<li>statically by automatic association: if you want to associate the same editor to all properties of the same type but without registering it to the <code>java.beans.PropertyEditorManager</code>, you can name your editor after the name of the type it is made for. For a given java type <i>a.b.X</i>, the <code>java.beans.PropertyEditorManager</code> will first check if there is an editor registered for the type, and if not it will automatically look for the editor <i>a.b.XEditor</i>. If not found it will look in its search path for the class <i>XEditor</i>.
+</li>
+</ul>
+</p>
+        </description>
+      </section>
+      <section>
+        <title>Tagging : Adding extra information to BeanInfo or PropertyDescriptor</title>
+        <description>
+          <p>Any <code><a href="http://java.sun.com/j2se/1.4.1/docs/api/java/beans/PropertyDescriptor.html">java.beans.PropertyDescriptor</a></code> or <code><a href="http://java.sun.com/j2se/1.4.1/docs/api/java/beans/BeanDescriptor.html">java.beans.BeanDescriptor</a></code> inherits from <code><a href="http://java.sun.com/j2se/1.4.1/docs/api/java/beans/FeatureDescriptor.html">java.beans.FeatureDescriptor</a></code> and can therefore receive named value. We call that tagging with a value. We use tagging to extend the use of <i>BeanInfos</i> and tailor them for NetBeans. The class <code>cern.gp.beans.BeanTagger</code> provides static methods to tag a given <i>bean</i> or property. One direct use of this is for specifying actions that a given <i>bean</i> want to propose in the GUI (displayed as contextual menus) as we show in the next section.</p>
+        </description>
+      </section>
+      <section>
+        <title>Specifying Actions for a given Bean using Tagging</title>
+        <description>
+          <p>Thanks to the information given by their <i>BeanInfo</i>, JavaBeans will be shown in the GUI using their specific icon and name. When JavaBeans are used as nodes in an explorer or in a table for instance, they can be associated with a contextual menu to provide some actions on them. Defining a contextual menu in the GP layer means associating actions to the JavaBean through its <i>BeanInfo</i>. Those actions will define the contextual menu. Specifying actions in the <i>BeanInfo</i> is done by tagging the <code>BeanDescriptor</code> using the <code>BeanTagger</code> class. The method <code>addActions</code> of the <code>BeanTagger</code> allows you to do that. Actions are passed as an array of <code>String</code> that give the fully qualified name of the class of each action. <code>null</code> can be used to display a separator in the menu.
+</p>
+          <p>
+All available actions are located in the package <code>cern.gp.actions</code>.
+</p>
+        </description>
+        <codeDescription>
+          <title>Tagging a BeanDescriptor with a list of actions</title>
+          <code>
+  protected BeanDescriptor getBeanDescriptorLazy() {
+    BeanDescriptor beanDescriptor = new BeanDescriptor(ModelObject.class, null);
+    BeanTagger.addActions(beanDescriptor, new String[] {
+              "cern.gp.actions.PropertiesAction",
+              "cern.gp.actions.OpenLocalExplorerAction",
+              null,
+              "cern.gp.actions.StopAction"
+           });
+    return beanDescriptor;
+  }</code>
+        </codeDescription>
+      </section>
+      <section>
+        <title>Defining the default action</title>
+        <description>
+          <p>As we saw that any <i>bean</i> can be associated with actions, it is also possible to define the default action for a given bean. The default action is the action triggered when the user double-click on the visual representation of the <i>bean</i>. For instance if the bean is displayed in a explorer, double-clicking on its name or icon will trigger the default action. Although related, the default action is a separate entity from the actions associated to the <i>bean</i>. A <i>bean</i> can have a default action and no action, or can have a default action that is not part of its associated actions.</p>
+          <p>Defining the default action is done in the <i>BeanDescriptor</i> of the <i>BeanInfo</i> using the <code>BeanTagger</code> similarly to the actions. Below is an example.</p>
+        </description>
+        <codeDescription>
+          <title>Defining a default action with the BeanTagger</title>
+          <code>
+  protected BeanDescriptor getBeanDescriptorLazy() {
+    BeanDescriptor beanDescriptor = new BeanDescriptor(ModelObject.class, null);
+    BeanTagger.setDefaultAction(beanDescriptor, "cern.gp.actions.PropertiesAction");
+    return beanDescriptor;
+  }</code>
+        </codeDescription>
+      </section>
+      <section>
+        <title>Specifying caching behavior</title>
+        <description>
+          <p>TODO</p>
+        </description>
+        <codeDescription>
+          <title>Specifying that all properties of a bean can be cached</title>
+          <code>
+  protected BeanDescriptor getBeanDescriptorLazy() {
+    BeanDescriptor beanDescriptor = new BeanDescriptor(ModelObject.class, null);
+    BeanTagger.setCacheable(beanDescriptor, true);
+    return beanDescriptor;
+  }</code>
+        </codeDescription>
+        <codeDescription>
+          <title>Specifying that a property of a bean can be cached</title>
+          <code>
+  protected PropertyDescriptor[] getPropertyDescriptorsLazy() throws IntrospectionException {
+    PropertyDescriptor p1 = new PropertyDescriptor("schedulingCycle", 
+                            BeamProcess.class, "getCycle", null);
+    PropertyDescriptor p2 = new PropertyDescriptor("startTime", 
+                            BeamProcess.class, "getStartTime", null);
+    p2.setPropertyEditorClass(TimeMillisecondsEditor.class);
+    BeanTagger.setCacheable(p2, true);
+    return new PropertyDescriptor[] { p1, p2 };
+  }</code>
+        </codeDescription>
+      </section>
+    </section>
+</document>
+

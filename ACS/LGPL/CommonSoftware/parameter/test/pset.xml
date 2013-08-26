@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pset:paramset xmlns:pset="urn:schemas-cosylab-com:pset:1.0" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="urn:schemas-cosylab-com:pset:1.0 pset.xsd">
+	<psetdef>psetdef.xml</psetdef>
+	<name>VLAFillerTestValues</name>
+	<param xsi:type="pset:string">
+		<name>msname</name>
+		<value>myvladata.ms</value>
+	</param>
+	<param xsi:type="pset:string">
+		<name>inputfile</name>
+		<value>c477_040502.xpl</value>
+	</param>
+	<param xsi:type="pset:string">
+		<name>project</name>
+		<value>ad577</value>
+	</param>	
+	<param xsi:type="pset:string">
+		<name>start</name>
+		<value>2004/05/02/18:30:00</value>
+	</param>	
+	<param xsi:type="pset:string">
+		<name>stop</name>
+		<value>2004/05/02/19:00:00</value>
+	</param>	
+	<param xsi:type="pset:double">
+		<name>centerfreq</name>
+		<units>GHz</units>
+		<value>1.489</value>
+	</param>	
+	<param xsi:type="pset:double">
+		<name>bandwidth</name>
+		<units>MHz</units>
+		<value>10.01</value>
+	</param>	
+	<param xsi:type="pset:string">
+		<name>bandname</name>
+		<value>P</value>
+	</param>
+	<param xsi:type="pset:string">
+		<name>source</name>
+		<value>3C49</value>
+	</param>
+	<param xsi:type="pset:bool">
+		<name>overwrite</name>
+		<value>true</value>
+	</param>
+	<param xsi:type="pset:string">
+		<name>testString</name>
+		<value>this is a string with a space and a comma, if you know what I be saying</value>
+	</param>
+</pset:paramset>
+

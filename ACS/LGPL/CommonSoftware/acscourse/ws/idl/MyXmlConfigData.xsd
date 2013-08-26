@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xsd:schema 
+	targetNamespace="AlmaTest/MyXmlConfigData" 
+	xmlns:xcfd="AlmaTest/MyXmlConfigData" 
+	xmlns:ent="Alma/CommonEntity" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified" attributeFormDefault="unqualified" version="1"
+	>
+	
+	<xsd:import namespace="Alma/CommonEntity" schemaLocation="CommonEntity.xsd"/>
+
+	<xsd:element name="MyXmlConfigData">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="MyXmlConfigDataEntity" type="ent:EntityT"/>
+				<xsd:element name="myStringData" type="xsd:string"/>
+				<xsd:element name="childData" type="xcfd:MyNestedDataT"/>
+			</xsd:sequence>
+			<xsd:attribute name="someAttribute" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="MyNestedDataT">
+		<xsd:sequence>
+			<xsd:element name="someNestedData" type="xcfd:MyNestedDataT" minOccurs="0" maxOccurs="7" />
+			<xsd:element name="someOtherData" type="xsd:string" use="optional" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<!-- This type would only be needed if other schemas would reference a 'MyXmlConfigData' element by its unique ID 
+	     and is currently not used in the examples
+	-->
+	<xsd:complexType name="MyXmlConfigDataRefT">
+		<xsd:complexContent>
+			<xsd:restriction base="ent:EntityRefT">
+				<xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="MyXmlConfigData"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+</xsd:schema>

@@ -1,0 +1,112 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeTclLib,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# gfilippi  20/05/94    created
+# gfilippi  07/09/94    makeXxxx utility renamed into vltMakeXxxx
+# gfilippi  01/02/95    itcl_mkindex used to create TCL libraries
+# gfilippi  03/02/95    add "lappend" to have the path to find itcl_mkindex
+# gfilippi  21/02/95    run the tcl checker on each tcl-file
+# gfilippi  04/03/95    make tcl checker customizable
+# gfilippi  02/04/96    Tcl4 - use auto_mkindex again to create TCL libraries
+# gfilippi  11/04/96    Tcl4 - temporarly use of seqWish instead of tclsh
+# gfilippi  16/04/96    Tcl4 - use itclsh to have the correct auto_mkindex
+# gfilippi  16/04/96    TMP_FILE name changed into /tmp/vltMakeTclLib_$$.tmp
+# eallaert  1999-03-16  remove use of TMP_FILE (suggested long ago!)
+# eallaert  2001-05-04  updated for use with Tcl-versions > 8.0
+#
+
+#************************************************************************
+#   NAME
+#   vltMakeTclLib - create a Tcl/Tk procedure library
+# 
+#   SYNOPSIS
+#
+#   vltMakeTclLib <tclChecker> <libName> <objectList> 
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to create an library of Tcl/Tk procedures.
+#   It is not intended to be used as a standalone command.
+#
+#   An Tcl/Tk procedure is obtained starting from one or more tcl/tk 
+#   script files in the src/ directory, copying them into a separate
+#   directory called ../lib/lib<libName>.tcl and generating the 
+#   tclIndex by using the auto_mkindex command. The use of auto_mkindex
+#   allows ro treat both normal tcl and [incr Tcl] libraries.
+#
+#   (1) see also Tcl/Tk manual, 13.7 Autoloading, pag.138.
+#
+#
+#   <tclChecker>  the program to be used as syntax checek for tcl files
+#
+#   <libName>     The name of the library directory. The output is named
+#                 ../lib/lib<libName>.tcl
+#
+#   <objectList>  The list of the script files in the src/ directory.
+#                 (Without neither directory nor .a suffix)
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile, Makefile, (GNU) make
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+if [ $# -ne 3 ]
+then
+    echo "" >&2
+    echo "vltMakeTclLib <tclChecker> <libName> <objectList>" >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# set up more readable variables:
+tclChecker=$1
+libName=$2
+objectList=$3
+
+LIBRARY=../lib/lib${libName}.tcl
+
+rm -rf $LIBRARY
+
+mkdir $LIBRARY
+
+
+for member in ${objectList}
+do
+    #
+    # run the tcl checker on each tcl-file
+    $tclChecker ${member}.tcl 1>&2
+
+    #
+    # copy it into the library directory
+    cp ${member}.tcl $LIBRARY
+done
+
+# We need to determine the Tcl-shell to use for the tclIndex generation.
+# itclsh does no longer exist for Tcl > 8.0; use tclsh in this case (only).
+# Remark that arithmetic expressions ("-le" etc) only work on integers; 
+# let's therefore do the arithmetic work in Tcl itself.
+# This can be hardcoded once we're sure this version of the "vlt" module
+# will only be used with a Tcl-versions > 8.0.
+TCL_SHELL=`echo 'if {$tcl_version > 8.0} {puts tclsh} else {puts itclsh}' | tclsh`
+
+echo "package require Itcl; auto_mkindex $LIBRARY *.tcl; exit" | $TCL_SHELL
+
+chmod -R 775 $LIBRARY
+
+echo "           $LIBRARY  created"
+#
+# ___oOo___

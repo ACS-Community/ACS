@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+	<head>
+		<title>Using actions and capabilities</title>
+		<section>AB/CO/AP</section>
+		<author firstname="Lionel" lastname="Mestre" ccid="97307"/>
+	</head>
+	<section>
+		<title>Capabilities and bean actions</title>
+		<description>
+			<p>Actions shown in contextual menus, are usually context sensitive which means that their execution is dependant on the current selection. Some actions are nevertheless completely generic such as <code>PropertiesAction</code> that open a window showing the properties of the selected <i>bean</i>. Other actions are <i>bean</i> dependant which means that their execution can only be performed by the <i>bean</i> itself. Those actions are related to the business logic of the application and are a way to hook the business functionality into the GUI. Those actions should therefore be matched with a method of the <i>bean</i> that has to be called upon execution of the action.
+</p>
+			<p>This is done through the concept of <b>
+					<i>capability</i>
+				</b>. All bean dependant actions are associated with one <i>capability</i>. This capability has to be implemented by the <i>bean</i> that want to offer it. If a bean sensitive action is associated with a <i>bean</i>, when the contextual menu is displayed, the option of the menu matching the action will only be enabled if the selected bean implement the <i>capability</i> associated to the action.
+</p>
+			<p>The GP layer provides the capability interface <code>cern.gp.capabilities.Capability</code> that is a marker interface to use to create capabilities. The GP layer also provides many predefined capabilities (in the package <code>cern.gp.capabilities</code> as well as their associated actions.
+</p>
+			<p>
+In order to facilitate the matching between <i>actions</i> and related <i>capabilities</i>, we adopted the following naming convention. Any capability is named <code>XXXCapability</code> where XXX is a placeholder for the capability name. The action associated to this capability is named <code>XXXAction</code>. 
+</p>
+		</description>
+		<codeDescription>
+			<title>Example of Capability</title>
+			<code>
+import cern.gp.nodes.GPNode;
+
+public interface RemoveCapability extends Capability {
+  
+  /** 
+   * Indicates to this object that it has to be removed. The object 
+   * has to interpret what does remove mean in its own context.
+   */
+  public void remove(GPNode node);
+  
+}</code>
+		</codeDescription>
+		<codeDescription>
+			<title>Example of an Action linked to a Capability</title>
+			<code>
+import cern.gp.action.support.BeanAction;
+import cern.gp.capabilities.Capability;
+import cern.gp.capabilities.RemoveCapability;
+import cern.gp.nodes.GPNode;
+
+public class RemoveAction extends BeanAction {
+  
+  public RemoveAction() {
+    super(RemoveCapability.class);
+  }
+  
+  public String getName() {
+    return "Remove";
+  }
+  
+  protected String iconResource() {
+    return "resources/stop.gif";
+  }
+  
+  protected void performCapability(GPNode node, Capability capability) {
+    RemoveCapability removeCapability = (RemoveCapability) capability;
+    removeCapability.remove(node);
+  }  
+  
+}</code>
+		</codeDescription>
+	</section>
+</document>
+

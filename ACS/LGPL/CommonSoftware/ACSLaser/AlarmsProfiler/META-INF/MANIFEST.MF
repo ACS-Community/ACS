@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: AlarmsAnalyzer
+Bundle-SymbolicName: alma.acs.alarmsanalyzer; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: alma.acs.alarmsanalyzer.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ alma.acs.jars,
+ org.swtchart
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

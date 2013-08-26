@@ -1,0 +1,69 @@
+Jar file	           Name & Version	    License  Homepage
+---------------------- -------------------- -------- -------------------------------------------
+activation.jar		jaf-1.0.1		      (4)	http://java.sun.com/webapps/download/Display?BundleId=7037&button=Continue
+                        JavaBeans Activation 
+                        Framework 
+
+avalon-framework.jar	Avalon Framework 4.1.5	      (1)        http://jakarta.apache.org/avalon/framework/
+                        To be coordinated with JacORB since 2.2.4                             
+
+cosyframework.jar	cosyframework			(5)	
+
+cosyicons.jar		cosyicons			(5)
+
+icons.jar		icons-1.0			(5)	
+
+infobus.jar		infobus-1.2			(4)	 http://java.sun.com/products/javabeans/infobus/
+
+jakarta-oro-2.0.5.jar	Jakarta-ORO 2.0.5		(1)	 http://jakarta.apache.org/oro/index.html
+
+jakarta-regexp-1.2.jar	Regexp 1.2		        (1)	 http://jakarta.apache.org/regexp/
+
+commons-cli-1.2.jar	Jakarta commons Command Line Interfaces		(1b)  http://jakarta.apache.org/commons/cli/
+
+commons-lang-2.5.jar	Apache commons Lang		(1b)  http://commons.apache.org/lang
+
+commons-logging-1.1.1.jar	Apache commons logging		(1b)  http://commons.apache.org/logging/
+
+commons-collections-3.2.1.jar	Apache commons collections		(1b)  http://commons.apache.org/collections/
+
+commons-math-2.1.jar	Apache commons math		(1b)  http://commons.apache.org/math/
+
+dom4j-1.6.1.jar           DOM4J           (9)        http://www.dom4j.org
+
+jnlp-1.0.1		Java Network Launch		(1)  
+                        Protocol 
+
+junit.jar		JUnit 3.8.1		        (3)	  http://www.junit.org/index.htm
+
+logkit.jar		LogKit 1.2		        (1)	  http://avalon.apache.org/logkit/	
+                        To be coordinated with JacORB since 2.2.4                             
+
+openorb-1.3.0.jar	 OpenORB	1.3.0		 (2)  http://openorb.sourceforge.net/
+
+openorb13Debug.jar	 OpenORB	1.3.0		 (2)  http://openorb.sourceforge.net/
+	
+openorb_tools-1.3.0.jar	 OpenORB	1.3.0		 (2)  http://openorb.sourceforge.net/
+
+prevayler		 prevayler-1.02.001		 (1)
+
+tablelayout.jar		 tablelayout-1.0		 (4)
+
+xalan.jar                xalan 2.7.0                     (1b)
+
+ejb3-peristence.ja       hibernate-annotations-3.4.0.GA
+
+hsqldb.jar               hsqldb-1.8.0.10
+
+Licences
+-----------------------------------------------------------------------
+(1)			The Apache Software License, Version 1.1
+(1b)   		        Apache License, Version 2.0
+(2)			The OpenORB Community Software License, Version 1.0
+(3)			IBM Common Public License, Version 0.5
+(4)			Sun Microsystems, Inc. Binary Code License Agreement
+(5)			CosyLab License
+(6)			http://ssllib.sourceforge.net/ExternalLibraries/concurrent.License.txt
+(7)			http://creativecommons.org/licenses/publicdomain
+(8)			Freeware
+(9)			BSD style license

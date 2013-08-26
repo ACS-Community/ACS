@@ -1,0 +1,64 @@
+#! /bin/bash
+. acsstartupConstants
+. acsstartupLogging.sh
+
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsstartupNotifyServiceStart,v 1.2 2013/03/13 08:23:17 msekoran Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# msekoran  2013-03-04  Created (extracted from acsNotifyService)
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
+# in order to get the correct svc.conf service configuration file.
+STARTUP_DIR=$PWD
+cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
+($ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=$ACS_NAME_SERVICE -IORoutput $NOTIFY_IOR $ORBOPTS -Boot 2>&1 & echo $! > $NOTIFY_SERVICE_PIDFILE) | tee $NOTIFY_OUT &
+cd $STARTUP_DIR
+
+# Block until the IOR shows up in the the correct file
+if ! acsutilBlock -t $MAX_TIMEOUT -f $NOTIFY_IOR -b "IOR:"
+then
+  exit $EC_TIMEOUT
+fi
+
+if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
+then
+  # Create the logging or archiving system channel now
+  if [ "X" = "X$NOTIFY_EVENT_CHANNEL_DOMAIN" ]
+  then
+    ACS_LOG_ERROR "The 'NOTIFY_EVENT_CHANNEL_DOMAIN' variable must be set if we want to create NC '$NOTIFY_EVENT_CHANNEL'."
+    exit $EC_FAILURE
+  fi
+  acsstartupCreateChannel --name_service $ACS_NAME_SERVICE --notify_service_id $NOTIFY_EVENT_CHANNEL_FACTORY --channel_id $NOTIFY_EVENT_CHANNEL --channel_domain $NOTIFY_EVENT_CHANNEL_DOMAIN # --max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
+fi
+
+# Register Monitor and Control Notify Service extension to the naming service
+$ACE_ROOT/bin/tao_nsadd --ns $ACS_NAME_SERVICE --rebind --name MC_${CL_NS_TYPE}NotifyEventChannelFactory --ior `cat $INSTANCE_DIR/iors/${CL_NS_TYPE}NotifyMCIOR` 2>&1 | tee $NOTIFY_OUT

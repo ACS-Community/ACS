@@ -1,0 +1,645 @@
+;;-*-emacs-lisp-*-
+;;*****************************************************************************
+;; E.S.O. - VLT project
+;;
+;; "@(#) $Id: emacs,v 1.5 2011/01/24 07:53:31 gchiozzi Exp $"
+;;
+;; 
+;; who      when     what
+;;-------- -------- ------------------
+;;vltsccm 02/16/95 created for cmm
+;;
+;;
+;; .emacs - Emacs special configuration file
+;;
+;; G.Chiozzi    27/02/2002      Doxymacs support added
+;; G.Chiozzi    09/02/2002      SPR ALMASW2001089 ALMASW2001105
+;; P.Sivera     17/09/2001      SPR VLTSW20010402
+;; R.Karban     11/12/1998      remove autoload of browse-url-netscape-reload
+;; G.Filippi    25/09/1998      Added JKN's favourite file types to MODE-ALIST
+;; G.Filippi    24/08/1998      Moved to stdEnv from emacs
+;; G.Chiozzi    22/01/1997      Fixed problems with new C++ mode and VLT stands
+;; G.Chiozzi    25/09/1996      Fixed html helper mode
+;; G.Chiozzi    14/03/1996      Added html helper mode and new bindings
+;; mnastvog     01/03/1996      Added key bindings for GOTO FUNCTION and GO UP
+;; G.Chiozzi    27/06/1995      Modified for standard VLT module structure
+;; G.Chiozzi    25/05/1994      Created
+;; G.Chiozzi    28/07/1994      Modified for VLT standard environment
+;;                              Special configurations are in .emacs.local
+;; S.Sandrock	01/08/1994	Extended 'auto-mode-alist'
+;;				Changed 'special-display-frame-alist'
+;;				Removed edt-emulation as default
+;; G.Chiozzi    02/09/1994      Added new function keys to handle
+;;                              errors, insert key and indentation.
+;; G,Chiozzi    28/03/1995      Added new functions.
+;;
+;; Users can have their own local definitions in ~/.emacs.local file:
+;; this is loaded last
+
+;; *************************************************************
+;; ************  definitions for ALL EMACS MODES ***************
+
+;
+; General emacs behavior
+;
+(setq-default scroll-step 1)       ; scroll just one line at a time 
+(setq backup-by-copying 1)         ; otherwise links are destroyed
+(setq compile-command "make -k ")  ; set default compile command
+(transient-mark-mode 1)		   ; selected region remains highlighted
+(line-number-mode 1)		   ; display line-number in mode-line
+(setq-default search-highlight t)  ; highlight for incremental-search
+(setq next-line-add-newlines nil)  ; No new lines with the cursor down key
+
+;
+; Function Keys:
+;
+(define-key global-map [f1]  'dired)
+(define-key global-map [f2]  'find-file-read-only)
+(define-key global-map [f3]  'revert-buffer)
+(define-key global-map [f4]  'save-buffer)
+(define-key global-map [C-f4] 'save-kill-buffer)
+
+(define-key global-map [f5]  'list-buffers)
+(define-key global-map [f6]  'split-window-vertically)
+(define-key global-map [f7]  'delete-window)
+(define-key global-map [f8]  'other-window)
+(define-key global-map [C-f8] 'cycle-buffer)
+(define-key global-map [M-f8] 'cycle-all-buffer)
+
+(define-key global-map [f9]  'compile)
+(define-key global-map [C-f9] 'vlt-comment-line)
+(define-key global-map [M-f9] 'vlt-command)
+(define-key global-map [f10] 'grep)
+(define-key global-map [f11] 'gdb)
+(define-key global-map [f12]    'next-error)    ; next error
+(define-key global-map [C-f12]  'prev-error)    ; previous error
+(define-key global-map [M-f12]  "\C-u\C-x`" )   ; first error
+
+(define-key global-map [insert]   'overwrite-mode)
+(define-key global-map [S-insert] 'yank)
+(define-key global-map [C-insert] 'vlt-file-add-log-entry)
+
+(define-key global-map [delete]   'delete-char)
+(define-key global-map [S-delete] 'kill-line)
+(define-key global-map [C-delete] 'kill-region)
+
+(define-key global-map [C-backspace] 'delete-whole-line) ; del the whole line
+
+(define-key global-map [S-left]   'beginning-of-line)
+(define-key global-map [S-right]  'end-of-line)
+
+(define-key global-map [S-tab] 'beginning-of-line)
+(define-key global-map [C-tab] 'tab-to-tab-stop)
+(define-key global-map [M-C-tab] 'indent-region)
+
+
+(define-key global-map "\eg"   'goto-line)            ; goto line
+(define-key global-map "\C-\z" 'call-last-kbd-macro)  ; execute kbd macro
+
+(define-key global-map [C-up] 'vlt-pop-bookmark)      ; defined in vlt-tags
+(define-key global-map [C-down] 'find-tag)
+
+
+;;
+;; New functions used by function keys
+;;
+
+(defun cycle-all-buffer ()
+  "Cycle between all buffers in the window.
+   Replace the current buffer with the next more suitable one.
+   Uses bury-buffer, but skips also system buffers."
+  (interactive)
+  (bury-buffer)
+)
+
+(defun cycle-buffer ()
+  "Cycle buffers in the window.
+   Replace the current buffer with the next more suitable one.
+   Uses bury-buffer, but skips also system buffers."
+  (interactive)
+  (let ((temp ""))
+    (bury-buffer)
+    (setq temp (buffer-name (Buffer-menu-buffer nil)))
+    (while (string-match "^\*" temp)
+      (progn
+	(bury-buffer)
+	(setq temp (buffer-name (Buffer-menu-buffer nil)))
+	)
+      )
+    )
+)
+
+(defun prev-error ()
+  "Visit previous compilation error message and corresponding source code."
+  (interactive)
+  (next-error -1)
+)
+
+(defun delete-whole-line ()
+  "Delete a whole line."
+  (interactive)
+  (beginning-of-line)
+  (kill-region (point) (progn (forward-line 1) (point)))
+)
+
+(defun save-kill-buffer ()
+  "Save current buffer in visited file if modified and kiil the buffer"
+  (interactive)
+  (save-buffer)
+  (kill-this-buffer)
+)
+ 
+  
+(defun vlt-file-add-log-entry(logComment)
+  "Function to add a new log entry in a standard vlt file header"
+  "The user is required to input (or pass as a parameter) a comment"
+  "A change log is added in the vlt file header."
+  "Change logs are placed so that the more recent modification is the"
+  "first in the list"
+  (interactive "sLog entry comment: ")
+  (save-excursion
+    (goto-char (point-min))
+    (if (search-forward "who       when      what" nil t)
+	(let ( (bstring "") (beg 0) ) 
+	  (forward-line 1) 
+	  (setq beg (point))
+	  (forward-line 1) 
+	  (setq bstring (buffer-substring  beg (point)))
+	  (insert bstring)
+	  (forward-line -1)
+	  (search-forward "--------" nil t)
+	  (replace-match "" nil t)
+	  (call-process "whoami" nil t)
+	  (delete-backward-char 1)
+	  (search-forward "--------" nil t)
+	  (replace-match "" nil t)
+	  (delete-backward-char 1)
+	  (call-process "date" nil t nil "+%Y-%m-%d")
+	  (delete-backward-char 1)
+	  (forward-char 1)
+	  (kill-line)
+	  (insert logComment)
+	  )
+      (message "Not a standard VLT header")
+      )
+    )
+  )
+
+(defun vlt-comment-line ()
+  "Function to insert a * to comment out a line and move down"
+  (interactive)
+  (let ((omode overwrite-mode))
+    (if (null omode)
+      (overwrite-mode 1)
+      )
+    (execute-kbd-macro (read-kbd-macro "*"))
+    (forward-line 1) 
+    (if (null omode)
+	(overwrite-mode 0)
+      )
+    )
+  )
+
+
+;;
+;; Emacs 19.23 features
+;;
+
+; Popup new frame for these buffers:
+(setq special-display-buffer-names 
+      '("*compilation*" "*Help*" "*grep*" "*vlt-cmm*"))
+(setq special-display-frame-alist '((width . 80) (height . 14) (unsplittable . t) (font . "fixed") (menu-bar-lines . 0) (minibuffer . nil)))
+
+; Popup a menu of 'interesting places':
+; Very usefull in C-mode
+(define-key global-map [C-mouse-2] 'imenu)	; Key was 'Help' in prev. vers.
+
+; Add a new menu with special fonts.
+; Add here new usefull fonts
+
+(setq x-fixed-font-alist
+  (append x-fixed-font-alist
+	  '(("Special"
+	    ("Pica 18x30" "pica.18x30")
+	    )) ))
+
+;; ************************************************************
+;; ************  Set of path for searching files **************
+
+(if (getenv "VLTROOT")
+    (progn
+      (setq vlt-temp-var 
+	    (substitute-in-file-name "$VLTROOT/lib/emacs/lisp"))
+      (if (file-exists-p vlt-temp-var)
+	  (setq load-path (cons vlt-temp-var load-path))
+	)
+      (setq vlt-temp-var 
+	    (substitute-in-file-name "$VLTROOT/lib/emacs/Info"))
+      (if (file-exists-p vlt-temp-var)
+	  (setq Info-default-directory-list 
+		(cons vlt-temp-var Info-default-directory-list))
+	)
+     )
+)
+
+(if (getenv "ACSROOT")
+    (progn
+      (setq vlt-temp-var 
+	    (substitute-in-file-name "$ACSROOT/lib/emacs/lisp"))
+      (if (file-exists-p vlt-temp-var)
+	  (setq load-path (cons vlt-temp-var load-path))
+	)
+      (setq vlt-temp-var 
+	    (substitute-in-file-name "$ACSROOT/lib/emacs/Info"))
+      (if (file-exists-p vlt-temp-var)
+	  (setq Info-default-directory-list 
+		(cons vlt-temp-var Info-default-directory-list))
+	)
+     )
+)
+
+(if (getenv "INTROOT")
+    (progn 
+      (setq vlt-temp-var 
+	    (substitute-in-file-name "$INTROOT/lib/emacs/lisp"))
+      (if (file-exists-p vlt-temp-var)
+	  (setq load-path (cons vlt-temp-var load-path))
+	)
+      (setq vlt-temp-var 
+	    (substitute-in-file-name "$INTROOT/lib/emacs/Info"))
+      (if (file-exists-p vlt-temp-var)
+	  (setq Info-default-directory-list 
+		(cons vlt-temp-var Info-default-directory-list))
+	)
+      )
+  )
+
+;; ************  MODE-ALIST **************************************
+
+(setq auto-mode-alist
+  (append '(("\\.C$"  . c++-mode)
+            ("\\.cc$" . c++-mode)
+	    ("\\.h$" . c++-mode)
+	    ("\\.hh$" . c++-mode)
+	    ("\\.icc$" . c++-mode)
+            ("\\.i$"  . c++-mode)             ; ALMASW2001089 
+            ("\\.c$"  . c-mode)               ; to edit C code
+            ("\\.idl$" . c++-mode)            ; ALMASW2001089 
+            ("\\.midl$" . c++-mode)            ; ALMASW2001089 
+            ("\\.tcl$" . tcl-mode)            ; to edit tcl code
+            ("\\.itk$" . tcl-mode)            ; to edit incrTk code
+            (".*\\.pan" . tcl-mode)
+            ("\\.emacs.*" . emacs-lisp-mode)  ; .emacs* in Lisp mode
+            ("[Mm]akefile$" . makefile-mode)  ; makefiles
+            ("\\.make$" . makefile-mode)      ; makefiles
+            (".*\\.db" . c++-mode)
+            (".*\\.class" . c++-mode)
+	    ("NOTES$"  . indented-text-mode)
+	    ("\\.occ$"  . occam-mode)
+	    ("\\.cfg$"  . tcl-mode)           ; requested by JKN 04 Jul 1998
+	    ("\\.det$"  . tcl-mode)           ; requested by JKN 04 Jul 1998
+	    ("\\.ins$"  . tcl-mode)           ; requested by JKN 04 Jul 1998
+	    ("\\.targ$"  . tcl-mode)          ; requested by JKN 04 Jul 1998
+	    ("\\.ref$"  . tcl-mode)           ; requested by JKN 04 Jul 1998
+	    ("\\.seq$"  . tcl-mode)           ; requested by JKN 04 Jul 1998
+	    ("\\.tsf$"  . tcl-mode)           ; requested by JKN 04 Jul 1998
+	    ("\\.tsfx$"  . tcl-mode)          ; requested by JKN 04 Jul 1998
+	    ("\\.obd$"  . tcl-mode)           ; requested by JKN 04 Jul 1998
+            ("\\.py$" . python-mode)          ; GCH 2002-02-09
+           ) auto-mode-alist))
+
+
+;; ************  END MODE-ALIST **************************************
+
+
+;; ************************************************************
+;; ************  Definitions for SPECIFIC MODES ***************
+
+;; ************  C, CC and C++ MODE ***************************
+;;
+;; VLT C/C++ language indentation rules for standard c-mode and C-mode
+;; Activate CC-mode instead of old C-mode
+
+(load "cc-mode")
+
+(c-add-style "vlt"
+             '(
+               (c-basic-offset  . 4)
+               (c-offsets-alist . ((statement-block-intro . 0)
+                                   (access-label . -2)
+                                   )
+                                )
+               )
+             )
+(setq c-default-style "vlt")
+(c-set-style "vlt")
+
+;; ************  END C, CC and C++ MODE ***************************
+
+
+;; ************  DIRED  MODE **************************************
+;;
+;; Change local keyboard binding for dired mode:
+;;    - v   now visit an alternate file: closes the current buffer
+;;
+(load "dired")
+(define-key dired-mode-map "v" 'dired-visit-alternate-file) ; visit file or dir
+(define-key dired-mode-map "u" 'dired-visit-parent-dir)     ; visit parent
+(define-key dired-mode-map "\C-^" 'dired-visit-parent-dir)  ; visit parent
+
+;;
+;; Function to visit an alternate file in dired mode
+;;
+(defun dired-visit-alternate-file ()
+  "In dired, visit an alternate file or directory named on this line."
+  (interactive)
+  (let ((obuff (current-buffer)))
+       (find-file (dired-get-filename))  
+       (kill-buffer obuff)))
+
+(defun dired-visit-parent-dir ()
+  "In dired, visit parent directory."
+  (interactive)
+  (let ((obuff (current-buffer)))
+       (find-file "..")  
+       (kill-buffer obuff)))
+
+;; ************  END DIRED  MODE **************************************
+
+
+
+;; ************  TEXT MODE **************************************
+
+;; Set a better behaviour for the TAB key
+;; Not used with EMACS > 19
+(if (<  emacs-major-version 20)
+    (progn
+      (define-key indented-text-mode-map [S-tab] 'indent-relative-next) ; key is shift-TAB
+      (define-key indented-text-mode-map [S-backtab] 'indent-relative-next) ; key is shift-BACKTAB
+      (define-key indented-text-mode-map [S-key-116] 'indent-relative-next) ; key is shift-TAB
+))
+
+;; To have also auto-fill-mode in text modes
+(setq text-mode-hook '(lambda () (auto-fill-mode 1)))
+
+; Determine mode according to filename: overload .text and .txt values
+(setq auto-mode-alist
+  (append '(("\\.text$"    . indented-text-mode)
+            ("\\.txt$"     . indented-text-mode)
+            ("[Rr]eadme.*" . indented-text-mode)
+            ("README.*"    . indented-text-mode)
+           ) auto-mode-alist))
+
+ 
+(defun indent-relative-next ()
+  "Align start of line under next indent point in previous nonblank line.
+   An indent point is a non-whitespace character following whitespace.
+   If the previous nonblank line has no indent points beyond the
+   column point starts at, `tab-to-tab-stop' is done instead."
+  (interactive)
+  (beginning-of-line)
+  (forward-word 1)
+  (backward-word 1)
+  (indent-relative)
+  (end-of-line)
+)
+
+
+;; ************  END TEXT  MODE **************************************
+
+;; ************  CALENDAR MODE **************************************
+;;
+;; Calendar settings
+;;
+
+(setq view-diary-entries-initially t)
+(setq mark-holidays-in-calendar t)
+(setq european-calendar-style t)
+(add-hook 'diary-display-hook 'fancy-diary-display)
+(add-hook 'list-diary-entries-hook 'sort-diary-entries)
+(add-hook 'list-diary-entries-hook 'include-other-diary-files)
+(add-hook 'mark-diary-entries-hook 'mark-included-diary-files)
+
+(setq hebrew-holidays nil)
+(setq islamic-holidays nil)
+
+(setq local-holidays
+      '((holiday-fixed 8 15 "Assumption day")
+       )
+)
+;; ************  END CALENDAR MODE **************************************
+
+;; ************  PYTHON MODE **************************************
+;;
+;; Python settings
+;;
+
+(setq interpreter-mode-alist
+      (cons '("python" . python-mode)
+            interpreter-mode-alist))
+
+(autoload 'python-mode "python-mode" "Python editing mode." t)
+
+;;; add these lines if you like color-based syntax highlighting
+(global-font-lock-mode t)
+(setq font-lock-maximum-decoration t)
+
+;; ************  END PYTHON MODE *************************************
+
+;; *******************************************************************
+;; ************  LOAD OF OTHER MODULES *******************************
+
+;;
+;; Version Control
+;;
+(require 'vc)
+;; we want backups also for version-controlled files:
+(setq vc-make-backup-files t)
+;; optional to disable CVS support:
+;;(setq vc-master-templates (delq 'vc-find-cvs-master vc-master-templates))
+
+;;
+;; Load html-helper-mode and related tools
+;;
+(autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
+(setq auto-mode-alist (cons '("\\.html$" . html-helper-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.htm$"  . html-helper-mode) auto-mode-alist))
+
+(autoload 'browse-url-at-point "browse-url"
+  "Ask a WWW browser to load the URL at or before point." t)
+(autoload 'browse-url-at-mouse "browse-url"
+  "Ask a WWW browser to load a URL clicked with the mouse." t)
+(autoload 'browse-url-of-buffer "browse-url"
+  "Ask a WWW browser to display BUFFER." t)
+(autoload 'browse-url-of-file "browse-url"
+  "Ask a WWW browser to display FILE." t)
+(autoload 'browse-url-of-dired-file "browse-url"
+  "In Dired, ask a WWW browser to display the file named on this line." t)
+
+(setq html-helper-do-write-file-hooks t)
+(setq html-helper-build-new-buffer t)
+(setq tempo-interactive t)
+(setq html-helper-address-string 
+  "User name &lt;user@eso.org&gt;</a>")
+
+(global-set-key "\C-c\C-z." 'browse-url-at-point)
+(global-set-key "\C-c\C-zb" 'browse-url-of-buffer)
+(global-set-key "\C-c\C-zv" 'browse-url-of-file)
+(add-hook 'dired-mode-hook
+          (function (lambda ()
+                      (local-set-key "\C-c\C-zf" 'browse-url-of-dired-file))))
+(if (boundp 'browse-url-browser-function)
+    (global-set-key "\C-c\C-zu" browse-url-browser-function)
+  (eval-after-load "browse-url"
+   '(global-set-key "\C-c\C-zu" browse-url-browser-function)))
+
+;; To always save modified buffers before displaying the file in a browser:
+(setq browse-url-save-file t)
+
+;; 
+;; Loads the local configuration file, if it does exist
+;;
+(if (file-exists-p "~/.emacs.local")
+    (load "~/.emacs.local")
+)
+
+;;
+;; Load and initialize hilit19 package to hilight with colors
+;; 'require' only loads if not already loaded (e.g. from .emacs.local)
+;;
+(require 'hilit19)
+
+;; additional hilit for Tcl and incrTcl:
+(require 'hilit-tcl)	; requires: hilit19
+
+
+;; ************************************************************
+;; ************** Optional packages ***************************
+;;
+
+;;
+;; 'ps-print'
+;;
+(require 'ps-print)
+
+(setq ps-bold-faces '(bold bold-italic cyan cyan-bold yellow))
+(setq ps-italic-faces '(italic bold-italic cyan moccasin orange Plum1))
+(setq ps-underlined-faces '(underline green))
+
+(setq ps-print-color-p nil)
+(setq ps-build-face-reference t)
+
+;;
+;; 'mouse buffer menu enhanced'
+;;
+(require 'msb)
+
+;;
+;; 'hscroll'
+;;
+(require 'hscroll)
+
+;;
+;; 'add-log' - semi-automatic ChangeLog management with RCS/CVS version-tags
+;;
+(require 'add-log)		; requires: rcs, cvs, hilit19
+(require 'hilit-change-log)	; requires: hilit19
+(global-set-key [M-insert]	'add-change-log-entry)
+(global-set-key [M-delete]	'kill-buffer)
+
+;;
+;; 'font-lock' - to improve colors and fonts in C and C++ code
+;;
+(require 'font-lock)
+(setq c-font-lock-keywords c-font-lock-keywords-2)
+(setq c++-font-lock-keywords c++-font-lock-keywords-2)
+
+
+;;
+;; other modules
+;;
+(load "c++-browse")	        ; c++ browser
+(autoload 'occam-mode   "occam-mode" "OCCAM Editing Mode" t)
+
+;;
+;; save editor context
+;;
+(require 'vlt-saveconf)
+(if (null (cdr command-line-args)) (recover-context))
+
+;; ************************************************************
+;; ************** 'calendar' package **************************
+(setq european-calendar-style t)
+
+
+;; ************************************************************
+;; ************** 'doxymacs' package **************************
+(require 'doxymacs)
+(add-hook 'c-mode-common-hook 'doxymacs-mode)
+
+(defun my-doxymacs-font-lock-hook ()
+    (if (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode))
+        (doxymacs-font-lock)))
+  (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
+
+;; ************************************************************
+;; ************** vlt special menus  **************************
+
+(require 'vlt-menu)	        ; vlt special menus
+
+;; ************************************************************
+;; ************** subversion support  *************************
+;; Start the svn interface with M-x svn-status
+(require 'psvn)
+
+;;***************************************************
+
+;; BACK TO OLD EMACS BEHAVIOR
+;; ===========================
+;; A couple of setting are very important in order to have
+;; reasonable performance over slow connections
+;; The other settings are commented out and can be switched on
+;; if you want the older behavior.
+;;
+
+(if (>  emacs-major-version 20)
+    (progn
+      ;; disable resizing mini buffer for performance over network
+      (setq resize-mini-windows nil)
+
+      ;; no blinking cursor - ahhhhhhhhhh
+      (blink-cursor-mode 0)
+
+      ;; home key moves to beginning of buffer
+      ;;(global-set-key [home] 'beginning-of-buffer)
+
+      ;; end key moves to end of buffer
+      ;;(global-set-key [end] 'end-of-buffer)
+
+      ;; Insert newline when you press `C-n' (next-line)
+      ;; at the end of the buffer
+      ;; (setq next-line-add-newlines t)
+
+      ;; Turn on image viewing
+      ;; (auto-image-file-mode t)
+
+      ;; Turn on menu bar (this bar has text)
+      ;; (Use numeric argument to turn on)
+      ;; (menu-bar-mode 1)
+
+      ;; Turn off tool bar (this bar has icons)
+      ;; (Use numeric argument to turn on)
+      ;; (tool-bar-mode nil)
+
+      ;; Turn off tooltip mode for tool bar
+      ;; (This mode causes icon explanations to pop up)
+      ;; (Use numeric argument to turn on)
+      (tooltip-mode nil)
+
+      ;; If tooltips turned on, make tips appear promptly
+      ;;(setq tooltip-delay 0.1)  ; default is one second
+    )
+)
+
+;; ___oOo___
+

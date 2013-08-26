@@ -1,0 +1,1 @@
+acsStartJava --noDirectory -noexport -endorsed -noClassLoader junit.textui.TestRunner alma.acs.commandcenter.AccTests

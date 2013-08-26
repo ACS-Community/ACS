@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat32,v 1.76 2003/01/09 17:51:27 vltsccm Exp $" 
+#
+# tat32
+#
+msgSend $lcu3 lccServer LCCGVER ""
+dbWrite "@$ws3<aiias>tat32.scan input control" 1
+if [ $? -eq 0 ]
+then echo dbWrite OK
+fi
+msgSend $lcu3 rdbServer DBGFAMN ":PARAMS:SCALARS"

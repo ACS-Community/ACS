@@ -1,0 +1,9 @@
+#!/bin/bash
+#A general purpose script designed to be used as the epilogue
+#for most tat modular tests
+
+#stop everything except clients
+echo " Stopping the services"
+acsStopORBSRVC -b `cat $ACS_TMP/acs_instance` >& $ACS_TMP/acsStop.log
+#This sleep is more of a precautionary measure than anything else
+sleep 3

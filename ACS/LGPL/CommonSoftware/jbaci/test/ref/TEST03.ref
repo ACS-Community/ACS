@@ -1,0 +1,36 @@
+1 - === Starting BuildingTest JUnit test
+1 - INFO - Starting Java application: alma.acsexmplBuilding.BuildingTest
+1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/home/almadev/introot/lib/endorsed:/alma/ACS-6.0/ACSSW/lib/endorsed:
+1 - Initializing CORBA...
+1 - CORBA initialized.
+1 - Resolving manager reference 'corbaloc::133.40.220.178:3000/Manager'.
+1 - Manager reference successfully resolved.
+1 - Logging to the manager...
+1 - [jacorb.poa] INFO : oid: 
+1 - 00 14 48 23 0F 14 25 1B 01 30 24                            ..H#..%..0$
+1 - object is activated
+1 - [jacorb.poa] INFO : Using server ID (8638363782) for transient POA
+1 - Logged in to the manager.
+1 - All initialization done.
+1 - [jacorb.orb] ERROR : no adapter activator exists for ComponentPOA
+1 - Version: 1.0
+1 - [jacorb.poa] INFO : oid: 
+1 - 01 14 48 23 0F 14 25 1B 01 30 24                            ..H#..%..0$
+1 - object is activated
+1 - 2006-10-31T07:11:10.000 (working) Value: 1.0
+1 - 2006-10-31T07:11:11.000 (working) Value: 1.0
+1 - 2006-10-31T07:11:12.000 (working) Value: 1.0
+1 - 2006-10-31T07:11:13.000 (working) Value: 1.0
+1 - 2006-10-31T07:11:14.000 (working) Value: 1.0
+1 - 2006-10-31T07:11:15.000 (working) Value: 1.0
+1 - 2006-10-31T07:11:16.000 (working) Value: 1.0
+1 - 2006-10-31T07:11:17.000 (working) Value: 1.0
+1 - 2006-10-31T07:11:18.000 (working) Value: 1.0
+1 - 2006-10-31T07:11:19.000 (working) Value: 1.0
+1 - 2006-10-31T07:11:19.602 (done) Value: 1.0
+1 - Logging out from the manager...
+1 - Logged out from the manager.
+1 - Finalizing CORBA...
+1 - [jacorb.poa] INFO : POA RootPOA destroyed
+1 - CORBA finalized.
+1 - === dispatchAction BuildingTest test completed

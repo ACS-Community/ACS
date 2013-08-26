@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+$Id: ControlDevice.xsd,v 1.2 2010/04/29 15:39:21 hsommer Exp $
+-->
+<!--
+  - Simple Control Device XSD created to have a common schema from
+  - where all other Control Devices extends from.
+  - 
+  - Author: Pablo Burgos 
+  -
+  - History:
+  -   2008-06-27  pburgos  Created
+-->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:ControlDevice:1.0"
+    xmlns="urn:schemas-cosylab-com:ControlDevice:1.0"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+  <xs:complexType name="ControlDevice">
+    
+    <xs:sequence>
+    </xs:sequence>
+    </xs:complexType>
+  <xs:element name="ControlDevice" type="ControlDevice"/>
+</xs:schema>

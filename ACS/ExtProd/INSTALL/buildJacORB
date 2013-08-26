@@ -1,0 +1,405 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: buildJacORB,v 1.25 2012/01/09 14:39:47 tstaig Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# almamgr  2003-03-11 created
+# sturolla 2005-10-09 ported to Bourne Shell and added external subroutine to check OS
+#
+
+#************************************************************************
+#   NAME
+#   buildJacORB
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#   This script is used to build JacORB and install it in the proper
+#   ACS place ($ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB), 
+#   after having applied a number of patches.
+#   The script assumes that:
+#   - It is executed from the place where the JacORB download
+#     tat ball is, together with all necessary patch files
+#   - The environment variables 
+#     $ALMASW_ROOTDIR and $ALMASW_RELEASE
+#     are set.
+#   - The user has write permission in the installation directory
+#   Any previous installation of JarORB will be erased.
+#
+#   To download JacORB:
+#       wget http://www.jacorb.org/releases/2.2.4/JacORB-2.2.4-source.zip
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+LOG=buildJacORB.log
+#
+exec > $LOG 2>&1
+
+date
+
+
+ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
+JACORB_SOURCES=`pwd`/../PRODUCTS
+CUR_DIR=`pwd`
+
+# HSO (2007-07-11): With JDK versions > 1.5_04 some subtle change of handling the classpath
+#                   (perhaps in jar manifest files) brought in the unpacked JacORB/lib/jacorb.jar
+#                   even if JACORB_HOME was not on the CLASSPATH. Therefore we can probably remove
+#                   the following classpath handling lines, 
+#                   and just rely on the ant target "realclean" to get rid of these jars.
+# 
+#if [ "X$JACORB_HOME" = X ]
+#then
+#   JACORB_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB
+#   echo "==== Setting JACORB_HOME to $JACORB_HOME"
+#   unset CLASSPATH
+#fi
+#
+#if [ `echo $CLASSPATH | grep -c $JACORB_HOME` -ne 0 ]
+#then
+#   echo "==== CLASSPATH contains $JACORB_HOME. Unsetting it for this script"
+#   echo "     But make sure we use the right version of ANT "
+#   CLASSPATH=$ANT_HOME/lib/ant.jar
+#fi
+
+echo ==== Building JacORB from: $JACORB_SOURCES    into:   $ALMASW_INSTDIR
+
+
+if [ -d $JACORB_HOME ]
+then
+   echo ==== JacORB build Directory exists. Removing it
+   rm -rf $JACORB_HOME
+   if [ $? -ne 0 ]
+   then
+        echo "========= FAILED =========="
+	exit 1
+   fi
+fi
+
+echo ==== Extracting package
+cd $ALMASW_INSTDIR
+
+unzip $JACORB_SOURCES/JacORB_2_2_4-full.zip
+mv JacORB-2.2.4 $JACORB_HOME
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+cd $JACORB_HOME
+
+# Apply a number of patches to JacORB.
+# All patches have been packed into one single patch command:
+# /bin/idltemplate
+# /build.xml
+#         Original file produces hard coded classpath to installaiton
+#         directory and is not relocatable
+# /idl/build.xml
+#         Extend the set of services we build support for with Peoperty Service
+# /src/org/jacorb/idl/NameTable.java
+# /src/org/jacorb/idl/ScopedName.java
+# /src/org/jacorb/idl/parser.java
+#         Fix IDL compiler and handling of prefix/package names
+# /src/org/jacorb/orb/CDRInputStream.java
+#         Fix problem with CDRInputStream.java read boolean
+# /idl/omg/orb.idl 
+#   Uncommented pragma inhibit_code_generation.
+#   This was uncommented with JacORB 1.1.4, but it is commented now.
+# /src/org/jacorb/idl/StructType.java
+#   Added support for forward declarations in IDL with JacORB 2.2.4
+#
+# The patch file has been generated from the following command:
+# LC_ALL=C TZ=UTC0 diff -Naur JacORB_2_2_4 JacORB_2_2_4-new >JacORB-ACS-2006-06-29.patch
+#
+# corbaloc reference should have been resolved as GIOP 1.0 by default, but is GIOP 1.2.
+#    src/org/jacorb/orb/iiop/IIOPProfile.java
+# .. and we get new comulativ patch: JacORB-ACS-2006-07-31.patch.gz
+
+echo ==== Cumulative Patch
+if [ -f $JACORB_SOURCES/JacORB-ACS-2006-07-31.patch.gz ]
+then
+    gunzip -c $JACORB_SOURCES/JacORB-ACS-2006-07-31.patch.gz >$JACORB_SOURCES/JacORB-ACS-2006-07-31.patch
+else
+    echo "file $JACORB_SOURCES/JacORB-ACS-2006-07-31.patch.gz not found"
+    echo "Installation aborted"
+    exit 3
+fi
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  dos2unix $JACORB_SOURCES/JacORB-ACS-2006-07-31.patch
+fi
+patch -p1 < $JACORB_SOURCES/JacORB-ACS-2006-07-31.patch
+if [ $? -ne 0 ]
+then
+    rm $JACORB_SOURCES/JacORB-ACS-2006-07-31.patch
+    echo "========= FAILED =========="
+	exit 1
+else
+    rm $JACORB_SOURCES/JacORB-ACS-2006-07-31.patch
+fi
+
+#
+# JacORB interoperability IR patch
+#
+
+echo ==== IR Patch
+if [ -f $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch.gz ]
+then
+    gunzip -c $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch.gz >$JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch
+else
+    echo "file $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch.gz not found"
+    echo "Installation aborted"
+    exit 3
+fi
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  dos2unix $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch
+  dos2unix $JACORB_HOME/idl/omg/Corba.idl
+fi
+patch -p1 < $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch
+if [ $? -ne 0 ]
+then
+    rm $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch
+    echo "========= FAILED =========="
+        exit 1
+else
+    rm $JACORB_SOURCES/JacORB-ACS-IR-2007-02-12.patch
+fi
+
+#
+# JacORB JVM-fork patch to avoid spurious JVM death in
+# <jacorb-antlr package="${etcl.target.package}" source="${dir.etcl.grammar}/tcl-lexer.g" />
+#
+
+echo ==== JVM fork patch
+if [ -f $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch.gz ]
+then
+    gunzip -c $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch.gz >$JACORB_SOURCES/JacORB-ACS-2007-10-19.patch
+else
+    echo "file $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch.gz not found"
+    echo "Installation aborted"
+    exit 3
+fi
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  dos2unix $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch
+fi
+patch -p1 < $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch
+if [ $? -ne 0 ]
+then
+    rm $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch
+    echo "========= FAILED =========="
+        exit 1
+else
+    rm $JACORB_SOURCES/JacORB-ACS-2007-10-19.patch
+fi
+
+
+#
+# JacORB ACS profiling patch
+#
+
+echo ==== ACS Profiling Patch
+if [ -f $JACORB_SOURCES/JacORB-ACS-profiling-2009-09-18.patch.gz ]
+then
+    gunzip -c $JACORB_SOURCES/JacORB-ACS-profiling-2009-09-18.patch.gz >$JACORB_SOURCES/JacORB-ACS-profiling-2009-09-18.patch
+else
+    echo "file $JACORB_SOURCES/JacORB-ACS-profiling-2009-09-18.patch.gz not found"
+    echo "Installation aborted"
+    exit 3
+fi
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  dos2unix $JACORB_SOURCES/JacORB-ACS-profiling-2009-09-18.patch
+fi
+patch -p1 < $JACORB_SOURCES/JacORB-ACS-profiling-2009-09-18.patch
+if [ $? -ne 0 ]
+then
+    rm $JACORB_SOURCES/JacORB-ACS-profiling-2009-09-18.patch
+    echo "========= FAILED =========="
+        exit 1
+else
+    rm $JACORB_SOURCES/JacORB-ACS-profiling-2009-09-18.patch
+fi
+
+
+#
+# JacORB ACS profiling update patch
+#
+
+echo ==== ACS Profiling Update Patch
+if [ -f $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch.gz ]
+then
+    gunzip -c $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch.gz >$JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch
+else
+    echo "file $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch.gz not found"
+    echo "Installation aborted"
+    exit 3
+fi
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  dos2unix $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch
+fi
+patch -p1 < $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch
+if [ $? -ne 0 ]
+then
+    rm $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch
+    echo "========= FAILED =========="
+        exit 1
+else
+    rm $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch
+fi
+
+
+echo "========= Done with unpacking and patching, can compile now... =========="
+
+
+echo ==== Building jaco
+ant jaco 
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+     exit 1
+fi
+
+echo "==== Building jars"
+cd $JACORB_HOME/
+
+# get rid of precompiled jacorb jars which sometimes mess with the classpath
+# to the effect that incompatible versions of some org.omg interface come in from the JDK libs
+ant realclean || exit 1
+
+# our JacORB should not use backport-util-concurrent.jar
+rm $JACORB_HOME/lib/backport-util-concurrent.jar
+ant convert.jdk5  || exit 1
+
+# Now that the standard ACS CLASSPATH no longer contains logkit-1.2.jar,
+# we need to add it here in order to compile JacORB. 
+# Later this same jar will be copied to ACSROOT/lib (in LGPL/Tools/).
+CLASSPATH=$CLASSPATH:$JACORB_HOME/lib/logkit-1.2.jar
+
+# the main jacorb compilation
+# To include debug information, exchange the following two lines:
+#ant -Ddebug=true -Ddebuglevel=lines,vars,source all 
+ant all
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+cd $JACORB_SOURCES
+
+echo "==== Build Notification service IDL"
+
+cd $JACORB_HOME/idl
+ant notification
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+echo "==== Build extra IDLs CosProperty(Service), DsLogAdmin and AVStreams"
+
+cd $JACORB_HOME/idl/omg
+cp $ACE_ROOT/TAO/orbsvcs/orbsvcs/CosProperty.idl .
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+cp $ACE_ROOT/TAO/orbsvcs/orbsvcs/DsLogAdmin.idl .
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+mkdir tao
+cp $ACE_ROOT/TAO/tao/TimeBase.pidl tao/
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+# See http://jira.alma.cl/browse/COMP-6266 about this workaround for OpenORB
+cd tao
+ln -s TimeBase.pidl TimeBase.pidl.idl
+cd ..
+
+cp $ACE_ROOT/TAO/orbsvcs/orbsvcs/AVStreams.idl .
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+cd $JACORB_HOME/idl
+
+ant property
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+ant logging
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+ant audiovideo
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+
+echo ==== Build with extra IDLs
+
+cd $JACORB_HOME
+ant jar
+if [ $? -ne 0 ]
+then
+     echo "========= FAILED =========="
+	exit 1
+fi
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  dos2unix $JACORB_HOME/bin/idl
+fi
+
+cd $CUR_DIR
+
+echo "==== Build with extra IDLs"
+echo "==== JacORB fully built   =========="
+echo "Make sure that the following environment variables"
+echo "are set before using JacORB:"
+echo " - JACORB_HOME=$JACORB_HOME"
+echo " - CLASSPATH contains: $JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar"
+echo " - PATH      contains: $JACORB_HOME/bin"
+echo "========= DONE   =========="
+
+echo JacORB installation done!
+date
+

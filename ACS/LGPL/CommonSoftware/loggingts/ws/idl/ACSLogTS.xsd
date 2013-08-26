@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+<xs:schema 
+	xmlns:loggingts="Alma/ACSLogTS" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:common="urn:schemas-cosylab-com:COMMONTYPES:1.0"
+	targetNamespace="Alma/ACSLogTS" 
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:COMMONTYPES:1.0" schemaLocation="commontypes.xsd"/>
+	<xs:annotation>
+		<xs:documentation>
+This schema describes type safe logs, that are used on top of the normal free format logs, provided by the log system. It is mainly intended for Operational logs of direct interest for the operator of the system, while free format logs are used for post-mortem analysis and debugging.
+		</xs:documentation>
+	</xs:annotation>
+	<xs:element name="LogDefinitionType">
+		<xs:annotation>
+			<xs:documentation>
+This element is used to describe and group together all the log definitions in the same file.
+			</xs:documentation>
+		</xs:annotation>
+
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="LogDefinition" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>This element contains all the information for the code generation for one type safe log, plus information for documentation purposes. Each LogDefinition will become a new class, with a standardized interface in all three languages supported by ACS(C++, Java and Python).
+
+CPP API:
+	SampleLog mylog(__FILE__, __LINE__, "routine")
+	mylog.setSomeMember("value") //sets member SomeMember="value" 
+	mylog.log()
+
+Java API:
+	SampleLog mylog = new SampleLog(mylogger);
+	mylog.setSomeMember("value"); //sets member SomeMember="value" 
+	mylog.log();
+
+Python API:
+	mylog = SampleLog() #filename, line number and function can be extracted at runtime
+	mylog.setSomeMember("value") #sets member SomeMember="value" 
+	mylog.log()
+
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="Member" type="common:Member_"/>
+						</xs:choice>
+						<xs:attribute name="logName" type="common:nameType" use="required"/>
+						<xs:attribute name="shortDescription" type="common:shortDescriptionString" use="required"/>
+						<xs:attribute name="description" type="common:nonEmptyString" use="required"/>
+						<xs:attribute name="URL" type="xs:string" use="optional"/>
+						<xs:attribute name="priority" type="loggingts:priorityType" use="required"/>
+						<xs:attribute name="audience" type="common:nonEmptyString" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:attribute name="name" type="common:nameType" use="required"/>
+			<xs:attribute name="type" type="loggingts:logType" use="required"/><!-- Actually needed? -->
+			<xs:attribute name="shortDescription" type="common:shortDescriptionString" use="optional"/>
+			<xs:attribute name="description" type="common:nonEmptyString" use="optional"/>
+			<xs:attribute name="URL" type="xs:string" use="optional"/>
+			<xs:attribute name="_prefix" type="common:prefixType" default="alma"/><!--for java package-->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="logType">
+		<xs:annotation>
+			<xs:documentation>The 'type' field of the LogDefinition is a non negative integer.
+@TODO: Remove this 'type', since it does not appear to be used anywhere.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:nonNegativeInteger"/>
+	</xs:simpleType>
+
+	<xs:simpleType name="priorityType">
+		<xs:annotation>
+			<xs:documentation>
+Type for priority. Just lists all the priorities defined for the ACS logging system.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="common:nonEmptyString">
+			<xs:enumeration value="TRACE"/>
+			<xs:enumeration value="DELOUSE"/>
+			<xs:enumeration value="DEBUG"/>
+			<xs:enumeration value="INFO"/>
+			<xs:enumeration value="NOTICE"/>
+			<xs:enumeration value="WARNING"/>
+			<xs:enumeration value="ERROR"/>
+			<xs:enumeration value="CRITICAL"/>
+			<xs:enumeration value="ALERT"/>
+			<xs:enumeration value="EMERGENCY"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

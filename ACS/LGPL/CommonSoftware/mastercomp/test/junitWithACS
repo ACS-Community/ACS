@@ -1,0 +1,2 @@
+acsutilTATTestRunner acsStartJava -endorsed -D ACS.log.minlevel.remote=2 alma.acs.testsupport.tat.TATJUnitRunner alma.ACS.MasterComponentImpl.MasterComponentTest
+acsutilTATTestRunner acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.ACS.SpecialTestMasterComponentImpl.SpecialTestMasterComponentTest

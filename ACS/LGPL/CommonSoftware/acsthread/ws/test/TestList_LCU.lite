@@ -1,0 +1,24 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: TestList_LCU.lite,v 1.1 2006/07/04 13:30:58 bjeram Exp $"
+#
+# TestList_LCU
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+
+SOURCE acsthreadTATEnv
+ENVIRONMENT lcuTat LCU
+
+1 ThreadTest_LCU "acsthreadTest testACSThread testACSThread"
+2 ThreadWithParameterTest_LCU "testACSThreadWithParameter"
+3 ThreadTiming_LCU "testACSThreadTiming"
+4 ThreadStop_LCU "testACSThreadStop"
+5 ThreadSuspend_LCU "testACSThreadSuspend"
+6 ThreadCorrExmp_LCUl "testACSThreadCorrExmpl"
+7 ThreadTestNoTM_LCU "testACSThreadNoTM"
+8 ThreadSleep_LCU "testACSThreadSleep"
+9 ThreadJoinable_LCU "testACSThreadJoinable"
+10 ThreadRestart_LCU "testACSThreadRestart"
+11 ThreadGuard_LCU "testACSThreadGuard"

@@ -1,0 +1,45 @@
+<project>
+
+<property environment="env" />
+
+<path id="toolslib">
+	<path location="${env.ACSROOT}/lib/commons-logging-1.1.1.jar" />
+	<path location="${env.ACSROOT}/lib/dom4j-1.6.1.jar" />
+	<path location="${env.ACSROOT}/lib/slf4j-api-1.5.8.jar" />
+	<path location="${env.ACSROOT}/lib/slf4j-acs.jar" />
+	<path location="${env.ACSROOT}/lib/acsjlog.jar" />
+	<path location="${env.ACSROOT}/lib/logging_idl.jar" />
+	<path location="${env.ACSROOT}/lib/maciSchemaBindings.jar" />
+	<path location="${env.ACSROOT}/lib/cdbErrType.jar" />
+	<path location="${env.ACSROOT}/lib/castor.jar" />
+	<path location="${env.ACSROOT}/lib/ACSErrTypeCommon.jar" />
+	<path location="${env.ACSROOT}/lib/acserr.jar" />
+	<path location="${env.ACSROOT}/lib/jACSUtil.jar" />
+	<path location="${env.ACSROOT}/lib/acserrj.jar" />
+	<path location="${env.ACSROOT}/lib/hsqldb.jar" />
+	<path location="${env.ACSROOT}/lib/hibernate3.jar" />
+	<path location="${env.ACSROOT}/lib/hibernate-annotations.jar" />
+	<path location="${env.ACSROOT}/lib/hibernate-tools.jar" />
+	<path location="${env.ACSROOT}/lib/freemarker.jar" />
+	<path location="${env.ACSROOT}/lib/tmcdbGenerator.jar" />
+	<path location="${env.INTROOT}/lib/hibernate-tools.jar" />  <!-- this and 2 following three should be removed -->
+	<path location="${env.INTROOT}/lib/freemarker.jar" />
+	<path location="${env.INTROOT}/lib/tmcdbGenerator.jar" />
+	<path location="../lib/TMCDBswconfigStrategy.jar" />
+</path>
+
+<taskdef name="hibernatetool"
+         classname="org.hibernate.tool.ant.HibernateToolTask"
+         classpathref="toolslib" />
+
+<target name="generate">
+	<hibernatetool destdir="gen" templatepath="alma/acs/tmcdb" >
+		<jdbcconfiguration
+		    packagename="alma.acs.tmcdb"
+		    reversestrategy="alma.acs.tmcdb.translator.TmcdbSwconfigStrategy"
+		    configurationfile="generator-hibernate.cfg.xml" />
+		<hbm2java jdk5="true" ejb3="true" />
+	</hibernatetool>
+</target>
+
+</project>

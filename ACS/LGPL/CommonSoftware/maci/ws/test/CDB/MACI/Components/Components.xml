@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <_ Name="MACI01"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestClass:1.0"			Container="Container01" ImplLang="cpp" />
+  <_ Name="MACI02"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestClass:1.0"			Container="Container02" ImplLang="cpp" />
+  <_ Name="MACI03"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestClass:1.0"			Container="Container03" ImplLang="cpp" />
+  <_ Name="MACI04"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestClass:1.0"			Container="Container01" ImplLang="cpp" />
+  <_ Name="MACI05"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestClass:1.0"			Container="Container02" ImplLang="cpp" />
+  <_ Name="MACI06"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0"			Container="Container03" ImplLang="cpp" />
+  <_ Name="MACI07"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0"			Container="Container01" ImplLang="cpp" />
+  <_ Name="MACI08"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0"			Container="Container03" ImplLang="cpp" />
+  <_ Name="MACI09"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0"			Container="Container03" ImplLang="cpp" />
+  <_ Name="MACI10"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0"			Container="Container04" ImplLang="cpp" />
+  <_ Name="MACI_FAKE"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestClass:1.0"			Container="Container01" ImplLang="cpp" />
+  <_ Name="MACI_HIER"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciHierarchicalTestClass:1.0"		Container="Container01" ImplLang="cpp" />
+  <_ Name="MACI_SUB"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestClass:1.0"			Container="Container01" ImplLang="cpp" />
+<!-- Component that test the diferent log level configurations-->
+  <_ Name="MACI_LOG_CONFIG"	Code="maciTestLogConfig"	Type="IDL:alma/MACI_TEST/LogConfigTestClass:1.0"			Container="ContainerTestLog" Autostart="true"  ImplLang="cpp" />
+
+<!-- The component that tests the container services -->
+  <_ Name="MACI_CS_TEST" Code="maciContainerServicesTestClass" Type="IDL:alma/MACI_TEST/ContainerServicesTestClass:1.0" Container="Container01" ImplLang="cpp" />
+  <_ Name="MACI_DYN_TEST1" Code="maciDynComp" Type="IDL:alma/MACI_TEST/DynamicTestClass:1.0" Container="Container01" ImplLang="cpp" />
+  <_ Name="MACI_DYN_TEST2" Code="maciDynComp" Type="IDL:alma/MACI_TEST/DynamicTestClass:1.0" Container="Container01" Default="true" ImplLang="cpp" />
+  <_ Name="MACI_DYN_TEST3" Code="maciDynComp" Type="IDL:alma/MACI_TEST/DynamicTestClass:1.0" Container="Container01" ImplLang="cpp" />
+  <_ Name="*" Code="maciDynComp"
+  Type="IDL:alma/MACI_TEST/DynamicTestClass:1.0"
+  Container="Container01" ImplLang="cpp" />
+
+<!-- The components that throw exceptions to the the robustness of the
+     container -->
+
+  <_ Name="MACI_EXCEPTION_COSTR" Code="maciDynComp" Type="IDL:alma/MACI_TEST/DynamicTestClass:1.0" Container="Container01" ImplLang="cpp" />
+  
+<_ Name="MACI_EXCEPTION_INIT" Code="maciDynComp"
+Type="IDL:alma/MACI_TEST/DynamicTestClass:1.0" Container="Container01" ImplLang="cpp" />
+
+<_ Name="MACI_EXCEPTION_EXE" Code="maciDynComp"
+Type="IDL:alma/MACI_TEST/DynamicTestClass:1.0"
+Container="Container01" ImplLang="cpp" />
+
+<_ Name="MACI_EXCEPTION_CLEAN" Code="maciDynComp"
+Type="IDL:alma/MACI_TEST/DynamicTestClass:1.0"
+Container="Container01" ImplLang="cpp" />
+
+<_ Name="MACI_EXCEPTION_ABORT" Code="maciDynComp"
+Type="IDL:alma/MACI_TEST/DynamicTestClass:1.0"
+Container="Container01" ImplLang="cpp" />
+
+</Components>
+
+

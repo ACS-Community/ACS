@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<CONTROL_WeatherStation 
+    xmlns="urn:schemas-cosylab-com:CONTROL_WeatherStation:1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    
+	<air_temp archive_min_int="1" archive_max_int="1"></air_temp>
+	<dew_temp></dew_temp>
+	<pressure></pressure>
+	<hygrometer_bal></hygrometer_bal>
+	<west_wind_direction></west_wind_direction>
+	<west_wind_speed></west_wind_speed>
+	<east_wind_direction></east_wind_direction>
+	<east_wind_speed></east_wind_speed>
+	<hygrometer_power></hygrometer_power>
+	<hygrometer_temp></hygrometer_temp>
+	<solar_flux></solar_flux>
+	<box_air_temp></box_air_temp>
+	<win_bird_flag></win_bird_flag>
+	<hygrometer_flag></hygrometer_flag>
+	<solar_flux_det_flag></solar_flux_det_flag>
+	<box_temp_flag></box_temp_flag>
+	<hygrometer_status></hygrometer_status>
+
+</CONTROL_WeatherStation>
+

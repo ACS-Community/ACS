@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <_ Name="MOUNT1_01"
+         Code="acscourseMount1Impl"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount1:1.0"
+         Container="mountContainer" ImplLang="cpp" />
+      <_ Name="MOUNT1_02"
+         Code="acscourseMount1Impl"    
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount1:1.0"
+         Container="mountContainer" ImplLang="cpp" />
+      <_ Name="MOUNT1_J_01"
+         Code="alma.ACSCOURSE_MOUNT.Mount1Impl.Mount1Helper"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount1:1.0"
+         Container="mountJava"    ImplLang="java" />
+      <_ Name="MOUNT1_PY_01"
+         Code="ACSCOURSE_MOUNTImpl.Mount1"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount1:1.0"
+         Container="mountPython"    ImplLang="py" />
+
+      <_ Name="MOUNT2_01"
+         Code="acscourseMount2Impl"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount2:1.0"
+         Container="mountContainer"
+         Autostart="true"  ImplLang="cpp" />
+      <_ Name="MOUNT2_LOOP"
+         Code="acscourseMount2LoopImpl"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount2:1.0"
+         Container="mountContainer"   ImplLang="cpp" />
+
+      <_ Name="MOUNT3_01"
+         Code="acscourseMount3Impl"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount3:1.0"
+         Container="mountContainer"    ImplLang="cpp" />
+
+      <_ Name="MOUNT4_01"
+         Code="acscourseMount4Impl"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount4:1.0"
+         Container="mountContainer"   ImplLang="cpp" />
+
+      <_ Name="MOUNT5_01"
+         Code="acscourseMount5Impl"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount5:1.0"
+         Container="mountContainer"   ImplLang="cpp" />
+      <_ Name="MOUNT5_02"
+         Code="acscourseMount5Impl"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount5:1.0"
+         Container="mountContainer"    ImplLang="cpp" />
+      <_ Name="MOUNT5_J_01"
+         Code="alma.ACSCOURSE_MOUNT.Mount5Impl.Mount5Helper"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount5:1.0"
+         Container="mountJava"    ImplLang="java" />
+
+      <_ Name="MOUNT6_01"
+         Code="alma.ACSCOURSE_MOUNT.Mount6Impl.Mount6Helper"
+         Type="IDL:alma/ACSCOURSE_MOUNT/Mount6:1.0"
+         Container="mountJava"  ImplLang="java" />
+
+      <_ Name="PBUMP_B_01"
+         Code="acsexmplPowerSupplyImpl"
+         Type="IDL:alma/PS/PowerSupply:1.0"
+         Container="mountContainer"     ImplLang="cpp" />
+      <_ Name="LAMP1"
+         Code="acsexmplLampImpl"
+         Type="IDL:alma/acsexmplLamp/Lamp:1.0"
+         Container="mountContainer"    ImplLang="cpp" />
+</Components>
+
+

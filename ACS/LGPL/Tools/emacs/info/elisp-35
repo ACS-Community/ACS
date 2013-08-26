@@ -1,0 +1,993 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: TCP,  Prev: Transaction Queues,  Up: Processes
+
+TCP
+===
+
+                  Emacs Lisp programs can open TCP connections to other
+processes on the same machine or other machines.  A network connection
+is handled by Lisp much like a subprocess, and is represented by a
+process object.  However, the process you are communicating with is not
+a child of the Emacs process, so you can't kill it or send it signals.
+All you can do is send and receive data.  `delete-process' closes the
+connection, but does not kill the process at the other end; that
+process must decide what to do about closure of the connection.
+
+                  You can distinguish process objects representing
+network connections from those representing subprocesses with the
+`process-status' function.  *Note Process Information::.
+
+                -- Function: open-network-stream NAME BUFFER-OR-NAME
+                         HOST SERVICE
+                    This function opens a TCP connection for a service
+                    to a host.  It returns a process object to
+                    represent the connection.
+
+                    The NAME argument specifies the name for the
+                    process object.  It is modified as necessary to
+                    make it unique.
+
+                    The BUFFER-OR-NAME argument is the buffer to
+                    associate with the connection.  Output from the
+                    connection is inserted in the buffer, unless you
+                    specify a filter function to handle the output.  If
+                    BUFFER-OR-NAME is `nil', it means that the
+                    connection is not associated with any buffer.
+
+                    The arguments HOST and SERVICE specify where to
+                    connect to; HOST is the host name (a string), and
+                    SERVICE is the name of a defined network service (a
+                    string) or a port number (an integer).
+
+
+File: elisp,  Node: System Interface,  Next: Display,  Prev: Processes,  Up: Top
+
+Operating System Interface
+**************************
+
+                  This chapter is about starting and getting out of
+Emacs, access to values in the operating system environment, and
+terminal input, output and flow control.
+
+                  *Note Building Emacs::, for related information.  See
+also *Note Display::, for additional operating system status information
+pertaining to the terminal and the screen.
+
+               * Menu:
+               
+               * Starting Up::         Customizing Emacs start-up processing.
+               * Getting Out::         How exiting works (permanent or temporary).
+               * System Environment::  Distinguish the name and kind of system.
+               * User Identification:: Finding the name and user id of the user.
+               * Time of Day::		Getting the current time.
+               * Timers::		Setting a timer to call a function at a certain time.
+               * Terminal Input::      Recording terminal input for debugging.
+               * Terminal Output::     Recording terminal output for debugging.
+               * Special Keysyms::     Defining system-specific key symbols for X windows.
+               * Flow Control::        How to turn output flow control on or off.
+               * Batch Mode::          Running Emacs without terminal interaction.
+
+
+File: elisp,  Node: Starting Up,  Next: Getting Out,  Up: System Interface
+
+Starting Up Emacs
+=================
+
+                  This section describes what Emacs does when it is
+started, and how you can customize these actions.
+
+               * Menu:
+               
+               * Start-up Summary::        Sequence of actions Emacs performs at start-up.
+               * Init File::               Details on reading the init file (`.emacs').
+               * Terminal-Specific::       How the terminal-specific Lisp file is read.
+               * Command Line Arguments::  How command line arguments are processed,
+                                             and how you can customize them.
+
+
+File: elisp,  Node: Start-up Summary,  Next: Init File,  Up: Starting Up
+
+Summary: Sequence of Actions at Start Up
+----------------------------------------
+
+                  The order of operations performed (in `startup.el')
+by Emacs when it is started up is as follows:
+
+                 1. It loads the initialization library for the window
+                    system, if you are using a window system.  This
+                    library's name is `term/WINDOWSYSTEM-win.el'.
+
+                 2. It initializes the X window frame and faces, if
+                    appropriate.
+
+                 3. It runs the normal hook `before-init-hook'.
+
+                 4. It loads the library `site-start', unless the option
+                    `-no-site-file' was specified.  The library's file
+                    name is usually `site-start.el'.
+
+                 5. It loads the file `~/.emacs' unless `-q' was
+                    specified on command line.  (This is not done in
+                    `-batch' mode.)  The `-u' option can specify the
+                    user name whose home directory should be used
+                    instead of `~'.
+
+                 6. It loads the library `default' unless
+                    `inhibit-default-init' is non-`nil'.  (This is not
+                    done in `-batch' mode or if `-q' was specified on
+                    command line.)  The library's file name is usually
+                    `default.el'.
+
+                 7. It runs the normal hook `after-init-hook'.
+
+                 8. It sets the major mode according to
+                    `initial-major-mode', provided the buffer
+                    `*scratch*' is still current and still in
+                    Fundamental mode.
+
+                 9. It loads the terminal-specific Lisp file, if any,
+                    except when in batch mode or using a window system.
+
+                10. It displays the initial echo area message, unless
+                    you have suppressed that with
+                    `inhibit-startup-echo-area-message'.
+
+                11. It processes any remaining command line arguments.
+
+                12. It runs `term-setup-hook'.
+
+                13. It calls `frame-notice-user-settings', which
+                    modifies the parameters of the selected frame
+                    according to whatever the init files specify.
+
+                14. It runs `window-setup-hook'.  *Note Window
+                    Systems::.
+
+                15. It displays copyleft, nonwarranty and basic use
+                    information, provided there were no remaining
+                    command line arguments (a few steps above) and the
+                    value of `inhibit-startup-message' is `nil'.
+
+                -- User Option: inhibit-startup-message
+                    This variable inhibits the initial startup messages
+                    (the nonwarranty, etc.).  If it is non-`nil', then
+                    the messages are not printed.
+
+                    This variable exists so you can set it in your
+                    personal init file, once you are familiar with the
+                    contents of the startup message.  Do not set this
+                    variable in the init file of a new user, or in a
+                    way that affects more than one user, because that
+                    would prevent new users from receiving the
+                    information they are supposed to see.
+
+                -- User Option: inhibit-startup-echo-area-message
+                    This variable controls the display of the startup
+                    echo area message.  You can suppress the startup
+                    echo area message by adding text with this form to
+                    your `.emacs' file:
+
+                         (setq inhibit-startup-echo-area-message
+                               "YOUR-LOGIN-NAME")
+
+                    Simply setting `inhibit-startup-echo-area-message'
+                    to your login name is not sufficient to inhibit the
+                    message; Emacs explicitly checks whether `.emacs'
+                    contains an expression as shown above.  Your login
+                    name must appear in the expression as a Lisp string
+                    constant.
+
+                    This way, you can easily inhibit the message for
+                    yourself if you wish, but thoughtless copying of
+                    your `.emacs' file will not inhibit the message for
+                    someone else.
+
+
+File: elisp,  Node: Init File,  Next: Terminal-Specific,  Prev: Start-up Summary,  Up: Starting Up
+
+The Init File: `.emacs'
+-----------------------
+
+                  When you start Emacs, it normally attempts to load
+the file `.emacs' from your home directory.  This file, if it exists,
+must contain Lisp code.  It is called your "init file".  The command
+line switches `-q' and `-u' affect the use of the init file; `-q' says
+not to load an init file, and `-u' says to load a specified user's init
+file instead of yours.  *Note Entering Emacs: (emacs)Entering Emacs.
+
+                  A site may have a "default init file", which is the
+library named `default.el'.  Emacs finds the `default.el' file through
+the standard search path for libraries (*note How Programs Do
+Loading::.).  The Emacs distribution does not come with this file;
+sites may provide one for local customizations.  If the default init
+file exists, it is loaded whenever you start Emacs, except in batch
+mode or if `-q' is specified.  But your own personal init file, if any,
+is loaded first; if it sets `inhibit-default-init' to a non-`nil'
+value, then Emacs does not subsequently load the `default.el' file.
+
+                  Another file for site-customization is
+`site-start.el'.  Emacs loads this *before* the user's init file.  You
+can inhibit the loading of this file with the option `-no-site-file'.
+
+                  If there is a great deal of code in your `.emacs'
+file, you should move it into another file named `SOMETHING.el',
+byte-compile it (*note Byte Compilation::.), and make your `.emacs'
+file load the other file using `load' (*note Loading::.).
+
+                  *Note Init File Examples: (emacs)Init File Examples,
+for examples of how to make various commonly desired customizations in
+your `.emacs' file.
+
+                -- User Option: inhibit-default-init
+                    This variable prevents Emacs from loading the
+                    default initialization library file for your
+                    session of Emacs.  If its value is non-`nil', then
+                    the default library is not loaded.  The default
+                    value is `nil'.
+
+                -- Variable: before-init-hook
+                -- Variable: after-init-hook
+                    These two normal hooks are run just before, and
+                    just after, loading of the user's init file,
+                    `default.el', and/or `site-start.el'.
+
+
+File: elisp,  Node: Terminal-Specific,  Next: Command Line Arguments,  Prev: Init File,  Up: Starting Up
+
+Terminal-Specific Initialization
+--------------------------------
+
+                  Each terminal type can have its own Lisp library that
+Emacs loads when run on that type of terminal.  For a terminal type
+named TERMTYPE, the library is called `term/TERMTYPE'.  Emacs finds the
+file by searching the `load-path' directories as it does for other
+files, and trying the `.elc' and `.el' suffixes.  Normally,
+terminal-specific Lisp library is located in `emacs/lisp/term', a
+subdirectory of the `emacs/lisp' directory in which most Emacs Lisp
+libraries are kept.
+
+                  The library's name is constructed by concatenating
+the value of the variable `term-file-prefix' and the terminal type.
+Normally, `term-file-prefix' has the value `"term/"'; changing this is
+not recommended.
+
+                  The usual function of a terminal-specific library is
+to enable special keys to send sequences that Emacs can recognize.  It
+may also need to set or add to `function-key-map' if the Termcap entry
+does not specify all the terminal's function keys.  *Note Terminal
+Input::.
+
+                  When the name of the terminal type contains a hyphen,
+only the part of the name before the first hyphen is significant in
+choosing the library name.  Thus, terminal types `aaa-48' and
+`aaa-30-rv' both use the `term/aaa' library.  If necessary, the library
+can evaluate `(getenv "TERM")' to find the full name of the terminal
+type.
+
+                  Your `.emacs' file can prevent the loading of the
+terminal-specific library by setting the variable `term-file-prefix' to
+`nil'.  This feature is useful when experimenting with your own
+peculiar customizations.
+
+                  You can also arrange to override some of the actions
+of the terminal-specific library by setting the variable
+`term-setup-hook'.  This is a normal hook which Emacs runs using
+`run-hooks' at the end of Emacs initialization, after loading both your
+`.emacs' file and any terminal-specific libraries.  You can use this
+variable to define initializations for terminals that do not have their
+own libraries.  *Note Hooks::.
+
+                -- Variable: term-file-prefix
+                    If the `term-file-prefix' variable is non-`nil',
+                    Emacs loads a terminal-specific initialization file
+                    as follows:
+
+                         (load (concat term-file-prefix (getenv "TERM")))
+
+                    You may set the `term-file-prefix' variable to
+                    `nil' in your `.emacs' file if you do not wish to
+                    load the terminal-initialization file.  To do this,
+                    put the following in your `.emacs' file: `(setq
+                    term-file-prefix nil)'.
+
+                -- Variable: term-setup-hook
+                    This variable is a normal hook which Emacs runs
+                    after loading your `.emacs' file, the default
+                    initialization file (if any) and the
+                    terminal-specific Lisp file.
+
+                    You can use `term-setup-hook' to override the
+                    definitions made by a terminal-specific file.
+
+                  See `window-setup-hook' in *Note Window Systems::,
+for a related feature.
+
+
+File: elisp,  Node: Command Line Arguments,  Prev: Terminal-Specific,  Up: Starting Up
+
+Command Line Arguments
+----------------------
+
+                  You can use command line arguments to request various
+actions when you start Emacs.  Since you do not need to start Emacs
+more than once per day, and will often leave your Emacs session running
+longer than that, command line arguments are hardly ever used.  As a
+practical matter, it is best to avoid making the habit of using them,
+since this habit would encourage you to kill and restart Emacs
+unnecessarily often.  These options exist for two reasons: to be
+compatible with other editors (for invocation by other programs) and to
+enable shell scripts to run specific Lisp programs.
+
+                  This section describes how Emacs processes command
+line arguments, and how you can customize them.
+
+                -- Function: command-line
+                    This function parses the command line which Emacs
+                    was called with, processes it, loads the user's
+                    `.emacs' file and displays the initial nonwarranty
+                    information, etc.
+
+                -- Variable: command-line-processed
+                    The value of this variable is `t' once the command
+                    line has been processed.
+
+                    If you redump Emacs by calling `dump-emacs', you
+                    may wish to set this variable to `nil' first in
+                    order to cause the new dumped Emacs to process its
+                    new command line arguments.
+
+                -- Variable: command-switch-alist
+                    The value of this variable is an alist of
+                    user-defined command-line options and associated
+                    handler functions.  This variable exists so you can
+                    add elements to it.
+
+                    A "command line option" is an argument on the
+                    command line of the form:
+
+                         -OPTION
+
+                    The elements of the `command-switch-alist' look
+                    like this:
+
+                         (OPTION . HANDLER-FUNCTION)
+
+                    The HANDLER-FUNCTION is called to handle OPTION and
+                    receives the option name as its sole argument.
+
+                    In some cases, the option is followed in the
+                    command line by an argument.  In these cases, the
+                    HANDLER-FUNCTION can find all the remaining
+                    command-line arguments in the variable
+                    `command-line-args-left'.  (The entire list of
+                    command-line arguments is in `command-line-args'.)
+
+                    The command line arguments are parsed by the
+                    `command-line-1' function in the `startup.el' file.
+                    See also *Note Command Line Switches and
+                    Arguments: (emacs)Command Switches.
+
+                -- Variable: command-line-args
+                    The value of this variable is the list of command
+                    line arguments passed to Emacs.
+
+                -- Variable: command-line-functions
+                    This variable's value is a list of functions for
+                    handling an unrecognized command-line argument.
+                    Each time the next argument to be processed has no
+                    special meaning, the functions in this list are
+                    called, in the order they appear, until one of them
+                    returns a non-`nil' value.
+
+                    These functions are called with no arguments.  They
+                    can access the command-line argument under
+                    consideration through the variable `argi'.  The
+                    remaining arguments (not including the current one)
+                    are in the variable `command-line-args-left'.
+
+                    When a function recognizes and processes the
+                    argument in `argi', it should return a non-`nil'
+                    value to say it has dealt with that argument.  If
+                    it has also dealt with some of the following
+                    arguments, it can indicate that by deleting them
+                    from `command-line-args-left'.
+
+                    If all of these functions return `nil', then the
+                    argument is used as a file name to visit.
+
+
+File: elisp,  Node: Getting Out,  Next: System Environment,  Prev: Starting Up,  Up: System Interface
+
+Getting Out of Emacs
+====================
+
+                  There are two ways to get out of Emacs: you can kill
+the Emacs job, which exits permanently, or you can suspend it, which
+permits you to reenter the Emacs process later.  As a practical matter,
+you seldom kill Emacs---only when you are about to log out.  Suspending
+is much more common.
+
+               * Menu:
+               
+               * Killing Emacs::        Exiting Emacs irreversibly.
+               * Suspending Emacs::     Exiting Emacs reversibly.
+
+
+File: elisp,  Node: Killing Emacs,  Next: Suspending Emacs,  Up: Getting Out
+
+Killing Emacs
+-------------
+
+                  Killing Emacs means ending the execution of the Emacs
+process.  The parent process normally resumes control.  The low-level
+primitive for killing Emacs is `kill-emacs'.
+
+                -- Function: kill-emacs &optional EXIT-DATA
+                    This function exits the Emacs process and kills it.
+
+                    If EXIT-DATA is an integer, then it is used as the
+                    exit status of the Emacs process.  (This is useful
+                    primarily in batch operation; see *Note Batch
+                    Mode::.)
+
+                    If EXIT-DATA is a string, its contents are stuffed
+                    into the terminal input buffer so that the shell
+                    (or whatever program next reads input) can read
+                    them.
+
+                  All the information in the Emacs process, aside from
+files that have been saved, is lost when the Emacs is killed.  Because
+killing Emacs inadvertently can lose a lot of work, Emacs queries for
+confirmation before actually terminating if you have buffers that need
+saving or subprocesses that are running.  This is done in the function
+`save-buffers-kill-emacs'.
+
+                -- Variable: kill-emacs-query-functions
+                    After asking the standard questions,
+                    `save-buffers-kill-emacs' calls the functions in
+                    the list `kill-buffer-query-functions', in order of
+                    appearance, with no arguments.  These functions can
+                    ask for additional confirmation from the user.  If
+                    any of them returns non-`nil', Emacs is not killed.
+
+                -- Variable: kill-emacs-hook
+                    This variable is a normal hook; once
+                    `save-buffers-kill-emacs' is finished with all file
+                    saving and confirmation, it runs the functions in
+                    this hook.
+
+
+File: elisp,  Node: Suspending Emacs,  Prev: Killing Emacs,  Up: Getting Out
+
+Suspending Emacs
+----------------
+
+                  "Suspending Emacs" means stopping Emacs temporarily
+and returning control to its superior process, which is usually the
+shell.  This allows you to resume editing later in the same Emacs
+process, with the same buffers, the same kill ring, the same undo
+history, and so on.  To resume Emacs, use the appropriate command in
+the parent shell---most likely `fg'.
+
+                  Some operating systems do not support suspension of
+jobs; on these systems, ``suspension'' actually creates a new shell
+temporarily as a subprocess of Emacs.  Then you would exit the shell to
+return to Emacs.
+
+                  Suspension is not useful with window systems such as
+X, because the Emacs job may not have a parent that can resume it
+again, and in any case you can give input to some other job such as a
+shell merely by moving to a different window.  Therefore, suspending is
+not allowed when Emacs is an X client.
+
+                -- Function: suspend-emacs STRING
+                    This function stops Emacs and returns control to
+                    the superior process.  If and when the superior
+                    process resumes Emacs, `suspend-emacs' returns
+                    `nil' to its caller in Lisp.
+
+                    If STRING is non-`nil', its characters are sent to
+                    be read as terminal input by Emacs's superior
+                    shell.  The characters in STRING are not echoed by
+                    the superior shell; only the results appear.
+
+                    Before suspending, `suspend-emacs' runs the normal
+                    hook `suspend-hook'.  In Emacs version 18,
+                    `suspend-hook' was not a normal hook; its value was
+                    a single function, and if its value was non-`nil',
+                    then `suspend-emacs' returned immediately without
+                    actually suspending anything.
+
+                    After the user resumes Emacs, it runs the normal
+                    hook `suspend-resume-hook'.  *Note Hooks::.
+
+                    The next redisplay after resumption will redraw the
+                    entire screen, unless the variable
+                    `no-redraw-on-reenter' is non-`nil' (*note Refresh
+                    Screen::.).
+
+                    In the following example, note that `pwd' is not
+                    echoed after Emacs is suspended.  But it is read
+                    and executed by the shell.
+
+                         (suspend-emacs)
+                              => nil
+
+                         (add-hook 'suspend-hook
+                                   (function (lambda ()
+                                               (or (y-or-n-p
+                                                     "Really suspend? ")
+                                                   (error "Suspend cancelled")))))
+                              => (lambda nil
+                                   (or (y-or-n-p "Really suspend? ")
+                                       (error "Suspend cancelled")))
+
+                         (add-hook 'suspend-resume-hook
+                                   (function (lambda () (message "Resumed!"))))
+                              => (lambda nil (message "Resumed!"))
+
+                         (suspend-emacs "pwd")
+                              => nil
+
+                         ---------- Buffer: Minibuffer ----------
+                         Really suspend? `y'
+                         ---------- Buffer: Minibuffer ----------
+
+                         ---------- Parent Shell ----------
+                         lewis@slug[23] % /user/lewis/manual
+                         lewis@slug[24] % fg
+
+                         ---------- Echo Area ----------
+                         Resumed!
+
+                -- Variable: suspend-hook
+                    This variable is a normal hook run before
+                    suspending.
+
+                -- Variable: suspend-resume-hook
+                    This variable is a normal hook run after suspending.
+
+
+File: elisp,  Node: System Environment,  Next: User Identification,  Prev: Getting Out,  Up: System Interface
+
+Operating System Environment
+============================
+
+                  Emacs provides access to variables in the operating
+system environment through various functions.  These variables include
+the name of the system, the user's UID, and so on.
+
+                -- Variable: system-type
+                    The value of this variable is a symbol indicating
+                    the type of operating system Emacs is operating on.
+                    Here is a table of the symbols for the operating
+                    systems that Emacs can run on up to version 19.1.
+
+                   `aix-v3'
+                         AIX.
+
+                   `berkeley-unix'
+                         Berkeley BSD.
+
+                   `hpux'
+                         Hewlett-Packard operating system.
+
+                   `irix'
+                         Silicon Graphics Irix system.
+
+                   `linux'
+                         The free Linux operating system.
+
+                   `rtu'
+                         Masscomp RTU, UCB universe.
+
+                   `unisoft-unix'
+                         UniSoft UniPlus.
+
+                   `usg-unix-v'
+                         AT&T System V.
+
+                   `vax-vms'
+                         VAX VMS.
+
+                   `xenix'
+                         SCO Xenix 386.
+
+                    We do not wish to add new symbols to make finer
+                    distinctions unless it is absolutely necessary!  In
+                    fact, we hope to eliminate some of these
+                    alternatives in the future.  We recommend using
+                    `system-configuration' to distinguish between
+                    different operating systems.
+
+                -- Variable: system-configuration
+                    This variable holds the three-part configuration
+                    name for the hardware/software configuration of
+                    your system, as a string.  The convenient way to
+                    test parts of this string is with `string-match'.
+
+                -- Function: system-name
+                    This function returns the name of the machine you
+                    are running on.
+                         (system-name)
+                              => "prep.ai.mit.edu"
+
+                -- Function: getenv VAR
+                    This function returns the value of the environment
+                    variable VAR, as a string.  Within Emacs, the
+                    environment variable values are kept in the Lisp
+                    variable `process-environment'.
+
+                         (getenv "USER")
+                              => "lewis"
+                         
+                         lewis@slug[10] % printenv
+                         PATH=.:/user/lewis/bin:/usr/bin:/usr/local/bin
+                         USER=lewis
+                         TERM=ibmapa16
+                         SHELL=/bin/csh
+                         HOME=/user/lewis
+
+                -- Command: setenv VARIABLE VALUE
+                    This command sets the value of the environment
+                    variable named VARIABLE to VALUE.  Both arguments
+                    should be strings.  This function works by
+                    modifying `process-environment'; binding that
+                    variable with `let' is also reasonable practice.
+
+                -- Variable: process-environment
+                    This variable is a list of strings, each describing
+                    one environment variable.  The functions `getenv'
+                    and `setenv' work by means of this variable.
+
+                         process-environment
+                         => ("l=/usr/stanford/lib/gnuemacs/lisp"
+                             "PATH=.:/user/lewis/bin:/usr/class:/nfsusr/local/bin"
+                             "USER=lewis"
+
+                         "TERM=ibmapa16"
+                             "SHELL=/bin/csh"
+                             "HOME=/user/lewis")
+
+                -- Variable: invocation-name
+                    This variable holds the program name under which
+                    Emacs was invoked.  The value is a string, and does
+                    not include a directory name.
+
+                -- Variable: invocation-directory
+                    This variable holds the directory from which the
+                    Emacs executable was invoked, or perhaps `nil' if
+                    that directory cannot be determined.
+
+                -- Variable: installation-directory
+                    If non-`nil', this is a directory within which to
+                    look for the `lib-src' and `etc' subdirectories.
+                    This is non-`nil' when Emacs can't find those
+                    directories in their standard installed locations,
+                    but can find them near where the Emacs executable
+                    was found.
+
+                -- Function: load-average
+                    This function returns the current 1 minute, 5
+                    minute and 15 minute load averages in a list.  The
+                    values are integers that are 100 times the system
+                    load averages.  (The load averages indicate the
+                    number of processes trying to run.)
+
+                         (load-average)
+                              => (169 48 36)
+                         
+                         lewis@rocky[5] % uptime
+                          11:55am  up 1 day, 19:37,  3 users,
+                          load average: 1.69, 0.48, 0.36
+
+                -- Function: emacs-pid
+                    This function returns the process ID of the Emacs
+                    process.
+
+                -- Function: setprv PRIVILEGE-NAME &optional SETP GETPRV
+                    This function sets or resets a VMS privilege.  (It
+                    does not exist on Unix.)  The first arg is the
+                    privilege name, as a string.  The second argument,
+                    SETP, is `t' or `nil', indicating whether the
+                    privilege is to be turned on or off.  Its default
+                    is `nil'.  The function returns `t' if successful,
+                    `nil' otherwise.
+
+                    If the third argument, GETPRV, is non-`nil',
+                    `setprv' does not change the privilege, but returns
+                    `t' or `nil' indicating whether the privilege is
+                    currently enabled.
+
+
+File: elisp,  Node: User Identification,  Next: Time of Day,  Prev: System Environment,  Up: System Interface
+
+User Identification
+===================
+
+                -- Function: user-login-name
+                    This function returns the name under which the user
+                    is logged in.  If the environment variable
+                    `LOGNAME' is set, that value is used.  Otherwise,
+                    if the environment variable `USER' is set, that
+                    value is used.  Otherwise, the value is based on
+                    the effective UID, not the real UID.
+
+                         (user-login-name)
+                              => "lewis"
+
+                -- Function: user-real-login-name
+                    This function returns the user name corresponding
+                    to Emacs's real UID.  This ignores the effective
+                    UID and ignores the environment variables `LOGNAME'
+                    and `USER'.
+
+                -- Function: user-full-name
+                    This function returns the full name of the user.
+
+                         (user-full-name)
+                              => "Bil Lewis"
+
+                -- Function: user-real-uid
+                    This function returns the real UID of the user.
+
+                         (user-real-uid)
+                              => 19
+
+                -- Function: user-uid
+                    This function returns the effective UID of the user.
+
+
+File: elisp,  Node: Time of Day,  Next: Timers,  Prev: User Identification,  Up: System Interface
+
+Time of Day
+===========
+
+                  This section explains how to determine the current
+time and the time zone.
+
+                -- Function: current-time-string &optional TIME-VALUE
+                    This function returns the current time and date as
+                    a humanly-readable string.  The format of the
+                    string is unvarying; the number of characters used
+                    for each part is always the same, so you can
+                    reliably use `substring' to extract pieces of it.
+                    However, it would be wise to count the characters
+                    from the beginning of the string rather than from
+                    the end, as additional information may be added at
+                    the end.
+
+                    The argument TIME-VALUE, if given, specifies a time
+                    to format instead of the current time.  The
+                    argument should be a cons cell containing two
+                    integers, or a list whose first two elements are
+                    integers.  Thus, you can use times obtained from
+                    `current-time' (see below) and from
+                    `file-attributes' (*note File Attributes::.).
+
+                         (current-time-string)
+                              => "Wed Oct 14 22:21:05 1987"
+
+                -- Function: current-time
+                    This function returns the system's time value as a
+                    list of three integers: `(HIGH LOW MICROSEC)'.  The
+                    integers HIGH and LOW combine to give the number of
+                    seconds since 0:00 January 1, 1970, which is HIGH *
+                    2**16 + LOW.
+
+                    The third element, MICROSEC, gives the microseconds
+                    since the start of the current second (or 0 for
+                    systems that return time only on the resolution of
+                    a second).
+
+                    The first two elements can be compared with file
+                    time values such as you get with the function
+                    `file-attributes'.  *Note File Attributes::.
+
+                -- Function: current-time-zone &optional TIME-VALUE
+                    This function returns a list describing the time
+                    zone that the user is in.
+
+                    The value has the form `(OFFSET NAME)'.  Here
+                    OFFSET is an integer giving the number of seconds
+                    ahead of UTC (east of Greenwich).  A negative value
+                    means west of Greenwich.  The second element, NAME
+                    is a string giving the name of the time zone.  Both
+                    elements change when daylight savings time begins
+                    or ends; if the user has specified a time zone that
+                    does not use a seasonal time adjustment, then the
+                    value is constant through time.
+
+                    If the operating system doesn't supply all the
+                    information necessary to compute the value, both
+                    elements of the list are `nil'.
+
+                    The argument TIME-VALUE, if given, specifies a time
+                    to analyze instead of the current time.  The
+                    argument should be a cons cell containing two
+                    integers, or a list whose first two elements are
+                    integers.  Thus, you can use times obtained from
+                    `current-time' (see below) and from
+                    `file-attributes' (*note File Attributes::.).
+
+
+File: elisp,  Node: Timers,  Next: Terminal Input,  Prev: Time of Day,  Up: System Interface
+
+Timers
+======
+
+                  You can set up a timer to call a function at a
+specified future time.
+
+                -- Function: run-at-time TIME REPEAT FUNCTION &rest ARGS
+                    This function arranges to call FUNCTION with
+                    arguments ARGS at time TIME.  The argument FUNCTION
+                    is a function to call later, and ARGS are the
+                    arguments to give it when it is called.  The time
+                    TIME is specified as a string.
+
+                    Absolute times may be specified in a wide variety
+                    of formats; The form `HOUR:MIN:SEC TIMEZONE
+                    MONTH/DAY/YEAR', where all fields are numbers,
+                    works; the format that `current-time-string'
+                    returns is also allowed.
+
+                    To specify a relative time, use numbers followed by
+                    units.  For example:
+
+                   `1 min'
+                         denotes 1 minute from now.
+
+                   `1 min 5 sec'
+                         denotes 65 seconds from now.
+
+                   `1 min 2 sec 3 hour 4 day 5 week 6 fortnight 7 month 8 year'
+                         denotes exactly 103 months, 123 days, and
+                         10862 seconds from now.
+
+                    If TIME is an integer, that specifies a relative
+                    time measured in seconds.
+
+                    The argument REPEAT specifies how often to repeat
+                    the call.  If REPEAT is `nil', there are no
+                    repetitions; FUNCTION is called just once, at TIME.
+                    If REPEAT is an integer, it specifies a repetition
+                    period measured in seconds.
+
+                -- Function: cancel-timer TIMER
+                    Cancel the requested action for TIMER, which should
+                    be a value previously returned by `run-at-time'.
+                    This cancels the effect of that call to
+                    `run-at-time'; the arrival of the specified time
+                    will not cause anything special to happen.
+
+
+File: elisp,  Node: Terminal Input,  Next: Terminal Output,  Prev: Timers,  Up: System Interface
+
+Terminal Input
+==============
+
+                  This section describes functions and variables for
+recording or manipulating terminal input.  See *Note Display::, for
+related functions.
+
+               * Menu:
+               
+               * Input Modes::		Options for how input is processed.
+               * Translating Input::   Low level conversion of some characters or events
+               			  into others.
+               * Recording Input::	Saving histories of recent or all input events.
+
+
+File: elisp,  Node: Input Modes,  Next: Translating Input,  Up: Terminal Input
+
+Input Modes
+-----------
+
+                -- Function: set-input-mode INTERRUPT FLOW META
+                         QUIT-CHAR
+                    This function sets the mode for reading keyboard
+                    input.  If INTERRUPT is non-null, then Emacs uses
+                    input interrupts.  If it is `nil', then it uses
+                    CBREAK mode.
+
+                    If FLOW is non-`nil', then Emacs uses XON/XOFF
+                    (`C-q', `C-s') flow control for output to terminal.
+                    This has no effect except in CBREAK mode.  *Note
+                    Flow Control::.
+
+                    The default setting is system dependent.  Some
+                    systems always use CBREAK mode regardless of what
+                    is specified.
+
+                    The argument META controls support for input
+                    character codes above 127.  If META is `t', Emacs
+                    converts characters with the 8th bit set into Meta
+                    characters.  If META is `nil', Emacs disregards the
+                    8th bit; this is necessary when the terminal uses
+                    it as a parity bit.  If META is neither `t' nor
+                    `nil', Emacs uses all 8 bits of input unchanged.
+                    This is good for terminals using European 8-bit
+                    character sets.
+
+                    If QUIT-CHAR is non-`nil', it specifies the
+                    character to use for quitting.  Normally this
+                    character is `C-g'.  *Note Quitting::.
+
+                  The `current-input-mode' function returns the input
+mode settings Emacs is currently using.
+
+                -- Function: current-input-mode
+                    This function returns current mode for reading
+                    keyboard input.  It returns a list, corresponding
+                    to the arguments of `set-input-mode', of the form
+                    `(INTERRUPT FLOW META QUIT)' in which:
+                   INTERRUPT
+                         is non-`nil' when Emacs is using
+                         interrupt-driven input.  If `nil', Emacs is
+                         using CBREAK mode.
+
+                   FLOW
+                         is non-`nil' if Emacs uses XON/XOFF (`C-q',
+                         `C-s') flow control for output to the
+                         terminal.  This value has no effect unless
+                         INTERRUPT is non-`nil'.
+
+                   META
+                         is non-`t' if Emacs treats the eighth bit of
+                         input characters as the meta bit; `nil' means
+                         Emacs clears the eighth bit of every input
+                         character; any other value means Emacs uses
+                         all eight bits as the basic character code.
+
+                   QUIT
+                         is the character Emacs currently uses for
+                         quitting, usually `C-g'.
+
+                -- Variable: meta-flag
+                    This variable used to control whether to treat the
+                    eight bit in keyboard input characters as the Meta
+                    bit.  `nil' meant no, and anything else meant yes.
+                    This variable existed in Emacs versions 18 and
+                    earlier but no longer exists in Emacs 19; use
+                    `set-input-mode' instead.
+

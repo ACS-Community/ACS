@@ -1,0 +1,1410 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Gianluca Chiozzi (E.S.O.) -->
+<!--
+   - Configuration Database Schema for BACI Types
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema xmlns="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:annotation>
+		<xs:documentation>
+This schema describes the Configuration Database types for the Component/Property/Characteristic design patterns (BACI).
+It contains the definitions fo the Characteristic Component types and for all defined Property types.
+
+To keep the documentation easier to maintain and avoiding replication of documentation, the schemas for the Long Property are fully documented.
+The other Properties only document their differences with respect to the Long Property.
+		</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="CharacteristicModel">
+		<xs:annotation>
+			<xs:documentation>Base schema for all BACI objects with configuration stored in the CDB</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="CharacteristicComponent">
+		<xs:annotation>
+			<xs:documentation>Schema for CharacteristicComponents. !!! To be renamed. Obsolete name !!!</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="CharacteristicModel">
+				<xs:attribute name="recentCommand" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>Placeholder for the of the last command executed.
+Note: optionally used, requires write access to the configuration database.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="recentTimeStamp" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>Placeholder for the timestamp of last command executed.
+ISO time format.
+Note: optionally used, requires write access to the database.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Property">
+		<xs:annotation>
+			<xs:documentation>Base schema for the configuration database of all properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="CharacteristicModel"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TypelessProperty">
+		<xs:annotation>
+			<xs:documentation>Defines Characteristics common to all properties, independently from their type</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Property">
+				<xs:attribute name="description" type="xs:string" use="optional" default="-">
+					<xs:annotation>
+						<xs:documentation>
+Description of the function and purpose of the Property.
+Used in panels and to provide short help and documentation about the specific property.
+      						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="format" type="xs:string" use="optional" default="-">
+					<xs:annotation>
+						<xs:documentation>The "C printf" format to be used to display the value of the Property.
+To be used by applications that dynamically build a string or a printout
+of the value.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="initialize_devio" type="xs:boolean" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>It is used to initialize the devIO of the property if it is true. It uses the "default_value" characteristic to initialize the devIO.
+The default it is false/0.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="units" type="xs:string" use="optional" default="-">
+					<xs:annotation>
+						<xs:documentation>A string representing the units (normally base SI units or combinations of SI units) of the quantity represented by the property. </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="65535">
+					<xs:annotation>
+						<xs:documentation>Bit pattern representing the significant bits in the property's value.
+For example a long is represented by 32 bits, but a physical device 
+might deliver a value consisting only of 24 bits.
+In that case the resolution attribute has only the first 24 bits up.
+The remaining 8 bits shall be ignored by the application. 
+This attribute is useful for example for returning the resolution of analog-digital conversion 
+The specific usage must be documented case by case.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_priority" type="xs:int" use="optional" default="3">
+					<xs:annotation>
+						<xs:documentation>
+The priority of the log entry that will carry the information required for archiving the parameters value.
+Default is 3 (LM_INFO). If the priority exceeds the value specified in the logging proxys MaxCachePriority,
+the archiving data will be transmitted to the centralized logger immediately.
+ If it is below MinCachePriority, the data will be ignored. 
+ If it is somewhere in-between, it will be cached locally until a sufficient amount of log entries 
+ is collected for transmission to the centralized logger.
+                                        </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_min_int" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>
+The minimum amount of time (in seconds and fractions of seconds) allowed to pass 
+between two consecutive submissions to the log. 
+If the time is smaller than the value specified here, the log entry is not submitted, 
+even though the value of the parameter has changed.
+This characteristic is used for archive monitors and is independent from the min_timer_trig characteristic, that is instead used for user defined monitors.                      </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_max_int" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>
+The maximum amount of time (in seconds and fractions of seconds) allowed 
+to pass between two consecutive submissions to the log. 
+If the time exceeds the value specified here, the log entry should be generated 
+even though the value of the parameter has not changed sufficiently.
+                                        </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0">
+					<xs:annotation>
+						<xs:documentation>When a timer is created without requiring a specific time interval, this is the value used.
+Normally, the value of a property has an intrisic change rate that should be specified here (in seconds and fractions of seconds).
+In this way applications can always get a reasonable update frequency without having to "guess" how often they have to request a value and without oversampling.
+This is particularly useful for GUI applications.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.001">
+					<xs:annotation>
+						<xs:documentation>Minimun allowed time interval (in seconds and fractions of second) for values published by timers.
+Independently from the requested time interval or from the frequency of change in case of monitors on changes, no values will be published less than min_timer_trig seconds from a previously published values.
+This characteristic is ment to limit bandwidth and avoit floading the system with 
+new values.
+This characteristic is used for user defined monitors and is independent from the min_timer_trig characteristic, that is equivalently used for archive monitors.                      </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Plong_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Long Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%d">
+					<xs:annotation>
+						<xs:documentation>See TypelessProperty for the description.
+Default value has been restricted here to %d to map the intrisic structure
+of a long.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Plong">
+		<xs:annotation>
+			<xs:documentation>Base schema for Long Properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Plong_">
+				<xs:attribute name="min_delta_trig" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>Same type and units as parameter Property
+Minimum change in value (with respect to the last value published) that will trigger an on-change monitor.
+For a change smaller than this value, no motir will be triggered.
+Important to filter out small random oscillations of the value.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>Same type and units as parameter Property
+The default value for this property, used when the property is not initialised.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:int" use="optional" default="-2147483648">
+					<xs:annotation>
+						<xs:documentation>Same type and units as parameter Property
+This characteristic represents the minimum value that the property will ever reach.
+The name come from the fact that it normally represents the recommended minimum for charts and gauges that display the value, but the actual meaning is wider.
+It should not be confused with the min_value characteristic of writable properties. The min_value represents the minimum value that can be SET, but the actual value reached by the property can in many case be lower (and defined by graph_min).
+For example while a device moves to the minimum allowerd set position, there can be an overshoot. Typically devices of this kind have a soft and an hard lower limit.
+TODO: It might be better to rename this characteristic to better express the actual meaning. </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:int" use="optional" default="2147483647">
+					<xs:annotation>
+						<xs:documentation>Same type and units as parameter Property
+This characteristic represents the miximum value that the property will ever reach.
+The name come from the fact that it normally represents the recommended maximum for charts and gauges that display the value, but the actual meaning is wider.
+It should not be confused with the max_value characteristic of writable properties. The max_value represents the maximum value that can be SET, but the actual value reached by the property can in many case be higher (and defined by graph_max).
+For example while a device moves to the maximum allowerd set position, there can be an overshoot. Typically devices of this kind have a soft and an hard upper limit.
+TODO: It might be better to rename this characteristic to better express the actual meaning.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>Same type and units as parameter Property
+This is the minimum step increment and decrement for the property.
+It is typically used by increment and decrement methods.
+A typical case is an "increment button", used to increment stepwise the value of a writable property by clicking on it.
+It can also be used to draw proper scale tags on a graph.
+When connecting to physical devices, this characteristic is often related to the
+resolution of the device and, therefore, to the resolution characteristic.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>
+Same type and units as parameter Property. Defines what a change in parameter value is.
+If the value changes for less than the amount specified here, no log entry is generated.
+                                       </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROlong">
+		<xs:annotation>
+			<xs:documentation>Read Only Long Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Plong">
+				<xs:attribute name="alarm_high_on" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>
+Same type and units as the Property.
+Above this value alarm is set 
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>
+Same type and units as the Property.
+Below this value the alarm is set.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>
+Same type and units as the Property.
+Below this value alarm is cleared 
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>
+Same type and units as the Property.
+Above this value alarm is cleared
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
+					<xs:annotation>
+						<xs:documentation>The minimum time interval (in seconds and fractions of seconds) for the notification of changes in the alarm status.
+See the documentation of the specific implementation for details on the implications of thsi value.
+For example in the ACS CPP baci implementation, the value of a property is checked for its status with respect to the alarm configuration by an internal monitor defined with this time interval. This means that, depending on the underlying DevIO implementation, changes in the alarm status accurring during this time interval might get un-noticed.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWlong">
+		<xs:annotation>
+			<xs:documentation>Read Write Long Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Plong">
+				<xs:attribute name="min_value" type="xs:int" use="optional" default="-2147483648">
+					<xs:annotation>
+						<xs:documentation>Same type and units as parameter Property
+This characteristic represents the minimum value that can be used to SET a writable property.
+It should not be confused with the graph_min characteristic. The min_value represents the minimum value that can be SET, but the actual value reached by the property can in many case be lower (and defined by graph_min).
+For example while a device moves to the minimum allowerd set position, there can be an overshoot. Typically devices of this kind have a soft and an hard lower limit.
+ </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:int" use="optional" default="2147483647">
+					<xs:annotation>
+						<xs:documentation>Same type and units as parameter Property
+This characteristic represents the maximum value that can be used to SET a writable property.
+It should not be confused with the graph_max characteristic. The max_value represents the maximum value that can be SET, but the actual value reached by the property can in many case be higher (and defined by graph_max).
+For example while a device moves to the maximum allowerd set position, there can be an overshoot. Typically devices of this kind have a soft and an hard upper limit.
+ </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Ppattern_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Pattern Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%u">
+					<xs:annotation>
+						<xs:documentation>See TypelessProperty for the description.
+Default value has been restricted here to %u to map the intrisic structure
+of a pattern.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Ppattern">
+		<xs:annotation>
+			<xs:documentation>pattern stands for an unsigned long. The typedef pattern is used because this type will mostly be used to encode a pattern of status bits. The type pattern can be used also for raw binary data. </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Ppattern_">
+				<xs:attribute name="default_value" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="bitDescription" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>This characteristic is a comma separated list of strings, each describing one of the bits in the pattern (in that order).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="whenSet" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>This characteristic is a comma separated list of integer values, each representing a color code starting from 0 to be used when the corresponding bit is set. To be used by GUIs to display the status of the bits with a proper color code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="whenCleared" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>This characteristic is a comma separated list of integer values, each representing a color code starting from 0 to be used when the corresponding bit is cleared. To be used by GUIs to display the status of the bits with a proper color code</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROpattern">
+		<xs:annotation>
+			<xs:documentation>Read Only pattern property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Ppattern">
+				<xs:attribute name="alarm_low_on" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.	
+NOTE: This is normally not used, since the concept  does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.				</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.								NOTE: This is normally not used, since the concept  does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_on" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.								
+NOTE: This is normally not used, since the concept  does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.		
+NOTE: This is normally not used, since the concept  does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.			</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWpattern">
+		<xs:annotation>
+			<xs:documentation>Read Write Pattern Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Ppattern"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Pdouble_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Double Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%9.4f"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Pdouble">
+		<xs:annotation>
+			<xs:documentation>Base schema for Double Properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pdouble_">
+				<xs:attribute name="min_delta_trig" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:double" use="optional" default="-1.7976931348623157E+308">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:double" use="optional" default="1.7976931348623157E+308">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROdouble">
+		<xs:annotation>
+			<xs:documentation>Read Only Double Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pdouble">
+				<xs:attribute name="alarm_high_on" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWdouble">
+		<xs:annotation>
+			<xs:documentation>Read Write Double Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pdouble">
+				<xs:attribute name="min_value" type="xs:double" use="optional" default="-1.7976931348623157E+308">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:double" use="optional" default="1.7976931348623157E+308">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Pfloat_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Float Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%9.4f"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Pfloat">
+		<xs:annotation>
+			<xs:documentation>Base schema for Float Properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pfloat_">
+				<xs:attribute name="min_delta_trig" type="xs:float" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:float" use="optional" default="-3.4028234663852886E+38">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:float" use="optional" default="3.4028234663852886E+38">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:float" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROfloat">
+		<xs:annotation>
+			<xs:documentation>Read Only Float Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pfloat">
+				<xs:attribute name="alarm_high_on" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWfloat">
+		<xs:annotation>
+			<xs:documentation>Read Write Float Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pfloat">
+				<xs:attribute name="min_value" type="xs:float" use="optional" default="-3.4028234663852886E+38">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:float" use="optional" default="3.4028234663852886E+38">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Pstring_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of String Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%s"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Pstring">
+		<xs:annotation>
+			<xs:documentation>Base schema for String Properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pstring_">
+				<xs:attribute name="default_value" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:string" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.          
+NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.                       </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROstring">
+		<xs:annotation>
+			<xs:documentation>Read Only String Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pstring">
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWstring">
+		<xs:annotation>
+			<xs:documentation>Read Write String Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Pstring"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PuLongLong_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Unsigned Long Long Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%d"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PuLongLong">
+		<xs:annotation>
+			<xs:documentation>Base schema for Unsigned Long Long Properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PuLongLong_">
+				<xs:attribute name="min_delta_trig" type="xs:unsignedLong" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:unsignedLong" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:unsignedLong" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:unsignedLong" use="optional" default="18446744073709551615">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:unsignedLong" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:unsignedLong" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                      </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROuLongLong">
+		<xs:annotation>
+			<xs:documentation>Read Only Unsigned Long Long Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PuLongLong">
+				<xs:attribute name="alarm_high_on" type="xs:unsignedLong" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:unsignedLong" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:unsignedLong" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:unsignedLong" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWuLongLong">
+		<xs:annotation>
+			<xs:documentation>Read Write Unsigned Long Long Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PuLongLong">
+				<xs:attribute name="min_value" type="xs:unsignedLong" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:unsignedLong" use="optional" default="18446744073709551615">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PlongLong_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Long Long Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%d"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PlongLong">
+		<xs:annotation>
+			<xs:documentation>Base schema for Long Long Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PlongLong_">
+				<xs:attribute name="min_delta_trig" type="xs:long" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:long" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:long" use="optional" default="-9223372036854775808">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:long" use="optional" default="9223372036854775807">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:long" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                     </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROlongLong">
+		<xs:annotation>
+			<xs:documentation>Read Only Long Long Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PlongLong">
+				<xs:attribute name="alarm_high_on" type="xs:long" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:long" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:long" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:long" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWlongLong">
+		<xs:annotation>
+			<xs:documentation>Read Write Long Long Property</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PlongLong">
+				<xs:attribute name="min_value" type="xs:long" use="optional" default="-9223372036854775808">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:long" use="optional" default="9223372036854775807">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PEnum_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Enum Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="-"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PEnum">
+		<xs:annotation>
+			<xs:documentation>Base schema for Enumeration Properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PEnum_">
+				<xs:attribute name="default_value" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="statesDescription" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>A comma-separated list  of mnemonics for the elements of the enumeration. This is used, for example, by ABeans widgets to build a display list of the available definitions. The name comes from the fact that these enumerations are normally used to represent states of state machines. There are as many entries as allowed values in the enumeration. Very convenient when using ABeans widgets.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="condition" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>A comma-separated list  of  integer values for the elements of the enumeration. This is used, for example, by ABeans widgets to associate colors to values in the enumeration, like when displaying the enumeration through colored leds. There are as many entries as allowed values in the enumeration. Not widely used by applications a part from a few specific ABeans widgets.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>
+Same type and units as parameter Property. Defines what a change in parameter value is.
+If the value changes for less than the amount specified here, no log entry is generated.
+                                       </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:int" use="optional" default="0"/>
+				<xs:attribute name="graph_max" type="xs:int" use="optional" default="0"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROEnum">
+		<xs:annotation>
+			<xs:documentation>Read Only Enumeration Property. Used to handle enumerations of values defined by the user.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PEnum">
+				<xs:attribute name="alarm_on" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>A comma-separated list of enumeration indexes, mapping
+into the values for the enumeration that correspond to alarm  ON.
+For example 0,2,3 would mean that enumerations whose indexes are
+0,2 and 3 correspond to the property alarm state set to ON.
+NOTE: In C++ BACI implementation enumerations values are
+indexs starting from 0 mapped into the enumeration definitions.
+Since CORBA does not provide any standard mapping between enumerations
+and index numbers, this might not be true for other implementations of 
+properties. Check with the implementation specific documentation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_off" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>A comma-separated list of enumeration indexes, mapping
+into the values for the enumeration that correspond to alarm  OFF.
+For example 1,4 would mean that enumerations whose indexes are
+1 and 4 correspond to the property alarm state set to OFF
+The value of this characteristic is the complement of alarm_on and is actually
+not necessary in the code but is defined here to provide a more clear configuration documentation.
+NOTE: In C++ BACI implementation enumerations values are
+indexs starting from 0 mapped into the enumeration definitions.
+Since CORBA does not provide any standard mapping between enumerations
+and index numbers, this might not be true for other implementations of 
+properties. Check with the implementation specific documentation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWEnum">
+		<xs:annotation>
+			<xs:documentation>Read Write Enumeration Property. Used to handle enumerations of values defined by the user.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PEnum">
+				<xs:attribute name="min_value" type="xs:int" use="optional" default="0"/>
+				<xs:attribute name="max_value" type="xs:int" use="optional" default="0"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PdoubleSeq_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Double Sequence Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="-"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PdoubleSeq">
+		<xs:annotation>
+			<xs:documentation>Base schema for a property representing a sequence of Double values.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PdoubleSeq_">
+				<xs:attribute name="min_delta_trig" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:double" use="optional" default="-1.7976931348623157E+308">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:double" use="optional" default="1.7976931348623157E+308">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                     </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROdoubleSeq">
+		<xs:annotation>
+			<xs:documentation>Read Only sequence of Double values.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PdoubleSeq">
+				<xs:attribute name="alarm_high_on" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWdoubleSeq">
+		<xs:annotation>
+			<xs:documentation>Read Write sequence of Double values.
+The values defined for the Characteristics apply to each single element of the sequence. </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PdoubleSeq">
+				<xs:attribute name="min_value" type="xs:double" use="optional" default="-1.7976931348623157E+308">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:double" use="optional" default="1.7976931348623157E+308">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PfloatSeq_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Float Sequence Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="-"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PfloatSeq">
+		<xs:annotation>
+			<xs:documentation>Base schema for a property representing a sequence of Float values.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PfloatSeq_">
+				<xs:attribute name="min_delta_trig" type="xs:float" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:float" use="optional" default="-3.4028234663852886E+38">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:float" use="optional" default="3.4028234663852886E+38">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:float" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                     </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROfloatSeq">
+		<xs:annotation>
+			<xs:documentation>Read Only sequence of Float values.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PfloatSeq">
+				<xs:attribute name="alarm_high_on" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:float" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWfloatSeq">
+		<xs:annotation>
+			<xs:documentation>Read Write sequence of Float values.
+The values defined for the Characteristics apply to each single element of the sequence. </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PfloatSeq">
+				<xs:attribute name="min_value" type="xs:float" use="optional" default="-3.4028234663852886E+38">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:float" use="optional" default="3.4028234663852886E+38">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PlongSeq_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of Long Sequence Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="-"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PlongSeq">
+		<xs:annotation>
+			<xs:documentation>Base schema for a property representing a sequence of Long values.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PlongSeq_">
+				<xs:attribute name="min_delta_trig" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="default_value" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_min" type="xs:int" use="optional" default="-2147483648">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="graph_max" type="xs:int" use="optional" default="2147483647">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="min_step" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.                                  </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROlongSeq">
+		<xs:annotation>
+			<xs:documentation>Read Only sequence of Long values.
+The values defined for the Characteristics apply to each single element of the sequence. </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PlongSeq">
+				<xs:attribute name="alarm_high_on" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_on" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_high_off" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_low_off" type="xs:int" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWlongSeq">
+		<xs:annotation>
+			<xs:documentation>Read Write sequence of Long values.
+The values defined for the Characteristics apply to each single element of the sequence. </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PlongSeq">
+				<xs:attribute name="min_value" type="xs:int" use="optional" default="-2147483648">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="max_value" type="xs:int" use="optional" default="2147483647">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation of the RWlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PstringSeq_">
+		<xs:annotation>
+			<xs:documentation>Restriction step of String Sequence Property definition.
+Since it is not possible to restrict and extend a base schema at the same time,
+we do always first a restriction derivation followed by an extension derivation.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="-"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PstringSeq">
+		<xs:annotation>
+			<xs:documentation>Base schema for a property representing a sequence of String values.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PstringSeq_">
+				<xs:attribute name="default_value" type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta" type="xs:string" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.          
+NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.                                        </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROstringSeq">
+		<xs:annotation>
+			<xs:documentation>Read Only sequence of String values.
+The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="PstringSeq"/>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
+

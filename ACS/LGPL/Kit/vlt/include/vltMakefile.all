@@ -1,0 +1,460 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakefile.all,v 1.3 2012/01/13 18:54:47 tstaig Exp $" 
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  09/12/93  created
+# gfilippi  23/02/94  T.Ebert -> ")" missing in "include ......." statements
+# gfilippi  26/04/94  JKN -> CCDEP executed with the same flags as CC
+# gfilippi  27/04/94  EAL's comments integrated
+# gfilippi  27/04/94  vpath for .h deleted 
+# gfilippi  19/05/94  do_tcl added (not optimized, file are always regenerated)
+# gfilippi  07/09/94  makeXxxx utility renamed into vltMakeXxxx
+# gfilippi  06/10/94  make output nicer as from SPR940175
+# gfilippi  06/10/94  C++ support added
+# gfilippi  24/10/94  "do_scripts" changed into automatic dependencies
+# gfilippi  25/10/94  stop on error ("-" removed from the make command)
+# gfilippi  08/12/94  handle script dependency files
+# gfilippi  17/02/95  panels added
+# gfilippi  07/07/95  vltMakeLOGSFiles added
+# gfilippi  10/07/95  do not display vltMakeLOGSFiles output unles VERBOSE on
+# gfilippi  15/07/95  Makefile added as dependency for *.o and *.d (in *.d)
+# gfilippi  15/07/95  remove empty *.d files (SPR 950168)
+# gfilippi  10/08/95  /usr/ccs/lib added to vpath lib*.a
+# gfilippi  15/11/95  C_PLUS_PLUS_FLAGS added to C++ compilations
+# gfilippi  20/11/95  LOGS and ERRORS managed by vltMakeIndexFiles
+# gfilippi  10/04/97  set vpath for shared libraries
+# gfilippi  10/04/97  <lib>_NOSHARED handled
+# gfilippi  13/04/97  local libraries cannot be shared
+# gfilippi  23/04/97  support <lib>_LDFLAGS for libraries
+# gfilippi  26/04/97  <lib>_LDFLAGS> was forgotten for local libraries
+# gfilippi  23/11/97  added remark for CppFiles files (SPR 950609)
+# rschmutz 1999-04-03 use $CXX to compile C++ sources, $ECHO back to echo.
+# psivera   09/08/99  vpath definition for lib. changed from %.<ext> to %.<ext>%
+# psivera   13/08/99  vpath definition for lib. changed back to %.<ext> 
+# gfilippi  25/08/99  safer handling of vpath definition for lib (" -L")
+# psivera   26/08/99  add statements to support C++ on LCU
+# psivera   30/08/99  add statements to support C++ on LCU
+# psivera   21/09/99  fix a bug in statements to support C++ on LCU
+# psivera   01/03/09  removed ../src in order to make cpp files in test dir also
+# psivera   01/05/22  removed MAKE_VXWORKS_NOT_USED and introduced ACE_ROOT in 
+#                     handling c++ code for vxworks
+# psivera   01/07/05  changed do_links to make_links
+# mzampare  18/12/01  added one command line arg for vltMakeLibraryDependencies
+
+
+#*******************************************************************************
+#   NAME
+#   vltMakefile.all - auxiliary file used by vltMakefile
+# 
+#   DESCRIPTION
+#   
+#   vltMakefile.all:
+#       - includes the dependencies files (if not available, make produces them)
+#       - does the standard actions needed to rebuild (make all)
+#
+#   This file shall is included by vltMakefile.
+#   vltMakefile defines all variables as "export"ed.
+#
+#   This file is a trick to avoid the generation of the dependencies when 
+#   any target, but not 'all', is specified.
+#     
+#   FILE
+#   VLTROOT/include/vltMakefile
+#                         VLT wide definitions for UNIX or VxWorks
+#
+#   
+#   ENVIRONMENT  
+#   Same as vltMakefile.
+#
+#   CAUTION
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#   Makefile, vltMakefile, (GNU) make
+#
+#   GNU make - Edition 0.41, for make Version 3.64 Beta, April 93
+#   VLT Software - Programming Standard - 1.0 10/03/93
+#   VxWorks documentation 
+#
+#   BUGS
+#------------------------------------------------------------------------
+
+#################################################
+# global stuffs are received from vltMakefile   #
+#################################################
+
+SHELL = /bin/bash
+
+#################################################
+# set search paths for target and dependencies  #
+#################################################
+
+# REMARK: the vpath (lowercase) directive permits to specify a search path make
+#         can use to locate a dependency when it does not reside on the 
+#         current directory. The path is specific for each file type.
+#         (see also GNU Make 3.64, pag 35)
+
+# - for object file
+vpath  %.o  ../object
+ifeq ($(os),$CYGWIN_VER)
+	.LIBPATTERNS = lib%.dll liba%.dll.a lib%.a
+endif
+
+# - for libraries specify the same path used by the linker
+#   The format is:  "<dir1>:<dir2>:..."
+#   The list is build using the same directories listed for the
+#   linker search (L_PATH: a list of -L<dir> items)
+#   To put the ":", I'm using some tricks with the make's string manipulation 
+#   functions:
+#      1) change " -L" into " :"   (-L<dir1> -L... --->  :<dir1> :.... )
+#         The substitution has to be done in such a way that directory
+#         names having the "-L" inside (e.g., /vlt/VLT-LITE) are not touched.
+#      2) take out -L../lib from L_PATH list (I know it must be the first)
+#      3) put "../lib" in front  (../lib :<dir1>  :.... )
+#
+
+#
+# In addition to those defined using -L, the "ld" uses LD_LIBRARY_PATH (SUN) 
+# or LPATH and SHLIB_PATH (HP) to find libraries, while "make" is using the vpath definition.
+# Since I put the "-l<lib>" in the dependency list, the two definition should
+# contain the same list of directories. Due to differences in how standard 
+# librarier are organized on SUN and HP and to the different default used by 
+# the two "ld"s, for Solaris, I have to add /usr/ccs/lib.
+#
+
+# remove leading, trailing, extra blanks
+LIB_PATH_LIST = $(strip $(L_PATH))
+
+#
+#  "-L../lib -L<dir1> -L<dir2> ...."  -->  "-L../lib :<dir1> :<dir2> ...."
+#
+# see GNU Make 3.70, p.80 (Function Call Syntax) for the handling of the "space"
+empty:=
+space:= $(empty) $(empty)
+LIB_PATH_LIST := $(subst $(space)-L,$(space):,$(LIB_PATH_LIST))
+
+#  "-L../lib :<dir1> :<dir2> ...."  -->  "../lib :<dir1> :<dir2> ...."
+LIB_PATH_LIST := ../lib $(filter-out -L../lib,$(LIB_PATH_LIST))
+
+ifndef MAKE_VXWORKS
+    ifeq ($(platform),Sun-Solaris2)
+          LIB_PATH_LIST := $(LIB_PATH_LIST) :/usr/ccs/lib
+    endif
+endif
+
+#  "../lib :<dir1> :<dir2> ...."   -->  "../lib:<dir1>:<dir2>...."
+LIB_PATH_LIST := $(subst $(space):,:,$(LIB_PATH_LIST))
+
+
+vpath  %.a  $(LIB_PATH_LIST)
+
+#
+# set search path for shared libraries (they have different extentions on HP and SUN)
+ifndef MAKE_VXWORKS
+    ifeq ($(os),HP-UX)
+        vpath  %.sl  $(LIB_PATH_LIST)
+    endif
+    ifeq ($(os),SunOS)
+        vpath  %.so  $(LIB_PATH_LIST)
+    endif
+    ifeq ($(os),Linux)
+        vpath  %.so  $(LIB_PATH_LIST)
+    endif
+    ifeq ($(os),$CYGWIN_VER)
+        vpath  %.dll  $(LIB_PATH_LIST)
+    endif
+endif
+
+# set search path for idl files
+
+vpath %.idl $(IDL_PATH_LIST)
+
+#################################################
+# set pattern rules (no implicit)               #
+#################################################
+
+# IMPORTANT: 
+#   similar compilation rules are used in vltMakefile to build
+#   cpp files needed by the errchCheck utility.          
+#   If any change is done here, the same must be done in vltMakefile
+#
+
+# - for object files 
+../object/%.o : %.c
+	- @echo "== C Compiling: $(<F)"
+	  $(AT)$(CC) -c $(CFLAGS) $(CPPFLAGS) $(I_PATH) $($*_CFLAGS) -o $@ $(@F:.o=.c)
+
+../object/%.o : %.C
+	- @echo "== C++ Compiling: $(<F)"
+	  $(AT)$(CXX) -c $(CFLAGS) $(CPPFLAGS) $(C_PLUS_PLUS_FLAGS) $(I_PATH) $($*_CFLAGS) -o $@ $(@F:.o=.C)
+ifdef MAKE_VXWORKS
+ifndef ACE_ROOT
+	  -$(AT)$(RM) ../object/__ctordtor.*
+	  $(AT)$(NM) $@ | munch > ../object/__ctordtor.c
+	  $(AT)$(CXX) -traditional -c ../object/__ctordtor.c -o ../object/__ctordtor.o
+	  $(AT)$(LD) -r -o  $(@F:.o=.out) ../object/__ctordtor.o  $@
+	  $(AT)mv $(@F:.o=.out) $@
+	  $(AT)$(RM) ../object/__ctordtor.*
+endif
+endif
+
+../object/%.o : %.cpp
+	- @echo "== C++ Compiling: $(<F)"
+	  $(AT)$(CXX) -c $(CFLAGS) $(CPPFLAGS) $(C_PLUS_PLUS_FLAGS) $(I_PATH) $($*_CFLAGS) -o $@ $(@F:.o=.cpp)
+ifdef MAKE_VXWORKS
+ifndef ACE_ROOT
+	  -$(AT)$(RM) ../object/__ctordtor.*
+	  $(AT)$(NM) $@ | munch > ../object/__ctordtor.c
+	  $(AT)$(CC) -traditional -c ../object/__ctordtor.c -o ../object/__ctordtor.o
+	  $(AT)$(LD) -r -o  $(@F:.o=.out) ../object/__ctordtor.o  $@
+	  $(AT)mv $(@F:.o=.out) $@
+	  $(AT)$(RM) ../object/__ctordtor.*
+endif
+endif
+
+# - for Automatic Dependencies for C source files.
+#   for each xxxx.c file, a corresponding "../object/xxxx.d" containing the 
+#   dependencies of the .o to the .c and all the .h files called by the .c.
+#   This is automatically done using the -MM option of the GNU-C compiler.
+#   The output is then edited in order to add the .d to the target list
+#   (because, obviously, it depends of the same dependency files as the .o)
+#   (see also GNU Make 3.64, pag 49)
+#   Of course, CCDEP shall be executed with the same flags as CC, i.e., both
+#   the general ones and the target specific ones ($*_CFLAGS).
+#
+#   The dependency includes the Makefile, because one can change only
+#   compilation flags.
+#
+#   (SPR950168) if an include file is not found, the gcc does not produce 
+#   the output file, but the return code is SUCCESS. The net result is an empty 
+#   dependency file that later on mess up the system. To avoid that, such
+#   empty files are removed. 
+#
+../object/%.d: %.c
+	@echo "== Dependencies: $@"
+	$(AT)$(CCDEP)  $(CFLAGS) $(CPPFLAGS) $(I_PATH) $($*_CFLAGS) $<   |  \
+	               sed -e "s/$*\.o/..\/object\/$*.o ..\/object\/$*.d /" \
+	                   -e "s/:/: Makefile /" > $@ ;                     \
+                       if [ ! -s $@ ]; then $(RM) $@ ; fi
+
+../object/%.d: %.C
+	@echo "== Dependencies: $@"
+	$(AT)$(CCDEP)  $(CFLAGS) $(CPPFLAGS) $(I_PATH) $($*_CFLAGS) $<  |  \
+	               sed -e "s/$*\.o/..\/object\/$*.o ..\/object\/$*.d /" \
+	                   -e "s/:/: Makefile /" > $@ ;                     \
+                       if [ ! -s $@ ]; then $(RM) $@ ; fi
+
+../object/%.d: %.cpp
+	@echo "== Dependencies: $@"
+	$(AT)$(CCDEP)  $(CFLAGS) $(CPPFLAGS) $(I_PATH) $($*_CFLAGS) $<  |  \
+	               sed -e "s/$*\.o/..\/object\/$*.o ..\/object\/$*.d /" \
+	                   -e "s/:/: Makefile /" > $@ ;                     \
+                       if [ ! -s $@ ]; then $(RM) $@ ; fi
+
+
+# - for Automatic Dependencies for executable.
+#   a "../object/xxxx.dx" containing the dependencies structure of an executable 
+#   is created using a special script that receives in input what specified
+#   by the caller in the Makefile
+#
+../object/%.dx:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeExecutableDependencies $(VW) $(*F) "$($(*F)_OBJECTS)" "$($(*F)_LDFLAGS)" "$($(*F)_LIBS)" >../object/$*.dx
+
+# - for Automatic Dependencies for libraries.
+#   a "../object/xxxx.da[l]" containing the dependencies structure of a library 
+#   is created using a special script that receives in input what specified
+#   by the caller in the Makefile
+../object/%.da:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeLibraryDependencies $(VW) $(*F) "$($(*F)_OBJECTS)" "$($(*F)_LDFLAGS)" "$($(*F)_NOSHARED)" "$($(*F)_LIBS)" >../object/$*.da
+
+# because they will not be installed, local libraries cannot be shared! Therefore: no <lib>_LDFLAGS is used and NOSHARED is forced:
+../object/%.dal:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeLibraryDependencies $(VW) $(*F) "$($(*F)_OBJECTS)"          ""        "NOSHARED"  >../object/$*.dal
+
+# - for library members: no implicit rules.
+#   If a library does not exist AND there is not an explicit rule (made by 
+#   vltMakeLibraryDependencies) just give a message. (see remark below for more).
+#
+%.a:
+	@echo "ERROR: ----> $@  does not exist."; exit 1
+
+#>>>---------------------------
+#>>>--- REMARK ON LIBRARIES ---
+#>>>---------------------------
+#>>> I had problems with the following (correct) way of managing libraries:
+#>>>
+#>>># - for library members (see GNU Make 3.64, pag 138)
+#>>>(../object/%.o) : %.c
+#>>>	-$(CC)  -c  $(CFLAGS)  $(CPPFLAGS)  $(I_PATH)  -o ../object/$*.o  $*.c
+#>>>	-$(AR)  rv  $@  ../object/$*.o
+#>>>	-$(RM)  ../object/$*.o
+#>>>
+#>>> So for the time being, libraries are always regenerated from scratch 
+#>>> (See also vltMakeLibraryDependencies)
+#>>> Actually, there are problems, mainly related to HP implementation of "ar"
+#>>>   - file names longer than 14 chars are truncated in the symbol table,
+#>>>     so they are not recognized anymore and are regenerated each time.
+#>>>   - "-r" option adds ad the end of the file and does not really replace,
+#>>>     so the libxxx.a files grows and grows, unless a make clean is done.
+#>>>     (but, as far as I remember this is the UNIX standard way)
+#>>> May be that using GNU-ar some of the problems can be removed, but for
+#>>> the time being let the computer work a bit more.
+#>>>
+#>>> In addition, there is another problem related on the use of "vpath"
+#>>> (needed to allow the presence of the libraries in the dependency list).
+#>>> Using the defined rule, make tries always to "updated" a library, only
+#>>> if it does not exists, make makes a new one. After a "make clean", if a 
+#>>> library exists already in one of the directory listed in vpath (i.e., as
+#>>> the result of a previous "make install"), there is an update on such 
+#>>> a library instead of creating a new one in ../lib.
+#>>> This is right but does not allowed to have a simple treatment of the
+#>>> library list (one should specify the libraries local to the module, for
+#>>> which there is the need to regenerate, and the other external to the
+#>>> module). So for the time being the module library/ies are always
+#>>> regenerated from scratch.
+#>>>------------------
+
+# - for Automatic Dependencies for script file
+#   a "../object/xxxx.ds" is created using a special script that receives 
+#   in input the list of scripts defined in the Makefile
+#
+../object/%.ds:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeScriptDependencies $(*F)  >../object/$*.ds
+
+#   a "../object/xxxx.dxt" containing the dependencies structure of a tcl/tk
+#   script is created using a special script that receives in input what 
+#   specified by the caller in the Makefile
+#
+../object/%.dxt:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeTclScriptDependencies $(*F) "$($(*F)_OBJECTS)" >../object/$*.dxt
+
+# - for Automatic Dependencies for tcl/tk library.
+#   a "../object/xxxx.dat" containing the dependencies structure of a tcl/tk
+#   library is created using a special script that receives in input what 
+#   specified by the caller in the Makefile
+#
+../object/%.dat:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeTclLibDependencies $(*F) "$($(*F)_OBJECTS)" >../object/$*.dat
+
+# - for Automatic Dependencies for panel file
+#   a "../object/xxxx.dpan" is created using a special script that receives 
+#   in input the list of panels defined in the Makefile
+#
+../object/%.dpan:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakePanelDependencies $(*F)  >../object/$*.dpan
+
+# Include Automatic Dependancies for C source files, libraries, ....
+# ------------------------------------------------------------------
+# (REMARK: if the files are not existing make does them using the appropriate
+#          rule as from above. (see GNU Make 3.64, pag 26)
+#
+# if the list of C-sources names is not empty, include dependencies files. 
+CSOURCENAMES := $(sort $(CSOURCENAMES))
+ifneq "$(strip $(CSOURCENAMES))" "" 
+    include $(addprefix ../object/, $(addsuffix .d, $(CSOURCENAMES)))
+endif
+#
+# if the list of executables is not empty, include exe-dependencies files. 
+EXECUTABLE_LIST =  $(EXECUTABLES) $(EXECUTABLES_L)
+ifneq "$(strip $(EXECUTABLE_LIST))" "" 
+    include $(addprefix ../object/, $(addsuffix .dx, $(EXECUTABLE_LIST)))
+endif
+
+#
+# list of libraries is not empty
+LIBRARY_LIST = $(LIBRARIES) $(LIBRARIES_L)
+
+# include lib-dependencies files.
+# local and public libraries need to be treated differently, namely local
+# libraries shall not be created as shared:
+ifneq "$(strip $(LIBRARIES))" "" 
+    include $(addprefix ../object/, $(addsuffix .da, $(LIBRARIES)))
+endif
+ifneq "$(strip $(LIBRARIES_L))" "" 
+    include $(addprefix ../object/, $(addsuffix .dal, $(LIBRARIES_L)))
+endif
+
+#
+# if the list of scripts is not empty, include script-dependencies files. 
+SCRIPT_LIST = $(SCRIPTS) $(SCRIPTS_L) 
+ifneq "$(strip $(SCRIPT_LIST))" "" 
+    include $(addprefix ../object/, $(addsuffix .ds, $(SCRIPT_LIST)))
+endif
+
+#
+# if the list of Tcl/Tk scripts is not empty, include TCLscript-dependencies files. 
+TCL_SCRIPT_LIST = $(TCL_SCRIPTS) $(TCL_SCRIPTS_L)
+ifneq "$(strip $(TCL_SCRIPT_LIST))" "" 
+    include $(addprefix ../object/, $(addsuffix .dxt, $(TCL_SCRIPT_LIST)))
+endif
+
+#
+# if the list of Tcl/Tk libraries is not empty, include TCLlib-dependencies files. 
+TCL_LIBRARY_LIST = $(TCL_LIBRARIES) $(TCL_LIBRARIES_L)
+ifneq "$(strip $(TCL_LIBRARY_LIST))" "" 
+    include $(addprefix ../object/, $(addsuffix .dat, $(TCL_LIBRARY_LIST)))
+endif
+
+#
+# if the list of panels is not empty, include panel-dependencies files. 
+PANEL_LIST = $(PANELS) $(PANELS_L)
+ifneq "$(strip $(PANEL_LIST))" "" 
+    include $(addprefix ../object/, $(addsuffix .dpan, $(PANEL_LIST)))
+endif
+
+#
+# include error&log index dependency files (the file should have been created by vltMakefile) 
+include ../object/vltMakeIndexFiles.del
+
+#################################################
+#################################################
+# entry points for various language specific
+# features
+# *********************************************
+include $(MAKEDIR)/javaMakefile
+# 
+#
+#################################################
+# set standard targets.                         #
+#################################################
+ALL_TARGET := $(ALL_TARGET) do_ERRORS do_LOGS make_links do_libs do_exes do_scripts do_tcl do_panels
+
+.PHONY : do_all
+do_all :  $(ALL_TARGET)
+
+#
+#do_ERRORS and do_LOGS are provided by vltMakeIndexFiles.del
+
+.PHONY : do_libs
+do_libs: $(LIBRARY_LIST)
+
+.PHONY : do_exes
+do_exes: $(EXECUTABLE_LIST) 
+
+.PHONY : do_scripts
+do_scripts: $(addprefix ../bin/, $(SCRIPTS) $(SCRIPTS_L))
+
+.PHONY : do_panels
+do_panels: $(addprefix ../bin/, $(PANELS) $(PANELS_L))
+
+.PHONY : do_tcl
+do_tcl: $(TCL_SCRIPT_LIST) $(TCL_LIBRARY_LIST)
+
+.PHONY : make_links
+make_links: $(LINK_FILES)
+
+
+#
+#___oOo___
+

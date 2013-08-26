@@ -1,0 +1,128 @@
+#ifndef _FILTERWHEEL_IDL_
+#define _FILTERWHEEL_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: acsexmplFilterWheel.idl,v 1.3 2006/03/28 22:35:48 dfugate Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* acaproni  20041204  Creation
+*/
+
+#include <baci.idl>
+
+#pragma prefix "alma"
+
+/** @file acsexmplFilterWheel.idl
+ *  FilterWheel's IDL File
+ */
+
+module acsexmplFilterWheel 
+{
+    /** @interface FilterWheel
+     *  Interface FilterWheel is a very simple interface which uses only 
+     *  asynchronous methods.
+     */
+    interface FilterWheel : ACS::CharacteristicComponent 
+	{
+	/** 
+	 *  Rotate the filter wheel asynchronously. That is, we are notified 
+	 *  by the callback when the method really completes.
+	 *  @param filterName The name of the filter to put in the beam
+	 *  @param cb callback when the lamp wheel is in position.
+	 *  @param desc is used to negotiate timeouts between client and sever.
+	 *  See the BACI specifications for more details.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void moveFilterInBeam(in string filterName, in ACS::CBvoid cb, in ACS::CBDescIn desc);
+	
+	/** 
+	 *  Rotate the filter wheel asynchronously. That is, we are notified 
+	 *  by the callback when the method really completes.
+	 *  @param slot The number of the slot to put in the beam
+	 *  @param cb callback when the lamp wheel is in position.
+	 *  @param desc is used to negotiate timeouts between client and sever.
+	 *  See the BACI specifications for more details.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void moveSlotInBeam(in long slot, in ACS::CBvoid cb, in ACS::CBDescIn desc);
+
+	/**
+	 * Move the wheel of some step
+	 *
+	 * @param step The step to move the wheel
+	 * @param cb callback when the lamp wheel is in position.
+	 * @param desc is used to negotiate timeouts between client and sever.
+	 * See the BACI specifications for more details.
+	 * @return void
+	 */
+	void adjust (in long step, in ACS::CBvoid cb, in ACS::CBDescIn desc);
+
+	/**
+	 * Set the new delta position for the specified filter (the value is also
+	 * stored in the CDB)
+	 *
+	 * The delta is evaluated by reading the slot step and the actual 
+	 * position of the wheel
+	 *
+	 * The method returns the new delta
+	 *
+	 * The method is synchrnous (it is somehow reasonable because the 
+	 * hardware is not involved i.e. the execution time is fast and short
+	 */
+	long calibrateFilter(in string filterName);
+
+	/**
+	 * Set the actual position for the passed slot (the value is also
+	 * stored in the CDB)
+	 *
+	 * The method returns the  position of the new slot
+	 *
+	 * * The method is synchrnous (it is somehow reasonable because the 
+	 * hardware is not involved i.e. the execution time is fast and short
+	 */
+	long calibrateWheel(in long slot);
+
+	/** This property is the position of the lamp wheel.
+	 */
+	readonly attribute ACS::ROdouble position;
+
+	/**
+	 * This property is the number of available slots in the lamp wheel
+	 */
+	readonly attribute ACS::ROlong slots;
+
+	/**
+	 * This property is the description of the lamp wheel.
+	 */
+	readonly attribute ACS::ROstring desc;
+	};
+};
+
+#endif

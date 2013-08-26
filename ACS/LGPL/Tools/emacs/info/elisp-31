@@ -1,0 +1,1173 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: Time Display Format,  Next: Daylight Savings,  Prev: Date Display Format,  Up: Calendar
+
+Time Display Format
+===================
+
+   The calendar and diary by default display times of day in the
+conventional American style with the hours from 1 through 12, minutes,
+and either `am' or `pm'.  If you prefer the European style, also known
+in the US as military, in which the hours go from 00 to 23, you can
+alter the variable `calendar-time-display-form'.  This variable is a
+list of expressions that can involve the variables `12-hours',
+`24-hours', and `minutes', all numbers in string form, and `am-pm' and
+`time-zone', both alphabetic strings.  The default value of
+`calendar-time-display-form' is as follows:
+
+     (12-hours ":" minutes am-pm
+               (if time-zone " (") time-zone (if time-zone ")"))
+
+Here is a value that provides European style times:
+
+     (24-hours ":" minutes
+               (if time-zone " (") time-zone (if time-zone ")"))
+
+
+File: elisp,  Node: Daylight Savings,  Next: Diary Customizing,  Prev: Time Display Format,  Up: Calendar
+
+Daylight Savings Time
+=====================
+
+   Emacs understands the difference between standard time and daylight
+savings time--the times given for sunrise, sunset, solstices,
+equinoxes, and the phases of the moon take that into account.  The rules
+for daylight savings time vary from place to place and have also varied
+historically from year to year.  To do the job properly, Emacs needs to
+know which rules to use.
+
+   Some operating systems keep track of the rules that apply to the
+place where you are; on these systems, Emacs gets the information it
+needs from the system automatically.  If some or all of this
+information is missing, Emacs fills in the gaps with the rules
+currently used in Cambridge, Massachusetts, which is the center of
+GNU's world.  If the default choice of rules is not appropriate for
+your location, you can tell Emacs the rules to use by setting certain
+variables.
+
+   These variables are `calendar-daylight-savings-starts' together with
+`calendar-daylight-savings-ends'.  Their values should be Lisp
+expressions that refer to the variable `year', and evaluate to the
+Gregorian date on which daylight savings time starts or (respectively)
+ends, in the form of a list `(MONTH DAY YEAR)'.  The values should be
+`nil' if your area does not use daylight savings time.
+
+   Emacs uses these expressions to determine the starting date of
+daylight savings time for the holiday list and for correcting times of
+day in the solar and lunar calculations.
+
+   The values for Cambridge, Massachusetts are as follows:
+
+     (calendar-nth-named-day 1 0 4 year)
+     (calendar-nth-named-day -1 0 10 year)
+
+i.e., the first 0th day (Sunday) of the fourth month (April) in the
+year specified by `year', and the last Sunday of the tenth month
+(October) of that year.  If daylight savings time were changed to start
+on October 1, you would set `calendar-daylight-savings-starts' to this:
+
+     (list 10 1 year)
+
+   For a more complex example, suppose daylight savings time begins on
+the first of Nisan on the Hebrew calendar.  You should set
+`calendar-daylight-savings-starts' to this value:
+
+     (calendar-gregorian-from-absolute
+       (calendar-absolute-from-hebrew
+         (list 1 1 (+ year 3760))))
+
+because Nisan is the first month in the Hebrew calendar and the Hebrew
+year differs from the Gregorian year by 3760 at Nisan.
+
+   If there is no daylight savings time at your location, or if you want
+all times in standard time, set `calendar-daylight-savings-starts' and
+`calendar-daylight-savings-ends' to `nil'.
+
+   The variable `calendar-daylight-time-offset' specifies the
+difference between daylight savings time and standard time, measured in
+minutes.  The value for Cambridge is 60.
+
+   The variable `calendar-daylight-savings-starts-time' and the
+variable `calendar-daylight-savings-ends-time' specify the number of
+minutes after midnight local time when the transition to and from
+daylight savings time should occur.  For Cambridge, both variables'
+values are 120.
+
+
+File: elisp,  Node: Diary Customizing,  Next: Hebrew/Islamic Entries,  Prev: Daylight Savings,  Up: Calendar
+
+Customizing the Diary
+=====================
+
+   Ordinarily, the mode line of the diary buffer window indicates any
+holidays that fall on the date of the diary entries.  The process of
+checking for holidays can take several seconds, so including holiday
+information delays the display of the diary buffer noticeably.  If you'd
+prefer to have a faster display of the diary buffer but without the
+holiday information, set the variable `holidays-in-diary-buffer' to
+`nil'.
+
+   The variable `number-of-diary-entries' controls the number of days
+of diary entries to be displayed at one time.  It affects the initial
+display when `view-diary-entries-initially' is `t', as well as the
+command `M-x diary'.  For example, the default value is 1, which says
+to display only the current day's diary entries.  If the value is 2,
+both the current day's and the next day's entries are displayed.  The
+value can also be a vector of seven elements: if the value is `[0 2 2 2
+2 4 1]' then no diary entries appear on Sunday, the current date's and
+the next day's diary entries appear Monday through Thursday, Friday
+through Monday's entries appear on Friday, while on Saturday only that
+day's entries appear.
+
+   The variable `print-diary-entries-hook' is a normal hook run after
+preparation of a temporary buffer containing just the diary entries
+currently visible in the diary buffer.  (The other, irrelevant diary
+entries are really absent from the temporary buffer; in the diary
+buffer, they are merely hidden.)  The default value of this hook does
+the printing with the command `lpr-buffer'.  If you want to use a
+different command to do the printing, just change the value of this
+hook.  Other uses might include, for example, rearranging the lines into
+order by day and time.
+
+   You can customize the form of dates in your diary file, if neither
+the standard American nor European styles suits your needs, by setting
+the variable `diary-date-forms'.  This variable is a list of patterns
+for recognizing a date.  Each date pattern is a list whose elements may
+be regular expressions (*note Regular Expressions::.) or the symbols
+`month', `day', `year', `monthname', and `dayname'.  All these elements
+serve as patterns that match certain kinds of text in the diary file.
+In order for the date pattern, as a whole, to match, all of its
+elements must match consecutively.
+
+   A regular expression in a date pattern matches in its usual fashion,
+using the standard syntax table altered so that `*' is a word
+constituent.
+
+   The symbols `month', `day', `year', `monthname', and `dayname' match
+the month number, day number, year number, month name, and day name of
+the date being considered.  The symbols that match numbers allow
+leading zeros; those that match names allow three-letter abbreviations
+and capitalization.  All the symbols can match `*'; since `*' in a
+diary entry means "any day", "any month", and so on, it should match
+regardless of the date being considered.
+
+   The default value of `diary-date-forms' in the American style is
+this:
+
+     ((month "/" day "[^/0-9]")
+      (month "/" day "/" year "[^0-9]")
+      (monthname " *" day "[^,0-9]")
+      (monthname " *" day ", *" year "[^0-9]")
+      (dayname "\\W"))
+
+   The date patterns in the list must be *mutually exclusive* and must
+not match any portion of the diary entry itself, just the date and one
+character of whitespace.  If, to be mutually exclusive, the pattern
+must match a portion of the diary entry text--beyond the whitespace
+that ends the date--then the first element of the date pattern *must*
+be `backup'.  This causes the date recognizer to back up to the
+beginning of the current word of the diary entry, after finishing the
+match.  Even if you use `backup', the date pattern must absolutely not
+match more than a portion of the first word of the diary entry.  The
+default value of `diary-date-forms' in the European style is this list:
+
+     ((day "/" month "[^/0-9]")
+      (day "/" month "/" year "[^0-9]")
+      (backup day " *" monthname "\\W+\\<[^*0-9]")
+      (day " *" monthname " *" year "[^0-9]")
+      (dayname "\\W"))
+
+Notice the use of `backup' in the third pattern, because it needs to
+match part of a word beyond the date itself to distinguish it from the
+fourth pattern.
+
+
+File: elisp,  Node: Hebrew/Islamic Entries,  Next: Fancy Diary Display,  Prev: Diary Customizing,  Up: Calendar
+
+Hebrew- and Islamic-Date Diary Entries
+======================================
+
+   Your diary file can have entries based on Hebrew or Islamic dates, as
+well as entries based on the world-standard Gregorian calendar.
+However, because recognition of such entries is time-consuming and most
+people don't use them, you must explicitly enable their use.  If you
+want the diary to recognize Hebrew-date diary entries, for example, you
+must do this:
+
+     (add-hook 'nongregorian-diary-listing-hook 'list-hebrew-diary-entries)
+     (add-hook 'nongregorian-diary-marking-hook 'mark-hebrew-diary-entries)
+
+If you want Islamic-date entries, do this:
+
+     (add-hook 'nongregorian-diary-listing-hook 'list-islamic-diary-entries)
+     (add-hook 'nongregorian-diary-marking-hook 'mark-islamic-diary-entries)
+
+   Hebrew- and Islamic-date diary entries have the same formats as
+Gregorian-date diary entries, except that `H' precedes a Hebrew date
+and `I' precedes an Islamic date.  Moreover, because the Hebrew and
+Islamic month names are not uniquely specified by the first three
+letters, you may not abbreviate them.  For example, a diary entry for
+the Hebrew date Heshvan 25 could look like this:
+
+     HHeshvan 25 Happy Hebrew birthday!
+
+and would appear in the diary for any date that corresponds to Heshvan
+25 on the Hebrew calendar.  And here is  Islamic-date diary entry  that
+matches Dhu al-Qada 25:
+
+     IDhu al-Qada 25 Happy Islamic birthday!
+
+   As with Gregorian-date diary entries, Hebrew- and Islamic-date
+entries are nonmarking if they are preceded with an ampersand (`&').
+
+   Here is a table of commands used in the calendar to create diary
+entries that match the selected date and other dates that are similar
+in the Hebrew or Islamic calendar:
+
+`i h d'
+     Add a diary entry for the Hebrew date corresponding to the
+     selected date (`insert-hebrew-diary-entry').
+
+`i h m'
+     Add a diary entry for the day of the Hebrew month corresponding to
+     the selected date (`insert-monthly-hebrew-diary-entry').  This
+     diary entry matches any date which has the same Hebrew
+     day-within-month as the selected date.
+
+`i h y'
+     Add a diary entry for the day of the Hebrew year corresponding to
+     the selected date (`insert-yearly-hebrew-diary-entry').  This diary
+     entry matches any date which has the same Hebrew month and
+     day-within-month as the selected date.
+
+`i i d'
+     Add a diary entry for the Islamic date corresponding to the
+     selected date (`insert-islamic-diary-entry').
+
+`i i m'
+     Add a diary entry for the day of the Islamic month corresponding
+     to the selected date (`insert-monthly-islamic-diary-entry').
+
+`i i y'
+     Add a diary entry for the day of the Islamic year corresponding to
+     the selected date (`insert-yearly-islamic-diary-entry').
+
+   These commands work much like the corresponding commands for ordinary
+diary entries: they apply to the date that point is on, in the calendar
+window, and what they do is insert just the date portion of a diary
+entry at the end of your diary file.  You must then insert the rest of
+the diary entry.
+
+
+File: elisp,  Node: Fancy Diary Display,  Next: Sexp Diary Entries,  Prev: Hebrew/Islamic Entries,  Up: Calendar
+
+Fancy Diary Display
+===================
+
+   Diary display works by preparing the diary buffer and then running
+the hook `diary-display-hook'.  The default value of this hook
+(`simple-diary-display') hides the irrelevant diary entries and then
+displays the buffer.  However, if you specify the hook as follows,
+
+     (add-hook 'diary-display-hook 'fancy-diary-display)
+
+this enables fancy diary display.  It displays diary entries and
+holidays by copying them into a special buffer that exists only for the
+sake of display.  Copying to a separate buffer provides an opportunity
+to change the displayed text to make it prettier--for example, to sort
+the entries by the dates they apply to.
+
+   As with simple diary display, you can print a hard copy of the buffer
+with `print-diary-entries'.  To print a hard copy of a day-by-day diary
+for a week by positioning point on Sunday of that week, type `7 d' and
+then do `M-x print-diary-entries'.  As usual, the inclusion of the
+holidays slows down the display slightly; you can speed things up by
+setting the variable `holidays-in-diary-buffer' to `nil'.
+
+   Ordinarily, the fancy diary buffer does not show days for which
+there are no diary entries, even if that day is a holiday.  If you want
+such days to be shown in the fancy diary buffer, set the variable
+`diary-list-include-blanks' to `t'.
+
+   If you use the fancy diary display, you can use the normal hook
+`list-diary-entries-hook' to sort each day's diary entries by their
+time of day.  Here's how
+
+     (add-hook 'list-diary-entries-hook 'sort-diary-entries)
+
+For each day, this sorts diary entries that begin with a recognizable
+time of day according to their times.  Diary entries without times come
+first within each day.
+
+   Fancy diary display also has the ability to process included diary
+files.  This permits a group of people to share a diary file for events
+that apply to all of them.  Lines in the diary file of this form:
+
+     #include "FILENAME"
+
+includes the diary entries from the file FILENAME in the fancy diary
+buffer The include mechanism is recursive, so that included files can
+include other files, and so on; you must be careful not to have a cycle
+of inclusions, of course.  Here is how to enable the include facility:
+
+     (add-hook 'list-diary-entries-hook 'include-other-diary-files)
+     (add-hook 'mark-diary-entries-hook 'mark-included-diary-files)
+
+   The include mechanism works only with the fancy diary display,
+because ordinary diary display shows the entries directly from your
+diary file.
+
+
+File: elisp,  Node: Sexp Diary Entries,  Next: Appt Customizing,  Prev: Fancy Diary Display,  Up: Calendar
+
+Sexp Entries and the Fancy Diary Display
+========================================
+
+   Sexp diary entries allow you to do more than just have complicated
+conditions under which a diary entry applies.  If you use the fancy
+diary display, sexp entries can generate the text of the entry depending
+on the date itself.  For example, an anniversary diary entry can insert
+the number of years since the anniversary date into the text of the
+diary entry.  Thus the `%d' in this dairy entry:
+
+     %%(diary-anniversary 10 31 1948) Arthur's birthday (%d years old)
+
+gets replaced by the age, so on October 31, 1990 the entry appears in
+the fancy diary buffer like this:
+
+     Arthur's birthday (42 years old)
+
+If the diary file instead contains this entry:
+
+     %%(diary-anniversary 10 31 1948) Arthur's %d%s birthday
+
+the entry in the fancy diary buffer for October 31, 1990 appears like
+this:
+
+     Arthur's 42nd birthday
+
+   Similarly, cyclic diary entries can interpolate the number of
+repetitions that have occurred:
+
+     %%(diary-cyclic 50 1 1 1990) Renew medication (%d%s time)
+
+looks like this:
+
+     Renew medication (5th time)
+
+in the fancy diary display on September 8, 1990.
+
+   The generality of sexp diary entries lets you specify any diary entry
+that you can describe algorithmically.  A sexp diary entry contains an
+expression that computes whether the entry applies to any given date.
+If its value is non-`nil', the entry applies to that date; otherwise,
+it does not.  The expression can use the variable  `date' to find the
+date being considered; its value is a list (MONTH DAY YEAR) that refers
+to the Gregorian calendar.
+
+   Suppose you get paid on the 21st of the month if it is a weekday, and
+to the Friday before if the 21st is on a weekend.  Here is how to write
+a sexp diary entry that matches those dates:
+
+     &%%(let ((dayname (calendar-day-of-week date))
+              (day (car (cdr date))))
+           (or (and (= day 21) (memq dayname '(1 2 3 4 5)))
+               (and (memq day '(19 20)) (= dayname 5)))
+              ) Pay check deposited
+
+   The following sexp diary entries take advantage of the ability (in
+the fancy diary display) to concoct diary entries whose text varies
+based on the date:
+
+`%%(diary-sunrise-sunset)'
+     Make a diary entry for the local times of today's sunrise and
+     sunset.
+
+`%%(diary-phases-of-moon)'
+     Make a diary entry for the phases (quarters) of the moon.
+
+`%%(diary-day-of-year)'
+     Make a diary entry with today's day number in the current year and
+     the number of days remaining in the current year.
+
+`%%(diary-iso-date)'
+     Make a diary entry with today's equivalent ISO commercial date.
+
+`%%(diary-julian-date)'
+     Make a diary entry with today's equivalent date on the Julian
+     calendar.
+
+`%%(diary-astro-day-number)'
+     Make a diary entry with today's equivalent astronomical (Julian)
+     day number.
+
+`%%(diary-hebrew-date)'
+     Make a diary entry with today's equivalent date on the Hebrew
+     calendar.
+
+`%%(diary-islamic-date)'
+     Make a diary entry with today's equivalent date on the Islamic
+     calendar.
+
+`%%(diary-french-date)'
+     Make a diary entry with today's equivalent date on the French
+     Revolutionary calendar.
+
+`%%(diary-mayan-date)'
+     Make a diary entry with today's equivalent date on the Mayan
+     calendar.
+
+Thus including the diary entry
+
+     &%%(diary-hebrew-date)
+
+causes every day's diary display to contain the equivalent date on the
+Hebrew calendar, if you are using the fancy diary display.  (With simple
+diary display, the line `&%%(diary-hebrew-date)' appears in the diary
+for any date, but does nothing particularly useful.)
+
+   These functions can be used in sexp diary entries based on the Hebrew
+calendar in certain standard ways:
+
+`%%(diary-rosh-hodesh)'
+     Make a diary entry that tells the occurrence and ritual
+     announcement of each new Hebrew month.
+
+`%%(diary-parasha)'
+     Make a Saturday diary entry that tells the weekly synagogue
+     scripture reading.
+
+`%%(diary-sabbath-candles)'
+     Make a Friday diary entry that tells the *local time* of Sabbath
+     candle lighting.
+
+`%%(diary-omer)'
+     Make a diary entry that gives the omer count, when appropriate.
+
+`%%(diary-yahrzeit MONTH DAY YEAR) NAME'
+     Make a diary entry marking the anniversary of a date of death.
+     The date is the *Gregorian* (civil) date of death.  The diary
+     entry appears on the proper Hebrew calendar anniversary and on the
+     day before.  (In the European style, the order of the parameters
+     is changed to DAY, MONTH, YEAR.)
+
+
+File: elisp,  Node: Appt Customizing,  Prev: Sexp Diary Entries,  Up: Calendar
+
+Customizing Appointment Reminders
+=================================
+
+   You can specify exactly how Emacs reminds you of an appointment and
+how far in advance it begins doing so.  Here are the variables that you
+can set:
+
+`appt-message-warning-time'
+     The time in minutes before an appointment that the reminder
+     begins.  The default is 10 minutes.
+
+`appt-audible'
+     If this is non-`nil', Emacs rings the terminal bell for
+     appointment reminders.  The default is `t'.
+
+`appt-visible'
+     If this is non-`nil', Emacs displays the appointment message in
+     echo area.  The default is `t'.
+
+`appt-display-mode-line'
+     If this is non-`nil', Emacs displays the number of minutes to the
+     appointment on the mode line.  The default is `t'.
+
+`appt-msg-window'
+     If this is non-`nil', Emacs displays the appointment message in
+     another window.  The default is `t'.
+
+`appt-disp-window-function'
+     This variable holds a function to use to create the other window
+     for the appointment message.
+
+`appt-delete-window-function'
+     This variable holds a function to use to get rid of the appointment
+     message window, when its time is up.
+
+`appt-display-duration'
+     The number of seconds to display an appointment message.  The
+     default is 5 seconds.
+
+
+File: elisp,  Node: Tips,  Next: GNU Emacs Internals,  Prev: Calendar,  Up: Top
+
+Tips and Standards
+******************
+
+   This chapter describes no additional features of Emacs Lisp.
+Instead it gives advice on making effective use of the features
+described in the previous chapters.
+
+* Menu:
+
+* Style Tips::                Writing clean and robust programs.
+* Compilation Tips::          Making compiled code run fast.
+* Documentation Tips::        Writing readable documentation strings.
+* Comment Tips::	      Conventions for writing comments.
+* Library Headers::           Standard headers for library packages.
+
+
+File: elisp,  Node: Style Tips,  Next: Compilation Tips,  Up: Tips
+
+Writing Clean Lisp Programs
+===========================
+
+   Here are some tips for avoiding common errors in writing Lisp code
+intended for widespread use:
+
+   * Since all global variables share the same name space, and all
+     functions share another name space, you should choose a short word
+     to distinguish your program from other Lisp programs.  Then take
+     care to begin the names of all global variables, constants, and
+     functions with the chosen prefix.  This helps avoid name conflicts.
+
+     This recommendation applies even to names for traditional Lisp
+     primitives that are not primitives in Emacs Lisp--even to `cadr'.
+     Believe it or not, there is more than one plausible way to define
+     `cadr'.  Play it safe; append your name prefix to produce a name
+     like `foo-cadr' or `mylib-cadr' instead.
+
+     If you write a function that you think ought to be added to Emacs
+     under a certain name, such as `twiddle-files', don't call it by
+     that name in your program.  Call it `mylib-twiddle-files' in your
+     program, and send mail to `bug-gnu-emacs@prep.ai.mit.edu'
+     suggesting we add it to Emacs.  If and when we do, we can change
+     the name easily enough.
+
+     If one prefix is insufficient, your package may use two or three
+     alternative common prefixes, so long as they make sense.
+
+     Separate the prefix from the rest of the symbol name with a hyphen,
+     `-'.  This will be consistent with Emacs itself and with most Emacs
+     Lisp programs.
+
+   * It is often useful to put a call to `provide' in each separate
+     library program, at least if there is more than one entry point to
+     the program.
+
+   * If one file FOO uses a macro defined in another file BAR, FOO
+     should contain `(require 'BAR)' before the first use of the macro.
+     (And BAR should contain `(provide 'BAR)', to make the `require'
+     work.)  This will cause BAR to be loaded when you byte-compile
+     FOO.  Otherwise, you risk compiling FOO without the necessary
+     macro loaded, and that would produce compiled code that won't work
+     right.  *Note Compiling Macros::.
+
+   * If you define a major mode, make sure to run a hook variable using
+     `run-hooks', just as the existing major modes do.  *Note Hooks::.
+
+   * Please do not define `C-c LETTER' as a key in your major modes.
+     These sequences are reserved for users; they are the *only*
+     sequences reserved for users, so we cannot do without them.
+
+     Instead, define sequences consisting of `C-c' followed by a
+     non-letter.  These sequences are reserved for major modes.
+
+     Changing all the major modes in Emacs 18 so they would follow this
+     convention was a lot of work.  Abandoning this convention would
+     waste that work and inconvenience the users.
+
+   * You should not bind `C-h' following any prefix character (including
+     `C-c').  If you don't bind `C-h', it is automatically available as
+     a help character for listing the subcommands of the prefix
+     character.
+
+   * You should not bind a key sequence ending in ESC except following
+     another ESC.  (That is, it is ok to bind a sequence ending in `ESC
+     ESC'.)
+
+     The reason for this rule is that a non-prefix binding for ESC in
+     any context prevents recognition of escape sequences as function
+     keys in that context.
+
+   * Applications should not bind mouse events based on button 1 with
+     the shift key held down.  These events include `S-mouse-1',
+     `M-S-mouse-1', `C-S-mouse-1', and so on.  They are reserved for
+     users.
+
+   * Modes should redefine `mouse-2' as a command to follow some sort of
+     reference in the text of a buffer, if users usually would not want
+     to alter the text in that buffer by hand.  Modes such as Dired,
+     Info, Compilation, and Occur redefine it in this way.
+
+   * It is a bad idea to define aliases for the Emacs primitives.  Use
+     the standard names instead.
+
+   * Redefining an Emacs primitive is an even worse idea.  It may do
+     the right thing for a particular program, but there is no telling
+     what other programs might break as a result.
+
+   * If a file does replace any of the functions or library programs of
+     standard Emacs, prominent comments at the beginning of the file
+     should say which functions are replaced, and how the behavior of
+     the replacements differs from that of the originals.
+
+   * If a file requires certain standard library programs to be loaded
+     beforehand, then the comments at the beginning of the file should
+     say so.
+
+   * Please keep the names of your Emacs Lisp source files to 13
+     characters or less.  This way, if the files are compiled, the
+     compiled files' names will be 14 characters or less, which is
+     short enough to fit on all kinds of Unix systems.
+
+   * Don't use `next-line' or `previous-line' in programs; nearly
+     always, `forward-line' is more convenient as well as more
+     predictable and robust.  *Note Text Lines::.
+
+   * Don't use functions that set the mark in your Lisp code (unless
+     you are writing a command to set the mark).  The mark is a
+     user-level feature, so it is incorrect to change the mark except
+     to supply a value for the user's benefit.  *Note The Mark::.
+
+     In particular, don't use these functions:
+
+        * `beginning-of-buffer', `end-of-buffer'
+
+        * `replace-string', `replace-regexp'
+
+     If you just want to move point, or replace a certain string,
+     without any of the other features intended for interactive users,
+     you can replace these functions with one or two lines of simple
+     Lisp code.
+
+   * The recommended way to print a message in the echo area is with
+     the `message' function, not `princ'.  *Note The Echo Area::.
+
+   * When you encounter an error condition, call the function `error'
+     (or `signal').  The function `error' does not return.  *Note
+     Signaling Errors::.
+
+     Do not use `message', `throw', `sleep-for', or `beep' to report
+     errors.
+
+   * Try to avoid using recursive edits.  Instead, do what the Rmail `e'
+     command does: use a new local keymap that contains one command
+     defined to switch back to the old local keymap.  Or do what the
+     `edit-options' command does: switch to another buffer and let the
+     user switch back at will.  *Note Recursive Editing::.
+
+   * In some other systems there is a convention of choosing variable
+     names that begin and end with `*'.  We don't use that convention
+     in Emacs Lisp, so please don't use it in your programs.  (Emacs
+     uses such names only for program-generated buffers.)  The users
+     will find Emacs more coherent if all libraries use the same
+     conventions.
+
+   * Indent each function with `C-M-q' (`indent-sexp') using the
+     default indentation parameters.
+
+   * Don't make a habit of putting close-parentheses on lines by
+     themselves; Lisp programmers find this disconcerting.  Once in a
+     while, when there is a sequence of many consecutive
+     close-parentheses, it may make sense to split them in one or two
+     significant places.
+
+   * Please put a copyright notice on the file if you give copies to
+     anyone.  Use the same lines that appear at the top of the Lisp
+     files in Emacs itself.  If you have not signed papers to assign
+     the copyright to the Foundation, then place your name in the
+     copyright notice in place of the Foundation's name.
+
+
+File: elisp,  Node: Compilation Tips,  Next: Documentation Tips,  Prev: Style Tips,  Up: Tips
+
+Tips for Making Compiled Code Fast
+==================================
+
+   Here are ways of improving the execution speed of byte-compiled Lisp
+programs.
+
+   * Use the `profile' library to profile your program.  See the file
+     `profile.el' for instructions.
+
+   * Use iteration rather than recursion whenever possible.  Function
+     calls are slow in Emacs Lisp even when a compiled function is
+     calling another compiled function.
+
+   * Using the primitive list-searching functions `memq', `assq' or
+     `assoc' is even faster than explicit iteration.  It may be worth
+     rearranging a data structure so that one of these primitive search
+     functions can be used.
+
+   * Certain built-in functions are handled specially in byte-compiled
+     code, avoiding the need for an ordinary function call.  It is a
+     good idea to use these functions rather than alternatives.  To see
+     whether a function is handled specially by the compiler, examine
+     its `byte-compile' property.  If the property is non-`nil', then
+     the function is handled specially.
+
+     For example, the following input will show you that `aref' is
+     compiled specially (*note Array Functions::.) while `elt' is not
+     (*note Sequence Functions::.):
+
+          (get 'aref 'byte-compile)
+               => byte-compile-two-args
+          
+          (get 'elt 'byte-compile)
+               => nil
+
+   * If calling a small function accounts for a  substantial part of
+     your program's running time, make the function inline.  This
+     eliminates the function call overhead.  Since making a function
+     inline reduces the flexibility of changing the program, don't do
+     it unless it gives a noticeable speedup in something slow enough
+     that users care about the speed.  *Note Inline Functions::.
+
+
+File: elisp,  Node: Documentation Tips,  Next: Comment Tips,  Prev: Compilation Tips,  Up: Tips
+
+Tips for Documentation Strings
+==============================
+
+   Here are some tips for the writing of documentation strings.
+
+   * Every command, function or variable intended for users to know
+     about should have a documentation string.
+
+   * An internal subroutine of a Lisp program need not have a
+     documentation string, and you can save space by using a comment
+     instead.
+
+   * The first line of the documentation string should consist of one
+     or two complete sentences which stand on their own as a summary.
+     `M-x apropos' displays just the first line, and if it doesn't
+     stand on its own, the result looks bad.  In particular, start the
+     first line with a capital letter and end with a period.
+
+     The documentation string can have additional lines which expand on
+     the details of how to use the function or variable.  The
+     additional lines should be made up of complete sentences also, but
+     they may be filled if that looks good.
+
+   * For consistency, phrase the verb in the first sentence of a
+     documentation string as an infinitive with "to" omitted.  For
+     instance, use "Return the cons of A and B." in preference to
+     "Returns the cons of A and B."  Usually it looks good to do
+     likewise for the rest of the first paragraph.  Subsequent
+     paragraphs usually look better if they have proper subjects.
+
+   * Write documentation strings in the active voice, not the passive,
+     and in the present tense, not the future.  For instance, use
+     "Return a list containing A and B." instead of "A list containing
+     A and B will be returned."
+
+   * Avoid using the word "cause" (or its equivalents) unnecessarily.
+     Instead of, "Cause Emacs to display text in boldface," write just
+     "Display text in boldface."
+
+   * Do not start or end a documentation string with whitespace.
+
+   * Format the documentation string so that it fits in an Emacs window
+     on an 80 column screen.  It is a good idea for most lines to be no
+     wider than 60 characters.  The first line can be wider if
+     necessary to fit the information that ought to be there.
+
+     However, rather than simply filling the entire documentation
+     string, you can make it much more readable by choosing line breaks
+     with care.  Use blank lines between topics if the documentation
+     string is long.
+
+   * *Do not* indent subsequent lines of a documentation string so that
+     the text is lined up in the source code with the text of the first
+     line.  This looks nice in the source code, but looks bizarre when
+     users view the documentation.  Remember that the indentation
+     before the starting double-quote is not part of the string!
+
+   * A variable's documentation string should start with `*' if the
+     variable is one that users would often want to set interactively.
+     If the value is a long list, or a function, or if the variable
+     would only be set in init files, then don't start the
+     documentation string with `*'.  *Note Defining Variables::.
+
+   * The documentation string for a variable that is a yes-or-no flag
+     should start with words such as "Non-nil means...", to make it
+     clear that all non-`nil' values are equivalent and indicate
+     explicitly what `nil' and non-`nil' mean.
+
+   * When a function's documentation string mentions the value of an
+     argument of the function, use the argument name in capital letters
+     as if it were a name for that value.  Thus, the documentation
+     string of the function `/' refers to its second argument as
+     `DIVISOR', because the actual argument name is `divisor'.
+
+     Also use all caps for meta-syntactic variables, such as when you
+     show the decomposition of a list or vector into subunits, some of
+     which may vary.
+
+   * When a documentation string refers to a Lisp symbol, write it as it
+     would be printed (which usually means in lower case), with
+     single-quotes around it.  For example: `lambda'.  There are two
+     exceptions: write t and nil without single-quotes.  (In this
+     manual, we normally do use single-quotes for those symbols.)
+
+   * Don't write key sequences directly in documentation strings.
+     Instead, use the `\\[...]' construct to stand for them.  For
+     example, instead of writing `C-f', write `\\[forward-char]'.  When
+     Emacs displays the documentation string, it substitutes whatever
+     key is currently bound to `forward-char'.  (This is normally `C-f',
+     but it may be some other character if the user has moved key
+     bindings.) *Note Keys in Documentation::.
+
+   * In documentation strings for a major mode, you will want to refer
+     to the key bindings of that mode's local map, rather than global
+     ones.  Therefore, use the construct `\\<...>' once in the
+     documentation string to specify which key map to use.  Do this
+     before the first use of `\\[...]'.  The text inside the `\\<...>'
+     should be the name of the variable containing the local keymap for
+     the major mode.
+
+     It is not practical to use `\\[...]' very many times, because
+     display of the documentation string will become slow.  So use this
+     to describe the most important commands in your major mode, and
+     then use `\\{...}' to display the rest of the mode's keymap.
+
+   * Don't use the term "Elisp", since that is or was a trademark.  Use
+     the term "Emacs Lisp".
+
+
+File: elisp,  Node: Comment Tips,  Next: Library Headers,  Prev: Documentation Tips,  Up: Tips
+
+Tips on Writing Comments
+========================
+
+   We recommend these conventions for where to put comments and how to
+indent them:
+
+`;'
+     Comments that start with a single semicolon, `;', should all be
+     aligned to the same column on the right of the source code.  Such
+     comments usually explain how the code on the same line does its
+     job.  In Lisp mode and related modes, the `M-;'
+     (`indent-for-comment') command automatically inserts such a `;' in
+     the right place, or aligns such a comment if it is already present.
+
+     (The following examples are taken from the Emacs sources.)
+
+          (setq base-version-list                 ; there was a base
+                (assoc (substring fn 0 start-vn)  ; version to which
+                       file-version-assoc-list))  ; this looks like
+                                                  ; a subversion
+
+`;;'
+     Comments that start with two semicolons, `;;', should be aligned to
+     the same level of indentation as the code.  Such comments usually
+     describe the purpose of the following lines or the state of the
+     program at that point.  For example:
+
+          (prog1 (setq auto-fill-function
+                       ...
+                       ...
+            ;; update mode line
+            (force-mode-line-update)))
+
+     Every function that has no documentation string (because it is use
+     only internally within the package it belongs to), should have
+     instead a two-semicolon comment right before the function,
+     explaining what the function does and how to call it properly.
+     Explain precisely what each argument means and how the function
+     interprets its possible value.
+
+`;;;'
+     Comments that start with three semicolons, `;;;', should start at
+     the left margin.  Such comments are used outside function
+     definitions to make general statements explaining the design
+     principles of the program.  For example:
+
+          ;;; This Lisp code is run in Emacs
+          ;;; when it is to operate as a server
+          ;;; for other processes.
+
+     Another use for triple-semicolon comments is for commenting out
+     line within a function.  We use triple-semicolons for this
+     precisely so that they remain at the left margin.
+
+          (defun foo (a)
+          ;;; This is no longer necessary.
+          ;;;  (force-mode-line-update)
+            (message "Finished with %s" a))
+
+`;;;;'
+     Comments that start with four semicolons, `;;;;', should be aligned
+     to the left margin and are used for headings of major sections of a
+     program.  For example:
+
+          ;;;; The kill ring
+
+The indentation commands of the Lisp modes in Emacs, such as `M-;'
+(`indent-for-comment') and TAB (`lisp-indent-line') automatically
+indent comments according to these conventions, depending on the the
+number of semicolons.  *Note Manipulating Comments: (emacs)Comments.
+
+
+File: elisp,  Node: Library Headers,  Prev: Comment Tips,  Up: Tips
+
+Conventional Headers for Emacs Libraries
+========================================
+
+   Emacs 19 has conventions for using special comments in Lisp libraries
+to divide them into sections and give information such as who wrote
+them.  This section explains these conventions.  First, an example:
+
+     ;;; lisp-mnt.el --- minor mode for Emacs Lisp maintainers
+     
+     ;; Copyright (C) 1992 Free Software Foundation, Inc.
+     
+     ;; Author: Eric S. Raymond <esr@snark.thyrsus.com>
+     ;; Maintainer: Eric S. Raymond <esr@snark.thyrsus.com>
+     ;; Created: 14 Jul 1992
+     ;; Version: 1.2
+     ;; Keywords: docs
+     
+     ;; This file is part of GNU Emacs.
+     COPYING CONDITIONS...
+
+   The very first line should have this format:
+
+     ;;; FILENAME --- DESCRIPTION
+
+The description should be complete in one line.
+
+   After the copyright notice come several "header comment" lines, each
+beginning with `;; HEADER-NAME:'.  Here is a table of the conventional
+possibilities for HEADER-NAME:
+
+`Author'
+     This line states the name and net address of at least the principal
+     author of the library.
+
+     If there are multiple authors, you can list them on continuation
+     lines led by `;;' and a tab character, like this:
+
+          ;; Author: Ashwin Ram <Ram-Ashwin@cs.yale.edu>
+          ;;      Dave Sill <de5@ornl.gov>
+          ;;      Dave Brennan <brennan@hal.com>
+          ;;      Eric Raymond <esr@snark.thyrsus.com>
+
+`Maintainer'
+     This line should contain a single name/address as in the Author
+     line, or an address only, or the string `FSF'.  If there is no
+     maintainer line, the person(s) in the Author field are presumed to
+     be the maintainers.  The example above is mildly bogus because the
+     maintainer line is redundant.
+
+     The idea behind the `Author' and `Maintainer' lines is to make
+     possible a Lisp function to "send mail to the maintainer" without
+     having to mine the name out by hand.
+
+     Be sure to surround the network address with `<...>' if you
+     include the person's full name as well as the network address.
+
+`Created'
+     This optional line gives the original creation date of the file.
+     For historical interest only.
+
+`Version'
+     If you wish to record version numbers for the individual Lisp
+     program, put them in this line.
+
+`Adapted-By'
+     In this header line, place the name of the person who adapted the
+     library for installation (to make it fit the style conventions, for
+     example).
+
+`Keywords'
+     This line lists keywords for the `finder-by-keyword' help command.
+     This field is important; it's how people will find your package
+     when they're looking for things by topic area.
+
+   Just about every Lisp library ought to have the `Author' and
+`Keywords' header comment lines.  Use the others if they are
+appropriate.  You can also put in header lines with other header
+names--they have no standard meanings, so they can't do any harm.
+
+   We use additional stylized comments to subdivide the contents of the
+library file.  Here is a table of them:
+
+`;;; Commentary:'
+     This begins introductory comments that explain how the library
+     works.  It should come right after the copying permissions.
+
+`;;; Change log:'
+     This begins change log information stored in the library file (if
+     you store the change history there).  For most of the Lisp files
+     distributed with Emacs, the change history is kept in the file
+     `ChangeLog' and not in the source file at all; these files do not
+     have a `;;; Change log:' line.
+
+`;;; Code:'
+     This begins the actual code of the program.
+
+`;;; FILENAME ends here'
+     This is the "footer line"; it appears at the very end of the file.
+     Its purpose is to enable people to detect truncated versions of
+     the file from the lack of a footer line.
+
+
+File: elisp,  Node: GNU Emacs Internals,  Next: Standard Errors,  Prev: Tips,  Up: Top
+
+GNU Emacs Internals
+*******************
+
+   This chapter describes how the runnable Emacs executable is dumped
+with the preloaded Lisp libraries in it, how storage is allocated, and
+some internal aspects of GNU Emacs that may be of interest to C
+programmers.
+
+* Menu:
+
+* Building Emacs::      How to preload Lisp libraries into Emacs.
+* Pure Storage::        A kludge to make preloaded Lisp functions sharable.
+* Garbage Collection::  Reclaiming space for Lisp objects no longer used.
+* Writing Emacs Primitives::   Writing C code for Emacs.
+* Object Internals::    Data formats of buffers, windows, processes.
+
+
+File: elisp,  Node: Building Emacs,  Next: Pure Storage,  Prev: GNU Emacs Internals,  Up: GNU Emacs Internals
+
+Building Emacs
+==============
+
+   This section explains the steps involved in building the Emacs
+executable.  You don't have to know this material to build and install
+Emacs, since the makefiles do all these things automatically.  This
+information is pertinent to Emacs maintenance.
+
+   Compilation of the C source files in the `src' directory produces an
+executable file called `temacs', also called a "bare impure Emacs".  It
+contains the Emacs Lisp interpreter and I/O routines, but not the
+editing commands.
+
+   The command `temacs -l loadup' uses `temacs' to create the real
+runnable Emacs executable.  These arguments direct `temacs' to evaluate
+the Lisp files specified in the file `loadup.el'.  These files set up
+the normal Emacs editing environment, resulting in an Emacs which is
+still impure but no longer bare.
+
+   It takes a substantial time to load the standard Lisp files.
+Luckily, you don't have to do this each time you run Emacs; `temacs' can
+dump out an executable program called `emacs' which has these files
+preloaded.  `emacs' starts more quickly because it does not need to
+load the files.  This is the Emacs executable that is normally
+installed.
+
+   To create `emacs', use the command `temacs -batch -l loadup dump'.
+The purpose of `-batch' here is to prevent `temacs' from trying to
+initialize any of its data on the terminal; this ensures that the
+tables of terminal information are empty in the dumped Emacs.  The
+argument `dump' tells `loadup.el' to dump a new executable named
+`emacs'.
+
+   Some operating systems don't support dumping.  On those systems, you
+must start Emacs with the `temacs -l loadup' command each time you use
+it.  This takes a substantial time, but since you need to start Emacs
+once a day at most--or once a week if you never log out--the extra time
+is not too severe a problem.
+
+   You can specify additional files to preload by writing a library
+named `site-load.el' which loads them.  You may need to increase the
+value of `PURESIZE', in `src/puresize.h', to make room for the
+additional files.  (Try adding increments of 20000 until it is big
+enough.)  However, the advantage of preloading additional files
+decreases as machines get faster.  On modern machines, it is usually not
+advisable.
+
+   You can specify other Lisp expressions to execute just before dumping
+by putting them in a library named `site-init.el'.  However, if they
+might alter the behavior that users expect from an ordinary unmodified
+Emacs, it is better to put them in `default.el', so that users can
+override them if they wish.  *Note Start-up Summary::.
+
+   Before `loadup.el' dumps the new executable, it finds the
+documentation strings for primitive and preloaded functions (and
+variables) in the file where they are stored, by calling
+`Snarf-documentation' (*note Accessing Documentation::.).  These
+strings were moved out of the `emacs' executable to make it smaller.
+*Note Documentation Basics::.
+
+ - Function: dump-emacs TO-FILE FROM-FILE
+     This function dumps the current state of Emacs into an executable
+     file TO-FILE.  It takes symbols from FROM-FILE (this is normally
+     the executable file `temacs').
+
+     If you use this function in an Emacs that was already dumped, you
+     must set `command-line-processed' to `nil' first for good results.
+     *Note Command Line Arguments::.
+
+ - Command: emacs-version
+     This function returns a string describing the version of Emacs
+     that is running.  It is useful to include this string in bug
+     reports.
+
+          (emacs-version)
+            => "GNU Emacs 19.22.1 of Fri Feb 27 1994 \
+          on slug (berkeley-unix)"
+
+     Called interactively, the function prints the same information in
+     the echo area.
+
+ - Variable: emacs-build-time
+     The value of this variable is the time at which Emacs was built at
+     the local site.
+
+          emacs-build-time
+               => "Fri Feb 27 14:55:57 1994"
+
+ - Variable: emacs-version
+     The value of this variable is the version of Emacs being run.  It
+     is a string such as `"19.22.1"'.
+
+   The following two variables did not exist before Emacs version 19.23,
+which reduces their usefulness at present, but we hope they will be
+convenient in the future.
+
+ - Variable: emacs-major-version
+     The major version number of Emacs, as an integer.
+
+ - Variable: emacs-minor-version
+     The minor version number of Emacs, as an integer.  For Emacs
+     version 19.23, the value is 23.
+

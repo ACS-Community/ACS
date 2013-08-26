@@ -1,0 +1,59 @@
+#! /bin/bash
+
+# History
+# --------
+# 2006-12 : mschilli : created
+# 
+
+##
+## import exit codes
+##
+. acsstartupConstants
+
+##
+## debug mode on/off
+##
+#set -x
+
+
+## on Linux use external $ACSROOT/bin/echo
+if [ "`uname`" = "Linux" ]; 
+	then enable -n echo
+fi
+
+
+THIS=`basename $0`
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+    echo "Generates or views Java Help"
+    echo ""
+#    echo "Generate Java Help from web contents:"
+    echo "$THIS -gen HELP-DIR {TOC-DIR|TOC-FILE}+"
+    echo "   Scans HELP-DIR for html files and writes Java Help files into it (thus, must be writable)."
+    echo "   Through TOC-DIRS and TOC-FILES you can determine the scan order, or exclude files (default: all, alphabetically)"
+    echo ""
+#    echo "View generated Java Help:"
+    echo "$THIS -view HELP-DIR"
+    echo "   Runs a browser to view the Java Help that has been generated in HELP-DIR"
+    echo ""
+}
+
+
+if [ "x$1" == "x-view" ] ; then
+   shift
+   export CLASSPATH=$CLASSPATH:.
+   acsStartJava --noDirectory alma.acs.jhelpgen.Gui $@
+elif [ "x$1" == "x-gen" ] ; then
+   shift
+   acsStartJava --noDirectory alma.acs.jhelpgen.Gen $@
+elif [ "x$1" == "x-h" ] ; then
+   printUsage
+   exit $EC_OK
+else
+   printUsage
+   exit $EC_BADARGS 
+fi   
+   

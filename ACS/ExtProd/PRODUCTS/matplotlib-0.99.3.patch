@@ -1,0 +1,32 @@
+--- matplotlib-0.99.3/setupext.py	2010-03-09 11:20:20.000000000 -0300
++++ setupext.py	2012-01-05 22:34:49.123116600 -0300
+@@ -917,6 +917,7 @@
+         tcl_inc = tcl_vars.get("default", "TCL_INCLUDE_SPEC")[3:-1]
+ 
+         tk_lib = tk_vars.get("default", "TK_LIB_SPEC")[1:-1].split()[0][2:]
++        tk_libs = [x[2:] for x in tk_vars.get("default", 'TK_LIBS')[1:-1].strip().split(" ")]
+         if tk_vars.has_option("default", "TK_INCLUDE_SPEC"):
+             # On Ubuntu 8.04
+             tk_inc = tk_vars.get("default", "TK_INCLUDE_SPEC")[3:-1]
+@@ -929,7 +930,7 @@
+     if not os.path.exists(os.path.join(tk_inc, 'tk.h')):
+         return None
+ 
+-    return tcl_lib, tcl_inc, tk_lib, tk_inc
++    return tcl_lib, tcl_inc, tk_lib, tk_inc, tk_libs
+ 
+ def guess_tcl_config(tcl_lib_dir, tk_lib_dir, tk_ver):
+     if not (os.path.exists(tcl_lib_dir) and os.path.exists(tk_lib_dir)):
+@@ -1072,10 +1073,11 @@
+                     result = hardcoded_tcl_config()
+ 
+         # Add final versions of directories and libraries to module lists
+-        tcl_lib, tcl_inc, tk_lib, tk_inc = result
++        tcl_lib, tcl_inc, tk_lib, tk_inc, tk_libs = result
+         module.include_dirs.extend([tcl_inc, tk_inc])
+         module.library_dirs.extend([tcl_lib, tk_lib])
+         module.libraries.extend(['tk' + tk_ver, 'tcl' + tk_ver])
++        module.libraries.extend(tk_libs)
+ 
+     return message
+ 

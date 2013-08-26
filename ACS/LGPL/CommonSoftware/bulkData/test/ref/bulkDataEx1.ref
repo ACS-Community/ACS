@@ -1,0 +1,85 @@
+2 - Running bulkDataEx1
+1 - Starting Container...
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+1 - Bootstrap ORB parms: maciContainer ContainerEx1 -m corbaloc::---:----/Manager
+1 - ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
+1 - Resolving reference: 'corbaloc::---:----/Manager'
+1 - Manager reference narrowed.
+1 - Manager hostname obtained via command line: '---'
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::getManager] Resolving manager...
+1 - ----------T--:--:--.--- [ContainerEx1-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::Container::init] Recovery enabled.
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Container 'ContainerEx1' activated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibEx1.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibEx1'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataSenderLibEx1.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibEx1.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibEx1'.
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Container 'ContainerEx1' initialized successfuly
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataReceiverLibEx1.so'.
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [ContainerEx1-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Logging into the Manager...
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Set Naming Context to Logger.
+1 - ----------T--:--:--.--- [ContainerEx1 - ContainerImpl::run] Container running...
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Logged into the Manager.
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibEx1.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibEx1'.
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataReceiver: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataReceiver: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataReceiver: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::activate_component] Component 'BulkDataReceiver' activated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibEx1.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibEx1'.
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataSenderEx1: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataSenderEx1: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataSenderEx1: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::activate_component] Component 'BulkDataSenderEx1' activated.
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow1
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow2
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow3
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow4
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] BulkDataReceiver<>::addFepToSep Added flowendpoint named: Flow1
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] BulkDataReceiver<>::addFepToSep Added flowendpoint named: Flow2
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] BulkDataReceiver<>::addFepToSep Added flowendpoint named: Flow3
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] BulkDataReceiver<>::addFepToSep Added flowendpoint named: Flow4
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] flow 1 total length: 14000000
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] flow 2 total length: 12000000
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] flow 4 total length: 37000000
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataSenderEx1: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataSenderEx1: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::deactivate_component] Component 'BulkDataSenderEx1' deactivated.
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataSenderEx1' etherealized.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping 3 sec to allow everything to cleanup and stabilize
+2 - Shutting down ContainerEx1
+2 - All done!
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataReceiver: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataReceiver: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::deactivate_component] Component 'BulkDataReceiver' deactivated.
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataReceiver' etherealized.
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'ContainerEx1' exited with code: 0.
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::logout] Logging out from the Manager.
+1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::logout] Logged out from the Manager.
+1 - ----------T--:--:--.--- [ContainerEx1 - ContainerImpl::run] Container stopping...
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Stopping container... 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
+1 - /----/libbaci.so
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Container stopped.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbaci.so'.

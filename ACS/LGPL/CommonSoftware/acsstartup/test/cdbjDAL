@@ -1,0 +1,5 @@
+#! /bin/bash
+
+tcpBlocker $@&
+sleep 1
+echo "JDAL is ready and waiting"

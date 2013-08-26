@@ -1,0 +1,64 @@
+1 - 'isNull' test passed!
+1 - The 'null' any has an ID of 'null'
+1 - Stringified any value is: null
+1 - 
+1 - 'isString' test passed!
+1 - The 'string' any has an ID of 'string'
+1 - Stringified any value is: a string
+1 - Extracted 'string' any value is: a string.
+1 - 
+1 - 'isDouble' test passed!
+1 - The 'double' any has an ID of 'double'
+1 - Stringified any value is: 3.14
+1 - Extracted 'double' any value is: 3.140000.
+1 - 
+1 - 'isFloat' test passed!
+1 - The 'float' any has an ID of 'float'
+1 - Stringified any value is: 3.1
+1 - Extracted 'float' any value is: 3.100000.
+1 - 
+1 - 'isLong' test passed!
+1 - The 'long' any has an ID of 'long'
+1 - Stringified any value is: 1
+1 - Extracted 'long' any value is: 1.
+1 - 
+1 - 'isLongLong' test passed!
+1 - The 'longlong' any has an ID of 'longlong'
+1 - Stringified any value is: 2
+1 - Extracted 'longlong' any value is: 2.
+1 - 
+1 - 'isULongLong' test passed!
+1 - The 'ulonglong' any has an ID of 'ulonglong-pattern'
+1 - Stringified any value is: 3
+1 - Extracted 'ulonglong' any value is: 3.
+1 - 
+1 - 'isPattern' test passed!
+1 - The 'pattern' any has an ID of 'ulonglong-pattern'
+1 - Stringified any value is: 4
+1 - Extracted 'pattern' any value is: 4.
+1 - 
+1 - 'isEnum' test passed!
+1 - The 'enum' any has an ID of 'IDL:alma/ACS/Condition:1.0'
+1 - Stringified any value is: RED
+1 - Extracted 'enum' any value is: 0.
+1 - 
+1 - 'isDoubleSeq' test passed!
+1 - The 'doubleSeq' any has an ID of 'IDL:alma/ACS/doubleSeq:1.0'
+1 - Stringified any value is: 3.14 
+1 - Extracted 'doubleSeq' any value is: [ 3.140000 ].
+1 - 
+1 - 'isLongSeq' test passed!
+1 - The 'longSeq' any has an ID of 'IDL:alma/ACS/longSeq:1.0'
+1 - Stringified any value is: 17 
+1 - Extracted 'longSeq' any value is: [ 17 ].
+1 - 
+1 - 'isStringSeq' test passed!
+1 - The 'stringSeq' any has an ID of 'IDL:alma/ACS/stringSeq:1.0'
+1 - Stringified any value is: another string 
+1 - Extracted 'stringSeq' any value is: [ another string ].
+1 - 
+1 - 'isFloatSeq' test passed!
+1 - The 'floatSeq' any has an ID of 'IDL:alma/ACS/floatSeq:1.0'
+1 - Stringified any value is: 3.1 
+1 - Extracted 'floatSeq' any value is: [ 3.100000 ].
+1 - 

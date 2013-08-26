@@ -1,0 +1,2 @@
+We need this dummy CDB directory since ACS 8.2, because now acsStart will fail if the CDB directory does not exist. (This module test itself does not need a CDB at all).
+We cannot rely on the default CDB, as the script acsutilTATPrologue will automatically change ACS_CDB from $ACSDATA/config/defaultCDB to $PWD. 

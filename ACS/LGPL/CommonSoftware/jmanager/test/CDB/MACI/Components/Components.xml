@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+      
+  <_ Name="MOUNT1"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
+ 
+  <_ Name="MOUNT2"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
+ 
+  <_ Name="MOUNT3"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
+  			Default="true"		Autostart="false"  ImplLang="cpp" />
+ 
+  <_ Name="MOUNT4"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
+ 
+  <_ Name="MOUNT5"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container2"
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
+  
+  <_ Name="Default"	Code="acsexmplMount"	Type="IDL:alma/MOUNT_ACS/Mount:1.0"	Container="Container"
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
+ 
+  <_ Name="PBEND_B_01"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
+ 
+  <_ Name="PBEND_B_02"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
+ 
+  <_ Name="*"		Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
+
+  <_ Name="DELAYED*"           Code="acsexmplPS"       Type="IDL:alma/PS/PowerSupply:1.0"      Container="Container"
+                        Default="false"         Autostart="false"  KeepAliveTime="5" ImplLang="cpp" />
+
+  <_ Name="IMMORTAL"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
+  			Default="false"		Autostart="false"	KeepAliveTime="-1"  ImplLang="cpp" />
+
+  <_ Name="PERSISTENT"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="Container"
+  			Default="false"		Autostart="false"	KeepAliveTime="5"  ImplLang="cpp" />
+
+  <_ Name="DEMANDER"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="OnDemandContainer"
+  			Default="false"		Autostart="false"  ImplLang="cpp" />
+
+  <_ Name="DEMANDER2"    Code="acsexmplPS"       Type="IDL:alma/PS/PowerSupply:1.0"      Container="OnDemandContainer2"
+                        Default="false"         Autostart="true"  ImplLang="cpp" />
+
+  <_ Name="CPP_ON_PY"  Code="acsexmplPS"       Type="IDL:alma/PS/PowerSupply:1.0"      Container="PyContainer"
+                        Default="false"         Autostart="false"  ImplLang="cpp" />
+
+</Components>
+
+

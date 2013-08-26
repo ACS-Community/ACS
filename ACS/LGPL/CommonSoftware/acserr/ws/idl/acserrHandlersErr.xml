@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"     
+     name="acserrHandlersErr"
+     type="6"
+     description="Errors used by Unspecified and Uncaught handlers"
+     _prefix="alma"
+>
+<ErrorCode name="UnspecifiedACSBasedException"
+     shortDescription="Unspecified ACS Based exception"
+     description="An unspecified ACS Based exception was thrown. This means that an exception was thrown but the exception is not listed in the function specification."
+/>
+<ErrorCode name="UnspecifiedCORBAException"
+     shortDescription="Unspecified CORBA exception"
+     description="An unspecified CORBA exception was thrown. This means that an exception was thrown but the exception is not listed in the function specification."
+>
+	<Member name="CORBAExName" type="string" description="Name of
+	CORBA exception"/>
+</ErrorCode>
+<ErrorCode name="UnspecifiedSTDException"
+     shortDescription="Unspecified std::exception"
+     description="An unspecified std::exception was thrown. This means that an exception was thrown but the exception is not listed in the function specification."
+>
+	<Member name="What" type="string" description="Name of std::exception got from what method."/>
+</ErrorCode>
+<ErrorCode name="UnspecifiedUnknownException"
+     shortDescription="Unspecified Unknown exception"
+     description="An unspecified Unknown exception was thrown. This means that an exception was thrown but the exception is not listed in the function specification."
+/>
+
+<ErrorCode name="UncaughtACSBasedException"
+     shortDescription="Uncaught ACS Based exception"
+     description="An uncaught ACS Based exception was thrown"
+/>
+<ErrorCode name="UncaughtCORBAException"
+     shortDescription="Uncaught CORBA exception"
+     description="An uncaught CORBA exception was thrown"
+>
+	<Member name="CORBAExName" type="string" description="Name of
+	CORBA exception"/>
+</ErrorCode>
+<ErrorCode name="UncaughtSTDException"
+     shortDescription="Uncaught std::exception"
+     description="An uncaught std::exception was thrown"
+>
+	<Member name="What" type="string" description="Name of std::exception got from what method!"/>
+</ErrorCode>
+<ErrorCode name="UncaughtUnknownException"
+     shortDescription="Uncaught Unknown exception"
+     description="An uncaught Unknown exception was thrown"
+/>
+<ErrorCode name="UncaughtUnspecifiedException"
+     shortDescription="Uncaught Unspecified exception"
+     description="An unspecified exception was thrown which caused
+     uncaught exception."
+/>
+</Type>
+

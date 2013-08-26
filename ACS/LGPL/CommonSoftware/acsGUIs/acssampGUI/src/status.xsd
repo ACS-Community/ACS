@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="SamplingStatus">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="SamplingGroup" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="SamplingGroupName" type="xs:string"/>
+            <xs:element name="SamplingManagerName" type="xs:string"/>
+            <xs:element name="Frequency" type="xs:double"/>
+            <xs:element name="SamplingTime" type="xs:int"/>
+            <xs:element name="TimeWindow" type="xs:int"/>
+	    <xs:element name="Sample" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+		  <xs:element name="component" type="xs:string"/>
+		  <xs:element name="property" type="xs:string"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element> 
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+</xs:schema>
+

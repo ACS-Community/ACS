@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	  xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	  name="ErrorSystemExample" 
+	  type="904" 
+	  _prefix="alma">
+	  
+    <!-- these are the codes for the ERRORS -->
+	<ErrorCode name="NothingCanBeScheduledError" 
+               shortDescription="Error in Scheduling System" 
+               description="Nothing could be scheduled error"/>
+	<ErrorCode name="PipelineProcessingRequestError" 
+               shortDescription="Error with pipeline processing request" 
+               description="1"/>
+</Type>
+

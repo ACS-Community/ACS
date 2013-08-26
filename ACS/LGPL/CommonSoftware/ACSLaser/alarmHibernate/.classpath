@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar" sourcepath="/ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbjDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AbsoluteLayout.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate-annotations.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate3.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hsqldb.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jdom.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar" sourcepath="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar" sourcepath="/ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lasercore.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsAlarmService.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AcsAlarmSystem.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsalarmSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/slf4j-acs.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbrdb-pojos.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ACS_cdb_rdb"/>
+	<classpathentry kind="var" path="ACSROOT/lib/tmcdbGenerator.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

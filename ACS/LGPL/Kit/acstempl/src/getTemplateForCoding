@@ -1,0 +1,389 @@
+#! /bin/sh -f
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: getTemplateForCoding,v 1.32 2011/11/02 15:17:18 mpasquat Exp $" 
+# who       when      what
+# --------- --------  ----------------------------------------------
+# gchiozzi  27/06/95  Added c++ and various templates
+# GIF       21/12/93  created
+# GIF       11/01/94  explanatory text added
+# GIF       14/01/94  filter out template description lines #%# and run editor
+# GIF       14/01/94  automatically setup user and date
+# GIF       01/03/94  occam-inc added
+#	    
+#---------  
+# GIF       20/02/95  $I>-<d$ handled
+# GIF       21/02/95  tclScript added
+# psivera   25/06/01  added two different Makefile templates for LCU and WS
+# MZA       02/01/02  added copyright choice panel and preamble info for ALMA
+# srankin   07/04/04  added pythonModule and pythonScript 
+#************************************************************************
+#   NAME
+#   getTemplateForCoding - manage access to available ACS template for coding
+# 
+#   SYNOPSIS
+#         getTemplateForCoding
+# 
+#   DESCRIPTION
+#   See getTemplate
+#------------------------------------------------------------------------
+
+
+if [ "$INTROOT" != "" ] && [ -d "$INTROOT/templates/forCoding" ]
+    #
+    # This case will only occur AFTER a "make all install" in this dir.
+    then
+    ACSTEMPLATES=$INTROOT/templates 
+elif [ "$VLTROOT" != "" ] && [ -d "$VLTROOT/templates/forCoding" ]
+    then
+    ACSTEMPLATES=$VLTROOT/templates      
+elif [ -d "$ACSROOT/templates/forCoding" ]
+    then 
+    ACSTEMPLATES=$ACSROOT/templates
+else
+    echo "\$ACSTEMPLATES not defined, no purpose in going further"
+    exit -1 
+fi
+
+T_DIR=$ACSTEMPLATES/forCoding
+
+
+while clear
+do
+    cat <<xyz
+-------------------------------------------------------------------------------
+This menu allows you to copy one of the available templates into a filename of
+your choice in the current directory (the output file must not already exist).
+
+
+Templates are available for:
+
+             ______________ c-main
+             ______________ c-procedure
+             ______________ h-file
+
+             ______________ java-class-interface
+
+             ______________ c++-file
+             ______________ c++-small-main
+             ______________ c++-class-file
+             ______________ c++-h-file
+
+             ______________ pythonModule
+             ______________ pythonScript
+
+             ______________ script
+             ______________ tclScript
+
+             ______________ Makefile_for_WS
+
+             ______________ Makefile_for_PACKAGE
+
+             ______________ Makefile_for_LCU
+
+	     ______________ RELEASE_NOTES
+
+
+xyz
+
+    echo "type the type of template you need or press <Enter> to exit: \c"
+    read OPTION
+ 
+    echo " - - - - - - - - - - - - - - - - - - - - - - - -"
+
+# if the user answer is not empty process it else go to previous level
+
+    if test -n "$OPTION"
+    then
+        case $OPTION in
+
+            c-main|c-procedure)
+                TEMPLATE=$T_DIR/$OPTION.template
+                FILE_NAME=""
+                FILE_SUFFIX=".c"
+                COMMENT="* "
+                MODE=644
+                ;;
+
+            c++-small-main|c++-file|c++-class-file)
+                TEMPLATE=$T_DIR/$OPTION.template
+                FILE_NAME=""
+                FILE_SUFFIX=".cpp"
+                COMMENT="* "
+                MODE=644
+                ;;
+
+            h-file|c++-h-file)
+                TEMPLATE=$T_DIR/$OPTION.template
+                FILE_NAME=""
+                FILE_SUFFIX=".h"
+                COMMENT="* "
+                MODE=644
+                ;;
+
+            # Removal of "dbl-file" spr ALMASW2004040
+            #dbl-file)
+            #    TEMPLATE=$T_DIR/$OPTION.template
+            #    FILE_NAME=""
+            #    FILE_SUFFIX=".dbl"
+            #    MODE=644
+            #    ;;
+
+            java-class-interface)
+                TEMPLATE=$T_DIR/$OPTION.template
+                FILE_NAME=""
+                FILE_SUFFIX=".java"
+                COMMENT="* "
+                MODE=644
+                ;;
+
+            pythonModule)
+                TEMPLATE=$T_DIR/$OPTION.template
+                FILE_NAME=""
+                FILE_SUFFIX=".py"
+                COMMENT="# "
+                MODE=644
+                ;;
+
+            pythonScript)
+                TEMPLATE=$T_DIR/$OPTION.template
+                FILE_NAME=""
+                FILE_SUFFIX=".py"
+                COMMENT="# "
+                MODE=644
+                ;;
+
+            script)
+                TEMPLATE=$T_DIR/$OPTION.template
+                FILE_NAME=""
+                FILE_SUFFIX=".sh"
+                COMMENT="# "
+                MODE=755
+                ;;
+
+            tclScript)
+                TEMPLATE=$T_DIR/$OPTION.template
+                FILE_NAME=""
+                FILE_SUFFIX=".tcl"
+                COMMENT="# "
+                MODE=755
+                ;;
+
+            Makefile_for_WS)
+                TEMPLATE=$ACSROOT/include/Makefile_WS.template
+                FILE_NAME="Makefile"
+                FILE_SUFFIX=""
+                COMMENT="# "
+                MODE=644
+                ;;
+
+            Makefile_for_PACKAGE)
+                TEMPLATE=$ACSROOT/include/Makefile_PACKAGE.template
+                FILE_NAME="Makefile"
+                FILE_SUFFIX=""
+                COMMENT="# "
+                MODE=644
+                ;;
+
+            Makefile_for_LCU)
+                TEMPLATE=$ACSROOT/include/Makefile_LCU.template
+                FILE_NAME="Makefile"
+                FILE_SUFFIX=""
+                COMMENT="# "
+                MODE=644
+                ;;
+
+            RELEASE_NOTES)
+                TEMPLATE=$T_DIR/$OPTION.template
+                FILE_NAME="RELEASE_NOTES"
+                FILE_SUFFIX=""
+                COMMENT=""
+                MODE=644
+                ;;
+
+            *)  
+                TEMPLATE=""
+                echo ">>$OPTION<< is an invalid choice. \c"
+                echo "Press <Enter> to continue . . .\c"
+                read a
+                ;;
+        esac
+
+        if [ ! "$TEMPLATE" = "" ]
+        then
+
+##
+##
+	    while clear
+	    do
+	    cat << abcd
+
+
+-------------------------------------------------------------------------------
+Please specify your affiliation:   
+
+          ______________ NRAO             
+          ______________ ESO             
+          ______________ IRAM             
+          ______________ MPIfR             
+          ______________ ATC             
+          ______________ NAOJ
+          ______________ COSYLAB
+          ______________ OBSPM
+          ______________ none
+
+abcd
+
+	    echo "type your affiliation: \c"
+	    read OPTION
+ 
+	    echo " - - - - - - - - - - - - - - - - - - - - - - - -"
+
+	    case $OPTION in
+
+            NRAO)
+                COPYRIGHT="Copyright (c) Associated Universities Inc."
+                ;;
+
+	    ESO)
+                COPYRIGHT="Copyright (c) European Southern Observatory"
+                ;;
+
+	    IRAM)
+                COPYRIGHT="Copyright (c) Institut de Radioastronomie Millimetrique"
+                ;;
+
+	    MPIfR)
+                COPYRIGHT="Copyright (c) Max Plank Institut fuer Radioastronomie"
+                ;;
+
+	    ATC)
+                COPYRIGHT="Copyright (c) UK Astronomy Technology Centre, Science and Technology Facilities Council"
+                ;;
+
+	    NAOJ)
+                COPYRIGHT="Copyright (c) Nobeyama Radio Observatory - NAOJ"
+                ;;
+
+            COSYLAB)
+                COPYRIGHT="Copyright (c) Control System Laboratory"
+                ;;
+
+            OBSPM)
+                COPYRIGHT="Copyright (c) L'Observatoire astronomique de Paris-Meudon-Nancay"
+                ;;
+
+	    none) 	
+                COPYRIGHT="Copyright (c) UNSPECIFIED - FILL IN"
+                ;;
+
+            *)  
+		COPYRIGHT=""
+                echo ">>$OPTION<< is an invalid choice. \c"
+                echo "Press <Enter> to continue . . .\c"
+                read a
+                ;;
+
+	    esac
+
+	    if [ ! "$COPYRIGHT" = "" ]
+	    then
+		echo $COPYRIGHT
+		break
+	    fi
+	    done
+	    COPYRIGHT=$COPYRIGHT", "`date "+%Y"`
+##
+##
+            if [ "$FILE_NAME" = "" ]
+            then
+                # prompt the user for a file name
+                echo "\noutput file name (without extention) or press <Enter> to quit: \c"
+                read FILE_NAME
+                if [ "$FILE_NAME" = "" ]
+                then 
+                    exit
+                fi 
+            fi
+
+            FILE=${FILE_NAME}${FILE_SUFFIX}
+
+# DEBUG - I don't know who's debug code this is, so I did not remove it.
+#            echo "hjdsjdsajd $FILE"
+#            echo "********************* $TEMPLATE"
+# DEBUG
+
+            # check that output file does not exist
+            if [ -f ${FILE} -o -d ${FILE} ]
+            then
+                echo "\n>>$FILE<< already exists. Press <Enter> to continue . . .\c"
+                read a
+                exit
+                #
+                # instead of getting out, it would be better to prompt the user
+                # for overriding. NEXT RELEASE!
+
+            else
+                if grep -v "#%#" $TEMPLATE > ${FILE}.BAK
+                then 
+                    chmod ${MODE} ${FILE}.BAK
+		    # setup preamble
+		    # notice that this cumbersome carriage returns
+		    # are needed by sed
+		    # I would also prefer to have this preamble into
+		    # a separate file, but that would make things even
+		    # more complicated for a dumb bash shell.
+		    PREAMBLE='ALMA - Atacama Large Millimiter Array\
+'${COMMENT}${COPYRIGHT}' \
+'${COMMENT}'\
+'${COMMENT}'This library is free software; you can redistribute it and\/or\
+'${COMMENT}'modify it under the terms of the GNU Lesser General Public\
+'${COMMENT}'License as published by the Free Software Foundation; either\
+'${COMMENT}'version 2.1 of the License, or (at your option) any later version.\
+'${COMMENT}'\
+'${COMMENT}'This library is distributed in the hope that it will be useful,\
+'${COMMENT}'but WITHOUT ANY WARRANTY; without even the implied warranty of\
+'${COMMENT}'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\
+'${COMMENT}'Lesser General Public License for more details.\
+'${COMMENT}'\
+'${COMMENT}'You should have received a copy of the GNU Lesser General Public\
+'${COMMENT}'License along with this library; if not, write to the Free Software\
+'${COMMENT}'Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA'
+		    #
+                    # setup author and date:
+                    AUTHOR=`whoami`
+                    #DATE=`date "+%d\/%m\/%y"`
+                    # New format for the date
+                    DATE=`date "+%Y-%m-%d"`
+                    sed  -e "1,$ s/NNNNNNNN/$AUTHOR/g" \
+			 -e "1,$ s/PPPPPPPP/$PREAMBLE/g" \
+                         -e "1,$ s/dd\/mm\/yy/$DATE/g" \
+                         -e "1,$ s/I>-<d/\Id/g"       \
+                         ${FILE}.BAK > ${FILE}
+                    rm -f ${FILE}.BAK
+                    echo "\n"
+                    echo "\n>>$FILE<< created."
+                else
+                    echo "\ncannot create >>$FILE<<."
+                fi
+                echo "\n press <Enter> to continue: \c"; read a
+
+            fi
+        else
+            # no templates choosen, ask again
+            continue
+        fi
+    else
+        # <Enter> was pressed --> exit (up to previous level)
+        clear
+        exit
+    fi
+#
+done
+#
+#end-of-procedure
+
+
+
+# ___oOo___

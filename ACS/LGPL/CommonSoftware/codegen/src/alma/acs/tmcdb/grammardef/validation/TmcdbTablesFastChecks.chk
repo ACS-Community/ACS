@@ -1,0 +1,62 @@
+import tmcdbTables;
+
+extension alma::acs::tmcdb::grammardef::util;
+
+// TODO: Add the following constraints:
+//  * Default values depend on the type of the column (strings and numbers)
+//  * CHECK values depend on the type of the column
+//  * in FOREIGN references, the type of the column referencing the foreign table must be the same
+//    that the type of the primary key of the referenced table
+
+context Table#name ERROR "Duplicated table: " + this.name:
+ 	this.getModel().allTables().select(e|e.name == this.name).size == 1;
+
+context Key#columns ERROR "Duplicated column in definition of key":
+	columns.name.forAll(e| columns.name.select(f|f == e).size == 1 );
+
+context Key#pieces ERROR "Duplicated column in definition of key generation":
+	pieces.name.forAll(e| pieces.name.select(f|f == e).size == 1 );
+
+context Key ERROR "Key column cannot be part of its generation":
+	columns.name.forAll(e| pieces.name.select(f| f == e).size == 0 );
+
+context Column ERROR "Duplicated column name '" + this.name + "'":
+	this.getTable().getColumns().select(e| e.name == this.name).size == 1;
+
+context DefaultSpecifier ERROR "Invalid default value for boolean type":
+	BooleanType.isInstance(this.getColumn().type) implies DefaultBooleanValue.isInstance(this.defaultValue);
+
+context DefaultSpecifier ERROR "Invalid default value for numeric type":
+	IntTypes.isInstance(this.getColumn().type) implies DefaultIntValue.isInstance(this.defaultValue);
+
+context DefaultSpecifier ERROR "Invalid default value for string type":
+	(LengthDefinedTypes.isInstance(this.getColumn().type) || TextTypes.isInstance(this.getColumn().type))
+	implies DefaultStringValue.isInstance(this.defaultValue);
+
+context CheckConstraint#possibleValues ERROR "Invalid possible values for column " + column.name:
+	(StringPossibleValues.isInstance(possibleValues) implies ( LengthDefinedTypes.isInstance(column.type) || TextTypes.isInstance(column.type) ) )
+&&  (IntegerPossibleValues.isInstance(possibleValues) implies ( IntTypes.isInstance(column.type) ) );
+
+context Constraint#name ERROR "Duplicate constraint name: " + name:
+	getTable().getCheckConstraints().union(getTable().getForeignKeyConstraints()).union(getTable().getUniquenessConstraints()).name.select(e|e==name).size == 1;
+
+context Constraint WARNING "Constraint name for '" + name + "' is too long (more than 30 characters). This may lead to problems with generated code for Oracle DB engine":
+	name.length <= 30;
+
+////////////////////////////////////////////
+// Constraints derivated from inheritance //
+////////////////////////////////////////////
+
+// TODO: Add a lot of new constraints!!
+
+// Tables that inherit from other ones can contain no columns, superParent tables must have
+context Table ERROR "Table " + name + " does not define any column":
+	!isChild implies columns.size > 0;
+
+// Simple tables must define a key
+context Table#name ERROR "Key not defined for table " + name:
+	superTable == null implies key != null;
+
+// Tables inheriting from other should not define a key, they inherit it
+context Table#key ERROR "Key shoud not be defined for table " + name + ". It inherits the defined key in table " + superTable.name:
+	superTable != null implies key == null;

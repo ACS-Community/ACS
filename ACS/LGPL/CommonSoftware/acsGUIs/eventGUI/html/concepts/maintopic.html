@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>The Event GUI</title>
+</head>
+
+<body>
+<h1>Event GUI Overview</h1>
+The eventGUI is intended as a replacement for the Python-based acseventbrowser,
+which has shown stability problems in the past. The new, Eclipse RCP (Java)-based
+eventGUI does not include all the functionality that was offered by its
+predecessor, but has other functionality not in the Python-based application, namely,
+the display of pertinent statistics about the Notify Service and its channels provided by
+the TAO Monitor and Control extensions to the Notify Service. The eventGUI should also
+be easier to use and understand.
+<br>
+<table class="../images/eventGUI.png">
+<caption align="bottom"><b>The main Event GUI screen, with the Event Detail View displayed in the lower right-hand quadrant.</b></caption>
+<tr><td><img src="../images/eventGUI.png"></td></tr>
+</table>
+<br>
+<!-- <img src="../images/eventGUI.png" alt="eventGUI default screen" /> <!-- width="100%" height="100%" -->
+
+There are three principal views:
+<h2>Service Summary View</h2>
+This hierarchical view displays high-level information concerning each of the instances of
+the CORBA Notify Service that are currently running under ACS. At the time
+of writing, these are:
+<ol>
+<li><b>Default Notify Service</b>: the first (default) instance to be used by subsystems for event communication; 
+any non-preconfigured additional instances are shown as well if they are running</li>
+<li><b>Logging Notify Service</b>: currently carries logs across the network</li>
+<li><b>Archiving Notify Service</b>: carries those BACI properties for which it is enabled in the (TM)CDB</li>
+<li><b>Archiving Notify Service</b>: carries alarms across the network</li>
+</ol>
+The leaves of the explorer-like tree show the number of consumers and the number of
+suppliers for each of these Services. When monitoring is enabled (right-click
+anywhere on the View and select "Start monitoring"), the recent (within the last
+10 seconds) increase or decrease in the number of suppliers/consumers will be
+shown next to the totals.
+<h2>Channel Tree View</h2>
+This hierarchical view shows, for each Notify Service instance, the channels that exist within that instance,
+the numbers and names of components (or, for C++, containers of components) that are subscribing to or consuming
+events on that channel. The current size of the event queue for each channel, which is normally zero for a
+well-behaved system, is also shown. When the queue size for a channel is &gt; 0, a list of the slowest
+consumers on that channel is displayed.
+
+For each channel, right-clicking on the channel name offers the option to subscribe or unsubscribe (if
+already subscribed) to all events on that channel. There will normally be a delay of up to 60 seconds
+before the subscription becomes effective, since that is the refresh cycle time for the monitoring thread
+in the eventGUI. Unsubscribing, on the other hand, is nearly immediate. 
+
+A shortcut which allows you to
+subscribe to all events on all channels at once (which mimics the previous default behavior of the eventGUI)
+is available in the View's drop-down menu. <b>You are advised not to do this on a full-up ALMA system, as
+the eventGUI will almost surely not be able to keep up with an influx of several hundred events/s; this, in
+turn, can impact the performance of the Notify Service itself and, if prolonged, lead to exhaustion of the
+Notify Service's memory.</b>
+<h2>Event List View</h2>
+Unless filtering (see below) is active, this View displays a scrolling list
+of events, updated roughly once per second. A handful of high-level fields are shown
+for each event, namely:
+<ol>
+<li><b>Timestamp</b>: </li>
+<li><b>Event source</b>: </li>
+<li><b>Number of events received for this channel</b>: </li>
+<li><b>Event type</b>: </li>
+<li><b>Number of events of this type received</b>: </li>
+</ol>
+Available memory is checked periodically, and when a low-water mark is reached, the
+oldest events will be deleted from the list. Note the contrast between this behavior and
+that of <tt>jlog</tt>, which can buffer log records to disk.
+
+When this View is selected, the latest 10-second average of the arriving event rate (for those channels
+to which the eventGUI is subscribing) is displayed in the status bar at the very bottom of the eventGUI
+main window.
+<h3>Filtering</h3>
+This facility, most assuredly in a preliminary, experimental state, can select which <i>incoming</i> events
+to display based on their type. Entering any part of a regular expression into the box
+above the list will show only those events whose type is matched by the expression, and only
+those which arrive <i>after</i> the filter is set. To resume full event display, the filter
+text box should be cleared; again this is effective only for events arriving after the
+filter box has been cleared.
+Clicking on an event in this view will open the Event Detail View.
+<h3>Event Detail View</h3>
+This view (still somewhat of a work in progress) displays the decoded contents
+of the selected event. In the case of an event that contains one or more
+arrays, only the first 5 elements of the array will be shown.
+
+Note that for large events, <I>e.g.</I>. with thousand-element arrays, display
+of the event may take some time, as indicated by a rotating cursor.
+
+</body>
+</html>

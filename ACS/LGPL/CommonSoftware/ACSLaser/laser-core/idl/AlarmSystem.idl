@@ -1,0 +1,313 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+
+#ifndef _CERNALARMSERVICE_IDL_
+#define _CERNALARMSERVICE_IDL_
+
+#include <CosProperty.idl>
+#include <AcsAlarmSystem.idl>
+
+#pragma prefix "alma"
+
+module alarmsystem
+{
+	/*
+	 * ALARM SYSTEM DEFINITIONS
+	 */
+	
+	struct Category
+	{
+  		long categoryId;
+  		string name;
+  		string description;
+  		string path;
+  		boolean leaf;
+	};
+		
+	typedef sequence<Category> CategorySequence;
+
+
+	struct ResponsiblePerson
+	{
+		long responsibleId;
+		string firstName;
+		string familyName;
+		string eMail;
+		string gsmNumber;
+		string phoneNumber;
+	};
+
+	typedef sequence<ResponsiblePerson> ResponsiblePersonSequence;
+
+
+	struct Source
+	{
+		string sourceId;
+		string description;
+		ResponsiblePerson sourceResponsiblePerson;
+	};	
+
+	typedef sequence<Source> SourceSequence;
+
+
+	struct Location
+	{
+		string locationId;
+		string floor;
+		string room;
+		string position;
+		string mnemonic;
+
+		// Building
+		string buildingNb;
+		string site;
+		long zone;
+		string map;
+	};
+
+	struct Timestamp
+	{
+		// milliseconds since January 1, 1970, 00:00:00 GMT
+		long long miliseconds;
+		long nanos;
+	};
+	
+	struct Status
+	{
+		boolean active;
+		boolean masked;
+		boolean reduced;
+		Timestamp sourceTimestamp;
+		string sourceHostname;
+		Timestamp userTimestamp;
+		Timestamp systemTimestamp;
+		CosPropertyService::Properties userProperties;
+	};
+	
+	struct Alarm
+	{
+		string alarmId;
+		Triplet alarmTriplet;
+		string systemName;
+		string identifier;
+		string problemDescription;
+		long priority;
+		string cause;
+		string action;
+		string consequence;
+		Source alarmSource;
+		string helpURL;
+		string piquetGSM;
+		string piquetEmail;
+		ResponsiblePerson alarmResponsiblePerson;
+		Location alarmLocation;
+		CategorySequence categories;
+		Status alarmStatus;
+		boolean instant;
+		boolean nodeParent;
+		boolean multiplicityParent;
+		boolean nodeChild;
+		boolean multiplicityChild;
+	};
+	
+	typedef sequence<Alarm> AlarmSequence;
+
+
+
+	struct AlarmDefinition 
+	{
+		string faultFamily;
+		string faultMember;
+		long faultCode;
+		string systemName;
+		string identifier;
+		string problemDescription;
+		long priority;
+		string cause;
+		string action;
+		string consequence;
+		boolean instant;
+		string helpURL;
+		string building;
+		string mnemonic;
+		string floor;
+		string room;
+		string position;
+		string sourceName;
+		long responsiblePersonId;
+		string piquetGSM;
+		string piquetEmail;
+	};
+	
+	typedef sequence<AlarmDefinition> AlarmDefinitionSequence;
+	
+	struct CategoryDefinition
+	{
+		string path;
+		string description;
+	};
+	
+	typedef sequence<CategoryDefinition> CategoryDefinitionSequence;
+	
+	struct CategoryLink
+	{
+		CategoryDefinition category;
+		AlarmDefinition alarm;
+	};
+	
+	typedef sequence<CategoryLink> CategoryLinkSequence;
+	
+	struct MaintenanceMask 
+	{
+		long long begin; // Number of millisec...
+		long long end; // Number of millisec...
+	};
+	
+	struct ModeMask
+	{
+		string machineMode;
+	};
+	
+	struct MultiplicityThreshold
+	{
+		AlarmDefinition parent;
+		long threshold;
+	};
+	
+	typedef sequence<MultiplicityThreshold> MultiplicityThresholdSequence;
+	
+	struct ReductionLink
+	{
+		AlarmDefinition parent;
+		AlarmDefinition child;
+	};
+	
+	typedef sequence<ReductionLink> ReductionLinkSequence;
+	
+	struct ResponsiblePersonDefinition 
+	{
+		long responsibleId;
+		string firstName;
+		string familyName;
+		string eMail;
+		string gsmNumber;
+		string phoneNumber;
+		string whoURL;
+	};
+	
+	typedef sequence<ResponsiblePersonDefinition> ResponsiblePersonDefinitionSequence;
+	
+	struct SourceDefinition 
+	{
+		string name;
+		string description;
+		long connectionTimeout;
+		long responsibleId;
+		string hostName;
+	};
+ 
+	typedef sequence<SourceDefinition> SourceDefinitionSequence;
+
+	/*
+	 * ALARM SYSTEM EXCEPTIONS
+	 */
+
+	exception LaserDefinitionException 
+	{
+	};
+	
+	exception LaserProcessingException
+	{
+	};
+
+	/*
+	 * ALARM SYSTEM CORE SERVICE
+	 */
+	interface CERNAlarmService: AlarmService
+	{
+		typedef sequence<long> long_sequence;
+		
+		//
+		// Core Service
+		//
+		
+		AlarmSequence getActiveMultiplicityChildren(in string parentId);
+		AlarmSequence getActiveNodeChildren(in string parentId);
+		Alarm getAlarmById(in string id);
+		Alarm getAlarmByTriplet(in string ff, in string fm, in long fc);
+		AlarmSequence getAlarmsByCategory(in long categoryId);
+		AlarmSequence getAlarmsByPriority(in long priority);
+		AlarmSequence getAlarmsByResponsiblePerson(in long responsibleId);
+		AlarmSequence getAlarmsBySource(in string sourceId);
+		CategorySequence getCategories();
+		Category getCategoryByPath(in string path);
+		CategorySequence getCategoryChildren(in long nodeId);
+		Category getCategoryParent(in long nodeId);
+		string getCategoryRootTopic();
+		string getHeartbeatTopic();
+		long long getHeartbeatFrequency();
+		Category getCategoryTreeRoot();
+		string getClientRootTopic();
+
+		string getSearchRootTopic();
+		AlarmSequence getMultiplicityChildren(in string parentId);
+		AlarmSequence getMultiplicityParents(in string childId);
+		long getMultiplicityThreshold(in string parentId);
+		AlarmSequence getNodeChildren(in string parentId);
+		AlarmSequence getNodeParents(in string childId);
+
+		ResponsiblePersonSequence getResponsiblePersons();
+		SourceSequence getSources();
+		void select(in long_sequence categoryIds, in string client) raises (LaserProcessingException);
+		void search(in long_sequence categoryIds, in string sql, in string clientId);
+		void archiveSearch(in long_sequence categoryIds, in string sql, in string clientId);
+	
+		//
+		// Alarm Console
+		//
+		
+		string createAdminUser(
+			in string name,
+			in string password	
+		) raises (LaserDefinitionException);
+		string loginAdminUser(
+			in string name,
+			in string password	
+		);
+		void createCategory(
+			in string userId,
+			in CategoryDefinition definition
+		) raises (LaserDefinitionException);
+		void createSource(
+			in string userId, 
+			in SourceDefinition definition
+		) raises (LaserDefinitionException); 
+		void createAlarm(
+			in string userId, 
+			in AlarmDefinition definition
+		) raises (LaserDefinitionException);
+		
+	};
+};
+
+#endif
+

@@ -1,0 +1,16 @@
+SUP.
+Log outputed to the local file
+lcuboot: open
+baci::BACIThread::terminate
+baci::BACIThread::stop
+baci::BACIMonitor::monitorStateChanged
+baci::BACIMonitor::setUpdateMode
+baci::BACIMonitor::setLastTime
+baci::Monitor&lt;&gt;::getName
+baci::Monitor&lt;&gt;::getObjectState
+baci::Monitor&lt;&gt;::monitorStateChanged
+baci::Monitor&lt;&gt;::set_timer_trigger
+ACSAlarmSystemInterfaceFactory::init
+ACSAlarmSystemInterfaceFactory::init
+ACSAlarmSystemInterfaceFactory::initImplementationType entering
+ACSAlarmSystemInterfaceFactory::initImplementationType exiting

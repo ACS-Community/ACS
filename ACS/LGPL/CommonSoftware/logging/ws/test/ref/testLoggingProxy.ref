@@ -1,0 +1,20 @@
+1 - ----------T--:--:--.--- [GlobalLogger - ] log 1
+1 - ----------T--:--:--.--- [GlobalLogger - ] log 2
+1 - ----------T--:--:--.--- [GlobalLogger - ] log 3
+1 - ----------T--:--:--.--- [GlobalLogger - ] log 4
+1 - ----------T--:--:--.--- [GlobalLogger - ] log 5 - now will flush
+1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
+1 - LC: 1
+1 - LC: 0
+1 - LC: 2
+1 - LC: 3
+1 - LC: 4
+1 - ----------T--:--:--.--- [GlobalLogger - ] log to be auto-flushed
+1 - LC: 1
+1 - LC: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ] emerency log - should bypass cache
+1 - ----------T--:--:--.--- [GlobalLogger - main] a log that it is not sent to the CL
+1 - ----------T--:--:--.--- [GlobalLogger - trace log - to be ignored] 
+1 - ----------T--:--:--.--- problematic log that shall not contain non empty file, line etc. fields
+1 - LC: 0
+1 - LC: 1

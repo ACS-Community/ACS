@@ -1,0 +1,26 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeTestScript,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+#
+# vltMakeTestScript
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  20/10/94  created
+#
+
+#************************************************************************
+#   NAME
+#   vltMakeTestScript - dummy shellscript
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   This program is part of the vltMake modular test package
+#
+#------------------------------------------------------------------------
+echo "vltMakeTestScript - PASS"
+#___oOo___

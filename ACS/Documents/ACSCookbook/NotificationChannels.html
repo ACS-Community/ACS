@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>  
+  <meta name="generator" content="HTML Tidy, see www.w3.org">
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Notification Channels</title>
+  <link rel="StyleSheet" href="ACSCookbook.css" type="text/css" media="screen">
+</head>
+<body style="color: lightgray; background-color: darkblue">
+<!--ALMA Logo Section-->
+<div class="almalogo">
+      <a href="http://www.eso.org/projects/alma/develop/acs"><img alt="ALMA Logo" src="http://www.eso.org/projects/alma/develop/software/alma-it/images/almapic.jpg" align="middle"></a> <a href="index.html">ACS Cookbook</a>: Notification Channels
+    </div>
+<!--Subsections-->
+<!--============================================================================-->
+<div class="overview">
+<h2>Overview</h2>
+<p>
+The notification channel APIs provide developers with an easy-to-use,
+high-performance, event-driven system in C++, Java, and Python. The API
+is based on a push event channel model where event suppliers push
+events onto the channel and event consumers process these
+asynchronously. It is also a many-to-many publishing model whereby
+multiple suppliers send events to multiple consumers on the same
+channel. There are only two classes developers need to be concerned
+with: SimpleSupplier and SimpleConsumer. SimpleSupplier was designed so
+that events could be published in the simplest manner possible without
+exposing any CORBA to the developer. Essentially all that needs to be
+known is the channel&#8217;s name and the IDL structure being published. With
+the SimpleConsumer class, the developer is responsible for providing
+the channel&#8217;s name as well as associating event types with functions
+that will handle them.<br>
+</p>
+</div>
+<!--============================================================================-->    
+<div class="briefexample">
+<h2>High-level Guide</h2>
+<ol>
+  <li>Determine whether or not the ACS event channel API is suitable
+      for your needs:
+      <ul>
+	<li>Will more than one piece of code be interested in the data
+	    being sent? If not, considering using <a class="doclink"
+	    href="Callbacks.html">Callbacks</a>.
+	</li>
+	<li>Is the data being sent very large? If so, considering using
+	    <a class="doclink" href="BulkData.html">Bulk Data Transfer</a>.
+	</li>
+	<li>Is the data being sent on a very low frequency? If so, considering using
+	    normal CORBA client invocations.
+	</li>
+      </ul>
+  </li>
+  <li>Define a struct in IDL to serve as your event. The name of this
+      struct should have "Event" appended to it.
+  </li>
+  <li>Determine the pre-existing channel (defined by a string) your
+      event should be published on or come up with a new channel name
+      defined as const string in IDL with "CHANNEL" appeneded to it.
+  </li>
+  <li>
+      To publish an event, instantiate an ACS Supplier or
+      Supplier-derived object and utilize the Supplier's publishEvent
+      method. Details on doing this can be found <a class="doclink" href="http://www.eso.org/projects/alma/develop/acs/OnlineDocs/Notification_Channel_Module_Software_Design.pdf">here</a>.
+  </li>
+  <li>
+      To subscribe to an event, instantiate an ACS Consumer or
+      Consumer-derived object and utilize the Consumer's addSubscription
+      method. addSubscription requires the developer to provide the
+      event type and also a function or method capable of consuming
+      that particular type of event. Details on doing this can be found <a class="doclink" href="http://www.eso.org/projects/alma/develop/acs/OnlineDocs/Notification_Channel_Module_Software_Design.pdf">here</a>.
+  </li>
+</ol>
+
+</div>
+<!--============================================================================-->
+    
+<div class="specialnotes">
+      <h2>
+        Special Notes
+      </h2>
+      <ul>
+        <li>Events are defined as IDL structs and the name of the IDL struct should have &#8220;Event&#8221; appended to it.<br>
+</li><li>Consumers and suppliers locate channels by name. These names
+are defined as const strings in IDL and the static variable defining
+the name should have &#8220;CHANNEL&#8221; appended to its own name. <br>
+  </li>
+  <li>There is no SimpleConsumer class in Java although Consumer performs the same functionality.<br>
+  </li>
+  <li>Supplier and Consumer are to be used in Python because SimpleSupplier and SimpleConsumer do not exist there.<br>
+  </li>
+  <li>Callbacks are a more appropriate form of asynchronous
+communication when there will only be one supplier sending events to a
+single consumer object.<br>
+  </li>
+  <li>A tool has been developed which is capable of monitoring all events. Look for &#8216;eventbrowser&#8217; in the Related Documents section. <br>
+
+        </li>
+
+      </ul>
+    </div>
+
+
+
+
+
+    <!--============================================================================-->
+    
+<div class="examples">
+      <h2>
+        Examples in the ALMA CVS Repository
+      </h2>
+      <table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td class="examples" style="vertical-align: top;">
+              ACS/LGPL/CommonSoftware/acsexmpl/ws/include/acsexmplFridgeImpl.h (C++ Supplier)<br>
+ACS/LGPL/CommonSoftware/acsexmpl/ws/src/acsexmplFridgeImpl.cpp (C++ Supplier)<br>
+ACS/LGPL/CommonSoftware/acsexmpl/ws/src/acsexmplClientFridgeNC.cpp (C++ Consumer)<br>
+ACS/LGPL/CommonSoftware/jcontexmpl/src/alma/demo/EventSupplierImpl/ (Java Supplier)<br>
+ACS/LGPL/CommonSoftware/jcontexmpl/src/alma/demo/EventConsumerImpl/ (Java Consumer)<br>
+ACS/LGPL/CommonSoftware/acspyexmpl/src/acspyexmplFridgeNCSupplier.py (Python Supplier)<br>
+ACS/LGPL/CommonSoftware/acspyexmpl/src/acspyexmplFridgeNCConsumer.py (Python Consumer)<br>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+
+
+
+    <!--============================================================================-->
+    
+<div class="relateddocuments">
+      <h2>
+        Related Documents
+      </h2>
+      <table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td class="relateddocuments" style="vertical-align: top;">
+              <a class="doclink" href="http://www.eso.org/projects/alma/develop/acs/OnlineDocs/Notification_Channel_Module_Software_Design.pdf">ACS Notification Channel Design and Tutorial</a><br>
+Associated inline documentation for the <a class="doclink" href="http://websqa.hq.eso.org/alma/snapshot/ACS-Reports/Documentation/ACS/LGPL/CommonSoftware/acsnc/ws/api/">C++</a>, <a class="doclink" href="http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACS_docs/java/namespacealma_1_1acs_1_1nc.html">Java</a>, and <a class="doclink" href="http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACS_docs/py/Acspy.Nc.html">Python</a> APIs<br>
+      <a class="doclink" href="Callbacks.html">Callbacks</a><br>
+      <a class="doclink" href="EventBrowser.html">Event Browser</a><br>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+
+
+
+    <!--============================================================================-->
+    <!--Keywords section-->
+    
+<div class="keywords">
+      <br>
+      <br>
+       Keywords: Notification Service, Supplier, Consumer, Event, Channel, IDL, C++, Java, Python
+    </div>
+
+
+
+
+
+    <!--============================================================================-->
+  </body></html>

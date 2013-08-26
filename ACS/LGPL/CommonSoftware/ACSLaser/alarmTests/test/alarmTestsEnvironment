@@ -1,0 +1,15 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: alarmTestsEnvironment,v 1.1.1.1 2009/11/22 19:49:02 acaproni Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+
+set ACS_TMP $env(PWD)/tmp
+set env(ACS_TMP) $ACS_TMP
+
+#
+# ___oOo___
+

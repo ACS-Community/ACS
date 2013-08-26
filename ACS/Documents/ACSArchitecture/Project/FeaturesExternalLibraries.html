@@ -1,0 +1,162 @@
+<html>
+
+
+
+<head>
+
+
+
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+
+
+
+<title>FeaturesFITSLibraries</title>
+
+
+
+<style><!--
+
+
+
+.Normal
+
+
+
+	{font-size:12.0pt;
+
+
+
+	font-family:"Times New Roman";}
+
+
+
+-->
+
+
+
+</style>
+
+
+
+<meta name=Template content="C:\Program Files\MSOffice\Office\html.dot">
+
+
+
+</head>
+
+
+
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+
+
+
+<h2>External Libraries</h2>
+
+
+
+<h3>The common software provides and integrates also external class libraries 
+
+  to solve common development problems. Some of these libraries are described 
+
+  in this section, but libraries are added upon request from the subsystems.</h3>
+
+<p> A list of libraries has to be compiled and standard off-the-shelf libraries 
+
+  should be used whenever possible, eventually with a small wrap around to make 
+
+  them uniform with the rest of the system.</p>
+
+
+
+<p>Libraries and application frameworks developed by other teams (Control System, 
+
+  Correlator, Data Flow, Archiving…) and recognized as of general use will have 
+
+  to be integrated in the Common Software kernel. Input is required in these areas.</p>
+
+<p>Packaging all these libraries, even if off-the-shelf, in the ACS distribution 
+  ensures that all sites involved in the project have the same version of the 
+  packages and that they are built and installed with the same options.</p>
+
+<p>Depending on the specific licensing agreements for developments external to 
+  ALMA, such libraries will be publicly available with each ACS installation package 
+  or only for specific ALMA internal packages where the library is actually used 
+  according to the agreed license.</p>
+
+<h3>Some libraries provided with ACS</h3>
+
+<ul>
+
+  <li> FITS package is made available for the handling of standard file formats 
+
+    (FITS files) <a
+
+
+
+href="ReferenceDocuments.html#RD01">[RD01 - 7.2.1 FITS]</a>.</li>
+
+  <li>Mathematical libraries (Fats, Fitting) <a href="ReferenceDocuments.html#RD01">[RD01 
+
+    - 5.3.2 Mathematics]</a>, units conversion and handling (based on the AIPS++ 
+
+    unit management classes)</li>
+
+  <li>Plotting tools <a href="ReferenceDocuments.html#RD45">[RD45 - EVLA Engineering 
+
+    Software Requirements, 4 Plotting]</a><a href="ReferenceDocuments.html#RD46">[RD46 
+
+    - EVLA Array Operations Software Requirments, 3.5 Plotting]</a>.<br>
+    An advanced java class library for plotting and charts <a href="ReferenceDocuments.html#RD47">[RD47 
+    - JFreeChart]</a> is integrated in ACS as described in the User Interface 
+    Libraries and Tools section.<br>
+    A Python library for plotting is also included to allow plotting from scripting 
+    language <a href="ReferenceDocuments.html#RD48">[RD48 - Matplotlib]</a>. These 
+    are the building block for the implementation of a generic plotting tool a 
+    required in <a href="ReferenceDocuments.html#RD45">[RD45]</a><a href="ReferenceDocuments.html#RD46">[RD46]</a>. 
+    We plan to use already available tools built on top of these libraries, with 
+    minimal customization.</li>
+
+  <li>Analysis tools <a href="ReferenceDocuments.html#RD45">[RD45 - EVLA Engineering 
+
+    Software Requirements, 5 Analysis]</a><br>
+
+    Python numerical and mathematical libraries are integrated in ACS (see <a href="ReferenceDocuments.html#RD48">[RD48 
+
+    - Matplotlib]</a> and the family of related packages). AIPS++ is also available 
+
+    in ACS distributions and interoperable with ACS. These are all the building 
+
+    block needed to write analysis tools easily accessible to engineers and operators. 
+
+    We consider Python the best of the supported languages to provide such features, 
+
+    since users can develop easily own applications build on top of a basic framework.</li>
+
+  <li>Documentation tools <a href="ReferenceDocuments.html#RD45">[RD45 - EVLA 
+
+    Engineering Software Requirements, 5 Documentation and Help]</a><a href="ReferenceDocuments.html#RD46">[RD46 
+
+    - EVLA Array Operations Software Requirments, 1.4 Online Help]</a>. See also 
+
+    GUI section for online and context sensitive help/documentation from applications.<br>
+
+    ACS integrates tools to automatically produce architecture, design and code 
+
+    documentation in the various languages. The documentation is web-based and 
+
+    follows the standards defined by Software Engineering.<br>
+
+    Java user interfaces will rely on standard Java documentation tools.<br>
+    ACS Logging System, Error System and Alarm System include features specifically 
+    designed to provide online documentation (see respective sections). </li>
+
+</ul>
+
+</body>
+
+
+
+</html>
+
+
+

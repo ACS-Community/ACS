@@ -1,0 +1,274 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: doc,v 1.31 2002/06/08 17:20:41 vltsccm Exp $" 
+#
+# doc
+#
+# who        when        what
+# ---------  ----------  ----------------------------------------------
+# G.Filippi  23-12-1993  created 
+# G.Filippi  12-01-1994  rules for docId added
+# G.Filippi  11-02-1994  indexGroups documented.
+# G.Filippi  14-02-1994  search by keyword documented.
+#
+
+#************************************************************************
+#   NAME
+#   doc - menu driven utility to access VLT Software Documents Area
+# 
+#   SYNOPSIS
+#       doc
+# 
+#   DESCRIPTION
+# 
+#   The documents in the VLT Software Documents Archive area are accessible 
+#   in READ to everybody and in WRITE to the author of a document.
+#   
+#   "doc" provides an easy access system to such a structure.
+#   The utility is menu driven and the menus are self explanatory.
+#   
+#   As general rules:
+#   
+#      - an empty selection (<Enter>) goes one level up
+#   
+#      - the easiest way to select is to use the mouse cut-paste features:
+#           1) possible answers are listed.
+#           2) place the cursor at the beginning of your choice
+#           3) left-click and move to the end of the line, then release
+#              (the best is that you include in your selection also the EOL)
+#           4) place the cursor after the prompt (option:) and left-click
+#           5) center-click (your selection is typed there, if EOL was 
+#              included, the line is also terminated and the utility 
+#              executes your choice)
+#
+#   ARCHIVE STRUCTURE
+#
+#   The following is the structure of the VLT Software Documents Archive
+#   area. It is intended to store files involved in the production of the
+#   documentation of the VLT Software and ii does not substitute the VLT
+#   Archive. The archive area is under the responsibility of the SCCM.
+#   
+#   Under the archive root:
+#   
+#      - a directory for each document. The directory name is the
+#        document number.
+#      - one or more ASCII file named "index<docGroup>" listing the title and the
+#        number of the document available in the archive.
+#   
+#   Under each document, a "issue_N.M" subdirectory for each official issue.
+#   
+#   Under each official issue:
+#      - "text" directory for the final version of all text and figure files 
+#      - one "prep<k>" directory for each intermediate draft. 
+#   
+#   Each "prep<k>}) collects all files related to the review procedure 
+#   (review call, comment list, etc.) and has a "text" subdirectory to store
+#   all text and figure files of the draft of the document.
+#   
+#   REMARK: the use of the the keywords: issue, prep, text is MANDATORY.
+#   
+#   VLT_DOCARCHIVE_ROOT/
+#    |
+#    |-indexGroups
+#    |-index<docGroup>
+#    |-keywords/
+#    |         |---.... (temporary files)
+#    |
+#    |
+#    |-VLT-SPE-ESO-pppppp-nnnn      (document)
+#    |        |
+#    |        |--issue_1.0/
+#    |        |       |--prep1/   (review files:comments, 
+#    |        |       |    |          comment list, etc.)
+#    |        |       |    +--text   (text files)
+#    |        |       |
+#    |        |       |--prep2/
+#    |        |       |     |
+#    |        |       |     +--text
+#    |        |       |    
+#    |        |       |    .
+#    |        |       | (other drafts)
+#    |        |       |    .
+#    |        |       |
+#    |        |       |--prepN/    (last review, normally external)
+#    |        |       |     |
+#    |        |       |     +--text
+#    |        |       | 
+#    |        |       +--text         (text files of archived issue)
+#    |        |
+#    |        |--issue_2.0/
+#    |        |       |
+#    |        |       .
+#    |        .  
+#    |        .
+#    |
+#    |
+#    |-VLT-SPE-ESO-pppppp-nnnn      (another document)
+#    |        |
+#    |        |--issue_1.0/
+#    |        |       |--prep1/   (review files:comments, 
+#    |        .       .  
+#    |        .
+#   
+#   
+#   ADD A NEW DOCUMENT
+#   
+#   The $VLT_DOCARCHIVE_ROOT directory and the VLT_DOCARCHIVE_ROOT/indexN 
+#   files are writeble to everybody.
+#   
+#   To add a document do the following steps:
+#   
+#     - decide:
+#   
+#          + to which group the document belongs. Possible groups are listed
+#            in the file VLT_DOCARCHIVE_ROOT/indexN and displaied at the 
+#            beginning. (Please, follow the convention already established,
+#            if not other people looking for your document will be confused)
+#   
+#          + the title of the document
+#
+#          + the identifier of the document. It should be the document number.
+#            If, for some reason, there is not a document number, make an
+#            identifier (UPPERCASE). 
+#            The docId is used to name the root directory of the document. 
+#            
+#
+#     - edit the file VLT_DOCARCHIVE_ROOT/index<docGroup>
+#
+#            insert a line   <docTitle>. . . . <docId>
+#
+#            The index<docGroup> files are displaied to user. Please respect the 
+#            already existing format. If needed, new layout text can be added. 
+#
+#            FORMAT:
+#              <docId>    [A-Z, 0-9, "-"] and must containing at least one "-"
+#              <docGroup> is limited to one digit [0-9, A-Z, a-z]
+#
+#     - create the document root directory  
+#
+#                     mkdir VLT_DOCARCHIVE_ROOT/<docId>
+#
+#     - create the document structure 
+#
+#          1st issue:   mkdir VLT_DOCARCHIVE_ROOT/<docId>/issue_1.0
+#          1st prep.:   mkdir VLT_DOCARCHIVE_ROOT/<docId>/issue_1.0/prep1
+#                       mkdir VLT_DOCARCHIVE_ROOT/<docId>/issue_1.0/prep1/text
+#
+#
+#   DOCUMENTS LIFE CYCLE
+#
+#   The normal life cycle of a document is the following (all actions are
+#   done under the document/issue directory and are under the responsibility
+#   of the author):
+#
+#     - using a text tools (editor, LaTeX, FrameMaker, xfig, etc) the document 
+#       is written. All the related files are in prep/text or subdirectories.
+#
+#     - the document is distributed for review (prep/reviewCall)
+#
+#     - comments are collected from the reviewers (prep/XXX.comments) and
+#       listed (prep/commentList
+#
+#     - comments are discussed (either in a meeting or directly) and 
+#       according to the final decision (prep/reviewReport):
+#
+#         - REJECTED: a new preparation is required. 
+#           The document directory structure must be updated adding:
+#
+#            prep.:   mkdir VLT_DOCARCHIVE_ROOT/<docId>/issue_1.0/prep<n+1>
+#            text :   mkdir VLT_DOCARCHIVE_ROOT/<docId>/issue_1.0/prep<n+1>/text
+#
+#           Files are copied in the new area 
+#
+#                     cp -R  prep<n>/text  prep<n+1>/text
+#           and the cycle restarts from editing.
+#
+#         - ACCEPTED: the final version is edited according to review outcomes.
+#           The document directory structure must be updated adding:
+#
+#                     mkdir VLT_DOCARCHIVE_ROOT/<docId>/issue_1.0/text
+#
+#           Files are copied in the new area 
+#
+#                     cp -R  prep<n>/text  text
+#
+#           and edited. 
+#
+#
+#     - the original is signed (author, approver, releaser) and with the 
+#       distribution list send to the VLT Archive for distribution.
+#
+#   POSTSCRIPT
+#
+#   To allow the display of any document, a PostScript version of the whole
+#   document, including the figures, and called "Document.ps" should be
+#   created in each "issue/prep/text" and "issue/text" directory
+#
+#   ANONYMOUS FTP
+#
+#   If appropriate, Document.ps should also be copied into the area
+#   accessible by anonymous ftp (currently te1:/home3/ftp/vlt/pub/doc). 
+#
+#   See /home3/ftp/vlt/pub/doc/README for how to name the file in the ftp area.
+#
+#   REMARK: technical report and any other document containing confidential
+#           information SHALL NOT be made available to ftp access.
+#
+#
+#
+#   FILES
+#
+#       indexGroups      list of available groups.
+#       index<docGroup>  list of available documents in group <docGroup>.
+#       keyword/$$_<key> temporary file to list documents by keyword.
+#
+#   ENVIRONMENT
+#   
+#     VLT_DOCARCHIVE_ROOT  IN  the archive root directory 
+#                              This directory MUST be (remotely) mounted by 
+#                              by all VLT developemnt computer.
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   The described procedure is not as described in the first version of the
+#   Document Review Procedure
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#   
+#
+#   BUGS     
+#   1) there are differences in behaviour when it is called from an Hp
+#      or from a SUN
+#
+#   2) the creation of a new document/issue/preparation should be more 
+#      interactive.
+#
+#   3) As ERIC (the profet of the new religion) has some time to explain me
+#      a bit of Tk/Tcl (you know, I'm quite ignorant and I need a good teacher)
+#      I'll provide a nicer graphical interface.
+#
+#   REMARK: semantically speaking, the english word "preparation" means the 
+#           process of preparing something, not the output of a process.
+#           Instead of prep1, prep2, etc, it would have been more correct to 
+#           use  draft1, draft2, etc. But for historical reason this term was
+#           already in use to identify issues(!). So take it as a contribution
+#           to the enrichement of the english language or as a mistake, but 
+#           use it.
+#------------------------------------------------------------------------
+#
+
+XTERM=" xterm -ls -sb -geometry 80x50"
+TITLE=" \" VLT SOFTWARE DOCUMENT ARCHIVE ($VLT_DOCARCHIVE_ROOT )\" "
+COMMAND=" -e docSelectDocument"
+
+$XTERM -title "$TITLE" $COMMAND &
+echo "Connecting Archive .\c"
+echo " .\c"; sleep 1; echo " .\c"; sleep 1; echo " ."
+
+# ___oOo___

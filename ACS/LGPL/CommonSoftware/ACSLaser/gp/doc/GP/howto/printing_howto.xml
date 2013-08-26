@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>How to print from GP</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Katarina" lastname="Sigerud" ccid="73162"/>
+    <reviewers>TBD</reviewers>
+    <currentVersion>0.1 (2002/08)</currentVersion>
+    <history>
+    0.1 (2003/05) : First Draft<br/>
+    </history>
+  </head>
+  <!-- 
+
+	SECTION 1
+	
+  -->
+  <section>
+    <title>Introduction</title>
+    <description>
+    <p>To avoid sending very large files to the printer, we have chosen in GP to provide a print utility that will create a file in PDF format, that can later be sent to a printer. This document describes briefly how this print utility works.
+</p>
+<p>NB! A requirement to use this utility is that the <em>Acrobat Distiller</em> is installed. If not, the default print service will be used, in which case a very large file will probably be sent to the default printer.
+    </p>
+    </description>
+  </section>
+  
+	<!-- SECTION 2 -->
+	<section>
+		<title>Printing in GP</title>
+    <description>
+    	<p class="normal">To print a component in GP you call the method <code>print(Component component)</code> in the class <code>cern.gp.util.PrintUtil</code>. The sequence of events that follow is:
+		<ul>
+			<li>A page dialog is displayed where the user can choose to change the page setup.
+			<pre><img src="images/pageDialog.jpg"/></pre>
+			</li>
+			<li>After clicking <em>OK</em> in the page dialog, a print dialog is displayed where the user chooses the name and location of the file to be created.
+			<pre><img src="images/printDialog.jpg"/></pre>
+			</li>
+		</ul>
+		</p>
+	</description>
+	
+	<!-- SUBSECTION 1 -->
+	<section>
+		<title>Examples</title>
+		<description>
+		<p>The examples below are taken from the class <code><a href="/proj-gp/GP-Examples/javasrc/gp/example/windowing/PrintDemoWindow.java.html">PrintDemoWindow.java</a></code>. There is also an action, <code><a href="/proj-gp/GP-Examples/javasrc/gp/example/windowing/actions/PrintDemoAction.java.html">PrintDemoAction.java</a></code>, that will display a demo window. This action can be incorporated into the NetBeans menu or toolbar via a module layer file.
+		</p>
+		</description>
+    <codeDescription>
+    <title>Printing a TreeExplorer</title>
+    	<comment>This examples sets up a TreeExplorer and prints it.</comment>
+     	<code>
+private void printButton2() {
+  try {
+    TreeExplorer expl = new TreeExplorer();
+    GPNode root = NodeFactory.createNode(new MyBean("parent"), new SimpleChildrenListManager());
+    expl.setRootNode(root);
+    WindowUtils.openInMode(expl, "TreeExplorerDemo");
+    expl.requestFocus();
+
+    PrintUtil.getInstance().print(expl);
+  } catch (IntrospectionException e) {
+    e.printStackTrace();
+  }
+}
+     	</code>
+    </codeDescription>
+    <description>
+    <p>The document will look like this:
+    <pre><img src="images/treePrint.jpg"/></pre>
+    </p>
+    </description>
+    <codeDescription>
+    <title>Printing a ListTableExplorer</title>
+      <comment>This example sets up a ListTableExplorer and prints it.</comment>
+     	<code>
+private void printButton3() {
+  try {
+    int numberOfBeans = 50;
+    MyBean[] beans = new MyBean[numberOfBeans];
+    for (int ix = 0; ix &lt; numberOfBeans; ix++) {
+      beans[ix] = new MyBean("bean_" + (numberOfBeans - ix - 1));
+    }
+
+    String[] columnNames = new String[] { "name", "value" };
+    ListTableExplorer expl = new ListTableExplorer();
+    GPNode[] nodes = NodeFactory.createNode(beans);
+
+    expl.setListNodes(nodes);
+    expl.setTableColumns(columnNames);
+    expl.getTreeTableView().setRootVisible(false);
+    WindowUtils.openInMode(expl, "ListTableExplorerDemo");
+    expl.requestFocus();
+  
+    PrintUtil.getInstance().print(expl);
+  } catch (IntrospectionException e) {
+    e.printStackTrace();
+  }
+}
+     	</code>
+    </codeDescription>
+    <description>
+    <p>The document will look like this:
+    <pre><img src="images/tablePrint.jpg"/></pre>
+    </p>
+    </description>
+    <codeDescription>
+    <title>Printing other components</title>
+      <comment>This examples shows a TopComponent that, when the <em>Print</em> button is pressed, prints itself.</comment>
+     	<code>
+public class PrintDemoWindow extends TopComponent implements ActionListener {
+  private JPanel jPanel2 = new JPanel();
+  private JList jList1 = new JList();
+  private JButton jButton1 = new JButton("Print");
+
+  public PrintDemoWindow() {
+    setLayout(new BorderLayout());
+    jButton1.addActionListener(this);
+    jPanel2.setLayout(new BorderLayout());
+    jPanel2.add(new FunctionViewer());
+    
+    add(jPanel2, BorderLayout.CENTER);
+    add(jButton1, BorderLayout.SOUTH);
+  }
+
+  public void actionPerformed(ActionEvent event) {
+    if (event.getSource().equals(jButton1)) {
+    	PrintUtil.getInstance().print(this);
+    }
+  }
+}
+     	</code>
+    </codeDescription>
+    <description>
+    <p>The document will look like this:
+    <pre><img src="images/topComponentPrint.jpg"/></pre>
+    </p>
+    </description>
+	</section>
+	</section>
+</document>
+

@@ -1,0 +1,36 @@
+#!/bin/sh
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+
+echo "=== Running all JUnit tests of module jcont which require a container infrastructure"
+
+# TODO: Remove the jacorb dumps once we figured out the spurious COMM_FAILURE issues
+    acsStartJava -endorsed -D jacorb.debug.dump_incoming_messages=on -D jacorb.debug.dump_outgoing_messages=on alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.ComponentTestclient
+
+    acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.AcsCorbaTestWithContainer
+    acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.ClientPendingReplyTimeoutTest
+    acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.container.corba.ContainerClientPendingReplyTimeoutTest
+    ACS_LOG_STDOUT=3; acsStartJava -endorsed -D jacorb.log.default.verbosity=3 alma.acs.testsupport.tat.TATJUnitRunner alma.acs.component.client.FrameworkLoggerTest
+    acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner   alma.acs.component.client.ClientWithLogReceiverTest
+    #This test is commented because it provokes a timeout in NRI 
+#   acsStartJava -Djacorb.connection.client.pending_reply_timeout=30000 -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.acs.container.corba.ContainerClientPendingReplyTimeoutTest
+echo "=== Done running jcont JUnit tests which require a container infrastructure"

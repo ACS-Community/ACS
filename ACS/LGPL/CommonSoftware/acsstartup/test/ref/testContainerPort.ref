@@ -1,0 +1,216 @@
+1 - *Testing basic params*
+1 - ---------
+1 - --Params: -cpp cpp1
+1 - maciContainer cpp1 -ORBEndpoint iiop://a.b.c.d:4000 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -java java1
+1 - acsStartJavaContainer java1 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -py py1
+1 - ACSStartContainerPy py1 -ORBendPoint giop:tcp:a.b.c.d:4004 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
+1 - *Testing funny named params*
+1 - ---------
+1 - --Params: -cpp funny/name/cpp1
+1 - maciContainer funny/name/cpp1 -ORBEndpoint iiop://a.b.c.d:4006 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -java funny/name/java1
+1 - acsStartJavaContainer funny/name/java1 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -py funny/name/py1
+1 - ACSStartContainerPy funny/name/py1 -ORBendPoint giop:tcp:a.b.c.d:4010 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
+1 - *Testing some more params*
+1 - ---------
+1 - --Params: -cpp -name cpp2
+1 - maciContainer cpp2 -ORBEndpoint iiop://a.b.c.d:4012 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -java -name java2
+1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -py -name py2
+1 - ACSStartContainerPy py2 -ORBendPoint giop:tcp:a.b.c.d:4016 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
+1 - *Testing manager param*
+1 - ---------
+1 - --Params: -cpp -name cpp2 -m corbaloc::some_host:666/Manager
+1 - maciContainer cpp2 -ORBEndpoint iiop://a.b.c.d:4012 -m corbaloc::some_host:666/Manager
+1 - 
+1 - ---------
+1 - --Params: -java -name java2 -m corbaloc::some_host:666/Manager
+1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::some_host:666/Manager
+1 - 
+1 - ---------
+1 - --Params: -py -name py2 -m corbaloc::some_host:666/Manager
+1 - ACSStartContainerPy py2 -ORBendPoint giop:tcp:a.b.c.d:4016 -m corbaloc::some_host:666/Manager
+1 - 
+1 - 
+1 - *Testing CDB param*
+1 - ---------
+1 - --Params: -cpp -name cpp2 -m corbaloc::some_host:666/Manager -d corbaloc::some_host:123/DAL
+1 - This container will use corbaloc::some_host:123/DAL for the CDB.
+1 - maciContainer cpp2 -ORBEndpoint iiop://a.b.c.d:4012 -d corbaloc::some_host:123/DAL -m corbaloc::some_host:666/Manager
+1 - 
+1 - ---------
+1 - --Params: -java -name java2 -m corbaloc::some_host:666/Manager -d corbaloc::some_host:123/DAL
+1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::some_host:666/Manager
+1 - 
+1 - ---------
+1 - --Params: -py -name py2 -m corbaloc::some_host:666/Manager -d corbaloc::some_host:123/DAL
+1 - ACSStartContainerPy py2 -ORBendPoint giop:tcp:a.b.c.d:4016 -m corbaloc::some_host:666/Manager
+1 - 
+1 - 
+1 - *Testing replacement exe param*
+1 - ---------
+1 - --Params: -cpp -name cpp2 -e fakeContainerExe
+1 - fakeContainerExe cpp2 -ORBEndpoint iiop://a.b.c.d:4012 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -java -name java2 -e fakeContainerExe
+1 - fakeContainerExe java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -py -name py2 -e fakeContainerExe
+1 - fakeContainerExe py2 -ORBendPoint giop:tcp:a.b.c.d:4016 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
+1 - *Testing remote host*
+1 - ---------
+1 - --Params: -cpp -name cppRH -remoteHost 127.0.0.1
+1 - ssh -f user@127.0.0.1 maciContainer cppRH -ORBEndpoint iiop://a.b.c.d:4000 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -java -name javaRH -remoteHost 127.0.0.1
+1 - ssh -f user@127.0.0.1 acsStartJavaContainer javaRH alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -py -name pyRH -remoteHost 127.0.0.1
+1 - ssh -f user@127.0.0.1 ACSStartContainerPy pyRH -ORBendPoint giop:tcp:a.b.c.d:4004 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
+1 - *Testing different baseports
+1 - ---------
+1 - --Params: -cpp -name cppB -b 0
+1 - maciContainer cppB -ORBEndpoint iiop://a.b.c.d:4018 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -java -name javaB -b 1
+1 - acsStartJavaContainer javaB alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3100/Manager
+1 - 
+1 - ---------
+1 - --Params: -py -name pyB -b 2
+1 - ACSStartContainerPy pyB -ORBendPoint giop:tcp:a.b.c.d:3250 -m corbaloc::a.b.c.d:3200/Manager
+1 - 
+1 - 
+1 - *Testing custom Java container library*
+1 - ---------
+1 - --Params: -java -name java2 -custom_java fake.java.container.class
+1 - acsStartJavaContainer java2 fake.java.container.class -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
+1 - *Testing Java remote debuggable*
+1 - ---------
+1 - --Params: -java -name java2 -remoteDebuggable
+1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
+1 - *Testing passthroughProcessStart*
+1 - ---------
+1 - --Params: -java -name java2 --passthroughProcessStart=-maxHeapSize 256m
+1 - acsStartJavaContainer java2 -maxHeapSize 256m alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
+1 - *Testing debug*
+1 - ---------
+1 - --Params: -java -name java2 -debug
+1 - Command-line TCP port:None
+1 - Command-line container name:java2
+1 - New args:[]
+1 - Dealing with a Java container
+1 - Container implementation class:alma.acs.container.AcsContainerRunner
+1 - Manager corbaloc is:corbaloc::a.b.c.d:3000/Manager
+1 - Executable to be run is:acsStartJavaContainer
+1 - Remote host to run the container under is:None
+1 - Remote debuggable is:0
+1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
+1 - *Testing specific TCP ports*
+1 - ---------
+1 - --Params: -cpp -name cpp3 -port 4444
+1 - maciContainer cpp3 -ORBEndpoint iiop://a.b.c.d:4444 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -java -name java3 -port 4445
+1 - acsStartJavaContainer java3 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - ---------
+1 - --Params: -py -name py3 -port 4446
+1 - ACSStartContainerPy py3 -ORBendPoint giop:tcp:a.b.c.d:4446 -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
+1 - *Testing extra parameters*
+1 - ---------
+1 - --Params: -cpp cpp3 stuff
+1 - maciContainer cpp3 -ORBEndpoint iiop://a.b.c.d:4444 -m corbaloc::a.b.c.d:3000/Manager stuff
+1 - 
+1 - ---------
+1 - --Params: -java java3 more stuff
+1 - acsStartJavaContainer java3 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager more stuff
+1 - 
+1 - ---------
+1 - --Params: -py py3 yet more stuff
+1 - ACSStartContainerPy py3 -ORBendPoint giop:tcp:a.b.c.d:4446 -m corbaloc::a.b.c.d:3000/Manager yet more stuff
+1 - 
+1 - ---------
+1 - --Params: -cpp -name cpp3 stuff
+1 - maciContainer cpp3 -ORBEndpoint iiop://a.b.c.d:4444 -m corbaloc::a.b.c.d:3000/Manager stuff
+1 - 
+1 - ---------
+1 - --Params: -java -name java3 more stuff
+1 - acsStartJavaContainer java3 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager more stuff
+1 - 
+1 - ---------
+1 - --Params: -py -name py3 yet more stuff
+1 - ACSStartContainerPy py3 -ORBendPoint giop:tcp:a.b.c.d:4446 -m corbaloc::a.b.c.d:3000/Manager yet more stuff
+1 - 
+1 - 
+1 - *Hard tests*
+1 - ---------
+1 - --Params: -cpp -name cpp4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myMaciContainer -b 9 -debug
+1 - -port option was specified:5555
+1 - Command-line TCP port:5555
+1 - Command-line container name:cpp4
+1 - New args:[]
+1 - Dealing with a C++ container
+1 - Manager corbaloc is:corbaloc::someManagerHost:3200/Manager
+1 - Executable to be run is:ssh -f user@127.0.0.1 myMaciContainer
+1 - Remote host to run the container under is:127.0.0.1
+1 - Remote debuggable is:0
+1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
+1 - ssh -f user@127.0.0.1 myMaciContainer cpp4 -ORBEndpoint iiop://a.b.c.d:5555 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager
+1 - 
+1 - ---------
+1 - --Params: -cpp -name java4 -port 5556 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container
+1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
+1 - ssh -f user@127.0.0.1 myJavaContainer java4 -ORBEndpoint iiop://a.b.c.d:5556 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager
+1 - 
+1 - ---------
+1 - --Params: -cpp -name cpp4 -port 5555 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myMaciContainer -b 9 extra args
+1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
+1 - ssh -f user@127.0.0.1 myMaciContainer cpp4 -ORBEndpoint iiop://a.b.c.d:5555 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager extra args
+1 - 
+1 - ---------
+1 - --Params: -cpp -name java4 -port 5556 -remoteHost 127.0.0.1 -m corbaloc::someManagerHost:3200/Manager -d corbaloc::someDALHost:3211/DAL -e myJavaContainer -b 9 -custom_java my.own.container extra args
+1 - This container will use corbaloc::someDALHost:3211/DAL for the CDB.
+1 - ssh -f user@127.0.0.1 myJavaContainer java4 -ORBEndpoint iiop://a.b.c.d:5556 -d corbaloc::someDALHost:3211/DAL -m corbaloc::someManagerHost:3200/Manager extra args
+1 - 

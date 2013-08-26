@@ -1,0 +1,73 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+
+###############################################
+# Runs the java test building automatically
+# the classpath.
+# Since acsStartJava is not jet available when 
+# this module is built, the logic for searching 
+# for the jar files is embedded in the script.
+################################################
+
+if [ "$OSYSTEM" = "cygwin" ]
+then
+    CPSEP=";"
+else
+    CPSEP=":"
+fi
+
+# setup jar file search path that will be fed to 
+# ACS class loader or to the acsGetSpecificJars seach script
+if [ -d ../lib ] ; then
+	CL_JARPATH="../lib:"
+fi
+
+if [ -d $INTROOT ] && [ $INTROOT ] ; then
+	CL_JARPATH="$CL_JARPATH$INTROOT/lib:"
+fi
+
+# Separation of dirs
+item_list=`echo $INTLIST | sed s/:/\ /g`
+for item in $item_list
+do
+  if [ -d $item ] && [ $item ] ; then
+	  CL_JARPATH="$CL_JARPATH$item/lib:"
+  fi
+done
+
+if [ -d $ACSROOT ] && [ $ACSROOT ] ; then
+	CL_JARPATH="$CL_JARPATH$ACSROOT/lib"
+fi
+
+CLASSPATH=`acsGetAllJars $CPSEP $CL_JARPATH`$CLASSPATH
+#
+# End of CLASSPATH preparation
+################################
+
+rm -rf doc
+mkdir -p doc
+cd schemas
+echo "=== Processing"
+
+java -classpath $CLASSPATH net.sf.xframe.xsddoc.Main -o ../doc -t "title" -b "bottom" -verbose testLAMP.xsd
+echo "=== Generated documentation listing"
+ls -R ../doc

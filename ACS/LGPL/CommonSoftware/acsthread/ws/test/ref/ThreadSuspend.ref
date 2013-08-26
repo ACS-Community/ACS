@@ -1,0 +1,45 @@
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 1 - Autodelete thread
+1 - ----------T--:--:--.--- [GlobalLogger - main] Creating thread
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::TestACSThread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (0)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (1)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (2)
+1 - ----------T--:--:--.--- [GlobalLogger - main] Checking suspended status. Returned: 0
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Called suspend. Returned: 1
+1 - ----------T--:--:--.--- [GlobalLogger - main] Checking suspended status. Returned: 1
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Called suspend. Returned: 1
+1 - ----------T--:--:--.--- [GlobalLogger - main] Checking suspended status. Returned: 1
+1 - ----------T--:--:--.--- [GlobalLogger - main] Resuming thread.
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Called resume. Returned: 1
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (3)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (4)
+1 - ----------T--:--:--.--- [GlobalLogger - main] Checking suspended status. Returned: 0
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Called resume again. Returned: 1
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (5)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (6)
+1 - ----------T--:--:--.--- [GlobalLogger - main] Done
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadA - ThreadBase::stop] Thread TestThreadA
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::~TestACSThread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::~ThreadBase] 

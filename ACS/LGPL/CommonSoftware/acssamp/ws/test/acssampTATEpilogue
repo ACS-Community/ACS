@@ -1,0 +1,10 @@
+#! /bin/bash
+_REDIR_=$ACS_TMP/acssampTATEpilogue.log
+
+export ACS_INSTANCE=`cat tmp/acs_instance`
+
+echo " ****************** acssampTATEpilogue *************** " >  $_REDIR_
+acsStop 2>&1 >> $_REDIR_
+
+#
+# ___oOo___

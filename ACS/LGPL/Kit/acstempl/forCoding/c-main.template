@@ -1,0 +1,88 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: c-main.template,v 1.22 2013/03/14 11:59:17 mpasquat Exp $" 
+#%# 
+#%# Template for c-main           
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gfilippi   29/06/93  created
+#%# gfilippi   20/02/95  added header and manpage
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN c_main(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+/*******************************************************************************
+* PPPPPPPP
+*
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* NNNNNNNN  dd/mm/yy  created
+*/
+
+/************************************************************************
+*   NAME
+* 
+*   SYNOPSIS
+* 
+*   DESCRIPTION
+*
+*   FILES
+*
+*   ENVIRONMENT
+*
+*   COMMANDS
+*
+*   RETURN VALUES
+*
+*   CAUTIONS 
+*
+*   EXAMPLES
+*
+*   SEE ALSO
+*
+*   BUGS   
+* 
+*------------------------------------------------------------------------
+*/
+
+#define _POSIX_SOURCE 1
+
+
+/* 
+ * System Headers 
+ */
+
+
+/*
+ * Local Headers 
+ */
+
+/* 
+ * Signal catching functions  
+ */
+
+
+/* 
+ *Local functions  
+ */
+
+
+/* 
+ * Main
+ */
+
+int main (int argc, char *argv[])
+{
+}
+
+/*___oOo___*/

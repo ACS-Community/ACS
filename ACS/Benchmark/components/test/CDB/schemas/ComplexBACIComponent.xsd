@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Configuration Database Schema for a ComplexBACIComponent
+   -
+   - Author: Anze Zagar
+  -->
+<xs:schema 
+    targetNamespace="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"
+    xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+    xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+  <xs:complexType name="ComplexRWlong">
+    <xs:complexContent>
+      <xs:extension base="baci:RWlong">
+        <xs:attribute name="characteristic01" type="xs:string" use="optional" default="Additional characteristic 01"/>
+        <xs:attribute name="characteristic02" type="xs:string" use="optional" default="Additional characteristic 02"/>
+        <xs:attribute name="characteristic03" type="xs:string" use="optional" default="Additional characteristic 03"/>
+        <xs:attribute name="characteristic04" type="xs:string" use="optional" default="Additional characteristic 04"/>
+        <xs:attribute name="characteristic05" type="xs:string" use="optional" default="Additional characteristic 05"/>
+        <xs:attribute name="characteristic06" type="xs:string" use="optional" default="Additional characteristic 06"/>
+        <xs:attribute name="characteristic07" type="xs:string" use="optional" default="Additional characteristic 07"/>
+        <xs:attribute name="characteristic08" type="xs:string" use="optional" default="Additional characteristic 08"/>
+        <xs:attribute name="characteristic09" type="xs:string" use="optional" default="Additional characteristic 09"/>
+        <xs:attribute name="characteristic10" type="xs:string" use="optional" default="Additional characteristic 10"/>
+        <xs:attribute name="characteristic11" type="xs:string" use="optional" default="Additional characteristic 11"/>
+        <xs:attribute name="characteristic12" type="xs:string" use="optional" default="Additional characteristic 12"/>
+        <xs:attribute name="characteristic13" type="xs:string" use="optional" default="Additional characteristic 13"/>
+        <xs:attribute name="characteristic14" type="xs:string" use="optional" default="Additional characteristic 14"/>
+        <xs:attribute name="characteristic15" type="xs:string" use="optional" default="Additional characteristic 15"/>
+        <xs:attribute name="characteristic16" type="xs:string" use="optional" default="Additional characteristic 16"/>
+        <xs:attribute name="characteristic17" type="xs:string" use="optional" default="Additional characteristic 17"/>
+        <xs:attribute name="characteristic18" type="xs:string" use="optional" default="Additional characteristic 18"/>
+        <xs:attribute name="characteristic19" type="xs:string" use="optional" default="Additional characteristic 19"/>
+        <xs:attribute name="characteristic20" type="xs:string" use="optional" default="Additional characteristic 20"/>
+        <xs:attribute name="characteristic21" type="xs:string" use="optional" default="Additional characteristic 21"/>
+        <xs:attribute name="characteristic22" type="xs:string" use="optional" default="Additional characteristic 22"/>
+        <xs:attribute name="characteristic23" type="xs:string" use="optional" default="Additional characteristic 23"/>
+        <xs:attribute name="characteristic24" type="xs:string" use="optional" default="Additional characteristic 24"/>
+        <xs:attribute name="characteristic25" type="xs:string" use="optional" default="Additional characteristic 25"/>
+        <xs:attribute name="characteristic26" type="xs:string" use="optional" default="Additional characteristic 26"/>
+        <xs:attribute name="characteristic27" type="xs:string" use="optional" default="Additional characteristic 27"/>
+        <xs:attribute name="characteristic28" type="xs:string" use="optional" default="Additional characteristic 28"/>
+        <xs:attribute name="characteristic29" type="xs:string" use="optional" default="Additional characteristic 29"/>
+        <xs:attribute name="characteristic30" type="xs:string" use="optional" default="Additional characteristic 30"/>
+        <xs:attribute name="characteristic31" type="xs:string" use="optional" default="Additional characteristic 31"/>
+        <xs:attribute name="characteristic32" type="xs:string" use="optional" default="Additional characteristic 32"/>
+        <xs:attribute name="characteristic33" type="xs:string" use="optional" default="Additional characteristic 33"/>
+        <xs:attribute name="characteristic34" type="xs:string" use="optional" default="Additional characteristic 34"/>
+        <xs:attribute name="characteristic35" type="xs:string" use="optional" default="Additional characteristic 35"/>
+        <xs:attribute name="characteristic36" type="xs:string" use="optional" default="Additional characteristic 36"/>
+        <xs:attribute name="characteristic37" type="xs:string" use="optional" default="Additional characteristic 37"/>
+        <xs:attribute name="characteristic38" type="xs:string" use="optional" default="Additional characteristic 38"/>
+        <xs:attribute name="characteristic39" type="xs:string" use="optional" default="Additional characteristic 39"/>
+        <xs:attribute name="characteristic40" type="xs:string" use="optional" default="Additional characteristic 40"/>
+        <xs:attribute name="characteristic41" type="xs:string" use="optional" default="Additional characteristic 41"/>
+        <xs:attribute name="characteristic42" type="xs:string" use="optional" default="Additional characteristic 42"/>
+        <xs:attribute name="characteristic43" type="xs:string" use="optional" default="Additional characteristic 43"/>
+        <xs:attribute name="characteristic44" type="xs:string" use="optional" default="Additional characteristic 44"/>
+        <xs:attribute name="characteristic45" type="xs:string" use="optional" default="Additional characteristic 45"/>
+        <xs:attribute name="characteristic46" type="xs:string" use="optional" default="Additional characteristic 46"/>
+        <xs:attribute name="characteristic47" type="xs:string" use="optional" default="Additional characteristic 47"/>
+        <xs:attribute name="characteristic48" type="xs:string" use="optional" default="Additional characteristic 48"/>
+        <xs:attribute name="characteristic49" type="xs:string" use="optional" default="Additional characteristic 49"/>
+        <xs:attribute name="characteristic50" type="xs:string" use="optional" default="Additional characteristic 50"/>
+        <xs:attribute name="characteristic51" type="xs:string" use="optional" default="Additional characteristic 51"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ComplexBACIComponent">
+    <xs:sequence>
+      <xs:element name="property01" type="ComplexRWlong"/>
+      <xs:element name="property02" type="ComplexRWlong"/>
+      <xs:element name="property03" type="ComplexRWlong"/>
+      <xs:element name="property04" type="ComplexRWlong"/>
+      <xs:element name="property05" type="ComplexRWlong"/>
+      <xs:element name="property06" type="ComplexRWlong"/>
+      <xs:element name="property07" type="ComplexRWlong"/>
+      <xs:element name="property08" type="ComplexRWlong"/>
+      <xs:element name="property09" type="ComplexRWlong"/>
+      <xs:element name="property10" type="ComplexRWlong"/>
+      <xs:element name="property11" type="ComplexRWlong"/>
+      <xs:element name="property12" type="ComplexRWlong"/>
+      <xs:element name="property13" type="ComplexRWlong"/>
+      <xs:element name="property14" type="ComplexRWlong"/>
+      <xs:element name="property15" type="ComplexRWlong"/>
+      <xs:element name="property16" type="ComplexRWlong"/>
+    </xs:sequence>
+    <xs:attribute name="characteristic01" type="xs:string" use="optional" default="Additional characteristic 01"/>
+    <xs:attribute name="characteristic02" type="xs:string" use="optional" default="Additional characteristic 02"/>
+    <xs:attribute name="characteristic03" type="xs:string" use="optional" default="Additional characteristic 03"/>
+    <xs:attribute name="characteristic04" type="xs:string" use="optional" default="Additional characteristic 04"/>
+    <xs:attribute name="characteristic05" type="xs:string" use="optional" default="Additional characteristic 05"/>
+    <xs:attribute name="characteristic06" type="xs:string" use="optional" default="Additional characteristic 06"/>
+    <xs:attribute name="characteristic07" type="xs:string" use="optional" default="Additional characteristic 07"/>
+    <xs:attribute name="characteristic08" type="xs:string" use="optional" default="Additional characteristic 08"/>
+    <xs:attribute name="characteristic09" type="xs:string" use="optional" default="Additional characteristic 09"/>
+    <xs:attribute name="characteristic10" type="xs:string" use="optional" default="Additional characteristic 10"/>
+    <xs:attribute name="characteristic11" type="xs:string" use="optional" default="Additional characteristic 11"/>
+    <xs:attribute name="characteristic12" type="xs:string" use="optional" default="Additional characteristic 12"/>
+    <xs:attribute name="characteristic13" type="xs:string" use="optional" default="Additional characteristic 13"/>
+    <xs:attribute name="characteristic14" type="xs:string" use="optional" default="Additional characteristic 14"/>
+    <xs:attribute name="characteristic15" type="xs:string" use="optional" default="Additional characteristic 15"/>
+    <xs:attribute name="characteristic16" type="xs:string" use="optional" default="Additional characteristic 16"/>
+    <xs:attribute name="characteristic17" type="xs:string" use="optional" default="Additional characteristic 17"/>
+    <xs:attribute name="characteristic18" type="xs:string" use="optional" default="Additional characteristic 18"/>
+    <xs:attribute name="characteristic19" type="xs:string" use="optional" default="Additional characteristic 19"/>
+    <xs:attribute name="characteristic20" type="xs:string" use="optional" default="Additional characteristic 20"/>
+    <xs:attribute name="characteristic21" type="xs:string" use="optional" default="Additional characteristic 21"/>
+    <xs:attribute name="characteristic22" type="xs:string" use="optional" default="Additional characteristic 22"/>
+    <xs:attribute name="characteristic23" type="xs:string" use="optional" default="Additional characteristic 23"/>
+    <xs:attribute name="characteristic24" type="xs:string" use="optional" default="Additional characteristic 24"/>
+    <xs:attribute name="characteristic25" type="xs:string" use="optional" default="Additional characteristic 25"/>
+    <xs:attribute name="characteristic26" type="xs:string" use="optional" default="Additional characteristic 26"/>
+    <xs:attribute name="characteristic27" type="xs:string" use="optional" default="Additional characteristic 27"/>
+    <xs:attribute name="characteristic28" type="xs:string" use="optional" default="Additional characteristic 28"/>
+    <xs:attribute name="characteristic29" type="xs:string" use="optional" default="Additional characteristic 29"/>
+    <xs:attribute name="characteristic30" type="xs:string" use="optional" default="Additional characteristic 30"/>
+    <xs:attribute name="characteristic31" type="xs:string" use="optional" default="Additional characteristic 31"/>
+    <xs:attribute name="characteristic32" type="xs:string" use="optional" default="Additional characteristic 32"/>
+    <xs:attribute name="characteristic33" type="xs:string" use="optional" default="Additional characteristic 33"/>
+    <xs:attribute name="characteristic34" type="xs:string" use="optional" default="Additional characteristic 34"/>
+    <xs:attribute name="characteristic35" type="xs:string" use="optional" default="Additional characteristic 35"/>
+    <xs:attribute name="characteristic36" type="xs:string" use="optional" default="Additional characteristic 36"/>
+    <xs:attribute name="characteristic37" type="xs:string" use="optional" default="Additional characteristic 37"/>
+    <xs:attribute name="characteristic38" type="xs:string" use="optional" default="Additional characteristic 38"/>
+    <xs:attribute name="characteristic39" type="xs:string" use="optional" default="Additional characteristic 39"/>
+    <xs:attribute name="characteristic40" type="xs:string" use="optional" default="Additional characteristic 40"/>
+    <xs:attribute name="characteristic41" type="xs:string" use="optional" default="Additional characteristic 41"/>
+    <xs:attribute name="characteristic42" type="xs:string" use="optional" default="Additional characteristic 42"/>
+    <xs:attribute name="characteristic43" type="xs:string" use="optional" default="Additional characteristic 43"/>
+    <xs:attribute name="characteristic44" type="xs:string" use="optional" default="Additional characteristic 44"/>
+    <xs:attribute name="characteristic45" type="xs:string" use="optional" default="Additional characteristic 45"/>
+    <xs:attribute name="characteristic46" type="xs:string" use="optional" default="Additional characteristic 46"/>
+    <xs:attribute name="characteristic47" type="xs:string" use="optional" default="Additional characteristic 47"/>
+    <xs:attribute name="characteristic48" type="xs:string" use="optional" default="Additional characteristic 48"/>
+    <xs:attribute name="characteristic49" type="xs:string" use="optional" default="Additional characteristic 49"/>
+    <xs:attribute name="characteristic50" type="xs:string" use="optional" default="Additional characteristic 50"/>
+    <xs:attribute name="characteristic51" type="xs:string" use="optional" default="Additional characteristic 51"/>
+    <xs:attribute name="characteristic52" type="xs:string" use="optional" default="Additional characteristic 52"/>
+    <xs:attribute name="characteristic53" type="xs:string" use="optional" default="Additional characteristic 53"/>
+    <xs:attribute name="characteristic54" type="xs:string" use="optional" default="Additional characteristic 54"/>
+    <xs:attribute name="characteristic55" type="xs:string" use="optional" default="Additional characteristic 55"/>
+    <xs:attribute name="characteristic56" type="xs:string" use="optional" default="Additional characteristic 56"/>
+    <xs:attribute name="characteristic57" type="xs:string" use="optional" default="Additional characteristic 57"/>
+    <xs:attribute name="characteristic58" type="xs:string" use="optional" default="Additional characteristic 58"/>
+    <xs:attribute name="characteristic59" type="xs:string" use="optional" default="Additional characteristic 59"/>
+    <xs:attribute name="characteristic60" type="xs:string" use="optional" default="Additional characteristic 60"/>
+    <xs:attribute name="characteristic61" type="xs:string" use="optional" default="Additional characteristic 61"/>
+    <xs:attribute name="characteristic62" type="xs:string" use="optional" default="Additional characteristic 62"/>
+    <xs:attribute name="characteristic63" type="xs:string" use="optional" default="Additional characteristic 63"/>
+    <xs:attribute name="characteristic64" type="xs:string" use="optional" default="Additional characteristic 64"/>
+  </xs:complexType>
+  <xs:element name="ComplexBACIComponent" type="ComplexBACIComponent"/>
+</xs:schema>

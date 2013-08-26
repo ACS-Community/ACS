@@ -1,0 +1,40 @@
+#! /bin/bash
+#-----------------------------------------------------------
+#set some variables
+export REPORT_NAME=acs_debug_report
+export REPORT_DIR=/tmp/$REPORT_NAME
+
+#-----------------------------------------------------------
+#create a directory to work within
+rm -rf $REPORT_DIR
+mkdir -p $REPORT_DIR
+
+#-----------------------------------------------------------
+#copy the contents of $ACS_TMP somewhere safe
+cp -RHL --preserve $ACS_TMP $REPORT_DIR/acsdata_tmp
+
+#-----------------------------------------------------------
+#find out every bit of info we can about processes
+ps -U root -u root -N > $REPORT_DIR/ps.log 
+
+#-----------------------------------------------------------
+#figure out which TCP ports are being tied up
+netstat -t -p -e -e -l | grep "30" > $REPORT_DIR/netstat.log
+
+#-----------------------------------------------------------
+#get an overview using ACS status
+acsStatus > $REPORT_DIR/instance_overview.log 2>1
+
+#-----------------------------------------------------------
+#bundle everything up
+OLD_PWD=$PWD
+cd /tmp
+tar -cf $REPORT_NAME.tar $REPORT_NAME > /dev/null
+gzip $REPORT_NAME.tar
+mv $REPORT_NAME.tar.gz $OLD_PWD/
+cd $OLD_PWD
+
+#-----------------------------------------------------------
+#final cleanup
+rm -rf $REPORT_DIR
+echo "The newly created debug report can be found in: $PWD/$REPORT_NAME.tar.gz"

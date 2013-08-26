@@ -1,0 +1,288 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>ACS-ESOCCS</TITLE>
+<META NAME="Template" CONTENT="E:\Program Files\Microsoft Office\Office\html.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<H1><A NAME="ACS_ESOCCS">APPENDIX - ALMA COMMON SOFTWARE CONCEPTS COMPARED WITH ESO COMMON SOFTWARE</A></H1>
+<H2><A NAME="DistributedObjectConcept">Distributed Object Concept</A></H2>
+
+<UL>
+<LI>The ESO Central Common Software does not have Distributed Objects as a native architectural concept, but various parts of the ESO Central Common Software can be mapped on them. </LI>
+<LI>The Real-time database, with the Object Oriented Database Loader class concept has been used to partially implement the concept of Distributed Object: </LI>
+
+<UL>
+<LI>The database follows the hierarchical model. </LI>
+<LI>On top of these concepts ESO has created an object oriented database definition language. </LI>
+<LI>Database entities are defined as database classes. </LI>
+<LI>Database classes contain <I>attributes</I>, i.e. data members of basic types (integers, strings, floats and some other), arrays and tables or instances of other classes. Attributes correspond to distributed object properties. </LI>
+<LI>The fact that a class can contain instances of other classes builds the hierarchical structure </LI>
+<LI>Instances of classes are called points. They can be mapped into Distributed Objects. </LI>
+<LI>Inheritance and overriding can be used to create new classes from existing ones and to set and change default and configuration values for the attributes. </LI>
+<LI>Attributes have a quality characteristic associated with them</LI></UL>
+
+<LI>Restore, backup and snapshot tools are used to save and load dynamically branches or whole databases. This is used to load configurations at run time and for persistence purposes. </LI>
+<LI>Whenever an environment is started, it loads the real-time database from a set of configuration files. These files contain the description of the Distributed Objects to be loaded and of all the configuration parameters. Every class defines default configuration values that can be overwritten in subclasses and at instantiation time. </LI>
+<LI>FITS Dictionaries implement a concept very similar to Characteristics. Description, units, ranges and formatting options for Properties that have to be logged in the archive or passed as configuration parameters in FITS files are described in FITS dictionaries are used at run time to check value consistency and to format them for the archive or for display. ESO is currently doing an effort to port FITS Dictionary concepts to XML files, to have more standard interfaces and to be able to use general-purpose XML tools. </LI>
+<LI>Command Definition Tables (CDTs) implement a concept similar to Characteristics for the checking of command parameters. Every command accepted by an application is described in a CDT and for every parameter units, ranges, formatting and a description are provided. The information present in a CDT for a command parameter partially overlaps what can be provided in a keyword entry for a FITS dictionary. The two syntaxes could be merged in a single XML definition used for both purposes. <BR>
+For example: </LI>
+
+<UL>
+<LI>CDT for the SETLAM command:</LI></UL>
+</UL>
+<DIR>
+<DIR>
+<DIR>
+
+<PRE>//===============================================================
+
+COMMAND=  SETLAM
+
+SYNONYMS= 
+
+FORMAT= A
+
+PARAMETERS=
+    PAR_NAME=    wavelength
+    PAR_UNIT=    NANOMETER
+    PAR_TYPE=    REAL
+    PAR_RANGE=   INTERVAL MIN=100.0 ; MAX=20000.0
+    PAR_DEF_VAL= 600.0
+
+REPLY_FORMAT= A
+REPLY_PARAMETERS=
+    PAR_NAME=    done
+    PAR_TYPE=    STRING
+    PAR_DEF_VAL= "OK"
+
+
+HELP_TEXT=
+Set observed wavelength.
+@
+
+//=================================================================</PRE>
+<P>&nbsp;</P></DIR>
+</DIR>
+</DIR>
+
+
+<UL>
+
+<UL>
+<LI>FITS dictionary definition for object target coordinates:</LI></UL>
+</UL>
+<DIR>
+<DIR>
+<DIR>
+
+<PRE>Parameter Name:    TEL TARG ALPHA
+Class:             setup
+Context:           telescope
+Type:              double
+Value Format:      %.3f
+Unit:              HHMMSS.TTT
+Comment Field:     Alpha coordinate for the target
+Description:       Alpha coordinate for the target in HHMMSS.TTT (0 to 240000)
+
+Parameter Name:    TEL TARG DELTA
+Class:             setup
+Context:           telescope
+Type:              double
+Value Format:      %.3f
+Unit:              DDMMSS.TTT
+Comment Field:     Delta coordinate for the target
+Description:       Delta coordinate for the target in DDMMSS.TTT (-900000 to 900000)</PRE></DIR>
+</DIR>
+</DIR>
+
+
+<UL>
+<LI>Every distributed object in the VLT Control System has to implement a state machine with the following states: (OFF, STANDBY, LOADED, ONLINE). The sub-states SIMULATION and DEBUG are also defined as standard. The transitions between these states and sub-states are standardized and a set of specific commands is provided <A HREF="ReferenceDocuments.html#RD17">[RD17]</A>. Specific distributed objects can have parallel sub-states (for example an axis device can be ONLINE - sub-state TRACKING or ONLINE - sub-state PRESETTING). <BR>
+What follows is, for example, the standard State Machine for an LCU Device.</LI></UL>
+
+<P ALIGN="CENTER"><IMG SRC="../../Model/Project/Images/lsfSM_Main.gif"></P>
+
+<UL>
+<I><LI>For performance comparison, a single VLT Unit Telescope (that should be compared with a single ALMA antenna) has about 30.000 database attributes, without taking into account the instruments attached to the telescope.</LI></UL>
+
+</I><H2><A NAME="DirectValueRetrieval">Direct Value Retrieval</A></H2>
+<P>The ESO CCS Real Time Database provides generic Read()/Write() access functions that can be used at any time to directly access attribute values, given their path in the hierarchical database structure.</P>
+<P>Generic database navigation tools allow navigating the hierarchical structure of the database and reaching any database point and attribute.</P>
+<H2><A NAME="ValueRetrievalByEvent">Value Retrieval by Event</A></H2>
+<P>The ESO CCS Event System:</P>
+
+<UL>
+<LI>Allows to attach an event to any attribute in the real time database of a workstation or of an LCU, i.e. to define a triggering condition (database value read, accessed, &lt;, &gt;,….) for the execution of a callback. </LI>
+<LI>Allows creating periodic timer objects that execute a given callback at the specified frequency. This callback can in turn read a value in the real time database. </LI>
+<LI>These two concepts together fully implement the described features are virtually identical to what provided by ANKA<A HREF="ReferenceDocuments.html#RD04">[RD04]</A>. </LI>
+<LI>Many applications can attach an event on the same database attribute&nbsp;</LI></UL>
+
+<H2><A NAME="IndirectValueRetrieval">Indirect Value Retrieval</A></H2>
+<P>The ESO CCS Scan System:</P>
+
+<UL>
+<LI>Selected real-time database attributes are configured and mirrored in a WS database </LI>
+<LI>The mirrored image is updated according to the defined policy: polling with a given frequency and rules or on change </LI>
+<LI>Many applications can then access the mirrored image on the WS without interfering with the LCU activity </LI>
+<LI>The LCU load can be estimated in advance. </LI>
+<LI>Mirroring of data is very efficient, since bunches of data are transferred in a single message. </LI>
+<LI>The VLT Control Software performances rely heavily on the existence of a Scan System&nbsp;</LI></UL>
+
+<H2><A NAME="Sampling">Sampling</A></H2>
+<P>In the CCS Sampling and Plotting Systems:</P>
+
+<UL>
+<LI>A Sampling GUI on the Control Workstation is used to: </LI>
+
+<UL>
+<LI>Configure in real time the sampling engine on the real time computers (database attributes to be sampled and frequencies) </LI>
+<LI>Configure the storage of sampled data on file </LI>
+<LI>Configure the real time plotting of sampled data on the operator's display</LI></UL>
+</UL>
+
+<H2><A NAME="CommandHandling">Command Handling </A></H2>
+<P>The ESO VLT Message System is based on RTAP communication protocol.</P>
+<P>The CORBA concept is more easy and flexible than the CCS message system, since communication is directly object to object and object's location is automatically resolved by the naming service. CORBA implementations are available for many platforms and are interoperable.</P>
+<P>The ESO CCS Command concept provides an abstract and de-coupled interaction between applications:</P>
+
+<UL>
+<LI>Messages are exchanged between processes. </LI>
+<LI>Message are sent to a specific process in a given environment:<BR>
+@wt0tcs:prsControl </LI>
+<LI>Data can be binary or ASCII </LI>
+<LI>Command's syntax is defined in CDTs. </LI>
+<LI>Commands are sent to the destination using the message system in string (or binary) format. Although ESO Message System handles both string and binary commands, binary commands are used only in very special cases. Typically commands are in string format and the server application parses ("by hand" of using the command checking library) the received string command buffer to extract the parameters and put them in variables of the appropriate type. This is convenient because it allows analyzing at any time the messages sent, without having to know on which binary structure they have to be mapped. It is also convenient because command line message sending tools are simpler, since do not have to parse parameters in order to build a binary buffer from a command line string. On the other hand, this prevents compile time checking of parameters. Using CORBA, all parameter conversion work is taken up by IDL at compile time of by the introspection mechanism when building commands "on the fly". A CORBA based command line message sending tool would use introspection and "pure binary" commands would then be the implementation for the ALMA Common Software, supported by proper debugging tools for interpreting the messages exchanged between applications. </LI>
+<LI>Command checking libraries validate command syntax and parameters based on CDT at run time. No compile time checking is possible. </LI>
+<LI>By convention, commands have to be checked by the sender. This has been done primarily to reduce network traffic, avoiding sending over the network to the server application an ill formed command. </LI>
+<LI>In practice many applications to not trust the sender of commands and check anyway the parameters on reception. This also allows performing context sensitive checks that cannot be performed with the pure information contained in CDTs. This leads to double checks. </LI>
+<LI>CDTs are also used to implement command simulation. The message system support putting server applications in simulation mode. In this case commands are not delivered to the final application, but are handled internally by the message system itself that performs a check on the CDT and returns a default reply, also defined in the CDT. This is very convenient during development and testing, but can also be implemented using standard "dummy processes" that replace the actual servers implementing a simple command-default reply scheme. </LI>
+<LI>Any kind of application (C/C++, TCL, shell script, UIF) can send any command using simple tools and calls, provided that it has direct access to a CCS environment. This means that CCS must be installed and running on the same machine. </LI>
+<LI>A major advantage of the CORBA approach is strong compile time type checking, while the CCS message system performs only run time command checking. On the other hand, CORBA does not provide any concept for checking of ranges in parameters. A basic library should be written to provide these "CDT like" features. CDTs could be replaced by expressions written in a subset of OCL (Object Constraints Language), proposed as the standard pre-postconditions language in UML<A HREF="ReferenceDocuments.html#RD06">[RD06]</A>. </LI>
+<LI>A generic command tool allows to send any command to any application, browsing in the applications running in the system and getting help and checking on the supported commands </LI>
+<LI>The CCS Event Handling toolkit (EVH) provides a callback-base handling of asynchronous commands: </LI>
+
+<UL>
+<LI>A command is sent to the destination and control is returned to the caller </LI>
+<LI>When the destination sends back a reply, a callback (or an error callback) in the caller is executed. Intermediate and final replies are handled. </LI>
+<LI>If a reply does not come in a specified timeout, an error condition is risen and an error callback is executed. </LI>
+<LI>The lack of support for synchronous commands has been a common criticism to the EVH toolkit. On one side they might encourage lazy programs which work until some fault condition arises. On the other side, when sequences of commands are coded, it is necessary to install a new set of callbacks for every command in the sequence and your sequence is then actually split through many callbacks. For a lot of people it is difficult in this case to follow the flow of the program. For me this is not a problem (I have been programming in this way since many years, starting with X-Windows), but I understand that it can be. Adding thread support (we do not have threads in EVH), a thread can be dedicated to a sequence: blocking calls are actually just blocking a thread and timeouts and concurrent events can be handled anyway. Without threads support, I think we should not allow synchronous commands. It is also necessary to provide a clear design pattern and some framework classes to show how sequences have to be implemented. </LI></UL>
+</UL>
+
+<H2><A NAME="LoggingSystem">Logging System</A></H2>
+<P>The CCS Logging System:</P>
+
+<UL>
+<LI>Provides the support classes for logging: </LI>
+
+<UL>
+<LI>Messages and data in FITS logs describing actions performed by the system and status information </LI>
+<LI>Errors </LI></UL>
+
+<LI>Provides user interfaces for navigating interactively in the log files, filtering and searching </LI>
+<LI>Tools can be easily developed for post processing (this has been extensively done for commissioning, like for example building plots of magnitudes extracted from the log file </LI>
+<LI>Every local host (in particular real-time nodes) has a local PROXI that caches logs and optimizes communication with the central database server. On the VLT the network traffic and CPU usage due to logging is a major issue, due to big amount of data logged. This PROXI architecture is of primary importance and we then assume that will have to be developed also for ALMA.</LI></UL>
+
+<H2><A NAME="ErrorSystem">Error System</A></H2>
+<P>The Error System provides the basic mechanism for applications to handle internal errors and to propagate from server to client information related to the failure of a request. An error can be notified to the final user and appear in a GUI window if an action initiated by the user fails (for example a command activated from a GUI fails).</P>
+<P>The CCS Error System:</P>
+
+<UL>
+<LI>Is a stack trace error system, i.e. an error condition is added to the error stack and reported to the caller of the function in error </LI>
+<LI>The calling function can handle the error in 3 ways: </LI>
+
+<UL>
+<LI>Add() a new error message to the stack, with context details and report one level up to its caller </LI>
+<LI>Recover from the error condition and Reset() the error stack, cleaning it </LI>
+<LI>Take actions on the error and Close() the error stack, i.e. dumping the error stack on the logging system. </LI></UL>
+
+<LI>If the error goes up to the level of a function handling a command received from another application, an error reply is sent back to the application. The error reply contains the whole error stack that in this way crosses application and CPU (WS or LCU) boundaries. </LI>
+<LI>Error messages have a predefined format string with printf() syntax that is filled in with proper parameters and details at run time </LI>
+<LI>CCS tools provide support for </LI>
+
+<UL>
+<LI>error stack navigation and display </LI>
+<LI>error message definition </LI>
+<LI>error help definition&nbsp;</LI></UL>
+</UL>
+
+<H2><A NAME="AlarmSystem">Alarm System</A></H2>
+<P>In the CCS Alarm Systems:</P>
+
+<UL>
+<LI>Alarms are triggered based on conditions on database attributes </LI>
+<LI>Alarms are asynchronous events. The mechanism is very similar to Events (an Alarm event is received by the interested applications and a callback is called) </LI>
+<LI>The definition of the triggering conditions is more flexible than events, and in particular allows defining alarms with multiple severity levels based on value ranges. </LI>
+<LI>The alarm server keeps track and history of all alarms. Some alarms just disappear when the alarm condition is cleared, but other requires an explicit acknowledgement from the operator </LI>
+<LI>A missing feature is the possibility of having hierarchical alarms.&nbsp;&nbsp;</LI></UL>
+
+<H2><A NAME="TimeSystem">Time System</A></H2>
+
+<UL>
+<LI>ESO CCS provides an abstract API that has been implemented on different platforms and that satisfies all these requirements. </LI>
+<LI>Real-time LCUs are connected to the time bus <A HREF="ReferenceDocuments.html#RD24">[RD24]</A>. At the VLT, the time bus supplies more than 100 LCUs distributed in an area of about 300m across with a time information having a measured absolute accuracy better than 2.5 microseconds.</LI></UL>
+
+<H2><A NAME="ScriptingSupport">Scripting support</A></H2>
+
+<UL>
+<LI>The ESO CCS scripting language is based on Tcl/Tk language </LI>
+<LI>It includes specific Tcl/Tk extensions to provide full integration with the CCS services. </LI>
+<LI>It is not platform independent since it can run only on Unix systems where CSS is supported. </LI>
+<LI>The Templates used as a building block of Data Flow Observation blocks, are TCL scripts and observation blocks are interpreted at run time by the Tcl/Tk sequencer.&nbsp;</LI></UL>
+
+<H2><A NAME="GraphicalUserInterfaceTools">Graphical User Interface tools</A></H2>
+
+<UL>
+<LI>The ESO CCS include a proprietary GUI builder called Panel Editor </LI>
+<LI>It is based on Tcl/Tk scripting language </LI>
+<LI>It provides full integration with the CCS services and all of them can be used from inside GUIs </LI>
+<LI>The Panel Editor requires the installation of the CCS software on the target machine </LI>
+<LI>The Panel Editor is not platform independent and can run only on Unix systems where CSS is supported.</LI></UL>
+
+<H2><A NAME="DeviceDrivers">Device Drivers</A></H2>
+
+<UL>
+<LI>Supported Operating Systems are highly standardized and only specific versions with defined sets of patch packages are allowed, to limit as much as possible incompatibilities between different installations. </LI>
+<LI>All boards are standardized and device drivers and communication libraries are provided</LI></UL>
+
+<H2><A NAME="HighLevelApplicationFramework">High level application framework</A></H2>
+<P>ESO CCS provides two basic application frameworks:</P>
+
+<UL>
+<LI>EVH for Workstation (co-ordination) applications </LI>
+<LI>CITMP (command interpreter) for LCU (real time) applications</LI></UL>
+
+<P>More over TCS applications and INS (instrumentation) applications are base on even higher-level application frameworks that provide a very uniform architecture for the various system components.</P>
+<P>&nbsp;A CORBA based common SW has to provide at least the same level of application framework to guarantee standardization&nbsp;</P>
+<H2><A NAME="SystemConfigurationIssues">System configuration issues</A></H2>
+<P>ESO CCS has tackled these problems in the following way: </P>
+
+<UL>
+<LI>TCS and instruments software is build by using a standard BUILD module that takes care of every step from copying a defined set of modules, with a given version, from the archive up to the bootstrap of the LCUs and workstations. </LI>
+<LI>The database classes corresponding to a set of code classes is defined together with the code, i.e. in the same SW module of the code </LI>
+<LI>Also all default configuration values for the database items are defined here </LI>
+<LI>When a whole application is defined, also its whole database branch is defined putting together database classes and eventually overriding default values. Integration SW modules are used for this purpose. </LI>
+<LI>Part of the installation procedure is the "build" of a clean database starting from these descriptions. Conditional compilation can be used to build different system's instances. The database structure is fixed at build time and cannot be dynamically modified at run time (only values can be changed at run time). </LI>
+<LI>Configuration scripts are used at application's INIT time to load specific configuration values. </LI>
+<LI>A "by hand" editing of the database structure, de-coupled from code generation, is not acceptable on the basis of the experience made at ESO. </LI>
+<LI>ESO has defined the structure for the software archive, choosing a SW module approach, in which all files logically related to a specific purpose (typically a sub system) are grouped in a unique configuration management unit called a <I>SW module</I>. </LI>
+<LI>On the VLT we have two levels of software installation: </LI>
+
+<UL>
+<LI>The official release is installed by a special account (not root) and is available to every user. </LI>
+<LI>Integration areas can be defined by any user (no root access) and can contain any subset of the VLT SW from one single development module up to the whole system.&nbsp;</LI></UL>
+</UL>
+
+<H2><A NAME="SystemManagementIssues">System management issues</A></H2>
+
+<UL>
+<LI>ESO Common Software handles every environment independently. </LI>
+<LI>A Scheduler process is responsible for the management of the whole environment (monitoring of processes and resources) </LI>
+<LI>Whenever a process is started, it registers itself to the Scheduler and is kept under control. </LI>
+<LI>Processes can register themselves for notification of "obituaries" events when specific processes are terminated or when exceptional events occur. </LI>
+<LI>The startup/shutdown procedures are handle by Scheduler configuration files where all processes needed in the environment are configured (startup sequence, priority, need of automatic restart, permission of running multiple instances).</LI></UL>
+
+<P>&nbsp;</P></BODY>
+</HTML>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>Example of windowing facilities in NetBeans</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Katarina" lastname="Sigerud" ccid="73162"/>
+    <reviewers>TBD</reviewers>
+    <currentVersion>0.5 (2003/01)</currentVersion>
+    <history>
+    0.1 (2002/08) : First Draft<br/>
+    0.2 (2002/10) : Added examples<br/>
+    0.3 (2002/11) : Corrected example code<br/>
+    0.4 (2002/11) : Removed reference to jar descriptor xml<br/>
+    0.5 (2003/01) : Corrected broken references<br/>
+    </history>
+  </head>
+  <!-- 
+
+    SECTION 1
+    
+  -->
+  <section>
+    <title>Abstract</title>
+    <description>
+      <p>This document describes, and gives examples of, some of the windowing facilities in the NetBeans platform.
+    </p>
+    </description>
+  </section>
+    <!--
+  
+    SECTION 2
+    
+    -->
+    <section>
+              <anchor>BASIC</anchor>
+        <title>Basic windowing in NetBeans</title>
+        <description> 
+            <p class="normal">The java source of the examples can be found in <code><a href="/proj-gp/GP-Examples/javasrc/gp/example/windowing/Windowing.java.html">Windowing.java</a></code> for reference when reading this document and for your own exploration. A more thorough description of the windowing possibilities of NetBeans can be found in the <a href = "../proj-gp/_notgenerated/tools/netbeans/openapi/index.html">NetBeans API</a> documentation.
+            </p>
+        </description>
+    <!--
+  
+    Sub Section
+    
+    -->
+    <section>
+              <anchor>CREATE_WORKSPACE</anchor>
+        <title>Create a Workspace</title>
+        <description> 
+            <p>In the method <code>createWorkspace</code> is shown how to:
+        <ul>
+            <li> Create a Workspace.</li>
+            <li> Create a Mode (~JFrame) in a workspace, set its size and position and dock a TopComponent (~JPanel) into it.</li>
+            <li> Make a mode reside in the desktop.</li>
+            <li> Detect a Workspace switch, and how to switch to a Workspace.</li>
+            <li> Write to the log file.</li>
+            <li> Write to the stdout tab and to a self-named output tab.</li>
+            <li> Pop-up dialogs for user input and confirmation.</li>
+        </ul>
+            </p>
+            <p>
+            For more information on pop-up dialogs read the <code><a href = "/proj-gp/_notgenerated/tools/netbeans/openapi/org/openide/NotifyDescriptor.html">NotifyDescriptor.java</a></code> javadoc documentation.
+            </p>
+    </description>
+    <codeDescription>
+    <title>Example of how to create a Mode and dock a TopComponent into it</title>
+    <comment>This example also shows how to make the mode reside in the desktop</comment>
+        <code>          
+createdMode = ws.createMode(modeName, modeName, null);
+
+TopComponent tcExample = new TopComponentExample("TopComponentOne");
+
+// Set the size and position of the new mode to fit the topcomponent.
+createdMode.setBounds(
+  new Rectangle(200, 200, tcExample.getBounds().height + 50, tcExample.getBounds().width + 50));
+
+Mode mode = WindowUtils.openInMode(ws, tcExample, createdMode.getName());
+WindowUtils.frameResidesInDesktop(mode);
+        </code>
+    </codeDescription>
+    <codeDescription>
+    <title>Example of how to pop-up a dialog for user input</title>
+        <code>          
+userInput = new NotifyDescriptor.InputLine("Mode name", "Create mode");
+if (GPManager.notify(userInput) == NotifyDescriptor.OK_OPTION) {
+  String modeName = ((NotifyDescriptor.InputLine) userInput).getInputText();
+  // Handle the user input
+}
+        </code>
+    </codeDescription>
+    </section>
+    <!--
+  
+    Sub Section
+    
+    -->
+    <section>
+              <anchor>FIND_WORKSPACE</anchor>
+        <title>Find a Workspace</title>
+        <description> 
+            <p>In the method <code>findWorkspace</code> is shown how to:
+        <ul>
+            <li> Find a Workspace by its unique name.</li>
+            <li> Pop up an error message.</li>
+            <li> Display exceptions and log them to the log file.</li>
+            <li> Add a JPanel object to a TopComponent object.</li>
+            <li> Add more than one TopComponent to a Mode object.</li>
+        </ul>
+            </p>
+    </description>
+    <codeDescription>
+    <title>Example of how to add a JPanel object to a TopComponent</title>
+        <code>
+ JPanelTest jPanelTest = new JPanelTest();
+ topComponent.add(jPanelTest);</code>
+    </codeDescription>
+    </section>
+    <!--
+  
+    Sub Section
+    
+    -->
+    <section>
+              <anchor>DELETE_WORKSPACE</anchor>
+        <title>Delete a Workspace</title>
+        <description> 
+            <p>In the method <code>deleteWorkspace</code> is shown how to:
+        <ul>
+            <li> Remove a Workspace.</li>
+            <li> Close a Mode by closing the TopComponents opened on it.</li>
+            <li> Write to the status line.</li>
+        </ul>
+            </p>
+    </description>
+    <codeDescription>
+    <title>Example of how to close a Mode</title>
+        <code>                  
+// This is done by closing all topcomponents opened on each mode.
+TopComponent[] tcs = mode.getTopComponents();
+for (int j = 0; j &lt; tcs.length; j++) {
+  TopComponent tcExample = tcs[j];
+  
+  String tcName = tcExample.getName();
+  tcExample.setCloseOperation(TopComponent.CLOSE_LAST);
+        </code>
+    </codeDescription>
+    <codeDescription>
+    <title>Example of how to write to the status line</title>
+        <code>                  
+GPManager.setStatusText((tcExample.close(ws) ? "\"" + tcName + "\" closed successfully!" : ""));
+        </code>
+    </codeDescription>
+    </section>
+    </section>
+    <!--
+  
+    Sub Section
+    
+    -->
+    <section>
+              <anchor>WORKSPACE_SWITCHES</anchor>
+        <title>Detect a Switch from one Workspace to another</title>
+        <description>
+        <p>There are situations when your program needs to be notified when the user changes from one workspace to another. For instance, 
+        if windows in your workspace are subscribed to middleware and receive updates, you want to receive these updates only when the windows are
+        actually visible, i.e. when the workspace they are contained in is active. Or, as another example, maybe you want to be informed 
+        everytime your workspace is activated to refresh the data in your windows.</p> 
+        <p>GP provides a untility class, <code>     
+        <a href="/proj-gp/api/cern/gp/windows/WorkspaceSwitchListenerSupport.html">WorkspaceSwitchListenerSupport</a></code> that listens to
+        switches in workspaces. You need to sub-class this class and override one of the <code>workspaceEntered()</code> or 
+        <code>workspaceExited()</code> methods. These methods are called by GP everytime the user switches workspace.</p>
+        <p>For an example of how to use it, please refer to 
+        <a href="/proj-gp/GP-Examples/javasrc/gp/example/windowing/WorkspaceSwitchListenerDemo.java.html">WorkspaceSwitchListenerDemo</a></p>
+        </description>
+  </section>
+  <!--
+
+    SECTION 3
+    
+    -->
+  <section>
+    <title>Executing the examples</title>
+    <description>
+        <p class="normal">The class <code>Windowing.java</code> is executable in itself.
+        </p>
+    </description>
+    </section>
+</document>
+

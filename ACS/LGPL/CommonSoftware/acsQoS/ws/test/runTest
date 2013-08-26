@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# remove the old ior file, if present
+rm -rf s1.ior
+
+# run the server in the background
+timeoutTestServer &
+
+# wait for the server to write the ior file
+waitForServer 
+
+# run the client, which performs the actual test
+timeoutTestClient
+
+# in case of an erroneous condition, in which the 
+# server has not stopped properly, we will kill it here.
+if ps --no-headers $! | grep timeoutTestServer
+then
+		kill $!
+fi

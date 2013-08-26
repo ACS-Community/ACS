@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/ACS_jcont/test/alma/acs/component/client/FrameworkLoggerTest.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value=""/>
+<booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
+<stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
+<stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="alma.acs.component.client.FrameworkLoggerTest"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ACS_jcont"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DACS.manager=corbaloc::alma-head:3000/Manager &#13;&#10;-DACS.logstdout=3&#13;&#10;-Djacorb.log.default.verbosity=3"/>
+</launchConfiguration>

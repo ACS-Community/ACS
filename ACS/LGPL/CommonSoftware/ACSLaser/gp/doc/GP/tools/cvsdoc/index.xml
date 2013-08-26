@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>GP project tools - cvs</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<description>
+      <UL>
+        <a href="http://www.cvshome.org/"><IMG BORDER="0" SRC="cvsorglogo.gif"/> cvshome.org</a><br/>
+        <br/>
+        <LI>The <a href="http://www.cvshome.org/docs/manual/cvs.html">complete manual</a>  - PDF version: <a HREF="/proj-gp/_notgenerated/tools/cvsdoc/CVS-Manual-1.11.2.pdf"><IMG BORDER="0" SRC="../../images/pdf.gif" ALT="PDF document" width="18" height="18"/></a> (PDF-1.1Mb)</LI><br/>
+        <LI><a href="http://www.cvshome.org/docs/manual/cvs_17.html#SEC153">Quick reference manual</a></LI><br/> 
+        <LI><a href="../../howto/netbeans/cvs_config.html">How to configure cvs in netbeans</a></LI><br/> 
+      </UL>
+    <br/>
+    <br/>
+
+  		</description>
+	</section>
+  
+</document>
+

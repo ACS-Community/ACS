@@ -1,0 +1,4 @@
+#! /bin/bash
+ACS_CDB=$PWD
+acsutilTATPrologue -l --noloadifr
+acsutilAwaitContainerStart -java ARCHIVE/TMCDB/MONITOR_CONTROL/javaContainer

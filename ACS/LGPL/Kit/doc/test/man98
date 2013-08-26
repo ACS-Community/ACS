@@ -1,0 +1,5 @@
+This file is used to test  docDoManPages.c
+
+used to check whether an existent non-dir man-section file is rejected
+
+DO NOT REMOVE THIS FILE

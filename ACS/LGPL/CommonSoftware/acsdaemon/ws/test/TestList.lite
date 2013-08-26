@@ -1,0 +1,16 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# " $Id: TestList.lite,v 1.9 2010/09/28 08:18:46 msekoran Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+PROLOGUE acsdaemonTATPrologue
+1 daemontest            "test.sh"
+2 daemontest80          "loglevel.sh 0 acsservicesdaemon -u" "@SLEEP 3" "loglevel.sh 0 acsServices80Test" "@SLEEP 120" "loglevel.sh 0 acsservicesdaemonStop"
+3 testAcsDaemonUtil "testAcsDaemonUtil"
+#3 jdaemontest		"loglevel.sh 0 acsservicesdaemon -u" "@SLEEP 3" "acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.daemontest.ServicesDaemonTest" "@SLEEP 60" "acsStop" "@SLEEP 30" "loglevel.sh 0 acsservicesdaemonStop"
+4 daemontestsync    "testSync.sh"
+EPILOGUE acsdaemonTATEpilogue

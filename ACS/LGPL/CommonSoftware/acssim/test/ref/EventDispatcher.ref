@@ -1,0 +1,14 @@
+1 - ----------T--:--:--.--- ALMA_EVENT_CHANNEL-Consumer addSubscription - temperatureDataBlockEvent
+1 - ----------T--:--:--.--- ALMA_EVENT_CHANNEL-Consumer addSubscription - XmlEntityStruct
+1 - ----------T--:--:--.--- ALMA_EVENT_CHANNEL-Consumer initCORBA - Created new channel.
+1 - ----------T--:--:--.--- ALMA_EVENT_CHANNEL-Consumer addSubscription - temperatureDataBlockEvent
+1 - ----------T--:--:--.--- ALMA_EVENT_RESPONSE_CHANNEL-Consumer addSubscription - Duration
+1 - ----------T--:--:--.--- ALMA_EVENT_RESPONSE_CHANNEL-Consumer initCORBA - Created new channel.
+1 - ----------T--:--:--.--- EventDispatcher (MS1) handleResponses - 'IDL:alma/acstime/Duration:1.0' events will be sent to the 'ALMA_EVENT_RESPONSE_CHANNEL' channel after '1.0' seconds with a '0.5' probabily of being skipped when events of type 'IDL:alma/FRIDGE/temperatureDataBlockEvent:1.0' are received on the 'ALMA_EVENT_CHANNEL' channel.
+1 - ----------T--:--:--.--- EventDispatcher (MS1) scheduleEventByInstance - Sending 'IDL:alma/xmlentity/XmlEntityStruct:1.0' events on the 'ALMA_EVENT_CHANNEL' channel at a rate of '10.0' per second.
+1 - ----------T--:--:--.--- EventDispatcher (MS1) scheduleEventByType - Sending 'IDL:alma/FRIDGE/temperatureDataBlockEvent:1.0' events on the 'ALMA_EVENT_CHANNEL' channel at a rate of '3.0' per second.
+1 - ----------T--:--:--.--- EventDispatcher (MS1) setupEventDispatching - Setting up event dispatching.
+1 - Code defined within this element gets executed only once.
+1 - Good...enough temperatureDataBlockEvent's
+1 - Good...enough XmlEntityStruct's
+1 - Good...enough Durations have been received

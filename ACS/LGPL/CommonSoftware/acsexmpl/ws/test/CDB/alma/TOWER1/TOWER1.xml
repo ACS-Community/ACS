@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Example Configuration Database Entry for a Building
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<Tower xmlns="urn:schemas-cosylab-com:Tower:1.0"
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+       xmlns:building="urn:schemas-cosylab-com:Building:1.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <version xmlns="urn:schemas-cosylab-com:Building:1.0"
+	   description="VersionNumber"
+           default_value="1.0"
+           archive_min_int="5.0"
+           archive_max_int="10.0" />
+</Tower>
+

@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat7,v 1.76 2003/01/09 17:51:29 vltsccm Exp $"
+#
+# tat7: access right bugs 
+#
+# 
+
+rm -f .testSession
+rm -f TestList.sed
+rm -f TestList.grep
+
+rm -f Makefile
+rm -f TestList
+cp TestList.tat7 TestList
+if [ ! -d ./ENVIRONMENTS/ws1 ]
+then
+	mkdir ./ENVIRONMENTS/ws1
+	mkdir ./ENVIRONMENTS/ws1/dbl
+	cp ws1.USER.db.tat7 ./ENVIRONMENTS/ws1/dbl/USER.db
+	# should be made writable by tat
+	chmod a-w ./ENVIRONMENTS/ws1/dbl/USER.db
+fi	
+
+# should be made executable by tat
+chmod a-x tat71
+
+tat makeEnv
+
+tat -g tat71
+cat ./ref/tat71.ref
+
+tat cleanEnv
+
+rm -rf ./ENVIRONMENTS/ws1
+
+
+
+

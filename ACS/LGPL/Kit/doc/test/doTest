@@ -1,0 +1,336 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: doTest,v 1.31 2002/06/08 17:20:36 vltsccm Exp $" 
+#
+# "@(#) $Id: doTest,v 1.31 2002/06/08 17:20:36 vltsccm Exp $" 
+#
+# doTest
+#
+# who        when      what
+# ---------  --------  ----------------------------------------------
+# G.Filippi  12/05/93  created
+#
+
+#************************************************************************
+#  TEST PROCEDURE
+# 
+#----------------------------------------------------------------------
+#
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "UTILITY UNDER TEST:"
+what `which docDoManPages`
+echo "----------------------------------------------------------------------"
+echo "TEST PROCEDURE STARTED AT `date`"
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+
+# 
+echo "   Create and check test environment:"
+echo "   ----------------------------------"
+
+DONT_GO=false
+
+#
+# used to create output
+if [ -d ../man/man1 ]
+then
+    echo "   OK: ../man/man1 is present"
+else
+    echo "   ERROR: ../man/man1 not present"
+    DONT_GO=true
+fi
+
+#
+# used to create output
+if [ -d ../man/man2 ]
+then
+    echo "   OK: ../man/man2 is present"
+else
+    echo "   ERROR: ../man/man2 not present"
+    DONT_GO=true
+fi
+
+#
+# used to check whether a nox existent man section is rejected
+NOT_EXISTING_MANSECTION=99
+if [ ! -d ../man/man$NOT_EXISTING_MANSECTION ]
+then
+    echo "   OK: ../man/man$NOT_EXISTING_MANSECTION not present"
+else
+    echo "   ERROR: ../man/man$NOT_EXISTING_MANSECTION is present"
+    DONT_GO=true
+fi
+
+#
+# used to check whether an existent non-dir man-section file is rejected
+#FALSE_MANSECTION=98
+#if [ -f ../man/man$FALSE_MANSECTION ]
+#then 
+#    if [ ! -d ../man/man$FALSE_MANSECTION ]
+#    then
+#        echo "   OK: ../man/man$FALSE_MANSECTION present and not a directory"
+#    else
+#        echo "   ERROR: ../man/man$FALSE_MANSECTION present but is a directory"
+#        DONT_GO=true
+#    fi
+#else
+#    echo "   ERROR: ../man/man$FALSE_MANSECTION not present"
+#    DONT_GO=true
+#fi
+
+#
+# used to check whether a nox existent input file is rejected
+NOT_EXISTING_FILE=thisFileMustNotExist.c
+if [ ! -f $NOT_EXISTING_FILE ]
+then
+    echo "   OK: $NOT_EXISTING_FILE not present"
+else
+    echo "   ERROR: $NOT_EXISTING_FILE is present"
+    DONT_GO=true
+fi
+
+#
+# used to check the case of no man page
+SOURCE_WITHOUT_MANPAGE=sourceWithoutManPage.c
+if [ -f $SOURCE_WITHOUT_MANPAGE ]
+then
+    echo "   OK: $SOURCE_WITHOUT_MANPAGE is present"
+else
+    echo "   ERROR: $SOURCE_WITHOUT_MANPAGE is not present"
+    DONT_GO=true
+fi
+
+#
+# used to check the case of no title
+SOURCE_NONE=sourceWithNoTitle.c
+if [ -f $SOURCE_NONE ]
+then
+    echo "   OK: $SOURCE_NONE is present"
+else
+    echo "   ERROR: $SOURCE_NONE is not present"
+    DONT_GO=true
+fi
+
+#
+# used to check the case of blank line between NAME and title line
+SOURCE_BLANK_LINE=sourceWithBlankLine.c
+if [ -f $SOURCE_BLANK_LINE ]
+then
+    echo "   OK: $SOURCE_BLANK_LINE is present"
+else
+    echo "   ERROR: $SOURCE_BLANK_LINE is not present"
+    DONT_GO=true
+fi
+
+#
+# used to check the case of missing hyphen
+SOURCE_NO_HYPHEN=sourceWithNoHyphen.c
+if [ -f $SOURCE_NO_HYPHEN ]
+then
+    echo "   OK: $SOURCE_NO_HYPHEN is present"
+else
+    echo "   ERROR: $SOURCE_NO_HYPHEN is not present"
+    DONT_GO=true
+fi
+
+#
+# used to check the case of missing hyphen
+SOURCE_NO_END_LINE=sourceWithNoEndLine.c
+if [ -f $SOURCE_NO_END_LINE ]
+then
+    echo "   OK: $SOURCE_NO_END_LINE is present"
+else
+    echo "   ERROR: $SOURCE_NO_END_LINE is not present"
+    DONT_GO=true
+fi
+
+#
+# used to check the case of one title
+SOURCE_1=sourceWithOneTitle.c
+if [ -f $SOURCE_1 ]
+then
+    echo "   OK: $SOURCE_1 is present"
+else
+    echo "   ERROR: $SOURCE_1 is not present"
+    DONT_GO=true
+fi
+
+#
+# used to check the case of more titles
+SOURCE_MORE=sourceWithMoreTitles.c
+if [ -f $SOURCE_MORE ]
+then
+    echo "   OK: $SOURCE_MORE is present"
+else
+    echo "   ERROR: $SOURCE_MORE is not present"
+    DONT_GO=true
+fi
+
+#
+# used to check the case of bad format
+SOURCE_BAD_FORMAT=sourceWithBadFormat.c
+if [ -f $SOURCE_BAD_FORMAT ]
+then
+    echo "   OK: $SOURCE_BAD_FORMAT is present"
+else
+    echo "   ERROR: $SOURCE_BAD_FORMAT is not present"
+    DONT_GO=true
+fi
+
+
+if [ $DONT_GO = false ]
+then
+    echo ""
+    echo "TEST ENVIRONMENT OK"
+else
+    echo ""
+    echo "WRONG TEST ENVIRONMENT - Fix it and try again"
+    echo "TEST PROCEDURE ABNORMALLY TERMINATED AT `date`"
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    exit
+fi
+
+
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "******************************************"
+echo "* too few input parameters               *"
+echo "******************************************"
+docDoManPages tooFewInputParameters
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "******************************************"
+echo "* called with too many arguments         *"
+echo "******************************************"
+docDoManPages called with too many arguments
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "******************************************"
+echo "* not Existing Input                     *"
+echo "******************************************"
+docDoManPages notExistingInput 1
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "******************************************"
+echo "* wrong man section                      *"
+echo "******************************************"
+docDoManPages docDoManPages.c wrongManSection
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+if [ -d ../man/man1 ]
+then 
+    echo "******************************************"
+    echo "* ../man/man1 not existing               *"
+    echo "******************************************"
+    mv ../man/man1 ../man/man1-test
+    docDoManPages docDoManPages.c 1
+
+    echo "******************************************"
+    echo "* ../man/man1 not a directory            *"
+    echo "******************************************"
+    touch ../man/man1
+    docDoManPages docDoManPages.c 1
+ 
+    rm ../man/man1
+    mv ../man/man1-test ../man/man1
+else
+    echo "ERROR ../man/man1 not found:  check on man directory NOT executed "
+fi
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+if [ -d ../doc ]
+then 
+    echo "******************************************"
+    echo "* /doc not existing                      *"
+    echo "******************************************"
+    mv ../doc ../doc-test
+    docDoManPages docDoManPages.c 1
+
+    echo "******************************************"
+    echo "* /doc not a directory                   *"
+    echo "******************************************"
+    touch ../doc
+    docDoManPages docDoManPages.c 1
+
+    rm ../doc
+    mv ../doc-test ../doc
+else
+    echo "ERROR ../doc not found:  check on doc directory NOT executed "
+fi
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "Test Case: input file without header"
+echo "----------"
+docDoManPages $SOURCE_WITHOUT_MANPAGE 1
+echo ""
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "Test Case: input file with bad format"
+echo "----------"
+docDoManPages $SOURCE_BAD_FORMAT 1
+echo ""
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "Test Case: input file with no title"
+echo "----------"
+docDoManPages $SOURCE_NONE 1
+echo ""
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "Test Case: input file with blank line between NAME and title line"
+echo "----------"
+docDoManPages $SOURCE_BLANK_LINE 1
+echo ""
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "Test Case: input file with missing - "
+echo "----------"
+docDoManPages $SOURCE_NO_HYPHEN 1
+echo ""
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "Test Case: input file with missing end-of-page line (------------)"
+echo "----------"
+docDoManPages $SOURCE_NO_END_LINE 1
+echo ""
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "Test Case: input file with one title"
+echo "----------"
+docDoManPages $SOURCE_1 1
+echo ""
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "Test Case: input file with more than one title"
+echo "----------"
+docDoManPages $SOURCE_MORE 1
+echo ""
+
+#----------------------------------------------------------------------
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "Test Case: input file with more titles into another section (man2)"
+echo "----------"
+docDoManPages $SOURCE_MORE 2
+echo ""
+
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "TEST PROCEDURE TERMINATED AT `date`"
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+#
+# ___oOo___#
+

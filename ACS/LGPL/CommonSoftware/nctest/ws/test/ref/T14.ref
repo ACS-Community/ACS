@@ -1,0 +1,13 @@
+2 - Getting the Supplier
+2 - Sending events
+2 - Finished sending events
+1 - ----------T--:--:--.--- FridgeNCConsumer Main - Creating FridgeConsumer
+1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
+1 - ----------T--:--:--.--- FridgeNCConsumer Main - Waiting for events . . .
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer Main - Events all done . . . exiting
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

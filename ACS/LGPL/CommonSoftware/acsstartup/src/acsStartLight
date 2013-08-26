@@ -1,0 +1,212 @@
+#! /bin/bash
+. acsstartupLogging.sh
+. acsstartupConstants
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# @(#) $Id: acsStartLight,v 1.11 2012/05/31 15:03:11 acaproni Exp $
+#
+# who       when      what
+# -------- ---------- ----------------------------------------------
+# mschilli 2004-07-05 created
+#
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_BASEPORT=
+CL_CDBROOT=
+CL_CONTNAME=
+CL_HELP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,baseport:,cdbroot:,name:
+SHORTOPTS=hb:c:n:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Starts a Java-only Acs Suite (Cdb, Manager, Container)"
+   echo ""
+   echo "Usage: `basename $0` [OPTIONS]  "
+   echo "Options: "
+   echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use (default is \$ACS_INSTANCE)"
+   echo "   -c | -cdbroot PATH             the cdb root (contains a subdir 'CDB', default is \$ACS_CDB)"
+   echo "   -n | -name NAME                the container name (default is frodoContainer)"
+   echo "   -h | -help                     prints this help and exits"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--cdbroot)          CL_CDBROOT=$2 ; shift ;;
+	-c)                 CL_CDBROOT=$2 ; shift ;;
+	--baseport)         CL_BASEPORT=$2 ; shift ;;
+	-b)                 CL_BASEPORT=$2 ; shift ;;
+	--name)             CL_CONTNAME=$2 ; shift ;;
+	-n)                 CL_CONTNAME=$2 ; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+function sanitycheckCdb {
+
+   if [ ! -d $cdbroot ] ; then
+      ACS_LOG_ERROR "acsStartLight" "The specified cdb root directory does not exist"
+      return
+   fi
+
+   if [ ! -d $cdbroot/CDB ] ; then
+      ACS_LOG_ERROR "acsStartLight" "The specified cdb root directory doesn't contain a directory named 'CDB'"
+      return
+   fi
+
+}
+
+function addToCdbSchemaPath {
+
+   if [ -d $1/config/CDB/schemas ] ; then
+
+      if [ "$cdbschemapath" ] ; then
+         separator=":"
+      else
+         separator=""
+      fi
+      
+      cdbschemapath=$cdbschemapath$separator$1/config/CDB/schemas
+   fi;   
+}
+
+###
+### setup (1.default, 2.environment, 3.commandline)
+###
+
+#
+# acs instance
+#
+
+if [ x$ACS_INSTANCE != x ] ; then
+   acsinstance=$ACS_INSTANCE
+fi
+
+if [ $CL_BASEPORT ] ; then
+   acsinstance=$CL_BASEPORT
+fi
+
+ACS_LOG_COMMAND $@
+
+
+#
+# cdb
+#
+cdbroot=.
+
+if [ x$ACS_CDB != x ] ; then
+   cdbroot=$ACS_CDB
+fi
+
+if [ $CL_CDBROOT ] ; then
+   cdbroot=$CL_CDBROOT
+fi
+
+
+#
+# container
+#
+contname=frodoContainer
+
+if [ $CL_CONTNAME ] ; then
+   contname=$CL_CONTNAME
+fi
+
+
+#
+# additional schema paths
+#
+cdbschemapath=
+addToCdbSchemaPath $PWD/..
+addToCdbSchemaPath $INTROOT
+intlist=`echo "$INTLIST" | cut -d ":" -f 0- --output-delimiter=" "`
+for dir in $intlist ; do
+   addToCdbSchemaPath $dir
+done
+addToCdbSchemaPath $ACSROOT
+
+
+###
+### some logging / sanitychecking
+###
+ACS_LOG_DEBUG "acsStartLight" "Using Acs instance: $acsinstance"
+ACS_LOG_DEBUG "acsStartLight" "Using Cdb root directory: $cdbroot"
+ACS_LOG_DEBUG "acsStartLight" "Using additional Cdb schemas from: $cdbschemapath"
+ACS_LOG_DEBUG "acsStartLight" "Using Container name: $contname"
+
+sanitycheckCdb
+
+
+# Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "acsStartLight.gclog". 
+export JVM_GC_LOG_NAME=acsStartLight
+
+### go (The class alma.acs.startup.AcsStartLight comes from module acscommandcenter)
+acsStartJava -endorsed -DACS.cdbpath=$cdbschemapath alma.acs.startup.AcsStartLight $acsinstance $cdbroot $contname
+

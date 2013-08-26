@@ -1,0 +1,3 @@
+plugs=
+#plugs=Simulator
+abeans.core.defaults.ConsoleLoggingPolicy=ALL

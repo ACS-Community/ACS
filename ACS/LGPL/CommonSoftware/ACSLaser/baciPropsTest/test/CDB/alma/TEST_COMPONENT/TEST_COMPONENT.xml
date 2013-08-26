@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<TEST_COMPONENT xmlns="urn:schemas-cosylab-com:TEST_COMPONENT:1.0"
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<testDoubleVar
+        description="Test property"
+        units="int"
+        alarm_low_on="-110.0"
+        alarm_low_off="-100.0"
+        alarm_high_on="360.0"
+        alarm_high_off="350.0"
+        min_delta_trig="0.1"
+        graph_min="-120"
+        graph_max="360"
+        min_step="0.1"
+        archive_min_int="5.0"
+        archive_max_int="10.0"
+        alarm_timer_trig="1.0" />
+<testPatternVar
+	alarm_mask = "2"
+	alarm_trigger = "2"
+	alarm_timer_trig="1.0" />
+<testEnumVar
+	alarm_on=" 1, 3" 
+	alarm_off="0, 2"
+	alarm_timer_trig="1.0" />
+</TEST_COMPONENT>

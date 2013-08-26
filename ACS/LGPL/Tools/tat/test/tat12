@@ -1,0 +1,60 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat12,v 1.76 2003/01/09 17:51:23 vltsccm Exp $"
+#
+# tat12: -nc flag + additional 'make clean' + $MODROOT/dbl in USER_INC
+# 
+
+rm -f .testSession
+rm -f .TestList.sed
+rm -f TestList.grep
+rm -f TestList.sed
+
+rm -f Makefile
+rm -f TestList
+cp TestList.tat12 TestList
+cp Makefile.tat12 Makefile
+
+# just for this test: should stay here to explicitely test USER_INC
+# inclusion by 'make db': should NOT be under ../dbl otherwise 
+# will be installed under $VLTROOT/$INTROOT
+cp TAT12.db ../dbl/.
+chmod u+w ../dbl/TAT12.db
+
+#
+# 1. no clean with tat -g
+# 
+
+# Makefile clean target creates a file clean.tat12
+
+make clean all MAKE_FROMTAT=defined >/dev/null 2>&1
+rm -f clean.tat12
+
+tat -nc makeEnv
+
+tat -nc -g tat121
+cat ./ref/tat121.ref
+
+if [ -f clean.tat12 ]
+then	echo "Unexpected make clean with tat -g: NOK"
+else    echo "No make clean with tat -g: OK"
+fi
+
+tat -nc cleanEnv
+
+#
+# 2. no clean with tat
+#
+
+tat -nc
+if [ -f clean.tat12 ]
+then	echo "Unexpected make clean with tat: NOK"
+else	echo "No make clean with tat: OK"
+fi	
+
+# should always be done, otherwise may be installed under $VLTROOT
+# or $INTROOT.
+rm -f ../dbl/TAT12.db
+
+make clean MAKE_FROMTAT=defined
+

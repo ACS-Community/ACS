@@ -1,0 +1,12 @@
+java -classpath
+Time:
+export
+Starting Java application
+-D user.dir=
+Jlog will use cache for
+INFO
+\[EngineFilteringTest.*\]
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+object is activated
+Local file logger: Cache saved to
+PySingletonClient disconnect - Shutdown called for client

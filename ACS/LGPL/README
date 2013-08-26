@@ -1,0 +1,159 @@
+# "@(#) $Id: README,v 1.5 2008/06/17 10:29:36 acaproni Exp $"
+
+
+			 ACS 2.1
+			____________
+
+LICENSE & COPYRIGHT
+====================
+ACS is free software. 
+
+The ACS distribution is split in 3 sub-directories.
+
+1 - KIT
+-------
+The directory Kit contains the following modules:
+   - acs       acs specific extensions Makefile and 
+               general scripts provided by the vlt module
+   - acstempl  acs specific templates. Extend what provided
+               in the doc module
+   - doc       VLT Common Software template and utilities
+               for documentation.       
+   - vlt       basic Makefile and development environment
+               support scripts from the VLT Common Software
+
+These modules are distributed under
+   
+           GNU LESSER GENERAL PUBLIC LICENSE
+
+For copyright  information please  see the file COPYING.LGPL, which
+contains the GNU Lesser Public Library License. 
+
+2 - Tools
+---------
+The directory Tools contains modules that are not developed by the ACS
+team and are distributed and built here for convenience.
+
+    - cmm     Configuration Management Module.
+              Configuraiton management tool developed and used by ESO
+              projects and based on RCS.
+              ACS is going to switch to standard CVS, but the module
+              is provided here to allow access to the current archive.
+              Is distributed as LGPL and it is Copyrighted by ESO.
+
+   - compat   Tool to track dackward incompatibilities between
+              releases of ACS. Developed for the VLT.
+              Is distributed as LGPL and it is Copyrighted by ESO.
+
+   - doxygen  Just packaging of the public doxygen documentation tool
+              into the standard ACS Makefile and module structure
+              see the file Tools/doxygen/src/doxygen-1.2.13.1/LICENSE
+
+   - emacs    Just a collection of free and publicly available
+              emacs tools and configuration files used to
+              optimize emacs configuration for ACS
+              development.
+    
+   - expat    is a free xml parser for C++ available from Source Forge
+              We have ported it to VxWorks.
+              The original free license is in the file:
+              Tools/expat/COPYING
+
+   - extjars  is a collection of Java jar files (Java libraries)
+              used in ACS.
+              These libraries have various Free Licence agreememts.
+              Lokk at the Tools/extjars/README file for details
+              about the jar files included in this module and their 
+              licences.
+
+   - loki     Loki is available from Source Forge
+              (http://sourceforge.net/projects/loki-lib/) under
+	      MIT License
+              Loki has been ported to gcc 2.95.3 by Nick Thurn.
+              More info:
+              http://moderncppdesign.com
+              See also the file Tools/loki/src/readme.txt
+
+   - tat      is a test tool developed for the VLT and ALMA projects
+              Is distributed as LGPL and it is Copyrighted by ESO
+
+   -vtd-xml   A XML parser (http://vtd-xml.sourceforge.net/)
+              Licensed as GPL.
+
+3 - ACS
+---------
+The directory ACS contains the actual source code for ACS.
+All modules are distributed under 
+   
+           GNU LESSER GENERAL PUBLIC LICENSE
+
+For copyright  information please  see the file COPYING.LGPL, which
+contains the GNU Lesser Public Library License, 
+
+WITH THE EXCEPTION OF THE ABEANS MODULE.
+
+Abeans are Copyright of Cosylab
+The libraries in the abeans module can be used with the user interfaces
+provided in ACS (like Object Explorer, Administrator Client and
+Java Logging) and to build astronomical applications.
+If you want to use Abeans in other applications than the ones
+mentioned, you must contact first 
+Cosylab (marketing@cosylab.com). 
+They are nice guys and they usually find a
+solution, accetable for both sides."
+
+For details on the ABeans license readd the file ABEANS.LICENSE
+
+NOTE: We are still working on cleaning up License issues
+----  and not all files have the proper LGPL header file
+      This will be fixed step by step.
+      For the time being, assume that all files contained in the
+      modules described here as licensed as LGPL contain the proper header.
+
+      Each file distributed under LGPL will have the following header:
+
+>    Copyright by ESO (in the framework of the ALMA collaboration) 
+>    and Cosylab, All rights reserved
+>
+>    This library is free software; you can redistribute it and/or
+>    modify it under the terms of the GNU Lesser General Public
+>    License as published by the Free Software Foundation; either
+>    version 2.1 of the License, or (at your option) any later version.
+>
+>    This library is distributed in the hope that it will be useful,
+>    but WITHOUT ANY WARRANTY; without even the implied warranty of
+>    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+>    Lesser General Public License for more details.
+>
+>    You should have received a copy of the GNU Lesser General Public
+>    License along with this library; if not, write to the Free Software
+>    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+>
+
+     where the Copyright line on top will be each time replaced or expandend
+     with the identification of the institution(s) responsible for the
+     specific development.
+   
+
+INSTALL ACS
+------------
+
+To build and install ACS go in the ACSSW-Sources directory:
+
+1) Define the root directory where you want ACS to be installed:
+   > export ACSROOT=<ACSROOT path>
+   
+2) Make sure that INTROOT and ACSROOT point to the same directory
+   tree:
+   > export INTROOT=$ACSROOT
+
+3) make build
+
+This will eventually rename the ACSROOT directory to keep a backup
+copy of a pre-existing installation (watch for disk space or delete
+by hand the pre-existing ACSROOT.
+
+For more details on the installation procedure, look at the README
+file in the root directory of the ACS Distribution CD or at the ACS
+Installation Manual.
+ 

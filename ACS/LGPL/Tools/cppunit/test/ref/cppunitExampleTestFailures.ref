@@ -1,0 +1,26 @@
+ExampleTestCase::example : assertion
+ExampleTestCase::anotherExample : assertion
+ExampleTestCase::testAdd : assertion
+ExampleTestCase::testEqualscppunitExampleTestFailures.cpp:64:Assertion
+Test name: ExampleTestCase::example
+double equality assertion failed
+- Expected: 1
+- Actual  : 1.1
+- Delta   : 0.05
+
+Test name: ExampleTestCase::anotherExample
+assertion failed
+- Expression: 1 == 2
+
+Test name: ExampleTestCase::testAdd
+assertion failed
+- Expression: result == 6.0
+
+Test name: ExampleTestCase::testEquals
+equality assertion failed
+- Expected: 12
+- Actual  : 13
+
+Failures !!!
+Run: 4   Failure total: 4   Failures: 4   Errors: 0
+ : assertion

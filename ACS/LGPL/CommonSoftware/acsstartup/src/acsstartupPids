@@ -1,0 +1,627 @@
+#!/bin/bash
+. acsstartupConstants
+. acsstartupAcsPorts
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+#-------------------------------------
+#This file consists of bash functions used to determine the process IDs
+#of ACS processes.
+#-------------------------------------
+#--Helper function - based on the TCP port number passed in (the sole 
+#--parameter to this function), this function will dynamically determine
+#--the process ID which is listening on the TCP port.
+#--
+#--If the TCP port has not been opened, this function returns with
+#--an error code.
+#--If the TCP port has indeed been opened and the ID of the process
+#--listening is obtainable, the process ID is printed to stdout.
+function getPidFromTCP
+{
+local TCP
+local PID
+
+TCP=$1
+
+#this little command picks off the process ID if it exists...
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+  #Windows PID
+  PID=`netstat -p tcp -o -a -n 2> /dev/nul |grep "TCP \+[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:$TCP" |awk '{printf("%s\n",$5)}' |sort -u |awk '{printf("%s",$1)}'`
+  #Cygwin PID
+  if [ "x$PID" != "x" ]; then
+     PID=`ps h |sed s/I/" "/ |awk '{printf("%s %s\n", $1, $4)}' |grep "[0-9]* $PID" |awk '{printf("%s",$1)}'`
+  fi
+else
+  PID=`netstat -t -p -e -e -l -n 2> /dev/null| grep ":$TCP " | awk '{printf("%s", $9)}'| sed s/"\/"/" "/g | awk '{printf("%s", $1)}'`
+fi
+
+#sanity check
+if [ "$PID" = "" ]
+then
+    ACS_SILENT_LOG "DEBUG Unable to find the process ID for a program using the '$1' TCP port"
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getPidFromTCP
+#-------------------------------------
+#--Helper function - obtains the process ID of some process through one
+#--of two mechanisms:
+#-- A) The first parameter to this function is a filename which is assumed
+#--    to contain only one piece of information - the process ID we are
+#--    searching for. However, if this file does not exist...
+#-- B) The second parameter to this function is a TCP port number. Through
+#--    the port number, we can dynamically determine the process ID.
+#--
+#--In the event this function cannot determine the process ID, it exits
+#--with an error code. If everything does complete OK, the process ID 
+#--is printed to stdout.
+function getPid
+{
+local FILE
+local PORT
+
+FILE=$1
+PORT=$2
+
+#try to get the pid from a file first
+if ! PID=`cat $FILE 2>/dev/null`
+then
+    ACS_SILENT_LOG "DEBUG Unable to determine the process ID from $FILE."
+
+    #check by TCP port if using the file fails
+    if ! PID=`getPidFromTCP $PORT`
+    then
+	ACS_SILENT_LOG "DEBUG Unable to determine the process ID from TCP port $PORT."
+	exit $EC_FAILURE
+    fi
+fi
+
+echo $PID
+}
+export getPid
+#-------------------------------------
+#Sends the process ID of some process to stdout or returns with an
+#error code if there's some failure.
+function getServicePid
+{
+local INSTANCE_DIR
+local SERVICE_NAME
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+SERVICE_NAME=$1
+FILE=$2
+PORT=$3
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine ${SERVICE_NAME}'s process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+export getServicePid
+#-------------------------------------
+#Sends the process ID of manager to stdout or returns with an 
+#error code if there's some failure.
+function getManagerPid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_MANAGER_PIDFILE
+
+PORT=`getManagerPort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine manager's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+export getManagerPid
+#-------------------------------------
+#Sends the process ID of the naming service to stdout or returns with an 
+#error code if there's some failure.
+function getNamingServicePid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_NAMING_SERVICE_PIDFILE
+
+PORT=`getNamingServicePort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine the naming service's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getNamingServicePid
+#-------------------------------------
+#Sends the process ID of the notify service to stdout or returns with an 
+#error code if there's some failure.
+function getNotifyServicePid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_NOTIFY_SERVICE_PIDFILE
+
+PORT=`getNotifyServicePort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine the notification service's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getNotifyServicePid
+#-------------------------------------
+#Sends the process ID of the logging service to stdout or returns with an 
+#error code if there's some failure.
+function getLoggingServicePid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_LOGGING_SERVICE_PIDFILE
+
+PORT=`getLoggingServicePort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine the logging service's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getLoggingServicePid
+#-------------------------------------
+#Sends the process ID of IFR to stdout or returns with an 
+#error code if there's some failure.
+function getIRPid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_IR_PIDFILE
+
+PORT=`getIRPort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine the interface repository's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getIRPid
+#-------------------------------------
+#Sends the process ID of logging's notify service to stdout or returns with an 
+#error code if there's some failure.
+function getLoggingNotifyServicePid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_PIDFILE
+
+PORT=`getLoggingNotifyServicePort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine logging's notify service process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getLoggingNotifyServicePid
+#-------------------------------------
+#Sends the process ID of the archive notify service to stdout or returns with an 
+#error code if there's some failure.
+function getArchiveNotifyServicePid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_PIDFILE
+
+PORT=`getArchiveNotifyServicePort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine archive notify service's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getArchiveNotifyServicePid
+#-------------------------------------
+#Sends the process ID of the alarm notify service to stdout or returns with an 
+#error code if there's some failure.
+function getAlarmNotifyServicePid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_ALARM_NOTIFY_SERVICE_PIDFILE
+
+PORT=`getAlarmNotifyServicePort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine alarm notify service's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getAlarmNotifyServicePid
+#-------------------------------------
+#Sends the process ID of acsLogSvc to stdout or returns with an 
+#error code if there's some failure.
+function getLogPid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_LOG_SERVICE_PIDFILE
+
+PORT=`getLogPort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine acsLogSvc's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getLogPid
+#-------------------------------------
+#Sends the process ID of the CDB to stdout or returns with an 
+#error code if there's some failure.
+function getCDBPid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_CDB_PIDFILE
+
+PORT=`getCDBPort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine CDB's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getCDBPid
+
+#-------------------------------------
+#Sends the process ID of the alarm service to stdout or returns with an 
+#error code if there's some failure.
+function getAlarmServicePid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_ALARM_SERVICE_PIDFILE
+
+PORT=`getAlarmServicePort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine AlarmService's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getAlarmServicePid
+
+#------------------------------------------------------------
+function checkDeadManager
+{
+local SOMETHING_ALIVE
+local INSTANCE_DIR
+
+SOMETHING_ALIVE=0
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+#Check manager's port
+if MANAGER_PID=`getManagerPid 2>/dev/null`
+then
+    PID=`ps h -p $MANAGER_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
+    then
+	ACS_LOG_ERROR "acsstartupPids" "Manager 'ghost' existed in $INSTANCE_DIR!"
+	rm -f  $INSTANCE_DIR/$ACS_MANAGER_OUT
+	rm -f  $INSTANCE_DIR/$ACS_MANAGER_PIDFILE
+	rm -rf $INSTANCE_DIR/jManager
+	rm -rf $INSTANCE_DIR/Manager_Recovery
+    else
+	SOMETHING_ALIVE=1
+    fi
+fi
+
+return $SOMETHING_ALIVE
+}
+
+export checkDeadManager
+
+#------------------------------------------------------------
+function checkDeadServices
+{
+local SOMETHING_ALIVE
+local INSTANCE_DIR
+local TEMP_PID
+
+SOMETHING_ALIVE=0
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+#------------------------------------------------
+#Check naming service port
+if TEMP_PID=`getNamingServicePid 2>/dev/null`
+then
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
+    then
+	ACS_LOG_ERROR "acsstartupPids" "Naming Service 'ghost' existed in $INSTANCE_DIR!"
+	rm -f $INSTANCE_DIR/$ACS_NAMING_SERVICE_PIDFILE
+	rm -f $INSTANCE_DIR/$ACS_NAMING_SERVICE_IORFILE
+    else
+	SOMETHING_ALIVE=1
+    fi
+fi
+
+#------------------------------------------------
+#Check notify service port
+if TEMP_PID=`getNotifyServicePid 2>/dev/null`
+then
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
+    then
+	ACS_LOG_ERROR "acsstartupPids" "Notify Service 'ghost' existed in $INSTANCE_DIR!"
+	rm -f $INSTANCE_DIR/$ACS_NOTIFY_SERVICE_PIDFILE
+	rm -f $INSTANCE_DIR/$ACS_NOTIFY_OUT
+	rm -f $INSTANCE_DIR/$ACS_NOTIFY_SERVICE_IORFILE
+    else
+	SOMETHING_ALIVE=1
+    fi
+fi
+
+#------------------------------------------------
+#Check logging service port
+if TEMP_PID=`getLoggingServicePid 2>/dev/null`
+then
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
+    then
+	ACS_LOG_ERROR "acsstartupPids" "Logging Service 'ghost' existed in $INSTANCE_DIR!"
+	rm -f $INSTANCE_DIR/$ACS_LOGGING_SERVICE_PIDFILE
+	rm -f $INSTANCE_DIR/$ACS_LOGGING_OUT
+    else
+	SOMETHING_ALIVE=1
+    fi
+fi
+
+#------------------------------------------------
+#Check IFR port
+if TEMP_PID=`getIRPid 2>/dev/null`
+then
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
+    then
+	ACS_LOG_ERROR "acsstartupPids" "Interface Repository 'ghost' existed in $INSTANCE_DIR!"
+	rm -f $INSTANCE_DIR/$ACS_IR_PIDFILE
+	rm -f $INSTANCE_DIR/$ACS_IR_IORFILE
+    else
+	SOMETHING_ALIVE=1
+    fi
+fi
+
+#------------------------------------------------
+#Check logging notify service
+if TEMP_PID=`getLoggingNotifyServicePid 2>/dev/null`
+then
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
+    then
+	ACS_LOG_ERROR "acsstartupPids" "Logging Notify Service 'ghost' existed in $INSTANCE_DIR!"
+	rm -f $INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_PIDFILE
+	rm -f $INSTANCE_DIR/$ACS_LOG_NOTIFY_OUT
+	rm -f $INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_IORFILE
+    else
+	SOMETHING_ALIVE=1
+    fi
+fi
+
+#------------------------------------------------
+#Check archive notify service
+if TEMP_PID=`getArchiveNotifyServicePid 2>/dev/null`
+then
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
+    then
+	ACS_LOG_ERROR "acsstartupPids" "Archiving Notify Service 'ghost' existed in $INSTANCE_DIR!"
+	rm -f $INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_PIDFILE
+	rm -f $INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_OUT
+	rm -f $INSTANCE_DIR/$ACS_ARCHIVE_NOTIFY_SERVICE_IORFILE
+    else
+	SOMETHING_ALIVE=1
+    fi
+fi
+
+#------------------------------------------------
+#Check log port
+if TEMP_PID=`getLogPid 2>/dev/null`
+then
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
+    then
+	ACS_LOG_ERROR "acsstartupPids" "Log Service 'ghost' existed in $INSTANCE_DIR!"
+	rm -f $INSTANCE_DIR/$ACS_LOG_SERVICE_PIDFILE
+	rm -f $INSTANCE_DIR/$ACS_LOG_SERVICE_OUT
+    else
+	SOMETHING_ALIVE=1
+    fi
+fi
+
+#------------------------------------------------
+#Check CDB port
+if TEMP_PID=`getCDBPid 2>/dev/null`
+then
+    PID=`ps h -p $TEMP_PID`
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+        PID=`$PID |grep -v PID`
+    fi
+    if [ "$PID" = "" ] 
+    then
+	ACS_LOG_ERROR "acsstartupPids" "CDB 'ghost' existed in $INSTANCE_DIR!"
+	rm -f $INSTANCE_DIR/$ACS_CDB_PIDFILE
+	rm -f $INSTANCE_DIR/$ACS_CDB_OUT
+	rm -f $INSTANCE_DIR/CDB_Recovery.txt
+    else
+	SOMETHING_ALIVE=1
+    fi
+fi
+
+#------------------------------------------------
+return $SOMETHING_ALIVE
+}
+export checkDeadServices
+
+#------------------------------------------------------------------------------------
+function checkDeadContainers
+{
+return 0
+}
+
+export checkDeadContainers
+
+
+#------------------------------------------------------------
+function checkDeadACS
+{
+local SOMETHING_ALIVE
+local INSTANCE_DIR
+
+SOMETHING_ALIVE=0
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+#Check manager's port
+if ! checkDeadManager
+then
+    SOMETHING_ALIVE=1
+fi
+
+#Check manager's port
+if ! checkDeadServices
+then
+    SOMETHING_ALIVE=1
+fi
+
+#Check manager's port
+if ! checkDeadContainers
+then
+    SOMETHING_ALIVE=1
+fi
+
+if [ "$SOMETHING_ALIVE" = "0" ]
+then
+    ACS_LOG_DEBUG "acsstartupPids" "All ACS processes appear to be dead for ACS_INSTANCE=$ACS_INSTANCE"
+    rm -f $INSTANCE_DIR/pids/ACS_PIDS
+else
+    ACS_LOG_ERROR "acsstartupPids" "There are still living processes for ACS_INSTANCE=$ACS_INSTANCE!"
+fi
+
+return $SOMETHING_ALIVE
+}
+export checkDeadACS

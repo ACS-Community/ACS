@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+<LogDefinitionType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSLogTS"	
+	name="AcsNCTraceLog" 
+	type="10"
+	shortDescription="ACS trace logs for use of notification services/channels"
+	description="ACS uses these messages to log notification service related activities such as creating channels, subscribing to a channel etc." 
+	_prefix="alma" 
+	>
+	
+	<!-- =========== Required TAO extensions are not enabled =========== -->
+	<LogDefinition
+		logName="LOG_NC_TaoExtensionsSubtypeMissing"
+		shortDescription="TAO extensions are not enabled."
+		description="TAO extensions are not enabled. Since ACS 8.0, we require the NotifyService to offer the TAO specific extensions. Without those, we would need to program our own NC manager to prevent race conditions and to keep track of names and clients."
+		priority="ERROR"
+		audience="Developer">
+		<Member name="ObjectName" type="string" description="An optional name of the factory, channel, admin object etc which does not have the expected type." />
+		<Member name="ExpectedType" type="string" description="Expected TAO extension IDL type, e.g. 'IDL:sandia.gov/NotifyMonitoringExt/EventChannelFactory:1.0'" />
+		<Member name="ActualType" type="string" description="Actual IDL type, e.g. 'IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0'" />
+		<!-- Member name="Service" type="string" description="Name or ID of the notification service." / -->
+	</LogDefinition>
+	
+	
+	<!-- =========== Channel lifecycle =========== -->
+
+	<LogDefinition
+		logName="LOG_NC_ChannelCreated_ATTEMPT"
+		shortDescription="About to create a notification channel"
+		description="About to create a notification channel"
+		priority="TRACE"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel to be created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that should host the channel." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_ChannelCreatedRaw_OK"
+		shortDescription="Successfully created an NC, w/o configuration yet."
+		description="Successfully created a notification channel, w/o configuration. Having this log message in addition to LOG_NC_ChannelCreated_OK is useful in order to measure performance bottlenecks in the various steps of NC creation."
+		priority="DELOUSE"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel created." />
+		<Member name="ChannelId" type="long" description="ID of the channel created." />
+		<Member name="TimeMillis" type="long" description="Elapsed time in ms for just the channel creation (call to NotifyFactory#create_named_channel)" />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_ChannelCreated_OK"
+		shortDescription="Successfully created and configured a notification channel."
+		description="Successfully created and configured a notification channel."
+		priority="INFO"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel created." />
+		<Member name="ChannelId" type="long" description="ID of the channel created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="TimeMillis" type="long" description="Elapsed time in ms, incl. channel configuration" />
+	</LogDefinition>
+	
+	<!-- @TODO: FIGURE OUT IF WE ACTUALLY (SHOULD) DESTROY NCs. IN JAVA THIS FEATURE IS NOT USED IN PRACTICE AS OF ALMA-5_0_1_9 -->
+	<LogDefinition
+		logName="LOG_NC_ChannelDestroyed_OK"
+		shortDescription="Successfully destroyed a notification channel"
+		description="Successfully destroyed a notification channel"
+		priority="INFO"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel destroyed." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosted the channel." />
+	</LogDefinition>
+	
+	<!-- =========== Channel connection objects =========== -->
+	 
+	<LogDefinition
+		logName="LOG_NC_ConsumerAdminObtained_OK"
+		shortDescription="Successfully obtained an NC consumer admin object."
+		description="Successfully obtained a notification channel consumer admin object, through creation or reuse."
+		priority="TRACE"
+		audience="Developer">
+		<Member name="ConsumerAdminId" type="long" description="ID of the admin object created." />
+		<Member name="CreatedOrReused" type="string" description="'created' if admin object was created, 'reused' if an existing admin object was reused." />
+		<Member name="ClientName" type="string" description="Name of the client that created the consumer admin." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the ConsumerAdmin was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+	</LogDefinition>
+
+	<LogDefinition
+		logName="LOG_NC_ConsumerAdmin_Overloaded"
+		shortDescription="Shared consumer admin object has too many proxies."
+		description="Shared consumer admin object has more push suppliers than it should, probably because a race condition was met by two simultaneous subscribers trying to acquire the same almost-full consumer admin."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ConsumerAdminId" type="long" description="ID of the admin object created." />
+		<Member name="CurrentProxiesForAdmin" type="long" description="Current number of proxies associated with the consumer admin." />
+		<Member name="MaxProxiesPerAdmin" type="long" description="Maximum expected number of proxies associated with this consumer admin." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the ConsumerAdmin was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_SupplierProxyCreation_OK"
+		shortDescription="Successfully created an NC supplier proxy object."
+		description="Successfully created a notification channel supplier proxy object, on behalf of the NC subscriber identified by 'ClientName'."
+		priority="TRACE"
+		audience="Developer">
+		<Member name="SupplierProxyId" type="long" description="System-provided ID of the supplier proxy object that was created." />
+		<Member name="ClientName" type="string" description="Name of the subscribing client that created the supplier proxy." />
+		<Member name="SupplierProxyName" type="string" description="Name of the supplier proxy object, derived from ClientName." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the supplier proxy was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_SupplierProxyCreation_FAIL"
+		shortDescription="Failed to create an NC supplier proxy object."
+		description="Failed to create a notification channel supplier proxy object on behalf of the NC subscriber identified by 'ClientName'."
+		priority="NOTICE"
+		audience="Developer">
+		<Member name="ClientName" type="string" description="Name of the subscribing client that created the supplier proxy." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the supplier proxy was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+		<Member name="Reason" type="string" description="Description of the reason for the failure." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_ConsumerProxyCreation_OK"
+		shortDescription="Successfully created an NC consumer proxy object."
+		description="Successfully created a notification channel Consumer proxy object, on behalf of the NC supplier identified by 'ClientName'."
+		priority="TRACE"
+		audience="Developer">
+		<Member name="ConsumerProxyId" type="long" description="System-provided ID of the consumer proxy object that was created." />
+		<Member name="ConsumerProxyName" type="string" description="Application-provided name of the consumer proxy object that was created." />
+		<Member name="ProxyCreationAttempts" type="long" description="Creation attempts until a unique proxy name was found. Should almost always be '1' thanks to random number appended." />
+		<Member name="ClientName" type="string" description="Name of the publishing client that created the supplier proxy." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the consumer proxy was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_ConsumerProxyCreation_FAIL"
+		shortDescription="Failed to create an NC consumer proxy object."
+		description="Failed to create a notification channel Consumer proxy object on behalf of the NC supplier identified by 'ClientName'."
+		priority="NOTICE"
+		audience="Developer">
+		<Member name="ClientName" type="string" description="Name of the publishing client that created the supplier proxy." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the consumer proxy was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+		<Member name="Reason" type="string" description="Description of the reason for the failure." />
+	</LogDefinition>
+	
+	
+	<!-- =========== Channel subscriptions =========== -->
+	
+	<LogDefinition
+		logName="LOG_NC_SubscriptionConnect_OK"
+		shortDescription="Successfully connected to a notification channel"
+		description="Successfully connected to a notification channel"
+		priority="DEBUG"
+		audience="Developer">
+		<!-- Member name="Subscriber" type="string" description="Name of the subscriber component or tool." / -->
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_SubscriptionConnect_FAIL"
+		shortDescription="Failed connecting to a notification channel"
+		description="Failed connecting to a notification channel"
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel not subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+	</LogDefinition>
+
+	<LogDefinition
+		logName="LOG_NC_SubscriptionDisconnect_OK"
+		shortDescription="Disconnected from a notification channel"
+		description="Disconnected from a notification channel"
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_SubscriptionDisconnect_FAIL"
+		shortDescription="Failed to disconnect from a notification channel"
+		description="Failed to disconnect from a notification channel. Perhaps resources could not be deallocated."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+	</LogDefinition>
+	
+	<!-- =========== Event processing =========== -->
+	
+	<LogDefinition
+		logName="LOG_NC_EventReceive_OK"
+		shortDescription="Event successfully received, ready to be processed"
+		description="Event successfully received, ready to be processed. The NC libraries will only log this message if the CDB enables event tracing for the particular channel, see 'IntegrationLogs' defined in EventChannel.xsd"
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_EventReceive_FAIL"
+		shortDescription="Received a corrupted event, which will not be processed."
+		description="Received a corrupted event whose data was null or not a subtype of IDLEntity. Thus this event cannot be processed."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+		<Member name="EventDataType" type="string" description="The offending event data type, or 'null'" />
+	</LogDefinition>	
+
+	<LogDefinition
+		logName="LOG_NC_EventReceive_NoHandler"
+		shortDescription="Ignoring event because no registered receiver was found."
+		description="An event was properly received, but no registered receiver was found, thus ACS will ignore this event. NC libs must carefully check whether event type filtering should be done in the NotifyService (then this is serious) or in the subscriber libraries (then this is normal), and adjust log level or use repeat guards accordingly."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_EventReceive_HandlerException"
+		shortDescription="The registered event handler illegally threw an exception."
+		description="Event handlers are not allowed to throw exceptions when they fail for whatever reason. If they do nonetheless, you see this log."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+		<Member name="HandlerClass" type="string" description="The receiver class that let the exception fly through." />
+		<Member name="ExceptionData" type="string" description="Data about the caught exception." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_ProcessingTimeExceeded"
+		shortDescription="Took too long to process an event"
+		description="Took too long to process an event, considering the maxProcessTime attribute from the EventChannel schema. This is different from LOG_NC_ReceiverTooSlow which indicates an actual problem."
+		priority="WARNING"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+		<Member name="LogOcurrencesNumber" type="long" description="Number of previous LOG_NC_ProcessingTimeExceeded logs reduced into this single log by a repeat guard." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_ReceiverTooSlow"
+		shortDescription="More events came in from the NC than the receiver processed."
+		description="More events came in from the NC than the receiver could process. The receiver must be changed to use its own queueing/discarding mechanism."
+		priority="ERROR"
+		audience="Developer">
+		<Member name="ClientName" type="string" description="Name of the client that failed to process events fast enough." />
+		<Member name="NumEventsDiscarded" type="long" description="Number of events discarded since the last log (log repeat guard used)." />
+		<Member name="EventName" type="string" description="Name of the last event that could not be handled immediately." />
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+	</LogDefinition>
+	
+</LogDefinitionType>
+

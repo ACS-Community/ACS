@@ -1,0 +1,95 @@
+#!/bin/sh
+# rpackMakeTarball -- Make ACS tarballs
+
+NO_ARGS=0
+E_OPTERROR=65
+ACS_SOURCES_DIR="../../../"
+CONFIG_FILE="../config/rpackTarball.conf"
+ACS_BASH_PROFILE=$ACS_SOURCES_DIR/LGPL/acsBUILD/config/.acs/.bash_profile.acs
+COMPILE_FARM="../redhat/"
+DEST_DIR="$COMPILE_FARM/SOURCES"
+USAGE="Usage: `basename $0` -n <name> [ -c <cfgfile> -s <srcdir> -b <bashprof> -v <version> -d <dest>] | -h | -l "
+HELP_TEXT="rpackMakeTarball is an automatic tarball builder for RPM generation, developed by UTFSM Team.
+
+Usage: `basename $0` -n <name> [ -c <cfgfile> -s <srcdir> -b <bashprof> -v <version> -d <dest>] | -h | -l
+
+-n <name>        : is the package name, a full list of names with the -l option
+-c <cfgfile>  : Configuration file path, by default $CONFIG_FILE
+-s <srcdir>   : Base ACS Source directory, by default $ACS_SOURCES_DIR
+-b <bashprof> : .bash_profile.acs path, by default $ACS_BASH_PROFILE
+-v <version>  : Redefine the Version of the tarball, defined at ACS/ACS_VERSION
+-d <dest>     : Destination directory, by default $DEST_DIR
+-l 	      : List the possible packages
+-h	      : Display this help message
+
+"
+
+if test $# -eq "$NO_ARGS"   # Script invoked with no command-line args?
+then
+  echo $USAGE
+  echo "### ERROR in rpackMakeTarball."
+  exit $E_OPTERROR        # Exit and explain usage, if no argument(s) given.
+fi
+
+while getopts "hln:c:s:b:d:v:" Option
+do
+  case $Option in
+    c     ) CONFIG_FILE=$OPTARG;;
+    s     ) ACS_SOURCES_DIR=$OPTARG;
+	    ACS_BASH_PROFILE=$ACS_SOURCES_DIR/LGPL/acsBUILD/config/.acs/.bash_profile.acs;;
+    b     ) ACS_BASH_PROFILE=$OPTARG;;
+    v     ) ACS_VERSION=$OPTARG;;
+    d     ) DEST_DIR=$OPTARG;;
+    h     ) echo -e "$HELP_TEXT"; exit 0;;
+    l     ) cat $CONFIG_FILE |grep ^"\[package\]" | cut -d " " -f2 ; exit 0;;
+    n     ) ACS_PACKAGE_NAME=$OPTARG;;
+    *     ) echo "Invalid Option or missing parameter"; exit 1;;   # DEFAULT
+  esac
+done
+
+# Put the message here so that we do not put extra output
+# when executing the -l option.
+echo "###### Executing rpackMakeTarball"
+
+if test -z $ACS_VERSION; then
+  if ! ACS_VERSION=`cat $ACS_SOURCES_DIR/ACS_VERSION`; then exit 1; fi;
+fi
+
+if test -z $ACS_PACKAGE_NAME; then
+  echo $USAGE
+  echo "### ERROR in rpackMakeTarball."
+  exit $E_OPTERROR        # Exit and explain usage, if no name argument given.
+fi
+
+
+# Fill the directory with the configuration disposed at the config file.
+cat $CONFIG_FILE | while read line; do
+  case `echo $line |grep ^"\[" | cut -d " " -f1` in
+	"[package]")  if test `echo $line |cut -d " " -f2` = $ACS_PACKAGE_NAME; then
+                        mkdir -p $DEST_DIR
+			WORKFLAG="WORKING";
+			TO_DIR=$DEST_DIR/$ACS_PACKAGE_NAME-$ACS_VERSION
+			mkdir -p $TO_DIR
+			cp $ACS_BASH_PROFILE $TO_DIR
+		      fi ;;
+	"[/package]") unset WORKFLAG; ;;
+	"[cp]")       if ! test -z $WORKFLAG;then
+		        cp -r $ACS_SOURCES_DIR/`echo $line | cut -d " " -f2` $TO_DIR/`echo $line | cut -d " " -f3`
+		      fi;;
+	"[mkdir]")    if ! test -z $WORKFLAG;then
+                        mkdir $TO_DIR/`echo $line | cut -d " " -f2`
+                      fi;;
+  esac
+done
+
+# Tar and removes the directory.
+echo "### Creating tar for package: $ACS_PACKAGE_NAME"
+if test -d "$DEST_DIR/$ACS_PACKAGE_NAME-$ACS_VERSION" ; then
+  cd $DEST_DIR
+  tar czvf $ACS_PACKAGE_NAME-$ACS_VERSION.tar.gz $ACS_PACKAGE_NAME-$ACS_VERSION
+  rm -rf $ACS_PACKAGE_NAME-$ACS_VERSION
+else
+  echo "No such Package Configuration."
+fi
+
+echo "### Done rpackMakeTarball."

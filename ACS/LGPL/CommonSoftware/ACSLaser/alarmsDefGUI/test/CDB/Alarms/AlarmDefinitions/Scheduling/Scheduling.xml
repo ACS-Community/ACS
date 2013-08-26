@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+$Id: Scheduling.xml,v 1.2 2013/03/08 08:49:12 acaproni Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/Scheduling/Scheduling.xml,v $
+-->
+<fault-family name="Scheduling" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-acs:AcsAlarmSystem:1.0 ../../../acsalarm-fault-family.xsd ">
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://tempuri.org</help-url>
+  <contact gsm="" name="scheduling person"/>
+  <fault-code value="1">
+    <priority>1</priority>
+    <cause>Archiving subsystem Problem. </cause>
+    <action>check Tomcat(Web server) service amd check Archiving connection(or mode) </action>
+    <consequence>Will not get any data from archive</consequence>
+    <problem-description>Can not get the reference to the archive or error from the archive is received</problem-description>
+  </fault-code>
+  <fault-code value="2">
+    <priority>1</priority>
+    <cause>Control subsystem Problem. </cause>
+    <action>Check the Control subsystem log or error message or check Control subsystem status </action>
+    <consequence>Some component of Control subsystem can not work may cause unexpected result</consequence>
+    <problem-description>tries to use the control system components and gets an error from the control system</problem-description>
+  </fault-code>
+  <fault-code value="3">
+    <priority>1</priority>
+    <cause>Control subsystem Problem. Array can not be used </cause>
+    <action>Check the Control subsystem log or error message or check array alarm/log/error </action>
+    <consequence>Some array component of Control subsystem can not work may cause unexpected result</consequence>
+    <problem-description>attempts to use its array components and receives an error</problem-description>
+  </fault-code>
+  <fault-code value="4">
+    <priority>1</priority>
+    <cause> Control subsystem send a ExecBlockEndedEvent.</cause>
+    <action>Check the Control subsystem log or error message which cause the ExecBlockEndedEvent sent</action>
+    <consequence>SB's execution is not successful</consequence>
+    <problem-description>attempt the to do a ExecBlock observation, but Control subsystem send a ExecBlockEndedEvent.</problem-description>
+  </fault-code>
+  <fault-code value="5">
+    <priority>1</priority>
+    <cause> Some component of the MasterScheduler not work</cause>
+    <action>chech log/error/alarm for the MasterScheduer</action>
+    <consequence>may cause unexpected behavor</consequence>
+    <problem-description>Scheduling get an error from MasterScheduler</problem-description>
+  </fault-code>
+  <fault-member-default>
+  </fault-member-default>
+</fault-family>

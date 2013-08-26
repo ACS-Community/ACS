@@ -1,0 +1,150 @@
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 1 - Creating thread passing just thread name
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::TestACSThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Wait a few seconds. Nothing should happen
+1 - ----------T--:--:--.--- [GlobalLogger - main] Resume the thread and wait. The thread should be executed.
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (0)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (1)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (2)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (3)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (4)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (5)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (6)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (7)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (8)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (9)
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (10)
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Destroy thread
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::~TestACSThread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 2 - Creating thread initially suspended
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::TestACSThread] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadB - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (0)
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (1)
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (2)
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (3)
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (4)
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (5)
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (6)
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (7)
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (8)
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (9)
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::runLoop] TestThreadB: runLoop (10)
+1 - ----------T--:--:--.--- [TestThreadB - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Deleting thread
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThread::~TestACSThread] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 3 - Creating thread, suspend and resume a few times
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::TestACSThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Wait a few seconds. Nothing should happen
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::runLoop] TestThreadC: runLoop (0)
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::runLoop] TestThreadC: runLoop (1)
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::runLoop] TestThreadC: runLoop (2)
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::runLoop] TestThreadC: runLoop (3)
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::runLoop] TestThreadC: runLoop (4)
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::runLoop] TestThreadC: runLoop (5)
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::runLoop] TestThreadC: runLoop (6)
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::runLoop] TestThreadC: runLoop (7)
+1 - ----------T--:--:--.--- [GlobalLogger - main] Deleting thread
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::~TestACSThread] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadC - ThreadBase::stop] Thread TestThreadC
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::cancel] Thread stopped:TestThreadC
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 4 - Creating thread that is never woken-up
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [SuspendForEver - TestACSThread::TestACSThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Deleting thread
+1 - ----------T--:--:--.--- [SuspendForEver - TestACSThread::~TestACSThread] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [SuspendForEver - ThreadBase::stop] Thread SuspendForEver
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:SuspendForEver
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 5 - Creating thread with long period and stop() it
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::TestACSThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Wait a few seconds. Nothing should happen
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::runLoop] TestThreadC: runLoop (0)
+1 - ----------T--:--:--.--- [GlobalLogger - main] Stopping thread
+1 - ----------T--:--:--.--- [TestThreadC - ThreadBase::stop] Thread TestThreadC
+1 - ----------T--:--:--.--- [TestThreadC - ThreadBase::stop] Thread TestThreadC did not stop within 20000000 100ns
+1 - ----------T--:--:--.--- [GlobalLogger - main] Stop failed, as expected
+1 - ----------T--:--:--.--- [GlobalLogger - main] Deleting thread
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::~TestACSThread] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 6 - Creating thread with long period and cancel() it
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::TestACSThread] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Cancelling thread
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::cancel] Thread stopped:TestThreadC
+1 - ----------T--:--:--.--- [GlobalLogger - main] Deleting thread
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThread::~TestACSThread] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== The end

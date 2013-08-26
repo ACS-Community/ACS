@@ -1,0 +1,19 @@
+#!/bin/bash
+#A general purpose script designed to determine the
+#ACS instance being used for a modular test and 
+#export it for an executable specified to this script
+#sample usage would be: 
+#          acsutilTATTestRunner acsexmplClient
+
+#determine the ACS instance
+export ACS_INSTANCE=`cat $ACS_TMP/acs_instance` 
+
+if [ "$ACS_INSTANCE" = "" ]
+then
+    echo "Could not determine the ACS_INSTANCE!"
+    echo "Exiting!"
+    exit 1
+fi
+
+#just run the command
+$*

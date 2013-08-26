@@ -1,0 +1,553 @@
+2 - ----------------------------------------------------------------
+2 - --testBasicROProperty--
+2 - Testing  <ACS._objref_ROstring instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/stringROProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 
+2 - 
+2 - Testing  <ACS._objref_ROstring instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: ('', ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - create_monitor: <ACS._objref_Monitorstring instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitorstring instance at 0xXXXX>
+2 - ----------------------------------------------------------------
+2 - --testBasicROProperty--
+2 - Testing  <ACS._objref_ROstringSeq instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/strSeqProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: []
+2 - 
+2 - Testing  <ACS._objref_ROstringSeq instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: ([], ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - create_monitor: <ACS._objref_MonitorstringSeq instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_MonitorstringSeq instance at 0xXXXX>
+2 - ----------------------------------------------------------------
+2 - --testBasicROProperty--
+2 - Testing  <ACS._objref_ROpattern instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/patternROProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_ROpattern instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: (0L, ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - create_monitor: <ACS._objref_Monitorpattern instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitorpattern instance at 0xXXXX>
+2 - --testPatternROProperty--
+2 - Testing  <ACS._objref_ROpattern instance at 0xXXXX>  attributes...
+2 - bitDescription: []
+2 - whenSet: []
+2 - whenCleared: []
+2 - 
+2 - Testing  <ACS._objref_ROpattern instance at 0xXXXX>  methods...
+2 - ----------------------------------------------------------------
+2 - --testBasicROProperty--
+2 - Testing  <ACS._objref_ROdouble instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/doubleROProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0.0
+2 - 
+2 - Testing  <ACS._objref_ROdouble instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: (0.0, ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - create_monitor: <ACS._objref_Monitordouble instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitordouble instance at 0xXXXX>
+2 - --testComplexROProperty--
+2 - Testing  <ACS._objref_ROdouble instance at 0xXXXX>  attributes...
+2 - min_delta_trigger: 0.0
+2 - graph_min: 0.0
+2 - graph_max: 1000.0
+2 - min_step: 0.0
+2 - alarm_low_on: 0.0
+2 - alarm_low_off: 0.0
+2 - alarm_high_on: 0.0
+2 - alarm_high_off: 0.0
+2 - 
+2 - Testing  <ACS._objref_ROdouble instance at 0xXXXX>  methods...
+2 - ----------------------------------------------------------------
+2 - --testBasicROProperty--
+2 - Testing  <ACS._objref_ROlong instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/longROProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_ROlong instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: (0, ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - create_monitor: <ACS._objref_Monitorlong instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitorlong instance at 0xXXXX>
+2 - --testComplexROProperty--
+2 - Testing  <ACS._objref_ROlong instance at 0xXXXX>  attributes...
+2 - min_delta_trigger: 0
+2 - graph_min: 0
+2 - graph_max: 1000
+2 - min_step: 0
+2 - alarm_low_on: 0
+2 - alarm_low_off: 0
+2 - alarm_high_on: 0
+2 - alarm_high_off: 0
+2 - 
+2 - Testing  <ACS._objref_ROlong instance at 0xXXXX>  methods...
+2 - ----------------------------------------------------------------
+2 - --testBasicROProperty--
+2 - Testing  <ACS._objref_ROlongLong instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/longLongROProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_ROlongLong instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: (0L, ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - create_monitor: <ACS._objref_MonitorlongLong instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_MonitorlongLong instance at 0xXXXX>
+2 - --testComplexROProperty--
+2 - Testing  <ACS._objref_ROlongLong instance at 0xXXXX>  attributes...
+2 - min_delta_trigger: 0
+2 - graph_min: 0
+2 - graph_max: 1000
+2 - min_step: 0
+2 - alarm_low_on: 0
+2 - alarm_low_off: 0
+2 - alarm_high_on: 0
+2 - alarm_high_off: 0
+2 - 
+2 - Testing  <ACS._objref_ROlongLong instance at 0xXXXX>  methods...
+2 - ----------------------------------------------------------------
+2 - --testBasicROProperty--
+2 - Testing  <ACS._objref_ROuLongLong instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/uLongLongROProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_ROuLongLong instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: (0L, ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - create_monitor: <ACS._objref_MonitoruLongLong instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_MonitoruLongLong instance at 0xXXXX>
+2 - --testComplexROProperty--
+2 - Testing  <ACS._objref_ROuLongLong instance at 0xXXXX>  attributes...
+2 - min_delta_trigger: 0
+2 - graph_min: 0
+2 - graph_max: 1000
+2 - min_step: 0
+2 - alarm_low_on: 0
+2 - alarm_low_off: 0
+2 - alarm_high_on: 0
+2 - alarm_high_off: 0
+2 - 
+2 - Testing  <ACS._objref_ROuLongLong instance at 0xXXXX>  methods...
+2 - ----------------------------------------------------------------
+2 - --testBasicROProperty--
+2 - Testing  <ACS._objref_ROdoubleSeq instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/doubleSeqROProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0.0
+2 - 
+2 - Testing  <ACS._objref_ROdoubleSeq instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: ([0.0], ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - create_monitor: <ACS._objref_Monitordouble instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitordouble instance at 0xXXXX>
+2 - --testComplexROProperty--
+2 - Testing  <ACS._objref_ROdoubleSeq instance at 0xXXXX>  attributes...
+2 - min_delta_trigger: 0.0
+2 - graph_min: 0.0
+2 - graph_max: 1000.0
+2 - min_step: 0.0
+2 - alarm_low_on: 0.0
+2 - alarm_low_off: 0.0
+2 - alarm_high_on: 0.0
+2 - alarm_high_off: 0.0
+2 - 
+2 - Testing  <ACS._objref_ROdoubleSeq instance at 0xXXXX>  methods...
+2 - ----------------------------------------------------------------
+2 - --testBasicROProperty--
+2 - Testing  <ACS._objref_ROlongSeq instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/longSeqROProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_ROlongSeq instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: ([0], ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - create_monitor: <ACS._objref_Monitorlong instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitorlong instance at 0xXXXX>
+2 - --testComplexROProperty--
+2 - Testing  <ACS._objref_ROlongSeq instance at 0xXXXX>  attributes...
+2 - min_delta_trigger: 0
+2 - graph_min: 0
+2 - graph_max: 1000
+2 - min_step: 0
+2 - alarm_low_on: 0
+2 - alarm_low_off: 0
+2 - alarm_high_on: 0
+2 - alarm_high_off: 0
+2 - 
+2 - Testing  <ACS._objref_ROlongSeq instance at 0xXXXX>  methods...
+2 - ----------------------------------------------------------------
+2 - ----------------------------------------------------------------
+2 - --testBasicRWProperty--
+2 - Testing  <ACS._objref_RWstring instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/stringRWProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 
+2 - 
+2 - Testing  <ACS._objref_RWstring instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: ('', ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - set_sync: ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[])
+2 - set_async: None
+2 - set_nonblocking: None
+2 - create_monitor: <ACS._objref_Monitorstring instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitorstring instance at 0xXXXX>
+2 - ----------------------------------------------------------------
+2 - --testBasicRWProperty--
+2 - Testing  <ACS._objref_RWpattern instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/patternRWProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_RWpattern instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: (0L, ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - set_sync: ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[])
+2 - set_async: None
+2 - set_nonblocking: None
+2 - create_monitor: <ACS._objref_Monitorpattern instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitorpattern instance at 0xXXXX>
+2 - --testPatternRWProperty--
+2 - Testing  <ACS._objref_RWpattern instance at 0xXXXX>  attributes...
+2 - bitDescription: []
+2 - whenSet: []
+2 - whenCleared: []
+2 - 
+2 - Testing  <ACS._objref_RWpattern instance at 0xXXXX>  methods...
+2 - ----------------------------------------------------------------
+2 - --testBasicRWProperty--
+2 - Testing  <ACS._objref_RWdouble instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/doubleRWProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0.0
+2 - 
+2 - Testing  <ACS._objref_RWdouble instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: (0.0, ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - set_sync: ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[])
+2 - set_async: None
+2 - set_nonblocking: None
+2 - create_monitor: <ACS._objref_Monitordouble instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitordouble instance at 0xXXXX>
+2 - --testComplexRWProperty--
+2 - Testing  <ACS._objref_RWdouble instance at 0xXXXX>  attributes...
+2 - min_value: 0.0
+2 - max_value: 1000.0
+2 - 
+2 - Testing  <ACS._objref_RWdouble instance at 0xXXXX>  methods...
+2 - increment: None
+2 - decrement: None
+2 - ----------------------------------------------------------------
+2 - --testBasicRWProperty--
+2 - Testing  <ACS._objref_RWlong instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/longRWProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_RWlong instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: (0, ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - set_sync: ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[])
+2 - set_async: None
+2 - set_nonblocking: None
+2 - create_monitor: <ACS._objref_Monitorlong instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitorlong instance at 0xXXXX>
+2 - --testComplexRWProperty--
+2 - Testing  <ACS._objref_RWlong instance at 0xXXXX>  attributes...
+2 - min_value: 0
+2 - max_value: 1000
+2 - 
+2 - Testing  <ACS._objref_RWlong instance at 0xXXXX>  methods...
+2 - increment: None
+2 - decrement: None
+2 - ----------------------------------------------------------------
+2 - --testBasicRWProperty--
+2 - Testing  <ACS._objref_RWlongLong instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/longLongRWProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_RWlongLong instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: (0L, ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - set_sync: ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[])
+2 - set_async: None
+2 - set_nonblocking: None
+2 - create_monitor: <ACS._objref_MonitorlongLong instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_MonitorlongLong instance at 0xXXXX>
+2 - --testComplexRWProperty--
+2 - Testing  <ACS._objref_RWlongLong instance at 0xXXXX>  attributes...
+2 - min_value: 0
+2 - max_value: 1000
+2 - 
+2 - Testing  <ACS._objref_RWlongLong instance at 0xXXXX>  methods...
+2 - increment: None
+2 - decrement: None
+2 - ----------------------------------------------------------------
+2 - --testBasicRWProperty--
+2 - Testing  <ACS._objref_RWuLongLong instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/uLongLongRWProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_RWuLongLong instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: (0L, ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - set_sync: ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[])
+2 - set_async: None
+2 - set_nonblocking: None
+2 - create_monitor: <ACS._objref_MonitoruLongLong instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_MonitoruLongLong instance at 0xXXXX>
+2 - --testComplexRWProperty--
+2 - Testing  <ACS._objref_RWuLongLong instance at 0xXXXX>  attributes...
+2 - min_value: 0
+2 - max_value: 1000
+2 - 
+2 - Testing  <ACS._objref_RWuLongLong instance at 0xXXXX>  methods...
+2 - increment: None
+2 - decrement: None
+2 - ----------------------------------------------------------------
+2 - --testBasicRWProperty--
+2 - Testing  <ACS._objref_RWdoubleSeq instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/doubleSeqRWProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0.0
+2 - 
+2 - Testing  <ACS._objref_RWdoubleSeq instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: ([0.0], ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - set_sync: ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[])
+2 - set_async: None
+2 - set_nonblocking: None
+2 - create_monitor: <ACS._objref_Monitordouble instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitordouble instance at 0xXXXX>
+2 - --testComplexRWProperty--
+2 - Testing  <ACS._objref_RWdoubleSeq instance at 0xXXXX>  attributes...
+2 - min_value: 0.0
+2 - max_value: 1000.0
+2 - 
+2 - Testing  <ACS._objref_RWdoubleSeq instance at 0xXXXX>  methods...
+2 - increment: None
+2 - decrement: None
+2 - ----------------------------------------------------------------
+2 - --testBasicRWProperty--
+2 - Testing  <ACS._objref_RWlongSeq instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/longSeqRWProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_RWlongSeq instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: ([0], ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - set_sync: ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[])
+2 - set_async: None
+2 - set_nonblocking: None
+2 - create_monitor: <ACS._objref_Monitorlong instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitorlong instance at 0xXXXX>
+2 - --testComplexRWProperty--
+2 - Testing  <ACS._objref_RWlongSeq instance at 0xXXXX>  attributes...
+2 - min_value: 0
+2 - max_value: 1000
+2 - 
+2 - Testing  <ACS._objref_RWlongSeq instance at 0xXXXX>  methods...
+2 - increment: None
+2 - decrement: None
+2 - ----------------------------------------------------------------
+2 - ----------------------------------------------------------------
+2 - --testBasicROProperty--
+2 - Testing  <ACS._objref_ROlongSeq instance at 0xXXXX>  attributes...
+2 - name: PyBaciTest/timestampROProp
+2 - characteristic_component_name: PYBACI1
+2 - description: No description available
+2 - format: No format available
+2 - units: No units available
+2 - resolution: 65535
+2 - default_timer_trigger: 1000000
+2 - min_timer_trigger: 1000000
+2 - default_value: 0
+2 - 
+2 - Testing  <ACS._objref_ROlongSeq instance at 0xXXXX>  methods...
+2 - get_characteristic_by_name: CORBA.Any(CORBA.TC_long, 0)
+2 - find_characteristic: []
+2 - get_all_characteristics: None
+2 - get_sync: ([0], ACSErr.Completion(timeStamp=XXXXL, type=XXXXL, code=XXXXL, previousError=[]))
+2 - get_async: None
+2 - create_monitor: <ACS._objref_Monitorlong instance at 0xXXXX>
+2 - create_postponed_monitor: <ACS._objref_Monitorlong instance at 0xXXXX>
+2 - --testComplexROProperty--
+2 - Testing  <ACS._objref_ROlongSeq instance at 0xXXXX>  attributes...
+2 - min_delta_trigger: 0
+2 - graph_min: 0
+2 - graph_max: 1000
+2 - min_step: 0
+2 - alarm_low_on: 0
+2 - alarm_low_off: 0
+2 - alarm_high_on: 0
+2 - alarm_high_off: 0
+2 - 
+2 - Testing  <ACS._objref_ROlongSeq instance at 0xXXXX>  methods...
+2 - ----------------------------------------------------------------
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+2 - The end __oOo__

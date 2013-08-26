@@ -1,0 +1,14 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: TestList.lite,v 1.1 2003/10/20 09:52:56 acaproni Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# acaproni 2000-10-13 created
+
+PROLOGUE ./SetupTest.py -c /tmp/recoveryStore_Test
+recoveryStore_Test
+EPILOGUE ./SetupTest.py -d /tmp/recoveryStore_Test

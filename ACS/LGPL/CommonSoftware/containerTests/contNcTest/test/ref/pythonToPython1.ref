@@ -1,0 +1,18 @@
+1 -  -D COUNTER_SUPPLIER=SUPPLIER_PYTHON -D COUNTER_CONSUMERS=CONSUMER1_PYTHON -D COUNTER_INIT_VALUE=1 -D COUNTER_LAST_VALUE=15 -D COUNTER_PERIOD=0.25 -- alma.COUNTER.CounterTestImpl.CounterTest
+1 - <timestamp> INFO [acsStartJava] Starting Java application: alma.COUNTER.CounterTestImpl.CounterTest
+1 - .<timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] -------------------------------
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] ComponentClientTestCase#setUp()
+1 - Bringing up consumer CONSUMER1_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] component 'alma.COUNTER.CounterTestImpl.CounterTest' requested AdvancedContainerServices
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER1_PYTHON now expecting blocks
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] requesting SUPPLIER_PYTHON to sendBlocks
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] SUPPLIER_PYTHON has sent 15 blocks
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] CONSUMER1_PYTHON has received 15 blocks
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=CONSUMER1_PYTHON
+1 - <timestamp> INFO [alma.COUNTER.CounterTestImpl.CounterTest#testNC] client 'alma.COUNTER.CounterTestImpl.CounterTest' has successfully delivered a component release request for curl=SUPPLIER_PYTHON
+1 - 
+1 - Time: <seconds>
+1 - 
+1 - OK (1 test)
+1 - 

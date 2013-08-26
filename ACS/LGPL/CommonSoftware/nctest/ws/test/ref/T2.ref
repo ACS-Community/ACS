@@ -1,0 +1,12 @@
+1 -  -- alma.nctest.clients.FridgeConsumer
+1 - ----------T--:--:--.--- INFO [FridgeConsumer] component 'FridgeConsumer' requested AdvancedContainerServices
+1 - Waiting for events...
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - Done...
+2 - ----------T--:--:--.--- FridgeNCSupplier Main - Creating an instance of Supplier
+2 - ----------T--:--:--.--- FridgeNCSupplier Main - Ready to send NC events...
+2 - ----------T--:--:--.--- FridgeNCSupplier Main - Events all done . . . exiting

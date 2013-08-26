@@ -1,0 +1,105 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+#ifndef _ACSPY_TEST_IDL_
+#define _ACSPY_TEST_IDL_
+
+#include <baci.idl>
+#include <enumpropMACRO.idl>
+
+#pragma prefix "alma"
+
+#define MAKE_PROP(T) \
+readonly attribute ACS::RO##T T##ROProp; \
+readonly attribute ACS::RW##T T##RWProp
+
+module acspytest
+{
+    
+    enum blar{ ON, OFF, notTrue, notFalse};
+    ACS_ENUM(blar);
+
+    /**
+     *  PyTest is designed to test the Python container.  It fully tests the 
+     *  ComponentLifecycle as well as ContainerServices implementations.
+     */
+    interface PyTest : ACS::ACSComponent
+	{
+	/**
+	 *  Prints "Hello World" to standard out
+	 */
+	void sayHello();
+
+	/**
+	 *  Invokes sayHello() on another component named compName.
+	 */
+	void invokeSayHello(in string compName);
+
+	/**
+	 *  Tests all of the container services.  Returns false on any failure
+	 *  and true otherwise.
+	 */
+	boolean testServices();
+
+	/**
+	 *  Tests components of other languages.
+	 */
+	void testMount(in string compName);
+
+
+	/**
+	 *  Invokes generic methods on other components.  This method is actually fairly
+	 *  dangerous but shows just how powerful Python components actually are.
+	 *  NOTE: return a CORBA Any instead...
+	 *  @param compName Name of the component to use.
+	 *  @param methodName Name of some method fo compName 
+	 *  @param params eval(...) will be called in this parameter.
+	 */
+	void testAnything(in string compName, in string methodName, in string params);
+	};    
+
+    interface PyBaciTest : ACS::CharacteristicComponent
+	{
+	MAKE_PROP(string);
+	MAKE_PROP(double);
+	MAKE_PROP(long);
+	MAKE_PROP(longLong);
+	MAKE_PROP(uLongLong);
+	MAKE_PROP(pattern);
+	MAKE_PROP(doubleSeq);
+	MAKE_PROP(longSeq);
+
+	readonly attribute ACS::ROstringSeq strSeqProp;
+
+	readonly attribute ROblar blarROProp;
+	readonly attribute RWblar blarRWProp;
+
+	readonly attribute ACS::ROlongSeq timestampROProp;
+	};
+
+	module nested {
+		interface PyTestNestedModule : ACS::ACSComponent {
+			void test();
+		};
+	};
+};
+
+#endif

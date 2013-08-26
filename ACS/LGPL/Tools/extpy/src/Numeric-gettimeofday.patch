@@ -1,0 +1,16 @@
+diff -Naur Numeric-24.2.old//Packages/RNG/Src/ranf.c Numeric-24.2//Packages/RNG/Src/ranf.c
+--- Numeric-24.2.old//Packages/RNG/Src/ranf.c	2011-12-25 16:03:49.218750000 -0300
++++ Numeric-24.2//Packages/RNG/Src/ranf.c	2011-12-25 16:04:09.828125000 -0300
+@@ -149,9 +149,9 @@
+ #else
+ 	struct timeval tv;
+ 	struct timezone tz;
+-#if !defined(__sgi)
+-	int gettimeofday(struct timeval *, struct timezone *);
+-#endif
++#if !defined(__sgi) && !defined(__CYGWIN__)
++	int gettimeofday(struct timeval *, struct timezone *);
++#endif
+ 
+ 	(void)gettimeofday(&tv,&tz);
+ 	s48[0] = (u32)tv.tv_sec;

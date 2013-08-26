@@ -1,0 +1,17 @@
+#ifndef _TEST_QOS_DEMO_IDL 
+#define _TEST_QOS_DEMO_IDL 
+
+#include <acscomponent.idl> 
+
+#pragma prefix "alma" 
+
+// used to test the quality of service functionality 
+module acspyTestQoS
+{ 
+	interface EchoTest : ACS::ACSComponent 
+	{ 
+		long echo(in long paramToEcho, in long millisecondsToDelay); 
+	};
+}; 
+
+#endif

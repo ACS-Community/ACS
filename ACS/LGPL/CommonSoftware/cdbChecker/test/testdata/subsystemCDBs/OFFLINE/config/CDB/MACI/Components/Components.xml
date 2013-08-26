@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+       <_ Name="CLOCK1"       Code="acsclock"
+                             Type="IDL:alma/acstime/Clock:1.0"
+                             Container="clockContainer"
+                             Default="true" ImplLang="cpp" />
+      <_ Name="TIMER1"       Code="acstimer"
+                             Type="IDL:alma/acstime/Timer:1.0"
+                             Container="clockContainer"
+                             Default="true" ImplLang="cpp" />
+      <_ Name="CORR_CDP_MASTER"  Code="Master"              
+                                 Type="IDL:alma/Correlator/Master:1.0"                                           Container="CDPMaster" ImplLang="cpp" />
+      <_ Name="ARCHIVE_CONNECTION"
+                             Code="alma.archive.helpers.ArchiveConnectionHelper"
+                             Type="IDL:alma/xmlstore/ArchiveConnection:1.0"
+                             Container="archiveContainer"
+                             Default="true" ImplLang="java" />
+      <_ Name="ARCHIVE_IDENTIFIER"
+                             Code="alma.archive.helpers.IdentifierHelper"
+                             Type="IDL:alma/xmlstore/Identifier:1.0"
+                             Container="archiveContainer"
+                             Default="true" ImplLang="java" />
+     <_ Name="TELCAL_PUBLISHER"
+                             Code="alma.TelCalPublisher.GetTelCalResultsImpl.GetTelCalResultsHelper"
+                             Type="IDL:alma/TelCalPublisher/GetTelCalResults:1.0"
+                             Container="telcalContainer" ImplLang="java" />
+
+</Components>
+

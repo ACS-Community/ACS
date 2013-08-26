@@ -1,0 +1,10 @@
+1 - Running acsexmplClientHelloWorld CONSTR_ERROR
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ConstrErrorHelloWorld::ConstrErrorHelloWorld] Construction Failure (type=50042, code=1) javaex.class="alma.acs.exceptions.DefaultAcsJException"
+1 - All done!
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerImpl::activate_component] Error activating component (type=25, code=9) CURL="CONSTR_ERROR" javaex.class="alma.acs.exceptions.DefaultAcsJException" ComponentCode="acsexmplConstrErrorHelloWorld" ComponentType="IDL:alma/acsexmplConstrErrorHelloWorld/ConstrError:1.0"
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ActivationMethod::call] Error activating component (type=25, code=9) javaex.class="alma.acs.exceptions.DefaultAcsJException"
+1 - ----------T--:--:--.--- [GlobalLogger - failed] Error retrieving component (type=25, code=1) javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+1 - ----------T--:--:--.--- [GlobalLogger - internalNoSyncRequestComponent] Error retrieving component (type=25, code=1) javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+1 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1) CURL="CONSTR_ERROR" javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+1 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="CONSTR_ERROR"

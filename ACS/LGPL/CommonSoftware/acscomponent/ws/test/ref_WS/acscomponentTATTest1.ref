@@ -1,0 +1,17 @@
+1 - Initialising ORB ... 
+2 - Running acscomponentTestClient
+1 - ORB initialised !
+2 - Initialising ORB ... 
+1 - 
+2 - ORB initialised !
+1 - 
+2 - ****** Test Block *****
+1 - ::ACSComponentTestClassImpl::ACSComponentTestClassImpl
+2 - Getting object reference ... 
+1 - POA Manager -> activate
+2 - Narrowing it .... 
+1 - Writing ior to the file: ACSCOMPONENTTEST1
+2 - Test performed.
+1 - Waiting for requests ...
+2 - All done!
+1 - acscomponentTestImpl Shutdown

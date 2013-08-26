@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Configuration Database Schema
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:CDB:1.0"
+ xmlns="urn:schemas-cosylab-com:CDB:1.0"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:complexType name="ArrayElement">
+    <xs:attribute name="string" type="xs:string" use="optional"/>
+    <xs:attribute name="double" type="xs:double" use="optional"/>
+    <xs:attribute name="long" type="xs:int" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="Array">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="_" type="ArrayElement"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

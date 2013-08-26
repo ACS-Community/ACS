@@ -1,0 +1,22 @@
+«IMPORT tmcdbTables»
+
+«EXTENSION alma::acs::tmcdb::grammardef::util»
+«EXTENSION alma::acs::tmcdb::generator::templates::oracleutil»
+
+«DEFINE Root FOR TMCDBModel»
+«FILE "oracle/DropAllOracleSequences.sql"-»
+-- TMCDB SQL TABLE DEFINITIONS Version «header.version» «header.versionTS»
+--
+-- /////////////////////////////////////////////////////////////////
+-- // WARNING!  DO NOT MODIFY THIS FILE!                          //
+-- //  ---------------------------------------------------------  //
+-- // | This is generated code!  Do not modify this file.       | //
+-- // | Any changes will be lost when the file is re-generated. | //
+-- //  ---------------------------------------------------------  //
+-- /////////////////////////////////////////////////////////////////
+
+«FOREACH this.getTablesWithOracleSequences().reverse() AS t-»
+DROP SEQUENCE «t.shortTableName()»_seq;
+«ENDFOREACH-»
+«ENDFILE»
+«ENDDEFINE»

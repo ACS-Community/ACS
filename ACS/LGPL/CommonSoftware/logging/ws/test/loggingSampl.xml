@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Log xmlns="urn:schemas-cosylab-com:logging:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-cosylab-com:logging:1.0 ../idl/loggingMI.xsd">
+	<Header Name="NameForXmlDocument" Type="LOGFILE"/>
+	<Trace TimeStamp="2004-07-22T12:12:27.768" File="/alma/ACS-3.1/ACSSW/include/enumpropROImpl.i" Line="111" Routine="ROEnumImpl::~ROEnumImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.768" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:27.775" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: FRIDGE1:powerStatus</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:27.775" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.775" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:27.775" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'FRIDGE1:powerStatus'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:27.776" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.776" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.776" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.776" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:27.776" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'powerStatus'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:27.776" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:27.784" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'powerStatus' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:27.784" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'FRIDGE1:powerStatus' destroyed.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:27.784" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.785" File="../include/baciRWcontImpl_T.i" Line="56" Routine="baci::RWcontImpl&lt;&gt;::~RWcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.785" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.785" File="../include/baciRWcommonImpl_T.i" Line="60" Routine="baci::RWcommonImpl&lt;&gt;::~RWcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.785" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.785" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:27.785" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: FRIDGE1:refTemperature</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:27.785" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.791" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:27.791" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'FRIDGE1:refTemperature'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:27.791" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.791" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.791" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.791" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:27.791" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'refTemperature'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:27.791" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:27.791" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'refTemperature' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:27.791" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'FRIDGE1:refTemperature' destroyed.</Debug>
+	<Info TimeStamp="2004-07-22T12:12:27.798">CharacteristicComponentImpl::~CharacteristicComponentImpl</Info>
+	<Trace TimeStamp="2004-07-22T12:12:27.798" File="baci.cpp" Line="1014" Routine="baci::BACIComponent::~BACIComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.798" File="baciThread.cpp" Line="152" Routine="baci::BACIThread::terminate" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:27.798" File="baciThread.cpp" Line="163" Routine="baci::BACIThread::stop" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:28.288" File="baciThread.cpp" Line="131" Routine="baci::BACIThread::cancel" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:28.289" File="baciThread.cpp" Line="231" Routine="baci::BACIThreadManager::~BACIThreadManager" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:28.289" File="baciThread.cpp" Line="152" Routine="baci::BACIThread::terminate" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:28.289" File="baciThread.cpp" Line="163" Routine="baci::BACIThread::stop" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:28.789" File="baciThread.cpp" Line="131" Routine="baci::BACIThread::cancel" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:28.789" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:28.804" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:28.805" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:28.805" File="baciThread.cpp" Line="152" Routine="baci::BACIThread::terminate" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:28.805" File="baciThread.cpp" Line="163" Routine="baci::BACIThread::stop" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.299" File="baciThread.cpp" Line="131" Routine="baci::BACIThread::cancel" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.299" File="baci.cpp" Line="1052" Routine="baci::BACIComponent::~BACIComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'FRIDGE1' destroyed.</Debug>
+	<Info TimeStamp="2004-07-22T12:12:29.299">acscomponent::ACSComponentImpl::~ACSComponentImpl</Info>
+	<Info TimeStamp="2004-07-22T12:12:29.299">acscomponent::ACS::COMPSTATE_DEFUNCT</Info>
+	<Info TimeStamp="2004-07-22T12:12:29.299" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'FRIDGE1' etherealized.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:29.299" File="maciLibraryManager.cpp" Line="499" Routine="maci::LibraryManager::unlock" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Info TimeStamp="2004-07-22T11:53:57.084" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te22.hq.eso.org" Thread="15" LogId="21873">Getting component 'curl:///FRIDGE1'.</Info>
+	<Info TimeStamp="2004-07-22T11:53:57.919" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te22.hq.eso.org" Thread="21" LogId="22029">Getting component 'curl:///NameService'.</Info>
+	<Info TimeStamp="2004-07-22T12:11:29.628" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te22.hq.eso.org" Thread="15" LogId="22218">Getting component 'curl:///MOUNT2'.</Info>
+	<Info TimeStamp="2004-07-22T12:11:31.064" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te22.hq.eso.org" Thread="15" LogId="22384">Getting component 'curl:///MOUNT1'.</Info>
+	<Info TimeStamp="2004-07-22T12:11:56.973" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te22.hq.eso.org" Thread="15" LogId="22417">Getting component 'curl:///HELLODEMO1'.</Info>
+	<Info TimeStamp="2004-07-22T12:12:01.681" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te22.hq.eso.org" Thread="15" LogId="22590">Getting component 'curl:///PYHELLODEMO1'.</Info>
+	<Info TimeStamp="2004-07-22T12:12:01.887" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te22.hq.eso.org" Thread="21" LogId="22743">Getting component 'curl:///CDB'.</Info>
+	<Info TimeStamp="2004-07-22T12:12:17.365" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te22.hq.eso.org" Thread="15" LogId="31071">Getting component 'curl:///HELLOLAMP1'.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:29.318" File="maciLibraryManager.cpp" Line="695" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.318" File="maciLibraryManager.cpp" Line="701" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Unloading '/alma/ACS-3.1/ACSSW/lib/libacsexmplFridgeImpl.so'</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:29.318" File="maciLibraryManager.cpp" Line="711" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Executing DLLClose</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:29.318" File="maciLibraryManager.cpp" Line="713" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">DLLClose executed</Debug>
+	<Info TimeStamp="2004-07-22T12:12:29.318" Routine="maci::LibraryManager::unload">Unloaded '/alma/ACS-3.1/ACSSW/lib/libacsexmplFridgeImpl.so'.</Info>
+	<Info TimeStamp="2004-07-22T12:12:29.318" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'FRIDGE1' deactivated.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:29.339" File="maciContainerImpl.cpp" Line="1700" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.339" File="maciContainerImpl.cpp" Line="1713" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Deactivating component with handle 16777221 (MOUNT2 of type IDL:alma/MOUNT_ACS/Mount:1.0)</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:29.339" File="maciContainerImpl.cpp" Line="1732" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'MOUNT2': calling cleanUp Lifecycle .</Debug>
+	<Info TimeStamp="2004-07-22T12:12:29.339">baci::CharacteristicComponentImpl::cleanUp</Info>
+	<Info TimeStamp="2004-07-22T12:12:20.727" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="getComponent" Host="te22.hq.eso.org" Thread="15" LogId="31246">Getting component 'curl:///LAMP1'.</Info>
+	<Info TimeStamp="2004-07-22T12:12:29.322" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="releaseComponent" Host="te22.hq.eso.org" Thread="15" LogId="31288">Component 'curl:///FRIDGE1' released.</Info>
+	<Info TimeStamp="2004-07-22T12:12:29.362">acscomponent::ACSComponentImpl::cleanUp</Info>
+	<Info TimeStamp="2004-07-22T12:12:29.363">acscomponent::ACS::COMPSTATE_DESTROYING</Info>
+	<Trace TimeStamp="2004-07-22T12:12:29.363" File="baci.cpp" Line="1088" Routine="baci::BACIComponent::stopAllThreads" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.363" File="baciThread.cpp" Line="152" Routine="baci::BACIThread::terminate" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.363" File="baciThread.cpp" Line="163" Routine="baci::BACIThread::stop" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.369" File="maciContainerImpl.cpp" Line="1405" Routine="maci::ContainerImpl::doneThread" Host="te22" Process="maciContainer" Thread="MOUNT2::monitorThread" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.379" File="maciContainerImpl.cpp" Line="1405" Routine="maci::ContainerImpl::doneThread" Host="te22" Process="maciContainer" Thread="MOUNT2::actionThread" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.598" File="maciContainerImpl.cpp" Line="1405" Routine="maci::ContainerImpl::doneThread" Host="te22" Process="maciContainer" Thread="FridgeOnThread" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.599" File="acsexmplFridgeImpl.cpp" Line="129" Routine="">Stopping fridge threadWorker</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:29.858" File="maciContainerImpl.cpp" Line="1738" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'MOUNT2' reference set to nil.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.874" File="maciContainerImpl.cpp" Line="1329" Routine="maci::ContainerImpl::deactivateCORBAObject" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.874" File="maciContainerImpl.cpp" Line="1298" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.874" File="maciContainerImpl.cpp" Line="1299" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Etherealizing 'MOUNT2'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.874" File="baci.cpp" Line="1088" Routine="baci::BACIComponent::stopAllThreads" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.874" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.875" File="../include/baciROcontImpl_T.i" Line="51" Routine="baci::ROcontImpl&lt;&gt;::~ROcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.875" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.875" File="../include/baciROcommonImpl_T.i" Line="78" Routine="baci::ROcommonImpl&lt;&gt;::~ROcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.875" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.875" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.892" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: MOUNT2:actEl</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.892" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.892" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.892" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'MOUNT2:actEl'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.893" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.893" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.893" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.893" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.893" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'actEl'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.893" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.912" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'actEl' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:29.912" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'MOUNT2:actEl' destroyed.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.912" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.912" File="../include/baciROcontImpl_T.i" Line="51" Routine="baci::ROcontImpl&lt;&gt;::~ROcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.912" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.912" File="../include/baciROcommonImpl_T.i" Line="78" Routine="baci::ROcommonImpl&lt;&gt;::~ROcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.912" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.912" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.912" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: MOUNT2:actAz</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.912" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.930" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.930" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'MOUNT2:actAz'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.931" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.931" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.931" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.931" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.931" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'actAz'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.931" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.931" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'actAz' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:29.931" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'MOUNT2:actAz' destroyed.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.949" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.949" File="../include/baciROcontImpl_T.i" Line="51" Routine="baci::ROcontImpl&lt;&gt;::~ROcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.949" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.949" File="../include/baciROcommonImpl_T.i" Line="78" Routine="baci::ROcommonImpl&lt;&gt;::~ROcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.949" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.949" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.949" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: MOUNT2:cmdEl</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.949" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.949" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.949" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'MOUNT2:cmdEl'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.968" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.968" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.968" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.968" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.968" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'cmdEl'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.968" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.968" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'cmdEl' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:29.968" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'MOUNT2:cmdEl' destroyed.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.969" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.969" File="../include/baciROcontImpl_T.i" Line="51" Routine="baci::ROcontImpl&lt;&gt;::~ROcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.998" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.998" File="../include/baciROcommonImpl_T.i" Line="78" Routine="baci::ROcommonImpl&lt;&gt;::~ROcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.998" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.998" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.998" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: MOUNT2:cmdAz</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.998" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.998" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:29.998" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'MOUNT2:cmdAz'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:29.998" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:29.998" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.012" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.012" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.012" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'cmdAz'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:30.013" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.013" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'cmdAz' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:30.013" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'MOUNT2:cmdAz' destroyed.</Debug>
+	<Info TimeStamp="2004-07-22T12:12:30.013">CharacteristicComponentImpl::~CharacteristicComponentImpl</Info>
+	<Trace TimeStamp="2004-07-22T12:12:30.013" File="baci.cpp" Line="1014" Routine="baci::BACIComponent::~BACIComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.013" File="baciThread.cpp" Line="231" Routine="baci::BACIThreadManager::~BACIThreadManager" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.013" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Info TimeStamp="2004-07-22T12:12:00.085" File="alma.acs.container.ContainerSealant" Routine="invoke()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="12" LogId="83">intercepted a call to 'HELLODEMO1#sayHello'...</Info>
+	<Info TimeStamp="2004-07-22T12:12:00.095" File="alma.acs.container.ContainerSealant" Routine="invoke()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="12" LogId="85">returning from HELLODEMO1#sayHello after 10 ms.</Info>
+	<Info TimeStamp="2004-07-22T12:12:00.828" File="alma.acs.container.ContainerSealant" Routine="invoke()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="12" LogId="86">intercepted a call to 'HELLODEMO1#sayHello'...</Info>
+	<Info TimeStamp="2004-07-22T12:12:00.836" File="alma.acs.container.ContainerSealant" Routine="invoke()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="12" LogId="88">returning from HELLODEMO1#sayHello after 8 ms.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:01.309" File="alma.acs.container.AcsContainer" Line="0" Routine="ping()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="89">ping received.</Trace>
+	<Info TimeStamp="2004-07-22T12:12:17.380" File="alma.acs.container.AcsContainer" Routine="activate_component()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="91">activate_component: handle=16777225 name=HELLOLAMP1 helperClass=alma.demo.LampAccessImpl.LampAccessHelper type=IDL:alma/demo/LampAccess:1.0</Info>
+	<Trace TimeStamp="2004-07-22T12:12:17.381" File="alma.acs.container.AcsContainer" Line="0" Routine="createComponentHelper()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="92">creating component helper instance of type alma.demo.LampAccessImpl.LampAccessHelper</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:17.400" File="alma.acs.container.ComponentHelper" Line="0" Routine="getComponentImpl()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="93">component implementation class 'alma.demo.LampAccessImpl.LampAccessImpl' instantiated.</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:17.404" File="alma.acs.container.AcsContainer" Line="0" Routine="activate_component()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="94">component HELLOLAMP1 implements operations interface directly; no dynamic translator proxy used.</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:17.418" File="alma.acs.container.ComponentAdapter" Line="0" Routine="activateComponent()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="95">entering ComponentAdapter#activateComponent for HELLOLAMP1</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:17.419" File="alma.acs.container.corba.AcsCorba" Line="0" Routine="activateComponent()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="96">entering activateComponent: name=HELLOLAMP1</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:17.420" File="alma.acs.container.corba.AcsCorba" Line="0" Routine="activateComponent()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="97">component 'HELLOLAMP1' activated as CORBA object.</Trace>
+	<Debug TimeStamp="2004-07-22T12:12:17.420" File="alma.acs.container.ComponentAdapter" Line="0" Routine="_getInterfaces()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="98">interfaces of component 'HELLOLAMP1': IDL:alma/demo/LampAccess:1.0IDL:alma/ACS/ACSComponent:1.0IDL:omg.org/CORBA/Object:1.0</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:17.424" File="alma.acs.container.AcsContainer" Line="0" Routine="activate_component()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="99">about to initialize component HELLOLAMP1</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:17.425" File="alma.acs.container.ComponentStateManagerImpl" Line="0" Routine="setState()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="100">switching state of component HELLOLAMP1 from NEW to INITIALIZING</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:17.429" File="alma.acs.container.ComponentStateManagerImpl" Line="0" Routine="setState()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="102">switching state of component HELLOLAMP1 from INITIALIZING to INITIALIZED</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:17.429" File="alma.acs.container.ComponentStateManagerImpl" Line="0" Routine="setState()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="103">switching state of component HELLOLAMP1 from INITIALIZED to OPERATIONAL</Trace>
+	<Info TimeStamp="2004-07-22T12:12:17.429" File="alma.acs.container.AcsContainer" Routine="activate_component()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="104">component HELLOLAMP1 activated and initialized in 49 ms.</Info>
+	<Info TimeStamp="2004-07-22T12:12:17.441" File="alma.acs.container.AcsContainer" Routine="activate_component()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="105">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</Info>
+	<Info TimeStamp="2004-07-22T12:12:20.706" File="alma.acs.container.ContainerSealant" Routine="invoke()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="13" LogId="106">intercepted a call to 'HELLOLAMP1#setLampBrightness'...</Info>
+	<Debug TimeStamp="2004-07-22T12:12:20.720" File="alma.acs.container.ContainerServicesImpl" Line="0" Routine="getComponent()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="13" LogId="108">will retrieve remote component 'LAMP1' using ACS Manager#get_component</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:20.735" File="alma.acs.container.ContainerServicesImpl" Line="0" Routine="getComponent()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="13" LogId="109">component LAMP1 retrieved successfully.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:20.796" File="alma.acs.container.corba.AcsCorba" Line="0" Routine="getPOAForOffshoots()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="13" LogId="112">will have to create offshoot POA</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:20.806" File="alma.acs.container.corba.AcsCorba" Line="0" Routine="getPOAForOffshoots()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="13" LogId="113">successfully created offshoot POA</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:20.811" File="alma.acs.container.corba.AcsCorba" Line="0" Routine="activateOffShoot()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="13" LogId="114">offshoot of type 'alma.demo.LampAccessImpl.CBvoidLampAccess' activated as a CORBA object.</Trace>
+	<Info TimeStamp="2004-07-22T12:12:20.851" File="alma.acs.container.ContainerSealant" Routine="invoke()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="13" LogId="118">returning from HELLOLAMP1#setLampBrightness after 145 ms.</Info>
+	<Debug TimeStamp="2004-07-22T12:12:30.033" File="alma.acs.container.AcsContainer" Line="0" Routine="logManagerRequest()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="120">received call to deactivate_components; handles = 16777222 </Debug>
+	<Trace TimeStamp="2004-07-22T12:12:30.034" File="alma.acs.container.ComponentStateManagerImpl" Line="0" Routine="setState()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="121">switching state of component HELLODEMO1 from OPERATIONAL to DESTROYING</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:30.034" File="alma.acs.container.AcsContainer" Line="0" Routine="deactivate_components()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="122">deactivating component 'HELLODEMO1' with handle 16777222</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:30.034" File="alma.acs.container.ComponentAdapter" Line="0" Routine="deactivateComponent()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="123">about to deactivate component HELLODEMO1</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:30.039" File="alma.acs.container.ComponentStateManagerImpl" Line="0" Routine="setState()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="125">switching state of component HELLODEMO1 from DESTROYING to DEFUNCT</Trace>
+	<Trace TimeStamp="2004-07-22T12:12:30.084" File="alma.acs.container.ComponentAdapter" Line="0" Routine="deactivateComponent()" Host="te22.hq.eso.org" Process="LoggerName: alma.acs.containerstart" Thread="11" LogId="126">done deactivating component HELLODEMO1</Trace>
+	<Info TimeStamp="2004-07-22T12:12:30.000" File="../lib/python/site-packages/Acspy/Container.py" Line="331" Routine="deactivate_components" Host="te22" Process="8553" Thread="omniORB" Context="">Deactivating component: PYHELLODEMO1</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.000" File="../lib/python/site-packages/demoImpl/HelloDemo.py" Line="113" Routine="cleanUp" Host="te22" Process="8553" Thread="omniORB" Context="">called...</Info>
+	<Warning TimeStamp="2004-07-22T12:12:30.000" File="/alma/ACS-3.1/ACSSW/lib/python/site-packages/Acspy/Servants/ContainerServices.py" Line="281" Routine="releaseComponent" Host="te22" Process="8553" Thread="omniORB" Context="" StackId="" StackLevel="0">Unable to release component...Minor: 0x0, COMPLETED_NO.</Warning>
+	<Trace TimeStamp="2004-07-22T12:12:30.021" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.021" File="baci.cpp" Line="1052" Routine="baci::BACIComponent::~BACIComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'MOUNT2' destroyed.</Debug>
+	<Info TimeStamp="2004-07-22T12:12:30.021">acscomponent::ACSComponentImpl::~ACSComponentImpl</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.021">acscomponent::ACS::COMPSTATE_DEFUNCT</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.021" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'MOUNT2' etherealized.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:30.021" File="maciLibraryManager.cpp" Line="499" Routine="maci::LibraryManager::unlock" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Info TimeStamp="2004-07-22T12:12:30.021" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'MOUNT2' deactivated.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:30.295" File="maciContainerImpl.cpp" Line="1700" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.295" File="maciContainerImpl.cpp" Line="1713" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Deactivating component with handle 16777224 (LAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0)</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:30.296" File="maciContainerImpl.cpp" Line="1732" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'LAMP1': calling cleanUp Lifecycle .</Debug>
+	<Info TimeStamp="2004-07-22T12:12:30.302">baci::CharacteristicComponentImpl::cleanUp</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.302">acscomponent::ACSComponentImpl::cleanUp</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.302">acscomponent::ACS::COMPSTATE_DESTROYING</Info>
+	<Trace TimeStamp="2004-07-22T12:12:30.302" File="baci.cpp" Line="1088" Routine="baci::BACIComponent::stopAllThreads" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.302" File="baciThread.cpp" Line="152" Routine="baci::BACIThread::terminate" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.302" File="baciThread.cpp" Line="163" Routine="baci::BACIThread::stop" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.330" File="maciContainerImpl.cpp" Line="1405" Routine="maci::ContainerImpl::doneThread" Host="te22" Process="maciContainer" Thread="LAMP1::actionThread" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.330" File="maciContainerImpl.cpp" Line="1405" Routine="maci::ContainerImpl::doneThread" Host="te22" Process="maciContainer" Thread="LAMP1::monitorThread" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.798" File="maciContainerImpl.cpp" Line="1738" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'LAMP1' reference set to nil.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:30.799" File="maciContainerImpl.cpp" Line="1329" Routine="maci::ContainerImpl::deactivateCORBAObject" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.814" File="maciContainerImpl.cpp" Line="1298" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.814" File="maciContainerImpl.cpp" Line="1299" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Etherealizing 'LAMP1'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:30.814" File="acsexmplLampImpl.cpp" Line="69" Routine="::Lamp::~Lamp" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.814" File="acsexmplLampImpl.cpp" Line="77" Routine="::Lamp::~Lamp" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying LAMP1...</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:30.814" File="baci.cpp" Line="1088" Routine="baci::BACIComponent::stopAllThreads" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.814" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.815" File="../include/baciRWcontImpl_T.i" Line="56" Routine="baci::RWcontImpl&lt;&gt;::~RWcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.815" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.815" File="../include/baciRWcommonImpl_T.i" Line="60" Routine="baci::RWcommonImpl&lt;&gt;::~RWcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.815" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.835" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.835" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: LAMP1:brightness</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:30.835" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.835" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.835" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'LAMP1:brightness'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:30.835" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.835" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.835" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.835" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.835" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'brightness'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:30.878" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.878" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'brightness' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:30.878" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'LAMP1:brightness' destroyed.</Debug>
+	<Info TimeStamp="2004-07-22T12:12:30.879">CharacteristicComponentImpl::~CharacteristicComponentImpl</Info>
+	<Trace TimeStamp="2004-07-22T12:12:30.879" File="baci.cpp" Line="1014" Routine="baci::BACIComponent::~BACIComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.879" File="baciThread.cpp" Line="231" Routine="baci::BACIThreadManager::~BACIThreadManager" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.879" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.879" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.879" File="baci.cpp" Line="1052" Routine="baci::BACIComponent::~BACIComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'LAMP1' destroyed.</Debug>
+	<Info TimeStamp="2004-07-22T12:12:30.879">acscomponent::ACSComponentImpl::~ACSComponentImpl</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.024" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="releaseComponent" Host="te22.hq.eso.org" Thread="15" LogId="31312">Component 'curl:///MOUNT2' released.</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.027" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="releaseComponent" Host="te22.hq.eso.org" Thread="15" LogId="31332">Component 'curl:///MOUNT1' released.</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.088" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="releaseComponent" Host="te22.hq.eso.org" Thread="15" LogId="31356">Component 'curl:///HELLODEMO1' released.</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.288" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="releaseComponent" Host="te22.hq.eso.org" Thread="15" LogId="31395">Component 'curl:///PYHELLODEMO1' released.</Info>
+	<Emergency TimeStamp="2004-07-22T12:12:30.452" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="23" StackId="unknown" StackLevel="0" LogId="31420">Invalid handle.</Emergency>
+	<Emergency TimeStamp="2004-07-22T12:12:30.956" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="24" StackId="unknown" StackLevel="0" LogId="31436">Invalid handle.</Emergency>
+	<Info TimeStamp="2004-07-22T12:12:30.977" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="releaseComponent" Host="te22.hq.eso.org" Thread="15" LogId="31444">Component 'curl:///HELLOLAMP1' released.</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.977" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="releaseComponents" Host="te22.hq.eso.org" Thread="15" LogId="31446">6 of 6 components released.</Info>
+	<Info TimeStamp="2004-07-22T12:12:31.026" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="clientLogout" Host="te22.hq.eso.org" Thread="15" LogId="31459">Client 'ObjectExplorer' logged out.</Info>
+	<Error TimeStamp="2004-07-22T12:12:30.178" File="com.cosylab.acs.maci.plug.ManagerProxyImpl" Routine="release_component" Host="te22.hq.eso.org" Thread="RequestProcessor-4" StackId="1090498352470" StackLevel="0" LogId="31469">Invalid handle.<Data Name="exceptionType">class com.cosylab.acs.maci.NoPermissionException</Data>
+	</Error>
+	<Info TimeStamp="2004-07-22T12:12:30.903">acscomponent::ACS::COMPSTATE_DEFUNCT</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.903" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'LAMP1' etherealized.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:30.903" File="maciLibraryManager.cpp" Line="499" Routine="maci::LibraryManager::unlock" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:30.903" File="maciLibraryManager.cpp" Line="695" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:30.903" File="maciLibraryManager.cpp" Line="701" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Unloading '/alma/ACS-3.1/ACSSW/lib/libacsexmplLampImpl.so'</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:30.903" File="maciLibraryManager.cpp" Line="711" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Executing DLLClose</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:30.903" File="maciLibraryManager.cpp" Line="713" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">DLLClose executed</Debug>
+	<Info TimeStamp="2004-07-22T12:12:30.904" Routine="maci::LibraryManager::unload">Unloaded '/alma/ACS-3.1/ACSSW/lib/libacsexmplLampImpl.so'.</Info>
+	<Info TimeStamp="2004-07-22T12:12:30.904" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'LAMP1' deactivated.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:38.694" File="maciContainerImpl.cpp" Line="1834" Routine="maci::ContainerImpl::shutdown" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:38.710" File="maciContainerImpl.cpp" Line="1206" Routine="maci::ContainerImpl::logout" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Info TimeStamp="2004-07-22T12:12:38.710" Routine="maci::ContainerImpl::logout" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Logging out from the Manager.</Info>
+	<Info TimeStamp="2004-07-22T12:12:38.740" Routine="maci::ContainerImpl::logout" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Logged out from the Manager.</Info>
+	<Debug TimeStamp="2004-07-22T12:12:38.741" File="maciContainerImpl.cpp" Line="1864" Routine="maci::ContainerImpl::shutdown" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">3 components left unactivated.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:38.741" File="maciContainerImpl.cpp" Line="1700" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:38.741" File="maciContainerImpl.cpp" Line="1713" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Deactivating component with handle 16777217 (CLOCK1 of type IDL:alma/acstime/Clock:1.0)</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:38.741" File="maciContainerImpl.cpp" Line="1732" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'CLOCK1': calling cleanUp Lifecycle .</Debug>
+	<Info TimeStamp="2004-07-22T12:12:38.741">baci::CharacteristicComponentImpl::cleanUp</Info>
+	<Info TimeStamp="2004-07-22T12:12:38.741">acscomponent::ACSComponentImpl::cleanUp</Info>
+	<Info TimeStamp="2004-07-22T12:12:38.741">acscomponent::ACS::COMPSTATE_DESTROYING</Info>
+	<Trace TimeStamp="2004-07-22T12:12:38.763" File="baci.cpp" Line="1088" Routine="baci::BACIComponent::stopAllThreads" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:38.763" File="baciThread.cpp" Line="152" Routine="baci::BACIThread::terminate" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:38.763" File="baciThread.cpp" Line="163" Routine="baci::BACIThread::stop" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:38.769" File="maciContainerImpl.cpp" Line="1405" Routine="maci::ContainerImpl::doneThread" Host="te22" Process="maciContainer" Thread="CLOCK1::actionThread" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:38.769" File="maciContainerImpl.cpp" Line="1405" Routine="maci::ContainerImpl::doneThread" Host="te22" Process="maciContainer" Thread="CLOCK1::monitorThread" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.258" File="maciContainerImpl.cpp" Line="1738" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'CLOCK1' reference set to nil.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.259" File="maciContainerImpl.cpp" Line="1329" Routine="maci::ContainerImpl::deactivateCORBAObject" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.259" File="maciContainerImpl.cpp" Line="1298" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.259" File="maciContainerImpl.cpp" Line="1299" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Etherealizing 'CLOCK1'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.259" File="baci.cpp" Line="1088" Routine="baci::BACIComponent::stopAllThreads" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.300" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.300" File="../include/baciRWcontImpl_T.i" Line="56" Routine="baci::RWcontImpl&lt;&gt;::~RWcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.300" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.300" File="../include/baciRWcommonImpl_T.i" Line="60" Routine="baci::RWcommonImpl&lt;&gt;::~RWcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.300" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.300" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.300" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: CLOCK1:array2TAI</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.300" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.301" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.301" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'CLOCK1:array2TAI'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.354" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.354" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.354" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.354" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.354" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'array2TAI'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.354" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.354" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'array2TAI' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.354" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'CLOCK1:array2TAI' destroyed.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.355" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.355" File="../include/baciRWcontImpl_T.i" Line="56" Routine="baci::RWcontImpl&lt;&gt;::~RWcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.387" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.387" File="../include/baciRWcommonImpl_T.i" Line="60" Routine="baci::RWcommonImpl&lt;&gt;::~RWcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.387" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.387" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.387" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: CLOCK1:TAI2UTC</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.387" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.387" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.387" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'CLOCK1:TAI2UTC'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.387" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.387" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.394" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.394" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.394" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'TAI2UTC'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.394" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.394" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'TAI2UTC' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.394" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'CLOCK1:TAI2UTC' destroyed.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.394" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.394" File="../include/baciROcontImpl_T.i" Line="51" Routine="baci::ROcontImpl&lt;&gt;::~ROcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.394" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.394" File="../include/baciROcommonImpl_T.i" Line="78" Routine="baci::ROcommonImpl&lt;&gt;::~ROcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.401" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.401" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.401" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: CLOCK1:now</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.401" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.401" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.401" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'CLOCK1:now'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.401" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.401" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.401" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.401" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.408" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'now'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.408" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.408" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'now' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.408" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'CLOCK1:now' destroyed.</Debug>
+	<Info TimeStamp="2004-07-22T12:12:39.408">CharacteristicComponentImpl::~CharacteristicComponentImpl</Info>
+	<Trace TimeStamp="2004-07-22T12:12:39.408" File="baci.cpp" Line="1014" Routine="baci::BACIComponent::~BACIComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.408" File="baciThread.cpp" Line="231" Routine="baci::BACIThreadManager::~BACIThreadManager" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.408" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.408" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.409" File="baci.cpp" Line="1052" Routine="baci::BACIComponent::~BACIComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'CLOCK1' destroyed.</Debug>
+	<Info TimeStamp="2004-07-22T12:12:39.416">acscomponent::ACSComponentImpl::~ACSComponentImpl</Info>
+	<Info TimeStamp="2004-07-22T12:12:39.416">acscomponent::ACS::COMPSTATE_DEFUNCT</Info>
+	<Info TimeStamp="2004-07-22T12:12:39.416" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'CLOCK1' etherealized.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:39.416" File="maciLibraryManager.cpp" Line="499" Routine="maci::LibraryManager::unlock" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.416" File="maciLibraryManager.cpp" Line="695" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.416" File="maciLibraryManager.cpp" Line="701" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Unloading '/alma/ACS-3.1/ACSSW/lib/libacsclock.so'</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.416" File="maciLibraryManager.cpp" Line="711" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Executing DLLClose</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.416" File="maciLibraryManager.cpp" Line="713" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">DLLClose executed</Debug>
+	<Info TimeStamp="2004-07-22T12:12:39.416" Routine="maci::LibraryManager::unload">Unloaded '/alma/ACS-3.1/ACSSW/lib/libacsclock.so'.</Info>
+	<Info TimeStamp="2004-07-22T12:12:39.416" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'CLOCK1' deactivated.</Info>
+	<Debug TimeStamp="2004-07-22T12:12:39.426" File="maciContainerImpl.cpp" Line="1713" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Deactivating component with handle 16777218 (TIMER1 of type IDL:alma/acstime/Timer:1.0)</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.426" File="maciContainerImpl.cpp" Line="1732" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'TIMER1': calling cleanUp Lifecycle .</Debug>
+	<Info TimeStamp="2004-07-22T12:12:39.426">acscomponent::ACSComponentImpl::cleanUp</Info>
+	<Info TimeStamp="2004-07-22T12:12:39.426">acscomponent::ACS::COMPSTATE_DESTROYING</Info>
+	<Debug TimeStamp="2004-07-22T12:12:39.426" File="maciContainerImpl.cpp" Line="1738" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'TIMER1' reference set to nil.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.426" File="maciContainerImpl.cpp" Line="1329" Routine="maci::ContainerImpl::deactivateCORBAObject" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.426" File="maciContainerImpl.cpp" Line="1298" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.426" File="maciContainerImpl.cpp" Line="1299" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Etherealizing 'TIMER1'</Debug>
+	<Info TimeStamp="2004-07-22T12:12:39.427">acscomponent::ACSComponentImpl::~ACSComponentImpl</Info>
+	<Info TimeStamp="2004-07-22T12:12:39.427">acscomponent::ACS::COMPSTATE_DEFUNCT</Info>
+	<Info TimeStamp="2004-07-22T12:12:39.433" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'TIMER1' etherealized.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:39.433" File="maciLibraryManager.cpp" Line="499" Routine="maci::LibraryManager::unlock" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.433" File="maciLibraryManager.cpp" Line="695" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.433" File="maciLibraryManager.cpp" Line="701" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Unloading '/alma/ACS-3.1/ACSSW/lib/libacstimer.so'</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.433" File="maciLibraryManager.cpp" Line="711" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Executing DLLClose</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.433" File="maciLibraryManager.cpp" Line="713" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">DLLClose executed</Debug>
+	<Info TimeStamp="2004-07-22T12:12:39.433" Routine="maci::LibraryManager::unload">Unloaded '/alma/ACS-3.1/ACSSW/lib/libacstimer.so'.</Info>
+	<Info TimeStamp="2004-07-22T12:12:39.434" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'TIMER1' deactivated.</Info>
+	<Debug TimeStamp="2004-07-22T12:12:39.434" File="maciContainerImpl.cpp" Line="1713" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Deactivating component with handle 16777219 (MOUNT1 of type IDL:alma/MOUNT_ACS/Mount:1.0)</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.434" File="maciContainerImpl.cpp" Line="1732" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'MOUNT1': calling cleanUp Lifecycle .</Debug>
+	<Info TimeStamp="2004-07-22T12:12:39.446">baci::CharacteristicComponentImpl::cleanUp</Info>
+	<Info TimeStamp="2004-07-22T12:12:39.446">acscomponent::ACSComponentImpl::cleanUp</Info>
+	<Info TimeStamp="2004-07-22T12:12:39.446">acscomponent::ACS::COMPSTATE_DESTROYING</Info>
+	<Trace TimeStamp="2004-07-22T12:12:39.446" File="baci.cpp" Line="1088" Routine="baci::BACIComponent::stopAllThreads" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.447" File="baciThread.cpp" Line="152" Routine="baci::BACIThread::terminate" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.447" File="baciThread.cpp" Line="163" Routine="baci::BACIThread::stop" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.459" File="maciContainerImpl.cpp" Line="1405" Routine="maci::ContainerImpl::doneThread" Host="te22" Process="maciContainer" Thread="MOUNT1::monitorThread" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.468" File="maciContainerImpl.cpp" Line="1405" Routine="maci::ContainerImpl::doneThread" Host="te22" Process="maciContainer" Thread="MOUNT1::actionThread" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.939" File="maciContainerImpl.cpp" Line="1738" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'MOUNT1' reference set to nil.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.939" File="maciContainerImpl.cpp" Line="1329" Routine="maci::ContainerImpl::deactivateCORBAObject" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.951" File="maciContainerImpl.cpp" Line="1298" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.951" File="maciContainerImpl.cpp" Line="1299" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Etherealizing 'MOUNT1'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.951" File="baci.cpp" Line="1088" Routine="baci::BACIComponent::stopAllThreads" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.952" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.952" File="../include/baciROcontImpl_T.i" Line="51" Routine="baci::ROcontImpl&lt;&gt;::~ROcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.952" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.952" File="../include/baciROcommonImpl_T.i" Line="78" Routine="baci::ROcommonImpl&lt;&gt;::~ROcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.952" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.952" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.952" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: MOUNT1:actEl</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.964" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.965" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.965" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'MOUNT1:actEl'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.965" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.965" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.965" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.965" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.965" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'actEl'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.965" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.965" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'actEl' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.983" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'MOUNT1:actEl' destroyed.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.983" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.983" File="../include/baciROcontImpl_T.i" Line="51" Routine="baci::ROcontImpl&lt;&gt;::~ROcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.983" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.984" File="../include/baciROcommonImpl_T.i" Line="78" Routine="baci::ROcommonImpl&lt;&gt;::~ROcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.984" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.984" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.984" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: MOUNT1:actAz</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.984" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.984" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.994" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'MOUNT1:actAz'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.994" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.994" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.994" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:39.994" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.994" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'actAz'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.994" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:39.994" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'actAz' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:39.994" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'MOUNT1:actAz' destroyed.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:39.994" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.005" File="../include/baciROcontImpl_T.i" Line="51" Routine="baci::ROcontImpl&lt;&gt;::~ROcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.005" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.005" File="../include/baciROcommonImpl_T.i" Line="78" Routine="baci::ROcommonImpl&lt;&gt;::~ROcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.005" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.005" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:40.005" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: MOUNT1:cmdEl</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:40.005" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.005" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:40.005" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'MOUNT1:cmdEl'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:40.005" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.015" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.016" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.016" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:40.016" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'cmdEl'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:40.016" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:40.016" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'cmdEl' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:40.016" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'MOUNT1:cmdEl' destroyed.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:40.016" File="../include/baciPcommonImpl_T.i" Line="100" Routine="baci::PcommonImpl&lt;&gt;::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.016" File="../include/baciROcontImpl_T.i" Line="51" Routine="baci::ROcontImpl&lt;&gt;::~ROcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.016" File="../include/baciPcontImpl_T.i" Line="22" Routine="baci::PcontImpl&lt;&gt;::~PcontImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.026" File="../include/baciROcommonImpl_T.i" Line="78" Routine="baci::ROcommonImpl&lt;&gt;::~ROcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.027" File="../include/baciPcommonImpl_T.i" Line="84" Routine="baci::PcommonImpl&lt;&gt;::~PcommonImpl" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.027" File="baci.cpp" Line="766" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:40.027" File="baci.cpp" Line="767" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying: MOUNT1:cmdAz</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:40.027" File="baci.cpp" Line="1294" Routine="baci::BACIComponent::removeProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.027" File="baci.cpp" Line="1299" Routine="baci::BACIComponent::removeProperty done" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:40.027" File="baci.cpp" Line="774" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Now I will go through monitors of 'MOUNT1:cmdAz'.</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:40.027" File="baci.cpp" Line="501" Routine="baci::BACIMonitor::internalDestroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.027" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.027" File="baci.cpp" Line="487" Routine="baci::BACIMonitor::destroy" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.066" File="baci.cpp" Line="460" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:40.066" File="baci.cpp" Line="461" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Destroying monitor 'cmdAz'</Debug>
+	<Trace TimeStamp="2004-07-22T12:12:40.066" File="baci.cpp" Line="805" Routine="baci::BACIProperty::removeMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:40.066" File="baci.cpp" Line="481" Routine="baci::BACIMonitor::~BACIMonitor" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Monitor 'cmdAz' destroyed.</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:40.066" File="baci.cpp" Line="788" Routine="baci::BACIProperty::~BACIProperty" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Property 'MOUNT1:cmdAz' destroyed.</Debug>
+	<Info TimeStamp="2004-07-22T12:12:40.066">CharacteristicComponentImpl::~CharacteristicComponentImpl</Info>
+	<Trace TimeStamp="2004-07-22T12:12:40.066" File="baci.cpp" Line="1014" Routine="baci::BACIComponent::~BACIComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.066" File="baciThread.cpp" Line="231" Routine="baci::BACIThreadManager::~BACIThreadManager" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.066" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.066" File="baciThread.cpp" Line="67" Routine="baci::BACIThread::~BACIThread" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:40.078" File="baci.cpp" Line="1052" Routine="baci::BACIComponent::~BACIComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'MOUNT1' destroyed.</Debug>
+	<Info TimeStamp="2004-07-22T12:12:40.078">acscomponent::ACSComponentImpl::~ACSComponentImpl</Info>
+	<Info TimeStamp="2004-07-22T12:12:40.078">acscomponent::ACS::COMPSTATE_DEFUNCT</Info>
+	<Info TimeStamp="2004-07-22T12:12:40.078" Routine="maci::ContainerImpl::etherealizeComponent" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'MOUNT1' etherealized.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:40.078" File="maciLibraryManager.cpp" Line="499" Routine="maci::LibraryManager::unlock" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Trace TimeStamp="2004-07-22T12:12:40.078" File="maciLibraryManager.cpp" Line="695" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context=""/>
+	<Debug TimeStamp="2004-07-22T12:12:40.078" File="maciLibraryManager.cpp" Line="701" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Unloading '/alma/ACS-3.1/ACSSW/lib/libacsexmplMountImpl.so'</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:40.079" File="maciLibraryManager.cpp" Line="711" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Executing DLLClose</Debug>
+	<Debug TimeStamp="2004-07-22T12:12:40.079" File="maciLibraryManager.cpp" Line="713" Routine="maci::LibraryManager::unload" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">DLLClose executed</Debug>
+	<Info TimeStamp="2004-07-22T12:12:40.079" Routine="maci::LibraryManager::unload">Unloaded '/alma/ACS-3.1/ACSSW/lib/libacsexmplMountImpl.so'.</Info>
+	<Info TimeStamp="2004-07-22T12:12:40.095" Routine="maci::ContainerImpl::deactivate_component" Host="te22" Process="maciContainer" Thread="ORBTask" Context="">Component 'MOUNT1' deactivated.</Info>
+	<Trace TimeStamp="2004-07-22T12:12:40.000" File="../lib/python/site-packages/Acspy/Container.py" Line="379" Routine="shutdown" Host="te22" Process="9409" Thread="omniORB" Context="">Shutting down container: aragornContainer</Trace>
+	<Warning TimeStamp="2004-07-22T12:12:41.000" File="../lib/python/site-packages/Acspy/Container.py" Line="564" Routine="destroyCORBA" Host="te22" Process="8546" Thread="MainThread" Context="" StackId="" StackLevel="0">Failed to log the ACSCorba client out of manager: Minor: 0x0, COMPLETED_NO.</Warning>
+	<Error TimeStamp="2004-07-22T12:12:30.949" File="com.cosylab.acs.maci.plug.ManagerProxyImpl" Routine="release_component" Host="te22.hq.eso.org" Thread="RequestProcessor-4" StackId="1090498352959" StackLevel="0" LogId="31471">Invalid handle.<Data Name="exceptionType">class com.cosylab.acs.maci.NoPermissionException</Data>
+	</Error>
+	<Info TimeStamp="2004-07-22T12:12:38.736" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="containerLogout" Host="te22.hq.eso.org" Thread="15" LogId="31508">Container 'bilboContainer' logged out.</Info>
+	<Info TimeStamp="2004-07-22T12:12:39.272" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="containerLogout" Host="te22.hq.eso.org" Thread="15" LogId="31540">Container 'frodoContainer' logged out.</Info>
+	<Info TimeStamp="2004-07-22T12:12:40.283" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="containerLogout" Host="te22.hq.eso.org" Thread="15" LogId="31572">Container 'aragornContainer' logged out.</Info>
+	<Info TimeStamp="2004-07-22T12:12:40.784" File="com.cosylab.acs.maci.manager.app.ManagerEngine" Routine="destroyManager" Host="te22.hq.eso.org" Thread="27" LogId="31591">Destroying Manager.</Info>
+	<Info TimeStamp="2004-07-22T12:12:40.785" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="shutdown" Host="te22.hq.eso.org" Thread="27" LogId="31595">Manager is shutting down.</Info>
+	<Emergency TimeStamp="2004-07-22T12:12:41.080" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="24" StackId="unknown" StackLevel="0" LogId="31608">Manager in shutdown state.</Emergency>
+	<Error TimeStamp="2004-07-22T12:12:41.080" File="com.cosylab.acs.maci.plug.ManagerProxyImpl" Routine="logout" Host="te22.hq.eso.org" Thread="RequestProcessor-5" StackId="1090498363090" StackLevel="0" LogId="31610">Manager in shutdown state.<Data Name="exceptionType">class com.cosylab.acs.maci.NoPermissionException</Data>
+	</Error>
+	<Info TimeStamp="2004-07-22T12:12:43.790" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="27" LogId="31616">Destroying...</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.790" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="27" LogId="31617">Disconnecting...</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.832" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="24" LogId="31621">Destroyed.</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.833" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="27" LogId="31631">Destroying...</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.834" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="27" LogId="31632">Disconnecting...</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.835" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="23" LogId="31636">Destroyed.</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.835" File="com.cosylab.acs.maci.manager.ManagerImpl" Routine="shutdown" Host="te22.hq.eso.org" Thread="27" LogId="31648">Manager shutdown completed.</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.849" File="com.cosylab.acs.maci.manager.app.ManagerEngine" Routine="destroyManager" Host="te22.hq.eso.org" Thread="27" LogId="31650">Destroying Manager.</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.865" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="27" LogId="31665">Destroying...</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.865" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="27" LogId="31666">Disconnecting...</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.867" File="abeans.core.defaults.AbeansLogger" Routine="log" Host="te22.hq.eso.org" Thread="22" LogId="31670">Destroyed.</Info>
+	<Info TimeStamp="2004-07-22T12:12:43.869" File="abeans.engine.Database" Routine="destroy" Host="te22.hq.eso.org" Thread="27" LogId="31673">Database destroyed, internal data structures cleared.</Info>
+</Log>
+

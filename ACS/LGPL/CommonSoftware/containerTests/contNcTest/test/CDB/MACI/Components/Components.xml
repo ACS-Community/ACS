@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <!--C++ components should go here...-->
+      <_ Name="SUPPLIER_CPP"
+      		Code="CounterSupplierImpl"
+	    	Type="IDL:alma/COUNTER/CounterSupplier:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+       <_ Name="CONSUMER1_CPP"
+            Code="CounterConsumerImpl"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+       <_ Name="CONSUMER2_CPP"
+            Code="CounterConsumerImpl"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+       <_ Name="CONSUMER3_CPP"
+            Code="CounterConsumerImpl"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+       <_ Name="CONSUMER4_CPP"
+            Code="CounterConsumerImpl"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+       <_ Name="CONSUMER5_CPP"
+            Code="CounterConsumerImpl"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+       <_ Name="CONSUMER6_CPP"
+            Code="CounterConsumerImpl"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+       <_ Name="CONSUMER7_CPP"
+            Code="CounterConsumerImpl"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+       <_ Name="CONSUMER8_CPP"
+            Code="CounterConsumerImpl"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+       <_ Name="CONSUMER9_CPP"
+            Code="CounterConsumerImpl"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+       <_ Name="CONSUMER10_CPP"
+            Code="CounterConsumerImpl"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="cppContainer" ImplLang="cpp" />
+      <!--Java components-->
+      <_ Name="SUPPLIER_JAVA"
+            Code="alma.COUNTER.CounterSupplierImpl.CounterSupplierHelper"
+	    	Type="IDL:alma/COUNTER/CounterSupplier:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <_ Name="CONSUMER1_JAVA"
+            Code="alma.COUNTER.CounterConsumerImpl.CounterConsumerHelper"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <_ Name="CONSUMER2_JAVA"
+            Code="alma.COUNTER.CounterConsumerImpl.CounterConsumerHelper"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <_ Name="CONSUMER3_JAVA"
+            Code="alma.COUNTER.CounterConsumerImpl.CounterConsumerHelper"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <_ Name="CONSUMER4_JAVA"
+            Code="alma.COUNTER.CounterConsumerImpl.CounterConsumerHelper"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <_ Name="CONSUMER5_JAVA"
+            Code="alma.COUNTER.CounterConsumerImpl.CounterConsumerHelper"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <_ Name="CONSUMER6_JAVA"
+            Code="alma.COUNTER.CounterConsumerImpl.CounterConsumerHelper"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <_ Name="CONSUMER7_JAVA"
+            Code="alma.COUNTER.CounterConsumerImpl.CounterConsumerHelper"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <_ Name="CONSUMER8_JAVA"
+            Code="alma.COUNTER.CounterConsumerImpl.CounterConsumerHelper"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <_ Name="CONSUMER9_JAVA"
+            Code="alma.COUNTER.CounterConsumerImpl.CounterConsumerHelper"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <_ Name="CONSUMER10_JAVA"
+            Code="alma.COUNTER.CounterConsumerImpl.CounterConsumerHelper"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="javaContainer" ImplLang="java" />
+      <!--Python components should go here...-->
+      <_ Name="SUPPLIER_PYTHON"
+            Code="pyCounterTest.CounterSupplier"
+	    	Type="IDL:alma/COUNTER/CounterSupplier:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+      <_ Name="CONSUMER1_PYTHON"
+            Code="pyCounterTest.CounterConsumer"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+      <_ Name="CONSUMER2_PYTHON"
+            Code="pyCounterTest.CounterConsumer"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+      <_ Name="CONSUMER3_PYTHON"
+            Code="pyCounterTest.CounterConsumer"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+      <_ Name="CONSUMER4_PYTHON"
+            Code="pyCounterTest.CounterConsumer"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+      <_ Name="CONSUMER5_PYTHON"
+            Code="pyCounterTest.CounterConsumer"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+      <_ Name="CONSUMER6_PYTHON"
+            Code="pyCounterTest.CounterConsumer"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+      <_ Name="CONSUMER7_PYTHON"
+            Code="pyCounterTest.CounterConsumer"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+      <_ Name="CONSUMER8_PYTHON"
+            Code="pyCounterTest.CounterConsumer"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+      <_ Name="CONSUMER9_PYTHON"
+            Code="pyCounterTest.CounterConsumer"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+      <_ Name="CONSUMER10_PYTHON"
+            Code="pyCounterTest.CounterConsumer"
+	    	Type="IDL:alma/COUNTER/CounterConsumer:1.0"
+	    	Container="pythonContainer" ImplLang="py" />
+</Components>
+

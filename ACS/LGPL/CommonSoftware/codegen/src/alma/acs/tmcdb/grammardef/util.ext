@@ -1,0 +1,71 @@
+import tmcdbTables;
+
+TMCDBModel getModel(Table this):
+	(TMCDBModel)this.eContainer;
+
+List[Table] allTables(TMCDBModel this):
+	this.tables;
+
+Table getTable(Key this):
+	(Table)this.eContainer;
+
+Table getTable(Column this):
+	(Table)this.eContainer;
+
+String shortTableName(Table this):
+	this.name.length <= 12 ?
+		this.name :
+		name.subString(0,6) + name.subString(6,name.length-1).toCharList().select(e| e.matches("^[A-Z]") ).toString("");
+
+String shortColName(Column this):
+	this.name.length <= 12 ?
+		this.name :
+		name.subString(0,6) + name.subString(6,name.length-1).toCharList().select(e| e.matches("^[A-Z]") ).toString("");	
+
+List[Column] getColumns(Table this) :
+	this.columns;
+	//this.superTable!=null ? this.columns.union(superTable.getColumns()) : this.columns;
+
+List[Column] getKeyColumns(Table this) :
+	this.superTable!=null ? this.superTable.key.columns : this.key.columns;
+
+List[ForeignConstraint] getForeignKeyConstraints(Table this):
+	this.constraints.typeSelect(ForeignConstraint);
+	//this.superTable!=null ? this.constraints.typeSelect(ForeignConstraint).union(this.superTable.constraints.typeSelect(ForeignConstraint)) :
+	//this.constraints.typeSelect(ForeignConstraint);
+
+List[CheckConstraint] getCheckConstraints(Table this):
+	this.constraints.typeSelect(CheckConstraint);
+	//this.superTable!=null ? this.constraints.typeSelect(CheckConstraint).union(this.superTable.constraints.typeSelect(CheckConstraint)) :
+	//this.constraints.typeSelect(CheckConstraint);
+
+List[UniquenessConstraint] getUniquenessConstraints(Table this):
+	this.constraints.typeSelect(UniquenessConstraint);
+
+List[Column] getBooleanColumns(Table this):
+	getColumns().select(e|BooleanType.isInstance(e.type));
+
+List[Column] getKeyPieces(Table this):
+	this.key.pieces;
+
+Column getColumn(Specifier this):
+	(Column)this.eContainer;
+
+CheckConstraint getCheckConstraint(PossibleValues this):
+	(CheckConstraint)this.eContainer;
+	
+Table getTable(PossibleValues this):
+	(Table)getCheckConstraint().getTable();
+
+Table getTable(Constraint this):
+	(Table)eContainer;
+
+Key finalKey(Table this):
+	this.superTable != null ? superTable.finalKey() : key;
+
+Table finalTableForColumn(Table e, Column c):
+	e.columns.contains(c) ? e : finalTableForColumn(e.superTable, c);
+	
+Table finalReferencedTable(ForeignConstraint this):
+	this.foreignColumn == null ? this.table :
+	finalTableForColumn(this.table, this.foreignColumn);

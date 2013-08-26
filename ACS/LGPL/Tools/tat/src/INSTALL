@@ -1,0 +1,96 @@
+#
+#  Installation notes for tat module
+#
+# "@(#) $Id: INSTALL,v 1.76 2003/01/09 17:50:40 vltsccm Exp $"
+#
+
+1. expect installation
+----------------------
+
+tat needs expect that is a specialized tcl shell allowing to talk
+to interactive programs. To install it, you need expect sources
+and tcl sources :
+
+- expect is located under $VLTSCCM/PRODUCTS/tcltk/expect5.19.0tar
+- tcl is located under $VLTSCCM/PRODUCTS/tcltk/tcl7.4.tar
+
+Untar the two tar files in the same directory:
+
+tar xf expect5.19.0.tar
+tar xf tcltk/tcl7.4.tar
+
+Execute:
+
+cd expect-5.19
+./configure
+make clean
+make expect
+make install
+
+The Makefile should find automatically the tcl sources and install
+the expect program under /usr/local/bin.
+
+To test that the installation is successfull:
+
+# don't use the binary generated under the expect-5.16 directory
+cd $HOME
+expect
+expect1.1> exp_version
+5.16.3
+expect1.2> exit
+
+2. Environment pools installation
+---------------------------------
+
+tat allocates dynamically environment for (RTAP) workstations and LCUs. 
+These environments are taken from pools that need to be installed by hand.
+
+2.1 RTAP environments
+
+Choose the number of RTAP environment that will run at the same time on
+a given workstation (10 is the maximum).
+
+A tat environment name is built by concatenating <host_string> and
+<env_number>:
+
+- if your hostname starts with 'w' then host_string is made up
+of the six first characters of host name.
+- if your host name does not start with 'w', then set the first character
+ of host_string to 'w' and add the first 5 letters of host name.
+- env_number ranges always from '0' to '9'
+
+Each environment should be added to
+- the acc/vcc database with the flag attic set to 1
+- $RTAPROOT/etc/RtapEnvList 
+- /etc/services
+
+2.2 LCU environments
+
+The LCU pool is global to your local network because a LCU is not dedicated
+to one workstation. You need to have one directory NFS mounted on every
+workstation where tests will be run:
+
+mkdir <LCUpoolPath>
+chmod g+w <LCUpathPath>
+
+for each LCU dedicated to automated testing:
+touch <LCUpoolPath>/<LCU environment name>
+
+Note: <LCU environment name> is the name of the LCU prefixed with an 'l'.
+
+Add in your standard environment definition on each workstation:
+setenv LCUROOT <LCUpoolPath>
+
+3. Install the tat module
+-------------------------
+
+cmmCopy tat <version number>
+cd tat/src
+make clean all man install
+
+
+Note: tat uses the sequencer, installed with the VLT software and the
+vcc database to create LCU/WS/RWS environments.
+
+
+                          ___oOo___

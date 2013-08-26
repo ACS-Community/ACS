@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>How to set the default executor in Netbeans</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<description>
+		 <UL>
+		 In order to set the default executor for ALL Java files please go to netbeans menu bar and select the  
+		 <I>Tools \ Options</I> menu item.<BR/>
+		 From the option dialog box please choose the <I> Editing \ Java sources</I> property sheet and select the <I>Default executor</I> item as shown below.
+ 		 <BR/>
+ 		 By default we recommend the <I>Internal execution</I> option.<BR/>
+ 		 <BR/> 
+		 <IMG SRC="images/defaultexecutor.gif"/>
+		 </UL>
+     <BR/>
+		</description>
+	</section>
+</document>
+

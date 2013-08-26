@@ -1,0 +1,88 @@
+#ifndef _COUNTER_IDL_
+#define _COUNTER_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+* "@(#) $Id: contNcTest_IF.idl,v 1.1 2008/05/23 12:53:45 eallaert Exp $"
+*
+* who       when        what
+* --------  ----------  ----------------------------------------------
+* eallaert  2008-01-18  initial version 
+* 
+*/
+#include <acscomponent.idl>
+#include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
+
+/** @file contNcTest_IF.idl
+ *  IDL File for use with NC tests
+ */
+
+module COUNTER 
+{
+    /**
+     * The counter can be either on or off.
+     */
+    enum OnOffStates { ON, OFF };
+    //typedef float OnOffStates;
+    
+
+    /**
+     * This defines the block of data that will be sent over the notification
+     * channel. A statusBlockEvent can be considered to be an event.
+     */
+    struct statusBlockEvent {
+		OnOffStates onOff;
+		string myString;
+		long counter1;
+		long counter2;
+		long counter3;
+		boolean flipFlop;
+		float period;
+    };
+
+    /**
+     * This defines the channel name for use with all event suppliers
+     * and consumers for the CounterControl component.
+     */
+    const string CHANNELNAME_COUNTER = "counter";
+
+    // the supplier and consumer are both very simple components 
+    interface CounterSupplier : ACS::ACSComponent
+    {
+    	long sendBlocks(in long initialVal,
+    					in long lastVal,
+    					in long changeVal,
+    					in float period)	
+    			raises (ACSErrTypeCommon::CouldntPerformActionEx);	    
+    	
+    };
+
+    interface CounterConsumer : ACS::ACSComponent
+    {
+    	void getBlocks() raises (ACSErrTypeCommon::CouldntPerformActionEx);
+    	long waitTillDone() raises (ACSErrTypeCommon::CouldntPerformActionEx);
+    };
+
+};
+
+#endif

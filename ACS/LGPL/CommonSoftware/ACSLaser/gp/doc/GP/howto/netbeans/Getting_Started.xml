@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+	<head>
+		<title>Getting Started with NetBeans</title>
+		<section>AB/CO/AP</section>
+		<author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+		<reviewers>eric Roux</reviewers>
+		<currentVersion>0.1 (2002/09/01)</currentVersion>
+		<history>
+    0.1 (2002/09/01) : First Draft<br/>
+    0.2 (2002/10/10) : Upadated file:// links to http:// ones and obviously the related documentation paragraphs <br/>
+		</history>
+	</head>
+	<!--
+
+	SECTION 1
+	
+  -->
+	<section>
+		<title>Abstract</title>
+		<description>
+			<p>This document gives instructions to install the NetBeans IDE and start developing NetBeans Modules. 
+      If you <em>really</em> don't want to work with the NetBeans IDE and you're adventurous, you can follow the instructions
+      in the section "Working with another IDE than NetBeans" below.</p>
+		</description>
+	</section>
+	<!--	SECTION 2 -->
+	<section>
+		<title>Install the Netbeans IDE</title>
+		<description>
+			<p>We are currently working with version 3.4.1</p>
+			<LI>
+				<B>MS Windows</B>:</LI>
+			<OL>
+				<LI>Make sure you have the <A HREF="../installjdk.html">JDK 1.3.1 installed</A> (JDK 1.4 is not yet recommended)</LI>
+				<LI>Extract the <a href="../../tools/netbeans/current/IDE/NetBeansIDE.zip">Netbeans IDE</a> zip file to the:<B>C:\Program Files</B>     directory.</LI>
+				<LI>Install the Javadoc <a href="../../tools/netbeans/current/IDE/NetBeansIDE-javadoc.zip">javadoc</a> under <B>C:\Program Files\netbeans\docs\api</B>
+				</LI>
+				<LI>Create a shortcut on your desktop to the Netbeans executable (<B>C:\Program Files\netbeans\bin\runide.exe</B>).</LI>
+				<LI>Now you can Launch "NetBeans IDE" from the Desktop</LI>
+			</OL>
+			<LI>
+				<B>Linux</B>: <I>(For PS users only at the moment as you need the psnfs1:/ps/java directory to be mounted)</I>
+			</LI>
+			<OL>
+				<LI>From a terminal window type the following: <b>/ps/java/tools/netbeans/install.sh</b>
+					<BR/>
+        It will install netbeans in your /local directory.</LI>
+				<li>To launch the IDE just type: ~/netbeans</li>
+			</OL>
+		</description>
+	</section>
+	<!--	SECTION 2 -->
+	<section>
+		<title>Install the OpenIDE Module</title>
+		<description>
+			<p>This module contains development functionality to help you develop NetBeans extensions. There are two ways to install the openide module:</p>
+			<UL>
+				<LI>Using a downloaded file: <UL>
+						<LI>Save the file <code>
+								<a href="../../tools/netbeans/current/IDE/apisupport-2.13.1.nbm">apisupport-2.13.1.nbm</a>
+							</code> (the version compatible with NetBeans 3.4.x).</LI>
+						<LI>
+							<STRONG>While the IDE is running</STRONG>, open the previously saved apisupport-2.13.1.nbm file from the menu "File\Open File..." or press the "Ctrl+O" keys.</LI> 
+        This will launch the NetBeans Install Windows, ask you a few questions (accept all) and restart the IDE at the end. 
+        </UL>
+				</LI>
+				<LI>By connecting to the NetBeans update site: <UL>
+						<LI>In the IDE choose the menu <code>Tools=>Update Center</code>, tick the check box 
+        <code>Netbeans Update Center</code> and click <code>next</code> until a tree modules appears. </LI>
+						<LI>Select <code>Open APIs Support</code> and click <code>next</code> or <code>accept</code> until it is installed. </LI>
+        At the end this will also restart the IDE.
+        </UL>
+				</LI>
+				<!-- option 2 doesn't workfor me. Eric -->
+			</UL>
+		</description>
+	</section>
+	<!--	SECTION 3 -->
+	<section>
+		<title>Tailor the NetBeans IDE</title>
+		<description>
+			<UL>
+				<LI>Disable superfluous modules
+      <p>To make NetBeans faster and lighter, you can deactivate some of the modules you don't need:</p>
+					<p>In the IDE choose the menu <code>Tools=>Options</code> (this opens the <code>Options window</code>); 
+    inside the options window select the branch <code>IDE Configuration=>System=>Modules</code>. Deactivate a module or a group 
+    of modules by selecting it and turning the <code>enabled</code> property in the window at its right from <code>true</code> to 
+    <code>false</code>. Modules that can be turned off are: Web, Distributed Application Support, Backward Compatibility, etc.
+      </p>
+				</LI>
+				<LI>Change compiler and execution settings
+      <p>We recommend that you change your compiler and execution settings as follows:
+      Select the menu <code>Tools=>Options</code> and go to the option <code>Editing=>Java Sources</code>. 
+         There, change the following items in the Property Sheet that appears on the right:</p>
+					<UL>
+						<LI>
+							<code>Default Compiler</code>: set it to <code>Internal Compilation</code>
+						</LI>
+						<LI>
+							<code>Default Executor</code>: set it to <code>Internal Execution</code>
+						</LI>
+					</UL>
+					<P>Accept the new settings by closing the Option Window.</P>
+				</LI>
+			</UL>
+		</description>
+	</section>
+	<!--	SECTION 4 -->
+	<section>
+		<title>Starting to work with your Java files</title>
+		<description>
+			<P>Here are the elementary instructions to create and work with Java code. Please refer to the last section for further documentation. </P>
+			<UL>
+				<LI>NetBeans mounts a File system by default. If you don't want to work there, you can mount another file system:</LI>
+				<UL>
+					<LI>In the explorer, select the the "Explorer [Filesystems]" tab</LI>
+					<LI>Right-click on the root node displayed (it's called "Filesystems") and select the menu "Mount => Local Directory"</LI>
+					<LI>To mount jar files (e.g. libraries) right-click on the root node and select the menu "Mount => Archive Files"</LI>
+					<LI>To unmount a file system: right-click on it and select the menu "Unmount Filesystem"</LI>
+				</UL>
+				<LI>To create new things inside a directory structure, use the "New" Wizard </LI>
+				<UL>
+					<LI>to create a new Java file right-click on the containing directory and select the menu "New => Java Classes => Class"</LI>
+					<LI>to create a new folder (Java package) right-click on the containing directory and select the menu "New => Folder"</LI>
+				</UL>
+				<LI>To compile and execute Java files... </LI>
+				<UL>
+					<LI>to compile one Java file: right-click on it and select the menu "compile"</LI>
+					<LI>to compile all Java files below a directory: right-click on the directory and select the menu "compile all"</LI>
+					<LI>to execute a Java file: right-click on the directory and select the menu "execute"</LI>
+				</UL>
+				<LI>To select the output directory for your <code>.class</code> files (so that they are not generated in the same directory as your sources)</LI>
+				<UL>
+					<LI>Mount the directory into which you want your classes to be placed, as explained above</LI>
+					<LI>Select the menu <code>Tools=>Options</code> and go to the option <code>Building=>Compiler Types</code>, 
+                and select the Compiler you are using</LI>
+					<LI>Change the Target in the Property Sheet that appears on the right: select the directory you have
+                mounted earlier</LI>
+					<LI>Accept the new settings by closing the Option Window.</LI>
+				</UL>
+			</UL>
+		</description>
+	</section>
+	<section>
+		<title>Installing the Netbeans Platform</title>
+		<description>
+			<p>The Netbeans Platform is the runtime environment you need to run your modules. </p>
+			<p>To install it, simply unzip the <a href="../../tools/netbeans/current/platform/NetBeansPlatform.zip">Netbeans Platform</a> 
+			   somewhere (e.g. in <B>C:\Programs\nbpf</B>). </p>
+			<p>To quickly install a module of yours in the platform, you can just drop the corresponding jar in the <code>modules</code> 
+			   directory. A better way, however, is to package it as a Netbeans Module file (*.nbm) and then proceed as described in the 
+			    <a href="../module/module-install.html">Module Installation Howto</a>, using the Update Center functionality.</p>
+		</description>
+	</section>
+	<!-- Section 5 -->
+	<section>
+		<title>Working with another IDE than NetBeans</title>
+		<description>
+			<P>This is not recommended and currently not officially supported by the GP team, but it is possible to use another IDE than NetBeans
+  	for development. This works as follows: you install the Netbeans Platform as described above.
+  Then, you proceed as described in <a href="./debuggingWithEclipse.html">Running the Netbeans platform in Eclipse</a> or analogously if you 
+  use a different IDE (e.g. JBuilder).
+			</P>
+		</description>
+	</section>
+	<!--	SECTION 6 -->
+	<section>
+		<title>Further documentation</title>
+		<description>
+			<UL>
+				<LI>To learn using the Netbeans <i>IDE</i> to develop Java programs, read the first part 
+            of the upcoming book by O'Reilly 
+            <a href="/prog-gp/_notgenerated/tools/netbeans/definitiveguide/OReilly-Book.pdf" target="ora">NetBeans -- the Definitive Guide</a>
+				</LI>
+				<LI>To learn programming with the NetBeans <i>Platform</i>, we recommend that you start with the document 
+             <a href="http://www.netbeans.org/download/apis/org/openide/doc-files/tips.html" target=".">Tips for Module Authors</a>. 
+             We recommend that you read all sections <i>except</i> for the ones on DataSystem API and x` API</LI>
+				<LI>To get a more in-depth view of programming with Netbeans, read the <i>second</i> part 
+            of the O'Reilly book "NetBeans -- the Definitive Guide" named "Extending NetBeans". You can find it on <a href="../../tools/netbeans/index.html"> the page covering NetBeans</a>.
+        </LI>
+			</UL>
+		</description>
+	</section>
+</document>
+

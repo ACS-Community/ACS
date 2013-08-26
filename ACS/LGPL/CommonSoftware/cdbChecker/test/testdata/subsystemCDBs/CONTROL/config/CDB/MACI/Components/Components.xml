@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+$Id: Components.xml,v 1.3 2008/08/15 08:58:19 cparedes Exp $
+Copyright (C) 2004, 2005
+Associated Universities, Inc. Washington DC, USA.
+
+Produced for the ALMA project
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public License
+as published by the Free Software Foundation; either version 2 of
+the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+
+Correspondence concerning ALMA should be addressed as follows:
+
+       Internet email: alma-sw-admin@nrao.edu
+-->
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0">
+<!-- The ArrayController interface is a dynamic component. It is put -->
+<!-- in here as there is, at the moment, no other way to specify it -->
+<!-- using the CDB naming conventions -->
+  <_ Name="*"   
+     Code="alma.Control.arrayInterfaces.ArrayControllerHelper"
+     Type="IDL:alma/Control/ArrayController:1.0"
+     Container="CONTROL/ACC/javaContainer" ImplLang="java" />
+<!-- The ArrayMonitor interface is a dynamic component. It is put -->
+<!-- in here as there is, at the moment, no other way to specify it -->
+<!-- using the CDB naming conventions -->
+  <_ Name="*"   
+     Code="alma.Control.arrayInterfaces.ArrayMonitorHelper"
+     Type="IDL:alma/Control/ArrayMonitor:1.0"
+     Container="CONTROL/ACC/javaContainer" ImplLang="java" />
+<!-- Used to get unique identifiers from the archive -->
+  <_ Name="ARCHIVE_IDENTIFIER"
+     Code="alma.archive.helpers.IdentifierHelper"
+     Type="IDL:alma/xmlstore/Identifier:1.0"
+     Container="CONTROL/ACC/javaContainer"
+     Default="true" ImplLang="java" />
+<!-- Used to get a reference to the operational archive (to retrieve SB's)  -->
+  <_ Name="ARCHIVE_CONNECTION"
+     Code="alma.archive.helpers.ArchiveConnectionHelper"
+     Type="IDL:alma/xmlstore/ArchiveConnection:1.0"
+     Container="CONTROL/ACC/javaContainer" ImplLang="java" />
+<!-- All the monitor points use this interface to get into the archive -->
+  <_ Name="ARCHIVE_MONITORSTORE"
+     Code="alma.archive.monitorstream.MonitorStreamHelper"
+     Type="IDL:alma/monitorstream/MonitorStreamListener:1.0"
+     Container="CONTROL/ACC/javaContainer" ImplLang="java" />
+<!-- This component is created by the observe function in the  -->
+<!-- ArrayController interface. Its unclear if we will run this -->
+<!-- component on the ACC but, as we are currently running this in -->
+<!-- on same CPU, I'll put it in the same container as the ArrayController -->
+<!-- (to cut down on the number of each separate java virtual machines that -->
+<!-- need to be started) -->
+  <_ Name="*"   
+     Code="alma.offline.DataCapturerImpl.DataCapturerHelper" 
+     Type="IDL:alma/offline/DataCapturer:1.0" 
+     Container="CONTROL/ACC/javaContainer" ImplLang="java" />
+<!-- This component is used by the TimeSource interface -->
+  <_ Name="ACS_CLOCK1"   
+     Code="acsclock" 
+     Type="IDL:alma/acstime/Clock:1.0" 
+     Container="CONTROL/Test/cppContainer" ImplLang="cpp" />
+<!-- Correlator simulator. There is no need to start this if you have -->
+<!-- the real Correlator. To use it just start a python container called -->
+<!-- idlSimPyContainer -->
+  <_ Name="CORR_OBSERVATION_CONTROL"
+     Code="Acssim.Servants.Simulator"
+     Type="IDL:alma/Correlator/ObservationControl:1.0"
+     Container="idlSimPyContainer" ImplLang="py" />
+<!-- Simulator for the TelCal Publisher. There is no need to start -->
+<!-- this if you have built and installed TelCal. To use it just start -->
+<!-- a python container called idlSimPyContainer. This interface is -->
+<!-- used by DataCapture -->
+  <_ Name="TELCAL_PUBLISHER"
+     Code="Acssim.Servants.Simulator"
+     Type="IDL:alma/TelCalPublisher/GetTelCalResults:1.0"
+     Container="idlSimPyContainer" ImplLang="py" />
+<!-- This component is used by the acseventBrowser. This browser is -->
+<!-- used to generate a simulated TelCalPublisherEventNC notification -->
+<!-- channel (which is used when testing DataCapture) -->
+  <_ Name="ACSEVENTADMIN"                               
+     Code="acsncImpl.ACSEventAdmin"
+     Type="IDL:alma/acsnc/ACSEventAdmin:1.0"
+     Container="idlSimPyContainer"
+     Default="true" ImplLang="py" />
+</Components>
+

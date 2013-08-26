@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="Alma/ACSError" 
+	xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	name="veryComplex"
+	type="1"
+	 _prefix="alma">
+
+	<ErrorCode name="Error1"
+	    shortDescription="The Error 1"
+	    description="The Error number 1">
+	</ErrorCode>
+	<ErrorCode name="Error2"
+	    shortDescription="The Error 2"
+	    description="The Error number 2 with members">
+		<Member name="member1"
+			type="string"
+			description="The member number 1"
+		/>
+		<Member name="member2"
+			type="string"
+			description="The member number 2"
+		/>
+	</ErrorCode>
+	<ErrorCode name="Error3"
+	    shortDescription="The Error 3"
+	    description="The Error number 3">
+	</ErrorCode>
+	<Code name="Completion1"
+	    shortDescription="The Completion 1"
+	    description="The Completion number 1">
+	</Code>
+</Type>
+

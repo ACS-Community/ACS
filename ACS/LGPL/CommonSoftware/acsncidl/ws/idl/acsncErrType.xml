@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="Alma/ACSError"
+	xsi:schemaLocation="Alma/ACSError ACSError.xsd"
+	name="acsncErrType"
+	type="38"
+	_prefix="alma">
+
+	<ErrorCode name="WrongEventReceived"
+		shortDescription="Wrong Event Received"
+		description="Wrong type of Event has been received">
+		<Member name="ExpectedEvent"
+			type="string"
+			description="Expected type of Event"/>
+		<Member name="ReceivedEvent"
+			type="string"
+			description="Received type of Event"/>
+	</ErrorCode>
+	
+	<ErrorCode name="EventSubscriptionFailure"
+		shortDescription="Subscription failure"
+		description="Failed to subscribe to one or more events on a given channel">
+		<Member name="EventName"
+			type="string"
+			description="Event name for which subscription failed. Use '*' if the subscription attempt was for all events."/>
+		<Member name="ChannelName"
+			type="string"
+			description="Channel on which subscription failed."/>
+	</ErrorCode>
+	
+	<ErrorCode name="PublishEventFailure"
+		shortDescription="PublishEvent failure"
+		description="An event could not be published">
+		<Member name="EventName"
+			type="string"
+			description="Name of the event that could not be sent."/>
+		<Member name="ChannelName"
+			type="string"
+			description="Channel on which publish event failed."/>
+		<Member name="FailureDescription"
+			type="string"
+			description="Context information about the failure."/>
+	</ErrorCode>
+</Type>
+

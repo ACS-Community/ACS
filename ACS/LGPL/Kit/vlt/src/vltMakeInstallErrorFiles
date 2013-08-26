@@ -1,0 +1,136 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeInstallErrorFiles,v 1.2 2010/07/09 15:15:24 rtobar Exp $" 
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  09/02/95  created
+# gfilippi  09/02/95  some editing on comments
+# gfilippi  23/11/95  completely changed to produce a makefile
+# gfilippi  11/05/96  fixed $ --> \$  for HP-UX10
+# rschmutz 1999-04-03 if Linux: disable bash builtin command 'echo'.
+
+#************************************************************************
+#   NAME
+#   vltMakeInstallErrorFiles - copy the Error files into target area.
+# 
+#   SYNOPSIS
+#
+#   vltMakeInstallErrorFiles <ERRORS> <protectionMask>
+#
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to generate the vltMakefile.install section
+#   in charge to copy the Error files into target area.
+#   It is not intended to be used as a standalone command.
+#
+#    treated files are:
+#
+#           ../include/*Errors.h    --->   <ERRORS>/../include
+#           ../ERRORS/*_ERRORS      --->   <ERRORS>
+#           ../ERRORS/*ERRORS.IDX   --->   <ERRORS>
+#           ../ERRORS/HELP/*        --->   <ERRORS>/HELP
+#
+#   <ERRORS>   root directory for copying Error files
+#
+#   <protectionMask>  how to set the protection of created file
+#
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+
+# if Linux: disable the bash builtin command 'echo'.
+if [ "`uname`" = "Linux" ]
+then
+    enable -n echo
+elif [ "`uname`" = "$CYGWIN_VER" ]
+then
+    alias echo="echo -e"
+fi
+
+if [ $# != 2 ]
+then
+    echo "" >&2
+    echo " ERROR:  vltMakeInstallErrorFiles: $*" >&2
+    echo " Usage:  vltMakeInstallErrorFiles <ERRORS> <protectionMask>" >&2
+    echo "" >&2
+    exit 1
+fi
+
+ERRORS=$1
+MASK=$2
+
+
+if [ ! -d $ERRORS ]
+then 
+    echo "" >&2
+    echo " ERROR: vltMakeInstallErrorFiles: " >&2
+    echo "          Internal error: >>$ERRORS<< not a valid directory " >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# according to the file currently under ERRORS, if any, produce
+# the needed targets:
+if [ -d ../ERRORS  -a  "`ls ../ERRORS/*_ERRORS 2>/dev/null`" != "" ]
+then 
+    
+    target="errors: errors_begin "
+
+    echo "errors_begin:"
+    echo "\t-@echo \"\"; echo \"..ERROR files:\""
+
+    for file in `ls ../ERRORS/*_ERRORS ../ERRORS/*ERRORS.IDX 2>/dev/null`
+    do
+        FILE=`basename $file`
+        echo "$ERRORS/$FILE: ../ERRORS/$FILE"
+        echo "\t-\$(AT)cp ../ERRORS/$FILE  $ERRORS/$FILE; \\"  
+        echo "\t      chmod $MASK $ERRORS/$FILE"
+        target="$target $ERRORS/$FILE"
+    done
+
+    for file in `ls ../include/*Errors.h 2>/dev/null`
+    do
+        FILE=`basename $file`
+        echo "$ERRORS/../include/$FILE: ../include/$FILE"
+        echo "\t-\$(AT)cp ../include/$FILE $ERRORS/../include/$FILE; \\" 
+        echo "\t      chmod $MASK $ERRORS/../include/$FILE"
+        target="$target $ERRORS/../include/$FILE"
+    done
+
+    for file in `ls ../ERRORS/HELP 2>/dev/null`
+    do
+        FILE=`basename $file`
+        if [ $FILE != CVS ] 
+        then
+            echo "$ERRORS/HELP/$FILE: ../ERRORS/HELP/$FILE"
+            echo "\t-\$(AT)cp ../ERRORS/HELP/$FILE $ERRORS/HELP/$FILE; \\"
+            echo "\t      chmod $MASK $ERRORS/HELP/$FILE"
+            target="$target $ERRORS/HELP/$FILE"
+        fi
+    done
+    echo $target
+else
+    echo "errors:"
+    echo "\t-@echo \"\""
+fi
+
+exit 0
+#
+# ___oOo___
+

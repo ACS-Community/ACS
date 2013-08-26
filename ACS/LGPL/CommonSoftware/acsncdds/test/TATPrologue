@@ -1,0 +1,28 @@
+#!/bin/bash
+
+### GCH - 20100615
+### Commented out: should be done by the acsutilTATPrologue.
+###   if [ ! -d $ACS_TMP ]
+###   then
+###           mkdir $ACS_TMP
+###   fi
+
+
+acsutilTATPrologue
+
+### GCH - 20100615
+### Commented out setting of these variables.
+### This must be handled in the login profile
+### and might be very different from installation to installation
+### 
+###   export INTROOT="$HOME/introot"
+###   export DDS_ROOT=/alma/ACS-8.0/DDS/build/linux
+###   export PATH=$PATH:$DDS_ROOT/bin
+###   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DDS_ROOT/lib
+###   export DDS_TYPE=OPEN_DDS
+###   export ACS_CDB=$PWD
+
+startDCPSInfoRepo &> $ACS_TMP/InfoRepo.log &
+sleep 2
+acsStartContainer -cpp Container &> $ACS_TMP/container.log &
+sleep 5

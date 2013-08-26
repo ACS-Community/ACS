@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat41,v 1.76 2003/01/09 17:51:27 vltsccm Exp $" 
+#
+# tat41
+#
+
+rm -f tat4.log
+cat .testSession > tat4.log
+
+# test only correct generation of WS and LCU databases
+
+find $VLTDATA/ENVIRONMENTS/$ws2/DB -print | grep $lcu2
+find $VLTDATA/ENVIRONMENTS/$lcu2/DB -print | grep $ws2
+
+
+

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+START_JAVA_VMVARS="-DACS.acsroot=$ACSROOT -DACS.introot=$INTROOT -DACS.modroot=$MODROOT"
+START_JAVA_OPTS="-endorsed"
+EXEC_CLASS="cl.utfsm.acs.ebe.ErrorBrowserEditor"
+
+function printUsage {
+	echo "errorBrowser Help Screen"
+	echo "  * errorBrowser is developed by ACS-UTFSM Team"
+	echo "  * <acs@listas.inf.utfsm.cl>"
+	echo ""
+        echo "This script is a Wrapper of the acsStartJava command line"
+	echo "for running the errorBrowser."
+        echo "Supported Flags:"
+        echo "      -h       Show this help"
+	echo ""
+}
+
+while getopts "h" Option
+do
+  case $Option in
+    h     ) printUsage; exit 0;;
+  esac
+done
+
+acsStartJava $START_JAVA_OPTS $START_JAVA_VMVARS $EXEC_CLASS
+

@@ -1,0 +1,6 @@
+1 -  --endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.ACS.jbaci.test.BACIDispatchActionTest
+1 - === Starting dispatchAction JUnit test
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.acs.testsupport.tat.TATJUnitRunner alma.ACS.jbaci.test.BACIDispatchActionTest
+1 - TEST_RUNNER_REPORT success/total: 7/7
+1 - JUnit test run succeeded
+1 - === dispatchAction JUnit test completed

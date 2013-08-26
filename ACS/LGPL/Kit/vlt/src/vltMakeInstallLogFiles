@@ -1,0 +1,137 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeInstallLogFiles,v 1.2 2010/07/09 15:15:24 rtobar Exp $" 
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  05/07/95  created
+# gfilippi  23/11/95  completely changed to produce a makefile
+# gfilippi  11/05/96  fixed $ --> \$  for HP-UX10
+# rschmutz 1999-04-03 if Linux: disable bash builtin command 'echo'.
+
+#************************************************************************
+#   NAME
+#   vltMakeInstallLogFiles - copy the Error files into target area.
+# 
+#   SYNOPSIS
+#
+#   vltMakeInstallLogFiles <LOGS> <protectionMask>
+#
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to copy the Log files into target area.
+#   It is not intended to be used as a standalone command.
+#
+#    file are copied into:
+#
+#           ../include/*Logs.h    --->   <LOGS>/../include
+#           ../LOGS/*_LOGS        --->   <LOGS>
+#           ../LOGS/*LOGS.IDX     --->   <LOGS>
+#           ../LOGS/HELP/*        --->   <LOGS>/HELP
+#
+#
+#   <LOGS>            root directory for copying Log files
+#
+#   <protectionMask>  how to set the protection of created file
+#
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+
+# if Linux: disable the bash builtin command 'echo'.
+if [ "`uname`" = "Linux" ]
+then
+    enable -n echo
+elif [ "`uname`" = "$CYGWIN_VER" ]
+then
+    alias echo="echo -e"
+fi
+
+if [ $# != 2 ]
+then
+    echo " ERROR:  vltMakeInstallLogFiles $*" >&2
+    echo " Usage:  vltMakeInstallLogFiles <LOGS> <protectionMask> " >&2
+    echo "" >&2
+    exit 1
+fi
+
+LOGS=$1
+MASK=$2
+
+#
+# check target directory
+
+if [ ! -d $LOGS ]
+then 
+    echo "" >&2
+    echo " ERROR: vltMakeInstallLogFiles: " >&2
+    echo "          Internal log: >>$LOGS<< not a valid directory " >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# according to the file currently under LOGS, if any, produce
+# the needed targets:
+if [ -d ../LOGS  -a  "`ls ../LOGS/*_LOGS 2>/dev/null`" != "" ]
+then 
+
+    target="logs: logs_begin "
+
+    echo "logs_begin:"
+    echo "\t-@echo \"\"; echo \"....LOG files:\""
+
+    for file in `ls ../LOGS/*_LOGS ../LOGS/*LOGS.IDX 2>/dev/null`
+    do
+        FILE=`basename $file`
+        echo "$LOGS/$FILE: ../LOGS/$FILE"
+        echo "\t-\$(AT)cp ../LOGS/$FILE  $LOGS/$FILE; \\"
+        echo "\t      chmod $MASK $LOGS/$FILE"
+        target="$target $LOGS/$FILE"
+    done
+
+    for file in `ls ../include/*Logs.h 2>/dev/null`
+    do
+        FILE=`basename $file`
+        echo "$LOGS/../include/$FILE: ../include/$FILE"
+        echo "\t-\$(AT)cp ../include/$FILE $LOGS/../include/$FILE; \\"
+        echo "\t      chmod $MASK $LOGS/../include/$FILE"
+        target="$target $LOGS/../include/$FILE"
+    done
+
+    for file in `ls ../LOGS/HELP 2>/dev/null`
+    do
+        FILE=`basename $file`
+        if [ $FILE != CVS ] 
+        then
+            echo "$LOGS/HELP/$FILE: ../LOGS/HELP/$FILE"
+            echo "\t-\$(AT)cp ../LOGS/HELP/$FILE $LOGS/HELP/$FILE; \\"
+            echo "\t      chmod $MASK $LOGS/HELP/$FILE"
+            target="$target $LOGS/HELP/$FILE"
+        fi
+    done
+    echo $target
+else
+    echo "logs:"
+    echo "\t-@echo \"\""
+fi
+
+exit 0
+
+#
+# ___oOo___
+

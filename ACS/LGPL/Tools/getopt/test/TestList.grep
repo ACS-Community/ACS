@@ -1,0 +1,20 @@
+SUP.
+Log outputed to the local file
+lcuboot: open
+DAL root is
+Time:
+Connected to
+export
+Local file logger: Cache saved to
+-classpath
+ACS Interface Repository:
+ACS Manager:
+ACS Name Service:
+Running the following command:
+modified by jDAL
+INFO - Using endorsed jar files in: -Djava.endorsed.dirs=
+INFO : Using server ID 
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+\[jacorb\.poa\] INFO : oid:
+object is activated
+com.cosylab.cdb.DALRead main

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
+    <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="alma.acs.tools.comphelpergen.AllTests"/>
+    <listAttribute key="org.eclipse.jdt.launching.CLASSPATH">
+        <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;runtimeClasspathEntry containerPath=&quot;JRE_LIB&quot; path=&quot;2&quot;     sourceAttachmentPath=&quot;JRE_SRC&quot; sourceRootPath=&quot;&quot; type=&quot;3&quot;/&gt; "/>
+        <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;runtimeClasspathEntry path=&quot;3&quot; projectName=&quot;comphelpgen&quot; type=&quot;1&quot;/&gt; "/>
+        <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;runtimeClasspathEntry containerPath=&quot;ACSROOT/lib/junit.jar&quot; path=&quot;3&quot; type=&quot;3&quot;/&gt; "/>
+        <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;runtimeClasspathEntry containerPath=&quot;ACSROOT/lib/xmljbind.jar&quot; path=&quot;3&quot; type=&quot;3&quot;/&gt; "/>
+        <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;runtimeClasspathEntry     containerPath=&quot;ACSROOT/lib/endorsed/xercesImpl.jar&quot; path=&quot;3&quot; type=&quot;3&quot;/&gt; "/>
+    </listAttribute>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="comphelpgen"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Duser.dir=Z:\CVSPRJ\ACS\comphelpgen\test"/>
+    <stringAttribute key="org.eclipse.debug.ui.target_debug_perspective" value="perspective_default"/>
+    <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value=""/>
+    <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="comphelpgen/test"/>
+    <stringAttribute key="org.eclipse.debug.core.source_locator_id" value="org.eclipse.jdt.debug.ui.javaSourceLocator"/>
+    <stringAttribute key="org.eclipse.debug.ui.target_run_perspective" value="perspective_none"/>
+</launchConfiguration>

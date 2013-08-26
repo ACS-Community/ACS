@@ -1,0 +1,44 @@
+Changes for GP 2.0.8
+- Given issue CSR-22, and as no one uses the functionality to change the font, I have removed it.
+- setRowHeight() remains.
+- BeanActionSupport.performCapability now throws InvocationTargetException, which is caught in 
+  BeanSupport.performAction(). This allows projects to override BeanActionSupport.performCapability() 
+  and catch, in one single place, the exceptions thrown in their Action classes.
+  Example: cesar-guiutil/cern.spsea.gui.util.ActionAccessControlSupport
+
+Issue CSR-22: GP version (2.0.7) has problems with the first column text, sometims there are only some dots "..."
+See http://issues.cern.ch/browse/CSR-22
+
+
+New things in GP 2.0.7
+- added functionality to change the font (family, size, style) in the table cells
+- added setRowHeight methods to explorers
+
+
+New things in GP 2.0.6
+- added functionality to change the background and foreground colors of the table cells
+- Title of Explorer can now be set with method setName() (bug fix)
+
+New things in GP 2.0.5
+- added functionality in ActionUtils to create context-aware Action Buttons that can be placed in a 
+  different TopComponent than the Explorer they belong to.
+  
+New things in GP Version 2.0.4
+- CheckboxEditor, to place a JCheckbox into a Cell of a Tree/ListTableExplorer
+- ButtonEditor, to place a JButton into a Cell of a Tree or ListTableExplorer
+- PropertyField, a simple component to edit one property of a Bean contained in a GPNode.
+  It uses the right editors, updating the bean and listening to property changes in the bean
+- ReversiblePropertyField, a PropertyField that does not immediately update the value
+  of the associated bean but lets the programmer either commit or revert the changes
+- PropertyDialog: a JDialog to edit a property of a Bean contained in a GPNode. Based on
+  PropertyField
+- WindowUtils: added a version of openInMode and frameResidesInDesktop that accepts one of three 
+  frame types, INTERNAL_FRAME, TOP_FRAME, and DESKTOP_FRAME, the default being that the new frame 
+  resides in the desktop.
+- PrintUtil: 
+  - Moved to new package: cern.gp.printing
+  - Added a method that accepts a Printable object, which will allow the users to define there own 
+    way of printing their components.
+  - Added three classes, PrintableComponent, PrintableListTableExplorer, and PrintableTreeExplorer, 
+    that can be used by the user to print nicely objects of these three types (see examples).
+

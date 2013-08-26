@@ -1,0 +1,273 @@
+<html>
+
+
+
+<head>
+
+
+
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+
+
+
+<link rel=Edit-Time-Data href="FeaturesAlarmSystem_files/editdata.mso">
+
+
+
+<title>FeaturesAlarmSystem</title>
+
+
+
+<style><!--
+
+
+
+.Normal
+
+
+
+	{font-size:12.0pt;
+
+
+
+	font-family:"Times New Roman";}
+
+
+
+.SpellE
+
+
+
+	{}
+
+
+
+.GramE
+
+
+
+	{}
+
+
+
+-->
+
+
+
+</style>
+
+
+
+</head>
+
+
+
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+
+
+
+<h2><a name=AlarmSystem>Alarm System</a></h2>
+
+
+
+<p>The Alarm System provides a mechanism for notifying asynchronously operators 
+
+
+
+  and registered applications of the occurrence of important anomalous conditions 
+
+
+
+  that can disrupt the observation or be potentially dangerous for the <span
+
+
+
+class=GramE>system</span><a href="ReferenceDocuments.html#RD01">[RD01 - 6.4.1 
+
+
+
+  Definition]</a>.</p>
+
+
+
+<h3>The design and implementation of the ACS Alarm System are based on the Laser 
+  system developed by CERN for the LHC accelerator <a href="ReferenceDocuments.html#RD19">[RD19<span class=GramE>]</span></a> 
+  and take into account the OVRO hierarchical alarm system <a href="ReferenceDocuments.html#RD22">[RD22<span class=GramE>]</span></a><a
+
+
+
+href="ReferenceDocuments.html#RD01">[RD01 - 6.4.5. <span class=GramE>Hierarchy]</span></a><span
+
+
+
+class=GramE>. For more details on the Laser system and for a very good Alarm System 
+  Requirements Document see <a href="ReferenceDocuments.html#RD19">[RD19<span class=GramE>]</span></a>.</span></h3>
+
+<h3>An Alarm System API implemented in C++, Java and Python allows applications 
+
+  to publish Alarms.</h3>
+
+<h3>Properties are able to trigger alarms. The simple alarm is triggered when 
+  the value of the property exceeds or falls below the alarm limits defined for 
+  the property. </h3>
+<h3><span class=SpellE><font face="Arial, Helvetica, sans-serif" color="#0000FF">Hysteresis</font></span><font face="Arial, Helvetica, sans-serif" color="#0000FF"> 
+  could be implemented for the alarm limits <b>(<i>Implementation not foreseen 
+  for ALMA</i>)</b>.</font></h3>
+
+
+
+<h3>Alarms are events published on an Alarm Notification Channel. Notification 
+
+  is done when the alarm is set and when it is cleared.</h3>
+
+
+
+<h3>Whenever an alarm is set or cleared, the event is logged in the Logging System 
+
+
+
+  <a href="ReferenceDocuments.html#RD01">[RD01 - 6.4.6. <span class=GramE>Alarm 
+
+
+
+  logging]</span></a><span class=GramE>.</span></h3>
+
+
+
+<h3>Alarm events are characterized by the following information:</h3>
+
+
+
+<UL>
+
+
+
+  <li style='     '>An enumerated state property with the values: GOOD, WARNING, 
+
+
+
+    BAD </li>
+
+
+
+  <li style='     '>A timestamp property describing when the alarm status changed 
+
+
+
+  </li>
+
+
+
+  <li style='     '>A set of description characteristics <a href="ReferenceDocuments.html#RD01">[RD01 
+
+
+
+    - 6.4.7. Configuration]</a>, including (on top of the standard ones like description, 
+
+
+
+    URL for extended documentation...) a severity <a
+
+
+
+     href="ReferenceDocuments.html#RD01">[RD01 - 6.4.3. Severity]</a> </li>
+
+
+
+</ul>
+
+
+
+<h3>An Alarm Server application keeps track of all active alarms.</h3>
+
+
+
+<h3>Hierarchical alarms can be constructed by the Alarm Server that behaves as 
+  client on top of the available alarm system and re-publish <span class=SpellE>hierarchical</span> 
+  alarms. </h3>
+
+
+
+<h3>The Alarm Server is also responsible to maintain State Alarms. These are alarms 
+  that maintain an internal state. In this case the alarm will be incarnated by 
+  an Alarm Object whose life cycle is controlled by the Alarm Server. They will 
+  have the following additional properties:</h3>
+
+
+
+<UL>
+
+
+
+  <li style='     '>An enumerated occurrence property (FIRST OCCURRENCE, MULTIPLE 
+
+
+
+    OCCURRENCE....<span class=GramE>)</span><a
+
+
+
+     href="ReferenceDocuments.html#RD01">[RD01 - 6.4.4. State]</a> </li>
+
+
+
+  <li style='     '>A property holding the status of user acknowledge, when required. 
+    Some alarms just disappear when the alarm condition is cleared, but others 
+    require an explicit acknowledgment from the operator<a href="ReferenceDocuments.html#RD01">[RD01 
+    - 6.4.2 Behavior]</a></li>
+
+
+
+</ul>
+
+
+
+<h3>It is possible to define actions that have to be started on the occurrence 
+
+  of a given alarm condition <a href="ReferenceDocuments.html#RD01">[RD01 - 6.4.8. 
+
+  <span class=GramE>Binding]</span></a><span class=GramE>.</span> Applications 
+
+  can use normal Notification Channel techniques to request a notification to 
+
+  be sent for the occurrence of specific alarms.</h3>
+
+
+
+<h3>An <span class=SpellE>alarmDisplay</span> GUI provides an operator user interface 
+  to the alarms. Using this application the operator can browse through the currently 
+  active alarms, request for detailed information and help about a specific alarm, 
+  acknowledge alarms when this is required.</h3>
+<h3>The Alarm System supports the definition of reduction rules.</h3>
+
+
+
+<p><img border=0 width=640
+
+
+
+id="_x0000_i1025" src="Images/Alarm_System__Alarm_Architecture.png" WIDTH="562" HEIGHT="354" ><br>
+
+
+
+  <i>Figure 3.20: Alarm System architecture</i> </p>
+
+
+
+</body>
+
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

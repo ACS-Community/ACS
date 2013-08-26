@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+# testtat - script for tat tests
+#
+# "@(#) $Id: ttat,v 1.76 2003/01/09 17:51:32 vltsccm Exp $"
+#
+
+#
+#
+# input: empty -> run all tests
+#        test numbers -> run these tests
+#
+
+doTest () {
+
+        echo "\n Executing $1\n"
+        rm -f $1.diff
+        rm -f $1.out
+        $1 > $1.out 2>&1
+        diff $1.out ref/$1.ref >$1.diff 2>&1
+        if [ -s $1.diff ]
+        then echo " $1 FAILED."
+             cat $1.diff
+        elif [ -f ref/$1.ref ]
+        then echo " $1 SUCCEEDED."
+        else echo " $1.ref MISSING !!!"
+        fi
+
+}
+
+tests="tat1 tat2 tat3 tat4 tat5 tat6"
+
+if [ $# -eq 0 ]
+then
+     for i in $tests
+     do
+        doTest $i
+     done
+else
+	for i in $* 
+	do
+	   doTest tat$i
+	done
+fi
+
+

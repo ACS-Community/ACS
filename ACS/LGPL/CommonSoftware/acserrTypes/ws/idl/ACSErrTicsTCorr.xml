@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) 
+This file has to be moved into the TICS subsystem !
+-->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSErrTicsTCorr"
+type="14" _prefix="alma">
+     <ErrorCode name="AnyTICSTCorrError" shortDescription="Any TICS
+     TCorr error" description="TICS TCorr error"/>
+</Type>
+

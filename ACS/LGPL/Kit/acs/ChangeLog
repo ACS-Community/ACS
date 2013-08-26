@@ -1,0 +1,277 @@
+Wed May 12 09:33:49 2004  Bogdan Jeram  <bjeram@te98.hq.eso.org>
+
+	* src/cpLKM.c,v 1.4: replaced C++ comments (//)with C ones (/* */)
+	added #include <fcntl.h> for SunOS
+
+Wed Jun  4 17:15:32 2003    <gchiozzi@pc10064.hq.eso.org>
+	* include/idlMakefile,v 1.68: 
+        If DEBUG=on, wait 2 seconds before calling javac, otherwise we can get problems
+        with the jar files containing both .java and .class files
+Sun Jan 26 21:05:14 2003 <mzampare@te13.hq.eso.org>  acs version: 1.61 
+        * acs/include/idlMakefile: further progress on XmlIdl compiler for ALMA
+        * acs/include/xsdMakefile: differen command line interface 
+Fri Jan 24 11:28:56 2003 <mzampare@te13.hq.eso.org>  acs version: 1.60 
+        * include/acsMakefile: 	lib directories created 
+	* if not already existing. (problem with CVS)
+Thu Jan 23 19:29:14 2003 <mzampare@te13.hq.eso.org>  acs version: 1.59 
+        * include/acsMakefile: 	object and bin directories created 
+	* if not already existing. (problem with CVS)
+Wed Jan 22 17:39:15 2003 <mzampare@te13.hq.eso.org>  acs version: 1.58 
+        * include/idlMakefile: 	XmlIdl compiler now called only on demand
+Wed Jan 22 15:00:26 2003 <mzampare@te13.hq.eso.org>  acs version: 1.57 
+        * include/xsdMakefile: added with initial support for Castor
+	* based Entity classes generation
+	* include/acsMakefile changed accordingly
+Sat Jan 18 16:36:40 2003 <mzampare@te13.hq.eso.org>  acs version: 1.56 
+        * include/idlMakefile: 
+	* initial implementation of XmlIdl compiler for Java
+Fri Dec 13 11:44:39 2002 <psivera@te13.hq.eso.org>  acs version: 1.55 
+	* removed config/.acs stuff
+Thu Dec 12 12:27:26 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* src/Makefile: 
+	Patched installation of include files.
+	To allow installing in the same root both vlt and acs modules, now
+	we force copying the files that have the same name.
+	TODO: cleanup vlt and acs modules.
+
+Thu Dec 12 12:25:55 2002 <gchiozzi@te13.hq.eso.org>  acs version: 1.54 
+Wed Dec 11 16:45:28 2002 <psivera@te13.hq.eso.org>  acs version: 1.53 
+	* added config/.acs stuff
+Wed Nov 27 17:18:54 2002 <mzampare@te13.hq.eso.org>  acs version: 1.52 
+        * src/acsMakeJavaDependencies modified to be used from src and test
+Wed Nov 27 11:43:19 2002 <mzampare@te13.hq.eso.org>  acs version: 1.51 
+        * include/idlMakefile added option --tie for Orbacus
+Fri Nov 22 15:54:52 2002 <mzampare@te13.hq.eso.org>  acs version: 1.50 
+        * include/tclMakefile: fixed problem due to KSH differences across
+	* OS. A target for TCL libraries was being added when no libraries
+	* were there.
+Tue Nov 19 17:37:37 2002 <mzampare@te13.hq.eso.org>  acs version: 1.49 
+        * src/acsMakeJavaDependencies added a "." to the CLASSPATH
+Tue Nov 12 13:39:39 2002 <mzampare@te13.hq.eso.org>  acs version: 1.48 
+	* include/javaMakefile support for extra files and compiler
+	* options added
+	* src/acsMakeJavaDependencies   the same.
+	* ( VLTSW20020559 and VLTSW20020518 )
+Thu Oct 31 11:54:29 2002 <psivera@te13.hq.eso.org>  acs version: 1.47 
+	* src/Makefile.doc  corrected information about debug and optimization
+Mon Oct 07 09:26:10 2002 <mzampare@te13.hq.eso.org>  acs version: 1.46 
+        * include/acsMakefile: added support for CDB_SCHEMAS
+Tue Aug 13 11:10:09 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+	* src/doxygenize: fixed minor problem with doxygenize script
+Tue Aug 13 19:07:31 2002 <dfugate@te13.hq.eso.org>  acs version: 1.45 
+Tue Aug 06 10:49:50 2002 <mzampare@te13.hq.eso.org>  acs version: 1.44 
+        * include/javaMakefile and acsMakefile modified for up to date
+	* documentation. 
+	* src/acsMakeJavaDependencies because of failing xargs
+	* include/Makefile_WS.template for Java variables in makefile
+	* 
+Wed Jul 24 10:59:16 2002 <mzampare@te13.hq.eso.org>  acs version: 1.43 
+	* include/idlMakefile and include/acsMakefile, added $(PWD) variable
+	* to be used instead of src 
+Thu Jun 27 19:40:27 2002 <mzampare@te13.hq.eso.org>  acs version: 1.42 
+        * idlMakefile and javaMakefile pythonMakefile modified to 
+	* heed the MAKE_VXWORKS flag
+Thu Jun 27 09:39:41 2002 <mzampare@te13.hq.eso.org>  acs version: 1.41 
+        * shell changed to ksh everywhere up to temporary makefiles
+	* include/acsMakefile and include/idlMakefile modified
+	* better policy towards ECHO
+Wed Jun 26 17:08:10 2002 <mzampare@te13.hq.eso.org>  acs version: 1.40 
+        * Make clean had been forgotten
+Wed Jun 26 16:52:42 2002 <mzampare@te13.hq.eso.org>  acs version: 1.39 
+        * include/acsMakefile: swapped 'default' target order
+Wed Jun 26 13:51:06 2002 <mzampare@te13.hq.eso.org>  acs version: 1.38 
+        * src/doxygenize modified to be a bit more fault tolerant, but not
+	* completed yet
+	* src/acsMakeJavaDependencies now interprets directories recursively
+Wed Jun 26 13:42:49 2002 <mzampare@te13.hq.eso.org>  acs version: 1.37 
+        * include/javaMakefile modified, the script name was wrong.
+Wed May 29 10:05:11 2002 <mzampare@te13.hq.eso.org>  acs version: 1.36 
+        * ALL files modified, several files added in include, some of 
+	* them copies of the VLT corresponding ones - 
+	* Implemented first step of common ESO Makefile, only with the
+	* following language packs: idl, java, python and tcl/tk
+Mon Apr 29 11:47:57 2002 <mzampare@te13.hq.eso.org>  acs version: 1.35 
+        * src/doxygenize: revision number obtained from Makefile
+Tue Apr  9 14:54:43 2002  Gianluca Chiozzi  <gchiozzi@localhost.localdomain>
+
+	* include/acsMakefile.all: 
+	* include/vltMakefile: 
+	Fixed alignment problems with vlt Makefile.
+	Python support was not aligned and PY_SCRIPTS were not installed.
+	Still the alignement between the two modules is a mess and I do
+	not know what is right where.
+
+
+Tue Apr 09 16:36:55 2002 <gchiozzi@te13.hq.eso.org>  acs version: 1.34 
+Fri Mar 22 13:11:35 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* include/acsMakefile:
+	Removed obsolete PURIFY option ignore-unknown-subspaces
+
+Fri Mar 22 13:10:36 2002 <gchiozzi@te13.hq.eso.org>  acs version: 1.33 
+Wed Mar 06 15:02:36 2002 <mzampare@te13.hq.eso.org>  acs version: 1.32 
+        * include/acsMakefile make clean was not possible from test:
+	fixed
+Tue Mar 05 09:39:13 2002 <mzampare@te13.hq.eso.org>  acs version: 1.31 
+        * include/acsMakefile (clean_all) fixed but in cleaning up 
+	timestams files
+Mon Mar  4 23:07:19 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* include/acsMakefile.idl: 
+	* include/acsMakefile (clean_all): Use -f and not -e in test
+	
+
+Mon Mar 04 23:04:39 2002 <gchiozzi@te13.hq.eso.org>  acs version: 1.30 
+Mon Mar 04 08:16:43 2002 <mzampare@te13.hq.eso.org>  acs version: 1.29 
+        * acsMakefile, acsMakefile.idl modified
+	the timestamp for IDL generation was not properly made and
+	make clean and install would only partially do the job
+Thu Feb 28 13:55:53 2002 <mzampare@te13.hq.eso.org>  acs version: 1.28 
+        * acsMakefile, acsMakefile.idl modified
+	fixed bugs in make install, all shells swapped to /bin/bash,
+	Linux echo style used
+Thu Feb 28 09:29:50 2002 <mzampare@te13.hq.eso.org>  acs version: 1.27 
+        * acsMakefile.idl, acsMakefile, doxygenize modified
+	IDL compilation is no longer carried out for Java and Python in
+	case of VxWorks. 
+	Variable for OMNI_IDL is more politically correct
+	doxygenize script is now /bin/bash
+	
+Wed Feb 27 08:50:53 2002 <mzampare@te13.hq.eso.org>  acs version: 1.25 
+        * acsMakefile, acsMakefile.idl, acsMakefile.all modified
+	* install_idl target made more robust for those idl files which do not 
+	* generate anything
+	* Python packages no longer flat under src 
+Tue Feb 26 10:03:31 2002    <almamgr@localhost.localdomain>
+
+	* include/acsMakefile.idl: 
+	GCH - Changed order in generation of CLASSPATH. Was reversed.
+	GCH - Added to jidl --auto-package option
+	GCH - Added to jidl IDL path
+	GCH - jar command now from ../object directory
+	GCH - Orbacus and OmniOrb vs. TAO compatibility patch
+ 	 There is a compatibility problem with the tao/Policy.idl file and both
+ 	 Orbacus and OmniOrb, since this TAO idl file uses the keyword 
+ 	 "local", that is not recognized
+	 For the time being, we put then by hand the Orbacus directories in the IDL_PATH
+ 	 BEFORE the TAO once when building java and Python.
+	
+	GCH - Added check if there are really java classes generated or
+	not. There can be idl files that do not correspond to real code
+	but are just utilities.
+	
+
+Tue Feb 26 09:49:19 2002 <gchiozzi@te13.hq.eso.org>  acs version: 1.24 
+Mon Feb 25 16:13:38 2002 <mzampare@te13.hq.eso.org>  acs version: 1.23 
+        * acsMakefile, acsMakefile.idl, acsMakefile.all modified
+	* added support for Java and for IDL compilation for Java and Python
+Mon Feb 11 18:22:27 2002 <psivera@te13.hq.eso.org>  acs version: 1.22 
+	* introduced support for Python
+Wed Jan 23 13:57:08 2002 <psivera@te13.hq.eso.org>  acs version: 1.21 
+	* include/acsMakefile: ported to Solaris 8; 
+	                        clean_dist: added removal of .*~ files also
+Tue Jan 15 16:21:01 2002  ALMA Project c/o Robert Karban  <almamgr@te1.hq.eso.org>
+
+	* src/Makefile (clean_dist): Added clean_dist target
+
+	* include/acsMakefile (VLTINC): 
+	Added -I$(ACE_ROOT)/TAO/tao/IFR_Client
+
+Tue Jan 15 17:19:24 2002 <almamgr@te13.hq.eso.org>  acs version: 1.20 
+Thu Jan 10 15:30:34 2002 <mzampare@te13.hq.eso.org>  acs version: 1.19 
+        Added doxygenize script which handles the generation of html and
+	optionally PDF for API and IDL parts. acsMakefile also modified
+	accordingly, MAKE_PDF qualifier added
+	
+	
+Mon Dec 03 10:09:22 2001 <mzampare@te13.hq.eso.org>  acs version: 1.18 
+Mon Nov 19 10:36:55 2001  ALMA Project c/o Robert Karban  <almamgr@te1.hq.eso.org>
+
+	* include/acsMakefile (VLTINC): 
+	Fixed typo: -I$(ACEROOT)/TAO/tao/SmartProxies
+ 	         --> -I$(ACE_ROOT)/TAO/tao/SmartProxies 
+
+Mon Nov 19 11:36:28 2001 <almamgr@te13.hq.eso.org>  acs version: 1.17 
+Fri Nov 16 09:48:23 2001  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* include/Makefile_WS.template (CSOURCENAMES):  looking for
+	acs(vlt)Makefile in INTROOT
+
+	* include/Makefile_LCU.template (MAKE_VXWORKS): looking for
+	acs(vlt)Makefile in INTROOT
+
+Wed Nov 14 16:51:06 2001  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* include/acsMakefile: added -I$(ACE_ROOT)/TAO/tao/DynamicAny
+
+Wed Nov 14 16:30:47 2001 <bjeram@te13.hq.eso.org>  acs version: 1.16 
+Thu Sep 20 10:51:41 2001 <psivera@te13.hq.eso.org>  acs version: 1.15 
+	* include/acsMakefile: added TAO/tao stuff in VLTIDL and changed the order
+Tue Jul 10 10:19:07 2001 <psivera@te13.hq.eso.org>  acs version: 1.14 
+	* include/acsMakefile: added creation of src/.obj dir for VxWorks 
+	   code when make all is run and removal when make clean is run.
+Wed Jun 27 11:32:11 2001 <psivera@te13.hq.eso.org>  acs version: 1.13 
+	introduced two different Makefile templates for lcu and ws code
+        include/acsMakefile(.all): added do_links and clean_links
+Sat Jun 16 17:07:04 2001 <psivera@te13.hq.eso.org>  acs version: 1.12 
+	* include/acsMakefile, Makefile.template: added clean_dist target
+	* src/Makefile.doc: documented clean_dist target
+Wed May 30 15:26:38 2001 <psivera@te13.hq.eso.org>  acs version: 1.11 
+	* include/acsMakefile: changed tao/orbsvcs/orbsvcs to TAO/orbsvcs/orbsvcs, as requested by BGU
+Tue May 22 14:52:34 2001    <almamgr@te20vm.hq.eso.org>
+
+	* include/acsMakefile: 
+	GCH - Added ace tao subdirs to include path. See ALMASW0000053 
+	GCH - Made CCDEP, CC and CXX for Linux the same (NO -ansi)
+
+Tue May 22 08:47:00 2001 <almamgr@te13.hq.eso.org>  acs version: 1.10 
+Fri Mar 09 11:49:24 2001 <psivera@te13.hq.eso.org>  acs version: 1.9 
+	* include/acsMakefile, -.all, -.idl: removed ../src to make 
+          idl files under test dir also.
+Fri Jan  5 15:27:51 2001    <almamgr@pc003459vm.hq.eso.org>
+
+	* include/acsMakefile (LD): LD is gcc and not egcs
+
+Fri Jan 05 15:31:03 2001 <almamgr@te13.hq.eso.org>  acs version: 1.8 
+Fri Dec  8 21:39:04 2000  rkarban  <almamgr@walmaacs.as.arizona.edu>
+
+	* include/acsMakefile (CFLAGS): remove -g default for vxWorks compilation
+
+Fri Dec 08 22:37:16 2000 <almamgr@te13.hq.eso.org>  acs version: 1.7 
+Thu Dec  7 23:45:19 2000  rkarban  <almamgr@walmaacs.as.arizona.edu>
+
+	* include/acsMakefile: check better for empty ACE_ROOT* var
+
+Thu Dec 07 23:46:55 2000 <almamgr@te13.hq.eso.org>  acs version: 1.6 
+Thu Dec  7 12:12:41 2000  rkarban  <almamgr@walmaacs.as.arizona.edu>
+
+	* include/acsMakefile (CCDEP,CXX): remove -ansi flag for
+	Sun-Solaris2 to allow comilation of ACE applications
+
+Thu Dec 07 18:00:28 2000 <almamgr@te13.hq.eso.org>  acs version: 1.5 
+Sun Dec  3 05:21:28 2000  rkarban  <almamgr@walmadev.as.arizona.edu>
+
+	* include/acsMakefile (MODIDL): add ws/idl to path
+	(VLTIDL): add vw/idl in case vxworks code is built for ACSROOT and INTROOT
+
+	(VW): move definition of VW to the top. it was used before it was defined.
+
+Sun Dec  3 01:09:15 2000  rkarban  <almamgr@walmadev>
+
+	* include/acsMakefile (CFLAGS): add SunOS specific CFLAGS
+
+Sat Dec  2 22:48:34 2000  rkarban  <almamgr@walmadev>
+
+	* include/acsMakefile: if compiling vxWorks set ACE_ROOT dependent
+	on ACE_ROOT_DIR. for workstation compilation using ACE the env
+	variable is use straight away (sun, linux).
+
+Sat Dec 02 23:42:46 2000 <almamgr@te13.hq.eso.org>  acs version: 1.4 
+Tue Oct 17 01:17:15 2000 <psivera@te13.hq.eso.org>  acs version: 1.3 
+	* include/Makefile.template: ported to ACS release
+Sun Oct 15 18:19:08 2000 <psivera@te13.hq.eso.org>  acs version: 1.2 
+	* include/acsMakefile: added -I$(VLTROOT)/dbl to DBL_INC
+Fri Oct 06 15:57:44 2000 <psivera@te13.hq.eso.org>  acs version: 1.1 
+	* first implementation of acs Makefile and related scripts
+"@(#) $Id: ChangeLog,v 1.63 2004/05/12 07:35:50 bjeram Exp $"

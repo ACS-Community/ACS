@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<EntitybuilderSettings>
+
+    <EntitySchema schemaName="ASIMessage.xsd" xmlNamespace="ACS/AlarmSource"/>
+    <XmlNamespace2JPackage xmlNamespace="ACS/AlarmSource" jPackage="cern.laser.source.alarmsysteminterface.impl.message"/>
+
+    <EntitySchema schemaName="ASIConfiguration.xsd" xmlNamespace="ACS/AlarmSource/Configuration"/>
+    <XmlNamespace2JPackage xmlNamespace="ACS/AlarmSource/Configuration" jPackage="cern.laser.source.alarmsysteminterface.impl.configuration"/>
+
+</EntitybuilderSettings>
+

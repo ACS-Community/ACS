@@ -1,0 +1,114 @@
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 1 - Creating thread passing just thread name
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::TestACSThreadWithParameter] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::TestACSThreadWithParameter] Thread parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (0) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (1) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::yield] 
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (2) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (3) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (4) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (5) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (6) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (7) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (8) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (9) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::runLoop] Thread (10) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Requesting ThreadManager to destroy thread
+1 - ----------T--:--:--.--- [TestThreadA - TestACSThreadWithParameter::~TestACSThreadWithParameter] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadA - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 2 - Creating thread initially suspended
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::TestACSThreadWithParameter] 
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::TestACSThreadWithParameter] Thread parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadB - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (0) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (1) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::yield] 
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (2) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (3) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (4) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (5) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (6) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (7) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (8) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (9) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::runLoop] Thread (10) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadB - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] Deleting thread
+1 - ----------T--:--:--.--- [TestThreadB - TestACSThreadWithParameter::~TestACSThreadWithParameter] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadB - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 3 - Creating thread
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThreadWithParameter::TestACSThreadWithParameter] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThreadWithParameter::TestACSThreadWithParameter] Thread parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThreadWithParameter::runLoop] Thread (0) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThreadWithParameter::runLoop] Thread (1) parameter: Thread msg
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== 4 - Creating thread that is never woken-up
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [SuspendForEver - TestACSThreadWithParameter::TestACSThreadWithParameter] 
+1 - ----------T--:--:--.--- [SuspendForEver - TestACSThreadWithParameter::TestACSThreadWithParameter] Thread parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::yield] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThreadWithParameter::runLoop] Thread (2) parameter: Thread msg
+1 - ----------T--:--:--.--- [GlobalLogger - main] Deleting thread
+1 - ----------T--:--:--.--- [SuspendForEver - TestACSThreadWithParameter::~TestACSThreadWithParameter] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [SuspendForEver - ThreadBase::stop] Thread SuspendForEver
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:SuspendForEver
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [SuspendForEver - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThreadWithParameter::runLoop] Thread (3) parameter: Thread msg
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThreadWithParameter::runLoop] Thread (4) parameter: Thread msg
+1 - ----------T--:--:--.--- [GlobalLogger - main] =============== The end
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadC - ThreadBase::stop] Thread TestThreadC
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::cancel] Thread stopped:TestThreadC
+1 - ----------T--:--:--.--- [TestThreadC - TestACSThreadWithParameter::~TestACSThreadWithParameter] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [TestThreadC - ACS::ThreadBase::terminate] 

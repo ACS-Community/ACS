@@ -1,0 +1,27 @@
+/*************************************************************************
+* E.S.O. - VLT project
+*
+* "@(#) $Id: vltPort.h.UNSUPPORTED,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+*
+* vltPort.h for UNSUPPORTED platforms
+*
+* who        when      what
+* --------  --------  ----------------------------------------------
+* gfilippi  22/05/96  created form vltPort.h
+*
+*/
+
+/************************************************************************
+*  REMARK: This file belongs to the "vltMake" module.
+*------------------------------------------------------------------------
+*/
+
+#ifndef VLTPORT_H
+#define VLTPORT_H
+
+/*
+* Cause a syntax error
+*/
+#    error "This version of the OS is not yet/any longer supported"
+
+#endif /*!VLTPORT_H*/

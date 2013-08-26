@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+. acsstartupConstants
+
+TMP_DIR="$ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE"
+if ! [ -d $TMP_DIR ]; then
+	echo -e "ACS environment is not properly set or ACS has not been started yet.\nExiting..."
+	exit 1
+fi
+CONFIG_DIR="$TMP_DIR/conf"
+IORS_DIR="$TMP_DIR/iors"
+
+PROTO_CONFIG_FILE="$CONFIG_DIR/DCPS_tcp.conf"
+DOMAIN_IDS_FILE="$CONFIG_DIR/DCPS_domainIds"
+IOR_FILE="$IORS_DIR/DCPSInfoRepositoryIOR"
+
+echo  "static DCPS_SimpleTcpLoader \"-type SimpleTcp\"" > $PROTO_CONFIG_FILE
+echo -e "410\n411\n412\n413\n414\n415\n416\n417\n418\n419" > $DOMAIN_IDS_FILE
+
+$DDS_ROOT/bin/DCPSInfoRepo -ORBEndpoint iiop://:3999 -ORBSvcConf $PROTO_CONFIG_FILE -o $IOR_FILE -d $DOMAIN_IDS_FILE

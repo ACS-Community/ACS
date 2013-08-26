@@ -1,0 +1,16 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: acsstartupTATEnvironment,v 1.6 2009/06/26 05:55:22 hyatagai Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+set HOST [eval exec "hostname -s"]
+
+set env(ACS_STARTUP_TIMEOUT_MULTIPLIER) 2
+set env(ACS_LOG_STDOUT) 4
+set env(ACS_TMP) $env(PWD)/tmp/$HOST
+set env(PYTHONPATH) $env(PWD)/../src:$env(PYTHONPATH)
+#
+# ___oOo___

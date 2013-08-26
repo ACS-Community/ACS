@@ -1,0 +1,148 @@
+#! /bin/bash
+. acsstartupPids
+#---------------------------------------------------------
+#Simple script which just reports what's up and running
+#as far as ACS is concerned.
+#---------------------------
+
+### store current ACS_INSTANCE
+ACE_INSTANCE_OLD=$ACS_INSTANCE
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_BASEPORT=$ACS_INSTANCE
+CL_HELP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,baseport:
+SHORTOPTS=hb:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Retruns status of an Acs instance"
+   echo ""
+	echo "Usage: `basename $0` [OPTIONS]  "
+	echo "Options: "
+	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to get status of"
+        echo "   -h | -help                     prints this help and exits"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--baseport)         CL_BASEPORT=$2 ; shift ;;
+	-b)                 CL_BASEPORT=$2 ; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+export ACS_INSTANCE=$CL_BASEPORT
+echo "Status for ACS instance:" $ACS_INSTANCE
+echo "------------------------------------------------------------------------"
+
+if PID=`getManagerPid`
+then
+    echo "Manager process ID is: $PID"
+fi
+#---------------------------
+if PID=`getNamingServicePid`
+then
+    echo "Naming service process ID is: $PID"
+fi
+#---------------------------
+if PID=`getNotifyServicePid`
+then
+    echo "Notify service process ID is: $PID"
+fi
+#---------------------------
+if PID=`getLoggingServicePid`
+then
+    echo "Logging service process ID is: $PID"
+fi
+#---------------------------
+if PID=`getIRPid`
+then
+    echo "IFR process ID is: $PID"
+fi
+#---------------------------
+if PID=`getLoggingNotifyServicePid`
+then
+    echo "Logging notify service process ID is: $PID"
+fi
+#---------------------------
+if PID=`getArchiveNotifyServicePid`
+then
+    echo "Archive notify service process ID is: $PID"
+fi
+#---------------------------
+if PID=`getAlarmNotifyServicePid`
+then
+    echo "Alarm notify service process ID is: $PID"
+fi
+#---------------------------
+if PID=`getLogPid`
+then
+    echo "ACS Log Service process ID is: $PID"
+fi
+#---------------------------
+if PID=`getCDBPid`
+then
+    echo "ACS CDB process ID is: $PID"
+fi
+#---------------------------
+if PID=`getAlarmServicePid`
+then
+    echo "ACS Alarm Service process ID is: $PID"
+fi
+#---------------------------
+echo ""
+acsContainersStatus
+echo ""
+acsNotifysStatus
+if [ $ACS_INSTANCE_OLD ]
+then
+    export ACS_INSTANCE=$ACS_INSTANCE_OLD
+fi
+echo "------------------------------------------------------------------------"

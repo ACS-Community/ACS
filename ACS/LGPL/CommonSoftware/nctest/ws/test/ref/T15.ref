@@ -1,0 +1,13 @@
+1 -  -- alma.nctest.clients.FridgeConsumer
+2 - Getting the Supplier
+2 - Sending events
+2 - Finished sending events
+1 - ----------T--:--:--.--- INFO [FridgeConsumer] component 'FridgeConsumer' requested AdvancedContainerServices
+1 - Waiting for events...
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - The Java temperature difference is ---
+1 - Done...
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

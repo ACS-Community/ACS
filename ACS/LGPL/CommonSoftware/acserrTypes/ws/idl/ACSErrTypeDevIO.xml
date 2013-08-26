@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan -->
+<!-- Jeram (E.S.O.) -->
+<!-- this is duplicated in baciidl and can be removed -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSErrTypeDevIO" type="17" _prefix="alma">
+<ErrorCode name="ReadError" shortDescription="Read Error" description="DevIO read error"/>
+<ErrorCode name="WriteError" shortDescription="Write error" description="DevIO write error"/>
+<ErrorCode name="UnimplementedRead" shortDescription="Read Method is not implemented" description="Read Method of DevIO is not implemented"/>
+<ErrorCode name="UnimplementedWrite" shortDescription="Write Method is not implemented" description="Write Method of DevIO is not implemented"/>
+</Type>
+

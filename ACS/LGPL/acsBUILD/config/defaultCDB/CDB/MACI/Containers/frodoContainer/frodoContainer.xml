@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Container 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="urn:schemas-cosylab-com:Container:1.0" 
+	xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
+	ImplLang="java"
+	>
+
+	<Autoload>
+	</Autoload>
+
+	<LoggingConfig minLogLevel="2" minLogLevelLocal="2">
+		<log:_ Name="jacorb@frodoContainer" minLogLevel="5" minLogLevelLocal="5" />
+	</LoggingConfig>
+
+</Container>
+

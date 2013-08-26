@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="alma.acs.config.validators.ConfigFileFinder"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-baseDir Z:\CVSPRJ\ACS\LGPL\CommonSoftware -fileEndings &quot;.dat&quot; xsd -targetDir c:\temp\configFiles -targetFilesFlat"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="jACS-Util"/>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+</launchConfiguration>
+

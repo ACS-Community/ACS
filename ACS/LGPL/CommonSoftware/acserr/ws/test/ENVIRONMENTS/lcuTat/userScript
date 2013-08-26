@@ -1,0 +1,79 @@
+#! VxWorks
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: userScript,v 1.46 2007/12/19 16:50:30 bjeram Exp $"
+#
+# Generic VxWorks user-script
+#
+#------------------------------------------------------------------------------
+# See userScript(5) for a detailed explanation on how to fill this file
+#------------------------------------------------------------------------------
+
+LDString=calloc(1,200)
+sprintf(LDString,"LD_LIBRARY_PATH=%s/vw/bin/PPC604:%s/vw/bin/PPC604",getenv("INTROOT"),getenv("ACSROOT"))
+putenv LDString
+
+LDString=calloc(1,200)
+sprintf(LDString,"LD_LIBRARY_PATH=%s:%s/bin",getenv("LD_LIBRARY_PATH"),getenv("MODROOT"))
+putenv LDString
+
+lcubootAutoLoad 1,"libACE.so"
+lcubootAutoLoad 1,"libTAO.so"
+lcubootAutoLoad 1,"libTAO_AnyTypeCode.so"
+lcubootAutoLoad 1,"libTAO_CodecFactory.so"
+lcubootAutoLoad 1,"libTAO_Valuetype.so"
+lcubootAutoLoad 1,"libTAO_PortableServer.so"
+lcubootAutoLoad 1,"libTAO_ObjRefTemplate.so"
+#lcubootAutoLoad 1,"libTAO_IORInterceptor.so"
+#lcubootAutoLoad 1,"libTAO_IORTable.so"
+lcubootAutoLoad 1,"libTAO_PI.so"
+lcubootAutoLoad 1,"libTAO_CosProperty.so"
+lcubootAutoLoad 1,"libTAO_Svc_Utils.so"
+lcubootAutoLoad 1,"libTAO_Messaging.so"
+lcubootAutoLoad 1,"libTAO_CosNaming.so"
+lcubootAutoLoad 1,"libTAO_DynamicAny.so"
+lcubootAutoLoad 1,"libTAO_ETCL.so"
+lcubootAutoLoad 1,"libTAO_DsLogAdmin.so"
+lcubootAutoLoad 1,"libTAO_CosEvent.so"
+lcubootAutoLoad 1,"libTAO_CosNotification.so"
+lcubootAutoLoad 1,"libTAO_IFR_Client.so"
+lcubootAutoLoad 1,"libTAO_Codeset.so"
+lcubootAutoLoad 1,"loki"
+lcubootAutoLoad 1,"acscommonStubs"
+lcubootAutoLoad 1,"acsutil"
+lcubootAutoLoad 1,"logging_idlStubs"
+lcubootAutoLoad 1,"loggingService"
+lcubootAutoLoad 1,"acserr"
+lcubootAutoLoad 1,"ACSErrTypeTest"
+lcubootAutoLoad 1,"acserrTestServer"
+lcubootAutoLoad 1,"acserrOldTestServer"
+lcubootAutoLoad 1,"addDataTest"
+
+
+
+
+
+putenv "ACS_LOG_STDOUT=2"
+putenv "ACS_LOG_FILE=logFile"
+
+
+# ___oOo___

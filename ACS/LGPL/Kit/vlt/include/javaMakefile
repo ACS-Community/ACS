@@ -1,0 +1,109 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: javaMakefile,v 1.2 2010/07/09 12:48:42 alopatin Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# psivera  05/06/02  created
+# psivera   2002-09-03 moved the install_java bit from javaMakefile to vltMakefile
+#
+
+#************************************************************************
+#   NAME
+#   javaMakefile - language specific Makefile
+#
+#   DESCRIPTION
+#   The javaMakefile handles the targets to make, install and clean 
+#   Java code (all files in the src directory of a software module 
+#   with extension .java)
+#
+#   All the files .java are compiled calling the Java compiler. 
+#   The resulting .class files are put in the ../object directory.
+#   Afterwards, all the files .class existing in the ../object 
+#   directory are combined in a single JAR archive file which is 
+#   created in the ../lib directory. 
+#   
+#   The "make install" will copy this jar file under the lib 
+#   directory of the installation root (INTROOT, VLTROOT...)
+#
+#   The name of the jar file is determined by the user who will 
+#   have to define in the module's Makefile the variable: 
+#   JARFILES = <name>
+#   (name of the resulting jar file without extension)
+#
+#   FILES
+#   vltMakeJavaClasspath: Utility used by vltMakefile to dynamically 
+#   generate the CLASSPATH for Java stuff, prior to compilation. 
+#   vltMakeJavaDependencies: Utility used by vltMakefile to create 
+#   the makefile to build a Java Jarfile
+#
+#
+#   ENVIRONMENT
+#
+#   CAUTIONS
+#   - Only one JAR file per module can be created
+#   - javadoc handle is not yet implemented
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#   VLTROOT/include/vltMakefile
+#             VLT wide definitions for UNIX or VxWorks
+#             This file includes the javaMakefile
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+SHELL=/bin/bash
+
+######################################
+# phony section
+######################################
+.PHONY : clean_java
+.PHONY : do_java
+
+######################################
+# incrementing tasks
+######################################
+TMP_DEP_JAR := $(addprefix ../object/, $(addsuffix .djar, $(JARFILES)))
+
+ifneq ($(strip $(JARFILES)),)
+    CLEAN_TARGET := $(CLEAN_TARGET) clean_java
+endif
+
+ifneq ($(strip $(JARFILES)),)
+    ALL_TARGET := $(ALL_TARGET) do_java
+endif
+
+
+######################################
+# targets specification
+######################################
+
+##  clean
+##
+clean_java:
+	-$(AT)$(RM) vltMake_clean_java      $(foreach member,  $(JARFILES), ../lib/$(member).jar ../object/$(member).djar ) ../object/vltMakeIndexFiles.del $(foreach member, $(JDIR), ../object/$(member) )   $(OUTPUT)
+	-$(AT)find ../object -type d ! -name object | xargs -i $(RM) {}
+	-$(AT)find ../object -type f | xargs -i $(RM) {}
+	-@$(ECHO) " .\c"
+
+
+## all
+##
+# - for Automatic Dependencies for Jarfiles
+#
+../object/%.djar:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeJavaDependencies $(*F) >../object/$*.djar
+
+do_java:  $(TMP_DEP_JAR)
+	$(AT) for member in $(foreach name, $(JARFILES), $(name) ); \
+		do \
+		make -f ../object/$${member}.djar ../lib/$${member}.jar;\
+		done
+
+
+

@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+  
+  <title>What's New? - Acs Command Center</title><meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+  <link rel="stylesheet" href="style.css" type="text/css"></head>
+<body style="" bgcolor="#ffffff" lang="EN-US" link="#0000ff" vlink="#800080">
+<br>
+<table class="MsoNormalTable" style="width: 585pt;" border="0" cellpadding="0" cellspacing="0" width="780">
+  <caption><br>
+  </caption><tbody>
+  </tbody> <tbody>
+    <tr style="">
+      <td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/projects/alma/"><img src="images/alma_art_3.jpg" alt="[ ALMA 
+  ]" id="_x0000_i1025" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
+      </td>
+      <td style="padding: 0.75pt;"> <span style="font-size: 18pt;"><b>ALMA
+Common Software</b></span> <span style="font-size: 18pt;"><b>Documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p><o:p></o:p></span>
+      <u1:p></u1:p> </td>
+      <td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/"><img src="images/eso-logo.gif" id="_x0000_i1026" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr align="center" size="1" width="100%">
+<div align="center"><br>
+<h1><a name="Whats_New">What's New? - Acs Command Center</a></h1>
+</div>
+<p>&nbsp;</p>
+<div align="right">
+<small>Described Versions: Acs 8.1 and later</small>&nbsp;<br>
+<small>Latest Update: 2009-12-21 M.Schilling</small>&nbsp;
+</div>
+<div> <a href="Acs_Command_Center_-_User_Guide.html"> &lt;&lt; User
+Guide - Acs Command Center </a></div>
+<br>
+<br>
+
+<h2>Acs 8.1</h2>
+<h4>Container Settings</h4>
+<ul>
+<li>Heap size can now be specified in the details settings for a container. Note this is currently only respected by Java containers, and when the project is using Acs Daemons.</li>
+</ul>
+<h4>Deployment Info</h4>
+<ul>
+<li>The controls at the top of Deployment Info were tidied up and uncluttered. Manually adding a manager is now a two-step procedure.</li>
+</ul>
+<br>
+
+<h2>Acs 8.0.1</h2>
+<h4>Common Settings<br></h4>
+<ul><li>Added more&nbsp;explanatory texts in the Common Settings</li><li>The remote variant ("Built-in ssh", "Native ssh", "Acs Daemons") is now stored as part of a Command Center project</li></ul><h4>Misc</h4><ul><li>The
+Progress Panel will no longer steal the focus from other applications,
+in particular when starting or stopping a list of containers</li><li>The "too many open files" problem related to&nbsp;native ssh mode has been solved</li></ul>
+
+<h2>Acs 8.0</h2>
+<h4>Common Settings<br></h4>
+<ul>
+<li>The Cdb Root can now also be specified for "localhost" mode</li>
+<li>The "local java" mode is no longer supported</li>
+<li>The "remote" mode now allows to use either Acs Daemons, or native ssh, or platform-independent ssh</li>
+<li>The platform-independent ssh was changed to a different product supporting more types of ssh servers</li>
+</ul>
+
+<h4>Container Settings</h4>
+<ul>
+<li>The container list now shows a preview of the host to run a&nbsp;container</li>
+<li>Type modifiers can now be specified in the details settings for a container</li>
+</ul>
+
+
+
+
+<h2>Acs 6.0.2</h2>
+<h4>Deployment Info<br>
+
+</h4>
+
+<ul>
+
+  <li>Added a toggle button "Freeze View" that suppresses automatic
+refresh, so the tree&nbsp;can be browsed through&nbsp;without
+disturbance</li>
+
+</ul>
+
+<br>
+<h2>Acs 5.0</h2>
+<h4>Starting Acs remotely</h4>
+<ul>
+  <li>Now supports&nbsp;native ssh installed on the underlying platform. This allows for using public-key authentication</li>
+  <li>The native ssh support can be switched on/off using Java system properties, command line switches, or the Gui</li>
+
+  <li>Remote processes (manager, containers) will no longer leave stray tail processes behind</li>
+
+  <li>Remote processes&nbsp;can now X-forward to localhost</li>
+
+  <li>Process logs in ~/.acs/commandcenter/ will now also contain a process's stderr output</li>
+</ul>
+<br><h4>Variables in Projects</h4>
+<ul>  <li>Variables with&nbsp;syntax ${varname}are now allowed in projects</li>  <li>A variable's value can be&nbsp;set by defining&nbsp;a&nbsp;Java
+system property of the same name, or through&nbsp;the Gui's Variable
+Editor</li></ul><br><h4>Deployment Info</h4>
+<ul>  <li>The "Containers", "Client Applications", "Components" nodes in the DeploymentInfoView now display how many children they contain</li>  <li>Containers and Clients now have a subnode "location" that displays their host and port</li>
+
+  <li>A manager to connect to can now be specified as command line argument, either as "<span style="font-style: italic;">corbaloc...</span>" or as "<span style="font-style: italic;">host:port</span>"</li></ul><br><h4>Misc</h4>
+<ul>  <li>A&nbsp;project to load can now, alternatively to the -retrieve option, be specified as the first command line argument</li>
+
+  <li>Closing the Progress Panel through the window title's X-button will no longer leave the Gui in an inoperable state</li>  <li>Logfiles now also get created when starting a remote container that contains&nbsp;slashes in its name<br>  </li>  <li>Some explanatory texts in the Gui have hopefully&nbsp;been made clearer, following suggestions by users</li>
+
+</ul>
+
+<br>
+<h2>Acs 4.1</h2>
+<h4>Container Section</h4>
+<ul>
+  <li>New controls to start/stop all containers in the container
+list&nbsp; sequentially in one go</li>
+  <li>New controls to move containers up/down within the container list</li>
+</ul>
+<h4>Log Area</h4>
+<ul>
+  <li>Each tool will now have its own log in the Log Area</li>
+  <li>The Log Area comes with various controls, e.g. to save a log, or
+restrict the size of a log</li>
+</ul>
+<h4>Misc</h4>
+<ul>
+  <li>The size and location of the application's Gui can now be
+specified through an command line option ("-geometry")</li>
+  <li>The (non-graphical) file logging client can now be stopped
+through an entry in the Tools Menu</li>
+  <li>The Acs Instance field will no longer accept input while an
+operation is being performed (i.e. the progress panel is on screen)</li>
+  <li>Noisy error messages on startup are now avoided by adopting a
+jacorb patch coming with this Acs release</li>
+  <li>A help menu has been added and online help can be invoked from it<br>
+  </li>
+</ul>
+<h4> Usage as a library</h4>
+<ul>
+  <li>An AcsCommandCenterProject now also stores the mode (local
+script, remote script, local java) of a project<br>
+  </li>
+  <li>Class ProjectRunModel now contains the logic to evaluate a
+project's mode so it can return the corresponding values. This logic
+had been in the application layer before. This change facilitates the
+implementation of a fully automatic run of a project.<br>
+  </li>
+</ul>
+<br>
+<h2>Acs 4.0</h2>
+<h4>Default Settings for Tools and Containers</h4>
+<p>
+Tools now have more "general settings" (invoke dialog through "Confgure
+Tools" in the Tools menu).
+One set of such settings will be offered as <i>default settings</i> in
+the dialog.
+<br>
+Especially, these settings will be auto-updated synchronously whenever
+data is being entered into the Gui's frontpanel.
+This allows for easier usage of some tools like the IR Browser that
+rely on extra settings. Those settings had to be set explicitly in
+earlier
+versions with the "Configure Tools" dialog. This led to confusion (it
+had been reported that the IR Browser doesn't work) and should now be
+much more intuitive.</p>
+<p></p>
+<p>The same is true for Containers: the respective dialog can be
+invoked through the "..." button (beside the "+" and "-" button).</p>
+<h4>Deployment Info</h4>
+<ul>
+  <li> Improved visualization of node-relations: When the user selects
+a node, it will be highlighted <b>blue</b> while its corresponding
+nodes will be highlighted <b>gray</b>
+  </li>
+  <li> Improved manual addition of managers. New "<b>Full Refresh</b>"
+button (in addition to "Refresh" in the manager context menu).
+  </li>
+  <li> Doing "<b>Remove from View</b>" in a manager's context menu no
+longer shuts down that manager. Shutdown is a separate entry in the
+manager context menu.
+  </li>
+  <li> A manager is now automatically removed from the Deployment Info
+after acsStop or acsStopManager
+  </li>
+  <li> The Component section is now automatically refreshed when a
+component is requested by any Acs client.
+  </li>
+  <li> Better dealing with gone-down managers and cut connections: most
+operations are now guarded by small-meshed error handlers
+  </li>
+</ul>
+<h4>Misc</h4>
+<ul>
+  <li> The tool tip of Java-Only Acs no longer claims it be
+Windows-only
+  </li>
+  <li> Fixed the bug where NullPointerExceptions arose when one tried
+to sort the containers but there were none
+  </li>
+  <li> The title of the "View Xml File" dialog is now updated correctly
+each time a file is shown
+  </li>
+  <li> Progress dialog closing to early when doing acsStop should now
+only appear on rare occasions
+  </li>
+  <li> Command center now again shows verbose output for <code>acsStart</code>
+(i.e., it undoes the recent changes to <code>acsStart</code>'s
+standard behavior)
+  </li>
+  <li> Fixed the problem with foreground scripts like "AcsEventAdmin"
+blocking the command center: changed internal task-execution from
+"foreground" to "background"
+  </li>
+</ul>
+<h4> Usage as a library </h4>
+<ul>
+  <li> Added class ProjectRunModel: it takes a project file and makes
+it available as a RunModel to the Executor engine. This allows an
+external application to start an Acs Suite described by a project file
+  </li>
+  <li> The ToolManager responsible for reading the definition files for
+external and built-in tools can now lazily auto-configure itself. This
+means applications using the Executor API no longer need to initialize
+the ToolManager (unless they aren't happy with the standard settings)
+  </li>
+</ul>
+<h2>Acs 3.1</h2>
+<h4>Java-only Acs</h4>
+Java-only Acs has been re-enabled, it now also respects the Acs
+Instance setting. It does not provide automatic instance assignment if
+the desired instance can not be occupied due to, e.g., port clashes.<br>
+<h4>Tool Definitions</h4>
+The abilities of Command Center are now defined in two external xml
+files:<br>
+<ul>
+  <li>AcsCommandCenterBuiltinTools.xml</li>
+  <br>
+Defines the fundamental functions of Command Center: how to
+start/stop/kill an instance of Acs locally/remotely, etc.<br>
+Some or all of the functions can be redefined at runtime.<br>
+  <br>
+  <li>AcsCommandCenterTools.xml</li>
+  <br>
+Defines the extra Tools that can be triggered through the "Tools" menu.<br>
+The complete content of the "Tools" menu can be replaced at runtime.
+</ul>
+<br>
+For both types of tools, an appropriate xml file with tool definitions
+can
+be loaded through the "Expert" menu.<br>
+<br>
+<h4>Deployment Info View</h4>
+Much more information on nodes is shown, the visual representation has
+changed.<br>
+Context menus were enhanced with many new actions to perform on the
+different
+nodes.<br>
+Will now detect when a Manager instance is down or was replaced by
+another
+Manager instance.<br>
+<h4>Misc</h4>
+Some hotkeys (keyboard shortcuts) have been added for easier usage
+without
+the mouse (seems to not work on X Windows, however).<br>
+The Advanced Controls section can now be enabled/disabled through a
+checkbox.<br>
+Menu "Extra" was renamed to "Experts". Its entries changed.<br>
+<br>
+<br>
+<h2>Acs 3.0<br>
+</h2>
+<br>
+First version ...<br>
+<br>
+<br>
+<hr size="2" width="100%"><br>
+<br>
+</body></html>

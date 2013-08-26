@@ -1,0 +1,227 @@
+Tue Aug 12 10:14:56 2003  Bogdan Jeram  <bjeram@te33.hq.eso.org>
+
+	* ws/test/monitorTest.cpp,v 1.29 (main): 
+	* ws/test/alarmTest.cpp,v 1.30 (main): 
+	* ws/test/testRWClient.cpp,v 1.30 (main): 
+	* ws/test/testClient.cpp,v 1.30 (main): 
+	* ws/test/onchangeMonitorTest.cpp,v 1.30 (main): 
+	  passing -ORBDottedDecimalAddresses 1 options to BACI_CORBA::InitCORBA
+
+Mon Jul 14 12:57:53 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* ws/src/Makefile,v 1.28: 
+	* ws/idl/enumpropMACRO.idl,v 1.29: 
+	* ws/idl/enumpropMACRO_included.idl: 
+	* ws/idl/enumpropALMASW2003048.idl: 
+          JacORB has problems when including twice a file with macros inside,
+          since it tries to parse also preprocessor directives that should
+          be excluded by the include guards, probably because it searches
+          for the #endif preprocessor directive. Weird !!!!!
+          See SPR ALMASW2003048 for details.
+
+Mon Jun  2 11:35:59 2003  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/include/enumpropRWImpl.i,v 1.30 (ACS_ENUM_T): 
+	* ws/include/enumpropRWImpl.h,v 1.29:
+	* ws/include/enumpropROImpl.i,v 1.30 (ACS_ENUM_T): 
+	* ws/include/enumpropROImpl.h,v 1.29 :  
+	     renamed DevIOT and DevIOMemT to DevIO and DevIOMem
+	
+Fri May 30 14:07:27 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/enumpropROImpl.i,v 1.29 (ACS_ENUM_T): removed setting
+	intial value for external DevIO
+
+	* ws/include/enumpropRWImpl.i,v 1.29 (ACS_ENUM_T): added intalization to default value for external DevIO
+
+Mon May 26 15:59:05 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* ws/test/testRWClient.cpp,v 1.28: 
+	* ws/test/testClient.cpp,v 1.28: 
+	Added some sleeps after get_async to allow for the callback to come back.
+        This is an important problem that we have to discuss.
+	The following sequence does NOT work as expected:
+
+   	   currentState->set_sync(state, ACE_TRY_ENV);
+	   currentState->get_async(cbStatesObj.in(), descin, ACE_TRY_ENV);
+	   currentState->set_sync(defState, ACE_TRY_ENV);
+
+	I would expect get_async to return ALWAYS the value set by the
+	previous set_sync(), but often it returns the value set by the
+	second set_sync().
+	This is because on the client side the two calls to
+	get_sync() and set_sync() are just one after the other and the on
+	the servant side the thread handling set_sync() can be scheduled
+	before the thread handling the callback for the get_sync(),
+	changing the value of the property before it is picked up by the
+	callback.
+
+	Adding a sleep() makes the execution deterministic:
+	
+   	   currentState->set_sync(state, ACE_TRY_ENV);
+	   currentState->get_async(cbStatesObj.in(), descin, ACE_TRY_ENV);
+           sleep(1);
+	   currentState->set_sync(defState, ACE_TRY_ENV);
+
+	I would say this is wrong, but we need to discuss.
+	
+Mon May 19 22:19:07 2003    <gchiozzi@pc10064.hq.eso.org>
+
+	* ws/idl/enumpropTestDevice.idl,v 1.30: 
+	Put back ACS_ENUM macro
+
+Tue Apr  8 09:25:54 2003  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/idl/enumpropTestDevice.idl,v 1.28: 
+	* ws/idl/enumpropMACRO.idl,v 1.28: 
+	Renamed ENUM macro as ACS_ENUM. JacORB was (rightly) complaining
+	because enum is a reserved word and IDL is case insensitive.
+	Added boundary ifdes
+
+Fri Mar 14 16:23:54 2003  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/enumpropRxImpl.i,v 1.28: 
+	- added BACIValue::NullValue as a parameter to constructor of Monitorpattern.
+	- added ACSErr prefix.
+	- changed MonitorpatternOC to Monitorpattern (template version)
+	- change DevIO to DevIOT<T> (and write/readPattern to just
+	write/read)
+		
+
+	* ws/include/enumpropRxImpl.h,v 1.28: 
+	- changed m_default_value from ACS::pattern type to type T
+	- change DevIO to DevIOT<T> 
+
+Sun Dec  8 08:38:24 2002  ALMA Project c/o Robert Karban  <almamgr@te20.hq.eso.org>
+
+	* Radostina forgo make clean!
+
+Sun Dec 08 08:35:21 2002 <gchiozzi@te13.hq.eso.org>  enumprop version: 1.28 
+Fri Dec  6 10:50:13 2002  Radostina Georgieva  <rgeorgie@te1.hq.eso.org>
+
+	* checked whether it is under LGPL.
+
+Thu Dec 05 20:31:57 2002 <rgeorgie@te13.hq.eso.org>  enumprop version: 1.27 
+Tue Dec 03 17:08:40 2002 <rgeorgie@te13.hq.eso.org>  enumprop version: 1.26 
+Fri Nov 22 12:56:33 2002  Bogdan Jeram  <bjeram@te37>
+
+	* ws/test: made necessary changes that testes using new  CDB work also on LCU
+
+Tue Nov 19 13:44:04 2002 <bjeram@te13.hq.eso.org>  enumprop version: 1.25 
+Mon Nov 18 13:43:38 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/test: changed to XML CDB
+
+	* ws/include/enumpropRO/WImpl.i (ACS_ENUM_T): changed to onchange monitor
+
+	* ws/idl/enumpropMACRO.idl (PENUM): changed "create_monitor" to
+	return Monitorpattern -> onchange
+
+Thu Nov 07 10:57:10 2002 <bjeram@te13.hq.eso.org>  enumprop version: 1.24 
+Thu Oct 31 14:56:51 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/enumpropRO/RWImpl.i (ACS_ENUM_T): added setting inital
+	value for DevIO that is passed to constructor 
+
+Thu Oct 31 14:28:10 2002 <bjeram@te13.hq.eso.org>  enumprop version: 1.23 
+Thu Aug 15 09:29:21 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* lcu/test/simpleTest.cpp: changed argUnpack.h to acsutilArgUnpack.h
+	* ws/test/simpleTest.cpp: changed argUnpack.h to acsutilArgUnpack.h
+	* lcu/include/argUnpack.h: removed
+
+Thu Aug 15 17:26:34 2002 <dfugate@te13.hq.eso.org>  enumprop version: 1.22 
+Mon Jul  8 16:13:19 2002  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/include/enumpropRWImpl.i: fixed set_async and non blocking +
+	added testes
+
+Mon Jul 08 15:04:13 2002 <bjeram@te13.hq.eso.org>  enumprop version: 1.21 
+Mon Jul  8 12:03:08 2002  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* ws/include/enumpropRO/WImpl.i : implemented allStates
+
+Fri Jul 05 13:58:47 2002 <bjeram@te13.hq.eso.org>  enumprop version: 1.20 
+Tue Apr 09 09:25:34 2002 <bjeram@te13.hq.eso.org>  enumprop version: 1.19 
+Thu Apr  4 14:38:04 2002  Bogdan Jeram  <bjeram@te4.hq.eso.org>
+
+	* ws/include/enumpropROImpl.h: added getDevIO and removed set_sync
+
+	* ws/idl/enumpropTestDevice.idl: changed from set_sync to DevIO::write
+
+Thu Apr 04 10:45:30 2002 <bjeram@te13.hq.eso.org>  enumprop version: 1.18 
+Thu Mar 28 13:54:54 2002  Bogdan Jeram  <bjeram@te22.hq.eso.org>
+
+	* ws/include/enumpropRxImpl.i (RxImpl): added m_devIO = devIO 
+
+Thu Mar 28 09:25:21 2002 <bjeram@te13.hq.eso.org>  enumprop version: 1.17 
+Wed Mar 20 15:11:38 2002  Bogdan Jeram  <bjeram@te37>
+
+	* ws/include/enumpropRWImpl.h: 
+	* ws/include/enumpropROImpl.h :
+	added support for DevIO
+
+Wed Mar 20 14:27:03 2002 <bjeram@te13.hq.eso.org>  enumprop version: 1.16 
+Fri Mar  1 15:43:52 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* *.ref:
+	Regenerated reference files, but still to be checked is it is
+	really correct that distruction of the properties disappears with
+	this version.
+
+	* ws/idl/enumpropTestDevice.idl: 
+	Everything moved into Module ENUMPROP_TEST.
+	Modules are necessary otherwise we have problems with Java
+	packages generation.
+        This has triggered many "namespace" changes in implementation
+	files and test clients.
+	
+	* StatesProp.idl: 
+	file deleted. Contents moved into enumpropTestDevice.idl
+
+	
+Thu Feb 28 11:05:48 2002 <gchiozzi@te13.hq.eso.org>  enumprop version: 1.15 
+Mon Feb 18 19:02:59 2002  Matej Sekoranja  <matej@dina.ijs.si>
+
+	* Applied new completion.
+	* Destruction of properties fixed.
+	* Added alarm_timer_trig.
+	* Tests regenerated.
+
+Mon Feb 18 17:40:51 2002 <msekoran@te13.hq.eso.org>  enumprop version: 1.14 
+Wed Feb  6 21:59:43 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* ws/test/ENVIRONMENTS/wsTat/dbl/USER.db:  
+	Removed DLL point. Not needed any more.
+
+Wed Feb 06 21:48:08 2002 <gchiozzi@te13.hq.eso.org>  enumprop version: 1.13 
+Mon Jan 21 16:45:44 2002  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* regenerated rteference files for new version of baci/maci
+
+Fri Dec 21 12:18:50 2001 <bjeram@te13.hq.eso.org>  enumprop version: 1.11 
+        * ws/test: can run WS only test and BOTH test
+Thu Dec 20 09:45:53 2001 <bjeram@te13.hq.eso.org>  enumprop version: 1.10 
+Thu Dec 20 09:42:56 2001  Bogdan Jeram  <bjeram@te33.hq.eso.org>
+
+	* improved test(s) and  make intermediate archive
+
+Thu Dec 20 09:38:38 2001 <bjeram@te13.hq.eso.org>  enumprop version: 1.9 
+Fri Dec 07 09:16:16 2001 <bjeram@te13.hq.eso.org>  enumprop version: 1.8 
+Wed Dec  5 11:55:49 2001  Bogdan Jeram  <bjeram@te1.hq.eso.org>
+
+	* imporved test(s). Removed manager/activator dependency.
+
+Mon Dec 03 14:12:20 2001 <bjeram@te13.hq.eso.org>  enumprop version: 1.7 
+Wed Nov 28 13:40:35 2001 <bjeram@te13.hq.eso.org>  enumprop version: 1.6 
+        * changed RefCount inheritance to virtual
+Thu Nov 08 10:21:59 2001 <rlemke@te13.hq.eso.org>  enumprop version: 1.5 
+	* changed "%Lu" to "%llu" in all printf statements
+
+  add RW
+Thu Oct 25 14:28:25 2001 <bjeram@te13.hq.eso.org>  enumprop version: 1.4 
+Tue Oct 23 15:33:19 2001 <bjeram@te13.hq.eso.org>  enumprop version: 1.3 
+ add support for namespaces
+Mon Oct 22 14:57:24 2001 <bjeram@te13.hq.eso.org>  enumprop version: 1.2 
+/* @(#) $Id: ChangeLog,v 1.36 2003/08/12 08:29:19 bjeram Exp $
+Wed Apr 11 14:00:00 2001 <fstauffe@jemez.aoc.nrao.edu> tics version:0.0

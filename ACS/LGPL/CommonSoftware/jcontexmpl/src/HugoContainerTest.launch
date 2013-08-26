@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="alma.acs.container.AcsContainerRunner"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="jcontexmpl"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-containerName hugoActivator -OAPort 3077"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DACS.manager=corbaloc::te1:3000/Manager -Dalma.MicroArchive.DbDir=Y:\alma\ACS-2.1\acsdata\config\MicroArchive -Djava.util.logging.config.file=../acsjlog/src/almalogging.properties"/>
+    <stringAttribute key="org.eclipse.debug.ui.target_debug_perspective" value="perspective_default"/>
+    <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="jcontexmpl"/>
+    <stringAttribute key="org.eclipse.debug.ui.target_run_perspective" value="perspective_default"/>
+    <stringAttribute key="org.eclipse.debug.core.source_locator_id" value="org.eclipse.jdt.debug.ui.javaSourceLocator"/>
+</launchConfiguration>
+

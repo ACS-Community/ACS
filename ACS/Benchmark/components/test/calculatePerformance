@@ -1,0 +1,145 @@
+#!/bin/bash
+
+#################################################################################
+#
+# This script is used to verify if the logging-performance is within the 
+# expected range. This range is calculated based on the performance of a
+# reference machine, and comparing the system-performance of this reference
+# machine with the system-under-test.
+#
+# @author Erik Allaert
+# @date 2007-07-27
+#################################################################################
+
+##########################################################################################
+# Function definitions used later in this script.
+##########################################################################################
+
+# definition of a function to print the usage statement for this script
+printUsageAndExit ()
+{
+    echo ""
+    echo "Usage: $0 [OPTIONS] <timingFile> <referenceFile>";
+    echo "  where: "
+    echo "";
+    echo "   <timingFile> is the file produced by running genLoggingProcessesReport"
+    echo "           with the option --csv on the system under test"
+    echo "   <referenceFile> is the file produced by running genLoggingProcessesReport"
+    echo "           with the option --csv on a reference machine"
+    echo "Options: "
+    echo "   -h | --help: print this usage message and exit."
+    echo ""
+    exit -1;
+}
+
+##########################################################################################
+# Script logic starts here...                                                            #
+##########################################################################################
+LONGOPTS=help
+SHORTOPTS=h
+
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is does the real work and sets execution flags for this script, as appropriate
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -u -a -l $LONGOPTS $SHORTOPTS "$@" >& /dev/null 
+if [ $? != 0 ] ; then
+    printUsageAndExit
+fi
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"` >& /dev/null ; 
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+while : 
+  do
+  case "$1" in
+      -h|--help)       HELP=true ;;
+      --) break ;;
+  esac
+  shift
+done
+shift
+
+if [ "$HELP" ] ; then
+    printUsageAndExit
+fi
+
+# first, verify that the script was invoked with the proper number of command-line arguments 
+if [ $# -ne 4 ] ; then 
+    printUsageAndExit
+fi
+
+# The CSV-files contain not only the time needed to process a number of logs,
+# but also a benchmark number, derived from the execution time of some
+# Unix processes. This allows to use the data of the reference file to
+# "normalize" the timing data of the system-under-test.
+timingFile=$1
+refFile=$2
+minPerfFactor=$3
+maxPerfFactor=$4
+
+# First extract the data from our reference file (i.e. benchmark on the 
+# same host)
+set -- `cat $refFile | gawk -F , '{print $2, $3, $6, $8, $9}'`
+nrLogsSent=$1
+nrLogsRecvd=$2
+refSysPerformance=$3
+# Time to send all logs
+time1=$4
+# Additional time to receive last log (or timeout) in $5
+time2=`echo "$4 + $5" | bc -l`
+
+# Send-log performance
+refLogPerf1=$(printf %.0f `echo "$nrLogsSent  / $time1" | bc -l`)
+# Receive-log performance
+refLogPerf2=$(printf %.0f `echo "$nrLogsRecvd / $time2" | bc -l`)
+
+# extract the number of logs sent, the performance of the system-under-test
+# and the time needed into positional vars
+set -- `cat $timingFile | gawk -F , '{print $2, $3, $6, $8, $9}'`
+
+nrLogsSent=$1
+nrLogsRecvd=$2
+sysPerformance=$3
+# Time to send all logs
+time1=$4
+# Additional time to receive last log (or timeout) in $5
+time2=`echo "$4 + $5" | bc -l`
+
+if [ $nrLogsSent -ne $nrLogsRecvd ] ; then
+    echo "WARNING: $nrLogsSent logs sent <--> $nrLogsRecvd logs received"
+fi
+
+# Send-log performance
+logPerf1=$(printf %.0f `echo "$nrLogsSent  / $time1" | bc -l`)
+# Receive-log performance
+logPerf2=$(printf %.0f `echo "$nrLogsRecvd / $time2" | bc -l`)
+
+# Calculate the relative performance (i.e. normalized with respect to when we did
+# our reference test - currently the load on the system may be different)
+###relPerformance=`echo "$sysPerformance / $refSysPerformance" | bc -l`
+relPerformance=1.
+
+# Log performance should be at least $minPerfFactor of "normalized" case, and max $maxPerfFactor
+minLogPerf1=$(printf %.0f `echo "$refLogPerf1 * $relPerformance * $minPerfFactor" | bc -l`)
+maxLogPerf1=$(printf %.0f `echo "$refLogPerf1 * $relPerformance * $maxPerfFactor" | bc -l`)
+minLogPerf2=$(printf %.0f `echo "$refLogPerf2 * $relPerformance * $minPerfFactor" | bc -l`)
+maxLogPerf2=$(printf %.0f `echo "$refLogPerf2 * $relPerformance * $maxPerfFactor" | bc -l`)
+
+if [ `printf %.0f $minLogPerf1` -gt $logPerf1 ] ; then
+   echo "sent $nrLogsSent logs in ${time1}s = $logPerf1 logs/s => below expected min of $minLogPerf1 logs/s"
+elif [ `printf %.0f $maxLogPerf1` -lt $logPerf1 ] ; then
+   echo "sent $nrLogsSent logs in ${time1}s = $logPerf1 logs/s => above expected max of $maxLogPerf1 logs/s"
+else
+   echo "sent $nrLogsSent logs in ${time1}s = $logPerf1 logs/s => within expected range (min $minLogPerf1, max $maxLogPerf1)"
+fi
+
+if [ `printf %.0f $minLogPerf2` -gt $logPerf2 ] ; then
+   echo "received $nrLogsRecvd logs in ${time2}s = $logPerf2 logs/s => below expected min of $minLogPerf2 logs/s"
+elif [ `printf %.0f $maxLogPerf2` -lt $logPerf2 ] ; then
+   echo "received $nrLogsRecvd logs in ${time2}s = $logPerf2 logs/s => above expected max of $maxLogPerf2 logs/s"
+else
+   echo "received $nrLogsRecvd logs in ${time2}s = $logPerf2 logs/s => within expected range (min $minLogPerf2, max $maxLogPerf2)"
+fi

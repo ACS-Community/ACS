@@ -1,0 +1,12 @@
+ Failed to read GIOP message
+\[cppContainer - maci::ContainerImpl::init\] Using DLL path: 
+\[maci::LibraryManager - maci::LibraryManager::load\] Full path 
+\[maci::LibraryManager - maci::LibraryManager::load\] Loaded 
+\[maci::LibraryManager - maci::LibraryManager::unload\] Unloaded 
+Local file logger: Cache saved to 
+\[javaContainer\] ping received, container alive. Memory usage
+Using endorsed jar files in:
+Not enough component handles provided for sorting.
+ blocks so far ...
+ORB status:
+Logger jacorb@.* created with custom log levels local=Info, remote=Info

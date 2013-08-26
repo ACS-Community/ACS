@@ -1,0 +1,4 @@
+1 - Parameters to this generic test script are: ['LAMP1', 'on']
+1 - Method executed...now just waiting on CB status
+1 - The callback has finished!
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

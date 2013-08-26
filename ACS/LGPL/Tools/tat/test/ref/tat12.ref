@@ -1,0 +1,11 @@
+Reference file tat121.ref generated
+Reference file generated.
+tatDummy
+/vltdata/ENVIRONMENTS/ws12/DB/Appl_data/tat12
+/vltdata/ENVIRONMENTS/ws12/DB/Appl_data/tat12/tat12
+No make clean with tat -g: OK
+TEST tat121 PASSED.
+PASSED.
+No make clean with tat: OK
+Cleaning up . . . . . . . . . . . . .
+ . . . . clean done

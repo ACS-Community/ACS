@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	  xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	  name="JContExmplErrTypeTest" 
+	  type="900903" 
+	  _prefix="alma">
+	  
+	<Code name="JContExmplErrTestOK" shortDescription="Test OK" description="Test OK"/>
+	<ErrorCode name="XmlComponentError" shortDescription="Error in XmlComponent" description="Error in XmlComponent (from the ACS example module jcontexmpl)"/>
+	<ErrorCode name="JContExmplErrTest1" shortDescription="Test error 1" description="Test error 1"/>
+	<ErrorCode name="JContExmplErrTest2" shortDescription="Test error 2" description="Test error 2"/>
+	<ErrorCode name="JContExmplErrTest3" shortDescription="Test error 3" description="Test error 3"/>
+	<ErrorCode name="JContExmplErrTest4" shortDescription="Test error 4" description="Test error 4" _suppressExceptionGeneration="1"/>
+	<ErrorCode name="JContExmplErrTest5" shortDescription="Test error 5" description="Test error 5" _suppressExceptionGeneration="true"/>
+</Type>
+

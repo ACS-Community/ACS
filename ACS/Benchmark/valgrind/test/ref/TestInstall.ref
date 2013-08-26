@@ -1,0 +1,92 @@
+1 - usage: valgrind [options] prog-and-args
+1 - 
+1 -   tool-selection option, with default in [ ]:
+1 -     --tool=<name>             use the Valgrind tool named <name> [memcheck]
+1 - 
+1 -   basic user options for all Valgrind tools, with defaults in [ ]:
+1 -     -h --help                 show this message
+1 -     --help-debug              show this message, plus debugging options
+1 -     --version                 show version
+1 -     -q --quiet                run silently; only print error msgs
+1 -     -v --verbose              be more verbose -- show misc extra info
+1 -     --trace-children=no|yes   Valgrind-ise child processes (follow execve)? [no]
+1 -     --trace-children-skip=patt1,patt2,...    specifies a list of executables
+1 -                               that --trace-children=yes should not trace into
+1 -     --child-silent-after-fork=no|yes omit child output between fork & exec? [no]
+1 -     --track-fds=no|yes        track open file descriptors? [no]
+1 -     --time-stamp=no|yes       add timestamps to log messages? [no]
+1 -     --log-fd=<number>         log messages to file descriptor [2=stderr]
+1 -     --log-file=<file>         log messages to <file>
+1 -     --log-socket=ipaddr:port  log messages to socket ipaddr:port
+1 - 
+1 -   user options for Valgrind tools that report errors:
+1 -     --xml=yes                 emit error output in XML (some tools only)
+1 -     --xml-fd=<number>         XML output to file descriptor
+1 -     --xml-file=<file>         XML output to <file>
+1 -     --xml-socket=ipaddr:port  XML output to socket ipaddr:port
+1 -     --xml-user-comment=STR    copy STR verbatim into XML output
+1 -     --demangle=no|yes         automatically demangle C++ names? [yes]
+1 -     --num-callers=<number>    show <number> callers in stack traces [12]
+1 -     --error-limit=no|yes      stop showing new errors if too many? [yes]
+1 -     --error-exitcode=<number> exit code to return if errors found [0=disable]
+1 -     --show-below-main=no|yes  continue stack traces below main() [no]
+1 -     --suppressions=<filename> suppress errors described in <filename>
+1 -     --gen-suppressions=no|yes|all    print suppressions for errors? [no]
+1 -     --db-attach=no|yes        start debugger when errors detected? [no]
+1 -     --db-command=<command>    command to start debugger [/usr/bin/gdb -nw %f %p]
+1 -     --input-fd=<number>       file descriptor for input [0=stdin]
+1 -     --dsymutil=no|yes         run dsymutil on Mac OS X when helpful? [no]
+1 -     --max-stackframe=<number> assume stack switch for SP changes larger
+1 -                               than <number> bytes [2000000]
+1 -     --main-stacksize=<number> set size of main thread's stack (in bytes)
+1 -                               [use current 'ulimit' value]
+1 - 
+1 -   user options for Valgrind tools that replace malloc:
+1 -     --alignment=<number>      set minimum alignment of heap allocations XX
+1 - 
+1 -   uncommon user options for all Valgrind tools:
+1 -     --fullpath-after=         (with nothing after the '=')
+1 -                               show full source paths in call stacks
+1 -     --fullpath-after=string   like --fullpath-after=, but only show the
+1 -                               part of the path after 'string'.  Allows removal
+1 -                               of path prefixes.  Use this flag multiple times
+1 -                               to specify a set of prefixes to remove.
+1 -     --smc-check=none|stack|all  checks for self-modifying code: none,
+1 -                               only for code found in stacks, or all [stack]
+1 -     --read-var-info=yes|no    read debug info on stack and global variables
+1 -                               and use it to print better error messages in
+1 -                               tools that make use of it (Memcheck, Helgrind,
+1 -                               DRD) [no]
+1 -     --run-libc-freeres=no|yes free up glibc memory at exit on Linux? [yes]
+1 -     --sim-hints=hint1,hint2,...  known hints:
+1 -                                  lax-ioctls, enable-outer [none]
+1 -     --kernel-variant=variant1,variant2,...  known variants: bproc [none]
+1 -                               handle non-standard kernel variants
+1 -     --show-emwarns=no|yes     show warnings about emulation limits? [no]
+1 -     --require-text-symbol=:sonamepattern:symbolpattern    abort run if the
+1 -                               stated shared object doesn't have the stated
+1 -                               text symbol.  Patterns can contain ? and *.
+1 - 
+1 -   user options for Memcheck:
+1 -     --leak-check=no|summary|full     search for memory leaks at exit?  [summary]
+1 -     --leak-resolution=low|med|high   differentiation of leak stack traces [high]
+1 -     --show-reachable=no|yes          show reachable blocks in leak check? [no]
+1 -     --show-possibly-lost=no|yes      show possibly lost blocks in leak check?
+1 -                                      [yes]
+1 -     --undef-value-errors=no|yes      check for undefined value errors [yes]
+1 -     --track-origins=no|yes           show origins of undefined values? [no]
+1 -     --partial-loads-ok=no|yes        too hard to explain here; see manual [no]
+1 -     --freelist-vol=<number>          volume of freed blocks queue [20000000]
+1 -     --workaround-gcc296-bugs=no|yes  self explanatory [no]
+1 -     --ignore-ranges=0xPP-0xQQ[,0xRR-0xSS]   assume given addresses are OK
+1 -     --malloc-fill=<hexnumber>        fill malloc'd areas with given value
+1 -     --free-fill=<hexnumber>          fill free'd areas with given value
+1 - 
+1 -   Extra options read from ~/.valgrindrc, $VALGRIND_OPTS, ./.valgrindrc
+1 - 
+1 -   Memcheck is Copyright (C) 2002-2010, and GNU GPL'd, by Julian Seward et al.
+1 -   Valgrind is Copyright (C) 2000-2010, and GNU GPL'd, by Julian Seward et al.
+1 -   LibVEX is Copyright (C) 2004-2010, and GNU GPL'd, by OpenWorks LLP et al.
+1 - 
+1 -   Bug reports, feedback, admiration, abuse, etc, to: www.valgrind.org.
+1 - 

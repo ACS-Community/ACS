@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by Bocek (Volja) -->
+<Container xmlns="urn:schemas-cosylab-com:Container:1.0"
+xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0"
+xsi:schemaLocation="urn:schemas-cosylab-com:Activator:1.0
+Activator.xsd" ImplLang="cpp">
+  <Autoload>
+    <cdb:_ string="baci" />
+  </Autoload>
+  <LoggingConfig dispatchPacketSize="0">
+  </LoggingConfig>
+</Container>
+
+

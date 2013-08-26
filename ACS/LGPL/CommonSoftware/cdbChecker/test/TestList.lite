@@ -1,0 +1,12 @@
+SOURCE environment
+PROLOGUE prologue.sh
+#1 test1 "acsStartJava -endorsed -Dacsdata=$PWD/.. cl.utfsm.cdbChecker.CDBChecker -v $PWD/testdata/good/ $PWD/testdata/good/"
+1 test-basic "test-basic.sh"
+2 test-defaultCDB "test-defaultCDB.sh"
+3 test-subsystems "test-subsystems.sh"
+4 test-acsexmpl "test-acsexmpl.sh"
+5 test-ITS "test-ITS.sh"
+6 test-defaultCDB-withcheckerscript "test-defaultCDB-withcheckerscript.sh"
+7 test-interfaceRepository "test-interfaceRepository.sh"
+8 test-fileEncoding "test-fileEncoding.sh"
+9 test-characteristicComponent "test-characteristicComponent.sh"

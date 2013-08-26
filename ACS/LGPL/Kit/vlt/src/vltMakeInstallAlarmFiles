@@ -1,0 +1,120 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeInstallAlarmFiles,v 1.4 2010/07/09 15:15:24 rtobar Exp $" 
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  23/06/99  created (SPR 990257)
+# gfilippi  14/07/99  use ALARMS/HELP (SPR 990257)
+
+#************************************************************************
+#   NAME
+#   vltMakeInstallAlarmFiles - copy the Alarm files into target area.
+# 
+#   SYNOPSIS
+#
+#   vltMakeInstallAlarmFiles <ALARMS> <protectionMask>
+#
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to generate the vltMakefile.install section
+#   in charge to copy the Alarm files into target area.
+#   It is not intended to be used as a standalone command.
+#
+#    treated files are:
+#
+#           ../ALARMS/HELP/*      --->   <ALARMS>
+#
+#   <ALARMS>   root directory for copying Alarm files
+#
+#   <protectionMask>  how to set the protection of created file
+#
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+
+# if Linux: disable the bash builtin command 'echo'.
+if [ "`uname`" = "Linux" ]
+then
+    enable -n echo
+elif [ "`uname`" = "$CYGWIN_VER" ]
+then
+    alias echo="echo -e"
+fi
+
+if [ $# != 2 ]
+then
+    echo "" >&2
+    echo " ERROR:  vltMakeInstallAlarmFiles: $*" >&2
+    echo " Usage:  vltMakeInstallAlarmFiles <ALARMS> <protectionMask>" >&2
+    echo "" >&2
+    exit 1
+fi
+
+ALARMS=$1
+MASK=$2
+
+
+if [ ! -d $ALARMS ]
+then 
+    echo "" >&2
+    echo " ERROR: vltMakeInstallAlarmFiles: " >&2
+    echo "          Internal error: >>$ALARMS<< not a valid directory " >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# At present, there are no other "alarm" files than the HELP ones!
+#
+
+#
+# according to the file currently under ALARMS/HELP, if any, produce
+# the needed targets:
+
+if [ -d ../ALARMS/HELP ] 
+then
+if [  "`ls -1 -d ../ALARMS/HELP/* |   grep -v CVS 2>/dev/null`" != "" ]
+then 
+    
+    target="alarms: alarms_begin "
+
+    echo "alarms_begin:"
+    echo "\t-@echo \"\"; echo \"..ALARM files:\""
+    for file in `ls -1 -d ../ALARMS/HELP/* | grep -v CVS 2>/dev/null`
+    do
+        FILE=`basename $file`
+        echo "$ALARMS/HELP/$FILE: ../ALARMS/HELP/$FILE"
+        echo "\t-\$(AT)cp ../ALARMS/HELP/$FILE  $ALARMS/HELP/$FILE; \\"  
+        echo "\t      chmod $MASK $ALARMS/HELP/$FILE"
+        target="$target $ALARMS/HELP/$FILE"
+    done
+
+    echo $target
+else
+    echo "alarms:"
+    echo "\t-@echo \"\""
+fi
+else
+    echo "alarms:"
+    echo "\t-@echo \"\""
+fi
+
+exit 0
+#
+# ___oOo___
+

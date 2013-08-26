@@ -1,0 +1,102 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ *    MA 02111-1307  USA
+ */
+#ifndef _XMLCOMPONENT_IDL_
+#define _XMLCOMPONENT_IDL_
+
+#include <xmlentity.idl>
+#include <acscommon.idl>
+#include <acscomponent.idl>
+#include <JContExmplErrTypeTest.idl>
+
+#pragma prefix "alma"
+
+module demo
+{
+	//typedef xmlentity::XmlEntityStruct ObsProject;
+	typedef xmlentity::XmlEntityStruct ObsProposal;
+	typedef xmlentity::XmlEntityStruct SchedBlock;
+	typedef sequence <SchedBlock> SchedBlockSeq;
+
+
+	struct ObsProjectTree
+	{
+		//ObsProject proj;
+		ObsProposal prop;
+		SchedBlockSeq schedBlocks;
+	};
+
+
+	// simple offshoot which should only store
+	// one sinlge proposal and one single sched block
+	interface XmlOffshoot : ACS::OffShoot {
+
+		void setObsProposal(in ObsProposal obsPropIn);
+
+		void setSchedBlock(in SchedBlock schedBlockIn);
+
+		SchedBlock getSchedBlock();
+
+		ObsProposal getObsProposal();
+
+	};
+
+	// a simple component that uses Xml Offshoots
+	interface ComponentWithXmlOffshoot : ACS::ACSComponent {
+		XmlOffshoot getOffshoot();
+		void deactivateOffshoot();
+	};
+
+ 	// a more complicated component that accesses another Java component
+ 	// and needs xml binding class support
+	interface XmlComponent : ACS::ACSComponent
+	{
+		long dumbMethod(in string somevalue);
+
+		ObsProposal createObsProposal();
+
+		SchedBlock getBestSchedBlock();
+
+		SchedBlockSeq getAllSchedBlocks();
+
+		void addNewSchedBlocks(in SchedBlockSeq newSchedBlocks);
+
+		void xmlInOutMethod(in ObsProposal opsPropIn,
+					out SchedBlock schedBlockOut);
+
+		ObsProjectTree getEntireTreeInAStruct();
+
+		// is supposed to contact HelloComponent
+		string sayHello();
+
+		XmlOffshoot getOffshoot();
+
+		void deactivateOffshoot();
+
+		void activateOffshoot();
+
+		// will throw an XmlComponentErrorEx (declared in JContExmplErrTypeTest.xml/.idl)
+		void exceptionMethod() raises (JContExmplErrTypeTest::XmlComponentErrorEx);
+	};
+
+};
+
+#endif

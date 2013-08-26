@@ -1,0 +1,127 @@
+#ifndef _MOUNT_ACS_IDL_
+#define _MOUNT_ACS_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: acsexmplMount.idl,v 1.83 2004/01/27 21:13:23 dfugate Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+*/
+
+#include <baci.idl>
+
+#pragma prefix "alma"
+
+/** @file acsexmplMount.idl
+ *  IDL specification of Mount object
+ */
+
+module MOUNT_ACS 
+{
+    /** @interface Mount
+     *  Defines the interface for controlling and monitoring a single 
+     *  antenna's position.
+     */
+    interface Mount : ACS::CharacteristicComponent
+	{
+	/** The antenna can be controlled in one of those two modes.
+	 */
+	enum coordType { Mean, Apparent };
+
+	/**
+	 * (Pre)sets a new equatorial source for the antenna to track.
+	 *  The source position is given in geocentric equatorial J2000 
+	 *  coordinates.  A callback is used to inform the caller when the 
+	 *  antenna reaches the new position.  If a new position is given 
+	 *  before the previous one is reached then the previous callback 
+	 *  immediately receives "aborted".
+	 *
+	 *  @param ra        source right ascension (hour)
+	 *  @param dec       source declination (hour)
+	 *  @param pmRa      source sky proper motion in right ascension (arc-sec/year)
+	 *  @param pmDec     source sky proper motion in declination (arc-sec/year)
+	 *  @param radVel    source radial velocity (kilometer/sec)
+	 *  @param par       source parallax correction (arc-sec)
+	 *  @param type      Apparent or Mean
+	 *  @param callBack  callback when position is reached
+	 *  @param desc      is used to negotiate timeouts between client and sever
+	 *  See the BACI specifications for more details.
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void obstar (in double ra,
+		     in double dec,
+		     in double pmRa,
+		     in double pmDec,
+		     in double radVel,
+		     in double par,
+		     in coordType type,
+		     in ACS::CBvoid callBack,
+		     in ACS::CBDescIn desc);
+	
+	/**
+	 * (Pre)sets a new non-moving position for the antenna.
+	 *  The position coordinates are given in azimuth and elevation.  A 
+	 *  callback is used to inform the caller when the antenna reaches the 
+	 *  new position.  If a new position is given before the previous one is 
+	 *  reached then the previous callback immediately receives "aborted".
+	 *
+	 *  @param az        position azimuth (degree)
+	 *  @param elev      position elevation (degree)
+	 *  @param callBack  callback when position is reached
+	 *  @param desc      is used to negotiate timeouts between client and sever
+	 *  See the BACI specifications for more details.
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void objfix (in double az,
+		     in double elev,
+		     in ACS::CBvoid callBack,
+		     in ACS::CBDescIn desc);
+	
+	/**
+	 * Current commanded azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble cmdAz;
+	
+	/**
+	 * Current commanded elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble cmdEl;
+	
+	/**
+	 * Current actual azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble actAz;
+	
+	/**
+	 * Current actual elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble actEl;	
+	};    
+};
+
+#endif

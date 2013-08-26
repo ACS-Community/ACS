@@ -1,0 +1,122 @@
+<HTML>
+
+<HEAD>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+
+<TITLE>FeaturesSampling</TITLE>
+
+<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+
+</HEAD>
+
+<BODY LINK="#0000ff" VLINK="#800080" bgcolor="#FFFFFF">
+
+<H2><A NAME="SamplingAndPlotting"></a><A NAME="CommandHandling">Sampling</A></H2>
+
+<H3>Every Property can be sampled at a specified sustained frequency, up to 200 
+
+  Hz, limited by hardware. </H3>
+
+<H3>A sampling frequency of 1KHz for a limited number of Distributed Object Properties 
+
+  must be allowed in order to implement a "virtual oscilloscope" whereby, for 
+
+  example, noise sources in the IF chains can be correlated and identified. </H3>
+
+<H3>The Sampling System is equivalent and covers the requirements of the Fast 
+  Data Dump in <a href="ReferenceDocuments.html#RD45">[RD45 - EVLA Engineering 
+  Software Requirements, 1.2 Fast Data Dump],</a> although it is not integrated 
+  in the Object Explorer.</H3>
+
+<H3>The Event and Notification System transports sampling data.</H3>
+
+<H3>The samples are stored in a data file for later analysis or to be passed to 
+  applications like MatLab for analysis of engineering data <a href="ReferenceDocuments.html#RD45">[RD45 
+  - 1.1-R8]</a>. Every sample is time-stamped to allow correlating data from different 
+  sources. <A HREF="ReferenceDocuments.html#RD01">[RD01 - 4.3.1. Sampling]</A> 
+</H3>
+
+<H3>The samples can be plotted in near real-time on a user interface on the operator 
+
+  terminal or any other user station. The plotting application subscribes to the 
+
+  sampling data from the notification channel, which is fed by the sampling manager, and 
+
+  periodically updates the running plot with the new data <A HREF="ReferenceDocuments.html#RD01">[RD01 
+
+  - 5.1.4 Analysis tool]</A>. The plotting application can also display sampling 
+
+  data from data files. The plotting application can be: </H3>
+
+<UL>
+
+  <LI>A Java application that uses Java plotting widgets and in particular widgets 
+
+    aware of the Property internal structure to define plotting scales and units. 
+
+  </LI>
+
+  <LI>A COTS application, like LabView<A HREF="ReferenceDocuments.html#RD13">[RD13]</A> 
+
+    <A HREF="ReferenceDocuments.html#RD01">[RD01 - 10.5.7 Analysis and plotting]</A>, 
+
+    with advanced plotting and analysis capabilities. </LI>
+
+</UL>
+
+<H3>Multiple samples can be super-imposed on the same plot with the same time 
+  base, even if the data are received from different distributed objects, possibly 
+  on different antennae <b><font color="#0000FF">(Partially implemented)</font></b>. 
+  Also, it should be possible to plot samples against one another, an example 
+  being VI curves (voltage vs. current) used in biasing mixer junctions <b><font color="#0000FF">(Not 
+  implemented yet)</font></b>. </H3>
+
+<H3>Data transport is optimized. The samples are NOT sent one by one to the central 
+
+  control computer responsible for storing data, but are cached on the local computer 
+
+  and sent in packets (for example with 1 Hz. Frequency). This is of primary importance 
+
+  to keep network load under control. <A HREF="ReferenceDocuments.html#RD01">[RD01 
+
+  - 4.3.1. Sampling]</A></H3>
+
+<H3>There is a sampling engine implemented as a Component:</H3>
+
+        <H4>It can be activated on any local computer</H4>
+
+        <H4>Can be configured to sample one or more Properties at given frequencies. 
+
+        </H4>
+
+        <H4>It sends periodically at low frequency packets of data to a sampling 
+
+          server that stores the data for later analysis or provides them to near-real-time 
+
+          plotting applications. </H4>
+
+        <H4>Sampling must not reduce the performance of the control system or 
+
+          the network. The caching of data will reduce network traffic while assuring 
+
+          that the sampling processes runs with lower priority than control processes 
+
+          will reduce the impact on the performance of the control system.</H4>
+
+    <P><IMG SRC="Images/Sampling__Sampling_Architecture.png" WIDTH="562" HEIGHT="583"  ><BR>
+
+  <I>Figure 3.21: Sampling architecture</I> </P>
+
+<H3>XML seems an interesting data format for sampling files. This format allows 
+
+  also easy data exchange with relational databases. Style sheets based on the 
+
+  eXtensible Style Language (XSL) can be used to transform XML files in other 
+
+  formats, like simple ACSII blank delimited tabular files.</H3>
+
+</BODY>
+
+</HTML>
+

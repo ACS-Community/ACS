@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jcontnc.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acsnc.jar"/>
+	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jms.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/selector-1.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
+	<classpathentry kind="output" path="object/eclipseOut"/>
+</classpath>

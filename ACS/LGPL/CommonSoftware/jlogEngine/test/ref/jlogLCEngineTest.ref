@@ -1,0 +1,1520 @@
+1 - Connection disconnected
+1 - Connecting
+1 - Status msg received: Connecting to ACS remote access...
+1 - Status msg received: Initializing CORBA...
+1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - Status msg received: CORBA initialized.
+1 - Status msg received: Resolving corbaloc::xxxxxxx:yyyy/Manager manager reference...
+1 - Status msg received: Manager reference resolved.
+1 - Status msg received: Resolving Naming Service...
+1 - Status msg received: Naming Service resolved.
+1 - Status msg received: Resolving channel "LogChannel_Name@LOGGING" from Notify Service...
+1 - Status msg received: Channel "LogChannel_Name@LOGGING" resolved.
+1 - Status msg received: Creating Consumer Admin...
+1 - Status msg received: Consumer Admin created.
+1 - Status msg received: Initializing Structured Push Consumer...
+1 - Status msg received: Structured Push Consumer initialized.
+1 - Status msg received: Connected to ACS remote access.
+1 - Connection established
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 0]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 0
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 1]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 1
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 2]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 2
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 3]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 3
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 4]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 4
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 5]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 5
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 6]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 6
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 7]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 7
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 8]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 8
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 9]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 9
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 10]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 10
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 11]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 11
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 12]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 12
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 13]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 13
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 14]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 14
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 15]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 15
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 16]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 16
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 17]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 17
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 18]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 18
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 19]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 19
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 20]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 20
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 21]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 21
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 22]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 22
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 23]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 23
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 24]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 24
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 25]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 25
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 26]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 26
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 27]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 27
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 28]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 28
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 29]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 29
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 30]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 30
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 31]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 31
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 32]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 32
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 33]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 33
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 34]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 34
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 35]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 35
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 36]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 36
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 37]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 37
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 38]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 38
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 39]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 39
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 40]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 40
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 41]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 41
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 42]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 42
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 43]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 43
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 44]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 44
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 45]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 45
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 46]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 46
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 47]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 47
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 48]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 48
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 49]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 49
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 50]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 50
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 51]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 51
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 52]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 52
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 53]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 53
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 54]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 54
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 55]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 55
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 56]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 56
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 57]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 57
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 58]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 58
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 59]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 59
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 60]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 60
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 61]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 61
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 62]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 62
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 63]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 63
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 64]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 64
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 65]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 65
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 66]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 66
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 67]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 67
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 68]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 68
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 69]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 69
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 70]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 70
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 71]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 71
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 72]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 72
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 73]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 73
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 74]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 74
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 75]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 75
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 76]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 76
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 77]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 77
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 78]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 78
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 79]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 79
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 80]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 80
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 81]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 81
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 82]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 82
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 83]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 83
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 84]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 84
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 85]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 85
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 86]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 86
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 87]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 87
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 88]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 88
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 89]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 89
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 90]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 90
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 91]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 91
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 92]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 92
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 93]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 93
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 94]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 94
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 95]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 95
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 96]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 96
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 97]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 97
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 98]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 98
+1 - 
+1 - RAW log: <Info TimeStamp="----------T--:--:--.---" File="logClient.cpp" Line="NNN" Routine="" Host="hostname"><![CDATA[Test message 99]]></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: logClient.cpp
+1 - Line: NNN
+1 - Routine: 
+1 - Host: hostname
+1 - Process: logClient
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: Test message 99
+1 - 
+2 - ----------T--:--:--.--- [GlobalLogger] Logging proxy successfully created.
+2 - ----------T--:--:--.--- [GlobalLogger] ManagerReference generated using localhost address: 'corbaloc::xxxxxxx:yyyy/Manager'
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 0
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 1
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 2
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 3
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 4
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 5
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 6
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 7
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 8
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 9
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 10
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 11
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 12
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 13
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 14
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 15
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 16
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 17
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 18
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 19
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 20
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 21
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 22
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 23
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 24
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 25
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 26
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 27
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 28
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 29
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 30
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 31
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 32
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 33
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 34
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 35
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 36
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 37
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 38
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 39
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 40
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 41
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 42
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 43
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 44
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 45
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 46
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 47
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 48
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 49
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 50
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 51
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 52
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 53
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 54
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 55
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 56
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 57
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 58
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 59
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 60
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 61
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 62
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 63
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 64
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 65
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 66
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 67
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 68
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 69
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 70
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 71
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 72
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 73
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 74
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 75
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 76
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 77
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 78
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 79
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 80
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 81
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 82
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 83
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 84
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 85
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 86
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 87
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 88
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 89
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 90
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 91
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 92
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 93
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 94
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 95
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 96
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 97
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 98
+2 - ----------T--:--:--.--- [GlobalLogger] Test message 99

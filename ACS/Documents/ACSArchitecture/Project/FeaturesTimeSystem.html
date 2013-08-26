@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>FeaturesTimeSystem</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="20080604;11480300">
+	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<STYLE TYPE="text/css">
+	<!--
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<H2><A NAME="TimeSystem"></A>Time System</H2>
+<H3>ALMA has a distributed HW pulse, with a 48 ms interval, that the
+hardware will synchronize to<A HREF="ReferenceDocuments.html#RD01">[RD01
+- 8.1.3. Distributed timing]</A> <A HREF="ReferenceDocuments.html#RD30">[RD30]</A>.
+Also devices on the CAN bus will be connected to the time bus to
+allow synchronization.</H3>
+<H3>All time data in ACS (APIs, timestamps….) is based on the array
+time <A HREF="ReferenceDocuments.html#RD01">[RD01 - 8.1.1. Standard]</A>.
+We assume that non-Real-Time boxes are simply synchronized to the
+array time using standard protocols, like NTP.</H3>
+<H3>The Time System provides basic service for time handling. It
+includes:</H3>
+<H4>Abstract API to access time information in ISO format <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 8.1.2. API]</A> and to perform time conversion, arithmetic and
+formatting <A HREF="ReferenceDocuments.html#RD01">[RD01 - 5.3.1.</A>
+Time conversion] <B>to/from various time systems (UTC, TAI…).</B> 
+</H4>
+<H4>An abstract API for synchronization between applications based on
+array time.</H4>
+<H4>Timer classes to trigger events based on time <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 8.1.4 Services]</A>:</H4>
+<H5>Applications can create instances of the timer class and register
+callbacks to be executed when the timer event is triggered</H5>
+<H5>Timers can be <I>periodic</I> (retriggerable) or <I>oneshot</I>
+events</H5>
+<H3>Absolute Time is internally represented in 100 ns since
+1582-10-15 00:00:00, based on the OMG Time Service Specification. An
+IDL typedef is used to define the Time type:</H3>
+<UL>
+	<LI><P>typedef unsigned long long Time; 
+	</P>
+</UL>
+<H3>A TimeInterval is defined as the difference between two absolute
+time points:</H3>
+<UL>
+	<LI><P>typedef long long TimeInterval; 
+	</P>
+</UL>
+<H3>ISO format will be used &quot;internally&quot; whenever a string
+representation of time is needed. At User Interface level, more
+formats might be required. We provide now only ISO format. Users can
+request more formats via the Change Request SPR mechanism.</H3>
+</BODY>
+</HTML>
+

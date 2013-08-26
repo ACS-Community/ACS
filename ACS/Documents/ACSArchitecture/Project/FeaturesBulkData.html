@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>FeaturesBulkData</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="20080604;12222500">
+	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<STYLE TYPE="text/css">
+	<!--
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<H2>Bulk Data</H2>
+<P>ACS provides support for the transport of bulk data <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 7.1. Bulk data transfer]</A>, to be used for science data. 
+</P>
+<H3>The following use cases are supported:</H3>
+<H4>Push streaming. Connection initiated by the supplier.</H4>
+<P>A data supplier produces a continuous stream of data for a
+specific bulk data consumerComponent. Typical example is the
+Correlator sending continuous streams of data to the Archive. 
+</P>
+<P>The basic operations are as follows:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">The supplier gets access to the
+	consumer Component 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Opens a connection. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Data is sent by the supplier to
+	the consumer until 
+	</P>
+	<LI><P>The supplier closes the connection 
+	</P>
+</UL>
+<H4>Push discrete bulk data. Connection initiated by the supplier</H4>
+<P>A data supplier produces bulks of data as separate, non continuous
+streaming, entities. Typical example is a data processing Component
+sending images to another Component for further processing.
+Everything works like in the previous case, but for the fact that the
+communication protocol must be able to identify separate bulks of
+data, like a single image.</P>
+<H4>Pull data from stream. Connection initiated by consumer.</H4>
+<P>An application needs streaming data published by a Stream Provider
+Component. There can be multiple clients. Typical example is a GUI
+connecting to a CCD camera. Multiple GUIs can display the image from
+the same Camera.</P>
+<P>The basic operations are a follows:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">The supplier Component is
+	available for publishing data 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">The client opens a connection with
+	the supplier 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">The supplier sends data to the
+	client(s) until 
+	</P>
+	<LI><P>The client closes the connection 
+	</P>
+</UL>
+<H4>Pull discrete bulk data. Connection initiated by the consumer.</H4>
+<P>An application needs to retrieve discrete bulks of data as
+separate, non continuous streaming, entities. Typical example is
+retrieval of images from the archive. Everything works like in the
+previous case, but for the fact that the communication protocol must
+be able to identify separate bulks of data, like a single image. 
+</P>
+<H3>Performance considerations</H3>
+<P>It shall be possible to handle the actual transfer of data with
+communication protocols more efficient than CORBA IIOP, in particular
+for high volume streams.</P>
+<P>When there are multiple clients for the data published we have
+implemented a service architecture in which the data supplier sends
+the data to just one Distributor which, in turn, sends them to a
+number of connecting clients. This decouples the load due to the
+increasing number of clients from the supplier.</P>
+<P>Precise performance requirements have been collected and verified
+with the ACS Bulk Data system implementation based on the CORBA Audio
+Video streaming service. Tests have demonstrated that the ACS
+implementation can deliver 700 – 800 Mbit/s to three consumers
+simultaneously.</P>
+<H3>Architecture and design</H3>
+<H4>Bulk data transfer can be implemented in CORBA using three
+techniques:</H4>
+<OL>
+	<LI><P STYLE="margin-bottom: 0in">Iterators on normal IDL methods 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Notification Channel 
+	</P>
+	<LI><P>Audio Video Streaming Service 
+	</P>
+</OL>
+<P>The first two options are based on the IIOP transport protocol and
+therefore suffer from performance limitations, although tests
+available in the literature show that properly designed buffering
+limits these problems. Option 1 is better suited for discrete bulk
+data while option 2 is better suited for streaming.</P>
+<P>Option 3 is based on the Audio Video Streaming Service <A HREF="ReferenceDocuments.html#RD42">[RD42]</A>
+defined by CORBA. This specification aims at the streaming and
+transfer of large amounts of data and satisfies the requirements
+expressed in <A HREF="ReferenceDocuments.html#RD01">[RD01 - 7.1.1
+Image pipeline]</A>. The handshaking protocol is defined using CORBA
+IDL Media Control interfaces, but the actual data transfer goes out
+of band and does not use (but could use) CORBA to transport data. TAO
+provides an implementation and provides transport over TCP and UDP
+with excellent performance<A HREF="ReferenceDocuments.html#RD43">[RD43]</A>.</P>
+<H4>The CORBA Audio Video Streaming Service supports all the use
+cases described above.</H4>
+<H5>There are the following basic concepts:</H5>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">Stream<BR>A stream represents
+	continuous media transfer between two or more entities. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Flow<BR>A stream can be composed
+	of many flows.<BR>For example a video camera stream has a video and
+	an audio flow.<BR>As an example strictly related to ALMA, the
+	Correlator will have one stream to send bulk data to the Archive,
+	but this would be split in up to 8 flows with at least 2 always
+	present: 1 per subarray, 1 for spectral data and 1 for channel
+	average.<BR>Each flow can have independent quality of service
+	parameters and each flow can have an independent direction (upload
+	or download). 
+	</P>
+	<LI><P>Frames<BR>A frame is a unit of data sent over a flow. <BR>A
+	frame of a video is a typical example.<BR>A set of data published by
+	the Correlator can be mapped to a frame as well.<BR>The basic A/V
+	service does not have the concept of frame. The SFP (Simple Flow
+	Protocol), on top of the physical transport protocol, introduces the
+	concept of frame in the A/V service and protocol messages to
+	identify and number the frames are added to the actual data. 
+	</P>
+</UL>
+<H5>Data published on a Flow is received via a callback implemented
+by the receiving Component. 
+</H5>
+<H5>The push use cases are implemented using an upload flow. The pull
+use cases are implemented using a download flow.</H5>
+<H5>The Bulk Data Components implement the Media Control interfaces
+(and extend them as needed). 
+</H5>
+<H5>Streaming use cases are implemented using the start control
+commands on the Component to notify that the stream has started and
+not sending the stop command until the stream needs to be closed.
+Structuring of the data sent in the stream or the SFP protocol are
+used for synchronization and framing of the message.</H5>
+<H5>Discrete use cases are implemented using the start and stop
+stream commands to identify each discrete piece of bulk data. These
+will be wrapped in convenience interfaces. In this way it is not
+necessary to inspect the incoming data to identify the frame boundary
+and the end of data.</H5>
+<H4>Limitations of the CORBA Audio Video Streaming Service</H4>
+<P>There is no implementation of CORBA A/V service for Java or
+Python. The producers and consumers of the bulk data stream
+(Correlator, Control, TelCal, Pipeline and Archive) all use C++
+implementations of the bulk data senders and receivers as ACS
+components. Java and Python applications can access these components
+via the normal ACS/CORBA interfaces. There is therefore no
+requirement for implementation of CORBA A/V in languages other than
+C++. For example, image data processing typically takes place between
+C++ Components without requiring high performance image transfer to
+Java or Python Components. 
+</P>
+<P>&nbsp; 
+</P>
+</BODY>
+</HTML>

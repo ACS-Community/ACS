@@ -1,0 +1,107 @@
+#*******************************************************************************
+#
+# E.S.O. - VLT project
+#
+# standardPrologue
+#
+# "@(#) $Id: standardPrologue,v 1.124 2010/06/28 09:25:41 rtobar Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  15/06/94  created
+# gfilippi  04/11/94  NOV 94 tape
+# gfilippi  04/03/95  FEB 95 tape
+# gfilippi  22/08/95  JUL 95 tape
+# gfilippi  13/11/95  DEC 95 tape
+# gfilippi  18/01/96  DEC 95 - give a warning if INTROOT is defined
+# gfilippi  23/05/96  JUN 96 tape
+# gfilippi  23/05/96  NOV 96 tape
+# gfilippi  28/02/97  MAY 97 tape
+# gfilippi  29/07/97  NOV 97 tape
+# gfilippi  17/03/98  APR 98 tape
+# gfilippi  24/06/98  OCT 98 tape
+# gfilippi  08/06/99  OCT 99 tape
+# ahuxley   29/09/99  added echo() shell function for consistent echo 
+#                     behaviour across SunOS/HP-UX/Linux
+# gfilippi  31/10/99  OCT 99 - set MAKE_NO_WARNINGS by default
+# psivera   31/01/00  FEB 00 tape
+# counnas   08/05/00  NOV 00 tape
+#
+
+#************************************************************************
+#   NAME
+#   standardPrologue - header used by all buildXxxxx script
+#
+#   SYNOPSIS
+#   source standardPrologue
+#
+#   DESCRIPTION
+#   
+#   FILES
+#
+#   ENVIRONMENT
+#     TITLE        Read    title to display
+#     BUILD_NAME   Read    name of the installation
+#
+#------------------------------------------------------------------------
+#
+
+#
+#  Common functions 
+#
+
+#  get OS and cache it (prevent running uname multiple times)
+THIS_OS=${THIS_OS:-`uname -s`}
+case $THIS_OS in
+    HP-UX) echo()
+           {
+               /bin/echo "$@"
+           }
+           ;;
+    Linux) echo()
+           {
+               /bin/echo "$@"
+           }
+           ;;
+    $CYGWIN_VER) echo()
+           {
+               /bin/echo "$@"
+           }
+           ;;
+    SunOS) alias echo=/bin/echo ;;
+    *)     echo "INTERNAL ERROR: echo() doesn't know how to handle $THIS_OS" 
+           exit 1 ;;
+esac
+
+# to have all separators of the same lenght:
+SEPARATOR="----------------------------------------------------------------------------"
+
+# set up common definitions:
+RELEASE_TITLE="               - - -  ALMA COMMON SOFTWARE - $ALMASW_RELEASE  - - - "
+MODVERSION="$ALMASW_RELEASE"
+export MODVERSION
+
+CWD=`pwd`
+INSTALL_ROOT=`pwd`
+HOST=`hostname`
+
+#
+# disable additional warnings:
+MAKE_NO_WARNINGS=on
+export MAKE_NO_WARNINGS
+
+echo ""
+echo "============================================================================"
+echo "$RELEASE_TITLE"
+echo ""
+echo "                    $TITLE"
+echo ""
+echo "$SEPARATOR"
+echo "build ${BUILD_NAME} started at `date`"
+echo ""
+echo "$SEPARATOR"
+echo ""
+echo "Install root: $INSTALL_ROOT"
+echo ""
+#
+#___oOo___

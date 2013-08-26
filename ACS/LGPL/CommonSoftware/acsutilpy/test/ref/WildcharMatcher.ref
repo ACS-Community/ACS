@@ -1,0 +1,10 @@
+1 - Translation to regex ^No control chars in wildcard$
+1 - Translation to regex ^Dot\.and asterisk.*$
+1 - Translation to regex ^Asterisk.* and 2 .questions.marks$
+1 - Translation to regex ^Regexp control chars \{\} \. \(\) \$\^ \[\] \\ \|$
+1 - Match with '*' (expect True) True
+1 - Match with '?' (expect True) True
+1 - Match with regex control char' (expect True) True
+1 - Does not match with '?' (expect False) False
+1 - Does not match with '*' (expect False) False
+1 - Does not match with '*' and ?' (expect False) False

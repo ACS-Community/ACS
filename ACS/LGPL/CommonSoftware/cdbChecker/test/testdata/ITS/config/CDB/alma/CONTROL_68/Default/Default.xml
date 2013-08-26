@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+@(#) $Id: Default.xml,v 1.2 2006/11/20 05:40:14 cparedes Exp $
+
+Copyright (C) 2004
+Associated Universities, Inc. Washington DC, USA.
+
+Produced for the ALMA project
+
+This library is free software; you can redistribute it and/or modify
+it it under the terms of the GNU Library General Public License as
+published by the Free Software Foundation; either version 2 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 675 Massachusetts Ave, Cambridge, MA, 02139, USA.
+
+Correspondence concerning ALMA should be addressed as follows:
+Internet email: alma-sw-admin@nrao.edu
+-->
+<IFMC xmlns="urn:schemas-cosylab-com:IFMC:1.0" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:amb="urn:schemas-cosylab-com:AmbDevice:1.0">
+  <attenuation units="db" format="%f" description="Attenuation Stages">
+    <amb:rcaMap relative_address="1" data_length="6">
+      <amb:doubleBitMap numberOfBits="-6" fieldWidth="8" scale="0.5"/>
+      <amb:doubleBitMap numberOfBits="-6" fieldWidth="8" scale="0.5"/>
+      <amb:doubleBitMap numberOfBits="-6" fieldWidth="8" scale="0.5"/>
+      <amb:doubleBitMap numberOfBits="-6" fieldWidth="8" scale="0.5"/>
+      <amb:doubleBitMap numberOfBits="-6" fieldWidth="8" scale="0.5"/>
+      <amb:doubleBitMap numberOfBits="-6" fieldWidth="8" scale="0.5"/>
+    </amb:rcaMap>
+  </attenuation>
+  <sbSwitches/>
+  <signalPaths/>
+  <dcVoltage>
+    <amb:rcaMap relative_address="4" data_length="8">
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.009765625"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="-0.009765625"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.0048828125"/>
+    </amb:rcaMap>
+    <amb:rcaMap relative_address="5" data_length="8">
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.009765625"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="-0.009765625"/>
+    </amb:rcaMap>
+  </dcVoltage>
+  <dcTemperature units="C">
+    <amb:rcaMap relative_address="6" data_length="8">
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+    </amb:rcaMap>
+  </dcTemperature>
+  <dcAnalog>
+    <amb:rcaMap relative_address="7" data_length="8">
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+    </amb:rcaMap>
+  </dcAnalog>
+  <bbVoltage units="V">
+    <amb:rcaMap relative_address="8" data_length="8">
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.0048828125" offset="-10"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.0048828125" offset="-10"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.0048828125" offset="-10"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.0048828125" offset="-10"/>
+    </amb:rcaMap>
+    <amb:rcaMap relative_address="9" data_length="8">
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.0048828125" offset="-10"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.0048828125" offset="-10"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.0048828125" offset="-10"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale="0.0048828125" offset="-10"/>
+    </amb:rcaMap>
+  </bbVoltage>
+  <bbTemperature units="C">
+    <amb:rcaMap relative_address="10" data_length="8">
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+    </amb:rcaMap>
+  </bbTemperature>
+  <bbAnalog>
+    <amb:rcaMap relative_address="11" data_length="8">
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+    </amb:rcaMap>
+  </bbAnalog>
+  <tpTemperature units="C">
+    <amb:rcaMap relative_address="12" data_length="8">
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "0.012207312"/>
+    </amb:rcaMap>
+  </tpTemperature>
+  <mcAnalog>
+    <amb:rcaMap relative_address="13" data_length="8">
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+      <amb:doubleBitMap numberOfBits="12" fieldWidth="16" scale= "1.0"/>
+    </amb:rcaMap>
+  </mcAnalog>
+
+  <commandCounter>
+    <amb:rcaMap relative_address="15" data_length="2">
+      <amb:intBitMap numberOfBits="16" fieldWidth="16"/>
+    </amb:rcaMap>
+  </commandCounter>
+
+  <Address/>
+  <errors/>
+  <transactions/>
+  <temperature/>
+</IFMC>
+

@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<title>ACS Logging Benchmarks</title>
+	</head>
+	<body>
+		<H1>Test summary: </H1>
+		For this test, we sent CHANGE_NUMBER_OF_LOGS logs per component, with a delay of CHANGE_DELAY milliseconds between each log.<br> 
+		The acs services (loggingService, acsLogSvc, and Notify_Service processes included)
+		were run on the the host: CHANGE_ACSHOST_NAME. <br>
+		We used CHANGE_NUMBER_OF_SUPPLIERS component(s) each running in a separate container on host: CHANGE_PUBLISHER_HOST_NAME.<br>
+		The components were implemented in: CHANGE_PUBLISHER_LANGUAGE.	<br>
+		<font color=CHANGE_RESULT_FONT_COLOR>CHANGE_RESULT:</font> we were expected to receive a total of: CHANGE_TOTAL_EXPECTED messages, 
+			and we received: CHANGE_TOTAL_RECEIVED.
+		<H2>Performance of log publisher process: </H2>
+		<img src="publisher.png"/>
+		<H2>Memory usage of log publisher process: </H2>
+		<img src="publisher-memory.png"/>
+		<H2>Performance of CORBA telecom logging service (loggingService) process: </H2>
+		<img src="loggingService.png"/>
+		<H2>Memory usage of CORBA telecom logging service (loggingService) process: </H2>
+		<img src="loggingService-memory.png"/>
+		<H2>Performance of logging notification service (appropriate instance of Notify_Service) process: </H2>
+		<img src="loggingNotifyService.png"/>
+		<H2>Memory usage of logging notification service (appropriate instance of Notify_Service) process: </H2>
+		<img src="loggingNotifyService-memory.png"/>
+		<H2>Performance of command-line logging client (loggingClient) process: </H2>
+		<img src="loggingClient.png"/>
+		<H2>Memory usage of command-line logging client (loggingClient) process: </H2>
+		<img src="loggingClient-memory.png"/>
+		<H2>Performance of jlog GUI (jlog) process: </H2>
+		<img src="jlog.png"/>
+		<H2>Memory usage of jlog GUI (jlog) process: </H2>
+		<img src="jlog-memory.png"/>
+		<H2>Performance of ACS log service (acsLogService) process: </H2>
+		<img src="acsLogSvc.png"/>
+		<H2>Memory usage of ACS log service (acsLogService) process: </H2>
+		<img src="acsLogSvc-memory.png"/>
+	</body>
+</html>

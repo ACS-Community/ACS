@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!--
+   - History:
+   -   Tue Aug 31 23:54:50 UTC 2004 modified by jDAL
+-->
+<Manager xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns="urn:schemas-cosylab-com:Manager:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        Timeout="50000"
+        ClientPingInterval="2000"
+        ContainerPingInterval="2000"
+        AdministratorPingInterval="2000">
+
+	<Startup>
+                <cdb:_ string="OFFLINE_DATACAP1"/>
+		<cdb:_ string="TELCAL_PUBLISHER"/>
+		<cdb:_ string="CORR_CDP_MASTER"/>
+	</Startup>
+	<ServiceComponents>
+		<cdb:_ string="Log"/>
+		<cdb:_ string="LogFactory"/>
+		<cdb:_ string="NotifyEventChannelFactory"/>
+		<cdb:_ string="InterfaceRepository"/>
+		<cdb:_ string="CDB"/>
+		<cdb:_ string="ACSLogSvc"/>
+		<cdb:_ string="PDB"/>
+	</ServiceComponents>
+
+  <LoggingConfig
+    	minLogLevel="2"
+    	immediateDispatchLevel="99"
+    	dispatchPacketSize="10" />
+
+</Manager>
+
+

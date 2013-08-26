@@ -1,0 +1,15 @@
+1 - ValueTestCase::testNull : OK
+1 - ValueTestCase::testPointer : OK
+1 - ValueTestCase::testString : OK
+1 - ValueTestCase::testDouble : OK
+1 - ValueTestCase::testFloat : OK
+1 - ValueTestCase::testLong : OK
+1 - ValueTestCase::testPattern : OK
+1 - ValueTestCase::testDoubleSeq : OK
+1 - ValueTestCase::testFloatSeq : OK
+1 - ValueTestCase::testLongSeq : OK
+1 - ValueTestCase::testLongLong : OK
+1 - ValueTestCase::testuLongLong : OK
+1 - ValueTestCase::testStringSeq : OK
+1 - ValueTestCase::testEnum : OK
+1 - OK (14)

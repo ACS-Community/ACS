@@ -1,0 +1,80 @@
+1 - Initialising ORB ... 
+2 - Resolving Naming Service...
+1 - ORB initialsed !
+2 - Resolving Notify Channel... 2 Logging-Channel-Name (please see .out.orig for original name)
+3 - Resolve AcsLogSvc reference!
+1 - Creating logging proxy ... 
+2 - Notify Channel: Logging-Channel-Name (please see .out.orig for original name)
+3 - Connected to object !
+2 - ACS Notify Push Subscriber Client is running...
+3 - 
+2 - <Debug TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::test" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 0 (type=900902, code=1)]]></Debug>
+3 - Getting error server test object reference ... 
+2 - <Debug TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (1)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 2 (type=900902, code=3)]]><Data Name="isErr"><![CDATA[true]]></Data><Data Name="depth"><![CDATA[0]]></Data></Debug>
+3 - Narrowing it .... 
+2 - <Debug TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (0)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 1 (type=900902, code=2)]]><Data Name="End of call's chain">N/A</Data></Debug>
+3 - Invoking remote call on error server to get error stack ...
+2 - <Alert TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::test" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger" StackId="XXXXXXXX" StackLevel="2"><![CDATA[Test error 0 (type=900902, code=1)]]></Alert>
+3 - Logging error stack using ACS Log Svc ... 
+2 - <Error TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (1)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger" StackId="XXXXXXXX" StackLevel="1"><![CDATA[Test error 2 (type=900902, code=3)]]><Data Name="isErr"><![CDATA[true]]></Data><Data Name="depth"><![CDATA[0]]></Data></Error>
+3 - Logging error stack using ACS Log Svc with different priorities 
+2 - <Error TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (0)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger" StackId="XXXXXXXX" StackLevel="0"><![CDATA[Test error 1 (type=900902, code=2)]]><Data Name="End of call's chain">N/A</Data></Error>
+3 - Test #1
+2 - <Debug TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::test" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 0 (type=900902, code=1)]]></Debug>
+3 - Test #2
+2 - <Debug TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (1)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 2 (type=900902, code=3)]]><Data Name="isErr"><![CDATA[true]]></Data><Data Name="depth"><![CDATA[0]]></Data></Debug>
+3 - Test #3
+2 - <Debug TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (0)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 1 (type=900902, code=2)]]><Data Name="End of call's chain">N/A</Data></Debug>
+3 - Test #4
+2 - <Info TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::test" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 0 (type=900902, code=1)]]></Info>
+3 - Test #5 (Delouse)
+2 - <Info TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (1)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 2 (type=900902, code=3)]]><Data Name="isErr"><![CDATA[true]]></Data><Data Name="depth"><![CDATA[0]]></Data></Info>
+3 - Test #5 (Debug)
+2 - <Info TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (0)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 1 (type=900902, code=2)]]><Data Name="End of call's chain">N/A</Data></Info>
+3 - Test #6 (Info)
+2 - <Trace TimeStamp="----------T--:--:--.---" File="" Line="---" Routine="" Host="xxxxxxxxx" Process="" Thread=xxxxxxxxx Context="" SourceObject=""><![CDATA[test msg #0 (there should not be Context and Source info)]]></Trace>
+3 - Test #7 (Notice)
+2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="" Thread=xxxxxxxxx Context="" SourceObject=""><![CDATA[test msg #1 (there should be Source info and not Context info)]]></Trace>
+3 - Test #8 (Warning)
+2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT"><![CDATA[test msg #2 (there should be Context and Source info)]]></Trace>
+3 - Test #9 (Critical)
+2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT"><![CDATA[test msg #3 (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Trace>
+3 - Test #10 (Alert)
+2 - <Delouse TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test Delouse msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Delouse>
+3 - Test #11 (Emergency)
+2 - <Debug TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT"><![CDATA[test Debug msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Debug>
+3 - logWithAudience Test #12 (Trace)
+2 - <Info TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT"><![CDATA[test Info msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Info>
+3 - logWithAudience Test #13 (Debug)
+2 - <Notice TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT"><![CDATA[test Notice msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Notice>
+3 - logWithAudience Test #14 (Info)
+2 - <Warning TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test Warning msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Warning>
+3 - logWithAudience Test #15 (Notice)
+2 - <Critical TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test Critical msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Critical>
+3 - logWithAudience Test #16 (Warning)
+2 - <Alert TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test Alert msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Alert>
+3 - logWithAudience Test #17 (Error)
+2 - <Emergency TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test Emergency msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Emergency>
+3 - logWithAudience Test #18 (Critical)
+2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna=""><![CDATA[test logWithAudience Trace msg (there should be Context and  Source info)]]></Trace>
+3 - logWithAudience Test #19 (Alert)
+2 - <Debug TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna=""><![CDATA[test logWithAudience Debug msg (there should be Context and  Source info)]]></Debug>
+3 - logWithAudience Test #20 (Emergency)
+2 - <Info TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna=""><![CDATA[test logWithAudience Info msg (there should be Context and  Source info)]]></Info>
+2 - <Notice TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna=""><![CDATA[test logWithAudience Notice msg (there should be Context and  Source info)]]></Notice>
+2 - <Warning TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna="" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test logWithAudience Warning msg (there should be Context and  Source info)]]></Warning>
+2 - <Error TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna="" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test logWithAudience Error msg (there should be Context and  Source info)]]></Error>
+2 - <Critical TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna="" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test logWithAudience Critical msg (there should be Context and  Source info)]]></Critical>
+2 - <Alert TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna="" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test logWithAudience Alert msg (there should be Context and  Source info)]]></Alert>
+2 - <Emergency TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna="" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test logWithAudience Emergency msg (there should be Context and  Source info)]]></Emergency>
+1 - ----------T--:--:--.--- [GlobalLogger -  acslogErrorServer] Logging proxy successfully created !
+1 - ----------T--:--:--.--- [GlobalLogger -  acslogErrorServer] Resolving  Naming service ... 
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Naming Service resolved !
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Logging Service resolved !
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Creating test object ...
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] POA Manager -> activate
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Waiting for requests ...
+1 - ----------T--:--:--.--- [GlobalLogger - acslogErrorServer] Writing ior to the file: s1 .... 
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900902, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900902, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900902, code=1)

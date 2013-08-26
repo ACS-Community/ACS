@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- definitions adopted from ICD/HLA/DataModel generated schemas 2004-09-02 -->
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+
+<xsd:schema xmlns:tprp="AlmaTest/ObsProposal" xmlns:tprj="AlmaTest/ObsProject" xmlns:tval="AlmaTest/ValueTypes" xmlns:ent="Alma/CommonEntity" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="AlmaTest/ObsProposal" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1">
+	<xsd:import namespace="Alma/CommonEntity" schemaLocation="CommonEntity.xsd"/>
+	<xsd:import namespace="AlmaTest/ObsProject" schemaLocation="TestObsProject.xsd"/>
+	<xsd:element name="ObsProposal">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="tprj:ObsPhaseT">
+					<xsd:sequence>
+						<xsd:element name="ObsProposalEntity" type="tprp:ObsProposalEntityT"/>
+						<xsd:element name="ObsProjectRef" type="tprj:ObsProjectRefT"/>
+						<xsd:element name="title" type="xsd:string"/>
+						<xsd:element name="PI" type="xsd:string"/>
+						<xsd:element name="version" type="xsd:int"/>
+						<xsd:element name="code" type="xsd:string"/>
+						<xsd:element name="ScientificCatagory" type="xsd:string"/>
+						<xsd:element name="CoIList" type="xsd:string"/>
+						<xsd:element name="ContactPerson" type="xsd:string"/>
+						<xsd:element name="StaffContact" type="xsd:string"/>
+						<xsd:element name="ScientificJustification" type="xsd:string"/>
+						<xsd:element name="TechnicalCatagory" type="xsd:string"/>
+						<xsd:element name="SourceListSummary" type="xsd:string"/>
+						<xsd:element name="ResourceListSummary" type="xsd:string"/>
+						<xsd:element name="Abstract" type="xsd:string"/>
+						<xsd:element name="ProposalType" type="xsd:string"/>
+						<xsd:element name="SupportRequired" type="xsd:string"/>
+						<xsd:element name="RelatedProposals" type="xsd:string"/>
+						<xsd:element name="PreviousProposals" type="xsd:string"/>
+						<xsd:element name="DateReceived" type="xsd:dateTime"/>
+						<xsd:element name="Cycle" type="xsd:string"/>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- 'ObsProposalEntityT' contains administration info for ObsProposal -->
+	<xsd:complexType name="ObsProposalEntityT">
+		<xsd:complexContent>
+			<xsd:restriction base="ent:EntityT">
+				<xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="ObsProposal"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- other classes use 'ObsProposalRefT' to reference an entity of type ObsProposal -->
+	<xsd:complexType name="ObsProposalRefT">
+		<xsd:complexContent>
+			<xsd:restriction base="ent:EntityRefT">
+				<xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="ObsProposal"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

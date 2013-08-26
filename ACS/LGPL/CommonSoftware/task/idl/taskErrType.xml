@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="taskErrType" type="42" _prefix="alma">
+	<ErrorCode name="TaskRunFailure" shortDescription="Task run failure" description="Run of the task failed"/>
+</Type>
+

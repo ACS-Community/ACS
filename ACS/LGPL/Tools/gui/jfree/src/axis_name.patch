@@ -1,0 +1,16 @@
+--- LocalizationBundle.properties	2010-12-03 05:50:49.000000000 +0000
++++ LocalizationBundle2.properties	2010-12-10 01:26:55.000000000 +0000
+@@ -9,11 +9,11 @@
+ All_Axes=Both Axes
+ Chart_Properties=Chart Properties
+ Copy=Copy
+-Domain_Axis=Domain Axis
++Domain_Axis=Abscissa
+ PNG_Image_Files=PNG Image Files
+ Print...=Print...
+ Properties...=Properties...
+ Save_as...=Save as...
+-Range_Axis=Range Axis
++Range_Axis=Ordinate
+ Zoom_In=Zoom In
+ Zoom_Out=Zoom Out

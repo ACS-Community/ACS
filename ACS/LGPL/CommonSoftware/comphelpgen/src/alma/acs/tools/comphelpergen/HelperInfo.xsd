@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xs:element name="ComponentHelperInfo">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ComponentInterface" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="outputRootDirectory" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="ComponentInterface">
+		<xs:complexType>
+			<xs:attribute name="corbaRepositoryId" type="xs:string" use="required"/>
+			<xs:attribute name="idlPackage" type="xs:string" use="required"/>
+			<xs:attribute name="componentClassName" type="xs:string" use="required"/>
+			<xs:attribute name="internalInterface" type="xs:string" use="optional"/>			
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>
+

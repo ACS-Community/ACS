@@ -1,0 +1,25 @@
+#! /bin/bash
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+
+CDB_DIR=`pwd`/CDB-MIX
+
+cdbTATPrologue $CDB_DIR
+
+ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
+
+CDB_PORT=`sed -n 1'p' $ACS_TMP/.cdbport`
+
+#read all components
+cdbRead MACI/Components -d corbaloc\:\:$HOST\:$CDB_PORT/CDB 
+
+#read one
+cdbRead MACI/Components/CONTROL/Antenna -d corbaloc\:\:$HOST\:$CDB_PORT/CDB  
+
+#read one that doesn't exist
+cdbRead MACI/Components/NotExist -d corbaloc\:\:$HOST\:$CDB_PORT/CDB  
+
+
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+cdbTATPrologue > cdbTATPrologue.log 2>&1
+
+

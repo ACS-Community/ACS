@@ -1,0 +1,6 @@
+How to run svc:
+acsLogSvc -ORBInitRef NameService=iiop://te1:10000/NameService [-ORBEndpoint iiop://HOST:xxxx]
+
+and test:
+acslogErrorServer err &
+acslogTest err [-ORBInitRef ACSLogSvc=iiop://HOST:xxxx/ACSLogSvc]

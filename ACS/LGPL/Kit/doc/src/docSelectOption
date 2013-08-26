@@ -1,0 +1,181 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docSelectOption,v 1.31 2002/06/08 17:20:45 vltsccm Exp $" 
+#
+# who        when        what
+# ---------  ----------  ----------------------------------------------
+# G.Filippi  23-12-1993  created 
+# G.Filippi  30-05-1994  ACCESS removed
+#
+
+#************************************************************************
+#   NAME
+#   docSelectOption - select the issue.
+# 
+#   SYNOPSIS
+#       docSelectOption <docRootDirectory> <docIssueNumber> <docPreparation>
+# 
+#   DESCRIPTION
+# 
+#   See doc.
+#
+#*******************************************************************************
+
+DOC_NUMBER=$1
+ISSUE_NUMBER=$2
+REVIEW_NUMBER=$3
+
+# set the review 
+cd $REVIEW_NUMBER
+#
+while clear
+do
+    pwd
+    echo "-------------------------------------------------------------------"
+#
+    echo "---- current content of the review binder  \n"
+    ls -o
+
+# user menu
+#
+    echo "--------------------------------------------------------------------"
+    echo "options: \n"
+
+    cat <<xyz
+
+    print a file___________________  1
+
+    clean-up (rm *BAK and LaTeX)___  2
+
+    get comment file from Mail_____  3
+
+    open a window on current "pwd"_  4
+
+
+    edit a file____________________  <file>
+
+xyz
+
+    if [ -d text ]
+    then 
+        echo "\n    open a window on text__________  text\n"
+    fi
+    echo ""
+    echo "using the mouse cut&paste, select an option"
+    echo "<Enter> to go to previous level: \c"
+
+    read OPTION
+ 
+    echo " - - - - - - - - - - - - - - - - - - - - - - - -"
+
+    # if the user answer is not empty process it else go to previous level
+
+    if test -n "$OPTION"
+    then
+
+    # if the selected option is a text file 
+      if test -f $OPTION
+      then
+      # activate the editor on it
+          $EDITOR  $OPTION  &
+
+      else
+           # if the selected option is a directory (normally the <<text>> directory)
+           if test -d $OPTION
+           then
+               # activate a window on it
+               cd $OPTION
+               xterm -ls &
+               echo "Opening new window on ./$OPTION. Please wait . . ."
+               sleep 2
+               cd ..
+           else 
+
+               # if is neither a text file nor a directory
+               # process the answer as a numeric option      
+               case $OPTION in
+
+               1) # print a file
+                   clear
+                   pwd
+                   echo "-------------------------------------------------------------------"
+                   echo "---- current content of the review binder  \n"
+                   ls 
+                   echo "\n using the mouse cut&paste, select the file to be printed. <Enter> to go up to option menu."
+                   read FILE
+                   if test -n "$FILE"
+                       #  something  was selected --> if it is a file print it
+                   then
+                       if test -f $FILE
+                       then 
+                           if print $FILE
+                           then
+                               echo "\n>>print executed. Press <Enter> to continue . . .\c"
+                               read a
+                           else 
+                               echo "\nERROR: I cannot print. Press <Enter> to continue . . .\c"
+                               read a
+                           fi
+                       else
+                           echo ">>$FILE<< is not a suitable file to be printed. "
+                           echo "Press <Enter> to continue . . \c"
+                           read a  
+                       fi
+                   fi
+                   ;;
+
+
+               2) # clean-up (rm *BAK and LaTeX)__ 1
+                   rm *.BAK; rm .*.BAK; rm *.log; rm *.aux; rm *.toc; rm *.lof
+                   ;;
+
+               3) # get comment file from Mail____
+                   echo "\n ---- Copy an income e-mail to a comment file."
+                   echo "Inbox mail number: \c"
+                   read MAIL_NUMBER
+                   if test -f $HOME/Mail/inbox/$MAIL_NUMBER
+                   then
+                       echo "Author's code: \c"
+                       read AUTHOR
+                       if test -f $AUTHOR.comments
+                       then
+                           echo "ERROR: $AUTHOR.comments already existing. Press <Enter> to continue . . .\c"
+                           read a           
+                       else
+                           if cp $HOME/Mail/inbox/$MAIL_NUMBER $AUTHOR.comments
+                           then 
+                               rm $HOME/Mail/inbox/$MAIL_NUMBER
+                               echo "$AUTHOR.comments created and mail inbox/$MAIL_NUMBER removed.  Press <Enter> to continue . . .\c"
+                               read a
+                           fi
+                       fi
+                   else
+                       echo "Income mail $MAIL_NUMBER does not exist. Press <Enter> to continue . . ."
+                       read a
+                   fi
+                   ;;
+
+               4) # open a window on current "pwd"
+                   xterm -ls &
+                   echo "Opening new window on current directory. Please wait . . ."
+                   sleep 2
+                   ;;
+
+               *)  # catch-all
+                   echo ">>$OPTION<< is an invalid choice. Press <Enter> to continue . . .\c"
+                   read a
+                   ;;
+           esac
+           fi
+        fi
+
+    else
+        # <Enter> was pressed --> exit (up to previous level)
+        exit
+    fi
+
+done
+#
+#end-of-procedure

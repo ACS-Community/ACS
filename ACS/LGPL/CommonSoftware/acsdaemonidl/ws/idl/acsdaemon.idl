@@ -1,0 +1,941 @@
+#ifndef _ACSDAEMON_IDL_
+#define _ACSDAEMON_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+* "@(#) $Id: acsdaemon.idl,v 1.25 2012/11/22 08:20:21 hsommer Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* msekoran 2006-06-21 created
+*
+* This file comes from module ACS/LGPL/CommonSoftware/acsdaemonidl
+*/
+
+#include <acscommon.idl>
+#include <acscomponent.idl>
+#include <ACSErrTypeCommon.idl>
+#include <maciErrType.idl>
+#include <acsdaemonErrType.idl>
+
+#pragma prefix "alma"
+
+/** @file acsdaemon.idl
+ *  ACS Daemon's IDL File
+ */
+
+module acsdaemon 
+{
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////// Container Daemon ///////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////
+
+	/** @interface Callback
+	 *  Interface Callback is used to signal operation completions from the daemon processes
+	 *  to the clients. 
+	 * Note that this interface is very similar to the CBvoid interface defined in baci.idl. Here we currently define our own interface,
+	 * mainly to avoid the unnecessary CBDescOut parameter in the callback methods, but also because the CBxxx interfaces
+	 * are mainly associated with baci. This should perhaps be changed once ACS has more general callback interfaces.
+	 */
+	interface DaemonCallback : ACS::OffShoot
+	{
+		/**
+		 * Report the result of the operation
+		 */
+		void done(in ACSErr::Completion comp);
+
+		/**
+		 * Report the progress of the operation
+		 */
+		void working(in ACSErr::Completion comp);
+	};
+
+
+	/** 
+	 * This service name is used by acsdaemon clients (scripts, manager etc) to resolve the container daemon reference.
+	 */
+	const string containerDaemonServiceName = "ACSContainerDaemon";
+
+
+	/** @interface ContainerDaemon
+	 * Interface ContainerDaemon is used to (remotely) control the lifecycle of ACS containers.
+	 * In the future we intend to add monitoring capabilities to the daemon, which should be exposed 
+	 * to operator tools via this interface or some inherited management interface. 
+	 */
+	interface ContainerDaemon
+	{
+	/** 
+	 *  Starts a container.
+	 * 
+	 *  @param type_modifiers See Container.xsd (DeployInfo.TypeModifiers) and http://jira.alma.cl/browse/COMP-1316 
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 * TBD: callback should be added :see COMP-8312
+	 */
+	void start_container(
+			in string container_type, 
+			in string container_name, 
+			in short instance_number,
+			in ACS::stringSeq type_modifiers,
+			in string flags)
+				raises (acsdaemonErrType::FailedToStartContainerEx, ACSErrTypeCommon::BadParameterEx);
+				
+	/**
+	* Starts container in sychronous way - It does not return until the container is up, or there is an error.
+	*/
+	void start_container_sync(
+			in string container_type, 
+			in string container_name, 
+			in short instance_number,
+			in ACS::stringSeq type_modifiers,
+			in string flags)
+				raises (acsdaemonErrType::FailedToStartContainerEx, ACSErrTypeCommon::BadParameterEx);
+				
+	/** 
+	 *  Stop a container.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+ 	 * TBD: callback should be added :see COMP-8312
+	 */
+	void stop_container(in string container_name, 
+			in short instance_number, 
+			in string flags) 
+				raises (acsdaemonErrType::FailedToStopContainerEx, ACSErrTypeCommon::BadParameterEx);
+
+	/**
+	* Stops container in sychronous way - it does not return until the container is down/or an error occures.
+	*/				
+	void stop_container_sync(in string container_name, 
+			in short instance_number, 
+			in string flags) 
+				raises (acsdaemonErrType::FailedToStopContainerEx, ACSErrTypeCommon::BadParameterEx);
+				
+				
+				
+	/** 
+	 * Shuts down the daemon.
+	 * @return void
+	 * @htmlonly
+	 * <br><hr>
+	 * @endhtmlonly
+	 */
+	void shutdown() raises (maciErrType::NoPermissionEx);
+	};
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////// Services Daemon ////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////
+
+	/** 
+	 * This service name is used by acsdaemon clients (scripts, manager etc) to resolve the services daemon reference.
+	 */
+	const string servicesDaemonServiceName = "ACSServicesDaemon";
+
+	/**
+	 *  String constant for use in {@link ServicesDaemon#start_notification_service} 
+	 *  and {@link ServiceDefinitionBuilder#add_notification_service} to start the
+	 *  system-defined default notification service for NC events.
+	 *  Note that in ACS lingo the NC process that we start is called "notification service" whereas Corba says "event channel factory".
+	 */
+	const string systemNotificationServiceDefault = "NotifyEventChannelFactory";
+
+	/**
+	 *  String constant for use in {@link ServicesDaemon#start_notification_service} 
+	 *  and {@link ServiceDefinitionBuilder#add_notification_service} to start the
+	 *  system-defined logging notification service.
+	 *  Note that in ACS lingo the NC process that we start is called "notification service" whereas Corba says "event channel factory".
+	 */
+	const string systemNotificationServiceLogging = "LoggingNotifyEventChannelFactory";
+
+	/**
+	 *  String constant for use in {@link ServicesDaemon#start_notification_service}
+	 *  and {@link ServiceDefinitionBuilder#add_notification_service} to start the
+	 *  system-defined alarm notification service.
+	 *  Note that in ACS lingo the NC process that we start is called "notification service" whereas Corba says "event channel factory".
+	 */
+	const string systemNotificationServiceAlarms = "AlarmNotifyEventChannelFactory";
+
+	/**
+	 *  String constant for use in {@link ServicesDaemon#start_notification_service} 
+	 *  and {@link ServiceDefinitionBuilder#add_notification_service} to start the
+	 *  system-defined notification service to transport monitor data to the archive (will be removed in the future!).
+	 *  Note that in ACS lingo the NC process that we start is called "notification service" whereas Corba says "event channel factory".
+	 */
+	const string systemNotificationServiceMonitorarchive = "ArchiveNotifyEventChannelFactory";
+	
+	/**
+	 *  An XML string that describes the services to be started or shut down by one or more services daemons.
+	 *  
+	 *  @todo Define the xml schema, e.g. based on the current format the OMC uses to define subsystem containers and components.
+	 */
+	typedef string services_definition_xml;
+	
+
+	/** @interface DaemonSequenceCallback
+	 *  Interface DaemonSequenceCallback is used to signal operation completions from the daemon processes
+	 *  to the clients. 
+	 */
+	interface DaemonSequenceCallback : ACS::OffShoot
+	{
+		/**
+		 * Report the result of the operation
+		 */
+		void done(in ACSErr::Completion comp);
+
+		/**
+		 * Report the progress of the operation
+		 */
+		void working(in string service, in string host, in short instance_number, in ACSErr::Completion comp);
+	};
+
+
+	/** @interface ServiceDefinitionBuilder
+	 *  Allows a client of a services daemon to first define the setup of ACS services and later to start all these services.
+	 *  The various add_ methods can be invoked in arbitrary order because the correct parallel/serial startup of the selected services
+	 *  is the responsibility of {@link ServicesDaemon#start_services}.
+	 *  For the different options to start ACS services, see the description of {@link ServicesDaemon}.
+	 *  <p>
+	 *  Note that clients must call {@link #close} when done with an object of this type.
+	 */
+	interface ServiceDefinitionBuilder : ACS::OffShoot
+	{
+		/** 
+		 *  The ACS instance number as specified in the factory method.
+		 */
+		readonly attribute short acs_instance_number;
+		
+		/** 
+		 *  Starts a naming service.
+		 * 
+		 *  @param host Hostname
+		 *  @return void
+		 */
+		void add_naming_service(in string host) raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 *  Starts a notification service.
+		 * 
+		 *  @param name Notification service name, either one of the systemNotificationServiceXyz string constants or the name of an optional notification service.
+		 *  @param host Hostname
+		 *  @return void
+		 */
+		void add_notification_service(in string name, in string host) raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 *  Starts a CDB service.
+		 *  @param host Hostname
+		 *  @param recovery if true then use recovery information from previous run. 
+		 *  @param xml_cdb_dir the directory which contains the CDB directory, see env var ACS_CDB.
+		 *  @return void
+		 */
+		void add_xml_cdb(in string host, in boolean recovery, in string xml_cdb_dir) raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 *  Starts a RDB CDB service.
+		 *  @param host Hostname
+		 *  @param recovery if true then use recovery information from previous run. 
+		 *  @param config_name the name of the configuration to use.
+		 *  @return void
+		 */
+		void add_rdb_cdb(in string host, in boolean recovery, in string config_name) raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 *  Starts a manager.
+		 * 
+		 *  @param host Hostname
+		 *  @param domain The manager's domain. Should be empty or null if manager federation is not enabled.
+		 *  @param recovery if true then use recovery information from previous run. 
+		 *  @return void
+		 */
+		void add_manager(in string host, in string domain, in boolean recovery) raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 *  Starts an ACSLog service (used by Python components and any corba-aware scripts to contribute log records to central logging).
+		 * 
+		 *  @param host Hostname
+		 *  @return void
+		 */
+		void add_acs_log(in string host) raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 *  Starts a logging service.
+		 * 
+		 *  @param host Hostname
+		 *  @param name name of the log service. If name is empty, then "Log" will be used.
+		 *  @return void
+		 */
+		void add_logging_service(in string host, in string name) raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 *  Starts an interface repository.
+		 * 
+		 *  @param host Hostname
+		 *  @param load  If true, the IFR is not only started, but also the loading with all IDL files is triggered. 
+		 *               Otherwise the IFR stays empty and should be loaded by an explicit execution of "acsstartupLoadIFR".
+		 *               This parameter has the opposite meaning of the flag "-noloadifr" in the acsStart script.
+		 *  @param wait_load  If true and load==true, then {@link ServicesDaemon#start_services} will wait for the IFR loading to finish.
+		 *                    This is the opposite of the flag "-nowaitifr" in the acsStart script.
+		 *  @return void
+		 */
+		void add_interface_repository(in string host, in boolean load, in boolean wait_load) raises (ACSErrTypeCommon::BadParameterEx);
+
+		/**
+		 *  Allows adding existing definitions, which should be obtained from a previous call to {@link #get_services_definition}.
+		 *  These definitions will be merged with those from the other add_ method calls.
+		 *  The ACS instance number of the given definition will be ignored, i.e., {@link acs_instance_number} remains unchanged.
+		 *  <p>
+		 *  Note that this method can be used to convert a preconfigured services description to a different ACS instance: just create
+		 *  a new ServiceDefinitionBuilder instance with the desired ACS instance, and feed the existing service description.
+		 *  <p>
+		 *  @todo Should we specify that illegal duplicate services will be stripped off automatically? If not, then this method
+		 *        would be useless for merging real configurations with one naming service each, but still could be useful to 
+		 *        add a setup snippet about optional notification services etc.
+		 *        Perhaps the typical usage will be for system integrators to dynamically construct a services description from a few disjoint building blocks,
+		 *        in order to reuse commonalities among operational and testing environments while having some services run differently.
+		 */
+		void add_services_definition(in services_definition_xml definition) raises (ACSErrTypeCommon::BadParameterEx);
+		
+		/**
+		 *  Validates the services definition that has been built up.
+		 *  This method can be used for error display by interactive clients, or to log errors when using preconfigured service definitions.
+		 *  Note that {@link #get_services_definition()} will not enforce a valid service description!
+		 *  @param error_description 
+		 *             Empty if the current definition is valid. 
+		 *             Otherwise a description about the problems, e.g. "Missing services: CDB, manager. Illegal multiple definition of: naming"
+		 *  @return true if the services definition is valid.
+		 */
+		boolean is_valid(out string error_description);
+
+		/**
+		 *  Serializes the current service description to XML, to be used as parameters of 
+		 *  {@link ServicesDaemon#start_services} and {@link ServicesDaemon#stop_services}.
+		 *  <p>
+		 *  To allow the serialization of a partially complete services definition, this method does not check/enforce 
+		 *  the validity of the services. See {@link #is_valid}.
+		 *  <p>
+		 *  The format of this XML is subject to changes between ACS releases, but for any given ACS release,
+		 *  a client can also store this service description and use it directly with the ServicesDaemon, 
+		 *  without going through this ServiceDefinitionBuilder again.
+		 */
+		services_definition_xml get_services_definition();
+		
+		/** 
+		 *  Starts an alarm service.
+		 * 
+		 *  @param host Hostname
+		 *  @return void
+		 */
+		void add_alarm_service(in string host) raises (ACSErrTypeCommon::BadParameterEx);
+
+		/**
+		 * This method must be called when the ServiceDefinitionBuilder instance is no longer used (typically after calling {@link #get_services_definition}).
+		 * It allows the factory (services daemon) to release allocated resources. The instance must not be used afterwards.
+		 * <p>
+		 * Note that the services daemon imposes a limit of 10 active ServiceDefinitionBuilder instances to protect itself from misbehaving clients,
+		 * which means that failures to call "close()" will eventually lead to failures in subsequent calls to {@link ServicesDaemon#create_service_definition_builder}. 
+		 */
+		void close();
+		
+	};
+
+	
+	/** 
+	 *  Enumeration presenting service state.
+	 */
+	enum ServiceState { NOT_EXISTING, DEFUNCT, DEGRADED, RUNNING };
+	
+	struct ServiceInfo {
+		string service_type; /** "Manager" or "NameService" */
+		string service_name; /** Used in case for named services (e.g. NotifyService-s) */
+		string service_reference; /** corbaloc or IOR */
+	};
+	
+	typedef sequence<ServiceInfo> ServiceInfoSeq;
+
+	/** 
+	 *  Base Imp interface.
+	 */
+	interface ImpBase
+	{
+		/**
+		 * Set configuration service (e.g. NameService, Manager) references.
+		 */
+		void set_configuration_reference(in short instance_number, in ServiceInfoSeq services_info);
+		
+		/** 
+		 * Heartbeat ping check.
+		 * @return boolean true if OK, false in case of malfunction
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 */
+		boolean ping();
+
+		/** 
+		 * Shuts down the Imp.
+		 * @return void
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 */
+		oneway void shutdown();
+	};
+
+
+
+	/** 
+	 *  Naming Service Spell interface.
+	 */
+	interface NamingServiceSpell
+	{
+		/** 
+		 *  Asynchronously starts a naming service.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void start_naming_service(in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously stops a naming service on the current host.
+		 *  Notification about service stop problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with stopping the service.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void stop_naming_service(in DaemonCallback callback, in short instance_number) 
+				raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
+	};
+
+	/** 
+	 *  Naming Service Imp.
+	 */
+	interface NamingServiceImp : ImpBase, NamingServiceSpell
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
+
+	/** 
+	 *  Notification Service Spell interface.
+	 */
+	interface NotificationServiceSpell
+	{
+		/** 
+		 *  Asynchronously starts a notification service on the current host.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 *  <p>
+		 *  The daemon will choose the port for the notification service. For system-defined services, the fixed port allocation
+		 *  will be used, while for user-defined optional notification services a port will be chosen by the daemon.
+		 *  The same port must be used when restarting a notification service of the same name, and also when restarting the services daemon. 
+		 *  @param name Notification service name
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void start_notification_service(in string name, in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously stops a notification service on the current host.
+		 *  Notification about service stop problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param name Notification service name
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with stopping the service.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void stop_notification_service(in string name, in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
+
+	};
+
+
+	/** 
+	 *  Notification Service Imp.
+	 */
+	interface NotificationServiceImp : ImpBase, NotificationServiceSpell
+	{
+		/** 
+		 *  Get service state.
+		 *  @param name Notification service name
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in string name, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
+	/** 
+	 *  CDB Spell interface.
+	 */
+	interface CDBSpell
+	{
+
+		/** 
+		 *  Asynchronously starts an XML-based CDB service on the current host.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 *  <p>
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @param recovery if true then use recovery information from previous run. 
+		 *  @param xml_cdb_dir the directory which contains the CDB directory, see env var ACS_CDB.
+		 *  @return void
+		 */
+		void start_xml_cdb(in DaemonCallback callback, in short instance_number, in boolean recovery, in string xml_cdb_dir) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously starts an RDB-based CDB service on the current host.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 *  <p>
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @param recovery if true then use recovery information from previous run. 
+		 *  @param config_name the name of the configuration to use.
+		 *  @return void
+		 */
+		void start_rdb_cdb(in DaemonCallback callback, in short instance_number, in boolean recovery, in string config_name) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously stops a CDB service on the current host.
+		 *  Notification about service stop problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with stopping the service.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void stop_cdb(in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
+
+	};
+
+	/** 
+	 *  CDB Imp.
+	 */
+	interface CDBImp : ImpBase, CDBSpell
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
+	/** 
+	 *  Manager Spell interface.
+	 */
+	interface ManagerSpell
+	{
+		/** 
+		 *  Asynchronously starts an ACS manager on the current host.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param domain The manager's domain. Should be empty or null if manager federation is not enabled. 
+		 *                (Note that the structure of domains and managers would reside in the naming service and does not need to be given here). 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @param recovery if true then use recovery information from previous run. 
+		 *  @return void
+		 */
+		void start_manager(in string domain, in DaemonCallback callback, in short instance_number, in boolean recovery)
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously stops a manager on the current host.
+		 *  Notification about service stop problems or successful completion is passed to the client via the callback, on which the client may block.
+		 *  @param domain The manager's domain. Should be empty or null if manager federation is not enabled.
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with stopping the service.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void stop_manager(in string domain, in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
+
+	};
+
+	/** 
+	 *  Manager Imp.
+	 */
+	interface ManagerImp : ImpBase, ManagerSpell
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
+
+	/** 
+	 *  ACS Log Spell interface.
+	 */
+	interface ACSLogSpell
+	{
+		/** 
+		 *  Asynchronously starts an ACSLog service on the current host.
+		 *  This service is used by Python components and any corba-aware scripts to contribute log records to central logging.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void start_acs_log(in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously stops an ACSLog service on the current host.
+		 *  Notification about service stop problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with stopping the service.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void stop_acs_log(in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
+
+	};
+
+	/** 
+	 *  ACSLog Imp.
+	 */
+	interface ACSLogImp : ImpBase, ACSLogSpell
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
+
+	/** 
+	 *  Logging Service Spell interface.
+	 */
+	interface LoggingServiceSpell
+	{
+		/** 
+		 *  Asynchronously starts a logging service on the current host.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param name name of the log service. If name is null, then "Log" will be used.
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void start_logging_service(in string name, in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously stops a logging service on the current host.
+		 *  Notification about service stop problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param name name of the log service. If name is null, then "Log" will be used.
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with stopping the service.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void stop_logging_service(in string name, in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
+
+	};
+
+	/** 
+	 *  LoggingService Imp.
+	 */
+	interface LoggingServiceImp : ImpBase, LoggingServiceSpell
+	{
+		/** 
+		 *  Get service state.
+		 *  @param name name of the log service. If name is null, then "Log" will be used.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in string name, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
+	/** 
+	 *  Interface Repository Spell interface.
+	 */
+	interface InterfaceRepositorySpell
+	{
+		/** 
+		 *  Asynchronously starts an interface repository on the current host.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 *  @param load  If true, the IFR is not only started, but also the loading with all IDL files is triggered. 
+		 *               Otherwise the IFR stays empty and should be loaded by an explicit execution of "acsstartupLoadIFR".
+		 *               This parameter has the opposite meaning of the flag "-noloadifr" in the acsStart script.
+		 *  @param wait_load  If true and load==true, then {@link ServicesDaemon#start_services} will wait for the IFR loading to finish.
+		 *                    This is the opposite of the flag "-nowaitifr" in the acsStart script.
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void start_interface_repository(in boolean load, in boolean wait_load, in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously stops an interface repository on the current host.
+		 *  Notification about service stop problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with stopping the service.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void stop_interface_repository(in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
+
+	};
+
+	/** 
+	 *  Interface Repository Imp.
+	 */
+	interface InterfaceRepositoryImp : ImpBase, InterfaceRepositorySpell
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
+	/** 
+	 *  Alarm Service Spell interface.
+	 */
+	interface AlarmServiceSpell
+	{
+		/** 
+		 *  Asynchronously starts an alarm service.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void start_alarm_service(in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously stops an alarm service on the current host.
+		 *  Notification about service stop problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with stopping the service.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void stop_alarm_service(in DaemonCallback callback, in short instance_number) 
+				raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
+	};
+
+	/** 
+	 *  Alarm Service Imp.
+	 */
+	interface AlarmServiceImp : ImpBase, AlarmServiceSpell
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
+	/** 
+	 * <p>
+	 *  The services daemon starts, stops and monitors the ACS services on one or more host machine(s).
+	 *  This daemon must persist any state data (such as user-defined notification service name-to-port mappings) 
+	 *  to allow simply restarting it in the event of a crash.
+	 *  <p>
+	 *  Use of this daemon is the generally recommended startup mechanism for ACS, 
+	 *  although for limited tests with all services running on one machine and w/o requirement for service monitoring, 
+	 *  it may be sufficient to run the "acsStart" and "acsStop" scripts directly without using the services daemon at all.
+	 *  <p>
+	 *  There are three different ways to start the ACS services through this daemon:
+	 *  <ol>
+	 *  <li>Call directly the start_xyz (stop_xyz) for every service that should be run on this daemon's host.
+	 *      Here the client is responsible for the correct order and timing of these calls. 
+	 *      The services will not be validated (e.g. missing manager, more than one naming service).
+	 *      The client must talk to the daemons on all the machines where ACS services should be started/stopped.
+	 *  <li>Create a services definition and have all services started via {@link #start_services}.
+	 *      This can be done through a new ServiceDefinitionBuilder (from {@link #create_service_definition_builder} or by reusing its output from previous runs).
+	 *      When there are multiple services daemons running in the system (but only 1 per computer), a client is free to arbitrarily chose one services daemon
+	 *      to define and execute the services definition. For that client, this particular services daemon instance becomes the "master" which can command
+	 *      the other services daemons if their hosts are referenced in the services description. 
+	 *  <li>Call {@link #start_acs} to run default services on the local host. The daemon will either run the acsStart script or otherwise emulate it.
+	 *  </ol>
+	 *  The stopping of the services must be done symmetrically to the starting, i.e. calling stop_xyz methods, {@link #stop_services}, {@link #acsStop}.
+	 *  <p>
+	 *  @todo About asynchronous calls that use DaemonSequenceCallback: describe the possible exceptions and intermediate/final result!
+	 *  
+	 *  <p>
+	 *  About daemon deployment (this info does not quite belong into the interface documentation, but for practical purposes seems justified): <br>
+	 *  A single instance of this daemon must be running on all computers on which ACS services should be started.
+	 *  The daemon can be started by a boot script, SNMP or other mechanism using the command "acsservicesdaemon".
+	 *  It may be started by a different user than the one later running ACS.
+	 *  The daemon can be found using "corbaloc::host:3014/ACSServicesDaemon".
+	 */
+	interface ServicesDaemon :
+		NamingServiceSpell, NotificationServiceSpell, CDBSpell,
+		ManagerSpell, ACSLogSpell, LoggingServiceSpell, InterfaceRepositorySpell, AlarmServiceSpell
+	{
+		/**
+		 *  Creates and retrieves a reference to a ServiceDescriptionBuilder instance.
+		 *  (Make sure to call {@link ServiceDescriptionBuilder#close} when done with it.)
+		 *  <p>
+		 *  This call may fail with a NoResourcesEx if 10 instances are already active,
+		 *  or if for another reason the daemon determines that its proper functioning would be jeopardized by creating the ServicesDaemonStartupSequence.
+		 *  This call will fail with BadParameterEx if the "instance_number" is invalid.
+		 *  @param instance_number The ACS instance (as in ACS_INSTANCE env var) to be started.
+		 *                         In an operational environment this should always be 0 (i.e. no coexistence of multiple instances!)
+		 *                         With ACS 8.0, it will no longer be possible to use collaborating services running as different ACS instances on different machines.
+		 *  @return ServicesDaemonStartupSequence
+		 */
+		ServiceDefinitionBuilder create_service_definition_builder(in short instance_number)
+			raises (ACSErrTypeCommon::BadParameterEx, ACSErrTypeCommon::NoResourcesEx);
+			
+		/**
+		 *  Asynchronously starts the defined services.
+		 *  This method can be called on any services daemon in the system, which will forward the calls to the daemons on the other hosts
+		 *  according to the services definition.
+		 *  <p>
+		 *  Exceptions are forwarded to the callback handler.
+		 *  If a service cannot be started, the starting sequence will be abandoned, but the services that have been started already will be left running.
+		 *  This allows the client to either fix the problem and call this method again (with reuse_services=true) to complete the startup,
+		 *  or to stop the services.
+		 *  If a defined service is running already, it will be reused if "reuse_services" is true. Otherwise it will be considered a failure (see above).
+		 *  <p>
+		 *  @todo We must define if (and using which rules) the services description should be validated before actually executing the startup, 
+		 *        and what exceptions / notifications should be sent to the callback interface. Or should we validate during the synchronous call
+		 *        and throw a BadParameterEx if the service description is invalid because of missing or too many services?
+		 *
+		 *  @param definition see {@link ServiceDefinitionBuilder#get_services_definition}.
+		 *  @param reuse_services if true then ServiceAlreadyRunning exceptions from the start_xyz methods will be ignored, otherwise they are considered failures.
+		 *  @param callback DaemonSequenceCallback instance to receive notifications on startup sequence progress.
+		 *  @see ServicesDaemon#stop_services();
+		 */
+		void start_services(in services_definition_xml definition, in boolean reuse_services, in DaemonSequenceCallback callback) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+
+		/**
+		 *  Asynchronously shuts down the services that were executed via the specified services definition.
+		 *  This method can be called on any services daemon in the system, which will forward the calls to the daemons on the other hosts
+		 *  according to the services definition.
+		 *  The shutdown order is determined by the daemon.
+		 *  <p>
+		 *  If one of the given services is found to be not running (ServiceNotRunning exception from any of the stop_ methods)
+		 *  then the client will be notified via the callback, but the execution of this method will continue.
+		 *
+		 *  @param definition Sequence descriptor XML.
+		 *  @param callback DaemonSequenceCallback instance to receive notification about completion or problems with the service stop.
+		 *  @return void
+		 *  @see ServicesDaemonStartupSequence#start_services();
+		 */
+		void stop_services(in services_definition_xml definition, in DaemonSequenceCallback callback) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+
+		/**
+		 * Starts ACS services. 
+		 * Returns immediately. The client will be notified through the callback object 
+		 * when the services are up, or if an error has occurred.
+		 * @return void
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 */
+		void start_acs( 
+				in DaemonSequenceCallback callback,
+				in short instance_number, 
+				in string flags)
+			raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 * Stops ACS services.
+		 * Returns immediately. The client will be notified through the callback object 
+		 * when the services are stopped, or if an error has occurred.
+		 * @return void
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 */
+		void stop_acs(
+				in DaemonSequenceCallback callback,
+				in short instance_number, 
+				in string flags)
+			raises (ACSErrTypeCommon::BadParameterEx);
+
+		/** 
+		 * Returns status of ACS (i.e. invokes acsStatus).
+		 * @parm instance_number ACS instance number
+		 * @return string Status of ACS.
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 * @tbd return a structure or similar instead string
+		 */
+		string status_acs(in short instance_number)
+			raises (acsdaemonErrType::FailedToGetAcsStatusEx);
+
+		/** 
+		 * Shuts down the daemon.
+		 * @return void
+		 * @htmlonly
+		 * <br><hr>
+		 * @endhtmlonly
+		 */
+		void shutdown() raises (maciErrType::NoPermissionEx);
+
+		/**
+		 * Set configuration service (e.g. NameService, Manager) references.
+		 */
+		void set_configuration_reference(in short instance_number, in ServiceInfoSeq services_info);
+	};
+
+};
+
+#endif

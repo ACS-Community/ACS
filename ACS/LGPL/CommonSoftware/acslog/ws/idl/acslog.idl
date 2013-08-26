@@ -1,0 +1,206 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *    and Cosylab 2002, All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+#ifndef _ACS_LOG_IDL
+#define _ACS_LOG_IDL
+
+#include <acscommon.idl>
+
+#include "acserr.idl"
+
+#pragma prefix "alma"
+
+
+module ACSLog {
+  /*
+  NVPair ? should we take from another place (PropertyService ?)
+  NVPair Seq ?
+  Ther is NVPair already in acserr !!
+  */
+  /**
+     Name-Value pair structure
+   */
+  struct NVPair {
+    string name;
+    string value; // any ? -> use than Property from Property Service
+  };
+  
+  /**
+     sequence of name-value pairs
+   */
+  typedef sequence<NVPair> NVPairSeq;
+
+  /**
+     Log messages priorities
+   */
+  enum Priorities {
+    ACS_LOG_TRACE, 
+    ACS_LOG_DELOUSE, 
+    ACS_LOG_DEBUG,  
+    ACS_LOG_INFO,  
+    ACS_LOG_NOTICE,  
+    ACS_LOG_WARNING,  
+    ACS_LOG_ERROR,  
+    ACS_LOG_CRITICAL,  
+    ACS_LOG_ALERT,  
+    ACS_LOG_EMERGENCY
+  };
+
+  typedef string XMLstring;
+
+  /**
+     structure to represent Run-Time Context information
+   */
+  struct RTContext {
+    /** Thread ID or name.*/
+    string thread;
+    /** Process ID (=PID) or process name.*/
+    string process;
+    /** Host name or its IP address. */
+    string host;
+    /** Additional context information.*/
+    string addContext;  
+      /** Component/container/etc. name */
+      string sourceObject;
+  
+    /* unsigned long stackLevel;
+    unsigned long stackId;  // user must take care that stackId is unique in the context !
+    */
+  };
+
+  /**
+    structure to represent Source information
+   */
+  struct SourceInfo {
+    /** file name. */
+    string file;
+    /** routine name. */
+    string routine;
+    /** line number.*/
+    unsigned long line;
+  };
+
+  interface LogSvc {
+    /* if length of data is 0 -> ther are no data
+       rtCont and srcInfo -> if evrything is NULL or 0 than that info is not writen into CL
+       LogId ? which type unsigned long or string ? 
+       LogPriorty is explicit
+    */
+
+    /**
+     * logs TRACE message. 
+     * If all rtCont string members are NULL than no run-time context information will be logged.
+     * If all srcInfo string members are NULL than no source information will be logged.
+     */
+    void logTrace(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+    /* It neeeds just routine info and time stamp. Should we send only this  ? */
+    
+    /**
+     * logs DELOUSE  message.
+     * If all rtCont string members are NULL than no run-time context information will be logged.
+     * If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logDelouse(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+   
+    /**
+     * logs DEBUG message.
+     * If all rtCont string members are NULL than no run-time context information will be logged.
+     * If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logDebug(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+
+    /**
+       logs INFO message.
+       If all rtCont string members are NULL than no run-time context information will be logged.
+       If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logInfo(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+    
+    /**
+       logs NOTICE message.
+       If all rtCont string members are NULL than no run-time context information will be logged.
+       If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logNotice(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+    
+    /**
+       logs WARNING message.
+       If all rtCont string members are NULL than no run-time context information will be logged.
+       If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logWarning(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+
+    /**
+       logs error stack (trace) of a Completion or an ACS exception.
+    */
+    void logError(in ACSErr::ErrorTrace c) raises (ACSErr::ACSException);
+
+    /**
+       logs error stack (trace) of a Completion or an ACS exception with certain priorty.
+    */
+    void logErrorWithPriority(in ACSErr::ErrorTrace c, in Priorities p) raises (ACSErr::ACSException);
+
+    /**
+       logs a message with a certain priority.
+       If all rtCont string members are NULL than no run-time context information will be logged.
+       If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logWithPriority(in Priorities p, in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data, in string audience, in string array, in string antenna) raises (ACSErr::ACSException);
+    
+    /**
+       logs a message with a certain priority, an audience, an array and an antenna.
+       If all rtCont string members are NULL than no run-time context information will be logged.
+       If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logWithAudience(in Priorities p, in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo, in string audience, in string array, in string antenna) raises (ACSErr::ACSException);
+    
+    /**
+       logs CRITICAL message.
+       If all rtCont string members are NULL than no run-time context information will be logged.
+       If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logCritical(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+    
+    /**
+       logs ALERT message.
+       If all rtCont string members are NULL than no run-time context information will be logged.
+       If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logAlert(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+    
+    /**
+       logs EMERGENCY message.
+       If all rtCont string members are NULL than no run-time context information will be logged.
+       If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logEmergency(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+
+    /**
+       logs XML message. If xml is not XML string than exception will be thrown (NOT implemnted yet!).
+    */
+    void logXML(in XMLstring xml) raises (ACSErr::ACSException); 
+    
+    //void logXMLTimed(in acscommon::TimeStamp time, in XMLstring xml) raises (ACSErr::ACSException);
+ };
+
+};
+
+#endif

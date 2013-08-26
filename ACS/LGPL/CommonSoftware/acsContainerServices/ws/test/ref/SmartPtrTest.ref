@@ -1,0 +1,54 @@
+1 - smartptrtest::defaultConstructorTest
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - smartptrtest::parmConstructorTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - smartptrtest::copyConstructorTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - smartptrtest::assignmentOperatorTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - smartptrtest::isNilNotSetTest
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - smartptrtest::releaseTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - smartptrtest::isNilSetTest
+1 - 
+1 - Set is running
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - smartptrtest::assnopr_cpyarginvalidTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - smartptrtest::assnopr_constinvalidTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 - OK (9)
+1 -  : OK

@@ -1,0 +1,262 @@
+.title 
+{
+  color: #CE2B25; 
+  font-size: 200%;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+  color: #003c8c;
+  text-align: left; 
+  margin-top: 2em; 
+  margin-bottom: 1em; 
+  font-family: Verdana, Arial, Helvetica; 
+}
+
+h2 
+{ 
+  color: #CE2B25; 
+}
+
+h1.toc, h2.toc, h3.toc, h4.toc, h5.toc, h6.toc
+{
+  color: #003c8c;
+  font-size: small;
+  text-align: left;
+  margin-right: 0%;
+  margin-top: 0%;
+  margin-bottom: 0%;
+}
+
+h1.toc
+{
+  margin-left: 3%;
+  font-weight: bold;
+}
+
+h2.toc
+{
+  margin-left: 6%;
+}
+
+h3.toc
+{
+  margin-left: 9%;
+}
+
+h4.toc
+{
+  margin-left: 12%;
+}
+
+h5.toc
+{
+  margin-left: 15%;
+}
+
+h6.toc
+{
+  margin-left: 18%;
+}
+
+body 
+{
+  margin-left: 5%; 
+  margin-right: 5%;
+}
+
+p
+{
+  font-family: Verdana, Arial, Helvetica;
+}
+
+p.table
+{
+  text-align: center;
+  margin-bottom: 0cm;
+}
+
+p.figure
+{ 
+  text-align: center
+}
+
+p
+{
+  text-align: justify;
+}
+
+p.comment
+{
+  color: red;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+p.warning
+{
+  background-color: #E0E0E0;
+}
+
+p.warning table tr td
+{
+  border-width: 0.02cm; 
+  border-color: red;
+}
+
+p.notice
+{
+  background-color: #F0F0F0;
+}
+
+p.notice table tr td
+{
+  border-width: 0.02cm; 
+  border-color: black;
+}
+
+ol, ul
+{
+  font-family: verdana,sans-serif;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-bottom: 0%;
+}
+
+pre
+{
+  background: #F0F0F0;
+}
+
+table
+{
+  width: 100%;
+  margin-bottom: 0cm;
+}
+
+th
+{ 
+  padding: 0.1cm;
+  background: #CACAD4; 
+  text-align: center; 
+  border-style: solid; 
+  border-width: 0.02cm;
+}
+
+th.header
+{
+  background: #D0D0D0;
+}
+
+td
+{
+  padding: 0.1cm;
+  border-style: solid;
+  border-width: 0.02cm;
+}
+
+table.compact
+{
+  width: 0;
+}
+
+table.compact th
+{
+  padding: 0cm;
+  background: #CACAD4; 
+  text-align: center; 
+  border-style: solid; 
+}
+
+table.compact td
+{
+  padding: 0cm;
+  padding-left: 0.2cm;
+  padding-right: 0.2cm;
+}
+
+table.equation tr td
+{
+  border-width: 0;
+}
+
+tr.reviewAccepted, .statusGreen
+{
+  background: #D0FFD0;
+}
+
+tr.reviewRejected, .statusRed
+{
+  background: #FFD0D0;
+}
+
+.statusUnknown
+{
+  background: #F0F080;
+}
+
+tr.retirement
+{
+  background: black;
+  color: white
+}
+
+span.menu
+{
+  color: white;
+  background: #787996;
+  font-family: tahoma;
+  font-size: 80%;
+}
+
+span.gui
+{
+  border-left-width: 0.025cm;
+  border-top-width: 0.025cm;
+  border-right-width: 0.04cm;
+  border-bottom-width: 0.04cm;
+  border-style: solid;
+  font-family: tahoma;
+  font-size: 80%
+}
+
+span.keystroke
+{            
+  border-style: groove;
+  border-color: #E0E0E0;
+  font-family: tahoma;
+  font-size: 70%;
+}
+
+span.emphasis
+{
+  font-style: italic;
+}
+
+span.bold
+{
+  font-weight: bold;
+}
+
+tt.filename
+{
+  font-family: tahoma;
+}
+
+tt.keyword
+{
+  font-weight: bold;
+}
+
+tt.command
+{
+  font-family: tahoma; 
+  font-weight: bold;
+}
+
+p.description 
+{
+  text-align: center;
+  margin-top: 0cm;
+}
+	

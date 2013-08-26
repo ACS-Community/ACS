@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>How to configure cvs in Netbeans</title>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <section>AB/CO/AP</section>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history>
+    </history>
+  </head>
+
+  <section>
+    <title></title>
+    <description>
+    Here is the procedure get the <I>GP module</I> stored on our <A HREF="../../tools/cvsdoc/index.html">cvs</A> server from Netbeans.<br/>
+    <br/><br/>
+    <UL>
+    <FONT Color="#FF0000">1</FONT>) <B>First of all you must enable the version control module</B>:<br/>
+    <br/>
+    From the Netbeans IDE choose the <I>Tools\option</I> menu item. It will popup the following options dialog box.<br/>
+    Then select the <I>IDE configuration\System\Modules\Version Control</I> item.<br/>
+    Check the <I>Enabled</I> property is set to true.(set it if false)<br/>
+    <br/>
+    <IMG SRC="images/cvs_config0.gif"/><br/>
+    <br/>
+    <br/>
+    <FONT Color="#FF0000">2</FONT>) <B>Set the cvs parameters</B>:<br/>
+    <br/>
+    From the Netbeans IDE choose the <I>Versioning\Mount Version Control\CVS</I> menu item. <br/><br/>
+    <IMG SRC="images/cvs_config1.gif"/><br/>
+    <br/>
+ 
+    It will popup the following dialog box. Then enter your working directory path and press the <I>Next</I> button.<br/><br/>
+    <IMG SRC="images/cvs_config2.gif"/><br/>
+    <br/>
+
+    Then enter the CVS connection parameters as shown below and press the <I>Next</I> button.<UL>
+    <B>.</B> Select <I><B><FONT Color="#FF0000">Password Server</FONT></B></I><br/>
+    <B>.</B> Server name <I><B><FONT Color="#FF0000">pcslux9.cern.ch</FONT></B></I><br/>
+    <B>.</B> User name <I><B><FONT Color="#FF0000">[Your_user_name]</FONT></B></I><br/>
+    <B>.</B> Repository <I><B><FONT Color="#FF0000">/home/cvs/cvsroot</FONT></B></I><br/>
+    </UL>
+    <br/>
+    <IMG SRC="images/cvs_config3.gif"/><br/>
+    <br/>
+    Choose Use Built-in cvs client and press the <I>Next</I> button.<br/>
+    <br/>
+    <IMG SRC="images/cvs_config4.gif"/><br/>
+    <br/>
+    Type your password to login and press the <I>login</I> button. Then press the <I>Next</I> button.<br/>
+    <br/>
+    <IMG SRC="images/cvs_config5.gif"/><br/>
+    <br/>
+    Check the box to checkout the copy of the repository to your working directory and press the <I>Finish</I> button.<br/>
+    <br/>
+    <IMG SRC="images/cvs_config6.gif"/><br/>
+    <br/>
+    A new dialog box will popup. Press the <I>Select Module</I> button to choose the GP module and press the <I>OK</I> buttons to close the dialog boxes.<br/>
+    <br/>
+    <IMG SRC="images/cvs_config7.gif"/><br/>
+    <br/>
+    The following dialog box will then appear, showing the checkout progress.<br/>
+    <br/>
+    <IMG SRC="images/cvs_config8.gif"/><br/>
+    <br/>
+    When seeing <I>Finished</I> in the status bar, then press the <I>Close</I> button... that's it !</UL>
+    <br/> 
+    </description>
+  </section>
+</document>
+

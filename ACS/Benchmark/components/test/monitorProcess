@@ -1,0 +1,153 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2006
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#
+# "@(#) $Id: monitorProcess,v 1.1 2007/04/20 06:16:28 sharring Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# jdressel  2006-06-20  created
+#
+
+#************************************************************************
+#   NAME  monitorProcess
+#
+#   SYNOPSIS  A tool to monitor the memory consumption of a process,
+#             using the /proc filesystem.
+#
+#   DESCRIPTION  This program will generate a tab-separated datafile of
+#                memory monitor points, and a gnuplot file to plot the
+#                data directly.  Just run the process, run this monitoring
+#                the process (as root with nice level -19 for sampling
+#                consistency).  Kill this monitoring tool whenever you like,
+#                then run gnuplot and do:
+#                  gnuplot>  cd "/path/to/datafile/directory"
+#                  gnuplot>  load "datafile.gnuplot"
+#                to plot the data.
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS  If this program is not run as root with nice value of -19, then
+#             the kernel scheduler with throttle the monitoring frequency if the
+#             system is under high load.  Increasing the priority ensures consistent
+#             monitoring under any load.
+#
+#             Also, due to the implementation of "sleep", it is a nondeterministic
+#             interval that represents a lower sleep bound.  The actual interval will
+#             vary slightly.  For instance, a monitor interval of 0.1 seconds will
+#             actually record a datapoint every ~0.12 seconds.  The points are timestamped
+#             carefully for this reason.
+#
+#   EXAMPLES  Default case (as root):  nice -n -19 monitorProcess PID#
+#               This will monitor the process with pid PID# at an sampling interval
+#               of 0.1 seconds.  It will dump a log file to ./PID#.log, and a gnuplot
+#               file to ./PID#.log.gnuplot.
+#
+#             Finetuned case (as root):  nice -n -19 monitorProcess PID# INTERVAL LOGFILE
+#               This will monitor the process with pid PID# at a sampling interval
+#               of INTERVAL seconds.  It will dump a log file to LOGFILE, and a gnuplot
+#               file to LOGFILE.gnuplot.
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+# PID of process to monitor passed in
+if [ -z "$1" ]; then
+  echo "Usage: $0 PID [frequency] [logfile]"
+  exit 1
+fi
+
+if [ -d /proc/$1 ]; then
+  declare -r PROCESS="$1"
+else
+  echo "The process $1 does not exist."
+  exit 1
+fi
+
+# Temp mutable storage for return value
+RETURN=""
+
+# Date of start
+DATE="`date \"+%F %H:%M:%S\"`"
+# Frequency of monitoring defaults to ~10th of a second
+if [ -n "$2" ]; then
+  FREQUENCY="$2"
+else
+  FREQUENCY=0.1
+fi
+
+# Logfile to dump data to
+if [ -n "$3" ]; then
+  LOGFILE="$3"
+else
+  LOGFILE="$PROCESS.log"
+fi
+
+if [ -n "$4" ]; then
+  MAX_CYCLES="$4"
+else
+  MAX_CYCLES=9999999999
+fi
+
+# Function to extract value from field "search"
+getValue () {
+  local info="$1"
+  local search="$2"
+  RETURN="`echo -e "$info" | grep "$2" | awk '{print $2}'`"
+}
+
+# Get the Process Name
+getValue "`cat /proc/$PROCESS/status`" "Name"
+processname="$RETURN"
+
+# Dump gnuplot script
+cat <<HERE > $LOGFILE.gnuplot
+set title "$processname\n$DATE"
+set xlabel "Time (sampled every $FREQUENCY seconds)"
+set ylabel "Memory Allocated (kB)"
+set xdata time
+set timefmt "%s"
+plot "${LOGFILE##*/}" using 1:2 title "Total Memory Requirement" with lines
+replot "${LOGFILE##*/}" using 1:3 title "Resident Memory Size" with lines
+HERE
+
+echo -e "#Process: $processname , PID: $PROCESS" > $LOGFILE
+echo -e "#Time\tVmSize\tVmRSS\tVmData\tVmStk" >> $LOGFILE
+#cycles=0
+#while [ $cycles -le $MAX_CYCLES ] ; do
+while true ; do
+  # Get timestamp to ns resolution (really reported at ms resolution)
+  TIME="`date +%s.%N`"
+  # Pull the process information from /proc
+  INFO="`cat /proc/$PROCESS/status`"
+  getValue "$INFO" "VmSize" 
+  vmsize="$RETURN"
+  getValue "$INFO" "VmRSS"
+  vmrss="$RETURN"
+  echo -e "$TIME\t$vmsize\t$vmrss" >> $LOGFILE
+  sleep $FREQUENCY
+#  cycles=`expr $cycles + 1`
+done

@@ -1,0 +1,50 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList.lite,v 1.42 2008/11/13 01:57:44 cparedes Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# david 2002-04-15 created
+SOURCE acsncTATEnvironment 
+PROLOGUE acsutilTATPrologue
+
+#Test a consumer when the channel hasn't been created yet...
+0 ChannelNonexistant  "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" "acsutilTATTestRunner acsncTATRunTest.sh acsncTestConSup CON1 SUP1"
+
+#Test a consumer connecting to an already existing channel
+1 ChannelCreated  "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" "acsutilTATTestRunner acsncTATRunTest.sh acsncTestConSup CON1 SUP1"
+
+#Test the publishing capability of a real-time supplier
+2 RTSupplier  "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" "acsutilTATTestRunner acsncTATRunTest.sh acsncTestConSup CON1 RTSUP1"
+
+3 ArchiveConsumer "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" "acsutilTATTestRunner acsStartContainer -cpp archiveContainer" "@SLEEP 15" "acsutilTATTestRunner acsncTATRunTest.sh acsncTestConSup ARCHIVECON1"
+
+4 IntegrationLogs "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" "acsutilTATTestRunner acsncTATRunTest.sh acsncTestConSup IL_CON1 IL_SUP1"
+
+5 ChannelCreator "acsutilTATTestRunner testChannelCreation"
+
+6 testNotificationServiceConfiguration "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" "acsutilTATTestRunner acsncTATRunTest.sh acsncTestSimpleComponent CDB_PROPS"
+
+EPILOGUE acsutilTATEpilogue

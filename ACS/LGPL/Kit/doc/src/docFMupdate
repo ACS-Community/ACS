@@ -1,0 +1,237 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docFMupdate,v 1.32 2004/09/21 09:36:08 mpasquat Exp $" 
+#
+# docFMupdate
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  28/02/94  created
+# gfilippi  29/01/95  SPR950027 file name filter changed
+# gfilippi  30/01/95  change to FrameMaker 4 MIF format
+# fcarbogn  24/07/97  used for FrameMaker 5 documents update
+
+
+#************************************************************************
+#   NAME
+#   docFMupdate - update a FrameMaker document
+# 
+#   SYNOPSIS
+#   docFMupdate
+# 
+#   DESCRIPTION
+#   This utility transform a document in FrameMaker 4 format to FrameMaker 5
+#   format and sobsitute every occurence of an imported file with the new
+#   importing by reference (text insets)
+#   
+#
+#   FILES
+#   Document.book  R   the book that need to be update
+#   xxxxxxxxxx     W   the documents forming the book. Some will be updated.
+#   yyyyy.mif      W   the last version of the imported files 
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   REMEMBER: 
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#------------------------------------------------------------------------
+
+echo \
+"------------------------------------------------------------------------------"
+echo "docFMupdate\n"
+
+#
+# This procedure uses ex-macro files that are not tretaed
+# automatically by the standard mechanisms (PATH, etc)
+#
+# where are the macro file? 
+if [ -f ~/doc/bin/docImported4to5.ex ]
+then 
+    EXFILE_DIR=~/doc/bin
+else
+    if [ -d "$INTROOT" -a  -f ${INTROOT}/bin/docImported4to5.ex ]
+    then 
+        EXFILE_DIR=$INTROOT/bin
+    else
+        # Separation of dirs
+        item_list=`echo $INTLIST | sed s/:/\ /g`
+        OK="no"
+        # And now all files for each INTLIST items
+        for item in $item_list
+        do
+           if [ -d "$item" -a  -f ${item}/bin/docImported4to5.ex -a "X$OK"="XNO" ]
+           then 
+              EXFILE_DIR=$item/bin
+              OK="YES"
+           fi
+        done
+
+        if [ -d "$VLTROOT" -a  -f ${VLTROOT}/bin/docImported4to5.ex -a "X$OK"="XNO" ]
+        then 
+            EXFILE_DIR=$VLTROOT/bin
+        else
+            echo "ERROR: unable to locate EX-MACRO files"
+            echo "       Probably this installation is wrong"
+            echo "       Please inform your vltmgr"
+            exit 2
+        fi
+    fi
+fi
+
+
+#
+# check the existence of a "Document.book" file
+if [ ! -f Document.book ]
+then
+    echo "Current directory: `pwd`"
+    echo "Document.book not found or not accessible. \n"
+    echo "This is not a standard document and I do not know what to do."
+    echo "Sorry!"
+    exit
+fi
+
+#
+# is it already opened?
+if [ -f Document.book.lck ]
+then
+    echo "Document.book not accessible. \n"
+    echo "File already locked by `cat Document.book.lck`\n\n"
+    echo "       ---> Exit FrameMaker and try again.\n\n"
+    exit
+fi
+
+# Update all the .mif file to be imported
+# The ex script docImported4to5.ex modify the .mif files to be inported
+# present in the same directory of the book.
+# It sobstitute 3.0 version with 5.0 version.
+# For Manpages in mif format it eliminate the 'ManHeading' entry that
+# caused the creation of a not needed paragraph
+# For ASCII-type inported file it eliminate the header:
+# `---\>BEGIN IMPORTED FILE:
+
+echo "\n. . . updating the files to be imported:\n"
+
+FILELIST=`ls *.mif`
+
+for document in $FILELIST
+do
+	ex $document < $EXFILE_DIR/docImported4to5.ex
+done
+
+#
+# transform the file into MIF format
+echo "Open Document.book"                  >$$_fmbatch
+echo "SaveAs m Document.book $$_book.mif" >>$$_fmbatch
+echo "Quit Document.book"                 >>$$_fmbatch
+echo "Quit "                              >>$$_fmbatch
+
+fmbatch -i $$_fmbatch
+
+echo "\n. . . looking for the files to be processed:\n"
+
+#
+# in $$_book.mif, each file in the book has a line like the following:
+#
+#        <FileName `<c\>FrontCover'>
+#
+# To build up the list of files forming the book:
+#
+#     - find in the  the lines with the "<FileName" keyword
+#
+#     - change "<" and "'" into blanks. Each line should become:
+#
+#        <FileName  <c\ FrontCover  
+#
+#     - extract the 3rd word of each line
+#
+grep "<FileName "  $$_book.mif > $$_grep
+sed -e "1,$ s/>/ /g" -e "1,$ s/'/ /g" $$_grep > $$_sed
+FILELIST=`awk '{printf "%s ", $3 }' $$_sed`
+
+# is any of the files already opened?
+for document in $FILELIST
+do
+    if [ -f $document.lck ]
+    then
+        echo "                --> $document <--  not accessible. \n"
+        echo "File already locked by `cat $document.lck`\n\n"
+        echo "       ---> Exit FrameMaker and try again.\n\n"
+        rm $$_*
+        exit
+    fi
+done
+
+#
+# list the file that will be processed
+for document in $FILELIST
+do
+    echo "                --> $document"
+done
+echo "\n\n"
+
+#
+# transform the file into MIF format
+touch $$_doc2mif
+echo "echo "                                                  >>$$_doc2mif
+echo "echo . . . transform the file into MIF format:       "  >>$$_doc2mif
+echo "echo "                                                  >>$$_doc2mif
+for document in $FILELIST
+do
+    echo "echo $document"                      >>$$_doc2mif
+    echo "Open $document"                      >>$$_doc2mif
+    echo "SaveAs m $document $$_$document.mif" >>$$_doc2mif
+    echo "Quit $document"                      >>$$_doc2mif
+done
+echo "Quit"   >>$$_doc2mif
+
+fmbatch -i $$_doc2mif
+
+#
+echo "\n\n   . . . sobstituting Markers with insets headers and footers ....  \n\n"
+
+# update importing files
+# The ex script docImporting4to5.ex modify document files in mif format
+# It sobstitute Markers with insets headers and footers
+# It create a separate paragraph for the Manpage with a separate title.
+# The man page itself will be seen as a separate item not editable 
+
+touch $$_mif2doc
+for document in $FILELIST
+do
+   
+	ex $$_$document.mif < $EXFILE_DIR/docImporting4to5.ex 
+	echo "echo $document"                         >>$$_mif2doc
+	echo "Open $$_$document.mif"                  >>$$_mif2doc
+	echo "SaveAs d $$_$document.mif $document"    >>$$_mif2doc
+	echo "Quit $$_$document.mif "                 >>$$_mif2doc
+done
+
+echo "\n\n      . . . transforming everything back into FM editable format . . .  \n\n"
+
+# transform the files back into editable format and Generate/Update the book
+echo "Open Document.book"                   >>$$_mif2doc
+echo "Update Document.book"                 >>$$_mif2doc
+echo "Quit Document.book"                   >>$$_mif2doc
+
+fmbatch -i $$_mif2doc
+
+# cleanup and exit
+rm $$_*
+
+# changing the *.mif date to force the import
+touch *.mif
+
+echo "\n\n"
+
+#___oOo___

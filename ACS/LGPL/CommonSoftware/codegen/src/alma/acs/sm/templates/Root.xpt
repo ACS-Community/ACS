@@ -1,0 +1,3 @@
+«DEFINE Root FOR uml::Model»
+	«EXPAND Java::FSMJava::Root»
+«ENDDEFINE»

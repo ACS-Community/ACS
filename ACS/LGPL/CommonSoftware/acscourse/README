@@ -1,0 +1,83 @@
+This module contains an example that is developed step by step during
+the ACS course.
+Each step increments the previous one and is kept as much as possible
+separate so that can be read independently, focusing only on the
+specific purpose of the tutorial.
+
+We develop a Mount Component and we try to put inside functionality
+and to use it.
+
+Documentation will have to be put in doxygen.
+
+Example:
+
+IDL
+
+Mount1   - with simple hello method.
+
+Mount2   - with properties (RO and RW)
+         - second implementation with control loop
+         - show dynamic loading of DLL replacing old one.
+
+Mount3   - with complete method interface, synchronous
+         - exceptions and error handling
+
+   BOGDAN: Add exceptions!!!!
+
+Mount4   - with asynchronous methods
+         - impl with error handling
+
+MountVLT
+         - Separate module for VLT specific course.
+         - impl of devio: CCS dbRead
+         - impl. sending commands to CCS
+
+   BOGDAN: Add exceptions!!!!
+
+
+Clients:
+
+- objexp
+
+We have to write the following example clients:
+   - Python
+   - Java
+   - Java GUI
+   - C++
+
+
+We should also write
+   - Java component
+   - Python component
+ 
+  What should they do? We cannot have properties there.
+  So we could simply implement Mount1
+
+Points to be filled in:
+
+- Abeans generator.
+- Index table
+- VLT CCS application
+
+NOTE:
+ I have created multiple Makefiles.
+ Each Makefile adds on the previous one.
+ But the ACS Makefile does not allow to use the 
+        make -f <makeName>
+ command.
+ Therefore we have to copy by hand the MakefileXX into Makefile
+ The last makefile should be the defaul Makefile, since it builds
+ everything.
+  
+###################################################################
+Hi Gianluca, great job! When I saw the email about this module I was 
+instantly full of ideas and you've implemented nearly all of them. The 
+only addition I'd make is for obstar to take an inout or out parameter
+too. Then maybe in Mount4 remove the non-asynchronous methods. As for
+a Python component implementation of the CharacteristicComponent
+subinterfaces, most of it could be done, only Null references would be 
+returned for BACI properties. Now that I think about it, perhaps 
+ActionImplementator should be in implemented in Python and Java.
+
+Dave
+###################################################################

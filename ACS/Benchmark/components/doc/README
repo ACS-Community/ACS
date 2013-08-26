@@ -1,0 +1,43 @@
+Author: Anze Zagar	<anze.zagar@cosylab.com>
+$Id: README,v 1.1 2004/09/16 22:23:47 dfugate Exp $
+
+The following scripts are used to get all the necessary services
+running prior to running the JMeter tests. More detailed information 
+about how to run the tests can be found in:
+../../../JMeter/doc/DOC-ACS_Performance_Test.html
+
+****************************************************************************
+WARNING: If you choose not to do a full CVS checkout (followed by a make and then followed by running the deployment script (../../../JMeter/build script)
+on one or more of the machines in a multi-computer test environment, be aware 
+that you will need to manually perform the same steps that the build script 
+performs, for each JMeter installation; if you choose not to do it from the CVS 
+checkout/make/build process, and instead decide to copy files by hand,
+look carefully at what needs to be done (by examining the 
+build script). If any of the files that are installed by the build script
+are missing for any of the machines in your test environment, it will fail!
+****************************************************************************
+
+A short description of each script follows:
+
+distsync-server $host	Starts distsync server connected to rmiregistry running
+			on $host. Normally this is the same computer on which
+			you run the script, however use the actual ip address 
+			and NOT localhost or 127.0.0.1 here.
+			You will also need to specify this (same) IP address 
+			in acsperftests.jmx's DISTSYNC_SERVER variable.
+jmeter-server		Slightly modified version of jmeter-server that allows
+			both DistSync and jMeter's server to run on the same
+			machine (sharing the same rmiregistry).
+start-rmiregistry	Starts rmiregistry with properly constructed CLASSPATH.
+			This script is used by the above scripts.
+stop-rmiregistry	If rmiregistry was not closed properly, it might 
+			cause some problems the next time you want to use either
+			of these services. If so, you can stop the rmi 
+			registry by running this script. All it really does is 
+			'killall rmiregistry'.
+
+Use the acsperftests.jmx test suite with jMeter to perform most of the acstests.
+
+When all tests are done, you can use JMeterToCSV.pl script to convert the
+collected data into CSV format, which can then be further analyzed with a
+spreadsheet tool like OOCalc.

@@ -1,0 +1,22 @@
+#ifndef _RECEIVER_PT_IDL_
+#define _RECEIVER_PT_IDL_
+
+#include <baci.idl>
+#include "ACSBulkDataError.idl"
+#include <AVStreams.idl>
+#include <bulkData.idl>
+#include <bulkDataReceiver.idl>
+
+#pragma prefix "alma"
+
+module TEST_M
+{
+    
+  interface ReceiverPT : bulkdata::BulkDataReceiver
+  {
+    void setTestName(in string name);
+  };
+
+};
+
+#endif

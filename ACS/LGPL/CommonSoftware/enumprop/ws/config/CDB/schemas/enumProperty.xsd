@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema targetNamespace="urn:schemas-cosylab-com:enumProperty:1.0" xmlns="urn:schemas-cosylab-com:enumProperty:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+	<xs:complexType name="Penum_">
+		<xs:complexContent>
+			<xs:restriction base="baci:TypelessProperty">
+				<xs:attribute name="format" type="xs:string" use="optional" default="%u"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Penum">
+		<xs:complexContent>
+			<xs:extension base="Penum_">
+				<xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0"/>
+				<xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001"/>
+				<xs:attribute name="default_value" type="xs:int" use="optional" default="0"/>
+				<xs:attribute name="min_step" type="xs:int" use="optional" default="0"/>
+				<xs:attribute name="archive_delta" type="xs:int" use="optional" default="0"/>
+				<xs:attribute name="statesDescription" type="xs:string" use="optional"/>
+				<xs:attribute name="condition" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ROenum">
+		<xs:complexContent>
+			<xs:extension base="Penum">
+				<xs:attribute name="alarm_on" type="xs:string" use="optional" default="0"/>
+				<xs:attribute name="alarm_off" type="xs:string" use="optional" default="0"/>
+				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0"/>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default=""/>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default=""/>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RWenum">
+		<xs:complexContent>
+			<xs:extension base="Penum">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+</xs:schema>
+

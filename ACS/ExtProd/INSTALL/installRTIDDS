@@ -1,0 +1,100 @@
+#! /bin/bash
+
+ARCH=`uname -m`
+DDS_DIR=$PWD/../PROPRIETARY/RTIDDS/
+
+if [ $ARCH == x86_64 ]
+then
+    HOST_TAR=rtidds45f-host-x64Linux.tar.gz.gpg
+    TARGET_TAR=rtidds45f-target-x64Linux2.6gcc4.1.2.tar.gz.gpg
+else
+    if [ $ARCH == i386 -o $ARCH == i686 ]
+    then
+    HOST_TAR=rtidds45f-host-i86Linux.tar.gz.gpg
+    TARGET_TAR=rtidds45f-target-i86Linux2.6gcc4.1.2.tar.gz.gpg
+    else
+    echo "ERROR: not supported platform: $ARCH"
+    exit 2
+    fi
+fi
+
+# do we have acrobatreader on the machine ?
+which acroread 2&>1 /dev/null
+ACRO_READER=$?
+
+# if option -c is specified we check out all neccessary files
+if [ "$1" == "-c" ]
+then
+    echo "Checking out RTIDDS (host tar $HOST_TAR for target $TARGET_TAR)"
+    SVN_URL=`svn info $0|grep URL`
+    RTIDDS_SVN_URL=`expr match "$SVN_URL" '.*\(https.*ExtProd\)'`
+    echo "Checking out $RTIDDS_SVN_URL"
+
+    svn co "$RTIDDS_SVN_URL/PROPRIETARY/RTIDDS"
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Cold not svn co: ACS/ExtProd/PROPRIETARY/RTIDDS"
+        exit 4
+    fi
+    DDS_DIR=$PWD/RTIDDS
+fi
+
+
+echo "Please read RTI Software License Agreement carefully!"
+
+if [ $ACRO_READER == 0 ]
+then
+    acroread $DDS_DIR/RTISoftwareLicenseAgreement20101217.pdf
+else
+    less -E $DDS_DIR/RTISoftwareLicenseAgreement20101217.txt 
+fi
+
+echo "-------------------------------------------------------------------------------"
+echo "Press Y or y if you have read and you agree with RTI Software License Agreement" 
+
+read -n1 AGREE
+if [ $AGREE != y -a $AGREE != Y ]
+then
+    echo ""
+    echo "installation of RTI DDS terminated !"
+    exit 1
+fi
+
+echo ""
+
+
+if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/RTI ]
+then
+  echo $ALMASW_ROOTDIR/$ALMASW_RELEASE/RTI directory exists already. I clean it up.
+  rm -rf $ALMASW_ROOTDIR/$ALMASW_RELEASE/RTI
+fi
+mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/RTI
+if [ $? != 0 ]
+then
+    echo "ERROR: Cold not create: " $ALMASW_ROOTDIR/$ALMASW_RELEASE/RTI
+    exit 3
+fi
+
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/RTI
+
+echo "Please give the passphrase (will not bee seen on the screen) for $HOST_TAR & $TARGET_TAR: "
+read -sp ">" PASS
+
+gpg -d --passphrase $PASS $DDS_DIR/$HOST_TAR | tar xvz
+if [ $? != 0 ]
+then
+    cd $TMP_DIR
+    echo "ERROR: failed to decrypte/unpack $HOST_TAR "
+    exit 4
+fi
+
+gpg -d --passphrase $PASS $DDS_DIR/$TARGET_TAR | tar xvz
+if [ $? != 0 ]
+then
+    cd $TMP_DIR
+    echo "ERROR: failed to decrypte/unpack $TARGET_TAR "
+    exit 5
+fi
+cd $TMP_DIR
+echo "Installation of RTI DDS completed."
+echo "=================================="

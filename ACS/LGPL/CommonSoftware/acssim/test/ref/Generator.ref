@@ -1,0 +1,56 @@
+1 - --Testing simple CORBA types--
+1 - Created an instance of ' IDL:omg.org/CORBA/Boolean:1.0 ': <type 'int'>
+1 - Created an instance of ' IDL:omg.org/CORBA/Char:1.0 ': <type 'str'>
+1 - Created an instance of ' IDL:omg.org/CORBA/Octet:1.0 ': <type 'int'>
+1 - Created an instance of ' IDL:omg.org/CORBA/Short:1.0 ': <type 'int'>
+1 - Created an instance of ' IDL:omg.org/CORBA/UShort:1.0 ': <type 'int'>
+1 - Created an instance of ' IDL:omg.org/CORBA/Long:1.0 ': <type 'int'>
+1 - Created an instance of ' IDL:omg.org/CORBA/ULong:1.0 ': <type 'long'>
+1 - Created an instance of ' IDL:omg.org/CORBA/LongLong:1.0 ': <type 'long'>
+1 - Created an instance of ' IDL:omg.org/CORBA/ULongLong:1.0 ': <type 'long'>
+1 - Created an instance of ' IDL:omg.org/CORBA/Float:1.0 ': <type 'float'>
+1 - Created an instance of ' IDL:omg.org/CORBA/Double:1.0 ': <type 'float'>
+1 - Created an instance of ' IDL:omg.org/CORBA/LongDouble:1.0 ': <type 'float'>
+1 - Created an instance of ' IDL:omg.org/CORBA/String:1.0 ': <type 'str'>
+1 - Created an instance of ' IDL:omg.org/CORBA/Void:1.0 ': <type 'NoneType'>
+1 - Created an instance of ' IDL:omg.org/CORBA/Null:1.0 ': <type 'NoneType'>
+1 - 
+1 - -----------------------------------------------------
+1 - --Testing simple sequence types--
+1 - Created an instance of ' IDL:omg.org/CORBA/BooleanSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:omg.org/CORBA/CharSeq:1.0 ': <type 'str'>
+1 - Created an instance of ' IDL:omg.org/CORBA/OctetSeq:1.0 ': <type 'xxx'>
+1 - Created an instance of ' IDL:omg.org/CORBA/ShortSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:omg.org/CORBA/UShortSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:omg.org/CORBA/LongSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:omg.org/CORBA/ULongSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:omg.org/CORBA/LongLongSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:omg.org/CORBA/ULongLongSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:omg.org/CORBA/FloatSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:omg.org/CORBA/DoubleSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:omg.org/CORBA/StringSeq:1.0 ': <type 'tuple'>
+1 - 
+1 - -----------------------------------------------------
+1 - --Testing everything from acssimTest
+1 - Created an instance of ' IDL:alma/acssimTest/OnOffStates:1.0 ': <type 'instance'>
+1 - 
+1 - Created an instance of ' IDL:alma/acssimTest/garbage:1.0 ': <type 'instance'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkCharComp:1.0 ': <type 'instance'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkBaciProp:1.0 ': <type 'instance'>
+1 - Created an instance of ' IDL:alma/acssimTest/complexStruct:1.0 ': <type 'instance'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl:1.0 ': <type 'instance'>
+1 - 
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/charSeq:1.0 ': <type 'str'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/charArray:1.0 ': <type 'str'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/longSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/longArray:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/OnOffStatesSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/OnOffStatesArray:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/garbageSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/garbageArray:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/JunkCharCompSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/JunkCharCompArray:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/JunkBaciPropSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/JunkBaciPropArray:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/complexStructSeq:1.0 ': <type 'tuple'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/complexStructArray:1.0 ': <type 'tuple'>

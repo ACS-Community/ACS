@@ -1,0 +1,159 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeInstallInsRootDir,v 1.2 2010/07/09 15:15:24 rtobar Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# rschmutz  30/09/99  install to VLTTARGET/config/INS_ROOT and $INS_ROOT.
+# rschmutz  19/08/99  created
+#
+
+#************************************************************************
+#   NAME
+#   vltMakeInstallInsRootDir - install INS_ROOT directory files.
+# 
+#   SYNOPSIS
+#   vltMakeInstallInsRootDir <dirList> <VLTTARGET> <protectionMask>
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to generate the vltMakefile.install
+#   section in charge to copy files to the INS_ROOT directory area.
+#   For every directory in <dirList>:
+#
+#   - the rule to copy the directory tree into INS_ROOT and into
+#     VLTTARGET/config/INS_ROOT is generated.  As for any installed
+#     file, the rule is executed only if the is newer. 
+#     The protection mask is applied to leave the file overwritable
+#     by the next installation.
+#
+#
+#   It is not intended to be used as a standalone command.
+#
+#   <dirList>		directories to be copied
+#   <VLTTARGET>		installation target (VLTROOT or INTROOT)
+#   <protectionMask>	how to set the protection of created files
+#
+#
+#   FILE
+#   $VLTROOT/include/vltMakefile
+#
+#   ENVIRONMENT
+#   INS_ROOT		instrument directory area
+#
+#   RETURN VALUES
+#
+#   SEE ALSO
+#   vltMakefile
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# if Linux: disable the bash builtin command 'echo'.
+if [ "`uname`" = "Linux" ]
+then
+    enable -n echo
+elif [ "`uname`" = "$CYGWIN_VER" ]
+then
+    alias echo="echo -e"
+fi
+
+#
+# 1. retrieve parameters
+#
+if [ $# != 3 ]
+then
+    echo "" >&2
+    echo " ERROR:  vltMakeInstallInsRootDir: $*" >&2
+    echo " Usage:  vltMakeInstallInsRootDir <dirList> <VLTTARGET> <protectionMask>" >&2
+    echo "" >&2
+    exit 1
+fi
+
+dirList=${1}
+VLTTARGET=$2
+MASK=$3
+
+
+if [ ! -d $VLTTARGET ]
+then 
+    echo "" >&2
+    echo " ERROR: vltMakeInstallFiles: " >&2
+    echo "          >>$VLTTARGET<< not a valid directory " >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# 2. build target directories
+#
+#    insroot1 = $INTROOT/config/INS_ROOT
+#    insroot2 = $INS_ROOT (if it exists)
+#
+insroot1=$VLTTARGET/config/INS_ROOT
+if [ "$INS_ROOT" != "" -a "$INS_ROOT" != "$insroot1" ]
+then
+    insroot2=$INS_ROOT
+    if [ ! -d $insroot2 ]
+    then 
+	echo "" >&2
+	echo " ERROR: vltMakeInstallInsRootDir: " >&2
+	echo "          >>$INS_ROOT<< not a valid directory " >&2
+	echo "" >&2
+	exit 1
+    fi
+else
+    insroot2=""
+fi
+
+
+#
+# 3. produce the needed targets:
+#
+if [ "$dirList" != "" ]
+then
+    echo "insrootdir_begin:"
+    echo "\t-@echo \"\"; echo \"..INS_ROOT directories:\""
+    echo "\t-\$(AT)if [ ! -d $insroot1 ]; then mkdir $insroot1; fi"
+    echo "install_insrootdir: insrootdir_begin "
+
+    for DIR in $dirList
+    do
+	if [ ! -d $DIR ]
+	then
+            echo "" >&2
+            echo " ERROR: vltMakeInstallInsRootDir: " >&2
+            echo "          >>$DIR<< directory not found " >&2
+            echo "" >&2
+            exit 1
+        fi
+
+	name=`basename $DIR`
+        echo "\t-\$(AT)echo \"\t$name\"; \\"
+        echo "\t      ( cd $DIR ; tar cf - * | ( cd $insroot1 ; tar xf - ) );"
+	if [ "$insroot2" != "" ]
+	then
+            echo "\t-\$(AT)( cd $DIR ; tar cf - * | ( cd $insroot2 ; tar xf - ) );"
+	fi
+    done
+
+    echo "\t-\$(AT)find $insroot1 -type f -user $USER ! -path '*/DETDATA/*' -exec chmod $MASK {} \\;"
+    if [ "$insroot2" != "" ]
+    then
+	# MASK is set to 664 when INTROOT is defined.
+	# We do not want the e.g. instrument user account to be
+	# able to delete files installed by the instrument manager
+	# account, therefore we always use permissions 644 for INS_ROOT.
+	echo "\t-\$(AT)find $insroot2 -type f -user $USER ! -path '*/DETDATA/*' -exec chmod 644 {} \\;"
+    fi
+else
+    echo "insrootdir:"
+    echo "\t-@echo \"\""
+fi
+
+exit 0
+#
+# ___oOo___

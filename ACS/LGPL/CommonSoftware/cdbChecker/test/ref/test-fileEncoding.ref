@@ -1,0 +1,38 @@
+1 - *** Reading required schema files
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
+1 - *** Reading given schema files
+1 - *** Reading given XML files
+1 - *** Getting TargetNamespaces from schema files
+1 - *** Validating Schemas
+1 -     /PATH/good-FE/reqSchemas.xsd[OK]
+1 - *** Validating XML files
+1 -     /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 1:44.
+1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination. Further Carriage Return errors are hidden.
+1 - [Error] CDBChecker exiting. Errors were found
+1 - return code is: 1
+1 - *** Reading required schema files
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
+1 - *** Reading given schema files
+1 - *** Reading given XML files
+1 - *** Getting TargetNamespaces from schema files
+1 - *** Validating Schemas
+1 -     /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 1:44.
+1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination. Further Carriage Return errors are hidden.
+1 - *** Validating XML files
+1 -     /PATH/good-FE/reqSchemas.xml[OK]
+1 - [Error] CDBChecker exiting. Errors were found
+1 - return code is: 1
+1 - *** Reading required schema files
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
+1 - *** Reading given schema files
+1 - *** Reading given XML files
+1 - *** Getting TargetNamespaces from schema files
+1 - *** Validating Schemas
+1 -     /PATH/good-FE/reqSchemas.xsd[OK]
+1 - *** Validating XML files
+1 -     /PATH/good-FE/reqSchemas.xml[OK]
+1 - CDBChecker exiting. No errors found
+1 - return code is: 0

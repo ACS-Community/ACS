@@ -1,0 +1,10 @@
+Local file logger: Cache saved to
+^$
+Logging to ACS log server.
+Running the container with these arguments
+Manager hostname obtained via command line
+ManagerReference obtained via command line
+multicast
+cdbChannelConfigExists
+getCDB
+Bootstrap ORB

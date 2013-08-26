@@ -1,0 +1,9 @@
+#
+# "@(#) $Id: TestList,v 1.76 2003/01/09 17:50:53 vltsccm Exp $"
+# 
+ENVIRONMENT wmod WS
+ENVIRONMENT lmod LCU
+mod1
+mod1.vw
+
+

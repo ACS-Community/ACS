@@ -1,0 +1,65 @@
+#ifndef _JTESTLOG_IDL_
+#define _JTESTLOG_IDL_
+
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+ 
+#include <acscomponent.idl>
+#include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
+
+/** @file contLogTest.idl
+ *  test-log's IDL File
+ */
+
+
+
+module contLogTest
+{
+    typedef sequence<long> LongSeq;	// unbounded sequence of 32-bit integers
+        
+    // a very simple component 
+    interface TestLogLevelsComp : ACS::ACSComponent
+    {
+		/** 
+	 	*  Retrieves the log-levels (hardcoded, etc) of this component.
+	 	*  @return Levels
+	 	*  @htmlonly
+	 	*  <br><hr>
+	 	*  @endhtmlonly
+		 */
+		LongSeq getLevels() raises (ACSErrTypeCommon::CouldntPerformActionEx);
+	    
+		/**
+		 * Logs a series of dummy messages, one for each provided log level.
+		 * The test client can then check what actually was printed to stdout or sent to the Log service,
+		 * to see if log levels were applied correctly.
+		 * @param levels  ACS core levels (e.g. 0, 2, 3, ...) for the messages to be logged.  
+		 */
+		void logDummyMessages(in LongSeq levels)
+			raises (ACSErrTypeCommon::IllegalArgumentEx);	    
+
+    };
+};
+
+#endif

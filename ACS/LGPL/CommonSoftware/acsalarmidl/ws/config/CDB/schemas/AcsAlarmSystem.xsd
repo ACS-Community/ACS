@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  - Alarm System Schema
+  -
+  - Author:
+  -    Francesco Calderini (CERN)
+  -    Klemen Zagar (Cosylab)
+  -
+  - History:
+  -   2005-02-10  CERN  Code given to ESO
+  -   2005-06-13  KZ    Added target namespace (for CDB validation)
+ -->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:AcsAlarmSystem:1.0"
+           xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+	<xs:element name="alarm-definitions">
+		<xs:annotation>
+			<xs:documentation>LASER alarm definitions</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="alarms-to-create" type="alarm-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to create</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="alarms-to-update" type="alarm-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to update</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="alarms-to-remove" type="alarm-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to remove</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="alarm-definition">
+		<xs:annotation>
+			<xs:documentation>LASER alarm definition</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="alarm-definitionType">
+					<xs:attribute name="fault-family" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="255"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="fault-member" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="255"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="fault-code" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:int">
+								<xs:minInclusive value="0"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="source-definition">
+		<xs:annotation>
+			<xs:documentation>LASER alarm source definition</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="source-definitionType">
+					<xs:attribute name="name" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="255"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="category-definition">
+		<xs:annotation>
+			<xs:documentation>LASER alarm category definition</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="category-definitionType">
+					<xs:attribute name="path" type="xs:string" use="required"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="source-definitions">
+		<xs:annotation>
+			<xs:documentation>LASER source definitions</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="sources-to-create" type="source-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to create</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="sources-to-update" type="source-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to update</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="sources-to-remove" type="source-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to remove</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="category-definitions">
+		<xs:annotation>
+			<xs:documentation>LASER category definitions</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="categories-to-create" type="category-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to create</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="categories-to-update" type="category-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to update</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="categories-to-remove" type="category-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to remove</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="alarm-definitionType">
+		<xs:all minOccurs="0">
+			<xs:element name="visual-fields">
+				<xs:annotation>
+					<xs:documentation>FS visual fields</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="system-name">
+							<xs:annotation>
+								<xs:documentation>The system type name</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="255"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="identifier">
+							<xs:annotation>
+								<xs:documentation>The system identification</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="255"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="problem-description">
+							<xs:annotation>
+								<xs:documentation>The system fault description</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="255"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="instant" type="xs:boolean" default="false">
+				<xs:annotation>
+					<xs:documentation>binary/instant FS</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cause" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>FS cause description</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="255"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="action" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>FS action to be taken</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="255"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="consequence" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>FS consequence description</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="255"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="priority" default="0">
+				<xs:annotation>
+					<xs:documentation>FS priority</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="responsible-id">
+				<xs:annotation>
+					<xs:documentation>FS responsible person CERN identifier</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="piquetGSM" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>FS piquet GSM number</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="5"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="help-url" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>FS help information URL</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="255"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="source-name">
+				<xs:annotation>
+					<xs:documentation>FS source name</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="255"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="location" type="locationType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>FS location</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="piquetEmail" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>FS piquet Email address</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="60"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="category-definitionType">
+		<xs:all minOccurs="0">
+			<xs:element name="description">
+				<xs:annotation>
+					<xs:documentation>category description</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="255"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="source-definitionType">
+		<xs:all minOccurs="0">
+			<xs:element name="description">
+				<xs:annotation>
+					<xs:documentation>source description</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="255"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="connection-timeout">
+				<xs:annotation>
+					<xs:documentation>source backup timeout</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="responsible-id">
+				<xs:annotation>
+					<xs:documentation>source responsible person CERN id</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="locationType">
+		<xs:all>
+			<xs:element name="building" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>building number</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="floor" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>floor number</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="room" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>room number</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="4"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="mnemonic" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>building mnemonic</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="255"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="position" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>FS position</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="255"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:element name="reduction-definitions">
+		<xs:annotation>
+			<xs:documentation>LASER reduction relationship definitions</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="links-to-create" type="reduction-link-definition-listType" minOccurs="0"/>
+				<xs:element name="links-to-remove" type="reduction-link-definition-listType" minOccurs="0"/>
+				<xs:element name="thresholds" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="threshold" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:all>
+										<xs:element ref="alarm-definition"/>
+									</xs:all>
+									<xs:attribute name="value" type="xs:int" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="reduction-linkType">
+		<xs:all>
+			<xs:element name="parent">
+				<xs:annotation>
+					<xs:documentation>parent FS</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:all>
+						<xs:element ref="alarm-definition"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="child">
+				<xs:annotation>
+					<xs:documentation>child FS</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:all>
+						<xs:element ref="alarm-definition"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="MULTIPLICITY"/>
+					<xs:enumeration value="NODE"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="mask-definitions">
+		<xs:annotation>
+			<xs:documentation>LASER mask definitions</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="masks-to-create" type="mask-definition-listType" minOccurs="0"/>
+				<xs:element name="masks-to-remove" type="mask-definition-listType" minOccurs="0"/>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="mode-maskType">
+		<xs:sequence>
+			<xs:element ref="alarm-definition"/>
+		</xs:sequence>
+		<xs:attribute name="machine-mode" use="required">
+			<xs:annotation>
+				<xs:documentation>the accelerator mode</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="255"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="mode-mask" type="mode-maskType">
+		<xs:annotation>
+			<xs:documentation>LASER alarm machine mode mask definition</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="maintenance-maskType">
+		<xs:sequence>
+			<xs:element ref="alarm-definition"/>
+		</xs:sequence>
+		<xs:attribute name="from" type="xs:date" use="required"/>
+		<xs:attribute name="to" type="xs:date" use="required"/>
+	</xs:complexType>
+	<xs:element name="maintenance-mask" type="maintenance-maskType">
+		<xs:annotation>
+			<xs:documentation>LASER alarm maintenance mask definition</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="reduction-link" type="reduction-linkType">
+		<xs:annotation>
+			<xs:documentation>LASER reduction relationship link</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="alarm-definition-list" type="alarm-definition-listType">
+		<xs:annotation>
+			<xs:documentation>LASER alarm definition list</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="alarm-definition-listType">
+		<xs:sequence>
+			<xs:element ref="alarm-definition" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="category-definition-list" type="category-definition-listType">
+		<xs:annotation>
+			<xs:documentation>LASER category definitions list</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="category-definition-listType">
+		<xs:sequence>
+			<xs:element ref="category-definition" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="source-definition-list" type="source-definition-listType">
+		<xs:annotation>
+			<xs:documentation>LASER alarm source definitions list</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="source-definition-listType">
+		<xs:sequence>
+			<xs:element ref="source-definition" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="mask-definition-list" type="mask-definition-listType">
+		<xs:annotation>
+			<xs:documentation>LASER alarm mask definitions list</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="mask-definition-listType">
+		<xs:sequence>
+			<xs:element ref="maintenance-mask" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="mode-mask" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="reduction-link-definition-list" type="reduction-link-definition-listType">
+		<xs:annotation>
+			<xs:documentation>LASER alarm reduction relationship definitions list</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="reduction-link-definition-listType">
+		<xs:sequence>
+			<xs:element ref="reduction-link" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="alarm-category-definitions">
+		<xs:annotation>
+			<xs:documentation>LASER alarm-category link definitions</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="category-links-to-create" type="alarm-category-link-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to create</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="category-links-to-remove" type="alarm-category-link-definition-listType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>definitions to remove</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="alarm-category-link" type="alarm-category-linkType">
+		<xs:annotation>
+			<xs:documentation>LASER alarm-category link definition</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="alarm-category-linkType">
+		<xs:all>
+			<xs:element name="category">
+				<xs:annotation>
+					<xs:documentation>the category</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:all>
+						<xs:element ref="category-definition"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="alarm">
+				<xs:annotation>
+					<xs:documentation>the fault state</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:all>
+						<xs:element ref="alarm-definition"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="alarm-category-link-definition-listType">
+		<xs:sequence>
+			<xs:element ref="alarm-category-link" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="alarm-category-link-definition-list" type="alarm-category-link-definition-listType">
+		<xs:annotation>
+			<xs:documentation>LASER alarm-category link definitions list</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>
+

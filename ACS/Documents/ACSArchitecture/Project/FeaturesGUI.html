@@ -1,0 +1,230 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<meta name="Template" content="C:\Program Files\MSOffice\Office\html.dot">
+
+<meta name="GENERATOR" content="Mozilla/4.79 [en] (Windows NT 5.0; U) [Netscape]">
+
+<title>FeaturesGUI</title>
+
+<style><!--
+
+.Normal
+
+	{font-size:12.0pt;
+
+	font-family:"Times New Roman";}
+
+-->
+
+</style>
+
+</head>
+
+<body link="#0000FF" vlink="#800080" lang="EN-US" class="Normal" bgcolor="#FFFFFF">
+
+<h2> <a NAME="GraphicalUserInterfaceTools"></a>User Interface Libraries and Tools</h2>
+
+<h3> The Java language<a href="ReferenceDocuments.html#RD06">[RD06]</a> is the 
+
+  current choice for GUI development, in particular coupled with the SWING graphical 
+
+  library</h3>
+
+<h4> A rich set of widgets is part of the standard package.</h4>
+
+<h4> Java is highly platform independent <a href="ReferenceDocuments.html#RD01">[RD01 
+
+  - 12.1.1 Portability]</a>. GUIs are platform independent and can be developed 
+
+  on any system and run on any other system<a href="ReferenceDocuments.html#RD01">[RD01 
+
+  - 12.1.2 Extended Portability]</a>.</h4>
+
+<h4> Java Applets can run inside Web Browsers for the deployment of low complexity 
+
+  GUIs on remote sites <a href="ReferenceDocuments.html#RD01">[RD01 - 12.1.2 Extended 
+
+  Portability]</a>.</h4>
+
+<h4> Both Java and Web Browsers have good CORBA support. JacORB<a href="ReferenceDocuments.html#RD34"> 
+
+  [RD34]</a> is the ORB currently used to provide CORBA support in Java.</h4>
+
+<h3> ACS provides in addition a standard set of tools for the development of user 
+  interfaces<a href="ReferenceDocuments.html#RD01">[RD01 - 12.1.3 Tools]</a>. 
+  This includes:</h3>
+
+<h4> Integrated Development Environment. A COTS Java Integrated Development Environment, 
+
+  including a GUI builder, has to be selected. The current choice is Eclipse<a href="ReferenceDocuments.html#RD35">[RD35]</a>, 
+
+  that is a multi-platform, free project, with the Eclipse Visual Editor project 
+
+  plugin. There is no point in developing a proprietary tool.</h4>
+
+<h4> Standard set of widgets for the implementation of applications with common 
+  look and feel. The adoption of the Characteristic Component concepts allows 
+  reuse of many Java Beans developed in the particle accelerator community specifically 
+  for the implementation of control systems. In particular the ABeans developed 
+  for ANKA<a href="ReferenceDocuments.html#RD04">[RD04]</a> provide a set of widgets 
+  for ACS aware of of the Characteristic Component design pattern. ABeans are 
+  integrated in Eclipse <a href="ReferenceDocuments.html#RD35">[RD35]</a> as a 
+  plugin that makes use of the Eclipse Visual Editor. Performance problems with 
+  the Abeans implementation limit their usage to small GUI applications, with 
+  a limited number of widgets.</h4>
+
+<h4> Standard Java class libraries for the integration with all services provided 
+
+  by the ACS.</h4>
+
+<h3>The ALMA Executive subsystem has designed a standard GUI user interface architecture 
+  that allows to implement GUI plugins for the main Executive GUI.</h3>
+<h3>Plotting will be an important element in GUIs (see also <a href="ReferenceDocuments.html#RD45">[RD45 
+  - EVLA Engineering Software Requirements, 4 Plotting]</a><a href="ReferenceDocuments.html#RD46">[RD46 
+  - EVLA Array Operations Software Requirments, 3.5 Plotting]</a>. ACS integrates 
+  an advanced Java GUI class library <a href="ReferenceDocuments.html#RD45">[RD47 
+  - JFreeChart]</a>. Plotting widgets are integrated with ABeans for the development 
+  of applications and are available with all tools capable of monitoring values, 
+  like Object Explorer.</h3>
+
+<h3> These Java and Python GUI tools allow developers and end-users to design 
+
+  and create their own display <a href="ReferenceDocuments.html#RD46">[RD46 - 
+
+  EVLA Array Operations Software Requirments, 2.8 Display Builder]</a>.</h3>
+
+<h3>All GUIs for generic ACS applications, (Object Explorer, logMonitor...) will 
+  be developed using ACS standard GUI libraries <a href="ReferenceDocuments.html#RD01">[RD01 
+  - 12.1.5 ACS GUIs]</a>. Tools, prototype and engineering GUIs can be implemented 
+  in Python.</h3>
+<h3>GUIs shall not implement any control logic<a href="ReferenceDocuments.html#RD01">[RD01 
+  - 12.1.4 Modularity]</a>. They should be dummy applications that simply send 
+  commands to Components and access Properties of Characteristic Components for 
+  display and update. Any action performed through a GUI shall also be available 
+  using command line commands, script or simple programs and no GUI shall be strictly 
+  required to drive the system. </h3>
+
+<h3> Online documentation and help</h3>
+
+<h4>Integration with the Web through the usage of an HTML/XML Browser provides 
+
+  access to online documentation <a href="ReferenceDocuments.html#RD45">[RD45 
+
+  - EVLA Engineering Software Requirements, 5 Documentation and Help]</a><a href="ReferenceDocuments.html#RD46">[RD46 
+
+  - EVLA Array Operations Software Requirments, 1.4 Online Help]</a>.</h4>
+
+<h4>Java help<br>
+
+  Online help systems, for example for graphical user interfaces, shall use he 
+
+  the JavaHelp extension (http://java.sun.com/products/javahelp/index.jsp): help 
+
+  pages are written in html and they are rendered inside the application by the 
+
+  help browser that it pard of the Java Development Kit (jhall-2.0_02.jar). This 
+
+  allows to deploy help pages locally or throught the web and, the other way around, 
+
+  to reference and access web pages from the application's help browser. </h4>
+
+<blockquote> 
+
+  <ul>
+
+    <ul>
+
+      <li>help location: an application passes the html resources to the help 
+
+        browser when it creates it. A webserver would be used if no help resources 
+
+        exists locally</li>
+
+      <li> context sensitive help: GUI widgets providing context help shall be 
+
+        named using setName(&quot;abc&quot;) to allow identifying the proper help 
+
+        topic for them dynamically<br>
+
+      </li>
+
+    </ul>
+
+  </ul>
+
+</blockquote>
+
+<h4>Printed help and documentation<br>
+
+  If the same document shall provide both online help and printed documentation, 
+
+  it is often convenient to write it in a higher level, more printing friendly, 
+
+  format than plain html, as long as a good conversion to PDF for printing and 
+
+  HTML for online usage are available and can be made automatic through Makefile. 
+
+</h4>
+
+<h4>A good and proven solution is Latex (currently used to produce OT documentation):</h4>
+
+<h4>OT help pages are written in latex. Before each OT user test, Alan generates 
+  a pdf file from them which is good to download and printout.</h4>
+
+<ul>
+
+  <ul>
+
+    <li>all help pages are kept together with the source code in the UserDoc directory</li>
+
+    <li>the makefile take care of processing them to produce documentation: 
+
+      <ul>
+
+        <li>it runs latex2html</li>
+
+        <li> it converts the postscript pictures to jpg</li>
+
+        <li> it creates the meta-information needed for the Java Help Library 
+
+          (TOC, etc.) dynamically<br>
+
+          the rest is just the same as in the commandcenter</li>
+
+        <li> packs them together in a jar file xxxHelp.jar</li>
+
+      </ul>
+
+    </li>
+
+  </ul>
+
+</ul>
+
+<p></p>
+
+<h4>The Java Web Start<a href="ReferenceDocuments.html#RD36">[RD40]</a> technology 
+  is used to deploy and update GUIs and more in general Java applications on remote 
+  sites without requiring installation of specific and heavy software packages. 
+  Using this technology, GUIs do not run inside the Web Browser but as stand-alone 
+  applications.</h4>
+<h4> LabView<a href="ReferenceDocuments.html#RD13">[RD13]</a> can be integrated 
+
+  with ACS and be used, for example, as a platform to develop engineering GUIs. 
+
+  It is possible to implement ACS functions in LabView applications via Code Interface 
+
+  Nodes (CIN). In this way LabVIEW GUIs can control and interact with standard 
+
+  ACS Components.</h4>
+
+</body>
+
+</html>
+

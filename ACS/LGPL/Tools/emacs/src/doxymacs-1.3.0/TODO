@@ -1,0 +1,10 @@
+$Id: TODO,v 1.26 2002/02/27 10:32:29 vltsccm Exp $
+
+lisp/doxymacs.el:
+ - fix all FIXMEs (of course)
+ - other stuff?
+
+README:
+INSTALL:
+ - better end-user documentation
+

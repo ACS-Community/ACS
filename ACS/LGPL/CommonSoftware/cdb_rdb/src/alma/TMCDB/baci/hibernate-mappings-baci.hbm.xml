@@ -1,0 +1,99 @@
+<?xml version="1.0"?> 
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping package="alma.TMCDB.baci" auto-import="false"> 
+
+  <class name="TypelessProperty" table="PropertyType" dynamic-update="true">
+
+    <id name="PropertyId" column="PropertyTypeId" access="field" />
+    <discriminator column="TableName" type="string"/> 
+
+    <property name="AssemblyName" column="AssemblyName" access="field" />
+    
+    <property name="PropertyName" column="PropertyName" access="field" />
+
+    <property name="format" column="GraphFormat"/> 
+    <property name="description" column="GraphTitle"/> <!-- or Description -->
+    <property name="units" column="Units"/> 
+
+    <property name="default_timer_trig" column="SamplingInterval"/> 
+    <property name="archive_min_int" column="SamplingInterval" insert="false" update="false"/> 
+    <property name="archive_max_int" column="SamplingInterval" insert="false" update="false"/> 
+
+	<subclass name="ROdouble" discriminator-value="DoubleProperty"> 
+	    <property name="graph_min" column="GraphMin"/> 
+    	<property name="graph_max" column="GraphMax"/> 
+	</subclass> 
+
+	<subclass name="ROfloat" discriminator-value="FloatProperty"> 
+	    <property name="graph_min" column="GraphMin"/> 
+    	<property name="graph_max" column="GraphMax"/> 
+	</subclass> 
+
+	<subclass name="ROlong" discriminator-value="IntegerProperty"> 
+	    <property name="graph_min" column="GraphMin"/> 
+    	<property name="graph_max" column="GraphMax"/> 
+	</subclass> 
+
+	<subclass name="ROboolean" discriminator-value="BooleanProperty"> 
+	    <property name="graph_min" column="GraphMin"/> 
+    	<property name="graph_max" column="GraphMax"/> 
+	</subclass> 
+
+	<subclass name="ROenum" discriminator-value="EnumProperty"> 
+	    <property name="graph_min" column="GraphMin"/> 
+    	<property name="graph_max" column="GraphMax"/> 
+	</subclass> 
+
+  </class>
+  
+  <class name="BACIPropertyType" table="BACIProperty" dynamic-update="true">
+
+    <id name="PropertyId" column="BACIPropertyId" access="field" />
+    <property name="PropertyName" access="field" />
+    <property name="ComponentId" access="field" />
+    <property name="Data" access="field" />
+    
+    <property name="description" />
+    <property name="format" />
+    <property name="units" />
+    <property name="resolution" />
+    <property name="archive_priority" />
+    <property name="archive_min_int" />
+    <property name="archive_max_int" />
+    <property name="archive_suppress" />
+    <property name="archive_mechanism" />
+    <property name="default_timer_trig" />
+    <property name="min_timer_trig" />
+    <property name="initialize_devio" />
+    <property name="min_delta_trig" />
+    <property name="default_value" />
+    <property name="graph_min" />
+    <property name="graph_max" />
+    <property name="min_step" />
+    <property name="archive_delta" />
+    <property name="archive_delta_percent" />
+    <property name="alarm_high_on" />
+    <property name="alarm_low_on" />
+    <property name="alarm_high_off" />
+    <property name="alarm_low_off" />
+    <property name="alarm_timer_trig" />
+    <property name="min_value" />
+    <property name="max_value" />
+    <property name="bitDescription" />
+    <property name="whenSet" />
+    <property name="whenCleared" />
+    <property name="statesDescription" />
+    <property name="condition" />
+    <property name="alarm_off" />
+    <property name="alarm_on" />
+    <property name="alarm_fault_family" />
+    <property name="alarm_fault_member" />
+    <property name="alarm_level" />
+  </class>
+  
+
+</hibernate-mapping> 

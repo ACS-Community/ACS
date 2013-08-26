@@ -1,0 +1,38 @@
+RELEASE_NOTES
+
+Module: 
+  vlt - general development utilities (merge of vltMake and vltMan)
+
+Date: 
+ 
+From: 
+  GIF
+
+Version: 
+  "@(#) $Id: RELEASE_NOTES,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+
+Documents:
+   VLT-PRO-ESO-10000-0228, issue 1.0 10/03/93 --- Programming Standards 
+   man pages 
+   
+Configuration Requirements:
+  - GNU make 3.70
+
+Tested:
+    manual test limited to added or modified features.
+
+Cost:
+    - 2 h
+
+Change Summary:
+
+   NEW FEATURES:
+       - none
+
+   BUG FIXING:
+       - handle "-L" in directory names part of the vpath for libraries
+       
+FILES:
+vlt/include/vltMakefile.all MODIFIED
+
+                    ___oOo___

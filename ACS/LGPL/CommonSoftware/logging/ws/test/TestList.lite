@@ -1,0 +1,10 @@
+SOURCE loggingTATEnvironment
+1 testNoLogging         "testNoLogging"
+2 testLogger            "testLogger"
+3 loggingXMLParserTest	"loggingXMLParserTest"
+4 testMacros		"testMacros"
+5 testGenericLogger     "testGenericLogger"
+6 testLoggable          "testLoggable"
+7 testACS_LOG_STDOUT    "testACS_LOG_STDOUT"
+8 testLoggingProxy      "testLoggingProxy"
+9 testLog4cpp			"testLog4cpp"

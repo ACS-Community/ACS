@@ -1,0 +1,50 @@
+<html>
+<head>
+<title>Features Daemons</title>
+<style>
+<!--
+.Normal
+	{font-size:12.0pt;
+	font-family:"Times New Roman";}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+<h2>Daemons</h2>
+<p>All ACS services and containers described in the previous chapters can be started and stopped by executing scripts provided by ACS. To execute these scripts directly, the user must be logged in on the host machine, or use the remote-ssh features provided by the ACS command center or the Alma Operator Master Client. Running ACS scripts in this way is still recommended for development and modular testing, but any large scale testing or real operations of the system should start ACS services and containers in a different way, using the ACS daemons. </p>
+<p>There are two types of daemons, one for managing ACS services, and one for managing ACS containers. They must be started before ACS, where &quot;ACS&quot; now refers to the services and containers only, excluding the daemons which of course are also part of ACS in terms of software development and packaging. The starting can be done as part of the host machine's boot sequence, or later using some initialization framework outside of ACS. The ACS daemons are implemented as Corba aware application, that are not daemons in the sense of the operating system.</p>
+<p>An ACS daemon only manages ACS services / containers on its local host machine, which means that a daemon must be running on every machine that should run ACS services and/or containers. There is at most one instance per daemon type running, handling all ACS instances ($ACS_INSTANCE numbers). </p>
+<p>By default an ACS daemon can only be shut down by killing the process, which ensures protection if a privileged user account is used to start the daemon. As of ACS 8.0.0, it is not yet possible to have ACS services or containers started as a different OS user than the one who started the daemon; this feature may have to be added in the future. </p>
+<p>The daemons will monitor their services or containers, and will raise alarms and/or restart the service in case of failures. </p>
+<h3>Services daemon</h3>
+<ul>
+  <li>A services daemon can start, monitor, and stop one or more of the ACS services.</li>
+  <li>Services can be run on different machines, in any combination, e.g. CDB and manager on one machine, the Log service on another, and so on</li>
+  <li>The daemons offer two APIs:
+    <ul>
+      <li>A &quot;direct&quot; API that lets the client decide what services to start in which order. The client must connect to the daemons on all machines it wants to use. The daemon does not check the order in which services are started, nor illegal attempts to start a singleton service twice. </li>
+      <li>A more sophisticated API that builds up or takes an existing XML based services description, and then processes it. Here the daemon knows about service dependencies and will start services in correct order. The client can connect to the services daemon on an arbitrarily selected machine, and sends the service requests for all machines; the daemon will contact other daemons as needed. </li>
+    </ul>
+  </li>
+  <li>Internally the services daemon consists of separate processes:
+    <ul>
+      <li>One main process that is the contact point for the daemon clients</li>
+      <li>Per type of service it runs one &quot;Imp&quot; process to which it delegates the actual work. For example, if a client requests to run the Corba naming service, the CDB, and 5 different Notify Services on a host machine, then a total of 3 Imps get created. </li>
+      <li>This design makes the daemon more robust, as the Imps can be restarted transparently. It also allows for specialized Imps, e.g. an Imp for running the ACS manager, which is itself written in Java in order to probe the manager's threading situation over JMX calls.</li>
+    </ul>
+  </li>
+  <li>The services daemon is started with the command <code>acsservicesdaemon</code>. When started with the <code>--unprotected</code> option, the services daemon can be shut down using the command <code>acsservicesdaemonStop</code>. This is mostly useful when using daemons as part of automated tests, that clean up after themselves. 
+    </p>
+</li>
+</ul>
+<h3>Container daemon</h3>
+<ul>
+  <li>A container daemon can start and stop any number of containers on its own host. </li>
+  <li>In the future it should also monitor containers.</li>
+  <li>A container daemon is required to be running if an ACS container is configured in the CDB to be started automatically by the manager (at ACS start, or upon direct request to a component that should run in that container, or upon indirect request by an autostart component configured to run in that container).</li>
+</ul>
+</body>
+
+</html>
+

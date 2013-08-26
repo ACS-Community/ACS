@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP project components</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<title>Explorer</title>
+		<description>
+		 <UL>[ to be filled]</UL>
+		</description>
+	</section>
+	
+	<section>
+		<title>Cycle selector</title>
+		<description>
+		 <UL>[ to be filled]</UL>
+		</description>
+	</section>
+  
+</document>
+

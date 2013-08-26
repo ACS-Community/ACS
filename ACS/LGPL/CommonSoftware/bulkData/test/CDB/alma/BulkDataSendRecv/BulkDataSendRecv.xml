@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Example Configuration Database Entry for a BulkDataSendRecv
+   -
+   - Author: oat
+   -
+   - History:
+   -   2004-11-23  oat  Created
+  -->
+<BulkDataSendRecv xmlns="urn:schemas-cosylab-com:BulkDataSendRecv:1.0"
+	  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+	  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  send_protocols="TCP"
+	  recv_protocols="TCP=${HOST}:13000/TCP/TCP/TCP"/>
+
+

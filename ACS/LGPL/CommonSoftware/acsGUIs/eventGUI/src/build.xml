@@ -1,0 +1,84 @@
+<project name="alma.acs.rcp.eventGUI" default="build">
+	<property environment="env" />
+	<property name="ALMASW_INSTDIR" value="${env.ALMASW_INSTDIR}" />
+	<property name="project_loc" location=".." />
+	<property name="buildDirectory" location="${project_loc}/object/headlessTemp"/>
+	<property file="build.properties" />
+	<property file="project.properties" />
+	<property name="pdeBuildPluginVersion" value="3.8.2.v20121114-140810" />
+	<property name="equinoxLauncherPluginVersion" value="1.3.0.v20120522-1813" />
+	<property name="eclipseLocation" value="${ALMASW_INSTDIR}/Eclipse4/SDKandDeltaPack/eclipse" />
+
+	<!--This target is responsible for cleaning up the build-directory -->
+	<target name="clean">
+		<delete dir="${buildDirectory}" />
+	</target>
+
+	<target name="init">
+		<echo>basedir = ${basedir}</echo>
+		<mkdir dir="${buildDirectory}" />
+		<mkdir dir="${buildDirectory}/plugins" />
+		<mkdir dir="${buildDirectory}/features" />
+		<mkdir dir="${buildDirectory}/features/${pluginID}" />
+		<copy todir="${buildDirectory}/plugins">
+			<fileset dir="${basedir}/../..">
+				<include name="eventGUI/**" />
+				<exclude name="eventGUI/test/**" />
+				<exclude name="eventGUI/object/**" />
+				<exclude name="eventGUI/bin/**" />
+				<exclude name="eventGUI/rtai/**" />
+				<exclude name="eventGUI/idl/**" />
+			</fileset>
+		</copy>
+		<copy todir="${buildDirectory}/features/${pluginID}">
+			<fileset dir="features">
+				<include name="*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- 
+		Create on the fly a plugin that encapsulates the ACS jars. 
+		The script acsPluginBuilder comes from ACS/LGPL/CommonSoftware/acsGUIs/acsEclipseUtils/ 
+		TODO: Merge this with the existing jarplugin used for developement in Eclipse .
+	--> 
+	<target name="createJarsPlugin">
+		<exec executable="acsPluginBuilder">
+			<!-- -l: the jar files are linked (as opposed to included) in the plugin -->
+			<arg value="-l" />
+			<!-- Name of the jar plugin -->
+			<arg value="alma.acs.rcp.jars_2.0.0" />
+			<!-- the destination folder of the created plugin of jars -->
+			<arg value="${buildDirectory}/plugins" />
+			<!-- List of ACS jars, comes from project.properties -->
+			<arg value="${acs.jars.required}" />
+		</exec>
+	</target>
+
+	<!--
+		This target actually executes the PDE Build process by launching the 
+		Eclipse antRunner application.
+		TODO: Cannot this generate a feature on the fly, so that we don't need the feature.xml file?
+	-->
+	<target name="pde-build">
+		<echo>basedir         = ${basedir}</echo>
+		<echo>eclipseLocation = ${eclipseLocation}</echo>
+		<echo>buildDirectory  = ${buildDirectory}</echo>
+		<java classname="org.eclipse.equinox.launcher.Main" fork="true" failonerror="true" maxmemory="512m" timeout="120000">
+			<arg value="-application" />
+			<arg value="org.eclipse.ant.core.antRunner" />
+			<arg value="-buildfile" />
+			<arg value="${eclipseLocation}/plugins/org.eclipse.pde.build_${pdeBuildPluginVersion}/scripts/productBuild/productBuild.xml" />
+			<arg value="-Dtimestamp=${timestamp}" />
+			<arg value="-DbuildDirectory=${buildDirectory}" />
+			<arg value="-DbaseLocation=${eclipseLocation}" />
+			<classpath>
+				<pathelement location="${eclipseLocation}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherPluginVersion}.jar" />
+			</classpath>
+		</java>
+	</target>
+
+
+	<!--This target defines the run-order of the targets-->
+	<target name="build" depends="clean, init, createJarsPlugin, pde-build" />
+</project>

@@ -1,0 +1,19 @@
+##########################################################
+# This file contains the change log of
+# the CVS ACS/Documents archive
+# used to generate automatically the
+# documentation in the ACS web pages.
+#
+# From the list of changes described here
+# you should be able to easily find out what documents
+# have been updated since you looked the last time
+# to the ACS documentation.
+#
+# We know that preducing a list of changes directly 
+# for the ACS documentation page would be nicer
+# for you.
+# But with the web technoology we are currently using
+# this is for us the simplest and cheapest way to
+# provide you with "almost" the same information.
+#
+##########################################################

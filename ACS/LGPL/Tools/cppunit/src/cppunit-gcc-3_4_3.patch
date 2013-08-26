@@ -1,0 +1,12 @@
+diff -Naur tmp_unpack/cppunit-1.10.2.orig/examples/hierarchy/ChessTest.h cppunit-1.10.2/examples/hierarchy/ChessTest.h
+--- tmp_unpack/cppunit-1.10.2.orig/examples/hierarchy/ChessTest.h	2002-07-10 18:50:02.000000000 +0000
++++ cppunit-1.10.2/examples/hierarchy/ChessTest.h	2005-11-17 23:15:49.833418936 +0000
+@@ -16,7 +16,7 @@
+   
+   void testNumberOfPieces()
+   { 
+-    CPPUNIT_ASSERT( m_game->getNumberOfPieces () == 32 );
++    CPPUNIT_ASSERT( BoardGameTest<GAMECLASS>::m_game->getNumberOfPieces () == 32 );
+   }
+ };
+ 

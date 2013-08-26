@@ -1,0 +1,26 @@
+1 - ----------T--:--:--.--- ERROR [acsStop] The lock directory 'something' does not exist!
+1 - ----------T--:--:--.--- INFO [acsStop] Will continue trying to shutdown ACS although containers cannot be stopped.
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine manager's process ID.
+1 - ----------T--:--:--.--- INFO [acsAlarmService] Stopping the AlarmService
+1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=0'
+1 - ----------T--:--:--.--- INFO [acsStop] Shutting down containers...
+1 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=0'
+1 - ----------T--:--:--.--- INFO [acsStop] Stopping Manager
+1 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Stopping the CDB
+1 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine the naming service's process ID.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine  notification service's process ID.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine Logging notification service's process ID.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine Archive notification service's process ID.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine Alarm notification service's process ID.
+1 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine the logging service's process ID.
+1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine the interface repository's process ID.
+1 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine acsLogSvc's process ID.
+1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.0

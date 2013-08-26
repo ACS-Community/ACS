@@ -1,0 +1,45 @@
+#! /bin/sh
+ 
+# History
+# --------
+# 2005-05 : mschilli : added to ACS
+# 2004-02 : mschilli : created
+# 
+
+if [ x$1 == x"-h" ] || [ x$1 == x"--help" ] || [ x$1 == x"-help" ] ; then
+	echo "Prints info about security signatures of jarfiles"
+	echo "Usage: `basename $0`  [jarfile]"
+	echo "       If invoked with no argument will scan the current directory tree"
+	exit
+fi
+
+
+if [ x$1 == "x" ] ; then
+	echo Scanning all jars in this directory tree for signatures...
+	find -name "*.jar" -exec $0 {} \; | sort
+	exit
+fi
+
+
+
+CERTNAMES=`unzip -l $1 | grep "META-INF" | cut -d "/" -f 2 | grep "\.SF" | cut -d "." -f 1`
+CERTNUMBER=`echo $CERTNAMES | wc -w`
+
+echo $CERTNUMBER \($CERTNAMES\) in $1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

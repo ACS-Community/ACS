@@ -1,0 +1,11 @@
+#! /bin/bash
+
+PORT_STR=`acsstartupNotifyPort $*`
+if [ "X" != "X$PORT_STR" ]
+then
+  # return value is "offset"
+  RET_VAL=`echo "$PORT_STR%100-20" | bc`
+  exit $RET_VAL 
+else
+  exit -1
+fi

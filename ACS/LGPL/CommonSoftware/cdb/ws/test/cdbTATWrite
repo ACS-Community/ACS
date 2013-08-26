@@ -1,0 +1,25 @@
+#! /bin/bash
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+
+#setup the Container to change
+CDB_DIR=`pwd`/CDB-MIX
+cp -r case-files/MACI/Containers/OnDemandContainer $CDB_DIR/CDB/MACI/Containers
+
+cdbTATPrologue $CDB_DIR
+ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
+
+CDB_PORT=`sed -n 1'p' $ACS_TMP/.cdbport`
+
+#perform the operation
+#cdbWrite MACI/Containers/OnDemandContainer/LoggingConfig minLogLevel 1 -d corbaloc\:\:$HOST\:$CDB_PORT/CDB
+cdbWrite MACI/Containers/OnDemandContainer LoggingConfig/minLogLevel 1 -d corbaloc\:\:$HOST\:$CDB_PORT/CDB
+#check if it is right
+diff $CDB_DIR/CDB/MACI/Containers/OnDemandContainer/OnDemandContainer.xml  case-files/MACI/Containers/OnDemandContainer/OnDemandContainer.xml
+
+#go back to normal
+rm -rf  $CDB_DIR/CDB/MACI/Containers/OnDemandContainer
+
+cdbTATEpilogue > cdbTATEpilogue.log 2>&1
+cdbTATPrologue > cdbTATPrologue.log 2>&1
+
+

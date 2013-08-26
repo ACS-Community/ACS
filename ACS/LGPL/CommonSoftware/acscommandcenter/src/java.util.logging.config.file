@@ -1,0 +1,97 @@
+############################################################
+# Java Logging Configuration File
+#
+# Sample usage: java -Djava.util.logging.config.file=(this file's path and name)
+#           or: export JAVA_OPTIONS="-Djava.util.logging.config.file=(this file's path and name)"
+#
+# Note: You must specify the full path - you cannot use the tilde or environment variables
+#
+############################################################
+
+
+
+############################################################
+#  	Global properties
+############################################################
+
+###
+### "Handlers" specifies a comma separated list of log Handler 
+### classes.  These handlers will be installed during VM startup.
+### Note that these classes must be on the system classpath.
+###
+handlers= java.util.logging.ConsoleHandler
+
+###
+### To also add the FileHandler, use the following line instead.
+###
+#handlers= java.util.logging.FileHandler, java.util.logging.ConsoleHandler
+
+###
+### Default global logging level.
+### This specifies which kinds of events are logged across
+### all loggers.  For any given facility this global level
+### can be overriden by a facility specific level
+### Note that the ConsoleHandler also has a separate level
+### setting to limit messages printed to the console.
+###
+.level=ALL
+
+
+############################################################
+# Handler specific properties.
+# Describes specific configuration info for Handlers.
+############################################################
+
+###
+### Which formatting and level to use on the console
+###
+java.util.logging.ConsoleHandler.formatter = java.util.logging.SimpleFormatter
+java.util.logging.ConsoleHandler.level = ALL
+
+
+###
+### Default file output is in user's home directory.
+###
+java.util.logging.FileHandler.pattern = %h/java%u.log
+java.util.logging.FileHandler.limit = 50000
+java.util.logging.FileHandler.count = 1
+java.util.logging.FileHandler.formatter = java.util.logging.XMLFormatter
+
+
+############################################################
+# Facility specific properties.
+# Provides extra control for each logger.
+############################################################
+
+###
+### Which levels to use for the various single loggers.
+### Commented out entries automatically inherit their
+### log level from their parent entry, for instance
+### "alma.techno.util.level" inherits from "alma.techno.level"
+###
+alma.acs.commandcenter.level=ALL
+
+
+
+
+############################################################
+#    Other (application-specific) logging properties
+############################################################
+
+
+###
+### There are no other logging properties (yet) for the commandcenter
+###
+
+
+
+
+##############################################################
+#   Java 1.5 writes logs like a lunatic - This suppresses most
+##############################################################
+
+java.awt.level=SEVERE
+javax.swing.level=SEVERE
+sun.awt.level=SEVERE
+
+

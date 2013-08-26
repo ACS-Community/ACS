@@ -1,0 +1,177 @@
+#! /bin/bash
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupAcsInstance
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: acsList,v 1.10 2009/06/29 08:45:37 msekoran Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# mschilli 2004-04-16 created
+#
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_BASEPORT=
+CL_VERBOSE=
+CL_HELP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,baseport:,verbose
+SHORTOPTS=hb:v
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Displays information about one or all currently running Acs instances"
+   echo ""
+	echo "Usage: `basename $0` [OPTIONS]  "
+	echo "Options: "
+	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to use"
+	echo "   -v | -verbose                  print verbose info about instances"
+   echo "   -h | -help                     prints this help and exits"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--baseport)         CL_BASEPORT=$2 ; shift ;;
+	-b)                 CL_BASEPORT=$2 ; shift ;;
+	--verbose)          CL_VERBOSE=true ;;
+	-v)                 CL_VERBOSE=true ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+# prints detailed info about one instance directory
+function printDetails() {
+
+	cdb=none
+	manager=none
+	nContainers=0
+	containers=
+	notifys=
+	nNotifys=0
+        
+	
+	if [ -d `getInstanceDirName $1` ] ; then 
+		pushd `getInstanceDirName $1` >/dev/null
+		
+	   if [ -e pids/ACS_CDB_PID ] ; then
+	      cdb=yes
+		fi
+	   
+	   if [ -e pids/ACS_MANAGER_PID ] ; then
+	      manager=yes
+		fi
+		
+		if [ -e USED_CONTAINER_PORTS ] ; then
+		   if [ ! -r USED_CONTAINER_PORTS ] ; then
+		   	containers="(can't read)"
+		  	else
+		      nContainers=`cat USED_CONTAINER_PORTS | wc -l`
+		      containers=`cat USED_CONTAINER_PORTS | cut -d " " -f 1`
+		   fi
+		fi
+
+		if [ -e USED_NOTIFY_PORTS ] ; then
+		   if [ ! -r USED_NOTIFY_PORTS ] ; then
+                        notifys="(can't read)"
+                        else
+                      nNotifys=`cat USED_NOTIFY_PORTS | wc -l`
+                      notifys=`cat USED_NOTIFY_PORTS | cut -d " " -f 1`
+		   fi
+		fi
+
+		echo Cdb: $cdb
+		echo Manager: $manager
+		echo $nContainers Container\(s\): $containers
+		echo $nNotifys Notify service\(s\): $notifys
+
+		popd >/dev/null
+	
+	else
+		echo "$1: doesn't exist"
+	fi
+
+}
+
+# prints basic info and checks verbosity level
+function printInfo() {
+
+	ls -l -d `getInstanceDirName $1` 2>/dev/null	
+
+   if [ "$CL_VERBOSE" ] ; then
+      printDetails $1
+   fi
+   
+}
+
+
+
+
+
+# if baseport was specified show only info about this instance
+# else show info about all instances
+
+if [ "$CL_BASEPORT" ] ; then
+	printInfo $CL_BASEPORT
+
+else
+   i=0
+   while [ $i != 10 ] ; do
+
+	   if [ "$CL_VERBOSE" ] ; then
+	      echo -------
+		fi
+   	printInfo $i
+   	let i=i+1
+   done
+
+   if [ "$CL_VERBOSE" ] ; then
+      echo -------
+	fi
+fi

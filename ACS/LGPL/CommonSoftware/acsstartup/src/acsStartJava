@@ -1,0 +1,635 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupConstants
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: acsStartJava,v 1.75 2013/02/05 13:29:39 hsommer Exp $"
+#
+# who      when       what
+# -------- ---------- ----------------------------------------------
+# eallaert 2007-10-25 added setting of ACS.log.minlevel.remote property from ACS_LOG_CENTRAL
+# mschilli 2004-04-15 added proper command line parsing, added cmdline option -D for JAVA_OPTIONS
+# mschilli 2003-11-03 export of some env.vars can now be suppressed with option '-noexport' (as arg #1)
+# gchiozzi 2003-07-04 Set also Name Service reference
+# gchiozzi 2003-05-27 Added setting .jacorb.properties in classpath inside $ACS_ABEANS_CONFIG
+# david 2003-05-14 changed to bash for tat tests
+# msekoran 2003-01-24 Added JAVA_ORB option
+# gchiozzi 2002-10-14 Added passing more command line parameters to final java command line
+# gchiozzi 2002-10-02 Added handling of -endorsed as first option.
+# gchiozzi 2002-10-02 Fixed small bug in building endorsed lib path
+# gchiozzi 2002-03-13 Added handling of JAVA_OPTIONS environment variable
+# gchiozzi 2002-03-13 Added handling of endorsed directory.
+# gchiozzi 2002-02-27 Changed shell from /din/sh to /bin/ksh
+# jdovc     20/12/01  created
+#
+
+#************************************************************************
+#   NAME        acsStartJava
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_CLIENTVM=
+CL_MAXHEAPSIZE=
+CL_THREADSTACKSIZE=
+CL_NOEXPORT=
+CL_MANAGERREF=
+CL_BASEPORT=
+CL_JAVAPROPS=
+CL_HELP=
+CL_JARPATH=
+CL_ENDORSED=
+CL_JARS=
+CL_NAC=
+CL_NCL=
+CL_DEBUGPORT=
+CL_NODIRECTORY=
+CL_VMTOOLS=
+CL_SPLASHFILE=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,clientVM,maxHeapSize:,threadStackSize:,noexport,managerReference:,baseport:,jarpath:,endorsed,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,noDirectory,vmtools,splash:
+SHORTOPTS=hm:b:D:j:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Starts a Java program"
+   echo ""
+	echo "Usage: `basename $0` [OPTIONS]  java_class  main_args"
+	echo "Options: "
+	echo "   -clientVM                                        uses JVM options suitable for small client applications"
+	echo "   -maxHeapSize size                                Sets the max JVM heap size, with same unit format as the java -Xmx option, e.g. 256m or 2g"
+	echo "   -threadStackSize size                            Sets the java thread stack size, with same unit format"
+	echo "                                                       as the java -Xss / -XX:ThreadStackSize options, e.g. 128k or 1m"
+	echo "   -noexport                                        try this on environment variable errors"
+	echo "   -m | -managerReference MGR                       the corbaloc of your favorite manager"
+	echo "   -b | -baseport INSTANCE                          the acs instance (0-9) you want to use"
+	echo "   -D PROP=VAL [-D PROP=VAL ...]                    system property definitions to pass to the JVM"
+	echo "   -j | -jarpath someDir/lib[:someOtherDir/lib]     allows developer to set directories where jar files can be found"
+	echo "   -endorsed                                        includes jar files under lib/endorsed/ (try this on xml parser errors)"
+	echo "   -addToClasspath someJar.jar[:someOtherJar.jar]   allows developer to pick special jar files to be added to the \$CLASSPATH"
+	echo "   -noAutoClasspath                                 do not generate automatically the CLASSPATH adding all jar files in the jarpath. "
+	echo "   -noClassLoader                                   do not use the special ACS class loader to find the jar files,"
+	echo "                                                       all files must be found in the CLASSPATH."
+	echo "   -debugport PORT                                  the port on which a remote debugger may access the JVM"
+	echo "   -noDirectory                                     do not create an acs instance directory"
+	echo "   -vmtools                                         start JVM Tools together with the application"
+	echo "   -splash FILE                                     uses file FILE for splash screen (if needed)"
+	echo "   -h | -help                                       prints this help and exits"
+	echo "Environment Variables:"
+	echo "   MANAGER_REFERENCE        if is not set, take the HOST to construct it. Used if not given as parameter"
+	echo "   JAVA_OPTIONS_MEMORY      if it is set, ignore -clientVM, -maxHeapSize, -threadStackSize and don't add any default memory"
+	echo "                                          and garbage collector settings; instead pass through the settings from this variable."
+	echo "   ACS_NAME_SERVICE         if is not set, take the computer where Manager is located"
+	echo "   ACS_INTERFACE_REPOSITORY if is not set, take the computer where Manager is located"
+}
+
+
+
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness.
+# Second run is the real deal which replaces the command line args with getopt's output.
+export POSIXLY_CORRECT=1
+
+QUIET_OPTION=""
+
+if [ "X$ACS_LOG_STDOUT" == "X99" ]
+then
+  QUIET_OPTION="-Q"
+fi
+
+# The "-u" is kept in this first getopt simply to avoid that too many tat ref-files
+# would need to be regenerated (as this command prints to stdout, and removing
+# -u leads to additional quotes around options and args).
+getopt -n `basename $0` $QUIET_OPTION -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+# Note that as some options for this script (e.g. -D) can contain spaces,
+# we cannot use getopt's "--unquoted" option.
+# This means also that all parameters will be enclosed by single quotes, that
+# need to be removed by e.g. "eval".
+temp=`getopt -a -l $LONGOPTS $SHORTOPTS "$@"`
+# Note the quotes around '$temp': they are essential!
+eval set -- "$temp"
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+# Note that for the -D option we can get spaces in the option-value,
+# so we need to protect these spaces with quotes, against interpretation
+# by bash as a field separator for argument splitting.
+#
+while : 
+do
+	case "$1" in
+	--endorsed)         CL_ENDORSED=true ;;
+	--clientVM)         CL_CLIENTVM=true ;;
+	--maxHeapSize)      CL_MAXHEAPSIZE=$2 ; shift ;;
+	--threadStackSize)  CL_THREADSTACKSIZE=$2 ; shift ;;
+	--noexport)         CL_NOEXPORT=true ;;
+	--managerReference) CL_MANAGERREF=$2 ; shift ;;
+	-m)                 CL_MANAGERREF=$2 ; shift ;;
+	--baseport)         CL_BASEPORT=$2 ; shift ;;
+	-b)                 CL_BASEPORT=$2 ; shift ;;
+	-D)                 CL_JAVAPROPS="$CL_JAVAPROPS -D'$2'" ; shift ;;
+	--jarpath)          CL_JARPATH=$2 ; shift ;;
+	-j)                 CL_JARPATH=$2 ; shift ;;
+	--addToClasspath)   CL_JARS=$2 ; shift ;;
+	--noAutoClasspath)  CL_NAC=true ;;
+	--noClassLoader)    CL_NCL=true ;;
+	--debugport)        CL_DEBUGPORT=$2 ; shift ;;
+	--noDirectory)      CL_NODIRECTORY=true ;;
+	--vmtools)          CL_VMTOOLS=true ;;
+	--splash)           CL_SPLASHFILE=$2; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+#
+# must be unset! otherwise our custom export() function
+# that is defined below doesn't get used by the shell
+#
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+#Set the port numbers...
+ACS_MANAGER_PORT=`getManagerPort`
+ACS_NAMING_SERVICE_PORT=`getNamingServicePort`
+ACS_IR_PORT=`getIRPort`
+export HOST=`getIP`
+
+
+# set ACS_INSTANCE if it was specified on the command line
+if [ "$CL_BASEPORT" ] ; then
+	export ACS_INSTANCE=$CL_BASEPORT
+fi
+
+# set ACS_LOG_BIN if not defined
+if [ X"$ACS_LOG_BIN" = X ]
+then 
+    export ACS_LOG_BIN="false"
+fi
+
+# append java system properties to JAVA_OPTIONS if such were specified on the command line
+if [ "$CL_JAVAPROPS" ] ; then
+	JAVA_OPTIONS="$JAVA_OPTIONS $CL_JAVAPROPS"
+fi
+
+# setup jar file search path that will be fed to 
+# ACS class loader or to the acsGetSpecificJars seach script
+if [ ! $CL_JARPATH ] ; then
+
+    if [ -d ../lib ] ; then
+	CL_JARPATH="../lib${PATH_SEP}"
+    fi
+
+    if [ -d $INTROOT ] && [ $INTROOT ] ; then
+	CL_JARPATH="$CL_JARPATH$INTROOT/lib${PATH_SEP}"
+    fi
+
+    # Separation of dirs
+    item_list=`echo $INTLIST | sed s/:/\ /g`
+    for item in $item_list
+    do
+      if [ -d $item ] && [ $item ] ; then
+	  CL_JARPATH="$CL_JARPATH$item/lib${PATH_SEP}"
+      fi
+    done
+
+    if [ -d $ACSROOT ] && [ $ACSROOT ] ; then
+	CL_JARPATH="$CL_JARPATH$ACSROOT/lib"
+    fi
+fi
+
+
+###
+### ------------- "-noexport" handling -------------------
+### When launching AcsCommandCenter, it is fatal to export e.g. MANAGER_REFERENCE and others.
+### Export of some variables can therefore be disabled through option "-noexport".
+
+function export {
+
+	until [ X"$1" = X ]
+	do
+		if [ "$CL_NOEXPORT" ] ; then 
+			## special treatment
+
+			if [ x"${1:0:17}" = xMANAGER_REFERENCE \
+			  -o x"${1:0:21}" = xMANAGER_COMPUTER_NAME \
+			  -o x"${1:0:16}" = xACS_NAME_SERVICE \
+			  -o x"${1:0:24}" = xACS_INTERFACE_REPOSITORY ]
+			then
+				ACS_LOG_DEBUG "acsStartJava" "(did NOT export $1)"
+			else
+				## default behaviour; protect eventual spaces with quotes
+				builtin export "$1" 
+				ACS_LOG_DEBUG "acsStartJava" "exported $1"
+			fi
+
+		else
+			## default behaviour; protect eventual spaces with quotes
+			builtin export "$1"
+			ACS_LOG_DEBUG "acsStartJava" "exported $1"
+		fi
+		# get next argument passed to this export function
+		shift
+	done
+}
+### ------------- End of "-noexport" handling --------------
+
+
+
+ACS_LOG_INFO "acsStartJava" "Starting Java application: $@"
+#
+# Checks if the first parameter is -endorsed
+# This forces using the endorsed libraries, 
+# that by default are not used
+#
+JAVA_ENDORSED=""
+if [ "$CL_ENDORSED" ]; then
+  #
+  # Creates ENDORSED class path for Java
+  #
+  if [ -d $ACSROOT/lib/endorsed ]
+  then
+     JAVA_ENDORSED="$ACSROOT/lib/endorsed${PATH_SEP}$JAVA_ENDORSED"
+  fi
+
+  # Separation of dirs
+  item_list=`echo $INTLIST | sed s/:/\ /g`
+  JAVA_ENDORSED_TMP=""
+  for item in $item_list
+  do
+     if [ -d $item/lib/endorsed ]
+     then
+        JAVA_ENDORSED_TMP="$JAVA_ENDORSED_TMP$item/lib/endorsed${PATH_SEP}"
+     fi
+  done
+  JAVA_ENDORSED=$JAVA_ENDORSED_TMP$JAVA_ENDORSED
+
+  if [ -d $INTROOT/lib/endorsed ]
+  then
+     JAVA_ENDORSED="$INTROOT/lib/endorsed${PATH_SEP}$JAVA_ENDORSED"
+  fi
+  if [ -d ../lib/endorsed ]
+  then
+     JAVA_ENDORSED="../lib/endorsed${PATH_SEP}$JAVA_ENDORSED"
+  fi
+  if [ X"$JAVA_ENDORSED" != X ]; then
+     JAVA_ENDORSED="-Djava.endorsed.dirs=$JAVA_ENDORSED"
+  fi
+  ACS_LOG_INFO "acsStartJava" "Using endorsed jar files in: $JAVA_ENDORSED"
+fi
+
+
+#
+# Xerces-J 2 property which prevents xerces from searching through all jar files for the file 'xerces.properties' 
+# and finally using XIncludeParserConfiguration as the default configuration.
+# XInclude is currently needed only by the CDB and the standard alternative without XInclude
+# would be the XML11Configuration configuration.
+# Unless we find problems we keep the XInclude as only configuration.
+# If we find problem we can make this property configurable.
+#
+# Note that since ACS 8.2, the CDB uses XMLGrammarCachingConfiguration and 
+# SAXParserFactory.setFeature("http://apache.org/xml/features/xinclude", true) to still allow xinclude, 
+# instead of using this default XIncludeParserConfiguration. This probably means that we could go back 
+# to XML11Configuration easily.
+#
+if [ "$CL_ENDORSED" ]; 
+then
+  #XERCES_CONFIG="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XML11Configuration"
+  XERCES_CONFIG="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration"
+fi
+
+
+#
+# CORBA ORB specification
+#
+if [ X"$JAVA_ORB" = X ]; then
+    # take JacORB as default
+    JAVA_ORB="-Dorg.omg.CORBA.ORBClass=org.jacorb.orb.ORB -Dorg.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton"
+fi
+
+#-------------------------------------------------------
+# Handling of CLASSPATH.
+# There are different options controlled by the mutually exclusive options 
+#  -noClassLoader and -addToClasspath
+#
+
+# If the -addToClasspath option is passed,
+# the listed jar files are searched in $CL_JARS and added
+# to the classpath so that they can be used to bootstrap 
+# the system even before the classloader can take over
+# (is requested).
+#
+if [ X"$CL_JARS" != X ]
+then
+    CLASSPATH=`acsGetSpecificJars ${PATH_SEP} $CL_JARS`$CLASSPATH
+fi
+
+#
+# If we do not want to use the custom Java class loader,
+# the command acsGetAllJars is used to retrieve all
+# jar files in the $CL_JARPATH.
+#
+if [ X"$CL_NCL" = Xtrue -a X"$CL_NAC" = X ]
+then
+    #
+    # Retrieves all jar files for the CLASSPATH
+    #
+    CLASSPATH=`acsGetAllJars ${PATH_SEP} $CL_JARPATH`$CLASSPATH
+#
+# By default the custom Java class loader is used.
+# In this case we need to have jACSUtil.jar in the CLASSPATH
+#
+elif [ X"$CL_NCL" = X ]
+then
+  # 
+  # Sets the class loader and adds ACSUtil.jar to the CLASSPATH
+  # 
+  # TODO: Perhaps replace CL_JARPATH with the new acsSearchPath, see http://jira.alma.cl/browse/COMP-5690
+  JAVA_OPTIONS="$JAVA_OPTIONS -Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader \
+   -Dacs.system.classpath.jardirs=\"$CL_JARPATH\" \
+   -Dacs.system.path=\"`acsSearchPath`\"" 
+
+  JACSUTIL_JAR=`acsGetSpecificJars ${PATH_SEP} jACSUtil.jar`
+  if [ X"$JACSUTIL_JAR" = X ]
+  then    
+    ACS_LOG_ERROR "acsStartJava" "Expected to find jACSUtil.jar in the ALMA Software directory structure but did not!"
+    exit $EC_FAILURE
+  fi
+  
+  CLASSPATH="$JACSUTIL_JAR${PATH_SEP}$CLASSPATH"
+fi
+
+#
+# AcsLogManager should be used instead of JDK's LogManager to allow logging during Ctrl-C shutdown
+#
+JAVA_OPTIONS="$JAVA_OPTIONS -Djava.util.logging.manager=alma.acs.logging.AcsLogManager"
+
+#
+# Since ACS 8.2 we enable by default the java logging libs to send the records to the Log service method "writeRecords(XmlLogRecord[]") 
+# which is defined by the ACS extension to the telecom log service. The advantage is to avoid wrapping log records by Corba Any.
+# See setting of LOG_SERVICE_USE_EXTENSIONS in .bash_profile.acs.
+#
+if [ X"$LOG_SERVICE_USE_EXTENSIONS" != X ]; then
+    JAVA_OPTIONS="$JAVA_OPTIONS -Dalma.acs.logging.useAcsLogServiceExtensions=$LOG_SERVICE_USE_EXTENSIONS"
+fi
+
+#
+# In orb.properties we set jacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory
+# which sends filtered JacORB logs messages to the central Log service. 
+# Here we can overrule this by uncommenting the following line.
+#
+#JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.log.loggerFactory="
+
+#
+# Set up apache commons logging to use the ACS adapter.
+# This is currently uesd by the SCXML engine (COMP-7929) but works flexible enough
+# to support also other frameworks that used commons logging.
+#
+JAVA_OPTIONS="$JAVA_OPTIONS -Dorg.apache.commons.logging.LogFactory=alma.acs.logging.adapters.CommonsLoggingFactory"
+
+
+#
+# Add jacorb.properties to the CLASSPATH
+#
+CLASSPATH="$CLASSPATH${PATH_SEP}$ACSDATA/config"
+export CLASSPATH
+### ------------- End of CLASSPATH handling --------------
+
+
+#
+# Creates default values for Manager and Interface Repository,
+# if not already given as environment variables.
+#
+if [ "$CL_MANAGERREF" ]; then
+   export MANAGER_REFERENCE=$CL_MANAGERREF
+   ACS_LOG_DEBUG "acsStartJava" "Command-line Manager Reference: $CL_MANAGERREF"
+fi
+
+if [ X"$MANAGER_REFERENCE" = X ]; then  
+   export MANAGER_REFERENCE=corbaloc::$HOST:$ACS_MANAGER_PORT/Manager
+fi
+
+ACS_LOG_DEBUG "acsStartJava" "ACS Manager: $MANAGER_REFERENCE"
+
+export MANAGER_COMPUTER_NAME=`echo $MANAGER_REFERENCE |  awk -F: '{print $3}'`
+
+# If $ACS_NAME_SERVICE is not set, take the computer
+# where Manager is located
+
+if [ X"$ACS_NAME_SERVICE" = X ]; then
+   export ACS_NAME_SERVICE=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_NAMING_SERVICE_PORT/NameService
+fi
+
+ACS_LOG_DEBUG "acsStartJava" "ACS Name Service: $ACS_NAME_SERVICE"
+
+#If $ACS_INTERFACE_REPOSITORY is not set, take the computer, where Manager
+#is located
+
+if [ X"$ACS_INTERFACE_REPOSITORY" = X ]; then
+   export ACS_INTERFACE_REPOSITORY=`acsQueryNS InterfaceRepository corbaloc::$MANAGER_COMPUTER_NAME:$ACS_IR_PORT/InterfaceRepository`
+fi
+
+ACS_LOG_DEBUG "acsStartJava" "ACS Interface Repository: $ACS_INTERFACE_REPOSITORY"
+
+#
+# Creates default values tmp directory
+# if not already given as environment variables.
+#
+if [ ! $CL_NODIRECTORY ]; then
+   INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+   #
+   # Makes sure that the directory for temporary 
+   # ACS_INSTANCE files exists.
+   # If the directory is created locally, removes it at the end.
+   #
+   if [ ! -d $INSTANCE_DIR ]; then
+      if [ ! createInstanceDirectory $ACS_INSTANCE ]; then
+        ACS_LOG_ERROR "acsStartJava" "For some reason this script could not create $INSTANCE_DIR!"
+        ACS_LOG_ERROR "acsStartJava" "    Check $ACS_INSTANCES_DIR for free base ports!"
+        exit $EC_CANNOTCREATE
+      fi
+   fi
+else
+   INSTANCE_DIR=$ACS_TMP
+fi
+
+###
+### -------------  "remoteDebug" handling  ---------------
+###
+if [ "$CL_DEBUGPORT" ]; then
+  JAVA_OPTIONS="$JAVA_OPTIONS -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$CL_DEBUGPORT -Djava.compiler=NONE"
+
+  ACS_LOG_INFO "acsStartJava" "The JVM will accept a remote debugger on port $CL_DEBUGPORT"
+fi
+### ---------- End of "remoteDebug" handling -------------
+
+
+
+###
+### ------------- "vmtools" handling -------------------
+###
+LAUNCHER=
+if [ "$CL_VMTOOLS" ]; then
+   LAUNCHER=alma.acs.vmtools.Launcher
+fi
+### ---------- End of "vmtools" handling -------------
+
+###
+### ------------- "splash" handling -------------------
+###
+if [ "$CL_SPLASHFILE" ]; then
+   JAVA_OPTIONS="$JAVA_OPTIONS -splash:$CL_SPLASHFILE"
+fi
+### ---------- End of "splash" handling -------------
+
+
+###
+### -------------- JVM memory settings -------------------
+###
+# The default is to use settings appropriate for server JVMs in Alma.
+# By specifying the "-clientVM" option for acsStartJava, some less server-sided configuration will be used (currently nothing but the JVM choice for the -client switch).
+#
+# Only for very specific needs, users may supply their own settings directly in the env var JAVA_OPTIONS_MEMORY
+# which will be used instead of the default server or client settings and will also override all GC settings, -maxHeapSize and -threadStackSize.
+#
+# TODO Decide about setting a default heap memory limit (-Xmx) in case the user does not pass the -maxHeapSize option. Otherwise JVM uses 64 MB
+#
+if [ X"$JAVA_OPTIONS_MEMORY" = X ]
+then
+    if [ "$CL_CLIENTVM" ]
+    then
+        JAVA_OPTIONS_MEMORY="-client"
+    else
+        JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+CMSParallelRemarkEnabled"
+    fi
+
+    # Options for JVM heap size and thread stack size
+    if [ X"$CL_MAXHEAPSIZE" != X ]; then
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xmx$CL_MAXHEAPSIZE"
+    fi
+    if [ X"$CL_THREADSTACKSIZE" != X ]; then
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xss$CL_THREADSTACKSIZE"
+    fi
+
+    # Log the garbage collector output if DEBUG stdout logs are enabled and the calling script sets $JVM_GC_LOG_NAME. 
+    # Slashes in the file name are replaced by underscores.
+    if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ] && [ X"$JVM_GC_LOG_NAME" != X ]; then
+        JVM_GC_LOG_FILE=$INSTANCE_DIR/`echo $JVM_GC_LOG_NAME | sed s/"\/"/_/g`.gclog
+        if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+            JVM_GC_LOG_FILE="`cygpath -w $JVM_GC_LOG_FILE`"
+            JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:\"$JVM_GC_LOG_FILE\""
+        else
+            JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:$JVM_GC_LOG_FILE"
+        fi
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC"
+    fi
+
+    # JVM dumps for OutOfMemoryError.
+    # see http://jira.alma.cl/browse/COMP-3061 about JVM crash when XX:HeapDumpPath is empty
+    # We use the -XX:ErrorFile flag to keep any Fatal Error Log also in $ACS_TMP
+    JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:+HeapDumpOnOutOfMemoryError"
+    if [ X"$INSTANCE_DIR" != X ]; then
+        DUMP_DIR="$ACSDATA/dumps/`hostname`/ACS_INSTANCE.$ACS_INSTANCE"
+        mkdir -p $DUMP_DIR
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$DUMP_DIR -XX:ErrorFile=$DUMP_DIR/jvm_fatal_error%p.log"
+    fi
+fi
+
+JAVA_OPTIONS="$JAVA_OPTIONS $JAVA_OPTIONS_MEMORY"
+
+### ----------- End of JVM memory settings ---------------
+
+
+
+
+#
+# Print information about actually used JVM, such as
+#   Java HotSpot(TM) Client VM (build 1.6.0_02-b05, mixed mode, sharing)
+# which are not identical to what "java -version" prints (e.g. when -server is used) 
+#
+if [ X"$ACS_LOG_STDOUT" != X ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
+then
+	JAVA_OPTIONS="$JAVA_OPTIONS -showversion"
+fi
+
+
+# While building the JAVA_COMMAND_LINE, we assume that the variables do not contain spaces,
+# or if they do, that they contain also quotes where necessary (see e.g. dealing with the
+# -D option above while parsing this script's options/arguments). To get rid of these
+# eventual quote characters, we need an "eval" of this JAVA_COMMAND_LINE instead of
+# a mere execution.
+JAVA_COMMAND_LINE="java -classpath \"$CLASSPATH\""
+if [ X"$JAVA_ENDORSED" != X ]
+then
+    JAVA_COMMAND_LINE=$JAVA_COMMAND_LINE" \"$JAVA_ENDORSED\""
+fi
+JAVA_COMMAND_LINE=$JAVA_COMMAND_LINE" $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN $JAVA_OPTIONS $LAUNCHER $@"
+
+ACS_LOG_DEBUG "acsStartJava" "Running the following command:"
+ACS_LOG_DEBUG "acsStartJava" "$JAVA_COMMAND_LINE"
+# TODO: or should we also log the final argument list (including those args inferred by the JVM) using -XX:+PrintCommandLineFlags, when ACS_LOG_STDOUT <= 2?
+
+#
+# .... and finally executes the Java command line
+#      storing the JVM return code
+#
+eval $JAVA_COMMAND_LINE
+JVM_RETURN_CODE=$?
+
+exit $JVM_RETURN_CODE
+
+# __oOo__

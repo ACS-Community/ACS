@@ -1,0 +1,58 @@
+<HTML>
+
+<HEAD>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+
+<TITLE>FeaturesSimulation</TITLE>
+
+<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+
+</HEAD>
+
+<BODY LINK="#0000ff" VLINK="#800080" bgcolor="#FFFFFF">
+<H2><A NAME="Simulation"></a>IDL Simulator</H2>
+<p>Simulation <a href="ReferenceDocuments.html#RD01">[RD01 - 3.3.4. Simulation]</a> 
+  is supported within ACS at the level of Components. That is, ACS provides the 
+  necessary libraries for dynamically implementing IDL interfaces derived from 
+  the ACSComponent IDL interface at run-time.</p>
+<H3>The simulator framework is available by specifying a special Python library 
+  as implementing the Component within the ACS Configuration Database</H3>
+<H3>The behavior of simulated components can be configured "ahead of time" using 
+  the ACS Configuration Database in cases where a standardized behavior is desired</H3>
+<H3>Complete implementations of all IDL methods and attributes can be implemented 
+  on the fly by the simulator framework</H3>
+<H3>The behavior of simulated components can be configured at run-time using:</H3>
+<ul>
+  <li>a GUI which is spawned automatically with the creation of the first simulated 
+    Component </li>
+  <li>the command-line and an easy-to-use API provided by ACS if the Python Container 
+    hosting the simulated Components was started within an interactive Python 
+    session</li>
+  <li>the IDL interface provided by a Simulator Component. This Component shall 
+    be deployed in the Python Container where the simulated components are deployed.</li>
+</ul>
+<H3>Using any of these techniques it is possible to:</H3>
+<ul>
+  <li>replace or retrieve the code of each simulated method, </li>
+  <li>set timeouts</li>
+  <li>set/get the value of global variables</li>
+</ul>
+<H3>The framework provides realistic behavior of certain ACS types such as BACI 
+  properties and is capable of invoking Callbacks properly</H3>
+<H3>The simulator includes the capability of creating other CORBA Objects where 
+  applicable</H3>
+<H3>Simulated components adhere to the Component LifeCycle design policies</H3>
+<H3>End-users have the capability of specifying sleep times which occur before 
+  simulated methods return control to the caller</H3>
+<H3>Exception throwing is supported</H3>
+<H3>The capability of sharing local variables between simulated Components has 
+  been included</H3>
+<H3>The parameters passed into simulated methods are made available to end-users</H3>
+
+
+
+</BODY>
+
+</HTML>
+

@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>  
+  <meta name="author" content="M.Schilling, 2004-10-26">
+  <meta name="generator" content="HTML Tidy, see www.w3.org">
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>ACS Cookbook - CallbacksSupport</title>
+  <link rel="StyleSheet" href="ACSCookbook.css" type="text/css" media="screen">
+  
+  <style type="text/css">
+ <!--
+.codeblock { white-space:pre; font-family:monospace; padding:1.0pt 4.0pt 1.0pt 4.0pt; color:black; font-size:80% ;  background: ghostwhite; }
+.code        { white-space:pre; font-family:monospace; color:black; font-size:80%; }
+.iframe { border-color: darkblue; border-width:2px; border-style:solid; margin:15px; background-color: ghostwhite; }
+ -->
+</style>
+</head>
+<!--============================================================================-->
+<body style="color: white; background-color: darkblue">
+<!--ALMA Logo Section-->
+<div class="almalogo">
+      <a href="http://www.eso.org/projects/alma/develop/acs"><img alt="ALMA Logo" src="http://www.eso.org/projects/alma/develop/software/alma-it/images/almapic.jpg" align="middle"></a> <a href="index.html">ACS Cookbook</a>: CallbacksSupport
+</div>
+<!--Subsections-->
+<!--============================================================================-->    
+<div class="overview">
+<h2>Overview</h2>
+<p>
+The acscallbacks module provides utilities for an easy usage of Callbacks.
+In the current version, only Java implementations are supported. The Java utility classes are:
+<p>
+<code>alma.acs.callbacks.  ...</code>
+<ul>
+  <li><code>RequesterUtil</code></li>
+  <li><code>ResponderUtil</code></li>
+  <li><code>ResponseReceiver</code></li>
+</ul>
+They are all contained in the archive <code>acsCallbacksSupport.jar</code>.
+</p>
+</p>
+</div>
+<!--============================================================================-->    
+<div class="briefexample">
+<h2>Example</h2>
+
+<p class="iframe">
+<iframe src="CallbacksSupport_1.html" name="CallbacksSupport_1" width="100%" height="400" frameborder="0">
+<p><a href="CallbacksSupport_1.html" target="_blank">Your browser doesn't support inlined frames</a></p>
+</iframe></p>
+
+<p class="iframe">
+<iframe src="CallbacksSupport_2.html" name="CallbacksSupport_2" width="100%" height="400" frameborder="0" >
+<p><a href="CallbacksSupport_2.html" target="_blank">Your browser doesn't support inlined frames</a></p>
+</iframe></p>
+
+
+</div>
+<!--============================================================================-->
+<div class="specialnotes">
+<h2>Special Notes</h2>
+
+  <p>Various types of callback return values are supported: <span class="code" style="font-weight: bold;">int, int[], double, double[], String, String[]</span>
+     <ul>
+	       <li> 
+		  	  In the implementation of <span class="code">ResponseReceiver</span> above,
+		  	  you could instead of overriding the generic method<br /><br />
+		  	  
+		  	      <span class="codeblock" style="color: rgb(204, 102, 0); font-weight: bold;">incomingResponse(Object x)</span><br /><br />
+		  	      
+		  	  equivalently override the specialized method <br /><br />
+		  	  
+		  	      <span class="codeblock" style="color: rgb(204, 102, 0); font-weight: bold;">incomingResponse(String x)</span><br /><br />
+		  	  This will save you a type cast - but will make your ResponseReceiver implementation less flexible for use with other
+		  	  callbacks
+		  	  
+		 </li><br />
+	
+		  <li>To invoke a method <span class="code">responder.giveStringLength(String text, CBlong cb, CBDescIn descIn)</span>, <br />
+			    where the return value is of type CBlong instead of CBstring, you would in the DemoRequester code above write <br /><br />
+			     <ul>
+			     
+	       	            <li><span class="codeblock" style="color: rgb(0, 0, 0); font-weight: bold;">RequesterUtil.giveCBLong(cs, <span style="color:rgb(204, 102, 0);">rere</span>)</span><br /><br />
+	       	            
+	       	            and, according to the previous point, optionally implement:<br /><br /></li>
+	       	            
+	       	            <li><span class="codeblock" style="color: rgb(204, 102, 0);"><span style="font-weight: bold;">incomingResponse(int x)</span>{ System.out.println(x); }</span><br /><br />
+	       	            
+	       	            Finally, in the EasyResponderImpl you'd write <br /><br /></li>
+	       	            
+                             <li><span class="codeblock" style="font-weight: bold; color: rgb(0, 0, 0);">ResponderUtil.respond (<span style="color: rgb(204, 102, 0)";>length</span>, cb, descIn);</span>
+                             </li>	       	            
+	               
+	               
+	               </ul>
+	               
+		  </li><br />
+		  
+    </ul>
+   </p>
+
+</div>
+<!--============================================================================-->
+<div class="examples">
+<h2>Examples in the ALMA CVS Repository</h2>
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+  <tr>
+    <td class="examples" style="vertical-align: top;">
+         <i> No examples yet </i>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+<!--============================================================================-->
+<div class="relateddocuments">
+<h2>Related Documents</h2>
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+  <tr>
+    <td class="relateddocuments" style="vertical-align: top;">
+    <a class="doclink" href="Callbacks.html">Callbacks</a><br>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+<!--============================================================================-->
+<!--Keywords section-->
+<div class="keywords">
+<br>
+<br>
+Keywords: Callbacks, Asynchronous, Java
+</div>
+<!--============================================================================-->
+</body>
+</html>

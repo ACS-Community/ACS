@@ -1,0 +1,45 @@
+This directory contains all files needed to build the ACS Architecture
+document.
+All previous versions have been imported in CVS on 2003-12-29 by
+G.Chiozzi.
+
+ATTENTION:
+  - This structure is still being ported from:
+        Rational Rose   to   Magic Draw
+        Microsoft Word  to   Open Office
+    and a couple of things still do not work.
+    Check inside the Makefile for details.
+
+Document main files:
+-------------------
+
+ACSArchitecture.doc
+   This is the main document and the one to be actually edited
+   It contains links to all sub components (mainly HTML files)
+  
+
+UML Directory:
+-------------
+This directory contains the UML model for ACS.
+It is important after check out and after changes to 
+export the model as html.
+
+Project Directory:
+-----------------
+This directory contains all HTML files that
+are used to compose the Document.doc document and that
+make the HTML version of this Architecture document
+(plus the contents of the Help directory).
+The sub-directory Project/Images contains all pictures
+used inside the HTML files.
+Most of the files in this directory are diagrams
+extracted from the Magic Draw UML model.
+Just a few diagrams come from other sources.
+After a checkout from CVS make sure that the UML diagrams are
+extracted from the model
+
+Makefile:
+--------
+The Makefile is used to generate in batch from the Magic Draw
+the HTML export and all diagrams used in the HTML files.
+

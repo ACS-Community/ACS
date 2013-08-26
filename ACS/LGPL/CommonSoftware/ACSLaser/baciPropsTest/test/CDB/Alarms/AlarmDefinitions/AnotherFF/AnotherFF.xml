@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fault-family name="AnotherFF" 
+	xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://tempuri.org</help-url>
+  <contact name="ACS developer"/>
+  <fault-code value="1">
+    <priority>1</priority>
+    <problem-description>BACI property with aanother FF, FM</problem-description>
+  </fault-code>
+  <fault-code value="2">
+    <priority>1</priority>
+    <problem-description>BACI property with a another FF, FM (LOW)</problem-description>
+  </fault-code>
+  <fault-code value="3">
+    <priority>1</priority>
+    <problem-description>BACI property with a another FF, FM (HIGH)</problem-description>
+  </fault-code>
+  <fault-member-default>
+  </fault-member-default>
+</fault-family>

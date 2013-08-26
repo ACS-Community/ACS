@@ -1,0 +1,1181 @@
+This is Info file gcc.info, produced by Makeinfo-1.54 from the input
+file gcc.texi.
+
+   This file documents the use and the internals of the GNU compiler.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1988, 1989, 1992, 1993 Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the sections entitled "GNU General Public License" and "Protect
+Your Freedom--Fight `Look And Feel'" are included exactly as in the
+original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this
+one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the sections entitled "GNU General Public
+License" and "Protect Your Freedom--Fight `Look And Feel'", and this
+permission notice, may be included in translations approved by the Free
+Software Foundation instead of in the original English.
+
+
+File: gcc.info,  Node: Overall Options,  Next: Invoking G++,  Prev: Option Summary,  Up: Invoking GCC
+
+Options Controlling the Kind of Output
+======================================
+
+   Compilation can involve up to four stages: preprocessing, compilation
+proper, assembly and linking, always in that order.  The first three
+stages apply to an individual source file, and end by producing an
+object file; linking combines all the object files (those newly
+compiled, and those specified as input) into an executable file.
+
+   For any given input file, the file name suffix determines what kind
+of compilation is done:
+
+`FILE.c'
+     C source code which must be preprocessed.
+
+`FILE.i'
+     C source code which should not be preprocessed.
+
+`FILE.ii'
+     C++ source code which should not be preprocessed.
+
+`FILE.m'
+     Objective-C source code.  Note that you must link with the library
+     `libobjc.a' to make an Objective-C program work.
+
+`FILE.h'
+     C header file (not to be compiled or linked).
+
+`FILE.cc'
+`FILE.cxx'
+`FILE.cpp'
+`FILE.C'
+     C++ source code which must be preprocessed.  Note that in `.cxx',
+     the last two letters must both be literally `x'.  Likewise, `.C'
+     refers to a literal capital C.
+
+`FILE.s'
+     Assembler code.
+
+`FILE.S'
+     Assembler code which must be preprocessed.
+
+`OTHER'
+     An object file to be fed straight into linking.  Any file name
+     with no recognized suffix is treated this way.
+
+   You can specify the input language explicitly with the `-x' option:
+
+`-x LANGUAGE'
+     Specify explicitly the LANGUAGE for the following input files
+     (rather than letting the compiler choose a default based on the
+     file name suffix).  This option applies to all following input
+     files until the next `-x' option.  Possible values for LANGUAGE
+     are:
+          c  objective-c  c++
+          c-header  cpp-output  c++-cpp-output
+          assembler  assembler-with-cpp
+
+`-x none'
+     Turn off any specification of a language, so that subsequent files
+     are handled according to their file name suffixes (as they are if
+     `-x' has not been used at all).
+
+   If you only want some of the stages of compilation, you can use `-x'
+(or filename suffixes) to tell `gcc' where to start, and one of the
+options `-c', `-S', or `-E' to say where `gcc' is to stop.  Note that
+some combinations (for example, `-x cpp-output -E' instruct `gcc' to do
+nothing at all.
+
+`-c'
+     Compile or assemble the source files, but do not link.  The linking
+     stage simply is not done.  The ultimate output is in the form of an
+     object file for each source file.
+
+     By default, the object file name for a source file is made by
+     replacing the suffix `.c', `.i', `.s', etc., with `.o'.
+
+     Unrecognized input files, not requiring compilation or assembly,
+     are ignored.
+
+`-S'
+     Stop after the stage of compilation proper; do not assemble.  The
+     output is in the form of an assembler code file for each
+     non-assembler input file specified.
+
+     By default, the assembler file name for a source file is made by
+     replacing the suffix `.c', `.i', etc., with `.s'.
+
+     Input files that don't require compilation are ignored.
+
+`-E'
+     Stop after the preprocessing stage; do not run the compiler
+     proper.  The output is in the form of preprocessed source code,
+     which is sent to the standard output.
+
+     Input files which don't require preprocessing are ignored.
+
+`-o FILE'
+     Place output in file FILE.  This applies regardless to whatever
+     sort of output is being produced, whether it be an executable file,
+     an object file, an assembler file or preprocessed C code.
+
+     Since only one output file can be specified, it does not make
+     sense to use `-o' when compiling more than one input file, unless
+     you are producing an executable file as output.
+
+     If `-o' is not specified, the default is to put an executable file
+     in `a.out', the object file for `SOURCE.SUFFIX' in `SOURCE.o', its
+     assembler file in `SOURCE.s', and all preprocessed C source on
+     standard output.
+
+`-v'
+     Print (on standard error output) the commands executed to run the
+     stages of compilation.  Also print the version number of the
+     compiler driver program and of the preprocessor and the compiler
+     proper.
+
+`-pipe'
+     Use pipes rather than temporary files for communication between the
+     various stages of compilation.  This fails to work on some systems
+     where the assembler is unable to read from a pipe; but the GNU
+     assembler has no trouble.
+
+
+File: gcc.info,  Node: Invoking G++,  Next: C Dialect Options,  Prev: Overall Options,  Up: Invoking GCC
+
+Compiling C++ Programs
+======================
+
+   C++ source files conventionally use one of the suffixes `.C', `.cc',
+or `.cxx'; preprocessed C++ files use the suffix `.ii'.  GNU CC
+recognizes files with these names and compiles them as C++ programs
+even if you call the compiler the same way as for compiling C programs
+(usually with the name `gcc').
+
+   However, C++ programs often require class libraries as well as a
+compiler that understands the C++ language--and under some
+circumstances, you might want to compile programs from standard input,
+or otherwise without a suffix that flags them as C++ programs.  `g++'
+is a program that calls GNU CC with the default language set to C++,
+and automatically specifies linking against the GNU class library
+libg++.  (1) On many systems, the script `g++' is also installed with
+the name `c++'.
+
+   When you compile C++ programs, you may specify many of the same
+command-line options that you use for compiling programs in any
+language; or command-line options meaningful for C and related
+languages; or options that are meaningful only for C++ programs.  *Note
+Options Controlling C Dialect: C Dialect Options, for explanations of
+options for languages related to C.  *Note Options Controlling C++
+Dialect: C++ Dialect Options, for explanations of options that are
+meaningful only for C++ programs.
+
+   ---------- Footnotes ----------
+
+   (1)  Prior to release 2 of the compiler, there was a separate `g++'
+compiler.  That version was based on GNU CC, but not integrated with
+it.  Versions of `g++' with a `1.XX' version number--for example, `g++'
+version 1.37 or 1.42--are much less reliable than the versions
+integrated with GCC 2.  Moreover, combining G++ `1.XX' with a version 2
+GCC will simply not work.
+
+
+File: gcc.info,  Node: C Dialect Options,  Next: C++ Dialect Options,  Prev: Invoking G++,  Up: Invoking GCC
+
+Options Controlling C Dialect
+=============================
+
+   The following options control the dialect of C (or languages derived
+from C, such as C++ and Objective C) that the compiler accepts:
+
+`-ansi'
+     Support all ANSI standard C programs.
+
+     This turns off certain features of GNU C that are incompatible
+     with ANSI C, such as the `asm', `inline' and `typeof' keywords, and
+     predefined macros such as `unix' and `vax' that identify the type
+     of system you are using.  It also enables the undesirable and
+     rarely used ANSI trigraph feature, and disallows `$' as part of
+     identifiers.
+
+     The alternate keywords `__asm__', `__extension__', `__inline__'
+     and `__typeof__' continue to work despite `-ansi'.  You would not
+     want to use them in an ANSI C program, of course, but it is useful
+     to put them in header files that might be included in compilations
+     done with `-ansi'.  Alternate predefined macros such as `__unix__'
+     and `__vax__' are also available, with or without `-ansi'.
+
+     The `-ansi' option does not cause non-ANSI programs to be rejected
+     gratuitously.  For that, `-pedantic' is required in addition to
+     `-ansi'.  *Note Warning Options::.
+
+     The macro `__STRICT_ANSI__' is predefined when the `-ansi' option
+     is used.  Some header files may notice this macro and refrain from
+     declaring certain functions or defining certain macros that the
+     ANSI standard doesn't call for; this is to avoid interfering with
+     any programs that might use these names for other things.
+
+     The functions `alloca', `abort', `exit', and `_exit' are not
+     builtin functions when `-ansi' is used.
+
+`-fno-asm'
+     Do not recognize `asm', `inline' or `typeof' as a keyword.  These
+     words may then be used as identifiers.  You can use the keywords
+     `__asm__', `__inline__' and `__typeof__' instead.  `-ansi' implies
+     `-fno-asm'.
+
+`-fno-builtin'
+     Don't recognize builtin functions that do not begin with two
+     leading underscores.  Currently, the functions affected include
+     `abort', `abs', `alloca', `cos', `exit', `fabs', `ffs', `labs',
+     `memcmp', `memcpy', `sin', `sqrt', `strcmp', `strcpy', and
+     `strlen'.
+
+     GCC normally generates special code to handle certain builtin
+     functions more efficiently; for instance, calls to `alloca' may
+     become single instructions that adjust the stack directly, and
+     calls to `memcpy' may become inline copy loops.  The resulting
+     code is often both smaller and faster, but since the function
+     calls no longer appear as such, you cannot set a breakpoint on
+     those calls, nor can you change the behavior of the functions by
+     linking with a different library.
+
+     The `-ansi' option prevents `alloca' and `ffs' from being builtin
+     functions, since these functions do not have an ANSI standard
+     meaning.
+
+`-trigraphs'
+     Support ANSI C trigraphs.  You don't want to know about this
+     brain-damage.  The `-ansi' option implies `-trigraphs'.
+
+`-traditional'
+     Attempt to support some aspects of traditional C compilers.
+     Specifically:
+
+        * All `extern' declarations take effect globally even if they
+          are written inside of a function definition.  This includes
+          implicit declarations of functions.
+
+        * The newer keywords `typeof', `inline', `signed', `const' and
+          `volatile' are not recognized.  (You can still use the
+          alternative keywords such as `__typeof__', `__inline__', and
+          so on.)
+
+        * Comparisons between pointers and integers are always allowed.
+
+        * Integer types `unsigned short' and `unsigned char' promote to
+          `unsigned int'.
+
+        * Out-of-range floating point literals are not an error.
+
+        * Certain constructs which ANSI regards as a single invalid
+          preprocessing number, such as `0xe-0xd', are treated as
+          expressions instead.
+
+        * String "constants" are not necessarily constant; they are
+          stored in writable space, and identical looking constants are
+          allocated separately.  (This is the same as the effect of
+          `-fwritable-strings'.)
+
+        * All automatic variables not declared `register' are preserved
+          by `longjmp'.  Ordinarily, GNU C follows ANSI C: automatic
+          variables not declared `volatile' may be clobbered.
+
+        * The character escape sequences `\x' and `\a' evaluate as the
+          literal characters `x' and `a' respectively.  Without
+          `-traditional', `\x' is a prefix for the hexadecimal
+          representation of a character, and `\a' produces a bell.
+
+        * In C++ programs, assignment to `this' is permitted with
+          `-traditional'.  (The option `-fthis-is-variable' also has
+          this effect.)
+
+     You may wish to use `-fno-builtin' as well as `-traditional' if
+     your program uses names that are normally GNU C builtin functions
+     for other purposes of its own.
+
+     You cannot use `-traditional' if you include any header files that
+     rely on ANSI C features.  Some vendors are starting to ship
+     systems with ANSI C header files and you cannot use `-traditional'
+     on such systems to compile files that include any system headers.
+
+`'
+     In the preprocessor, comments convert to nothing at all, rather
+     than to a space.  This allows traditional token concatenation.
+
+`'
+     In preprocessor directive, the `#' symbol must appear as the first
+     character of a line.
+
+`'
+     In the preprocessor, macro arguments are recognized within string
+     constants in a macro definition (and their values are stringified,
+     though without additional quote marks, when they appear in such a
+     context).  The preprocessor always considers a string constant to
+     end at a newline.
+
+`'
+     The predefined macro `__STDC__' is not defined when you use
+     `-traditional', but `__GNUC__' is (since the GNU extensions which
+     `__GNUC__' indicates are not affected by `-traditional').  If you
+     need to write header files that work differently depending on
+     whether `-traditional' is in use, by testing both of these
+     predefined macros you can distinguish four situations: GNU C,
+     traditional GNU C, other ANSI C compilers, and other old C
+     compilers.  *Note Standard Predefined Macros: (cpp.info)Standard
+     Predefined, for more discussion of these and other predefined
+     macros.
+
+`'
+     The preprocessor considers a string constant to end at a newline
+     (unless the newline is escaped with `\').  (Without `-traditional',
+     string constants can contain the newline character as typed.)
+
+`-traditional-cpp'
+     Attempt to support some aspects of traditional C preprocessors.
+     This includes the last five items in the table immediately above,
+     but none of the other effects of `-traditional'.
+
+`-fcond-mismatch'
+     Allow conditional expressions with mismatched types in the second
+     and third arguments.  The value of such an expression is void.
+
+`-funsigned-char'
+     Let the type `char' be unsigned, like `unsigned char'.
+
+     Each kind of machine has a default for what `char' should be.  It
+     is either like `unsigned char' by default or like `signed char' by
+     default.
+
+     Ideally, a portable program should always use `signed char' or
+     `unsigned char' when it depends on the signedness of an object.
+     But many programs have been written to use plain `char' and expect
+     it to be signed, or expect it to be unsigned, depending on the
+     machines they were written for.  This option, and its inverse, let
+     you make such a program work with the opposite default.
+
+     The type `char' is always a distinct type from each of `signed
+     char' or `unsigned char', even though its behavior is always just
+     like one of those two.
+
+`-fsigned-char'
+     Let the type `char' be signed, like `signed char'.
+
+     Note that this is equivalent to `-fno-unsigned-char', which is the
+     negative form of `-funsigned-char'.  Likewise, the option
+     `-fno-signed-char' is equivalent to `-funsigned-char'.
+
+`-fsigned-bitfields'
+`-funsigned-bitfields'
+`-fno-signed-bitfields'
+`-fno-unsigned-bitfields'
+     These options control whether a bitfield is signed or unsigned,
+     when the declaration does not use either `signed' or `unsigned'.
+     By default, such a bitfield is signed, because this is consistent:
+     the basic integer types such as `int' are signed types.
+
+     However, when `-traditional' is used, bitfields are all unsigned
+     no matter what.
+
+`-fwritable-strings'
+     Store string constants in the writable data segment and don't
+     uniquize them.  This is for compatibility with old programs which
+     assume they can write into string constants.  The option
+     `-traditional' also has this effect.
+
+     Writing into string constants is a very bad idea; "constants"
+     should be constant.
+
+`-fallow-single-precision'
+     Do not promote single precision math operations to double
+     precision, even when compiling with `-traditional'.
+
+     Traditional K&R C promotes all floating point operations to double
+     precision, regardless of the sizes of the operands.   On the
+     architecture for which you are compiling, single precision may be
+     faster than double precision.   If you must use `-traditional',
+     but want to use single precision operations when the operands are
+     single precision, use this option.   This option has no effect
+     when compiling with ANSI or GNU C conventions (the default).
+
+
+File: gcc.info,  Node: C++ Dialect Options,  Next: Warning Options,  Prev: C Dialect Options,  Up: Invoking GCC
+
+Options Controlling C++ Dialect
+===============================
+
+   This section describes the command-line options that are only
+meaningful for C++ programs; but you can also use most of the GNU
+compiler options regardless of what language your program is in.  For
+example, you might compile a file `firstClass.C' like this:
+
+     g++ -g -felide-constructors -O -c firstClass.C
+
+In this example, only `-felide-constructors' is an option meant only
+for C++ programs; you can use the other options with any language
+supported by GNU CC.
+
+   Here is a list of options that are *only* for compiling C++ programs:
+
+`-fall-virtual'
+     Treat all possible member functions as virtual, implicitly.  All
+     member functions (except for constructor functions and `new' or
+     `delete' member operators) are treated as virtual functions of the
+     class where they appear.
+
+     This does not mean that all calls to these member functions will
+     be made through the internal table of virtual functions.  Under
+     some circumstances, the compiler can determine that a call to a
+     given virtual function can be made directly; in these cases the
+     calls are direct in any case.
+
+`-fdollars-in-identifiers'
+     Accept `$' in identifiers.  You can also explicitly prohibit use of
+     `$' with the option `-fno-dollars-in-identifiers'.  (GNU C++
+     allows `$' by default on some target systems but not others.)
+     Traditional C allowed the character `$' to form part of
+     identifiers.  However, ANSI C and C++ forbid `$' in identifiers.
+
+`-felide-constructors'
+     Elide constructors when this seems plausible.  With this option,
+     GNU C++ initializes `y' directly from the call to `foo' without
+     going through a temporary in the following code:
+
+          A foo ();
+          A y = foo ();
+
+     Without this option, GNU C++ (1) initializes `y' by calling the
+     appropriate constructor for type `A'; (2) assigns the result of
+     `foo' to a temporary; and, finally, (3) replaces the initial value
+     of `y' with the temporary.
+
+     The default behavior (`-fno-elide-constructors') is specified by
+     the draft ANSI C++ standard.  If your program's constructors have
+     side effects, `-felide-constructors' can change your program's
+     behavior, since some constructor calls may be omitted.
+
+`-fenum-int-equiv'
+     Permit implicit conversion of `int' to enumeration types.  Normally
+     GNU C++ allows conversion of `enum' to `int', but not the other
+     way around.
+
+`-fexternal-templates'
+     Produce smaller code for template declarations, by generating only
+     a single copy of each template function where it is defined.  To
+     use this option successfully, you must also mark all files that
+     use templates with either `#pragma implementation' (the
+     definition) or `#pragma interface' (declarations).  *Note
+     Declarations and Definitions in One Header: C++ Interface, for more
+     discussion of these pragmas.
+
+     When your code is compiled with `-fexternal-templates', all
+     template instantiations are external.  You must arrange for all
+     necessary instantiations to appear in the implementation file; you
+     can do this with a `typedef' that references each instantiation
+     needed.  Conversely, when you compile using the default option
+     `-fno-external-templates', all template instantiations are
+     explicitly internal.
+
+     You do not need to specify `-fexternal-templates' when compiling a
+     file that does not define and instantiate templates used in other
+     files, even if your file *uses* templates defined in other files
+     that are compiled with `-fexternal-templates'.  The only side
+     effect is an increase in object size for each file that you
+     compile without `-fexternal-templates'.
+
+`-fhandle-signatures'
+     Recognize the `signature' and `sigof' keywords for specifying
+     abstract types.  The default (`-fno-handle-signatures') is not to
+     recognize them.  *Note Type Abstraction using Signatures: C++
+     Signatures.
+
+`-fmemoize-lookups'
+`-fsave-memoized'
+     Use heuristics to compile faster.  These heuristics are not
+     enabled by default, since they are only effective for certain
+     input files.  Other input files compile more slowly.
+
+     The first time the compiler must build a call to a member function
+     (or reference to a data member), it must (1) determine whether the
+     class implements member functions of that name; (2) resolve which
+     member function to call (which involves figuring out what sorts of
+     type conversions need to be made); and (3) check the visibility of
+     the member function to the caller.  All of this adds up to slower
+     compilation.  Normally, the second time a call is made to that
+     member function (or reference to that data member), it must go
+     through the same lengthy process again.  This means that code like
+     this:
+
+          cout << "This " << p << " has " << n << " legs.\n";
+
+     makes six passes through all three steps.  By using a software
+     cache, a "hit" significantly reduces this cost.  Unfortunately,
+     using the cache introduces another layer of mechanisms which must
+     be implemented, and so incurs its own overhead.
+     `-fmemoize-lookups' enables the software cache.
+
+     Because access privileges (visibility) to members and member
+     functions may differ from one function context to the next, G++
+     may need to flush the cache.  With the `-fmemoize-lookups' flag,
+     the cache is flushed after every function that is compiled.  The
+     `-fsave-memoized' flag enables the same software cache, but when
+     the compiler determines that the context of the last function
+     compiled would yield the same access privileges of the next
+     function to compile, it preserves the cache.  This is most helpful
+     when defining many member functions for the same class: with the
+     exception of member functions which are friends of other classes,
+     each member function has exactly the same access privileges as
+     every other, and the cache need not be flushed.
+
+`-fno-strict-prototype'
+     Treat a function declaration with no arguments, such as `int foo
+     ();', as C would treat it--as saying nothing about the number of
+     arguments or their types.  Normally, such a declaration in C++
+     means that the function `foo' takes no arguments.
+
+`-fnonnull-objects'
+     Assume that objects reached through references are not null.
+
+     Normally, GNU C++ makes conservative assumptions about objects
+     reached through references.  For example, the compiler must check
+     that `a' is not null in code like the following:
+
+          obj &a = g ();
+          a.f (2);
+
+     Checking that references of this sort have non-null values requires
+     extra code, however, and it is unnecessary for many programs.  You
+     can use `-fnonnull-objects' to omit the checks for null, if your
+     program doesn't require checking.
+
+`-fthis-is-variable'
+     Permit assignment to `this'.  The incorporation of user-defined
+     free store management into C++ has made assignment to `this' an
+     anachronism.  Therefore, by default it is invalid to assign to
+     `this' within a class member function; that is, GNU C++ treats the
+     type of `this' in a member function of class `X' to be `X *const'.
+     However, for backwards compatibility, you can make it valid with
+     `-fthis-is-variable'.
+
+`-nostdinc++'
+     Do not search for header files in the standard directories
+     specific to C++, but do still search the other standard
+     directories.  (This option is used when building libg++.)
+
+`-traditional'
+     For C++ programs (in addition to the effects that apply to both C
+     and C++), this has the same effect as `-fthis-is-variable'.  *Note
+     Options Controlling C Dialect: C Dialect Options.
+
+   In addition, these optimization, warning, and code generation options
+have meanings only for C++ programs:
+
+`-fno-default-inline'
+     Do not assume `inline' for functions defined inside a class scope.
+     *Note Options That Control Optimization: Optimize Options.
+
+`-Wenum-clash'
+`-Woverloaded-virtual'
+`-Wtemplate-debugging'
+     Warnings that apply only to C++ programs.  *Note Options to
+     Request or Suppress Warnings: Warning Options.
+
+`+eN'
+     Control how virtual function definitions are used, in a fashion
+     compatible with `cfront' 1.x.  *Note Options for Code Generation
+     Conventions: Code Gen Options.
+
+
+File: gcc.info,  Node: Warning Options,  Next: Debugging Options,  Prev: C++ Dialect Options,  Up: Invoking GCC
+
+Options to Request or Suppress Warnings
+=======================================
+
+   Warnings are diagnostic messages that report constructions which are
+not inherently erroneous but which are risky or suggest there may have
+been an error.
+
+   You can request many specific warnings with options beginning `-W',
+for example `-Wimplicit' to request warnings on implicit declarations.
+Each of these specific warning options also has a negative form
+beginning `-Wno-' to turn off warnings; for example, `-Wno-implicit'.
+This manual lists only one of the two forms, whichever is not the
+default.
+
+   These options control the amount and kinds of warnings produced by
+GNU CC:
+
+`-fsyntax-only'
+     Check the code for syntax errors, but don't do anything beyond
+     that.
+
+`-w'
+     Inhibit all warning messages.
+
+`-Wno-import'
+     Inhibit warning messages about the use of `#import'.
+
+`-pedantic'
+     Issue all the warnings demanded by strict ANSI standard C; reject
+     all programs that use forbidden extensions.
+
+     Valid ANSI standard C programs should compile properly with or
+     without this option (though a rare few will require `-ansi').
+     However, without this option, certain GNU extensions and
+     traditional C features are supported as well.  With this option,
+     they are rejected.
+
+     `-pedantic' does not cause warning messages for use of the
+     alternate keywords whose names begin and end with `__'.  Pedantic
+     warnings are also disabled in the expression that follows
+     `__extension__'.  However, only system header files should use
+     these escape routes; application programs should avoid them.
+     *Note Alternate Keywords::.
+
+     This option is not intended to be useful; it exists only to satisfy
+     pedants who would otherwise claim that GNU CC fails to support the
+     ANSI standard.
+
+     Some users try to use `-pedantic' to check programs for strict ANSI
+     C conformance.  They soon find that it does not do quite what they
+     want: it finds some non-ANSI practices, but not all--only those
+     for which ANSI C *requires* a diagnostic.
+
+     A feature to report any failure to conform to ANSI C might be
+     useful in some instances, but would require considerable
+     additional work and would be quite different from `-pedantic'.  We
+     recommend, rather, that users take advantage of the extensions of
+     GNU C and disregard the limitations of other compilers.  Aside
+     from certain supercomputers and obsolete small machines, there is
+     less and less reason ever to use any other C compiler other than
+     for bootstrapping GNU CC.
+
+`-pedantic-errors'
+     Like `-pedantic', except that errors are produced rather than
+     warnings.
+
+`-W'
+     Print extra warning messages for these events:
+
+        * A nonvolatile automatic variable might be changed by a call to
+          `longjmp'.  These warnings as well are possible only in
+          optimizing compilation.
+
+          The compiler sees only the calls to `setjmp'.  It cannot know
+          where `longjmp' will be called; in fact, a signal handler
+          could call it at any point in the code.  As a result, you may
+          get a warning even when there is in fact no problem because
+          `longjmp' cannot in fact be called at the place which would
+          cause a problem.
+
+        * A function can return either with or without a value.
+          (Falling off the end of the function body is considered
+          returning without a value.)  For example, this function would
+          evoke such a warning:
+
+               foo (a)
+               {
+                 if (a > 0)
+                   return a;
+               }
+
+        * An expression-statement contains no side effects.
+
+        * An unsigned value is compared against zero with `>' or `<='.
+
+        * A comparison like `x<=y<=z' appears; this is equivalent to
+          `(x<=y ? 1 : 0) <= z', which is a different interpretation
+          from that of ordinary mathematical notation.
+
+        * Storage-class specifiers like `static' are not the first
+          things in a declaration.  According to the C Standard, this
+          usage is obsolescent.
+
+        * An aggregate has a partly bracketed initializer.  For
+          example, the following code would evoke such a warning,
+          because braces are missing around the initializer for `x.h':
+
+               struct s { int f, g; };
+               struct t { struct s h; int i; };
+               struct t x = { 1, 2, 3 };
+
+`-Wimplicit'
+     Warn whenever a function or parameter is implicitly declared.
+
+`-Wreturn-type'
+     Warn whenever a function is defined with a return-type that
+     defaults to `int'.  Also warn about any `return' statement with no
+     return-value in a function whose return-type is not `void'.
+
+`-Wunused'
+     Warn whenever a local variable is unused aside from its
+     declaration, whenever a function is declared static but never
+     defined, whenever a label is declared but not used, and whenever a
+     statement computes a result that is explicitly not used.
+
+`-Wswitch'
+     Warn whenever a `switch' statement has an index of enumeral type
+     and lacks a `case' for one or more of the named codes of that
+     enumeration.  (The presence of a `default' label prevents this
+     warning.)  `case' labels outside the enumeration range also
+     provoke warnings when this option is used.
+
+`-Wcomment'
+     Warn whenever a comment-start sequence `/*' appears in a comment.
+
+`-Wtrigraphs'
+     Warn if any trigraphs are encountered (assuming they are enabled).
+
+`-Wformat'
+     Check calls to `printf' and `scanf', etc., to make sure that the
+     arguments supplied have types appropriate to the format string
+     specified.
+
+`-Wchar-subscripts'
+     Warn if an array subscript has type `char'.  This is a common cause
+     of error, as programmers often forget that this type is signed on
+     some machines.
+
+`-Wuninitialized'
+     An automatic variable is used without first being initialized.
+
+     These warnings are possible only in optimizing compilation,
+     because they require data flow information that is computed only
+     when optimizing.  If you don't specify `-O', you simply won't get
+     these warnings.
+
+     These warnings occur only for variables that are candidates for
+     register allocation.  Therefore, they do not occur for a variable
+     that is declared `volatile', or whose address is taken, or whose
+     size is other than 1, 2, 4 or 8 bytes.  Also, they do not occur for
+     structures, unions or arrays, even when they are in registers.
+
+     Note that there may be no warning about a variable that is used
+     only to compute a value that itself is never used, because such
+     computations may be deleted by data flow analysis before the
+     warnings are printed.
+
+     These warnings are made optional because GNU CC is not smart
+     enough to see all the reasons why the code might be correct
+     despite appearing to have an error.  Here is one example of how
+     this can happen:
+
+          {
+            int x;
+            switch (y)
+              {
+              case 1: x = 1;
+                break;
+              case 2: x = 4;
+                break;
+              case 3: x = 5;
+              }
+            foo (x);
+          }
+
+     If the value of `y' is always 1, 2 or 3, then `x' is always
+     initialized, but GNU CC doesn't know this.  Here is another common
+     case:
+
+          {
+            int save_y;
+            if (change_y) save_y = y, y = new_y;
+            ...
+            if (change_y) y = save_y;
+          }
+
+     This has no bug because `save_y' is used only if it is set.
+
+     Some spurious warnings can be avoided if you declare all the
+     functions you use that never return as `volatile'.  *Note Function
+     Attributes::.
+
+`-Wparentheses'
+     Warn if parentheses are omitted in certain contexts, such as when
+     there is an assignment in a context where a truth value is
+     expected, or when operators are nested whose precedence people
+     often get confused about.
+
+`-Wenum-clash'
+     Warn about conversion between different enumeration types.  (C++
+     only).
+
+`-Wtemplate-debugging'
+     When using templates in a C++ program, warn if debugging is not yet
+     fully available (C++ only).
+
+`-Wall'
+     All of the above `-W' options combined.  These are all the options
+     which pertain to usage that we recommend avoiding and that we
+     believe is easy to avoid, even in conjunction with macros.
+
+   The remaining `-W...' options are not implied by `-Wall' because
+they warn about constructions that we consider reasonable to use, on
+occasion, in clean programs.
+
+`-Wtraditional'
+     Warn about certain constructs that behave differently in
+     traditional and ANSI C.
+
+        * Macro arguments occurring within string constants in the
+          macro body.  These would substitute the argument in
+          traditional C, but are part of the constant in ANSI C.
+
+        * A function declared external in one block and then used after
+          the end of the block.
+
+        * A `switch' statement has an operand of type `long'.
+
+`-Wshadow'
+     Warn whenever a local variable shadows another local variable.
+
+`-Wid-clash-LEN'
+     Warn whenever two distinct identifiers match in the first LEN
+     characters.  This may help you prepare a program that will compile
+     with certain obsolete, brain-damaged compilers.
+
+`-Wlarger-than-LEN'
+     Warn whenever an object of larger than LEN bytes is defined.
+
+`-Wpointer-arith'
+     Warn about anything that depends on the "size of" a function type
+     or of `void'.  GNU C assigns these types a size of 1, for
+     convenience in calculations with `void *' pointers and pointers to
+     functions.
+
+`-Wbad-function-cast'
+     Warn whenever a function call is cast to a non-matching type.  For
+     example, warn if `int malloc()' is cast to `anything *'.
+
+`-Wcast-qual'
+     Warn whenever a pointer is cast so as to remove a type qualifier
+     from the target type.  For example, warn if a `const char *' is
+     cast to an ordinary `char *'.
+
+`-Wcast-align'
+     Warn whenever a pointer is cast such that the required alignment
+     of the target is increased.  For example, warn if a `char *' is
+     cast to an `int *' on machines where integers can only be accessed
+     at two- or four-byte boundaries.
+
+`-Wwrite-strings'
+     Give string constants the type `const char[LENGTH]' so that
+     copying the address of one into a non-`const' `char *' pointer
+     will get a warning.  These warnings will help you find at compile
+     time code that can try to write into a string constant, but only
+     if you have been very careful about using `const' in declarations
+     and prototypes.  Otherwise, it will just be a nuisance; this is
+     why we did not make `-Wall' request these warnings.
+
+`-Wconversion'
+     Warn if a prototype causes a type conversion that is different
+     from what would happen to the same argument in the absence of a
+     prototype.  This includes conversions of fixed point to floating
+     and vice versa, and conversions changing the width or signedness
+     of a fixed point argument except when the same as the default
+     promotion.
+
+     Also, warn if a negative integer constant expression is implicitly
+     converted to an unsigned type.  For example, warn about the
+     assignment `x = -1' if `x' is unsigned.  But do not warn about
+     explicit casts like `(unsigned) -1'.
+
+`-Waggregate-return'
+     Warn if any functions that return structures or unions are defined
+     or called.  (In languages where you can return an array, this also
+     elicits a warning.)
+
+`-Wstrict-prototypes'
+     Warn if a function is declared or defined without specifying the
+     argument types.  (An old-style function definition is permitted
+     without a warning if preceded by a declaration which specifies the
+     argument types.)
+
+`-Wmissing-prototypes'
+     Warn if a global function is defined without a previous prototype
+     declaration.  This warning is issued even if the definition itself
+     provides a prototype.  The aim is to detect global functions that
+     fail to be declared in header files.
+
+`-Wmissing-declarations'
+     Warn if a global function is defined without a previous
+     declaration.  Do so even if the definition itself provides a
+     prototype.  Use this option to detect global functions that are
+     not declared in header files.
+
+`-Wredundant-decls'
+     Warn if anything is declared more than once in the same scope,
+     even in cases where multiple declaration is valid and changes
+     nothing.
+
+`-Wnested-externs'
+     Warn if an `extern' declaration is encountered within an function.
+
+`-Winline'
+     Warn if a function can not be inlined, and either it was declared
+     as inline, or else the `-finline-functions' option was given.
+
+`-Woverloaded-virtual'
+     Warn when a derived class function declaration may be an error in
+     defining a virtual function (C++ only).  In a derived class, the
+     definitions of virtual functions must match the type signature of a
+     virtual function declared in the base class.  With this option, the
+     compiler warns when you define a function with the same name as a
+     virtual function, but with a type signature that does not match any
+     declarations from the base class.
+
+`-Werror'
+     Make all warnings into errors.
+
+
+File: gcc.info,  Node: Debugging Options,  Next: Optimize Options,  Prev: Warning Options,  Up: Invoking GCC
+
+Options for Debugging Your Program or GNU CC
+============================================
+
+   GNU CC has various special options that are used for debugging
+either your program or GCC:
+
+`-g'
+     Produce debugging information in the operating system's native
+     format (stabs, COFF, XCOFF, or DWARF).  GDB can work with this
+     debugging information.
+
+     On most systems that use stabs format, `-g' enables use of extra
+     debugging information that only GDB can use; this extra information
+     makes debugging work better in GDB but will probably make other
+     debuggers crash or refuse to read the program.  If you want to
+     control for certain whether to generate the extra information, use
+     `-gstabs+', `-gstabs', `-gxcoff+', `-gxcoff', `-gdwarf+', or
+     `-gdwarf' (see below).
+
+     Unlike most other C compilers, GNU CC allows you to use `-g' with
+     `-O'.  The shortcuts taken by optimized code may occasionally
+     produce surprising results: some variables you declared may not
+     exist at all; flow of control may briefly move where you did not
+     expect it; some statements may not be executed because they
+     compute constant results or their values were already at hand;
+     some statements may execute in different places because they were
+     moved out of loops.
+
+     Nevertheless it proves possible to debug optimized output.  This
+     makes it reasonable to use the optimizer for programs that might
+     have bugs.
+
+     The following options are useful when GNU CC is generated with the
+     capability for more than one debugging format.
+
+`-ggdb'
+     Produce debugging information in the native format (if that is
+     supported), including GDB extensions if at all possible.
+
+`-gstabs'
+     Produce debugging information in stabs format (if that is
+     supported), without GDB extensions.  This is the format used by
+     DBX on most BSD systems.  On MIPS and Alpha systems this option
+     produces embedded stabs debugging output which is not understood
+     by DBX.
+
+`-gstabs+'
+     Produce debugging information in stabs format (if that is
+     supported), using GNU extensions understood only by the GNU
+     debugger (GDB).  The use of these extensions is likely to make
+     other debuggers crash or refuse to read the program.
+
+`-gcoff'
+     Produce debugging information in COFF format (if that is
+     supported).  This is the format used by SDB on most System V
+     systems prior to System V Release 4.
+
+`-gxcoff'
+     Produce debugging information in XCOFF format (if that is
+     supported).  This is the format used by the DBX debugger on IBM
+     RS/6000 systems.
+
+`-gxcoff+'
+     Produce debugging information in XCOFF format (if that is
+     supported), using GNU extensions understood only by the GNU
+     debugger (GDB).  The use of these extensions is likely to make
+     other debuggers crash or refuse to read the program.
+
+`-gdwarf'
+     Produce debugging information in DWARF format (if that is
+     supported).  This is the format used by SDB on most System V
+     Release 4 systems.
+
+`-gdwarf+'
+     Produce debugging information in DWARF format (if that is
+     supported), using GNU extensions understood only by the GNU
+     debugger (GDB).  The use of these extensions is likely to make
+     other debuggers crash or refuse to read the program.
+
+`-gLEVEL'
+`-ggdbLEVEL'
+`-gstabsLEVEL'
+`-gcoffLEVEL'
+`-gxcoffLEVEL'
+`-gdwarfLEVEL'
+     Request debugging information and also use LEVEL to specify how
+     much information.  The default level is 2.
+
+     Level 1 produces minimal information, enough for making backtraces
+     in parts of the program that you don't plan to debug.  This
+     includes descriptions of functions and external variables, but no
+     information about local variables and no line numbers.
+
+     Level 3 includes extra information, such as all the macro
+     definitions present in the program.  Some debuggers support macro
+     expansion when you use `-g3'.
+
+`-p'
+     Generate extra code to write profile information suitable for the
+     analysis program `prof'.  You must use this option when compiling
+     the source files you want data about, and you must also use it when
+     linking.
+
+`-pg'
+     Generate extra code to write profile information suitable for the
+     analysis program `gprof'.  You must use this option when compiling
+     the source files you want data about, and you must also use it when
+     linking.
+
+`-a'
+     Generate extra code to write profile information for basic blocks,
+     which will record the number of times each basic block is
+     executed, the basic block start address, and the function name
+     containing the basic block.  If `-g' is used, the line number and
+     filename of the start of the basic block will also be recorded.
+     If not overridden by the machine description, the default action is
+     to append to the text file `bb.out'.
+
+     This data could be analyzed by a program like `tcov'.  Note,
+     however, that the format of the data is not what `tcov' expects.
+     Eventually GNU `gprof' should be extended to process this data.
+
+`-dLETTERS'
+     Says to make debugging dumps during compilation at times specified
+     by LETTERS.  This is used for debugging the compiler.  The file
+     names for most of the dumps are made by appending a word to the
+     source file name (e.g.  `foo.c.rtl' or `foo.c.jump').  Here are the
+     possible letters for use in LETTERS, and their meanings:
+
+    `M'
+          Dump all macro definitions, at the end of preprocessing, and
+          write no output.
+
+    `N'
+          Dump all macro names, at the end of preprocessing.
+
+    `D'
+          Dump all macro definitions, at the end of preprocessing, in
+          addition to normal output.
+
+    `y'
+          Dump debugging information during parsing, to standard error.
+
+    `r'
+          Dump after RTL generation, to `FILE.rtl'.
+
+    `x'
+          Just generate RTL for a function instead of compiling it.
+          Usually used with `r'.
+
+    `j'
+          Dump after first jump optimization, to `FILE.jump'.
+
+    `s'
+          Dump after CSE (including the jump optimization that sometimes
+          follows CSE), to `FILE.cse'.
+
+    `L'
+          Dump after loop optimization, to `FILE.loop'.
+
+    `t'
+          Dump after the second CSE pass (including the jump
+          optimization that sometimes follows CSE), to `FILE.cse2'.
+
+    `f'
+          Dump after flow analysis, to `FILE.flow'.
+
+    `c'
+          Dump after instruction combination, to the file
+          `FILE.combine'.
+
+    `S'
+          Dump after the first instruction scheduling pass, to
+          `FILE.sched'.
+
+    `l'
+          Dump after local register allocation, to `FILE.lreg'.
+
+    `g'
+          Dump after global register allocation, to `FILE.greg'.
+
+    `R'
+          Dump after the second instruction scheduling pass, to
+          `FILE.sched2'.
+
+    `J'
+          Dump after last jump optimization, to `FILE.jump2'.
+
+    `d'
+          Dump after delayed branch scheduling, to `FILE.dbr'.
+
+    `k'
+          Dump after conversion from registers to stack, to
+          `FILE.stack'.
+
+    `a'
+          Produce all the dumps listed above.
+
+    `m'
+          Print statistics on memory usage, at the end of the run, to
+          standard error.
+
+    `p'
+          Annotate the assembler output with a comment indicating which
+          pattern and alternative was used.
+
+`-fpretend-float'
+     When running a cross-compiler, pretend that the target machine
+     uses the same floating point format as the host machine.  This
+     causes incorrect output of the actual floating constants, but the
+     actual instruction sequence will probably be the same as GNU CC
+     would make when running on the target machine.
+
+`-save-temps'
+     Store the usual "temporary" intermediate files permanently; place
+     them in the current directory and name them based on the source
+     file.  Thus, compiling `foo.c' with `-c -save-temps' would produce
+     files `foo.i' and `foo.s', as well as `foo.o'.
+
+`-print-file-name=LIBRARY'
+     Print the full absolute name of the library file LIBRARY that
+     would be used when linking--and don't do anything else.  With this
+     option, GNU CC does not compile or link anything; it just prints
+     the file name.
+
+`-print-prog-name=PROGRAM'
+     Like `-print-file-name', but searches for a program such as `cpp'.
+
+`-print-libgcc-file-name'
+     Same as `-print-file-name=libgcc.a'.
+
+     This is useful when you use `-nostdlib' but you do want to link
+     with `libgcc.a'.  You can do
+
+          gcc -nostdlib FILES... `gcc -print-libgcc-file-name`
+

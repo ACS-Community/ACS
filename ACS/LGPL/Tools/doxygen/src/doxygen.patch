@@ -1,0 +1,11 @@
+diff -Naur tmp_unpack/doxygen-1.7.0.orig/src/util.cpp doxygen-1.7.0/src/util.cpp
+--- tmp_unpack/doxygen-1.7.0.orig/src/util.cpp	2010-06-14 09:15:31.000000000 +0000
++++ doxygen-1.7.0/src/util.cpp	2010-07-06 15:28:12.000000000 +0000
+@@ -6434,6 +6434,7 @@
+ {
+   g_extLookup.setAutoDelete(TRUE);
+   updateLanguageMapping(".idl",   "idl"); 
++  updateLanguageMapping(".midl",  "idl"); 
+   updateLanguageMapping(".ddl",   "idl"); 
+   updateLanguageMapping(".odl",   "idl"); 
+   updateLanguageMapping(".java",  "java");

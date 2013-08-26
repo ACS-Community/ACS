@@ -1,0 +1,141 @@
+#!/bin/bash
+#A general purpose script designed to be used as the prologue
+#for most tat modular tests
+
+. acsstartupConstants # load error codes like 
+
+# Usage info. Be nice and keep this up-to-date!
+function printUsage 
+{
+   echo "Usage: `basename $0` [OPTIONS]"
+   echo "Start a TAT session"
+   echo ""
+   echo "Options: "
+   echo "  --noloadifr                         Do not load the Interface Repository."
+   echo "  -l, --log                           Save the ACS logging output to a file"
+   echo "  -h, --help                          Prints this message and exits."
+}
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_LOADIFR=
+CL_LOG=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=noloadifr,log,help
+SHORTOPTS=lh
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--noloadifr)                  CL_LOADIFR="--noloadifr" ;;
+	--log)                        CL_LOG=true ;;
+	-l)                           CL_LOG=true ;;
+	--help)                       printUsage ; exit 0 ;;
+	-h)                           printUsage ; exit 0 ;;
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+#---------------------------------------------------------------------------
+#Set the CDB to be the present working directory IFF
+#it's set to be the default ACS CDB
+if [ "$ACS_CDB" = "$ACSDATA/config/defaultCDB" ] || [ "$ACS_CDB" = "" ]
+then
+    ACS_CDB=$PWD
+fi 
+#---------------------------------------------------------------------------
+#Pick an ACS base port to use
+
+#unset ACS_INSTANCE - we do not allow people to set this from TAT!
+unset ACS_INSTANCE
+
+#iterate through the ten possible choices
+i=0
+while [ $i -lt 10 ]
+do
+	#if the directory has not already been created.
+	if [ ! -e $ACS_TMP/ACS_INSTANCE.$i ]
+	then
+		#we've found a free one and we're done
+		export ACS_INSTANCE=$i
+	        break
+ 	fi
+
+ 	i=$(( $i + 1 ))
+done
+
+if [ "X$ACS_INSTANCE" = "X" ]
+then
+    echo "No ACS instances were available!" > /dev/stderr
+    exit 1
+fi
+
+#---------------------------------------------------------------------------
+#Start the services and manager
+if [ "X$ACS_TMP" == "X" ]
+then 
+    echo "The environment variable ACS_TMP is not defined. Exiting!"
+    exit 1
+else
+    echo " Starting ORB Services and Manager"
+    acsStart $CL_LOADIFR > $ACS_TMP/acsStart.log
+fi
+INSTANCE_DIR=$ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+
+#---------------------------------------------------------------------------
+#Get the ACS_INSTANCE from the log file just written out
+export ACS_INSTANCE=`grep -m 1 "For this ACS session, please do an" $ACS_TMP/acsStart.log | cut -d\' -f2 | cut -d= -f2`
+if [ "$ACS_INSTANCE" = "" ]
+then
+    echo "Could not determine whether an ACS_INSTANCE was selected by acsStart!"
+    echo "Exiting!"
+    exit 1
+else 
+    echo $ACS_INSTANCE > $ACS_TMP/acs_instance
+fi
+#---------------------------------------------------------------------------
+#
+# Checks LOGGING mode
+#
+
+if [ "$CL_LOG" = "true" ]
+then
+# commands from a simplified "accStarter -p loggingClient.pid -o all_logs.xml loggingClient LoggingChannel"
+    
+    pidfile=$INSTANCE_DIR/loggingClient.pid
+    outfile=$INSTANCE_DIR/all_logs.xml
+	
+	# logging client writes to stderr which would confuse TAT
+	loggingClient -f $outfile Logging >& $INSTANCE_DIR/logerrfile.out &
+	pid=$!
+
+	## store pid in file, so that acsutilTATEpilogue can kill the logging client process (there's no other way to end it)
+	echo $pid >> $pidfile
+fi
+#---------------------------------------------------------------------------

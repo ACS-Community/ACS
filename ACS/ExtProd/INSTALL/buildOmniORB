@@ -1,0 +1,169 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: buildOmniORB,v 1.22 2012/01/09 14:39:47 tstaig Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# psivera   2002-08-21  created
+# psivera   2002-09-25  added mv of directories after unzip
+# sturolla  2002-09-25  ported to Bourne Shell and added external subroutin to determine OS 
+#
+
+#************************************************************************
+#   NAME
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+#set -x 
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+
+LOG=buildOmniORB.log
+#
+exec > $LOG 2>&1
+
+date
+
+#
+# Install omniORB.  This deletes and rebuilds the $OMNI_ROOT
+# It will ftp the distribution files if they are not found.
+#
+# NOTE: need to set OMNI_ROOT, PYTHON, and TICS_PGS.
+# Source ENV.sh to do this.
+#
+# Reference to omniORB:
+#	http://omniorb.sourceforge.net/download.html
+#
+echo installing the omniORB distribution
+
+#
+# omniORB ORB - omniORB-4.1.4.tar.gz
+# 
+# Notes: omni/README.FIRST, omni/README.unix
+#
+# Edit config/config.mk and set the platform:
+#   platform = i586_linux_2.0_glibc2.1
+#
+# Edit mk/platforms/i586_linux_2.0_glibc2.1.mk
+#   PYTHON = /home/alma/packages/bin/python
+#
+
+if [ ! -e ../PRODUCTS/omniORB-4.1.4.tar.gz ]
+then
+  echo Error: omniORB-4.1.4 sources are missing
+  exit 2
+fi
+
+rm -rf $OMNI_ROOT
+CWD=`pwd`
+cd ../PRODUCTS
+tar -zxf omniORB-4.1.4.tar.gz
+mv  omniORB-4.1.4 $OMNI_ROOT
+
+cd $OMNI_ROOT
+
+#
+# change configuration files
+#
+if [ "$OS" = "LINUX" ] || [ "$OS" = "SOLARIS" ] || [ "$OS" = "$CYGWIN_VER" ]
+then
+    mkdir build
+    cd build
+    ../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python 
+    make
+    make install
+else
+    echo "OS $OS is not supported"
+    exit 1
+fi
+
+cd $CWD
+
+#
+# omniORB Python - omniORBpy-3.4.tar.gz
+#
+# Notes: See omniORBpy/ReleaseNote for help
+#
+if [ ! -e ../PRODUCTS/omniORBpy-3.4.tar.gz ]
+then
+  echo Error: omniORBpy-3.4 sources are missing
+  exit 2
+fi
+
+cd ../PRODUCTS
+tar -zxf omniORBpy-3.4.tar.gz -C $OMNI_ROOT/src/lib
+
+cp omniORB-patches/CosProperty.idl $OMNI_ROOT/idl/COS
+
+mkdir -p $OMNI_ROOT/src/lib/
+mv $OMNI_ROOT/src/lib/omniORBpy-3.4 $OMNI_ROOT/src/lib/omniORBpy
+cd $OMNI_ROOT/src/lib/omniORBpy
+mkdir -p build
+cd build
+../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python 
+make
+make install
+#
+# Depending on the version of python installed and used for building,
+# the code generated will be put in python2.3 or 2.4 directory.
+# using a wildcard here is a trick (a bit dirty) to get both
+# possibilities.
+# It would give troubles only in the case for some reason both 
+# 2.3 and 2.4 (or other) version directories have bee built.
+# But I am pretty confident this will never happen.
+#
+#               Gianluca
+#
+mkdir -p $OMNI_ROOT/lib
+mv $OMNI_ROOT/lib/python2.* $OMNI_ROOT/lib/python
+cd $OMNI_ROOT/lib/python
+omniidl -I. -I$OMNI_ROOT/idl -I$OMNI_ROOT/idl/COS -bpython $OMNI_ROOT/idl/COS/CosNotif*.idl \
+                                                           $OMNI_ROOT/idl/COS/CosEvent*.idl \
+                                                           $OMNI_ROOT/idl/COS/CosProper*.idl
+
+# omniORB does not come with TAO's AVStreams library so we must 
+# compile the stubs ourselves.
+omniidl -I. -I$OMNI_ROOT/idl -I$OMNI_ROOT/idl/COS -bpython $ACE_ROOT/TAO/orbsvcs/orbsvcs/AVStreams.idl
+
+# there is problem with omniORB which assumes that the idl module name corespond to the name of the file
+# This is not true for CosPropertyService which is in CosProperty.idl file, but module name is CosPropertyService
+#
+omniidl -I. -I$OMNI_ROOT/idl -I$OMNI_ROOT/idl/COS -bpython $OMNI_ROOT/idl/COS/CosProperty.idl
+
+#Make omniidl able to install in a non standard location
+#See ticket COMP-5526
+export OMNI_ROOT_PATH=$(echo $OMNI_ROOT | sed -e 's/\//\\\//g') 
+cat $OMNI_ROOT/bin/omniidl | sed -e s/\""$OMNI_ROOT_PATH"/os\.getenv\(\"OMNI_ROOT\"\)\ \+\ \"/g > $OMNI_ROOT/bin/omniidl.new
+mv $OMNI_ROOT/bin/omniidl.new $OMNI_ROOT/bin/omniidl
+chmod a+x $OMNI_ROOT/bin/omniidl
+
+cd $CWD
+echo omniORB installation done!
+date

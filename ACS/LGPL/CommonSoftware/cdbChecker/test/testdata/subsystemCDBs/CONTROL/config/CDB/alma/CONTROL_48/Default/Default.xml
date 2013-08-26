@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+@(#) $Id: Default.xml,v 1.2 2006/11/20 05:40:15 cparedes Exp $
+
+Copyright (C) 2004
+Associated Universities, Inc. Washington DC, USA.
+
+Produced for the ALMA project
+
+This library is free software; you can redistribute it and/or modify
+it it under the terms of the GNU Library General Public License as
+published by the Free Software Foundation; either version 2 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 675 Massachusetts Ave, Cambridge, MA, 02139, USA.
+
+Correspondence concerning ALMA should be addressed as follows:
+Internet email: alma-sw-admin@nrao.edu
+-->
+
+<DigiClock xmlns="urn:schemas-cosylab-com:DigiClock:1.0" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:amb="urn:schemas-cosylab-com:AmbDevice:1.0">
+  <lockIndicatorVoltage alarm_low_on="2.5"
+                        alarm_low_off="2.54"
+                        alarm_high_on="4.0"
+                        alarm_high_off="3.96"
+                        default_timer_trig="10.0"
+                        min_timer_trig="10.0"
+                        min_delta_trig="0.03906"
+                        default_value="0.0"
+                        graph_min="0.0"
+                        graph_max="5.0"
+                        min_step="0.03906"
+                        units="V"
+                        description="Lock Indicator Voltage"
+                        format="%f">
+    <amb:rcaMap relative_address="112" data_length="2">
+      <amb:doubleBitMap numberOfBits="10" fieldWidth="16" scale= "0.0048875855"/>
+    </amb:rcaMap>
+  </lockIndicatorVoltage>
+  <psVoltageClock alarm_low_on="5.5"
+                        alarm_low_off="5.54"
+                        alarm_high_on="7.5"
+                        alarm_high_off="7.46"
+                        default_timer_trig="60.0"
+                        min_timer_trig="1.0"
+                        min_delta_trig="0.03906"
+                        default_value="6.0"
+                        graph_min="0.0"
+                        graph_max="10.0"
+                        min_step="0.03906"
+                        units="V"
+                        description="PS Voltage Clock"
+                        format="%f">
+    <amb:rcaMap relative_address="113" data_length="2">
+      <amb:doubleBitMap numberOfBits="10" fieldWidth="16" scale= "0.009765625"/>
+    </amb:rcaMap>
+  </psVoltageClock>
+  <dgckStatus/>
+  <missedCommand/>
+  <Address/>
+  <errors/>
+  <transactions/>
+  <temperature/>
+</DigiClock>
+

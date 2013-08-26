@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Test schema for MACI
+   -
+   - Author: G.Chiozzi
+   -
+   - There should be inheritance!!!!!!!
+   -
+  -->
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:MaciTestCClass:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:MaciTestCClass:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+  <xs:complexType name="MaciTestCClass">
+    <xs:attribute name="name" type="xs:string" use="optional" default=""/>
+    <xs:attribute name="x" type="xs:unsignedInt" use="optional" default="0"/>
+    <xs:attribute name="y" type="xs:unsignedInt" use="optional" default="0"/>
+  </xs:complexType>
+  <xs:element name="MaciTestCClass" type="MaciTestCClass"/>
+</xs:schema>
+

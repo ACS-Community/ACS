@@ -1,0 +1,254 @@
+#!/usr/bin/perl
+# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.10 2012/01/13 18:54:47 tstaig Exp $
+#-----------------------------------------------------------------------
+# Copyright (C) 2007 Patrick P. Murphy
+#
+# Produced for the ALMA project
+#
+#   This script is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version. 
+#
+#   This library is distributed in the hope that it will be useful, 
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY FITNESS FOR A PARTICULAR PURPOSE. See the 
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this library; if not, write to the Free Software 
+#   Foundation, Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#   Correspondence concerning ALMA should be addressed as follows:
+#
+#      Internet email: alma-sw-admin@nrao.edu
+#
+#-----------------------------------------------------------------------
+#
+#   NAME
+#    CheckUnresolvedSymbols
+#
+#   DESCRIPTION
+#    Checks the specified shared library for unresolved symbols
+#    This script will take the argument on the command line, assume it
+#    is a shared library of ELF format objects, and check it for
+#    unresolved symbols.  If there are any found, it exits with an error
+#    status and an appropriate error message.
+#
+#    An alternative usage is obtained via the -l flag; this invokes ldd
+#    against the relevant library to highlight any shared libraries that
+#    cannot be found.
+#
+#   USAGE
+#    See the "$usage = ..." section below.
+#
+#   AUTHOR
+#    Pat Murphy
+#
+#   ENVIRONMENT
+#
+#   CAUTION
+#    The approach here is like cracking an egg with a sledgehammer.  It
+#    is HIGHLY empirical.  While using the "ld" command on a .so and
+#    checking its return status seems to work now on the test cases we
+#    tried, it may not work in the future.
+#
+#   EXAMPLES
+#    To be inserted.
+#
+#   SEE ALSO
+#    Manual pages for "ld" and "readelf" and "ldd"
+#
+#   BUGS
+#    Probably present.  Squish them as you find them.
+#
+#   DEPENDENCIES
+#    Just standard perl stuff.
+#-----------------------------------------------------------------------
+
+use File::Basename;
+use Getopt::Std;
+
+$myname = basename($0, ".pl");  # Who am I?
+
+#---------------customization, local variables, setup, usage -----------
+#
+
+$usage = "Usage: $myname library.$SHLIB_EXT [opts]\n\n" .
+    "Options:\n\n" .
+    " -h          show this message\n" .
+    " -l          Use 'ldd' to only show 'not found' libraries\n" .
+    " -o {file}   Output to {file} instead of CheckUnresolvedSymbols-DELETEME.out\n" .
+    " -n          Do not print headers or summary in output\n" .
+    " -q          Ultra Quiet mode, only use status return\n" .
+    " -s          Save (do not delete) output file\n" .
+    " -v          Debug mode (more verbose output, cancels -q)\n" .
+    " -w          Warn about unresolved modules, but exit with success.";
+
+# Options! Options!  Must have options!
+
+getopts('hlno:qsvw') || die($usage);
+if ($opt_h) {
+    printf $usage;
+    exit;
+}
+
+# Need to get arguments here from ARGV 
+if ($#ARGV <= -1) {
+    printf STDERR "$myname: No libraries to check!\n\n$usage";
+    exit(1);
+}
+# Try to run "ld" on the thang...
+$mylib = $ARGV[0];
+if ( ! -r $mylib ) {
+    printf STDERR "$myname: Cannot read $mylib\n";
+    exit(2);
+} else {
+    # the OR here is due to SWIG libraries
+    if($mylib =~ /lib(\w+).$SHLIB_EXT/ || $mylib =~ /(\w+).$SHLIB_EXT/) { 
+	$stem = $1;
+    } else {
+	printf STDERR "Failure in identifying the stem of $mylib\n";
+    }
+}
+if ( ! -w "." ) {
+    printf STDERR "$myname: Current directory is not writable\n";
+    exit(3);
+}
+if (!$opt_o) {
+    $opt_o = "CheckUnresolvedSymbols-$stem-$>-DELETEME.out";
+}
+if ($opt_q && $opt_v) {
+    printf STDERR "$myname warning: -v overrides -q\n";
+    undef($opt_q);
+}
+printf "$myname debug: output is $opt_o\n" if ($opt_v);
+
+$ush = $ENV{"SHELL"};
+$cmd = "ld $mylib -o $opt_o 2>&1";
+if ($opt_l) {
+    $cmd = "ldd $mylib 2>&1";
+}
+if ($ush =~ /csh/) {            # Ick ick!  Note that a google search for
+                                # 'tcsh version of "2>&1"' finds the FAQ
+                                # "csh programming considered harmful".
+                                # This circumvention may not work.  If
+                                # not, then put in an error here instead.
+    $cmd = "bash -c 'ld $mylib -o $opt_o 2>&1' ";
+    if ($opt_l) {
+        $cmd = "bash -c 'ldd $mylib 2>&1' ";
+    }
+    # printf STDERR "$myname: your shell is csh or tcsh; This script cannot\n";
+    # printf STDERR "$myname: run under c-style shells.  Please read or \n";
+    # printf STDERR "$myname: google the unix-faq/shell/csh-whynot FAQ to\n";
+    # printf STDERR "$myname: find out why this is (cf. redirection).\n";
+    # exit(4);
+}
+printf "$myname debug: command is $cmd\n" if ($opt_v);
+
+$first = 1;
+$nundef = 0;
+$mystat = 0;
+
+if (!open(ROLF, "$cmd |")) {    # Open a pipe to the command
+    printf STDERR "$myname: cannot run $cmd on $mylib: $!\n";
+    exit(5);                
+} elsif ($opt_v) {
+    printf "$myname debug: checking $mylib\n";
+}
+while (<ROLF>) {
+    chomp;                      # trim any newline
+    if ($opt_l) {
+        next unless /(lib.*) =\> not found$/;
+        $und = $1;
+        printf "$myname debug:  ldd found $und\n" if ($opt_v);
+        if ($first) {
+            if (!($opt_n || $opt_q)) {
+                printf STDERR "$myname: 'not found' library/ies detected in $mylib\n";
+                printf STDERR "$myname:  - List follows:\n";
+            }
+            $first--;
+        }
+    } else {
+        next if /entry symbol _start/; # Always ignore this
+        next unless /undefined reference to \`([^\']*)\'/;
+        $und = $1;
+        printf "$myname debug:  found $und:\n" if ($opt_v);
+        if ($first) {
+            if (!($opt_n || $opt_q)) {
+                printf STDERR "$myname: Undefined symbol(s) detected in $mylib\n";
+                printf STDERR "$myname:  - List follows:\n";
+            }
+            $first--;
+        }
+    }
+                                # see if we have it already; unlikely
+    if ($undefs{$und}) {
+        printf "$myname debug:   Skipping $und, already found\n" 
+            if ($opt_v);
+    } else {
+        printf STDERR "$myname: $und\n" unless ($opt_q);
+        $mystat = 3;
+        $nundef++;
+        $undefs{$und} = $mylib;
+    }
+}
+$stat = 0;
+# Just close it; see older CVS versions for the check-close version; it didn't
+# work as expected.
+close(ROLF);                   # Clean up.
+                                # Report on findings.
+if ($nundef > 0) {
+    if (!($opt_n || $opt_q)) {
+        if ($opt_l) {
+            if ($nundef == 1) {
+                printf STDERR "$myname: Total of one 'not found'in $mylib\n";
+            } else {
+                printf STDERR "$myname: Total of $nundef 'not found' in $mylib\n";
+            }
+        } else {
+            if ($nundef == 1) {
+                printf STDERR "$myname: Total of one undefined symbol in $mylib\n";
+            } else {
+                printf STDERR "$myname: Total of $nundef undefined symbols in $mylib\n";
+            }
+        }
+    }
+    if (!$opt_s && !$opt_l) {
+        if (( -f $opt_o) && (! $opt_q) ) {
+                                # See below; this should not happen.
+            printf STDERR "$myname: found unexpected $opt_o, deleting it...\n";
+            unlink($opt_o);
+        }
+    }
+    if (!$opt_w) {
+        if ($opt_l) {
+            printf STDERR "$myname: ###### FAIL for ldd on $mylib\n";
+        } else {
+            printf STDERR "$myname: ###### FAIL for ld on $mylib\n";
+        }
+    }
+} else {
+    if ($opt_l) {
+        printf "$myname debug: no 'not found' libraries referenced in $mylib.\n" 
+            if ($opt_v);
+    } else {
+        printf "$myname debug: no undefined symbols detected in $mylib.\n" 
+            if ($opt_v);
+    }
+    if (!$opt_s && !$opt_l) {   # See if we have to clean up.
+                                # NOTE: no undefined symbols usually means the
+                                # CheckUnresolvedSymbols-DELETEME.out or $opt_o file
+                                # got created. It seems not to be created otherwise.
+        if ( -f $opt_o) {
+            printf STDERR "$myname: found $opt_o, deleting it...\n" if ($opt_v);
+            unlink($opt_o);
+        } else {
+            printf STDERR "$myname: no $opt_o to delete?  Weird!\n";
+        }
+    }
+}
+if ($opt_w) {
+    exit(0);
+} else {
+    exit($mystat);                  # will be 0 or 3.
+}

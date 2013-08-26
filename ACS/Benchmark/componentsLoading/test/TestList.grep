@@ -1,0 +1,26 @@
+DEBUG
+FINE
+^. - [jJ]ava
+Time:
+export
+Starting Java application
+-D user.dir=
+Jlog will use cache for
+\[EngineFilteringTest.*\]
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+object is activated
+Local file logger: Cache saved to
+ACS.log.minlevel.namedloggers not defined.
+Component loaded in
+A task got the component
+getDynamicComponent called with compName
+componentReleased
+authenticate called
+Request queue is full
+ACS Container Daemon
+chmod: changing permissions of
+GlobalLogger
+Thread pool exhausted
+log queue overflow
+log queue no longer overflowing
+Logger jacorb@[[:alpha:]]*#[[:alpha:]]* created with custom log levels local=Info, remote=Info

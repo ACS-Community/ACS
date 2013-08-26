@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP project meetings minutes</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+	
+	<section>
+		<description>
+    Please click on the <FONT COLOR="#0000FF">blue</FONT> date below to consult the related minutes in HTML format.<br/><br/>
+    <table BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="100%">
+    <tr>
+        <td ID="TableTitle">Date</td>
+        <td ID="TableTitle" width="100%">Topics</td>
+    </tr>
+
+    <tr>
+        <td ID="CellLeftTop10">
+        	<A HREF="../../_notgenerated/meetings/20021113/">20/08/2002</A><br/>
+        	<a HREF="../../_notgenerated/meetings/20021113/minutes.doc"><IMG BORDER="0" SRC="../images/word.gif" ALT="MS word document" width="18" height="18"/></a>
+        </td>
+        <td ID="Cellleft10">
+        Discussions about next GP courses.
+    </td>
+    </tr>
+
+    <tr>
+        <td ID="CellLeftTop10">
+        	<A HREF="../../_notgenerated/meetings/20020820/">20/08/2002</A><br/>
+        	<a HREF="../../_notgenerated/meetings/20020820/minutes.doc"><IMG BORDER="0" SRC="../images/word.gif" ALT="MS word document" width="18" height="18"/></a>
+        </td>
+        <td ID="Cellleft10">
+        Find a first agreement on technical and organizational issues: <br/>
+        <LI> Structure of the Web site</LI>
+        <LI> Templates for documentation (overall structure, HTML vs. XML)</LI>
+        <LI> how to do Quality Assurance (JUnit etc)</LI>
+        <LI> Using ANT as a make/distribution tool</LI>
+        <LI> coding conventions (can we simply adopt Sun/Java coding conventions?)</LI> 
+        <LI> what tools to use in support of coding conventions </LI>
+    </td>
+    </tr>
+
+    <tr>
+        <td ID="CellLeftTop10">
+        	<A HREF="../../_notgenerated/meetings/20020729/">29/07/2002</A><br/><br/>
+        	<a HREF="../../_notgenerated/meetings/20020729/minutes.doc"><IMG BORDER="0" SRC="../images/word.gif" ALT="MS word document" width="18" height="18"/></a>
+        </td>
+        <td ID="CellLeftTop10">
+            Conclusions from the kick-off meeting on Thursday<br/> 
+            <LI> Clarification of concepts between NetBeans platform and Console Manager </LI>
+            <LI> Brainstorming for preliminary requirements </LI>
+            <LI> Planning of a AscBeans presentation demo(?) in PS</LI>
+    </td>
+    </tr>
+
+    <tr>
+        <td ID="CellLeftTop10">
+        	<A HREF="../../_notgenerated/meetings/20020719/">19/07/2002</A><br/>
+        	<a HREF="../../_notgenerated/meetings/20020719/minutes.doc"><IMG BORDER="0" SRC="../images/word.gif" ALT="MS word document" width="18" height="18"/></a>
+        </td>
+        <td ID="CellLeftTop10">
+            Project name Brainstorming + decision (20') <br/>
+            "Tour de table" of ongoing activities (10')<br/> 
+            Activity planning for selected milestones (c.f. below) (60-90')<br/> 
+        </td>
+    </tr>
+
+    <tr>
+        <td ID="CellLeftTop10">
+        	<A HREF="../../_notgenerated/meetings/20020716/">16/07/2002</A><br/>
+        	<a HREF="../../_notgenerated/meetings/20020716/minutes.doc"><IMG BORDER="0" SRC="../images/word.gif" ALT="MS word document" width="18" height="18"/></a>
+        </td>
+        <td ID="CellLeftTop10">
+            Project Name <br/>
+            Support Infrastructure<br/>
+            Netbeans vs. Eclipse<br/>
+            Milestones<br/>
+        </td>
+    </tr>
+
+    <tr>
+        <td ID="CellLeftTop10">
+        	<A HREF="../../_notgenerated/meetings/20020710/">10/07/2002</A><br/>
+        	<a HREF="../../_notgenerated/meetings/20020710/minutes.doc"><IMG BORDER="0" SRC="../images/word.gif" ALT="MS word document" width="18" height="18"/></a>
+        </td>
+        <td ID="CellLeftTop10">
+            Project Name, Infrastructure + mailing lists<br/>
+            Milestones<br/>
+    </td>
+    </tr>
+
+    <tr>
+        <td ID="CellLeftTop10">
+        	<A HREF="../../_notgenerated/meetings/20020708/">08/07/2002</A><br/>
+        	<a HREF="../../_notgenerated/meetings/20020708/minutes.doc"><IMG BORDER="0" SRC="../images/word.gif" ALT="MS word document" width="18" height="18"/></a>
+        </td>
+        <td ID="CellLeftTop10">
+            Presentation of the Project (Vito)<br/>
+            Comments and Questions on the Project description (all)<br/>
+            Elaboration of a Preliminary Milestone Plan (all)<br/>
+        </td>
+    </tr>
+    </table>		
+    </description>
+	</section>
+</document>
+

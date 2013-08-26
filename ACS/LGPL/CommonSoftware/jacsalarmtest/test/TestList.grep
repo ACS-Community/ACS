@@ -1,0 +1,12 @@
+DEBUG \[acsStartJava\]
+^. - [jJ]ava
+Time:
+export
+Starting Java application
+-D user.dir=
+Jlog will use cache for
+Connected
+failed to flush logging queue because remote logging service has not been made available
+<Info
+ACS.log.minlevel.namedloggers not defined.
+DELOUSE

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) 
+This has to be just temporary solution. 
+This file has to be moved into the TICS subsystem
+or better removed
+-->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSErrTICS"
+type="13" _prefix="alma">
+           <ErrorCode name="AnyTICSError" shortDescription="Any TICS error" description="TICS error"/>
+</Type>
+

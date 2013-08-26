@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns="urn:schemas-cosylab-com:Channels:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:schemas-cosylab-com:Channels:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xs:complexType name="DomainsMappingElement">
+		<xs:annotation>
+			<xs:documentation>
+			Schema describing an individual domain mapping to a particular event service.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+				Name of the domain.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="NotificationService" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+				Name of the notification service, as registered into a naming service.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+    <xs:complexType name="Domains">
+        <xs:annotation>
+            <xs:documentation>This is a sequence of domain mappings.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="_" type="DomainsMappingElement" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+	<xs:complexType name="ChannelMappingElement">
+		<xs:annotation>
+			<xs:documentation>
+			Schema describing an individual channel mapping to a particular event service.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+				Name of the channels, wildchars are allowed.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="NotificationService" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+				Name of the notification service, as registered into a naming service.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+    <xs:complexType name="Channels">
+        <xs:annotation>
+            <xs:documentation>This is a sequence of domain mappings.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="_" type="ChannelMappingElement" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NotificationServiceMapping">
+		<xs:annotation>
+			<xs:documentation>This is an element defining domain and channel mapping to particular event service.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Domains" type="Domains" minOccurs="0" />
+			<xs:element name="Channels_" type="Domains" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="DefaultNotificationService" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+					Name of the default notification service, used if not mapping criteria matches.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+
+    <xs:element name="Channels">
+        <xs:annotation>
+            <xs:documentation>This is an element defining notification channels.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="NotificationServiceMapping" type="NotificationServiceMapping" />
+                <!--xs:element name="EventChannel" type="EventChannel" minOccurs="0" maxOccurs="unbounded"/-->
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

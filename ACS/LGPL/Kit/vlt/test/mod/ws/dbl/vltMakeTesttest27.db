@@ -1,0 +1,11 @@
+// "@(#) $Id: vltMakeTesttest27.db,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $"
+//++ BCF for vltMake test
+//++ --------------------
+//
+
+#include "vltMakeTestAUTOLOAD.class"
+
+POINT NULL_CLASS test27
+
+POINT vltMakeTestAUTOLOAD test27:autoload1
+

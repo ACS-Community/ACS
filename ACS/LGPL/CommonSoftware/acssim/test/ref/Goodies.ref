@@ -1,0 +1,38 @@
+1 - --Testing----------------------------------------------------------
+1 - getComponent('dkfjkdf'): None
+1 - Good: 7
+1 - Good.
+1 - Done.
+1 - 
+1 - --Testing----------------------------------------------------------
+1 - getSimProxy('TEST_PS_1'): <Acssim.Servants.Representations.BehaviorProxy.BehaviorProxy instance at 0xXXXX>
+1 - 
+1 - getComponentXMLObj('TEST_PS_1'): None
+1 - getComponentXMLObj('HELLOWORLD1'): <Acspy.Util.XmlObjectifier.XmlObject instance at 0xXXXX>
+1 - getComponentXMLObj(''): None
+1 - 
+1 - setGlobalData('stuff',1L): None
+1 - getGlobalData(): 1
+1 - removeGlobalData('stuff'): None
+1 - getGlobalData(): None
+1 - 
+1 - getCompLocalNS('TEST_PS_1'): {'ReadbackDevIO': <class interfaceInheritance.ReadbackDevIO at 0xXXXX>}
+1 - getCompLocalNS('HELLOWORLD1'): {'ACSErrTypeCommonImpl': <module 'ACSErrTypeCommonImpl' from 'xxx'>}
+1 - getCompLocalNS(''): {}
+1 - 
+1 - getCHARS(): ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ' ', '_']
+1 - setCHARS(('a', 'b')): None
+1 - getCHARS(): ('a', 'b')
+1 - 
+1 - getStandardTimeout(): 0.2
+1 - setStandardTimeout(5.0): None
+1 - getStandardTimeout(): 5.0
+1 - 
+1 - getExceptProb(): 0.01
+1 - setExceptProb(0.5): None
+1 - getExceptProb(): 0.5
+1 - 
+1 - getMaxSeqSize(): 15
+1 - setMaxSeqSize(50): None
+1 - getMaxSeqSize(): 50
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

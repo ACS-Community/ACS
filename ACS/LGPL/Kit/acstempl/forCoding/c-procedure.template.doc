@@ -1,0 +1,171 @@
+#------------------------------------------------------------------------
+# E.S.O. - ACS project
+# 
+# "@(#) $Id: c-procedure.template.doc,v 1.19+ 2002/11/12 10:34:16 vltsccm Exp $" 
+# 
+# who        when      what
+# ---------  --------  ----------------------------------------------
+# gfilippi   21/02/95  created
+# 
+#------------------------------------------------------------------------
+/************************************************************************
+*   NAME
+*   c_procedure - procedure(s) written in C language
+*
+*   SYNOPSIS
+*       <mod>/src/<name>.c
+*            /test/<name>.c
+*
+*       <mod>
+*           |/ws/src/<name>.c
+*           |   /test/<name>.c
+*           |/lcu/src/<name>.c
+*                /test/<name>.c
+*
+*   DESCRIPTION
+*   A procedure written in C language shall be written using the convention
+*   established in the "VLT-PRO-ESO-10000-0228, 1.0 10/03/93 VLT Software
+*   Programming Standards".
+*
+*   An empty template is provided by getTemplate(7) in the "code" menu.
+*   Complete the template according to the following instruction:
+*   
+*
+*   /**********.. .  .
+*   * E.S.O. - ACS project
+*   *
+*   * <name>.c      <<<<  Normally there is one procedure per file. 
+*                         In this case <name> is the name of the procedure. 
+*                         If needed, several procedures can be grouped
+*                         in one file. In this case <name> is a meaningful 
+*                         name for the group.
+*   *
+*   * who       when      what
+*   * --------  --------  -------------------- 
+*   * NNNNNNNN  dd/mm/yy  created
+*   */|----------------| <<<<in the template these two fields are changed
+*                            according to the current value of username and date.
+*
+*
+*   >>>>complete the man page as explained<<<
+*   /*****************.. .
+*   *   NAME
+*   *   <name>{[,<name>]} - <brief description of procedure(s)>
+*   * 
+*   *   SYNOPSIS
+*   *   <program_name> [<par_1> [<par_2>  . . . [<par_n>]]] 
+*   * 
+*   *   DESCRIPTION
+*   *   #include "......h"
+*   *
+*   *   <ret_type> <name> (arg1, arg2, ..., arg-n)
+*   *
+*   *   [<ret_type> <name> ( ... )]
+*   *
+*   * 
+*   *   (more than one function can be described here - 
+*   *      see ad example the man page of documentation of "printf")
+*   * 
+*   * 
+*   *   <arg1> <description and grammar rules for the first argument>
+*   *           ....................................
+*   *   <arg2> ....................................
+*   *                .
+*   *                .
+*   *   <arg-n> <description and grammar rules for the n-th argument> 
+*   *           ....................................
+*   *
+*   *   FILES
+*   *   <file_1>  <access> <meaning and purpose of the file>
+*   *                           .................................
+*   *   <file_2>  <access> ....................................
+*   *   ......
+*   *
+*   *   ENVIRONMENT
+*   *   <var_1>   <access> <meaning and purpose of the variable>
+*   *                      ....................................
+*   *   <var_2>   <access> ....................................
+*   *   ......
+*   *
+*   *   COMMANDS
+*   *   <Command_1>  brief description of the action performed 
+*   *                     .........................................
+*   *   <Command_2>  .........................................
+*   *   ......
+*   *
+*   *   RETURN VALUES
+*   *   <ret_value_1> <message> <diagnostic of the error>
+*   *                                .........................
+*   *   <ret_value_2> <message> .........................
+*   *   ......
+*   *
+*   *   CAUTIONS 
+*   *   (optional)
+*   *   ......
+*   *   ......
+*   *
+*   *   EXAMPLES
+*   *   (optional)
+*   *   ......
+*   *   ......
+*   *
+*   *   SEE ALSO
+*   *   (optional)
+*   *   ......
+*   *   ......
+*   *
+*   *   BUGS   
+*   *   (optional)
+*   *   ......
+*   *   ......
+*   * 
+*   *------------ -  -  -
+*   */
+*   
+*   #define _POSIX_SOURCE 1      <<<< if you delete this line you SHALL comment
+*                                     why POSIX does not apply for this file
+*                                   >>>>do not change the following lines<<<<
+*   
+*   /* 
+*    * System Headers 
+*    */                    >>>Remember: system include SHALL be between <> <<<<
+*   #include <.....>                /* ........ */  <<<<except for obvious files,
+*   #include <.....>                /* ........ */      say why you need this include
+*   .......  
+*   
+*   /*
+*    * Local Headers 
+*    */                    >>>Remember: local include SHALL be between "" <<<<
+*   #include "........."            /* ........ */  <<<<except for obvious files,
+*   #include "........."            /* ........ */      say why you need this include
+*   
+*   /* 
+*    * Function definition
+*    */
+*   <ret_type> <name>(
+*       <typ1> <arg1>, 
+*       <typ2> <arg2>,
+*       ....)
+*   /* 
+*    * function design description . . . . .
+*    * . . . . . . . . . . . . . . . . . . . 
+*    */
+*   {
+*       .
+*       .
+*      code 
+*       .
+*       .
+*   }
+*   
+*   ...... if any, 2nd function and so on .....
+*   
+*   /*
+*    **************.. .  .
+*    */
+*   
+*   
+*   
+*   /*___oOo___*/
+*   ------------------------------------------------------------------------
+                              ___oOo___

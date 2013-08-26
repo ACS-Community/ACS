@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    name="ACS_BD_Errors" 
+    type="57" _prefix="alma"
+    xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
+>
+    <ErrorCode name="StreamCreateProblem" shortDescription="Problem to create BD stream" description="Problem to create BD stream">
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
+    <ErrorCode name="StreamAlreadyExists" shortDescription="Stream alread exists" description="Stream alread exists">
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
+    <ErrorCode name="StreamNotExist" shortDescription="Stream does not exist" description="Stream does not exist">
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
+    <ErrorCode name="FlowCreateProblem" shortDescription="Problem to create BD flow" description="Problem to create BD flow">
+        <Member name="FlowName" type="string" description="Name of flow" />
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
+    <ErrorCode name="FlowAlreadyExists" shortDescription="Flow alread exists" description="Flow alread exists">
+        <Member name="FlowName" type="string" description="Name of flow" />
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
+    <ErrorCode name="FlowNotExist" shortDescription="Flow does not exist" description="Flow does not exist">
+        <Member name="FlowName" type="string" description="Name of flow" />
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
+    <ErrorCode name="StreamDestroyProblem" shortDescription="Problem to destroy BD stream" description="Problem to destroy BD stream">
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
+    <ErrorCode name="FlowDestroyProblem" shortDescription="Problem to destroy BD flow" description="Problem to destroy BD flow">
+        <Member name="FlowName" type="string" description="Name of flow" />
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
+    <ErrorCode name="CDBProblem" shortDescription="Problem when parsing the CDB configuration" description="A problem was found while parsing the CDB configuration for the given entity">
+    	<Member name="Detail" type="string" description="Details of the underlying error" />
+    </ErrorCode>
+    
+    <ErrorCode name="UnknownDataType" shortDescription="Unknown data type" description="Arrived BD data with undefined data type.">
+        <Member name="DataType" type="long" description="Data Type" />
+        <Member name="FrameCount" type="long" description="Actual frame count" />
+        <Member name="TotalFrameCount" type="long" description="Total frame count" />
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
+    </ErrorCode>
+    <ErrorCode name="WrongFrameOrder" shortDescription="Wrong frame order" description="Parmeter or data frame arrived at wrong point">
+        <Member name="DataType" type="string" description="Data Type" />
+        <Member name="State" type="string" description="State: StartState, DataRcvState, StopState" />
+        <Member name="FrameLength" type="long" description="Length of the frame"/>
+        <Member name="FrameCount" type="long" description="Actual frame count" />
+        <Member name="TotalFrameCount" type="long" description="Number of all frames" />
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
+    </ErrorCode>
+    <ErrorCode name="FrameLost" shortDescription="Frame Lost" description="Some data frame(s)has not arrived during sendData">
+        <Member name="NextDataFrame" type="long" description="Data frame that should arrive" />
+        <Member name="FrameLength" type="long" description="Length of the frame"/>
+        <Member name="RestFrames" type="long" description="Rest frame number" />
+        <Member name="FrameCount" type="long" description="Number of arrived frames" />
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
+    </ErrorCode>
+    
+    <ErrorCode name="SampleLost" shortDescription="Sample Lost" description="Sample lost is reported in DDS on_data_lost">
+        <Member name="LostSamples" type="long" description="Number of lost DDS samples" />
+        <Member name="NextDataFrame" type="long" description="Data frame that should arrive" />
+        <Member name="FrameCount" type="long" description="Number of arrived frames" />
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
+        <Member name="TotalSampleLost" type="long" description="Number of so far total lost DDS samples" />
+        <Member name="Reason" type="long" description="DDS Reason for sample lost (SampleLostStatusKind)" />
+    </ErrorCode>
+    
+    <ErrorCode name="UserCallbackError" shortDescription="Error in user's callback" description="An exception occured while calling a method of callback">
+        <Member name="Call" type="string" description="Call" />
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
+    </ErrorCode>
+
+    <ErrorCode name="SendDataError" shortDescription="Error to send BD data" description="Error while sending BD data.">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="FrameCount" type="long" description="Frame counter" />
+        <Member name="TotalFrameCount" type="long" description="Total number of frames" />        
+    </ErrorCode>
+    
+    <ErrorCode name="StopSendError" shortDescription="stopSend error" description="Error in calling stopSend">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />        
+    </ErrorCode>
+
+    <ErrorCode name="StartSendError" shortDescription="startSend error" description="Error in calling startSend">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />        
+    </ErrorCode>
+    
+    <ErrorCode name="SendFrameGenericError" shortDescription="Error to send BD frame" description="Error while sending a BD frame.">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="FrameCount" type="long" description="Frame counter" />
+        <Member name="RetCode" type="long" description="Return (error) code" />        
+    </ErrorCode>
+    
+    <ErrorCode name="SendFrameTimeout" shortDescription="Send BD Frame Timeout" description="Timeout during sending a BD frame.">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="Timeout" type="double" description="set timeout in sec" />
+        <Member name="FrameCount" type="long" description="Frame counter" />
+    </ErrorCode>
+    
+    <ErrorCode name="FrameAckTimeout" shortDescription="BD Frame Ack Timeout" description="Timeout waiting for acknowledgments">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="Timeout" type="double" description="set timeout in sec" />
+    </ErrorCode>
+    
+    <ErrorCode name="FrameTooLong" shortDescription="BD Frame too long" description="Size of frame is too long.">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="FrameLength" type="long" description="Frame length" />
+        <Member name="MaxFrameLength" type="long" description="Max Frame length" />
+    </ErrorCode>
+    
+    <ErrorCode name="CBReceiveProcessTimeout" shortDescription="cbReceive took too long" description="Processing in user's cbReceive took too long.">
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
+        <Member name="ProcessTimeoutSec" type="double" description="cbReceive Process Timeout in Sec" />
+        <Member name="ActualProcessTime" type="double" description="Actual  execution time of cbReceive" />
+        <Member name="FrameCount" type="long" description="Number of arrived frames" />
+        <Member name="TotalFrameCount" type="long" description="Total frame count" />        
+    </ErrorCode>
+    
+    <ErrorCode name="CBReceiveAvgProcessTimeout" shortDescription="cbReceive in AVG took too long" description="In average processing in user's cbReceive took too long.">
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
+        <Member name="AvgProcessTimeoutSec" type="double" description="cbReceive AVG Process Timeout in Sec" />
+        <Member name="ActualAvgProcessTime" type="double" description="Actual AVG execution time of cbReceive" />
+        <Member name="CallsCount" type="long" description="Number of cbReceive calls" />
+        <Member name="Throughput" type="double" description="Coresponding Throughput in MB/sec" />        
+    </ErrorCode>
+    
+    <ErrorCode name="SenderWrongCmdOrder" shortDescription="Wrong sender command order" description="The command/method was not executed in the right order.">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="Command" type="string" description="command/method name" />
+        <Member name="State" type="string" description="Current sender flow state" />
+    </ErrorCode>
+</Type>

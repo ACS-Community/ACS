@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  -->
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:PyBaciTest:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:PyBaciTest:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+  
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+
+  <xs:complexType name="PyBaciTest">
+    <xs:sequence>
+
+      <xs:element name="stringROProp" type="baci:ROstring"/>
+      <xs:element name="stringRWProp" type="baci:RWstring"/>
+
+      <xs:element name="doubleROProp" type="baci:ROdouble"/>
+      <xs:element name="doubleRWProp" type="baci:RWdouble"/>
+
+      <xs:element name="longROProp" type="baci:ROlong"/>
+      <xs:element name="longRWProp" type="baci:RWlong"/>
+
+      <xs:element name="longLongROProp" type="baci:ROlongLong"/>
+      <xs:element name="longLongRWProp" type="baci:RWlongLong"/>
+
+      <xs:element name="uLongLongROProp" type="baci:ROuLongLong"/>
+      <xs:element name="uLongLongRWProp" type="baci:RWuLongLong"/>
+
+      <xs:element name="patternROProp" type="baci:ROpattern"/>
+      <xs:element name="patternRWProp" type="baci:RWpattern"/>
+
+      <xs:element name="doubleSeqROProp" type="baci:ROdoubleSeq"/>
+      <xs:element name="doubleSeqRWProp" type="baci:RWdoubleSeq"/>
+
+      <xs:element name="longSeqROProp" type="baci:ROlongSeq"/>
+      <xs:element name="longSeqRWProp" type="baci:RWlongSeq"/>
+
+      <xs:element name="strSeqProp" type="baci:ROstringSeq"/>
+
+      <xs:element name="blarROProp">
+      <xs:complexType>
+          <xs:complexContent>
+            <xs:restriction base="baci:ROEnum">
+              <xs:attribute name="graph_min" type="xs:int" use="optional" default="0" />
+              <xs:attribute name="graph_max" type="xs:int" use="optional" default="1" />
+              <xs:attribute name="statesDescription" type="xs:string" use="optional" default="ON, OFF, notTrue, notFalse"/>
+            </xs:restriction>
+          </xs:complexContent>
+        </xs:complexType>
+	</xs:element>
+
+
+      <xs:element name="blarRWProp">
+      <xs:complexType>
+          <xs:complexContent>
+            <xs:restriction base="baci:RWEnum">
+              <xs:attribute name="graph_min" type="xs:int" use="optional" default="0" />
+              <xs:attribute name="graph_max" type="xs:int" use="optional" default="1" />
+              <xs:attribute name="statesDescription" type="xs:string" use="optional" default="ON, OFF, notTrue, notFalse"/>
+            </xs:restriction>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="PyBaciTest" type="PyBaciTest"/>
+  
+</xs:schema>
+

@@ -1,0 +1,8 @@
+
+set ACS_TMP $env(PWD)/tmp
+set ACS_CDB $env(PWD)
+set env(ACS_TMP) $ACS_TMP
+set env(ACS_LOG_STDOUT) 1
+set env(ACS_LOG_FILE) $ACS_TMP/log_cache.dat
+set env(BULKDATA_NT_DEBUG) 4
+set env(ENABLE_BULKDATA_NT) 1

@@ -1,0 +1,62 @@
+/*! \mainpage 
+ 
+ \htmlinclude header.html
+ \n
+ <H2> INDEX </H2>\n
+ \n
+ \li \ref one \n
+ \li \ref two \n
+ \li \ref three \n
+ \li \ref four \n
+ \li \ref five \n
+ \li \ref six \n
+ \li \ref seven \n
+ \li \ref eight \n
+ \li \ref nine \n
+ \li \ref ten \n
+ \li \ref eleven \n
+ \n <HR>
+ \section one Purpose 
+
+The XMLstore stores metadata in the form of XML
+ documents presistently. Documents are identified by unique
+ identifiers (UIDs) and can be retrieved with UIDs and queried with
+ XPath expressions. The XMLstore also contains some methods for
+ schema, user and permission management
+
+
+ \section two Namespaces
+
+The namespace to be used is alma.xmlstore.
+
+ \section three Interfaces 
+The XMLstore contains the following interfaces:
+<ul>
+<li>ArchiveConnection: A thin layer for accessing the Operational and Identifier components
+<li>Operational: Containing the core functionality
+<li>Identifier: Giving out UIDs
+<li>Cursor: A dynamic component returned when querying the XMLstore with XPath queries
+<li>Administrative: Containing administrative functionality
+</ul>
+
+
+\section four Schemas and entities
+There is no special schema or entity type related with the XMLstore. 
+
+ \section five Published Events
+XMLstore does not publish any events.
+
+ \section six Received Events
+XMLstore does not receive events.
+ \section seven Published Streams
+ \section eight Consumed Streams
+ \section nine Dependencies on external data
+The XMLstore depends on the configuration file, whose location can be specified with a Java environment variable, but the default location is $ACSDATA/config/dbConfig.xml.
+ \section ten ACS Dependencies
+The Container depends on the Identifier interface of XMLstore. 
+ \section eleven Required interfaces and subssytem
+XMLstore does not require any interfaces apart from ACS.
+
+ \include archive_xmlstore_if.idl
+
+*/

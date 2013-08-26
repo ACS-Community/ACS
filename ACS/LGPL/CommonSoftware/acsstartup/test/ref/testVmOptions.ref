@@ -1,0 +1,25 @@
+1 - awk: {if($2==) print($1)}
+1 - awk:         ^ syntax error
+1 - ERROR: Process ID list syntax error.
+1 - ********* simple selection *********  ********* selection by list *********
+1 - -A all processes                      -C by command name
+1 - -N negate selection                   -G by real group ID (supports names)
+1 - -a all w/ tty except session leaders  -U by real user ID (supports names)
+1 - -d all except session leaders         -g by session OR by effective group name
+1 - -e all processes                      -p by process ID
+1 - T  all processes on this terminal     -s processes in the sessions given
+1 - a  all w/ tty, including other users  -t by tty
+1 - g  OBSOLETE -- DO NOT USE             -u by effective user ID (supports names)
+1 - r  only running processes             U  processes for specified users
+1 - x  processes w/o controlling ttys     t  by tty
+1 - *********** output format **********  *********** long options ***********
+1 - -o,o user-defined  -f full            --Group --User --pid --cols --ppid
+1 - -j,j job control   s  signal          --group --user --sid --rows --info
+1 - -O,O preloaded -o  v  virtual memory  --cumulative --format --deselect
+1 - -l,l long          u  user-oriented   --sort --tty --forest --version
+1 - -F   extra full    X  registers       --heading --no-heading --context
+1 -                     ********* misc options *********
+1 - -V,V  show version      L  list format codes  f  ASCII art forest
+1 - -m,m,-L,-T,H  threads   S  children in sum    -y change -l format
+1 - -M,Z  security data     c  true command name  -c scheduling class
+1 - -w,w  wide output       n  numeric WCHAN,UID  -H process hierarchy

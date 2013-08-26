@@ -1,0 +1,92 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+#ifndef _ACSALARMSERVICE_IDL_
+#define _ACSALARMSERVICE_IDL_
+
+#include <logging_idl.idl>
+#include <CosProperty.idl>
+#include <acscommon.idl>
+#include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
+
+module alarmsystem
+{
+	/*
+	 * The string used to register the alarm service in the naming
+	 * service
+	 */
+	const string AlarmServiceName="AcsAlarmService";
+	
+	/*
+	 * The triplet
+	 */
+	struct Triplet
+	{
+		string faultFamily;
+		string faultMember;
+		long faultCode;
+	};
+	
+	/*
+	 * The ACS alarm service.
+	 * 
+	 * It is a fake process that does nothing but waiting for shutdown.
+	 *
+	 * Having this servant is useful to uniform the behaviour of the system that does
+	 not need to be aware of the implementation currently running.
+	 * 
+	 */ 
+	interface AlarmService : Logging::LoggingConfigurable
+	{
+		/**
+		 * shutdown the alarm service
+		 */
+		oneway void shutdown();
+		/*
+		 * Return the type of alarm service: true means ACS implementation
+		 *                                   false means CERN implementation
+		 */
+		boolean isACSAlarmService();
+		
+		/*
+		 * Submit an alarm bypassing the NC
+		 * 
+		 * This method allows to send alarms even when the Notify Service
+		 * is down or not working properly and it is meant for this purpose
+		 * only: normally alarms must be sent through the API of your
+		 * preferred programming language because it offers more functionalities
+		 * then this method
+		 */
+		void submitAlarm(
+			in alarmsystem::Triplet triplet,
+			in boolean active,
+			in string sourceHostName,
+			in string sourceName,
+			in ACS::Time sourceTimestamp,
+			in CosPropertyService::Properties alarmProperties)
+			 raises (ACSErrTypeCommon::BadParameterEx, ACSErrTypeCommon::UnexpectedExceptionEx);
+	};
+
+};
+
+#endif

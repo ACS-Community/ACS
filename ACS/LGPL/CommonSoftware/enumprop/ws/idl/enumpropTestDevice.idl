@@ -1,0 +1,107 @@
+#ifndef _ENUM_PROP_TEST_DEVICE_IDL
+#define _ENUM_PROP_TEST_DEVICE_IDL
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: enumpropTestDevice.idl,v 1.36 2009/10/02 13:59:09 bjeram Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* gchiozzi 2003-05-19 Put back ACS_ENUM macro
+* gchiozzi 2003-04-08 Renamed ENUM macro as ACS_ENUM. JacORB was complaining
+* jib/blo   02/04/02  Created
+*/
+
+#include <baci.idl>
+#include <enumpropMACRO.idl>
+#include <enumpropStd.idl>
+
+#define BASE_STATES DISABLED, ENABLED, DIAGNOSE, \
+	            SHUTDOWN,  INITIALIZE
+
+module ENUMPROP_TEST {
+
+  enum States { BASE_STATES, ON, OFF};
+
+   ACS_ENUM(States);
+
+
+  interface StateMachine {
+    
+    exception NoSuchState { };
+    exception NoSuchTransition { };
+
+/**
+ * RO + command for changin state version
+ */
+
+    /**
+     * Current state for this machine.
+     */
+    readonly attribute ROStates currentState;
+    /**
+     * Commands for changing state
+     */  
+    ACSErr::Completion enable() raises (NoSuchTransition);
+    ACSErr::Completion disable() raises (NoSuchTransition);
+    ACSErr::Completion diagnose() raises (NoSuchTransition);
+    ACSErr::Completion shutdown() raises (NoSuchTransition);
+    ACSErr::Completion init() raises (NoSuchTransition);
+    ACSErr::Completion on() raises (NoSuchTransition);
+    ACSErr::Completion off() raises (NoSuchTransition);
+
+
+    /**
+     * read-write version
+     */
+    readonly attribute RWStates currentStateRW;
+
+    /**
+     * server shutdown
+     */
+    oneway void serverShutdown();
+    
+    /**
+    * For test purpose we want to be able to change FF and FM
+    */
+ 	void changeAlarmFFFM(in string FF, in string FM);
+
+  };
+
+interface enumpropTestDevice : ACS::CharacteristicComponent, StateMachine {
+
+};
+
+/**
+ * Tests standard enum property library and .midl implementation
+ */
+interface enumpropTestBool {
+
+    readonly attribute ACS::ROBool boolRO;
+    readonly attribute ACS::RWBool boolRW;
+
+  };
+
+};
+
+#endif
+

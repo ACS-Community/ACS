@@ -1,0 +1,30 @@
+
+The labm environment is intended for use on a VxWorks LCU. 
+
+
+Before pkginBuild is used to create this environment, the ACC host
+database needs to have the following entries:
+
+INSERT INTO prog_environment VALUES ('labm'  ,'','LCU',2160,'<LCU host
+name>','','','',0 )\g
+
+INSERT INTO lcu_progenv VALUES ('labm'  ,'<Boot Workstation host
+environment name>' ) \g
+
+The following files should also be customized for the local network configuration
+in which the LCU exists:
+
+bootScript:
+Replace the host "jemez" and its IP address with the boot workstation
+for the LCU.
+Replace the hosts "condor" and "blacktail" with the hosts running the
+name service and the MACI manager, respectively. 
+
+userScript:
+Replace "blacktail" with the host location of the wacc environment. If
+the workstations are on a different subnet from the LCU, then change
+the "routeAdd" command to the appropriate routing information.
+
+dbl/USER.db
+change the ManagerReference attribute of the abm1 Activator to point
+to the host where the manager will be executed.

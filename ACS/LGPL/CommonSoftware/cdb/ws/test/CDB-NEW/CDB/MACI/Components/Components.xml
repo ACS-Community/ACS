@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0">
+    <_ Name="*"
+	Code="alma.Control.arrayInterfaces.ArrayControllerHelper"
+	Type="IDL:alma/Control/ArrayController:1.0"
+	Container="javaDebugContainer" ImplLang="java" />
+    <_ Name="*"
+	Code="alma.Control.arrayInterfaces.ArrayMonitorHelper"
+	Type="IDL:alma/Control/ArrayMonitor:1.0"
+	Container="javaContainer" ImplLang="java" />
+    <_ Name="*"
+	Code="alma.Control.antennaInterfaces.AntennaControllerHelper"
+	Type="IDL:alma/Control/AntennaController:1.0"
+	Container="javaContainer" ImplLang="java" />
+    <_ Name="*"
+	Code="alma.Control.antennaInterfaces.AntennaMonitorHelper"
+	Type="IDL:alma/Control/AntennaMonitor:1.0"
+	Container="javaContainer" ImplLang="java" />
+    <_ Name="*"
+	Code="alma.offline.DataCapturerImpl.DataCapturerHelper"
+	Type="IDL:alma/offline/DataCapturer:1.0"
+	Container="*" ImplLang="java" />
+</Components>
+

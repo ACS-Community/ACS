@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BulkDataNTSender
+   xmlns="urn:schemas-cosylab-com:BulkDataNTSender:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTSender:1.0 BulkDataNTSender.xsd">
+
+	<SenderStream Name="Name7">
+		<SenderFlow Name="Name3">
+			<DDSSenderFlowQoS>
+				<datareader_qos name="name1">
+				</datareader_qos>
+			</DDSSenderFlowQoS>
+		</SenderFlow>
+		<SenderFlow Name="Name5">
+			<DDSSenderFlowQoS>
+				<datareader_qos name="name3">
+				</datareader_qos>
+			</DDSSenderFlowQoS>
+		</SenderFlow>
+		<DDSSenderStreamQoS>
+			<participant_qos name="name5">
+			</participant_qos>
+		</DDSSenderStreamQoS>
+	</SenderStream>
+	<SenderStream Name="Name1">
+		<SenderFlow Name="Name3">
+			<DDSSenderFlowQoS>
+				<datareader_qos name="name1">
+				</datareader_qos>
+			</DDSSenderFlowQoS>
+			</SenderFlow>
+		<SenderFlow Name="Name5">
+			<DDSSenderFlowQoS>
+				<datareader_qos name="name3">
+				</datareader_qos>
+			</DDSSenderFlowQoS>
+		</SenderFlow>
+	</SenderStream>
+
+</BulkDataNTSender>

@@ -1,0 +1,1208 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: How Programs Do Loading,  Next: Autoload,  Up: Loading
+
+How Programs Do Loading
+=======================
+
+   Emacs Lisp has several interfaces for loading.  For example,
+`autoload' creates a placeholder object for a function in a file;
+trying to call the autoloading function loads the file to get the
+function's real definition (*note Autoload::.).  `require' loads a file
+if it isn't already loaded (*note Features::.).  Ultimately, all these
+facilities call the `load' function to do the work.
+
+ - Function: load FILENAME &optional MISSING-OK NOMESSAGE NOSUFFIX
+     This function finds and opens a file of Lisp code, evaluates all
+     the forms in it, and closes the file.
+
+     To find the file, `load' first looks for a file named
+     `FILENAME.elc', that is, for a file whose name is FILENAME with
+     `.elc' appended.  If such a file exists, it is loaded.  If there
+     is no file by that name, then `load' looks for a file named
+     `FILENAME.el'.  If that file exists, it is loaded.  Finally, if
+     neither of those names is found, `load' looks for a file named
+     FILENAME with nothing appended, and loads it if it exists.  (The
+     `load' function is not clever about looking at FILENAME.  In the
+     perverse case of a file named `foo.el.el', evaluation of `(load
+     "foo.el")' will indeed find it.)
+
+     If the optional argument NOSUFFIX is non-`nil', then the suffixes
+     `.elc' and `.el' are not tried.  In this case, you must specify
+     the precise file name you want.
+
+     If FILENAME is a relative file name, such as `foo' or
+     `baz/foo.bar', `load' searches for the file using the variable
+     `load-path'.  It appends FILENAME to each of the directories
+     listed in `load-path', and loads the first file it finds whose name
+     matches.  The current default directory is tried only if it is
+     specified in `load-path', where `nil' stands for the default
+     directory.  `load' tries all three possible suffixes in the first
+     directory in `load-path', then all three suffixes in the second
+     directory, and so on.
+
+     If you get a warning that `foo.elc' is older than `foo.el', it
+     means you should consider recompiling `foo.el'.  *Note Byte
+     Compilation::.
+
+     Messages like `Loading foo...' and `Loading foo...done' appear in
+     the echo area during loading unless NOMESSAGE is non-`nil'.
+
+     Any unhandled errors while loading a file terminate loading.  If
+     the load was done for the sake of `autoload', any function
+     definitions made during the loading are undone.
+
+     If `load' can't find the file to load, then normally it signals the
+     error `file-error' (with `Cannot open load file FILENAME').  But
+     if MISSING-OK is non-`nil', then `load' just returns `nil'.
+
+     `load' returns `t' if the file loads successfully.
+
+ - User Option: load-path
+     The value of this variable is a list of directories to search when
+     loading files with `load'.  Each element is a string (which must be
+     a directory name) or `nil' (which stands for the current working
+     directory).  The value of `load-path' is initialized from the
+     environment variable `EMACSLOADPATH', if that exists; otherwise its
+     default value is specified in `emacs/src/paths.h' when Emacs is
+     built.
+
+     The syntax of `EMACSLOADPATH' is the same as used for `PATH'; `:'
+     separates directory names, and `.' is used for the current default
+     directory.  Here is an example of how to set your `EMACSLOADPATH'
+     variable from a `csh' `.login' file:
+
+          setenv EMACSLOADPATH .:/user/bil/emacs:/usr/lib/emacs/lisp
+
+     Here is how to set it using `sh':
+
+          export EMACSLOADPATH
+          EMACSLOADPATH=.:/user/bil/emacs:/usr/local/lib/emacs/lisp
+
+     Here is an example of code you can place in a `.emacs' file to add
+     several directories to the front of your default `load-path':
+
+          (setq load-path
+                (append (list nil "/user/bil/emacs"
+                              "/usr/local/lisplib"
+                              (expand-file-name "~/emacs"))
+                        load-path))
+
+     In this example, the path searches the current working directory
+     first, followed then by the `/user/bil/emacs' directory and then by
+     the `/usr/local/lisplib' directory, which are then followed by the
+     standard directories for Lisp code.
+
+     The command line options `-l' or `-load' specify a Lisp library to
+     load as part of Emacs startup.  Since this file might be in the
+     current directory, Emacs 18 temporarily adds the current directory
+     to the front of `load-path' so the file can be found there.  Newer
+     Emacs versions also find such files in the current directory, but
+     without altering `load-path'.
+
+ - Variable: load-in-progress
+     This variable is non-`nil' if Emacs is in the process of loading a
+     file, and it is `nil' otherwise.  This is how `defun' and
+     `provide' determine whether a load is in progress, so that their
+     effect can be undone if the load fails.
+
+   To learn how `load' is used to build Emacs, see *Note Building
+Emacs::.
+
+
+File: elisp,  Node: Autoload,  Next: Repeated Loading,  Prev: How Programs Do Loading,  Up: Loading
+
+Autoload
+========
+
+   The "autoload" facility allows you to make a function or macro
+available but put off loading its actual definition.  The first call to
+the function automatically reads the proper file to install the real
+definition and other associated code, then runs the real definition as
+if it had been loaded all along.
+
+   There are two ways to set up an autoloaded function: by calling
+`autoload', and by writing a special "magic" comment in the source
+before the real definition.  `autoload' is the low-level primitive for
+autoloading; any Lisp program can call `autoload' at any time.  Magic
+comments do nothing on their own; they serve as a guide for the command
+`update-file-autoloads', which constructs calls to `autoload' and
+arranges to execute them when Emacs is built.  Magic comments are the
+most convenient way to make a function autoload, but only for packages
+installed along with Emacs.
+
+ - Function: autoload FUNCTION FILENAME &optional DOCSTRING INTERACTIVE
+          TYPE
+     This function defines the function (or macro) named FUNCTION so as
+     to load automatically from FILENAME.  The string FILENAME
+     specifies the file to load to get the real definition of FUNCTION.
+
+     The argument DOCSTRING is the documentation string for the
+     function.  Normally, this is the identical to the documentation
+     string in the function definition itself.  Specifying the
+     documentation string in the call to `autoload' makes it possible
+     to look at the documentation without loading the function's real
+     definition.
+
+     If INTERACTIVE is non-`nil', then the function can be called
+     interactively.  This lets completion in `M-x' work without loading
+     the function's real definition.  The complete interactive
+     specification need not be given here; it's not needed unless the
+     user actually calls FUNCTION, and when that happens, it's time to
+     load the real definition.
+
+     You can autoload macros and keymaps as well as ordinary functions.
+     Specify TYPE as `macro' if FUNCTION is really a macro.  Specify
+     TYPE as `keymap' if FUNCTION is really a keymap.  Various parts of
+     Emacs need to know this information without loading the real
+     definition.
+
+     If FUNCTION already has a non-void function definition that is not
+     an autoload object, `autoload' does nothing and returns `nil'.  If
+     the function cell of FUNCTION is void, or is already an autoload
+     object, then it is defined as an autoload object like this:
+
+          (autoload FILENAME DOCSTRING INTERACTIVE TYPE)
+
+     For example,
+
+          (symbol-function 'run-prolog)
+               => (autoload "prolog" 169681 t nil)
+
+     In this case, `"prolog"' is the name of the file to load, 169681
+     refers to the documentation string in the `emacs/etc/DOC' file
+     (*note Documentation Basics::.), `t' means the function is
+     interactive, and `nil' that it is not a macro or a keymap.
+
+   The autoloaded file usually contains other definitions and may
+require or provide one or more features.  If the file is not completely
+loaded (due to an error in the evaluation of its contents), any function
+definitions or `provide' calls that occurred during the load are
+undone.  This is to ensure that the next attempt to call any function
+autoloading from this file will try again to load the file.  If not for
+this, then some of the functions in the file might appear defined, but
+they might fail to work properly for the lack of certain subroutines
+defined later in the file and not loaded successfully.
+
+   If the autoloaded file fails to define the desired Lisp function or
+macro, then an error is signaled with data `"Autoloading failed to
+define function FUNCTION-NAME"'.
+
+   A magic autoload comment looks like `;;;###autoload', on a line by
+itself, just before the real definition of the function in its
+autoloadable source file.  The command `M-x update-file-autoloads'
+writes a corresponding `autoload' call into `loaddefs.el'.  Building
+Emacs loads `loaddefs.el' and thus calls `autoload'.  `M-x
+update-directory-autoloads' is even more powerful; it updates autoloads
+for all files in the current directory.
+
+   The same magic comment can copy any kind of form into `loaddefs.el'.
+If the form following the magic comment is not a function definition,
+it is copied verbatim.  You can also use a magic comment to execute a
+form at build time *without* executing it when the file itself is
+loaded.  To do this, write the form "on the same line" as the magic
+comment.  Since it is in a comment, it does nothing when you load the
+source file; but `update-file-autoloads' copies it to `loaddefs.el',
+where it is executed while building Emacs.
+
+   The following example shows how `doctor' is prepared for autoloading
+with a magic comment:
+
+     ;;;###autoload
+     (defun doctor ()
+       "Switch to *doctor* buffer and start giving psychotherapy."
+       (interactive)
+       (switch-to-buffer "*doctor*")
+       (doctor-mode))
+
+Here's what that produces in `loaddefs.el':
+
+     (autoload 'doctor "doctor"
+       "\
+     Switch to *doctor* buffer and start giving psychotherapy."
+       t)
+
+The backslash and newline immediately following the double-quote are a
+convention used only in the preloaded Lisp files such as `loaddefs.el';
+they tell `make-docfile' to put the documentation string in the
+`etc/DOC' file.  *Note Building Emacs::.
+
+
+File: elisp,  Node: Repeated Loading,  Next: Features,  Prev: Autoload,  Up: Loading
+
+Repeated Loading
+================
+
+   You may load one file more than once in an Emacs session.  For
+example, after you have rewritten and reinstalled a function definition
+by editing it in a buffer, you may wish to return to the original
+version; you can do this by reloading the file it came from.
+
+   When you load or reload files, bear in mind that the `load' and
+`load-library' functions automatically load a byte-compiled file rather
+than a non-compiled file of similar name.  If you rewrite a file that
+you intend to save and reinstall, remember to byte-compile it if
+necessary; otherwise you may find yourself inadvertently reloading the
+older, byte-compiled file instead of your newer, non-compiled file!
+
+   When writing the forms in a Lisp library file, keep in mind that the
+file might be loaded more than once.  For example, the choice of
+`defvar' vs. `defconst' for defining a variable depends on whether it
+is desirable to reinitialize the variable if the library is reloaded:
+`defconst' does so, and `defvar' does not.  (*Note Defining
+Variables::.)
+
+   The simplest way to add an element to an alist is like this:
+
+     (setq minor-mode-alist
+           (cons '(leif-mode " Leif") minor-mode-alist))
+
+But this would add multiple elements if the library is reloaded.  To
+avoid the problem, write this:
+
+     (or (assq 'leif-mode minor-mode-alist)
+         (setq minor-mode-alist
+               (cons '(leif-mode " Leif") minor-mode-alist)))
+
+   Occasionally you will want to test explicitly whether a library has
+already been loaded.  Here's one way to test, in a library, whether it
+has been loaded before:
+
+     (if (not (boundp 'foo-was-loaded))
+         EXECUTE-FIRST-TIME-ONLY)
+     
+     (setq foo-was-loaded t)
+
+If the library uses `provide' to provide a named feature, you can use
+`featurep' to test whether the library has been loaded.  *Note
+Features::.
+
+
+File: elisp,  Node: Features,  Next: Unloading,  Prev: Repeated Loading,  Up: Loading
+
+Features
+========
+
+   `provide' and `require' are an alternative to `autoload' for loading
+files automatically.  They work in terms of named "features".
+Autoloading is triggered by calling a specific function, but a feature
+is loaded the first time another program asks for it by name.
+
+   A feature name is a symbol that stands for a collection of functions,
+variables, etc.  The file that defines them should "provide" the
+feature.  Another program that uses them may ensure they are defined by
+"requiring" the feature.  This loads the file of definitions if it
+hasn't been loaded already.
+
+   To require the presence of a feature, call `require' with the
+feature name as argument.  `require' looks in the global variable
+`features' to see whether the desired feature has been provided
+already.  If not, it loads the feature from the appropriate file.  This
+file should call `provide' at the top level to add the feature to
+`features'; if it fails to do so, `require' signals an error.
+
+   Features are normally named after the files that provide them, so
+that `require' need not be given the file name.
+
+   For example, in `emacs/lisp/prolog.el', the definition for
+`run-prolog' includes the following code:
+
+     (defun run-prolog ()
+       "Run an inferior Prolog process, input and output via buffer *prolog*."
+       (interactive)
+       (require 'comint)
+       (switch-to-buffer (make-comint "prolog" prolog-program-name))
+       (inferior-prolog-mode))
+
+The expression `(require 'comint)' loads the file `comint.el' if it has
+not yet been loaded.  This ensures that `make-comint' is defined.
+
+   The `comint.el' file contains the following top-level expression:
+
+     (provide 'comint)
+
+This adds `comint' to the global `features' list, so that `(require
+'comint)' will henceforth know that nothing needs to be done.
+
+   When `require' is used at top level in a file, it takes effect when
+you byte-compile that file (*note Byte Compilation::.) as well as when
+you load it.  This is in case the required package contains macros that
+the byte compiler must know about.
+
+   Although top-level calls to `require' are evaluated during byte
+compilation, `provide' calls are not.  Therefore, you can ensure that a
+file of definitions is loaded before it is byte-compiled by including a
+`provide' followed by a `require' for the same feature, as in the
+following example.
+
+     (provide 'my-feature)  ; Ignored by byte compiler,
+                            ;   evaluated by `load'.
+     (require 'my-feature)  ; Evaluated by byte compiler.
+
+The compiler ignores the `provide', then processes the `require' by
+loading the file in question.  Loading the file does execute the
+`provide' call, so the subsequent `require' call does nothing while
+loading.
+
+ - Function: provide FEATURE
+     This function announces that FEATURE is now loaded, or being
+     loaded, into the current Emacs session.  This means that the
+     facilities associated with FEATURE are or will be available for
+     other Lisp programs.
+
+     The direct effect of calling `provide' is to add FEATURE to the
+     front of the list `features' if it is not already in the list.
+     The argument FEATURE must be a symbol.  `provide' returns FEATURE.
+
+          features
+               => (bar bish)
+          
+          (provide 'foo)
+               => foo
+          features
+               => (foo bar bish)
+
+     If the file isn't completely loaded, due to an error in the
+     evaluating its contents, any function definitions or `provide'
+     calls that occurred during the load are undone.  *Note Autoload::.
+
+ - Function: require FEATURE &optional FILENAME
+     This function checks whether FEATURE is present in the current
+     Emacs session (using `(featurep FEATURE)'; see below).  If it is
+     not, then `require' loads FILENAME with `load'.  If FILENAME is
+     not supplied, then the name of the symbol FEATURE is used as the
+     file name to load.
+
+     If loading the file fails to provide FEATURE, `require' signals an
+     error, `Required feature FEATURE was not provided'.
+
+ - Function: featurep FEATURE
+     This function returns `t' if FEATURE has been provided in the
+     current Emacs session (i.e., FEATURE is a member of `features'.)
+
+ - Variable: features
+     The value of this variable is a list of symbols that are the
+     features loaded in the current Emacs session.  Each symbol was put
+     in this list with a call to `provide'.  The order of the elements
+     in the `features' list is not significant.
+
+
+File: elisp,  Node: Unloading,  Next: Hooks for Loading,  Prev: Features,  Up: Loading
+
+Unloading
+=========
+
+   You can discard the functions and variables loaded by a library to
+reclaim memory for other Lisp objects.  To do this, use the function
+`unload-feature':
+
+ - Command: unload-feature FEATURE
+     This command unloads the library that provided feature FEATURE.
+     It undefines all functions, macros, and variables defined in that
+     library with `defconst', `defvar', `defun', `defmacro', `defsubst'
+     and `defalias'.  It then restores any autoloads formerly
+     associated with those symbols.
+
+   The `unload-feature' function is written in Lisp; its actions are
+based on the variable `load-history'.
+
+ - Variable: load-history
+     This variable's value is an alist connecting library names with the
+     names of functions and variables they define, the features they
+     provide, and the features they require.
+
+     Each element is a list and describes one library.  The CAR of the
+     list is the name of the library, as a string.  The rest of the
+     list is composed of these kinds of objects:
+
+        * Symbols that were defined by this library.
+
+        * Lists of the form `(require . FEATURE)' indicating features
+          that were required.
+
+        * Lists of the form `(provide . FEATURE)' indicating features
+          that were provided.
+
+     The value of `load-history' may have one element whose CAR is
+     `nil'.  This element describes definitions made with `eval-buffer'
+     on a buffer that is not visiting a file.
+
+   The command `eval-region' updates `load-history', but does so by
+adding the symbols defined to the element for the file being visited,
+rather than replacing that element.
+
+
+File: elisp,  Node: Hooks for Loading,  Prev: Unloading,  Up: Loading
+
+Hooks for Loading
+=================
+
+   You can ask for code to be executed if and when a particular library
+is loaded, by calling `eval-after-load'.
+
+ - Function: eval-after-load LIBRARY FORM
+     This function arranges to evaluate FORM at the end of loading the
+     library LIBRARY, if and when LIBRARY is loaded.
+
+     The library name LIBRARY must exactly match the argument of
+     `load'.  To get the proper results when an installed library is
+     found by searching `load-path', you should not include any
+     directory names in LIBRARY.
+
+     An error in FORM does not undo the load, but does prevent
+     execution of the rest of FORM.
+
+ - Variable: after-load-alist
+     An alist of expressions to evaluate if and when particular
+     libraries are loaded.  Each element looks like this:
+
+          (FILENAME FORMS...)
+
+     The function `load' checks `after-load-alist' in order to
+     implement `eval-after-load'.
+
+
+File: elisp,  Node: Byte Compilation,  Next: Debugging,  Prev: Loading,  Up: Top
+
+Byte Compilation
+****************
+
+   GNU Emacs Lisp has a "compiler" that translates functions written in
+Lisp into a special representation called "byte-code" that can be
+executed more efficiently.  The compiler replaces Lisp function
+definitions with byte-code.  When a byte-code function is called, its
+definition is evaluated by the "byte-code interpreter".
+
+   Because the byte-compiled code is evaluated by the byte-code
+interpreter, instead of being executed directly by the machine's
+hardware (as true compiled code is), byte-code is completely
+transportable from machine to machine without recompilation.  It is not,
+however, as fast as true compiled code.
+
+   In general, any version of Emacs can run byte-compiled code produced
+by recent earlier versions of Emacs, but the reverse is not true.  In
+particular, if you compile a program with Emacs 18, you can run the
+compiled code in Emacs 19, but not vice versa.
+
+   *Note Compilation Errors::, for how to investigate errors occurring
+in byte compilation.
+
+* Menu:
+
+* Speed of Byte-Code::          An example of speedup from byte compilation.
+* Compilation Functions::       Byte compilation functions.
+* Eval During Compile::  	Code to be evaluated when you compile.
+* Byte-Code Objects::		The data type used for byte-compiled functions.
+* Disassembly::                 Disassembling byte-code; how to read byte-code.
+
+
+File: elisp,  Node: Speed of Byte-Code,  Next: Compilation Functions,  Up: Byte Compilation
+
+Performance of Byte-Compiled Code
+=================================
+
+   A byte-compiled function is not as efficient as a primitive function
+written in C, but runs much faster than the version written in Lisp.
+Here is an example:
+
+     (defun silly-loop (n)
+       "Return time before and after N iterations of a loop."
+       (let ((t1 (current-time-string)))
+         (while (> (setq n (1- n))
+                   0))
+         (list t1 (current-time-string))))
+     => silly-loop
+     
+     (silly-loop 100000)
+     => ("Fri Mar 18 17:25:57 1994"
+         "Fri Mar 18 17:26:28 1994")  ; 31 seconds
+     
+     (byte-compile 'silly-loop)
+     => [Compiled code not shown]
+     
+     (silly-loop 100000)
+     => ("Fri Mar 18 17:26:52 1994"
+         "Fri Mar 18 17:26:58 1994")  ; 6 seconds
+
+   In this example, the interpreted code required 31 seconds to run,
+whereas the byte-compiled code required 6 seconds.  These results are
+representative, but actual results will vary greatly.
+
+
+File: elisp,  Node: Compilation Functions,  Next: Eval During Compile,  Prev: Speed of Byte-Code,  Up: Byte Compilation
+
+The Compilation Functions
+=========================
+
+   You can byte-compile an individual function or macro definition with
+the `byte-compile' function.  You can compile a whole file with
+`byte-compile-file', or several files with `byte-recompile-directory'
+or `batch-byte-compile'.
+
+   When you run the byte compiler, you may get warnings in a buffer
+called `*Compile-Log*'.  These report things in your program that
+suggest a problem but are not necessarily erroneous.
+
+   Be careful when byte-compiling code that uses macros.  Macro calls
+are expanded when they are compiled, so the macros must already be
+defined for proper compilation.  For more details, see *Note Compiling
+Macros::.
+
+   Normally, compiling a file does not evaluate the file's contents or
+load the file.  But it does execute any `require' calls at top level in
+the file.  One way to ensure that necessary macro definitions are
+available during compilation is to require the file that defines them.
+*Note Features::.
+
+ - Function: byte-compile SYMBOL
+     This function byte-compiles the function definition of SYMBOL,
+     replacing the previous definition with the compiled one.  The
+     function definition of SYMBOL must be the actual code for the
+     function; i.e., the compiler does not follow indirection to
+     another symbol.  `byte-compile' returns the new, compiled
+     definition of SYMBOL.
+
+     If SYMBOL's definition is a byte-code function object,
+     `byte-compile' does nothing and returns `nil'.  Lisp records only
+     one function definition for any symbol, and if that is already
+     compiled, non-compiled code is not available anywhere.  So there
+     is no way to "compile the same definition again."
+
+          (defun factorial (integer)
+            "Compute factorial of INTEGER."
+            (if (= 1 integer) 1
+              (* integer (factorial (1- integer)))))
+          => factorial
+          
+          (byte-compile 'factorial)
+          =>
+          #[(integer)
+            "^H\301U\203^H^@\301\207\302^H\303^HS!\"\207"
+            [integer 1 * factorial]
+            4 "Compute factorial of INTEGER."]
+
+     The result is a byte-code function object.  The string it contains
+     is the actual byte-code; each character in it is an instruction or
+     an operand of an instruction.  The vector contains all the
+     constants, variable names and function names used by the function,
+     except for certain primitives that are coded as special
+     instructions.
+
+ - Command: compile-defun
+     This command reads the defun containing point, compiles it, and
+     evaluates the result.  If you use this on a defun that is actually
+     a function definition, the effect is to install a compiled version
+     of that function.
+
+ - Command: byte-compile-file FILENAME
+     This function compiles a file of Lisp code named FILENAME into a
+     file of byte-code.  The output file's name is made by appending
+     `c' to the end of FILENAME.
+
+     Compilation works by reading the input file one form at a time.
+     If it is a definition of a function or macro, the compiled
+     function or macro definition is written out.  Other forms are
+     batched together, then each batch is compiled, and written so that
+     its compiled code will be executed when the file is read.  All
+     comments are discarded when the input file is read.
+
+     This command returns `t'.  When called interactively, it prompts
+     for the file name.
+
+          % ls -l push*
+          -rw-r--r--  1 lewis     791 Oct  5 20:31 push.el
+          
+          (byte-compile-file "~/emacs/push.el")
+               => t
+          
+          % ls -l push*
+          -rw-r--r--  1 lewis     791 Oct  5 20:31 push.el
+          -rw-rw-rw-  1 lewis     638 Oct  8 20:25 push.elc
+
+ - Command: byte-recompile-directory DIRECTORY FLAG
+     This function recompiles every `.el' file in DIRECTORY that needs
+     recompilation.  A file needs recompilation if a `.elc' file exists
+     but is older than the `.el' file.
+
+     If a `.el' file exists, but there is no corresponding `.elc' file,
+     then FLAG says what to do.  If it is `nil', the file is ignored.
+     If it is non-`nil', the user is asked whether to compile the file.
+
+     The returned value of this command is unpredictable.
+
+ - Function: batch-byte-compile
+     This function runs `byte-compile-file' on files specified on the
+     command line.  This function must be used only in a batch
+     execution of Emacs, as it kills Emacs on completion.  An error in
+     one file does not prevent processing of subsequent files.  (The
+     file that gets the error will not, of course, produce any compiled
+     code.)
+
+          % emacs -batch -f batch-byte-compile *.el
+
+ - Function: byte-code CODE-STRING DATA-VECTOR MAX-STACK
+     This function actually interprets byte-code.  A byte-compiled
+     function is actually defined with a body that calls `byte-code'.
+     Don't call this function yourself.  Only the byte compiler knows
+     how to generate valid calls to this function.
+
+     In newer Emacs versions (19 and up), byte-code is usually executed
+     as part of a byte-code function object, and only rarely due to an
+     explicit call to `byte-code'.
+
+
+File: elisp,  Node: Eval During Compile,  Next: Byte-Code Objects,  Prev: Compilation Functions,  Up: Byte Compilation
+
+Evaluation During Compilation
+=============================
+
+   These features permit you to write code to be evaluated during
+compilation of a program.
+
+ - Special Form: eval-and-compile BODY
+     This form marks BODY to be evaluated both when you compile the
+     containing code and when you run it (whether compiled or not).
+
+     You can get a similar result by putting BODY in a separate file
+     and referring to that file with `require'.  Using `require' is
+     preferable if there is a substantial amount of code to be executed
+     in this way.
+
+ - Special Form: eval-when-compile BODY
+     This form marks BODY to be evaluated at compile time and not when
+     the compiled program is loaded.  The result of evaluation by the
+     compiler becomes a constant which appears in the compiled program.
+     When the program is interpreted, not compiled at all, BODY is
+     evaluated normally.
+
+     At top level, this is analogous to the Common Lisp idiom
+     `(eval-when (compile eval) ...)'.  Elsewhere, the Common Lisp `#.'
+     reader macro (but not when interpreting) is closer to what
+     `eval-when-compile' does.
+
+
+File: elisp,  Node: Byte-Code Objects,  Next: Disassembly,  Prev: Eval During Compile,  Up: Byte Compilation
+
+Byte-Code Objects
+=================
+
+   Byte-compiled functions have a special data type: they are
+"byte-code function objects".
+
+   Internally, a byte-code function object is much like a vector;
+however, the evaluator handles this data type specially when it appears
+as a function to be called.  The printed representation for a byte-code
+function object is like that for a vector, with an additional `#'
+before the opening `['.
+
+   In Emacs version 18, there was no byte-code function object data
+type; compiled functions used the function `byte-code' to run the byte
+code.
+
+   A byte-code function object must have at least four elements; there
+is no maximum number, but only the first six elements are actually used.
+They are:
+
+ARGLIST
+     The list of argument symbols.
+
+BYTE-CODE
+     The string containing the byte-code instructions.
+
+CONSTANTS
+     The vector of Lisp objects referenced by the byte code.  These
+     include symbols used as function names and variable names.
+
+STACKSIZE
+     The maximum stack size this function needs.
+
+DOCSTRING
+     The documentation string (if any); otherwise, `nil'.  For functions
+     preloaded before Emacs is dumped, this is usually an integer which
+     is an index into the `DOC' file; use `documentation' to convert
+     this into a string (*note Accessing Documentation::.).
+
+INTERACTIVE
+     The interactive spec (if any).  This can be a string or a Lisp
+     expression.  It is `nil' for a function that isn't interactive.
+
+   Here's an example of a byte-code function object, in printed
+representation.  It is the definition of the command `backward-sexp'.
+
+     #[(&optional arg)
+       "^H\204^F^@\301^P\302^H[!\207"
+       [arg 1 forward-sexp]
+       2
+       254435
+       "p"]
+
+   The primitive way to create a byte-code object is with
+`make-byte-code':
+
+ - Function: make-byte-code &rest ELEMENTS
+     This function constructs and returns a byte-code function object
+     with ELEMENTS as its elements.
+
+   You should not try to come up with the elements for a byte-code
+function yourself, because if they are inconsistent, Emacs may crash
+when you call the function.  Always leave it to the byte compiler to
+create these objects; it makes the elements consistent (we hope).
+
+   You can access the elements of a byte-code object using `aref'; you
+can also use `vconcat' to create a vector with the same elements.
+
+
+File: elisp,  Node: Disassembly,  Prev: Byte-Code Objects,  Up: Byte Compilation
+
+Disassembled Byte-Code
+======================
+
+   People do not write byte-code; that job is left to the byte compiler.
+But we provide a disassembler to satisfy a cat-like curiosity.  The
+disassembler converts the byte-compiled code into humanly readable form.
+
+   The byte-code interpreter is implemented as a simple stack machine.
+It pushes values onto a stack of its own, then pops them off to use them
+in calculations whose results are themselves pushed back on the stack.
+When a byte-code function returns, it pops a value off the stack and
+returns it as the value of the function.
+
+   In addition to the stack, byte-code functions can use, bind, and set
+ordinary Lisp variables, by transferring values between variables and
+the stack.
+
+ - Command: disassemble OBJECT &optional STREAM
+     This function prints the disassembled code for OBJECT.  If STREAM
+     is supplied, then output goes there.  Otherwise, the disassembled
+     code is printed to the stream `standard-output'.  The argument
+     OBJECT can be a function name or a lambda expression.
+
+     As a special exception, if this function is used interactively, it
+     outputs to a buffer named `*Disassemble*'.
+
+   Here are two examples of using the `disassemble' function.  We have
+added explanatory comments to help you relate the byte-code to the Lisp
+source; these do not appear in the output of `disassemble'.  These
+examples show unoptimized byte-code.  Nowadays byte-code is usually
+optimized, but we did not want to rewrite these examples, since they
+still serve their purpose.
+
+     (defun factorial (integer)
+       "Compute factorial of an integer."
+       (if (= 1 integer) 1
+         (* integer (factorial (1- integer)))))
+          => factorial
+     
+     (factorial 4)
+          => 24
+     
+     (disassemble 'factorial)
+          -| byte-code for factorial:
+      doc: Compute factorial of an integer.
+      args: (integer)
+     
+     0   constant 1              ; Push 1 onto stack.
+     
+     1   varref   integer        ; Get value of `integer'
+                                 ;   from the environment
+                                 ;   and push the value
+                                 ;   onto the stack.
+     
+     2   eqlsign                 ; Pop top two values off stack,
+                                 ;   compare them,
+                                 ;   and push result onto stack.
+     
+     3   goto-if-nil 10          ; Pop and test top of stack;
+                                 ;   if `nil', go to 10,
+                                 ;   else continue.
+     
+     6   constant 1              ; Push 1 onto top of stack.
+     
+     7   goto     17             ; Go to 17 (in this case, 1 will be
+                                 ;   returned by the function).
+     
+     10  constant *              ; Push symbol `*' onto stack.
+     
+     11  varref   integer        ; Push value of `integer' onto stack.
+     
+     12  constant factorial      ; Push `factorial' onto stack.
+     
+     13  varref   integer        ; Push value of `integer' onto stack.
+     
+     14  sub1                    ; Pop `integer', decrement value,
+                                 ;   push new value onto stack.
+     
+                                 ; Stack now contains:
+                                 ;   - decremented value of `integer'
+                                 ;   - `factorial'
+                                 ;   - value of `integer'
+                                 ;   - `*'
+     
+     15  call     1              ; Call function `factorial' using
+                                 ;   the first (i.e., the top) element
+                                 ;   of the stack as the argument;
+                                 ;   push returned value onto stack.
+     
+                                 ; Stack now contains:
+                                 ;   - result of recursive
+                                 ;        call to `factorial'
+                                 ;   - value of `integer'
+                                 ;   - `*'
+     
+     16  call     2              ; Using the first two
+                                 ;   (i.e., the top two)
+                                 ;   elements of the stack
+                                 ;   as arguments,
+                                 ;   call the function `*',
+                                 ;   pushing the result onto the stack.
+     
+     17  return                  ; Return the top element
+                                 ;   of the stack.
+          => nil
+
+   The `silly-loop' function is somewhat more complex:
+
+     (defun silly-loop (n)
+       "Return time before and after N iterations of a loop."
+       (let ((t1 (current-time-string)))
+         (while (> (setq n (1- n))
+                   0))
+         (list t1 (current-time-string))))
+          => silly-loop
+     
+     (disassemble 'silly-loop)
+          -| byte-code for silly-loop:
+      doc: Return time before and after N iterations of a loop.
+      args: (n)
+     
+     0   constant current-time-string  ; Push
+                                       ;   `current-time-string'
+                                       ;   onto top of stack.
+     
+     1   call     0              ; Call `current-time-string'
+                                 ;    with no argument,
+                                 ;    pushing result onto stack.
+     
+     2   varbind  t1             ; Pop stack and bind `t1'
+                                 ;   to popped value.
+     
+     3   varref   n              ; Get value of `n' from
+                                 ;   the environment and push
+                                 ;   the value onto the stack.
+     
+     4   sub1                    ; Subtract 1 from top of stack.
+     
+     5   dup                     ; Duplicate the top of the stack;
+                                 ;   i.e., copy the top of
+                                 ;   the stack and push the
+                                 ;   copy onto the stack.
+     
+     6   varset   n              ; Pop the top of the stack,
+                                 ;   and bind `n' to the value.
+     
+                                 ; In effect, the sequence `dup varset'
+                                 ;   copies the top of the stack
+                                 ;   into the value of `n'
+                                 ;   without popping it.
+     
+     7   constant 0              ; Push 0 onto stack.
+     
+     8   gtr                     ; Pop top two values off stack,
+                                 ;   test if N is greater than 0
+                                 ;   and push result onto stack.
+     
+     9   goto-if-nil-else-pop 17 ; Goto 17 if `n' <= 0
+                                 ;   (this exits the while loop).
+                                 ;   else pop top of stack
+                                 ;   and continue
+     
+     12  constant nil            ; Push `nil' onto stack
+                                 ;   (this is the body of the loop).
+     
+     13  discard                 ; Discard result of the body
+                                 ;   of the loop (a while loop
+                                 ;   is always evaluated for
+                                 ;   its side effects).
+     
+     14  goto     3              ; Jump back to beginning
+                                 ;   of while loop.
+     
+     17  discard                 ; Discard result of while loop
+                                 ;   by popping top of stack.
+                                 ;   This result is the value `nil' that
+                                 ;   was not popped by the goto at 9.
+     
+     18  varref   t1             ; Push value of `t1' onto stack.
+     
+     19  constant current-time-string  ; Push
+                                       ;   `current-time-string'
+                                       ;   onto top of stack.
+     
+     20  call     0              ; Call `current-time-string' again.
+     
+     21  list2                   ; Pop top two elements off stack,
+                                 ;   create a list of them,
+                                 ;   and push list onto stack.
+     
+     22  unbind   1              ; Unbind `t1' in local environment.
+     
+     23  return                  ; Return value of the top of stack.
+     
+          => nil
+
+
+File: elisp,  Node: Debugging,  Next: Read and Print,  Prev: Byte Compilation,  Up: Top
+
+Debugging Lisp Programs
+***********************
+
+   There are three ways to investigate a problem in an Emacs Lisp
+program, depending on what you are doing with the program when the
+problem appears.
+
+   * If the problem occurs when you run the program, you can use a Lisp
+     debugger (either the default debugger or Edebug) to investigate
+     what is happening during execution.
+
+   * If the problem is syntactic, so that Lisp cannot even read the
+     program, you can use the Emacs facilities for editing Lisp to
+     localize it.
+
+   * If the problem occurs when trying to compile the program with the
+     byte compiler, you need to know how to examine the compiler's
+     input buffer.
+
+* Menu:
+
+* Debugger::            How the Emacs Lisp debugger is implemented.
+* Syntax Errors::       How to find syntax errors.
+* Compilation Errors::  How to find errors that show up in byte compilation.
+* Edebug::		A source-level Emacs Lisp debugger.
+
+   Another useful debugging tool is the dribble file.  When a dribble
+file is open, Emacs copies all keyboard input characters to that file.
+Afterward, you can examine the file to find out what input was used.
+*Note Terminal Input::.
+
+   For debugging problems in terminal descriptions, the
+`open-termscript' function can be useful.  *Note Terminal Output::.
+
+
+File: elisp,  Node: Debugger,  Next: Syntax Errors,  Up: Debugging
+
+The Lisp Debugger
+=================
+
+   The "Lisp debugger" provides the ability to suspend evaluation of a
+form.  While evaluation is suspended (a state that is commonly known as
+a "break"), you may examine the run time stack, examine the values of
+local or global variables, or change those values.  Since a break is a
+recursive edit, all the usual editing facilities of Emacs are
+available; you can even run programs that will enter the debugger
+recursively.  *Note Recursive Editing::.
+
+* Menu:
+
+* Error Debugging::       Entering the debugger when an error happens.
+* Infinite Loops::	  Stopping and debugging a program that doesn't exit.
+* Function Debugging::    Entering it when a certain function is called.
+* Explicit Debug::        Entering it at a certain point in the program.
+* Using Debugger::        What the debugger does; what you see while in it.
+* Debugger Commands::     Commands used while in the debugger.
+* Invoking the Debugger:: How to call the function `debug'.
+* Internals of Debugger:: Subroutines of the debugger, and global variables.
+
+
+File: elisp,  Node: Error Debugging,  Next: Infinite Loops,  Up: Debugger
+
+Entering the Debugger on an Error
+---------------------------------
+
+   The most important time to enter the debugger is when a Lisp error
+happens.  This allows you to investigate the immediate causes of the
+error.
+
+   However, entry to the debugger is not a normal consequence of an
+error.  Many commands frequently get Lisp errors when invoked in
+inappropriate contexts (such as `C-f' at the end of the buffer) and
+during ordinary editing it would be very unpleasant to enter the
+debugger each time this happens.  If you want errors to enter the
+debugger, set the variable `debug-on-error' to non-`nil'.
+
+ - User Option: debug-on-error
+     This variable determines whether the debugger is called when an
+     error is signaled and not handled.  If `debug-on-error' is `t', all
+     errors call the debugger.  If it is `nil', none call the debugger.
+
+     The value can also be a list of error conditions that should call
+     the debugger.  For example, if you set it to the list
+     `(void-variable)', then only errors about a variable that has no
+     value invoke the debugger.
+
+   To debug an error that happens during loading of the `.emacs' file,
+use the option `-debug-init', which binds `debug-on-error' to `t' while
+`.emacs' is loaded and inhibits use of `condition-case' to catch init
+file errors.
+
+   If your `.emacs' file sets `debug-on-error', the effect may not last
+past the end of loading `.emacs'.  (This is an undesirable byproduct of
+the code that implements the `-debug-init' command line option.)  The
+best way to make `.emacs' set `debug-on-error' permanently is with
+`after-init-hook', like this:
+
+     (add-hook 'after-init-hook
+               '(lambda () (setq debug-on-error t)))
+
+
+File: elisp,  Node: Infinite Loops,  Next: Function Debugging,  Prev: Error Debugging,  Up: Debugger
+
+Debugging Infinite Loops
+------------------------
+
+   When a program loops infinitely and fails to return, your first
+problem is to stop the loop.  On most operating systems, you can do this
+with `C-g', which causes quit.
+
+   Ordinary quitting gives no information about why the program was
+looping.  To get more information, you can set the variable
+`debug-on-quit' to non-`nil'.  Quitting with `C-g' is not considered an
+error, and `debug-on-error' has no effect on the handling of `C-g'.
+Likewise, `debug-on-quit' has no effect on errors.
+
+   Once you have the debugger running in the middle of the infinite
+loop, you can proceed from the debugger using the stepping commands.
+If you step through the entire loop, you will probably get enough
+information to solve the problem.
+
+ - User Option: debug-on-quit
+     This variable determines whether the debugger is called when `quit'
+     is signaled and not handled.  If `debug-on-quit' is non-`nil',
+     then the debugger is called whenever you quit (that is, type
+     `C-g').  If `debug-on-quit' is `nil', then the debugger is not
+     called when you quit.  *Note Quitting::.
+
+
+File: elisp,  Node: Function Debugging,  Next: Explicit Debug,  Prev: Infinite Loops,  Up: Debugger
+
+Entering the Debugger on a Function Call
+----------------------------------------
+
+   To investigate a problem that happens in the middle of a program, one
+useful technique is to enter the debugger whenever a certain function is
+called.  You can do this to the function in which the problem occurs,
+and then step through the function, or you can do this to a function
+called shortly before the problem, step quickly over the call to that
+function, and then step through its caller.
+
+ - Command: debug-on-entry FUNCTION-NAME
+     This function requests FUNCTION-NAME to invoke the debugger each
+     time it is called.  It works by inserting the form `(debug
+     'debug)' into the function definition as the first form.
+
+     Any function defined as Lisp code may be set to break on entry,
+     regardless of whether it is interpreted code or compiled code.  If
+     the function is a command, it will enter the debugger when called
+     from Lisp and when called interactively (after the reading of the
+     arguments).  You can't debug primitive functions (i.e., those
+     written in C) this way.
+
+     When `debug-on-entry' is called interactively, it prompts for
+     FUNCTION-NAME in the minibuffer.
+
+     If the function is already set up to invoke the debugger on entry,
+     `debug-on-entry' does nothing.
+
+     Caveat: if you redefine a function after using `debug-on-entry' on
+     it, the code to enter the debugger is lost.
+
+     `debug-on-entry' returns FUNCTION-NAME.
+
+          (defun fact (n)
+            (if (zerop n) 1
+                (* n (fact (1- n)))))
+               => fact
+          (debug-on-entry 'fact)
+               => fact
+          (fact 3)
+          
+          ------ Buffer: *Backtrace* ------
+          Entering:
+          * fact(3)
+            eval-region(4870 4878 t)
+            byte-code("...")
+            eval-last-sexp(nil)
+            (let ...)
+            eval-insert-last-sexp(nil)
+          * call-interactively(eval-insert-last-sexp)
+          ------ Buffer: *Backtrace* ------
+          
+          (symbol-function 'fact)
+               => (lambda (n)
+                    (debug (quote debug))
+                    (if (zerop n) 1 (* n (fact (1- n)))))
+
+ - Command: cancel-debug-on-entry FUNCTION-NAME
+     This function undoes the effect of `debug-on-entry' on
+     FUNCTION-NAME.  When called interactively, it prompts for
+     FUNCTION-NAME in the minibuffer.
+
+     If `cancel-debug-on-entry' is called more than once on the same
+     function, the second call does nothing.  `cancel-debug-on-entry'
+     returns FUNCTION-NAME.
+
+
+File: elisp,  Node: Explicit Debug,  Next: Using Debugger,  Prev: Function Debugging,  Up: Debugger
+
+Explicit Entry to the Debugger
+------------------------------
+
+   You can cause the debugger to be called at a certain point in your
+program by writing the expression `(debug)' at that point.  To do this,
+visit the source file, insert the text `(debug)' at the proper place,
+and type `C-M-x'.  Be sure to undo this insertion before you save the
+file!
+
+   The place where you insert `(debug)' must be a place where an
+additional form can be evaluated and its value ignored.  (If the value
+of `(debug)' isn't ignored, it will alter the execution of the
+program!)  The most common suitable places are inside a `progn' or an
+implicit `progn' (*note Sequencing::.).
+

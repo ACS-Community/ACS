@@ -1,0 +1,46 @@
+1 - Simple test...should see once for ACS log svc handler.
+1 - Entering...
+1 - -------------------------------------------------------------------------
+1 - -------------------------------------------------------------------------
+1 - Should be a trace begin here...
+1 - 2 Entering... testLogger.cpp 108 no method name
+1 - 2 Entering... testLogger.cpp 108 no method name
+1 - 2 Entering... testLogger.cpp 108 no method name
+1 - 2 Entering... testLogger.cpp 108 no method name
+1 - Exiting...
+1 - ...something in the middle...
+1 - 2 Exiting... testLogger.cpp 108 no method name
+1 - 2 Exiting... testLogger.cpp 108 no method name
+1 - 2 Exiting... testLogger.cpp 108 no method name
+1 - 2 Exiting... testLogger.cpp 108 no method name
+1 - Simple test with multiple handlers...should see five times.
+1 - ...and the trace ending should be done now.
+1 - -------------------------------------------------------------------------
+1 - 8 Simple test with multiple handlers...should see five times. Unavailable 0 Unavailable
+1 - 8 Simple test with multiple handlers...should see five times. Unavailable 0 Unavailable
+1 - 8 Simple test with multiple handlers...should see five times. Unavailable 0 Unavailable
+1 - 8 Simple test with multiple handlers...should see five times. Unavailable 0 Unavailable
+1 - Test priority...should see four times
+1 - -------------------------------------------------------------------------
+1 - 8 Test priority...should see four times Unavailable 0 Unavailable
+1 - 8 Test priority...should see four times Unavailable 0 Unavailable
+1 - 8 Test priority...should see four times Unavailable 0 Unavailable
+1 - Test priority...should see five times
+1 - 8 Test priority...should see five times Unavailable 0 Unavailable
+1 - 8 Test priority...should see five times Unavailable 0 Unavailable
+1 - 8 Test priority...should see five times Unavailable 0 Unavailable
+1 - 8 Test priority...should see five times Unavailable 0 Unavailable
+1 - Test remove 1 handler...should see three times
+1 - -------------------------------------------------------------------------
+1 - 8 Test remove 1 handler...should see three times Unavailable 0 Unavailable
+1 - 8 Test remove 1 handler...should see three times Unavailable 0 Unavailable
+1 - Test removing non-existant handler...should see three times
+1 - -------------------------------------------------------------------------
+1 - 8 Test removing non-existant handler...should see three times Unavailable 0 Unavailable
+1 - 8 Test removing non-existant handler...should see three times Unavailable 0 Unavailable
+1 - -------------------------------------------------------------------------
+1 - TestHandler destructor: h1
+1 - TestHandler destructor: h1
+1 - Test with two more handlers of identical names removed - should see once
+1 - TestHandler destructor: h3
+1 - TestHandler destructor: h2

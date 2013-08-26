@@ -1,0 +1,12 @@
+1 - This is a global level log message.
+1 - This is a logger named: GlobalLogger
+1 - This is a logger named: loggableWithName
+1 - This is a logger named: MainLogger
+1 - This is a logger named: GlobalLogger
+1 - This is a logger named: loggableWithName
+1 - This is a logger named: MainLogger
+1 - Entering...
+1 - Exiting...
+1 - -------------------------------------------------------------------------
+1 - -------------------------------------------------------------------------
+1 - Here we test if static log macro(s) work(s)

@@ -1,0 +1,3 @@
+1 - Heap dump created successfully.
+1 - OutOfMemoryError was thrown as expected.
+1 - Removing dump file java_pidXXX.hprof

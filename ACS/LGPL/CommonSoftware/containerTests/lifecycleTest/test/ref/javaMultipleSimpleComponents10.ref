@@ -1,0 +1,19 @@
+1 -  -- alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTJAVASIMPLE 10 SIMPLE
+1 - <timestamp> INFO [acsStartJava] Starting Java application: alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTJAVASIMPLE 10 SIMPLE
+1 - .<timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] -------------------------------
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] ComponentClientTestCase#setUp()
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully delivered a component release request for curl=TESTJAVASIMPLE6
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully delivered a component release request for curl=TESTJAVASIMPLE7
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully delivered a component release request for curl=TESTJAVASIMPLE8
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully delivered a component release request for curl=TESTJAVASIMPLE10
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully delivered a component release request for curl=TESTJAVASIMPLE9
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully delivered a component release request for curl=TESTJAVASIMPLE3
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully delivered a component release request for curl=TESTJAVASIMPLE2
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully delivered a component release request for curl=TESTJAVASIMPLE5
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully delivered a component release request for curl=TESTJAVASIMPLE4
+1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully delivered a component release request for curl=TESTJAVASIMPLE1
+1 - 
+1 - Time: <seconds>
+1 - 
+1 - OK (1 test)
+1 - 

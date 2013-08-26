@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+@(#) $Id: Default.xml,v 1.2 2006/11/20 05:40:14 cparedes Exp $
+
+Copyright (C) 2004
+Associated Universities, Inc. Washington DC, USA.
+
+Produced for the ALMA project
+
+This library is free software; you can redistribute it and/or modify
+it it under the terms of the GNU Library General Public License as
+published by the Free Software Foundation; either version 2 of the
+License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 675 Massachusetts Ave, Cambridge, MA, 02139, USA.
+
+Correspondence concerning ALMA should be addressed as follows:
+Internet email: alma-sw-admin@nrao.edu
+-->
+
+<AmbDevIOTest xmlns="urn:schemas-cosylab-com:AmbDevIOTest:1.0" 
+      xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+      xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+      xmlns:amb="urn:schemas-cosylab-com:AmbDevice:1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <roBoolProp/>
+  <rwBoolProp/>
+
+  <!-- Unsigned Double Properties -->
+  <roDoubleProp description="Read Only Double Property">
+    <amb:rcaMap relative_address="2" data_length="2">
+      <amb:doubleBitMap numberOfBits="10" fieldWidth="16" scale ="0.5"
+offset = "0.25" signedData="false"/>
+    </amb:rcaMap>
+  </roDoubleProp>
+
+  <rwDoubleProp description="Read Write Double Property">
+    <amb:rcaMap relative_address="130" data_length="2">
+      <amb:doubleBitMap numberOfBits="10" fieldWidth="16" scale ="0.5"
+offset = "0.25" signedData="false"/>
+    </amb:rcaMap>
+  </rwDoubleProp>
+  
+  <!-- Signed Double Properties -->
+  <roSignedDoubleProp description="Read Only Signed Double Property">
+    <amb:rcaMap relative_address="3" data_length="4">
+      <amb:doubleBitMap numberOfBits="25" fieldWidth="30" scale="0.5" offset = "0.25" signedData="true"/>
+    </amb:rcaMap>
+  </roSignedDoubleProp>
+
+  <rwSignedDoubleProp description="Read Write Signed Double Property">
+    <amb:rcaMap relative_address="131" data_length="4">
+      <amb:doubleBitMap numberOfBits="25" fieldWidth="30" scale ="0.5" offset="0.25" signedData="true"/>
+    </amb:rcaMap>
+  </rwSignedDoubleProp>
+
+  <!-- Unsigned Double Sequence Properties -->
+  <roDoubleSeqProp description = "Read Only Double Sequence Property"
+                   format = "%f">
+    <amb:rcaMap relative_address="4" data_length="8">
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale="0.5" offset="0.25"/>
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale="0.75" offset="0.125"/>
+    </amb:rcaMap>
+    <amb:rcaMap relative_address="5" data_length="6">
+      <amb:doubleBitMap numberOfBits="36" fieldWidth="40" scale="0.5" offset="0.125"/>
+    </amb:rcaMap>
+  </roDoubleSeqProp>
+
+  <rwDoubleSeqProp description = "Read Write Double Sequence Property"
+                   format = "%f">
+    <amb:rcaMap relative_address="132" data_length="8">
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale="0.5" offset= "0.25"/>
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale="0.75" offset="0.125"/>
+    </amb:rcaMap>
+    <amb:rcaMap relative_address="133" data_length="6">
+      <amb:doubleBitMap numberOfBits="36" fieldWidth="40" scale="0.5" offset="0.125"/>
+    </amb:rcaMap>
+  </rwDoubleSeqProp>
+
+  <!-- Signed Double Sequence Properties -->
+  <roSignedDoubleSeqProp description = "Read Only Double Sequence Property"
+                         format = "%f">
+    <amb:rcaMap relative_address="6" data_length="8">
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale="0.5" offset="0.25" signedData="true"/>
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale="0.75" offset="0.125" signedData="true"/>
+    </amb:rcaMap>
+    <amb:rcaMap relative_address="7" data_length="6">
+      <amb:doubleBitMap numberOfBits="36" fieldWidth="40" scale="0.5" offset="0.125" signedData="true"/>
+    </amb:rcaMap>
+  </roSignedDoubleSeqProp>
+
+  <rwSignedDoubleSeqProp description = "Read Write Double Sequence Property"
+                         format = "%f">
+    <amb:rcaMap relative_address="134" data_length="8">
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale="0.5" offset= "0.25" signedData="true"/>
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale="0.75" offset="0.125" signedData="true"/>
+    </amb:rcaMap>
+    <amb:rcaMap relative_address="135" data_length="6">
+      <amb:doubleBitMap numberOfBits="36" fieldWidth="40" scale="0.5" offset="0.125" signedData="true"/>
+    </amb:rcaMap>
+  </rwSignedDoubleSeqProp>
+
+  <Address/>
+  <errors/>
+  <transactions/>
+  <temperature/>
+</AmbDevIOTest>
+

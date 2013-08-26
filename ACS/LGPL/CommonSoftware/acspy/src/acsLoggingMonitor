@@ -1,0 +1,82 @@
+#!/usr/bin/env python
+
+# This script works only if ACS is running the custom Telecom Log Service
+# ACS 8.1.0 or better
+from Acspy.Util import ACSCorba
+import CosNaming
+import Logging
+import sys, time, getopt
+
+def getLogServiceFromLocation(locString):
+	#the user must pass the name service location as argument
+	orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
+
+	obj = orb.resolve_initial_references("NameService")
+	rootContext = obj._narrow(CosNaming.NamingContext)
+
+	name = [CosNaming.NameComponent("Log", "")] 
+
+	obj = rootContext.resolve(name) 
+	#ior = sys.argv[1] 
+	#obj = orb.string_to_object(ior)
+
+	log = obj._narrow(Logging.AcsLogService)
+	return log
+
+def getLogServiceFromManager():
+	obj = ACSCorba.log()
+	log = obj._narrow(Logging.AcsLogService)
+	return log
+
+def usage():
+	print 'ACS Logging Service performance monitor'
+	print 'Options:'
+	print '-h \t\tshows this help'
+	print '-l address \tuse a corbaLoc address to connect to the logging service'
+	print '-t number \trefresh the statistics every \'number\' seconds'
+
+try:
+	optlist, args = getopt.getopt(sys.argv[1:], 'hl:t:')
+except getopt.GetoptError, err:
+	print str(err)
+	usage()
+	sys.exit(2)
+
+useLoc = False
+locStr = None
+refreshTime = 5
+for o, a in optlist:
+	if o == '-h':
+		usage()
+		sys.exit(0)
+	if o == '-l':
+		useLoc = True
+		locStr = a
+	elif o == '-t':
+		try: 
+			refreshTime = int(a)
+		except ValueError, err:
+			print 'The time to refresh the statistics must be a valid integer'
+			sys.exit(2)
+
+log = None
+if useLoc:
+	log = getLogServiceFromLocation(locStr)
+else:
+	log = getLogServiceFromManager()
+
+oTime = time.time()
+oCount = log.getStatistics().receivedLogs
+
+cTime = time.time()
+cCount = log.getStatistics().receivedLogs
+
+print 'Starting...'
+while True:
+	time.sleep(refreshTime)
+	print "Number of Logs: ", log.getStatistics().receivedLogs
+	oCount = cCount
+	oTime = cTime
+	cCount = log.getStatistics().receivedLogs
+	cTime = time.time()
+	print "Estimated performance:", (cCount - oCount)/(cTime - oTime), "Logs/sec"

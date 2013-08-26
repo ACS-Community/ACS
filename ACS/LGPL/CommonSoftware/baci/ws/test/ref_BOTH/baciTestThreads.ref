@@ -1,0 +1,69 @@
+1 - rlogin LCU
+1 - 
+1 - LCU->lcubootAutoLoad 1,"baciTestThreads" 
+1 - lcubootAutoLoad: Loading module baciTestThreads, flags: 0,0
+1 - value = xx
+1 - LCU->putenv "DAL_REFERENCE=corbaloc:HOST:PORT/CDB"
+1 - value = xx
+1 - LCU->sp startBaciTestThreads 
+1 - task spawned
+1 - value = xx
+1 - LCU->----------T--:--:--.--- [GlobalLogger - ] Spawning threads...
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Starting thread 'xxxx' [xxxx].
+1 - ----------T--:--:--.--- [GlobalLogger - ] Spawned.
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
+1 - ----------T--:--:--.--- [GlobalLogger - ] Suspending.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Suspended.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Resuming.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Resumed.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stop] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread Test thread
+1 - ----------T--:--:--.--- [GlobalLogger - ] Stopping thread [xxxx].
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:Test thread
+1 - ----------T--:--:--.--- [GlobalLogger - ] Stopped.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Deleting manager.
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Done.
+1 - 

@@ -1,0 +1,245 @@
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: Makefile,v 1.32 2012/01/21 23:20:46 tstaig Exp $"
+#
+# Makefile of ........
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# alma  30/03/04  created
+#
+
+#*******************************************************************************
+# This Makefile follows VLT Standards (see Makefile(5) for more).
+#*******************************************************************************
+# REMARKS
+#    None
+#------------------------------------------------------------------------
+
+
+#
+# user definable C-compilation flags
+#USER_CFLAGS = 
+
+#MAKE_ONLY="C++"
+
+#
+# Additional include and library search paths
+# We need to explicitly add $(TAO_ROOT)/orbsvcs/orbsvcs/AV 
+# to the include path because some include files in the 
+# AV directory assume that -I- option is NOT used and therefore
+# do not prepend AV/ to the file name when including it.
+# But we are using -I- and therefore compilation fails for us.
+# We should fix the AV includes to always eplicitly put the
+# directory prefix when inluding their own files.
+# Also, we cannot put this -I$(TAO_ROOT)/orbsvcs/orbsvcs/AV 
+# option in the acsMakefile, because there are inside files with
+# conflicting names and we would get anyway in trouble.
+# So we set it locally: it works but it is not 100% safe.
+#
+USER_INC = -I$(TAO_ROOT)/orbsvcs/orbsvcs/AV
+USER_LIB =
+
+#
+# MODULE CODE DESCRIPTION:
+# ------------------------
+# As a general rule:  public file are "cleaned" and "installed"  
+#                     local (_L) are not "installed".
+
+#
+# C programs (public and local)
+# -----------------------------
+EXECUTABLES     =
+EXECUTABLES_L   = 
+
+#
+# <brief description of xxxxx program>
+xxxxx_OBJECTS   =	
+xxxxx_LDFLAGS   =
+xxxxx_LIBS      =
+
+#
+# special compilation flags for single c sources
+#yyyyy_CFLAGS   = 
+
+#
+# Includes (.h) files (public only)
+# ---------------------------------
+INCLUDES        = bulkDataReceiverImpl.h bulkDataReceiverImpl.i \
+		  bulkDataReceiver.h bulkDataReceiver.i \
+	          bulkDataSender.h bulkDataSender.i \
+		  bulkDataSenderImpl.h bulkDataSenderImpl.i \
+		  bulkDataSenderDefaultCb.h bulkDataCallback.h \
+		  bulkDataFlowConsumer.h bulkDataFlowConsumer.i \
+		  bulkDataFlowProducer.h bulkDataFlowProducer.i \
+		  bulkDataDistributerCb.h \
+		  bulkDataDistributer.h bulkDataDistributer.i \
+		  bulkDataDistributerImpl.h bulkDataDistributerImpl.i
+
+#
+# Libraries (public and local)
+# ----------------------------
+LIBRARIES       = bulkDataCallback bulkDataDistributerLib
+LIBRARIES_L     =
+
+
+#
+# <brief description of lllll library>
+bulkDataCallback_OBJECTS   = bulkDataCallback
+bulkDataCallback_LIBS      = ACSBulkDataError ACSBulkDataStatus archiveevents TAO_AV
+
+bulkDataDistributerLib_OBJECTS   = bulkDataDistributerCb	
+bulkDataDistributerLib_LIBS      = ACSBulkDataError ACSBulkDataStatus bulkDataDistributerStubs bulkDataStubs bulkDataSenderStubs bulkDataReceiverStubs baci ACSErrTypeCORBA TAO_Messaging
+
+#
+# Scripts (public and local)
+# ----------------------------
+SCRIPTS         =
+SCRIPTS_L       =
+
+#
+# TCL scripts (public and local)
+# ------------------------------
+TCL_SCRIPTS     =
+TCL_SCRIPTS_L   =
+
+#
+# Python stuff (public and local)
+# ----------------------------
+PY_SCRIPTS         =
+PY_SCRIPTS_L       =
+
+PY_MODULES         =
+PY_MODULES_L       =
+
+PY_PACKAGES        =
+PY_PACKAGES_L      =
+pppppp_MODULES	   =
+
+#
+# <brief description of tttttt tcl-script>
+tttttt_OBJECTS  =
+tttttt_TCLSH    = 
+tttttt_LIBS     = 
+
+#
+# TCL libraries (public and local)
+# ------------------------------
+TCL_LIBRARIES   =
+TCL_LIBRARIES_L =
+
+#
+# <brief description of tttlll library>
+tttlll_OBJECTS  = 
+
+#
+# Configuration Database Files
+# ----------------------------
+CDB_SCHEMAS = BulkDataReceiver BulkDataSender BulkDataDistributer
+
+# 
+# IDL Files and flags
+# 
+IDL_FILES = bulkData bulkDataReceiver bulkDataSender bulkDataDistributer
+IDL_TAO_FLAGS =
+bulkDataStubs_LIBS = TAO_AV
+bulkDataReceiverStubs_LIBS = baciStubs ACSBulkDataError ACSBulkDataStatus bulkDataStubs
+bulkDataSenderStubs_LIBS = baciStubs ACSBulkDataError bulkDataStubs bulkDataReceiverStubs
+bulkDataDistributerStubs_LIBS = baciStubs ACSErrTypeCommon ACSBulkDataError bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
+
+#ACS Error System target
+ACSERRDEF = ACSBulkDataError ACSBulkDataStatus
+
+#
+# Jarfiles and their directories
+#
+JARFILES= 
+jjj_DIRS=
+jjj_EXTRAS= 
+#
+# java sources in Jarfile on/off
+DEBUG=on 
+#
+# ACS XmlIdl generation on/off
+#
+XML_IDL= 
+#
+# Java Component Helper Classes generation on/off
+#
+COMPONENT_HELPERS=
+#
+# Java Entity Classes generation on/off
+#
+XSDBIND=
+#
+# Schema Config files for the above
+#
+XSDBIND_INCLUDE=
+# man pages to be done
+# --------------------
+MANSECTIONS =
+MAN1 =
+MAN3 =
+MAN5 =
+MAN7 =
+MAN8 =
+
+#
+# local man pages
+# ---------------
+MANl =
+
+#
+# ASCII file to be converted into Framemaker-MIF
+# --------------------
+ASCII_TO_MIF = 
+
+#
+# other files to be installed
+#----------------------------
+INSTALL_FILES =
+#
+# list of all possible C-sources (used to create automatic dependencies)
+# ------------------------------
+CSOURCENAMES = \
+	$(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
+	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
+
+#
+#>>>>> END OF standard rules
+
+#
+# INCLUDE STANDARDS
+# -----------------
+MAKEDIRTMP := $(shell searchFile include/acsMakefile)
+ifneq ($(MAKEDIRTMP),\#error\#)
+   MAKEDIR := $(MAKEDIRTMP)/include
+   include $(MAKEDIR)/acsMakefile
+endif
+
+
+#
+# TARGETS
+# -------
+all:	do_all
+	@echo " . . . 'all' done" 
+
+clean : clean_all
+	$(RM) *~ ../include/*~ ../dbl/*~ ../idl/*~ ../*~ ../../*~ core*
+	@echo " . . . clean done"
+
+clean_dist : clean_all clean_dist_all 
+	@echo " . . . clean_dist done"
+
+man   : do_man 
+	@echo " . . . man page(s) done"
+
+install : install_all
+	@echo " . . . installation done"
+
+db : db_all
+	@echo " . . . ../DB done"
+
+
+#___oOo___

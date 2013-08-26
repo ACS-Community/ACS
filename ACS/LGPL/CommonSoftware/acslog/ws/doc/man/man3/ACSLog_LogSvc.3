@@ -1,0 +1,80 @@
+.TH "ACSLog::LogSvc" 3 "19 Sep 2001" "ACSLogService" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ACSLog::LogSvc \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <acslog.idl>\fP
+.PP
+.SS "Public Methods"
+
+.in +1c
+.ti -1c
+.RI "void \fBlogTrace\fP (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.br
+.ti -1c
+.RI "void \fBlogDebug\fP (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.br
+.ti -1c
+.RI "void \fBlogInfo\fP (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.br
+.ti -1c
+.RI "void \fBlogNotice\fP (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.br
+.ti -1c
+.RI "void \fBlogWarning\fP (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.br
+.ti -1c
+.RI "void \fBlogError\fP (in ACSErr::Completion c)  raises (ACSErr::ACSException)"
+.br
+.ti -1c
+.RI "void \fBlogCritical\fP (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.br
+.ti -1c
+.RI "void \fBlogAlert\fP (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.br
+.ti -1c
+.RI "void \fBlogEmergency\fP (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.br
+.ti -1c
+.RI "void \fBlogXML\fP (in \fBXMLstring\fP xml)  raises (ACSErr::ACSException)"
+.br
+.in -1c
+.SH "MEMBER FUNCTION DOCUMENTATION"
+.PP 
+.SS "void ACSLog::LogSvc::logTrace (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.PP
+logs TRACE message.  If all rtCont string members are NULL than no run-time context information will be logged. If all srcInfo string members are NULL than no source information will be logged. 
+.SS "void ACSLog::LogSvc::logDebug (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.PP
+logs DEBUG message. If all rtCont string members are NULL than no run-time context information will be logged. If all srcInfo string members are NULL than no source information will be logged. 
+.SS "void ACSLog::LogSvc::logInfo (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.PP
+logs INFO message. If all rtCont string members are NULL than no run-time context information will be logged. If all srcInfo string members are NULL than no source information will be logged. 
+.SS "void ACSLog::LogSvc::logNotice (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.PP
+logs NOTICE message. If all rtCont string members are NULL than no run-time context information will be logged. If all srcInfo string members are NULL than no source information will be logged. 
+.SS "void ACSLog::LogSvc::logWarning (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.PP
+logs WARNING message. If all rtCont string members are NULL than no run-time context information will be logged. If all srcInfo string members are NULL than no source information will be logged. 
+.SS "void ACSLog::LogSvc::logError (in ACSErr::Completion c)  raises (ACSErr::ACSException)"
+.PP
+logs error stack (trace) of the Completion. 
+.SS "void ACSLog::LogSvc::logCritical (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.PP
+logs CRITICAL message. If all rtCont string members are NULL than no run-time context information will be logged. If all srcInfo string members are NULL than no source information will be logged. 
+.SS "void ACSLog::LogSvc::logAlert (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.PP
+logs ALERT message. If all rtCont string members are NULL than no run-time context information will be logged. If all srcInfo string members are NULL than no source information will be logged. 
+.SS "void ACSLog::LogSvc::logEmergency (in \fBTimeStamp\fP time, in string msg, in \fBRTContext\fP rtCont, in \fBSourceInfo\fP srcInfo, in \fBNVPairSeq\fP data)  raises (ACSErr::ACSException)"
+.PP
+logs EMERGENCY message. If all rtCont string members are NULL than no run-time context information will be logged. If all srcInfo string members are NULL than no source information will be logged. 
+.SS "void ACSLog::LogSvc::logXML (in \fBXMLstring\fP xml)  raises (ACSErr::ACSException)"
+.PP
+logs XML message. If xml is not XML string than exception will be thrown (NOT implemnted yet!). 
+
+.SH "AUTHOR"
+.PP 
+Generated automatically by Doxygen for ACSLogService from the source code.

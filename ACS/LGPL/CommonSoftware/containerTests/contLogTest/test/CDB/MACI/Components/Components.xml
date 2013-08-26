@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <_ Name="TESTLOG1"    Code="alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompHelper"
+		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
+                            Container="myDefaultJavaTestContainer" ImplLang="java" />
+      <_ Name="TESTLOG2"    Code="alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompHelper"
+		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
+                            Container="frodoContainer" ImplLang="java" />
+      <_ Name="TESTLOG3"    Code="contLogTestImpl"
+		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
+                            Container="myDefaultCppTestContainer" ImplLang="cpp" />
+      <_ Name="TESTLOG4"    Code="contLogTestImpl"
+		             		Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
+                            Container="bilboContainer"
+                             ImplLang="cpp" />
+      <_ Name="TESTLOG5" Code="pyContLogTest.TestLogLevelsComp" 
+                                        Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
+                            Container="myDefaultPyTestContainer"  ImplLang="py" />
+      <_ Name="TESTLOG6" Code="pyContLogTest.TestLogLevelsComp"
+                                        Type="IDL:alma/contLogTest/TestLogLevelsComp:1.0"
+                            Container="aragornContainer"  ImplLang="py" />
+</Components>

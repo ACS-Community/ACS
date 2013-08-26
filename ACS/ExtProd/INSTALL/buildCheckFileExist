@@ -1,0 +1,45 @@
+#!/bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# buildCheckFileExist
+#
+# "@(#) $Id: buildCheckFileExist,v 1.3 2007/09/06 07:58:55 eallaert Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  14/11/96  created (NOV96) 
+# ahuxley   12/10/99  OCT99 - changed to Korne Shell
+# sturolla  12/10/99  OCT99 - changed to bourne shell
+
+#************************************************************************
+#   NAME
+#   buildCheckFileExist - check that a file exists 
+#
+#   SYNOPSIS
+#   buildCheckFileExist <file>
+#
+#   DESCRIPTION
+#   This script is used by buildTcltk and buildGNU to check
+#   that a file exists. In order not to interrupt xargs, it returns always  
+#   SUCCESS. The produced output is:
+#    if file exists:     ".\c"
+#    if not:             "\n  not existing: <file> \n" 
+#   FILES
+#
+#   ENVIRONMENT
+#
+#------------------------------------------------------------------------
+#
+
+if [ -d $1 -o  -f $1 ]
+then 
+    echo -e ".\c"
+else 
+    echo "" 
+    echo "  not existing: $1 " 
+fi
+
+exit 
+#
+#___oOo___

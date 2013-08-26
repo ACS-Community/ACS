@@ -1,0 +1,3 @@
+tat_error: exec make clean all  MAKE_FROMTAT=defined >>& /tmp/make.log  has failed: make: *** No rule to make target `clean'.  Stop..
+Releasing environments. Please wait ...
+tat makeEnv RC: 1

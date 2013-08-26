@@ -1,0 +1,143 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+#ifndef _JCONTTEST_IDL_
+#define _JCONTTEST_IDL_
+
+#include <acscommon.idl>
+#include <acscomponent.idl>
+#include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
+
+// Module for test components. 
+// These are meant more for ACS internal tests rather than for demo purposes,
+// although they should be instructive at the same time.
+// 
+module jconttest
+{
+	interface ContainerServicesTester : ACS::ACSComponent
+	{
+		boolean testComponentName(out string compName);
+		boolean testStateManager(out string currStateName);
+
+		boolean testGetDynamicDummyComponent(out string compName); 
+		
+		/**
+		 * Will retrieve component 'DefaultDummyComp', then wrap the comp reference 
+		 * using ContainerServices#getReferenceWithCustomClientSideTimeout to assign a 10 second timeout,
+		 * and will call method 'DummyComponent#callThatTakesSomeTime' to check the timeout.
+		 * @return true if the test passed.
+		 */
+		boolean testGetReferenceWithCustomClientSideTimeout(); 
+		
+		boolean testGetDefaultIdentifierArchive(out string compName);
+
+		boolean testGetThreadFactory(in long numThreads, in long busyLoopCount, in boolean randomize);
+		
+		/**
+		 * Will call ContainerServices#findComponents(null, "IDL:alma/jconttest/DummyComponent:1.0") 
+		 * and return the resulting list of configured dummy comp instance curls.
+		 */
+		void testFindDummyComponentsByType(out ACS::stringSeq curls) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+		
+		/**
+		 * Will obtain a reference to a component given by curl and/or compType, 
+		 * which will run in the same container in which the component identified by targetCurl runs
+		 * or is defined to run in.
+		 */
+		void testGetCollocatedComponent(in string curl, in string compType, in string targetCurl) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+		
+		/**
+		 * Will obtain a non-sticky reference to the given component using the ContainerServices.
+		 * This method throws an exception if the reference can't be obtained, which is expected to happen if the 
+		 * other component has not already been activated by some other client.
+		 * If the parameter 'release' is true, then the non-sticky component will be released; that call is expected to 
+		 * have no effect (aside from some log message).
+		 */
+		void testGetComponentNonSticky(in string curl, in boolean release) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+		
+	};
+
+	
+	interface DummyComponent : ACS::ACSComponent
+	{
+		void dummyComponentsCanDoCloseToNothing();
+		void callThatTakesSomeTime(in long timeInMillisec);
+	};
+
+	/**
+	 * To be used for tests that require a different component type (e.g. to avoid conflicts in the CDB).
+	 */
+	interface DummyComponent2 : DummyComponent
+	{
+	};
+
+
+	/**
+	 * A component that calls DummyComponent, to allow testing of timeouts where the client is a container and not a JUnit test.
+	 */
+	interface DummyComponentWrapper : ACS::ACSComponent
+	{
+		/**
+		 * Gets the default "DummyComponent" and calls "callThatTakesSomeTime" with the given positive "timeInMillisec".
+		 * If the parameter "timeInMillisec" is negative, then a time value greater than the effective corba system-level timeout will be used.
+		 * Returns true if a timeout occurred, otherwise false.
+		 */
+		boolean callDummyComponentWithTime(in long timeInMillisec) 
+			raises (ACSErrTypeCommon::CouldntPerformActionEx);
+	};
+
+
+	interface DataReceiver : ACS::ACSComponent
+	{
+		void storeThis(in string data);
+		double stop();
+	};
+
+
+	/**
+	 * A component used to define and test IDL data with illegal null values.
+	 */
+	interface ComponentWithBadNulls : ACS::ACSComponent
+	{
+		enum Enum1 { MY_ONLY_VALUE }; 
+
+		struct Struct1 
+		{
+			string mystring;
+			Enum1 myenum1;
+		};
+		
+		struct Struct2
+		{
+			Struct1 mystruct1;
+			sequence < Struct1 > seqOfStruct1;
+		};
+		
+		Struct1 methodWithReturnData(in string instring, in Struct1 instruct1,
+						inout string inoutstring, inout Struct1 inoutstruct1, 
+						out string outstring, out Struct1 outstruct1);
+	};
+	
+};
+
+#endif 

@@ -1,0 +1,1200 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: Replacing Match,  Next: Entire Match Data,  Prev: Simple Match Data,  Up: Match Data
+
+Replacing the Text That Matched
+-------------------------------
+
+   This function replaces the text matched by the last search with
+REPLACEMENT.
+
+ - Function: replace-match REPLACEMENT &optional FIXEDCASE LITERAL
+     This function replaces the buffer text matched by the last search,
+     with REPLACEMENT.  It applies only to buffers; you can't use
+     `replace-match' to replace a substring found with `string-match'.
+
+     If FIXEDCASE is non-`nil', then the case of the replacement text
+     is not changed; otherwise, the replacement text is converted to a
+     different case depending upon the capitalization of the text to be
+     replaced.  If the original text is all upper case, the replacement
+     text is converted to upper case.  If the first word of the
+     original text is capitalized, then the first word of the
+     replacement text is capitalized.  If the original text contains
+     just one word, and that word is a capital letter, `replace-match'
+     considers this a capitalized first word rather than all upper case.
+
+     If LITERAL is non-`nil', then REPLACEMENT is inserted exactly as
+     it is, the only alterations being case changes as needed.  If it
+     is `nil' (the default), then the character `\' is treated
+     specially.  If a `\' appears in REPLACEMENT, then it must be part
+     of one of the following sequences:
+
+    `\&'
+          `\&' stands for the entire text being replaced.
+
+    `\N'
+          `\N' stands for the text that matched the Nth subexpression
+          in the original regexp.  Subexpressions are those expressions
+          grouped inside of `\(...\)'.  N is a digit.
+
+    `\\'
+          `\\' stands for a single `\' in the replacement text.
+
+     `replace-match' leaves point at the end of the replacement text,
+     and returns `t'.
+
+
+File: elisp,  Node: Entire Match Data,  Next: Saving Match Data,  Prev: Replacing Match,  Up: Match Data
+
+Accessing the Entire Match Data
+-------------------------------
+
+   The functions `match-data' and `set-match-data' read or write the
+entire match data, all at once.
+
+ - Function: match-data
+     This function returns a newly constructed list containing all the
+     information on what text the last search matched.  Element zero is
+     the position of the beginning of the match for the whole
+     expression; element one is the position of the end of the match
+     for the expression.  The next two elements are the positions of
+     the beginning and end of the match for the first subexpression,
+     and so on.  In general, element number 2N corresponds to
+     `(match-beginning N)'; and element number 2N + 1 corresponds to
+     `(match-end N)'.
+
+     All the elements are markers or `nil' if matching was done on a
+     buffer, and all are integers or `nil' if matching was done on a
+     string with `string-match'.  (In Emacs 18 and earlier versions,
+     markers were used even for matching on a string, except in the case
+     of the integer 0.)
+
+     As always, there must be no possibility of intervening searches
+     between the call to a search function and the call to `match-data'
+     that is intended to access the match data for that search.
+
+          (match-data)
+               =>  (#<marker at 9 in foo>
+                    #<marker at 17 in foo>
+                    #<marker at 13 in foo>
+                    #<marker at 17 in foo>)
+
+ - Function: set-match-data MATCH-LIST
+     This function sets the match data from the elements of MATCH-LIST,
+     which should be a list that was the value of a previous call to
+     `match-data'.
+
+     If MATCH-LIST refers to a buffer that doesn't exist, you don't get
+     an error; that sets the match data in a meaningless but harmless
+     way.
+
+     `store-match-data' is an alias for `set-match-data'.
+
+
+File: elisp,  Node: Saving Match Data,  Prev: Entire Match Data,  Up: Match Data
+
+Saving and Restoring the Match Data
+-----------------------------------
+
+   All asynchronous process functions (filters and sentinels) and
+functions that use `recursive-edit' should save and restore the match
+data if they do a search or if they let the user type arbitrary
+commands.  Saving the match data is useful in other cases as
+well--whenever you want to access the match data resulting from an
+earlier search, notwithstanding another intervening search.
+
+   This example shows the problem that can arise if you fail to attend
+to this requirement:
+
+     (re-search-forward "The \\(cat \\)")
+          => 48
+     (foo)                   ; Perhaps `foo' does
+                             ;   more searching.
+     (match-end 0)
+          => 61              ; Unexpected result---not 48!
+
+   In Emacs versions 19 and later, you can save and restore the match
+data with `save-match-data':
+
+ - Special Form: save-match-data BODY...
+     This special form executes BODY, saving and restoring the match
+     data around it.  This is useful if you wish to do a search without
+     altering the match data that resulted from an earlier search.
+
+   You can use `set-match-data' together with `match-data' to imitate
+the effect of the special form `save-match-data'.  This is useful for
+writing code that can run in Emacs 18.  Here is how:
+
+     (let ((data (match-data)))
+       (unwind-protect
+           ...   ; May change the original match data.
+         (set-match-data data)))
+
+
+File: elisp,  Node: Searching and Case,  Next: Standard Regexps,  Prev: Match Data,  Up: Searching and Matching
+
+Searching and Case
+==================
+
+   By default, searches in Emacs ignore the case of the text they are
+searching through; if you specify searching for `FOO', then `Foo' or
+`foo' is also considered a match.  Regexps, and in particular character
+sets, are included: thus, `[aB]' would match `a' or `A' or `b' or `B'.
+
+   If you do not want this feature, set the variable `case-fold-search'
+to `nil'.  Then all letters must match exactly, including case.  This
+is a per-buffer-local variable; altering the variable affects only the
+current buffer.  (*Note Intro to Buffer-Local::.)  Alternatively, you
+may change the value of `default-case-fold-search', which is the
+default value of `case-fold-search' for buffers that do not override it.
+
+   Note that the user-level incremental search feature handles case
+distinctions differently.  When given a lower case letter, it looks for
+a match of either case, but when given an upper case letter, it looks
+for an upper case letter only.  But this has nothing to do with the
+searching functions Lisp functions use.
+
+ - User Option: case-replace
+     This variable determines whether `query-replace' should preserve
+     case in replacements.  If the variable is `nil', then
+     `replace-match' should not try to convert case.
+
+ - User Option: case-fold-search
+     This buffer-local variable determines whether searches should
+     ignore case.  If the variable is `nil' they do not ignore case;
+     otherwise they do ignore case.
+
+ - Variable: default-case-fold-search
+     The value of this variable is the default value for
+     `case-fold-search' in buffers that do not override it.  This is the
+     same as `(default-value 'case-fold-search)'.
+
+
+File: elisp,  Node: Standard Regexps,  Prev: Searching and Case,  Up: Searching and Matching
+
+Standard Regular Expressions Used in Editing
+============================================
+
+   This section describes some variables that hold regular expressions
+used for certain purposes in editing:
+
+ - Variable: page-delimiter
+     This is the regexp describing line-beginnings that separate pages.
+     The default value is `"^\014"' (i.e., `"^^L"' or `"^\C-l"').
+
+ - Variable: paragraph-separate
+     This is the regular expression for recognizing the beginning of a
+     line that separates paragraphs.  (If you change this, you may have
+     to change `paragraph-start' also.)  The default value is `"^[
+     \t\f]*$"', which is a line that consists entirely of spaces, tabs,
+     and form feeds.
+
+ - Variable: paragraph-start
+     This is the regular expression for recognizing the beginning of a
+     line that starts *or* separates paragraphs.  The default value is
+     `"^[ \t\n\f]"', which matches a line starting with a space, tab,
+     newline, or form feed.
+
+ - Variable: sentence-end
+     This is the regular expression describing the end of a sentence.
+     (All paragraph boundaries also end sentences, regardless.)  The
+     default value is:
+
+          "[.?!][]\"')}]*\\($\\|\t\\| \\)[ \t\n]*"
+
+     This means a period, question mark or exclamation mark, followed
+     by a closing brace, followed by tabs, spaces or new lines.
+
+     For a detailed explanation of this regular expression, see *Note
+     Regexp Example::.
+
+
+File: elisp,  Node: Syntax Tables,  Next: Abbrevs,  Prev: Searching and Matching,  Up: Top
+
+Syntax Tables
+*************
+
+   A "syntax table" specifies the syntactic textual function of each
+character.  This information is used by the parsing commands, the
+complex movement commands, and others to determine where words, symbols,
+and other syntactic constructs begin and end.  The current syntax table
+controls the meaning of the word motion functions (*note Word Motion::.)
+and the list motion functions (*note List Motion::.) as well as the
+functions in this chapter.
+
+* Menu:
+
+* Basics: Syntax Basics.     Basic concepts of syntax tables.
+* Desc: Syntax Descriptors.  How characters are classified.
+* Syntax Table Functions::   How to create, examine and alter syntax tables.
+* Motion and Syntax::	     Moving over characters with certain syntaxes.
+* Parsing Expressions::      Parsing balanced expressions
+                                using the syntax table.
+* Standard Syntax Tables::   Syntax tables used by various major modes.
+* Syntax Table Internals::   How syntax table information is stored.
+
+
+File: elisp,  Node: Syntax Basics,  Next: Syntax Descriptors,  Up: Syntax Tables
+
+Syntax Table Concepts
+=====================
+
+   A "syntax table" provides Emacs with the information that determines
+the syntactic use of each character in a buffer.  This information is
+used by the parsing commands, the complex movement commands, and others
+to determine where words, symbols, and other syntactic constructs begin
+and end.  The current syntax table controls the meaning of the word
+motion functions (*note Word Motion::.) and the list motion functions
+(*note List Motion::.) as well as the functions in this chapter.
+
+   A syntax table is a vector of 256 elements; it contains one entry for
+each of the 256 ASCII characters of an 8-bit byte.  Each element is an
+integer that encodes the syntax of the character in question.
+
+   Syntax tables are used only for moving across text, not for the Emacs
+Lisp reader.  Emacs Lisp uses built-in syntactic rules when reading Lisp
+expressions, and these rules cannot be changed.
+
+   Each buffer has its own major mode, and each major mode has its own
+idea of the syntactic class of various characters.  For example, in Lisp
+mode, the character `;' begins a comment, but in C mode, it terminates
+a statement.  To support these variations, Emacs makes the choice of
+syntax table local to each buffer.  Typically, each major mode has its
+own syntax table and installs that table in each buffer which uses that
+mode.  Changing this table alters the syntax in all those buffers as
+well as in any buffers subsequently put in that mode.  Occasionally
+several similar modes share one syntax table.  *Note Example Major
+Modes::, for an example of how to set up a syntax table.
+
+   A syntax table can inherit the data for some characters from the
+standard syntax table, while specifying other characters itself.  The
+"inherit" syntax class means "inherit this character's syntax from the
+standard syntax table."  Most major modes' syntax tables inherit the
+syntax of character codes 0 through 31 and 128 through 255.  This is
+useful with character sets such as ISO Latin-1 that have additional
+alphabetic characters in the range 128 to 255.  Just changing the
+standard syntax for these characters affects all major modes.
+
+ - Function: syntax-table-p OBJECT
+     This function returns `t' if OBJECT is a vector of length 256
+     elements.  This means that the vector may be a syntax table.
+     However, according to this test, any vector of length 256 is
+     considered to be a syntax table, no matter what its contents.
+
+
+File: elisp,  Node: Syntax Descriptors,  Next: Syntax Table Functions,  Prev: Syntax Basics,  Up: Syntax Tables
+
+Syntax Descriptors
+==================
+
+   This section describes the syntax classes and flags that denote the
+syntax of a character, and how they are represented as a "syntax
+descriptor", which is a Lisp string that you pass to
+`modify-syntax-entry' to specify the desired syntax.
+
+   Emacs defines a number of "syntax classes".  Each syntax table puts
+each character into one class.  There is no necessary relationship
+between the class of a character in one syntax table and its class in
+any other table.
+
+   Each class is designated by a mnemonic character which serves as the
+name of the class when you need to specify a class.  Usually the
+designator character is one which is frequently put in that class;
+however, its meaning as a designator is unvarying and independent of
+what syntax that character currently has.
+
+   A syntax descriptor is a Lisp string which specifies a syntax class,
+a matching character (used only for the parenthesis classes) and flags.
+The first character is the designator for a syntax class.  The second
+character is the character to match; if it is unused, put a space there.
+Then come the characters for any desired flags.  If no matching
+character or flags are needed, one character is sufficient.
+
+   For example, the descriptor for the character `*' in C mode is
+`. 23' (i.e., punctuation, matching character slot unused, second
+character of a comment-starter, first character of an comment-ender),
+and the entry for `/' is `. 14' (i.e., punctuation, matching character
+slot unused, first character of a comment-starter, second character of
+a comment-ender).
+
+* Menu:
+
+* Syntax Class Table::      Table of syntax classes.
+* Syntax Flags::            Additional flags each character can have.
+
+
+File: elisp,  Node: Syntax Class Table,  Next: Syntax Flags,  Up: Syntax Descriptors
+
+Table of Syntax Classes
+-----------------------
+
+   Here is a table syntax classes, the characters that stand for them,
+their meanings, and examples of their use.
+
+ - Syntax class: whitespace character
+     "Whitespace characters" (designated with ` ' or `-') separate
+     symbols and words from each other.  Typically, whitespace
+     characters have no other syntactic significance, and multiple
+     whitespace characters are syntactically equivalent to a single
+     one.  Space, tab, newline and formfeed are almost always
+     classified as whitespace.
+
+ - Syntax class: word constituent
+     "Word constituents" (designated with `w') are parts of normal
+     English words and are typically used in variable and command names
+     in programs.  All upper and lower case letters and the digits are
+     typically word constituents.
+
+ - Syntax class: symbol constituent
+     "Symbol constituents" (designated with `_') are the extra
+     characters that are used in variable and command names along with
+     word constituents.  For example, the symbol constituents class is
+     used in Lisp mode to indicate that certain characters may be part
+     of symbol names even though they are not part of English words.
+     These characters are `$&*+-_<>'.  In standard C, the only
+     non-word-constituent character that is valid in symbols is
+     underscore (`_').
+
+ - Syntax class: punctuation character
+     "Punctuation characters" (`.') are those characters that are used
+     as punctuation in English, or are used in some way in a programming
+     language to separate symbols from one another.  Most programming
+     language modes, including Emacs Lisp mode, have no characters in
+     this class since the few characters that are not symbol or word
+     constituents all have other uses.
+
+ - Syntax class: open parenthesis character
+ - Syntax class: close parenthesis character
+     Open and close "parenthesis characters" are characters used in
+     dissimilar pairs to surround sentences or expressions.  Such a
+     grouping is begun with an open parenthesis character and
+     terminated with a close.  Each open parenthesis character matches
+     a particular close parenthesis character, and vice versa.
+     Normally, Emacs indicates momentarily the matching open
+     parenthesis when you insert a close parenthesis.  *Note Blinking::.
+
+     The class of open parentheses is designated with `(', and that of
+     close parentheses with `)'.
+
+     In English text, and in C code, the parenthesis pairs are `()',
+     `[]', and `{}'.  In Emacs Lisp, the delimiters for lists and
+     vectors (`()' and `[]') are classified as parenthesis characters.
+
+ - Syntax class: string quote
+     "String quote characters" (designated with `"') are used in many
+     languages, including Lisp and C, to delimit string constants.  The
+     same string quote character appears at the beginning and the end
+     of a string.  Such quoted strings do not nest.
+
+     The parsing facilities of Emacs consider a string as a single
+     token.  The usual syntactic meanings of the characters in the
+     string are suppressed.
+
+     The Lisp modes have two string quote characters: double-quote (`"')
+     and vertical bar (`|').  `|' is not used in Emacs Lisp, but it is
+     used in Common Lisp.  C also has two string quote characters:
+     double-quote for strings, and single-quote (`'') for character
+     constants.
+
+     English text has no string quote characters because English is not
+     a programming language.  Although quotation marks are used in
+     English, we do not want them to turn off the usual syntactic
+     properties of other characters in the quotation.
+
+ - Syntax class: escape
+     An "escape character" (designated with `\') starts an escape
+     sequence such as is used in C string and character constants.  The
+     character `\' belongs to this class in both C and Lisp.  (In C, it
+     is used thus only inside strings, but it turns out to cause no
+     trouble to treat it this way throughout C code.)
+
+     Characters in this class count as part of words if
+     `words-include-escapes' is non-`nil'.  *Note Word Motion::.
+
+ - Syntax class: character quote
+     A "character quote character" (designated with `/') quotes the
+     following character so that it loses its normal syntactic meaning.
+     This differs from an escape character in that only the character
+     immediately following is ever affected.
+
+     Characters in this class count as part of words if
+     `words-include-escapes' is non-`nil'.  *Note Word Motion::.
+
+     This class is not currently used in any standard Emacs modes.
+
+ - Syntax class: paired delimiter
+     "Paired delimiter characters" (designated with `$') are like
+     string quote characters except that the syntactic properties of the
+     characters between the delimiters are not suppressed.  Only TeX
+     mode uses a paired identical delimiter presently--the `$' that both
+     enters and leaves math mode.
+
+ - Syntax class: expression prefix
+     An "expression prefix operator" (designated with `'') is used for
+     syntactic operators that are part of an expression if they appear
+     next to one.  These characters in Lisp include the apostrophe, `''
+     (used for quoting), the comma, `,' (used in macros), and `#' (used
+     in the read syntax for certain data types).
+
+ - Syntax class: comment starter
+ - Syntax class: comment ender
+     The "comment starter" and "comment ender" characters are used in
+     various languages to delimit comments.  These classes are
+     designated with `<' and `>', respectively.
+
+     English text has no comment characters.  In Lisp, the semicolon
+     (`;') starts a comment and a newline or formfeed ends one.
+
+ - Syntax class: inherit
+     This syntax class does not specify a syntax.  It says to look in
+     the standard syntax table to find the syntax of this character.
+     The designator for this syntax code is `@'.
+
+
+File: elisp,  Node: Syntax Flags,  Prev: Syntax Class Table,  Up: Syntax Descriptors
+
+Syntax Flags
+------------
+
+   In addition to the classes, entries for characters in a syntax table
+can include flags.  There are six possible flags, represented by the
+characters `1', `2', `3', `4', `b' and `p'.
+
+   All the flags except `p' are used to describe multi-character
+comment delimiters.  The digit flags indicate that a character can
+*also* be part of a comment sequence, in addition to the syntactic
+properties associated with its character class.  The flags are
+independent of the class and each other for the sake of characters such
+as `*' in C mode, which is a punctuation character, *and* the second
+character of a start-of-comment sequence (`/*'), *and* the first
+character of an end-of-comment sequence (`*/').
+
+   The flags for a character C are:
+
+   * `1' means C is the start of a two-character comment start sequence.
+
+   * `2' means C is the second character of such a sequence.
+
+   * `3' means C is the start of a two-character comment end sequence.
+
+   * `4' means C is the second character of such a sequence.
+
+   * `b' means that C as a comment delimiter belongs to the alternative
+     "b" comment style.
+
+     Emacs supports two comment styles simultaneously in any one syntax
+     table.  This is for the sake of C++.  Each style of comment syntax
+     has its own comment-start sequence and its own comment-end
+     sequence.  Each comment must stick to one style or the other;
+     thus, if it starts with the comment-start sequence of style "b",
+     it must also end with the comment-end sequence of style "b".
+
+     The two comment-start sequences must begin with the same
+     character; only the second character may differ.  Mark the second
+     character of the "b"-style comment start sequence with the `b'
+     flag.
+
+     A comment-end sequence (one or two characters) applies to the "b"
+     style if its first character has the `b' flag set; otherwise, it
+     applies to the "a" style.
+
+     The appropriate comment syntax settings for C++ are as follows:
+
+    `/'
+          `124b'
+
+    `*'
+          `23'
+
+    newline
+          `>b'
+
+     Thus `/*' is a comment-start sequence for "a" style, `//' is a
+     comment-start sequence for "b" style, `*/' is a comment-end
+     sequence for "a" style, and newline is a comment-end sequence for
+     "b" style.
+
+   * `p' identifies an additional "prefix character" for Lisp syntax.
+     These characters are treated as whitespace when they appear between
+     expressions.  When they appear within an expression, they are
+     handled according to their usual syntax codes.
+
+     The function `backward-prefix-chars' moves back over these
+     characters, as well as over characters whose primary syntax class
+     is prefix (`'').  *Note Motion and Syntax::.
+
+
+File: elisp,  Node: Syntax Table Functions,  Next: Motion and Syntax,  Prev: Syntax Descriptors,  Up: Syntax Tables
+
+Syntax Table Functions
+======================
+
+   In this section we describe functions for creating, accessing and
+altering syntax tables.
+
+ - Function: make-syntax-table
+     This function creates a new syntax table.  Character codes 0
+     through 31, and 128 through 255, are set up to inherit from the
+     standard syntax table.  The other character codes are set up by
+     copying what the standard syntax table says about them.
+
+     Most major mode syntax tables are created in this way.
+
+ - Function: copy-syntax-table &optional TABLE
+     This function constructs a copy of TABLE and returns it.  If TABLE
+     is not supplied (or is `nil'), it returns a copy of the current
+     syntax table.  Otherwise, an error is signaled if TABLE is not a
+     syntax table.
+
+ - Command: modify-syntax-entry CHAR SYNTAX-DESCRIPTOR &optional TABLE
+     This function sets the syntax entry for CHAR according to
+     SYNTAX-DESCRIPTOR.  The syntax is changed only for TABLE, which
+     defaults to the current buffer's syntax table, and not in any
+     other syntax table.  The argument SYNTAX-DESCRIPTOR specifies the
+     desired syntax; this is a string beginning with a class designator
+     character, and optionally containing a matching character and
+     flags as well.  *Note Syntax Descriptors::.
+
+     This function always returns `nil'.  The old syntax information in
+     the table for this character is discarded.
+
+     An error is signaled if the first character of the syntax
+     descriptor is not one of the twelve syntax class designator
+     characters.  An error is also signaled if CHAR is not a character.
+
+     Examples:
+
+          ;; Put the space character in class whitespace.
+          (modify-syntax-entry ?\  " ")
+               => nil
+          
+          ;; Make `$' an open parenthesis character,
+          ;;   with `^' as its matching close.
+          (modify-syntax-entry ?$ "(^")
+               => nil
+          
+          ;; Make `^' a close parenthesis character,
+          ;;   with `$' as its matching open.
+          (modify-syntax-entry ?^ ")$")
+               => nil
+          
+          ;; Make `/' a punctuation character,
+          ;;   the first character of a start-comment sequence,
+          ;;   and the second character of an end-comment sequence.
+          ;;   This is used in C mode.
+          (modify-syntax-entry ?/ ".13")
+               => nil
+
+ - Function: char-syntax CHARACTER
+     This function returns the syntax class of CHARACTER, represented
+     by its mnemonic designator character.  This *only* returns the
+     class, not any matching parenthesis or flags.
+
+     An error is signaled if CHAR is not a character.
+
+     The following examples apply to C mode.  The first example shows
+     that the syntax class of space is whitespace (represented by a
+     space).  The second example shows that the syntax of `/' is
+     punctuation.  This does not show the fact that it is also part of
+     comment start and end sequence.  The third example shows that open
+     parenthesis is in the class of open parentheses.  This does not
+     show the fact that it has a matching character, `)'.
+
+          (char-to-string (char-syntax ?\ ))
+               => " "
+          
+          (char-to-string (char-syntax ?/))
+               => "."
+          
+          (char-to-string (char-syntax ?\())
+               => "("
+
+ - Function: set-syntax-table TABLE
+     This function makes TABLE the syntax table for the current buffer.
+     It returns TABLE.
+
+ - Function: syntax-table
+     This function returns the current syntax table, which is the table
+     for the current buffer.
+
+
+File: elisp,  Node: Motion and Syntax,  Next: Parsing Expressions,  Prev: Syntax Table Functions,  Up: Syntax Tables
+
+Motion and Syntax
+=================
+
+   This section describes functions for moving across characters in
+certain syntax classes.  None of these functions exists in Emacs
+version 18 or earlier.
+
+ - Function: skip-syntax-forward SYNTAXES &optional LIMIT
+     This function moves point forward across characters having syntax
+     classes mentioned in SYNTAXES.  It stops when it encounters the
+     end of the buffer, or position LIM (if specified), or a character
+     it is not supposed to skip.
+
+ - Function: skip-syntax-backward SYNTAXES &optional LIMIT
+     This function moves point backward across characters whose syntax
+     classes are mentioned in SYNTAXES.  It stops when it encounters
+     the beginning of the buffer, or position LIM (if specified), or a
+     character it is not supposed to skip.
+
+ - Function: backward-prefix-chars
+     This function moves point backward over any number of characters
+     with expression prefix syntax.  This includes both characters in
+     the expression prefix syntax class, and characters with the `p'
+     flag.
+
+
+File: elisp,  Node: Parsing Expressions,  Next: Standard Syntax Tables,  Prev: Motion and Syntax,  Up: Syntax Tables
+
+Parsing Balanced Expressions
+============================
+
+   Here are several functions for parsing and scanning balanced
+expressions, also known as "sexps", in which parentheses match in
+pairs.  The syntax table controls the interpretation of characters, so
+these functions can be used for Lisp expressions when in Lisp mode and
+for C expressions when in C mode.  *Note List Motion::, for convenient
+higher-level functions for moving over balanced expressions.
+
+ - Function: parse-partial-sexp START LIMIT &optional TARGET-DEPTH
+          STOP-BEFORE STATE STOP-COMMENT
+     This function parses a sexp in the current buffer starting at
+     START, not scanning past LIMIT.  It stops at LIMIT or when certain
+     criteria described below are met, and sets to the location where
+     parsing stops.  It returns a value describing the status of the
+     parse at the point where it stops.
+
+     If STATE is `nil', START is assumed to be at the top level of
+     parenthesis structure, such as the beginning of a function
+     definition.  Alternatively, you might wish to resume parsing in the
+     middle of the structure.  To do this, you must provide a STATE
+     argument that describes the initial status of parsing.
+
+     If the third argument TARGET-DEPTH is non-`nil', parsing stops if
+     the depth in parentheses becomes equal to TARGET-DEPTH.  The depth
+     starts at 0, or at whatever is given in STATE.
+
+     If the fourth argument STOP-BEFORE is non-`nil', parsing stops
+     when it comes to any character that starts a sexp.  If
+     STOP-COMMENT is non-`nil', parsing stops when it comes to the
+     start of a comment.
+
+     The fifth argument STATE is an eight-element list of the same form
+     as the value of this function, described below.  The return value
+     of one call may be used to initialize the state of the parse on
+     another call to `parse-partial-sexp'.
+
+     The result is a list of eight elements describing the final state
+     of the parse:
+
+       0. The depth in parentheses, counting from 0.
+
+       1. The character position of the start of the innermost
+          containing parenthetical grouping; `nil' if none.
+
+       2. The character position of the start of the last complete
+          subexpression terminated; `nil' if none.
+
+       3. Non-`nil' if inside a string.  More precisely, this is the
+          character that will terminate the string.
+
+       4. `t' if inside a comment.
+
+       5. `t' if point is just after a quote character.
+
+       6. The minimum parenthesis depth encountered during this scan.
+
+       7. `t' if inside a comment of style "b".
+
+     Elements 0, 3, 4, 5 and 7 are significant in the argument STATE.
+
+     This function is most often used to compute indentation for
+     languages that have nested parentheses.
+
+ - Function: scan-lists FROM COUNT DEPTH
+     This function scans forward COUNT balanced parenthetical groupings
+     from character number FROM.  It returns the character position
+     where the scan stops.
+
+     If DEPTH is nonzero, parenthesis depth counting begins from that
+     value.  The only candidates for stopping are places where the
+     depth in parentheses becomes zero; `scan-lists' counts COUNT such
+     places and then stops.  Thus, a positive value for DEPTH means go
+     out levels of parenthesis.
+
+     Scanning ignores comments if `parse-sexp-ignore-comments' is
+     non-`nil'.
+
+     If scan reaches the beginning or end of the buffer (or its
+     accessible portion), and the depth is not zero, an error is
+     signaled.  If the depth is zero but the count is not used up,
+     `nil' is returned.
+
+ - Function: scan-sexps FROM COUNT
+     This function scans forward COUNT sexps from character position
+     FROM.  It returns the character position where the scan stops.
+
+     Scanning ignores comments if `parse-sexp-ignore-comments' is
+     non-`nil'.
+
+     If scan reaches the beginning or end of (the accessible part of)
+     the buffer in the middle of a parenthetical grouping, an error is
+     signaled.  If it reaches the beginning or end between groupings
+     but before count is used up, `nil' is returned.
+
+ - Variable: parse-sexp-ignore-comments
+     If the value is non-`nil', then comments are treated as whitespace
+     by the functions in this section and by `forward-sexp'.
+
+     In older Emacs versions, this feature worked only when the comment
+     terminator is something like `*/', and appears only to end a
+     comment.  In languages where newlines terminate comments, it was
+     necessary make this variable `nil', since not every newline is the
+     end of a comment.  This limitation no longer exists.
+
+   You can use `forward-comment' to move forward or backward over one
+comment or several comments.
+
+ - Function: forward-comment COUNT
+     This function moves point forward across COUNT comments (backward,
+     if COUNT is negative).  If it finds anything other than a comment
+     or whitespace, it stops, leaving point at the place where it
+     stopped.  It also stops after satisfying COUNT.
+
+   To move forward over all comments and whitespace following point, use
+`(forward-comment (buffer-size))'.  `(buffer-size)' is a good argument
+to use, because the number of comments to in the buffer cannot exceed
+that many.
+
+
+File: elisp,  Node: Standard Syntax Tables,  Next: Syntax Table Internals,  Prev: Parsing Expressions,  Up: Syntax Tables
+
+Some Standard Syntax Tables
+===========================
+
+   Each of the major modes in Emacs has its own syntax table.  Here are
+several of them:
+
+ - Function: standard-syntax-table
+     This function returns the standard syntax table, which is the
+     syntax table used in Fundamental mode.
+
+ - Variable: text-mode-syntax-table
+     The value of this variable is the syntax table used in Text mode.
+
+ - Variable: c-mode-syntax-table
+     The value of this variable is the syntax table for C-mode buffers.
+
+ - Variable: emacs-lisp-mode-syntax-table
+     The value of this variable is the syntax table used in Emacs Lisp
+     mode by editing commands.  (It has no effect on the Lisp `read'
+     function.)
+
+
+File: elisp,  Node: Syntax Table Internals,  Prev: Standard Syntax Tables,  Up: Syntax Tables
+
+Syntax Table Internals
+======================
+
+   Each element of a syntax table is an integer that encodes the syntax
+of one character: the syntax class, possible matching character, and
+flags.  Lisp programs don't usually work with the elements directly; the
+Lisp-level syntax table functions usually work with syntax descriptors
+(*note Syntax Descriptors::.).
+
+   The low 8 bits of each element of a syntax table indicate the syntax
+class.
+
+Integer
+     Class
+
+0
+     whitespace
+
+1
+     punctuation
+
+2
+     word
+
+3
+     symbol
+
+4
+     open parenthesis
+
+5
+     close parenthesis
+
+6
+     expression prefix
+
+7
+     string quote
+
+8
+     paired delimiter
+
+9
+     escape
+
+10
+     character quote
+
+11
+     comment-start
+
+12
+     comment-end
+
+13
+     inherit
+
+   The next 8 bits are the matching opposite parenthesis (if the
+character has parenthesis syntax); otherwise, they are not meaningful.
+The next 6 bits are the flags.
+
+
+File: elisp,  Node: Abbrevs,  Next: Processes,  Prev: Syntax Tables,  Up: Top
+
+Abbrevs And Abbrev Expansion
+****************************
+
+   An abbreviation or "abbrev" is a string of characters that may be
+expanded to a longer string.  The user can insert the abbrev string and
+find it replaced automatically with the expansion of the abbrev.  This
+saves typing.
+
+   The set of abbrevs currently in effect is recorded in an "abbrev
+table".  Each buffer has a local abbrev table, but normally all buffers
+in the same major mode share one abbrev table.  There is also a global
+abbrev table.  Normally both are used.
+
+   An abbrev table is represented as an obarray containing a symbol for
+each abbreviation.  The symbol's name is the abbreviation.  Its value is
+the expansion; its function definition is the hook function to do the
+expansion (if any); its property list cell contains the use count, the
+number of times the abbreviation has been expanded.  Because these
+symbols are not interned in the usual obarray, they will never appear as
+the result of reading a Lisp expression; in fact, normally they are
+never used except by the code that handles abbrevs.  Therefore, it is
+safe to use them in an extremely nonstandard way.  *Note Creating
+Symbols::.
+
+   For the user-level commands for abbrevs, see *Note Abbrev Mode:
+(emacs)Abbrevs.
+
+* Menu:
+
+* Abbrev Mode::                 Setting up Emacs for abbreviation.
+* Tables: Abbrev Tables.        Creating and working with abbrev tables.
+* Defining Abbrevs::            Specifying abbreviations and their expansions.
+* Files: Abbrev Files.          Saving abbrevs in files.
+* Expansion: Abbrev Expansion.  Controlling expansion; expansion subroutines.
+* Standard Abbrev Tables::      Abbrev tables used by various major modes.
+
+
+File: elisp,  Node: Abbrev Mode,  Next: Abbrev Tables,  Prev: Abbrevs,  Up: Abbrevs
+
+Setting Up Abbrev Mode
+======================
+
+   Abbrev mode is a minor mode controlled by the value of the variable
+`abbrev-mode'.
+
+ - Variable: abbrev-mode
+     A non-`nil' value of this variable turns on the automatic expansion
+     of abbrevs when their abbreviations are inserted into a buffer.
+     If the value is `nil', abbrevs may be defined, but they are not
+     expanded automatically.
+
+     This variable automatically becomes local when set in any fashion.
+
+ - Variable: default-abbrev-mode
+     This is the value `abbrev-mode' for buffers that do not override
+     it.  This is the same as `(default-value 'abbrev-mode)'.
+
+
+File: elisp,  Node: Abbrev Tables,  Next: Defining Abbrevs,  Prev: Abbrev Mode,  Up: Abbrevs
+
+Abbrev Tables
+=============
+
+   This section describes how to create and manipulate abbrev tables.
+
+ - Function: make-abbrev-table
+     This function creates and returns a new, empty abbrev table--an
+     obarray containing no symbols.  It is a vector filled with zeros.
+
+ - Function: clear-abbrev-table TABLE
+     This function undefines all the abbrevs in abbrev table TABLE,
+     leaving it empty.  The function returns `nil'.
+
+ - Function: define-abbrev-table TABNAME DEFINITIONS
+     This function defines TABNAME (a symbol) as an abbrev table name,
+     i.e., as a variable whose value is an abbrev table.  It defines
+     abbrevs in the table according to DEFINITIONS, a list of elements
+     of the form `(ABBREVNAME EXPANSION HOOK USECOUNT)'.  The value is
+     always `nil'.
+
+ - Variable: abbrev-table-name-list
+     This is a list of symbols whose values are abbrev tables.
+     `define-abbrev-table' adds the new abbrev table name to this list.
+
+ - Function: insert-abbrev-table-description NAME &optional HUMAN
+     This function inserts before point a description of the abbrev
+     table named NAME.  The argument NAME is a symbol whose value is an
+     abbrev table.  The value is always `nil'.
+
+     If HUMAN is non-`nil', the description is human-oriented.
+     Otherwise the description is a Lisp expression--a call to
+     `define-abbrev-table' which would define NAME exactly as it is
+     currently defined.
+
+
+File: elisp,  Node: Defining Abbrevs,  Next: Abbrev Files,  Prev: Abbrev Tables,  Up: Abbrevs
+
+Defining Abbrevs
+================
+
+   These functions define an abbrev in a specified abbrev table.
+`define-abbrev' is the low-level basic function, while `add-abbrev' is
+used by commands that ask for information from the user.
+
+ - Function: add-abbrev TABLE TYPE ARG
+     This function adds an abbreviation to abbrev table TABLE.  The
+     argument TYPE is a string describing in English the kind of abbrev
+     this will be (typically, `"global"' or `"mode-specific"'); this is
+     used in prompting the user.  The argument ARG is the number of
+     words in the expansion.
+
+     The return value is the symbol which internally represents the new
+     abbrev, or `nil' if the user declines to confirm redefining an
+     existing abbrev.
+
+ - Function: define-abbrev TABLE NAME EXPANSION HOOK
+     This function defines an abbrev in TABLE named NAME, to expand to
+     EXPANSION, and call HOOK.  The return value is an uninterned
+     symbol which represents the abbrev inside Emacs; its name is NAME.
+
+     The argument NAME should be a string.  The argument EXPANSION
+     should be a string, or `nil', to undefine the abbrev.
+
+     The argument HOOK is a function or `nil'.  If HOOK is non-`nil',
+     then it is called with no arguments after the abbrev is replaced
+     with EXPANSION; point is located at the end of EXPANSION.
+
+     The use count of the abbrev is initialized to zero.
+
+ - User Option: only-global-abbrevs
+     If this variable is non-`nil', it means that the user plans to use
+     global abbrevs only.  This tells the commands that define
+     mode-specific abbrevs to define global ones instead.  This
+     variable does not alter the functioning of the functions in this
+     section; it is examined by their callers.
+
+
+File: elisp,  Node: Abbrev Files,  Next: Abbrev Expansion,  Prev: Defining Abbrevs,  Up: Abbrevs
+
+Saving Abbrevs in Files
+=======================
+
+   A file of saved abbrev definitions is actually a file of Lisp code.
+The abbrevs are saved in the form of a Lisp program to define the same
+abbrev tables with the same contents.  Therefore, you can load the file
+with `load' (*note How Programs Do Loading::.).  However, the function
+`quietly-read-abbrev-file' is provided as a more convenient interface.
+
+   User-level facilities such as `save-some-buffers' can save abbrevs
+in a file automatically, under the control of variables described here.
+
+ - User Option: abbrev-file-name
+     This is the default file name for reading and saving abbrevs.
+
+ - Function: quietly-read-abbrev-file FILENAME
+     This function reads abbrev definitions from a file named FILENAME,
+     previously written with `write-abbrev-file'.  If FILENAME is
+     `nil', the file specified in `abbrev-file-name' is used.
+     `save-abbrevs' is set to `t' so that changes will be saved.
+
+     This function does not display any messages.  It returns `nil'.
+
+ - User Option: save-abbrevs
+     A non-`nil' value for `save-abbrev' means that Emacs should save
+     abbrevs when files are saved.  `abbrev-file-name' specifies the
+     file to save the abbrevs in.
+
+ - Variable: abbrevs-changed
+     This variable is set non-`nil' by defining or altering any
+     abbrevs.  This serves as a flag for various Emacs commands to
+     offer to save your abbrevs.
+
+ - Command: write-abbrev-file FILENAME
+     Save all abbrev definitions, in all abbrev tables, in the file
+     FILENAME, in the form of a Lisp program which when loaded will
+     define the same abbrevs.  This function returns `nil'.
+
+
+File: elisp,  Node: Abbrev Expansion,  Next: Standard Abbrev Tables,  Prev: Abbrev Files,  Up: Abbrevs
+
+Looking Up and Expanding Abbreviations
+======================================
+
+   Abbrevs are usually expanded by commands for interactive use,
+including `self-insert-command'.  This section describes the
+subroutines used in writing such functions, as well as the variables
+they use for communication.
+
+ - Function: abbrev-symbol ABBREV &optional TABLE
+     This function returns the symbol representing the abbrev named
+     ABBREV.  The value returned is `nil' if that abbrev is not
+     defined.  The optional second argument TABLE is the abbrev table
+     to look it up in.  If TABLE is `nil', this function tries first
+     the current buffer's local abbrev table, and second the global
+     abbrev table.
+
+ - User Option: abbrev-all-caps
+     When this is set non-`nil', an abbrev entered entirely in upper
+     case is expanded using all upper case.  Otherwise, an abbrev
+     entered entirely in upper case is expanded by capitalizing each
+     word of the expansion.
+
+ - Function: abbrev-expansion ABBREV &optional TABLE
+     This function returns the string that ABBREV would expand into (as
+     defined by the abbrev tables used for the current buffer).  The
+     optional argument TABLE specifies the abbrev table to use; if it is
+     specified, the abbrev is looked up in that table only.
+
+ - Variable: abbrev-start-location
+     This is the buffer position for `expand-abbrev' to use as the start
+     of the next abbrev to be expanded.  (`nil' means use the word
+     before point instead.)  `abbrev-start-location' is set to `nil'
+     each time `expand-abbrev' is called.  This variable is also set by
+     `abbrev-prefix-mark'.
+
+ - Variable: abbrev-start-location-buffer
+     The value of this variable is the buffer for which
+     `abbrev-start-location' has been set.  Trying to expand an abbrev
+     in any other buffer clears `abbrev-start-location'.  This variable
+     is set by `abbrev-prefix-mark'.
+
+ - Variable: last-abbrev
+     This is the `abbrev-symbol' of the last abbrev expanded.  This
+     information is left by `expand-abbrev' for the sake of the
+     `unexpand-abbrev' command.
+
+ - Variable: last-abbrev-location
+     This is the location of the last abbrev expanded.  This contains
+     information left by `expand-abbrev' for the sake of the
+     `unexpand-abbrev' command.
+
+ - Variable: last-abbrev-text
+     This is the exact expansion  text of the last abbrev expanded, as
+     results from case conversion.  Its value is `nil' if the abbrev
+     has already been unexpanded.  This contains information left by
+     `expand-abbrev' for the sake of the `unexpand-abbrev' command.
+
+ - Variable: pre-abbrev-expand-hook
+     This is a normal hook whose functions are executed, in sequence,
+     just before any expansion of an abbrev.  *Note Hooks::.  Since it
+     is a normal hook, the hook functions receive no arguments.
+     However, they can find the abbrev to be expanded by looking in the
+     buffer before point.
+
+   The following sample code shows a simple use of
+`pre-abbrev-expand-hook'.  If the user terminates an abbrev with a
+punctuation character, the hook function asks for confirmation.  Thus,
+this hook allows the user to decide whether to expand the abbrev, and
+aborts expansion if it is not confirmed.
+
+     (add-hook 'pre-abbrev-expand-hook 'query-if-not-space)
+     
+     ;; This is the function invoked by `pre-abbrev-expand-hook'.
+     
+     ;; If the user terminated the abbrev with a space, the function does
+     ;; nothing (that is, it returns so that the abbrev can expand).  If the
+     ;; user entered some other character, this function asks whether
+     ;; expansion should continue.
+     
+     ;; If the user enters the prompt with `y', the function returns
+     ;; `nil' (because of the `not' function), but that is
+     ;; acceptable; the return value has no effect on expansion.
+     
+     (defun query-if-not-space ()
+       (if (/= ?\  (preceding-char))
+           (if (not (y-or-n-p "Do you want to expand this abbrev? "))
+               (error "Not expanding this abbrev"))))
+
+
+File: elisp,  Node: Standard Abbrev Tables,  Prev: Abbrev Expansion,  Up: Abbrevs
+
+Standard Abbrev Tables
+======================
+
+   Here we list the variables that hold the abbrev tables for the
+preloaded major modes of Emacs.
+
+ - Variable: global-abbrev-table
+     This is the abbrev table for mode-independent abbrevs.  The abbrevs
+     defined in it apply to all buffers.  Each buffer may also have a
+     local abbrev table, whose abbrev definitions take precedence over
+     those in the global table.
+
+ - Variable: local-abbrev-table
+     The value of this buffer-local variable is the (mode-specific)
+     abbreviation table of the current buffer.
+
+ - Variable: fundamental-mode-abbrev-table
+     This is the local abbrev table used in Fundamental mode.  It is the
+     local abbrev table in all buffers in Fundamental mode.
+
+ - Variable: text-mode-abbrev-table
+     This is the local abbrev table used in Text mode.
+
+ - Variable: c-mode-abbrev-table
+     This is the local abbrev table used in C mode.
+
+ - Variable: lisp-mode-abbrev-table
+     This is the local abbrev table used in Lisp mode and Emacs Lisp
+     mode.
+

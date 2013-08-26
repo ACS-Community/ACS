@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Component  xmlns="urn:schemas-cosylab-com:Component:1.0"
+       		Name="PBEND_B_01"   
+		Code="acsexmplPowerSupplyImpl"
+                Type="IDL:alma/PS/PowerSupply:1.0"
+                Container="bilboContainer"
+ ImplLang="cpp" />

@@ -1,0 +1,1075 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: Managing Overlays,  Prev: Overlay Properties,  Up: Overlays
+
+Managing Overlays
+-----------------
+
+                  This section describes the functions to create,
+delete and move overlays, and to examine their contents.
+
+                -- Function: make-overlay START END &optional BUFFER
+                    This function creates and returns an overlay which
+                    belongs to BUFFER and ranges from START to END.
+                    Both START and END must specify buffer positions;
+                    they may be integers or markers.  If BUFFER is
+                    omitted, the overlay is created in the current
+                    buffer.
+
+                -- Function: overlay-start OVERLAY
+                    This function returns the position at which OVERLAY
+                    starts.
+
+                -- Function: overlay-end OVERLAY
+                    This function returns the position at which OVERLAY
+                    ends.
+
+                -- Function: overlay-buffer OVERLAY
+                    This function returns the buffer that OVERLAY
+                    belongs to.
+
+                -- Function: delete-overlay OVERLAY
+                    This function deletes OVERLAY.  The overlay
+                    continues to exist as a Lisp object, but ceases to
+                    be part of the buffer it belonged to, and ceases to
+                    have any effect on display.
+
+                -- Function: move-overlay OVERLAY START END &optional
+                         BUFFER
+                    This function moves OVERLAY to BUFFER, and places
+                    its bounds at START and END.  Both arguments START
+                    and END must specify buffer positions; they may be
+                    integers or markers.  If BUFFER is omitted, the
+                    overlay stays in the same buffer.
+
+                    The return value is OVERLAY.
+
+                    This is the only valid way to change the endpoints
+                    of an overlay.  Do not try modifying the markers in
+                    the overlay by hand, as that fails to update other
+                    vital data structures and can cause some overlays
+                    to be ``lost''.
+
+                -- Function: overlays-at POS
+                    This function returns a list of all the overlays
+                    that contain position POS in the current buffer.
+                    The list is in no particular order.  An overlay
+                    contains position POS if it begins at or before
+                    POS, and ends after POS.
+
+                -- Function: next-overlay-change POS
+                    This function returns the buffer position of the
+                    next beginning or end of an overlay, after POS.
+
+
+File: elisp,  Node: Faces,  Next: Blinking,  Prev: Overlays,  Up: Display
+
+Faces
+=====
+
+                  A "face" is a named collection of graphical
+attributes: font, foreground color, background color and optional
+underlining.  Faces control the display of text on the screen.
+
+                  Each face has its own "face id number" which
+distinguishes faces at low levels within Emacs.  However, for most
+purposes, you can refer to faces in Lisp programs by their names.
+
+                  Each face name is meaningful for all frames, and by
+default it has the same meaning in all frames.  But you can arrange to
+give a particular face name a special meaning in one frame if you wish.
+
+               * Menu:
+               
+               * Standard Faces::      The faces Emacs normally comes with.
+               * Merging Faces::	How Emacs decides which face to use for a character.
+               * Face Functions::	How to define and examine faces.
+
+
+File: elisp,  Node: Standard Faces,  Next: Merging Faces,  Up: Faces
+
+Standard Faces
+--------------
+
+                  This table lists all the standard faces and their
+uses.
+
+              `default'
+                    This face is used for ordinary text.
+
+              `modeline'
+                    This face is used for mode lines and menu bars.
+
+              `region'
+                    This face is used for highlighting the region in
+                    Transient Mark mode.
+
+              `secondary-selection'
+                    This face is used to show any secondary selection
+                    you have made.
+
+              `highlight'
+                    This face is meant to be used for highlighting for
+                    various purposes.
+
+              `underline'
+                    This face underlines text.
+
+              `bold'
+                    This face uses a bold font, if possible.  It uses
+                    the bold variant of the frame's font, if it has
+                    one.  It's up to you to choose a default font that
+                    has a bold variant, if you want to use one.
+
+              `italic'
+                    This face uses the italic variant of the frame's
+                    font, if it has one.
+
+              `bold-italic'
+                    This face uses the bold italic variant of the
+                    frame's font, if it has one.
+
+
+File: elisp,  Node: Merging Faces,  Next: Face Functions,  Prev: Standard Faces,  Up: Faces
+
+Merging Faces for Display
+-------------------------
+
+                  Here are all the ways to specify which face to use
+for display of text:
+
+                  * With defaults.  Each frame has a "default face",
+                    whose id number is zero, which is used for all text
+                    that doesn't somehow specify another face.
+
+                  * With text properties.  A character may have a
+                    `face' property; if so, it's displayed with that
+                    face.  *Note Special Properties::.
+
+                    If the character has a `mouse-face' property, that
+                    is used instead of the `face' property when the
+                    mouse is ``near enough'' to the character.
+
+                  * With overlays.  An overlay may have `face' and
+                    `mouse-face' properties too; they apply to all the
+                    text covered by the overlay.
+
+                  * With special glyphs.  Each glyph can specify a
+                    particular face id number.  *Note Glyphs::.
+
+                  If these various sources together specify more than
+one face for a particular character, Emacs merges the attributes of the
+various faces specified.  The attributes of the faces of special glyphs
+come first; then come attributes of faces from overlays, followed by
+those from text properties, and last the default face.
+
+                  When multiple overlays cover one character, an
+overlay with higher priority overrides those with lower priority.
+*Note Overlays::.
+
+                  If an attribute such as the font or a color is not
+specified in any of the above ways, the frame's own font or color is
+used.
+
+
+File: elisp,  Node: Face Functions,  Prev: Merging Faces,  Up: Faces
+
+Functions for Working with Faces
+--------------------------------
+
+                  The attributes a face can specify include the font,
+the foreground color, the background color, and underlining.  The face
+can also leave these unspecified by giving the value `nil' for them.
+
+                  Here are the primitives for creating and changing
+faces.
+
+                -- Function: make-face NAME
+                    This function defines a new face named NAME,
+                    initially with all attributes `nil'.  It does
+                    nothing if there is already a face named NAME.
+
+                -- Function: face-list
+                    This function returns a list of all defined face
+                    names.
+
+                -- Function: copy-face OLD-FACE NEW-NAME &optional
+                         FRAME NEW-FRAME
+                    This function defines the face NEW-NAME as a copy
+                    of the existing face named OLD-FACE.  It creates
+                    the face NEW-NAME if that doesn't already exist.
+
+                    If the optional argument FRAME is given, this
+                    function applies only to that frame.  Otherwise it
+                    applies to each frame individually, copying
+                    attributes from OLD-FACE in each frame to NEW-FACE
+                    in the same frame.
+
+                    If the optional argument NEW-FRAME is given, then
+                    `copy-face' copies the attributes of OLD-FACE in
+                    FRAME to NEW-NAME in NEW-FRAME.
+
+                  You can modify the attributes of an existing face
+with the following functions.  If you specify FRAME, they affect just
+that frame; otherwise, they affect all frames as well as the defaults
+that apply to new frames.
+
+                -- Function: set-face-foreground FACE COLOR &optional
+                         FRAME
+                -- Function: set-face-background FACE COLOR &optional
+                         FRAME
+                    These functions set the foreground (respectively,
+                    background) color of face FACE to COLOR.  The
+                    argument COLOR should be a string, the name of a
+                    color.
+
+                -- Function: set-face-font FACE FONT &optional FRAME
+                    This function sets the font of face FACE.  The
+                    argument FONT should be a string.
+
+                -- Function: set-face-underline-p FACE UNDERLINE-P
+                         &optional FRAME
+                    This function sets the underline attribute of face
+                    FACE.  Non-`nil' means do underline; `nil' means
+                    don't.
+
+                -- Function: invert-face FACE &optional FRAME
+                    Swap the foreground and background colors of face
+                    FACE.  If the face doesn't specify both foreground
+                    and background, then its foreground and background
+                    are set to the default background and foreground.
+
+                  These functions examine the attributes of a face.  If
+you don't specify FRAME, they refer to the default data for new frames.
+
+                -- Function: face-foreground FACE &optional FRAME
+                -- Function: face-background FACE &optional FRAME
+                    These functions return the foreground
+                    (respectively, background) color of face FACE, as a
+                    string.
+
+                -- Function: face-font FACE &optional FRAME
+                    This function returns the name of the font of face
+                    FACE.
+
+                -- Function: face-underline-p FACE &optional FRAME
+                    This function returns the underline attribute of
+                    face FACE.
+
+                -- Function: face-id-number FACE
+                    This function returns the face id number of face
+                    FACE.
+
+                -- Function: face-equal FACE1 FACE2 &optional FRAME
+                    This returns `t' if the faces FACE1 and FACE2 have
+                    the same attributes for display.
+
+                -- Function: face-differs-from-default-p FACE &optional
+                         FRAME
+                    This returns `t' if the face FACE displays
+                    differently from the default face.  A face is
+                    considered to be ``the same'' as the normal face if
+                    each attribute is either the same as that of the
+                    default face or `nil' (meaning to inherit from the
+                    default).
+
+                -- Variable: region-face
+                    This variable's value specifies the face id to use
+                    to display characters in the region when it is
+                    active (in Transient Mark mode only).  The face
+                    thus specified takes precedence over all faces that
+                    come from text properties and overlays, for
+                    characters in the region.  *Note The Mark::, for
+                    more information about Transient Mark mode.
+
+                    Normally, the value is the id number of the face
+                    named `region'.
+
+
+File: elisp,  Node: Blinking,  Next: Inverse Video,  Prev: Faces,  Up: Display
+
+Blinking Parentheses
+====================
+
+                  This section describes the mechanism by which Emacs
+shows a matching open parenthesis when the user inserts a close
+parenthesis.
+
+                -- Variable: blink-paren-function
+                    The value of this variable should be a function (of
+                    no arguments) to be called whenever a character
+                    with close parenthesis syntax is inserted.  The
+                    value of `blink-paren-function' may be `nil', in
+                    which case nothing is done.
+
+                         *Please note:* this variable was named
+                         `blink-paren-hook' in older Emacs versions,
+                         but since it is not called with the standard
+                         convention for hooks, it was renamed to
+                         `blink-paren-function' in version 19.
+
+                -- Variable: blink-matching-paren
+                    If this variable is `nil', then
+                    `blink-matching-open' does nothing.
+
+                -- Variable: blink-matching-paren-distance
+                    This variable specifies the maximum distance to
+                    scan for a matching parenthesis before giving up.
+
+                -- Function: blink-matching-open
+                    This function is the default value of
+                    `blink-paren-function'.  It assumes that point
+                    follows a character with close parenthesis syntax
+                    and moves the cursor momentarily to the matching
+                    opening character.  If that character is not
+                    already on the screen, it displays the character's
+                    context in the echo area.  To avoid long delays,
+                    this function does not search farther than
+                    `blink-matching-paren-distance' characters.
+
+                    Here is an example of calling this function
+                    explicitly.
+
+                         (defun interactive-blink-matching-open ()
+                           "Indicate momentarily the start of sexp before point."
+                           (interactive)
+
+                         (let ((blink-matching-paren-distance
+                                  (buffer-size))
+                                 (blink-matching-paren t))
+                             (blink-matching-open)))
+
+
+File: elisp,  Node: Inverse Video,  Next: Usual Display,  Prev: Blinking,  Up: Display
+
+Inverse Video
+=============
+
+                -- User Option: inverse-video
+                    This variable controls whether Emacs uses inverse
+                    video for all text on the screen.  Non-`nil' means
+                    yes, `nil' means no.  The default is `nil'.
+
+                -- User Option: mode-line-inverse-video
+                    This variable controls the use of inverse video for
+                    mode lines.  If it is non-`nil', then mode lines
+                    are displayed in inverse video (under X, this uses
+                    the face named `modeline', which you can set as you
+                    wish).  Otherwise, mode lines are displayed
+                    normally, just like text.  The default is `t'.
+
+
+File: elisp,  Node: Usual Display,  Next: Display Tables,  Prev: Inverse Video,  Up: Display
+
+Usual Display Conventions
+=========================
+
+                  The usual display conventions define how to display
+each character code.  You can override these conventions by setting up
+a display table (*note Display Tables::.).  Here are the usual display
+conventions:
+
+                  * Character codes 32 through 126 map to glyph codes
+                    32 through 126.  Normally this means they display
+                    as themselves.
+
+                  * Character code 9 is a horizontal tab.  It displays
+                    as whitespace up to a position determined by
+                    `tab-width'.
+
+                  * Character code 10 is a newline.
+
+                  * All other codes in the range 0 through 31, and code
+                    127, display in one of two ways according to the
+                    value of `ctl-arrow'.  If it is is non-`nil', these
+                    codes map to sequences of two glyphs, where the
+                    first glyph is the ASCII code for `^'.  (A display
+                    table can specify a glyph to use instead of `^'.)
+                    Otherwise, these codes map just like the codes in
+                    the range 128 to 255.
+
+                  * Character codes 128 through 255 map to sequences of
+                    four glyphs, where the first glyph is the ASCII
+                    code for `\', and the others are digit characters
+                    representing the code in octal.  (A display table
+                    can specify a glyph to use instead of `\'.)
+
+                  The usual display conventions apply even when there
+is a display table, for any character whose entry in the active display
+table is `nil'.  Thus, when you set up a display table, you need only
+specify the the characters for which you want unusual behavior.
+
+                  These variables affect the way certain characters are
+displayed on the screen.  Since they change the number of columns the
+characters occupy, they also affect the indentation functions.
+
+                -- User Option: ctl-arrow
+                    This buffer-local variable controls how control
+                    characters are displayed.  If it is non-`nil', they
+                    are displayed as a caret followed by the character:
+                    `^A'.  If it is `nil', they are displayed as a
+                    backslash followed by three octal digits: `\001'.
+
+                -- Variable: default-ctl-arrow
+                    The value of this variable is the default value for
+                    `ctl-arrow' in buffers that do not override it.
+                    *Note Default Value::.
+
+                -- User Option: tab-width
+                    The value of this variable is the spacing between
+                    tab stops used for displaying tab characters in
+                    Emacs buffers.  The default is 8.  Note that this
+                    feature is completely independent from the
+                    user-settable tab stops used by the command
+                    `tab-to-tab-stop'.  *Note Indent Tabs::.
+
+
+File: elisp,  Node: Display Tables,  Next: Beeping,  Prev: Usual Display,  Up: Display
+
+Display Tables
+==============
+
+                  You can use the "display table" feature to control
+how all 256 possible character codes display on the screen.  This is
+useful for displaying European languages that have letters not in the
+ASCII character set.
+
+                  The display table maps each character code into a
+sequence of "glyphs", each glyph being an image that takes up one
+character position on the screen.  You can also define how to display
+each glyph on your terminal, using the "glyph table".
+
+               * Menu:
+               
+               * Display Table Format::	What a display table consists of.
+               * Active Display Table::	How Emacs selects a display table to use.
+               * Glyphs::			How to define a glyph, and what glyphs mean.
+               * ISO Latin 1::			How to use display tables
+               				  to support the ISO Latin 1 character set.
+
+
+File: elisp,  Node: Display Table Format,  Next: Active Display Table,  Up: Display Tables
+
+Display Table Format
+--------------------
+
+                  A display table is actually an array of 261 elements.
+
+                -- Function: make-display-table
+                    This creates and returns a display table.  The
+                    table initially has `nil' in all elements.
+
+                  The first 256 elements correspond to character codes;
+the Nth element says how to display the character code N.  The value
+should be `nil' or a vector of glyph values (*note Glyphs::.).  If an
+element is `nil', it says to display that character according to the
+usual display conventions (*note Usual Display::.).
+
+                  The remaining five elements of a display table serve
+special purposes, and `nil' means use the default stated below.
+
+              256
+                    The glyph for the end of a truncated screen line
+                    (the default for this is `$').  *Note Glyphs::.
+
+              257
+                    The glyph for the end of a continued line (the
+                    default is `\').
+
+              258
+                    The glyph for indicating a character displayed as
+                    an octal character code (the default is `\').
+
+              259
+                    The glyph for indicating a control character (the
+                    default is `^').
+
+              260
+                    A vector of glyphs for indicating the presence of
+                    invisible lines (the default is `...').  *Note
+                    Selective Display::.
+
+                  For example, here is how to construct a display table
+that mimics the effect of setting `ctl-arrow' to a non-`nil' value:
+
+                    (setq disptab (make-display-table))
+                    (let ((i 0))
+                      (while (< i 32)
+                        (or (= i ?\t) (= i ?\n)
+                            (aset disptab i (vector ?^ (+ i 64))))
+                        (setq i (1+ i)))
+                      (aset disptab 127 (vector ?^ ??)))
+
+
+File: elisp,  Node: Active Display Table,  Next: Glyphs,  Prev: Display Table Format,  Up: Display Tables
+
+Active Display Table
+--------------------
+
+                  Each window can specify a display table, and so can
+each buffer.  When a buffer B is displayed in window W, display uses the
+display table for window W if it has one; otherwise, the display table
+for buffer B if it has one; otherwise, the standard display table if
+any.  The display table chosen is called the "active" display table.
+
+                -- Function: window-display-table WINDOW
+                    This function returns WINDOW's display table, or
+                    `nil' if WINDOW does not have an assigned display
+                    table.
+
+                -- Function: set-window-display-table WINDOW TABLE
+                    This function sets the display table of WINDOW to
+                    TABLE.  The argument TABLE should be either a
+                    display table or `nil'.
+
+                -- Variable: buffer-display-table
+                    This variable is automatically local in all
+                    buffers; its value in a particular buffer is the
+                    display table for that buffer, or `nil' if the
+                    buffer does not have an assigned display table.
+
+                -- Variable: standard-display-table
+                    This variable's value is the default display table,
+                    used whenever a window has no display table and
+                    neither does the buffer displayed in that window.
+                    This variable is `nil' by default.
+
+                  If there is no display table to use for a particular
+window---that is, if the window has none, its buffer has none, and
+`standard-display-table' has none---then Emacs uses the usual display
+conventions for all character codes in that window.  *Note Usual
+Display::.
+
+
+File: elisp,  Node: Glyphs,  Next: ISO Latin 1,  Prev: Active Display Table,  Up: Display Tables
+
+Glyphs
+------
+
+                  A "glyph" is a generalization of a character; it
+stands for an image that takes up a single character position on the
+screen.  Glyphs are represented in Lisp as integers, just as characters
+are.
+
+                  The meaning of each integer, as a glyph, is defined
+by the glyph table, which is the value of the variable `glyph-table'.
+
+                -- Variable: glyph-table
+                    The value of this variable is the current glyph
+                    table.  It should be a vector; the Gth element
+                    defines glyph code G.  If the value is `nil'
+                    instead of a vector, then all glyphs are simple (see
+                    below).
+
+                  Here are the possible types of elements in the glyph
+table:
+
+              STRING
+                    Send the characters in STRING to the terminal to
+                    output this glyph.  This alternative is available
+                    on character terminals, but not under X.
+
+              INTEGER
+                    Define this glyph code as an alias for code
+                    INTEGER.  You can use an alias to specify a face
+                    code for the glyph; see below.
+
+              `NIL'
+                    This glyph is simple.  On an ordinary terminal, the
+                    glyph code mod 256 is the character to output.
+                    With X, the glyph code mod 256 is the character to
+                    output, and the glyph code divided by 256 specifies
+                    the "face id number" to use while outputting it.
+                    *Note Faces::.
+
+                  If a glyph code is greater than or equal to the
+length of the glyph table, that code is automatically simple.
+
+
+File: elisp,  Node: ISO Latin 1,  Prev: Glyphs,  Up: Display Tables
+
+ISO Latin 1
+-----------
+
+                  If you have a terminal that can handle the entire ISO
+Latin 1 character set, you can arrange to use that character set as
+follows:
+
+                    (require 'disp-table)
+                    ;; Set char codes 160--255 to display as themselves.
+                    ;; (Codes 128--159 are the additional control characters.)
+                    (standard-display-8bit 160 255)
+
+                  If you are editing buffers written in the ISO Latin 1
+character set and your terminal doesn't handle anything but ASCII, you
+can load the file `iso-ascii' to set up a display table which makes the
+other ISO characters display as sequences of ASCII characters.  For
+example, the character ``o with umlaut'' displays as `{"o}'.
+
+                  Some European countries have terminals that don't
+support ISO Latin 1 but do support the special characters for that
+country's language.  You can define a display table to work one
+language using such terminals.  For an example, see `lisp/iso-swed.el',
+which handles certain Swedish terminals.
+
+                  You can load the appropriate display table for your
+terminal automatically by writing a terminal-specific Lisp file for the
+terminal type.
+
+
+File: elisp,  Node: Beeping,  Next: Window Systems,  Prev: Display Tables,  Up: Display
+
+Beeping
+=======
+
+                  You can make Emacs ring a bell (or blink the screen)
+to attract the user's attention.  Be conservative about how often you
+do this; frequent bells can become irritating.  Also be careful not to
+use beeping alone when signaling an error is appropriate.  (*Note
+Errors::.)
+
+                -- Function: ding &optional DONT-TERMINATE
+                    This function beeps, or flashes the screen (see
+                    `visible-bell' below).  It also terminates any
+                    keyboard macro currently executing unless
+                    DONT-TERMINATE is non-`nil'.
+
+                -- Function: beep &optional DONT-TERMINATE
+                    This is a synonym for `ding'.
+
+                -- Variable: visible-bell
+                    This variable determines whether Emacs should flash
+                    the screen to represent a bell.  Non-`nil' means
+                    yes, `nil' means no.  This is effective only if the
+                    Termcap entry for the terminal in use has the
+                    visible bell flag (`vb') set.
+
+
+File: elisp,  Node: Window Systems,  Prev: Beeping,  Up: Display
+
+Window Systems
+==============
+
+                  Emacs works with several window systems, most notably
+the X Window System.  Both Emacs and X use the term ``window'', but use
+it differently.  An Emacs frame is a single window as far as X is
+concerned; the individual Emacs windows are not known to X at all.
+
+                -- Variable: window-system
+                    This variable tells Lisp programs what window
+                    system Emacs is running under.  Its value should be
+                    a symbol such as `x' (if Emacs is running under X)
+                    or `nil' (if Emacs is running on an ordinary
+                    terminal).
+
+                -- Variable: window-system-version
+                    This variable distinguishes between different
+                    versions of the X Window System.  Its value is 10
+                    or 11 when using X; `nil' otherwise.
+
+                -- Variable: window-setup-hook
+                    This variable is a normal hook which Emacs runs
+                    after loading your `.emacs' file and the default
+                    initialization file (if any), after loading
+                    terminal-specific Lisp code, and after running the
+                    hook `term-setup-hook'.
+
+                    This hook is used for internal purposes: setting up
+                    communication with the window system, and creating
+                    the initial window.  Users should not interfere
+                    with it.
+
+
+File: elisp,  Node: Calendar,  Next: Tips,  Prev: Display,  Up: Top
+
+Customizing the Calendar and Diary
+**********************************
+
+                  There are many customizations that you can use to
+make the calendar and diary suit your personal tastes.
+
+               * Menu:
+               
+               * Calendar Customizing::   Defaults you can set.
+               * Holiday Customizing::    Defining your own holidays.
+               * Date Display Format::    Changing the format.
+               * Time Display Format::    Changing the format.
+               * Daylight Savings::       Changing the default.
+               * Diary Customizing::      Defaults you can set.
+               * Hebrew/Islamic Entries:: How to obtain them.
+               * Fancy Diary Display::    Enhancing the diary display, sorting entries,
+                                            using included diary files.
+               * Sexp Diary Entries::     Fancy things you can do.
+               * Appt Customizing::	   Customizing appointment reminders.
+
+
+File: elisp,  Node: Calendar Customizing,  Next: Holiday Customizing,  Up: Calendar
+
+Customizing the Calendar
+========================
+
+                  If you set the variable
+`view-diary-entries-initially' to `t', calling up the calendar
+automatically displays the diary entries for the current date as well.
+The diary dates appear only if the current date is visible.  If you add
+both of the following lines to your `.emacs' file:
+
+                    (setq view-diary-entries-initially t)
+                    (calendar)
+
+               they display both the calendar and diary windows
+whenever you start Emacs.
+
+                  Similarly, if you set the variable
+`view-calendar-holidays-initially' to `t', entering the calendar
+automatically displays a list of holidays for the current three month
+period.  The holiday list appears in a separate window.
+
+                  You can set the variable
+`mark-diary-entries-in-calendar' to `t' in order to mark any dates with
+diary entries.  This takes effect whenever the calendar window contents
+are recomputed.  There are two ways of marking these dates: by changing
+the face (*note Faces::.), if the display supports that, or by placing
+a plus sign (`+') beside the date otherwise.
+
+                  Similarly, setting the variable
+`mark-holidays-in-calendar' to `t' marks holiday dates, either with a
+change of face or with an asterisk (`*').
+
+                  The variable `calendar-load-hook' is a normal hook
+run when the calendar package is first loaded (before actually starting
+to display the calendar).
+
+                  Starting the calendar runs the normal hook
+`initial-calendar-window-hook'.  Recomputation of the calendar display
+does not run this hook.  But if you leave the calendar with the `q'
+command and reenter it, the hook runs again.
+
+                  The variable `today-visible-calendar-hook' is a
+normal hook run after the calendar buffer has been prepared with the
+calendar when the current date is visible in the window.  One use of
+this hook is to replace today's date with asterisks; to do that, use
+the hook function `calendar-star-date'.
+
+                    (add-hook 'today-visible-calendar-hook 'calendar-star-date)
+
+               Another standard hook function marks the current date,
+either by changing its face or by adding an asterisk.  Here's how to
+use it:
+
+                    (add-hook 'today-visible-calendar-hook 'calendar-mark-today)
+
+               A similar normal hook, `today-invisible-calendar-hook'
+is run if the current date is *not* visible in the window.
+
+
+File: elisp,  Node: Holiday Customizing,  Next: Date Display Format,  Prev: Calendar Customizing,  Up: Calendar
+
+Customizing the Holidays
+========================
+
+                  Emacs knows about holidays defined by entries on one
+of several lists.  You can customize theses lists of holidays to your
+own needs, adding holidays or deleting lists of holidays.  The lists of
+holidays that Emacs uses are for general holidays (`general-holidays'),
+local holidays (`local-holidays'), Christian holidays
+(`christian-holidays'), Hebrew (Jewish) holidays (`hebrew-holidays'),
+Islamic (Moslem) holidays (`islamic-holidays'), and other holidays
+(`other-holidays').
+
+                  The general holidays are, by default, holidays common
+throughout the United States.  To eliminate these holidays, set
+`general-holidays' to `nil'.
+
+                  There are no default local holidays (but sites may
+supply some).  You can set the variable `local-holidays' to any list of
+holidays, as described below.
+
+                  By default, Emacs does not include all the holidays
+of the religions that it knows; only those commonly found in secular
+calendars.  For a more extensive collection of religious holidays, you
+can set any (or all) of the variables `all-christian-calendar-holidays',
+`all-hebrew-calendar-holidays', or `all-islamic-calendar-holidays' to
+`t'.  If you want to eliminate the religious holidays, set any or all
+of the corresponding variables `christian-holidays', `hebrew-holidays',
+and `islamic-holidays' to `nil'.
+
+                  You can set the variable `other-holidays' to any list
+of holidays.  This list, normally empty, is intended for individual use.
+
+                  Each of the lists (`general-holidays',
+`local-holidays', `christian-holidays', `hebrew-holidays',
+`islamic-holidays', and `other-holidays') is a list of "holiday forms",
+each holiday form describing a holiday (or sometimes a list of
+holidays).
+
+                  Here is a table of the possible kinds of holiday
+form.  Day numbers and month numbers count starting from 1, but
+day-within-week numbers count Sunday as 0.  The element STRING is
+always the name of the holiday, as a string.
+
+              `(holiday-fixed MONTH DAY STRING)'
+                    A fixed date on the Gregorian calendar; MONTH and
+                    DAY are numbers.
+
+              `(holiday-float MONTH DAYNAME K STRING)'
+                    The Kth DAYNAME in MONTH on the Gregorian calendar
+                    (DAYNAME=0 for Sunday, and so on); negative K means
+                    count back from the end of the month.
+
+              `(holiday-hebrew MONTH DAY STRING)'
+                    A fixed date on the Hebrew calendar; MONTH and DAY
+                    are numbers.
+
+              `(holiday-islamic MONTH DAY STRING)'
+                    A fixed date on the Islamic calendar; MONTH and DAY
+                    are numbers.
+
+              `(holiday-julian MONTH DAY STRING)'
+                    A fixed date on the Julian calendar; MONTH and DAY
+                    are numbers.
+
+              `(holiday-sexp SEXP STRING)'
+                    A date calculated by the Lisp expression SEXP.  The
+                    expression should use the variable `year' to
+                    compute the date of a holiday, or `nil' if the
+                    holiday doesn't happen this year.  The value of SEXP
+                    must represent the date as a list of the form
+                    `(MONTH DAY YEAR)'.
+
+              `(FUNCTION [ARGS])'
+                    A date calculated by the function FUNCTION, called
+                    with arguments ARGS.
+
+                  For example, suppose you want to add Bastille Day,
+celebrated in France on July 14.  You can do this as follows:
+
+                    (setq other-holidays '((holiday-fixed 7 14 "Bastille Day")))
+
+               The holiday form `(holiday-fixed 7 14 "Bastille Day")'
+specifies the fourteenth day of the seventh month (July).
+
+                  Many holidays occur on a specific day of the week, at
+a specific time of month.  Here is a holiday form describing Hurricane
+Supplication Day, celebrated in the Virgin Islands on the fourth Monday
+in August:
+
+                    (holiday-float 8 1 4 "Hurricane Supplication Day")
+
+               Here the 8 specifies August, the 1 specifies Monday
+(Sunday is 0, Tuesday is 2, and so on), and the 4 specifies the fourth
+occurrence in the month (1 specifies the first occurrence, 2 the second
+occurrence, -1 the last occurrence, -2 the second-to-last occurrence,
+and so on).
+
+                  You can specify holidays that occur on fixed days of
+the Hebrew, Islamic, and Julian calendars too.  For example,
+
+                    (setq other-holidays
+                          '((holiday-hebrew 10 2 "Last day of Hanukkah")
+                            (holiday-islamic 3 12 "Mohammed's Birthday")
+                            (holiday-julian 4 2 "Jefferson's Birthday")))
+
+               adds the last day of Hanukkah (since the Hebrew months
+are numbered with 1 starting from Nisan), the Islamic feast celebrating
+Mohammed's birthday (since the Islamic months are numbered from 1
+starting with Muharram), and Thomas Jefferson's birthday, which is 2
+April 1743 on the Julian calendar.
+
+                  To include a holiday conditionally, use either Emacs
+Lisp's `if' or the `holiday-sexp' form.  For example, American
+presidential elections occur on the first Tuesday after the first
+Monday in November of years divisible by 4:
+
+                    (holiday-sexp (if (= 0 (% year 4))
+                                       (calendar-gregorian-from-absolute
+                                     (1+ (calendar-dayname-on-or-before
+                                           1 (+ 6 (calendar-absolute-from-gregorian
+                                                    (list 11 1 year))))))
+                                  "US Presidential Election"))
+
+               or
+
+                    (if (= 0 (% displayed-year 4))
+                        (fixed 11
+                               (extract-calendar-day
+                                 (calendar-gregorian-from-absolute
+                                   (1+ (calendar-dayname-on-or-before
+                                         1 (+ 6 (calendar-absolute-from-gregorian
+                                                  (list 11 1 displayed-year)))))))
+                               "US Presidential Election"))
+
+                  Some holidays just don't fit into any of these forms
+because special calculations are involved in their determination.  In
+such cases you must write a Lisp function to do the calculation.  To
+include eclipses, for example, add `(eclipses)' to `other-holidays' and
+write an Emacs Lisp function `eclipses' that returns a (possibly empty)
+list of the relevant Gregorian dates among the range visible in the
+calendar window, with descriptive strings, like this:
+
+                    (((6 27 1991) "Lunar Eclipse") ((7 11 1991) "Solar Eclipse") ... )
+
+
+File: elisp,  Node: Date Display Format,  Next: Time Display Format,  Prev: Holiday Customizing,  Up: Calendar
+
+Date Display Format
+===================
+
+                  You can customize the manner of displaying dates in
+the diary, in mode lines, and in messages by setting
+`calendar-date-display-form'.  This variable holds a list of
+expressions that can involve the variables `month', `day', and `year',
+all numbers in string form, and `monthname' and `dayname', both
+alphabetic strings.  In the American style, the default value of this
+list is as follows:
+
+                    ((if dayname (concat dayname ", ")) monthname " " day ", " year)
+
+               while in the European style this value is the default:
+
+                    ((if dayname (concat dayname ", ")) day " " monthname " " year)
+
+               The ISO standard date representation is this:
+
+                    (year "-" month "-" day)
+
+               This specifies a typical American format:
+
+                    (month "/" day "/" (substring year -2))
+
+
+File: elisp,  Node: Time Display Format,  Next: Daylight Savings,  Prev: Date Display Format,  Up: Calendar
+
+Time Display Format
+===================
+
+                  The calendar and diary by default display times of
+day in the conventional American style with the hours from 1 through
+12, minutes, and either `am' or `pm'.  If you prefer the European style,
+also known in the US as military, in which the hours go from 00 to 23,
+you can alter the variable `calendar-time-display-form'.  This variable
+is a list of expressions that can involve the variables `12-hours',
+`24-hours', and `minutes', all numbers in string form, and `am-pm' and
+`time-zone', both alphabetic strings.  The default value of
+`calendar-time-display-form' is as follows:
+
+                    (12-hours ":" minutes am-pm
+                              (if time-zone " (") time-zone (if time-zone ")"))
+
+               Here is a value that provides European style times:
+
+                    (24-hours ":" minutes
+                              (if time-zone " (") time-zone (if time-zone ")"))
+
+
+File: elisp,  Node: Daylight Savings,  Next: Diary Customizing,  Prev: Time Display Format,  Up: Calendar
+
+Daylight Savings Time
+=====================
+
+                  Emacs understands the difference between standard
+time and daylight savings time---the times given for sunrise, sunset,
+solstices, equinoxes, and the phases of the moon take that into
+account.  The rules for daylight savings time vary from place to place
+and have also varied historically from year to year.  To do the job
+properly, Emacs needs to know which rules to use.
+
+                  Some operating systems keep track of the rules that
+apply to the place where you are; on these systems, Emacs gets the
+information it needs from the system automatically.  If some or all of
+this information is missing, Emacs fills in the gaps with the rules
+currently used in Cambridge, Massachusetts, which is the center of
+GNU's world.  If the default choice of rules is not appropriate for
+your location, you can tell Emacs the rules to use by setting certain
+variables.
+
+                  These variables are
+`calendar-daylight-savings-starts' together with
+`calendar-daylight-savings-ends'.  Their values should be Lisp
+expressions that refer to the variable `year', and evaluate to the
+Gregorian date on which daylight savings time starts or (respectively)
+ends, in the form of a list `(MONTH DAY YEAR)'.  The values should be
+`nil' if your area does not use daylight savings time.
+
+                  Emacs uses these expressions to determine the
+starting date of daylight savings time for the holiday list and for
+correcting times of day in the solar and lunar calculations.
+
+                  The values for Cambridge, Massachusetts are as
+follows:
+
+                    (calendar-nth-named-day 1 0 4 year)
+                    (calendar-nth-named-day -1 0 10 year)
+
+               i.e., the first 0th day (Sunday) of the fourth month
+(April) in the year specified by `year', and the last Sunday of the
+tenth month (October) of that year.  If daylight savings time were
+changed to start on October 1, you would set
+`calendar-daylight-savings-starts' to this:
+
+                    (list 10 1 year)
+
+                  For a more complex example, suppose daylight savings
+time begins on the first of Nisan on the Hebrew calendar.  You should
+set `calendar-daylight-savings-starts' to this value:
+
+                    (calendar-gregorian-from-absolute
+                      (calendar-absolute-from-hebrew
+                        (list 1 1 (+ year 3760))))
+
+               because Nisan is the first month in the Hebrew calendar
+and the Hebrew year differs from the Gregorian year by 3760 at Nisan.
+
+                  If there is no daylight savings time at your
+location, or if you want all times in standard time, set
+`calendar-daylight-savings-starts' and `calendar-daylight-savings-ends'
+to `nil'.
+
+                  The variable `calendar-daylight-time-offset'
+specifies the difference between daylight savings time and standard
+time, measured in minutes.  The value for Cambridge is 60.
+
+                  The variable `calendar-daylight-savings-starts-time'
+and the variable `calendar-daylight-savings-ends-time' specify the
+number of minutes after midnight local time when the transition to and
+from daylight savings time should occur.  For Cambridge, both variables'
+values are 120.
+

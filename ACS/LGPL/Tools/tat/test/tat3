@@ -1,0 +1,52 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat3,v 1.76 2003/01/09 17:51:26 vltsccm Exp $"
+#
+# tat - test3
+#
+# 
+# valid command line options with tests needing 1 WS + 1 LCU env.
+# 
+#
+#
+
+# testing with /introot/bgilli/DEC95 ...
+# to test no interference between environment pool under VLTROOT and INTROOT ?
+# INTROOT=`pwd`
+# export INTROOT
+
+rm -f .testSession
+rm -f TestList.sed
+
+rm -f TestList
+rm -f TestList.sed
+rm -f TestList.grep
+rm -f Makefile
+cp Makefile.tat3 Makefile
+rm -f TestList
+cp TestList.tat3 TestList
+cp TestList.sed.tat3 TestList.sed
+
+#
+# makeEnv + cleanEnv
+#
+tat makeEnv
+echo "makeEnv OK"
+
+tat -g tat31
+cat ./ref/tat31.ref
+tat -g tat32
+cat ./ref/tat32.ref
+
+# test session opened => tat: run all tests without creating environments
+tat
+
+# check that the LCU has been rebooted and is OK
+
+tat cleanEnv
+echo "cleanEnv OK"
+
+# tat => run tat31 + tat32
+tat
+
+rm -f TestList.sed

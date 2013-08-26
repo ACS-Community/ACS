@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat141,v 1.76 2003/01/09 17:51:25 vltsccm Exp $"
+#
+echo tat141 OK

@@ -1,0 +1,18 @@
+export
+java -classpath
+endorsed
+Starting Java application
+Time:
+Connected
+ACS central logging not available!
+failed to flush logging queue because remote logging service has not been made available
+FINE 
+FINER 
+FINEST 
+DELOUSE 
+DEBUG 
+Ignoring call to ClientLogManager#init: already initialized!
+ComponentClientTestCase#setUp()
+suppressRemoteLogging called
+Logger jacorb@.* created with custom log levels local=Info, remote=Info
+Logger scxml@.* created with custom log levels local=Warning, remote=Warning

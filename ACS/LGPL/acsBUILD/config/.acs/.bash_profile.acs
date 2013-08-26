@@ -1,0 +1,1469 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+#
+# User specific environment and startup programs
+#
+# The following settings must be done before beginning the build 
+# of the ACS software. 
+#
+# The following variables give the location
+# where the ACS software and tools are installed:
+# The installation procedure understands whether you 
+# chose the default location or not and will (un)comment
+# the following lines accodingly.
+
+# The following variables can be overwritten
+# in the calling script to point to home defined versions of the tools
+# if the option:
+#      -r
+# is given as a parameter when calling the script 
+# or if the environment variable 
+#      ACS_RETAIN 
+# is set.
+#
+# Otherwise standard ACS values are used.
+#
+# See later in the script for the standard definitions
+#
+######
+# ACS specific configuration
+#
+# ALMASW_ROOTDIR # Parent directory for the installation
+#             # of any ACS version.
+#             # Normally /alma, should be touched
+#             # only when it is not possible to build
+#             # an ACS installation in the standard
+#             # tree
+# ALMASW_RELEASE # Parent directory for a specific
+#             # ACS version, appended to ALMASW_ROOTDIR
+#             # to build the absolute path of the installation.
+#             # Normally ACS-x.y is typically changed outside this
+#             # profile only when building test installations
+#             # including new tools
+#             # ACS external products (ACS/ExtProd) are built 
+#             # and installed here.
+# ACSROOT     # ACS installation directory below ALMASW_RELEASE
+#             # Changing this variable allows to have different
+#             # ACS installations using the same set of external product.
+#             # Since the external product have to be the same
+#             # for all patches ACS-x.y.z of the same ACS-x.y version
+#             # this allows to keep and switch between patches
+#             # and it is therefore quite useful for application
+#             # developers.
+# INTROOT     # Developer integration area
+# INTLIST     # A list of intermediate installation directories
+#             # between ACSROOT and INTROOT 
+#             # (external value always overwrite script default)
+# ACSDATA     # ACS run time files
+# ACS_CDB     # ACS configuration database file tree
+# ACS_TMP     # ACS tmporary directory, which contains ACS_INSTANCE.{n}
+# VLTROOT     # VLT Common software installation (if any)
+# VLTSW_RELEASE  # As above             
+#
+# MODPATH     # Defines if ../lib, ../bin...
+#             # have to be added to the PTHs or not
+#             # (external value always overwrite script default)
+# ACS_STARTUP_TIMEOUT_MULTIPLIER
+#             # Time factor to be applied when waiting
+#             # for a timeout during the execution of a script
+#             # (external value always overwrite script default)
+#
+# ACS_WIND_HOME  # e.g. ACS_WIND_HOME=WindRiver-3.7
+#             # Path to a Wind River installation ($WIND_HOME)
+#             # Give only the path portion relative to $ALMASW_INSTDIR
+# ACS_WIND_PLATFORM # e.g. ACS_WIND_PLATFORM=vxworks-6.7
+#             # typically a vxworks version in WIND_HOME ($WIND_PLATFORM).
+#             # This is not always the folder name, see wrenv -o print_packages.
+# WRSD_LICENSE_FILE # e.g. WRSD_LICENSE_FILE=27000@te13.hq.eso.org
+#             # FlexLM license management.
+#             # A server mentioned in this list must be reachable and alive.
+#             # For node locked license a path to the local license file.
+#             # Alternatively the setting can be superseded with like
+#             # lmutil lmpath -override wrsd 27000@te13.hq.eso.org
+#             # The override is stored in ~/.flexlmrc
+# If the Wind River installation is found, set the environment
+# for this also to allow APEX builds.
+
+#####
+# GCC and GNU tools installation directory
+#
+# GNU_ROOT
+# TCLTK_ROOT
+#####
+# ACE/TAO installation directory
+#
+# ACE_ROOT_DIR   # This is used to build indirectly ACE_ROOT 
+######
+# Python and OmniORB installation
+#
+# PYTHON_ROOT
+# OMNI_ROOT
+######
+# MICO_HOME      # MICO installation 
+######
+#
+# Java JDK installation, ORB and tools:
+# JAVA_HOME
+# ANT_HOME
+# JACORB_HOME
+######
+# 
+# VxWorks:
+# If the scripts finds a VxWorks installation
+# available, all corresponding environment variables
+# will be set.
+# This implies that later on TAT and ACS Makefile
+# will try to build and test VxWorks code.
+# If you want to avoid using VxWorks on a machine where it is
+# installed,
+#     unset WIND_BASE
+# after have executed this script.
+#
+#######################################################
+
+#
+# Checks RETAIN mode
+#
+if [ "$1" = "-r" ]
+then
+   ACS_RETAIN=1
+fi
+
+#
+# Default location for the ACS software and tools:
+#
+if [ X"$ALMASW_ROOTDIR" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ALMASW_ROOTDIR=/alma
+fi
+if [ X"$ALMASW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ALMASW_RELEASE=ACS-12.1
+fi
+
+# Combined absolute path where ACS software and tools are installed.
+ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
+
+
+#########################################################
+# Here is the OS detection Subroutines
+# Please skip this section if you want to modify other variables
+# 
+os_discovery ()
+{
+	#   Solaris: uname command is enough
+	#
+	#   Linux
+	# RedHat     : /etc/redhat-release
+	# Fedora     : /etc/redhat-release
+	# Debian     : /etc/debian-version
+	# Slackware  : /etc/slackware-version
+	#
+	# RHEL
+	# Red Hat Enterprise Linux WS release 4 (Nahant Update 1)
+	######################################################
+	# SL
+	# Scientific Linux SL release 4.1 (Beryllium)
+	######################################################
+	# RH
+	# Red Hat Linux release 9 (Shrike)
+	######################################################
+	# Fedora
+	# Fedora Core release 4 (Stentz)
+	######################################################
+	# Mandrake
+	# Mandrakelinux release 10.1 (Cooker) for i586
+	######################################################
+	# Gentoo
+	# Gentoo Base System version 1.6.12
+
+	# By Default the OS/Release are unknown
+	DISTRO='UNKNOWN'
+	REL='UNKNOWN'
+
+	# Here start the research
+	OS=`uname -s`
+
+
+	# First RedHat and connected distributions (Scientific Linux, Fedora)
+	case $OS in
+		'Linux'   )     # Need to know what distribution and get release number
+				check_linux;;
+		'SunOS' )	# Much easier, uname command is enough
+				check_solaris;;
+	esac
+}
+
+check_solaris ()
+{
+	OS='SOLARIS'
+	DISTRO='SOLARIS'
+	REL=`uname -r`
+}
+
+check_linux ()
+{
+	
+	OS='LINUX'
+	# Standard release files for different distributions
+	RH=/etc/redhat-release
+	DB=/etc/debian-version
+	SL=/etc/slackware-version
+	SU=/etc/SuSE-release
+	GT=/etc/gentoo-release
+	MD=/etc/mandrake-release
+
+	if [ -f $RH ] 
+   	then
+		INFO=`cat $RH`
+		# It can be Redhat, Scientific Linux or Fedora
+		# Check with first word
+		DUMMY=`cat $RH | cut -d' ' -f1`
+
+		case $DUMMY 
+		in
+			'Red') 		# It can be Redhat standard or RedHat Enterprise
+					case `cat $RH | cut -d' ' -f3` 
+					in
+						'Linux') # Old RedHat Free distribution (7.3, 8.0 or 9)
+					 		DISTRO='RHLX'
+					 		REL=`cat $RH | cut -d' ' -f5` ;;
+						'Enterprise') # RedHat Enterprise
+					 		DISTRO='RHEL'
+					 		REL=`cat $RH | cut -d' ' -f7` ;;
+					esac;;
+			'Scientific') 	# Scientific Linux
+					DISTRO='SL'
+					REL=`cat $RH | cut -d' ' -f5` ;;
+			'Fedora') 	# Fedora Core 
+					DISTRO='FEDORA'
+					REL=`cat $RH | cut -d' ' -f4` ;;
+		esac
+	fi
+
+	# then let's check other distributions, first SuSe
+	if [ -f $SU ]
+	then
+		# SuSe 
+		DISTRO=SUSE
+		REL=`grep -i SuSe $SU |  cut -d' ' -f3` 
+	fi
+
+	# Then Mandrake
+	if [ -f $MD ] 
+	then
+		DISTRO='MDRK'
+		REL=`cat $MD | cut -d' ' -f3` 
+	fi
+
+	# Debian
+	if [ -f $DB ] 
+	then
+		DISTRO='DEBIAN'
+		REL=""
+	fi
+	
+	if [ -f $GT ] 
+	then
+		DISTRO='GENTOO'
+		REL=`cat $GT` 
+	fi
+}
+##############################################################################
+# End of OS detection subroutines
+##############################################################################
+
+# Now call OS detection subroutin
+os_discovery
+
+#
+# This is necessary on RH 9 kernels from the original distribution
+# (kernel version < 2.4.20-28.9).
+# Comment it if you have a newer kernel.
+#
+#export LD_ASSUME_KERNEL=2.4.18
+
+#
+# This is necessary that we can send structured events from Python (OMNIORB)
+# to TAO notification channel
+# For detils check: 
+# http://omniorb.sourceforge.net/omni40/omniORB/omniORB004.html#toc23
+export ORBuseTypeCodeIndirections=0
+
+#
+# Uncomment this to use at the same time 
+# ACS and VLT common software on Linux 
+# (used by VLT/ACS evaluation projects)
+# 
+# VLTROOT=$ALMASW_INSTDIR/CCSLite
+#
+# Alternatively, let the script to find by itself
+# if CCS is installed in the standard ACS tree.
+# Comment this out if you want to be sure no VLTROOT is set
+#
+# WARNING: almamgr, doing the installation of ACS
+#          SHALL NOT DEFINE VLTROOT here.
+#          This would get in conflict with build procedures.
+#if [ -d  $ALMASW_INSTDIR/CCSLite ]
+#then
+#    VLTROOT=$ALMASW_INSTDIR/CCSLite
+#fi
+#
+
+#
+# Custom location for the ACS software and tools:
+# Normally you do not need to change these.
+# unless you are testing with special distributions.
+#
+# ALMASW_INSTDIR=_where_you_install_the_software_
+# ALMASW_RELEASE=""
+# ALMASW_ROOTDIR=$ALMASW_INSTDIR
+
+# set the following variable to the instance of ACS
+# you would like to use. Values are limited from 0-9.
+# be mindful of other users on your system who might
+# inadvertantly try to use your instance.
+if [ X"$ACS_INSTANCE" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACS_INSTANCE=0
+fi
+
+# set the following variable to the path where you want to install 
+# the ACS sources. The sources are downloaded under $HOME/ACSSW. 
+# Be careful that the ACSROOT must be different from $HOME/ACSSW!
+# Default value:
+if [ X"$ACSROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACSROOT=$ALMASW_INSTDIR/ACSSW
+fi
+
+# set the following variable for defining more working areas
+# INTLIST=dir1:dir2:dir3:...:dirn
+
+# Integration area
+# Uncomment the following line when you want to use an INTROOT
+# if [ X"$INTROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+# then
+#    INTROOT=$HOME/introot
+# fi
+
+# Different parts of INTLIST are separated
+if  [ X"$INTLIST" != X ]
+then
+  # item_list is only a temporary variable
+  item_list=`echo $INTLIST | sed s/:/\ /g`
+
+  INTLIST_DIRS=`echo $item_list`
+  intlist_first_dir=`echo $INTLIST | awk -F: '{print $1}'`
+fi
+
+
+# Set MODULE in all paths.
+# The value can be already set in the inherited environment.
+# Otherwise it can be set here. If set to 1,
+# ../bin will be added to PATH (if you are not concerned by potential security threats)
+# ../lib will be added to LD_LIBRARY_PATH
+# ../idl will be added to IDL_PATH
+# ../lib/python/site-packages will be added to PYTHONPATH
+if [ X"$MODPATH" = X ]
+then
+    MODPATH=0
+fi
+
+# WARNING: the following two variables GNU_ROOT and TCLTK_ROOT
+# cannot be empty.
+
+# set the following variable to the path where you installed your gnu stuff.
+# If you are running RedHat 7.2, 7.3 or 9 then you need to get GNU and TCL&TK from ACS
+if [ X"$GNU_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	if [ "${DISTRO}-${REL}" = "RHLX-9" -o "${DISTRO}-${REL}" = "RHLX-7.3" -o  "${DISTRO}-${REL}" = "RHLX-7.3" ] 
+	then 
+   		GNU_ROOT=$ALMASW_INSTDIR/gnu
+	else
+   		GNU_ROOT=/usr
+	fi	
+fi
+# set the following variable to the path where you installed your tcltk stuff.
+# If you are running RedHat 7.2, 7.3 or 9 then you need to get GNU and TCL&TK from ACS
+if [ X"$TCLTK_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/tcltk -o "${DISTRO}-${REL}" = "RHLX-9" -o "${DISTRO}-${REL}" = "RHLX-7.3" -o  "${DISTRO}-${REL}" = "RHLX-7.3" -o "$OSYSTEM"="$CYGWIN_VER" ] 
+	then 
+   		TCLTK_ROOT=$ALMASW_INSTDIR/tcltk
+	else
+   		TCLTK_ROOT=/usr
+	fi	
+fi
+
+# Activate the improved logging service in ACS by default
+if  [ X"$LOG_SERVICE_USE_EXTENSIONS" = X ]
+then
+	LOG_SERVICE_USE_EXTENSIONS=1
+fi
+
+# ACS_WIND_HOME
+# e.g. ACS_WIND_HOME=WindRiver-3.7
+# Path to a Wind River installation ($WIND_HOME)
+# Give only the path portion relative to $ALMASW_INSTDIR
+#
+# ACS_WIND_PLATFORM
+# e.g. ACS_WIND_PLATFORM=vxworks-6.7
+# typically a vxworks version in WIND_HOME ($WIND_PLATFORM).
+# This is not always the folder name, see wrenv -o print_packages.
+#
+# WRSD_LICENSE_FILE
+# e.g. WRSD_LICENSE_FILE=27000@te13.hq.eso.org
+# FlexLM license management.
+# A server mentioned in this list must be reachable and alive.
+# For node locked license a path to the local license file.
+# Alternatively the setting can be superseded with like
+# lmutil lmpath -override wrsd 27000@te13.hq.eso.org
+# The override is stored in ~/.flexlmrc
+
+#
+# The Wind River installation is optional.
+# Only if it is found, set the environment for this to allow APEX builds.
+
+if [ X"$ACS_WIND_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	ACS_WIND_HOME=WindRiver-3.7
+fi
+
+if [ X"$ACS_WIND_PLATFORM" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	ACS_WIND_PLATFORM=vxworks-6.7
+fi
+
+if [ X"$WRSD_LICENSE_FILE" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	WRSD_LICENSE_FILE=27000@te13.hq.eso.org
+fi
+
+# ------ End variables to be edited by hand ------------------
+# ------------------------------------------------------------
+
+
+# ------ The following variables are built based on  ----------
+# ------ the previous ones. You normally do not need ----------
+# ------ to change them by hand, but, please, have a ----------
+# ------ look at their value and meaning.            ----------
+# ------ (in particular if you did not install all   ----------
+# ------ the tools from the ACS cd.                  ----------
+
+# set the following variable to the path where you installed your TAO 
+# stuff:
+if [ X"$ACE_ROOT_DIR" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACE_ROOT_DIR=$ALMASW_INSTDIR/TAO/ACE_wrappers/build
+fi
+
+#Set the variables for OpenDDS
+if [ X"$DDS_ROOT_DIR" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   DDS_ROOT_DIR=$ALMASW_INSTDIR/DDS/build
+fi
+
+# set the following variable to the path where you installed your TAO 
+# stuff:
+OSYSTEM=`uname -s`
+CYGWIN_VER="CYGWIN_NT-5.1"
+if [ "$OSYSTEM" = "SunOS" ]
+then
+    ACE_ROOT=$ACE_ROOT_DIR/sun
+    if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+    then
+       ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+    fi
+elif [ "$OSYSTEM" = "Linux" ]
+then
+    ACE_ROOT=$ACE_ROOT_DIR/linux
+    DDS_ROOT=$DDS_ROOT_DIR/linux
+    if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+    then
+       ACS_STARTUP_TIMEOUT_MULTIPLIER=2
+    fi
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    ACE_ROOT=$ALMASW_INSTDIR/TAO/ACE_wrappers
+    DDS_ROOT=$DDS_ROOT_DIR/cygwin
+    if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+    then
+       ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+    fi
+else
+    ACE_ROOT=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+fi
+
+#
+# If ACE/TAO have been built for VxWorks, set the proper path
+#
+if [ -d $ACE_ROOT_DIR/vxworks ]
+then
+    ACE_ROOT_VW=$ACE_ROOT_DIR/vxworks
+fi
+
+##################
+# RTI DDS #
+##################
+if [ -d $ALMASW_INSTDIR/RTI/ndds.4.5f ]
+then
+    export NDDSHOME=$ALMASW_INSTDIR/RTI/ndds.4.5f
+fi
+
+##################
+# OpenSplice DDS #
+##################
+ARCH=`uname -m`
+if [ "$ARCH" != "x86_64" ]
+then
+    ARCH=x86
+fi
+if [ -f $ALMASW_INSTDIR/OpenSplice/HDE/$ARCH.linux2.6/release.com ]
+then
+    . $ALMASW_INSTDIR/OpenSplice/HDE/$ARCH.linux2.6/release.com
+fi 
+
+# About JAVA_HOME:
+# - If you have a standard Sun JDK installed, it has created the symlink /usr/java/default,
+#   and you can leave it to .bash_profile.acs to set JAVA_HOME to /usr/java/default.
+# - With a non-standard JDK installation, please edit this script, 
+#   or set JAVA_HOME before sourcing this script (if also $ACS_RETAIN is set).
+# - Please note that starting with ACS 8.2, the default JDK gets referenced by the "default" symlink,
+#   and therefore the exact version name is no longer critical. 
+#   This simplifies installations of slightly different JDK versions, but also bears the risk
+#   that you have a totally wrong JDK installed and don't notice this immediately.
+#   Please check the ACS documentation, or acsConfigReport output, 
+#   to ensure that you have a supported JDK installed.
+if [ X"$JAVA_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+    then
+      	JAVA_HOME=/Java
+    else
+      	JAVA_HOME=/usr/java/default
+    fi
+fi
+
+# If not explicitly set by hand,
+# set the following variable to the path where you installed the vlt stuff.
+# only if the CCSLite directory exist!
+
+if [ X"$VLTROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   if [ -d $ALMASW_INSTDIR/CCSLite ]
+   then
+       VLTROOT=$ALMASW_INSTDIR/CCSLite
+   else
+       VLTROOT=$ACSROOT
+   fi
+fi
+
+# We have to define the following variable
+# to make one of the VLT tools (pkgin) work without problems.
+if [ X"$VLTSW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   VLTSW_RELEASE=$ALMASW_RELEASE
+fi
+
+# set the following variable to the acsdata stuff.
+if [ X"$ACSDATA" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACSDATA=$ALMASW_INSTDIR/acsdata
+fi
+
+# for compatilibility issue, VLTDATA is also defined
+VLTDATA=$ACSDATA
+
+if [ X"$ACS_CDB" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACS_CDB=$ACSDATA/config/defaultCDB
+fi
+
+if [ X"$ACS_TMP" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+	then
+       ACS_TMP=$ACSDATA/tmp/`hostname`
+	else
+       ACS_TMP=$ACSDATA/tmp/`hostname -s`
+	fi
+fi
+
+# set the following variable to your default environment
+RTAPENV=walma
+
+# you do not need to change the following two settings. 
+# They allow you to use the cmm archive
+CMM_PORT=3000
+CMM_HOST=te13.hq.eso.org
+
+# HOST should be the name of the machine
+HOST=`hostname`
+
+if [ "$OSYSTEM" = "SunOS" ]
+then
+    USER=`/usr/ucb/whoami`
+elif [ "$OSYSTEM" = "Linux" ]
+then
+    USER=`/usr/bin/whoami`
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    USER=$USERNAME
+else
+    USER=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+fi
+
+##################
+# Python stuff
+##################
+if [ X"$PYTHON_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   PYTHON_ROOT=$ALMASW_INSTDIR/Python
+fi
+
+if [ X"$OMNI_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   OMNI_ROOT=$PYTHON_ROOT/omni
+fi
+OMNIORB_CONFIG=$OMNI_ROOT/config
+
+# Path where IDL files are searched at run time, for
+# example by the Interface Repository.
+
+IDL_PATH="-I$ACE_ROOT/TAO/orbsvcs/orbsvcs -I$ACE_ROOT/TAO/orbsvcs -I$ACE_ROOT/TAO -I$ACE_ROOT/TAO/tao"
+
+if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+then
+   IDL_PATH="-I$VLTROOT/idl "$IDL_PATH	
+fi
+
+if [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+then
+   IDL_PATH="-I$ACSROOT/idl "$IDL_PATH
+fi
+
+if  [ X"$INTLIST" != X ]
+then
+
+   tmp_list=""
+   for item_list in $INTLIST_DIRS
+   do
+      tmp_list=$tmp_list"-I$item_list/idl "
+   done
+
+   if [ X"$INTROOT" != X ]
+   then
+      IDL_PATH="-I$INTROOT/idl $tmp_list "$IDL_PATH
+   else
+      IDL_PATH="$tmp_list "$IDL_PATH
+   fi
+else
+   if [ X"$INTROOT" != X ]
+   then
+      IDL_PATH="-I$INTROOT/idl "$IDL_PATH
+   fi
+fi
+
+# CASA stuff
+if [ X"$CASA_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   if [ -e $ALMASW_INSTDIR/casa ]
+   then
+      export CASA_ROOT=$ALMASW_INSTDIR/casa
+      export CASAPATH="$CASA_ROOT $(uname -s | tr [:upper:] [:lower:]) local $(uname -n)"
+   fi
+fi
+
+# MICO stuff
+if [ X"$MICO_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   MICO_HOME=$ALMASW_INSTDIR/mico
+fi
+
+# Ant and JacORB stuff
+if [ X"$ANT_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ANT_HOME=$ALMASW_INSTDIR/ant
+fi
+
+if [ X"$JACORB_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   JACORB_HOME=$ALMASW_INSTDIR/JacORB
+fi
+
+# RTOS
+if [ X"$RTAI_HOME" = X ] || [ X"$LINUX_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   # Check for the directory structure AND for the existence of
+   # the files inside it. (disappeared by mistake in 1.47.
+   if [ -h $ALMASW_INSTDIR/rtai ] || [ -d $ALMASW_INSTDIR/rtai ]
+   then
+      if [ -f $ALMASW_INSTDIR/rtai/bin/rtai-config ] 
+      then
+      export RTAI_HOME=$ALMASW_INSTDIR/rtai
+      export LINUX_HOME=$ALMASW_INSTDIR/rtlinux
+     fi
+   fi
+fi
+
+# set the PATH, LD_LIBRARY_PATH and MANPATH and CLASSPATH accordingly to what 
+# you set above
+
+# In order to prevent a recursive definition of PATH, LD_LIBRARY_PATH, MANPATH,
+# intermediate variables have been defined.
+#
+# Also first reset the recursive additions.
+# This allows further path manipulations to appear in any suitable order,
+# because no one refers to $_ORIG_XXX which would have to come first.
+#
+# Note:
+# $PS1 presence is commonly used to distinguish a login shell from an
+# interactive shell.
+# Therefore $PS1 should not be exported and only modified if it already exists
+# (in .bashrc)
+# Improper export of $PS1 therefore might cause multiple run of
+# .bash_profile and such the recursion.
+# Or the profile runs is executed by .bashrc instead of by .bash_profile
+
+if [[ -z $ORIG_PATH ]]
+then
+   ORIG_PATH=$PATH
+else
+   PATH=$ORIG_PATH
+fi
+
+if [[ -z $ORIG_LD_LIBRARY_PATH ]]
+then
+   ORIG_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+else
+   LD_LIBRARY_PATH=$ORIG_LD_LIBRARY_PATH
+fi
+
+if [[ -z $ORIG_MANPATH ]]
+then
+   ORIG_MANPATH=$MANPATH
+else
+   MANPATH=$ORIG_MANPATH
+fi
+
+# PATH common settings
+
+# the PATH which comes with the operating system is preserved.
+# Very often it contains /usr/local/bin:/usr/bin
+# If you have problem with this order and you want to have /usr/bin
+# before /usr/local/bin just uncomment one of the following lines:
+# on SUN:
+#PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$ACSROOT/bin:$VLTROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/ccs/bin:/usr/5bin:/usr/ucb:/usr/dt/bin:/usr/openwin/bin:/usr/bin:$PATH
+# on Linux:
+#PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$ACSROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/bin:$PATH
+
+if [ "$OSYSTEM" = "SunOS" ]
+then
+   PATH=$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$JAVA_HOME/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/ccs/bin:/usr/5bin:/usr/ucb:/usr/dt/bin:/usr/openwin/bin:$PATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+      PATH=$VLTROOT/bin:$PATH
+   fi
+
+   if [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      PATH=$ACSROOT/bin:$PATH
+   fi
+
+   if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
+   then
+      PATH=$PATH:$CASA_ROOT/bin
+   fi
+
+elif [ "$OSYSTEM" = "Linux" ]
+then
+   # So it is linux
+   PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$PATH
+   
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+      PATH=$VLTROOT/bin:$PATH
+   fi
+
+   if [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      PATH=$ACSROOT/bin:$PATH
+   fi
+
+   if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
+   then
+      PATH=$PATH:$CASA_ROOT/bin
+   fi
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+   # So, we're under Cygwin
+   PATH=$ACE_ROOT/bin:$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$PATH
+   
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+      PATH=$VLTROOT/bin:$PATH
+   fi
+
+   if [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      PATH=$ACSROOT/bin:$PATH
+   fi
+
+   if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
+   then
+      PATH=$CASA_ROOT/bin:$PATH
+   fi
+else
+    PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+fi
+
+# LD_LIBRARY_PATH common settings
+
+if [ "$OSYSTEM" = "Linux" ]
+then
+   if  [ X"$RTAI_HOME" != X ]
+   then
+      LD_LIBRARY_PATH=$RTAI_HOME/lib:$LD_LIBRARY_PATH
+   fi
+
+   # No need to add /usr/lib in the LD_LIBRARY_PATH
+   if [ "$GNU_ROOT" != "/usr" ]
+   then
+      # Warning: On 64 bits machines, there might be the need to add $GNU_ROOT/lib64 
+      # instead of $GNU_ROOT/lib ? 
+      LD_LIBRARY_PATH=$GNU_ROOT/lib:$LD_LIBRARY_PATH
+   fi
+   if [ "$TCLTK_ROOT" != "/usr" ]
+   then
+      LD_LIBRARY_PATH=$TCLTK_ROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$ALMASW_INSTDIR/boost/lib:$LD_LIBRARY_PATH
+
+   if  [ X"$DDS_ROOT" != X ]
+   then
+	LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   if  [ X"$NDDSHOME" != X ]
+   then
+      if [ "$ARCH" != "x86_64" ]
+      then
+        LD_LIBRARY_PATH=$NDDSHOME/lib/i86Linux2.6gcc4.1.2:$LD_LIBRARY_PATH
+      else
+        LD_LIBRARY_PATH=$NDDSHOME/lib/x64Linux2.6gcc4.1.2:$LD_LIBRARY_PATH
+      fi
+   fi   
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+       LD_LIBRARY_PATH=$VLTROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+       LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
+   fi
+
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+   if  [ X"$RTAI_HOME" != X ]
+   then
+	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$RTAI_HOME/lib:LD_LIBRARY_PATH
+   else
+	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$LD_LIBRARY_PATH	
+   fi
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+       LD_LIBRARY_PATH=$VLTROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   if  [ X"$DDS_ROOT" != X ]
+   then
+	LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+       LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
+   fi
+
+   if  [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
+   then
+       LD_LIBRARY_PATH=$CASA_ROOT/lib:$LD_LIBRARY_PATH 
+   fi
+
+   PATH=$PATH:$LD_LIBRARY_PATH
+
+else
+    LD_LIBRARY_PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+fi
+
+# MANPATH common settings
+
+if [ "$OSYSTEM" = "SunOS" ]
+then
+
+   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:/usr/dt/man:/usr/openwin/man:/usr/man:$MANPATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then 
+      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
+   fi
+      
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      MANPATH=$ACSROOT/man:$MANPATH
+   fi
+
+elif [ "$OSYSTEM" = "Linux" ]
+then
+   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:$MANPATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then 
+      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
+   fi
+      
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      MANPATH=$ACSROOT/man:$MANPATH
+   fi
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:$MANPATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then 
+      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
+   fi
+      
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      MANPATH=$ACSROOT/man:$MANPATH
+   fi
+else
+    MANPATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
+fi
+
+# Note Helmut Tischer 2010-05-05, update 2010-08-19:
+#
+# Wind River VxWorks settings
+#
+# The Wind River installation is optional.
+# Only if it is found, set the environment for this to allow APEX builds.
+#
+# Values are based on the install location. This above is specified with
+# $ACS_WIND_HOME and $ACS_WIND_PLATFORM
+#
+# The Wind River script wrenv.sh knows the complete list of consistent values.
+# Inside shell scripts e.g.: eval `wrenv.sh -p vxworks-6.7 -o print_env -f sh`
+# In interactive shell simply, by a sub shell, e.g.: wrenv.sh -p vxworks-6.7
+#
+# Note: This adds prefixes to the variables PATH, LD_LIBRARY_PATH, MANPATH.
+#   Therefore do these settings after resetting the recursion above
+#   to prevent loosing these settings, or adding them multiple times.
+#
+# Since the path variables are extended by an an invoced application, make sure
+# that the variables are exported to it. Even though an earlier export picks up
+# later value changes, not sure whether all are already exported.
+# Because of the tcl hack (see below), TCLTK_ROOT is also used by wrenv.sh
+# and thus needs to be exported.
+# GNU_ROOT was needed in wrenv.sh before, but no longer. No need to export.
+# WRSD_LICENSE_FILE is not needed in wrenv.sh but during runtime. export also.
+#
+# About tcl package search path:
+#
+# Packages are automatically only found, if they are installed nearby libtcl*.so
+# Other locations must be specified with TCLLIBPATH.
+# Some tcl versions need TCLLIBPATH whitespace delimited, others optionally ':'
+# Attention! Packages installed in tcl must not be specified in TCLLIBPATH!
+#
+# The found libtcl*.so location determines the automatically found packages,
+# so LD_LIBRARY_PATH must be consistent with TCLLIBPATH.
+# PATH must match to use a consistent tcl executable and libraries.
+#
+# Wind River Workbench provides its own tcl installation with special packets
+# in $WIND_FOUNDATION_PATH/$WIND_HOST_TYPE/lib/tcl8.5
+# Additional VxWorks specific packages in $WIND_BASE/host/resource/tcl
+# If both are mentioned in TCLLIBPATH (Wind River tcl installation not used),
+# then $WIND_BASE ... must come first!
+# Order is important, because some Workbench versions are containing two
+# different implementations of package osconfig with same name and version nr.
+# tcl files and 'package provide' in other folders are not relevant, because
+# they get loaded explicitely when needed. See eg. shell script windsh
+# loading its own tcl environment for windsh.tcl
+#
+# An ACS specific tcl installation with packages is in $TCLTK_ROOT/lib/tcl8.4
+# More packages are in $TCLTK_ROOT/lib. Only on running this installation,
+# both folders are searched automatically/ 
+#
+# For the core tcl installation, Workbench ia superset of ACS, but
+# ACS has additional libraries and executables and tcl packages in the search path.
+# So keep the $TCLTK_ROOT portion in PATH and LD_LIBRARY_PATH.
+#
+# Wind River Workbench 3.6 and newer is containing tcl 8.5, ACS tcl 8.4
+# Additional libraries are not always compatible to tcl 8.5, in particular
+# blt is incompatible (3rd party unmaintained library which is hardcoded to
+# the tcl version specific native C interface).
+# "Normal" tcl scripts are considered non critical for tcl upgrades.
+# ACS and most likely APEX are no longer using tcl GUI related code.
+# (Note: But CCS/VLT did require very many additional packages!)
+#
+# Nevertheless so far set up search pathes for tcl 8.4 to keep ACS untouched,
+# and test Workbench and VxWorks kernel build/configuration management scripts.
+# For this $TCLTK_ROOT based path must come first, and TCLLIBPATH mentioning
+# both Wind River packet locations.
+# Unfortunately on setting the Wind River packages of tcl8.5 in TCLLIBPATH,
+# the tcl8.5 builtin packages of the same folder are also found before the
+# corresponding builtin packages of the actually running tcl8.4
+# This can be seen e.g. on 'package require tcltest'.
+# Therefore create a new folder far from the search path, and put in
+# links to the Wind River packages in the Workbench tcl installation, but not to the
+# tcl8.5 builtin packages, and refer to this new folder in TCLLIBPATH.
+# clock.tcl, msgs/, tzdata/ are not needed because this is a 8.5 specific expanded
+# version of the 8.4 builtin clock command.
+#
+# If TCLLIBPATH for 8.4 is whitespace delimited, packages are found from commandline
+# But Workbench loads tcl scripts explicitely and for this evaluates TCLLIBPATH
+# also, and expects a ":" as path delimiter.
+# Then on creating a VxWorks Image Project, no BSPs are shown and the Error Log
+# Window shows a missing PrjUtils.tcl
+# On colon delimited TCLLIBPATH, Workbench can load PrjUtils.tcl, but then later on
+# there is a error from within the tcl script, because dere a whitespace delimited
+# TCLLIBPATH is needed to call each other.
+# So effectively, the TCLLIBPATH must consist of only one entry.
+# Therefore to the new tcl package folder, add also links to packages and tcl files
+# from the VxWorks tcl package folder.
+# Note: There are some more tcl fiels and duplicated packages in other folders
+# outside the search path, but they are called explicitely when needed and need
+# not being covered here.
+#
+# Do not add the links to the workbench tcl packages directly into the VxWorks
+# tcl packages folder, because this would make it impossible to run an
+# instance with the original behaviour at the same time.
+# Disadvantage: hardcoded package version numbers in the links.
+#
+# mkdir $(WIND_HOME)/tcl_merged
+# cd $(WIND_HOME)/tcl_merged
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/dde
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/platform
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/reg
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/tclxml3.0
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/Wind
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/wrreader
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/Wtx
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/tm.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/OsConfig
+# ln -s ../vxworks-6.7/host/resource/tcl/cmpScriptHttp.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/gdb.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/init.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/shelbrws.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/VxWorksErrnoTbl.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/wtxcore.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/wtxinit.tcl
+#
+# Note that wrenv.sh does not append to TCLLIBPATH, but replaces it completely.
+#
+# For the shell only, it would be sufficient to insert $TCLTK_ROOT before
+# wrenv and overwrite TCLLIBPATH after wrenv.
+# But then still, workbench would load its own environment with different
+# setting and dependent behaviour. This could result e.g. in some ACS scripts
+# being unusable from within Workbench.
+# Therefore tcl environment fix is directly done in Workbench configuration.
+# This also has the advantage, that .bash_profile.acs can left unchanged,
+# e.g. on moving ACS from tcl 8.4 to 8.5
+# Also duplicate path entries are removed by wrenv "addpath" command,see below.
+# Attention! The tcl fix might get lost after Workbench/VxWorks update.
+# Therefore reapply after update!
+# Please note the steps down in Wind River setup.log to make it obvious.
+# Also the fix is based on TCLTK_ROOT, so export before running wrenv!
+#
+# Steps to adjust wrenv created environment for ACS tcl:
+# - $(WIND_HOME)/vxworks-6.7/package.properties
+# -- remove line TCLLIBPATH (moved to workbench-3.1/package.properties)
+#   This makes sure that PATH/LD_LIBRARY_PATH/TCLLIBPATH stay consistent,
+#   even if e.g. for Host native development only the Workbench environment
+#   is loaded, but not the VxWorks environment.
+# -- change TCLLIBPATH line to
+# - $(WIND_HOME)/workbench-3.1/package.properties:
+# -- append lines
+# workbench31.eval.44=addpath PATH $(TCLTK_ROOT)$/bin
+# workbench31.eval.45=addpath LD_LIBRARY_PATH $(TCLTK_ROOT)$/lib
+# workbench31.eval.46=export TCLLIBPATH=$(WIND_HOME)$/tcl_merged
+# Note:
+#   eval.xx numbers must be bigger as the numbers at original
+#     addpath...$(WIND_FOUNDATION_PATH) use for these PATH variables.
+#   Every eval.xx number must be unique.
+#   If needed on other Wind River installations, adjust numbers and order.
+#   No quoting of values even when whitespace delimiter are embedded
+#   Don't use variables set by other packages, because they might not be loaded.
+#   Try to avoid hardcoded version numbers to other packets.
+# - run:
+# cd $(WIND_HOME); setup/postinstall.sh
+# Attention! Required to propagate changes to install.properties and wrenv
+# - in $(WIND_HOME)/setup.log make a note about the changes to not
+#   forgetting about reapplying in case of an update.
+#
+# Steps to adjust search path of: make, expect, coverage
+# cd $(WIND_HOME)
+# ln -s /usr/bin/make make
+# ln -s ../Python/bin/coverage coverage_py
+# ln -s workbench-3.1/analysis/host/bin/x86-linux2/coverage coverage_wr
+# ln -s coverage_py coverage
+# utilities-1.0/package.properties: 
+# - remove line
+# utilities10.eval.04=addpath PATH $(GNU_ROOT)$/bin
+# - run: cd $(WIND_HOME); setup/postinstall.sh
+# - make a note in $(WIND_HOME)/setup.log
+#
+# For Alma, by GNU_ROOT, make is in /usr/bin
+# Pulling /usr/bin before Wind River pathes and other Alma pathes
+# would also invoke in particular /usr/bin/python and /usr/bin/java
+# instead of the dedicated versions in the Alma release.
+# Instead of pulling other Alma folders also to the front,
+# no longer pull $(GNU_ROOT) to the front, but dedicate another
+# folder in the front. For conflicting executables, this should
+# contain a symbolic path to the correct version.
+# The only executable names which are in ALMA as well as Wind River path are:
+# make, expect, coverage
+# expect is already the correct version (in turn of reordering tcl)
+# For make the Alma version is newer
+# The two versions of coverage have completely different meanings:
+# Preprocessor for Python or C/C++
+# Create symbolic links with name postfix for unique identification, make
+# ALMA python version the default
+# correspinding analysis for LD_LIBRARY_PATH
+# Only common libs between ALMA and WIND are libtcl8.4.so, libtk8.4.so
+# TCLLIBPATH fix above takes care about this.
+# ALMA some contains duplicate libraries between ACSSW and CCSLite or
+# ACSSW and /usr. Therefore keep other ALMA relative search path order.
+#
+# Note to two make versions in $PATH::
+# 'make -v', Wind River is 3.8, ACS is 3.81
+# For added features see
+# http://www.cmcrossroads.com/ask-mr-make/6789-whats-new-in-gnu-make-381
+# acsMakefile was using the "else ifeq ()" syntax. This is reverted now.
+# Other than that no make 3.81 requirement known.
+#
+# Verification:
+# - New values are propagated to $(WIND_HOME)/install.properties
+# - Run '$(WIND_HOME)/wrenv.sh -p vxworks-6.7' to start a sub shell
+# - Check the following environment variable value with path order:
+# TCLLIBPATH=.../vxworks-6.7/host/resource/tcl .../tcl_added
+# LD_LIBRARY_PATH=.../ACS-x.y/tcltk/lib:...:.../workbench-3.1/foundation/x86-linux2/lib:...
+# PATH=.../ACS-x.y/tcltk/bin:...:.../workbench-3.1/foundation/x86-linux2/bin:...
+# - Start Workbench, create a project of type "user defined" based on VxWorks
+# - in the makefile insert the rule
+# printenv:
+#	env | sort
+# - In Project navigator on the new project RightClick->NewTarget-> "printenv"
+# - In Project navigator a new "printenv" appears. RightClick->build target
+# - In the Build log window, verify in particular the above
+#   environment variables to be identical
+# - Create a VxWorks Image project, based on some BSP
+# - in the project navigator, open the kernel configurator of this project, modify,
+#   e.g. add entire C++ support
+# - rebuild the VxWorks image project
+# - On the shell, to prove that all packages in the right version are present:
+# (Sybtcl and pkginBuild are present only in CCS/vlt,
+#  in ACS/alma these two may fail)
+# > tclsh
+# % package require tcltest
+# 2.2.9
+# % package require Wind
+# 1.2
+# % package require OsConfig
+# 1.0
+# % cmpProfileAdd
+# wrong # args: should be "cmpProfileAdd hProj profile"
+# % package require Sybtcl
+# 2.5
+# % exit
+# > pkginBuild
+# pkginBuild ... help screen
+
+if [ -d $ALMASW_INSTDIR/$ACS_WIND_HOME ]
+then
+
+    export WRSD_LICENSE_FILE
+    export PATH LD_LIBRARY_PATH MANPATH TCLTK_ROOT
+    eval `$ALMASW_INSTDIR/$ACS_WIND_HOME/wrenv.sh -p $ACS_WIND_PLATFORM -o print_env -f sh`
+
+    # ACS specific settings based on Wind River tools.
+    export ACC_HOST=$HOSTNAME
+    CPU=${CPU:-PPC604}
+    case $CPU in
+            MC68040) VX_CPU_FAMILY=68k ;;
+            PPC604)  VX_CPU_FAMILY=ppc ;;
+            *)       VX_CPU_FAMILY="unknown_CPU_type_$CPU" ;;
+    esac
+     VX_HOST_TYPE=x86-linux
+     VXROOT=$WIND_BASE/target
+     VX_VW_BASE=$WIND_BASE/target
+     VX_HSP_BASE=$VXROOT
+     VX_BSP_BASE=$VXROOT
+    export ACC_HOST CPU VX_CPU_FAMILY
+    export VX_HOST_TYPE VXROOT VX_VW_BASE VX_HSP_BASE VX_BSP_BASE
+
+fi
+
+# PATH depending on INTROOT settings
+
+if  [ X"$INTLIST" != X ]
+then
+
+   tmp_list=""
+   for item_list in $INTLIST_DIRS
+   do
+      tmp_list=$tmp_list$item_list/bin:
+   done
+
+   if [ X"$INTROOT" != X ]
+   then
+      PATH=$INTROOT/bin:$tmp_list$PATH
+   else
+      PATH=$tmp_list$PATH
+   fi
+else
+   if [ X"$INTROOT" != X ]
+   then
+      PATH=$INTROOT/bin:$PATH
+   fi
+fi
+
+# LD_LIBRARY_PATH depending on INTLIST settings
+
+if  [ X"$INTLIST" != X ]
+then
+
+   tmp_list=""
+   for item_list in $INTLIST_DIRS
+   do
+      tmp_list=$tmp_list$item_list/lib:
+   done
+
+   if [ X"$INTROOT" != X ]
+   then
+      LD_LIBRARY_PATH=$INTROOT/lib:$tmp_list$LD_LIBRARY_PATH
+   else
+      LD_LIBRARY_PATH=$tmp_list$LD_LIBRARY_PATH
+   fi
+else
+   if [ X"$INTROOT" != X ]
+   then
+       LD_LIBRARY_PATH=$INTROOT/lib:$LD_LIBRARY_PATH
+   fi
+fi
+
+# MANPATH setting
+
+# Only for Linux or SunOS
+if [[ "$OSYSTEM" = "Linux"  || "$OSYSTEM" = "SunOS" || "$OSYSTEM" = "$CYGWIN_VER" ]]
+then
+   if  [ X"$INTLIST" != X ]
+   then
+
+      tmp_list=""
+      tmp_list_sub=""
+      for item_list in $INTLIST_DIRS
+      do
+         tmp_list=$tmp_list$item_list/man:
+         tmp_list_sun=$tmp_list_sun$item_list/vw/man:
+      done
+
+      if [ X"$INTROOT" != X ]
+      then
+         if [ "$OSYSTEM" = "Linux" ]
+         then
+            MANPATH=$INTROOT/man:$tmp_list$MANPATH
+         else
+            MANPATH=$INTROOT/man:$INTROOT/vw/man:$tmp_list$tmp_list_sun$MANPATH
+         fi
+      else
+         if [ "$OSYSTEM" = "Linux" ]
+         then
+            MANPATH=$tmp_list$MANPATH
+         else
+            MANPATH=$tmp_list$tmp_list_sun$MANPATH
+         fi
+      fi
+   else
+      if [ X"$INTROOT" != X ]
+      then
+         if [ "$OSYSTEM" = "Linux" ]
+         then
+            MANPATH=$INTROOT/man:$MANPATH
+         else
+            MANPATH=$INTROOT/man:$INTROOT/vw/man:$MANPATH
+         fi
+      fi
+   fi
+fi
+
+# In order to make the command "man" working the MANPATH variable must end with ":"
+MANPATH=$MANPATH:
+
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    PATH_SEP=":"
+else
+    PATH_SEP=":"
+fi
+
+# We only add jar files to the CLASSPATH which cannot be picked up by the AcsSystemClassloader that the acsStartJava script enables.
+#
+# As of ACS 9.1, avalon.jar and logkit.jar installed by ACS is copied from the jacorb installation instead of keeping a copy in Tools/extjars,
+# so that we no longer add $JACORB_HOME/lib/avalon-framework-4.1.5.jar and $JACORB_HOME/lib/logkit-1.2.jar to the CLASSPATH here.
+# This avoids adding the same jar files twice on the classpath, with possible version conflicts.
+CLASSPATH=$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
+
+#
+# Now that PATH and LD_LIBRARY_PATH are properly set, I first need
+# to export them and then I can call the Python interpreter in order to
+# extract the Python version and create a variable that contains only
+# X.Y discarding eventual minor numbers.
+# This is used to "find" the right directory for Python code and there
+# the minor version number seem not used.
+# If I do it before, I get the system python and not the one we want to use.
+#
+if [ -e $PYTHON_ROOT/bin/python ]; then
+	PYTHONVER=`LD_LIBRARY_PATH=$PYTHON_ROOT/lib $PYTHON_ROOT/bin/python -c "import sys; print '%d.%d' % (sys.version_info[0],sys.version_info[1])"`
+fi
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    PYTHONPATH="$OMNI_ROOT/lib/python${PATH_SEP}$OMNI_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib/python$PYTHONVER/site-packages${PATH_SEP}$OMNI_ROOT/lib/python/site-packages"
+else
+    PYTHONPATH="$OMNI_ROOT/lib/python${PATH_SEP}$OMNI_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib/python$PYTHONVER/site-packages${PATH_SEP}$OMNI_ROOT/lib/python/site-packages"
+fi
+export PATH LD_LIBRARY_PATH
+export PYTHONPATH
+if [ -e $PYTHON_ROOT/bin/python ]; then
+	PYTHONINC=`$PYTHON_ROOT/bin/python -c "from distutils.sysconfig import get_python_inc ; print get_python_inc()"`
+fi
+
+
+if [ X"$ACSROOT" != X ] || [ X"$INTLIST" = X ]
+then
+   PYTHONPATH="$ACSROOT/lib/python/site-packages${PATH_SEP}$PYTHONPATH"
+fi
+
+
+if [ X"$INTLIST" != X ]
+then
+   tmp_list=""
+   for item_list in $INTLIST_DIRS
+   do
+      tmp_list=$tmp_list$item_list/lib/python/site-packages${PATH_SEP}
+   done
+
+   PYTHONPATH=$tmp_list$PYTHONPATH
+fi
+
+if [ X"$INTROOT" != X ]
+then
+   PYTHONPATH=$INTROOT/lib/python/site-packages${PATH_SEP}$PYTHONPATH
+fi
+
+########################################
+# Set MODULE in all paths.
+# If this variable is defined,
+# ../bin will be added to PATH (if you are not concerned by potential security threats)
+# ../lib will be added to LD_LIBRARY_PATH
+# ../idl will be added to IDL_PATH
+# ../lib/python/site-packages will be added to PYTHONPATH
+if [ "$MODPATH" = "1" ]
+then
+        IDL_PATH="-I../idl "$IDL_PATH
+	PYTHONPATH=../lib/python/site-packages$PATH_SEP$PYTHONPATH
+	LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
+        # this could introduce security problems!
+	PATH=../bin:$PATH
+fi
+
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+	PATH=$ALMASW_INSTDIR/CygwinWrappers${PATH_SEP}$PATH
+fi
+
+########################################
+# Export variables.
+#
+export ORIG_PATH PATH LD_LIBRARY_PATH INTLIST
+export ORIG_MANPATH MANPATH IDL_PATH CLASSPATH HOST ALMASW_RELEASE ALMASW_ROOTDIR ORIG_LD_LIBRARY_PATH
+export ALMASW_INSTDIR ACSROOT ACE_ROOT_DIR ACE_ROOT_VW ACE_ROOT DDS_ROOT INTROOT USER LOG_SERVICE_USE_EXTENSIONS
+export GNU_ROOT TCLTK_ROOT JAVA_HOME VLTROOT ACSDATA VLTDATA ACS_CDB RTAPENV CMM_PORT CMM_HOST
+export ANT_HOME JACORB_HOME PYTHON_ROOT OMNI_ROOT OMNIORB_CONFIG PYTHONPATH MICO_HOME PYTHONINC
+export ACS_STARTUP_TIMEOUT_MULTIPLIER
+export ACS_INSTANCE
+export OSYSTEM
+export PATH_SEP
+export ACS_TMP
+export CYGWIN_VER
+
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+	export LOGNAME=`logname`
+	export CYGWIN_ROOT=`cygpath -m /`
+fi
+
+# See COMP-5690 about no longer unsetting MODPATH (if RETAIN flag is set)
+if [ X"$ACS_RETAIN" = X ]
+then
+    unset MODPATH
+fi
+
+
+# - Functions and aliases are not exported to sub-shells, therefore pointless
+#   in the profile.
+# - PS1 presence commonly used for distinguishing between login and interactive
+#   shell. Therefore exporting it to Sub-Shell breaks this, and can e.g. lead
+#   to recursive execution of .profile (see workaround ORIG_xxx above)
+#   Don't set it, if it is not set at all. Don't export!
+#   This is important to distinguish login shells from sub shells.
+#   if [ ! -z "$PS1" ]; then
+#     PS1='\h \u:\w \! > '
+#   fi
+#   PS1 will not be shown by external program 'env', because not exported.
+#   Use 'set' to see local variables and functions also.
+#
+# functions, aliases, PS1 should be moved to ~/.bashrc!
+# If the settings are needed in the login shell also, ~/.bashrc should be
+# called from the personal .bash_profile, after calling .bash_profile.acs
+#
+# For compatibility reasons so far leave it as it is.
+
+#
+# Some useful definitions of general usage.
+#
+psg()
+{
+    ps -ef | grep $1 | grep -v grep
+}
+
+PS1='\h \u:\w \! > '
+export PS1
+
+alias lr="ls -ltra"

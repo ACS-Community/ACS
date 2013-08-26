@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xi="http://www.w3.org/2001/XInclude">
+      <_ Name="HELLOWORLD_CPP" 	    
+         Code="corbaRefTest" 
+         Type="IDL:alma/CorbaRefTest/HelloWorld:1.0" 	
+         Container="cppContainer" ImplLang="cpp" />
+      <_ Name="HELLOWORLD_JAVA"
+         Code="alma.test.corbareftest.component.HelloWorldHelper" 
+         Type="IDL:alma/CorbaRefTest/HelloWorld:1.0" 
+         Container="javaContainer" ImplLang="java" /> 
+       <_ Name="HELLOWORLD_PY" 
+          Code="pythonImpl.HelloWorld" 
+          Type="IDL:alma/CorbaRefTest/HelloWorld:1.0" 
+          Container="pyContainer"  ImplLang="py" />
+
+		<!-- These are the components that request for other component, through the CS -->
+      <_ Name="COMP_JAVA"    Code="alma.demo.ComponentGetterImpl.ComponentGetterHelper"
+                             Type="IDL:alma/demo/ComponentGetter:1.0"
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="COMP_CPP"     Code="componentGetterImpl"
+                             Type="IDL:alma/demo/ComponentGetter:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="COMP_PY"      Code="demoImpl.ComponentGetterImpl"
+                             Type="IDL:alma/demo/ComponentGetter:1.0"
+                             Container="gandalfContainer" ImplLang="py" />
+
+		<!-- This is the component that all the other request for, runs in a different cpp container -->
+      <_ Name="COMP_TO_GET"  Code="componentGetterImpl"
+                             Type="IDL:alma/demo/ComponentGetter:1.0"
+                             Container="bilboContainer2" ImplLang="cpp" />
+</Components>
+

@@ -1,0 +1,118 @@
+#!/usr/bin/env perl
+#******************************************************************************
+# -*- perl-mode  -*-
+## @file
+#   $Id: mdExtractHtml,v 1.2 2009/04/30 08:18:14 gchiozzi Exp $
+#
+#   NAME
+#   mdExtractHtml
+# 
+#   DESCRIPTION
+#   wrapper script to call WebPublisher from MagicDraw, to generate
+#   HTML pages from a UML/SysML model
+#
+#   AUTHOR
+#   Michele Zamparelli
+#
+#   ENVIRONMENT  
+#   
+#   CAUTION
+#   - The modeal and destination directory must have absolute 
+#     path, but the check is done then in the wrong place 
+#   - Changed MAGIC_DRAW path
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#   
+#   BUGS
+#
+#   DEPENDENCIES:
+#
+#
+# VARIABLE SETTINGS
+#
+
+chop($binary = `which mduml 2> /dev/null`);
+
+if ($? == 0  && -f "$binary") { 
+    $binary =~ s/\/bin\/mduml$//;  
+    $instDir = $binary;
+} elsif ( -d "$ENV{MAGIC_DRAW_HOME}" ) { 
+    $instDir = $ENV{MAGIC_DRAW_HOME};
+} elsif ( -f "$ENV{HOME}/MagicDraw_UML/bin/mduml") { 
+    $instDir = "$ENV{HOME}/MagicDraw_UML";
+} else {
+    die "Could not find any MagicDraw installation directory\n";
+}
+
+
+$pluginDir = "$instDir/plugins/com.nomagic.magicdraw.reportwizard";
+$debug = 0;
+
+if($#ARGV < 2) { 
+    die "Usage: $0 <modelFile> <packages> <htmlOutputDir>\n";
+}
+
+$model     = $ARGV[0];
+$package   = $ARGV[1];
+$destDir   = $ARGV[2];
+
+# CHECKS
+
+
+#
+## MODEL EXISTANCE 
+#
+if ( ! -f $model) { 
+    die "$0: file $model does not exist\n";
+}
+#
+## DIR EXISTENCE 
+#
+if ( ! -d $destDir || ! -w $destDir) { 
+    die "$0: directory $destDir not existing or not writeable\n";
+}
+#
+# MAKING THE CLASSPATH
+#
+if (0) { 
+    # while the following approach is much more flexible and better
+    # I have to switch it off because of the system going out of memory
+    #
+    $ENV{CLASSPATH} = ".";
+    @jarfiles = `find $instDir/lib $instDir/plugins -follow -name \\*.jar`;
+    $cp = "";
+    foreach $jar (@jarfiles) { 
+	$jar =~ s/\n$//;
+	next if ($jar =~ /md_commontw/);
+	next if ($jar =~ /md_commontw_api/);
+	$cp .= "$cp:$jar";
+    }
+    
+} else { 
+
+    $cpOld =     "../../lib/patch.jar:../../lib/md.jar:../../lib/md_api.jar:../../lib/md_common.jar:../../lib/md_common_api.jar:../../lib/fl_common.jar:../../lib/tw_common.jar:../../lib/activation.jar:../../lib/batik.jar:../../lib/cvsclient.jar:../../lib/fop.jar:../../lib/jedit_syntax.jar:../../lib/jhall.jar:../../lib/jide-common.jar:../../lib/jide-dock.jar:../../lib/jimi.jar:../../lib/launcher.jar:../../lib/log4j-1.2.15.jar:../../lib/commons-logging-1.0.4.jar:../../lib/commons-codec-1.3.jar:../../lib/commons-httpclient-3.1.jar:../../lib/webservice/axis.jar:../../lib/webservice/commons-discovery-0.2.jar:../../lib/webservice/jaxrpc.jar:../../lib/webservice/mdserviceclient.jar:../../lib/webservice/saaj.jar:../../lib/webservice/wsdl4j-1.5.1.jar:../../lib/tidy.jar:../../lib/xalan.jar:../../lib/xercesImpl.jar:../../lib/xfc.jar:../../lib/xml-apis.jar:../../lib/y.jar:../../lib/jide-grids.jar:../../lib/CaliberRMSDK65.jar:../../lib/jax-qname.jar:../../lib/jaxb-api.jar:../../lib/jaxb-impl.jar:../../lib/jaxb-libs.jar:../../lib/namespace.jar:../../lib/relaxngDatatype.jar:../../lib/xsdlib.jar:../../lib/cmof14.jar:../../lib/cmof14ui.jar:../../lib/javax_jmi-1_0-fr.jar:../../lib/uml2.jar:../../lib/tas.jar:../../lib/jide-action.jar:../../lib/jide-components.jar:../../lib/antlr_2.7.6.1.jar:../../lib/graphics/freehep-base.jar:../../lib/graphics/freehep-graphics2d.jar:../../lib/graphics/freehep-graphicsio-emf.jar:../../lib/graphics/freehep-graphicsio-ps.jar:../../lib/graphics/freehep-graphicsio.jar:../../lib/graphics/clibwrapper_jiio.jar:../../lib/graphics/jai_imageio.jar:reportwizard.jar:reportwizard_api.jar:./lib/avalon-logkit-2.1.jar:./lib/commons-beanutils-1.7.0.jar:./lib/commons-collections-3.1.jar:./lib/commons-lang-2.1.jar:./lib/commons-logging-1.1.jar:./lib/log4j-1.2.14.jar:./lib/magicreport.jar:./lib/oro-2.0.8.jar:./lib/velocity-1.5.jar:./lib/velocity-tools-generic-1.3.jar:../../plugins/com.nomagic.magicdraw.caliberrm/caliberrm.jar:../../plugins/com.nomagic.magicdraw.caliberrm/caliberrm_api.jar:../../plugins/com.nomagic.magicdraw.caliberrm/lib/launcher.jar";
+    foreach $item (split(/:/,$cpOld)) {
+	if ($item =~ /^\w+/) { 
+	    $item = "$instDir/plugins/com.nomagic.magicdraw.reportwizard/$item";
+	}
+	$item =~ s/^\.\.\/\.\.\/lib/$instDir\/lib/;
+	$item =~ s/^\.\.\/\.\.\/plugins/$instDir\/plugins/;
+	$item =~ s/^\.\/lib/$instDir\/plugins\/com.nomagic.magicdraw.reportwizard\/lib/;
+	if (! -f $item) { 
+	    #warn ">>> $item not found\n";
+	}
+	$cp .= "$item:";
+    }
+}
+
+$executeClass = "com.nomagic.magicdraw.magicreport.CommandLine";
+$javaParams   = "-XX:PermSize=40M -XX:MaxPermSize=150M -Xmx800M -Xss26M";
+$javaParams   = "-Xmx800M -XX:MaxPermSize=128M";
+$command      = "java $javaParams -cp $cp $executeClass -project $model -output $destDir/index.html  -template Web\\ Publisher\\ 2.0 -package \"$package\" -recursive true";
+
+
+print $command if ($debug);
+system $command;
+exit $?;

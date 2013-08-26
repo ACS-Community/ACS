@@ -1,0 +1,39 @@
+1 - 
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'testPushAlarm#testPushAlarm' and updated logger names
+1 - ----------T--:--:----- INFO [testPushAlarm#testPushAlarm] -------------------------------
+1 - ----------T--:--:----- INFO [testPushAlarm#testPushAlarm] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@testPushAlarm#testPushAlarm created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] POA activated
+1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] Manager login done ...
+1 - ----------T--:--:----- DEBUG [testPushAlarm#testPushAlarm] Alarm system type: ACS
+1 - ----------T--:--:----- DEBUG [testPushAlarm#testPushAlarm] Alarm system type: ACS
+1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] Alarm source of UNDEFINED connected to the logging
+1 - ----------T--:--:----- ALERT [testPushAlarm#testPushAlarm] Alarm sent: &lt;TestFamily,TestMember,1&gt; Alarm for test
+1 - ----------T--:--:----- DEBUG [testPushAlarm#testPushAlarm] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] about to log out from manager
+1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] logged out from manager
+1 - ----------T--:--:----- WARNING [testPushAlarm#testPushAlarm] AlarmSourceFactory already closed
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'testAlarmsCollection#testAlarmsCollection' and updated logger names
+1 - ----------T--:--:----- INFO [testAlarmsCollection#testAlarmsCollection] -------------------------------
+1 - ----------T--:--:----- INFO [testAlarmsCollection#testAlarmsCollection] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@testAlarmsCollection#testAlarmsCollection created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] POA activated
+1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] Manager login done ...
+1 - ----------T--:--:----- DEBUG [testAlarmsCollection#testAlarmsCollection] Alarm system type: ACS
+1 - ----------T--:--:----- DEBUG [testAlarmsCollection#testAlarmsCollection] Alarm system type: ACS
+1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] Alarm source of UNDEFINED connected to the logging
+1 - ----------T--:--:----- ALERT [testAlarmsCollection#testAlarmsCollection] Alarm sent: &lt;TestFamily - 1,TestMember - 1,0&gt; Description of Al1
+1 - ----------T--:--:----- ALERT [testAlarmsCollection#testAlarmsCollection] Alarm sent: &lt;TestFamily - 2,TestMember - 2,1&gt; Description of Al2
+1 - ----------T--:--:----- ALERT [testAlarmsCollection#testAlarmsCollection] Alarm sent: &lt;TestFamily - 3,TestMember - 3,2&gt; Description of Al3
+1 - ----------T--:--:----- DEBUG [testAlarmsCollection#testAlarmsCollection] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] about to log out from manager
+1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] logged out from manager
+1 - ----------T--:--:----- WARNING [testAlarmsCollection#testAlarmsCollection] AlarmSourceFactory already closed
+1 - 
+1 - 
+1 - OK (2 tests)
+1 - 

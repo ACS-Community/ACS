@@ -1,0 +1,83 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList.lite,v 1.19 2010/10/12 12:34:43 rbourtem Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dave 2003-08-13 converted to eccs test driver
+# 
+SOURCE acsstartupTATEnvironment
+PROLOGUE acsstartupTATPrologue
+0  testAcsInstance  "testAcsInstance.sh"
+1  T1  "acsStartORBSRVC -noloadIFR -b 9" "@SLEEP 30" "acsStop -b 9"
+2  T2  "acsStartORBSRVC -noloadIFR -b 9" "@SLEEP 30" "acsStartManager -b 9" "@SLEEP 3" "acsStop -b 9"
+3  T3  "acsStart -noloadifr -b 9" "@SLEEP 30" \
+       "acsStartContainer -java -b 9 jCont" "@SLEEP 2" \
+       "acsStartContainer -py -b 9 pyCont"  "@SLEEP 2" \
+       "acsStartContainer -cpp -b 9 TestContainer" "@SLEEP 2" \
+       "acsStop -b 9"
+
+4  T4  "acsStart -noloadifr -b 9" "@SLEEP 30" \
+       "acsStartContainer -java -b 9 jCont" "@SLEEP 2" \
+       "acsStartContainer -java -b 9 opCont" "@SLEEP 2" \
+       "acsstartupSetEnv -hide acsStopContainer -b 9 jCont"        "@SLEEP 16" \
+       "acsStartContainer -java -b 9 jCont" "@SLEEP 2"  "acsStop -b 9"
+
+5  T5  "acsStart -noloadifr -b 9" "@SLEEP 30" \
+       "acsStartContainer -java -b 9 jCont" "@SLEEP 2" \
+       "acsStartContainer -py -b 9 pyCont"  "@SLEEP 2" \
+       "acsStartContainer -cpp -b 9 TestContainer" "@SLEEP 2" \
+       "acsStart -noloadifr -b 8" "@SLEEP 30" \
+       "acsStartContainer -java -b 8 jCont" "@SLEEP 2" \
+       "acsStartContainer -py -b 8 pyCont"  "@SLEEP 2" \
+       "acsStartContainer -cpp -b 8 TestContainer" "@SLEEP 2" \
+       "acsStop -b 9"  "@SLEEP 30" "acsStop -b 8"
+
+6  T6  "acsStart -noloadifr -b 9" "@SLEEP 30" \
+       "acsStartContainer -java -b 9 jCont" "@SLEEP 2" \
+       "acsStartContainer -py -b 9 pyCont" "@SLEEP 2" \
+       "acsStartContainer -cpp -b 9 TestContainer" "@SLEEP 2" \
+       "acsStop -b 9" 
+
+7  T7  "acsStop -b 0"
+
+8  T8  "acsstartupTestLoadIFR.sh"
+
+10 testContainerPort "testContainerPort.sh"
+
+11 heapDumpOnOutOfMemoryErrorTest "heapDumpOnOutOfMemoryErrorTest" 
+
+12 testContainerPortLock "testContainerPortLock"
+
+13 testVmOptions "testVmOption.sh"
+
+14 testNotifyEventChannelFactorySuffix "acsNamingService -b 9 -s" "@SLEEP 2" \
+                                       "acsNotifyService -b 9 -s -n TESTNotifyEventChannelFactory" "@SLEEP 4" \
+                                       "acsstartupTest_nslist" "@SLEEP 2" \
+                                       "acsNotifyService -b 9 -k -n TEST" "@SLEEP 2" \
+                                       "acsstartupTest_nslist" "@SLEEP 2" \
+                                       "acsNamingService -b 9 -k"
+
+EPILOGUE acsstartupTATEpilogue

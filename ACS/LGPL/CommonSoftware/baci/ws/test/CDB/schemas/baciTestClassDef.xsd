@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by Bocek (Volja) -->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:baciTestClassDef:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:baciTestClassDef:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+	<xs:complexType name="baciTestClassDef">
+		<xs:complexContent>
+			<xs:extension base="baci:CharacteristicComponent">
+				<xs:sequence>
+					<xs:element name="RWdoubleProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:RWdouble"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROdoubleProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:ROdouble"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWfloatProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:RWfloat"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROfloatProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:ROfloat"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWlongProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:RWlong"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROlongProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:ROlong"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWpatternProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWpattern">
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_value" type="xs:unsignedLong" default="5"/>
+									<xs:attribute name="bitDescription" type="xs:string" default="On, Remote, Sum Failure, External Interlock, DC Overcurrent, Phase Failure, Not Ready, State Inconsistent, Ramping"/>
+									<xs:attribute name="whenSet" type="xs:string" default="3, 2,  0,  0,  0,  0,  1,  1,  1"/>
+									<xs:attribute name="whenCleared" type="xs:string" default="2, 3, 3, 3, 3, 3, 3, 3, 3 "/>
+									<xs:attribute name="description" type="xs:string" default="Status"/>
+									<xs:attribute name="format" type="xs:string" default="%d"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" default="3263"/>
+									<xs:attribute name="units" type="xs:string" default="w/o"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROpatternProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROpattern">
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_value" type="xs:unsignedLong" default="5"/>
+									<xs:attribute name="bitDescription" type="xs:string" default="On, Remote, Sum Failure, External Interlock, DC Overcurrent, Phase Failure, Not Ready, State Inconsistent, Ramping"/>
+									<xs:attribute name="whenSet" type="xs:string" default="3, 2,  0,  0,  0,  0,  1,  1,  1"/>
+									<xs:attribute name="whenCleared" type="xs:string" default="2, 3, 3, 3, 3, 3, 3, 3, 3 "/>
+									<xs:attribute name="description" type="xs:string" default="Status"/>
+									<xs:attribute name="format" type="xs:string" default="%d"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" default="3263"/>
+									<xs:attribute name="units" type="xs:string" default="w/o"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROstringProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:ROstring"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWstringProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:RWstring"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWdoubleSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:RWdoubleSeq"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROdoubleSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:ROdoubleSeq"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWfloatSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:RWfloatSeq"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROfloatSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:ROfloatSeq"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWlongSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:RWlongSeq"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROlongSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="baci:ROlongSeq"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="baciTestClassDef" type="baciTestClassDef"/>
+</xs:schema>
+

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>Introduction to GP Layer</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+  </head>
+  <!--
+
+	    Section : Background
+	
+  -->
+  <section>
+    <title>Background</title>
+    <description>
+      <p>The GP Layer on top of NetBeans aims at:
+        <ul>
+          <li>offering services tailored to CERN needs that are less generic and simpler than NetBeans ones.</li>
+          <li>avoiding a too strong coupling with NetBeans</li>
+          <li>preserving a clean separation between domain-specific code and general-purpose GUI code.</li>
+          <li>using standards as the basis for defining APIs</li>
+        </ul>
+      </p>
+      <p>To achieve these goals, the GP layer defines new APIs and functionality for the core functionality of the 
+      Netbeans platform. The tailored services comprise the various NetBeans GUI components, definition of actions 
+      that can used in pop-up menus and the main menus, and an API for writing logging and tracing output.
+      The APIs have been designed so as to facilitate the use of the underlying NetBeans functionality, and to 
+      avoid that developers use the NetBeans APIs directly. In this way, it should be less difficult to change to a 
+      different platform than NetBeans if the need should ever arise in future.</p>
+      <p>NetBeans already provides a means to preserve a clean separation between domain-specific code and 
+      general-purpose GUI code. 
+      The GP Layer further exploits this characteristics and defines clear rules to be followed when integrating
+      domain classes into the GUI. In essence the GP layer leverages the JavaBeans standard as described in the next
+      section.</p>
+      <p>The GP Layer is based on the JavaBeans specificiations, and leverages related functionality intrinsic to NetBeans.
+      In brief, the developer has to respect the following guidelines to integrate domain classes into NetBeans:</p>
+      <ul>
+        <li>domain-specific classes have to follow the name specifications for getter and setter methods >>>ref</li>
+        <li>they have to use <a href="http://java.sun.com/j2se/1.3/docs/api/java/beans/PropertyChangeEvent.html">
+        PropertyChangeEvent objects</a> to publish new values (updates) to be displayed in the GUI</li>
+        <li>they have to provide <a href="http://java.sun.com/j2se/1.3/docs/api/java/beans/PropertyEditor.html">PropertyEditor</a>
+        classes so that the properties of your domain objects can be displayed/edited using textfields, labels, etc.</li>
+        <li>they need to provide <a href="http://java.sun.com/j2se/1.3/docs/api/java/beans/PropertyDescriptor.html">
+        PropertyDescriptor</a> objects to specify details on how the properties shall be displayed in the GUI</li>
+      </ul>
+      <p>In this document we assumes that you are familiar with those elements of the JavaBeans specifications. At least you should know what is a <i>Bean</i>, what conventions you have to follow, what is a <i>BeanInfo</i>, what is a <i>PropertyDescriptor</i> and what is a <i>PropertyEditor</i>. If you are not yet confident with those notions you should take the time to browse or read the following documents listed below before continuing to the next section.</p>
+      <ul>
+        <li>
+          <a href="http://java.sun.com/products/javabeans/docs/">JavaBeans Component Architecture Documentation from Sun</a>
+        </li>
+        <li>
+          <a href="http://developer.java.sun.com/developer/onlineTraining/Beans/JBeansAPI/shortcourse.html">Introduction to the JavaBeans API, Short Course</a>
+        </li>
+        <li>
+          <a href="http://www.javaworld.com/javaworld/jw-08-1997/jw-08-beans_p.html">JavaWorld article : A walking tour of JavaBeans (What JavaBeans is, how it works, and why you want to use it)</a>
+        </li>
+        <li>
+          <a href="http://www.javaworld.com/javaworld/jw-09-1997/jw-09-beans_p.html">JavaWorld article : Customize your Java (How to tailor JavaBeans to fit your application)</a>
+        </li>
+        <li>
+          <a href="http://www.javaworld.com/javaworld/jw-11-1997/jw-11-beans_p.html">JavaWorld article : The trick to controlling <i>bean</i> customization (Make your beans easy to customize using the BeanInfo interface and the Introspector class)</a>
+        </li>
+      </ul>
+    </description>
+  </section>
+  <!--
+
+        Section : The basic concepts
+                
+  -->
+  <section>
+    <title>The basic concepts</title>
+    <description>
+    <p>
+    This section gives an overview of the basic concepts used in the GP Layer, which are
+        <ul>
+        <li>JavaBeans compliant domain classes</li>
+        <li>Nodes and Children</li>
+        <li>Explorer GUI components</li>
+        </ul>
+        <p>We can make a parallel with the Model-View-Controller Pattern>>>ref, where the JB domain objects are the model, the GUI components
+        are the View and Controller, and the Nodes and children are the "glue" in between.</p>
+        <p>The following subsections will explain each of these concepts in more detail.</p>
+    </p>
+    </description>
+    <section>
+      <title>JavaBeans Compliant Domain Classes</title>
+      <description>
+        <p>
+        First of all, it has to be clarified that in this document, by "JavaBean" we do <em>not</em> mean the visual GUI components you find in the component 
+        palette of JBuilder or other IDE tools, and which you can drag-and-drop into your GUI using a visual GUI builder tool. What we mean are <em>non-visible</em>
+        domain classes that in general do not inherit from a Swing class. Such a JB-compliant domain object has properties with setter and 
+        getter methods which respect the JavaBeans naming conventions, and it publishes new values of these properties using PropertyChangeEvents. In 
+        the rest of this document, they will be simply referred to as "domain beans" or simply "beans". </p>
+        <p>As already mentioned, the GP platform leverages functionality of the NetBeans platform to seamlessly integrate beans. 
+        A bean provides all the information needed for the GUI with appropriate methods. For instance, it has a method getNodeIcon() to 
+        return the Icon, a method getDisplayName() that returns the GUI display name, and a method getNodeActions() that returns the actions to 
+        be displayed in a Popup-Menu. See >>>BeanSupport for the complete list of methods.</p>
+        <p>Section >>> describes in further detail how this is done. </p>
+      </description>
+        <codeDescription>
+          <title>Example of a domain bean representing an alarm</title>
+          <comment>
+          An Alarm domain class has methods specific to alarms and methods for representing an alarm in the GUI.
+          </comment>
+          <code>
+public class Alarm extends BeanSupport {
+    public String getName() {...}
+    public int getPriority() {...}
+    public boolean isMasked() {...}
+    public setMasked(boolean masked) {...}
+    public Image getNodeIcon() {...}
+    public String[] getNodeActions() {...}
+}</code>
+        </codeDescription>
+    </section>
+    <section>
+      <title>Nodes and Children</title>
+      <description>        
+        <p>So called>>>"GPNodes" are the "glue" between the GUI and the JavaBean-compliant domain class. For each domain bean an GPNode
+        is created. GPNodes can have children which are themselves GPNodes. This makes it possible to create a hierarchy of GPNodes that can be visualized
+        using one of the GP Explorer components. </p>
+        <p>When a GPNode is passed to a GP explorer, it extracts relevant information from the JB domain objects, so that the Explorer can visualize them. </p>
+      
+        <p>The GPNode class is also part of the GP Layer API. A GPNode is actually a wrapper around a native Node used inside the NetBeans platform. 
+        We could have used NetBeans native Nodes directly, but we decided to provide the GPNodes with a simple API to the developers, to shield 
+        them from the complexity of the NetBeans node, and to reduce the dependency on NetBeans APIs.</p> 
+
+        <p>If a developer gives a JavaBean to the GP layer, it automatically gathers information from the JavaBean and from the eventual associated 
+        BeanInfo class. It uses this information to create the <i>Node</i> data structure, which can then be visualized in various components, e.g. 
+        an explorer component, a property sheet, a table, a list, or a menu. In terms of the MVC (Model View Controller) Pattern, the 
+        Model is made up of JB compliant domain classes which are held together by GPNodes. This one Model can then be viewed and controlled in different 
+        Explorer Components.</p>
+      </description>
+    </section>
+    <section>
+      <title>Explorers and other GUI components</title>
+      <description>
+        <p>In terms of the MVC pattern, GUI components combine the controler and the view. GP provides a series of >>>different GUI components, such
+        as >>>TreeExplorers, >>>ListExplorers, and >>>TreeTableExplorers. They are all used of visualizing a hierarchy of GPNode objects with their 
+        associated JB-compliant beans. In fact, the same GPNode hierarchy can be displayed in different explorers -- a TreeExplorer would show 
+        the whole hierarchy of nodes, whereas a ListExplorer would show only a list of sibling nodes. A ListTableExplorer would a list of
+        domain beans plus a table with the the properties of each bean.</p>
+        <p>Two explorers can also share a common GPNode structure. Because they share a model, the two explorers will be synchronized. For instance, if 
+        the user changes the icon of a node in one Explorer, the icon change will be reflected in the other explorer too. </p>
+      </description>
+    </section>
+  </section> 
+  
+</document>
+

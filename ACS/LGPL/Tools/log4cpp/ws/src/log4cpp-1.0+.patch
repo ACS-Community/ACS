@@ -1,0 +1,2197 @@
+diff -Naur log4cpp-1.0/configure log4cpp-1.0+/configure
+--- log4cpp-1.0/configure	2007-08-29 03:33:57.000000000 -0600
++++ log4cpp-1.0+/configure	2011-04-18 16:39:13.906768262 -0600
+@@ -21253,7 +21253,17 @@
+ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+ 
+-acx_pthread_ok=no
++if test "$cross_compiling" = no; then
++	acx_pthread_ok=no
++else
++	acx_pthread_ok=yes
++    { echo "$as_me:$LINENO: WARNING: On cross compiling without remote execution, the pthreads capability probe application
++    	cannot be executed. For now fake success of HAVE_PTHREAD, HAVE_THREADING, USE_PTHREADS
++    	and assume no pthreads specific PTHREAD_LIBS and PTHREAD_CFLAGS" >&5
++    echo "$as_me: WARNING: On cross compiling without remote execution, the pthreads capability probe application
++    	cannot be executed. For now fake success of HAVE_PTHREAD, HAVE_THREADING, USE_PTHREADS
++    	and assume no pthreads specific PTHREAD_LIBS and PTHREAD_CFLAGS" >&2;}
++fi	
+ 
+ # We used to check for pthread.h first, but this fails if pthread.h
+ # requires special compiler flags (e.g. on True64 or Sequent).
+diff -Naur log4cpp-1.0/doc/Doxyfile.in log4cpp-1.0+/doc/Doxyfile.in
+--- log4cpp-1.0/doc/Doxyfile.in	2007-09-03 03:53:14.000000000 -0600
++++ log4cpp-1.0+/doc/Doxyfile.in	2011-04-18 16:38:48.020789780 -0600
+@@ -62,7 +62,9 @@
+ INCLUDE_GRAPH        = YES
+ INCLUDED_BY_GRAPH    = YES
+ GRAPHICAL_HIERARCHY  = YES
+-MAX_DOT_GRAPH_WIDTH    = 1024
+-MAX_DOT_GRAPH_HEIGHT   = 1024
++#Warning: Tag `MAX_DOT_GRAPH_xxx' at line 65 of file Doxyfile has become obsolete.
++#To avoid this warning please update your configuration file using "doxygen -u"
++#MAX_DOT_GRAPH_WIDTH    = 1024
++#MAX_DOT_GRAPH_HEIGHT   = 1024
+ GENERATE_LEGEND        = YES
+ DOT_IMAGE_FORMAT = gif
+diff -Naur log4cpp-1.0/include/log4cpp/Appender.hh log4cpp-1.0+/include/log4cpp/Appender.hh
+--- log4cpp-1.0/include/log4cpp/Appender.hh	2002-10-26 19:48:52.000000000 -0600
++++ log4cpp-1.0+/include/log4cpp/Appender.hh	2011-04-18 16:38:48.021816833 -0600
+@@ -49,6 +49,18 @@
+         
+         /**
+          * Call reopen() on all existing Appenders.
++         * @returns set of names of Appenders returned fales on their reopen() call.
++         */
++        static std::set<std::string> reopenAllFailedNames();
++        
++        /**
++         * Get a set of getName() of all existing Appenders.
++         * @returns set of names of Appenders 
++         **/
++        static  std::set<std::string> getAllAppenders();
++        	
++        /**
++         * Call reopen() on all existing Appenders.
+          * @returns true if all Appenders returned true on their reopen() call.
+          **/
+         static void closeAll();
+@@ -137,7 +149,7 @@
+         static threading::Mutex _appenderMapMutex;
+ 
+         static AppenderMap& _getAllAppenders();
+-        static void _deleteAllAppenders();
++        // static void _deleteAllAppenders(); //ownership management and implementation problem. anyway not used.
+         static void _addAppender(Appender* appender);
+         static void _removeAppender(Appender* appender);
+ 
+diff -Naur log4cpp-1.0/include/log4cpp/Category.hh log4cpp-1.0+/include/log4cpp/Category.hh
+--- log4cpp-1.0/include/log4cpp/Category.hh	2007-08-28 01:54:10.000000000 -0600
++++ log4cpp-1.0+/include/log4cpp/Category.hh	2011-04-18 16:38:48.023769281 -0600
+@@ -666,6 +666,62 @@
+         volatile bool _isAdditive;
+ 
+     };
++    
++    /**
++     * Helper class for testing purposes
++     * Rerunning multiple tests within a single process.
++     **/   
++	class Log4cppCleanup {
+ 
++		//NOTE:
++		// Within a Doxygen Comment #xxx is treated as explicite link to
++		// a source symbol xxx documented elsewhere.
++		// Use \# for literal use e.g. on citing a C++ include
++		// This avoids doxygen warning about non existing explicite link
++		public:
++        /**
++         * delete an Instance created by Category::getInstance() above.
++         * Attention!
++         * Only for testing purposes!
++         * In a real application FixedContextCategory() should be used
++         * for local Categories!
++         * 
++         * Details:
++         * E.g. to explicitely clean up globally created Categories for
++         * rerunning tests in the same process.
++         * Attention, a reference to a deleted Instance might be left behind
++         * at caller function levels, if an already existing Category was
++         * returned by getInstance, but deleted nevertheless!
++         * See also Category::exists() to check whether the category existed
++         * already before creation.
++         * Alternatively use log4cpp::Category::getCurrentCategories() to
++         * find all existing Categories.
++         * On destruction of a Category, by Category::removeAllAppenders
++         * Appenders owned by the Category are deleted automatically in addition
++         * to removal. Others Appenders need to be deleted separately.
++         * Ownership of Appenders can be selected by
++         * addAppender(Appender*) vs. addAppender(Appender&)
++         * orphaned appenders e.g. are keeping logfiles open.
++         * See testmain.cpp, Appender::reopenAll covering orphaned logs.
++         * 
++         * See also log4cpp::Category::shutdown() removes all appenders
++         * of all Categories which are still in the Category map.
++         * 
++         * Note:
++         * testConfig.cpp and testPropertyConfig.cpp are loading log filenames
++         * and categories from the config files! Take into account on cleanup.
++         * filenames from config files are expected in the current folder!
++         * 
++         * Alternatively before a new test round in same process consider 
++         * \#include <log4cpp/HierarchyMaintainer.hh>
++		 * log4cpp::HierarchyMaintainer::getDefaultMaintainer().deleteAllCategories();
++		 * But this might clean up the map only, and leaving behind orphaned categories.
++		 *
++		 * Note: Also NDC might leave behind nested contexts.
++		 *   Clean up with NDC::clear() or balanced NDC::pop() 
++         */
++		static void deleteInstance(Category& category);
++	};
+ }
++
+ #endif // _LOG4CPP_CATEGORY_HH
+diff -Naur log4cpp-1.0/include/log4cpp/config-vxworks.h log4cpp-1.0+/include/log4cpp/config-vxworks.h
+--- log4cpp-1.0/include/log4cpp/config-vxworks.h	1969-12-31 17:00:00.000000000 -0700
++++ log4cpp-1.0+/include/log4cpp/config-vxworks.h	2011-04-18 16:38:48.026197388 -0600
+@@ -0,0 +1,366 @@
++#ifndef _INCLUDE_LOG4CPP_CONFIG_VXWORKS_H
++#define _INCLUDE_LOG4CPP_CONFIG_VXWORKS_H 1
++
++/* manually edited from include/log4cpp/config.h */
++
++/* Other fixes for building for VxWorks and other compiler/script warnings
++
++* include/log4cpp/config-vxworks.h: Added for custom forcing settings
++*
++* include/log4cpp/PatternLayout.hh: doxygen syntax
++* include/log4cpp/Portability.hh: use config-vxworks.h on VxWorks. Note: Portability.hh for use in *.hh files; In *.cpp use PortabilityImpl.hh with added inlines.
++* include/log4cpp/Priority.hh: enum syntax (trailing comma)
++* src/Category.cpp: Superflous Scope specification
++* src/FileAppender.cpp: conflicting write() declaration - need const. for ioctl need ioLib.h
++* src/Localtime.cpp: use string.h not memory.h
++* src/Priority.cpp: log entry type keyword strings
++* tests/Clock.hh: sys/times.h not sys/time.h for struct timeval in Vxworks kernel. Portability.hh missing.
++* include/log4cpp/RemoteSyslogAppender.hh: enum syntax (trailing comma)
++* src/RemoteSyslogAppender.cpp: need hostLib.h for e.g. gethostbyname(0
++* src/RemoteSyslogAppender.cpp: #include <sockLib.h> for e.g. socket(), sendto() etc
++* src/BasicConfigurator.cpp: # include <ioLib.h>  For dup() __RTP__: Also unistd.h
++* src/SimpleConfigurator.cpp: # include <ioLib.h>  For dup() __RTP__: Also unistd.h
++* tests/Clock.cpp: in Kernel sys/times.h instead of Linux and __RTP__ sys/time.h for struct timeval; clock_gettime(CLOCK_REALTIME) not gettimeofday() PortabilityImpl.hh missing.
++* 
++* log4cpp.spec: removed, generated by configure
++*
++* configure for pthreads, see below, optional
++* bcb5/log4cpp/Makefile.in - by mistake? 
++* 	"INSTALL_c_PROGRAM = @INSTALL_STRIP_PROGRAM@" instead of "INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@"
++*
++* doc/Doxyfile.in: doxygen warning, obsolete parameter
++* 
++ */
++
++/* Add  appropriate #include in Portability.h:
++ * #if defined (_MSC_VER) || defined(__BORLANDC__)
++ * ...
++#elif defined(__vxworks)
++#else
++#        include <log4cpp/config-vxworks.h>
++#endif
++ * Predefined Macros for powerpc-wrs-vxworks see: touch foo.h; cppppc -dM foo.h; rm foo.h
++ * Check both GNU 2.96 for VxWorks 5.x and GNU 3.x or 4.x for VxWorks 6.x to prefer version independent Macros.
++ * __vxworks
++ * For VxWorks 6.x see also _WRS_KERNEL and __RTP__ to differentiate between kernel space and application process space
++ * See also _ARCH_PPC, __BIG_ENDIAN__
++ */
++
++#if 0
++/* include/log4cpp/config.h. Generated automatically at end of configure. */
++/* include/config.h.  Generated from config.h.in by configure.  */
++/* include/config.h.in.  Generated from configure.in by autoheader.  */
++#endif
++
++/* Define to 1 if you have the <dlfcn.h> header file. */
++/* Only in VxWorks application processes! */
++/* #undef LOG4CPP_HAVE_DLFCN_H */
++#ifndef LOG4CPP_HAVE_DLFCN_H
++#ifdef __RTP__
++#define LOG4CPP_HAVE_DLFCN_H 1
++#endif
++#endif
++
++/* Define to 1 if you have the `ftime' function. */
++/* #undef LOG4CPP_HAVE_FTIME */
++
++/* Define to 1 if you have the `gettimeofday' function. */
++/* Used despite the exclusion in Clock.cpp */
++/* Anyway timezones undefined and not used, therefore clock_gettime(CLOCK_REALTIME) is as good as well.
++ * Note conversion from nsec to usec, see timeval vs. timespec, note time.h not sys/time.h
++ */
++/* VxWorks __RTP__ : declared in sys/time.h but still not available */
++/* VxWorks _WRS_KERNEL : not available */
++/* #undef LOG4CPP_HAVE_GETTIMEOFDAY */
++
++/* define if the compiler has int64_t */
++/* #undef LOG4CPP_HAVE_INT64_T */
++#ifndef LOG4CPP_HAVE_INT64_T
++#define LOG4CPP_HAVE_INT64_T 1
++#endif
++
++/* Define to 1 if you have the <inttypes.h> header file. */
++/* Only in application processes!!!!! */
++/* #undef LOG4CPP_HAVE_INTTYPES_H */
++#ifndef LOG4CPP_HAVE_INTTYPES_H
++#ifdef __RTP__
++#define LOG4CPP_HAVE_INTTYPES_H 1
++#endif
++#endif
++
++/* Define to 1 if you have the <io.h> header file. */
++/* #undef LOG4CPP_HAVE_IO_H */
++
++/* Define to 1 if you have the `idsa' library (-lidsa). */
++/* #undef LOG4CPP_HAVE_LIBIDSA */
++
++/* Wrong by autoconfigure! */
++/* Define to 1 if you have the `localtime_r' function. */
++/* #undef LOG4CPP_HAVE_LOCALTIME_R */
++#ifndef LOG4CPP_HAVE_LOCALTIME_R
++#define LOG4CPP_HAVE_LOCALTIME_R 1
++#endif
++
++/* Wrong by autoconfigure! define to get around problems with ERROR and DEBUG in vxWorks.h
++ * 
++ * ERROR and DEBUG used by Priority.hh as scoped C++ symbol.
++ * but Macros override the value in all Scopes. 
++ * 
++ * In VxWorks Application Processes (#if defined(__RTP__) ), Name collision free pure Posix
++ * conformance could be enforced by #define _POSIX_C_SOURCE 200112L. But this precludes
++ * some VxWorks features in this application.
++ * Don't taking care about further VxWorks Process details for now.
++ * 
++ * For VxWorks Kernel Process:
++ * DEBUG:
++ *   Used only as #ifdef by compiler command line. Value irrelevant.
++ *   Sufficient to override #define DEBUG DEBUG to keep meaning when used as C++ symbol.
++ * ERROR:
++ *   Value is important, defined by VxWorks indirectly included header file.
++ *
++ *   Need to put a variable ERROR with the correct value into global scope, in addition to
++ *   override #define ERROR ERROR. Then VxWorks as well as scoped use of ERROR expand to the
++ *   proper variable. static linkage is sufficient, because Priority.hh included in all conflicting files.
++ *
++ *   It must be prevented, that #define ERROR is overriden by a later VxWorks header
++ *   after it got fixed in Priority.hh
++ *   Unfortunately system headers do not show a warning on override, see -isystem, -Wsystem-headers
++ *   Also the Priority.hh fix is only in effect, if the VxWorks value was already defined before.
++ *   Therefore in Portability.hh always refering the platform specific value by an
++ *   extern const int ERROR_platform variable in PortabilityImpl.cpp does not help.
++ *   Also it is not obvious what OS internal header file got indirectly included, and therefore
++ *   there is no specific correct log4cpp header inclusion order.
++ *   The only way is, to include the entire OS specific header which defines ERROR, to benefit from the
++ *   double inclusion protection. This must be done within a sub include of Portability.hh, to
++ *   be sure that it is available before Priority.hh
++ *   The minimum system header which fullfills this, and does not collide with VxWorks.h inclusion
++ *   order is vxWorksCommon.h
++ */   
++#ifndef LOG4CPP_FIX_ERROR_COLLISION
++#define LOG4CPP_FIX_ERROR_COLLISION 1
++#endif
++#include <vxWorksCommon.h>
++
++/* Define to 1 if you have the <memory.h> header file. */
++/* Note: With VxWorks corresponding functions are in string.h instead
++ * either create a forwarding memory.h in the application or handle at memory.h usage.
++ * Anyway with log4cpp the only occurence in Localtime.cpp is not used because of available localtime_r
++ * Alternatively: #include string.h or other memcpy declaration right here, to get by with skipping memory.h at usage locations.
++ */
++/* #undef LOG4CPP_HAVE_MEMORY_H */
++
++/* define if the compiler implements namespaces */
++#ifndef LOG4CPP_HAVE_NAMESPACES 
++#define LOG4CPP_HAVE_NAMESPACES   
++#endif
++
++/* src/m4/ACX_PTHREAD.m4 is one of the templates which together are making up the configure script
++ * Near beginning of configure script see acx_pthread_ok=no
++ * This activates the tests further below for pthread availability, compiler options and capability.
++ * Alternate executable pthread-config to return necessary compiler options not present and fails.
++ * With VxWorks it is unnecessary to set special compiler/linker options for pthread.  
++ * Further tests in configure fail, because on the fly building and executing a pthread executable
++ *   which does not work without access to target.
++ * This will show misleading pthread off in ../configure.log, config.log and other config.h* 
++ * Note: config.log with #define HAVE_PTHREAD refers to non existing confdefs.h, similar to auto-generated
++ *   include/config.h with template include/config.h.in
++ *   include/log4cpp/config.h is the template of include/log4cpp/config-vxworks.h
++ * Are other config* settings effective, or is always config-vxworks.h taking precedence after the other settings?
++ *  See Portability.hh - on platform specific config*.h, plain config.h completely ignored!
++ *  On *.hh #include Portability.hh, on *.cpp #include PortabilityImpl.hh with added inline functions!
++ * Success of the configure test can be forced by setting acx_pthread_ok=yes at beginning of pthread tests in configure.
++ * But this will affect both ws and lcu side.
++ * 
++ * However forcing the pthreads availability in config-vxworks.h is not sufficient, because on original configure
++ * behaviour on cross compiling the configure fails with:
++ * 
++ * configure: error: unable to find pthreads, currently this is required
++ * 
++ * This error is triggered by the log4cpp specific configure.in at ACX_PTHREAD,
++ * which by autoconfigure gets converted to the configure script,
++ * which involves inclusion of the *.m4 tests.
++ * Since log4cpp seem to depends on pthreads, no point in removing this test.
++ * Also for now it is not desired to regenerate so much of the build mechanism in the log4cpp package.
++ * So patch configure and ACX_PTHREAD.m4 consistently to fake success on cross compiling.
++ * But on the linux side the behaviour must be unchanged.
++ * Therefore replace initial 'acx_pthread_ok=no' in ACX_PTHREAD.m4 and configure by the following:
++ * 
++ * if test "$cross_compiling" != no; then
++ * 	acx_pthread_ok=no
++ * else
++ * 	acx_pthread_ok=yes
++ *     AC_MSG_WARN([On cross compiling without remote execution, the pthreads capability probe application \
++ *     	cannot be executed. For now fake success of HAVE_PTHREAD, HAVE_THREADING, USE_PTHREADS \
++ *     	and assume no pthreads specific PTHREAD_LIBS and PTHREAD_CFLAGS ])
++ * fi
++ * 
++ * In configure replace multi line
++ * AC_MSG_WARN([...\
++ * ...])
++ * by
++ * { echo "$as_me:$LINENO: WARNING: ...
++ * ..." >&5
++ * echo "$as_me: WARNING: ...
++ * ..." >&2;}
++ * 
++ */
++
++/* Define if you have POSIX threads libraries and header files. */
++#ifndef LOG4CPP_HAVE_PTHREAD 
++#define LOG4CPP_HAVE_PTHREAD  1 
++#endif
++
++/* define if the C library has snprintf */
++/* Wrong by autoconf! */
++/* #undef LOG4CPP_HAVE_SNPRINTF */
++#ifndef LOG4CPP_HAVE_SNPRINTF 
++#define LOG4CPP_HAVE_SNPRINTF  1 
++#endif
++
++/* define if the compiler has stringstream */
++#ifndef LOG4CPP_HAVE_SSTREAM 
++#define LOG4CPP_HAVE_SSTREAM   
++#endif
++
++/* define if you have the <stdint.h> header file. */
++/* Only in application processes!!!!! */
++/* #undef LOG4CPP_HAVE_STDINT_H */
++#ifndef LOG4CPP_HAVE_STDINT_H 
++#ifdef __RTP__
++#define LOG4CPP_HAVE_STDINT_H
++#endif
++#endif
++
++/* Define to 1 if you have the <stdlib.h> header file. */
++#ifndef LOG4CPP_HAVE_STDLIB_H 
++#define LOG4CPP_HAVE_STDLIB_H  1 
++#endif
++
++/* Define to 1 if you have the <strings.h> header file. */
++#ifndef LOG4CPP_HAVE_STRINGS_H 
++#define LOG4CPP_HAVE_STRINGS_H  1 
++#endif
++
++/* Define to 1 if you have the <string.h> header file. */
++#ifndef LOG4CPP_HAVE_STRING_H 
++#define LOG4CPP_HAVE_STRING_H  1 
++#endif
++
++/* Define to 1 if you have the `syslog' function. */
++/* #undef LOG4CPP_HAVE_SYSLOG */
++
++/* Define to 1 if you have the <sys/stat.h> header file. */
++#ifndef LOG4CPP_HAVE_SYS_STAT_H 
++#define LOG4CPP_HAVE_SYS_STAT_H  1 
++#endif
++
++/* Define to 1 if you have the <sys/types.h> header file. */
++#ifndef LOG4CPP_HAVE_SYS_TYPES_H 
++#define LOG4CPP_HAVE_SYS_TYPES_H  1 
++#endif
++
++/* define if threading is enabled */
++#ifndef LOG4CPP_HAVE_THREADING 
++#define LOG4CPP_HAVE_THREADING  1 
++#endif
++
++/* Define to 1 if you have the <unistd.h> header file. */
++/* Most is also in ioLib.h but with slightly different prototype.
++ * Linux unistd.h: extern ssize_t write (int __fd, __const void *__buf, size_t __n) __wur;
++ * VxWorks6.7 unistd.h: extern int 		write (int fd, char *buffer, size_t nbytes);
++ * VxWorks 6.7 ioLib.h: extern ssize_t	write (int, const void *, size_t);
++ * All Vxworks variants result in a const or propagation violation in FileAppender.cpp
++ * Instead of including unistd.h here and #define write temporarily to something else and providing the correct declaration,
++ * So far workaround at occurence of unistd.h for FileAppender.cpp FileAppender::_append
++ */
++#ifndef LOG4CPP_HAVE_UNISTD_H 
++#define LOG4CPP_HAVE_UNISTD_H  1 
++#endif
++
++/* Name of package */
++#ifndef LOG4CPP_PACKAGE 
++#define LOG4CPP_PACKAGE  "log4cpp" 
++#endif
++
++/* Define to the address where bug reports for this package should be sent. */
++#ifndef LOG4CPP_PACKAGE_BUGREPORT 
++#define LOG4CPP_PACKAGE_BUGREPORT  "" 
++#endif
++
++/* Define to the full name of this package. */
++#ifndef LOG4CPP_PACKAGE_NAME 
++#define LOG4CPP_PACKAGE_NAME  "log4cpp" 
++#endif
++
++/* Define to the full name and version of this package. */
++#ifndef LOG4CPP_PACKAGE_STRING 
++#define LOG4CPP_PACKAGE_STRING  "log4cpp 1.0" 
++#endif
++
++/* Define to the one symbol short name of this package. */
++#ifndef LOG4CPP_PACKAGE_TARNAME 
++#define LOG4CPP_PACKAGE_TARNAME  "log4cpp" 
++#endif
++
++/* Define to the version of this package. */
++#ifndef LOG4CPP_PACKAGE_VERSION 
++#define LOG4CPP_PACKAGE_VERSION  "1.0" 
++#endif
++
++/* Define to necessary symbol if this constant uses a non-standard name on
++   your system. */
++#ifndef LOG4CPP_PTHREAD_CREATE_JOINABLE 
++#define LOG4CPP_PTHREAD_CREATE_JOINABLE  unknown 
++#endif
++
++/* Define to 1 if you have the ANSI C header files. */
++#ifndef LOG4CPP_STDC_HEADERS 
++#define LOG4CPP_STDC_HEADERS  1 
++#endif
++
++/* define if pthread library is available */
++#ifndef LOG4CPP_USE_PTHREADS 
++#define LOG4CPP_USE_PTHREADS  1 
++#endif
++
++/* Version number of package */
++#ifndef LOG4CPP_VERSION 
++#define LOG4CPP_VERSION  "1.0" 
++#endif
++
++#if defined(__vxworks) && !defined(__RTP__)
++/* This Macro should immediately precede all main definitions and contain the application name:
++ * LOG4CPP_MAIN_DECL(example_appname)
++ * int main(int argc, char *argv[]) { ... }
++ * By default definition of Portability.hh expands to nothing, but config-xxx.h can redefine it.
++ * 
++ * VxWorks loadable kernel modules are in the same already running process,
++ * and therefore do not have the concept of a main function.
++ * Therefore config-vxworks.h redefines the Macro to convert main into a suitable declaration.
++ * 
++ * common name main needs to be static. Since the compiler treats main special,
++ * need to redefine it to main_static by a Macrp.
++ *  
++ * provide a C function which takes a const string for the arguments.
++ * This converts the string to the argc/argv form and calls the local main function.
++ * 
++ * argument conversion function centralized in PortabilityImpl.cpp
++ */
++
++#define main main_static
++
++int log4cpp_maincall(const char *args, int (*main)(int argc, char** argv), char *appname );
++
++#undef LOG4CPP_MAIN_DECL
++#define LOG4CPP_MAIN_DECL(appname) \
++static int main(int argc, char** argv); \
++extern "C" int appname( const char *args) \
++{ \
++	return log4cpp_maincall(args, main, #appname); \
++} \
++static
++
++#endif
++
++/* _INCLUDE_LOG4CPP_CONFIG_VXWORKS_H */
++#endif
+diff -Naur log4cpp-1.0/include/log4cpp/FileAppender.hh log4cpp-1.0+/include/log4cpp/FileAppender.hh
+--- log4cpp-1.0/include/log4cpp/FileAppender.hh	2002-03-22 14:30:07.000000000 -0700
++++ log4cpp-1.0+/include/log4cpp/FileAppender.hh	2011-04-18 16:38:48.026764404 -0600
+@@ -13,6 +13,7 @@
+ #include <log4cpp/Portability.hh>
+ #include <log4cpp/LayoutAppender.hh>
+ #include <string>
++#include <set>
+ #include <stdarg.h>
+ 
+ namespace log4cpp {
+@@ -22,6 +23,10 @@
+ 
+         /**
+            Constructs a FileAppender.
++		   Using the same filename for more appenders is not allowed.
++		   Instead use Appender::getAppender(name)
++		   or open the file externally and use dup()
++		   or use FileAppender::FileAppender(name,fd)
+            @param name the name of the Appender.
+            @param fileName the name of the file to which the Appender has 
+            to log.
+@@ -86,6 +91,7 @@
+         int _fd;
+         int _flags;
+         mode_t _mode;
++        static std::set<std::string> _openfiles;
+     };
+ }
+ 
+diff -Naur log4cpp-1.0/include/log4cpp/PatternLayout.hh log4cpp-1.0+/include/log4cpp/PatternLayout.hh
+--- log4cpp-1.0/include/log4cpp/PatternLayout.hh	2003-03-10 02:01:16.000000000 -0700
++++ log4cpp-1.0+/include/log4cpp/PatternLayout.hh	2011-04-18 16:38:48.027810051 -0600
+@@ -62,6 +62,7 @@
+          * Sets the format of log lines handled by this
+          * PatternLayout. By default, set to "%%m%%n".<br>
+          * Format characters are as follows:<br>
++         * <ul>
+          * <li><b>%%</b> - a single percent sign</li>
+          * <li><b>%%c</b> - the category</li>
+          * <li><b>%%d</b> - the date\n
+@@ -78,6 +79,7 @@
+          * <li><b>%%R</b> - seconds since Jan 1, 1970</li>
+          * <li><b>%%u</b> - clock ticks since process start</li>
+          * <li><b>%%x</b> - the NDC</li>
++         * </ul>
+          * @param conversionPattern the conversion pattern
+          * @exception ConfigureFailure if the pattern is invalid
+          **/
+diff -Naur log4cpp-1.0/include/log4cpp/Portability.hh log4cpp-1.0+/include/log4cpp/Portability.hh
+--- log4cpp-1.0/include/log4cpp/Portability.hh	2007-07-03 11:19:36.000000000 -0600
++++ log4cpp-1.0+/include/log4cpp/Portability.hh	2011-04-18 16:38:48.028778827 -0600
+@@ -10,12 +10,24 @@
+ #ifndef _LOG4CPP_PORTABILITY_HH
+ #define _LOG4CPP_PORTABILITY_HH
+ 
++/* This Macro should immediately precede all main definitions and contain the application name:
++ * LOG4CPP_MAIN_DECL(example_appname)
++ * int main(int argc, char *argv[]) { .. }
++ * By default definition of Portability.hh expands to nothing, but config-xxx.h can redefine it.
++ * E.g.  VxWorks loadable kernel modules are in the same already running process,
++ * and therefore do not have the concept of a main function.
++ * Therefore config-vxworks.h redefines the Macro to convert main into a suitable declaration.
++ */
++#define LOG4CPP_MAIN_DECL(appname)
++
+ #if defined (_MSC_VER) || defined(__BORLANDC__)
+ #    if defined (LOG4CPP_STLPORT_AND_BOOST_BUILD)
+ #        include <log4cpp/config-win32-stlport-boost.h>
+ #    else
+ #        include <log4cpp/config-win32.h>
+ #    endif
++#elif defined(__vxworks)
++#        include <log4cpp/config-vxworks.h>
+ #else
+ #if defined(__OPENVMS__)
+ #    include <log4cpp/config-openvms.h>
+diff -Naur log4cpp-1.0/include/log4cpp/Priority.hh log4cpp-1.0+/include/log4cpp/Priority.hh
+--- log4cpp-1.0/include/log4cpp/Priority.hh	2005-10-17 02:03:16.000000000 -0600
++++ log4cpp-1.0+/include/log4cpp/Priority.hh	2011-04-18 16:38:48.028778827 -0600
+@@ -61,7 +61,7 @@
+     class LOG4CPP_EXPORT Priority {
+         public:
+ 
+-		static const int MESSAGE_SIZE; // = 8;
++		static const int MESSAGE_SIZE; // = 10;
+ 
+         /**
+          * Predefined Levels of Priorities. These correspond to the
+@@ -69,14 +69,19 @@
+          **/
+         typedef enum {EMERG  = 0, 
+ 		      FATAL  = 0,
++              EMERGENCY = 0,
+                       ALERT  = 100,
+                       CRIT   = 200,
++                      CRITICAL = 200,
+                       ERROR  = 300, 
+                       WARN   = 400,
++                      WARNING = 400,
+                       NOTICE = 500,
+                       INFO   = 600,
+                       DEBUG  = 700,
+-                      NOTSET = 800
++                      DELOUSE = 800,
++                      TRACE = 900,
++                      NOTSET = 1000
+         } PriorityLevel;
+ 
+         /**
+diff -Naur log4cpp-1.0/include/log4cpp/PropertyConfigurator.hh log4cpp-1.0+/include/log4cpp/PropertyConfigurator.hh
+--- log4cpp-1.0/include/log4cpp/PropertyConfigurator.hh	2003-05-09 16:16:25.000000000 -0600
++++ log4cpp-1.0+/include/log4cpp/PropertyConfigurator.hh	2011-04-18 16:38:48.031768140 -0600
+@@ -42,10 +42,20 @@
+        </PRE>
+        
+        @since 0.3.2
++       
++       For being able to run a different configuration within the same process,
++       need to clean up the configuration objects kept within PropertyConfigurator,
++       when the previous configuration is no longer used for logging.
++       This affects the Appenders owned by PropertyConfigurator and the Property
++       lines of the configuration file.
++       The Category instantiated by the configuration file need to be cleaned up
++       separately, e.g. with help of log4cpp::Category::getCurrentCategories()
++       
+     **/
+     class LOG4CPP_EXPORT PropertyConfigurator {
+         public:
+         static void configure(const std::string& initFileName) throw (ConfigureFailure);
++        static void cleanup();
+     };
+ }
+ 
+diff -Naur log4cpp-1.0/include/log4cpp/RemoteSyslogAppender.hh log4cpp-1.0+/include/log4cpp/RemoteSyslogAppender.hh
+--- log4cpp-1.0/include/log4cpp/RemoteSyslogAppender.hh	2005-04-12 11:57:14.000000000 -0600
++++ log4cpp-1.0+/include/log4cpp/RemoteSyslogAppender.hh	2011-04-18 16:38:48.032795499 -0600
+@@ -33,7 +33,7 @@
+     LOG_WARNING = 4,       ///< warning conditions
+     LOG_NOTICE  = 5,       ///< normal but significant condition
+     LOG_INFO    = 6,       ///< informational
+-    LOG_DEBUG   = 7,       ///< debug-level messages
++    LOG_DEBUG   = 7/*,*/       ///< debug-level messages
+ } SyslogLevel;
+ 
+ typedef enum {
+@@ -58,7 +58,7 @@
+     LOG_LOCAL4   = (20<<3), ///< reserved for local use
+     LOG_LOCAL5   = (21<<3), ///< reserved for local use
+     LOG_LOCAL6   = (22<<3), ///< reserved for local use
+-    LOG_LOCAL7   = (23<<3), ///< reserved for local use
++    LOG_LOCAL7   = (23<<3)/*,*/ ///< reserved for local use
+ } SyslogFacility;
+ #endif
+ 
+diff -Naur log4cpp-1.0/include/log4cpp/TimeStamp.hh log4cpp-1.0+/include/log4cpp/TimeStamp.hh
+--- log4cpp-1.0/include/log4cpp/TimeStamp.hh	2002-07-30 17:07:58.000000000 -0600
++++ log4cpp-1.0+/include/log4cpp/TimeStamp.hh	2011-04-18 16:38:48.033792838 -0600
+@@ -65,7 +65,7 @@
+         protected:
+         static TimeStamp _startStamp;
+ 
+-        int _seconds;
++        unsigned _seconds; /* int would overflow 19-Jan-2038. Anyway set with positive int and propagated to 64 bit on read */
+         int _microSeconds;
+     };
+ }
+diff -Naur log4cpp-1.0/log4cpp.spec log4cpp-1.0+/log4cpp.spec
+--- log4cpp-1.0/log4cpp.spec	2007-09-03 03:54:04.000000000 -0600
++++ log4cpp-1.0+/log4cpp.spec	1969-12-31 17:00:00.000000000 -0700
+@@ -1,97 +0,0 @@
+-%define  RELEASE 4
+-%define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
+-
+-%define lib_name log4cpp
+-%define manualdir       /var/www/html/manual/%{name}
+-
+-Name: log4cpp
+-Version: 1.0
+-Release: %rel
+-
+-Summary: Log for C++
+-License: LGPL
+-Group: Development/Libraries
+-Vendor:  Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+-Packager: Cedric Le Goater <cedric@legoater.com>
+-Url: http://log4cpp.sourceforge.net/
+-
+-Source: ftp://download.sourceforge.net/pub/sourceforge/log4cpp/%name-%version.tar.gz
+-
+-Prefix: %_prefix
+-BuildRoot: %_tmppath/%name-%version-root
+-
+-%description
+-Log for C++ is a library of classes for flexible logging to files, syslog,
+-and other destinations. It is modeled after the Log for Java library and
+-stays as close to its API as is reasonable.
+-
+-%package devel
+-Summary: development tools for Log for C++
+-Group: Development/Libraries
+-Requires: %name = %version
+-
+-%description devel
+-The %name-devel package contains the static libraries and header files
+-needed for development with %name.
+-
+-%package doc
+-Summary: HTML formatted API documention for Log for C++
+-Group: Development/Libraries
+-#can't set doc package to noarch without setting the others as well.
+-#BuildArch: noarch
+-%{!?_without_doxygenrpm:BuildRequires: doxygen}
+-
+-%description doc
+-The %name-doc package contains HTML formatted API documention generated by
+-the popular doxygen documentation generation tool.
+-
+-%prep
+-%{__rm} -rf $RPM_BUILD_ROOT
+-
+-%setup
+-CC=%{__cc} CXX=%{__cxx} ./configure --prefix=%{prefix} --enable-doxygen 
+-
+-%build
+-%{__make}
+-
+-%install
+-%{__rm} -rf $RPM_BUILD_ROOT
+-
+-%{__make} prefix=$RPM_BUILD_ROOT%{prefix}docdir=$RPM_BUILD_ROOT/%{manualdir} install
+-%clean
+-%{__rm} -rf $RPM_BUILD_ROOT
+-
+-%ifnos solaris2.8 solaris2.9 solaris2.10
+-%post -p /sbin/ldconfig
+-%endif
+-
+-%post devel
+-if test "x$RPM_INSTALL_PREFIX0" != "x" ; then
+-    %{__perl} -pi -e"s|^libdir='[^\']*'|libdir='$RPM_INSTALL_PREFIX0/lib'|" $RPM_INSTALL_PREFIX0/lib/liblog4cpp.la
+-    %{__perl} -pi -e"s|^prefix=\"[^\"]*\"|prefix=\"$RPM_INSTALL_PREFIX0\"|" $RPM_INSTALL_PREFIX0/bin/log4cpp-config
+-fi
+-
+-%ifnos solaris2.8 solaris2.9 solaris2.10 
+-%postun -p /sbin/ldconfig
+-%endif
+-
+-%files
+-%defattr(-,root,root,755)
+-%attr(755,root,root) %prefix/lib/lib*.so.*
+-%doc AUTHORS COPYING INSTALL NEWS README THANKS ChangeLog
+-
+-%files devel
+-%defattr(-,root,root,755)
+-%prefix/include/*
+-%prefix/man/*
+-%attr(755,root,root) %prefix/bin/log4cpp-config
+-%attr(755,root,root) %prefix/lib/lib*.so
+-%attr(644,root,root) %prefix/lib/*.*a
+-%attr(644,root,root) %prefix/lib/pkgconfig/log4cpp.pc
+-%attr(644,root,root) %prefix/share/aclocal/*.m4
+-
+-%files doc
+-%defattr(-,root,root)
+-%doc %{manualdir}
+-
+-
+diff -Naur log4cpp-1.0/m4/ACX_PTHREAD.m4 log4cpp-1.0+/m4/ACX_PTHREAD.m4
+--- log4cpp-1.0/m4/ACX_PTHREAD.m4	2007-08-23 23:51:58.000000000 -0600
++++ log4cpp-1.0+/m4/ACX_PTHREAD.m4	2011-04-18 16:38:48.034760814 -0600
+@@ -87,7 +87,15 @@
+ AC_REQUIRE([AC_CANONICAL_HOST])
+ AC_LANG_SAVE
+ AC_LANG_C
+-acx_pthread_ok=no
++
++if test "$cross_compiling" != no; then
++	acx_pthread_ok=no
++else
++	acx_pthread_ok=yes
++    AC_MSG_WARN([On cross compiling without remote execution, the pthreads capability probe application \
++    	cannot be executed. For now fake success of HAVE_PTHREAD, HAVE_THREADING, USE_PTHREADS \
++    	and assume no pthreads specific PTHREAD_LIBS and PTHREAD_CFLAGS])
++fi	
+ 
+ # We used to check for pthread.h first, but this fails if pthread.h
+ # requires special compiler flags (e.g. on True64 or Sequent).
+diff -Naur log4cpp-1.0/src/Appender.cpp log4cpp-1.0+/src/Appender.cpp
+--- log4cpp-1.0/src/Appender.cpp	2007-08-02 07:20:26.000000000 -0600
++++ log4cpp-1.0+/src/Appender.cpp	2011-04-18 16:38:48.035812681 -0600
+@@ -44,13 +44,46 @@
+         threading::ScopedLock lock(_appenderMapMutex);
+         bool result = true;
+         AppenderMap& allAppenders = _getAllAppenders();
++        /* Need to attempting to reopen all appenders, and return whether at least one failed.
++         * Because of sequential execution of "&&" result must come last to avoid that
++         * further iterations get pointless by skipping the attempts anyway. 
++         */
+         for(AppenderMap::iterator i = allAppenders.begin(); i != allAppenders.end(); i++) {
+-            result = result && ((*i).second)->reopen();
++            result = ((*i).second)->reopen() && result;
+         }
+         
+         return result;
+     }
++
++    /* unrestricted operations on Appenders owned by someone else can be harmful.
++     * Also Appenders can have been deleted by other threads by the time of access.
++     * Return only copies of the names of the appenders.
++     * Note: Without extending the Appender Abstraction, the FileAppender::_fileName
++     * associated to getName() cannot be returned.
++     */
++    
++    std::set<std::string> Appender::reopenAllFailedNames() {
++        threading::ScopedLock lock(_appenderMapMutex);
++        std::set<std::string> names;
++        AppenderMap& allAppenders = _getAllAppenders();
++        for(AppenderMap::iterator i = allAppenders.begin(); i != allAppenders.end(); i++) {
++        	if ( !(((*i).second)->reopen()) ) {
++        		names.insert((*i).first);
++        	}
++        }
++        return names;
++    }
+     
++    std::set<std::string> Appender::getAllAppenders() {
++        threading::ScopedLock lock(_appenderMapMutex);
++        std::set<std::string> names;
++        AppenderMap& allAppenders = _getAllAppenders();
++        for(AppenderMap::iterator i = allAppenders.begin(); i != allAppenders.end(); i++) {
++       		names.insert((*i).first);
++        }
++        return names;
++    }
++
+     void Appender::closeAll() {
+         threading::ScopedLock lock(_appenderMapMutex);
+         AppenderMap& allAppenders = _getAllAppenders();
+@@ -59,6 +92,10 @@
+         }
+     }
+     
++	/* Attention! After deleting the Appenders pointed to by the Map, the Map contains
++	 * dangling pointers and should be cleared. Also e.g. Category, PropertyConfiguratorImpl
++	 * and application functions can still have references to the deleted Appenders.
++	 * Anyway method currently not used.
+     void Appender::_deleteAllAppenders() {
+         threading::ScopedLock lock(_appenderMapMutex);
+         AppenderMap& allAppenders = _getAllAppenders();
+@@ -68,6 +105,7 @@
+             delete (app);
+         }
+     }    
++	 */
+ 
+     Appender::Appender(const std::string& name) :
+         _name(name) {
+diff -Naur log4cpp-1.0/src/BasicConfigurator.cpp log4cpp-1.0+/src/BasicConfigurator.cpp
+--- log4cpp-1.0/src/BasicConfigurator.cpp	2002-10-26 12:30:55.000000000 -0600
++++ log4cpp-1.0+/src/BasicConfigurator.cpp	2011-04-18 16:38:48.036808559 -0600
+@@ -13,6 +13,9 @@
+ #ifdef LOG4CPP_HAVE_UNISTD_H
+ #    include <unistd.h>
+ #endif
++#if defined(__vxworks) && !defined(__RTP__)
++ # include <ioLib.h>  /* For dup(), otherwise in unistd.h */
++#endif
+ 
+ #include <cstdio>
+ #include <log4cpp/BasicConfigurator.hh>
+diff -Naur log4cpp-1.0/src/BasicLayout.cpp log4cpp-1.0+/src/BasicLayout.cpp
+--- log4cpp-1.0/src/BasicLayout.cpp	2006-09-30 00:03:20.000000000 -0600
++++ log4cpp-1.0+/src/BasicLayout.cpp	2011-04-18 16:38:48.037809761 -0600
+@@ -11,6 +11,7 @@
+ #include <log4cpp/BasicLayout.hh>
+ #include <log4cpp/Priority.hh>
+ #include <log4cpp/FactoryParams.hh>
++#include <memory>
+ #ifdef LOG4CPP_HAVE_SSTREAM
+ #include <sstream>
+ #endif
+diff -Naur log4cpp-1.0/src/Category.cpp log4cpp-1.0+/src/Category.cpp
+--- log4cpp-1.0/src/Category.cpp	2002-10-26 19:38:15.000000000 -0600
++++ log4cpp-1.0+/src/Category.cpp	2011-04-18 16:38:48.038814085 -0600
+@@ -20,6 +20,17 @@
+ 
+ namespace log4cpp {
+ 
++	void Log4cppCleanup::deleteInstance(Category& category)	{
++		{
++			/* Extra scope for the lock to end before deleting category, to
++			 * avoid risk of dead locks by nested locks with inconsistent order.
++			 */
++			threading::ScopedLock lock(HierarchyMaintainer::getDefaultMaintainer()._categoryMutex);
++			HierarchyMaintainer::getDefaultMaintainer()._categoryMap.erase(category.getName());
++		}
++		delete &category;
++	}
++
+     Category& Category::getRoot() {
+         return getInstance("");
+     }
+@@ -200,8 +211,13 @@
+     }
+ 
+     /* assume lock is held */
++    /* bool Category::ownsAppender(Appender* appender, 
++                                Category::OwnsAppenderMap::iterator& i2) throw() { }
++     * typedef OwnsAppenderMap declared in Category. Over-specify produces
++     * Warning: no uniquely matching class member found for ... Possible candidates: ...
++     */
+     bool Category::ownsAppender(Appender* appender, 
+-                                Category::OwnsAppenderMap::iterator& i2) throw() {
++                                OwnsAppenderMap::iterator& i2) throw() {
+         bool owned = false;
+ 
+         if (NULL != appender) {
+diff -Naur log4cpp-1.0/src/FileAppender.cpp log4cpp-1.0+/src/FileAppender.cpp
+--- log4cpp-1.0/src/FileAppender.cpp	2006-09-30 00:03:20.000000000 -0600
++++ log4cpp-1.0+/src/FileAppender.cpp	2011-04-18 16:38:48.039881215 -0600
+@@ -12,7 +12,17 @@
+ #    include <io.h>
+ #endif
+ #ifdef LOG4CPP_HAVE_UNISTD_H
++#if defined(__vxworks) && !defined(__RTP__)
++#  define write write_vx_unistd_unused
+ #    include <unistd.h>
++#  undef write
++extern "C" ssize_t write (int fd, const char *buffer, size_t nbytes); //need const
++#else
++#    include <unistd.h>
++#endif
++#endif
++#if defined(__vxworks)
++#include <ioLib.h> //for ioctl
+ #endif
+ 
+ #include <memory>
+@@ -24,6 +34,12 @@
+ 
+ namespace log4cpp {
+ 
++	std::set<std::string> FileAppender::_openfiles;
++
++	// See description at FileAppender::reopen()
++	// Do not accept using the same filename twice.
++	// Instead use Appender::getAppender(name) or open the file externally and use dup() and
++	// FileAppender::FileAppender(name,fd)
+     FileAppender::FileAppender(const std::string& name, 
+                                const std::string& fileName,
+                                bool append,
+@@ -34,7 +50,19 @@
+             _mode(mode) {
+         if (!append)
+             _flags |= O_TRUNC;
+-        _fd = ::open(_fileName.c_str(), _flags, _mode);
++        if (_openfiles.find(fileName) != _openfiles.end()) {
++        	_fd = -1;
++        } else {
++        	_fd = ::open(_fileName.c_str(), _flags, _mode);
++        	if ( _fd != -1 ) {
++        		_openfiles.insert(fileName);
++#if defined(__vxworks)
++        		if (lseek(_fd, 0, SEEK_END ) == ERROR ) {
++        			// XXX help! help!
++        		}
++#endif
++        	}
++		}
+     }
+     
+     FileAppender::FileAppender(const std::string& name, int fd) :
+@@ -52,6 +80,7 @@
+     void FileAppender::close() {
+         if (_fd!=-1) {
+             ::close(_fd);
++            _openfiles.erase(_fileName);
+             _fd=-1;
+         }
+     }
+@@ -68,6 +97,9 @@
+         return (_flags & O_TRUNC) == 0;
+     }
+ 
++    // Only accepted upon reopen().
++    // Attention! Removing O_APPEND corrupts content on having the same file open multiple times
++    // and is pointless on having the file open only once.
+     void FileAppender::setMode(mode_t mode) {
+         _mode = mode;
+     }
+@@ -84,19 +116,54 @@
+     }
+ 
+     bool FileAppender::reopen() {
+-        if (_fileName != "") {
+-            int fd = ::open(_fileName.c_str(), _flags, _mode);
+-            if (fd < 0)
+-                return false;
+-            else {
+-	        if (_fd != -1)
+-                    ::close(_fd);
+-                _fd = fd;
+-                return true;
+-            }
+-        } else {
+-            return true;
+-        }      
++        if ( _fileName == "" ) {
++    		return _fd != -1;
++        }
++        if ( _fd == -1 && _openfiles.find(_fileName) != _openfiles.end() ) {
++        	return false; // desired file already in use elsewhere
++        }
++#if defined(__vxworks)
++		/* With nfs and rsh/ftp on VxWorks, O_APPEND is not supported and multiple
++		 * opens with the same filename are not detected as being the same file.
++		 * This can cause corrupted data.
++		 * For now treat all filesystems like having these restrictions.
++		 * Therefore need FIOSYNC for allow the second open getting the true file length and
++		 * position correctly with lseek, and prevent other threads from writing into the same
++		 * file througout FIOSYNC/open/lseek.
++		 * This would require a mutex around write() only for the rare collision with reopen().
++		 * close cannot be done before open to no loosing output from other treads.
++		 * Therefore for now do not migrate to a different fd on reopen. Only reasonable thing is FIOSYNC.
++		 * Note: dup() is ok even with nfs/rsh/ftp !
++		 * Note: For clients writing into the same nfs file in append mode from different
++		 *   machines, the corresponding restriction is inherent to nfs and affects all operating systems!
++		 */
++		if (_fd != -1) {
++			if (::ioctl(_fd,FIOSYNC,0) == ERROR) {
++				// XXX help! help!
++			}
++			return true;
++		}
++		_fd = ::open(_fileName.c_str(), _flags, _mode);
++		if ( _fd != -1 ) {
++			_openfiles.insert(_fileName);
++			if (lseek(_fd, 0, SEEK_END ) == ERROR ) {
++				// XXX help! help!
++			}
++			return true;
++		}
++		return false;
++#else        	
++		int fd = ::open(_fileName.c_str(), _flags, _mode);
++		if ( fd == -1 ) {
++			return false; //file might still be open, but reopen failed
++		}
++		if (_fd != -1) 	{
++			::close(_fd);
++		}
++		_fd = fd;
++		_openfiles.insert(_fileName); //The file might have been closed before
++		return true;
++#endif        
+     }
+ 
+    std::auto_ptr<Appender> create_file_appender(const FactoryParams& params)
+diff -Naur log4cpp-1.0/src/HierarchyMaintainer.cpp log4cpp-1.0+/src/HierarchyMaintainer.cpp
+--- log4cpp-1.0/src/HierarchyMaintainer.cpp	2006-10-06 23:30:19.000000000 -0600
++++ log4cpp-1.0+/src/HierarchyMaintainer.cpp	2011-04-18 16:38:48.040768044 -0600
+@@ -94,6 +94,9 @@
+         return categories;
+     }
+ 
++    /* Callers might keep references to the Categories, therefore it is only safe to delete
++     * owned appenders, but destruction of categories must be done by the creators. 
++     */
+     void HierarchyMaintainer::shutdown() {
+         threading::ScopedLock lock(_categoryMutex);
+         {
+diff -Naur log4cpp-1.0/src/Localtime.cpp log4cpp-1.0+/src/Localtime.cpp
+--- log4cpp-1.0/src/Localtime.cpp	2007-08-19 04:20:18.000000000 -0600
++++ log4cpp-1.0+/src/Localtime.cpp	2011-04-18 16:38:48.041827502 -0600
+@@ -1,7 +1,6 @@
+ #include <log4cpp/Portability.hh>
+ #include "Localtime.hh"
+ #include <time.h>
+-#include <memory.h>
+ 
+ namespace log4cpp         
+ {
+@@ -21,6 +20,13 @@
+ #endif
+ 
+ #if !defined(LOG4CPP_HAVE_LOCALTIME_R)
++  #ifdef LOG4CPP_HAVE_MEMORY_H   
++    #include <memory.h>
++#elif defined(__vxworks) 
++    #include <string.h> /* Not reached because VxWorks has LOG4CPP_HAVE_LOCALTIME_R */
++#else
++    /* memcpy undeclared or non existing */ 
++#endif   
+    void localtime(const ::time_t* time, ::tm* t)
+    {
+       ::tm* tmp = ::localtime(time);
+diff -Naur log4cpp-1.0/src/PatternLayout.cpp log4cpp-1.0+/src/PatternLayout.cpp
+--- log4cpp-1.0/src/PatternLayout.cpp	2007-08-28 01:54:12.000000000 -0600
++++ log4cpp-1.0+/src/PatternLayout.cpp	2011-04-18 16:38:48.043814013 -0600
+@@ -370,7 +370,7 @@
+                         literal = "";
+                     }
+                     if ((minWidth != 0) || (maxWidth != 0)) {
+-                        component = new FormatModifierComponent(component, std::abs(minWidth), maxWidth, minWidth < 0);
++                        component = new FormatModifierComponent(component, std::abs((double)minWidth), maxWidth, minWidth < 0);
+                         minWidth = maxWidth = 0;
+                     }
+                     _components.push_back(component);
+diff -Naur log4cpp-1.0/src/PortabilityImpl.cpp log4cpp-1.0+/src/PortabilityImpl.cpp
+--- log4cpp-1.0/src/PortabilityImpl.cpp	2002-10-27 12:44:50.000000000 -0700
++++ log4cpp-1.0+/src/PortabilityImpl.cpp	2011-04-18 16:38:48.043814013 -0600
+@@ -25,3 +25,39 @@
+ }
+ 
+ #endif
++
++#if defined(__vxworks) && !defined(__RTP__)
++/* VxWorks loadable kernel modules are in the same already running process,
++ * and therefore do not have the concept of a main function.
++ * Therefore by macro LOG4CPP_MAIN_DECL(example_appname) of config-vxworks.h/Portability.hh,
++ * An application specific function name is provided, which takes a string
++ * and passes the string together with the main function name on to here for parameter
++ * conversion to argc/argv and propagation to the passed main function.
++ * getOptServ rejects NULL and "" empty arguments. Special treatment to accept this cases.
++ */ 
++
++#include <unistd.h>
++#include <string.h>
++
++#define ARGC_MAX 64
++#define ARGS_MAX 512
++int log4cpp_maincall(const char *args, int (*main)(int argc, char** argv), char *appname )
++{
++	int argc;
++	char* argv[ARGC_MAX];
++	char argsm[ARGS_MAX];
++	
++	if (args == NULL || *args == '\0') {
++		argv[0] = appname;
++		argv[1] = NULL;
++		argc = 1;
++	} else {
++		strncpy(argsm,args,ARGS_MAX);
++		if ( getOptServ(argsm,appname,&argc,argv,ARGC_MAX) ) {
++			return 1;
++		}
++	}
++	return main(argc, argv);
++}
++#endif //defined(__vxworks) && !defined(__RTP__)
++
+diff -Naur log4cpp-1.0/src/Priority.cpp log4cpp-1.0+/src/Priority.cpp
+--- log4cpp-1.0/src/Priority.cpp	2005-10-17 02:03:16.000000000 -0600
++++ log4cpp-1.0+/src/Priority.cpp	2011-04-18 16:38:48.044787819 -0600
+@@ -14,35 +14,40 @@
+ namespace log4cpp {
+ 
+     namespace {
+-        const std::string names[10] = {
+-            "FATAL",
++        const std::string names[] = {
++            "EMERGENCY",
+ 			"ALERT",
+-			"CRIT",
++			"CRITICAL",
+ 			"ERROR",
+-			"WARN",
++			"WARNING",
+             "NOTICE",
+ 			"INFO",
+ 			"DEBUG",
++            "DELOUSE",
++            "TRACE",
+ 			"NOTSET",
+ 			"UNKNOWN" 
+         };
+     }    
+ 
+-    const int log4cpp::Priority::MESSAGE_SIZE = 8;
+-    
++    //Number of messages has changed. Automatically adjust array limits.
++    const int names_max = sizeof (names)/sizeof (names[0]) - 1;
+ 
++    const int log4cpp::Priority::MESSAGE_SIZE = 10;
++   
+     const std::string& Priority::getPriorityName(int priority) throw() {
+          
+-        priority++;
++        priority++; //Todo: correct offset for rounding? If e.g 100 delivers ALERT and 200 delivers CRITICAL,
++					//should 101 and/or 199 deliver ALERT or CRITICAL ? 
+         priority /= 100;
+-        return names[((priority < 0) || (priority > 8)) ? 8 : priority];
++        return names[((priority < 0) || (priority > names_max)) ? names_max : priority];
+     }
+ 
+     Priority::Value Priority::getPriorityValue(const std::string& priorityName) 
+     throw(std::invalid_argument) {
+ 	Priority::Value value = -1;
+ 
+-	for (unsigned int i = 0; i < 10; i++) {
++	for (int i = 0; i < names_max; i++) {
+ 	    if (priorityName == names[i]) {
+ 		value = i * 100;
+ 		break;
+diff -Naur log4cpp-1.0/src/PropertyConfigurator.cpp log4cpp-1.0+/src/PropertyConfigurator.cpp
+--- log4cpp-1.0/src/PropertyConfigurator.cpp	2002-10-26 12:30:55.000000000 -0600
++++ log4cpp-1.0+/src/PropertyConfigurator.cpp	2011-04-18 16:38:48.048284758 -0600
+@@ -16,5 +16,9 @@
+         
+         configurator.doConfigure(initFileName);
+     }
++    
++    void PropertyConfigurator::cleanup() {
++    	PropertyConfiguratorImpl::doCleanup();
++    }
+ }
+ 
+diff -Naur log4cpp-1.0/src/PropertyConfiguratorImpl.cpp log4cpp-1.0+/src/PropertyConfiguratorImpl.cpp
+--- log4cpp-1.0/src/PropertyConfiguratorImpl.cpp	2003-05-22 16:45:48.000000000 -0600
++++ log4cpp-1.0+/src/PropertyConfiguratorImpl.cpp	2011-04-18 16:38:48.048779103 -0600
+@@ -56,7 +56,9 @@
+ 
+ namespace log4cpp {
+ 
+-    PropertyConfiguratorImpl::PropertyConfiguratorImpl() {
++	PropertyConfiguratorImpl::AppenderMap PropertyConfiguratorImpl::_allAppenders;
++
++	PropertyConfiguratorImpl::PropertyConfiguratorImpl() {
+     }
+ 
+     PropertyConfiguratorImpl::~PropertyConfiguratorImpl() {
+@@ -89,6 +91,28 @@
+         }
+     }
+ 
++    /* on processing the config file, for appenders, PropertyConfigurator
++     * uses Category::addAppender(Appender &) not Category::addAppender(Appender *) 
++     * This way PropertyConfigurator keeps the ownership of the appenders,
++     * and on cleaning up a category e.g. by Category::removeAllAppenders, these
++     * appenders get removed, but not deleted.
++     * To avoid stale appenders in case of doing another PropertyConfigurator::configure
++     * or running with an otherwise different configuration in the same process,
++     * it is necessary to delete the appenders from the AppenderMap explicitely.
++     * 
++     * _properties cleared automatically on ~PropertyConfiguratorImpl() on return
++     * from PropertyConfigurator::configure().
++     * No need to clean the Properties map explicitely before doing another configure.
++     * The Properties map consists of config strings is kept during configure,
++     * because it is processed in multiple passes.
++     */
++    void PropertyConfiguratorImpl::doCleanup() {
++        for (AppenderMap::const_iterator i = _allAppenders.begin(); i != _allAppenders.end(); ++i) {
++                delete (*i).second;
++        }
++        _allAppenders.clear();
++    }
++    
+     void PropertyConfiguratorImpl::instantiateAllAppenders() throw(ConfigureFailure) {
+         std::string currentAppender;
+ 
+diff -Naur log4cpp-1.0/src/PropertyConfiguratorImpl.hh log4cpp-1.0+/src/PropertyConfiguratorImpl.hh
+--- log4cpp-1.0/src/PropertyConfiguratorImpl.hh	2002-10-26 12:30:55.000000000 -0600
++++ log4cpp-1.0+/src/PropertyConfiguratorImpl.hh	2011-04-18 16:38:48.049885022 -0600
+@@ -32,6 +32,7 @@
+             throw (ConfigureFailure);
+         virtual void doConfigure(std::istream& in)
+             throw (ConfigureFailure);
++        static void doCleanup();
+ 
+         protected:
+         /**
+@@ -77,7 +78,15 @@
+         void setLayout(Appender* appender, const std::string& name);
+ 
+         Properties _properties;
+-        AppenderMap _allAppenders;
++        
++        /* See doCleanup(), Appenders are owned by PropertyConfiguratorImpl() and not
++         * deleted by ~PropertyConfiguratorImpl(), and actually must live after
++         * return from PropertyConfigurator::configure() until this configuration is
++         * no longer used for logging.
++         * Therefore keep in a static member to be able to find the Appenders later for explicite
++         * cleanup by doCleanup()
++         */
++        static AppenderMap _allAppenders;
+     };
+ }
+ 
+diff -Naur log4cpp-1.0/src/RemoteSyslogAppender.cpp log4cpp-1.0+/src/RemoteSyslogAppender.cpp
+--- log4cpp-1.0/src/RemoteSyslogAppender.cpp	2007-07-03 03:17:27.000000000 -0600
++++ log4cpp-1.0+/src/RemoteSyslogAppender.cpp	2011-04-18 16:38:48.050805226 -0600
+@@ -29,6 +29,10 @@
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
++#ifdef __vxworks
++#include <hostLib.h> /* for e.g. gethostbyname() */
++#include <sockLib.h> /* for e.g. socket(), sendto() etc */
++#endif
+ #endif
+ 
+ namespace log4cpp {
+diff -Naur log4cpp-1.0/src/SimpleConfigurator.cpp log4cpp-1.0+/src/SimpleConfigurator.cpp
+--- log4cpp-1.0/src/SimpleConfigurator.cpp	2007-07-03 03:17:28.000000000 -0600
++++ log4cpp-1.0+/src/SimpleConfigurator.cpp	2011-04-18 16:38:48.051785782 -0600
+@@ -13,6 +13,9 @@
+ #ifdef LOG4CPP_HAVE_IO_H
+ #    include <io.h>
+ #endif
++#if defined(__vxworks) && !defined(__RTP__)
++ # include <ioLib.h>  /* For dup(), otherwise in unistd.h */
++#endif
+ 
+ #include <stdio.h>
+ #include <iostream>
+diff -Naur log4cpp-1.0/src/TimeStamp.cpp log4cpp-1.0+/src/TimeStamp.cpp
+--- log4cpp-1.0/src/TimeStamp.cpp	2005-04-12 11:16:37.000000000 -0600
++++ log4cpp-1.0+/src/TimeStamp.cpp	2011-04-18 16:38:48.052833107 -0600
+@@ -37,6 +37,21 @@
+         ::ftime(&tb);
+         _seconds = tb.time;
+         _microSeconds = 1000 * tb.millitm;
++#elif defined(__vxworks)
++		/* Timezones are undefined by POSIX gettimeofday and not used above.
++		 * Therefore possible to use Posix clock_gettime(CLOCK_REALTIME,struct timespec *) instead.
++		 * gettimeofday timeval: tv_usec Microseconds
++		 * clock_gettime timespec: tv_nsec Nanoseconds. Scale down!
++         * Despite the unit, clock_gettime has only a resolution of 1/sysClkRateGet(), typically (200/3) hz
++         * This is enough for log4cpp.
++         * For higher precision access CPU hardware time, see ../tests/clock.cpp
++         * (In addition need to poll for next toggle of clock_gettime and record the offset between the calendertime
++         * and CPU timer at that point. But we cannot know if someone else changes clock_settime ).
++		 */
++		struct timespec ts;
++		clock_gettime(CLOCK_REALTIME,&ts);
++        _seconds = ts.tv_sec;
++        _microSeconds = ts.tv_nsec / 1000;
+ #else
+         _seconds = ::time(NULL);
+         _microSeconds = 0;
+diff -Naur log4cpp-1.0/tests/Clock.cpp log4cpp-1.0+/tests/Clock.cpp
+--- log4cpp-1.0/tests/Clock.cpp	2002-09-15 16:40:50.000000000 -0600
++++ log4cpp-1.0+/tests/Clock.cpp	2011-04-18 16:38:48.053777051 -0600
+@@ -4,8 +4,21 @@
+  * See the COPYING file for the terms of usage and distribution.
+  */
+ 
++#include <PortabilityImpl.hh>
++
+ #include <cstdlib>
++#ifndef LOG4CPP_HAVE_GETTIMEOFDAY
++#include <time.h> //For clock_gettime
++#endif
++#if defined(__vxworks) && !defined(__RTP__)
++#include <sys/times.h>			// for struct timeval
++#if (defined(__ppc) || defined(__386))
++#include <vxLib.h>	// For vxTimeBaseGet() and pentiumTscGet64()
++#include <sysLib.h> // For sysTimestampFreq() in drv/timer/timerDev.h
++#endif
++#else
+ #include <sys/time.h>			// for struct timeval
++#endif
+ #ifdef __osf__
+ #    include <machine/builtins.h>       // for __RPCC()
+ #elif __linux__ && __i386__
+@@ -21,7 +34,22 @@
+     const usec_t UsecPerSec = INT64_CONSTANT(1000000);
+ }
+ 
++#if defined(__vxworks) && !defined(__RTP__) && (defined(__ppc) || defined(__386))
++/* For consistency with rest of application, don't check for defined(_WRS_KERNEL), but for !defined(__RTP__)
++ * In VxWorks kernel process, access to CPU clock is always possible,
++ * and the value can be scaled according to frequency.
++ * Therefore in VxWorks kernel, CPU clock is more precise as Posix Time, as opposed to Linux. 
++ * Clock.cpp implements only Pentium and PowerPC.
++ * For consistency between DIAB and GNU check for __386, not for __386__.  Don't care about 80486.
++ * C++ static member variable initialized at load time, not at start time.
++ * To avoid forgetting putenv("CLOCK_USE_CPU=1") ahead of time, make it default.
++ * VxWorks timestamp has a typical resolution of > 10 MHz (PPC) or > 1 GHz (IA)
++ * clock_gettime(CLOCK_REALTIME,&ts) has only a resolution of 1/sysClkRateGet() s, typically (200/3) hz 
++ */
++bool Clock::UsingCPU  = true;
++#else
+ bool Clock::UsingCPU  = std::getenv("CLOCK_USE_CPU") ? true : false;
++#endif
+ 
+ // -----------------------------------------------------------------------------
+ usec_t Clock::time(void)
+@@ -39,10 +67,53 @@
+ #elif __linux__ && __i386__
+ 	{
+ 	    unsigned long tsc;
+-			
++
++		/* Attention!
++		 * Not scaled to 1 MHz! Can run up to several MHz!
++		 * Only lower 32Bits returned! Can roll over within a second!
++		 */
+ 	    rdtscl(tsc);
+ 	    return (usec_t) tsc;
+ 	}
++#elif defined(__vxworks) && !defined(__RTP__) && (defined(__ppc) || defined(__386))
++	{
++		static unsigned frequency = 0;
++		usec_t timestamp;
++		
++		/* Retrieve only once. Alternatively put it into a static class member variable. */
++		if (!frequency) {
++			frequency = sysTimestampFreq();
++			if (!frequency) {
++			    std::cerr << "CPU clock not implemented for this architecture" << std::endl;
++			    UsingCPU = false;
++			    return Clock::time();
++			}
++		}
++
++		/* By convention and historic restriction, in most VxWorks configurations
++		 * sysTimestamp() resets to 0 with every tick (default (200/3) Hz).
++		 * Therefore access a 64 bit CPU timer with same frequency and continuous run.
++		 * On integer math propagate to 64 Bit before doing computation!
++		 */
++#ifdef __ppc
++		unsigned hi;
++		unsigned lo;
++		
++		vxTimeBaseGet(&hi,&lo);
++		timestamp = ((int64_t)hi << 32) + lo;
++#else /* __i386 */
++		pentiumTscGet64(&timestamp);
++#endif
++		/* Convert to a resolution of 1 Microsecond.
++		 * (t/f)*c : rounding errors on integer
++		 * (t*c)/f : overflow
++		 * (t/f)*c + ((t%f)*c)/f : integer error compensated.
++		 * Overflow save while f*c has no overflow
++		 * With 64Bit and c=1M: until f=16THz 
++		 */
++		return ( timestamp / frequency ) * UsecPerSec +
++				( (timestamp % frequency) * UsecPerSec ) / frequency;
++	}
+ #else
+ 	{
+ 	    std::cerr << "CPU clock not implemented for this architecture" << std::endl;
+@@ -51,10 +122,24 @@
+ 	}
+ #endif	
+     } else {
+-	struct timeval tv;
+-	
+-	gettimeofday(&tv, NULL);	
+-	return (usec_t) (tv.tv_sec * UsecPerSec + tv.tv_usec);
++#ifdef LOG4CPP_HAVE_GETTIMEOFDAY
++    	struct timeval tv;
++    	
++    	gettimeofday(&tv, NULL);
++    	return (usec_t) (tv.tv_sec * UsecPerSec + tv.tv_usec);
++#else
++		/* Anyway timezones are undefined by POSIX gettimeofday and not used above.
++		 * Use Posix clock_gettime(CLOCK_REALTIME,struct timespec *) instead.
++		 * gettimeofday timeval: tv_usec Microseconds
++		 * clock_gettime timespec: tv_nsec Nanoseconds. Scale down!
++		 * UsecPerSec propagates to 64Bit, so no overflow ...+ (ts.tv_nsec * UsecPerSec)/1000000000
++		 * But anyway hardcoded immediately above ...+ts.tv_nsec/1000
++		 */
++		struct timespec ts;
++		
++		clock_gettime(CLOCK_REALTIME,&ts);
++		return (usec_t) (ts.tv_sec * UsecPerSec + (ts.tv_nsec * UsecPerSec)/1000000000 );
++#endif		
+     }
+ }
+ 
+diff -Naur log4cpp-1.0/tests/Clock.hh log4cpp-1.0+/tests/Clock.hh
+--- log4cpp-1.0/tests/Clock.hh	2002-09-15 16:40:50.000000000 -0600
++++ log4cpp-1.0+/tests/Clock.hh	2011-04-18 16:38:48.054787066 -0600
+@@ -6,6 +6,8 @@
+ #ifndef __CLOCK_H
+ #define __CLOCK_H
+ 
++#include <log4cpp/Portability.hh>
++
+ #ifdef LOG4CPP_HAVE_STDINT_H
+ #include <stdint.h>
+ #endif // LOG4CPP_HAVE_STDINT_H
+@@ -13,6 +15,16 @@
+ #ifdef __osf__
+     typedef long usec_t;    /* number of microseconds since 1970/01/01 */
+ #   define INT64_CONSTANT(val)  (val##L)
++#elif defined(__GNUC__)
++    /* __extension__ should avoid GNU -pedantic warning: use of C99 long long integer constant
++     * Not working, see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=7263
++     * Also suggested workaround of using unsigned with "ULL" does not work with e.g. GNU 4.1.2
++     * #   define INT64_CONSTANT(val)  ((int64_t)(uint64_t)(__extension__ val##ULL))
++     * For now just typecast unspecified scalar literal to 64 Bit. OK on numbers which fit in 31/32 bit.
++     * Compiler error on numbers which do not fit. Need to express differently in sourcecode.
++     */
++    typedef int64_t usec_t;
++#   define INT64_CONSTANT(val)  ((int64_t)val)
+ #else
+     typedef int64_t usec_t;
+ #   define INT64_CONSTANT(val)  (val##LL)
+diff -Naur log4cpp-1.0/tests/testbench.cpp log4cpp-1.0+/tests/testbench.cpp
+--- log4cpp-1.0/tests/testbench.cpp	2007-08-29 02:52:40.000000000 -0600
++++ log4cpp-1.0+/tests/testbench.cpp	2011-04-18 16:38:48.055794386 -0600
+@@ -1,3 +1,15 @@
++#include "PortabilityImpl.hh"
++
++#ifdef LOG4CPP_HAVE_UNISTD_H
++#include <unistd.h> /* For dup() Linux or VxWorks application process */
++#endif
++#ifdef LOG4CPP_HAVE_IO_H
++#    include <io.h> /* For dup() Windows */
++#endif
++#if defined(__vxworks) && !defined(__RTP__)
++ # include <ioLib.h>  /* For dup() missing in unistd.h of VxWorks kernel process */
++#endif
++
+ #include <cstdlib>
+ #include <cstring>
+ #include <cstdio>
+@@ -12,10 +24,35 @@
+ 
+ #include "Clock.hh"
+ 
++/* static to avoid conflicts if more tests are loaded into same process
++ * show categories with associated appenders, and list of all appenders
++ */
++static void showObjects(void)
++{
++	std::cout << "[" << std::endl;
++	std::vector<log4cpp::Category*> &categories = *log4cpp::Category::getCurrentCategories();
++	for (unsigned i=0; i<categories.size(); ++i) {
++		std::cout << categories[i]->getName() << " :";
++	    log4cpp::AppenderSet catappends = categories[i]->getAllAppenders();
++        for (log4cpp::AppenderSet::const_iterator i = catappends.begin(); i != catappends.end(); i++) {
++                std::cout << " " << (*i)->getName();
++        }
++    	std::cout << std::endl;
++	}
++	std::cout << "[";
++   	std::set<std::string> allappends = log4cpp::Appender::getAllAppenders();
++    for (std::set<std::string>::const_iterator i = allappends.begin(); i != allappends.end(); i++) {
++            std::cout << " " << *i;
++    }
++   	std::cout << " ]" << std::endl;
++	std::cout << "]" << std::endl;
++}
+ 
+ // -----------------------------------------------------------------------------
++LOG4CPP_MAIN_DECL(testbench)
+ int main(int argc, char* argv[])
+ {
++	{
+     int    count  = argc > 1 ? std::atoi(argv[1]) : 100;
+     size_t size   = argc > 2 ? std::atoi(argv[2]) : 128;    
+ 
+@@ -26,8 +63,21 @@
+     log4cpp::Category&	root	 = log4cpp::Category::getRoot();
+     root.setPriority(log4cpp::Priority::ERROR);    
+ 
++    /* Compare with FileAppender usage
++     * in SimpleConfigurator::configure() and BasicConfigurator::configure()
++     * Ownership of the already opened file descriptor gets transfered to the FileAppender
++     * object which is responsible to close on Destruction.
++     * Closing stdout/stderr would prevent using stdout/stderr later in the application.
++     * If process lives longer as the application, this breaks also other applications which
++     * are running in the same process, e.g. if shell and application are loaded into a
++     * VxWorks kernel process.
++     * Therefore with dup() transfer an additional file descriptor to the same file,
++     * instead of the file descriptor itself.
++     * Note: OstreamAppender behaves different - ownership of stream remains at the caller
++     *   and gets not closed on Destruction.
++     */
+     log4cpp::OstreamAppender ostreamAppender("cerr", &std::cerr);
+-    log4cpp::FileAppender fileAppender("stderr", fileno(stderr));
++    log4cpp::FileAppender fileAppender("stderr", dup(fileno(stderr)));
+     ostreamAppender.setLayout(new log4cpp::BasicLayout());
+     fileAppender.setLayout(new log4cpp::BasicLayout());
+ 
+@@ -36,6 +86,8 @@
+ 
+     log4cpp::Category& log = log4cpp::Category::getInstance("someCategory");
+ 
++	showObjects();
++	
+     Clock  clock;
+     char*  buffer = new char[size + 1];
+     
+@@ -165,8 +217,17 @@
+ 	std::cout << std::endl << "  fprintf:        " << ((float)clock.elapsed()) / count << " us" << std::endl;
+     }
+ 
++	// Restore state before calling, for the case that more tests are executing within a process
++    log4cpp::Log4cppCleanup::deleteInstance(log);
++    log4cpp::Log4cppCleanup::deleteInstance(root);
++    
+     delete[] buffer;
+     log4cpp::Category::shutdown();
++    
++	}
+ 
++	// Sub scope to allow destruction of local Appender objects before listing objects
++    showObjects();
++    
+     return 0;
+ }
+diff -Naur log4cpp-1.0/tests/testCategory.cpp log4cpp-1.0+/tests/testCategory.cpp
+--- log4cpp-1.0/tests/testCategory.cpp	2007-08-28 01:54:12.000000000 -0600
++++ log4cpp-1.0+/tests/testCategory.cpp	2011-04-18 16:38:48.056765911 -0600
+@@ -132,9 +132,12 @@
+     root.removeAppender(appender2);
+     root.removeAppender(&appender3);
+ 
++	// Restore state before calling, for the case that more tests are executing within a process
++    log4cpp::Log4cppCleanup::deleteInstance(sub1);
+ } /* end testMultiAppenders() */
+ 
+ 
++LOG4CPP_MAIN_DECL(testCategory)
+ int main(int argc, char** argv) {    
+ 
+     testMultiAppenders();
+@@ -201,6 +204,12 @@
+     sub2 << log4cpp::Priority::WARN << "warn2.." << "..warn3..value=" << 0 
+          << log4cpp::eol << "..warn4";
+ 
++	// Restore state before calling, for the case that more tests are executing within a process
++	// sub1.setAdditivity(true); Would reset modified sub1 output above. But anyway deleted below.
++    log4cpp::Log4cppCleanup::deleteInstance(sub2);
++    log4cpp::Log4cppCleanup::deleteInstance(sub1);
++    log4cpp::Log4cppCleanup::deleteInstance(root);
++    
+     log4cpp::Category::shutdown();
+ 
+     return 0;
+diff -Naur log4cpp-1.0/tests/testConfig.cpp log4cpp-1.0+/tests/testConfig.cpp
+--- log4cpp-1.0/tests/testConfig.cpp	2007-08-28 01:54:12.000000000 -0600
++++ log4cpp-1.0+/tests/testConfig.cpp	2011-04-18 16:38:48.058784389 -0600
+@@ -24,7 +24,10 @@
+ 
+ #include <log4cpp/SimpleConfigurator.hh>
+ 
+-double calcPi()
++/* static to avoid conflict when testConfig and testPropertyConfig
++ * are loaded into the same process e.g. in VxWorks
++ */
++static double calcPi()
+ {
+     double denominator = 3.0;
+     double retVal = 4.0;
+@@ -39,6 +42,7 @@
+     return retVal;
+ }
+ 
++LOG4CPP_MAIN_DECL(testConfig)
+ int main(int argc, char* argv[])
+ {
+     try {
+@@ -96,6 +100,11 @@
+     sub2 << log4cpp::Priority::WARN << "warn2.." << "..warn3..value=" << 0 
+          << log4cpp::eol << "..warn4";
+ 
++	// Restore state before calling, for the case that more tests are executing within a process
++    log4cpp::Log4cppCleanup::deleteInstance(sub2);
++    log4cpp::Log4cppCleanup::deleteInstance(sub1);
++    log4cpp::Log4cppCleanup::deleteInstance(root);
++    
+     log4cpp::Category::shutdown();
+ 
+     return 0;
+diff -Naur log4cpp-1.0/tests/testErrorCollision.cpp log4cpp-1.0+/tests/testErrorCollision.cpp
+--- log4cpp-1.0/tests/testErrorCollision.cpp	2001-06-01 11:56:59.000000000 -0600
++++ log4cpp-1.0+/tests/testErrorCollision.cpp	2011-04-18 16:38:48.058784389 -0600
+@@ -1,9 +1,40 @@
++/* If the platform has the ERROR problem, the full Portability.hh
++ * with double inclusion protection is needed before faking
++ * the ERROR definition, to prevent silent
++ * redefinition of ERROR by later indirectly included system internal
++ * headers. Implicite include of Portability.hh by Priority.hh
++ * after faking ERROR is not enough.
++ */
++#include <log4cpp/Portability.hh>
++#ifndef LOG4CPP_FIX_ERROR_COLLISION
++/* For consistency test,
++ * if, and only if current platform does not have the problem, simulate it.
++ */
+ #define ERROR 666
+ #define LOG4CPP_FIX_ERROR_COLLISION 1
++#endif
++
++/* Record the value as defined by the platform headers */
++const int ERROR_platform = ERROR;
+ 
+ #include <log4cpp/Priority.hh>
+ #include <assert.h>
++#include <iostream>
++
++/* Trying to define in non system header must produce a compiler warning
++ */
++//#define ERROR 777
+ 
++/* Make sure that Macro fix in Priority.hh did
++ * not change the value, neither for the system ERROR
++ * nor for the log4cpp ERROR.
++ * If the ERROR Macro got redefined to a numeric value,
++ * a syntax error results below. This is intentional.
++ */
++LOG4CPP_MAIN_DECL(testErrorCollision)
+ int main(int argc, char** argv) {
+-    assert(ERROR == 666);
++    assert(ERROR == ERROR_platform);
++    assert(log4cpp::Priority::ERROR == 300);
++    std::cout << "platform ERROR = " << ERROR << std::endl;
++    return 0;
+ }
+diff -Naur log4cpp-1.0/tests/testFilter.cpp log4cpp-1.0+/tests/testFilter.cpp
+--- log4cpp-1.0/tests/testFilter.cpp	2002-08-12 15:21:52.000000000 -0600
++++ log4cpp-1.0+/tests/testFilter.cpp	2011-04-18 16:38:48.059775021 -0600
+@@ -37,6 +37,7 @@
+     };
+ };
+ 
++LOG4CPP_MAIN_DECL(testFilter)
+ int main(int argc, char** argv) {
+     TestFilter filter;
+ 
+diff -Naur log4cpp-1.0/tests/testFixedContextCategory.cpp log4cpp-1.0+/tests/testFixedContextCategory.cpp
+--- log4cpp-1.0/tests/testFixedContextCategory.cpp	2007-08-28 01:54:12.000000000 -0600
++++ log4cpp-1.0+/tests/testFixedContextCategory.cpp	2011-04-18 16:38:48.060779333 -0600
+@@ -8,7 +8,34 @@
+ #include "log4cpp/Priority.hh"
+ #include "log4cpp/NDC.hh"
+ 
+-int main(int argc, char** argv) {    
++
++/* static to avoid conflicts if more tests are loaded into same process
++ * show categories with associated appenders, and list of all appenders
++ */
++static void showObjects(void)
++{
++	std::cout << "[" << std::endl;
++	std::vector<log4cpp::Category*> &categories = *log4cpp::Category::getCurrentCategories();
++	for (unsigned i=0; i<categories.size(); ++i) {
++		std::cout << categories[i]->getName() << " :";
++	    log4cpp::AppenderSet catappends = categories[i]->getAllAppenders();
++        for (log4cpp::AppenderSet::const_iterator i = catappends.begin(); i != catappends.end(); i++) {
++                std::cout << " " << (*i)->getName();
++        }
++    	std::cout << std::endl;
++	}
++	std::cout << "[";
++   	std::set<std::string> allappends = log4cpp::Appender::getAllAppenders();
++    for (std::set<std::string>::const_iterator i = allappends.begin(); i != allappends.end(); i++) {
++            std::cout << " " << *i;
++    }
++   	std::cout << " ]" << std::endl;
++	std::cout << "]" << std::endl;
++}
++
++LOG4CPP_MAIN_DECL(testFixedContextCategory)
++int main(int argc, char** argv) {
++
+     log4cpp::Appender* appender = 
+         new log4cpp::OstreamAppender("default", &std::cout);
+ 
+@@ -18,13 +45,16 @@
+     log4cpp::Category& root = log4cpp::Category::getRoot();
+     root.addAppender(appender);
+        root.setPriority(log4cpp::Priority::ERROR);
+-    
++
++    {
+     log4cpp::FixedContextCategory sub1(std::string("sub1"), std::string("context1"));
+ 
+     log4cpp::FixedContextCategory sub1_2(std::string("sub1"), std::string("context1_2"));
+ 
+     log4cpp::FixedContextCategory sub2(std::string("sub1.sub2"), std::string("context2"));
+ 
++    showObjects();
++    
+     std::cout << " root priority = " << root.getPriority() << std::endl;
+     std::cout << " sub1 priority = " << sub1.getPriority() << std::endl;
+     std::cout << " sub2 priority = " << sub2.getPriority() << std::endl;
+@@ -57,8 +87,25 @@
+ 
+     sub2 << log4cpp::Priority::WARN << "warn2.." << "..warn3..value=" << 0 
+          << log4cpp::eol << "..warn4";
+-
++    
++    }
++    
++	/* Restore state before calling, for the case that more tests are executing within a process
++     * local FixedContextCategory categories sub1 sub1_2 sub2 with NDC context info get destructed automatically.
++     * Internally the Category referenced by the first arg got instantiated, but not deleted.
++     * FixedContextCategory during destruction accesses the associated Categories, therefore
++     * they must not be deleted before FixedContextCategory destruction has completed.
++     * Therefore keep FixedContextCategory in a nested Scope and clean up the instantiated Categories afterwards.
++     */
++    log4cpp::Log4cppCleanup::deleteInstance(log4cpp::Category::getInstance("sub1"));
++    log4cpp::Log4cppCleanup::deleteInstance(log4cpp::Category::getInstance("sub1.sub2"));
++    
++    // root is a reference to a Category and therefore also allows destruction.
++    log4cpp::Log4cppCleanup::deleteInstance(root);
++    
+     log4cpp::Category::shutdown();
+ 
++    showObjects();
++
+     return 0;
+ }
+diff -Naur log4cpp-1.0/tests/testmain.cpp log4cpp-1.0+/tests/testmain.cpp
+--- log4cpp-1.0/tests/testmain.cpp	2007-08-28 01:54:12.000000000 -0600
++++ log4cpp-1.0+/tests/testmain.cpp	2011-04-18 16:42:25.033788610 -0600
+@@ -1,4 +1,6 @@
+ #include <stdio.h>
++#include <cstring>
++#include <cstdlib>
+ #include "log4cpp/Portability.hh"
+ #ifdef LOG4CPP_HAVE_UNISTD_H
+ #include <unistd.h>
+@@ -16,8 +18,67 @@
+ #include "log4cpp/Priority.hh"
+ #include "log4cpp/NDC.hh"
+ 
++/* Verify that the same filename for more appenders is not allowed.
++ * When needed, instead use Appender::getAppender(name)
++ * or open the file externally and use dup()
++ * or use FileAppender::FileAppender(name,fd)
++ */
++static void multifile(std::string fileName) {
++
++	log4cpp::Appender* file1 = new log4cpp::FileAppender("MULTFILEA", fileName);
++	file1->setLayout(new log4cpp::BasicLayout());
++	log4cpp::Category& cat1 = log4cpp::Category::getInstance(std::string("multfileA"));
++	cat1.addAppender(file1); //Transfer ownership by passing pointer not reference
++	cat1.setPriority(log4cpp::Priority::ERROR);
++
++	log4cpp::Appender* file2 = new log4cpp::FileAppender("MULTFILEB", fileName);
++	file2->setLayout(new log4cpp::BasicLayout());
++	log4cpp::Category& cat2 = log4cpp::Category::getInstance(std::string("multfileB"));
++	cat2.addAppender(file2); //Transfer ownership by passing pointer not reference
++	cat2.setPriority(log4cpp::Priority::ERROR);
++
++	/* Only cat1 associated to file1 should be shown in file */
++	cat1.error("test 1a show");
++	cat2.error("test 1b hide");
++
++	cat2.error("test 2a hide");
++	cat1.error("test 2b show");
++
++	/* file2 should fail */
++	if (log4cpp::Appender::reopenAll()) {
++		std::cout <<"log reopened" << std::endl;
++	} else {
++		std::ostringstream sout;
++		sout << "could not reopen log -";
++	   	std::set<std::string> failedappends = log4cpp::Appender::reopenAllFailedNames();
++	    for (std::set<std::string>::const_iterator i = failedappends.begin(); i != failedappends.end(); i++) {
++	            sout << " " << *i;
++	    }
++	    std::cout << sout.str() << std::endl;
++	}
++	
++	cat1.error("test 3a show");
++	cat2.error("test 3b hide");
++
++	cat2.error("test 4a hide");
++	cat1.error("test 4b show");
++	
++    log4cpp::Log4cppCleanup::deleteInstance(cat2);
++    log4cpp::Log4cppCleanup::deleteInstance(cat1);
++}
++
++
++/* On comparing output of different platforms, non existing syslog redirected to stdout disturbs comparison.
++ * Optionally allow redirection into a file. the option to redirect syslog is only available, if
++ * the platform does not support the real syslog.
++ * Configurable iteration count for turnaround time of test suite.
++ * Usage:
++ * testmain [-f <syslogdummy>] [-n <count>] [<logfile>]
++ */
++LOG4CPP_MAIN_DECL(testmain)
+ int main(int argc, char** argv) {
+ 	log4cpp::Appender* appender;
++	int argfn = 1;
+ #ifdef LOG4CPP_HAVE_SYSLOG
+ 	log4cpp::SyslogAppender* syslogAppender;
+ 
+@@ -25,13 +86,25 @@
+ #else
+ 	log4cpp::Appender* syslogAppender;
+ 
+-	syslogAppender = new log4cpp::OstreamAppender("syslogdummy", &std::cout);
++	if (argc >= (argfn + 2) && !std::strcmp(argv[argfn],"-s")) {
++		syslogAppender = new log4cpp::FileAppender("syslogdummy", argv[argfn+1]);
++		argfn += 2;
++	} else {
++		syslogAppender = new log4cpp::OstreamAppender("syslogdummy", &std::cout);
++	}
+ #endif
+ 
+-	if (argc < 2) {
++	int count = 10000;
++	if (argc >= (argfn + 2) && !std::strcmp(argv[argfn],"-n")) {
++		count = std::atoi(argv[argfn+1]);
++		argfn += 2;
++	}
++	if (argc <= argfn ) {
+ 		appender = new log4cpp::OstreamAppender("default", &std::cout);
+ 	} else {
+-		appender = new log4cpp::FileAppender("default", argv[1]);
++		multifile(argv[argfn]);
++
++		appender = new log4cpp::FileAppender("default", argv[argfn]);
+ 	}
+ 
+ 	syslogAppender->setLayout(new log4cpp::BasicLayout());
+@@ -78,7 +151,7 @@
+              << log4cpp::eol << " warn4";
+ 
+ 	{
+-		for(int i = 0; i < 10000; i++) {
++		for(int i = 0; i < count; i++) {
+ 			char ndc2[20];
+ 			sprintf(ndc2, "i=%d", i);
+ 			log4cpp::NDC::push(ndc2);
+@@ -88,7 +161,13 @@
+ 				if (log4cpp::Appender::reopenAll()) {
+ 					sub1.info("log reopened");
+ 				} else {
+-					sub1.warn("could not reopen log");
++					std::ostringstream sout;
++					sout << "could not reopen log -";
++				   	std::set<std::string> failedappends = log4cpp::Appender::reopenAllFailedNames();
++				    for (std::set<std::string>::const_iterator i = failedappends.begin(); i != failedappends.end(); i++) {
++				            sout << " " << *i;
++				    }
++				    sub1.warnStream() << sout.str();
+ 				}
+ 			}
+ #ifndef WIN32
+@@ -98,5 +177,11 @@
+ 		}
+ 	}
+ 
++	// Restore state before calling, for the case that more tests are executing within a process
++	log4cpp::NDC::pop();
++    log4cpp::Log4cppCleanup::deleteInstance(sub2);
++    log4cpp::Log4cppCleanup::deleteInstance(sub1);
++    log4cpp::Log4cppCleanup::deleteInstance(root);
++    
+ 	return 0;
+ }
+diff -Naur log4cpp-1.0/tests/testNDC.cpp log4cpp-1.0+/tests/testNDC.cpp
+--- log4cpp-1.0/tests/testNDC.cpp	2002-06-18 05:31:53.000000000 -0600
++++ log4cpp-1.0+/tests/testNDC.cpp	2011-04-18 16:38:48.062762979 -0600
+@@ -1,8 +1,10 @@
+ #include <iostream>
+ #include "log4cpp/NDC.hh"
++#include "log4cpp/HierarchyMaintainer.hh" // For deleteAllCategories
+ 
+ using namespace log4cpp;
+ 
++LOG4CPP_MAIN_DECL(testNDC)
+ int main(int argc, char** argv) {
+     std::cout << "1. empty NDC: " << NDC::get() << std::endl;
+ 
+diff -Naur log4cpp-1.0/tests/testNTEventLog.cpp log4cpp-1.0+/tests/testNTEventLog.cpp
+--- log4cpp-1.0/tests/testNTEventLog.cpp	2002-06-17 01:43:43.000000000 -0600
++++ log4cpp-1.0+/tests/testNTEventLog.cpp	2011-04-18 16:38:48.062762979 -0600
+@@ -17,6 +17,7 @@
+ #include "log4cpp/NTEventLogAppender.hh"
+ #include "log4cpp/Priority.hh"
+ 
++LOG4CPP_MAIN_DECL(testNTEventLog)
+ int main(int argc, char* argv[])
+ {
+     log4cpp::Appender* appender = 
+@@ -39,6 +40,9 @@
+     sub1.log(log4cpp::Priority::NOTSET, "sub1 notset");
+     sub1.log(log4cpp::Priority::ERROR, "sub1 error");
+ 
++	// Restore state before calling, for the case that more tests are executing within a process
++    log4cpp::Log4cppCleanup::deleteInstance(sub1);
++    
+     log4cpp::Category::shutdown();
+ 
+     return 0;
+diff -Naur log4cpp-1.0/tests/testPattern.cpp log4cpp-1.0+/tests/testPattern.cpp
+--- log4cpp-1.0/tests/testPattern.cpp	2003-05-09 17:24:31.000000000 -0600
++++ log4cpp-1.0+/tests/testPattern.cpp	2011-04-18 16:38:48.063770064 -0600
+@@ -18,6 +18,31 @@
+     }	
+ }                                                                              
+ 
++/* static to avoid conflicts if more tests are loaded into same process
++ * show categories with associated appenders, and list of all appenders
++ */
++static void showObjects(void)
++{
++	std::cout << "[" << std::endl;
++	std::vector<log4cpp::Category*> &categories = *log4cpp::Category::getCurrentCategories();
++	for (unsigned i=0; i<categories.size(); ++i) {
++		std::cout << categories[i]->getName() << " :";
++	    log4cpp::AppenderSet catappends = categories[i]->getAllAppenders();
++        for (log4cpp::AppenderSet::const_iterator i = catappends.begin(); i != catappends.end(); i++) {
++                std::cout << " " << (*i)->getName();
++        }
++    	std::cout << std::endl;
++	}
++	std::cout << "[";
++   	std::set<std::string> allappends = log4cpp::Appender::getAllAppenders();
++    for (std::set<std::string>::const_iterator i = allappends.begin(); i != allappends.end(); i++) {
++            std::cout << " " << *i;
++    }
++   	std::cout << " ]" << std::endl;
++	std::cout << "]" << std::endl;
++}
++
++LOG4CPP_MAIN_DECL(testPattern)
+ int main(int argc, char* argv[])
+ {
+     log4cpp::BasicConfigurator::configure();
+@@ -37,7 +62,8 @@
+     test(">%.5m<%n", layout, cat);
+ 
+     // category test
+-    test(">%c{2}<%n", layout, log4cpp::Category::getInstance("c1.c2.c3.c4"));
++    log4cpp::Category& testcat = log4cpp::Category::getInstance("c1.c2.c3.c4");
++    test(">%c{2}<%n", layout, testcat);
+ 
+     // test date format
+     test("%d{%d %b %Y %H:%M:%S.%l} %m %n", layout, cat);
+@@ -57,8 +83,22 @@
+     // test bug #688715
+     test("%.10m", layout, cat);
+ 
++	showObjects();
++	
++	// Restore state before calling, for the case that more tests are executing within a process
++    // getInstance("c1.c2.c3.c4") creates the upper level instances also. Need to delete individually!
++    log4cpp::Log4cppCleanup::deleteInstance(testcat);
++    log4cpp::Log4cppCleanup::deleteInstance(log4cpp::Category::getInstance("c1.c2.c3"));
++    log4cpp::Log4cppCleanup::deleteInstance(log4cpp::Category::getInstance("c1.c2"));
++    log4cpp::Log4cppCleanup::deleteInstance(log4cpp::Category::getInstance("c1"));
++    log4cpp::NDC::pop();
++    log4cpp::Log4cppCleanup::deleteInstance(cat);
++    log4cpp::Log4cppCleanup::deleteInstance(log4cpp::Category::getRoot());
++
+     log4cpp::Category::shutdown();
+ 
++	showObjects();
++	
+     return 0;
+ }
+ 
+diff -Naur log4cpp-1.0/tests/testPriority.cpp log4cpp-1.0+/tests/testPriority.cpp
+--- log4cpp-1.0/tests/testPriority.cpp	2002-03-22 05:44:28.000000000 -0700
++++ log4cpp-1.0+/tests/testPriority.cpp	2011-04-18 16:38:48.064787076 -0600
+@@ -3,6 +3,7 @@
+ 
+ using namespace log4cpp;
+ 
++LOG4CPP_MAIN_DECL(testPriority)
+ int main(int argc, char** argv) {
+     
+     std::cout << "priority debug(700): " << Priority::getPriorityName(700) << std::endl;
+diff -Naur log4cpp-1.0/tests/testProperties.cpp log4cpp-1.0+/tests/testProperties.cpp
+--- log4cpp-1.0/tests/testProperties.cpp	2002-08-15 17:17:31.000000000 -0600
++++ log4cpp-1.0+/tests/testProperties.cpp	2011-04-18 16:38:48.065828867 -0600
+@@ -1,13 +1,32 @@
+ #include "Properties.hh"
+ #include <iostream>
+ #include <fstream>
++#include <cstdlib> //for std::getenv
+ 
++LOG4CPP_MAIN_DECL(testProperties)
+ int main(int argc, char** argv) {
+-    log4cpp::Properties properties;
+-    std::string inFile = (argc > 1) ? argv[1] : "log4cpp.properties";  
+-    std::ifstream in(inFile.c_str());
++
++	log4cpp::Properties properties;
++    std::string initFileName;
++    
++    if (argc > 1) {
++    	initFileName = argv[1]; 
++    } else {
++    	/* If no argument given look in consistent folder to testConfig.cpp and testPropertyConfig.cpp
++    	 * to find the test file.
++    	 */
++    	char* srcdir = std::getenv("srcdir");
++    	if (srcdir == NULL) {
++    		initFileName = "./log4cpp.properties";
++    	} else {
++    		initFileName = std::string(srcdir) + "/log4cpp.properties";
++    	}
++    }
++
++    std::ifstream in(initFileName.c_str());
+ 
+     properties.load(in);
+     properties.save(std::cout);
++    return 0;
+ }
+ 
+diff -Naur log4cpp-1.0/tests/testPropertyConfig.cpp log4cpp-1.0+/tests/testPropertyConfig.cpp
+--- log4cpp-1.0/tests/testPropertyConfig.cpp	2007-08-28 01:54:12.000000000 -0600
++++ log4cpp-1.0+/tests/testPropertyConfig.cpp	2011-04-18 16:38:48.066761386 -0600
+@@ -24,7 +24,10 @@
+ 
+ #include <log4cpp/PropertyConfigurator.hh>
+ 
+-double calcPi()
++/* static to avoid conflict when testConfig and testPropertyConfig
++ * are loaded into the same process e.g. in VxWorks
++ */
++static double calcPi()
+ {
+     double denominator = 3.0;
+     double retVal = 4.0;
+@@ -39,6 +42,31 @@
+     return retVal;
+ }
+ 
++/* static to avoid conflicts if more tests are loaded into same process
++ * show categories with associated appenders, and list of all appenders
++ */
++static void showObjects(void)
++{
++	std::cout << "[" << std::endl;
++	std::vector<log4cpp::Category*> &categories = *log4cpp::Category::getCurrentCategories();
++	for (unsigned i=0; i<categories.size(); ++i) {
++		std::cout << categories[i]->getName() << " :";
++	    log4cpp::AppenderSet catappends = categories[i]->getAllAppenders();
++        for (log4cpp::AppenderSet::const_iterator i = catappends.begin(); i != catappends.end(); i++) {
++                std::cout << " " << (*i)->getName();
++        }
++    	std::cout << std::endl;
++	}
++	std::cout << "[";
++   	std::set<std::string> allappends = log4cpp::Appender::getAllAppenders();
++    for (std::set<std::string>::const_iterator i = allappends.begin(); i != allappends.end(); i++) {
++            std::cout << " " << *i;
++    }
++   	std::cout << " ]" << std::endl;
++	std::cout << "]" << std::endl;
++}
++
++LOG4CPP_MAIN_DECL(testPropertyConfig)
+ int main(int argc, char* argv[])
+ {
+     try {
+@@ -67,6 +95,8 @@
+     log4cpp::Category& sub2 = 
+         log4cpp::Category::getInstance(std::string("sub1.sub2"));
+ 
++	showObjects();
++
+     root.error("root error");
+     root.warn("root warn");
+     sub1.error("sub1 error");
+@@ -96,8 +126,29 @@
+     sub2 << log4cpp::Priority::WARN << "warn2.." << "..warn3..value=" << 0 
+          << log4cpp::eol << "..warn4";
+ 
++	// Restore state before calling, for the case that more tests are executing within a process
++    
++    // Remove instantiated objects, need to including those instantiated by PropertyConfigurator
++    // or SimpleConfigurator by configuration files.
++    // Alternatively use log4cpp::Category::getCurrentCategories() to find them.
++
++    log4cpp::Log4cppCleanup::deleteInstance(sub2);
++    log4cpp::Log4cppCleanup::deleteInstance(log4cpp::Category::getInstance(std::string("sub2")));
++    log4cpp::Log4cppCleanup::deleteInstance(sub1);
++    log4cpp::Log4cppCleanup::deleteInstance(root);
++    
++	// remove Appenders from all remaining Categories by removeAllAppenders()
++	// within Category::shutdown()
++	// Only Appenders owned by the Categories get deleted automatically in
++	// addition to the removal. 
+     log4cpp::Category::shutdown();
+ 
++	// Remove Appenders owned by PropertyConfigurator
++	// Stale appenders produce problems e.g. on reopenAll, see testmain.cpp
++    log4cpp::PropertyConfigurator::cleanup();
++    
++	showObjects();
++	
+     return 0;
+ }
+ 

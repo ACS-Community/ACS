@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+$Id: PSA.xml,v 1.2 2013/03/08 08:49:12 acaproni Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/PSA/PSA.xml,v $
+-->
+<fault-family name="PSA"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="ATF Support Team"/>
+    <fault-code value="1">
+        <priority>3</priority>
+        <cause>Internal Condition Trip. Over/Under voltage or current</cause>
+        <action>Outputs can only be re-enabled by writing a 0 to SHUTDOWN_COM</action>
+        <consequence>PSA is shutdown, backend analog rack stops working.</consequence>
+        <problem-description>All supply modules have been disabled due internal condition trip</problem-description>
+    </fault-code>
+    <fault-code value="2">
+        <priority>2</priority>
+        <cause>Command Shutdown or internal condition trip</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Internal condition Trip or COMMAND SHUTDOWN</problem-description>
+    </fault-code>
+    <fault-code value="8">
+        <priority>3</priority>
+        <cause>Error on the -17V module</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Error on the -17V module</problem-description>
+    </fault-code>
+    <fault-code value="16">
+        <priority>3</priority>
+        <cause>Error on the -7V module</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Error on the -7V module</problem-description>
+    </fault-code>
+    <fault-code value="32">
+        <priority>3</priority>
+        <cause>Error on the +7V module</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Error on the +7V module</problem-description>
+    </fault-code>
+    <fault-code value="64">
+        <priority>3</priority>
+        <cause>Error on the +17VB module</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Error on the +17VB module</problem-description>
+    </fault-code>
+    <fault-code value="128">
+        <priority>3</priority>
+        <cause>Error on the +17VA module</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Error on the +17VA module</problem-description>
+    </fault-code>
+    <fault-code value="256">
+        <priority>3</priority>
+        <cause>+17V B module is OFF</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>+17V B module is OFF</problem-description>
+    </fault-code>
+    <fault-code value="512">
+        <priority>3</priority>
+        <cause>-17V module is OFF</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>-17V module is OFF</problem-description>
+    </fault-code>
+    <fault-code value="1024">
+        <priority>3</priority>
+        <cause>+17VA module is OFF</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>+17VA module is OFF</problem-description>
+    </fault-code>
+    <fault-code value="2048">
+        <priority>3</priority>
+        <cause>+7V module is OFF</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>+7V module is OFF</problem-description>
+    </fault-code>
+    <fault-code value="4096">
+        <priority>3</priority>
+        <cause>-7V module is OFF</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>-7V module is OFF</problem-description>
+    </fault-code>
+    <fault-code value="65536">
+        <priority>3</priority>
+        <cause>Over temperature Status NOT ok</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Over temperature Status NOT ok</problem-description>
+    </fault-code>
+    <fault-code value="131072">
+        <priority>3</priority>
+        <cause>FAN Status NOT ok</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>FAN Status NOT ok</problem-description>
+    </fault-code>
+    <fault-code value="262144">
+        <priority>3</priority>
+        <cause>AC Status is NOT ok</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>AC Status is NOT ok</problem-description>
+    </fault-code>
+    <fault-code value="524288">
+        <priority>3</priority>
+        <cause>Global DC Status is NOT ok</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Global DC Status is NOT ok</problem-description>
+    </fault-code>
+    <fault-code value="1048576">
+        <priority>3</priority>
+        <cause>Current Limit Status NOT ok</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Current Limit Status NOT ok</problem-description>
+    </fault-code>
+    <fault-code value="4194304">
+        <priority>3</priority>
+        <cause>Over Voltage Protection Status is NOT ok</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Over Voltage Protection Status is NOT ok</problem-description>
+    </fault-code>
+    <fault-code value="8388608">
+        <priority>3</priority>
+        <cause>FAN Speed Status is NOT ok</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>FAN Speed Status is NOT ok</problem-description>
+    </fault-code>
+    <fault-code value="16777216">
+        <priority>3</priority>
+        <cause>Ambient Temperature out of valid range [10C--22C]</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>Ambient Temperature detected on PSA out of valid range.</problem-description>
+    </fault-code>
+    <fault-code value="33554432">
+        <priority>3</priority>
+        <cause>+7Volts MAX Voltage above normal</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>+7Volts MAX Voltage above normal</problem-description>
+    </fault-code>
+    <fault-code value="67108864">
+        <priority>3</priority>
+        <cause>+7Volts MIN Voltage below normal</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>+7Volts MIN Voltage below normal</problem-description>
+    </fault-code>
+    <fault-code value="134217728">
+        <priority>3</priority>
+        <cause>+7V PowerSupply. Current above normal. </cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>+7V PowerSupply. Current above normal. </problem-description>
+    </fault-code>
+    <fault-code value="268435456">
+        <priority>3</priority>
+        <cause>-7V Power Supply. Voltage output above normal.</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>-7V Power Supply. Voltage output above normal.</problem-description>
+    </fault-code>
+    <fault-code value="536870912">
+        <priority>3</priority>
+        <cause>+17VA  Power Supply. Voltage output out of range.</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>-7V Power Supply. Voltage output below normal range.</problem-description>
+    </fault-code>
+    <fault-code value="1073741824">
+        <priority>3</priority>
+        <cause>-7V Power Supply. Current output above normal.(>16Amp)</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>-7V Power Supply. Current output above normal.(>16Amp)</problem-description>
+    </fault-code>
+    <fault-code value="8192">
+        <priority>3</priority>
+        <cause>+17VA PowerSupply. Output current above normal (>16amp) </cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>+17VA PowerSupply. Output current above normal (>16amp)</problem-description>
+    </fault-code>
+    <fault-code value="16384">
+        <priority>3</priority>
+        <cause>-17V PowerSupply. Voltage out of operational range.</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>-17V PowerSupply. Voltage out of operational range.</problem-description>
+    </fault-code>
+    <fault-code value="2097152">
+        <priority>3</priority>
+        <cause>-17V PowerSupply. Output current above max allowed.</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>-17V PowerSupply. Output current above max allowed.</problem-description>
+    </fault-code>
+    <fault-code value="4">
+        <priority>3</priority>
+        <cause>+17VB PowerSupply. Output Voltage out of operational range.</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>+17VB PowerSupply. Output Voltage out of operational range.</problem-description>
+    </fault-code>
+    <fault-code value="32768">
+        <priority>3</priority>
+        <cause>+17VB PowerSupply. Output Voltage out of operational range.</cause>
+        <action>NONE DEFINED</action>
+        <consequence>NONE DEFINED</consequence>
+        <problem-description>+17VB PowerSupply. Output Voltage out of operational range.</problem-description>
+    </fault-code>
+    <fault-member-default>
+    </fault-member-default>
+</fault-family>

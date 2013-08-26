@@ -1,0 +1,585 @@
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is -nosvcs 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is inputfile=c477_040502.xpl 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is msname=myvladata.ms 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is project=ad477 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is start=2004/05/02/18:30:00 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is stop=2004/05/02/19:00:00 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is bandname=P 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is bandwidth=10.01 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is centerfreq=1.489 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is source=3C49 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is overwrite=1 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is testInt=-12 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is testString=changeme 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is testStringArray=1 with space ,2 space,3 space 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is testDoubleArray=-1.1,2.2,3.3d5 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] argv is testIntArray=1,2,3 
+1 - ----------T--:--:--.--- [GlobalLogger - StaticContainer::createComponent] Creating component: Component-XXXX
+1 - ----------T--:--:--.--- [GlobalLogger - paramTaskTest] Creating component
+1 - ----------T--:--:--.--- [GlobalLogger - StaticContainer::createComponent] Component Life Cycle
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component Component-XXXX: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component Component-XXXX: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component Component-XXXX: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [GlobalLogger - StaticContainer::createComponent] Activating the component
+1 - ----------T--:--:--.--- [GlobalLogger - paramTaskTest] Invoking run operation on the component
+1 - ----------T--:--:--.--- [GlobalLogger - paramTaskTest] Task component has been created
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: msname=myvladata.ms 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: inputfile=c477_040502.xpl 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: project=ad477 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: start=2004/05/02/18:30:00 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: stop=2004/05/02/19:00:00 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: bandname=P 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: bandwidth=10.01 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: centerfreq=1.489 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: source=3C49 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: overwrite=1 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: testInt=-12 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: testString=changeme 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: testStringArray=1 with space ,2 space,3 space 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] length of commandline param sequence: 15 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: testDoubleArray=-1.1,2.2,3.3d5 
+1 - ----------T--:--:--.--- [GlobalLogger - taskRunner::main] sequence element: testIntArray=1,2,3 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] sequence length is: 15 
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: msname
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::parseDOM] Parsed file: paramTaskTest.xml
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of output ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. myvladata.ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: true
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of vla archive
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: true
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: inputfile
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. c477_040502.xpl
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: project
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of project to extract, defaults to all projects in input
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. ad577
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] default: all
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: start
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] default: beginning of input file
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: start time to extract
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. 2004/05/02/18:30:00
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: stop
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: end time of extracted data
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. 2004/05/02/19:00:00
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] double param def name: centerfreq
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] default: end of input file
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] double param def name: bandwidth
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] help text: frequency of data to extract (used along with bandwidth parameter)
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] prompt text: e.g. 1.489 GHz
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] string default: all
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] help text: data around centerfreq to get out
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] prompt text: e.g. 10.01 Mhz
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] string default: all
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: bandname
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] default: all
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of band to extract
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. P
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: source
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of source
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. 3C49 or 1338+4995
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] default: all
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] bool param def name: overwrite
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] help value: overwrite or append
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] prompt value: e.g. true or false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] required value: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] bool param def name: testMissing
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] default value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] inserted boolparam: overwrite into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] required value: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] default value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] help value: overwrite or append
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] inserted boolparam: testMissing into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] prompt value: e.g. true or false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] help value: help testing 123
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] int param def name: testInt
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] max value: 12
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] prompt value: testing 123
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] valid value: -12
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] valid value: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] valid value: 11
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] valid value: 12
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: testString
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of source
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. 3C49 or 1338+4995
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: true
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] valid value: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] valid value: testingBoy
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] valid value: testingGirl
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] valid value: testingWoman
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] help text: name of output ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] prompt text: e.g. myvladata.ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] string array param def name: testStringArray
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] int array param def name: testIntArray
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] default value: default str1
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] default value: default str2
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] default value: default str3
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] maxLen: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] help text: name of output ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] prompt text: e.g. myvladata.ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] double array param def name: testDoubleArray
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] default value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] default value: 2
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] default value: 3
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] maxLen: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] help text: name of output ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] maxLen: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] prompt text: e.g. myvladata.ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] default value: 1.400000
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] default value: 1.500000
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] default value: 1.600000
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 6
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: msname
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 0 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: msname=myvladata.ms 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: myvladata.ms
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 1 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 0 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: inputfile=c477_040502.xpl 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 9
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: inputfile
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: c477_040502.xpl
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 1 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 7
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: project
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 2 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: project=ad477 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: ad477
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 3 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 2 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: start=2004/05/02/18:30:00 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 5
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: start
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: 2004/05/02/18:30:00
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 3 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 4
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: stop
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 4 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: stop=2004/05/02/19:00:00 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: 2004/05/02/19:00:00
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 5 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 4 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: centerfreq=1.489 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 10
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: centerfreq
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: 1.489
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 9
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 6 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 5 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: bandwidth=10.01 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: bandwidth
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: 10.01
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 7 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 6 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 8
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: bandname
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: P
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: bandname=P 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 6
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 8 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 7 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: source=3C49 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: source
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: 3C49
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 9 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 8 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 9
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: overwrite
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: 1
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: overwrite=1 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 10
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 10 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 9 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: testString=changeme 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: testString
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: changeme
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 11 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 10 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 7
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: testInt
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: -12
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: testInt=-12 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 15
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 12 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 11 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: testStringArray=1 with space ,2 space,3 space 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: testStringArray
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: 1 with space ,2 space,3 space
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseStringArrayElement] The value string incoming: 1 with space ,2 space,3 space
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseStringArrayElement] value pushed into vector is: 1 with space 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 13 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 12 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseStringArrayElement] value pushed into vector is: 2 space
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseStringArrayElement] value pushed into vector is: 3 space
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 12
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: testIntArray
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: 1,2,3
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: testIntArray=1,2,3 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseIntArrayElement] The value string incoming: 1,2,3
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseIntArrayElement] value pushed into vector is: 1
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseIntArrayElement] value pushed into vector is: 2
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseIntArrayElement] value pushed into vector is: 3
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The equals sign position is: 15
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] entering loop, value of i is: 14 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 13 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] name/value pair: testDoubleArray=-1.1,2.2,3.3d5 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The parameter name was parsed as: testDoubleArray
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] The value string is: -1.1,2.2,3.3d5
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseDoubleArrayElement] The value string incoming: -1.1,2.2,3.3d5
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseDoubleArrayElement] value pushed into vector is: -1.1
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseDoubleArrayElement] The string after correction of sci-notation is: 3.3e5
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseDoubleArrayElement] The string before correction of sci-notation is: 3.3d5
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseDoubleArrayElement] value pushed into vector is: 2.2
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::parseDoubleArrayElement] value pushed into vector is: 3.3e5
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::buildParameterMap] exiting loop, value of i is: 14 
+1 - ----------T--:--:--.--- [Component-XXXX - parameterTask::run] The XML built from command line params is:
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::initialize] initialized XML platform
+1 - <?xml version="1.0" encoding="ISO-8859-1" standalone="yes" ?>
+1 - <pset:paramset xmlns:pset="urn:schemas-cosylab-com:pset:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-cosylab-com:pset:1.0 pset.xsd">
+1 -   <psetdef>paramTaskTest.xml</psetdef>
+1 -   <name>command-line values</name>
+1 -   <param xsi:type="pset:string">
+1 -     <name>bandname</name>
+1 -     <value>P</value>
+1 -   </param>
+1 -   <param xsi:type="pset:double">
+1 -     <name>bandwidth</name>
+1 -     <value>10.01</value>
+1 -   </param>
+1 -   <param xsi:type="pset:double">
+1 -     <name>centerfreq</name>
+1 -     <value>1.489</value>
+1 -   </param>
+1 -   <param xsi:type="pset:string">
+1 -     <name>inputfile</name>
+1 -     <value>c477_040502.xpl</value>
+1 -   </param>
+1 -   <param xsi:type="pset:string">
+1 -     <name>msname</name>
+1 -     <value>myvladata.ms</value>
+1 -   </param>
+1 -   <param xsi:type="pset:bool">
+1 -     <name>overwrite</name>
+1 -     <value>1</value>
+1 -   </param>
+1 -   <param xsi:type="pset:string">
+1 -     <name>project</name>
+1 -     <value>ad477</value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::parseDOM] parsed xml in memory of id: CommandLine
+1 -   </param>
+1 -   <param xsi:type="pset:string">
+1 -     <name>source</name>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: true
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: msname
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::parseDOM] Parsed file: paramTaskTest.xml
+1 -     <value>3C49</value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of output ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. myvladata.ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: true
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: inputfile
+1 -   </param>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of vla archive
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. c477_040502.xpl
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: project
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of project to extract, defaults to all projects in input
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. ad577
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 0
+1 -   <param xsi:type="pset:string">
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] default: all
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: start
+1 -     <name>start</name>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] default: beginning of input file
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: start time to extract
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. 2004/05/02/18:30:00
+1 -     <value>2004/05/02/18:30:00</value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: end time of extracted data
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: stop
+1 -   </param>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] double param def name: centerfreq
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] default: end of input file
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. 2004/05/02/19:00:00
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] help text: frequency of data to extract (used along with bandwidth parameter)
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] prompt text: e.g. 1.489 GHz
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] string default: all
+1 -   <param xsi:type="pset:string">
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] double param def name: bandwidth
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] help text: data around centerfreq to get out
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] required value: 0
+1 -     <name>stop</name>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] prompt text: e.g. 10.01 Mhz
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleParamDef] string default: all
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: bandname
+1 -     <value>2004/05/02/19:00:00</value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] default: all
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of band to extract
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. P
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 0
+1 -   </param>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of source
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: source
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] bool param def name: overwrite
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] help value: overwrite or append
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] required value: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] default: all
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. 3C49 or 1338+4995
+1 -   <param xsi:type="pset:doubleArray">
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] bool param def name: testMissing
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] default value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] inserted boolparam: overwrite into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] prompt value: e.g. true or false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] required value: false
+1 -     <name>testDoubleArray</name>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] default value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] help value: overwrite or append
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] inserted boolparam: testMissing into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleBoolParamDef] prompt value: e.g. true or false
+1 -     <value>-1.1</value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] help value: help testing 123
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] int param def name: testInt
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] prompt value: testing 123
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] required value: 0
+1 -     <value>2.2</value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] max value: 12
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] valid value: -12
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] valid value: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] valid value: 11
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntParamDef] valid value: 12
+1 -     <value>3.3e5</value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] help text: name of source
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required string: true
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] required value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] string param def name: testString
+1 -   </param>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] prompt text: e.g. 3C49 or 1338+4995
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] valid value: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] valid value: testingBoy
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] valid value: testingGirl
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringParamDef] valid value: testingWoman
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] help text: name of output ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] prompt text: e.g. myvladata.ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] string array param def name: testStringArray
+1 -   <param xsi:type="pset:int">
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] default value: default str1
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] default value: default str2
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] default value: default str3
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleStringArrayParamDef] maxLen: 10
+1 -     <name>testInt</name>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] help text: name of output ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] int array param def name: testIntArray
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] prompt text: e.g. myvladata.ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] required value: 0
+1 -     <value>-12</value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] double array param def name: testDoubleArray
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] default value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] default value: 2
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] default value: 3
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleIntArrayParamDef] maxLen: 10
+1 -   </param>
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] help text: name of output ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] maxLen: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] prompt text: e.g. myvladata.ms
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] required string: false
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] required value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] default value: 1.400000
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] default value: 1.500000
+1 - ----------T--:--:--.--- [GlobalLogger - ParamSetDef::handleDoubleArrayParamDef] default value: 1.600000
+1 -   <param xsi:type="pset:intArray">
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleDoubleParam] param name:
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] inserted a string param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param name: bandname
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param value: P
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: bandname was overridden in pset
+1 -     <name>testIntArray</name>
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleDoubleParam] param value: 10.010000
+1 -     <value>1</value>
+1 -     <value>2</value>
+1 -     <value>3</value>
+1 -   </param>
+1 -   <param xsi:type="pset:string">
+1 -     <name>testString</name>
+1 -     <value>changeme</value>
+1 -   </param>
+1 -   <param xsi:type="pset:stringArray">
+1 -     <name>testStringArray</name>
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleParam] optional double param: bandwidth was overridden in pset
+1 -     <value>1 with space </value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleDoubleParam] inserted a double param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleDoubleParam] param name:
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleDoubleParam] param value: 1.489000
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleParam] optional double param: centerfreq was overridden in pset
+1 -     <value>2 space</value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleDoubleParam] inserted a double param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] inserted a string param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param name: inputfile
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param value: c477_040502.xpl
+1 -     <value>3 space</value>
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleBoolParam] param name: overwrite
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] inserted a string param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param name: msname
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param value: myvladata.ms
+1 -   </param>
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleBoolParam] bool string: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleBoolParam] bool value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleBoolParam] inserted a bool param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param name: project
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] inserted a string param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param name: source
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param value: ad477
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: project was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] inserted a string param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param name: start
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param value: 3C49
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: source was overridden in pset
+1 - </pset:paramset>
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] inserted a string param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param name: stop
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param value: 2004/05/02/18:30:00
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: start was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleDoubleArrayParam] param name: testDoubleArray
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] inserted a string param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param value: 2004/05/02/19:00:00
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: stop was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleDoubleArrayParam] inserted a double array param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleArrayParam] optional double array: testDoubleArray was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleArrayParam] pset array length: 3
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleArrayParam] psetdef maxLen: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleIntParam] inserted an int param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntParam] optional int param: testInt was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntParam] pset max is: -12
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntParam] psetdef max is: 12
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleIntArrayParam] param name:
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntArrayParam] optional int array param: testIntArray was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntArrayParam] pset array length is: 3
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntArrayParam] psetdef maxLen is: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleIntArrayParam] inserted an int array param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param name: testString
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] param value: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] valid value[0] is: testingBoy and val is: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringParam] inserted a string param into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] valid value[1] is: testingGirl and val is: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] valid value[2] is: testingWoman and val is: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] valid value[3] is: changeme and val is: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringArrayParam] param name: testStringArray
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringArrayParam] pushing string: 1 with space  into value vector
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringArrayParam] pushing string: 2 space into value vector
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringArrayParam] pushing string: 3 space into value vector
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringArrayParam] optional string array param: testStringArray overrriden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringArrayParam] pset array length is: 3
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringArrayParam] psetdef maxLen is: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::handleStringArrayParam] inserted a string array into object model
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateBoolParam] adding optional, unspecified bool param
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateBoolParam] optional bool param: overwrite was overriden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntParam] optional int param: testInt was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleParam] optional double param: bandwidth was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleParam] optional double param: centerfreq was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntParam] pset max is: -12
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntParam] psetdef max is: 12
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: bandname was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: project was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: source was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: start was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: stop was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] valid value[0] is: testingBoy and val is: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] valid value[1] is: testingGirl and val is: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] valid value[2] is: testingWoman and val is: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntArrayParam] optional int array param: testIntArray was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntArrayParam] pset array length is: 3
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntArrayParam] psetdef maxLen is: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] valid value[3] is: changeme and val is: changeme
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleArrayParam] optional double array: testDoubleArray was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleArrayParam] pset array length: 3
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleArrayParam] psetdef maxLen: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringArrayParam] optional string array param: testStringArray overrriden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringArrayParam] pset array length is: 3
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringArrayParam] psetdef maxLen is: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringParam] optional string param: bandname was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleParam] optional double param: centerfreq was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntParam] optional int param: testInt was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntParam] pset max is: 11
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntParam] psetdef max is: 12
+1 - bandname now: newstring
+1 - bandname was: P
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleArrayParam] optional double array: testDoubleArray was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringArrayParam] optional string array param: testStringArray overrriden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringArrayParam] pset array length is: 2
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateStringArrayParam] psetdef maxLen is: 10
+1 - centerfreq now: 5.5
+1 - testInt now: 11
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleArrayParam] pset array length: 2
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateDoubleArrayParam] psetdef maxLen: 10
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntArrayParam] optional int array param: testIntArray was overridden in pset
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntArrayParam] psetdef maxLen is: 10
+1 - centerfreq was: 1.489
+1 - testStringArray now: 
+1 - ----------T--:--:--.--- [GlobalLogger - ParameterSet::validateIntArrayParam] pset array length is: 2
+1 - ----------T--:--:--.--- [GlobalLogger - StaticContainer::destroyComponent] Component Life Cycle
+1 - ----------T--:--:--.--- [GlobalLogger - paramTaskTest] Destroying the task component
+1 - ----------T--:--:--.--- [GlobalLogger - paramTaskTest] command run has been invoked
+1 - overwrite was: 1
+1 - string[0]: newstr1
+1 - testDoubleArray now: 
+1 - testInt was: -12
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component Component-XXXX: OPERATIONAL -> DESTROYING
+1 - double[0]: 5.5
+1 - overwrite now: 0
+1 - string[1]: newstr2
+1 - testIntArray now: 
+1 - ----------T--:--:--.--- [GlobalLogger - StaticContainer::destroyComponent] deleting the component Component-XXXX
+1 - ----------T--:--:--.--- [GlobalLogger - ] Switched state of component Component-XXXX: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [GlobalLogger - paramTaskTest] Task Component destroyed
+1 - double[1]: 6.6
+1 - int[0]: 5
+1 - ----------T--:--:--.--- [Component-XXXX - ::paramTaskTestImpl::~paramTaskTestImpl] Destroying Component-XXXX...
+1 - int[1]: 6
+1 - testDoubleArray was: 
+1 - testStringArray was: 
+1 - double[0]: -1.1
+1 - string[0]: 1 with space 
+1 - testIntArray was: 
+1 - double[1]: 2.2
+1 - int[0]: 1
+1 - string[1]: 2 space
+1 - double[2]: 330000
+1 - int[1]: 2
+1 - string[2]: 3 space
+1 - int[2]: 3

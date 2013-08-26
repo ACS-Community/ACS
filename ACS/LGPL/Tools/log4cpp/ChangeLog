@@ -1,0 +1,83 @@
+htischer 21/02/11 ressource cleanup, VxWorks fixes
+	Linux and Vxworks:
+	- FileAppender(name,fileName) Using the same filename for more appenders is not allowed.
+	  Instead use Appender::getAppender(name)
+	  or open the file externally and use dup()
+	  or use FileAppender::FileAppender(name,fd)
+    - object query and cleanup functions, Ressource cleanup on application end to allow multiple
+      sessions within a single process
+    - Appender::reopen() no longer skips remaining Appenders on first error and diagnostics
+    - Timestamp sign error
+    - text/num Conversion of added log Priorities now succeeds 
+    VxWorks:
+	- Timestamp with sub second resolution
+    - with nfs,rsh and ftp, O_APPEND is not supported and multiple opens with the same filename
+      are not detected as being the same file which can cause corrupted data. 
+      FileAppender workarounds: open() - unique filename explicte lseek, reopen() - keep same fd
+	  Note: dup() is ok even with nfs/rsh/ftp !
+	Note: For clients writing into the same nfs file in append mode from different
+	  machines, the corresponding restriction is inherent to nfs and affects all operating systems!
+	Todo: Priority.cpp: Verify correct offset for rounding.
+	  If e.g 100 delivers ALERT and 200 delivers CRITICAL, should 101 and/or 199 deliver ALERT or CRITICAL ? 
+
+---
+
+htischer  11/02/11  Enhance testsuite, automated run, preprocess test log for easier diff.
+					Rename 'make clean' without rtobar change to 'make clean_build'
+					Rename 'make clean_configure' to 'make clean'
+				    Portability changes in sourcecode.
+				    For VxWorks:
+					- building, loading and running rpeatedly and reproducable.
+				    - Remote execution of testsuite
+                    - Treat library as application to load once in common address space.
+				    - Linking all testcases into a single application without library
+                      testxxx.cpp:main(argc,argv) turned into testxxx.cpp:testxxx(char *args)
+				    - Todo: Verify detailed test results.
+
+---
+
+2011-02-02 rtobar	on 'make clean', internally also clean the configure results of log4cpp
+---
+
+2011-01-28 htischer
+
+	- make clean_dist : creates a new patch with sourcecode changes before checkin
+	- make clean_configure : preview clean new state before packing to patch and rm of extracted
+	- configure compile and create library for VxWorks (not yet linking)
+	- install library, headers and doxygen documentation for VxWorks
+	- common sourcecode for ws and lcu
+	- fixed compile and doxygen warnings for ws and lcu
+	- build stabilizing
+
+---
+
+2011-01-25 htischer
+
+	- ws/src/Makefile
+		summarized available targets
+		Move ws/lcu common part to a common file (version numbers)
+		Remove editor backup files *~
+	- lcu/src/Makefile
+		sourcecodechange/patchcreation management
+		unified lcu and ws repository
+		!preliminary! still building for ws on lcu tree for build test
+
+---
+
+2011-01-21 htischer ws/src/Makefile robusteness and support to create new patch version on source updates
+
+	- on 'make clean_dist' create a new patch version including sourcecode updates
+	- on unpack/patch/clean do not overwrite sourcecode updates
+	- Allow build with 'make all' and allow 'make clean' without reconfiguring 
+	  and without overwriting source modifications done after unpacking.
+	- build output more self descriptive
+	
+---
+
+2010-10-27 htischer move src down to ws/src and added lcu/src/Makefile to prepare APEX port
+
+---
+
+2010-05-05 javarias Added log4cpp to ACS
+
+--- End ---

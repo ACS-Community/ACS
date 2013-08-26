@@ -1,0 +1,248 @@
+CAPABILITIES MATRIX
+
+sohalia:
+NOTIFICATION CHANNEL	(all languages)
+  is using the notification service
+  the implementation that we have now is TAO, which is C++, so it means
+  that although you can use it from Java, you must have TAO running
+  somewhere
+
+drs:
+BACI
+ CharacteristicComponent/ Property/Characteristics design patterns: 
+  this includes monitors and alarms.
+  This pacakge is only available in C++ -- this means that you can
+  create CharacteristicComponents, and can create alarms and monitorED 
+  Properties from C++ only.
+  You can MONITOR and RECEIVE alarms from any ACS lanaguage
+
+raymond:
+LOGGING
+  uses TAO
+
+hye:
+ERROR
+  same as LOGGING
+
+ken:
+ARCHIVE
+ archive is a component, essentially, so you can get from every
+ language (archive is not ACS (is ALMA))
+
+ldavis:
+XML
+ xml is itself available everywhere:
+   C++ --> expat, Python --> SAX, Java --> Xerces
+XML BINDING
+   java --> Castor
+   not c++
+   not python
+
+
+michelle:
+DATA STORAGE SERVICE
+ service to save backup state
+
+   heiko2 says: after some level you can use the notification channel
+   for this, you need a data struct format and is up to 1 megaBYTE per
+   second/
+
+      gl: to add explicit ACS support for this thing, I would say
+      "no", but "notification channel can be used"
+
+
+alain:
+CBD
+
+ is accessible by everybody, but there are some cleanup things that
+ are pending. With ACS 3.0 it is fully available as a
+ component, so that access will be easier.
+
+ASYNC DESIGN PATTERN
+
+  we have *explicit* support for this only in C++, with a class
+  called ActionImplementator;
+
+  obviously anyone can implement such a thing in Java or Python, but
+  there is no explicit support for such things.
+
+
+?????
+"LOAD BALANCING"
+   what I can write here is "MANAGER FEATURES"
+
+   In this way it is something to be done for the future; I don't
+   think it can go in this discussion.
+
+
+
+rodrigo:
+REAL-TIME EXTENSIONS
+  C++, via ACE and TAO.
+  nothing for Java or Python...
+
+  if you use ACE you have nice design patterns, TAO will give you RT
+  CORBA; you can do hard-real-time inside the same vxWorks machine.
+
+
+gl:
+GUI SUPPORT
+ we have in Java, so ACS comes with the ABeans libraries, that know
+ how to talk to MACI (the Manager) and understand how to connect to
+ (or to use) the BACI Properties -- this means that you know things
+ like minimum/maximum, uses baci monitors to keep the display
+ updated...
+
+ in python, claro, you have the 
+
+
+allen:
+AUTHENTICATION
+
+ the only thing that we have now is the manager login interface, and
+ we have been discussing (last week) the model that has been discussed
+ within the HLA Team on how authentication will be done on a component
+ basis, that is the client logs in to the manager, so essentially
+ getCOB() will give you only the componts that you are authorized to
+ do. this is forseen but at the moment there is no real authentication
+ in the Manager.
+
+ as a separate issue, secure communication channels we know that it
+ should be possible to just configure properly the ORBs to get
+ authentication via HTTP or SSH, but I would not put it there, because
+ so far we have not tried this.
+
+ the other thing we will have to really see what is the
+ interoperability with these secure protocols: JacORB <--> TAO, loki
+ libs etc.
+
+
+MANAGER
+ yes, we have a Java manager, they can be accessed from any.
+
+ in particular I would like to have a JavaManager class, that
+ can be used inside the Java Container, to have a self-contained
+ application that runs on your local machine. This will be very useful
+ in the future when we have federated managers, so for the VLT for
+ example they can start on a per-machine, standalone basis, and then
+ be federated into a larger ACS distributed system...
+
+
+boyd:
+OBJ_EXPLORER
+  requires a network configuration?
+
+  you must have a valid resolution of your hostname, so if you resolve
+  your hostname as the localhost, then you cannot talk to other CORBA
+  services outside of your host.
+
+    so for example what we deliver with ACS is a script that runs at
+    startup, and cleans this up.
+
+       it really depends on what you do and how the names are
+       resolved. there are a number of tricks between the hostname and
+       the ip address... the way that WORKS it to have the _real_ IP
+       in the /etc/hosts --- for DHCP you need that startup script,
+       then --- and we are still finding out these sorts of things,
+       different between the different ORBs, etc...
+
+          there is no problem with no CONNECTION, but you need a good
+          CONFIGURATION.
+
+             if you are using DHCP, you should use the ACS network
+             init script.
+
+
+
+==== SOFTWARE ENGINEERING ====
+
+sohalia:
+DOCUMENTATION SUPPORT
+ this is a nice question.
+  C++, Java, IDL ===> 
+Doxygen, which is a tool to do all this kind of documentation
+
+  Python         ===>  
+PyDoc: the problem of this is that it is not integrated with all the
+rest, so you can ask the python documentation while running python,
+but we are not aware of the HTML output from Pydoc. We think that
+Michelle Zamparelli currently has this as a requirement... 
+... but so far we do not have official ACS documentation for Python.
+
+
+
+RECOMMENDED DEVELOPMENT TOOLS/ENVIRONMENT?
+
+on the one hand, is a personal choice, but on the other hand, it is a
+system that we help you with that helps for team development...
+
+ C++, well, I am strongly inclined to put Emacs...
+ Java --> Eclipse, lower in the hierarchy is SunONE (Netbeans)
+
+   for the time being, the GUI development tool has been VisualAge,
+   but it is not being maintained. Sun ONE is the best for the sort of
+   things that we used to do in VisualAge.
+
+
+rodrigo:
+ DEBUGGING?
+   well, gdb, but it does not work with multi-threaded apps.
+     alain: there are complex things, and we need some more support for this.
+       gl: well, the best thing for debugging at that level is the logging.
+     alain: MEMORY LEAKS?
+       gl: purify, valgrind -- it works with ACS, for gcc compilers.
+
+   gl: in my opinion, the best debugging tool that we have is the
+   logging system, if the logging system is properly used, it gives
+   you a very good idea of what is happening for all of your
+   system. so if an exception occurs, you get the full trace, for
+   errors.... the logging system is what I mostly use for debugging;
+   use the logging system and not "printf" please!
+  
+
+drs:
+TESTING
+  JUnit for Java
+  TAT for everybody
+
+  (PyUnit is not part of the distro, but I would like to add this and
+  CppUnit -- we have already too many things for ACS 3.0, so that
+  probably will not get done...)
+
+
+rmoeser:
+BENCHMARKING?
+  well, we have talked of this many times but have not done much. I
+  would be very interested to collect all of the benchmarking that has
+  been done and to collect them in the ACS web pages.
+
+  what we have done is to look at what the other projects have done --
+  the ACE and TAO -- to see if what we have is reasonable, but we have
+  not yet done formal benchmarking.
+
+
+NETWORK THORUGHPUT TESTING?
+
+  well, ALMA the design decision is that there is no hard-real-time
+  requirement for things across the network, so for example we know
+  how to scale things by adding processors, so I think we will be able
+  to solve the problems when we find them.
+
+    another thing is that we may find we send too much in XML and
+    therefore the messages become too big, so we can rewrite the
+    transports [to use DIME, for example], when we find out that we
+    need to do this.
+
+    we do not do real-time networking with CORBA, all the real-time is
+    within a particular host, but not over CORBA.
+
+      alain: but there is a target to get down to 48ms?
+
+        gl: we can miss a tick -- there is NOT a REQUIREMENT to meet
+        such a 48 ms deadline..
+
+           the idea is whenever you want five antennas to do the same
+           thing at the same time, you send the message in advance in
+           order to tell them this.
+
+

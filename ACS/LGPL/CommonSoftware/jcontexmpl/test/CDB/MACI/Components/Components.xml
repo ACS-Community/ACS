@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<_	Name="HELLODEMO1" 
+		Code="alma.demo.HelloDemoImpl.HelloDemoHelper" 
+		Type="IDL:alma/demo/HelloDemo:1.0" 
+		Container="dynamicContainer"
+		ImplLang="java"
+		Autostart="false"/>
+
+	<_	Name="XMLCOMP1" 
+		Code="alma.demo.XmlComponentImpl.XmlComponentHelper" 
+		Type="IDL:alma/demo/XmlComponent:1.0" 
+		Container="frodoContainer"
+		ImplLang="java" 
+		Autostart="true">
+		<ComponentLogger minLogLevel="4" minLogLevelLocal="4"/>
+	</_>
+
+	<_	Name="COMPWITHXMLOFFSHOOT" 
+		Code="alma.demo.ComponentWithXmlOffshootImpl.ComponentWithXmlOffshootHelper" 
+		Type="IDL:alma/demo/ComponentWithXmlOffshoot:1.0" 
+		Container="frodoContainer"
+		ImplLang="java" 
+		Autostart="true"/>
+
+	<_	Name="ERRORCOMP_JAVA" 
+		Code="alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper" 
+		Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0" 
+		Container="frodoContainer" 
+		KeepAliveTime="60"
+		ImplLang="java" />
+
+   <_ Name="EVENT_SUPPLIER"
+      Code="alma.demo.EventSupplierImpl.EventSupplierHelper"
+      Type="IDL:alma/demo/SupplierComp:1.0"
+      Container="frodoContainer"
+		ImplLang="java" />
+
+   <_ Name="EVENT_CONSUMER"
+      Code="alma.demo.EventConsumerImpl.NCReceiverHelper"
+      Type="IDL:alma/demo/NCReceiver:1.0"
+      Container="frodoContainer"
+		ImplLang="java" />
+
+</Components>
+

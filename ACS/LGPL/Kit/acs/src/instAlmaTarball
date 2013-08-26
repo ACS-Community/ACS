@@ -1,0 +1,131 @@
+#! /bin/bash
+#************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: instAlmaTarball,v 1.2 2010/07/09 12:48:42 alopatin Exp $"
+#
+# who       when        what
+# --------  ----------  -------------------------------------------------
+# mpasquat  2003-NOV-24 created
+# alopatin  2010-JUL-07 switched from ksh to bash
+#
+#************************************************************************
+#   NAME 
+#   instAlmaTarball - install an alma software tarball
+# 
+#   SYNOPSIS
+#   instAlmaTarball Installation_directory almaTarball_Path
+# 
+#   DESCRIPTION
+#   This script installs almaTarball_Path in the "Installation_directory" dir.
+#   
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#   0 - no errors have been produced
+#   1 - bad options have been passed or some operation did not work
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#   instAlmaTarball ~/mydir ~/warehouse/ACSSW_MONTHLY-2003-11.tar.gz 
+#      The file  ~/warehouse/ACSSW_MONTHLY-2003-11.tar.gz is 
+#      installed in ~/mydir
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+
+
+# Arguments checking
+if [[ $# -ne 2  ]]
+then
+   echo " "
+   if [[ $#<2 ]]
+   then
+      echo " *** Argument/s missing!"
+   else
+      echo " *** Too many arguments!"
+   fi
+   echo " "
+   echo " usage: instAlmaTarball Inst_directory almaTarball_Path"
+   echo " "
+   echo " Inst_directory.............: specifies the installation directory "
+   echo "                              of the tarball "
+   echo " almaTarball_Path...........: path of the almaTarball with tarball file name included"
+   echo " "
+   exit 1
+fi
+
+# Arguments processing
+almatarballPath=${2%/*.*}
+fileName=${2##/*/}
+instDirectory=$1
+remove="NO"
+
+
+
+# almatarball Directory check
+if [[ ! -f $almatarballPath/$fileName ]]
+then
+   echo " "
+   echo " File $2 is not valid."
+   echo " "
+   exit 1 
+fi
+
+# Installation Directory check
+if [[ ! -d $instDirectory ]]
+then
+  echo " Directory $instDirectory does not exist."
+  mkdir $instDirectory
+  if [[ "$?" != "0" ]]
+  then
+     echo " *** Could not create directory"
+     exit 1
+  fi
+  echo " Created Installation Directory."
+fi
+
+# Go to the installation directory
+cd $instDirectory 
+
+# Moving the file from the source to the installation directory
+if [[ ! -f $instDirectory/$fileName ]] 
+then
+   remove="YES"
+   cp $almatarballPath/$fileName .
+else
+   echo " "
+   echo " >>> $fileName is present in the installation directory. <<<"
+   echo " >>> It will not be removed after the untar command.     <<<"
+   echo " "
+fi
+
+# Untar the tarball
+echo " Untar ongoing."
+gtar zxpf $fileName
+if [ "$?" = "0" ] 
+then
+   echo " "
+   echo ">>> The file $fileName has been extracted. <<<"
+   echo " "
+else 
+   echo " "
+   echo "*** gtar Error."
+   echo " "
+   exit 1
+fi
+
+# Removal of $fileName
+if [[ "X$remove" = "XYES" ]] 
+then
+   rm $fileName
+fi
+
+echo " "
+echo " done."

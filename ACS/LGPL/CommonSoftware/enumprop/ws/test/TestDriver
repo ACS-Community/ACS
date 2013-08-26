@@ -1,0 +1,57 @@
+#! /bin/csh -f
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestDriver,v 1.34 2007/12/03 12:02:21 hsommer Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# almamgr 2000-09-13 created
+
+
+if ( $?WIND_BASE ) then
+ setenv RTAPENV `grep lcuTat .testSession | awk '{print $3}'`
+else
+ setenv RTAPENV `grep wsTat .testSession | awk '{print $3}'`
+endif
+
+setenv wsTat `grep wsTat .testSession | awk '{print $3}'`
+
+set CDB_PORT=`sed -n 1'p' ./.cdbport`
+setenv DAL_REFERENCE corbaloc\:\:$HOST\:$CDB_PORT/CDB
+
+setenv ACS_TMP ../test
+setenv ACS_LOG_STDOUT 2
+setenv ACS_BACI_RECOVERY_FILE ./baciRecovery
+setenv ACS_LOG_FILE ./log_cache.dat 
+
+rm -f ./baciRecovery 
+rm -f ./log_cache.dat* >& /dev/null
+rm -f EPTESTDEVICE*.ior >& /dev/null
+
+# Execute Test
+eccsTestDriver -x $*
+
+rm -f ./baciRecovery 
+rm -f ./log_cache.dat* >& /dev/null
+rm -f EPTESTDEVICE*.ior
+#
+# ___oOo___

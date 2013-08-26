@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Klemen agar (.) -->
+<!--
+   - Configuration Database Schema for MACI Container
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:Components:1.0"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+ xmlns="urn:schemas-cosylab-com:COBs:1.0"
+ xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+ 	<xs:complexType name="COBinfo">
+		<xs:attribute name="Name" type="xs:string" use="required"/>
+		<xs:attribute name="Code" type="xs:string" use="required"/>
+		<xs:attribute name="Type" type="xs:string" use="required"/>
+		<xs:attribute name="Container" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:element name="COBs">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="_" type="COBinfo" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>
+
+

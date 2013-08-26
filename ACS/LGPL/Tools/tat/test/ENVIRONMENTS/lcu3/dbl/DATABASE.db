@@ -1,0 +1,33 @@
+//*****************************************************************************
+//* E.S.O. - VLT project
+//*
+//* "@(#) $Id: DATABASE.db,v 1.76 2003/01/09 17:50:48 vltsccm Exp $"
+//*
+//* who       when      what
+//* --------  --------  ----------------------------------------------
+//* NNNNNNNN  dd/mm/yy  created
+//*
+
+//************************************************************************
+// VLT COMMON SOFTWARE 
+//************************************************************************
+
+// Loads classes definition from standard file
+#include "CCS.db"
+
+//
+// USER.db contains necessary points for CCS, but requiring editing to match
+// installed configuration.
+#include "USER.db"
+
+
+//************************************************************************
+// APPLICATION SOFTWARE 
+//************************************************************************
+
+//
+// Load branches needed by your application
+
+#include "BRANCH.db"
+
+// ___oOo___

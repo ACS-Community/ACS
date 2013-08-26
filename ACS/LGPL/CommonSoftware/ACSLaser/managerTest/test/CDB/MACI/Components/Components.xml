@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!--
+  - Configuration for alarm system test.
+  -
+  - Author:
+  -    Klemen Zagar (Cosylab)
+  -
+  - History:
+  -   2005-06-13  KZ  Created
+ -->
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0"
+            xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+            xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<_ Name="AlarmService"
+	   Code="alma.alarmsystem.AlarmServiceImpl.AlarmServiceHelper"
+	   Type="IDL:alma/alarmsystem/AlarmService:1.0"
+	   Container="frodoContainer"  ImplLang="java" />
+</Components>
+

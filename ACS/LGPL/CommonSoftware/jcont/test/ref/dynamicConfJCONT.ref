@@ -1,0 +1,38 @@
+1 - Will test dynamic log level configuration using the 'maciContainerLogLevel' tool
+1 - Will read default logger config of 'dynamicTestContainer'. Expecting local level 4 set by ACS_LOG_STDOUT:
+1 - ----------T--:--:--.--- [GlobalLogger - ] Container: dynamicTestContainer
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	Log levels for logger 'default':
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 2
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 4
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+1 - Will set default logger config of 'dynamicTestContainer' to (3, 5):
+1 - ----------T--:--:--.--- [GlobalLogger - ] Container: dynamicTestContainer
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	Setting levels for logger 'default':
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 3
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 5
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+1 - Will read default logger config of 'dynamicTestContainer':
+1 - ----------T--:--:--.--- [GlobalLogger - ] Container: dynamicTestContainer
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	Log levels for logger 'default':
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 3
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 5
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+1 - Will refresh logger config of 'dynamicTestContainer' from CDB and static default values:
+1 - ----------T--:--:--.--- [GlobalLogger - ] Container: dynamicTestContainer
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	Refreshing logging config.
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+1 - Will read again the default logger config of 'dynamicTestContainer'. Expecting local level 2 set by the CDB which now takes precedence.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Container: dynamicTestContainer
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	Log levels for logger 'default':
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		useDefault      : false
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevel     : 2
+1 - ----------T--:--:--.--- [GlobalLogger - ] 		minLogLevelLocal: 2
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Done all.

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Component  xmlns="urn:schemas-cosylab-com:Component:1.0"
+       		Name="FRIDGE1"	     
+		Code="acsexmplFridgeImpl"	  
+                Type="IDL:alma/FRIDGE/FridgeControl:1.0"
+ 		Container="bilboContainer" ImplLang="cpp" />

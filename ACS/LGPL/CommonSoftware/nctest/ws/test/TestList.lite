@@ -1,0 +1,134 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList.lite,v 1.7 2006/11/24 14:42:01 bjeram Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dave 2003-08-13 converted to eccs test driver
+# 
+SOURCE nctestTATEnvironment
+PROLOGUE nctestTATPrologue
+
+###################################################################
+####PYTHON SUPPLIERS###############################################
+###################################################################
+#Tests a Python Client Supplier against a Python Consumer Client
+1  T1  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCSupplier" "@SLEEP 75"
+
+#Tests a Python Client Supplier against a Java Consumer Client
+2  T2  "acsutilTATTestRunner acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCSupplier" "@SLEEP 75"
+
+#Tests a Python Client Supplier against a C++ Consumer Client
+3  T3  "acsutilTATTestRunner acsexmplClientFridgeNC" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCSupplier" "@SLEEP 75"
+
+#Tests a Python Client Supplier against all Consumers
+4  T4  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsutilTATTestRunner acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsutilTATTestRunner acsexmplClientFridgeNC" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCSupplier" "@SLEEP 75"
+
+#Tests a Python Component Supplier against a Python Consumer Client
+#5  T5  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a Python Component Supplier against a Java Consumer Client
+#6  T6  "acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a Python Component Supplier against a C++ Consumer Client
+#7  T7  "acsexmplClientFridgeNC" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a Python Component Supplier against all Consumers
+#8  T8  "acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsexmplClientFridgeNC" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests Python Client and Component Suppliers against all Consumers
+#9  T9  "acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsexmplClientFridgeNC" "@SLEEP 5" "" "@SLEEP 5" "" "@SLEEP 75"
+
+###################################################################
+####JAVA SUPPLIERS#################################################
+###################################################################
+#Tests a Java Client Supplier against a Python Consumer Client
+#10  T10  "acspyexmplFridgeNCConsumer" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a Java Client Supplier against a Java Consumer Client
+#11  T11  "acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a Java Client Supplier against a C++ Consumer Client
+#12  T12  "acsexmplClientFridgeNC" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a Java Client Supplier against all Consumers
+#13  T13  "acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsexmplClientFridgeNC" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a Java Component Supplier against a Python Consumer Client
+14  T14  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsutilTATTestRunner javaSupplierComponent" "@SLEEP 75"
+
+#Tests a Java Component Supplier against a Java Consumer Client
+15  T15  "acsutilTATTestRunner acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsutilTATTestRunner javaSupplierComponent" "@SLEEP 75"
+
+#Tests a Java Component Supplier against a C++ Consumer Client
+16  T16  "acsutilTATTestRunner acsexmplClientFridgeNC" "@SLEEP 5" "acsutilTATTestRunner javaSupplierComponent" "@SLEEP 75"
+
+#Tests a Java Component Supplier against all Consumers
+17  T17  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsutilTATTestRunner acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsutilTATTestRunner acsexmplClientFridgeNC" "@SLEEP 5" "acsutilTATTestRunner javaSupplierComponent" "@SLEEP 75"
+
+#Tests Java Client and Component Suppliers against all Consumers
+#18  T18  "acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsexmplClientFridgeNC" "@SLEEP 5" "" "@SLEEP 5" "" "@SLEEP 75"
+
+###################################################################
+####C++ SUPPLIERS##################################################
+###################################################################
+#Tests a C++ Client Supplier against a Python Consumer Client
+#19  T19  "acspyexmplFridgeNCConsumer" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a C++ Client Supplier against a Java Consumer Client
+#18  T18  "acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a C++ Client Supplier against a C++ Consumer Client
+#19  T19  "acsexmplClientFridgeNC" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a C++ Client Supplier against all Consumers
+#20  T20  "acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsexmplClientFridgeNC" "@SLEEP 5" "" "@SLEEP 75"
+
+#Tests a C++ Client Supplier against a Python Consumer Client
+21  T21  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCClient" "@SLEEP 75"
+
+#Tests a C++ Client Supplier against a Java Consumer Client
+22  T22  "acsutilTATTestRunner acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCClient" "@SLEEP 75"
+
+#Tests a C++ Client Supplier against a C++ Consumer Client
+23  T23  "acsutilTATTestRunner acsexmplClientFridgeNC" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCClient" "@SLEEP 75"
+
+#Tests a C++ Client Supplier against all Consumers
+24  T24  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsutilTATTestRunner acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsutilTATTestRunner acsexmplClientFridgeNC" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCClient" "@SLEEP 75"
+
+#Tests C++ Client and Component Suppliers against all Consumers
+#25  T25  "acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsexmplClientFridgeNC" "@SLEEP 5" "" "@SLEEP 20" "" "@SLEEP 75"
+
+###################################################################
+####ALL SUPPLIERS##################################################
+###################################################################
+#Tests all Suppliers against all Consumers
+#DWF-todo
+26  T26  "acsutilTATTestRunner acspyexmplFridgeNCConsumer" "@SLEEP 5" "acsutilTATTestRunner acsStartJava alma.nctest.clients.FridgeConsumer" "@SLEEP 5" "acsutilTATTestRunner acsexmplClientFridgeNC" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCSupplier" "@SLEEP 5" "acsutilTATTestRunner javaSupplierComponent" "@SLEEP 5" "acsutilTATTestRunner acspyexmplFridgeNCClient" "@SLEEP 75"
+
+# Test sending complicated structures to NC from python
+27 pySupplierStruct "acsutilTATTestRunner pyStructureEventTest"
+ 
+EPILOGUE acsutilTATEpilogue

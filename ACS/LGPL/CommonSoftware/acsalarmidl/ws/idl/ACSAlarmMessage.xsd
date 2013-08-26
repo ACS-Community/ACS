@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:aas="Alma/AlarmSystem" targetNamespace="Alma/AlarmSystem">
+
+    <xsd:annotation>
+        <xsd:documentation>
+            XML schema definition for alarm messages between service and GUI
+        </xsd:documentation>
+    </xsd:annotation>
+	
+	<xsd:element name="ACS-Alarm-Message">
+		<xsd:complexType>
+            <xsd:sequence>
+				<xsd:element name="alarmId" type="xsd:string"/>
+				<!-- I use ident as identifier is not allowed -->
+				<xsd:element name="ident" type="xsd:string"/> 
+				<xsd:element name="systemName" type="xsd:string"/>
+				<xsd:element name="identifier" type="xsd:string"/>
+				<xsd:element name="problemDescription" type="xsd:string"/>
+				<xsd:element name="priority" type="xsd:int"/>
+				<xsd:element name="cause" type="xsd:string"/>
+				<xsd:element name="action" type="xsd:string"/>
+				<xsd:element name="consequence" type="xsd:string"/>
+				<xsd:element name="piquetGSM" type="xsd:string"/>
+				<xsd:element name="piquetEmail" type="xsd:string"/>
+				<xsd:element name="helpURLString" type="xsd:string"/>
+				<xsd:element name="instant" type="xsd:boolean"/>
+				<xsd:element name="multiplicityThreshold" type="xsd:int"/>
+				<xsd:element type="aas:ACS-Triplet" name="triplet"/>
+				<xsd:element type="aas:ACS-Source" name="source"/>
+				<xsd:element type="aas:ACS-ResponsiblePerson" name="responsiblePerson"/>
+				<xsd:element type="aas:ACS-Location" name="location"/>
+				<xsd:element name="nodeParentIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
+				<xsd:element name="nodeChildrenIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
+				<xsd:element name="multiplicityParentIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
+				<xsd:element name="multiplicityChildrenIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
+				<xsd:element type="aas:ACS-Category" name="categories" maxOccurs="unbounded" minOccurs="0"/>
+				<xsd:element type="aas:ACS-Status" name="status"/>
+				<xsd:element name="nodeParent" type="xsd:boolean"/>
+    			<xsd:element name="multiplicityParent" type="xsd:boolean"/>
+    			<xsd:element name="nodeChild" type="xsd:boolean"/>
+    			<xsd:element name="multiplicityChild" type="xsd:boolean"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="ACS-Property">
+		<xsd:sequence>
+			<xsd:element name="key" type="xsd:string"/>
+			<xsd:element name="value" type="xsd:string"/>
+		</xsd:sequence>	
+	</xsd:complexType>
+	
+	<xsd:complexType 	name="ACS-Triplet">
+		<xsd:sequence>
+			<xsd:element name="faultFamily" type="xsd:string"/>
+			<xsd:element name="faultMember" type="xsd:string"/>
+			<xsd:element name="faultCode" type="xsd:int"/>
+		</xsd:sequence>	
+	</xsd:complexType>
+	
+	<xsd:complexType name="ACS-Source">
+		<xsd:sequence>
+			<xsd:element name="sourceId" type="xsd:string"/>
+			<xsd:element name="description" type="xsd:string"/>
+			<xsd:element name="connectionTimeout" type="xsd:int"/>
+			<xsd:element name="surveillanceAlarmId" type="xsd:string"/>
+			<xsd:element type="aas:ACS-ResponsiblePerson" name="responsiblePerson"/>
+			<xsd:element name="alarmIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
+			<xsd:element type="aas:ACS-Source-Status" name="sourceStatus"/>
+			<xsd:element name="hostName" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ACS-ResponsiblePerson">
+		<xsd:sequence>
+			<xsd:element name="responsibleId" type="xsd:int"/>
+			<xsd:element name="sourceId" type="xsd:string"/>
+			<xsd:element name="firstName" type="xsd:string"/>
+			<xsd:element name="familyName" type="xsd:string"/>
+			<xsd:element name="eMail" type="xsd:string"/>
+			<xsd:element name="gsmNumber" type="xsd:string"/>
+			<xsd:element name="phoneNumber" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ACS-Building">
+		<xsd:sequence>
+			<xsd:element name="buildingNumber" type="xsd:string"/>
+			<xsd:element name="site" type="xsd:string"/>
+			<xsd:element name="zone" type="xsd:int"/>
+			<xsd:element name="map" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ACS-Location">
+		<xsd:sequence>
+			<xsd:element name="locationId" type="xsd:string"/>
+			<xsd:element name="floor" type="xsd:string"/>
+			<xsd:element name="room" type="xsd:string"/>
+			<xsd:element name="mnemonic" type="xsd:string"/>
+			<xsd:element name="position" type="xsd:string"/>
+			<xsd:element type ="aas:ACS-Building"  name="building"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ACS-Category">
+		<xsd:sequence>
+			<xsd:element name="categoryId" type="xsd:int"/>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="description" type="xsd:string"/>
+			<xsd:element name="parentId" type="xsd:int"/>
+			<xsd:element name="path" type="xsd:string"/>
+			<xsd:element name="isLeaf" type="xsd:boolean"/>
+			<xsd:element name="childrenIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
+			<xsd:element name="alarmIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ACS-Timestamp">
+		<xsd:sequence>
+			<xsd:element name="date" type="xsd:long"/>
+			<xsd:element name="nanos" type="xsd:int"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ACS-Status">
+		<xsd:sequence>
+			<xsd:element name="statusId" type="xsd:string"/>
+			<xsd:element name="active" type="xsd:boolean"/>
+			<xsd:element name="masked" type="xsd:boolean"/>
+			<xsd:element name="reduced" type="xsd:boolean"/>
+			<xsd:element name="globalAcknowledged" type="xsd:boolean"/>
+			<xsd:element name="terminatedByBackup" type="xsd:boolean"/>
+			<xsd:element name="activatedByBackup" type="xsd:boolean"/>
+			<xsd:element type="aas:ACS-Timestamp" name="sourceTimestamp"/>
+			<xsd:element name="sourceHostname" type="xsd:string"/>
+			<xsd:element type="aas:ACS-Timestamp" name="userTimestamp"/>
+			<xsd:element type="aas:ACS-Timestamp" name="systemTimestamp"/>
+			<xsd:element type="aas:ACS-Property" name="persistentUserProperties" maxOccurs="unbounded" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ACS-Source-Status">
+		<xsd:sequence>
+			<xsd:element name="statusId" type="xsd:string"/>
+			<xsd:element name="connected" type="xsd:boolean"/>
+			<xsd:element type="aas:ACS-Timestamp" name="lastContact"/>
+			<xsd:element name="enabled" type="xsd:boolean"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

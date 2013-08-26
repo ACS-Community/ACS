@@ -1,0 +1,48 @@
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	name="MonitorErr" type="60200" _prefix="alma">
+
+	<!-- =========== Monitor collector errors =========== -->
+	
+	<ErrorCode name="DeviceAlreadyRegistered" shortDescription="Device already registered." description="Device already registered.">
+		<Member name="Device" type="string" description="Device name."/>
+	</ErrorCode>
+	
+	<ErrorCode name="RegisteringDeviceProblem" shortDescription="Registering Device Problem." description="Problem to register the device.">
+		<Member name="Device" type="string" description="Device name."/>
+	</ErrorCode>
+	
+	<ErrorCode name="DeviceNotRegistered" shortDescription="Device has not been registered." description="Device has not been registered.">
+		<Member name="Device" type="string" description="Device name."/>
+	</ErrorCode>
+	
+	<ErrorCode name="StartMonitoringProblem" shortDescription="Could not start monitoring." description="Could not start monitoring the device">
+		<Member name="Device" type="string" description="Device name."/>
+	</ErrorCode>
+	
+	<ErrorCode name="StopMonitoringProblem" shortDescription="Could not stop monitoring." description="Could not stop monitoring the device">
+		<Member name="Device" type="string" description="Device name."/>
+	</ErrorCode>
+	
+	<ErrorCode name="NonExistentProperty" shortDescription="Property does not exist." description="The property does not exist.">
+		<Member name="Property" type="string" description="Property name."/>
+	</ErrorCode>
+	
+	<ErrorCode name="NonSupportedType" shortDescription="Non supported type." description="Non supported property type.">
+	    <Member name="Property" type="string" description="Property name."/>
+		<Member name="PropertyType" type="string" description="Property type."/>
+	</ErrorCode>
+	
+	<ErrorCode name="NotCollocatedComponent" shortDescription="Device not collocated." description="Try to monitor component that's not collocated.">
+		<Member name="Component" type="string" description="Component name."/>
+	</ErrorCode>
+
+	<!-- =========== Monitor controller errors =========== -->
+
+	<ErrorCode name="CollectorRegistrationFailed" 
+	           shortDescription="Failed to register a collector with a blobber." 
+	           description="The monitor controller failed to assign the calling monitor collector to any of the blobber components.">
+		<Member name="NumberOfBlobbers" type="long" description="The number of blobber components tried to assign the collector to. This may include configured blobbers that are not available at runtime."/>
+	</ErrorCode>
+
+</Type>
+

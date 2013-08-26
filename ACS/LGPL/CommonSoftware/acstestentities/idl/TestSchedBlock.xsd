@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- definitions adopted from ICD/HLA/DataModel generated schemas 2004-09-02 -->
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+
+<xsd:schema 
+	targetNamespace="AlmaTest/SchedBlock"
+	xmlns:tsbl="AlmaTest/SchedBlock" 
+	xmlns:tprj="AlmaTest/ObsProject" 
+	xmlns:tval="AlmaTest/ValueTypes" 
+	xmlns:ent="Alma/CommonEntity" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified" attributeFormDefault="unqualified" version="1" 
+	>
+	
+  <xsd:import namespace="Alma/CommonEntity" schemaLocation="CommonEntity.xsd" />
+  <xsd:import namespace="AlmaTest/ValueTypes" schemaLocation="TestValueTypes.xsd" />
+  <xsd:import namespace="AlmaTest/ObsProject" schemaLocation="TestObsProject.xsd" />
+  
+  <xsd:element name="SchedBlock">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="tprj:ObsUnitT">
+          <xsd:sequence>
+            <xsd:element name="SchedBlockEntity" type="tsbl:SchedBlockEntityT" />
+            <xsd:element name="ObsProjectRef" type="tprj:ObsProjectRefT" minOccurs="0" />
+            <xsd:element name="StandardMode" type="xsd:boolean" />
+            <xsd:element name="timeFirstReady" type="xsd:dateTime" />
+            <xsd:element name="ObsTarget" type="tsbl:ObsTargetT" maxOccurs="unbounded" />
+            <xsd:element name="SchedBlockControl" type="tsbl:SchedBlockControlT" />
+            <xsd:element name="PointingCalTarget" type="tsbl:PointingCalTargetT" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="ObsProcedure" type="tsbl:ObsProcedureT" />
+            <xsd:element name="schedBlockImaging" type="tprj:ImagingProcedureT" />
+            <xsd:element name="PhaseCalTarget" type="tsbl:PhaseCalTargetT" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="AmplitudeCalTarget" type="tsbl:AmplitudeCalTargetT" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <!-- generated from dependent class 'FieldSpec' -->
+  <xsd:complexType name="FieldSpecT">
+    <xsd:sequence>
+      <xsd:element name="DesiredSynthesisedBeamSize" type="tval:SmallAngleT" />
+      <xsd:element name="FieldSource" type="tsbl:FieldSourceT" />
+      <xsd:element name="FieldPattern" type="tsbl:FieldPatternT" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- generated from dependent class 'FieldPattern' -->
+  <xsd:complexType name="FieldPatternT">
+    <xsd:sequence>
+      <xsd:element name="OffsetCoordinates" type="tval:SkyCoordinatesT" />
+      <xsd:element name="ReferenceCoordinates" type="tval:SkyCoordinatesT" />
+      <xsd:element name="PhaseCenterCoordinates" type="tval:SkyCoordinatesT" />
+      <xsd:element name="intTimeReference" type="tval:IntTimeReferenceT" />
+      <xsd:element name="intTimeSource" type="tval:IntTimeSourceT" />
+      <xsd:element name="Rectangle" type="tsbl:RectangleT" minOccurs="0" />
+    </xsd:sequence>
+    <xsd:attribute name="type">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="circle" />
+          <xsd:enumeration value="rectangle" />
+          <xsd:enumeration value="spiral" />
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+  <!-- generated from dependent class 'ObsTarget' -->
+  <xsd:complexType name="ObsTargetT">
+    <xsd:complexContent>
+      <xsd:extension base="tsbl:TargetT">
+        <xsd:sequence />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- generated from dependent class 'CalibratorTarget' -->
+  <xsd:complexType name="CalibratorTargetT">
+    <xsd:complexContent>
+      <xsd:extension base="tsbl:TargetT">
+        <xsd:sequence>
+          <xsd:element name="cycleTime" type="tval:TimeT" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- generated from dependent class 'ObsProcedure' -->
+  <xsd:complexType name="ObsProcedureT">
+    <xsd:sequence>
+      <xsd:element name="obsProcScript" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- generated from dependent class 'PointingCalTarget' -->
+  <xsd:complexType name="PointingCalTargetT">
+    <xsd:complexContent>
+      <xsd:extension base="tsbl:CalibratorTargetT">
+        <xsd:sequence>
+          <xsd:element name="desiredAccuracy" type="tval:SmallAngleT" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- generated from dependent class 'SourceProperty' -->
+  <xsd:complexType name="SourcePropertyT">
+    <xsd:sequence>
+      <xsd:element name="SourceFrequency" type="tval:FrequencyT" />
+      <xsd:element name="SourceFlux" type="tval:FluxT" />
+      <xsd:element name="SourceDiameter" type="tval:SmallAngleT" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- generated from dependent class 'FrequencySetup' -->
+  <xsd:complexType name="FrequencySetupT">
+    <xsd:sequence>
+      <xsd:element name="restFrequency" type="tval:FrequencyT" />
+      <xsd:element name="transitionName" type="xsd:string" />
+    </xsd:sequence>
+    <xsd:attribute name="sideBand">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="lsb" />
+          <xsd:enumeration value="usb" />
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+    <xsd:attribute name="receiverBand">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="1" />
+          <xsd:enumeration value="2" />
+          <xsd:enumeration value="3" />
+          <xsd:enumeration value="4" />
+          <xsd:enumeration value="5" />
+          <xsd:enumeration value="6" />
+          <xsd:enumeration value="7" />
+          <xsd:enumeration value="8" />
+          <xsd:enumeration value="9" />
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+  <!-- generated from dependent class 'SpectralSpec' -->
+  <xsd:complexType name="SpectralSpecT">
+    <xsd:sequence>
+      <xsd:element name="FrequencySetup" type="tsbl:FrequencySetupT" />
+      <xsd:element name="CorrelatorConfig" type="tsbl:CorrelatorConfigT" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- generated from dependent class 'ChannelAverageBands' -->
+  <xsd:complexType name="ChannelAverageBandsT">
+    <xsd:sequence>
+      <xsd:element name="ChanAverStartChannel" type="xsd:int" />
+      <xsd:element name="ChanAverBandWidth" type="xsd:int" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- generated from dependent class 'Target' -->
+  <xsd:complexType name="TargetT" abstract="true">
+    <xsd:sequence>
+      <xsd:element name="FieldSpec" type="tsbl:FieldSpecT" />
+      <xsd:element name="SpectralSpec" type="tsbl:SpectralSpecT" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- generated from dependent class 'CorrelatorConfig' -->
+  <xsd:complexType name="CorrelatorConfigT">
+    <xsd:sequence>
+      <xsd:element name="IntegrationDuration" type="xsd:int" />
+      <xsd:element name="BaseBandConfig" type="tsbl:BaseBandConfigT" maxOccurs="4" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- generated from dependent class 'SchedBlockControl' -->
+  <xsd:complexType name="SchedBlockControlT">
+    <xsd:sequence>
+      <xsd:element name="repeatCount" type="xsd:int" />
+      <xsd:element name="SBMaximumTime" type="tval:TimeT" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- generated from dependent class 'Rectangle' -->
+  <xsd:complexType name="RectangleT">
+    <xsd:sequence>
+      <xsd:element name="LongitudeLength" type="tval:AngleT" />
+      <xsd:element name="LongitudeStep" type="tval:AngleT" />
+      <xsd:element name="LatitudeLength" type="tval:AngleT" />
+      <xsd:element name="LatitudeStep" type="tval:AngleT" />
+      <xsd:element name="ScanVelocity" type="tval:AngularVelocityT" />
+    </xsd:sequence>
+    <xsd:attribute name="ScanDirection">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="longitude" />
+          <xsd:enumeration value="latitude" />
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+  <!-- generated from dependent class 'AmplitudeCalTarget' -->
+  <xsd:complexType name="AmplitudeCalTargetT">
+    <xsd:complexContent>
+      <xsd:extension base="tsbl:CalibratorTargetT">
+        <xsd:sequence />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- generated from dependent class 'SubBands' -->
+  <xsd:complexType name="SubBandsT">
+    <xsd:sequence>
+      <xsd:element name="startChannel" type="xsd:int" />
+      <xsd:element name="bandWidth" type="xsd:int" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- generated from dependent class 'PhaseCalTarget' -->
+  <xsd:complexType name="PhaseCalTargetT">
+    <xsd:complexContent>
+      <xsd:extension base="tsbl:CalibratorTargetT">
+        <xsd:sequence />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- generated from dependent class 'BaseBandConfig' -->
+  <xsd:complexType name="BaseBandConfigT">
+    <xsd:sequence>
+      <xsd:element name="BaseBandIndex" type="xsd:int" />
+      <xsd:element name="BBC" type="xsd:int" />
+      <xsd:element name="CAM">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:int">
+            <xsd:enumeration value="1" />
+            <xsd:enumeration value="16" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="BinMode">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:int">
+            <xsd:enumeration value="0" />
+            <xsd:enumeration value="1" />
+            <xsd:enumeration value="2" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="Bin0Ticks" type="xsd:int" />
+      <xsd:element name="Bin1Ticks" type="xsd:int" />
+      <xsd:element name="NumSwitchCycles" type="xsd:int" />
+      <xsd:element name="LagsPerDump" type="xsd:int" />
+      <xsd:element name="CrossCorr" type="xsd:boolean" />
+      <xsd:element name="APCDataSets">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:int">
+            <xsd:enumeration value="1" />
+            <xsd:enumeration value="2" />
+            <xsd:enumeration value="3" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="QuantizationCorrection" type="xsd:boolean" />
+      <xsd:element name="FFT" type="xsd:boolean" />
+      <xsd:element name="ChannelAverageDuration" type="xsd:int" />
+      <xsd:element name="subBands" type="tsbl:SubBandsT" maxOccurs="32" />
+      <xsd:element name="channelAverageBands" type="tsbl:ChannelAverageBandsT" maxOccurs="10" />
+    </xsd:sequence>
+    <xsd:attribute name="WindowFunction">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Uniform" />
+          <xsd:enumeration value="Hanning" />
+          <xsd:enumeration value="Hamming" />
+          <xsd:enumeration value="Bartlett" />
+          <xsd:enumeration value="Blackman" />
+          <xsd:enumeration value="Blackman-Harris" />
+          <xsd:enumeration value="Welch" />
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+  <!-- generated from dependent class 'FieldSource' -->
+  <xsd:complexType name="FieldSourceT">
+    <xsd:sequence>
+      <xsd:element name="SourceCoordinates" type="tval:SkyCoordinatesT" />
+      <xsd:element name="SourceVelocity" type="tval:VelocityT" />
+      <xsd:element name="sourceName" type="xsd:string" />
+      <xsd:element name="SourceEphemeris" type="xsd:string" />
+      <xsd:element name="SourceProperty" type="tsbl:SourcePropertyT" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- 'SchedBlockEntityT' contains administration info for SchedBlock -->
+  <xsd:complexType name="SchedBlockEntityT">
+    <xsd:complexContent>
+      <xsd:restriction base="ent:EntityT">
+        <xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="SchedBlock" />
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- other classes use 'SchedBlockRefT' to reference an entity of type SchedBlock -->
+  <xsd:complexType name="SchedBlockRefT">
+    <xsd:complexContent>
+      <xsd:restriction base="ent:EntityRefT">
+        <xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="SchedBlock" />
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:schema>

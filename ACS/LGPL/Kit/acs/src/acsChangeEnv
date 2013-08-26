@@ -1,0 +1,313 @@
+#!/bin/bash
+#************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: acsChangeEnv,v 1.2 2010/07/09 12:48:42 alopatin Exp $"
+#
+# who       when        what
+# --------  ----------  -------------------------------------------------
+# mpasquat  2003-NOV-26 created
+# alopatin  2010-JUL-07 switched from ksh to bash
+
+#************************************************************************
+#   NAME 
+#   acsChangeEnv - Chnage the environment variables
+# 
+#   SYNOPSIS
+#   acsChangeEnv ( -l | -r | -f Filename | (Variable=Value)+ )
+# 
+#   DESCRIPTION
+#   This script changes the acs environment:
+#   1) modifing the existing one in two ways:
+#      1.1) changing variables specified by the user via a file 
+#      1.2) chnaging varibales specified by the user via command line arguments
+#
+#   In all these cases it opens a new xterminal in which the envirnoment is re-setted 
+#   in compliance with the previous changes.
+#   The actual bash_profile.acs is also modified to take in account the modifications.
+#
+#   Modifiable variables:
+#   ---------------------
+#   ALMASW_ROOTDIR
+#   ALMASW_RELEASE 
+#   ALMASW_INSTDIR 
+#   ACSROOT 
+#   INTROOT 
+#   INTLIST 
+#   GNU_ROOT 
+#   TCLTK_ROOT 
+#   ACE_ROOT_DIR 
+#   JAVA_HOME  
+#   ACSDATA 
+#   ACS_CDB 
+#   PYTHON_ROOT 
+#   OMNI_ROOT 
+#   ANT_HOME J
+#   ACORB_HOME
+#  
+#   File Structure:
+#   The file can contain commented line with the simbol "#" and must
+#   contain lines following this template
+#   
+#   Variable=Value
+#   
+#   
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#   0 - no errors have been produced
+#   1 - bad options have been passed or some operation did not work
+#
+#   CAUTIONS
+#   EXAMPLES
+#   acsChangeEnv -l                                 
+#      Display the list of allowed variables the user can modify
+#
+#   acsChangeEnv -f myFile                           
+#      The new variables definitions are loaded via the file myFile
+#
+#   acsChangeEnv ACEROOT=~/acerootArea 
+#              INTLIST=~/firstArea:~/secondArea   
+#      New variables definitions are loaded as arguments
+#
+#   acsChangeEnv -r
+#      the $ACSROOT/config/.acs/.bash_profile.acs is restored       
+#                                       
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+
+# Deafault variable values
+isFile="NO"
+ALLOWED_VARIBALE_LIST="ALMASW_ROOTDIR ALMASW_RELEASE ALMASW_INSTDIR ACSROOT INTROOT INTLIST GNU_ROOT TCLTK_ROOT ACE_ROOT_DIR JAVA_HOME  ACSDATA ACS_CDB PYTHON_ROOT OMNI_ROOT ANT_HOME JACORB_HOME"
+
+# Check for .acs/.bash_profile existency 
+if [ ! -f $HOME/.acs/.bash_profile.acs ]
+then
+   echo " "
+   echo "*** The file $HOME/.acs/.bash_profile.acs does not exist!"
+   echo " "
+   exit 1
+fi
+
+# DISPLAY variable check
+if [[ ! -n $DISPLAY ]]
+then
+   echo " "
+   echo " *** DISPLAY variable is not set!"
+   echo " "
+   exit 1
+fi
+
+# Checking arguments
+# Only one argument with option -f MUST be a file
+if [[ $# -eq 2  ]]
+then
+   if [[ "$1" = "-f" ]]
+   then
+      if [[ ! -f $2 ]]
+      then
+        echo " " 
+        echo "*** The argument you provided is a not a file!"
+        echo " "
+        exit 1
+      else
+         isFile="YES"
+      fi
+   fi
+fi
+
+if [[ $# -eq 1 && "$1" = "-l" ]]
+then
+   echo " "
+   echo "Allowed variables: "
+   echo "--------------------"
+   echo "$ALLOWED_VARIBALE_LIST"
+   echo " "
+   exit 0
+fi
+
+
+if [[ $# -eq 1 && "$1" = "-r" ]]
+then
+   if [ ! -f $ACSROOT/config/.acs/.bash_profile.acs ]
+   then
+      echo " "
+      echo "*** $ACSROOT/config/.acs/.bash_profile.acs does not exist. Reset aborted!"
+      echo " "
+      exit 1
+   else
+      cp $ACSROOT/config/.acs/.bash_profile.acs  $HOME/.acs/.bash_profile.acs
+      if [[ "$?" != "0" ]]
+      then
+         echo " "
+         echo "*** No write permission on directory $HOME/.acs!"
+         echo " "
+         exit 1
+      fi
+   fi
+   echo " "
+   echo " Restored $ACSROOT/config/.acs/.bash_profile.acs"
+   echo " "
+   exit 0
+fi
+
+
+# Option -l
+# 17 is the number of variables +1 
+if [[ $# -lt 1  || $# -gt 17  ]]
+then 
+  if  [[ $# -lt 1 ]]
+  then
+     echo " "
+     echo " *** Argument/s missing!"
+  else
+     echo " "
+     echo " *** Too many arguments!"
+  fi
+   echo " "
+   echo " usage: acsChangeEnv ( -l | -r | -f Filename | (Variable=Value)+ )"
+   echo " "
+   echo " Filename......: file of Variable=Value couples" 
+   echo " Variable......: a valid variable name"
+   echo " Value.........: the variable value"
+   echo " -l............: display the allowed variables"
+   echo " -r............: reset the bash_profile"
+   echo " "
+   echo " Examples:"
+   echo " ---------"
+   echo " 1) acsChangeEnv -l"                          
+   echo "    -Display the list of allowed variables the user can modify"
+   echo " "
+   echo " 2) acsChangeEnv -f myFile"
+   echo "    -The new variables definitions are loaded via the file myFile"
+   echo " "
+   echo " 3) acsChangeEnv ACEROOT=~/acerootArea INTLIST=~/firstArea:~/secondArea"
+   echo "    -New variables definitions are loaded as arguments"
+   echo " "
+   echo " 4) acsChangeEnv -r"
+   echo "    -the $ACSROOT/config/.acs/.bash_profile.acs is restored"
+   echo " "
+   exit 1
+fi
+
+# This function validates the input and prepares the new .bash_profile.acs.$$ file
+# $1 contains the couple Variable=Value 
+function validationCheck {
+    
+   # Hiding the output
+   exec > /dev/null 2>&1
+   if ! echo $1 | grep =
+   then
+      # Enabling the output
+      exec >&0 2>&1
+      echo " "
+      echo "*** Assignment simbol = is missing in <$couple>!"
+      echo " "
+      rm $HOME/.acs/.bash_profile.acs.$$
+      exit 1
+   fi
+   # Enabling the output
+   exec >&0 2>&1
+
+   # Separation of VariableName and VariableValue from <Variable=Name>
+   name=${1%%=*}
+   value=${1##*=}
+
+   if [[ -z $name || -z $value ]]
+      then
+      echo " "
+      echo "*** Not a valid assignment for <$couple>!"
+      echo " "
+      rm $HOME/.acs/.bash_profile.acs.$$
+      exit 1
+   fi
+
+   #if [[ ! -d $value ]]
+   #then
+   #   echo " "
+   #   echo " *** $value in <$1> is not a valid path!"
+   #   echo " "
+   #   rm $HOME/.acs/.bash_profile.acs.$$
+   #   exit 1 
+   #fi
+   
+   # Hiding the output
+   exec > /dev/null 2>&1
+   if ! echo $ALLOWED_VARIBALE_LIST |  grep $name
+   then
+      # Enabling the output
+      exec >&0 2>&1
+      echo " "
+      echo "*** Variable <$name> does not belong to the allowed list of variables that can be modified!"
+      echo "    For a complete list run the command with option -l"
+      echo " "
+      rm $HOME/.acs/.bash_profile.acs.$$
+      exit 1
+   fi
+   # Enabling the output
+   exec >&0 2>&1
+
+   # From here on variables and the values are considered correct
+
+   # Particular case for INTLIST 
+   # Exclusion of line <INTLIST=`echo $INTLIST | sed s/:/\ /g`> from the substitution process
+   if [[ "$name" = "INTLIST" ]]
+   then
+      grep -v "sed s" $HOME/.acs/.bash_profile.acs.$$ | sed "s,^\(.*\)$name=\(.*\),$name=$value,g" > $HOME/.acs/.bash_profile.acs.$$.2
+   else
+      # Changing the .acs/.bash_profile.acs.$$ with new variable value couples
+      cat $HOME/.acs/.bash_profile.acs.$$ | sed "s,^\(.*\)$name=\(.*\),$name=$value,g" > $HOME/.acs/.bash_profile.acs.$$.2
+   fi
+   mv $HOME/.acs/.bash_profile.acs.$$.2 $HOME/.acs/.bash_profile.acs.$$
+}
+
+
+# Loop over the arguments
+if [[ "$isFile" = "YES" ]]
+then
+   # We have variable value couples on a file
+   #  Checking loop
+   cat $2 | grep -v "#" > $2_$$
+   VariableList=$(<$2_$$)
+   rm $2_$$
+fi
+
+if [[ "$isFile" = "NO" ]]
+then
+   # We have variable value couples on the command line
+   # Checking loop
+   VariableList=$*
+fi
+
+if  [[ "$isFile" = "NO"  ||  "$isFile" = "YES" ]]
+then
+   cp $HOME/.acs/.bash_profile.acs $HOME/.acs/.bash_profile.acs.$$
+   if [[ "$?" != "0" ]]
+   then
+      echo " "
+      echo "*** No write permission on directory $HOME/.acs!"
+      echo " "
+      exit 1
+   fi
+   # For each Variable Value couple input validation is performed and a new .bash_profile.acs.$$ is prepared
+   for couple in $VariableList
+   do
+      validationCheck $couple
+   done
+   mv $HOME/.acs/.bash_profile.acs.$$ $HOME/.acs/.bash_profile.acs
+   xterm -ls &
+fi
+
+echo " "
+echo " The NEW xterm has the customized environment settings."
+echo " ---> In this shell the enviroment will change ONLY at your next log in."
+echo " "
+
+
+
+

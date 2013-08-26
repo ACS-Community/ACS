@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP platform download page</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+  </head>
+
+	<section>
+		<title>GP Update Center</title>
+		<description>
+     <p>The update center NBM to install in the platform in order to define a new update center from which you will be able to download all the other GP components.</p>
+     <p><b><a HREF="../../GP-UpdateCenter/dist/GP-UpdateCenter-1.0.nbm">GP-UpdateCenter-1.0.nbm</a></b></p>
+     </description>
+	</section>
+
+	<section>
+		<title>GP Module</title>
+		<description>
+     <p>
+      GP is available as a <a HREF="../../GP-2.0-bin.zip">zip file <img SRC="../images/zip.gif" ALT="Winzip file" BORDER="0"/></a> containing:
+      <ul>
+      <li>GP API</li>
+      <li>GP.nbm (to install directly from within NetBeans)</li>
+      <li>GP.jar (to place manually in the module directory of your NetBeans user directory)</li>
+      </ul>
+      </p>
+      <p>
+      You can also directly download :
+      <ul>
+      <li><A HREF="../../dist/GP.nbm">GP-2.0.nbm</A> : the NetBeans module</li>
+      <li><A HREF="../../dist/GP-api.zip">GP-2.0-api.zip</A> : only the GP Javadoc</li>
+      <li><A HREF="../../dist/GP-src.zip">GP-2.0-src.zip</A> : same as GP-bin.zip with source code</li>
+      </ul>
+      </p>
+  		</description>
+	</section>
+	
+	<section>
+		<title>Logging Module</title>
+		<description>
+     <UL>
+      <li>The logging Module <a HREF="../../_notgenerated/logging/logging.zip">zip file <img SRC="../images/zip.gif" ALT="Winzip file" BORDER="0"/></a> containing:
+      <ul>
+      <li>The logging Module <A HREF="../../_notgenerated/logging/logging.nbm">nbm file</A> (to install directly from within NetBeans).</li>
+      <li>The logging Module <A HREF="../../_notgenerated/logging/logging.jar">jar file</A> (to place manually in the module directory of your NetBeans user directory).</li>
+      <li>The logging api.</li>
+      </ul>
+      </li>
+      </UL>
+  		</description>
+	</section>
+	
+	<section>
+		<title>GP Examples</title>
+		<description>
+		<p>You can download a set of examples with the source code [<a href="../../GP-Examples/dist/GP-Examples-2.0-src.zip">GP-Examples-src.zip</a>]</p>
+  		</description>
+	</section>
+
+	<section>
+		<title>Installing the modules</title>
+		<description>
+		<p>See the <a href="../howto/module/module_install.html">dedicated document</a> for installing GP and Logging modules in NetBeans.</p>
+  		</description>
+	</section>
+  
+</document>
+

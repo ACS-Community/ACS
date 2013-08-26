@@ -1,0 +1,53 @@
+The tar file for CCSLite is normally taken 
+from a previous ACS release (when there are not compatibility 
+problems). If not, from the VLTSW distribution.
+
+For building a VLTROOT from scratch, the scripts used are: 
+- buildFromArchive (where the version of the modules should be properly updated) 
+- build, which in turn uses: 
+	buildCCS
+	buildCCS++
+	buildCCSinclude
+	buildHOS
+	buildKit
+	buildLCC
+	buildPanel
+	buildSlx
+	buildVLTROOT
+	standardEpilogue
+	standardPrologue
+
+
+The procedure to follow is: 
+
+- check the environment variables in order to see that VLTROOT 
+  is correctly defined. 
+- The VLTROOT should be built before the ACSROOT. The env 
+  variable ACSROOT can be defined but there should not be 
+  ACSSW directory.
+- update the cmm modules versions in buildFromArchive 
+- check that you have access to cmm. You need:
+  1. a user defined into the cmm server (ask vltsccm@eso.org) 
+  2. the cmm software available, so either a previous VLTROOT already installed 
+     on the machine you are installing the ACS tools or the retrieve should be 
+     done from another machine. If a VLTROOT is available on the machine where 
+     you are installing the tools but under a different ACS release, you should 
+     login having that release in the environment, run the buildFromArchive, 
+     then log out and in again with the right ACS release defined.
+- launch buildFromArchive from the ACS/ExtProd/INSTALL dir 
+  (this will create the following directories in ../INSTALL: 
+  CCS Drivers HOS Kit LCC PANEL Qserver SLX
+  containing the respective cmm modules). 
+- launch build from the ACS/ExtProd/INSTALL dir
+  with the command: 
+  build > build.log 2>&1
+- examine the log file build.log and the build<PACKAGE_NAME>Error.<machine_name> 
+  and build<PACKAGE_NAME>Output.<machine_name>, where <PACKAGE_NAME> can be: 
+  VLTROOT CCS CCS++ CCSinclude HOS Kit LCC Panel Slx
+
+----------
+
+During the build ignore errors related to man and documentation like:
+
+       system error: No such file or directory
+make[1]: [man1] Error 1 (ignored)

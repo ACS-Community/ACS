@@ -1,0 +1,18 @@
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
+1 - <timestamp> [GlobalLogger - ] Container: bilboContainer
+1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'TESTLOG4':
+1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
+1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
+1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
+1 - <timestamp> [GlobalLogger - ] ... failed!
+1 - <timestamp> (<ID>) EXCEPTION, Exception caught while calling remote method.
+1 - user exception, ID 'IDL:alma/Logging/LoggerDoesNotExistEx:1.0'
+1 - 
+1 - <timestamp> [GlobalLogger - ] Done all.
+2 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
+2 - <timestamp> [GlobalLogger - ] Container: bilboContainer
+2 - <timestamp> [GlobalLogger - ] ... failed!
+2 - <timestamp> (<ID>) EXCEPTION, Exception caught while calling remote method.
+2 - user exception, ID 'IDL:alma/Logging/LoggerDoesNotExistEx:1.0'
+2 - 
+2 - <timestamp> [GlobalLogger - ] Done all.

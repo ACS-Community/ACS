@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSErrTypeCommon" type="10" _prefix="alma">
+	
+	<ErrorCode name="FileNotFound" 
+		shortDescription="File couldn't be found" 
+		description="File couldn't be found" >
+		<Member name="FileName" type="string" description="File name"/>
+	</ErrorCode>
+	
+	<ErrorCode name="OutOfBounds" 
+		shortDescription="Out of bounds"
+		description="Out of bounds" >
+		<Member name="MinValue" type="string" description="Min value of the bounds."/>
+		<Member name="MaxValue" type="string" description="Max value of the bounds."/>
+		<Member name="RequestedValue" type="string" description="Requested value."/>
+	</ErrorCode>
+	
+	<ErrorCode name="IOError" shortDescription="Input Output Error" description="Input Output Error"/>
+	<ErrorCode name="Unknown" shortDescription="Unknown Error" description="Unknown Error"/>
+	<ErrorCode name="NoResources" shortDescription="No Resources" description="No Resources"/>
+	<ErrorCode name="MemoryFault" shortDescription="Memory Problem" description="Memory Problem"/>
+	<ErrorCode name="CouldntCreateObject" shortDescription="Object couldn't be created" description="Object couldn't be created"/>
+	<ErrorCode name="CouldntCreateThread" shortDescription="Thread couldn't be created" description="Thread couldn't be created"/>
+	<ErrorCode name="CouldntAccessComponent" shortDescription="Component couldn't be accessed" description="Component couldn't be accessed"/>
+	<ErrorCode name="CouldntAccessProperty" shortDescription="Property couldn't be accessed" description="Property couldn't be accessed"/>
+	<ErrorCode name="CouldntPerformAction" shortDescription="Action couldn't be performed" description="Action couldn't be performed"/>
+	<ErrorCode name="TypeNotFound" shortDescription="Type Not Found" description="Type Not Found"/>
+	<ErrorCode name="TypeNotSupported" shortDescription="Type Not Supported" description="Type Not Supported"/>
+	
+	<ErrorCode name="CORBAProblem" 
+	           shortDescription="CORBA Problem" 
+		   description="CORBA Problem">
+		<Member name="Minor" 
+		        type="long" 
+                        description="Standard CORBA minor exception code"/>
+		<Member name="CompletionStatus" 
+		        type="long" 
+			description="Standard CORBA completion status code"/>
+		<Member name="Info" 
+		        type="string" 
+			description="String containing information about the exception. Availability is ORB dependent and not CORBA compliant."/>
+	</ErrorCode>
+	
+	<ErrorCode name="IllegalStateEvent" 
+		shortDescription="Illegal event sent to a state machine" 
+		description="An illegal event was sent to a state machine">
+		<Member name="Event" type="string" description="Name of the offending event"/>
+		<Member name="State" type="string" description="Name of the current state that could not accept the event."/>
+	</ErrorCode>
+
+	<ErrorCode name="StateMachineAction" 
+		shortDescription="Error in state machine action." 
+		description="An error occurred in the execution of a state machine action, either in user-supplied callbacks or in the ACS action handling layer.">
+		<Member name="Action" type="string" description="Name of the action."/>
+		<Member name="Context" type="string" description="Context description, e.g. about triggering event, transition."/>
+	</ErrorCode>
+
+	<ErrorCode name="NotImplemented" 
+		shortDescription="Method or feature not implemented" 
+		description="The specified feature is not implemented. If none is specified, the whole method is not implemented.">
+		<Member name="Feature" type="string" description="Feature not implemented. Whole method is not specified"/>
+	</ErrorCode>
+	
+	<ErrorCode name="GenericError" 
+		shortDescription="An error occurred, see ErrorDesc member" 
+		description="An error occurred and no specific error code exists. A description of the error is given in the ErrorDesc member.">
+		<Member name="ErrorDesc" type="string" description="String describing the error condition"/>
+	</ErrorCode>
+	
+	<ErrorCode name="NullPointer"
+		shortDescription="Null pointer error"
+		description="A variable (pointer or reference) is NULL when a value is expected.">
+		<Member name="Variable" type="string" description="Name of variable whose value is NULL"/>
+	</ErrorCode>
+	
+	<ErrorCode name="IllegalArgument"
+		shortDescription="Illegal argument."
+		description="A variable passed as an argument to a function has an illegal value or is NULL.">
+		<Member name="Variable" type="string" description="Name of the variable with the illegal value."/>
+		<Member name="Value" type="string" description="The illegal value."/>
+		<Member name="ErrorDesc" type="string" description="Optional text about correct value range, circumstances, etc."/>
+	</ErrorCode>
+		
+	<ErrorCode name="BadParameter"
+		shortDescription="Bad parameter error"
+		description="Bad parameter error">
+		<Member name="Parameter" type="string" description="Name of the parameter"/>
+		<Member name="ParameterValue" type="string" 
+ 		        description="Value of the above parameter (optional)"/>
+		<Member name="Reason" type="string" 
+ 		        description="Why the parameter is invalid (optional)"/>
+	</ErrorCode>
+        
+	<ErrorCode name="UnexpectedException" 
+                   shortDescription="An unexpected exception has been caught" 
+                   description="An unexpected exception has been caught.
+                   Code should always catch for unexpected exceptions
+		   at the end of any try block, to avoid having
+		   unexpected exceptions flowing high up in the call trace.
+                   This ACS exception definition provides a generic
+		   catcher for such situations, so that call trace
+		   context information can be added to the stack trace
+		   to identify where the unextected exception has been
+		   caught. It should be used when there are no specific additional
+		   details that can be better described by using
+		   another, more specific, ACS exception.">
+	</ErrorCode>
+	
+	<ErrorCode name="NotInitialized"
+		shortDescription="Not Initialized"
+		description="Generic Not Initialized Error">
+		<Member name="Name" 
+			type="string"
+			description="Name of the object that was not initalized"/>
+	</ErrorCode>
+	
+	<ErrorCode name="CannotLoad"
+		shortDescription="Can not load error"
+		description="Generic can not load for ex. library, package, ...">
+		<Member name="ObjectName" 
+			type="string"
+			description="Name of the object that could not be loaded"/>
+	</ErrorCode>	
+	
+	<ErrorCode name="ParsingXMLProblem"
+		shortDescription="Problem with parsin XML"
+		description="A XML string/file can not be parsed">
+		<Member name="XML" 
+			type="string"
+			description="XML that case the problem"/>
+	</ErrorCode>
+	
+	<ErrorCode name="StdException"
+		shortDescription="std::exception caught"
+		description="A wrapper for std::exception">
+		<Member name="What" 
+			type="string"
+			description="What caused std::exception"/>
+	</ErrorCode>
+	
+	<ErrorCode name="CORBAUserException" 
+		shortDescription="CORBA User Exception" 
+		description="CORBA User Exception wrapper">
+		<Member name="Info" 
+			type="string" 
+			description="String containing information about the exception. Availability is ORB dependent and not CORBA compliant."/>
+	</ErrorCode>
+</Type>
+

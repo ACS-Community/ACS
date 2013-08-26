@@ -1,0 +1,99 @@
+#! /bin/bash
+OF=result.out
+PF=test.plot
+HF=testH.plot
+FILES=`ls ~/bulkDataNTGenSender*`
+COMMA=""
+
+echo "Files that are going to be processed: " $FILES
+
+rm -rf $OF
+
+
+#
+# Plots the transfer rates as function of time
+#
+echo "set title \"$1\" " > $PF
+echo "set xlabel \"time [sec.msec]\"" >> $PF
+echo "set ylabel \"Data Rate [MBytes/sec]\"" >> $PF
+echo -ne "plot " >> $PF
+
+for f in $FILES
+do	
+	MACHINE=`echo $f | awk 'BEGIN {FS="."}; {print $2}'`
+	OF=$MACHINE.TP
+	rm -rf $OF
+	grep 'Transfer rate' $f | awk -v M=$MACHINE '{t=substr($1,12,13)*3600+substr($1,15,16)*60+substr($1,18); printf("%s, %.3f, %s\n", substr($1,12), t, $10)}' >> $OF
+	echo -ne $COMMA "\"$OF\" using 2:3 " >> $PF
+	COMMA=","
+#	egrep 'proto|cache' $f	>> $OF
+	echo "###########################################"
+	echo $MACHINE " : "
+	egrep -i 'Error|Timeout' $f | grep -v setACK 
+	egrep 'Average transfer rate for all' $f | awk '{print "\t", $12, $13}' 
+	echo -ne "\t" 
+	echo -ne `egrep 'proto' $f | cut -d " " -f11-25` 
+	egrep 'proto' $f | awk '{print " NACK/total: " $22/$13}'
+	echo -ne "\t"
+	egrep 'cache' $f | cut -d " " -f7-25
+	echo ""
+done
+
+#egrep -i 'Error|Timeout' ~/bulkDataNTGenSender*
+#egrep 'Average transfer rate for all' ~/bulkDataNTGenSender*
+#egrep 'proto|cache' ~/bulkDataNTGenSender*
+
+#with linespoints
+
+echo "" >> $PF
+echo "set terminal png" >> $PF
+echo "set output \"result.png\"" >> $PF
+echo "replot" >> $PF
+gnuplot -p $PF
+
+#
+# Histogram of transfer rates
+#
+echo "set title \"Throughput distribution\"" > $HF
+
+echo "set datafile separator \",\"" >> $HF
+ 
+echo "bin(x, s) = s*int(x/s)" >> $HF
+echo "bw = 1.0" >> $HF
+echo "set boxwidth bw*0.6" >> $HF
+echo "set style fill solid 0.4" >> $HF
+ 
+echo "#set xrange [47:73]" >> $HF
+echo "#set xtics add (47,73)" >> $HF
+echo "set mxtics 5" >> $HF
+echo "set yrange [0:*]" >> $HF
+
+
+echo "set xlabel \"Data Rate [MBytes/sec]\"" >> $HF
+echo "set ylabel \"Frequency\"" >> $HF
+
+####################
+# Builds the gnuplot copmmand line to plot the distribution of the reached data rates
+# echo "plot "alma78-00.TP" using (bin($3,bw)+bw/2):(1.0) smooth frequency ti 'freq' w boxes, "alma78-01.TP" ....  >> $HF
+###
+echo -ne "plot " >> $HF
+
+COMMA=""
+PLOTCMD="using (bin(\$3,bw)+bw/2):(1.0) smooth frequency w boxes "
+for f in $FILES
+do	
+	MACHINE=`echo $f | awk 'BEGIN {FS="."}; {print $2}'`
+	OF=$MACHINE.TP
+	echo -ne $COMMA "\"$OF\"" $PLOTCMD ti \"$OF dist\" >> $HF
+	COMMA=","
+done
+
+
+echo "" >> $HF
+echo "set terminal png" >> $HF
+echo "set output "resultH.png"" >> $HF
+echo "replot" >> $HF
+gnuplot -p $HF
+
+
+

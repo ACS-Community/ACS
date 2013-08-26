@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2006
+#
+#
+# mini script which checks if there are suspicious permission settings
+# in files in the customary places
+#
+# $Id: acsCheckGroupPermissions,v 1.1 2006/01/03 14:27:45 mzampare Exp $
+#*******************************************************************************
+$command = "find $ENV{INTROOT} $ENV{ACSDATA} $ENV{ACSROOT} ! -perm +040 -type f ";
+
+@list = `$command`;
+foreach $file (@list) { 
+    chop($file);
+    print ">> $file is not group readable\n";
+}
+
+$command = "find $ENV{INTROOT}/bin $ENV{ACSROOT}/bin ! -perm +010 -type f ";
+
+@list = `$command`;
+foreach $file (@list) { 
+    chop($file);
+    print ">> $file is not group executable\n";
+}
+

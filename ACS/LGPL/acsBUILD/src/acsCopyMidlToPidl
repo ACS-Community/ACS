@@ -1,0 +1,59 @@
+#! /bin/bash
+
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsCopyMidlToPidl,v 1.1 2005/08/30 13:29:07 gchiozzi Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+#
+
+#************************************************************************
+#   NAME 
+#   acsCopyMidlToPidl - Copies all .midl files in new directory as .pidl
+# 
+#   SYNOPSIS
+#   acsCopyMidlToPidl <sourceDir> <destDir>
+# 
+#   DESCRIPTION
+#   Searched for all *.midl files in the tree starting from the
+#   <sourceDir> directory and copies them directly under the
+#   <destDir> directory, renaming them .pidl.
+#   
+#   This is used to generate doxygen documentation, since doxygen
+#   does not recognize the .midl extension as valid idl files.
+#   Since it recognises .pidl, we comy the .midl files
+#   in a temporary directory with this extension.
+#   We do not use the plain .idl extension so that we do not introduce
+#   duplicate files.
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+mkdir -p $2
+
+FILES=`find $1 -name "*.midl"`
+
+for entry in $FILES
+do
+  baseEntry=`basename $entry .midl`
+  cp $entry $2/$baseEntry.pidl
+done
+
+
+#
+# ___oOo___

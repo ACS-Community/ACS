@@ -1,0 +1,49 @@
+#******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: Makefile.tat10,v 1.76 2003/01/09 17:51:10 vltsccm Exp $"
+#
+# Makefile of "tat10"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# pforstma  25/09/95  created
+#
+
+#
+# CHOSE PLATFORM
+# --------------
+
+#
+# C programs (public and local)
+# -----------------------------
+EXECUTABLES     = tat101
+EXECUTABLES_L   = 
+
+tat101_OBJECTS   =	tat101
+tat101_LDFLAGS   =
+tat101_LIBS      =
+
+#
+# list of all possible C-sources (used to create automatic dependencies)
+# ------------------------------
+CSOURCENAMES = \
+	$(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
+	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
+
+
+MAKEDIR = $(VLTROOT)/include
+include $(MAKEDIR)/vltMakefile
+
+
+#
+# TARGETS
+# -------
+all:	do_all
+	@echo " . . . 'all' done" 
+
+clean : clean_all 
+	@echo " . . . clean done"
+
+
+#___oOo___

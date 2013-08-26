@@ -1,0 +1,145 @@
+Thu Apr 24 15:56:35 2003    <almamgr@midnight-vml.aoc.nrao.edu.>
+
+	* ws/src/acsncORBHelperImpl.cpp,v 1.37 (init_ORB): TAO 1.3 fixes 
+	command-line param problems for ORB arguments.
+
+Mon Mar  3 07:40:56 2003  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* ws/idl/acsnc.idl,v 1.1: added definitions common to all implementations.
+
+Thu Dec  5 13:50:19 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* vltdata to acsdata and cdbjDAL hides the output in TAT tests.
+
+Thu Dec 05 21:39:31 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.29 
+Thu Dec  5 16:23:07 2002  Radostina Georgieva  <rgeorgie@te1.hq.eso.org>
+
+	* ws/test/Makefile: 
+	* ws/src/Makefile: Added clean_dist target
+
+	* changed GPL to LGPL.
+
+	* deleted references to CCS in the Makefile. 
+	
+
+Thu Dec 05 15:14:04 2002 <rgeorgie@te13.hq.eso.org>  acsnc version: 1.28 
+Wed Nov 13 14:42:38 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* added doxygen comments.
+
+Wed Nov 13 19:18:10 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.27 
+Thu Oct 31 14:27:24 2002  David Fugate  <david@dhcp22.hq.eso.org.>
+
+	* cleaned up the modular tests a little.
+
+Thu Oct 31 14:13:12 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.26 
+Wed Oct 30 16:07:49 2002  David Fugate  <david@dhcp22.hq.eso.org.>
+
+	* ws/test/*: added many more modular TAT tests. 
+
+Wed Oct 30 11:34:45 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.25 
+Tue Oct 29 16:52:08 2002  David Fugate  <david@dhcp22.hq.eso.org.>
+
+	* ws/test: added an incomplete TAT test (needs SimpleClient)
+
+Tue Oct 29 15:33:29 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.24 
+Fri Oct 25 11:56:58 2002  David Fugate  <david@dhcp37.hq.eso.org.>
+
+	* ws/test: fixed the consumer test's segfault.
+
+Fri Oct 25 09:18:15 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.23 
+Wed Oct 23 18:46:57 2002  David Fugate  <david@dhcp37.hq.eso.org.>
+
+	* ws/test/ConsumerChild.py: hopefully this is now updated...
+	* removed an unnecessary IDL file.
+
+Wed Oct 23 17:01:55 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.22 
+Wed Oct 23 16:45:26 2002  David Fugate  <david@dhcp37.hq.eso.org.>
+
+	* added a test ENVIRONMENT based off the new CDB.  still needs the
+	python client and/or a C++ client invoked from tat though.
+
+Wed Oct 23 13:09:27 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.21 
+Mon Sep 30 16:40:14 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* added a test ENVIRONMENT with test DO's.  Also added ACE_DEBUG's
+	to every method (will be replaced by ACS_TRACE's eventually).
+
+Fri Sep 27 22:45:13 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.20 
+Tue Sep 24 20:13:56 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* setup Consumer and Supplier to use Activator's orb with the old
+	constructor.
+	* removed ORB methods from helper and placed them in their own class.
+
+Fri Sep 20 16:27:10 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.19 
+Thu Sep 19 16:25:51 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* by passing (CORBA::ORB_ptr)0 to Supplier/Consumer's constructor,
+	the DB and command-line params are no longer needed.
+
+Thu Sep 19 16:37:03 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.18 
+Wed Sep 18 10:37:31 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* ws/src/Helper.cpp: added support for LCU DB.  Fixed stand-alone bug.
+
+Wed Sep 18 18:00:45 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.17 
+Tue Sep 17 15:14:07 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* ws/src/Supplier.cpp: added patch to handle multiple consumers
+	* ws/test/: added stand alone tests also.
+
+Mon Sep 16 17:37:51 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.16 
+Fri Sep 13 14:29:18 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* improved error handling and changed the tests.
+
+Fri Sep 13 00:26:54 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.15 
+Thu Sep 12 16:14:04 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* now uses BACI threads instead of posix or VxWorks
+
+Thu Sep 12 17:45:46 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.14 
+Thu Sep 12 09:40:46 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* ws/include & ws/src: added new constructors that do not need to
+	spawn threads for separate orbs.
+
+Wed Sep 11 19:50:47 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.13 
+Fri Sep  6 09:51:36 2002  David Fugate  <david@midnight-vml.aoc.nrao.edu>
+
+	* ws/src/Helper.cpp: removed database usage.  Removed duplicated
+	code with functions from maciHelper.h
+
+Thu Sep 05 16:17:28 2002 <dfugate@te13.hq.eso.org>  acsnc version: 1.12 
+Sun Sep 01 16:43:54 2002 <rheald>  acsnc version: 1.11 
+	* Move db entries outside of :Managers:Manager
+Thu Aug 29 21:40:02 2002 <rmarson>  acsnc version: 1.10 
+	* Worked around a compiler warning in gcc-2.95.2
+Wed Aug 28 15:34:16 2002 <jpisano>  acsnc version: 1.9 
+	* Fixed copy constructor compiler warning for vxWorks in Consumer.h
+Tue Aug 27 20:29:03 2002 <jpisano>  acsnc version: 1.8 
+	* Fixed copy constructor compiler warning for vxWorks in Supplier.h
+	* Fixed documentation re. ORB init param in Supplier.h & Consumer.h
+Fri Aug 02 18:31:06 2002 <rheald>  acsnc version: 1.7 
+	* Get NameService, NotifyFactory from database
+	* TODO -
+	* Fix problem when using > 1 channel consumer
+	* Documentation needs correction in Supplier.h and Consumer.h
+	* Use ACE_thread instead of separate Linux & VxWorks thread mechanisms
+	* Fix gcc.2.7.2 (vxWorks) compiler warning
+	* Environment variable "NAME_SERVER" should be used
+Tue Jul 30 22:20:59 2002 <jpisano>  acsnc version: 1.6 
+	* LCU makefile link fixed
+Tue Jul 30 18:10:17 2002 <jpisano>  acsnc version: 1.5 
+	* LCU now runs SupplierChild publisher with WS consumers
+Mon Jul 29 15:44:24 2002  David Fugate  <david>
+	* fixed the LCU makefile to handle links from WS side
+Mon Jul 29 23:33:07 2002 <dfugate>  acsnc version: 1.4 
+Mon Jul 29 14:34:32 2002  David Fugate  <david>
+	* changed LCU's makefile
+Mon Jul 29 22:31:11 2002 <dfugate>  acsnc version: 1.3 
+Wed Jul 24 14:43:18 2002 <jpisano>  acsnc version: 1.2 
+	* Cleaned up directory structure
+	* Initial checkin of this module
+"@(#) $Id: ChangeLog,v 1.32 2003/04/25 16:16:03 dfugate Exp $"

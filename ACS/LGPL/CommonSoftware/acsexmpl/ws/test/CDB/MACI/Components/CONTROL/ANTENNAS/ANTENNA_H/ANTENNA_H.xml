@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xi="http://www.w3.org/2003/XInclude">
+      <_ Name="MOUNT/LAMP"
+         Code="acsexmplMountImpl"	
+         Type="IDL:alma/MOUNT_ACS/Mount:1.0"
+         Container="Container" ImplLang="cpp" />
+      <_ Name="POWER_SUPPLY"	    
+         Code="acsexmplPowerSupplyImpl"	  
+         Type="IDL:alma/PS/PowerSupply:1.0"
+         Container="Container"  ImplLang="cpp" />
+</Components>
+

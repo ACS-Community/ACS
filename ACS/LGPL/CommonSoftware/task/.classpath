@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="lib" path="lib/characteristicTask.jar"/>
+	<classpathentry kind="lib" path="lib/taskComponent.jar"/>
+	<classpathentry kind="lib" path="lib/taskErrType.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="object/eclipseOut"/>
+</classpath>

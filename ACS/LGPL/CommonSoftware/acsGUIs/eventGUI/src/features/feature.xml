@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- TODO: Do we really need this? See help on "Plug-in Development Environment Guide > Tasks > PDE Build > Automated building of features" -->
+
+<feature
+      id="ACS_eventGUI"
+      label="eventGUI"
+      version="1.0.0"
+      provider-name="European Southern Observatory"
+      plugin="ACS_eventGUI">
+
+   <description url="http://www.eso.org">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.eso.org">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.eso.org">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.eclipse.e4.rcp"
+         version="0.0.0"
+         os="linux"
+         ws="gtk"
+         arch="x86"/>
+
+   <requires>
+      <import feature="org.eclipse.e4.rcp" version="1.1.2.v20130130-191718-91FUvGP7GIX2Kgz-z-gvjMvXV1NS"/> 
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.w3c.css.sac"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.help.webapp"/>
+      <import plugin="alma.acs.rcp.jars" version="2.0.0"/>
+   </requires>
+
+   <plugin
+         id="ACS_eventGUI"
+         os="linux"
+         ws="gtk"
+         nl="en_US"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

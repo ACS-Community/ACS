@@ -1,0 +1,28 @@
+ACS Manager:
+ACS Interface Repository:
+java -classpath
+^. - [jJ]ava
+Time:
+has not defined the Timeout for the component
+export
+Starting Java application
+endorsed
+ACS Name Service
+Running the following command:
+calling orbresolve_initial_references
+manager reference not yet available in method loginToManager
+Manager login done
+FINE
+FINER
+FINEST
+DELOUSE
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+will retrieve remote component
+retrieved successfully
+about to release component
+Don't need to create servant for offshoot
+successfully activated offshoot of type
+successfully deactivated offshoot of type
+ACS.log.minlevel.namedloggers not defined
+componentReleased
+Logger jacorb@.* created with custom log levels local=Info, remote=Info

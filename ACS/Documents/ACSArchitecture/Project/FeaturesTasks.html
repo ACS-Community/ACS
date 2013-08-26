@@ -1,0 +1,87 @@
+<html>
+
+<head>
+
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+
+<title>FeaturesTasks</title>
+
+<style><!--
+
+.Normal
+
+	{font-size:12.0pt;
+
+	font-family:"Times New Roman";}
+
+-->
+
+</style>
+
+<meta name=Template content="C:\Program Files\MSOffice\Office\html.dot">
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+<h2>Tasks</h2>
+<h3>ACS provides support for tasks. </h3>
+<ul>
+  <li>A task is a concise program which starts up, performs some processing, and 
+    then shuts down. </li>
+  <li>A task may or may not require other more advanced ACS services, depending 
+    on context. Tasks are specifically intended to address the needs of the Offline 
+    team, which needs to be able to implement concise, stand-alone programs which 
+    perform some offline data processing or manipulation. </li>
+  <li>It is expected that tasks will often be run from the Unix command prompt 
+    by typing a simple command (task name) plus some additional information describing 
+    the data to be used by the task. </li>
+  <li>It is desirable, therefore, that a complete ACS startup scenario not be 
+    required in order to run a task; rather, the running of a task should simply 
+    involve typing a single command at the unix command prompt. </li>
+</ul>
+<h3> In order to facilitate the requirement of a simple execution mechanism (i.e. 
+  no complete ACS startup required), ACS provides a task mechanism that is able 
+  to run either with or without ACS services being up and running. </h3>
+<h3>In addition, a special "static container" has been developed which allows 
+  the functionality for the ACS container to be linked in directly with the task 
+  executable at compile/link time. </h3>
+<ul>
+  <li>The static container functionality allows the Task mechanism to adhere fully 
+    to the ACS component-container model while still requiring no complete startup 
+    (e.g. no explicit starting of a C++ container is necessary). </li>
+  <li>In the event that ACS services are available, the Task component, using 
+    the linked-in static container, will be capable of operating like a full-fledged 
+    ACS component. </li>
+</ul>
+<h3> Tasks will often require parameters (see Parameter section), so two primary 
+  types of tasks are provided. </h3>
+<h4>A generic Task interface is provided which defines only a single method, <font face="Arial, Helvetica, sans-serif">run()</font>, 
+  which must be implemented by the task developer. </h4>
+<h4>A specialization of this generic Task is also provided, ParameterTask, which 
+  extends the basic task interface and allows for both a <font face="Arial, Helvetica, sans-serif">run()</font> 
+  and a <font face="Arial, Helvetica, sans-serif">go()</font> method. </h4>
+<p>&nbsp;</p>
+<p>In ParameterTask, the <font face="Arial, Helvetica, sans-serif">run()</font> 
+  method is implemented by ACS and provides support for defining/parsing parameters 
+  passed in via the unix command line, converting the command line parameters 
+  to XML in order to construct a ParameterSet object, and then calling the <font face="Arial, Helvetica, sans-serif">go()</font> 
+  method (which will be implemented by the task developer). </p>
+<p>&nbsp;</p>
+<h3>Architecture and design</h3>
+<p>The Task architecture is very straightforward. </p>
+<p>Two IDL interfaces are defined by ACS: Task, the generic task base class, and 
+  a specialization of the Task base class which adds command-line parameter handling, 
+  ParameterTask. </p>
+<p>Both of these types extend from ACSComponent, making them full-fledged Components 
+  in the ACS Component-Container model. </p>
+<p align=center style='text-align:center'><img border=0
+
+
+
+ src="Images/Task__TaskArchitecture.png" WIDTH="562" HEIGHT="581" ></p>
+<p align=center style='text-align:center'><i>Figure 3.15: Task Component Architecture</i></p>
+
+</body>
+
+</html>
+

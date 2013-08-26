@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema targetNamespace="urn:schemas-cosylab-com:MCtestPropertiesComponent:1.0"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns="urn:schemas-cosylab-com:MCtestPropertiesComponent:1.0"
+	xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+	xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+
+	<xs:complexType name="MCtestPropertiesComponent">
+		<xs:sequence>
+			<xs:element name="doubleROProp"     type="baci:ROdouble" />
+			<xs:element name="floatROProp"      type="baci:ROfloat" />
+			<xs:element name="longROProp"       type="baci:ROlong" />
+			<xs:element name="uLongROProp"      type="baci:ROuLong" />
+			<xs:element name="patternROProp"    type="baci:ROpattern" />
+			<xs:element name="stringROProp"     type="baci:ROstring" />
+			<xs:element name="longLongROProp"   type="baci:ROlongLong" />
+			<xs:element name="uLongLongROProp"  type="baci:ROuLongLong" />
+			<xs:element name="booleanROProp"    type="baci:ROboolean" />
+			<xs:element name="doubleSeqROProp"  type="baci:ROdoubleSeq" />
+			<xs:element name="floatSeqROProp"   type="baci:ROfloatSeq" />
+			<xs:element name="longSeqROProp"    type="baci:ROlongSeq" />
+			<xs:element name="uLongSeqROProp"   type="baci:ROuLongSeq" />
+			<xs:element name="booleanSeqROProp" type="baci:RObooleanSeq" />
+			<xs:element name="EnumTestROProp"   type="baci:ROEnum" />
+			<xs:element name="doubleRWProp"     type="baci:RWdouble" />
+			<xs:element name="floatRWProp"      type="baci:RWfloat" />
+			<xs:element name="longRWProp"       type="baci:RWlong" />
+			<xs:element name="uLongRWProp"      type="baci:RWuLong" />
+			<xs:element name="patternRWProp"    type="baci:RWpattern" />
+			<xs:element name="stringRWProp"     type="baci:RWstring" />
+			<xs:element name="longLongRWProp"   type="baci:RWlongLong" />
+			<xs:element name="uLongLongRWProp"  type="baci:RWuLongLong" />
+			<xs:element name="booleanRWProp"    type="baci:RWboolean" />
+			<xs:element name="doubleSeqRWProp"  type="baci:RWdoubleSeq" />
+			<xs:element name="floatSeqRWProp"   type="baci:RWfloatSeq" />
+			<xs:element name="longSeqRWProp"    type="baci:RWlongSeq" />
+			<xs:element name="uLongSeqRWProp"   type="baci:RWuLongSeq" />
+			<xs:element name="booleanSeqRWProp" type="baci:RWbooleanSeq" />
+			<xs:element name="EnumTestRWProp"   type="baci:RWEnum" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="MCtestPropertiesComponent" type="MCtestPropertiesComponent"/>
+</xs:schema>

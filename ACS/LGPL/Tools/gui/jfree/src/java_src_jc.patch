@@ -1,0 +1,14 @@
+--- build.xml	2008-12-30 12:25:48.000000000 +0000
++++ build2.xml	2010-12-17 07:30:20.000000000 +0000
+@@ -88,6 +88,11 @@
+       </fileset>
+     </copy>
+ 
++    <!-- patch to include java source bhola.panta@naoj 2010/12/17-->
++     <copy todir="${builddir}/src/">
++        <fileset dir="source" includes="**/*.java" />
++    </copy>
++
+     <!-- make the jar -->
+     <jar jarfile="${jcommon-jar-file}" basedir="${builddir}"/>
+ 

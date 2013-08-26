@@ -1,0 +1,7 @@
+1 - Manager location is: corbaloc:iiop:te1.hq.eso.org:2252/Manager
+1 - Got manager reference
+1 - Manager narrowed.
+1 - Logged in.
+1 - Getting device: 'curl:///EPTESTDEVICE1'. Creating it... OK
+1 - Device narrowed.
+1 - (Status::CBStates::done) Value: ENABLED (1)

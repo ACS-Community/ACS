@@ -1,0 +1,4 @@
+1 - Concrete.getMethod('displayMessage'): {'nonempty': 'constructor'}
+1 - Concrete.getMethod('displayMessage'): {'nonempty': 'main'}
+1 - 
+1 - Concrete.getMethod('nomethod'): None

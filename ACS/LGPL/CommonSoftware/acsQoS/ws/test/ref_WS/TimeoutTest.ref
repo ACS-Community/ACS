@@ -1,0 +1,9 @@
+SUCCESS 1: Method w/o timeout executed successfully.
+Constructing timeout with value of: 400 and no previous timeout value.
+Constructing timeout; old timeout was: 400
+Constructing timeout; new timeout is: 5000
+Deleting timeout and resetting timeout to previous value of: 400
+Deleting timeout: no previous value exists, so not resetting.
+SUCCESS 2: Timeout exception caught, this is expected.
+SUCCESS 3: Timeout exception caught, this is expected.
+SUCCESS 4: Method w/o timeout executed successfully.

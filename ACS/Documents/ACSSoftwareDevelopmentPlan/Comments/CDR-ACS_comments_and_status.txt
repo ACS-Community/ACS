@@ -1,0 +1,142 @@
+Thu May 11 17:18:06 CEST 2006
+
+============================================
+Comments on R4 deliverables and CDR4 notes
+============================================
+
+---001--------------------------------------------------------------------------
+(BrianGlendenning)
+
+CORBA through firewalls
+
+It is not obvious to me that we need to run CORBA through the firewall. As I understand 
+it the only service that is needed is depositing SBs from remote users to the Archive 
+inside the firewall. Given this limited purpose, perhaps a very simple HTTP protocol 
+could be implemented instead, rather than using the JacORB which is noted as being 
+buggy.
+
+REPLY
+OT requirements on ACS for R4 explicitly request the capability to handle
+CORBA through the firewall.
+But you might be right and HTTP might be sufficient.
+In any case, Marcus Shilling, representing both OT and ACS, is responsible to 
+analyse in details what is needed, so that we avoid unnecessary developments.
+
+For what concerns JacORB, we plan to upgrade from 1.4 to 2.x, that is allegedly
+much more stable. We think this is in any case an important activity, because
+JacORB 1.4 is by now quite old.
+
+The final decision should be taken for the ACS 6.0 planning meeting, that 
+I would like to have at the time of the leads meeting in Garching.
+---002--------------------------------------------------------------------------
+(BrianGlendenning)
+
+Optical pointing punch list
+
+As I understand the reply, all items have either already been fixed or an SPR has been 
+submitted for the open items, this is enough I think.
+
+REPLY
+Yes, this is the case.
+
+---003--------------------------------------------------------------------------
+(GianniRaffi)
+Cannot find reference to the new CASA framework that will be deployed by Offline. No ACS further req
+uirements coming from this? Offline lists assumptions etc for ACS.
+
+REPLY
+I am not aware of any requirement from Offline.
+None was stated in the R4 wiki page and I have not received any request.
+But I have not read the Offline CDR-4 documentation.
+Please let me know if I have to look into that or if I have to explicitly ask.
+
+---004--------------------------------------------------------------------------
+(JoeSchwarz)
+
+Help system for ALMA
+Note that the handling of images by the OT is currently quite poor: 
+very large PostScript files are used for screenshots (which bloats the OT
+help files) and they don't even display well! Some way to incorporate the
+JPEG equivalents should be found. (Marcus is investigating http://www.pdflib.com/products/more/jpeg2
+ps.html.)
+
+REPLY
+Thanks for the note of caution.
+I will discuss this issue with Marcus and probably add some information
+to the ACS Architecture document.
+
+---005--------------------------------------------------------------------------
+============================================
+Comments on Planning Spreadsheet
+============================================
+
+---006--------------------------------------------------------------------------
+(GianniRaffi)
+
+21 Restart .. seems important soon
+
+REPLY
+It is already possible to explicitly request a component to shutdown and to 
+restart it manually.
+But this implies a complete stop and restart of that component.
+This item would implement an interface to request that a component if re-initialised.
+This is more that what already implemented, but not so much.
+Therefore I think this item does not have really high priority.
+
+---007--------------------------------------------------------------------------
+(GianniRaffi)
+
+23 Upgrade of OS and basic tools. Do we need to upgrade anything? I would propose to check very care
+fully, in order to make sure that there are no implications on the RTOS version we use, which we can
+not afford to change (ideally for a year or more).
+
+REPLY
+I think we really need to upgrade JacORB, because we are using a very old version.
+This might be rather expensive but I have already allocated the resources.
+It would probably be also good to upgrade ACE/TAO, because the newer versions have a 
+number of imptovements, but we do not have really pressing issues.
+For the rest I hope we will be able to keep stable versions. 
+---008--------------------------------------------------------------------------
+(GianniRaffi)
+
+43 Alarm system. To complete this with Control is important. To go to the latest laser much less, un
+less fundamental problems are found.
+
+REPLY
+Agreed.
+
+---009--------------------------------------------------------------------------
+(BrianGlendenning)
+
+Should log message structuring (wanted by Exec I believe) be an item?
+
+REPLY
+In this document I have put items that have been already agreed.
+I will prepare a new version after discussion of the ACS 6.0 planning.
+This item is already in the list for the ACS 6.0 planning proposal.
+---010--------------------------------------------------------------------------
+(BrianGlendenning)
+
+Should there be work for GUI panels (with or without LabView, ABeans)? I think in this cycle we shou
+ld work on the technical underpinnings of GUIs, including a sample panel or two.
+
+REPLY
+This also should be discussed at the ACS 6.0 planning.
+There have been recent discussions aroung this topic and it would be probably
+good to have a discussion at the leads meeting.
+I personally think that we should do this work and provide both support for 
+Java GUI building and LabView.
+
+---011--------------------------------------------------------------------------
+(BrianGlendenning)
+
+Ralph commented in email that the State machine / component lifecycle infrastructure (at least for C
+++) needs some work. Should this be a development item?
+
+REPLY
+This is being discussed now and there is still no agreement.
+For, for the time beeing, I would keep the item out of the planning.
+Depending on what we will agree, it might become a minor update or major changes.
+
+
+                              _____oOo_____

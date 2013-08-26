@@ -1,0 +1,161 @@
+grammar alma.acs.tmcdb.grammardef.TmcdbTables with org.eclipse.xtext.common.Terminals
+
+generate tmcdbTables "http://www.grammardef.tmcdb.acs.alma/TmcdbTables"
+
+TMCDBModel:
+	(header=Header)
+	(note=Note)?
+	(includes+=Include)*
+	(modelName=ModelName)
+	(tables+=Table)+;
+
+Header:
+	name="TMCDB" "SQL" "TABLE" "DEFINITIONS" "VERSION" version=VersionType versionTS=TimestampType;
+
+terminal VersionType:
+	INT('.'INT)+;
+
+terminal TimestampType:
+	INT'-'INT'-'INT'T'INT':'INT':'INT'.'INT;
+
+Note:
+	"NOTE"
+	note=STRING*
+	"ENDNOTE";
+
+Include:
+	"INCLUDE" importURI=STRING;
+
+ModelName:
+	"MODELNAME" name=ID;
+
+Table:
+	'TABLE' name=ID (isChild?='EXTENDS' superTable=[Table])?
+		(columns+=Column)*
+		(key=Key)?
+		(constraints+=Constraint)*
+	'ENDTABLE';
+
+Column:
+	name=ID type=Type specifier=Specifier;
+
+Key:
+	"KEY" columns+=[Column] ( (isGenerated?="GENERATED" (isGeneratedFrom?="FROM" (pieces+=[Column])+)?) | (columns+=[Column])* );
+
+Type:
+	IntTypes | LengthDefinedTypes | TextTypes | TimeTypes | OtherTypes;
+
+IntTypes:
+	IntType | TinyintType | SmallintType | BigintType | LengthType;
+
+LengthDefinedTypes:
+	CharType | VarcharType | LongvarcharType;
+
+TextTypes:
+	TextType | NameType | LongnameType;
+
+TimeTypes:
+	TstampType | TimeType;
+
+OtherTypes:
+	BooleanType | DoubleType | FloatType | ClobType | XmlClobType ;
+
+// Individual types definitions
+IntType:
+	name="INTEGER"; // INT gives problem?
+
+SmallintType:
+	name="SMALLINT";
+
+BigintType:
+	name="BIGINT";
+
+TinyintType:
+	name="TINYINT";
+
+LengthType:
+	name="LENGTH";
+
+CharType:
+	name="CHAR" ("("(length=INT)")");
+
+VarcharType:
+	name="VARCHAR" "("(length=INT)")";
+
+LongvarcharType:
+	name="LONGVARCHAR" "("(length=INT)")";
+
+TextType:
+	name="TEXT";
+
+NameType:
+	name="NAME";
+
+LongnameType:
+	name="LONGNAME";
+	
+TstampType:
+	name="TSTAMP";
+
+TimeType:
+	name="TIME";
+
+BooleanType:
+	name="BOOLEAN";
+
+DoubleType:
+	name="DOUBLE";
+
+FloatType:
+	name="FLOAT";
+
+ClobType:
+	name="CLOB";
+
+XmlClobType:
+	name="XMLCLOB";
+
+Specifier:
+	NullitySpecifier | DefaultSpecifier;
+
+NullitySpecifier:
+	(isNotNull?="NOT")? specifier="NULL";
+
+DefaultSpecifier:
+	"DEFAULT" defaultValue=DefaultValue;
+
+DefaultValue:
+	DefaultIntValue | DefaultStringValue | DefaultBooleanValue;
+
+DefaultIntValue:
+	(isNegative?="-")? value=INT;
+
+DefaultStringValue:
+	value=STRING;
+
+DefaultBooleanValue:
+	isTrue?="TRUE" | isFalse?="FALSE";
+
+Constraint:
+	ForeignConstraint | CheckConstraint | UniquenessConstraint;
+
+ForeignConstraint:
+	"CONSTRAINT" name=ID "FOREIGN" "KEY" "(" columns+=[Column] (',' columns+=[Column])* ")" "REFERENCES" table=[Table] ( cascading=CascadeType | (toSpecificColumn?="(" foreignColumn=[Column] ")"))?;
+
+CheckConstraint:
+	"CONSTRAINT" name=ID "CHECK" "(" column=[Column] "IN" possibleValues=PossibleValues ")";
+
+UniquenessConstraint:
+	"CONSTRAINT" name=ID "UNIQUE" "(" columns+=[Column] (',' columns+=[Column])* ")";
+
+CascadeType:
+	"CASCADING" isInverse?="INVERSE"? (aggregation?="AGGREGATION"|composition?="COMPOSITION");
+
+PossibleValues:
+	IntegerPossibleValues | StringPossibleValues;
+
+IntegerPossibleValues:
+	"(" possibleValues+=INT (',' possibleValues+=INT)* ")";
+
+StringPossibleValues:
+	"(" possibleValues+=STRING (',' possibleValues+=STRING)* ")";

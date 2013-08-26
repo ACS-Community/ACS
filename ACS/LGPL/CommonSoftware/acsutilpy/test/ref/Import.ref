@@ -1,0 +1,38 @@
+1 - Test import statement with no parameter ... ok
+1 - Test import statement with int parameter ... ok
+1 - Test import statement with float parameter ... ok
+1 - Test import statement with invalid separator ... ok
+1 - Test from import statement with no package or module information ... ok
+1 - Test from import statement with int package and no module information ... ok
+1 - Test from import statement with float package and no module information ... ok
+1 - Test from import statement with invalid package separator and no module information ... ok
+1 - Test from import statement with no module information ... ok
+1 - Test from import statement with int module information ... ok
+1 - Test from import statement with float module information ... ok
+1 - Import a module with a mis-spelled name ... ok
+1 - Import a module with a mis-spelled name using 'from import' statement ... ok
+1 - Import a known module ... ok
+1 - Import a known module using 'from import' statement ... ok
+1 - Import a known nested module ... ok
+1 - Import a known nested module using 'from import' statement ... ok
+1 - Import a known module twice ... ok
+1 - Import a known module twice using from import ... ok
+1 - Import a known nested module twice ... ok
+1 - Import a known nested module twice using from import ... ok
+1 - Import a package module that does not exist ... ok
+1 - Import a package module that exists in the beginning of the search path ... ok
+1 - Import a package module that exists in the middle of the search path ... ok
+1 - Import a package module that exists at the end of the search path ... ok
+1 - Import a package module that exists in two places in the search path ... ok
+1 - Re-import a module that was found by a search ... ok
+1 - Import a package module that does not exist using 'from import' ... ok
+1 - Import a package module that exists in the beginning of the search path using 'from import' ... ok
+1 - Import a package module that exists in the middle of the search path using 'from import' ... ok
+1 - Import a package module that exists at the end of the search path using 'from import' ... ok
+1 - Import a package module that exists in two places in the search path using 'from import' ... ok
+1 - Re-import a module that was found by a search using 'from import' ... ok
+1 - 
+1 - ----------------------------------------------------------------------
+1 - Ran 33 tests in x.xxs
+1 - 
+1 - OK

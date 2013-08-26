@@ -1,0 +1,28 @@
+#ifndef _SIMPLE_EXAMPLE_IDL
+#define _SIMPLE_EXAMPLE_IDL
+
+#include <baci.idl>
+
+#pragma prefix "alma"
+
+module DDS_SIMPLE_EXAMPLE{
+	const string CHANNEL_NAME = "simple_example";
+	const string CHANNEL_NAME_2 = "another_example";
+
+#pragma DCPS_DATA_TYPE "DDS_SIMPLE_EXAMPLE::simpleMessage"
+	struct simpleMessage{
+		unsigned long seqnum;
+	};
+
+	/**
+	  * Simple component interface to send messages via DDS NC
+	  */
+	interface simpleExample : ACS::ACSComponent{
+		/**
+		  * Send a message of type DDS_SIMPLE_EXAMPLE::message
+		  */
+		void sendMessage ();
+	};
+
+};
+#endif

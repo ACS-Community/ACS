@@ -1,0 +1,40 @@
+1 - .----------T--:--:--.--- INFO [alma.alarmsystem.clients.test.UserPropsTest#testProperties] -------------------------------
+1 - ----------T--:--:--.--- INFO [alma.alarmsystem.clients.test.UserPropsTest#testProperties] component 'alma.alarmsystem.clients.test.UserPropsTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] loading configuration...
+1 - ----------T--:--:--.--- WARNING [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] could not load configuration, using defaults
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] subscribe(CMW.ALARM_SYSTEM.HEARTBEAT, listener, HEARTBEAT = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] Alarm Heartbeat client check frequency : 30000 milliseconds
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] starting heartbeat check...
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] started heartbeat check
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.ROOT, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] subscribe(CMW.ALARM_SYSTEM.CLIENTS.------, listener, (NOT_REDUCED_MASKED_SET = TRUE) OR LASER_INIT = TRUE)
+1 - ----------T--:--:--.--- INFO [alma.alarmsystem.clients.test.UserPropsTest#testProperties] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CLIENTS.------' ChannelId='xx' ]
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] unSubscribe(5)
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] instantiating the alarm system interface
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] loading configuration...
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] configuration loaded
+1 - SynchroBuffer[minWindowSize=500,maxWindowSize=5000,windowGrowthFactor=100,duplicatePolicy=DUPLICATE_OK]
+1 - Source FaultState <TEST, TEST_MEMBER1, 1> 
+1 - 	Size of props of TEST, TEST_MEMBER1, 1> = 2
+1 - 	TEST, TEST_MEMBER1, 1>  [TestProp2, Another property]
+1 - 	TEST, TEST_MEMBER1, 1>  [TestProp1, Value of test property 1]
+1 - Source FaultState <TEST, TEST_MEMBER1, 2> 
+1 - 	Size of props of TEST, TEST_MEMBER1, 2> = 1
+1 - 	TEST, TEST_MEMBER1, 2>  [PropertyKey, One property only]
+1 - <TEST, TEST_MEMBER1, 1>  size=2
+1 - 	<TEST, TEST_MEMBER1, 1>  user property [TestProp2, Another property]
+1 - 	<TEST, TEST_MEMBER1, 1>  user property [TestProp1, Value of test property 1]
+1 - <TEST, TEST_MEMBER1, 2>  size=1
+1 - 	<TEST, TEST_MEMBER1, 2>  user property [PropertyKey, One property only]
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] stopped heartbeat check
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] stopping heartbeat check...
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] unSubscribeAll()
+1 - ### DefaultSubscriberImpl::unSubscribeAll
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] closing...
+1 - ----------T--:--:--.--- INFO [laser@alma.alarmsystem.clients.test.UserPropsTest#testProperties] closed
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 

@@ -1,0 +1,825 @@
+#! /bin/bash
+# Note that acsstartupAcsPorts defines the functions getIP() and getManagerPort()
+. acsstartupAcsPorts
+
+#################################################################################
+#
+# This script is used to monitor the performance of the ACS logging system
+#
+# @author Steve Harrington
+# @date 04-11-2007
+#################################################################################
+
+##########################################################################################
+# Function definitions used later in this script.
+##########################################################################################
+
+# definition of a function to print the usage statement for this script
+printUsageAndExit ()
+{
+    echo ""
+    echo "Usage: $0 [OPTIONS] <numLogsToSend> <numComponents> <delayBetweenLogs>";
+    echo "  where: "
+    echo "";
+    echo "   <numLogsToSend> is the number of logs to publish per component.";
+    echo "   <numComponents> is the number of publishing components to use.";
+    echo "   <delayBetweenLogs> is the number of milliseconds to pause between sending each log.";
+    echo "Options: "
+    echo "   -j | --jlog: indicates whether to profile the jlog GUI (default if not"
+    echo "            specified is true)";
+    echo "   -h | --help: print this usage message and exit."
+    echo "   -d | --debug: print additional debugging info about this script to stdout."
+    echo "   -p | --publishingHost [<user>@]<hostname>: remote host name on which to run the"
+    echo "            publishing container(s), via ssh. Optionally, a username different"
+    echo "            than the local username can be passed as well. Default: current user"
+    echo "            on local machine."
+    echo "   -l | --language <py | cpp | java>: the implementation language of the publishing"
+    echo "            component (cpp, java, python) - NOTE: default is cpp."
+    echo "   -m | --minLogLevelLocal <level>: the local log level to set for all containers."
+    echo "            NOTE: default is no change."
+    echo "   -s | --skipReport: do not run sar to produce html reports about CPU load"
+    echo "   -n | --noRedirection: leave output of Containers to stdout instead of redirecting"
+    echo "            to a temporary file."
+    echo "   -c | --csv <fileName>: append timing info in CSV format to <fileName>."
+    echo ""
+    exit -1;
+}
+
+# definition of a function to echo (print to stdout) based on debug settings
+debugPrint ()
+{
+    if [ "$DEBUG_MODE" ] ;
+	then
+	echo " DEBUG: $1"
+    fi;
+}
+
+# definition of a function to find the number (counting from 1) of the column which contains the %user cpu information 
+# in the output from the sar command. It seems this can vary from machine to machine, so we cannot hard-code a column number.
+findCpuColumnInSarOutput () 
+{
+    LOG_FILE=$1
+    retval=
+    count=1
+    for i in `grep PID $LOG_FILE | grep "[0-9]"`
+      do
+      if [ "$i" = "%user" ]
+	  then 
+	  retval=$count
+	  break
+      fi
+      count=`expr $count + 1`
+    done
+    echo $retval
+}
+
+# definition of a function to plot (using gnuplot) the data produced by the unix 'sar' and 'top' commands
+genplot () 
+{
+    LOG_FILE_NAME=$1
+    ACS_TEMP=$2
+    X_AXIS_POSITION=1	
+    Y_AXIS_POSITION=`findCpuColumnInSarOutput $ACS_TEMP/$LOG_FILE_NAME.orig.log`
+    debugPrint "cpu column for $LOG_FILE_NAME was determined to be: $Y_AXIS_POSITION"
+    if [ -z "$Y_AXIS_POSITION" ]
+	then
+	echo "FATAL ERROR: could not find cpu column in sar output!"
+	exit -1;
+    fi
+    cat ./gnuplot.template | sed -e s@CHANGE_PNG@../doc/$LOG_FILE_NAME@g | sed -e s@CHANGE_LOGFILE@$ACS_TEMP/$LOG_FILE_NAME@g \
+	| sed -e s@CHANGE_X_LOCATION@$X_AXIS_POSITION@g | sed -e s@CHANGE_Y_LOCATION@$Y_AXIS_POSITION@g \
+	| sed -e s@CHANGE_GRAPH_TITLE@$LOG_FILE_NAME@g > $ACS_TEMP/gplot.tmp;
+	
+    gnuplot $ACS_TEMP/gplot.tmp;
+}
+
+# definition of a function to plot (using gnuplot) the data produced by the unix 'sar' command for one or more containers
+gencontainerplot () 
+{
+    LOG_FILE_NAME=$1
+    ACS_TEMP=$2
+
+    X_AXIS_POSITION=1
+
+    # remove the first plot commands in the template
+    cat ./gnuplot.template > $ACS_TEMP/gnuplot.tmp
+    cat $ACS_TEMP/gnuplot.tmp | sed -e /using/d > $ACS_TEMP/gnuplot.tmp
+
+    # insert plot commands in the template, for each component
+    i=1
+    Y_AXIS_POSITION=`findCpuColumnInSarOutput $ACS_TEMP/$LOG_FILE_NAME$i.orig.log`
+    debugPrint "cpu column for $LOG_FILE_NAME$i was determined to be: $Y_AXIS_POSITION"
+    if [ -z "$Y_AXIS_POSITION" ]
+	then
+	echo "FATAL ERROR: could not find cpu column in sar output!"
+	exit -1;
+    fi
+
+    if [ $NUM_COMPONENTS -ge 2 ]
+	then
+	echo -e "plot \"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines, "\\c \
+	    >> $ACS_TEMP/gnuplot.tmp
+    else
+	echo "plot \"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines" >> $ACS_TEMP/gnuplot.tmp
+    fi
+
+    i=2
+    while [ "$i" -le $NUM_COMPONENTS ]
+      do
+      Y_AXIS_POSITION=`findCpuColumnInSarOutput $ACS_TEMP/$LOG_FILE_NAME$i.orig.log`
+      debugPrint "cpu column for $LOG_FILE_NAME$i was determined to be: $Y_AXIS_POSITION"
+      if [ -z "$Y_AXIS_POSITION" ]
+	  then
+	  echo "FATAL ERROR: could not find cpu column in sar output!"
+	  exit -1;
+      fi
+      if [ "$i" -lt $NUM_COMPONENTS ]
+	  then
+	  echo -e "\"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines, "\\c \
+	      >> $ACS_TEMP/gnuplot.tmp
+      else
+	  echo " \"CHANGE_LOGFILE$i.log\" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title \"%user cpu: container$i\" with lines" \
+	      >> $ACS_TEMP/gnuplot.tmp
+      fi
+      i=`expr $i + 1`
+    done
+
+    # replace substitution keywords
+    cat $ACS_TEMP/gnuplot.tmp | sed -e s@CHANGE_PNG@../doc/$LOG_FILE_NAME@g | sed -e s@CHANGE_LOGFILE@$ACS_TEMP/$LOG_FILE_NAME@g \
+	| sed -e s@CHANGE_X_LOCATION@$X_AXIS_POSITION@g | sed -e s@CHANGE_Y_LOCATION@$Y_AXIS_POSITION@g \
+	| sed -e s@CHANGE_GRAPH_TITLE@$LOG_FILE_NAME@g > $ACS_TEMP/gplotFinal.tmp;
+
+    # plot the results
+    gnuplot $ACS_TEMP/gplotFinal.tmp;
+}
+
+genmemoryplot ()
+{
+    LOG_FILE_NAME=$1
+    ACS_TEMP=$2
+    PROCESS_NAME=$3
+
+# Dump gnuplot script
+cat <<HERE > $ACS_TEMP/gnuplot.tmp
+    set terminal png
+    set out "../doc/$LOG_FILE_NAME.png"
+    set title "Memory usage for process: $PROCESS_NAME"
+    set xlabel "Time"
+    set ylabel "Memory Allocated (kB)"
+    set xdata time
+    set timefmt "%s"
+    plot "$ACS_TEMP/$LOG_FILE_NAME" using 1:2 title "Total Memory Requirement" with lines, "$ACS_TEMP/$LOG_FILE_NAME" using 1:3 title "Resident Memory Size" with lines
+HERE
+
+    # plot the results
+    gnuplot $ACS_TEMP/gnuplot.tmp;
+}
+
+# definition of a function to plot (using gnuplot) the memory information for 1-n containers
+gencontainermemoryplot () 
+{
+    LOG_FILE_NAME=$1
+    ACS_TEMP=$2
+    NUM_COMPONENTS=$3
+
+# Dump gnuplot script
+cat <<HERE > $ACS_TEMP/gnuplot.tmp
+    set terminal png
+    set out "../doc/$LOG_FILE_NAME.png"
+    set title "Container memory usage"
+    set xlabel "Time"
+    set ylabel "Memory Allocated (kB)"
+    set xdata time
+    set timefmt "%s"
+HERE
+
+    i=1
+    if [ $NUM_COMPONENTS -ge 2 ]
+	then
+	echo -e "plot \"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:2 title \"Total Memory Requirement container: $i\" with lines, \"$ACS_TEMP/$LOG_FILE_NAME$i\" \
+	    using 1:3 title \"Resident Memory Size container: $i\" with lines, "\\c >> $ACS_TEMP/gnuplot.tmp
+    else
+	echo -e "plot \"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:2 title \"Total Memory Requirement container: $i\" with lines, \"$ACS_TEMP/$LOG_FILE_NAME$i\" \
+	    using 1:3 title \"Resident Memory Size container: $i\" with lines "\\c >> $ACS_TEMP/gnuplot.tmp
+    fi
+    i=2
+    while [ "$i" -le $NUM_COMPONENTS ]
+      do
+      if [ "$i" -lt $NUM_COMPONENTS ]
+	  then
+	  echo -e "\"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:2 title \"Total Memory Requirement container: $i\" with lines, \
+	      \"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:3 title \"Resident Memory Size\" with lines, "\\c >> $ACS_TEMP/gnuplot.tmp
+      else
+	  echo -e "\"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:2 title \"Total Memory Requirement container: $i\" with lines, \
+	      \"$ACS_TEMP/$LOG_FILE_NAME$i\" using 1:3 title \"Resident Memory Size container: $i\" with lines " >> $ACS_TEMP/gnuplot.tmp
+      fi
+      i=`expr $i + 1`
+    done
+    
+    # plot the results
+    gnuplot $ACS_TEMP/gnuplot.tmp;
+}
+
+# definition of a function to generate an html file summarizing the test results
+genhtml () 
+{
+    result=SUCCESS
+    resultFontColor=GREEN
+    if [ "$6" -ne "$7" ]
+	then
+	result=FAILURE
+	resultFontColor=RED
+    fi
+    cat ./index.html.template \
+	| sed -e s/CHANGE_RESULT_FONT_COLOR/$resultFontColor/g \
+	| sed -e s/CHANGE_RESULT/$result/g \
+	| sed -e s/CHANGE_NUMBER_OF_LOGS/$1/g \
+	| sed -e s/CHANGE_ACSHOST_NAME/$2/g \
+	| sed -e s/CHANGE_NUMBER_OF_SUPPLIERS/$3/g \
+	| sed -e s/CHANGE_PUBLISHER_HOST_NAME/$4/g \
+	| sed -e s/CHANGE_PUBLISHER_LANGUAGE/$5/g \
+	| sed -e s/CHANGE_TOTAL_EXPECTED/$6/g \
+	| sed -e s/CHANGE_TOTAL_RECEIVED/$7/g \
+	| sed -e s/CHANGE_DELAY/$8/g \
+	> ../doc/loggingPerformance.html;
+
+    if [ ! $PROFILE_JLOG ]
+	then
+	cat ../doc/loggingPerformance.html | sed -e /jlog/d > ../doc/loggingPerformance.html;
+    fi
+}
+
+# Definition of a function to set the minLogLevelLocal for a container.
+# Arguments: <containerName> <minLogLevelLocal>
+# If <minLogLevelLocal> is empty (i.e. when option -m has not been passed to this
+# script) this function will return immediately without action.
+setLogLevelLocal () 
+{
+    CONTAINER=$1
+    STDOUT_LEVEL=$2
+    # Note that maciContainerLogLevel does not work with python containers
+    if [ -n "$STDOUT_LEVEL" ] && [ X"$COMPONENT_LANGUAGE" != X"py" ] ; then
+	##echo maciContainerLogLevel: `maciContainerLogLevel $1 get default`
+	set -- `maciContainerLogLevel $1 get default | grep "minLogLevel "`
+	if [ -z $7 ] ; then
+	    # Python doesn't know "get default"
+	    echo " Warning: setting minLogLevel to 2"
+        elif [ $7 -ne 2 ] ; then
+	    echo " Warning: changing minLogLevel from $7 to 2"
+	fi
+	maciContainerLogLevel $CONTAINER set default 2 $STDOUT_LEVEL
+    fi
+}
+
+# Definition of a function to reset and start a chronometer. The number of the
+# chronometer is given as first argument. If there is a a second argument,
+# it is interpreted as an offset in time (i.e. number of seconds ago that this
+# timer should have started)
+startChrono () 
+{
+    if [ X"$2" = X ] ; then
+	eval START_CHRONO$1=`echo "puts [clock clicks -milliseconds]" | tclsh`
+    else
+	eval START_CHRONO$1=`echo "puts [expr {[clock clicks -milliseconds] - int($2 * 1000.)}]" | tclsh`
+    fi
+}
+
+# Definition of a function to read the time elapsed (seconds, float) since the
+# chronometer was last started. The number of the chronometer is given as
+# first (and only) argument.
+getChrono () 
+{
+    eval CHRONO=\$START_CHRONO$1
+    echo "puts [format %.3f [expr {([clock clicks -milliseconds] - $CHRONO) /1000.}]]" | tclsh
+}
+
+# Same as getChrono, except that the value returned is a (truncated) integer instead of float 
+getChronoInt () 
+{
+    eval CHRONO=\$START_CHRONO$1
+    echo "puts [expr {int(([clock clicks -milliseconds] - $CHRONO) /1000.)}]" | tclsh
+}
+
+# Definition of a function to sleep a number of ms
+milliSleep () 
+{
+    echo "after $1" | tclsh
+}
+
+# Definition of a function to get this hosts IP address 
+# (is already in acsstartupAcsPorts)
+#!#getIP () 
+#!#{
+#!#    echo "puts [lindex [fconfigure [socket -server dummy -myaddr [info hostname] 0] -sockname] 0]" | tclsh
+#!#}
+
+##########################################################################################
+# Script logic starts here...                                                            #
+##########################################################################################
+
+ORIGINAL_CMD_LINE=$@
+
+#
+# These will contain the command line arguments and/or options
+#
+HELP=
+DEBUG_MODE=
+PROFILE_JLOG=
+REMOTE_HOST=
+COMPONENT_LANGUAGE=cpp
+NO_REDIRECTION=
+CSVFILE=/dev/null
+NO_REPORT=
+
+#
+# Make sure that /usr/local/bin is on the PATH so that we find gnuplot there. 
+# NRI has a problem with some special settings used for ACS tests. 
+# This is what Moreno explained on 2012-06-01: 
+# "When NRI calls NRIDYN on te48 it forces to override the pecs env resourcing again the bash profile just retrieved from CVS
+#  This bash profile does not contain "/usr/local/bin" since it is not activated "
+# 
+if ! $(echo "$PATH" | tr ":" "\n" | grep -qx "/usr/local/bin") ; then PATH=$PATH:/usr/local/bin ; fi
+
+#
+# These options can be recognized (longopts comma-separated. Colon means 1 argument is required)
+#
+LONGOPTS=csv:,debug,help,jlog,language:,minLogLevelLocal:,noRedirection,publishingHost:,skipReport
+SHORTOPTS=c:,d,h,j,l:,m:,n,p:,s
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is does the real work and sets execution flags for this script, as appropriate
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -u -a -l $LONGOPTS $SHORTOPTS "$@" || printUsageAndExit;
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"` >& /dev/null ; 
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+  do
+  case "$1" in
+      --help)           HELP=true ;;
+      -h)               HELP=true ;;
+      --jlog)           PROFILE_JLOG=true ;;
+      -j)               PROFILE_JLOG=true ;;
+      --debug)          DEBUG_MODE=true ;;
+      -d)               DEBUG_MODE=true ;;
+      -p)               REMOTE_HOST=$2 ; shift ;;
+      --publishingHost) REMOTE_HOST=$2 ; shift ;;
+      -l)               COMPONENT_LANGUAGE=$2 ; shift ;;
+      --language)       COMPONENT_LANGUAGE=$2 ; shift ;;
+      -m)               export ACS_LOG_STDOUT=$2 ; shift ;;
+      --minLogLevelLocal)  export ACS_LOG_STDOUT=$2 ; shift ;;
+      -n)               NO_REDIRECTION=true ;;
+      --noRedirection) 	NO_REDIRECTION=true ;;
+      -s)               NO_REPORT=true ;;
+      --skipReport) 	NO_REPORT=true ;;
+      -c)               CSVFILE=$2 ; shift ;;
+      --csv)            CSVFILE=$2 ; shift ;;
+      --) break ;;
+  esac
+  shift
+done
+shift
+
+# must be unset! otherwise our custom export() function
+# that is defined below doesn't get used by the shell
+#
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$HELP" ] ; 
+then
+    printUsageAndExit
+fi
+
+# first, verify that the script was invoked w/ the proper number of command-line arguments 
+if [ $# -ne 3 ] ;
+then 
+    printUsageAndExit
+fi
+
+case "$COMPONENT_LANGUAGE" in
+    "cpp")	CONTAINER_GREP_STRING="maciContainer cppContainer"
+        COMPONENT_NAME=LOGSTRESSCPP;;
+    "java")  CONTAINER_GREP_STRING="containerName javaContainer"
+        COMPONENT_NAME=LOGSTRESSJAVA;;
+    "py") CONTAINER_GREP_STRING="ACSStartContainerPy pyContainer"
+        COMPONENT_NAME=LOGSTRESSPYTHON;;
+    *) printUsageAndExit;;
+esac
+
+debugPrint "Component type will be: $COMPONENT_LANGUAGE and name will be: $COMPONENT_NAME"
+
+NUM_LOGS=$1
+NUM_COMPONENTS=$2
+DELAY=$3
+
+# 'guesstimate' the amount of time we need to monitor the processes using the
+# unix sar command by a rough rule of thumb that 100000 logs require ~ 100 s.
+# But as we'll wait anyway till the producing component has finished, we
+# can cut this extra-wait time down
+debugPrint "NUM_LOGS was: $NUM_LOGS"
+EXTRA_WAIT_TIME=`expr \( $NUM_LOGS / 2000 \)`
+debugPrint "EXTRA_WAIT_TIME was calculated as: $EXTRA_WAIT_TIME"
+if [ "$EXTRA_WAIT_TIME" -le "30" ] ;
+then
+    EXTRA_WAIT_TIME=30
+fi
+
+debugPrint "Extra wait time will be: $EXTRA_WAIT_TIME"
+
+# start acs
+export ACS_TMP=`pwd`/tmp
+debugPrint "exported ACS_TMP: $ACS_TMP"
+
+rm -Rf $ACS_TMP
+debugPrint "deleted old ACS_TMP: $ACS_TMP"
+
+mkdir $ACS_TMP
+debugPrint "made new ACS_TMP: $ACS_TMP"
+
+export ACS_CDB=`pwd`
+debugPrint "exported ACS_CDB: $ACS_CDB"
+
+# start ACS
+acsutilTATPrologue -l
+# We need to update ACS_INSTANCE here before containers are started
+export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
+echo "started ACS_INSTANCE $ACS_INSTANCE"
+
+# define some string constants which will be used in several places
+ACS_LOG_SVC_LOG_FILE=acsLogSvc
+LOGGING_SERVICE_LOG_FILE=loggingService
+LOGGING_CLIENT_LOG_FILE=loggingClient
+LOGGING_NOTIFY_SERVICE_LOG_FILE=loggingNotifyService
+JLOG_LOG_FILE=jlog
+PUBLISHER_LOG_FILE=publisher
+
+# Set the property to not drop logs
+if [ "${COMPONENT_LANGUAGE}" = "java" ] ; then
+    #JAVA_OPTIONS="$JAVA_OPTIONS -Dalma.acs.logging.lossless=true -Djacorb.log.loggerFactory="
+    JAVA_OPTIONS="$JAVA_OPTIONS -Dalma.acs.logging.lossless=true"
+    export JAVA_OPTIONS
+fi
+# start the container(s)
+i=1
+while [ "$i" -le $NUM_COMPONENTS ]
+do
+  if [ -z "$REMOTE_HOST" ]
+      then
+      if [ $NO_REDIRECTION ] ; then
+		  echo " Starting Container $i without redirecting output to file"
+		  acsutilBlock -s -b "components activated." -x acsStartContainer -${COMPONENT_LANGUAGE} ${COMPONENT_LANGUAGE}Container$i
+      else
+		  echo " Starting Container $i"
+		  acsutilAwaitContainerStart -${COMPONENT_LANGUAGE} ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
+      fi
+      publisherPid[$i]=`ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v bash | grep -v grep | gawk '{ print $2 }'`
+      debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
+      sleep 5
+      setLogLevelLocal ${COMPONENT_LANGUAGE}Container$i $ACS_LOG_STDOUT
+      if [ ! $NO_REPORT ] ; 
+      then 
+    	  `sar -x ${publisherPid[${i}]} 1 9999 >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log` &
+    	  ./monitorProcess ${publisherPid[${i}]} 1 $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
+  	  fi
+  else
+      echo " Starting Remote Container $i"
+      export MANAGER_REFERENCE=corbaloc::`getIP`:`getManagerPort`/Manager
+      if [ $NO_REDIRECTION ] ;
+	  then 
+          # command is specified instead of login shell - make sure PATH settings are OK
+	  ssh -f $REMOTE_HOST ". ~/.bash_profile; acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" 
+      else
+          # command is specified instead of login shell - make sure PATH settings are OK
+	  ssh -f $REMOTE_HOST ". ~/.bash_profile; acsStartContainer -m $MANAGER_REFERENCE -$COMPONENT_LANGUAGE ${COMPONENT_LANGUAGE}Container$i" \
+	      >& $ACS_TMP/${COMPONENT_LANGUAGE}Container$i.log
+      fi
+      debugPrint "waiting for remote container $i to start..."
+      sleep 15
+      publisherPid[$i]=`ssh -f $REMOTE_HOST ps -ef | grep "${CONTAINER_GREP_STRING}$i"  | grep -v acsStartJava | grep -v bash \
+	  | grep -v grep | gawk '{ print $2 }'`
+      debugPrint "publisherPid$i is: ${publisherPid[${i}]}"
+      if [ ! $NO_REPORT ] ; 
+      then 
+      	ssh -f $REMOTE_HOST "sar -x ${publisherPid[${i}]} 1 9999" >& $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log &
+      	ssh -f $REMOTE_HOST ". ~/.bash_profile; remoteMonitorProcess ${publisherPid[${i}]} 1" >& $ACS_TMP/$PUBLISHER_LOG_FILE-memory$i &
+      fi
+  fi
+  i=`expr $i + 1`
+done
+
+# find the pids for all the processes that we're interested in monitoring
+# don't use the "-e" option in the call to ps, as we're only interested in
+# the processes started by *this* user.
+while [ -z "$logSvcPid" ] ; do
+    logSvcPid=`ps -f | grep acsLogSvc | grep -v grep | gawk '{ print $2 }'`
+done
+debugPrint "logSvcPid is: $logSvcPid"
+
+while [ -z "$loggingServicePid" ] ; do
+    loggingServicePid=`ps -f | grep loggingService | grep -v grep | gawk '{ print $2 }'`
+done
+debugPrint "loggingServicePid is: $loggingServicePid"
+
+while [ -z "$loggingNotifyServicePid" ] ; do
+	loggingNotifyServicePid=`ps -f | grep Notify_Service | grep -v grep | grep LoggingNotify | gawk '{ print $2 }'`
+done
+debugPrint "loggingNotifyServicePid is: $loggingNotifyServicePid"
+
+while [ -z "$loggingClientPid" ] ; do
+    loggingClientPid=`ps -f | grep loggingClient  | grep -v grep | gawk '{ print $2 }'`
+done
+# Should actually check here is loggingClientPid is a single number,
+# as there could be several (not terminated) loggingClients running
+debugPrint "loggingClientPid is: $loggingClientPid"
+
+# monitor the relevant processes using the unix 'sar' command
+if [ ! $NO_REPORT ] ; then
+    debugPrint "sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log"
+    sar -x $logSvcPid 1 9999 >& $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log &
+    ./monitorProcess $logSvcPid 1 $ACS_TMP/$ACS_LOG_SVC_LOG_FILE-memory &
+
+    debugPrint "sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log"
+    sar -x $loggingServicePid 1 9999 >& $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log &
+    ./monitorProcess $loggingServicePid 1 $ACS_TMP/$LOGGING_SERVICE_LOG_FILE-memory  &
+
+	debugPrint "sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log"
+	sar -x $loggingNotifyServicePid 1 9999 >& $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log &
+	./monitorProcess $loggingNotifyServicePid 1 $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE-memory  &
+
+    debugPrint "sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log"
+    sar -x $loggingClientPid 1 9999 >& $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log &
+    ./monitorProcess $loggingClientPid 1 $ACS_TMP/$LOGGING_CLIENT_LOG_FILE-memory  &
+fi
+
+if [ "$PROFILE_JLOG" ] ; then
+    echo " Starting jlog..."
+    jlog >& $ACS_TMP/jlogOutput.log &
+    while [ -z "$jlogPid" ]
+      do
+      jlogPid=`ps -ef | grep LogFrame  | grep -v grep | grep -v acsStartJava | gawk '{ print $2 }'`
+      ###jlogPid=`ps -ef | grep bin/jlog | grep -v grep | grep -v acsStartJava | gawk '{ print $2 }'`
+    done
+    debugPrint "jlogPid is: $jlogPid"
+    sleep 5
+    if [ ! $NO_REPORT ] ; then
+    	# start monitoring jlog process with 'sar' command
+    	sar -x $jlogPid 1 9999 >& $ACS_TMP/$JLOG_LOG_FILE.orig.log &
+    	./monitorProcess $jlogPid 1 $ACS_TMP/$JLOG_LOG_FILE-memory  &
+    fi
+fi
+
+# Reset the chronometer
+echo " Resetting/starting chronometer 1"
+startChrono 1
+
+# start up the client which will activate the components that will send the appropriate number of logs
+ClientJavaClass=LogPerformanceTestClient
+echo " Sending logs"
+acsStartJava -D NumLogs=$NUM_LOGS -D NumComponents=$NUM_COMPONENTS -D Delay=$DELAY -D ComponentName=$COMPONENT_NAME \
+    alma.perftest.client.$ClientJavaClass >& $ACS_TMP/clientOutput.log &
+
+# Start another timer as soon as the logs effectively start arriving, 
+# as there is some delay (25s) coded into ClientJavaClass
+sleep 25
+startChrono 2
+sleepUnit=13
+timeout=30
+# Note that on a fully loaded system, "milliSleep" may take a lot more
+# than 13 ms wall-clock time to execute. So we'll have to take
+# measures for that - see below this "while" loop.
+# Waiting till all_logs.xml gets filled seems not to be the proper way to
+# measure when the logs start to arrive, as this may take a while for
+# fully loaded CPU on a system with Real-Time extensions an not a lot
+# of RAM (=> swapping)...
+delay=0
+firstBatchOfLogs=0
+# Note: in this loop chrono3 is to measure the time between seeing the first logs
+# arrive, and the complete arrival of all logs. We reset it as close as possible
+# to gathering the test data used below. 
+# Also, we attempt to correct this timer for the execution time of grep|wc
+# (which can be substantial on a heavily loaded machine - and that'll be the
+# case as soon as we spit out logs at full speed)
+while [ $delay -lt $timeout ] ; do
+    milliSleep $sleepUnit
+    startChrono 3
+    firstBatchOfLogs=`grep "msg: " $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/all_logs.xml | wc -l`
+    if [ $firstBatchOfLogs -ne 0 ] ; then
+	break
+    else
+	delay=`getChronoInt 2`
+    	debugPrint "waiting for all_logs.xml since ${delay}s"
+    fi
+done
+ 
+# Restart timer, correcting it for execution time of loop (particularly "grep")
+startChrono 2 `getChrono 3`/2.
+
+debugPrint "firstBatchOfLogs = $firstBatchOfLogs"
+# We can use offset2 as the value to subtract from chrono2 to
+# measure the time from the reception of the 1st log.
+# In case we got more than 1 log already, we'll have to
+# extrapolate the time back to the 1st log (done later).
+# However, if we timed-out waiting on all_logs.xml being filled,
+# it is likely due to an overloaded system. In this case, we don't
+# have a clear trigger for our time-measurement. So we'll have to
+# assume a default offset in this case, or signal that the measurement
+# is not reliable.
+
+if [ $delay -ge $timeout ] ; then
+    if [ $firstBatchOfLogs -ne 0 ] ; then
+    	debugPrint "Something is wrong: we needed more than ${timeout}s to see the first log in all_logs.xml"
+    else
+    	debugPrint "Something is very wrong: after ${timeout}s still no logs in all_logs.xml"
+    fi
+fi
+
+# Wait until the most recently started background process (acsStartJava ... LogPerformanceTestClient) 
+# has completed. Note that LogPerformanceTestClient polls the components to see when they are done
+# sending the logs, and when they are, this client will terminate.
+echo " Waiting for all logs to be sent..."
+wait $!
+##echo " Resetting/starting chronometer 4"
+startChrono 4
+
+# Tell how long it took to send all these logs
+chrono1=`getChrono 1`
+chrono2Snap=`getChrono 2`
+# chrono2 is the time it took to between getting the first batch of logs 
+# ($firstBatchOfLogs) into all_logs.xml and the sending of all logs. We will
+# need to extrapolate to get estimate the point in time the very first log arrived,
+# and to be able to do that we have to wait till we have them all in.
+if [ $delay -ge $timeout ] ; then
+    echo " Needed ${chrono1}s to send all logs / ${chrono2Snap}s after timing out on all_logs.xml (see above)"
+else
+    echo " Needed ${chrono1}s to send all logs / ${chrono2Snap}s after first $firstBatchOfLogs logs came to all_logs.xml"
+fi
+
+# sleep a bit longer to allow things to 'settle'
+echo " Sleeping (at most) $EXTRA_WAIT_TIME seconds to allow logs to be processed..."
+totalLogsExpected=`expr $NUM_LOGS \* $NUM_COMPONENTS`
+lastMsgId=`expr $NUM_LOGS - 1`
+delay=0
+# First look for the last log(s), then check later if no logs are lost
+while [ $delay -le $EXTRA_WAIT_TIME ] ; do
+    nrLastLogs=`grep "msg: $lastMsgId]" $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/all_logs.xml | wc -l`
+    # Note that a grep|wc on all_logs.xml can take its time if lots of logs are sent,
+    # and that duration is anyway proportional to the size of all_logs.xml.
+    # So don't assume that loop duration is determined by the "sleep" further on.
+    if [ "$nrLastLogs" -eq " $NUM_COMPONENTS" ] ; then
+	chrono2=`getChrono 2`
+	chrono4=`getChrono 4`
+	debugPrint "received last log of all components, no need to wait any longer"
+	break
+    fi
+    delay=`getChronoInt 4`
+    #!#debugPrint "waiting since $delay s"
+    milliSleep 157
+done
+
+if [ $delay -le $EXTRA_WAIT_TIME ] ; then
+    echo " Last log digested within ${chrono4}s after generating process stopped."
+else
+    chrono4=`getChrono 4`
+    echo " Log digestion timed out after ${chrono4}s after last log was sent."
+fi
+
+# Calculate now how long it took to receive all logs, starting from the
+# first; remember that we only know at what point in time arrived the
+# first batch of logs (firstBatchOfLogs).
+if [ $firstBatchOfLogs -lt $totalLogsExpected ]
+then
+    timeForAllLogs=$(printf %.3f `echo "$chrono2 * $totalLogsExpected / ($totalLogsExpected - $firstBatchOfLogs)" | bc -l`)
+else
+    timeForAllLogs=$chrono2
+fi
+debugPrint " Time to receive remaining logs (after $firstBatchOfLogs logs) = ${chrono2}s / all logs = ${timeForAllLogs}s"
+
+# verify the proper number of logs were received
+startChrono 4
+totalLogsReceivedByLoggingClient=`grep "msg: " $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/all_logs.xml | wc -l`
+chrono4=`getChrono 4`
+# Calculate the system performance as the number of logs/s processed by the
+# above grep|wc
+sysPerformance=$(printf %0.f `echo "$totalLogsExpected / $chrono4" | bc -l`)
+if [ $totalLogsReceivedByLoggingClient -ne $totalLogsExpected ]
+then
+    echo " FAILURE: received $totalLogsReceivedByLoggingClient logs instead of expected $totalLogsExpected."
+else
+    echo " SUCCESS - all logs accounted for."
+fi
+
+# stop the monitoring
+echo " Stopping the monitoring"
+echo ""
+echo " NOTE: some 'process terminated' messages are normal here..."
+echo ""
+killall -q monitorProcess >& $ACS_TMP/killallLocalMonitorProcess.log
+killall -q sar >& $ACS_TMP/killallLocalSar.log
+if [ ! -z "$REMOTE_HOST" ] 
+then
+    ssh -f $REMOTE_HOST ". ~/.bash_profile; killall -q remoteMonitorProcess" >& $ACS_TMP/killallMonitorProcess.log
+    ssh -f $REMOTE_HOST ". ~/.bash_profile; killall -q sar >& /dev/null" >& $ACS_TMP/killallSar.log
+fi
+echo ""
+
+# stop the loggingClient
+#!# The loggingClient is stopped by acsutilTATEpilogue
+#!#echo " Stopping the loggingClient"
+#!#kill -9 $loggingClientPid
+
+# stop jlog
+if [ "$PROFILE_JLOG" ] ;
+then
+    echo " Stopping jlog"
+    kill -9 $jlogPid
+fi
+
+# append timing data to a CSV file, for import into Excel
+echo "$COMPONENT_LANGUAGE,$NUM_LOGS,$totalLogsReceivedByLoggingClient,$ACS_LOG_STDOUT,$DELAY,$sysPerformance,$chrono1,$chrono2,$chrono4" >> $CSVFILE
+
+# stop the container(s)
+i=1
+while [ "$i" -le $NUM_COMPONENTS ]
+do
+  if [ -z "$REMOTE_HOST" ]
+      then
+      echo " Stopping Container $i"
+      acsStopContainer ${COMPONENT_LANGUAGE}Container$i >& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
+  else
+      echo " Stopping Remote Container $i"
+      ssh -f $REMOTE_HOST ". ~/.bash_profile; acsStopContainer ${COMPONENT_LANGUAGE}Container$i" \
+	  >& $ACS_TMP/Stop${COMPONENT_LANGUAGE}Container$i.log
+      debugPrint "waiting for remote container $i to stop..."
+      sleep 15
+  fi
+  i=`expr $i + 1`
+done
+
+# stop acs
+echo " Stopping ACS"
+#!#acsStop >& $ACS_TMP/acsStop.log
+acsutilTATEpilogue
+
+
+# prep the log files
+if [ ! $NO_REPORT ] ;
+then
+echo " Preparing the sar log files"
+	cat $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
+    	| grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$ACS_LOG_SVC_LOG_FILE.log 
+	cat $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
+ 	   | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_SERVICE_LOG_FILE.log
+	cat $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
+  	  | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_NOTIFY_SERVICE_LOG_FILE.log
+	cat $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
+ 	   | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$LOGGING_CLIENT_LOG_FILE.log
+
+	i=1
+	while [ "$i" -le $NUM_COMPONENTS ]
+	do
+	  cat $ACS_TMP/$PUBLISHER_LOG_FILE$i.orig.log | grep -v -i average | grep -v -i linux \
+	      | grep -v -i pid | sed -e /^[^0-9]/d > $ACS_TMP/$PUBLISHER_LOG_FILE$i.log
+  
+	  i=`expr $i + 1`
+	done
+
+	if [ "$PROFILE_JLOG" ] ; then
+	    cat $ACS_TMP/$JLOG_LOG_FILE.orig.log | grep -v -i average | grep -v -i linux \
+		| grep -v -i pid > $ACS_TMP/$JLOG_LOG_FILE.log
+	fi
+
+	# plot the data from the prepped log files
+	echo " Generating the plots"
+	genplot $ACS_LOG_SVC_LOG_FILE $ACS_TMP
+	genmemoryplot $ACS_LOG_SVC_LOG_FILE-memory $ACS_TMP acsLogSvc
+	genplot $LOGGING_SERVICE_LOG_FILE $ACS_TMP 
+	genmemoryplot $LOGGING_SERVICE_LOG_FILE-memory $ACS_TMP loggingService
+	genplot $LOGGING_NOTIFY_SERVICE_LOG_FILE $ACS_TMP
+	genmemoryplot $LOGGING_NOTIFY_SERVICE_LOG_FILE-memory $ACS_TMP
+	genplot $LOGGING_CLIENT_LOG_FILE $ACS_TMP
+	genmemoryplot $LOGGING_CLIENT_LOG_FILE-memory $ACS_TMP loggingClient
+	gencontainerplot $PUBLISHER_LOG_FILE $ACS_TMP
+	gencontainermemoryplot $PUBLISHER_LOG_FILE-memory $ACS_TMP $NUM_COMPONENTS 
+
+	if [ "$PROFILE_JLOG" ] ;
+	    then
+	    genplot $JLOG_LOG_FILE $ACS_TMP
+	    genmemoryplot $JLOG_LOG_FILE-memory $ACS_TMP jlog
+	fi
+fi
+
+# generate the html page summarizing the test results
+echo " Generating the html file"
+LOCALHOSTNAME=`hostname -f` 
+if [ -z "$REMOTE_HOST" ]
+    then
+    REMOTE_HOST=$LOCALHOSTNAME
+fi
+genhtml $NUM_LOGS $LOCALHOSTNAME $NUM_COMPONENTS $REMOTE_HOST $COMPONENT_LANGUAGE $totalLogsExpected $totalLogsReceivedByLoggingClient $DELAY

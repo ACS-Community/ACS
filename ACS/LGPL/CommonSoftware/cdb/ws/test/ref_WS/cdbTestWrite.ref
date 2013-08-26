@@ -1,0 +1,16 @@
+1 -  --endorsed --clientVM -- com.cosylab.cdb.DALWrite MACI/Containers/OnDemandContainer LoggingConfig/minLogLevel 1 -d corbaloc::xxxxxxx:yyyy/CDB
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: com.cosylab.cdb.DALWrite MACI/Containers/OnDemandContainer LoggingConfig/minLogLevel 1 -d corbaloc::xxxxxxx:yyyy/CDB
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
+1 - Reading 'MACI/Containers/OnDemandContainer/LoggingConfig/minLogLevel'='2'
+1 - Setting 'MACI/Containers/OnDemandContainer/LoggingConfig/minLogLevel'='1'
+1 - 5d4
+1 - 11,12c10,14
+1 - < 	<LoggingConfig centralizedLogger="Log" minLogLevel="1" dispatchPacketSize="10" immediateDispatchLevel="99" />
+1 - < </Container>
+1 - \ No newline at end of file
+1 - ---
+1 - > 	<LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="10" immediateDispatchLevel="99" />
+1 - > </Container>
+1 - > 
+1 - > 
+1 - > 

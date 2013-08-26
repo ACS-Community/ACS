@@ -1,0 +1,29 @@
+--- tmp/xml-xerces/java/src/org/apache/xerces/xpointer/XPointerHandler.java	2006-11-23 00:36:57.000000000 +0100
++++ xml-xerces/java/src/org/apache/xerces/xpointer/XPointerHandler.java	2007-08-14 15:07:22.000000000 +0200
+@@ -1055,7 +1055,8 @@
+ 
+             return;
+         }
+-        super.startElement(element, attributes, augs);
++
++     //   super.startElement(element, attributes, augs);
+     }
+ 
+     /**
+@@ -1144,7 +1145,8 @@
+             // no need to restore restoreBaseURI() for xml:base and xml:lang processing
+             return;
+         }
+-        super.endElement(element, augs);
++       
++       // super.endElement(element, augs);
+     }
+ 
+     /**
+@@ -1249,4 +1251,4 @@
+         super.setProperty(propertyId, value);
+     }
+ 
+-}
+\ No newline at end of file
++}

@@ -1,0 +1,153 @@
+TEST01: UNIX application development
+VLTMAKE/test/mod/ws/src
+
+Cleaning up . . . . . . . .
+ . . . clean done
+/usr/local/bin/make MAKEDIR=VLTMAKE/src -f VLTMAKE/src/vltMakefile.all --no-print-directory do_all
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestCCSusage.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestClibrary.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestProcedure1.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestProcedure2.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:218: ../object/vltMakeTestUSER_CFLAG.d: No such file or directory
+VLTMAKE/src/vltMakefile.all:224: ../object/vltMakeTestUSER_CFLAG.dx: No such file or directory
+VLTMAKE/src/vltMakefile.all:224: ../object/vltMakeTestCCSusage.dx: No such file or directory
+VLTMAKE/src/vltMakefile.all:224: ../object/vltMakeTestClibrary.dx: No such file or directory
+VLTMAKE/src/vltMakefile.all:224: ../object/vltMakeTestClibraryLocal.dx: No such file or directory
+VLTMAKE/src/vltMakefile.all:233: ../object/vltMakeTest.da: No such file or directory
+VLTMAKE/src/vltMakefile.all:233: ../object/vltMakeTestLocal.da: No such file or directory
+VLTMAKE/src/vltMakefile.all:242: ../object/vltMakeTestScript.ds: No such file or directory
+VLTMAKE/src/vltMakefile.all:242: ../object/vltMakeTestScriptLocal.ds: No such file or directory
+VLTMAKE/src/vltMakefile.all:251: ../object/vltMakeTestTCLScript.dxt: No such file or directory
+VLTMAKE/src/vltMakefile.all:260: ../object/vltMakeTestTCLlib.dat: No such file or directory
+== Dependencies: ../object/vltMakeTestTCLlib.dat
+== Dependencies: ../object/vltMakeTestTCLScript.dxt
+== Dependencies: ../object/vltMakeTestScriptLocal.ds
+== Dependencies: ../object/vltMakeTestScript.ds
+== Dependencies: ../object/vltMakeTestLocal.da
+== Dependencies: ../object/vltMakeTest.da
+== Dependencies: ../object/vltMakeTestClibraryLocal.dx
+== Dependencies: ../object/vltMakeTestClibrary.dx
+== Dependencies: ../object/vltMakeTestCCSusage.dx
+== Dependencies: ../object/vltMakeTestUSER_CFLAG.dx
+== Dependencies: ../object/vltMakeTestUSER_CFLAG.d
+== Dependencies: ../object/vltMakeTestProcedure2.d
+== Dependencies: ../object/vltMakeTestProcedure1.d
+== Dependencies: ../object/vltMakeTestClibrary.d
+== Dependencies: ../object/vltMakeTestCCSusage.d
+== C Compiling: vltMakeTestProcedure1.c
+== C Compiling: vltMakeTestProcedure2.c
+== Making library:  ../lib/libvltMakeTest.a
+
+== Making library:  ../lib/libvltMakeTestLocal.a
+
+== C Compiling: vltMakeTestUSER_CFLAG.c
+== Building executable: ../bin/vltMakeTestUSER_CFLAG
+
+== C Compiling: vltMakeTestCCSusage.c
+== Building executable: ../bin/vltMakeTestCCSusage
+RtapUnlockExe ../bin/vltMakeTestCCSusage
+RTAP is implied by CCS. You can remove it from vltMakeTestCCSusage_LIB
+
+== C Compiling: vltMakeTestClibrary.c
+== Building executable: ../bin/vltMakeTestClibrary
+
+== Building executable: ../bin/vltMakeTestClibraryLocal
+
+== Making script: ../bin/vltMakeTestScript
+== Making script: ../bin/vltMakeTestScriptLocal
+== Making TCL script: ../bin/vltMakeTestTCLScript
+== Making TCL library: ../lib/libvltMakeTestTCLlib.tcl
+ . . . 'all' done
+
+man-pages...
+....section 1:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+....section 2:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+....section 3:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+....section 4:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+....section 5:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+....section 6:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+....section 7:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+....section 8:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+....section n:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+  local pages:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+ ASCII to MIF:  vltMakeTestUSER_CFLAG.c
+                vltMakeTestCCSusage.c
+                vltMakeTestClibrary.c
+              
+ . . . man page(s) done
+
+Installing into target: INTROOT
+
+.....binaries:  vltMakeTestUSER_CFLAG
+                vltMakeTestCCSusage
+                vltMakeTestClibrary
+              
+......scripts:  vltMakeTestScript
+              
+.....includes:  vltMakeTest.h
+                ERROR files
+              
+....libraries:  vltMakeTest
+              
+...TCLscripts:  vltMakeTestTCLScript
+              
+.TCLlibraries:  vltMakeTestTCLlib
+              
+....man-pages:  section 1
+                section 2
+                section 3
+                section 4
+                section 5
+                section 6
+                section 7
+                section 8
+                section n
+              
+
+        ---> installation recorded in INTROOT/vltMakeInstall.log
+
+
+ Copying source files 
+        from: VLTMAKE/test/mod/ws/src
+        to: INTROOT/src/mod-ws
+                                               . . . done 
+
+ . . . installation done
+vltMakeTestClibrary - PASS
+vltMakeTestClibrary - PASS
+vltMakeTestTCLScript - PASS
+vltMakeTestCCSusage - PASS
+vltMakeTestScript - PASS
+vltMakeTestScriptLocal - PASS
+vltMakeTestUSER_CFLAG - PASS
+ . . . execute done

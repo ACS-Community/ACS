@@ -1,0 +1,39 @@
+1 - Starting Container...
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+1 - Resolving reference: 'corbaloc::---:----/Manager'
+1 - Manager reference narrowed.
+1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
+1 - Configuration information for container 'bilboContainer' not available.
+1 - Starting as dynamic container.
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+2 - Starting Container...
+2 - Retrieving CDB reference from Manager using bootstrap ORB
+2 - Resolving reference: 'corbaloc::---:----/Manager'
+2 - Manager reference narrowed.
+2 - DAO:'MACI' Unable to return field: 'Containers/archiveContainer/LoggingConfig/dispatchPacketSize'
+2 - Configuration information for container 'archiveContainer' not available.
+2 - Starting as dynamic container.
+2 - ContainerStatusMsg: Startup begins
+2 - ContainerStatusMsg: ORB initialization begins
+2 - ContainerStatusMsg: ORB initialization ends
+2 - ContainerStatusMsg: Manager access initialization begins
+2 - ContainerStatusMsg: Manager access initialization ends
+2 - ContainerStatusMsg: Startup ends
+2 - ContainerStatusMsg: Automatic component loading begins
+2 - ContainerStatusMsg: Automatic component loading ends
+2 - ContainerStatusMsg: Ready
+1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1
+1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1
+1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1
+1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1
+1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1
+1 - /----/libbaci.so
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'bilboContainer' exited with code: 0.

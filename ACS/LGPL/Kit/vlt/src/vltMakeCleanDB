@@ -1,0 +1,67 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeCleanDB,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  02/03/95  created
+# gfilippi  04/07/95  use rm $i* to remove names containing blanks
+#
+
+#************************************************************************
+#   NAME
+#   vltMakeCleanDB - clean up ../DB
+# 
+#   SYNOPSIS
+#
+#   vltMakeCleanDB
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to delete Point Config Files created
+#   by make db.
+#   It is not intended to be used as a standalone command.
+#
+#   It is done using a script because I do not want to delete the 
+#   ../DB/CVS directory.
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile
+#
+#   BUGS    
+#   
+#----------------------------------------------------------------------
+
+if [ $# -ne 0 ]
+then
+    echo ""
+    echo "ERROR: vltMakeCleanDB does not accept parameters"
+    echo ""
+    exit 1
+fi
+
+if [ -d ../DB ]
+then 
+    for i in `ls ../DB`
+    do 
+        if [ "$i" != "CVS" ]
+        then 
+            # the "*" is needed because RTAP point files can contain
+            # blanks characters. For instance: "user config" is 
+            # handled by the for loop as two separate words.
+            echo "    remove ../DB/${i}*"
+            rm -rf ../DB/${i}*
+        fi
+    done
+fi
+
+#
+# ___oOo___

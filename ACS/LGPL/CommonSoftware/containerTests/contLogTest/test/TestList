@@ -1,0 +1,480 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList,v 1.19 2008/11/19 15:29:25 eallaert Exp $"
+#
+# TestList
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# eallaert  2007-11-02  Initial version
+# agrimstr  2007-11-14  Added tests for Python
+# eallaert  2007-12-13  Added several test (without CDB file, etc)
+#
+
+# NOTE: if running individual tests (e.g. "tat -v -nc 1 3 ..."), the following
+# SOURCE and PROLOGUE directives are not taken into account. In this case,
+# run "tat makeEnv" first (and "tat cleanEnv" after) , or give the command 
+# "export ACS_CDB=`pwd`" from this directory, and then start up ACS "by hand". 
+SOURCE setupTatEnvironment.tcl
+PROLOGUE acsutilTATPrologue --noloadifr -l
+
+########################################################
+# CDB CHECK
+########################################################
+# Run the cdbChecker.
+# We expect an error for the missing "myDefaultJavaTestContainer" CDB config data,
+# because the tests (currently still) work with the fact that this container is not configured at all. 
+0 PROLOGUE "tclsh generateSed.tcl cdbCheck" \
+    cdbCheck cdbChecker
+
+########################################################
+# JAVA-CONTAINER WITHOUT CDB FILE
+########################################################
+# Start 'myDefaultJavaTestContainer' without log level env vars or CDB config available.
+# Verify "minLogLevel=2" etc using output of maciContainerLogLevel command.
+1 SOURCE prepareHardcodedLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java myDefaultJavaTestContainer" \
+    javaHardcodedLevelsNoCdb2 "maciContainerLogLevel myDefaultJavaTestContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up.
+2   javaHardcodedLevelsNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG1 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultJavaTestContainer"
+
+
+# As there is no CDB file for this container, we must skip the test for the container
+# default log-levels as set in the CDB. 
+
+# NOTE1: acsutilAwaitContainerStart will look for particular messages to stdout
+#   sent by the Container; if we would set here within prepareEnvLevels.tcl the
+#   env var ACS_LOG_STDOUT to a high value, these msgs to stdout are not
+#   produced, so acsutilAwaitContainerStart would time out.
+#   Workaround: use high levels in xml file, lower ones in env vars
+#   Update HSO: Since ACS 7.0.2 we print "ContainerStatusMsg" to stdout, 
+#   so that the start scripts see this output regardless of logging settings.
+#   Therefore the current workaround is not necessary any more.
+# NOTE2: similar for acsStopContainer.
+# NOTE3: the file $ACSROOT/bin/acsstartupConstants.sh sets the "script debugging
+#   var ACS_DEBUG_PRIORITY to 4, and acsStartJava will send extra debug messages
+#   to stdout if ACS_LOG_STDOUT exists and is less than ACS_DEBUG_PRIORITY.
+#   Be aware that this magic level 4 impacts the reference file more than just
+#   that number ...
+5 SOURCE prepareEnvLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java myDefaultJavaTestContainer" \
+    javaEnvironmentLevelsNoCdb2 "maciContainerLogLevel myDefaultJavaTestContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+6   javaEnvironmentLevelsNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG1 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultJavaTestContainer"
+
+
+7 SOURCE prepareDynLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java myDefaultJavaTestContainer" \
+	javaDynamicLevelsNoCdb2 "maciContainerLogLevel myDefaultJavaTestContainer set default 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel myDefaultJavaTestContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+8	javaDynamicLevelsNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG1 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+	EPILOGUE "acsStopContainer myDefaultJavaTestContainer"
+
+# Same as test 7/8, but now setting the levels of a specific logger which is not yet
+# defined when this dynamic setting is done.
+9 SOURCE prepareDynLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java myDefaultJavaTestContainer" \
+    javaDynamicLevelsUnknownLoggerNoCdb2 "maciContainerLogLevel myDefaultJavaTestContainer set TESTLOG1 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel myDefaultJavaTestContainer get TESTLOG1"
+# Execute always together with previous test - it assumes proper container is already/still up
+10  javaDynamicLevelsUnknownLoggerNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG1 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultJavaTestContainer"
+
+########################################################
+# JAVA-CONTAINER WITH CDB FILE, NO NAMED LOGGERS
+########################################################
+11 SOURCE prepareHardcodedLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+    javaHardcodedLevels2 "maciContainerLogLevel frodoContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+12  javaHardcodedLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer frodoContainer"
+
+
+13 SOURCE prepareCdbLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+    javaCdbLevels2 "maciContainerLogLevel frodoContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+14  javaCdbLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer frodoContainer"
+
+# NOTE1: acsutilAwaitContainerStart will look for particular messages to stdout
+#   sent by the Container; if we would set here within prepareEnvLevels.tcl the
+#   env var ACS_LOG_STDOUT to a high value, these msgs to stdout are not
+#   produced, so acsutilAwaitContainerStart would time out.
+#   Workaround: use high levels in xml file, lower ones in env vars
+# NOTE2: similar for acsStopContainer.
+# NOTE3: the file $ACSROOT/bin/acsstartupConstants.sh sets the "script debugging
+#   var ACS_DEBUG_PRIORITY to 4, and acsStartJava will send extra debug messages
+#   to stdout if ACS_LOG_STDOUT exists and is less than ACS_DEBUG_PRIORITY.
+#   Be aware that this magic level 4 impacts the reference file more than just
+#   that number ...
+15 SOURCE prepareEnvLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+    javaEnvironmentLevels2 "maciContainerLogLevel frodoContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+16  javaEnvironmentLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer frodoContainer"
+
+
+17 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+    javaDynamicLevels2 "maciContainerLogLevel frodoContainer set default 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel frodoContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+18  javaDynamicLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer frodoContainer"
+
+
+# Same as test 17/18, but now setting the levels of a specific logger which is not yet
+# defined when this dynamic setting is done.
+19 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+    javaDynamicLevelsUnknownLogger2 "maciContainerLogLevel frodoContainer set TESTLOG2 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel frodoContainer get TESTLOG2"
+# Execute always together with previous test - it assumes proper container is already/still up
+20  javaDynamicLevelsUnknownLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer frodoContainer"
+
+########################################################
+# JAVA-CONTAINER WITH CDB FILE AND NAMED LOGGERS
+########################################################
+# Fails, see http://jira.alma.cl/browse/COMP-1928
+21 SOURCE prepareHardcodedLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+    javaHardcodedLevelsNamedLogger2 "maciContainerLogLevel frodoContainer get TESTLOG2"
+# Execute always together with previous test - it assumes proper container is already/still up
+22  javaHardcodedLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer frodoContainer"
+
+
+# Fails, see http://jira.alma.cl/browse/COMP-1928
+23 SOURCE prepareCdbLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+    javaCdbLevelsNamedLogger2 "maciContainerLogLevel frodoContainer get TESTLOG2"
+# Execute always together with previous test - it assumes proper container is already/still up
+# Fails, see http://jira.alma.cl/browse/COMP-1928
+24  javaCdbLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer frodoContainer"
+
+
+# NOTE1: acsutilAwaitContainerStart will look for particular messages to stdout
+#   sent by the Container; if we would set here within prepareEnvLevels.tcl the
+#   env var ACS_LOG_STDOUT to a high value, these msgs to stdout are not
+#   produced, so acsutilAwaitContainerStart would time out.
+#   Workaround: use high levels in xml file, lower ones in env vars
+# NOTE2: similar for acsStopContainer.
+# NOTE3: the file $ACSROOT/bin/acsstartupConstants.sh sets the "script debugging
+#   var ACS_DEBUG_PRIORITY to 4, and acsStartJava will send extra debug messages
+#   to stdout if ACS_LOG_STDOUT exists and is less than ACS_DEBUG_PRIORITY.
+#   Be aware that this magic level 4 impacts the reference file more than just
+#   that number ...
+# Fails, see http://jira.alma.cl/browse/COMP-1928
+25 SOURCE prepareEnvLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+    javaEnvironmentLevelsNamedLogger2 "maciContainerLogLevel frodoContainer get TESTLOG2"
+# Execute always together with previous test - it assumes proper container is already/still up
+26  javaEnvironmentLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer frodoContainer"
+
+
+# Fails, see http://jira.alma.cl/browse/COMP-1928
+27 SOURCE prepareDynLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -java frodoContainer" \
+    javaDynamicLevelsNamedLogger2 "maciContainerLogLevel frodoContainer set TESTLOG2 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel frodoContainer get TESTLOG2"
+# Execute always together with previous test - it assumes proper container is already/still up
+28  javaDynamicLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG2 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer frodoContainer"
+
+########################################################
+# CPP-CONTAINER WITHOUT CDB FILE
+########################################################
+# 32,36,38,40 will need a new ref-file as soon as sending logs at level 99 is causing exception. 
+31 SOURCE prepareHardcodedLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp myDefaultCppTestContainer" \
+    cppHardcodedLevelsNoCdb2 "maciContainerLogLevel myDefaultCppTestContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+32  cppHardcodedLevelsNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG3 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultCppTestContainer"
+
+
+# As there is no CDB file for this container, we must skip the test for the container
+# default log-levels as set in the CDB. 
+
+35 SOURCE prepareEnvLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp myDefaultCppTestContainer" \
+    cppEnvironmentLevelsNoCdb2 "maciContainerLogLevel myDefaultCppTestContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+36  cppEnvironmentLevelsNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG3 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultCppTestContainer"
+
+
+37 SOURCE prepareDynLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp myDefaultCppTestContainer" \
+    cppDynamicLevelsNoCdb2 "maciContainerLogLevel myDefaultCppTestContainer set default 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel myDefaultCppTestContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+38  cppDynamicLevelsNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG3 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultCppTestContainer"
+
+# Same as test 37/38, but now setting the levels of a specific logger which is not yet
+# defined when this dynamic setting is done.
+39 SOURCE prepareDynLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp myDefaultCppTestContainer" \
+    cppDynamicLevelsUnknownLoggerNoCdb2 "maciContainerLogLevel myDefaultCppTestContainer set TESTLOG3 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel myDefaultCppTestContainer get TESTLOG3"
+# Execute always together with previous test - it assumes proper container is already/still up
+40  cppDynamicLevelsUnknownLoggerNoCdb "maciContainerLogLevel myDefaultCppTestContainer set TESTLOG3 8 9" \
+                      "@SLEEP 2" \
+                      "acsStartJava -D TEST_COMP_NAMES=TESTLOG3 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultCppTestContainer"
+
+########################################################
+# CPP-CONTAINER WITH CDB FILE, NO NAMED LOGGERS
+########################################################
+# 42, 44, 46, 48, 50 will need a new ref-file as soon as sending logs at level 99 is causing exception. 
+41 SOURCE prepareHardcodedLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+    cppHardcodedLevels2 "maciContainerLogLevel bilboContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+42  cppHardcodedLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer bilboContainer"
+
+
+43 SOURCE prepareCdbLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+    cppCdbLevels2 "maciContainerLogLevel bilboContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+44  cppCdbLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer bilboContainer"
+
+
+45 SOURCE prepareEnvLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+    cppEnvironmentLevels2 "maciContainerLogLevel bilboContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+46  cppEnvironmentLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer bilboContainer"
+
+
+47 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+    cppDynamicLevels2 "maciContainerLogLevel bilboContainer set default 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel bilboContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+48  cppDynamicLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer bilboContainer"
+
+
+# Same as test 47/48, but now setting the levels of a specific logger which is not yet
+# defined when this dynamic setting is done.
+49 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+    cppDynamicLevelsUnknownLogger2 "maciContainerLogLevel bilboContainer set TESTLOG4 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel bilboContainer get TESTLOG4"
+# Execute always together with previous test - it assumes proper container is already/still up
+50  cppDynamicLevelsUnknownLogger "maciContainerLogLevel bilboContainer set TESTLOG4 8 9" \
+                      "@SLEEP 2" \
+                      "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer bilboContainer"
+
+########################################################
+# CPP-CONTAINER WITH CDB FILE AND NAMED LOGGERS
+########################################################
+# 52, 54, 56, 58 will need a new ref-file as soon as sending logs at level 99 is causing exception. 
+51 SOURCE prepareHardcodedLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+    cppHardcodedLevelsNamedLogger2 "maciContainerLogLevel bilboContainer get TESTLOG4"
+# Execute always together with previous test - it assumes proper container is already/still up
+52  cppHardcodedLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer bilboContainer"
+
+
+53 SOURCE prepareCdbLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+    cppCdbLevelsNamedLogger2 "maciContainerLogLevel bilboContainer get TESTLOG4"
+# Execute always together with previous test - it assumes proper container is already/still up
+54  cppCdbLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer bilboContainer"
+
+
+55 SOURCE prepareEnvLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+    cppEnvironmentLevelsNamedLogger2 "maciContainerLogLevel bilboContainer get TESTLOG4"
+# Execute always together with previous test - it assumes proper container is already/still up
+56  cppEnvironmentLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer bilboContainer"
+
+57 SOURCE prepareDynLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -cpp bilboContainer" \
+    cppDynamicLevelsNamedLogger2 "maciContainerLogLevel bilboContainer set TESTLOG4 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel bilboContainer get TESTLOG4"
+# Execute always together with previous test - it assumes proper container is already/still up
+58  cppDynamicLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG4 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer bilboContainer"
+
+########################################################
+# PYTHON-CONTAINER WITHOUT CDB FILE
+########################################################
+#
+61 SOURCE prepareHardcodedLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py myDefaultPyTestContainer" \
+    pyHardcodedLevelsNoCdb2 "maciContainerLogLevel myDefaultPyTestContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+62  pyHardcodedLevelsNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG5 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultPyTestContainer"
+
+
+# As there is no CDB file for this container, we must skip the test for the container
+# default log-levels as set in the CDB. 
+
+65 SOURCE prepareEnvLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py myDefaultPyTestContainer" \
+    pyEnvironmentLevelsNoCdb2 "maciContainerLogLevel myDefaultPyTestContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+66  pyEnvironmentLevelsNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG5 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultPyTestContainer"
+
+
+67 SOURCE prepareDynLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py myDefaultPyTestContainer" \
+    pyDynamicLevelsNoCdb2 "maciContainerLogLevel myDefaultPyTestContainer set default 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel myDefaultPyTestContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+68  pyDynamicLevelsNoCdb "acsStartJava -D TEST_COMP_NAMES=TESTLOG5 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultPyTestContainer"
+
+
+# Same as test 67/68, but now setting the levels of a specific logger which is not yet
+# defined when this dynamic setting is done.
+69 SOURCE prepareDynLevelsNoCdb.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py myDefaultPyTestContainer" \
+    pyDynamicLevelsUnknownLoggerNoCdb2 "maciContainerLogLevel myDefaultPyTestContainer set TESTLOG5 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel myDefaultPyTestContainer get TESTLOG5"
+# Execute always together with previous test - it assumes proper container is already/still up
+70  pyDynamicLevelsUnknownLoggerNoCdb "maciContainerLogLevel myDefaultPyTestContainer set TESTLOG5 8 9" \
+                      "@SLEEP 2" \
+                      "acsStartJava -D TEST_COMP_NAMES=TESTLOG5 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer myDefaultPyTestContainer"
+
+########################################################
+# PYTHON-CONTAINER WITH CDB FILE, NO NAMED LOGGERS
+########################################################
+71 SOURCE prepareHardcodedLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+    pyHardcodedLevels2 "maciContainerLogLevel aragornContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+72  pyHardcodedLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer aragornContainer"
+
+
+73 SOURCE prepareCdbLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+    pyCdbLevels2 "maciContainerLogLevel aragornContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+74  pyCdbLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer aragornContainer"
+
+
+# 75 will fail: python gives precedence to CDB defaults above env var settings (bug)
+75 SOURCE prepareEnvLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+    pyEnvironmentLevels2 "maciContainerLogLevel aragornContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+76  pyEnvironmentLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer aragornContainer"
+
+77 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+    pyDynamicLevels2 "maciContainerLogLevel aragornContainer set default 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel aragornContainer get default"
+# Execute always together with previous test - it assumes proper container is already/still up
+78  pyDynamicLevels "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer aragornContainer"
+
+
+# Same as test 77/78, but now setting the levels of a specific logger which is not yet
+# defined when this dynamic setting is done.
+79 SOURCE prepareDynLevels.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+    pyDynamicLevelsUnknownLogger2 "maciContainerLogLevel aragornContainer set TESTLOG6 8 9" \
+                      "@SLEEP 2" \
+                      "maciContainerLogLevel aragornContainer get TESTLOG6"
+# Execute always together with previous test - it assumes proper container is already/still up
+80  pyDynamicLevelsUnknownLogger "maciContainerLogLevel aragornContainer set TESTLOG6 8 9" \
+                      "@SLEEP 2" \
+                      "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer aragornContainer"
+
+########################################################
+# PYTHON-CONTAINER WITH CDB FILE AND NAMED LOGGERS
+########################################################
+81 SOURCE prepareHardcodedLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+    pyHardcodedLevelsNamedLogger2 "maciContainerLogLevel aragornContainer get TESTLOG6"
+# Execute always together with previous test - it assumes proper container is already/still up
+82  pyHardcodedLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer aragornContainer"
+
+
+83 SOURCE prepareCdbLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+    pyCdbLevelsNamedLogger2 "maciContainerLogLevel aragornContainer get TESTLOG6"
+# Execute always together with previous test - it assumes proper container is already/still up
+84  pyCdbLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer aragornContainer"
+
+
+85 SOURCE prepareEnvLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+    pyEnvironmentLevelsNamedLogger2 "maciContainerLogLevel aragornContainer get aragornContainer"
+# Execute always together with previous test - it assumes proper container is already/still up
+86  pyEnvironmentLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer aragornContainer"
+
+
+87 SOURCE prepareDynLevelsNamedLogger.tcl \
+	PROLOGUE "acsutilAwaitContainerStart -py aragornContainer" \
+    pyDynamicLevelsNamedLogger2 "maciContainerLogLevel aragornContainer set TESTLOG6 8 9"
+# Execute always together with previous test - it assumes proper container is already/still up
+88  pyDynamicLevelsNamedLogger "acsStartJava -D TEST_COMP_NAMES=TESTLOG6 alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest" \
+    EPILOGUE "acsStopContainer aragornContainer"
+
+################# finito ##################	
+EPILOGUE acsutilTATEpilogue

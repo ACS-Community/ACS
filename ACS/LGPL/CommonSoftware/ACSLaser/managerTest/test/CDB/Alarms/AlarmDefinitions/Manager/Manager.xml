@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fault-family name="Manager" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://tempuri.org</help-url>
+  <contact name="Alessandro Caproni"/>
+  
+  <fault-code value="1">
+    <priority>3</priority>
+    <problem-description>Container crashed</problem-description>
+  </fault-code>
+  
+  <fault-code value="2">
+    <priority>2</priority>
+    <problem-description>Filesystem error affecting manager state recovery after restart.</problem-description>
+  </fault-code>
+
+  <!--  Having a default fault member is necessary for alarms on container/client crashes (FC=1),
+        because for these the manager uses FM=<clientName> which cannot be configured statically.
+   -->
+  <fault-member-default/>
+
+  <fault-member name="Prevayler"/>
+  
+</fault-family>

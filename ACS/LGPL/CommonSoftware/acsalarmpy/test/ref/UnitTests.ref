@@ -1,0 +1,43 @@
+1 - test_createFaultState (test_Acsalarmpy.TestAlarmSystemInterfaceFactory) ... ok
+1 - test_createFaultState_noinit (test_Acsalarmpy.TestAlarmSystemInterfaceFactory) ... ok
+1 - test_createSource_ACS (test_Acsalarmpy.TestAlarmSystemInterfaceFactory) ... ok
+1 - test_createSource_CERN (test_Acsalarmpy.TestAlarmSystemInterfaceFactory) ... ok
+1 - AlarmSystemInterfaceFactory does not create source when not initialized ... ok
+1 - test_done (test_Acsalarmpy.TestAlarmSystemInterfaceFactory) ... ok
+1 - test_init_acs (test_Acsalarmpy.TestAlarmSystemInterfaceFactory) ... ok
+1 - test_init_cern (test_Acsalarmpy.TestAlarmSystemInterfaceFactory) ... ok
+1 - ACSAlarmSystemInterfaceProxy close interface ... ok
+1 - ACSAlarmSystemInterfaceProxy default initializer ... ok
+1 - ACSAlarmSystemInterfaceProxy publish message to alarm system ... ok
+1 - ACSAlarmSystemInterfaceProxy push a list of active faults ... ok
+1 - ACSAlarmSystemInterfaceProxy push multiple faults ... ok
+1 - ACSAlarmSystemInterfaceProxy push a single fault ... ok
+1 - ASIConfiguration default initializer ... ok
+1 - test_object_initialization (test_Acsalarmpy_ASI.TestASIMessage) ... ok
+1 - test_toXML (test_Acsalarmpy_ASI.TestASIMessage) ... ok
+1 - AlarmSystemInterface close interface ... ok
+1 - AlarmSystemInterface default initializer ... ok
+1 - AlarmSystemInterface publish message to alarm system ... ok
+1 - test_pushActiveList (test_Acsalarmpy_AlarmSystemInterface.TestAlarmSystemInterface) ... ok
+1 - test_push_multi (test_Acsalarmpy_AlarmSystemInterface.TestAlarmSystemInterface) ... ok
+1 - test_push_single (test_Acsalarmpy_AlarmSystemInterface.TestAlarmSystemInterface) ... ok
+1 - FaultState initializes with default values ... ok
+1 - FaultState initializes with all required values ... ok
+1 - FaultState initializes with only a few values ... ok
+1 - FaultState creates XML for all values ... ok
+1 - FaultState creates XML for default values ... ok
+1 - FaultState creates XML with descriptor ... ok
+1 - FaultState creates XML with properties ... ok
+1 - FaultState creates XML with timestamp ... ok
+1 - Properties creates XML for default values ... ok
+1 - Properties creates XML for given values ... ok
+1 - Timestamp initializes with all values ... ok
+1 - test_object_initialization_default (test_Acsalarmpy_Timestamp.TestTimestamp) ... ok
+1 - Timestamp initializes with microseconds provided ... ok
+1 - Timestamp initializes with seconds provided ... ok
+1 - test_toXML (test_Acsalarmpy_Timestamp.TestTimestamp) ... ok
+1 - 
+1 - ----------------------------------------------------------------------
+1 - Ran 38 tests in x.xxxs
+1 - 
+1 - OK

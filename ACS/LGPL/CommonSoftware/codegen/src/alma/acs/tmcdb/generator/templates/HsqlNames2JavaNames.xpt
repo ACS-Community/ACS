@@ -1,0 +1,191 @@
+«IMPORT tmcdbTables»
+
+«EXTENSION alma::acs::tmcdb::grammardef::util»
+«EXTENSION alma::acs::tmcdb::generator::templates::javautil»
+«EXTENSION alma::acs::tmcdb::generator::templates::sqlutil»
+
+«DEFINE Root FOR TMCDBModel»
+«EXPAND HibernateTranslations»
+«EXPAND CreateEnumClasses::Root»
+«ENDDEFINE»
+
+«DEFINE HibernateTranslations FOR TMCDBModel»
+«FILE "alma/acs/tmcdb/translator/Table2Class_"+modelName.name+".java"-»
+package alma.acs.tmcdb.translator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class Table2Class_«modelName.name» extends AbstractTable2Class {
+
+	public Table2Class_«modelName.name»() {
+
+		map = new HashMap<String, String>();
+«FOREACH tables AS t-»
+			map.put("«t.name.toLowerCase()»", PACKAGE + "«t.name»");
+«ENDFOREACH-»
+
+		tablesWithGeneratedKeys = new ArrayList<String>();
+«FOREACH tables AS t-»
+«IF t.finalKey().isGenerated-»
+			tablesWithGeneratedKeys.add("«t.name.toLowerCase()»");
+«ENDIF-»
+«ENDFOREACH-»
+
+	}
+
+}
+«ENDFILE»
+
+«FILE "alma/acs/tmcdb/translator/Column2Attribute_"+modelName.name+".java"-»
+package alma.acs.tmcdb.translator;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Column2Attribute_«modelName.name» extends AbstractColumn2Attribute {
+
+	public Column2Attribute_«modelName.name»() {
+
+		Map<String,String> tmpMap;
+		map = new HashMap<String, Map<String,String>>();
+«FOREACH tables AS t-»
+				tmpMap = new HashMap<String,String>();
+«FOREACH t.getColumns() AS c-»
+				tmpMap.put("«c.name.toLowerCase()»", "«c.columnNameAsJavaAttribute()»");
+«ENDFOREACH-»
+«IF t.isChild-»
+«FOREACH t.finalKey().columns AS c-»
+				tmpMap.put("«c.name.toLowerCase()»", "«c.columnNameAsJavaAttribute()»");
+«ENDFOREACH-»
+«ENDIF-»
+			map.put("«t.name.toLowerCase()»", tmpMap);
+«ENDFOREACH-»
+
+	}
+
+}
+«ENDFILE»
+
+«FILE "alma/acs/tmcdb/translator/TableInheritance_"+modelName.name+".java"-»
+package alma.acs.tmcdb.translator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+
+public class TableInheritance_«modelName.name» extends AbstractTableInheritance {
+
+	public TableInheritance_«modelName.name»() {
+
+		Map<String, String> tmpMap;
+
+		map = new HashMap<String, String>();
+«FOREACH tables AS t-»
+«IF t.superTable != null-»
+			map.put("«t.name.toLowerCase()»", "«t.superTable.name»");
+«ENDIF-»
+«ENDFOREACH-»
+
+		keymap = new HashMap<String, String>();
+«FOREACH tables AS t-»
+«IF t.superTable != null-»
+«FOREACH t.finalKey().columns AS c-»
+			keymap.put("«t.name.toLowerCase()»","«t.shortTableName().toLowerCase()»«c.getTable().shortTableName().toLowerCase()»fkey");
+«ENDFOREACH-»
+«ENDIF-»
+«ENDFOREACH-»
+
+		List<String> keyColumns;
+		keyColumnsMap = new HashMap<String, List<String>>();
+«FOREACH tables AS t-»
+«IF t.superTable != null-»
+				keyColumns = new ArrayList<String>();
+«FOREACH t.finalKey().columns AS c-»
+				keyColumns.add("«c.name.toLowerCase()»");
+«ENDFOREACH-»
+			keyColumnsMap.put("«t.name.toLowerCase()»", keyColumns);
+«ENDIF-»
+«ENDFOREACH-»
+
+		List<String> keyPieces;
+		keyPiecesMap = new HashMap<String, List<String>>();
+«FOREACH tables AS t-»
+«IF t.key.isGeneratedFrom != null && t.key.isGeneratedFrom -»
+				keyPieces = new ArrayList<String>();
+«FOREACH t.key.pieces AS c-»
+				keyPieces.add("«c.name.toLowerCase()»");
+«ENDFOREACH-»
+			keyPiecesMap.put("«t.name.toLowerCase()»", keyPieces);
+«ENDIF-»
+«ENDFOREACH-»
+
+		cascadingTypes = new HashMap<String, CascadeType>();
+«FOREACH tables AS t-»
+«FOREACH t.getForeignKeyConstraints() AS const-»
+«IF const.cascading != null && const.cascading.aggregation-»
+«IF const.cascading.isInverse-»
+			cascadingTypes.put("«const.name.toLowerCase()»", CascadeType.AGGREGATION_INVERSE);
+«ELSE-»
+			cascadingTypes.put("«const.name.toLowerCase()»", CascadeType.AGGREGATION);
+«ENDIF-»
+«ELSEIF const.cascading != null && const.cascading.composition -»
+«IF const.cascading.isInverse-»
+			cascadingTypes.put("«const.name.toLowerCase()»", CascadeType.COMPOSITION_INVERSE);
+«ELSE-»
+			cascadingTypes.put("«const.name.toLowerCase()»", CascadeType.COMPOSITION);
+«ENDIF-»
+«ELSE-»
+			cascadingTypes.put("«const.name.toLowerCase()»", CascadeType.NONE);
+«ENDIF-»
+«ENDFOREACH-»
+«ENDFOREACH-»
+
+		List<String> xmlClobColumns;
+		xmlClobTableColumns = new HashMap<String, List<String>>();
+«FOREACH tables AS t-»
+«IF t.hasXmlClobTypeColumn()-»
+				xmlClobColumns = new ArrayList<String>();
+«FOREACH t.getXmlClobTypeColumns() AS c-»
+				xmlClobColumns.add("«c.name.toLowerCase()»");
+«ENDFOREACH-»
+			xmlClobTableColumns.put("«t.name.toLowerCase()»", xmlClobColumns);
+«ENDIF-»
+«ENDFOREACH-»
+
+		sequences = new HashMap<String, String>();
+«FOREACH tables AS t-»
+«IF t.finalKey().isGenerated && !t.isChild-»
+			sequences.put("«t.name.toLowerCase()»", "«t.shortTableName()»_seq");
+«ENDIF-»
+«ENDFOREACH-»
+
+		duplicatedForeignKeys = new HashMap<String, String>();
+«FOREACH tables AS t-»
+«FOREACH t.getForeignKeyConstraints() AS c1-»
+	«IF c1.table.isChild -»
+		«FOREACH t.getForeignKeyConstraints() AS c2-»
+			«IF c1.table.superTable.name == c2.table.name -»
+			duplicatedForeignKeys.put("«t.name.toLowerCase()»","«c1.columns.get(0).name.toLowerCase()»");
+			«ENDIF-»
+		«ENDFOREACH-»
+	«ENDIF-»
+«ENDFOREACH-»
+«ENDFOREACH-»
+
+		checkConstraints = new HashMap<String, Map<String, String>>();
+«FOREACH tables AS t»
+			tmpMap = new HashMap<String,String>();
+	«FOREACH getCheckConstraints(t) AS constraint-»
+		«IF TextTypes.isInstance(constraint.column.type) || LengthDefinedTypes.isInstance(constraint.column.type)-»
+			tmpMap.put("«constraint.column.name.toLowerCase()»", "alma.acs.tmcdb.«constraint.name»");
+		«ENDIF-»
+	«ENDFOREACH-»
+			checkConstraints.put("«t.name.toLowerCase()»", tmpMap);
+«ENDFOREACH»
+	}
+}
+«ENDFILE»
+
+«ENDDEFINE»

@@ -1,0 +1,329 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA Project
+#
+# "@(#) $Id: acsUpdate,v 1.4 2006/03/15 09:55:35 gchiozzi Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gchiozzi  2005-03-21 created
+#
+
+#************************************************************************
+#   NAME 
+#   acsUpdate - Updates a standard ACS installation
+#
+#   SYNOPSIS
+#   acsUpdate [OPTIONS]  tar_file_name
+# 
+#   DESCRIPTION
+#   Updates a standard ACS installation
+#   It assumes that another version of ACS
+#   is already installed in $ALMASW_INSTDIR
+#   and that the environment is properly configured
+#
+#   The already existing ACS installation is
+#   backed up by making a copy of the directoryes
+#   ACSSW and acsdata using, if possible their
+#   version number or tag as inferred from the version files.
+#   If such directories already esist, the PID is 
+#   appended to generate unique directory names.
+#
+#   In order to use the older version "in parallel"
+#   to the new version, it is sufficient to
+#   set in the login script ACSROOT and ACSDATA
+#   environment variables to the names of the backed up
+#   directories.
+#   This allows to keep multiple patches/minor versions
+#   of ACS in the same installation
+#
+#   FILES
+#   The file name of the tar file given as last argument
+#   and containing the new ACS binary distribution
+#
+#   ENVIRONMENT
+#   The following environment variables are used and assumed to
+#   be properly set:
+#      ALMASW_INSTDIR
+#      ALMASW_RELEASE
+#   The following environment variables are checked
+#   for consistency with ALMASW_INSTDIR and eventually
+#   overwritten:
+#      ACSROOT    (must be $ALMASW_INSTDIR/ACSSW)
+#      ACSDATA    (must be $ALMASW_INSTDIR/acsdata)
+#
+#   RETURN VALUES
+#   0 - if everything OK
+#   2 - in case of errors
+# 
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+#
+# which platform?
+#
+build_OS=`uname -s`
+
+echo "====== ALMA Common Software update script ======"
+
+CWD=`pwd`
+
+date
+echo ""
+
+#################################
+# command line options handling #
+#################################
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+# LONGOPTS=help,managerReference:,DALReference:
+# SHORTOPTS=hm:d:b:e:
+#
+LONGOPTS=help,check
+SHORTOPTS=hc
+
+THIS=`basename $0`
+CL_HELP=
+CL_ACTION="update"
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Updates a standard ACS installation"
+   echo "It assumes that another version of ACS"
+   echo "is already installed in ALMASW_INSTDIR"
+   echo "and that the environment is properly configured"
+   echo "Usage: $THIS [OPTIONS]  tar_file_name"
+   echo "Options: "
+   echo "   -c | -check                  only checks configuration and exits"
+   echo "   -h | -help                   prints this help and exits"
+   echo ""
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n $THIS -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+   exit 43;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	-c)                 CL_ACTION=check ;;
+	--check)            CL_ACTION=check ;;
+	-h)                 CL_HELP=true ;; 
+	--help)             CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit 0
+fi
+
+## end cmd line parsing ###############################
+
+#
+# Get the name of the ACS tar file from the
+# last argument in the command line and makes its path
+# absolute
+#
+ACS_TAR_FILE=$1
+case "$ACS_TAR_FILE" in
+/*) ;;
+*)  ACS_TAR_FILE=$PWD/$ACS_TAR_FILE
+    ;;
+esac
+
+if [ ! -e $ACS_TAR_FILE ]
+then
+  echo Error: ACS tar file $ACS_TAR_FILE is missing
+  exit 2
+fi
+
+if [ -d $ACS_TAR_FILE ]
+then
+  echo Error: $ACS_TAR_FILE is a directory
+  exit 2
+fi
+
+echo "Using ACS tar file $ACS_TAR_FILE"
+
+if [ ! -d $ALMASW_INSTDIR ]
+then
+  echo "ALMA SW installation directory does not exist!"
+  exit 2
+fi
+
+#
+# Checks consistency of ACSROOT and ACSDATA
+# If not standard, overwrite with standard value
+#
+if [ $ACSROOT != $ALMASW_INSTDIR/ACSSW ]
+then
+   echo ACSROOT=$ACSROOT is not standard. Overwriting
+   ACSROOT=$ALMASW_INSTDIR/ACSSW
+fi
+if [ $ACSDATA != $ALMASW_INSTDIR/acsdata ]
+then
+   echo ACSDATA=$ACSDATA is not standard. Overwriting
+   ACSDATA=$ALMASW_INSTDIR/acsdata
+fi
+
+#
+# Checks current installation
+# 
+echo "==== Checking current installation"
+if [ -e $ACSROOT/ACS_VERSION ]
+then
+   ACS_VERSION_NOW=`cat $ACSROOT/ACS_VERSION`
+else
+   ACS_VERSION_NOW="UNKNOWN"
+fi
+
+if [ -e $ACSROOT/ACS_PATCH_LEVEL ]
+then
+   ACS_PATCH_LEVEL_NOW=`cat $ACSROOT/ACS_PATCH_LEVEL`
+else
+   ACS_PATCH_LEVEL_NOW="UNKNOWN"
+fi
+
+echo "ACS version: $ACS_VERSION_NOW.$ACS_PATCH_LEVEL_NOW"
+
+if [ -e $ACSROOT/ACS_TAG ]
+then
+   ACS_TAG_NOW=`cat $ACSROOT/ACS_TAG`
+   case "$ACS_TAG_NOW" in
+     WARNING*) ACS_TAG_NOW="UNKNOWN";;
+   esac
+else
+   ACS_TAG_NOW="UNKNOWN"
+fi
+
+echo "ACS tag    : $ACS_TAG_NOW"
+ 
+#
+# Checks the version coming with the given tar file
+# 
+echo "==== Checking version in tar file: $ACS_TAR_FILE"
+echo "     Retrieving the version information may take some time!"
+ACS_VERSION_NEW=`gtar -xOzf $ACS_TAR_FILE alma/$ALMASW_RELEASE/ACSSW/ACS_VERSION`
+if [ $? != 0 ] 
+then
+  echo "Invalid ACS distribution (no ACS_VERSION). Abort"
+  exit 2
+fi
+
+ACS_PATCH_LEVEL_NEW=`gtar -xOzf $ACS_TAR_FILE alma/$ALMASW_RELEASE/ACSSW/ACS_PATCH_LEVEL`
+if [ $? != 0 ] 
+then
+  echo "Invalid ACS distribution (no ACS_PATCH_LEVEL). Abort"
+  exit 2
+fi
+
+ACS_TAG_NEW=`gtar -xOzf $ACS_TAR_FILE alma/$ALMASW_RELEASE/ACSSW/ACS_TAG 2>/dev/null`
+if [ $? != 0 ] 
+then
+  echo "ACS_TAG file not found in archive. This is not a tagged distribution."
+  ACS_TAG_NEW="UNKNOWN"
+fi
+
+#
+# Print out version and tag in tar file
+# 
+echo "ACS version: $ACS_VERSION_NEW.$ACS_PATCH_LEVEL_NEW"
+echo "ACS tag    : $ACS_TAG_NEW"
+
+#
+# Finds the proper name for the backup directory
+#
+if [ "$CL_ACTION" = "update" ] ; then
+
+   echo "==== Create backup of current ACSROOT and ACSDATA"
+   ACSROOT_BACKUP=$ACSROOT.$ACS_VERSION_NOW.$ACS_PATCH_LEVEL_NOW
+   ACSDATA_BACKUP=$ACSDATA.$ACS_VERSION_NOW.$ACS_PATCH_LEVEL_NOW
+
+   if [ -e $ACSROOT_BACKUP ]
+	then
+	echo $ACSROOT_BACKUP already exists
+	if [ "$ACS_TAG_NOW" != "UNKNOWN" ]
+	    then
+	    ACSROOT_BACKUP=$ACSROOT.$ACS_TAG_NOW
+	    ACSDATA_BACKUP=$ACSDATA.$ACS_TAG_NOW
+	fi
+	if [ -e $ACSROOT_BACKUP ]
+	    then
+	    echo $ACSROOT_BACKUP already exists
+	    ACSROOT_BACKUP=$ACSROOT.$$
+	    ACSDATA_BACKUP=$ACSDATA.$$
+	fi
+   fi
+
+   echo "ACSROOT will be backed up in: $ACSROOT_BACKUP"
+   echo "ACSDATA will be backed up in: $ACSDATA_BACKUP"
+
+   mv $ACSROOT $ACSROOT_BACKUP
+   if [ $? != 0 ] 
+   then
+     echo "Cannot backup $ACSROOT. Abort"
+     exit 2
+   fi
+   mv $ACSDATA $ACSDATA_BACKUP
+   if [ $? != 0 ] 
+   then
+     echo "Cannot backup $ACSDATA. Abort"
+     exit 2
+   fi
+
+   #
+   # Go to the base directory for the installation
+   #
+   CWD=`pwd`
+   cd $ALMASW_INSTDIR
+   cd ../..
+   
+   #
+   # As last, unpacks
+   #
+   echo "==== Unpack the $ACS_TAR_FILE distribution"
+   gtar zpxf $ACS_TAR_FILE alma/$ALMASW_RELEASE/ACSSW alma/$ALMASW_RELEASE/acsdata
+   if [ $? != 0 ] 
+   then
+     echo "Error unpacking $ACS_TAR_FILE. Abort"
+     exit 2
+   fi
+fi
+
+echo ""
+date
+echo "==== ACS $CL_ACTION done! ===="
+
+#
+# ___oOo___
+
+
+

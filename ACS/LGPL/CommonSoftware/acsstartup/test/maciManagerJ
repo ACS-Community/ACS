@@ -1,0 +1,5 @@
+#! /bin/bash
+
+echo $$  > $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/pids/ACS_MANAGER_PID
+
+acsstartupGenericProcess.sh -e HANG "Manager Application initialized"

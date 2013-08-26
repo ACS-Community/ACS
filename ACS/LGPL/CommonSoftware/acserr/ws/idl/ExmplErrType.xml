@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- This is just an example for the ACS Error document -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"     
+     name="ExmplErrType"
+     type="900902"
+     _prefix="alma"
+>
+<Code name="PointingInProgress" 
+      shortDescription="Pointing in progress"    
+      description="Pointing in progress"
+/>
+<ErrorCode name="PointingFailure"
+     shortDescription="Pointing Failure"
+     description="Pointing can not be executed"
+>
+<Member name="Azimuth"
+     type="double"
+     description="Azimuth"/>
+<Member name="Elevation"
+     type="double"
+     description="Elevation"/>
+</ErrorCode>
+<ErrorCode name="PositionNotObtained"
+     shortDescription="Position not obtained"
+     description="Position of the object can not be obtained"
+/>
+<ErrorCode name="RecordNotFound"
+     shortDescription="Record Not Found"
+     description="Record can not be found">
+<Member name="RecordName"
+     type="string"
+     description="Record name"/>
+</ErrorCode>
+<ErrorCode name="ErrorWOException"
+     shortDescription="Error w/o exception"
+     description="An example of error w/o exception"
+     _suppressExceptionGeneration="true"
+/>
+</Type>
+

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>Error messages</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<description>
+            <DIV ID="CellLeft10">
+You may fing here a list of common error messages / problems you may encounter using the <A HREF="../GP_Layer_architecture.html">GP layer</A>.<BR/>
+      If your problem is not listed here, please <A HREF="mailto:project-gp-users@cern.ch">inform us</A> specifying in detail under which conditions it happens.<BR/> 
+      Thanks in advance for your cooperation.<BR/><BR/>
+	</DIV>
+        	</description>
+	</section>
+	
+	<section>
+		<title>GP layer</title>
+		<description>
+		 <UL>
+		 [ to be filled]
+		 </UL>
+     <BR/>
+		</description>
+	</section>
+  
+	<section>
+		<title>Netbeans error messages</title>
+		<description>
+		 <UL>
+		 <LI><A HREF="netbeans/javaexecution.html">java.lang.IllegalStateException: Fatal error, can't find window manager instance in lookup</A></LI>
+		 </UL>
+     <BR/><BR/>
+		</description>
+	</section>
+</document>
+

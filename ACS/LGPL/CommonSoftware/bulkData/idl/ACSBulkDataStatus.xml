@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSBulkDataStatus" type="54" _prefix="alma">
+	<Code name="AVCbReady" shortDescription="Receiver callback ok status" description="Receiver callback ok status"/>
+	<Code name="AVCbWorking" shortDescription="Receiver callback working status" description="Receiver callback working status"/>
+	<Code name="AVCbTimeout" shortDescription="Receiver callback timeout status" description="Receiver callback timeout status"/>
+	<Code name="AVCbWorkingTimeout" shortDescription="Receiver callback timeout and working status" description="Receiver callback timeout and working status"/>
+	<Code name="AVCbNotAvailable" shortDescription="Receiver callback not available" description="Receiver callback not available"/>
+	<ErrorCode name="AVCbError" shortDescription="Receiver callback error" description="Receiver callback error"/>
+	<ErrorCode name="AVCbNULL" shortDescription="Receiver callback NULL" description="Receiver callback NULL"/>
+</Type>
+

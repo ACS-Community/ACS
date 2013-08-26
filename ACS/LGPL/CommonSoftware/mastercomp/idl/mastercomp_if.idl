@@ -1,0 +1,119 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
+ 
+#ifndef _MASTERCOMP_IDL_
+#define _MASTERCOMP_IDL_
+
+#include <acscomponent.idl>
+#include <baci.idl>
+#include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
+
+
+module ACS
+{
+	typedef string StateName;
+	typedef string ModeName;
+
+	// ALMA-subsystem superstates (not extensible)
+	const StateName SUBSYSSTATE_AVAILABLE = "AVAILABLE";
+	const StateName SUBSYSSTATE_OFFLINE = "OFFLINE";
+	const StateName SUBSYSSTATE_ONLINE = "ONLINE";
+	const StateName SUBSYSSTATE_OPERATIONAL = "OPERATIONAL";
+	const StateName SUBSYSSTATE_ERROR = "ERROR";
+	
+	// system-defined substates (of superstate SUBSYSSTATE_OFFLINE)
+	const StateName SUBSYSSTATE_SHUTDOWN = "SHUTDOWN";
+	const StateName SUBSYSSTATE_INITIALIZING_PASS1 = "INITIALIZING_PASS1";
+	const StateName SUBSYSSTATE_PREINITIALIZED = "PREINITIALIZED";
+	const StateName SUBSYSSTATE_INITIALIZING_PASS2 = "INITIALIZING_PASS2";
+	const StateName SUBSYSSTATE_REINITIALIZING = "REINITIALIZING";
+	const StateName SUBSYSSTATE_SHUTTINGDOWN_PASS1 = "SHUTTINGDOWN_PASS1";
+	const StateName SUBSYSSTATE_PRESHUTDOWN = "PRESHUTDOWN";
+	const StateName SUBSYSSTATE_SHUTTINGDOWN_PASS2 = "SHUTTINGDOWN_PASS2";
+	
+	// Note that user-defined substates of the superstates SUBSYSSTATE_ONLINE and 
+	// SUBSYSSTATE_OPERATIONAL must use names that are different from the above
+	
+	// subsystem modes are not yet supported; we declare the 3 system modes here anyway
+	const ModeName SUBSYSMODE_SIMULATION = "SIMULATION";
+	const ModeName SUBSYSMODE_STANDALONE = "STANDALONE";
+	const ModeName SUBSYSMODE_DEGRADED = "DEGRADED";
+    
+    
+    
+    /** 
+     * Subsystem Master Component with read-only access.     
+     * This interface should be used by clients that want to monitor 
+     * state and mode changes of other subsystems.
+     */
+    interface MasterComponentReadOnly : ACS::CharacteristicComponent
+    {
+        /** 
+         * Top-level container state first, down to concrete state.
+         * The string values are as defined above (StateName), or subsystem-specific
+         * (substates of ONLINE and OPERATIONAL can be user-defined)
+         */
+        readonly attribute ACS::ROstringSeq currentStateHierarchy;        
+
+
+        // todo: add method(s) that list describe(s) all states, including those 
+        // which are defined by the particular subsystem;
+        // to be used for GUI display etc.                
+    };
+
+    
+    /** 
+     * Subsystem Master Component with full access.
+     * This interface should be used by the Executive and perhaps other 
+     * ALMA operations software which is supposed to manipulate the state and modes
+     * of subsystems, e.g. during system startup.
+     */
+    interface MasterComponent : MasterComponentReadOnly
+    {
+		// Events that can be sent to the master component.
+	    // We assume that the optional subsystem-specific substates of 'ONLINE' and 'OPERATIONAL' 
+	    // don't add any new events (i.e., they are read-only from an outside point of view)
+		enum SubsystemStateEvent {
+	        SUBSYSEVENT_INITPASS1,
+	        SUBSYSEVENT_INITPASS2,
+	        SUBSYSEVENT_REINIT,
+	        SUBSYSEVENT_START,
+	        SUBSYSEVENT_STOP,
+	        SUBSYSEVENT_SHUTDOWNPASS1,
+	        SUBSYSEVENT_SHUTDOWNPASS2,
+	        SUBSYSEVENT_ERROR
+		};
+  
+        /** 
+         * Generic method to handle all events.
+         * Or should we rather have separate methods for each event? Or both?
+         */
+        void doTransition(in SubsystemStateEvent event)
+               raises (ACSErrTypeCommon::IllegalStateEventEx);
+               
+    };
+    
+};
+
+#endif

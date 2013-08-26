@@ -1,0 +1,99 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docFMpatch,v 1.31 2002/06/08 17:20:43 vltsccm Exp $" 
+#
+# docFMpatch
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  03/03/94  created
+#
+
+#************************************************************************
+#   NAME
+#   docFMpatch - set in current documen some paragraph formats used by man pages
+# 
+#   SYNOPSIS
+#   docFMpatch
+# 
+#   DESCRIPTION
+#   This utility takes the paragraph formats from a file and load them into 
+#   into the current document (the "Document.book" file in the current 
+#   directory.
+#   
+#   Ese this procedure BEFORE importing any manpage or listing)
+#
+#   FILES
+#
+#   Document.book  W   the book that need to be update
+#
+#   /home1/gfilippi/vlt/tools/doc/src/paraCatalog.mif
+#                  R   the documents from where to copy.
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#   MIF Reference Manual,
+#    
+#   BUGS        
+#------------------------------------------------------------------------
+#
+echo \
+"------------------------------------------------------------------------------"
+echo "docFMpatch \n"
+
+#
+# check the existence of a "Document.book" file
+if [ ! -f Document.book ]
+then
+    echo "Current directory: `pwd`"
+    echo "Document.book not found or not accessible. \n"
+    echo "This is not a standard document and I do not know what to do."
+    echo "Sorry!"
+    exit
+fi
+
+#
+# is it already opened?
+if [ -f Document.book.lck ]
+then
+    echo "Document.book not accessible. \n"
+    echo "File already locked by `cat Document.book.lck`\n\n"
+    echo "       ---> Exit FrameMaker and try again.\n\n"
+    exit
+fi
+
+
+FORMAT_FILE=/home1/gfilippi/vlt/tools/doc/src/paraCatalog.mif
+if [ -f $FORMAT_FILE ]
+then
+    echo "\n\n  Load paragraph and character formats used by man pages . . .\n\n"
+else 
+    echo "\n\nProblems to access: $FORMAT_FILE\n"
+    echo "      Please report this problem to Giorgio."
+fi    
+
+
+#
+# prepare the batch to update the FM file (See FM Reference Sept90 pag E-6/7)
+echo "Open $FORMAT_FILE"                            >$$_fmbatch
+echo "Open Document.book"                          >>$$_fmbatch
+echo "UseFormatsFrom p Document.book $FORMAT_FILE" >>$$_fmbatch
+echo "Quit"                                        >>$$_fmbatch
+ 
+fmbatch -i $$_fmbatch
+
+# cleanup and exit
+rm $$_fmbatch
+
+echo "\n\n                                              . . . done.\n\n"
+
+#___oOo___

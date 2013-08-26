@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<_ Name="ARCHIVE/TMCDB/MONITOR_CONTROL" Code="alma.acs.monitoring.controller.ControllerHelper" Type="IDL:alma/MonitorArchiver/Controller:1.0" Container="blobTestCont" ImplLang="java" Default="true" />
+	<_ Name="ARCHIVE/TMCDB/MONITOR_BLOBBER" Code="alma.acs.monitoring.monitor.BlobberHelper" Type="IDL:alma/MonitorArchiver/Blobber:1.0" Container="blobTestCont" ImplLang="java" Default="true" />
+</Components>

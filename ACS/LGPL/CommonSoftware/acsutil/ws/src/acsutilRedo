@@ -1,0 +1,146 @@
+#! /bin/bash
+
+## TODO:
+## Nothing! ;)
+
+
+##
+## debug mode on/off
+##
+#set -x
+
+
+## on Linux use external $ACSROOT/bin/echo
+if [ "`uname`" = "Linux" ]; 
+	then enable -n echo
+fi
+
+
+THIS=`basename $0`
+
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_EAGER=
+CL_HELP=
+
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,eager
+SHORTOPTS=he
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Infinitely re-invokes a command on a clear'd terminal"
+   echo ""
+   echo "Usage: $THIS [OPTIONS] COMMAND"
+   echo "Options: "
+   echo "   -e | -eager                redo at high frequency (more cpu load)"
+   echo "   -h | -help                 prints this help and exits"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit 43;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--eager)         CL_EAGER=true ;;
+	-e)              CL_EAGER=true ;;
+	--help)          CL_HELP=true ;; 
+	-h)              CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit 0
+fi
+
+##
+## read command
+##
+command=$@
+if [ ! "$command" ] ; then
+   printUsage
+   exit 43
+fi
+
+### ---------- End of Command Line Parsing -------------
+
+
+
+
+sleeptime=
+
+## on Linux we can sleep for fractions of seconds
+## but seems bash can only calculate with integers
+if [ "`uname`" = "Linux" ] ; then
+   if [ "$CL_EAGER" ] ; then
+      sleeptime=0.5
+   else
+      sleeptime=1.5
+   fi
+else
+   if [ "$CL_EAGER" ] ; then
+      sleeptime=1
+   else
+      sleeptime=3
+   fi
+fi
+
+
+
+
+##
+## repeat command
+##
+
+while [ 1 ] ; do 
+
+	## run command, show output
+	clear
+	$command
+	retval=$?
+	
+	
+	## problems executing the command?
+	if [ ! $retval == 0 ] ; then
+	   exit $retval
+	fi
+
+
+   sleep $sleeptime
+
+done
+
+
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+      <_ Name="DDS_SIMPLE_EXAMPLE" Code="simpleExampleDDSImpl"
+		                             ImplLang="cpp"
+                           Type="IDL:alma/DDS_SIMPLE_EXAMPLE/simpleExample:1.0"
+                           Container="Container"/>
+
+      <_ Name="NC_SIMPLE_EXAMPLE" Code="simpleExampleNCImpl"
+		                             ImplLang="cpp"
+                           Type="IDL:alma/DDS_SIMPLE_EXAMPLE/simpleExample:1.0"
+                           Container="Container"/>
+      
+		<_ Name="NC_SUPPLIER" Code="NCBenchmarkImpl"
+		                      ImplLang="cpp"
+                            Type="IDL:alma/NC_BENCHMARK/testNCSupplier:1.0"
+                            Container="Container"/>
+
+      <_ Name="NC_DDS_SUPPLIER" Code="DDSNCBenchmarkImpl"
+		                          ImplLang="cpp"
+                             Type="IDL:alma/NC_BENCHMARK/testNCSupplier:1.0"
+                             Container="Container"/>
+
+      <_ Name="CDB_PROPS"    Code="testCDBProps"
+			     ImplLang="cpp"
+			     Type="IDL:alma/CDB_PROPS/cdbProps:1.0"
+			     Container="Container" />
+</Components>

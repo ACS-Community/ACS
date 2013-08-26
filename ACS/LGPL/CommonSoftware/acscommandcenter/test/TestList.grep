@@ -1,0 +1,38 @@
+Starting Java application
+Using endorsed jar files in: 
+ACS Manager: 
+ACS Interface Repository: 
+Running the following command:
+java -classpath
+Time:
+FINEST:
+FINER:
+FINE:
+CONFIG:
+INFO:
+WARNING:
+SEVERE:
+Jan
+Feb
+Mar 
+Apr
+May
+Jun
+Jul
+Aug
+Sep
+Oct
+Nov
+Dec
+event_channel created 
+Logging EC registered with the naming service as: 
+Archiving EC registered with the naming service as: 
+Log Factory registered with the naming service as: 
+Log registered with the naming service as: 
+: command not found
+=== Starting the ORB services for this test
+=== Shuting the ORB services down
+Connecting with
+sys-package-mgr
+alma.acs.testsupport.tat.TATJUnitRunner
+TEST_RUNNER_REPORT

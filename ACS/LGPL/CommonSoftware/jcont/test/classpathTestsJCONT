@@ -1,0 +1,45 @@
+#!/bin/sh
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+echo "=== running a Java container with prioritized jar files only"
+
+# Want to get FINE, FINER and FINEST which would otherwise be suppressed by setting in jcontTATEnvironment.
+# Container output comparison is an additional feature of this test, since all other tests
+# use JUnit assertions instead of log output analysis.
+export ACS_LOG_STDOUT=1
+
+# this flag is meant for testing only -- AcsSystemClassLoader will refuse any jar files 
+# that are not explicitly moved to the beginning of the classpath in jacsutil::alma.acs.classloading.JarOrderOptimizer.
+# If this test fails, the hardcoded list in jacsutil / JarOrderOptimizer should be updated.
+export JAVA_OPTIONS="-Dacs.system.classpath.topjarsonly=true"
+
+# the real test: start and stop the container (errors will occur if jar files are missing on the classpath)
+acsStartContainer -java testContainer &
+sleep 10
+# 2 lines above to be replaced with next line as soon as acsutilAwaitContainerStart stops suppressing container output to stdout
+# acsutilAwaitContainerStart -java testContainer
+
+acsStopContainer testContainer
+
+export JAVA_OPTIONS=
+
+echo "=== Done running a Java container with prioritized jar files only"

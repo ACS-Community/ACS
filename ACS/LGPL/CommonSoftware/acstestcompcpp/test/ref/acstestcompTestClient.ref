@@ -1,0 +1,33 @@
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::xxxx:xxxx/Manager'
+1 - ----------T--:--:--.--- [GlobalLogger - ] Welcome to acstestcompTestClient!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Login in maciManager...
+1 - ----------T--:--:--.--- [GlobalLogger - ] Listing all componentes of type *TimingExplorer*
+1 - ----------T--:--:--.--- [GlobalLogger - ] HangOnInit (IDL:alma/acstestcomp/TimingExplorer:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] TimingExplorer_NOCONT (IDL:alma/acstestcomp/TimingExplorer:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] TimingExplorer (IDL:alma/acstestcomp/TimingExplorer:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] TimingExplorer_NODLL (IDL:alma/acstestcomp/TimingExplorer:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] Getting component TimingExplorer...
+1 - ----------T--:--:--.--- [GlobalLogger - ] ... got component TimingExplorer
+1 - ----------T--:--:--.--- [GlobalLogger - ] Call waitToReply...
+1 - ----------T--:--:--.--- [GlobalLogger - ] Call multipleReplies...
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::working
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::done
+1 - ----------T--:--:--.--- [GlobalLogger - ] Error code returned: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ] CBvoid::done
+1 - ----------T--:--:--.--- [GlobalLogger - ] Error code returned: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...

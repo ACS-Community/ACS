@@ -1,0 +1,283 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupPids
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsLoggingService,v 1.8 2013/03/04 09:33:07 msekoran Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# azagar   2008-08-06 Extracted from acsStartORBSRVC and acsStopORBSRVC
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+PID=$$
+export HOST=`getIP`
+COMMAND=`basename $0`
+#LOGPOSTFIX=" using 'ACS_INSTANCE=$ACS_INSTANCE'"
+LOGPOSTFIX=
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_START=false
+CL_STOP=false
+CL_WAIT=false
+CL_BASEPORT=
+CL_HELP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+# Intentionally includes all options supported by acsStartORBSRVC
+#
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,nameService:
+SHORTOPTS=hskwrb:t:x:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+  cat << EOF
+Starts or stops Naming Service for Acs
+
+Usage: $COMMAND [OPTIONS]
+Options:
+   -s | --start                      start service
+   -k | --kill                       stop service
+   -w | --wait                       wait for service to get started
+   -b | --baseport INSTANCE          the acs instance (0-9) you want to use
+   -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
+   -x | --nameService REF           set name service reference via command-line
+   -h | --help                       prints this help and exits
+EOF
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n $COMMAND -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+  printUsage
+  exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+  case "$1" in
+    --baseport)                   CL_BASEPORT=$2 ; shift ;;
+    -b)                           CL_BASEPORT=$2 ; shift ;;
+    --timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    -t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    --help)                       CL_HELP=true ;; 
+    -h)                           CL_HELP=true ;; 
+    --start)                      CL_START=true ;; 
+    -s)                           CL_START=true ;; 
+    --kill)                       CL_STOP=true ;; 
+    -k)                           CL_STOP=true ;; 
+    --wait)                       CL_WAIT=true ;; 
+    -w)                           CL_WAIT=true ;; 
+    --nameService)                export ACS_NAME_SERVICE=$2 ; shift ;;
+    -x)                           export ACS_NAME_SERVICE=$2 ; shift ;;
+    --) break ;;
+  esac
+  shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+if [ "$CL_HELP" ] ; then
+  printUsage
+  exit $EC_OK
+fi
+
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+################################
+#Set variables
+################################
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+  export ACS_INSTANCE="$CL_BASEPORT"
+fi
+
+ACS_LOG_COMMAND $@
+
+#Makes sure there is an initial value
+if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+then
+  ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+fi
+
+#maximum timeout for any given process to complete
+MAX_TIMEOUT=$(( 10 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+
+export STD_SLEEP=3
+
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+#use the instance directory to get the complete names of the 
+#files where process IDs are stored in.
+LOGGING_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOGGING_SERVICE_PIDFILE
+LOGGING_NOTIFY_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_LOGGING_NOTIFY_SERVICE_PIDFILE
+
+#set the filenames where binaries' output will be sent
+LOGGING_OUT=$INSTANCE_DIR/$ACS_LOGGING_OUT
+
+#determine the TCP ports to be used
+LOGGING_SERVICE_PORT=`getLoggingServicePort`
+
+# Always use -ORBDottedDecimalAddresses=1
+if [ "X$ORBOPTS" = "X" ]
+then
+  ORBOPTS="-ORBDottedDecimalAddresses 1"
+fi
+
+
+
+
+################################
+# Logging Service
+################################
+# NOTE - this must be started after the Notify Service (and Naming Service) are running.
+
+if [ "$CL_STOP" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  if [ ! -d $INSTANCE_DIR ]
+  then
+    ACS_LOG_DEBUG "$COMMAND" "Lock directory '$INSTANCE_DIR' does not exist!"
+  elif [ ! -w $INSTANCE_DIR ]
+  then
+    ACS_LOG_ERROR "$COMMAND" "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
+    exit $EC_CANNOTUSE
+  fi
+
+  ACS_NAME_SERVICE=`acsstartupNSRef`
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name LogFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name Log -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+
+  # SERVICE SHUTDOWN
+  # --------------------------------------------------------------------------
+  ACS_LOG_INFO "$COMMAND" "Stopping the CORBA Logging Service${LOGPOSTFIX}"
+  if LOGGING_SERVICE_PID=`getLoggingServicePid`
+  then
+    acsKillProc $LOGGING_SERVICE_PID 2> /dev/null && rm -f $LOGGING_SERVICE_PIDFILE || (ACS_LOG_ERROR "$COMMAND" "Cannot kill the Logging Service")
+  fi
+fi
+
+if [ "$CL_START" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  # Check if Logging Notify Service is running
+  if [ ! -e $LOGGING_NOTIFY_SERVICE_PIDFILE ]
+  then
+    if [ "X$ACS_NAME_SERVICE" = "X" ]
+    then
+      ACS_LOG_ERROR "$COMMAND" "Logging Notify Service must be running before starting a Logging Service!"
+      exit $EC_FAILURE
+    else
+      ACS_LOG_INFO "$COMMAND" "Logging Notify Service is not running locally, assuming remote Naming Service and/or Logging Notify Service!"
+    fi
+  fi
+
+  # Prevent from having the service started more than once on the same baseport
+  if [ -e $LOGGING_SERVICE_PIDFILE ]
+  then
+    ACS_LOG_ERROR "$COMMAND" "It appears as if you're trying to run the `basename $0` command twice"
+    ACS_LOG_ERROR "$COMMAND" "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
+    exit $EC_FAILURE
+  fi
+
+  # Make sure that the directory for temporary ACS_INSTANCE files exists.
+  if ! createInstanceDirectory $ACS_INSTANCE
+  then
+     ACS_LOG_ERROR "$COMMAND" "Cannot create $INSTANCE_DIR"
+     exit $EC_CANNOTCREATE
+  fi
+  mkdir -p $INSTANCE_DIR/$ACS_PID_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_OUT_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_IOR_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_CNF_DIR
+
+  # Ensure the port numbers are actually free
+  if ! checkTCPPort $LOGGING_SERVICE_PORT
+  then
+    ACS_LOG_ERROR "$COMMAND" "Logging service port is being used by another process. Cannot continue!"
+    exit $EC_NOPORT
+  fi
+
+  ACS_NAME_SERVICE=`acsstartupNSRef`
+
+  # SERVICE STARTUP
+  # --------------------------------------------------------------------------
+  ACS_LOG_INFO "$COMMAND" "Starting Logging Service${LOGPOSTFIX}"
+  loggingService  -ORBEndpoint iiop://$HOST:$LOGGING_SERVICE_PORT -ORBInitRef NameService=$ACS_NAME_SERVICE -ORBInitRef LoggingNotifyEventChannelFactory=corbaloc::$HOST:$LOGGING_NOTIFY_SERVICE_PORT/LoggingNotifyEventChannelFactory $ORBOPTS &> $LOGGING_OUT &
+
+  LOGGING_SERVICE_PID=$!
+  echo $LOGGING_SERVICE_PID > $LOGGING_SERVICE_PIDFILE
+fi
+
+if [ -e $LOGGING_SERVICE_PIDFILE -a "$CL_WAIT" = "true" ]
+then
+  # Block until the expected output shows up in the the correct file
+  if ! acsutilBlock -t $MAX_TIMEOUT -f $LOGGING_OUT -b "ACS Centralized Logger is running"
+  then
+    ACS_LOG_ERROR "$COMMAND" "Unable to start the Logging Service!"
+    ACS_LOG_ERROR "$COMMAND" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
+    exit $EC_TIMEOUT
+  fi
+fi
+
+
+#
+# ___oOo___

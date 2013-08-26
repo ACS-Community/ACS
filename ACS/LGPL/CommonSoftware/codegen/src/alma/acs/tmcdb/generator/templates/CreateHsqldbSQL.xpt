@@ -1,0 +1,76 @@
+«IMPORT tmcdbTables»
+
+«EXTENSION alma::acs::tmcdb::grammardef::util»
+«EXTENSION alma::acs::tmcdb::generator::templates::sqlutil»
+«EXTENSION alma::acs::tmcdb::generator::templates::hsqldbutil»
+
+«DEFINE Root FOR TMCDBModel»
+«FILE "hsqldb/CreateHsqldbTables.sql"-»
+-- TMCDB SQL TABLE DEFINITIONS Version «header.version» «header.versionTS»
+--
+-- /////////////////////////////////////////////////////////////////
+-- // WARNING!  DO NOT MODIFY THIS FILE!                          //
+-- //  ---------------------------------------------------------  //
+-- // | This is generated code!  Do not modify this file.       | //
+-- // | Any changes will be lost when the file is re-generated. | //
+-- //  ---------------------------------------------------------  //
+-- /////////////////////////////////////////////////////////////////
+«REM»We add all the table definitions«ENDREM»
+«EXPAND TableDefinition FOREACH tables» 
+
+«REM»And we populate the TMCDBVersion table«ENDREM»
+«IF tables.select(e|e.name == "TMCDBVersion").size != 0»
+INSERT INTO TMCDBVersion VALUES ( 'TMCDB', '«header.version»', '«header.versionTS»' );
+
+COMMIT;
+«ENDIF-»
+«ENDFILE»
+«ENDDEFINE»
+
+«REM»
+Expansion for each of the tables.
+For each table, we generate the following, in this order:
+
+ 1) Each of the columns of the table (for generated keys, the syntax is sligthly different)
+ 2) The FOREIGN KEY constraints (these are not mandatory)
+ 3) The CHECK constraints (these are not mandatory)
+ 4) The UNIQUE constraint (depending if the key is GENERATED FROM)
+ 5) The PRIMARY KEY constraint
+ 
+ 6) The sequence and trigger for the generated keys, if needed
+«ENDREM»
+«DEFINE TableDefinition FOR Table-»
+CREATE TABLE «this.name» (
+«IF isChild && finalKey().isGeneratedFrom-»
+	«LET finalKey().columns.first() AS c-»
+	«c.name» «c.type.getHsqldbType()»«c.type.getHsqldbLength()»,
+	«ENDLET-»
+«ENDIF-»
+«FOREACH this.getColumns() AS c ITERATOR iter-»
+«IF finalKey().isGenerated && c.name == finalKey().columns.first().name-»
+	«c.name» «c.type.getHsqldbType()»«c.type.getHsqldbLength()» IDENTITY,
+«ELSE-»
+	«c.name» «c.type.getHsqldbType()»«c.type.getHsqldbLength()» «c.specifier.getHsqldbSpecifier()»«IF !iter.lastIteration || getForeignKeyConstraints().size > 0 || getCheckConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+«ENDIF-»
+«ENDFOREACH-»
+«FOREACH getForeignKeyConstraints() AS const-»
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» FOREIGN KEY («const.columns.name.toString(", ")») REFERENCES «const.finalReferencedTable().name»«IF const.foreignColumn!= null»(«const.foreignColumn.name»)«ENDIF»«IF getCheckConstraints().size > 0 || getUniquenessConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+«ENDFOREACH-»
+«FOREACH getCheckConstraints() AS const-»
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» CHECK («const.column.name» IN («const.possibleValues.getPossibleValuesAsSQL()»))«IF getUniquenessConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+«ENDFOREACH-»
+«FOREACH getUniquenessConstraints() AS const-»
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» UNIQUE («const.columns.name.toString(", ")»)«IF finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+«ENDFOREACH-»
+«IF finalKey().isGeneratedFrom && !isChild -»
+	CONSTRAINT «shortTableName()»AltKey UNIQUE («finalKey().pieces.name.toString(", ")»)«IF isChild»,«ENDIF»
+«ELSEIF !finalKey().isGenerated || isChild -»
+	CONSTRAINT «shortTableName()»Key PRIMARY KEY («finalKey().columns.name.toString(", ")»)«IF isChild»,«ENDIF»
+«ENDIF-»
+«IF isChild-»
+	CONSTRAINT «shortTableName()»«superTable.shortTableName()»FKey FOREIGN KEY («finalKey().columns.name.toString(",")») REFERENCES «superTable.name»
+«ENDIF-»
+);
+«ENDDEFINE»
+
+«ENDFOREACH-»

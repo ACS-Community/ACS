@@ -1,0 +1,38 @@
+#! /bin/sh
+#
+
+#
+# GCH 2003-11-12
+# I force the acscommandcenter to put its log files
+# directly in $ACSDATA/tmp instead of using an ACS_INSTANCE
+# directory.
+# This is necessary to allow later on to us the same ACS_INSTANCE
+# also to start ACS.
+# If not, acsStartJAva would create the ACS_INSTANCE tmp directory
+# and acsStaretORBSRVC would think it is already used.
+# This approach could give troubles only if another temporary file
+# with the same PID get created at the same time, but this is very 
+# unlikely
+# Setting by hand ACS_TMP would anyway override this value
+#
+#if [ "X$ACS_TMP" = X ]; then  
+#   ACS_TMP=$ACSDATA/tmp
+#   export ACS_TMP
+#fi
+
+## msc 2005-07-22: When running CDB or Manager, ACS_TMP needs to have a value so CDB and
+## Manager can put their recovery files into it. acsStartJava knows this and creates an
+## instance directory, and sets ACS_TMP to it. Problem is it always does this,
+## even if you run any other Java program (that doesn't need an ACS_TMP). Then this
+## instance directory is no longer available for others as described above.
+## In the previous version of this script, we prevented acsStartJava from 
+## creating the instance dir by explicitly setting the ACS_TMP. This had the
+## side-effect that two users will try to write to the same tmp-files.
+## The creation of the instance dir can now be prevented with the new 
+## -noDirectory switch in acsStartJava.
+##
+
+# Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "acscommandcenter.gclog". 
+export JVM_GC_LOG_NAME=acscommandcenter
+
+acsStartJava -noDirectory -noexport -endorsed -D ACS.root=$ACSROOT -D ACS.cdbroot=$ACS_CDB alma.acs.commandcenter.CommandCenter $@

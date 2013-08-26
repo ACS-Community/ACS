@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<AcsCommandCenterTools xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../idl/AcsCommandCenterTools.xsd">
+
+
+<!-- ===================================================================================================
+
+This file defines the "Tools" that can be started via AcsCommandCenter.
+A Tool definition has the following elements:
+
+	CAPTION
+	This text will be shown in the "Tools" menu.
+
+	COMMAND
+	This string will be executed as a native shell command on the local host.
+	It typically contains question marks ("?") as placeholders.
+	Each question mark in the COMMAND will be replaced by the corresponding INSERTION.
+
+	INSERTIONS
+	An INSERTION can have a DEFAULT value.
+	An INSERTION must have an attribute SOURCE:
+		a) SOURCE=INPUT
+		A dialog with a textfield will ask the user to enter the value.
+		If a DEFAULT value exists the textfield will be pre-filled with it.
+
+		b) SOURCE=MODEL
+		The value to be inserted will be taken from AcsCommandCenter's RunModel instance.
+		To refer to a value ABC use either getABC(), getABC, or simply ABC.
+		If the value found in the RunModel is empty, the DEFAULT value will be used.
+
+	If there are more placeholders than INSERTIONS, they will not be resolved (yielding question marks in the command).
+	If there are more INSERTIONS than placeholders, they will not be inserted.
+
+	MAX STARTUP SECONDS
+	This is the timeout (in seconds) after which the command must have terminated.
+	Otherwise AcsCommandCenter will assume the execution of the command has failed.
+	[pending msc: verify this]
+	This is an optional element. If it is not specified, no timeout will be active.
+
+	EXPECTED OUTPUT
+	This is a piece of the command's output that AcsCommandCenter will wait for.
+	As of Acs 4.0, this element is ignored in the Tool definitions contained in this file.
+	It is only in use for built-in-Tools which are defined in "AcsCommandCenterBuiltinTools.xml".
+
+=================================================================================================== -->
+
+	<tool>
+		<caption>Acs List</caption>
+		<command>accEnableVars acsList -v</command>
+	</tool>
+
+	<tool>
+		<caption>Object Explorer</caption>
+		<command>accEnableVars accStarter -e ACS_INSTANCE=? -p $HOME/.acs/commandcenter/objexp objexp -m corbaloc::?:?/Manager</command>
+		<insertion source="model">ScriptBase</insertion>
+		<insertion source="model">ToolAgainstManagerHost</insertion>
+		<insertion source="model">ToolAgainstManagerPort</insertion>
+	</tool>
+
+	<tool>
+		<caption>Object Explorer advanced</caption>
+		<command>accEnableVars accStarter -e ACS_INTERFACE_REPOSITORY=corbaloc::?:3?04/InterfaceRepository -e MANAGER_REFERENCE=corbaloc::?:3?00/Manager -p $HOME/.acs/commandcenter/objexp objexp</command>
+		<insertion source="input">Interface Repository Host<default>localhost</default></insertion>
+		<insertion source="input">Interface Repository Instance<default>0</default></insertion>
+		<insertion source="model">ToolAgainstManagerHost</insertion>
+		<insertion source="model">ScriptBase</insertion>
+	</tool>
+
+	<tool>
+		<caption>Logging Client (graphical)</caption>
+		<command>accEnableVars accStarter -e MANAGER_REFERENCE=corbaloc::?:?/Manager -p $HOME/.acs/commandcenter/jlog jlog</command>
+		<insertion source="model">ToolAgainstManagerHost</insertion>
+		<insertion source="model">ToolAgainstManagerPort</insertion>
+	</tool>
+
+	<tool>
+		<caption>Logging Client (to file)</caption>
+		<command>accEnableVars accStarter -p $HOME/.acs/commandcenter/loggingClient -o ? loggingClient ? -ORBInitRef NameService=?</command>
+		<insertion source="input">To File<default>$HOME/loggingClient.out</default></insertion>
+		<insertion source="input">Channel<default>LoggingChannel</default></insertion>
+		<insertion source="model">ToolAgainstNameService</insertion>
+	</tool>
+
+	<tool>
+		<caption>Logging Client (to file) - Quit</caption>
+		<command>accEnableVars accStopper $HOME/.acs/commandcenter/loggingClient</command>
+		<insertion source="model">ScriptBase</insertion>
+	</tool>
+
+	<tool>
+		<caption>Cdb Browser</caption>
+		<command>accEnableVars accStarter -e ACS_INSTANCE=? -p $HOME/.acs/commandcenter/cdbBrowser cdbBrowser</command>
+		<insertion source="model">ScriptBase</insertion>
+	</tool>
+
+	<tool>
+		<caption>Dynamic Components Client</caption>
+		<command>accEnableVars accStarter -e ACS_INSTANCE=? -p $HOME/.acs/commandcenter/JDynAct acsStartJava --noDirectory alma.demo.dyncomp.JDynAct</command>
+		<insertion source="model">ScriptBase</insertion>
+	</tool>
+
+	<tool>
+		<caption>Interface Repository Browser</caption>
+		<command>accEnableVars accStarter -p $HOME/.acs/commandcenter/IRBrowser acsStartJava --noDirectory -DORBInitRef.InterfaceRepository=? org.jacorb.ir.gui.IRBrowser</command>
+		<insertion source="model">ToolAgainstInterfaceRepository</insertion>
+	</tool>
+
+	<tool>
+		<caption>Name Service Browser</caption>
+		<command>accEnableVars accStarter -p $HOME/.acs/commandcenter/NameManager acsStartJava  --noDirectory -DORBInitRef.NameService=? org.jacorb.naming.namemanager.NameManager</command>
+		<insertion source="model">ToolAgainstNameService</insertion>
+	</tool>
+
+	<tool>
+		<caption>Event Browser (classic)</caption>
+		<command>accEnableVars accStarter -e ACS_INSTANCE=? -p $HOME/.acs/commandcenter/acseventbrowser acseventbrowser</command>
+		<insertion source="model">ScriptBase</insertion>
+	</tool>
+
+	<tool>
+		<caption>Event Browser (modern)</caption>
+		<command>accEnableVars accStarter -e ACS_INSTANCE=? -e ACS_NAME_SERVICE=? -e ACS_INTERFACE_REPOSITORY=? -e MANAGER_REFERENCE=corbaloc::?:?/Manager -p $HOME/.acs/commandcenter/eventGUI eventGUI</command>
+		<insertion source="model">ScriptBase</insertion>
+		<insertion source="model">ToolAgainstNameService</insertion>
+		<insertion source="model">ToolAgainstInterfaceRepository</insertion>
+		<insertion source="model">ToolAgainstManagerHost</insertion>
+		<insertion source="model">ToolAgainstManagerPort</insertion>
+	</tool>
+
+  <!--
+	<tool>
+		<caption>Test</caption>
+		<command>accEnableVars accStarter -e ACS_INTERFACE_REPOSITORY=? -e MANAGER_REFERENCE=corbaloc::?:?/Manager objexp; ?</command>
+		<insertion source="model">ToolAgainstInterfaceRepository 					                     </insertion>
+		<insertion source="model">ToolAgainstManagerHost  <default>localhost</default>                   </insertion>
+		<insertion source="model">ToolAgainstManagerPort  <default>4711</default>                        </insertion>
+		<insertion source="input">IR                      <default>corbaloc::localhost:3404/InterfaceRepository</default> </insertion>
+		<insertion source="input">Second Command          <default>echo test</default>                   </insertion>
+	</tool>
+	-->
+	
+	
+</AcsCommandCenterTools>
+
+
+
+
+
+

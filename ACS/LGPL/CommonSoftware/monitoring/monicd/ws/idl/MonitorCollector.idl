@@ -1,0 +1,68 @@
+#ifndef _TMCBD_MONITOR_COLLECTOR_
+#define _TMCBD_MONITOR_COLLECTOR_
+
+#include <acscommon.idl>
+#include <acscomponent.idl>
+#include <TMCDBCOMMON_IDL.idl>
+
+#include "MonitorErr.idl"
+
+#pragma prefix "alma"
+
+
+module TMCDB
+{
+
+struct propertySerailNumber
+{
+	string  propertyName;
+	serialNumberTypeSeq  serialNumbers;
+};
+
+typedef sequence<propertySerailNumber> propertySerialNumberSeq; 
+
+
+ interface MonitorCollector : ACS::ACSComponent
+    {
+    ///@deprecated: methods for registering a component/device, please use either #registerCollocatedMonitoredDevice or #registerNonCollocatedMonitoredDevice
+    void registerMonitoredDevice(in string componentName, in serialNumberType serialNumber) 
+    	raises (MonitorErr::DeviceAlreadyRegisteredEx, MonitorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
+
+    /// register a device/component that has to be collocated 
+    void registerCollocatedMonitoredDevice(in string componentName, in serialNumberType serialNumber) 
+            	raises (MonitorErr::DeviceAlreadyRegisteredEx, MonitorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
+    /// register a device/component that it is not necessary to be collocated
+    void registerNonCollocatedMonitoredDevice(in string componentName, in serialNumberType serialNumber) 
+        	raises (MonitorErr::DeviceAlreadyRegisteredEx, MonitorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
+    
+    ///@deprecated: plese use either: #registerCollocatedMonitoredDeviceWithMultipleSerial or #registerNonCollocatedMonitoredDeviceWithMultipleSerial  
+	void registerMonitoredDeviceWithMultipleSerial(in string componentName, in  propertySerialNumberSeq serialNumbers) 
+    	raises (MonitorErr::DeviceAlreadyRegisteredEx, MonitorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
+
+	void registerCollocatedMonitoredDeviceWithMultipleSerial(in string componentName, in  propertySerialNumberSeq serialNumbers) 
+	    	raises (MonitorErr::DeviceAlreadyRegisteredEx, MonitorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
+
+	void registerNonCollocatedMonitoredDeviceWithMultipleSerial(in string componentName, in  propertySerialNumberSeq serialNumbers) 
+	    	raises (MonitorErr::DeviceAlreadyRegisteredEx, MonitorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
+    	    	
+    void deregisterMonitoredDevice(in string componentName)
+    	raises(MonitorErr::DeviceNotRegisteredEx);
+    
+    void startMonitoring(in string componentName) raises(MonitorErr::StartMonitoringProblemEx);
+    
+    void stopMonitoring(in string componentName) raises (MonitorErr::StopMonitoringProblemEx);
+
+	///for the archiver or better monitor controler
+    MonitorDataBlocks getMonitorData();  
+
+    void set_archiving_interval(in string componentName, in string propertyName, in ACS::TimeInterval time);
+
+    void suppress_archiving(in string componentName, in string propertyName);
+
+    void enable_archiving(in string componentName, in string propertyName);
+    };//interface MonitorCollector
+
+
+};//module  TMCDB
+
+#endif

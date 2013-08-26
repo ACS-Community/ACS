@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<baciTest xmlns="urn:schemas-cosylab-com:baciTest:1.0"
+	  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+          xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<RWdoubleWithErrorDevIOProp />
+
+<RWdoubleWithDevIOProp />
+
+<RWdoubleProp />
+<ROdoubleProp archive_min_int="0.5" archive_max_int="2.0" />
+
+<RWfloatProp />
+<ROfloatProp archive_min_int="0.5" archive_max_int="2.0" />
+
+<RWlongProp />
+<ROlongProp archive_min_int="0.5" archive_max_int="2.0" archive_delta="3"/>
+
+<RWpatternProp />
+<ROpatternProp />
+
+<ROstringProp />
+<RWstringProp />
+
+<RWdoubleSeqProp />
+<ROdoubleSeqProp />
+
+<RWfloatSeqProp />
+<ROfloatSeqProp />
+
+<RWlongSeqProp />
+<ROlongSeqProp />
+
+</baciTest>
+

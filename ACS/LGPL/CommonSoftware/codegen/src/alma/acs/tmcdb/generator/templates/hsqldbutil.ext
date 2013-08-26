@@ -1,0 +1,41 @@
+import tmcdbTables;
+
+// This method returns the Hsqldb type name for our meta-model's names
+String getHsqldbType(Type this):
+
+	if      ClobType.isInstance(this) then "LONGVARCHAR"
+	else if XmlClobType.isInstance(this)  then "LONGVARCHAR"
+	else if TextType.isInstance(this) then "LONGVARCHAR"
+	else if NameType.isInstance(this) then "VARCHAR"
+	else if LongnameType.isInstance(this) then "VARCHAR"
+
+	else if LengthType.isInstance(this) then "DOUBLE"
+	else if TimeType.isInstance(this) then "BIGINT"
+	else if TstampType.isInstance(this) then "TIMESTAMP"
+
+	// TINYINT, SMALLINT, INTEGER, BIGINT, FLOAT, DOUBLE, CHAR, VARCHAR, LONGVARCHAR, BOOLEAN
+	else name;
+
+String getHsqldbLength(Type this):
+
+	if      CharType.isInstance(this) || VarcharType.isInstance(this)
+		then " (" + ((LengthDefinedTypes)this).length + ")"
+
+	else if NameType.isInstance(this) then " (128)"
+	else if LongnameType.isInstance(this) then " (256)"
+	else if TstampType.isInstance(this) then " (6)"
+
+	// INT, SMALLINT, BIGINT, TINYINT, CLOB, TEXT, TIME, BOOLEAN, LENGTH, FLOAT, DOUBLE, XMLCLOBTYPE
+	else "";
+
+String getHsqldbSpecifier(Specifier this):
+
+	if NullitySpecifier.isInstance(this)
+		then ( ((NullitySpecifier)this).isNotNull ? "NOT " : "") + "NULL"
+
+	else if DefaultBooleanValue.isInstance(((DefaultSpecifier)this).defaultValue)
+		then "DEFAULT " + ( ((DefaultBooleanValue)((DefaultSpecifier)this).defaultValue).isFalse ? "FALSE" : "TRUE") 
+	else if DefaultIntValue.isInstance(((DefaultSpecifier)this).defaultValue)
+		then "DEFAULT " + ( ((DefaultIntValue)((DefaultSpecifier)this).defaultValue).isNegative ? "-" : "") + ((DefaultIntValue)((DefaultSpecifier)this).defaultValue).value
+	else if DefaultStringValue.isInstance(((DefaultSpecifier)this).defaultValue)
+		then "DEFAULT '" + ((DefaultStringValue)((DefaultSpecifier)this).defaultValue).value + "'";

@@ -1,0 +1,147 @@
+1 - Making check in tests
+1 - Making check in .
+1 - PASS: t-bswap
+1 - PASS: t-constants
+1 - PASS: t-count_zeros
+1 - PASS: t-gmpmax
+1 - PASS: t-modlinv
+1 - ==================
+1 - All 5 tests passed
+1 - ==================
+1 - Making check in devel
+1 - Making check in mpn
+1 - PASS: t-asmtype
+1 - PASS: t-aors_1
+1 - PASS: t-iord_u
+1 - PASS: t-mp_bases
+1 - PASS: t-scan
+1 - ==================
+1 - All 5 tests passed
+1 - ==================
+1 - Making check in mpz
+1 - PASS: t-addsub
+1 - PASS: t-cmp
+1 - PASS: t-mul
+1 - PASS: t-mul_i
+1 - PASS: t-tdiv
+1 - PASS: t-tdiv_ui
+1 - PASS: t-fdiv
+1 - PASS: t-fdiv_ui
+1 - PASS: t-cdiv_ui
+1 - PASS: t-gcd
+1 - PASS: t-gcd_ui
+1 - PASS: t-lcm
+1 - PASS: dive
+1 - PASS: dive_ui
+1 - PASS: t-sqrtrem
+1 - PASS: convert
+1 - PASS: io
+1 - PASS: t-inp_str
+1 - PASS: logic
+1 - PASS: bit
+1 - PASS: t-powm
+1 - PASS: t-powm_ui
+1 - PASS: t-pow
+1 - PASS: t-div_2exp
+1 - PASS: reuse
+1 - PASS: t-root
+1 - PASS: t-perfsqr
+1 - PASS: t-jac
+1 - PASS: t-bin
+1 - PASS: t-get_d
+1 - PASS: t-get_si
+1 - PASS: t-set_si
+1 - PASS: t-fac_ui
+1 - PASS: t-fib_ui
+1 - PASS: t-lucnum_ui
+1 - PASS: t-scan
+1 - PASS: t-fits
+1 - PASS: t-divis
+1 - PASS: t-divis_2exp
+1 - PASS: t-cong
+1 - PASS: t-cong_2exp
+1 - PASS: t-sizeinbase
+1 - PASS: t-set_str
+1 - PASS: t-aorsmul
+1 - PASS: t-cmp_d
+1 - PASS: t-cmp_si
+1 - PASS: t-hamdist
+1 - PASS: t-oddeven
+1 - PASS: t-popcount
+1 - PASS: t-set_f
+1 - PASS: t-io_raw
+1 - PASS: t-import
+1 - PASS: t-export
+1 - ===================
+1 - All 53 tests passed
+1 - ===================
+1 - Making check in mpq
+1 - PASS: t-aors
+1 - PASS: t-cmp
+1 - PASS: t-cmp_ui
+1 - PASS: t-cmp_si
+1 - PASS: t-equal
+1 - PASS: t-get_d
+1 - PASS: t-get_str
+1 - PASS: t-inp_str
+1 - PASS: t-md_2exp
+1 - PASS: t-set_f
+1 - PASS: t-set_str
+1 - ===================
+1 - All 11 tests passed
+1 - ===================
+1 - Making check in mpf
+1 - PASS: t-add
+1 - PASS: t-sub
+1 - PASS: t-conv
+1 - PASS: t-sqrt
+1 - PASS: t-muldiv
+1 - PASS: t-dm2exp
+1 - PASS: reuse
+1 - PASS: t-get_d
+1 - PASS: t-cmp_si
+1 - PASS: t-fits
+1 - PASS: t-get_si
+1 - PASS: t-gsprec
+1 - PASS: t-int_p
+1 - PASS: t-set_si
+1 - PASS: t-trunc
+1 - ===================
+1 - All 15 tests passed
+1 - ===================
+1 - Making check in rand
+1 - PASS: t-lc2exp
+1 - PASS: t-rand
+1 - ==================
+1 - All 2 tests passed
+1 - ==================
+1 - Making check in misc
+1 - PASS: t-printf
+1 - PASS: t-scanf
+1 - PASS: t-locale
+1 - ==================
+1 - All 3 tests passed
+1 - ==================
+1 - Making check in cxx
+1 - PASS: t-cast
+1 - PASS: t-headers
+1 - PASS: t-ostream
+1 - PASS: t-locale
+1 - PASS: t-constr
+1 - PASS: t-expr
+1 - ==================
+1 - All 6 tests passed
+1 - ==================
+1 - Making check in mpbsd
+1 - Making check in mpn
+1 - Making check in mpz
+1 - Making check in mpq
+1 - Making check in mpf
+1 - Making check in printf
+1 - Making check in scanf
+1 - Making check in cxx
+1 - Making check in mpbsd
+1 - Making check in demos
+1 - Making check in calc
+1 - Making check in expr
+1 - Making check in tune

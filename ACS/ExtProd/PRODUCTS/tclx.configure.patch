@@ -1,0 +1,91 @@
+--- configure.orig	2010-10-22 14:46:13.218750000 -0300
++++ configure	2010-10-22 15:09:41.187500000 -0300
+@@ -1345,7 +1345,7 @@
+ echo "${ECHO_T}ok (TEA ${TEA_VERSION})" >&6
+     fi
+     case "`uname -s`" in
+-	*win32*|*WIN32*|*CYGWIN_NT*|*CYGWIN_9*|*CYGWIN_ME*|*MINGW32_*)
++	*win32*|*WIN32*|*MINGW32_*)
+ 	    # Extract the first word of "cygpath", so it can be a program name with args.
+ set dummy cygpath; ac_word=$2
+ echo "$as_me:$LINENO: checking for $ac_word" >&5
+@@ -1385,6 +1385,11 @@
+ 	    EXEEXT=".exe"
+ 	    TEA_PLATFORM="windows"
+ 	    ;;
++	*CYGWIN_NT*|*CYGWIN_9*|*CYGWIN_ME*)
++	    CYGPATH=echo
++	    EXEEXT=".exe"
++	    TEA_PLATFORM="unix"
++	    ;;
+ 	*)
+ 	    CYGPATH=echo
+ 	    EXEEXT=""
+@@ -7999,6 +8004,67 @@
+ 	        fi
+ 	    fi
+ 	    ;;
++	CYGWIN*)
++	    if test "$have_dl" = "no" ; then
++	       echo $ac_n "checking for dlopen in -lltdl""... $ac_c" 1>&6
++echo "configure:3068: checking for dlopen in -lltdl" >&5
++ac_lib_var=`echo ltdl'_'dlopen | sed 'y%./+-%__p_%'`
++if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
++  echo $ac_n "(cached) $ac_c" 1>&6
++else
++  ac_save_LIBS="$LIBS"
++LIBS="-lltdl  $LIBS"
++cat > conftest.$ac_ext <<EOF
++#line 3076 "configure"
++#include "confdefs.h"
++/* Override any gcc2 internal prototype to avoid an error.  */
++/* We use char because int might match the return type of a gcc2
++    builtin and then its argument prototype would still apply.  */
++char dlopen();
++
++int main() {
++dlopen()
++; return 0; }
++EOF
++if { (eval echo configure:3087: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
++  rm -rf conftest*
++  eval "ac_cv_lib_$ac_lib_var=yes"
++else
++  echo "configure: failed program was:" >&5
++  cat conftest.$ac_ext >&5
++  rm -rf conftest*
++  eval "ac_cv_lib_$ac_lib_var=no"
++fi
++rm -f conftest*
++LIBS="$ac_save_LIBS"
++
++fi
++if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
++  echo "$ac_t""yes" 1>&6
++  have_dl=yes
++else
++  echo "$ac_t""no" 1>&6
++have_dl=no
++fi
++
++	       DL_LIBS="-lltdl"
++	    else
++	       DL_LIBS="-ldl"
++	    fi
++	    SHLIB_CFLAGS=""
++	    SHLIB_LD_LIBS='${LIBS}'
++	    SHLIB_SUFFIX=".dll"
++
++	    SHLIB_LD="${CC} -shared"
++	    DL_OBJS="tclLoadDl.o"
++	    LDFLAGS=""
++	    CC_SEARCH_FLAGS='-Wl,-rpath,${LIB_RUNTIME_DIR}'
++	    LD_SEARCH_FLAGS=${CC_SEARCH_FLAGS}
++	    cat >> confdefs.h <<\EOF
++#define HAVE_TM_ZONE 1
++EOF
++
++	    ;;
+ 	Linux*)
+ 	    SHLIB_CFLAGS="-fPIC"
+ 	    SHLIB_LD_LIBS='${LIBS}'

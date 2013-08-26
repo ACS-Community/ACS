@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>FeaturesCDB</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="20080603;16551900">
+	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<STYLE TYPE="text/css">
+	<!--
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<H2><A NAME="DistributedObjectConcept"></A>Configuration Database</H2>
+<H3>The configuration parameters for all Components and, in
+particular, for all Characteristic Components, i.e. the initial
+values for Properties values and all Characteristics for Properties,
+are persistently stored in the Configuration Database <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 4.2.1. Configuration Database]</A>. Any application can make use of
+the Configuration Database to get access to configuration
+information. 
+</H3>
+<H3>There are 4 different issues related to the problems addressed by
+the CDB:</H3>
+<P>1) input of data by the user<BR>System configurators define the
+structure of the system and enter the configuration data. Easy and
+intuitive data entry methods are needed.</P>
+<P>2)&nbsp;storage of the data<BR>The configuration data is kept into
+a database.</P>
+<P>3) maintenance and management of the data (e.g.
+versioning)<BR>Configuration data changes because the system
+structure and/or the implementation of the system’s components
+changes&nbsp; with time and has to be maintained under configuration
+control.</P>
+<P>4) loading data into the ACS Containers<BR>At run-time, the data
+has to be retrieved and used to initialize and configure the
+Components.</P>
+<P>The main objective of the CDB Architecture is to keep these 4
+issues as decoupled as possible so that:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">We can develop them separately, in
+	space and time, according to the project priorities and the
+	availability of resources. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">We can eventually use different
+	technologies 
+	</P>
+	<LI><P>We can, in particular, support multiple data storage
+	mechanisms (like ALMA Archive, RDBMS and XML files) in different
+	environments (development, testing, final running system). 
+	</P>
+</UL>
+<H3>The high-level architecture is based on three layers:</H3>
+<P>1) The Database Itself<BR>It is the database engine we use to
+store and retrieve data.</P>
+<P>2) The Database Access Layer (DAL) is used to hide the actual
+database implementation from applications, so that it is possible to
+use the same interfaces to access different database engines, as
+described in the requirements and discussed in the following
+sections.</P>
+<P>3) The Database Clients, store and retrieve data from the database
+using only the interfaces provided by the DAL.<BR>Data Clients, like
+containers, Managers and Components retrieve their configuration
+information from the Database and are involved in issue 4.<BR>On the
+other hand, CDB Administration applications are used to configure,
+maintain and load data in the database using again interfaces
+provided by the DAL layer. They are involved in issue 1 and 3 and
+will be possibly using DAL interfaces different from the ones used by
+the Data Clients, as will be discussed later on.<BR><I><B>Notice that
+Data Clients need only data retrieving and not data change functions.</B></I></P>
+<P><A NAME="_x0000_i1025"></A><IMG SRC="Images/CDBLayers.png" WIDTH="562" HEIGHT="384"  NAME="graphics1" ALIGN=BOTTOM BORDER=0></P>
+<P ALIGN=CENTER><I>Figure 3.4: Configuration Database architectural
+layers</I></P>
+<H3>A Database Loader application is used to manipulate database
+description files and load them into the Database using the DAL
+administrator interfaces. Database Description Files are XML files
+and XML Schemas are used to define classes of database entities,
+allowing to use inheritance and to define default values. The
+Database Loader also takes care of validating the data, to make sure
+that only valid and consistent data is actually loaded into the
+database. For example, the following inconsistencies should be
+spotted and reported:</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">missing property or characteristic
+		</P>
+	<LI><P STYLE="margin-bottom: 0in">undefined values, default will be
+	used 
+	</P>
+	<LI><P>defined values that are not used elsewhere 
+	</P>
+</UL>
+<H3>When a Characteristic Component is instantiated, it configures
+itself according to the configuration stored in the Configuration
+Database<A HREF="ReferenceDocuments.html#RD01">[RD01 - 3.3.2.
+Serialization]</A>.</H3>
+<H3>The implementation of the Configuration Database is hidden in a
+Configuration Database Access API to allow switching among
+alternative implementations<A HREF="ReferenceDocuments.html#RD01">[RD01
+- 4.2.2 Database Design]</A>. 
+</H3>
+<H3>The reference implementation is based on XML files and a Java
+application loads and parses the XML files. Files are validated at
+run time and a separate CDB checker can be used to validate offline
+CDB XML files without the need of loading them in a &quot;live&quot;
+database.</H3>
+<H3>In ALMA, configuration information is stored in the Telescope and
+Monitoring Configuration Data Base (TMCDB). This is based on the
+Oracle RDBMS (with the small-footprint RDBMS, hsqldb, used for
+small-scale testing). Archive, Control and ACS subsystems are
+responsible for the implementation of the Configuration Database
+Access API on top of the TMCDB, throught the implementation of a
+specific Component. This implementation includes round-trip tools to
+convert CDB instances between the XML reference implementation and
+the TMCDB. In this way it is possible to develop locally with the XML
+implementation and transparently migrate to the final system based on
+the ALMA Archive and TMCBD. <I>(Being enhanced).</I></H3>
+<H3>All Components have access to the Configuration Database during
+construction/initialization and later during their operational life.
+While accessing the CDB is optional for normal components,
+Characteristic Components must retrieve their configuration
+information from there.<BR>At a higher level, the Container
+responsible for the Components (see Container package) provides an
+interface to set the reference to the configuration database used. In
+this way it is also easy to switch between different databases at
+startup time. 
+</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">In order to allow switching
+	between different instances of Configuration Database, the reference
+	to the DAL used by each Component is provided as a common service by
+	the Container inside which the Component lives. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Whenever a Container is started,
+	it gets in touch with a specified DAL instance. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">By default, if nothing else is
+	specified, this is the DAL for Central Configuration Database and is
+	obtained by requesting the reference to the Manager. 
+	</P>
+	<LI><P>Otherwise, the container can be instructed to use explicitly
+	another DAL instance, apt to work with a Configuration Database
+	Engine of one of the supported types. 
+	</P>
+</UL>
+<P><A NAME="_x0000_i1026"></A><IMG SRC="Images/Configuration_Database__Configuration_Database.png" WIDTH="562" HEIGHT="301"  NAME="graphics2" ALIGN=BOTTOM BORDER=0></P>
+<P ALIGN=CENTER><I>Figure 3.5: Configuration Database</I></P>
+<H4>We define Characteristics as statically defined in the
+Configuration Database. This means that is possible to change their
+value only by changing the configuration database and reloading just
+the corresponding Characteristic Components<A HREF="ReferenceDocuments.html#RD01">[RD01
+- 14.1.9 Dynamic configuration]</A>. This means that they cannot be
+used for, e.g., calibrations that change at run time. With this
+definition, calibration values that change at run time should be
+implemented as Properties, not as Characteristics. &quot;Static&quot;
+calibration values, for example measured by an engineer and not
+supposed to change for months can be Characteristics. Characteristics
+can change with time or can change with the context. 
+</H4>
+<H4><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>Note:
+It is possible to implement also a more dynamic mechanism, but we
+have not identified a requirement for ALMA. This can be done
+transparently at a later time extending the Property class with
+methods to change the value of characteristics but this has not been
+considered in the first design to avoid increasing the complexity of
+the system. <B>(Implementation not foreseen for ALMA)</B></FONT></FONT></FONT></H4>
+<H3><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>Note:
+A Visual Configuration Tool (CT) can be implemented on top of the
+Database Loader. This can be completely independent of all other
+aspects of CDB and therefore can be implemented at a later stage.
+ALMA configuration data is edited using the TMCDB tools and therefore
+no requirement for such Visual Configuration Tool has been
+recognized. The basic features are described hereafter for a possible
+future implementation <I>(Implementation not foreseen for ALMA)</I></FONT></FONT></FONT></H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in"><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>The
+	CT allows to visually edit the structure/schema of the configuration
+	database and to fill in the values inside the instantiated database.</FONT></FONT></FONT>
+		</P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>The
+	CT supports expressions and variables.&nbsp; </FONT></FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>Allows
+	switching between different views (think of Eclipse): source,
+	members, hierarchy, editions, and visual composition. Like in
+	Eclipse, there should be wizards that help create new structures,
+	but the structures can be created also manually. Structures can be
+	changed using connections and drag&amp;drop. </FONT></FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>An
+	existing CDB can be parsed and displayed visually, for easier
+	re-engineering. </FONT></FONT></FONT>
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>There
+	is a tree view in CT that uses colour codes and icons to define
+	classes or properties that are abstract, inherited, calculated (from
+	expressions) and imported from templates.</FONT></FONT></FONT> 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>A
+	“spreadsheet view” is used for mass population of configuration
+	data. The normal approach is to define the structure with the tools
+	just described, and then to write a substitution file, which
+	contains data in compact form in a table that is similar to a
+	spreadsheet. Ideally, it should be straightforward to create such a
+	substitution file in a spreadsheet program and use it from there
+	directly. </FONT></FONT></FONT>
+	</P>
+	<LI><P><FONT COLOR="#0000ff"><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>The
+	development of CT will be based on existing tools. For example it
+	could be an Eclipse plugin.</FONT></FONT></FONT> 
+	</P>
+</UL>
+</BODY>
+</HTML>

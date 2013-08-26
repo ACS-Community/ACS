@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>FeaturesEventAndNotificationService</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="20080604;11280500">
+	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<STYLE TYPE="text/css">
+	<!--
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<H2><A NAME="CommandHandling"></A>Event and Notification System</H2>
+<H3>The Event and Notification System is an implementation of the
+Observer Design Pattern. It provides a generic mechanism to
+asynchronously pass information between data/event suppliers and
+data/event consumers, in a many-to-many relation scheme.</H3>
+<H3>With the Event and Notification System (in its basic form):</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">the data supplier <I>publishes</I>
+	its data <I>pushing</I> it on a <I>channel</I>, completely unaware
+	of clients getting access to the data, i.e. the data supplier
+	decides how and when data is going to be published 
+	</P>
+	<LI><P>data consumers <I>subscribe</I> to data sets on the <I>channel</I>
+	without establishing any direct communication with the data
+	suppliers. 
+	</P>
+</UL>
+<H3>The Event and Notification System is the basic mechanism for
+Indirect Value Retrieval <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 4.1.2 Indirect value retrieval]</A> providing mirroring of data on
+computers other than where the data are produced. This makes it
+possible to randomly access data without interfering with the control
+process <A HREF="ReferenceDocuments.html#RD01">[RD01 - 3.2.2 Value
+retrieval]</A> and without knowing if the data is directly available
+on the client's machine or if it is a mirrored copy<A HREF="ReferenceDocuments.html#RD01">[RD01
+- 4.1.4 Transparency]</A>.</H3>
+<H3>The CORBA Notification Service provides the infrastructure for
+the Event and Notification System implementation:</H3>
+<P ALIGN=CENTER><A NAME="_x0000_i1025"></A><IMG SRC="Images/Event_and_Notification_System__Event_and_Notification_System_architecture.png" WIDTH="562" HEIGHT="312"  NAME="graphics1" ALIGN=BOTTOM BORDER=0></P>
+<P ALIGN=CENTER><I>Figure 3.6: Event and Notification System</I></P>
+<H4>An ACS API provides a simplified client and server API to connect
+to the Notification Service and to create/connect/disconnect channels
+in the Event and Notification System. This does not hinder direct
+access to the CORBA Notification Service to access features not
+implemented by the API.</H4>
+<H4><FONT FACE="Arial, Helvetica, sans-serif"><FONT SIZE=2>Note: The
+structured-push-supplier / structured-push-consumer model of the
+CORBA Notification Service has been implemented first. Other
+Notification Service models can be implemented later on based on
+specific application needs (Implementation not foreseen for ALMA)</FONT></FONT>.</H4>
+<H4>CORBA TCL (Trader Constraint Language) query language is used to
+allow filtering of messages from clients. Filtering is currently only
+allowed on simple CORBA types like Floats, Longs, etc.</H4>
+<H4>Notification Service servers can be federated to guarantee system
+redundancy and to provide higher reliability <I>(Provided by CORBA
+but not integrated in ACS yet)</I>. Federated Notification Service
+servers allow:</H4>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">Load balancing. Client access can
+	be split among different servers 
+	</P>
+	<LI><P>Security. Just specific servers, with a reduced set of
+	published data (defined using filtering), can be allowed access from
+	remote sites. This can be used to allow remote monitoring of ALMA
+	from Europe and USA without exposing to the Internet confidential
+	data. 
+	</P>
+</UL>
+<H3>The Notification Service is a process separated both from
+publisher and subscriber. It also optimizes data transfer by
+implementing caching to reduce network traffic.</H3>
+<H3>The current ACS API provides a class for supplying events. An
+application instantiates a Supplier or Supplier-derived object and
+invokes the publishEvent() method that fills a
+CosNotification::StructuredEvent, which is the structure that defines
+the data sent on the Notification Channel. The Supplier class takes
+care of the whole administration of the Notification Channel
+including its creation.</H3>
+<H3>SimpleSupplier is a subclass of Supplier designed specifically
+for publishing events defined as IDL structures, the normal and most
+common situation. It provides the interface used to push IDL structs
+onto the notification channel, creates the channel (if it doesn’t
+exist), and hides all CORBA from the developer.</H3>
+<H3>The current ACS API provides a base class for Consumer as well.
+An application implements a subclass of this for each Consumer and
+provides an implementation for the push_structured_event() method
+that has the purpose of pushing the data in the received
+CosNotification::StructuredEvent into appropriate member variables.
+The base class takes care of the whole administration of the
+connection to the Notification Channel. 
+</H3>
+<H3>In Java, the Consumer class can directly resolve the event type
+using introspection and does not need to be subclassed in most cases.
+In C++ instead, a  SimpleConsumer template subclass can be used to
+handle events in a generic manner by passing the event type as a
+template argument.</H3>
+<H3>The Supplier and Consumer classes have a common engine that has
+been factorized in the Helper common base class. In particular the
+Helper class provides common information such as the &quot;kind&quot;
+of the Notification Channel as registered with the CORBA Naming
+Service.</H3>
+<H3>The CORBA API for the Notify Service does not provide for
+retrieving the identifiers of the suppliers and consumers that have
+been registered with it. When an application with open subscriptions
+terminates without explicitly closing these connections, the
+subscriptions remain open within the Notify Service, retaining
+resources (threads and memory) uselessly. For ACS 8.0, the interface
+to the Notify Service will be changed to delegate the creation of
+suppliers and consumers to an ACS entity (typically, Container
+Services), so that ACS can clean up connections left open when an
+application terminates. 
+</H3>
+<H3>ACS itself uses the Event and Notification System to provide
+basic services like logging and archiving.</H3>
+<H3>Comparison between Event and Notification System, Direct Value
+Retrieval and Data Retrieval by Event:</H3>
+<H4>The 3 data access mechanisms provided by ACS have different
+characteristics and are meant to be used in different situations. 
+</H4>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">With the Event and Notification
+	System, data subscriber and data publisher are completely
+	de-coupled. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">With Direct Value Retrieval, the
+	client needs the reference to the servant object to call get()
+	methods that directly return the requested value 
+	</P>
+	<LI><P>With Value Retrieval by Event, the client establishes a
+	callback-based direct communication with the servant that
+	asynchronously delivers data to the client in a point-to-point
+	communication scheme. 
+	</P>
+</UL>
+<H4>The Event and Notification System pattern is convenient when:</H4>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">the client is interested in
+	receiving events of a certain type (for instance event logs, monitor
+	point values or alarm events) and handling them regardless of their
+	source. Since the potential number of sources is very large, it
+	becomes very inefficient if the client must establish a connection
+	to each potential source. In this case a Notification Channel is
+	necessary as the mediator between publishers and subscribers.
+	Publishers push data in the channel while the channel efficiently
+	multicasts events to all subscribers that are interested in
+	receiving them. 
+	</P>
+	<LI><P>many clients (in particular remote clients) are interested in
+	the same data. With a point-to-point communication, the data
+	producer would have to deliver data to each of many clients, with a
+	potentially heavy impact on servant performances. With the Event and
+	Notification System pattern, the servant pushes the data only once
+	on the channel that will efficiently multicast the events to the
+	interested clients allowing to keep constant the load on the
+	servant. 
+	</P>
+</UL>
+<H4>Direct Value Retrieval and Value Retrieval by Event are
+convenient when the client needs to be in control of the rate by
+which it receives data from the servant (asking directly for the
+values, when required, or establishing monitors with a specific data
+rate or triggering condition.</H4>
+</BODY>
+</HTML>
+

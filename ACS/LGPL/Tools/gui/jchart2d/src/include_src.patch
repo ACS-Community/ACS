@@ -1,0 +1,17 @@
+--- build.xml	2010-06-01 22:47:32.000000000 +0000
++++ build2.xml	2010-12-07 02:59:28.000000000 +0000
+@@ -113,8 +113,14 @@
+     </target>
+ -->
+ 	<target name="makejarFat" depends="delete.classfiles,build">
++
++		<copy todir="${builddir}/src/">
++			<fileset dir="${sourcedir}" includes="**/*.java" />
++		</copy>
++
+ 		<jar destfile="${project.name}-${project.version}.jar" basedir="${builddir}" update="false" manifest="manifest.mf">
+ 			<include name="**/*.class" />
++			<include name="**/*.java" />
+ 		</jar>
+ 		<!-- rebuild test classes as eclipse would show errors afterwards. -->
+ 		<antcall target="build.test">

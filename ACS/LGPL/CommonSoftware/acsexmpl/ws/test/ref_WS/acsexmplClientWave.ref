@@ -1,0 +1,24 @@
+1 - Running acsexmplClientWave MOUNT1 10 4
+1 - Welcome to acsexmplClientWave!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ]   contact      : MOUNT1
+1 - ----------T--:--:--.--- [GlobalLogger - ] Will:
+1 - ----------T--:--:--.--- [GlobalLogger - ]   # cmds sent  : 2
+1 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: MOUNT1
+1 - ----------T--:--:--.--- [GlobalLogger - ]   with interval: 4s
+1 - ----------T--:--:--.--- [GlobalLogger - ]   work for     : 10s
+1 - ----------T--:--:--.--- [GlobalLogger - ] Descriptor:
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	name: MOUNT1
+1 - ----------T--:--:--.--- [GlobalLogger - ] Going in main loop for 10s...
+1 - ----------T--:--:--.--- [actionThread - ] actionThread: Going to (-100.000000,0.000000)
+1 - ----------T--:--:--.--- [actionThread - ] actionThread: Going to (-38.226896,27.797897)
+1 - ----------T--:--:--.--- [actionThread - ] actionThread: Going to (-68.728838,14.072023)
+1 - ----------T--:--:--.--- [actionThread - ] actionThread: OK
+1 - ----------T--:--:--.--- [GlobalLogger - ] (objfix::CBvoid::done)
+1 - ----------T--:--:--.--- [GlobalLogger - ] Error code returned: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ] Error code returned: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ] (objfix::CBvoid::done)
+1 - ----------T--:--:--.--- [GlobalLogger - ] Error code returned: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ] (objfix::CBvoid::done)
+1 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...
+1 - All done!

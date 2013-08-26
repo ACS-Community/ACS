@@ -1,0 +1,91 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: buildEclipse,v 1.5 2012/01/09 14:39:47 tstaig Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# jschwarz    02/10/2009
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+LOG=buildEclipse.log
+exec > $LOG 2>&1
+
+date
+
+CURR_DIR=`pwd`
+
+if [ "$OS" = "LINUX" ]
+then 
+  OSTAG=linux
+elif [ "$OS" = "$CYGWIN_VER" ]
+then
+  OSTAG=cygwin
+else
+  echo "OS $OS not supported"
+  exit -1
+fi
+
+echo "Installing Eclipse for $OSTAG"
+echo 
+
+TOPDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE/Eclipse
+if [ -d $TOPDIR ]
+then
+  echo $TOPDIR directory exists already. I clean it up.
+  rm -rf $TOPDIR
+fi
+SDKDIR=$TOPDIR/SDKandDeltaPack
+mkdir $TOPDIR
+mkdir $SDKDIR
+
+#
+# Unpack the tar file
+# put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/Eclipse
+#
+VERSION=3.6.1
+echo "unpacking the archives for Eclipse "$VERSION
+SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-gtk.tar.gz
+cd $SDKDIR
+tar zxf $SDKFILE
+DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip
+unzip -o $DELTAPACKFILE
+echo "done"
+echo ""
+
+
+#
+# Starting with ACS 11.2 we also install Eclipse 4 (currently 4.2.2)
+# under $ALMASW_ROOTDIR/$ALMASW_RELEASE/Eclipse4.
+# Some time in the future we should remove the Eclipse 3 installation.
+#
+TOPDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE/Eclipse4
+if [ -d $TOPDIR ]
+then
+  echo $TOPDIR directory exists already. I clean it up.
+  rm -rf $TOPDIR
+fi
+SDKDIR=$TOPDIR/SDKandDeltaPack
+mkdir $TOPDIR
+mkdir $SDKDIR
+VERSION=4.2.2
+echo "unpacking the archives for Eclipse "$VERSION
+SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-gtk.tar.gz
+cd $SDKDIR
+tar zxf $SDKFILE
+DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip
+unzip -oq $DELTAPACKFILE
+echo "done"
+echo ""
+
+
+cd $CURR_DIR
+echo Eclipse installation done
+date

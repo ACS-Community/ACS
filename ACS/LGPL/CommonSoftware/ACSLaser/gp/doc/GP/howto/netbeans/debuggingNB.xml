@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>Running and debugging modules in a different IDE</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Lionel" lastname="Mestre" ccid="97307"/>
+    <author firstname="Katarina" lastname="Sigerud" ccid="73162"/>
+    <author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+    <history>
+    0.1 (2003/??) : First Draft<br/>
+    0.2 (2003/05) : Made the description more general<br/>
+    0.3 (2003/05) : Made the description fit NB platform 3.5<br/>
+    0.4 (2003/07) : Made the description more detailed<br/>
+    </history>
+  </head>
+  <!--
+
+	SECTION 1
+	
+  -->
+  <section>
+    <title>Running the NetBeans platform from another IDE</title>
+    <description>
+    <p>
+    It is possible to run the NetBeans Platform, like any other Java Program, inside another IDE, e.g. JDeveloper or Eclipse. 
+    You might want to do this for several reasons:
+    <ul>
+    <li>You want to debug the code the module you've written. Using the NetBeans IDE this is complicated and inefficient, but it easy if you launch both the Netbeans Platform and your Module from another IDE.</li>
+	  <li>You are already a proficient user of another IDE and you don't want to change to the NetBeans IDE</li>
+    </ul>
+    </p>
+    <p>Here is how it works: as the NetBeans Platform is just another Java Application, you can launch it from the IDE. Step 1 ("Launch the NetBeans Platform from another IDE") below explains how this is done. Once it's launched, the NetBeans Platform fetches information about modules to execute in two directories, called the "home directory" and the "user directory". How to do this is explained in Step 2 ("Install your module inside the platform") below.
+    </p>
+    </description>
+    <section>
+    <title>Launch the NetBeans Platform from another IDE</title>
+    <description>
+    <p>We assume here that you know how to use the chosen IDE. We also assume that you have a directory where the NetBeans Platform is installed. If you do not have the Platform set up, a description of how to do it can be found in <a href="netbeans/setupNBPlatform3.5####.html">How to set up the NetBeans Platform</a>. The following instructions are specific to the Eclipse IDE, but it has also been tested for JDeveloper, and should work with any other IDE.</p>
+    <ol>
+    <li>You first need to add the following jars to your project's java build path. You can point the IDE to the existing files in the NetBeans Platform installation directory.
+    <ul>
+    <li><code>lib\core.jar</code></li>
+    <li><code>lib\core-windows.jar</code></li>
+    <li><code>lib\openide.jar</code></li>
+    <li><code>lib\ext\boot.jar</code></li>
+    <!--li><code>modules\autoload\openide-io.jar</code></li-->
+    </ul>
+    <br/>
+    </li>
+    <li>
+    You need to create a policy file that you can call <code>security.policy</code>. This is a text file that contains the following :
+    <pre>grant {
+   permission java.security.AllPermission;
+};</pre>
+	 <p>You can find a file like this in the project <code>gp-examples</code> in the folder <code>src\metadata\runplatform</code>.</p>
+    </li>
+    <li>Next you need to create a launch configuration (Menu Run=>Run...)
+    <ul>
+    <li>"Main" tab: enter the Main class: <code>org.netbeans.core.Main</code></li>
+    <li>"Arguments" tab: enter the VM arguments
+    <pre>
+  -Djava.security.policy=[full pathname to the policy file created in the previous step]
+  -Dnetbeans.home=[full pathname to the NetBeans Platform home directory] 
+  -Dnetbeans.user=[full pathname to the user dir containing your the <code>module</code> directory with your modules]</pre>
+  		<p>below an example</p>
+  		<pre>
+  -Djava.security.policy=C:\cvs\gp-example\src\metadata\runplatform\security.policy
+  -Dnetbeans.home=C:\programs\nb35platform\netbeans
+  -Dnetbeans.user=C:\lionel\netbeans\platform\user</pre>
+    </li>
+    <p>The VM arguments point the instance of the platform running in the IDE to where it will find the essential parts it needs to run.</p>
+    <li>"JRE" tab (Optional): check that you have JDK 1.4.1_03 or higher installed
+    </li>	
+    <li>"Classpath" tab (Optional): have a look at the jars mounted in the class path. You should see the NetBeans libraries mentioned above.
+    </li>
+    <p></p>
+    </ul>
+    </li>
+    <li>
+    Press the "Run" button. This should launch the Netbeans Platform. Don't worry (for the moment) if you get a DuplicateException, simply acknowledge it.
+    </li>
+<p>If you have problems, the best idea is to have a look at the <code>ide.log</code> file. You find it in the <code>system</code> directory below your user directory. (<code>C:\lionel\netbeans\platform\user\system\ide.log</code> in our example.)</p>    
+    </ol>
+    
+    </description>
+    </section>
+  </section>
+  <section>
+    <title>Install your module inside the platform</title>
+    <description>
+      <p>Now you need to tell the NetBeans Platform where and how to find the sources of your Module. There is a trick here. You don't need to create a Module jar and package all the classes into it (as you would do when you deploy it). Instead, you can create a minimal Module jar that only contains a Manifest, that contains all information about where to find the classes. One more thing is missing: you need to tell NetBeans which class of your sources it should execute (e.g. a class with a <code>main()</code> method. There are two possibilities here: you create a Menu or you use a start-up class. A start-up class is executed by the NetBeans Platform as soon it has started up.</p>
+		<ol>
+			<li>Add a start-up class to your code. This is a class that implements the class <code>org.openide.modules.ModuleInstall</code> and
+			overrides the method <code>restore()</code>. An example of such a class is <code>gp.example.startup.AutoStartup</code>.
+			</li>
+			<li>Create a Manifest. It should contain the following lines:
+			<pre>
+Manifest-Version: 1.0
+OpenIDE-Module: your.module.name
+OpenIDE-Module-IDE-Dependencies: IDE/1 > 3.40
+OpenIDE-Module-Install: gp/example/startup/AutoStartup.class</pre>
+			<p>The last line contains the reference to your start-up class. You probably have to adapt the name and package to point to your own start-up class.</p>
+			</li>
+			<li>Create a Jar that only contains this Manifest. You can do this with Winzip, with the jar command or with Eclipse "File=>Export..." menu.
+			You only need to create it once, so don't worry if you are not using an extremely efficient creation method.
+			</li>
+			<li>Copy this Jar to the modules directory in the NetBeans userdir. If we take the same example as above, this would be the directory
+			<code>C:\lionel\netbeans\platform\user\modules</code>
+			</li>
+		</ol>
+		<p>Now try to launch the NetBeans Platform again from Eclipse, using the Launch Configuration you have prepared before. The Platform should start-up and right after that, your module should be executed.</p>
+<p>If you have problems, check the following items:
+<ul>
+<li>look at the <code>ide.log</code> file. It might contain a Stack Trace or an warning that clarifies your problem.</li>
+<li>look whether your module is activated. Use the menu "Tools=>Options" in the NetBeans Platform, and in the window that appears, open the branch "IDE Configuration=>System=>Modules". 
+Select your module - it might be not enabled. If it is false, change Enabled to "True". If this works -- perfekt. If not, you might get an error message that explains why it cannot be enabled.</li>
+<li>open the jar of your module (with Winzip) and check if you really have the correct manifest inside.</li>
+</ul>
+</p>
+<p>If you want to execute another of your source classes, you don't need to change the Jar with the manifest, just edit your start-up Class.</p>
+</description>
+  </section>
+  <section>
+    <title>Debugging your Module Code</title>
+    <description>
+      <p>Now you can easily debug your code. All you need to do is launch your Launch Configuration in debug mode. Use the Menu "Run=>Debug..." for this. You can set Breakpoints directly in your source code. </p>
+    </description>
+  </section>
+</document>
+

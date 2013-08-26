@@ -1,0 +1,26 @@
+JUnit version
+Starting Java application
+DEBUG \[acsStartJava\] ACS
+DEBUG \[acsStartJava\] exported
+ORB options -ORBInitRef 
+Running the following command
+^. - [jJ]ava
+java -classpath
+Connected to
+manager corbaloc
+Manager login done
+authenticate called
+logged out from manager
+about to exit the JVM...
+Local file logger: Cache saved to
+Waiting for the container to really shutdown
+- Time: [0-9]+\.[0-9]+
+^. - $
+ACS.log.minlevel.namedloggers not defined.
+Thread shut down
+TRACE
+FINEST
+DELOUSE
+FINER
+DEBUG
+FINE

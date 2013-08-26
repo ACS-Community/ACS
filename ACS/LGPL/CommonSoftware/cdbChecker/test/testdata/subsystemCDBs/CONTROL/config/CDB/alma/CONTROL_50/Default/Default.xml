@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<FTS xmlns="urn:schemas-cosylab-com:FTS:1.0"
+     xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+     xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+     xmlns:amb="urn:schemas-cosylab-com:AmbDevice:1.0"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <antennaID/>
+  <enableDelayTracking/>
+  <enableFringeTracking/>
+
+  <Frequency alarm_low_on = "0.0"
+                alarm_low_off = "0.0"
+                alarm_high_on = "125e6"
+                alarm_high_off = "125e6"
+                min_delta_trig = "4.4408920985006262e-07"
+                default_value = "31.25e6"
+                graph_min = "0.0"
+                graph_max = "125e6"
+                min_step = "100"
+                units = "Hz"
+                description = "Frequency"
+                format = "%f">
+    <amb:rcaMap relative_address="1" data_length="6">
+      <amb:doubleBitMap numberOfBits="48" fieldWidth="48" scale = "4.440892098500626e-7"/>
+    </amb:rcaMap>
+  </Frequency>
+
+  <PhaseValues alarm_low_on = "0.0"
+                  alarm_low_off = "0.0"
+                  alarm_high_on = "360.0"
+                  alarm_high_off = "360.0"
+                  min_delta_trig = "0.02197265625"
+                  default_value = "0.0"
+                  graph_min = "0.0"
+                  graph_max = "360"
+                  min_step = "1"
+                  units = "Degree"
+                  description = "Phase offset values"
+                  format = "%f">
+    <amb:rcaMap relative_address="2" data_length="8">
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale = "2.197265625e-2"/>
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale = "2.197265625e-2"/>
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale = "2.197265625e-2"/>
+      <amb:doubleBitMap numberOfBits="14" fieldWidth="16" scale = "2.197265625e-2"/>
+    </amb:rcaMap>
+  </PhaseValues>
+
+  <VoltageStatus/>
+
+  <SwitchingDelay alarm_low_on = "0.004"
+                  alarm_low_off ="0.004"
+                  alarm_high_on = "0.012388608"
+                  alarm_high_off ="0.012388608"
+                  min_delta_trig = "8e-9"
+                  default_value = "0.008"
+                  graph_min ="0.004"
+                  graph_max = "0.013"
+                  min_step = "8e-9"
+                  units = "Second"
+                  description= "Phase switching delay"
+                  format = "%f">
+    <amb:rcaMap relative_address="7" data_length="3">
+      <amb:doubleBitMap numberOfBits="20" fieldWidth="24" scale = "8.0e-9" offset = "0.004"/>
+    </amb:rcaMap>
+  </SwitchingDelay>
+
+  <Address/>
+  <errors/>
+  <transactions/>
+  <temperature/>
+</FTS>
+

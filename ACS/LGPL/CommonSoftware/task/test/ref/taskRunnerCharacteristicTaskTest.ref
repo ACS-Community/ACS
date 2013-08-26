@@ -1,0 +1,43 @@
+1 - ContainerStatusMsg: Startup begins
+1 - ----------T--:--:--.--- [Container-XXXX-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [Container-XXXX - ] Configuration information for container 'Container-XXXX' not available.
+1 - ----------T--:--:--.--- [Container-XXXX - maci::Container::init] Starting as dynamic container.
+1 - ----------T--:--:--.--- [Container-XXXX-GL - cdb::DAOImpl] DAO:'MACI' Unable to return field: 'Containers/Container-XXXX/LoggingConfig/dispatchPacketSize'
+1 - ----------T--:--:--.--- [Container-XXXX-GL - maci::MACIHelper::getManagerHostname] Manager hostname generated using localhost address: '---'
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::getManager] Resolving manager...
+1 - ----------T--:--:--.--- [Container-XXXX-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [Container-XXXX - maci::Container::init] Recovery enabled.
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Container 'Container-XXXX' activated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Container 'Container-XXXX' initialized successfuly
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
+1 - ----------T--:--:--.--- [Container-XXXX-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Connected to the Manager.
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Connecting to the Centralized Logger...
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Connected to the Centralized Logger.
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Logging into the Manager...
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Set Naming Context to Logger.
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::init] Logged into the Manager.
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'characteristicTaskTestImpl'.
+1 - ----------T--:--:--.--- [Container-XXXX-GL - ] Switched state of component TEST_TASK: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [Container-XXXX-GL - ] Switched state of component TEST_TASK: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [Container-XXXX-GL - ] Switched state of component TEST_TASK: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::activate_component] Component 'TEST_TASK' activated.
+1 - Hello World
+1 - ----------T--:--:--.--- [Container-XXXX-GL - ] Switched state of component TEST_TASK: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [Container-XXXX-GL - ] Switched state of component TEST_TASK: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::etherealizeComponent] Component 'TEST_TASK' etherealized.
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::deactivate_component] Component 'TEST_TASK' deactivated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 'XXXXXX/libcharacteristicTaskTestImpl.so'.
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::logout] Logging out from the Manager.
+1 - ----------T--:--:--.--- [Container-XXXX - maci::ContainerImpl::logout] Logged out from the Manager.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
+1 - XXXXXX/libbaci.so
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 'XXXXXX/libbaci.so'.

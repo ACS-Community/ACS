@@ -1,0 +1,97 @@
+/*************************************************************************
+* E.S.O. - VLT project
+*
+* "@(#) $Id: vltPort.h.Linux,v 1.2 2009/12/21 13:11:50 gchiozzi Exp $" 
+*
+* vltPort.h for Linux
+*
+* who        when       what
+* --------  ----------  ----------------------------------------------
+* eallaert  1998-06-08  created from vltPort.h.Solaris2
+* ahuxley   1999-09-29  added definition of _SVID_SOURCE
+* bgilli    1999-10-01  added timeval stuff just like on Solaris.
+* bgilli    1999-10-06  #define _SVID_SOURCE transformed in #define _GNU_SOURCE
+* bgilli    1999-10-06  added missing endif!
+* psivera   2002-11-29  _GNU_SOURCE used only for C code, not C++
+*
+*/
+
+/************************************************************************
+*  vltPort.h - Include file to mask differences between platforms.
+*              This file should be included in all source files.
+*              It relies on macro definitions preceeding the
+*              inclusion of this file.
+*                
+*  REMARK: This file belongs to the "vltMake" module.
+*------------------------------------------------------------------------
+*/
+
+#ifndef VLTPORT_H
+#define VLTPORT_H
+
+#ifdef __GNUC__
+#define ATTRIBUTE_UNUSED __attribute__((__unused__))
+#else
+#define ATTRIBUTE_UNUSED
+#endif
+
+
+/*
+* When it is used, vltPort.h MUST be the very first file included
+* in ANSI ".c" files.
+* Cause a syntax error if we detect that any other include file has been
+* included before vltPort.h in an ANSI ".c" file.
+*/
+#if defined(__STDC__) && \
+                         (defined(_H_STANDARDS) || \
+                          defined(_SYS_STDSYMS_INCLUDED) || \
+                          defined(_STANDARDS_H_))
+#    error "vltPort.h MUST BE THE VERY FIRST FILE INCLUDED IN ANSI '.c' FILES"
+#endif
+
+/*
+ * This file is used also by some VxWorks code.
+ * To be compatible with existing code, SUN_COMP is defined for both
+ * gcc and cc68k, but the following definitiond do not influence cc68k
+ */
+ 
+#define LINUX
+
+/* 
+ * at present, SELECT is defined in the code using it. It should be done here
+ * for all. May be in the next release.
+ */
+
+/*
+ * Adjust name-space information.
+ */
+#if defined(_ALL_SOURCE)
+#    undef _POSIX_C_SOURCE
+#endif
+
+#if defined(_XOPEN_SOURCE)
+#    undef _POSIX_C_SOURCE
+#endif
+  
+/* for Thomas Ebert re. ipc.h AH 29/09/99. BGI:Modified in _GNU_SOURCE 06/10/99 */
+#ifndef __cplusplus
+#define _GNU_SOURCE
+#endif
+
+/* For CCS_Lite, just like on Solaris. */
+#ifndef MAKE_VXWORKS
+#include <stddef.h>
+#include <sys/types.h>
+#include <sys/time.h>
+ 
+#if !defined(timercmp)
+    struct timeval
+        {
+        long      tv_sec;         /* seconds */
+        long      tv_usec;        /* and microseconds */
+        };
+#define crTIMEVAL_TIMEZONE_DEFINED
+#endif
+#endif /* MAKE_VXWORKS */
+
+#endif /*!VLTPORT_H*/

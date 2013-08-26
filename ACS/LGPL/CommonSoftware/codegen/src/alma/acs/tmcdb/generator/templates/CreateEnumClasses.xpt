@@ -1,0 +1,52 @@
+«IMPORT tmcdbTables»
+
+«EXTENSION alma::acs::tmcdb::grammardef::util»
+
+«DEFINE Root FOR TMCDBModel»
+«FOREACH tables AS table»
+	«FOREACH getCheckConstraints(table) AS constraint-»
+		«IF TextTypes.isInstance(constraint.column.type) || LengthDefinedTypes.isInstance(constraint.column.type)»
+			«EXPAND EnumClassDefinition FOR constraint»
+		«ENDIF»
+	«ENDFOREACH»
+«ENDFOREACH»
+«ENDDEFINE»
+
+«DEFINE EnumClassDefinition FOR CheckConstraint»
+«FILE  "gen/alma/acs/tmcdb/" + name + ".java"-»
+package alma.acs.tmcdb;
+
+/**
+ * This class has been automatically generated from the '«this.getTable().getModel().modelName.name»' TMCDB table model,
+ * and represents the '«name»' CHECK constraint defined for the '«column.name»' column of the '«getTable().name»' table.
+ *
+ * <p>This is automatic generated code, so don't try to change it by yourself!
+ */
+public enum «name» {
+
+«FOREACH ((StringPossibleValues)this.possibleValues).possibleValues AS value ITERATOR it-»
+	«value.toUpperCase()»("«value»")«IF !it.lastIteration-»,«ELSE»;«ENDIF»
+«ENDFOREACH-»
+
+	private String _stringValue;
+
+	«name»(String value) {
+		_stringValue = value;
+	}
+
+	public String toString() {
+		return _stringValue;
+	}
+
+	public static «name» valueOfForEnum(String value) {
+«FOREACH ((StringPossibleValues)this.possibleValues).possibleValues AS value ITERATOR it-»
+		if( value.equals("«value»") )
+			return «value.toUpperCase()»;
+«ENDFOREACH-»
+		else
+			throw new RuntimeException("Invalid value for «name» enumeration: " + value);
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

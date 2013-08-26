@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!--
+$Id: Generic.xml,v 1.3 2008/08/15 08:13:18 cparedes Exp $
+Copyright (C) 2005
+Associated Universities, Inc. Washington DC, USA.
+
+Produced for the ALMA project
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public License
+as published by the Free Software Foundation; either version 2 of
+the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+
+Correspondence concerning ALMA should be addressed as follows:
+
+       Internet email: alma-sw-admin@nrao.edu
+
+   - History:
+   -   Tue Mar 07 15:42:05 UTC 2006 modified by jDAL
+-->
+<Component xmlns="urn:schemas-cosylab-com:Component:1.0" Name="CONTROL/SecondLO/Node0x42/Generic" Code="SecondLOImpl" Type="IDL:alma/Control/SecondLO:1.0" Container="CONTROL/Test/cppContainer" Default="true"  ImplLang="cpp" />
+

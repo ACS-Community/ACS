@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat99,v 1.76 2003/01/09 17:51:31 vltsccm Exp $"
+#
+# to clean tat directory after test execution before archiving
+#
+rm -f ../bin/tat*
+rm -f ../object/tat*
+rm -f out/*.*
+find . -name '*.log' -exec rm -rf {} \;
+rm -f *.out
+rm -f *.diff
+rm -f sed.scan
+# cannot be cmm(re)Created
+rm -f TestList.sed
+rm -f Makefile
+rm -f wte*
+# to make 'tat' working for tat
+touch out/tat99.out
+

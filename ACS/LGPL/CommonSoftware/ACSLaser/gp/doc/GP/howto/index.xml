@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP project how to...</title>
+    <section><A href="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+  </head>
+
+	<section>
+		<description>
+		<p>
+      You will find here a list of HOW TOs / tips and tricks related to the GP layer.<br/>
+      If you can't find any solution to your problem in the list below, please <A href="mailto:project-gp-users@cern.ch">inform us</A>. 
+      Thanks in advance for your cooperation.  
+     </p>
+		</description>
+	</section>
+
+	<section>
+  		<anchor>GENERAL</anchor>
+		<title>General</title>
+		<description>
+      <ul>
+      <li><a href="printing_howto.html">How to print NetBeans</a>.</li>
+      </ul>
+		</description>
+	</section>
+
+  	<section>
+		<anchor>ACTIONS</anchor>
+		<title>Actions</title>
+		<description>
+      <ul>
+      <li>How to specify menus, toolbars and keyboard shortcuts.</li>
+      <li>How to specify static sub-menus (not dynamic ones).</li>
+      <li>How to create actions that can be added to the menu/to an explorer node.</li>
+      <li>How to link a JPanel to NetBeans actions callable from Menus, toolbars, Pop-Up menus, etc.</li>
+      <li>How to enable/disable actions according to current state of the GUI  (but no Cookie actions).</li>
+      </ul>
+		</description>
+	</section>
+
+	<section>
+  		<anchor>NODES</anchor>
+		<title>Nodes</title>
+		<description>
+      <ul>
+      <li><a href="nodes/nodes_howto.html">How to build up a node hierarchy</a>.
+      <ul>
+      <li><a href="nodes/nodes_howto.html#CreatingNodes">How to create Nodes</a>.</li>
+      <li><a href="nodes/nodes_howto.html#NodeFactory">How to use the <code>NodeFactory</code></a>.</li>
+      <li><a href="nodes/nodes_howto.html#ChildrenManager">How to write a <code>ChildrenManager</code></a>.</li>
+      <li><a href="nodes/nodes_howto.html#SortingChildren">How to sort children</a>.</li>
+      </ul>
+      </li></ul>
+		</description>
+	</section>
+
+	<section>
+  		<anchor>BEANS</anchor>
+		<title>Beans</title>
+		<description>
+      <ul>
+      <li><a href="beans/beans_howto.html">How to add information and behavior to domain beans</a>.
+      <ul>
+      <li><a href="beans/beans_howto.html#IntegrationDomainBeans">How to integrate domain beans with GP Layer</a>.</li>
+      <li><a href="beans/beans_howto.html#UsingBeanSupport">How to use BeanSupport</a>.</li>
+      <li><a href="beans/beans_howto.html#FiringPropertyChangeEvent">How to dynamically update the node</a>.</li>
+      <li><a href="beans/beans_howto.html#NameProperty">How to add the name property</a>.</li>
+      <li><a href="beans/beans_howto.html#DisplayNameProperty">How to add the displayName property</a>.</li>
+      <li><a href="beans/beans_howto.html#ShortDescriptionProperty">How to add the shortDescription property</a>.</li>
+      <li><a href="beans/beans_howto.html#NodeIconProperty">How to add the nodeIcon property</a>.</li>
+      <li><a href="beans/beans_howto.html#NodeDefaultActionProperty">How to add the nodeDefaultAction property</a>.</li>
+      <li><a href="beans/beans_howto.html#NodeActionsProperty">How to add the nodeActions property</a>.</li>
+      <li><a href="beans/beans_howto.html#NodePropertiesCacheableProperty">How to add the nodePropertiesCacheable property</a>.</li>
+      <li><a href="beans/beans_howto.html#PropertyInfoProperty">How to add the propertyInfo property</a>.</li>
+      </ul></li>
+      <li><a href="beans/beaninfo_howto.html">How to add information and behavior to domain beans using <code>BeanInfo</code></a>.</li>
+      </ul>
+		</description>
+	</section>
+
+	<section>
+  		<anchor>EXPLORER</anchor>
+		<title>Explorer</title>
+		<description>
+      <ul>
+      <li><A href="explorer/explorer_features.html">Features of Explorers and TableExplorers</A></li>
+      <li><A href="explorer/explorer_howto.html">Using GP Explorers</A>.
+      <ul>
+      <li>We will define a few pairs of classes for nodes + associated children for different purposes.</li> 
+      <li>How to lazily populate of the tree.</li>
+      <li>How to set and dynamically change labels, icons , tool tips.</li>
+      <li>How to make children nodes sortable (only one default sorting criterion).</li>
+      <li>How to Transform a Swing JTree to NetBeans Explorer.</li>
+      <li>How to use provide context-menus on explorer nodes using NetBeans actions.</li> 
+      </ul></li></ul>
+		</description>
+	</section>
+
+	<section>
+  		<anchor>LOGGING</anchor>
+		<title>Logging</title>
+		<description>
+      <ul>
+      <li><a href="logging/logging_howto.html">How to use the logging</a>.</li>     
+      </ul>
+		</description>
+	</section>
+
+	<section>
+  		<anchor>MODULES</anchor>
+		<title>Modules</title>
+		<description>
+      <ul>
+      <li><a href="module/module_howto.html">How to create a NetBeans Module</a>.</li>     
+      <li><a href="module/module_install.html">How to install NetBeans Modules (*.nbm files)</a></li>    
+      <li><a href="module/module_manifest_howto.html">How to write a manifest file (GP dependencies and so on)</a>.</li> 
+      </ul>
+		</description>
+	</section>
+<!--
+	<section>
+  		<anchor>PROPERTYSHEET</anchor>
+		<title>Property sheet</title>
+		<description>
+      <ul>
+      <li>How to automatically create a property from a JavaBean compliant class.</li>
+      <li>How to use the necessary JavaBeans facilities like a BeanInfo description, and property editors.</li>
+      <li>We will also provide a series of property editors for common types.</li>
+      </ul>
+		</description>
+	</section>
+-->
+	<section>
+  		<anchor>WINDOWING</anchor>
+		<title>Windowing</title>
+		<description>
+      <ul>
+      <li><A href="windowing/Windowing_howto.html">Windowing in NetBeans</A>.
+      <ul>
+      <li><A href="windowing/Windowing_howto.html#CREATE_WORKSPACE">How to create a NetBeans Workspace</A>.</li>
+      <li><A href="windowing/Windowing_howto.html#DELETE_WORKSPACE">How to delete a NetBeans Workspace</A>.</li>
+      <li><A href="windowing/Windowing_howto.html#FIND_WORKSPACE">How to find an existing Workspaces</A>.</li>
+      <li><A href="windowing/Windowing_howto.html#WORKSPACE_SWITCHES">How to detect when the user switches from one workspace to another</A></li>
+      </ul></li>
+<!--      <li>How to integrate an existing JPanel into NetBeans.</li> 
+      <li>How to set the size and position of a window (NetBeans Mode).</li>
+      <li>How to dock a TopComponent into a NetBeans Mode.</li>
+      <li>Write to the output window. </li> 
+      <li>Write to the status bar.</li> 
+      <li>Write to the logfile.</li> 
+      <li>How use pop-up dialogs for information and for error messages</li> 
+      <li>How to detect a Workspace switch.</li>
+      <li>How to safely access properties in Swing Panels and widgets from a thread other than the main AWT event handler.</li> 
+      -->
+      </ul>
+		</description>
+	</section>
+
+	<section>
+  		<anchor>NETBEANS</anchor>
+		<title>Netbeans</title>
+		<description>
+      <ul>
+      <li><A href="netbeans/Getting_Started.html">Getting started with NetBeans</A>.</li>
+      <li><A href="netbeans/debuggingNB.html">Debugging NetBeans from another IDE</A>.</li>
+      <li><A href="netbeans/setupNBPlatform.html">Running NetBeans Platform</A>.</li>
+      <li><A href="netbeans/cvs_config.html">How to configure CVS in Netbeans</A>.</li>
+      <li><A href="netbeans/defaultexecutor.html">How to set the default executor in Netbeans</A>.</li>
+      <!--li>How to deploy NetBeans with Java WebStart.</li-->
+      </ul>
+		</description>
+	</section>
+
+</document>
+

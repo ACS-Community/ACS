@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <_ Name="*"  
+           Code="alma.Control.arrayInterfaces.ArrayControllerHelper"
+           Type="IDL:alma/Control/ArrayController:1.0"
+           Container="CONTROL/ACC/javaContainer" ImplLang="java" />
+
+    <_ Name="*" 
+           Code="alma.Control.arrayInterfaces.ArrayMonitorHelper"
+           Type="IDL:alma/Control/ArrayMonitor:1.0"
+           Container="CONTROL/ACC/javaContainer" ImplLang="java" />
+
+</Components>

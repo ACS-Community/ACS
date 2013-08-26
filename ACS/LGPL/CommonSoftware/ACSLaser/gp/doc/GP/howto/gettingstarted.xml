@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP project Getting started</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+    <section>
+        <description>
+      <DIV ID="CellLeft10">
+      You will find in this page the guidelines to build your first GP application. <BR/> 
+    </DIV>
+            </description>
+    </section>
+
+    <section>
+        <anchor>INSTALL</anchor>
+        <title>Setting-up the development environment</title>
+        <description>
+            <UL>
+            <FONT COLOR="#FF0000">1</FONT>) <A HREF="installjdk.html">Installing the JDK</A>.<BR/>
+            <BR/>
+            <FONT COLOR="#FF0000">2</FONT>) <A HREF="netbeans/Getting_Started.html">Installing and configuring the Netbeans IDE</A>.<BR/>
+            <BR/>
+            <FONT COLOR="#FF0000">3</FONT>) <A HREF="../download/index.html">Downloading the GP components</A>.<BR/>
+            <BR/>
+            <FONT COLOR="#FF0000">4</FONT>) <A HREF="installingGP.html">Installing the GP components</A>.<BR/>
+            <BR/>
+            </UL>
+            <BR/>
+        </description>
+    </section>
+    
+    <section>
+        <anchor>COURSE</anchor>
+        <title>Training course for external GP developers</title>
+        <description>
+            <UL>
+            <FONT COLOR="#FF0000">1</FONT>) GP-Training Course Part 1 <A HREF="/proj-gp/_notgenerated/presentations/GP-Course-1/GP-Course-1.htm">slides</A> , <A HREF="../course/course1.html">exercises</A> and <A HREF="../GP-Examples/javasrc/index.html">sources</A>.<BR/>
+            <FONT COLOR="#FF0000">1</FONT>) GP-Training Course Part 2 <A HREF="/proj-gp/_notgenerated/presentations/GP-Course-2/GP-Course-2.htm">slides</A> , <A HREF="../course/course2.html">exercises</A> and <A HREF="../GP-Examples/javasrc/index.html">sources</A>.<BR/>
+            <BR/>
+            </UL>
+            <BR/>
+        </description>
+    </section>
+<!--    <section>
+        <anchor>SAMPLEDEV</anchor>
+        <title>Building a sample application using the GP package</title>
+        <description>
+      <UL>
+            <BR/>
+             [ to be filled ]
+      </UL><BR/><BR/>
+            
+        </description>
+    </section>
+  -->
+</document>
+

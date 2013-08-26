@@ -1,0 +1,436 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>  
+  <meta name="generator" content="HTML Tidy, see www.w3.org">
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>ACS Cookbook</title>
+  <link rel="StyleSheet" href="ACSCookbook.css" type="text/css" media="screen">
+</head>
+<!--============================================================================-->
+<body style="color: white; background-color: darkblue">
+<!--ALMA Logo Section-->
+<div class="almalogo">
+      <a href="http://www.eso.org/projects/alma/develop/acs"><img alt="ALMA
+Logo"
+src="http://www.eso.org/projects/alma/develop/software/alma-it/images/almapic.jpg"
+align="middle"></a> <a href="index.html">ACS Cookbook</a>: Environment Variables
+</div>
+<!--Subsections-->
+<!--============================================================================-->    
+<div class="overview">
+<h2>Overview</h2>
+<p>
+In order to run ACS as an end-user or even develop software based on the
+ACS framework, a number of environment variables must be
+defined. The majority of these variables are defined in a BASH script
+provided by ACS (usually located in
+<i>/alma/ACS-x.y/ACSSW/config/.acs/.bash_profile.acs</i>). ACS does
+not provide this script in other shell languages although there is
+nothing wrong with porting <i>.bash_profile.acs</i> to another shell.<br>
+</p>
+</div>
+<!--============================================================================-->    
+<div class="briefexample">
+<center>
+<h2>Optional Environment Variables</h2>
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td class="examples"><b><big>ACS_TMP</big></b></td>
+<td class="examples">The directory where temporary
+files will be stored.&nbsp; ($ACSDATA/tmp/,
+when not set)</td>
+</tr>
+<tr>
+<td class="examples"><b><big>ACS_INSTANCE</big></b></td>
+<td class="examples">Specifies a baseport (ranging
+from 0-9) used to start an instance of ACS.&nbsp; There is a
+one-to-one correlation between this value and the
+$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE directories.
+(Dynamically picks a free baseport when not set) </td>
+</tr>
+<tr>
+<td class="examples"><b><big>ACS_LOG_STDOUT</big></b></td>
+<td class="examples">Control the amount of
+information sent to stdout. By default, only LM_INFO log messages are
+sent to stdout. </td>
+</tr>
+<tr>
+<td class="examples"><b><big>ACS_LOG_FILE</big></b><br>
+</td>
+<td class="examples">Location and root file name for
+ACS log files. Each process/thread generates a unique file name by
+appending process name and PID to the root file name.&nbsp; ($ACSDATA/tmp/acs_local_log_, when
+not set)<br>
+</td>
+</tr>
+<tr>
+<td class="examples"><b><big>MANAGER_REFERENCE</big></b>
+</td>
+<td class="examples">corbaloc reference to manager.<br>
+</td>
+</tr>
+<tr>
+<td class="examples"><b><big>NAMESERVICE_REFERENCE</big></b>
+</td>
+<td class="examples">corbaloc reference to the Naming
+Service<br>
+</td>
+</tr>
+<tr>
+<td class="examples"><b><big>ACS_NAME_SERVICE</big></b>
+</td>
+<td class="examples">CORBA Initial Reference for the
+Naming Service.&nbsp; (default: $MANAGER_COMPUTER_NAME:4000/NameService)<br>
+</td>
+</tr>
+<tr>
+<td class="examples"><b><big>ACS_RECOVERY_FILE</big></b>
+</td>
+<td class="examples">Name and location of ACS's
+recovery file.<br>
+</td>
+</tr>
+<tr>
+<td class="examples"><b><big>ACS_BACI_RECOVERY_FILE</big></b></td>
+<td class="examples">Name and location of BACI's
+recovery file.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Environment Variables Set By .bash_profile.acs</h2>
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td class="examples"><b><big>ALMASW_ROOTDIR<br>
+</big></b></td>
+<td class="examples">Usually "/alma". &nbsp;The root directory of the
+ACS
+installation.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>ALMASW_RELEASE<br>
+</big></b></td>
+<td class="examples">The ACS release. &nbsp;An example is "ACS-2.1".<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>ALMASW_INSTDIR<br>
+</big></b></td>
+<td class="examples">Usually "ACSSW". &nbsp;The directory where ACS
+libraries
+are installed.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>ACSROOT<br>
+</big></b></td>
+<td class="examples">The fully expanded ALMASW_INSTDIR directory.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>INTROOT<br>
+</big></b></td>
+<td class="examples">Where a developer's personal libraries,
+executables,
+etc. are stored.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>GNU_ROOT<br>
+</big></b></td>
+<td class="examples">Location of GNU tools installation.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>TCLTK_ROOT<br>
+</big></b></td>
+<td class="examples">Location of tcl and tk installation.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>ACE_ROOT_DIR<br>
+</big></b></td>
+<td class="examples">Location of ACE+TAO installation.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>OSYSTEM<br>
+</big></b></td>
+<td class="examples">Name of the operating system. &nbsp;Should be
+either
+"Linux" or "SunOS".<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>JAVA_HOME<br>
+</big></b></td>
+<td class="examples">Location of the Java installation.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>VLTROOT<br>
+</big></b></td>
+<td class="examples">The same as <b>$ACSROOT</b>. &nbsp;Used for
+Very Large
+Telescope software.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>VLTSW_RELEASE<br>
+</big></b></td>
+<td class="examples">The same as<b> $ACSSW_RELEASE</b>. &nbsp;Used
+for
+Very Large Telescope software.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>ACSDATA<br>
+</big></b></td>
+<td class="examples">The root directory where all ACS configuration
+files (including Configuration Database files) are stored.&nbsp; <br>
+(default:<b> $ALMASW_INSTDIR</b>/acsdata)<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>VLTDATA<br>
+</big></b></td>
+<td class="examples"><b>DEPRECATED</b><br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>ACS_CDB<br>
+</big></b></td>
+<td class="examples">Location of the configuration database files to
+be used when cdbjDAL is started. (default: $ACSDATA/config/defaultCDB)<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>RTAPENV<br>
+</big></b></td>
+<td class="examples"><b>DEPRECATED</b><br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>CMM_PORT<br>
+</big></b></td>
+<td class="examples"><b>DEPRECATED</b><br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>CMM_HOST<br>
+</big></b></td>
+<td class="examples"><b>DEPRECATED</b><br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>HOST<br>
+</big></b></td>
+<td class="examples">Hostname.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>USER<br>
+</big></b></td>
+<td class="examples">Username.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>PYTHON_ROOT<br>
+</big></b></td>
+<td class="examples">Location of Python installation.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>FARCH<br>
+</big></b></td>
+<td class="examples">Standard C library???<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>OMNI_ROOT<br>
+</big></b></td>
+<td class="examples">Root directory of the omniORB installation.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>OMNIORB_CONFIG<br>
+</big></b></td>
+<td class="examples">Configuration file for omniORB.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>PYTHONPATH<br>
+</big></b></td>
+<td class="examples">Search path for Python scripts/modules.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>IDL_PATH<br>
+</big></b></td>
+<td class="examples">Search path for IDL files.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>ANT_HOME<br>
+</big></b></td>
+<td class="examples">Location of the Ant installation.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>JACORB_HOME<br>
+</big></b></td>
+<td class="examples">Location of the JacORB installation.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>ACC_HOST<br>
+</big></b></td>
+<td class="examples">Host where maciManager is running.
+&nbsp;DEPRECATED???<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>WIND_BASE<br>
+</big></b></td>
+<td class="examples">Location of a VxWorks installation.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>CPU<br>
+</big></b></td>
+<td class="examples">Type of CPU being used on an LCU.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>WIND_REGISTRY<br>
+</big></b></td>
+<td class="examples"><b>$HOSTNAME</b><br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>WIND_VERSION<br>
+</big></b></td>
+<td class="examples">Directory where VxWorks is installed.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>VX_CPU_FAMILY<br>
+</big></b></td>
+<td class="examples">Family of CPUs <b>$CPU</b> is in.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>WIND_HOST_TYPE<br>
+</big></b></td>
+<td class="examples">Type of host hosting VxWorks. &nbsp;Typically
+"sun4-solaris2". <br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>VX_HOST_TYPE<br>
+</big></b></td>
+<td class="examples">Type of operating system hosting VxWorks.
+&nbsp;Typically
+"solaris". <br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>VXROOT<br>
+</big></b></td>
+<td class="examples">Root installation of VxWorks.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>VX_VW_BASE<br>
+</big></b></td>
+<td class="examples"><b>$VXROOT</b><br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>VX_HSP_BASE<br>
+</big></b></td>
+<td class="examples"><b>$VXROOT</b><br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>VX_BSP_BASE<br>
+</big></b></td>
+<td class="examples"><b>$VXROOT</b><br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>PATH<br>
+</big></b></td>
+<td class="examples">Search path for executables.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>LD_LIBRARY_PATH<br>
+</big></b></td>
+<td class="examples">Search path for shared libraries.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>MANPATH<br>
+</big></b></td>
+<td class="examples">Search path for manpage entries.<br>
+</td>
+</tr>
+<tr>
+<td class="examples" style="vertical-align: top;"><b><big>CLASSPATH<br>
+</big></b></td>
+<td class="examples">Search path for Java jar files.<br>
+</td>
+</tr>
+</tbody>
+</table>
+</center>
+</p>
+</div>
+<!--============================================================================-->
+<div class="specialnotes">
+<h2>Special Notes</h2>
+<ul>
+  <li>
+      None at the moment.
+  </li>
+</ul>
+</div>
+<!--============================================================================-->
+<div class="examples">
+<h2>Examples in the ALMA CVS Repository</h2>
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+  <tr>
+    <td class="examples" style="vertical-align: top;">
+    N/A
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+<!--============================================================================-->
+<div class="relateddocuments">
+<h2>Related Documents</h2>
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+  <tr>
+    <td class="relateddocuments" style="vertical-align: top;">
+    None.
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+<!--============================================================================-->
+<!--Keywords section-->
+<div class="keywords">
+<br>
+<br>
+Keywords: .bash_profile.acs, BASH, shell
+</div>
+<!--============================================================================-->
+</body>
+</html>

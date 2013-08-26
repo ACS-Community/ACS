@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+      <!--Standard C++ components-->
+      <_ Name="CLOCK1"	Code="acsclock" Type="IDL:alma/acstime/Clock:1.0" Container="TestContainer" ImplLang="cpp" />
+      <_ Name="TIMER1"	Code="acstimer" Type="IDL:alma/acstime/Timer:1.0" Container="TestContainer" ImplLang="cpp" />
+
+      <!--C++ components needed for various tests-->
+      <_ Name="MOUNT1"      Code="acsexmplMountImpl"      Type="IDL:alma/MOUNT_ACS/Mount:1.0"	        Container="TestContainer" ImplLang="cpp" />
+      <_ Name="FRIDGE1"	    Code="acsexmplFridgeImpl"     Type="IDL:alma/FRIDGE/FridgeControl:1.0"	    Container="TestContainer" ImplLang="cpp" />
+      <_ Name="HELLOWORLD1" Code="acsexmplHelloWorldImpl" Type="IDL:alma/acsexmplHelloWorld/HelloWorld:1.0"	Container="TestContainer" ImplLang="cpp" />
+      <_ Name="LAMP1"       Code="acsexmplLampImpl"       Type="IDL:alma/acsexmplLamp/Lamp:1.0"                 Container="TestContainer" ImplLang="cpp" />
+
+      <!--Archive components needed for archive-related methods in containerServices class.-->
+      <_ Name="OPERATIONAL_ARCHIVE" Code="alma.archive.helpers.OperationalHelper" Type="IDL:alma/xmlstore/Operational:1.0" Container="hugoContainer" ImplLang="java" />
+      <_ Name="IDENTIFIER_ARCHIVE" Code="alma.archive.helpers.IdentifierHelper" Type="IDL:alma/xmlstore/Identifier:1.0" Container="hugoContainer" ImplLang="java" />
+      <_ Name="ADMINISTRATIVE_ARCHIVE" Code="alma.archive.helpers.AdministrativeHelper" Type="IDL:alma/xmlstore/Administrative:1.0" Container="hugoContainer" ImplLang="java" />
+      <_ Name="ARCHIVE_DATABASE" Code="alma.archive.database.xindice.XindiceDatabaseHelper" Type="IDL:alma/archiveinternal/Database:1.0" Container="hugoContainer" ImplLang="java" />
+
+      <!--the various python components-->
+      <_ Name="TEST_QOS_COMPONENT"	Code="acspyTestQoSImpl.EchoTest" Type="IDL:alma/acspyTestQoS/EchoTest:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="TESTCOMPONENT"	Code="acspytestImpl.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="TESTCOMPONENT1"	Code="acspytestImpl.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="TESTCOMPONENT2"	Code="acspytestImpl.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="TESTCOMPONENT3"	Code="acspytestImpl.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="TESTCOMPONENT4"	Code="acspytestImpl.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="TESTCOMPONENT5"	Code="acspytestImpl.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="RELOADCOMP1"	Code="acspytestImpl.testSubPackage.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer2" ImplLang="py" />
+      <_ Name="RELOADCOMP2"	Code="acspytestImpl.testSubPackage.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer2" ImplLang="py" />
+
+      <_ Name="ACSEVENTADMIN"	
+         Code="acsncImpl.ACSEventAdmin" 
+         Type="IDL:alma/acsnc/ACSEventAdmin:1.0" 
+         Container="pyContainer"
+         Default="true" ImplLang="py" />
+      <_ Name="PYBACI1"	Code="acspytestImpl.PyBaciTest"
+      Type="IDL:alma/acspytest/PyBaciTest:1.0"
+      Container="pyContainer" ImplLang="py" />
+     <_ Name="PYBACI2"	Code="acspytestImpl.PyBaciTest"
+      Type="IDL:alma/acspytest/PyBaciTest:1.0"
+      Container="pyContainer" ImplLang="py" />
+      <_ Name="TEST_PS_1"    Code="acsexmplPowerSupplyImpl"
+                       Type="IDL:alma/PS/PowerSupply:1.0"
+                       Container="TestContainer" ImplLang="cpp" />
+</Components>
+

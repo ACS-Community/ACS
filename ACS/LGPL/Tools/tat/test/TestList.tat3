@@ -1,0 +1,8 @@
+#
+# "@(#) $Id: TestList.tat3,v 1.76 2003/01/09 17:51:18 vltsccm Exp $"
+# 
+# Note the different white spaces in ENVIRONMENT lines
+ENVIRONMENT  ws3   WS   
+ENVIRONMENT lcu3  LCU	
+tat31
+tat32

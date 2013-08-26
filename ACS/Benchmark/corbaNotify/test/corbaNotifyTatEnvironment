@@ -1,0 +1,32 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id$"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# eallaert  2008-01-18  initial version
+
+# Set ACS_TMP to the local tmp folder
+set ACS_TMP [file join [pwd] tmp]
+set env(ACS_TMP) $ACS_TMP
+
+# Also set ACSDATA to the local tmp folder, to capture locally the output of containers started by the daemon.
+# The file $ACSDATA/config/orb.properties must be copied, otherwise the manager fails with wrong jacorb logging factory errors.
+# (Replace "/" with "file join" stuff as needed...) 
+file mkdir $ACS_TMP/acsdata/config
+file copy $env(ACSDATA)/config/orb.properties $ACS_TMP/acsdata/config
+set env(ACSDATA) $ACS_TMP/acsdata
+
+# Test CDB (needed for NC and manager config, even though we currently only use fully dynamic components and containers) 
+set env(ACS_CDB) [pwd] 
+
+# Produce also low-level logs for all acsStart.log, all_logs.xml, and test .out.orig files. 
+# The latter will be thinned out by TestList.grep to keep the ref files maintainable.
+set env(ACS_LOG_STDOUT) 1
+set env(ACS_LOG_CENTRAL) 3
+
+#set env(ACS_LOG_FILE) [file join $ACS_TMP log_cache.dat]
+
+#
+# ___oOo___

@@ -1,0 +1,661 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+Indirect:
+elisp-1: 1718
+elisp-2: 35686
+elisp-3: 81024
+elisp-4: 129709
+elisp-5: 177109
+elisp-6: 224715
+elisp-7: 273033
+elisp-8: 319808
+elisp-9: 368924
+elisp-10: 418481
+elisp-11: 467522
+elisp-12: 516631
+elisp-13: 566328
+elisp-14: 616143
+elisp-15: 665726
+elisp-16: 714906
+elisp-17: 762647
+elisp-18: 807887
+elisp-19: 856550
+elisp-20: 906193
+elisp-21: 954466
+elisp-22: 1001612
+elisp-23: 1050386
+elisp-24: 1098411
+elisp-25: 1146105
+elisp-26: 1195412
+elisp-27: 1245347
+elisp-28: 1293702
+elisp-29: 1342757
+elisp-30: 1392649
+elisp-31: 1442157
+elisp-32: 1490206
+elisp-33: 1529937
+elisp-34: 1547825
+
+Tag Table:
+(Indirect)
+Node: Top1718
+Node: Copying35686
+Node: Introduction54837
+Node: Caveats56406
+Node: Lisp History58179
+Node: Conventions59437
+Node: Some Terms60245
+Node: nil and t60954
+Node: Evaluation Notation62629
+Node: Printing Notation63549
+Node: Error Messages64416
+Node: Buffer Text Notation64850
+Node: Format of Descriptions65718
+Node: A Sample Function Description66565
+Node: A Sample Variable Description70542
+Node: Acknowledgements71443
+Node: Lisp Data Types72748
+Node: Printed Representation75047
+Node: Comments77081
+Node: Programming Types77708
+Node: Integer Type79304
+Node: Floating Point Type80347
+Node: Character Type81024
+Node: Symbol Type87751
+Node: Sequence Type90475
+Node: Cons Cell Type91899
+Node: Dotted Pair Notation96375
+Node: Association List Type98489
+Node: Array Type99365
+Node: String Type100723
+Node: Vector Type103827
+Node: Function Type104590
+Node: Macro Type105695
+Node: Primitive Function Type106384
+Node: Byte-Code Type107896
+Node: Autoload Type108490
+Node: Editing Types109465
+Node: Buffer Type110384
+Node: Marker Type112214
+Node: Window Type112931
+Node: Frame Type114132
+Node: Window Configuration Type114812
+Node: Process Type115349
+Node: Stream Type116301
+Node: Keymap Type117419
+Node: Syntax Table Type117872
+Node: Display Table Type118837
+Node: Overlay Type119191
+Node: Type Predicates119793
+Node: Equality Predicates122746
+Node: Numbers125858
+Node: Integer Basics127357
+Node: Float Basics129709
+Node: Predicates on Numbers131506
+Node: Comparison of Numbers133135
+Node: Numeric Conversions136472
+Node: Arithmetic Operations137770
+Node: Rounding Operations143120
+Node: Bitwise Operations144209
+Node: Transcendental Functions152936
+Node: Random Numbers154708
+Node: Strings and Characters156562
+Node: String Basics157755
+Node: Predicates for Strings160000
+Node: Creating Strings160553
+Node: Text Comparison165104
+Node: String Conversion167952
+Node: Formatting Strings171222
+Node: Character Case177109
+Node: Case Table179997
+Node: Lists183868
+Node: Cons Cells184822
+Node: Lists as Boxes186151
+Node: List-related Predicates188786
+Node: List Elements190481
+Node: Building Lists193495
+Node: Modifying Lists199734
+Node: Setcar200539
+Node: Setcdr202953
+Node: Rearrangement205456
+Node: Sets And Lists211263
+Node: Association Lists215355
+Node: Sequences Arrays Vectors222564
+Node: Sequence Functions224715
+Node: Arrays228012
+Node: Array Functions230167
+Node: Vectors232346
+Node: Vector Functions233859
+Node: Symbols236275
+Node: Symbol Components237323
+Node: Definitions241510
+Node: Creating Symbols243663
+Node: Property Lists250120
+Node: Evaluation254436
+Node: Intro Eval255233
+Node: Eval258739
+Node: Forms263016
+Node: Self-Evaluating Forms264164
+Node: Symbol Forms265682
+Node: Classifying Lists266592
+Node: Function Indirection267341
+Node: Function Forms270449
+Node: Macro Forms271441
+Node: Special Forms273033
+Node: Autoloading275305
+Node: Quoting275795
+Node: Control Structures277231
+Node: Sequencing278845
+Node: Conditionals281703
+Node: Combining Conditions285118
+Node: Iteration288381
+Node: Nonlocal Exits290158
+Node: Catch and Throw290851
+Node: Examples of Catch294687
+Node: Errors296698
+Node: Signaling Errors298177
+Node: Processing of Errors301236
+Node: Handling Errors302557
+Node: Error Symbols309454
+Node: Cleanups312750
+Node: Variables316522
+Node: Global Variables318223
+Node: Constant Variables319292
+Node: Local Variables319808
+Node: Void Variables324497
+Node: Defining Variables328001
+Node: Accessing Variables334852
+Node: Setting Variables336271
+Node: Variable Scoping339642
+Node: Scope341232
+Node: Extent342748
+Node: Impl of Scope344216
+Node: Using Scoping346174
+Node: Buffer-Local Variables347390
+Node: Intro to Buffer-Local348192
+Node: Creating Buffer-Local351898
+Node: Default Value356551
+Node: Functions359688
+Node: What Is a Function360775
+Node: Lambda Expressions364683
+Node: Lambda Components365448
+Node: Simple Lambda367272
+Node: Argument List368924
+Node: Function Documentation372644
+Node: Function Names374608
+Node: Defining Functions377175
+Node: Calling Functions379704
+Node: Mapping Functions383549
+Node: Anonymous Functions385894
+Node: Function Cells389131
+Node: Inline Functions393799
+Node: Related Topics395663
+Node: Macros396709
+Node: Simple Macro397986
+Node: Expansion398714
+Node: Compiling Macros401681
+Node: Defining Macros403333
+Node: Backquote404650
+Node: Problems with Macros407449
+Node: Argument Evaluation408137
+Node: Surprising Local Vars411090
+Node: Eval During Expansion413225
+Node: Repeated Expansion414912
+Node: Loading416816
+Node: How Programs Do Loading418481
+Node: Autoload423622
+Node: Repeated Loading429127
+Node: Features431096
+Node: Unloading435699
+Node: Hooks for Loading437442
+Node: Byte Compilation438447
+Node: Speed of Byte-Code439913
+Node: Compilation Functions440991
+Node: Eval During Compile446327
+Node: Byte-Code Objects447583
+Node: Disassembly450072
+Node: Debugging458512
+Node: Debugger459912
+Node: Error Debugging461049
+Node: Infinite Loops462837
+Node: Function Debugging464074
+Node: Explicit Debug466757
+Node: Using Debugger467522
+Node: Debugger Commands469379
+Node: Invoking the Debugger472815
+Node: Internals of Debugger476726
+Node: Syntax Errors481242
+Node: Excess Open482483
+Node: Excess Close484347
+Node: Compilation Errors485757
+Node: Edebug487038
+Node: Using Edebug489087
+Node: Instrumenting491671
+Node: Edebug Execution Modes494706
+Node: Jumping497975
+Node: Edebug Misc500919
+Node: Breakpoints502340
+Node: Global Break Condition505276
+Node: Source Breakpoints506159
+Node: Trapping Errors507081
+Node: Edebug Views508168
+Node: Edebug Eval510072
+Node: Eval List511138
+Node: Printing in Edebug515205
+Node: Trace Buffer516631
+Node: Coverage Testing518493
+Node: The Outside Context520537
+Node: Checking Whether to Stop521255
+Node: Edebug Display Update521921
+Node: Edebug Recursive Edit524064
+Node: Instrumenting Macro Calls525685
+Node: Specification List527956
+Node: Backtracking535878
+Node: Specification Examples537812
+Node: Edebug Options539875
+Node: Read and Print545012
+Node: Streams Intro545982
+Node: Input Streams547855
+Node: Input Functions552931
+Node: Output Streams554984
+Node: Output Functions559024
+Node: Output Variables563315
+Node: Minibuffers565250
+Node: Intro to Minibuffers566328
+Node: Text from Minibuffer568727
+Node: Object from Minibuffer573405
+Node: Minibuffer History576593
+Node: Completion579162
+Node: Basic Completion581127
+Node: Minibuffer Completion585984
+Node: Completion Commands588887
+Node: High-Level Completion593515
+Node: Reading File Names597290
+Node: Programmed Completion600897
+Node: Yes-or-No Queries603099
+Node: Multiple Queries607919
+Node: Minibuffer Misc611734
+Node: Command Loop616143
+Node: Command Overview617493
+Node: Defining Commands621624
+Node: Using Interactive622365
+Node: Interactive Codes625723
+Node: Interactive Examples631336
+Node: Interactive Call632643
+Node: Command Loop Info637868
+Node: Input Events641980
+Node: Keyboard Events643378
+Node: Function Keys645912
+Node: Mouse Events648306
+Node: Click Events649415
+Node: Drag Events652078
+Node: Button-Down Events653512
+Node: Repeat Events654748
+Node: Motion Events658733
+Node: Focus Events659852
+Node: Event Examples661400
+Node: Classifying Events662642
+Node: Accessing Events665726
+Node: Strings of Events668359
+Node: Reading Input671430
+Node: Key Sequence Input672292
+Node: Reading One Event675611
+Node: Quoted Character Input677535
+Node: Event Input Misc678869
+Node: Waiting682084
+Node: Quitting684531
+Node: Prefix Command Arguments688926
+Node: Recursive Editing693806
+Node: Disabling Commands698590
+Node: Command History700650
+Node: Keyboard Macros702383
+Node: Keymaps704491
+Node: Keymap Terminology705945
+Node: Format of Keymaps708865
+Node: Creating Keymaps712031
+Node: Inheritance and Keymaps713895
+Node: Prefix Keys714906
+Node: Active Keymaps718212
+Node: Key Lookup724372
+Node: Functions for Key Lookup729848
+Node: Changing Key Bindings735138
+Node: Key Binding Commands742017
+Node: Scanning Keymaps744004
+Node: Menu Keymaps749268
+Node: Defining Menus749885
+Node: Mouse Menus752668
+Node: Keyboard Menus754933
+Node: Menu Example756322
+Node: Menu Bar757653
+Node: Modifying Menus760517
+Node: Modes761708
+Node: Major Modes762647
+Node: Major Mode Conventions765550
+Node: Example Major Modes771497
+Node: Auto Major Mode779349
+Node: Mode Help785991
+Node: Derived Modes787085
+Node: Minor Modes789269
+Node: Minor Mode Conventions790576
+Node: Keymaps and Minor Modes793415
+Node: Mode Line Format795249
+Node: Mode Line Data796953
+Node: Mode Line Variables801155
+Node: %-Constructs805669
+Node: Hooks807887
+Node: Documentation813434
+Node: Documentation Basics814786
+Node: Accessing Documentation817561
+Node: Keys in Documentation823332
+Node: Describing Characters825757
+Node: Help Functions828027
+Node: Files835952
+Node: Visiting Files837723
+Node: Visiting Functions839220
+Node: Subroutines of Visiting844200
+Node: Saving Buffers846104
+Node: Reading from Files851926
+Node: Writing to Files853965
+Node: File Locks856550
+Node: Information about Files859576
+Node: Testing Accessibility860330
+Node: Kinds of Files863882
+Node: Truenames865321
+Node: File Attributes866171
+Node: Changing File Attributes871274
+Node: File Names876672
+Node: File Name Components878198
+Node: Directory Names880723
+Node: Relative File Names884028
+Node: File Name Expansion885099
+Node: Unique File Names889380
+Node: File Name Completion890506
+Node: Contents of Directories893131
+Node: Create/Delete Dirs896232
+Node: Magic File Names896728
+Node: Files and MS-DOS902084
+Node: Backups and Auto-Saving904140
+Node: Backup Files904807
+Node: Making Backups906193
+Node: Rename or Copy908747
+Node: Numbered Backups911227
+Node: Backup Names913464
+Node: Auto-Saving916740
+Node: Reverting923948
+Node: Buffers927695
+Node: Buffer Basics929024
+Node: Buffer Names931067
+Node: Buffer File Name934090
+Node: Buffer Modification938201
+Node: Modification Time940316
+Node: Read Only Buffers943645
+Node: The Buffer List945926
+Node: Creating Buffers948884
+Node: Killing Buffers950918
+Node: Current Buffer954466
+Node: Windows959125
+Node: Basic Windows960595
+Node: Splitting Windows963554
+Node: Deleting Windows968969
+Node: Selecting Windows971574
+Node: Cyclic Window Ordering973833
+Node: Buffers and Windows977696
+Node: Displaying Buffers979843
+Node: Choosing Window984169
+Node: Window Point989693
+Node: Window Start991732
+Node: Vertical Scrolling995745
+Node: Horizontal Scrolling1001612
+Node: Size of Window1005027
+Node: Resizing Windows1009053
+Node: Coordinates and Windows1012461
+Node: Window Configurations1014421
+Node: Frames1017283
+Node: Creating Frames1019319
+Node: Frame Parameters1021557
+Node: Parameter Access1022356
+Node: Initial Parameters1023048
+Node: X Frame Parameters1023847
+Node: Size and Position1028182
+Node: Deleting Frames1030800
+Node: Finding All Frames1031573
+Node: Frames and Windows1032924
+Node: Minibuffers and Frames1034229
+Node: Input Focus1035204
+Node: Visibility of Frames1038321
+Node: Raising and Lowering1039544
+Node: Frame Configurations1041021
+Node: Mouse Tracking1041612
+Node: Mouse Position1042837
+Node: Pop-Up Menus1044018
+Node: Dialog Boxes1045885
+Node: X Selections1047771
+Node: X Connections1050386
+Node: Resources1052526
+Node: Server Data1053345
+Node: Positions1055260
+Node: Point1056211
+Node: Motion1058804
+Node: Character Motion1059671
+Node: Word Motion1061715
+Node: Buffer End Motion1063063
+Node: Text Lines1064540
+Node: Screen Lines1068630
+Node: Vertical Motion1074158
+Node: List Motion1075907
+Node: Skipping Characters1078697
+Node: Excursions1080849
+Node: Narrowing1083091
+Node: Markers1088283
+Node: Overview of Markers1089178
+Node: Predicates on Markers1092059
+Node: Creating Markers1092924
+Node: Information from Markers1095935
+Node: Changing Markers1097026
+Node: The Mark1098411
+Node: The Region1105121
+Node: Text1106284
+Node: Near Point1108819
+Node: Buffer Contents1111537
+Node: Comparing Text1113092
+Node: Insertion1114519
+Node: Commands for Insertion1117414
+Node: Deletion1120158
+Node: User-Level Deletion1123629
+Node: The Kill Ring1127746
+Node: Kill Ring Concepts1129905
+Node: Kill Functions1130953
+Node: Yank Commands1132635
+Node: Low Level Kill Ring1134462
+Node: Internals of Kill Ring1137181
+Node: Undo1139934
+Node: Maintaining Undo1143487
+Node: Filling1146105
+Node: Auto Filling1150341
+Node: Sorting1151407
+Node: Columns1160774
+Node: Indentation1163275
+Node: Primitive Indent1164047
+Node: Mode-Specific Indent1165207
+Node: Region Indent1168342
+Node: Relative Indent1171263
+Node: Indent Tabs1173639
+Node: Motion by Indent1174953
+Node: Case Changes1175725
+Node: Text Properties1179007
+Node: Examining Properties1180766
+Node: Changing Properties1182734
+Node: Property Search1186163
+Node: Special Properties1190810
+Node: Sticky Properties1195412
+Node: Saving Properties1198402
+Node: Not Intervals1201506
+Node: Substitution1203997
+Node: Registers1206007
+Node: Transposition1208541
+Node: Change Hooks1209428
+Node: Searching and Matching1212621
+Node: String Search1213677
+Node: Regular Expressions1218206
+Node: Syntax of Regexps1218782
+Node: Regexp Example1230711
+Node: Regexp Search1232870
+Node: Search and Replace1238010
+Node: Match Data1241205
+Node: Simple Match Data1242327
+Node: Replacing Match1245347
+Node: Entire Match Data1247259
+Node: Saving Match Data1249243
+Node: Searching and Case1250806
+Node: Standard Regexps1252621
+Node: Syntax Tables1254161
+Node: Syntax Basics1255270
+Node: Syntax Descriptors1257826
+Node: Syntax Class Table1259673
+Node: Syntax Flags1265720
+Node: Syntax Table Functions1268558
+Node: Motion and Syntax1272317
+Node: Parsing Expressions1273504
+Node: Standard Syntax Tables1278908
+Node: Syntax Table Internals1279740
+Node: Abbrevs1280760
+Node: Abbrev Mode1282543
+Node: Abbrev Tables1283269
+Node: Defining Abbrevs1284796
+Node: Abbrev Files1286639
+Node: Abbrev Expansion1288405
+Node: Standard Abbrev Tables1292571
+Node: Processes1293702
+Node: Subprocess Creation1295836
+Node: Synchronous Processes1299123
+Node: MS-DOS Subprocesses1304801
+Node: Asynchronous Processes1305868
+Node: Deleting Processes1309440
+Node: Process Information1311103
+Node: Input to Processes1314535
+Node: Signals to Processes1316796
+Node: Output from Processes1320991
+Node: Process Buffers1321717
+Node: Filter Functions1324688
+Node: Accepting Output1329606
+Node: Sentinels1331130
+Node: Transaction Queues1334248
+Node: TCP1335925
+Node: System Interface1337549
+Node: Starting Up1338743
+Node: Start-up Summary1339326
+Node: Init File1342757
+Node: Terminal-Specific1344960
+Node: Command Line Arguments1347914
+Node: Getting Out1351410
+Node: Killing Emacs1351962
+Node: Suspending Emacs1353610
+Node: System Environment1356891
+Node: User Identification1361672
+Node: Time of Day1362777
+Node: Timers1365604
+Node: Terminal Input1367287
+Node: Input Modes1367783
+Node: Translating Input1370353
+Node: Recording Input1376995
+Node: Terminal Output1378289
+Node: Special Keysyms1381137
+Node: Flow Control1382012
+Node: Batch Mode1385691
+Node: Display1386767
+Node: Refresh Screen1387908
+Node: Screen Size1389087
+Node: Truncation1390741
+Node: The Echo Area1392649
+Node: Selective Display1394719
+Node: Overlay Arrow1398734
+Node: Temporary Displays1399831
+Node: Overlays1403644
+Node: Overlay Properties1404218
+Node: Managing Overlays1408012
+Node: Faces1410096
+Node: Standard Faces1410938
+Node: Merging Faces1411945
+Node: Face Functions1413456
+Node: Blinking1417433
+Node: Inverse Video1419335
+Node: Usual Display1420005
+Node: Display Tables1422560
+Node: Display Table Format1423426
+Node: Active Display Table1425062
+Node: Glyphs1426634
+Node: ISO Latin 11428105
+Node: Beeping1429291
+Node: Window Systems1430254
+Node: Calendar1431495
+Node: Calendar Customizing1432342
+Node: Holiday Customizing1435181
+Node: Date Display Format1441244
+Node: Time Display Format1442157
+Node: Daylight Savings1443137
+Node: Diary Customizing1446239
+Node: Hebrew/Islamic Entries1450615
+Node: Fancy Diary Display1453833
+Node: Sexp Diary Entries1456482
+Node: Appt Customizing1461169
+Node: Tips1462537
+Node: Style Tips1463156
+Node: Compilation Tips1470656
+Node: Documentation Tips1472553
+Node: Comment Tips1478050
+Node: Library Headers1481048
+Node: GNU Emacs Internals1484945
+Node: Building Emacs1485647
+Node: Pure Storage1490206
+Node: Garbage Collection1492833
+Node: Writing Emacs Primitives1498828
+Node: Object Internals1508337
+Node: Buffer Internals1509671
+Node: Window Internals1513134
+Node: Process Internals1516566
+Node: Standard Errors1518412
+Node: Standard Buffer-Local Variables1521435
+Node: Standard Keymaps1523748
+Node: Standard Hooks1526765
+Node: Antinews1529937
+Node: Index1547825
+
+End Tag Table

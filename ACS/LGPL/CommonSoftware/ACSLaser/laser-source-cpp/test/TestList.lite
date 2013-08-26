@@ -1,0 +1,6 @@
+SOURCE alarmTATEnv
+PROLOGUE alarmTestPrologue
+0 testXML "testXML"
+1 testXML_2 "testXML_2"
+2 AlarmTestCern "testDriver 10"
+EPILOGUE alarmTestEpilogue

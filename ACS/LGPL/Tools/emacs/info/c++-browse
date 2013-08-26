@@ -1,0 +1,400 @@
+Info file: c++-browse,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `c++-browse.texinfo'
+using `texinfmt.el' version 2.32 of 19 November 1993.
+
+
+This file documents c++-browse, a set of emacs lisp macros for browsing
+C++ code within GNU emacs.
+
+This file is an adaptation of the files THESIS and c++-browse.el from
+Nancy Sechrist's distriubtion of her c++ class browse.
+
+
+
+File: c++-browse, Node: Top, Next: Introduction, Prev: (dir), Up: (dir)
+
+* Menu:
+
+* Introduction::     What is `c++-browse'?
+* Function Index::   Using emacs commands to browse C++ code
+* Examples::         Creating a Tags Table File
+* Limitations::      Limitations of the browser
+* Installation::     How do build it
+* References::       
+
+
+File: c++-browse, Node: Introduction, Next: Function Index, Prev: Top, Up: Top
+
+What is `c++-browse'?
+=====================
+
+`c++-browse' searches for and displays declarations, definitions and
+instances in a given set of C++ source files.  It locates classes,
+subclasses, instances, or arbitrary regular expressions and displays the
+matching text in a GNU emacs window.
+
+Using `c++-browse' one can chose a specific class and quickly scan
+through it's declarations, instances, and subclass declarations.  This
+can helps one learn about the existing program structures and where and
+how they are used.  It can also help a one develop and maintain code.
+`c++-browse' relieves the programmer's burden of remembering the names
+of files and explicitly opening them to search for certain constructs.
+
+
+The key bindings (as distributed) are:
+     C-x C   find-class
+     C-x I   find-instance
+     C-x J   find-class-instlist
+     C-x K   find-class-subclasslist
+     C-x M   find-class-next-instance
+     C-x S   find-class-next-subclass
+     C-x T   find-tag-at-caller
+     C-x N   find-tag-next-caller
+     C-x L   find-tag-callerlist
+     C-x 4 C-x C   find-class-other-window
+     C-x 4 C-x I   find-instance-other-window
+
+
+
+File: c++-browse, Node: Function Index, Next: Installation, Prev: Introduction, Up: Top
+
+Function Index
+==============
+
+* Menu:
+
+* find-tag::			M-.     Find the definition of TAG
+* tags-apropos::		        List all tags matching REGEXP
+* find-tag-at-caller::		C-x T   Find call to TAG in CALLER
+* find-tag-next-caller::	C-x N   Find next call to TAG
+* find-last-tag-at-caller::	        Find a call to last tagname
+* find-tag-callerlist::		C-x L   List all calls to TAG
+* find-class::                  C-x C   Find the declaration for a class
+* find-instance::		C-x I   Find a class instance
+* find-class-other-window::	C-x 4 C-x C Find the declaration for a class
+* find-instance-other-window::	C-x 4 C-x I Find instance in another window
+* find-class-subclasslist::	C-x K   List the subclasses
+* find-class-instlist::		C-x J   List all instances of a class
+* find-class-next-subclass::	C-x S   Find the next subclass
+* find-class-next-instance::	C-x M   Find the next instance
+
+
+File: c++-browse, Node: find-tag, Next: tags-apropos, Up: Function Index
+
+`find-tag'
+----------
+     M-. TAGNAME
+
+`find-tag' takes a tag name (function name) as an argument and searches
+the tags table file for a matching entry. It opens the source file and
+places point at the function definition.  If TAGNAME is a null string,
+the expression in the buffer around or before point is used as the tag
+name.
+
+If second arg NEXT is non-nil (interactively, with prefix arg), searches
+for the next tag in the tag table that matches the tagname used in the
+previous find-tag.
+
+
+File: c++-browse, Node: tags-apropos, Next: find-tag-at-caller, Prev: find-tag, Up: Function Index
+
+`tags-apropos'
+--------------
+     M-x tags-apropos REGEXP
+
+`tags-apropos' displays a list of all tags in tag table REGEXP matches.
+
+
+File: c++-browse, Node: find-tag-at-caller, Next: find-tag-next-caller, Prev: tags-apropos, Up: Function Index
+
+`find-tag-at-caller'
+--------------------
+     C-x T TAGNAME RET CALLER RET
+
+`find-tag-at-caller' finds a function call by a particular caller.  It
+first prompts the user for the tag name. It then prompts for the name of
+the caller. If either of these arguments are defaulted (by typing return
+only), the expression on or about point is found and used.
+
+Once point is placed correctly, the function ensures that subsequent
+search commands will use the tag name as the search pattern.  In this
+manner, multiple calls to a C++ function by the same caller are easily
+browsed.
+
+
+File: c++-browse, Node: find-tag-next-caller, Next: find-last-tag-at-caller, Prev: find-tag-at-caller, Up: Function Index
+
+`find-tag-next-caller'
+----------------------
+     C-x N
+
+This function finds the next caller in a list of callers to a particular
+function. It first determines if there has been a last caller recorded
+by a previous call to this routine. If there is no last caller, then the
+appropriate entry is found by calling `match-tag-and-caller' with a nil
+caller name. If there is a last caller, the entry for the tag and last
+caller is found. Then a call to `match-tag-not-caller' is made. This
+finds the next applicable entry in the tags table.
+`open-tag-callerline' is called to place point in the proper source
+file.
+
+
+File: c++-browse, Node: find-last-tag-at-caller, Next: find-tag-callerlist, Prev: find-tag-next-caller, Up: Function Index
+
+`find-last-tag-at-caller'
+-------------------------
+     M-x find-last-tag-at-caller CALLER RET
+
+
+After you call commands such as `find-tag' or `find-tag-at-caller' which
+set the value of the last tag, you can call `find-last-tag-at-caller' to
+find a call to this last function for a particluar caller.  That is, you
+can continue to search for another CALLER to the same function or class.
+
+
+File: c++-browse, Node: find-tag-callerlist, Next: find-class, Prev: find-last-tag-at-caller, Up: Function Index
+
+`find-tag-callerlist'
+---------------------
+     C-x L TAG RET
+
+`find-tag-callerlist' builds and displays a list of all callers for a
+function.  When invoked, it creates a temporary buffer and writes the
+caller names from every entry in the tags table which matches the tag
+name with a non-null caller field.  Since the entries in the tags table
+are sorted, this list appears sorted alphabetically as well.
+
+
+File: c++-browse, Node: find-class, Next: find-instance, Prev: find-tag-callerlist, Up: Function Index
+
+`find-class'
+------------
+     C-x C TAG RET
+
+`find-class' finds a class definition by locating a tags table entry of
+type `class' that contains the class name. The appropriate source file
+is opened and the class definition is found using an ever-widening
+search in order to place point.
+
+
+File: c++-browse, Node: find-instance, Next: find-class-other-window, Prev: find-class, Up: Function Index
+
+`find-instance'
+---------------
+     C-x I TAG RET
+
+`find-instance' finds an instance declaration by finding an `instance'
+entry in the tags table that contains the instance name.  The
+appropriate source file is opened and the instance declaration is found
+using an ever-widening search in order to place point.
+
+
+File: c++-browse, Node: find-class-other-window, Next: find-instance-other-window, Prev: find-instance, Up: Function Index
+
+`find-class-other-window'
+-------------------------
+     C-x 4 C-x C TAG RET
+
+`find-class-other-window' is the same as `find-class' except that when
+the source file containing the class is displayed, it is shown in a new
+window.
+
+
+File: c++-browse, Node: find-instance-other-window, Next: find-class-subclasslist, Prev: find-class-other-window, Up: Function Index
+
+`find-instance-other-window'
+----------------------------
+     C-x 4 C-x I TAG RET
+
+`find-instance-other-window' is the same as `find-instance' except that
+the source file containing the instance is shown in another window.
+
+
+File: c++-browse, Node: find-class-subclasslist, Next: find-class-next-subclass, Prev: find-instance-other-window, Up: Function Index
+
+`find-class-subclasslist'
+-------------------------
+     C-x K TAG RET
+
+`find-class-subclasslist' is similar to `find-tag-callerlist'.  It
+builds a list of the subclasses of a class. The temporary buffer shows
+the parent class name from all tags table entries which are classes with
+a non-null parent class field. Since the entries in the tags table are
+alphabetically sorted, the list appears sorted also.
+
+
+File: c++-browse, Node: find-class-next-subclass, Next: find-class-instlist, Prev: find-class-subclasslist, Up: Function Index
+
+`find-class-next-subclass'
+--------------------------
+     C-x S
+
+`find-class-next-subclass' locates the next subclass of a given parent
+class. It first determines if there has been a last subclass recorded by
+a previous call to this routine. If there is no last subclass, the first
+class which is a subclass of the last class is found. If there is a last
+subclass, then the entry for the last class and last subclass is found.
+Then the next entry which matches the last class is determined. The
+appropriate source file is opened and point is placed using an
+ever-widening search.
+
+
+File: c++-browse, Node: find-class-instlist, Next: find-class-next-instance, Prev: find-class-next-subclass, Up: Function Index
+
+`find-class-instlist'
+---------------------
+     C-x J TAG RET
+
+`find-class-instlist' is similar to `find-tag-callerlist'.  It builds a
+list of all the instances of this class. The temporary buffer shows the
+instance name from all tags table entries which are instances and match
+the specified class. Since the entries in the tags table are
+alphabetically sorted, the list appears sorted also.
+
+
+File: c++-browse, Node: find-class-next-instance, Prev: find-class-instlist, Up: Function Index
+
+`find-class-next-instance'
+--------------------------
+     C-x M
+
+`find-class-next-instance' locates the next instance in a list of the
+instances of a specified class. It first determines if there has been a
+last instance recorded by a previous call to this routine. If there is
+no last instance, the first instance of the last class is found. If
+there is a last instance, then the entry for the last class and last
+instance is found. Then the next instance entry which matches the last
+class is determined. The appropriate source file is opened and point is
+placed using an ever-widening search.
+
+
+File: c++-browse, Node: Installation, Next: Examples, Prev: Function Index, Up: top
+
+Installation
+============
+
+In order to install the C++ Browser, GNU Emacs should already be
+installed.  The following files are required for the browser.
+
+etags.c
+lex.yy.c
+y.tab.c
+makefile
+c++-browse.el
+
+The C sources are for producing the program etags.  The makefile should
+be used to create it. The browser is based upon the tags facility in GNU
+Emacs.  This new version of etags is backward compatible with the
+distributed version so that it may be overwritten if desired. The file
+c++-browse.el contains the commands to be loaded into GNU Emacs. This
+file should be placed in the GNU Emacs lisp directory.
+
+The user should make the following addition to his GNU Emacs
+initialization file.
+
+     (load "c++-browse.el")
+
+This will take care of making the browser commands available and will
+set up a key binding.
+
+
+File: c++-browse, Node: Examples, Next: Limitations, Prev: Installation, Up: top
+
+Creating a Tags Table File
+==========================
+
+The program etags is used to create and maintain the browser tags table
+file. Before the program is run, the user must determine which source
+files will be included in the tags table file. The names of these files
+are given to the etags program either as absolute path or relative to
+the directory from which GNU Emacs will be run. This path information is
+used by the browser for finding and opening files, so it is important
+that the user decide this first.
+
+To run etags:
+     etags -b filename1 filename2 ...
+
+The -b option tells etags to create a browser file with all the
+appropriate entries for the source files specified. Etags will also
+appropriately handle masks in file names. For example, a browser tags
+table file for all include files and sources in the current directory
+can be created with the following command.
+
+     etags -b *.h *.c
+
+The result is a file called TAGS in the current working directory. The
+user can add another file to an existing TAGS file by running etags in
+this way.
+
+     etags -ba forgot_one.c
+
+The -a option appends to TAGS in the same manner as the original version
+of etags.
+
+It is possible to create and use several tags table files with the
+browser.  However, it is necessary for the user to change tags table
+files explicitly.  Once the browser has read a TAGS file, it assumes it
+should use the same one unless told to do otherwise. (Refer to the
+`visit-tags-table' command for more information.)
+
+
+File: c++-browse, Node: Limitations, Next: References, Prev: Examples, Up: Top
+
+Limitations
+===========
+
+The GNU Emacs C++ browser and the etags program have a few
+deficiencies. I believe that these deficiencies do not detract from the
+usefulness of the browser. One problem which is evident when one looks
+at the parser implementation is in the handling of instance parsing. Due
+to the way in which initializers are skipped, function calls within
+initializers of instances are not recorded. Another problem is that if a
+member function is declared within a class definition which is itself
+inside a function, the member function will be recorded as if it were a
+function call. This is also due to the fact that the parser does not use
+a grammar which describes the whole language.
+
+
+File: c++-browse, Node: References, Prev: Limitations, Up: Top
+
+References
+==========
+
+[1] Adele Goldberg, *Programmer as Reader*, IEEE Software, vol. 4,
+no. 5, September, 1987
+
+[2] Bjarne Stroustrup, *The C++ Programming Language*, AT&T Bell
+Laboratories, Murray Hill, New Jersey, Addison-Wesley, Reading,
+Massachusetts, 1986
+
+[3] Richard Stallman, *GNU Emacs Manual*, sixth edition, version 18,
+March, 1987
+
+[4] S.R. Bourne, The UNIX System, AT&T Bell Laboratories,
+Addison-Wesley, Reading, Massachusetts, 1983
+
+[5] Adele Goldberg and David Robson, *Smalltalk-80: The Language and its
+Implementation*, Xerox Palo Alto Research Center, Addison-Wesley,
+Reading Massachusetts, 1983
+
+[6] Brian Marick, *Lynx User's Guide*, University Of Illinois at
+Urbana-Champaign, unpublished, 1987
+
+[7] Joseph L. Steffen, *Interactive Examination of a C Program with
+Cscope*, AT&T Bell Laboratories, Naperville, Illinois, USENIX
+Association Conference Proceedings, Dallas, Texas, January, 1985
+
+[8] M.E. Lesk and E Schmidt, *Lex - A Lexical Analyzer Generator*,
+Computer Science Technical Report No. 39, AT&T Bell Laboratories, Murray
+Hill, New Jersey, 1985
+
+[9] S.C. Johnson, *Yacc: Yet Another Compiler Compiler*, Computer
+Science Technical Report No. 32.  AT&T Bell Laboratories, Murray Hill,
+New Jersey, 1975
+
+[10] Daniel LaLiberte, *GNU Emacs Lisp Reference Manual*, University Of
+Illinois at Urbana-Champaign, unpublished, 1987
+
+[11] Robert Krawitz, *GNU Emacs Programming*, unpublished, January,1987
+

@@ -1,0 +1,143 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docFMuseStandards,v 1.31 2002/06/08 17:20:44 vltsccm Exp $" 
+#
+# docFMuseStandards
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  03/03/94  created
+#
+
+#************************************************************************
+#   NAME
+#   docFMuseStandards - import basid FrameMaker standards into current document
+# 
+#   SYNOPSIS
+#   docFMuseStandards  [<documentType>]
+# 
+#   DESCRIPTION
+#   This utility takes the:
+# 
+#            - paragraph formats
+#            - character formats
+#            - page layout (master and reference pages)  (NOT YET IMPLEMENTED)
+# 
+#   from the standard <documentType> (Document is the default) and copy them 
+#   into the current document (the "Document.book" file in the current 
+#   directory.
+#   
+#   <documentType>   the template from where to copy
+#
+#
+#   FILES
+#
+#   Document.book  W   the book that need to be update
+#
+#   /vlt/templates/forFM/<documentType>/FrontCover
+#                  W   the documents from where to copy.
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#   If you have modified in your document the definition of standard
+#   paragraph and/or character formats, this command will overwrite your
+#   modification.
+#
+#   (.... this is the punishment for having modified a standard definition)
+#
+#
+#   EXAMPLES
+#           docFMuseStandards  DesignDescription
+#
+#   SEE ALSO
+#   MIF Reference Manual,
+#   getTemplate for the list of available template
+#
+#   BUGS     
+#
+#   
+#------------------------------------------------------------------------
+#
+echo \
+"------------------------------------------------------------------------------"
+echo "docFMuseStandards\"
+
+#
+# check the existence of a "Document.book" file
+if [ ! -f Document.book ]
+then
+    echo "Current directory: `pwd`"
+    echo "Document.book not found or not accessible. \n"
+    echo "This is not a standard document and I do not know what to do."
+    echo "Sorry!"
+    exit
+fi
+
+#
+# is it already opened?
+if [ -f Document.book.lck ]
+then
+    echo "Document.book not accessible. \n"
+    echo "File already locked by `cat Document.book.lck`\n\n"
+    echo "       ---> Exit FrameMaker and try again.\n\n"
+    exit
+fi
+
+VLTFMTEMPLATES=/vlt/templates/forFM/
+if [ ! -d $VLTFMTEMPLATES ]
+then
+   echo "\n\nProblems to access: $VLTFMTEMPLATES\n"
+   echo "Are you sure that your system is properly configured?"
+fi
+
+#
+# identify the template from which taking the formats
+if [ "$1" != "" ]
+then
+    TEMPLATE=$1
+else
+    TEMPLATE=Document
+fi
+
+TEMPLATE_DIR=$VLTFMTEMPLATES/$TEMPLATE
+
+if [ -d $TEMPLATE_DIR ]
+then
+    FORMAT_FILE=$TEMPLATE_DIR/FrontCover
+    if [ -f $FORMAT_FILE ]
+    then
+        echo "\n\n  Use paragraph and character formats from $TEMPLATE . . .\n\n"
+    else 
+        echo "\n\nProblems to access: $FORMAT_FILE\n"
+        echo "Are you sure that >>TEMPLATE<< is available in your system?"
+    fi    
+else 
+    echo "\n\nProblems to access: $T_DIR\n"
+    echo "Are you sure that >>$<< is an available template?"
+    exit
+fi
+
+#
+# prepare the batch to update the FM file (See FM Reference Sept90 pag E-6/7)
+echo "Open $FORMAT_FILE"                            >$$_fmbatch
+echo "Open Document.book"                          >>$$_fmbatch
+echo "UseFormatsFrom p Document.book $FORMAT_FILE" >>$$_fmbatch
+echo "UseFormatsFrom f Document.book $FORMAT_FILE" >>$$_fmbatch
+echo "UseFormatsFrom l Document.book $FORMAT_FILE" >>$$_fmbatch
+echo "Quit Document.book"                          >>$$_fmbatch
+ 
+fmbatch -i $$_fmbatch
+
+# cleanup and exit
+rm $$_fmbatch
+
+echo "\n\n                                              . . . done.\n\n"
+
+#___oOo___
+
+#___oOo___

@@ -1,0 +1,162 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: tclMakefile,v 1.2 2010/07/09 12:48:42 alopatin Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# psivera  05/06/02  created
+#
+
+#************************************************************************
+#   NAME
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+SHELL=/bin/bash
+
+######################################
+# phony section
+######################################
+.PHONY : install_TCLscripts
+.PHONY : install_TCLlibraries
+.PHONY : do_tcl
+
+######################################
+# incrementing tasks
+######################################
+TMP_TCL_LIST := $(TCL_SCRIPTS) $(TCL_SCRIPTS_L) $(TCL_LIBRARIES) $(TCL_LIBRARIES_L)
+
+ifneq ($(strip $(TMP_TCL_LIST) ), )
+    CLEAN_TARGET := $(CLEAN_TARGET) clean_tcl
+endif
+
+ifneq ($(strip $(TCL_SCRIPTS)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_TCLscripts
+endif
+
+ifneq ($(strip $(TCL_LIBRARIES)),)
+    INSTALL_TARGET := $(INSTALL_TARGET) install_TCLlibraries
+endif
+
+ifneq ($(strip $(TMP_TCL_LIST)),)
+    ALL_TARGET := $(ALL_TARGET) do_tcl_scripts do_tcl_libraries
+endif
+
+
+######################################
+# targets specification
+######################################
+
+## install
+##
+install_TCLscripts:
+ifneq ($(strip $(TCL_SCRIPTS)),)
+	-@$(ECHO) "install_TCLscripts: TCLscripts_begin $(foreach member, $(TCL_SCRIPTS), $(BIN)/$(member)) app-defaults" >>$(FILE)
+	-@$(ECHO) "TCLscripts_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"...TCLscripts:\"" >>$(FILE)
+	-$(AT) for member in $(foreach name, $(TCL_SCRIPTS), $(name) ); \
+		do \
+		    $(ECHO) "$(BIN)/$${member}: ../bin/$${member}" >>$(FILE);\
+		    $(ECHO) "	-\$$(AT)echo \"	$${member}\";\\"  >>$(FILE);\
+		    $(ECHO) "	cp ../bin/$${member} $(BIN)/$${member};\\"  >>$(FILE);\
+		    $(ECHO) "	chmod $(P755) $(BIN)/$${member}" >>$(FILE);\
+	        done; 
+	-$(AT) target="app-defaults:";\
+	       for member in $(foreach name, $(TCL_SCRIPTS), $(name) ); \
+		do \
+			if [ -f ../app-defaults/X$${member} ];\
+			then \
+			    target="$$target $(VLTTOP)/app-defaults/X$${member}";\
+			    $(ECHO) "$(VLTTOP)/app-defaults/X$${member}: ../app-defaults/X$${member}" >>$(FILE);\
+			    $(ECHO) "	-\$$(AT)cp ../app-defaults/X$${member} $(VLTTOP)/app-defaults/X$${member};\\" >>$(FILE);\
+			    $(ECHO) "	chmod $(P644) $(VLTTOP)/app-defaults/X$${member}" >>$(FILE) ;  \
+			fi;\
+	        done; \
+		$(ECHO) "$$target" >>$(FILE); $(ECHO) "	-@echo \"\"" >>$(FILE)
+endif
+
+install_TCLlibraries:
+ifneq ($(strip $(TCL_LIBRARIES)),)
+	-@$(ECHO) "install_TCLlibraries: TCLlibraries_begin $(foreach member, $(TCL_LIBRARIES), $(LIB)/lib$(member).tcl) " >>$(FILE)
+	-@$(ECHO) "TCLlibraries_begin:" >>$(FILE)
+	-@$(ECHO) "	-@echo \"\"; $(ECHO) \".TCLlibraries:\"" >>$(FILE)
+	-$(AT) for member in $(foreach name, $(TCL_LIBRARIES), $(name) ); \
+		do \
+		    $(ECHO) "$(LIB)/lib$${member}.tcl: ../lib/lib$${member}.tcl" >>$(FILE);\
+		    $(ECHO) "	-\$$(AT)echo \"\t$${member}\";\\" >>$(FILE);\
+		    $(ECHO) "	rm -rf $(LIB)/lib$${member}.tcl;\\" >>$(FILE);\
+		    $(ECHO) "	cp -r ../lib/lib$${member}.tcl $(LIB)/lib$${member}.tcl;\\" >>$(FILE);\
+		    $(ECHO) "	chmod -R $(P755) $(LIB)/lib$${member}.tcl" >>$(FILE);\
+		done;
+endif
+
+##  clean
+##
+clean_tcl:
+	-$(AT)$(RM) vltMake_clean_tclScripts   $(foreach member, $(TCL_SCRIPTS)   $(TCL_SCRIPTS_L),  ../bin/$(member) ../object/$(member).dxt )                    $(OUTPUT)
+	-@$(ECHO) " .\c"
+	-$(AT)$(RM) vltMake_clean_tclLibraries $(foreach member, $(TCL_LIBRARIES) $(TCL_LIBRARIES_L), ../lib/lib$(member).tcl ../object/$(member).dat )            $(OUTPUT)
+	-@$(ECHO) " .\c"
+
+## all
+##
+
+# - for Automatic Dependencies for tcl/tk executable.
+#   a "../object/xxxx.dxt" containing the dependencies structure of a tcl/tk
+#   script is created using a special script that receives in input what 
+#   specified by the caller in the Makefile
+#
+../object/%.dxt:
+	- @echo "== Dependencies: $@"
+	$(AT)acsMakeTclScriptDependencies $(*F) "$($(*F)_OBJECTS)" >../object/$*.dxt
+
+# - for Automatic Dependencies for tcl/tk library.
+#   a "../object/xxxx.dat" containing the dependencies structure of a tcl/tk
+#   library is created using a special script that receives in input what 
+#   specified by the caller in the Makefile
+#
+../object/%.dat:
+	- @echo "== Dependencies: $@"
+	$(AT)vltMakeTclLibDependencies $(*F) "$($(*F)_OBJECTS)" >../object/$*.dat
+
+
+#
+# if the list of Tcl/Tk scripts is not empty, include TCLscript-dependencies files. 
+TCL_SCRIPT_LIST = $(TCL_SCRIPTS) $(TCL_SCRIPTS_L)
+TMP_DEP_SCRIPT = $(addprefix ../object/, $(addsuffix .dxt, $(TCL_SCRIPT_LIST)))
+#
+# if the list of Tcl/Tk libraries is not empty, include TCLlib-dependencies files. 
+TCL_LIBRARY_LIST = $(TCL_LIBRARIES) $(TCL_LIBRARIES_L)
+TMP_DEP_LIBRARY = $(addprefix ../object/, $(addsuffix .dat, $(TCL_LIBRARY_LIST)))
+
+do_tcl_scripts:  $(TMP_DEP_SCRIPT)
+	$(AT) for member in $(foreach name, $(TCL_SCRIPT_LIST), $(name) ); \
+		do \
+		make -f ../object/$${member}.dxt $${member};\
+		done
+
+do_tcl_libraries:  $(TMP_DEP_LIBRARY)
+	$(AT) for member in $(foreach name, $(TCL_LIBRARY_LIST), $(name) ); \
+		do \
+		make -f ../object/$${member}.dat $${member};\
+		done

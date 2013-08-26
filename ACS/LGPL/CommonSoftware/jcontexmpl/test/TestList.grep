@@ -1,0 +1,28 @@
+Running the following command:
+Starting Java application
+Using endorsed jar files in: -Djava.endorsed.dirs=
+ACS Manager: corbaloc::
+ACS Name Service: corbaloc::
+ACS Interface Repository: corbaloc::
+java -classpath
+Logging to ACS log server.
+RTContext:
+SourceInfo:
+local manager from
+export
+Running the container with these arguments
+JacORB
+Using naming reference
+Retrying to connect to
+Abnormal connection termination
+POA RootPOA
+POA ManagerPOA
+Connected to
+POA ComponentPOA
+POA offshootPoa
+POA Container
+ping received,
+Waiting for the container
+Local file logger
+GlobalLogger
+alma.acs.testsupport.tat.TATJUnitRunner

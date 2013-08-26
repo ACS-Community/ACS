@@ -1,0 +1,16 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: ACG Plug-in
+Bundle-SymbolicName: cl.utfsm.acs.acg; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: cl.utfsm.acs.acg.gui.Activator
+Require-Bundle: alma.acs.rcp.jars,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.ui.views
+Export-Package: cl.utfsm.acs.acg,
+ cl.utfsm.acs.acg.core,
+ cl.utfsm.acs.acg.gui,
+ cl.utfsm.acs.acg.gui.actions
+Bundle-Vendor: ALMA-UTFSM Group
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

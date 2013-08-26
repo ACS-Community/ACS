@@ -1,0 +1,346 @@
+Fri May 18 12:01:57 CEST 2007
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+General
+
+Now that you're passing the torch for ACS to Heiko and myself, it would be
+worthwhile to evaluate where we are. In particular:
+
+What use is made in ALMA of the following ACS features:
+
+1. Parameters sets (psets)
+
+REPLY: This was requested by offline, but, as far as I know, it is not
+used.
+
+2. Tasks
+
+REPLY: This was requested by offline, but, as far as I know, it is not
+used.
+
+3. Archiving monitor data (does Control's implementation supersede ACS's?)
+
+REPLY: No. Control's implementation uses the ACS mechanism, but builds
+       on top of that a collection strategy different from what
+       originally foreseen by ACS.
+    
+4. Sampling system
+
+REPLY: As far as I know, this is not used.
+
+5. Command system
+
+REPLY: The command system as described here is implemented 
+       and used all over the place.
+       Notice that this is rather different from what
+       was initially (several years ago) foreseen.
+
+There are several features that have been marked as "not foreseen
+for ALMA," even though they're part of the ACS architecture. Is there a general
+explanation for this?
+
+REPLY: This formulation result form the CDR-4 discussions.
+       There are a number of features that we think should be part of
+       ACS and that were introduced in the architecture document.
+       For various reasons (no resources, not requested by
+       subsystems....) they have not bee implemented until now and
+       their implementation is not foreseen for ALMA.
+       But we agreed at CDR-4 that it would have been bad to remove
+       them completely from the architecture and therefore we deided
+       to mark them in this way.
+  
+
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 5, Change AIPS++ to CASA (everywhere in document).
+
+REPLY: ACCEPTED
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 19, Putting all three languages in Figure 2.2, makes a diagram that is
+unnecessarily confusing. One language would be enough, along with the note
+that the other two are (at the level of this diagram) identical.
+
+REPLY: To de biscussed.
+       I think it is important to show in the diagram 
+       that we support miltiple languages in a symmetric way.
+       Therefore I would prefer not to change this diagram.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 20, Third paragraph: satisfying the RTOS requirement should not refer to
+VxWorks but to Real Time Linux.
+
+REPLY: Yes and no.
+       This paragraph refers to the low level ACS layers and they are
+       not implemented for RTAI, but only for Linux (non real time)
+       and VxWorks.
+       Therefore I cannot assign this specific requirement to RTAI.
+  
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 20, Sixth paragraph, Eclipse is neither required nor more convenient to
+run on Windows. On Linux, it is satisfyingly fast and well supported. Find 
+another example if you need one...
+
+REPLY: Accepted. I will remove the example.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 22, I would eliminate the VxWorks boxes from the figure and the discussion.
+
+REPLY: To be discussed.
+       ACS is still supporting this configuration, although we are not
+       putting an effort in maintaining it. 
+       For example APEX uses it and it might be an important point for
+       other projects interested in using ACS, like the ELT.
+       Since it is said clearly in a number of places that ALMA is not
+       using VxWorks but that this document is describing the ACS
+       Architecture also for aspects that are not used by ALMA,
+       I would not remove these boxes.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 22, "In many cases Java development tools are more reliable and stable
+under Windows than under Linux..." -- this might have been true at one time,
+but not anymore. Eclipse, MagicDraw, Oxygen (XML editor implemented in Java)
+have state-of-the-art implementations in Linux.
+
+REPLY: You might be right and I might be biased, but still I have the
+       feeling that Java applications run faster under windows.
+       Somebody also recently mentioned to me crashes of Eclipse under Linux.
+       I can anyway remove this point.
+  
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 23, I would eliminate the discussion of VxWorks RT computers and cross-
+development workstation, or else put them in a "Version-Not-For-ALMA"
+appendix.
+
+REPLY: To be discussed.
+       See above discussion.
+       An appendix might be an acceptable solution.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 25, 3.4.3, The explanation of "exceptional cases" is not clear. Is it to
+minimize "the impact of CORBA on component implementation classes" that one
+can create OffShoots? But these are CORBA objects, too.
+
+REPLY: Accepted.
+       This should actually be a separate paragraph and is not
+       related to the "minimize the impact of CORBA".
+       I will re-qrite this, abbing some more details about Offsoots.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 28, For which types has scalarTypeSeq been implemented?
+
+REPLY: See baci.idl.
+       ROstring, ROdouble, RWdouble, ROfloat, RWfloat, 
+       ROlong, RWlong
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 29, Figure 3.1, It's confusing to show the ACS::CharacteristicModel with
+the UML Stereotype (Circle) for interfaces, since all the operations get
+spread out over the diagram. I suggest that you use a normal class rectangle,
+and add a text <<interface>> stereotype if that is what you mean.
+
+REPLY: Accepted
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 39, The TMCDB implementation works with HSQLDB as well as Oracle; we are
+working hard to keep it free of Oracle dependencies.
+
+REPLY: I can add reference to HSQLDB.
+       Probably it would be better to wait for the final
+       implementation of TMCDB and then revise this section.
+ 
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 40, Figure 3.5, same comment as for Figure 3.1 (replace i/f stereotype with
+class rectangle).
+
+REPLY: Accepted
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 43, 1.4.9, The "templated" adjective doesn't apply to the Java implementation
+of SimpleConsumer. Maybe you could reword this to describe it as type-safe.
+
+REPLY: Accepted.
+       Temples are used in the CPP implementation but not in Java.
+       I will rewrite this part to better capture the differences and
+       to explain that the concept is the same, but the implementation
+       based on different language features.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 49, 1.15.21, The explanation of why exceptions must be specified, even in
+C++, is so important that it ought to be given here. The consequences of *not*
+calling the appropriate method to serialize an exception to a CORBA struct at
+the interface level of a component should be spelled out in this document.
+
+REPLY: Accepted
+       I will add here a detailed explanation.
+
+--------------------------------------------------------------------------------
+(BrianGlendenning)
+P.52 Do you have a ratio between binary and XML logs? Given that the payload
+of a log message is intrinsically text is it really so large?
+
+REPLY: I have looked at some log files and the ratio is
+       between 1/2 and 1/3.
+       It clearly depends on the length of the message text, but this
+       is normally not much.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+pp. 52-53, It's not clear to me where the "filtering" occurs: at the component,
+the container, or the logging client level.
+
+REPLY: Accepted. 
+       I will clarify in the text.
+       The filtering is done at the logger level.
+       The loggers are in a hierarchy, with the logger for the
+       container being at the root.
+       Then each component can have its own logger with a different
+       configuration.
+       In any case, what is important is that the filtering is done
+       inside the container, BEFORE the logs are ever sent over the network.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 53, 1.17.1 "ALMA will has..." --> "ALMA has..."
+
+REPLY: Accepted
+
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 53, 1.17.7, "...API...provides higher time resolution ...on platforms that
+have specific HW support (48 ms event...)" -- This isn't clear to me; if the
+internal representation is in units of 100 ns, what difference does it make
+if the HW supports 48 ms? 
+
+REPLY: Accepted.
+       I will just remove this reference to the 48ms.
+       I think it is simply coming from old times when we had in mind
+       to provide specific synchronisation features based on the 48ms 
+       HW tick.
+       In practice we neve had to do it.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 54, 1.18.4, What is the "added security" that the Manager provides?
+Later on, you refer to an "authorization protocol," that a client must pass,
+but since no usernames or passwords are passed around, I don't understand
+what you mean.
+
+REPLY: The CORBA Naming Service is completely open and anybody
+       can read and write into it.
+       The Manager hides the CORBA NS and takes care of reading
+       and writing into it under stricter control.
+       A non-administrative client cannot get access to all
+       information in the NS, but only to what the Manager provides.
+       If we would fully implement the "authorization control" (that
+       is foreseen but not implemented) we could put there also
+       passwords and really close the access to the Manager.
+      
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 62, 1.18.11, bullet 4: Why is the tie-in to the (ALMA) Archive User
+Repository "not foreseen for ALMA"?
+
+REPLY: The whole implementation of the authorization is not foreseen.
+       If it was, we would probably do it using the Archive User Repository.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 72, 1.21.5, Where are C++ and Python classes being generated? Not for
+the APDM, of that I'm sure.
+
+REPLY: From the IDL interfacs.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 74, 1.21.8, Has the shortcutting of local calls been implemented?
+
+REPLY: I do not think so. I have to check with Heiko.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 75, 1.22, Has any of this Archiving infrastructure been included in the
+Monitor DB that is being developed as part of the TMCDB by Control?
+
+Have any performance tests been done to determine the capacity of this
+system to transmit and archive monitor data?
+
+REPLY: The Monitor DB uses to some extent this mechanism to collect
+       data.
+       Then it uses its own mechanisms to send data to the archive.
+       I do not know the details.
+       The performance should be measured for the whole system, including
+       the Monitor DB.
+       I do not think this was done and I agree that it should be done.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 79, second line: AMI is supported by JacORB 2.3 (I don't know about
+earlier versions)
+
+REPLY: ACCEPTED: I will check.
+       Earlier versions did not support it.
+       
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 85, 1.26.2, The Bulk Data distributor has been implemented, as you know, so
+this section should be brought up to date.
+
+REPLY: Accepted.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 87, I don't believe that Java and Python implementations of the CORBA
+A/V service are needed or planned for ALMA.
+
+REPLY: I agree, but the issue was put up a couple of times in the
+       past.
+       What is important to do here is to make clear that a path
+       exist, if we really need it.
+       I will rephrase.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 89, 1.27.8.3,4, & 5, Why not describe the system used in ACS to generate,
+for example, this Architecture document?
+
+REPLY: Accepted.
+
+--------------------------------------------------------------------------------
+(JoeSchwarz)
+p. 98, 3.1, second paragraph, Allowing a client and a server to use different
+versions of an IDL interface seems very dangerous to me; we ought to forbid it
+in ALMA.
+
+REPLY: To be discussed.
+       At this stage of development I fully agree with you.
+       Later on, when the system will be operational it will be
+       different.
+       The requirement of having to reinstall the whole system on all
+       machines at the same time is a very storng requirement.
+       It will be much better to foresee upgrading to a new version of
+       the software one machine at the time or gourps of machines.
+       If we impose strict rules on how the IDL interfaces can change
+       to ensure backward compatibility, this will make selective
+       upgrades much much easier.
+
+                              _____oOo_____

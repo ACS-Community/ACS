@@ -1,0 +1,20 @@
+import tmcdbTables;
+
+
+String getPossibleValuesAsSQL(PossibleValues this):
+	if IntegerPossibleValues.isInstance(this)
+		then ((IntegerPossibleValues)this).possibleValues.toString(", ")
+	else if StringPossibleValues.isInstance(this)
+		then "'" + ((StringPossibleValues)this).possibleValues.toString("', '") + "'";
+
+
+boolean hasXmlClobTypeColumn(Table this):
+	if this.columns.type.typeSelect( XmlClobType ).size > 0 then true
+	else false;
+
+
+List[Column] getXmlClobTypeColumns(Table this):
+	this.columns.select( e | XmlClobType.isInstance(e.type) );
+
+boolean isManyToManyTable(Table this):
+	this.columns.size == this.constraints.typeSelect(ForeignConstraint).size && this.columns.size == 2;

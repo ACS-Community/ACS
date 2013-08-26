@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<body>
+	<entity type="abeans.pluggable.simulator.Namespace" name="MACI" parent="" descriptor="abeans.models.meta.NamespaceDescriptor"/>
+	
+	<!-- create one Manager -->
+	<entity type="abeans.pluggable.simulator.Property" name="Managers" parent="MACI" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="[Ljava.lang.String;"/>
+		<property name="value" type="[Ljava.lang.String;" value="{Manager}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<!-- Manager -->
+	<entity type="abeans.pluggable.simulator.Property" name="Manager" parent="MACI/Managers" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="[Ljava.lang.String;"/>
+		<property name="value" type="[Ljava.lang.String;" value="{Startup,Execute,ServiceComponents,CommandLine,Timeout,HeartbeatTimeout,CacheSize,MinCachePriority,MaxCachePriority,CentralizedLogger}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Startup -->
+		<entity type="abeans.pluggable.simulator.Property" name="Startup" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="[Ljava.lang.String;"/>
+			<property name="value" type="[Ljava.lang.String;" value="{MOUNT1}"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/Startup" descriptor="abeans.datatypes.GetDescriptor"/>
+	
+		<!-- Execute -->
+		<entity type="abeans.pluggable.simulator.Property" name="Execute" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="[Ljava.lang.String;"/>
+			<property name="value" type="[Ljava.lang.String;" value="{}"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/Execute" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- ServiceComponents -->
+		<entity type="abeans.pluggable.simulator.Property" name="ServiceComponents" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="[Ljava.lang.String;"/>
+			<property name="value" type="[Ljava.lang.String;" value="{Log,LogFactory,NotifyEventChannelFactory,InterfaceRepository,CDB,ACSLogSvc,PDB}"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/ServiceComponents" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- CommandLine -->	
+		<entity type="abeans.pluggable.simulator.Property" name="CommandLine" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value=""/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/CommandLine" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Timeout -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Timeout" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="value" type="java.lang.Double" value="50000"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/Timeout" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- HeartbeatTimeout -->	
+		<entity type="abeans.pluggable.simulator.Property" name="HeartbeatTimeout" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="value" type="java.lang.Double" value="2000"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/HeartbeatTimeout" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- CentralizedLogger -->	
+		<entity type="abeans.pluggable.simulator.Property" name="CentralizedLogger" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="Log"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/CentralizedLogger" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- CacheSize -->	
+		<entity type="abeans.pluggable.simulator.Property" name="CacheSize" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="value" type="java.lang.Double" value="10"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/CacheSize" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- MinCachePriority -->	
+		<entity type="abeans.pluggable.simulator.Property" name="MinCachePriority" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="value" type="java.lang.Double" value="0"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/MinCachePriority" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- CacheSize -->	
+		<entity type="abeans.pluggable.simulator.Property" name="MaxCachePriority" parent="MACI/Managers/Manager" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="value" type="java.lang.Double" value="31"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Managers/Manager/MaxCachePriority" descriptor="abeans.datatypes.GetDescriptor"/>
+
+
+
+	<!-- create 6 Components: {MOUNT1,MOUNT2,MOUNT3,MOUNT4,MOUNT5,PBEND_B_01,PBEND_B_02,*} -->
+	<entity type="abeans.pluggable.simulator.Property" name="Components" parent="MACI" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="[Ljava.lang.String;"/>
+		<property name="value" type="[Ljava.lang.String;" value="{MOUNT1,MOUNT2,MOUNT3,MOUNT4,MOUNT5,PBEND_B_01,PBEND_B_02,*}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components" descriptor="abeans.datatypes.GetDescriptor"/>
+	
+	<entity type="abeans.pluggable.simulator.Property" name="_characteristics" parent="MACI/Components" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="MOUNT1,MOUNT2,MOUNT3,MOUNT4,MOUNT5,PBEND_B_01,PBEND_B_02,*"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/_characteristics" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<entity type="abeans.pluggable.simulator.Property" name="_subnodes" parent="MACI/Components" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="[Ljava.lang.String;"/>
+		<!--property name="value" type="[Ljava.lang.String;" value="{}"/-->
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/_subnodes" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<!-- MOUNT1 -->
+	<entity type="abeans.pluggable.simulator.Property" name="MOUNT1" parent="MACI/Components" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="{Name,Code,Type,Container,Default,Autostart}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT1" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Name -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Name" parent="MACI/Components/MOUNT1" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="MOUNT1"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT1/Name" descriptor="abeans.datatypes.GetDescriptor"/>
+	
+		<!-- Code -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Code" parent="MACI/Components/MOUNT1" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="acsexmplMount"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT1/Code" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Type -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Type" parent="MACI/Components/MOUNT1" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="IDL:alma/MOUNT_ACS/Mount:1.0"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT1/Type" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Container -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Container" parent="MACI/Components/MOUNT1" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="Container"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT1/Container" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Default -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Default" parent="MACI/Components/MOUNT1" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT1/Default" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Autostart -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Autostart" parent="MACI/Components/MOUNT1" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT1/Autostart" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<!-- MOUNT2 -->
+	<entity type="abeans.pluggable.simulator.Property" name="MOUNT2" parent="MACI/Components" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="{Name,Code,Type,Container,Default,Autostart}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT2" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Name -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Name" parent="MACI/Components/MOUNT2" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="MOUNT2"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT2/Name" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Code -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Code" parent="MACI/Components/MOUNT2" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="acsexmplMount"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT2/Code" descriptor="abeans.datatypes.GetDescriptor"/>
+	
+		<!-- Type -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Type" parent="MACI/Components/MOUNT2" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="IDL:alma/MOUNT_ACS/Mount:1.0"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT2/Type" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Container -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Container" parent="MACI/Components/MOUNT2" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="Container"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT2/Container" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Default -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Default" parent="MACI/Components/MOUNT2" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT2/Default" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Autostart -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Autostart" parent="MACI/Components/MOUNT2" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT2/Autostart" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<!-- MOUNT3 -->
+	<entity type="abeans.pluggable.simulator.Property" name="MOUNT3" parent="MACI/Components" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="{Name,Code,Type,Container,Default,Autostart}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT3" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Name -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Name" parent="MACI/Components/MOUNT3" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="MOUNT3"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT3/Name" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Code -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Code" parent="MACI/Components/MOUNT3" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="acsexmplMount"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT3/Code" descriptor="abeans.datatypes.GetDescriptor"/>
+	
+		<!-- Type -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Type" parent="MACI/Components/MOUNT3" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="IDL:alma/MOUNT_ACS/Mount:1.0"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT3/Type" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Container -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Container" parent="MACI/Components/MOUNT3" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="Container"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT3/Container" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Default -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Default" parent="MACI/Components/MOUNT3" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="true"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT3/Default" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Autostart -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Autostart" parent="MACI/Components/MOUNT3" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT3/Autostart" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<!-- MOUNT4 -->
+	<entity type="abeans.pluggable.simulator.Property" name="MOUNT4" parent="MACI/Components" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="{Name,Code,Type,Container,Default,Autostart}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT4" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Name -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Name" parent="MACI/Components/MOUNT4" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="MOUNT4"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT4/Name" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Code -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Code" parent="MACI/Components/MOUNT4" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="acsexmplMount"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT4/Code" descriptor="abeans.datatypes.GetDescriptor"/>
+	
+		<!-- Type -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Type" parent="MACI/Components/MOUNT4" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="IDL:alma/MOUNT_ACS/Mount:1.0"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT4/Type" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Container -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Container" parent="MACI/Components/MOUNT4" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="Container"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT4/Container" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Default -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Default" parent="MACI/Components/MOUNT4" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT4/Default" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Autostart -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Autostart" parent="MACI/Components/MOUNT4" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT4/Autostart" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<!-- MOUNT5 -->
+	<entity type="abeans.pluggable.simulator.Property" name="MOUNT5" parent="MACI/Components" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="{Name,Code,Type,Container,Default,Autostar}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT5" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Name -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Name" parent="MACI/Components/MOUNT5" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="MOUNT5"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT5/Name" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Code -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Code" parent="MACI/Components/MOUNT5" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="acsexmplMount"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT5/Code" descriptor="abeans.datatypes.GetDescriptor"/>
+	
+		<!-- Type -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Type" parent="MACI/Components/MOUNT5" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="IDL:alma/MOUNT_ACS/Mount:1.0"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT5/Type" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Container -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Container" parent="MACI/Components/MOUNT5" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="Container2"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT5/Container" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Default -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Default" parent="MACI/Components/MOUNT5" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT5/Default" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Autostart -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Autostart" parent="MACI/Components/MOUNT5" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/MOUNT5/Autostart" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<!-- PBEND_B_01 -->
+	<entity type="abeans.pluggable.simulator.Property" name="PBEND_B_01" parent="MACI/Components" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="{Name,Code,Type,Container,Default,Autostart}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_01" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Name -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Name" parent="MACI/Components/PBEND_B_01" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="PBEND_B_01"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_01/Name" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Code -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Code" parent="MACI/Components/PBEND_B_01" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="acsexmplPS"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_01/Code" descriptor="abeans.datatypes.GetDescriptor"/>
+	
+		<!-- Type -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Type" parent="MACI/Components/PBEND_B_01" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="IDL:alma/PS/PowerSupply:1.0"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_01/Type" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Container -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Container" parent="MACI/Components/PBEND_B_01" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="Container"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_01/Container" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Default -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Default" parent="MACI/Components/PBEND_B_01" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_01/Default" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Autostart -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Autostart" parent="MACI/Components/PBEND_B_01" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_01/Autostart" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<!-- PBEND_B_02 -->
+	<entity type="abeans.pluggable.simulator.Property" name="PBEND_B_02" parent="MACI/Components" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="{Name,Code,Type,Container,Default,Autostart}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_02" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Name -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Name" parent="MACI/Components/PBEND_B_02" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="PBEND_B_02"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_02/Name" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Code -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Code" parent="MACI/Components/PBEND_B_02" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="acsexmplPS"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_02/Code" descriptor="abeans.datatypes.GetDescriptor"/>
+	
+		<!-- Type -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Type" parent="MACI/Components/PBEND_B_02" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="IDL:alma/PS/PowerSupply:1.0"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_02/Type" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Container -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Container" parent="MACI/Components/PBEND_B_02" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="Container"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_02/Container" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Default -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Default" parent="MACI/Components/PBEND_B_02" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_02/Default" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Autostart -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Autostart" parent="MACI/Components/PBEND_B_02" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/PBEND_B_02/Autostart" descriptor="abeans.datatypes.GetDescriptor"/>
+
+	<!-- * -->
+	<entity type="abeans.pluggable.simulator.Property" name="*" parent="MACI/Components" descriptor="abeans.datatypes.CharacteristicDescriptor">
+		<property name="type" type="java.lang.Class" value="java.lang.String"/>
+		<property name="value" type="java.lang.String" value="{Name,Code,Type,Container,Default,Autostart}"/>
+	</entity>
+	<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/*" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Name -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Name" parent="MACI/Components/*" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="*"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/*/Name" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Code -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Code" parent="MACI/Components/*" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="acsexmplPS"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/*/Code" descriptor="abeans.datatypes.GetDescriptor"/>
+	
+		<!-- Type -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Type" parent="MACI/Components/*" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="IDL:alma/PS/PowerSupply:1.0"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/*/Type" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Container -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Container" parent="MACI/Components/*" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="Container"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/*/Container" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Default -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Default" parent="MACI/Components/*" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/*/Default" descriptor="abeans.datatypes.GetDescriptor"/>
+
+		<!-- Autostart -->	
+		<entity type="abeans.pluggable.simulator.Property" name="Autostart" parent="MACI/Components/*" descriptor="abeans.datatypes.CharacteristicDescriptor">
+			<property name="type" type="java.lang.Class" value="java.lang.String"/>
+			<property name="value" type="java.lang.String" value="false"/>
+		</entity>
+		<entity type="abeans.pluggable.simulator.GetQuery" parent="MACI/Components/*/Autostart" descriptor="abeans.datatypes.GetDescriptor"/>
+</body>

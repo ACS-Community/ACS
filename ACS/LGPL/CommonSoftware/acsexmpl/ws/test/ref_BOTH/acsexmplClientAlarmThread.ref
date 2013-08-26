@@ -1,0 +1,26 @@
+1 - Running acsexmplClientAlarmThread PBUMP_B_01
+1 - Welcome to acsexmplClientAlarmThread!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: PBUMP_B_01
+1 - ----------T--:--:--.--- [GlobalLogger - ] PowerSupply reference retrieved.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Trying to get readback... 
+1 - ----------T--:--:--.--- [GlobalLogger - ] OK
+1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm subscription created
+1 - ----------T--:--:--.--- [GlobalLogger - ] actionThread: Created thread
+1 - ----------T--:--:--.--- [GlobalLogger - ] (BACIClient main thread) Going in main loop sleep...
+1 - ----------T--:--:--.--- [GlobalLogger - ] actionThread: Started runLoop for thread
+1 - ----------T--:--:--.--- [GlobalLogger - ] actionThread: Setting current to 50.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] actionThread: Setting current to 8.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] (readback::Alarmdouble::alarm_raised) Value: 8.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] actionThread: Setting current to 15.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] actionThread: Setting current to 25.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] (readback::Alarmdouble::alarm_cleared) Value: 25.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] actionThread: Setting current to 995.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] (readback::Alarmdouble::alarm_raised) Value: 995.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] actionThread: Setting current to 970.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] (readback::Alarmdouble::alarm_cleared) Value: 970.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] actionThread: Setting current to 50.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] actionThread: Stopped thread
+1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm subscription deleted
+1 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...
+1 - All done!

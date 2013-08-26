@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" 
+	name="acsdaemonErrType"
+	type="55" 
+	_prefix="alma">
+	
+	<ErrorCode name="FailedToStartContainer"
+		shortDescription="Failed to start container"
+		description="Failed to start container">
+		<Member name="ReturnCode" type="long" description="Return error code."/>
+	</ErrorCode>
+	
+
+	<ErrorCode name="FailedToStopContainer"
+		shortDescription="Failed to stop container"
+		description="Failed to stop container">
+		<Member name="ReturnCode" type="long" description="Return error code."/>
+	</ErrorCode>
+	
+
+	<ErrorCode name="AcsStartServices"
+		shortDescription="Status of ACS services start"
+		description="The status of starting the ACS services, optionally with an exception list."
+	/>
+
+	<ErrorCode name="FailedToStopAcs"
+		shortDescription="Failed to stop ACS services"
+		description="Failed to stop ACS services"
+	/>
+
+	<ErrorCode name="ServiceAlreadyRunning"
+		shortDescription="The requested service is running already."
+		description="The requested service is running already and therefore cannot be started.">
+			<Member name="Service" type="string" description="service name"/>
+	</ErrorCode>
+
+	<ErrorCode name="ServiceNotRunning"
+		shortDescription="The requested service is not running."
+		description="The requested service is not running and therefore cannot be stopped."
+	/>
+
+	<ErrorCode name="FailedToGetAcsStatus"
+		shortDescription="Failed to get ACS status"
+		description="Failed to get ACS status"
+	/>
+
+	<ErrorCode name="ProcessingAborted"
+		shortDescription="Processing was stopped."
+		description="Command processor thread has been stopped before the request was processed."
+	/>
+
+	<ErrorCode name="CannotCreateInstance"
+		shortDescription="Cannot create requested instance."
+		description="Failed to create requested instance."
+	/>
+
+	<ErrorCode name="CannotUseInstance"
+		shortDescription="Instance is in use and cannot be used."
+		description="Failed to use requested instance because it is in use."
+	/>
+
+	<ErrorCode name="FailedToProcessRequest"
+		shortDescription="Failed to process request."
+		description="Failed to process request."
+	/>
+
+	<ErrorCode name="BadArguments"
+		shortDescription="Command line arguments wrong or missing."
+		description="Command line arguments wrong or missing."
+	/>
+
+	<ErrorCode name="PortInUse"
+		shortDescription="Service port is in use."
+		description="Failed to process request because service port is in use."
+	/>
+
+	<ErrorCode name="RequestProcessingTimedOut"
+		shortDescription="Request processing has timed out."
+		description="Request processing has timed out."
+	/>
+	
+</Type>

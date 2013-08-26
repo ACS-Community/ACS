@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../../standard_stylesheet.xsl"?>
+<document location="../../../">
+  <head>
+    <title>Netbeans : Java execution error message</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<title>java.lang.IllegalStateException: Fatal error, can't find window manager instance in lookup</title>
+		<description>
+		 <ul>
+		 <B>Problem description</B><BR/>
+		 <pre><font color="#FF0000">java.lang.IllegalStateException: Fatal error, can't find window manager instance in lookup.
+at org.openide.windows.WindowManager.getDefault(WindowManager.java:60)
+at org.openide.windows.TopComponent.&lt;init&gt;(TopComponent.java:127)
+at org.openide.explorer.ExplorerPanel.&lt;init&gt;(ExplorerPanel.java:73)
+at cern.gp.explorer.TreeExplorer.&lt;init&gt;(TreeExplorer.java:40)
+at cern.gp.explorer.TreeTableExplorer.&lt;init&gt;(TreeTableExplorer.java:30)
+at gp.example.nodes.dynamic.AlarmApp.main(AlarmApp.java:27)</font></pre>
+      It means that your application (using a <i>Netbeans Window Manager</i>) is 
+      launched as an <i>external aplication</i> instead of an <i>internal application</i>.<br/>
+		 <br/>
+		 <B>Possible solution(s)</B>
+		 <br/>
+		 1) Local update:<br/>
+		 <br/>
+      <table cellSpacing="0" cellPadding="0"  border="0">
+      <tr>
+         <td>
+      		 <img src="images/javaexecution.gif"/>
+      	</td>
+      	<td ID="CellLeftTop10">
+      		 You can change the <i>Executor</i> item to <b>Internal Executor</b> from the <i>Execution</i> 
+      		 property sheet by selecting first your application from the <i>File system</i> explorer tree as shown below. 
+         </td>
+      </tr>
+      </table>
+		 <br/><BR/>
+		 2) <a href="../../../howto/netbeans/defaultexecutor.html">Update globally this option for all java application</a>.
+      </ul>
+     <BR/>
+		</description>
+	</section>
+</document>
+

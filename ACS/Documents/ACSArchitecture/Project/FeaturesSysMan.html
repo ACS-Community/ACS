@@ -1,0 +1,31 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>FeaturesSysMan</TITLE>
+<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<H2><A NAME="SystemManagementIssues">System management issues</A></H2>
+<P>The are a number of important issues related to the run time management of the control system.</P>
+<P>What follows are some important points:</P>
+<H3>The whole control system must be started/stopped from a centralized procedure<A HREF="ReferenceDocuments.html#RD01">[RD01 - 5.1.2 Procedures]</A>. This must be able to: </H3><DIR>
+<DIR>
+
+<H4>Start/stop processes in a predefined order and handling dependencies between processes </H4>
+<H4>Verify the health of the system after startup/shutdown</H4></DIR>
+</DIR>
+
+<H3>During run-time a management application must monitor the system: </H3><DIR>
+<DIR>
+
+<H4>Detect terminating processes (and eventually restart them automatically) and notify other interested processes of the fact </H4>
+<H4>Identify locked processes </H4>
+<H4>Identify lack of resources</H4></DIR>
+</DIR>
+
+<H3>The mechanism used by the ESO Common Software is very well tested and satisfies all requirements (see next paragraph).</H3>
+<H3>Alternatively an implementation of another environment for network and distributed system management can be investigated (some alternatives for the implementation of these concepts are: SNMP, Unicenter TNG <A HREF="ReferenceDocuments.html#RD20">[RD20]</A> or Tivoli <A HREF="ReferenceDocuments.html#RD21">[RD21]</A>). </H3>
+<H3>Management of the control system should be possible without requiring root access.</H3></BODY>
+</HTML>

@@ -1,0 +1,30 @@
+1 -  --endorsed --clientVM -- com.cosylab.cdb.DALRead MACI/Components/CONTROL/MASTER -d corbaloc::xxxxxxx:yyyy/CDB
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: com.cosylab.cdb.DALRead MACI/Components/CONTROL/MASTER -d corbaloc::xxxxxxx:yyyy/CDB
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@DALRead created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
+1 - ----------T--:--:--.--- ERROR [] CDB record does not exist (type=51, code=9) [ Curl='MACI/Components/CONTROL/MASTER' ]
+1 - ----------T--:--:--.--- NOTICE [DALRead] Record does not exist 	CURL='MACI/Components/CONTROL/MASTER'
+1 - alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx [ Curl='MACI/Components/CONTROL/MASTER' ] 
+1 - 	at ---.loadRecords(DALImpl.java:xx)
+1 -  --clientVM -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxxxxx:yyyy/CDB
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxxxxx:yyyy/CDB
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@cdbjDALClearCache created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
+1 - ----------T--:--:--.--- INFO [cdbjDALClearCache] Cleared CDB cache for all curls.
+1 -  --endorsed --clientVM -- com.cosylab.cdb.DALRead MACI/Components/CONTROL/MASTER -d corbaloc::xxxxxxx:yyyy/CDB
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: com.cosylab.cdb.DALRead MACI/Components/CONTROL/MASTER -d corbaloc::xxxxxxx:yyyy/CDB
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@DALRead created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
+1 - Env null
+1 - ________________________________________________________
+1 - Node Component
+1 -     xmlns="urn:schemas-cosylab-com:Component:1.0"
+1 -     xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+1 -     xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+1 -     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+1 -     Name="CONTROL/MASTER"
+1 -     Code="alma.Control.Master.MasterImplCreator"
+1 -     Type="IDL:alma/ControlCommon/Master:1.0"
+1 -     Container="CONTROL/ACC/javaContainer"
+1 -     ImplLang="java"
+1 -     Default="false"
+1 -     Autostart="false"
+1 -     KeepAliveTime="0"
+1 - ________________________________________________________

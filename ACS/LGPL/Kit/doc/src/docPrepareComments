@@ -1,0 +1,178 @@
+#! /bin/bash
+
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: docPrepareComments,v 1.1 2009/06/26 13:46:08 eallaert Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# eallaert  2009-06-26  created
+#
+
+###############################################################################
+# Function definitions used later in this script.
+###############################################################################
+
+# definition of a function to print the usage statement for this script
+printUsageAndExit ()
+{
+    echo ""
+    echo "Usage: $0 [OPTIONS] <documentNr>";
+    echo "  where: "
+    echo "";
+    echo "  <documentNr> is the number of the document for which the comments are"
+    echo "          collected, e.g. 'COMP-70.20.00.00-001-E-STD'. This script will"
+    echo "          then produce an output file called 'Reply.<documentNr>.txt', with"
+    echo "          by default Unix-style line endings. This document number will"
+    echo "          also be recorded into the output file."
+    echo "Options: "
+    echo "   -d | --dos: use DOS-style line endings"
+    echo "   -h | --help: print this usage message and exit."
+    echo "   -o | --output <fileName>: use as output <filename> instead of"
+    echo "          'Reply.<documentNr>.txt'."
+    echo ""
+    exit -1;
+}
+# definition of a function to echo (print to stdout) based on debug settings
+debugPrint ()
+{
+    if [ "$DEBUG_MODE" ] ;
+	then
+	echo " DEBUG: $1"
+    fi;
+}
+
+##########################################################################################
+# Script logic starts here...                                                            #
+##########################################################################################
+
+ORIGINAL_CMD_LINE=$@
+
+#
+# These will contain the command line arguments and/or options
+#
+HELP=
+DOS=
+DEBUG_MODE=
+OUTPUT=
+#
+# These options can be recognized (longopts comma-separated. Colon means 1 argument is required)
+#
+LONGOPTS=debug,help,output:
+SHORTOPTS=d,h,o:
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# - 1st run is simply to check the commandline for correctness
+# - 2nd run does the real work and sets execution flags for this script, as appropriate
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -a -l $LONGOPTS $SHORTOPTS "$@" || printUsageAndExit 
+
+# Note that if option-parameters can contain spaces, one should NOT use 
+# getopt's "--unquoted" option.
+# This means also that all parameters will be enclosed by single quotes, that
+# need to be removed by e.g. "eval".
+eval set -- `getopt -a -l $LONGOPTS $SHORTOPTS "$@"` >& /dev/null ; 
+
+#
+# Iterate over getopt's output and set variables accordingly
+#
+while : 
+  do
+  case "$1" in
+      --help)           HELP=true ;;
+      -h)               HELP=true ;;
+      --debug)          DOS=true ;;
+      -d)               DOS=true ;;
+      -o)               OUTPUT=$2 ; shift ;;
+      --output)         OUTPUT=$2 ; shift ;;
+      --) break ;;
+  esac
+  shift
+done
+shift
+
+# must be unset! otherwise our custom export() function
+# that is defined below doesn't get used by the shell
+#
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$HELP" ] ; 
+then
+    printUsageAndExit
+fi
+
+# first, verify that the script was invoked w/ the proper number of command-line arguments 
+if [ $# -ne 1 ] ;
+then 
+    printUsageAndExit
+fi
+
+DOC_NR=$1
+if [ X$OUTPUT != X ] ;
+then
+    OUTPUT_FILE=$OUTPUT
+else
+    OUTPUT_FILE=Reply.${DOC_NR}.txt
+fi
+
+################################################################################
+# Here the action starts ...                                                             #
+################################################################################
+
+# Ensure all comments are with Unix-style line endings
+dos2unix -q *.comments
+
+# Merge all the comments-files (mask: *.comments) on the current directory 
+# into a file called "commentList"
+docMergeComments
+
+# Remove the timestamp inserted by docMergeComments
+acsReplace -quiet -nobackup "^[^\n]+" "" commentList
+
+# Remove the "empty" comments inserted by docMergeComments
+acsReplace -quiet -nobackup "(?w)(^[-]+\n)(\([A-Za-z_]+\)\n[-]+\n)+" "\\1" commentList
+
+# Now insert the line numbers
+docSetCommentNumber commentList 
+
+# Copy the file into its final destination, inserting the document number as well
+echo ""                                          >  $OUTPUT_FILE
+echo "Comments on: $DOC_NR"                      >> $OUTPUT_FILE
+echo "             **************************"   >> $OUTPUT_FILE
+echo ""                                          >> $OUTPUT_FILE
+echo "Generated on `date +'%A %d %B %Y, %T %Z'`" >> $OUTPUT_FILE
+echo "(using '$0 $ORIGINAL_CMD_LINE')"           >> $OUTPUT_FILE
+cat commentList                                  >> $OUTPUT_FILE
+
+if [ $DOS ] ; 
+then
+    unix2dos -q $OUTPUT_FILE
+    echo "NOTE: $OUTPUT_FILE has been converted to DOS format"
+    echo ""
+fi
+
+rm -f commentList commentList.BAK
+
+

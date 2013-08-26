@@ -1,0 +1,11 @@
+--- os_types.h.orig	2010-10-22 12:45:52.640625000 -0300
++++ os_types.h	2010-10-06 11:01:07.051250000 -0300
+@@ -71,7 +71,7 @@
+ 
+ #if defined (ACE_SIZEOF_LONG) && ACE_SIZEOF_LONG == 8
+    typedef off_t ACE_LOFF_T;
+-#elif defined (ACE_HAS_RTEMS) || defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__APPLE__) || defined(ACE_MVS) || defined(__INTERIX) || \
++#elif defined (ACE_HAS_RTEMS) || defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__APPLE__) || defined(ACE_MVS) || defined(__INTERIX) || defined(__CYGWIN__) || \
+   (defined (ACE_OPENVMS) && defined (_LARGEFILE))
+    typedef off_t ACE_LOFF_T;
+ #elif defined (__sgi) || defined (AIX) || defined (HPUX) || defined (__QNX__)

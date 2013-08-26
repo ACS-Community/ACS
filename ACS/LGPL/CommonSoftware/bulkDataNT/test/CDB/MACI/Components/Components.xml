@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <_ Name="BulkDataNTSenderTEST"  Code="bdNTSenderLibTestNew"	
+        Type="IDL:alma/bulkdata/BulkDataSender:1.0"
+        Container="bdNTTestContainer" ImplLang="cpp" />
+    
+    <_ Name="BulkDataNTReceiverTEST_1"  Code="bdNTReceiverLibTest"	
+        Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+        Container="bdNTTestContainer" ImplLang="cpp" />
+    
+    <_ Name="BulkDataNTReceiverTEST_2"  Code="bdNTReceiverLibTest"
+        Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+        Container="bdNTTestContainer" ImplLang="cpp" />                   
+
+    <_ Name="BulkDataSenderTEST"  Code="bdNTSenderLibTest"	
+        Type="IDL:alma/bulkdata/BulkDataSender:1.0"
+        Container="bdNTTestContainer" ImplLang="cpp" />
+
+    <_ Name="BulkDataReceiverTEST_1"  Code="bdNTReceiverLibTest"	
+	    Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+	    Container="bdNTTestContainer" ImplLang="cpp" />
+                            
+    <_ Name="BulkDataReceiverTEST_2"  Code="bdNTReceiverLibTest"
+        Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+        Container="bdNTTestContainer" ImplLang="cpp" />               
+
+	<_ Name="NEWCONFIG_RECEIVER"  Code="bdNTReceiverLibTest"	
+	   Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+	   Container="newConfigRecvContainer" ImplLang="cpp" />
+    
+    <_ Name="NEWCONFIG_RECEIVER_1"  Code="bdNTReceiverLibTest"	
+        Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+        Container="newConfigRecvContainer" ImplLang="cpp" />
+
+	<_ Name="OLDCONFIG_RECEIVER"  Code="bdNTReceiverLibTest"	
+	   Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+	   Container="newConfigRecvContainer" ImplLang="cpp" />
+    
+    <_ Name="NEWCONFIG_SENDER_TEST"  Code="bdNTSenderLibTest"	
+        Type="IDL:alma/bulkdata/BulkDataSender:1.0"
+        Container="newConfigRecvContainer" ImplLang="cpp" />
+
+</Components>

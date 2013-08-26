@@ -1,0 +1,286 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupPids
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsManager,v 1.8 2013/03/04 09:33:07 msekoran Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# azagar   2008-08-06 Extracted from acsStartManager and acsStopManager
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+PID=$$
+export HOST=`getIP`
+COMMAND=`basename $0`
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_START=false
+CL_STOP=false
+CL_WAIT=false
+CL_BASEPORT=
+CL_HELP=
+CL_RECOVER=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+# Intentionally includes all options supported by acsStartORBSRVC
+#
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,nameService:
+SHORTOPTS=hskwrb:t:d:x:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+  cat << EOF
+Starts Interface Repository for Acs
+
+Usage: $COMMAND [OPTIONS]
+Options:
+   -s | --start                      start service
+   -k | --kill                       stop service
+   -w | --wait                       wait for service to get started
+   -b | --baseport INSTANCE          the acs instance (0-9) you want to use
+   -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
+   -r | --recoverClientConnections   force services to recover client connections
+   -x | --nameService REF            set name service reference via command-line
+   -h | --help                       prints this help and exits
+EOF
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n $COMMAND -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+  printUsage
+  exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+  case "$1" in
+    --baseport)                   CL_BASEPORT=$2 ; shift ;;
+    -b)                           CL_BASEPORT=$2 ; shift ;;
+    --timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    -t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    --recoverClientConnections)   CL_RECOVER=true ;; 
+    -r)                           CL_RECOVER=true ;; 
+    --help)                       CL_HELP=true ;; 
+    -h)                           CL_HELP=true ;; 
+    --start)                      CL_START=true ;; 
+    -s)                           CL_START=true ;; 
+    --kill)                       CL_STOP=true ;; 
+    -k)                           CL_STOP=true ;; 
+    --wait)                       CL_WAIT=true ;; 
+    -w)                           CL_WAIT=true ;; 
+    --nameService)                export ACS_NAME_SERVICE=$2 ; shift ;;
+    -x)                           export ACS_NAME_SERVICE=$2 ; shift ;;
+    --) break ;;
+  esac
+  shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+if [ "$CL_HELP" ] ; then
+  printUsage
+  exit $EC_OK
+fi
+
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+################################
+#Set variables
+################################
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+  export ACS_INSTANCE="$CL_BASEPORT"
+fi
+
+ACS_LOG_COMMAND $@
+
+#Makes shure there is an initial value
+if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+then
+  ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+fi
+
+#maximum timeout for any given process to complete
+MAX_TIMEOUT=$(( 10 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+
+export STD_SLEEP=3
+
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+#use the instance directory to get the complete names of the 
+#files where process IDs are stored in.
+MANAGER_PIDFILE=$INSTANCE_DIR/$ACS_MANAGER_PIDFILE
+
+#set the filenames where binaries' output will be sent
+MANAGER_OUT=$INSTANCE_DIR/$ACS_MANAGER_OUT
+
+
+
+
+################################
+# Manager
+################################
+
+if [ "$CL_STOP" = "true" ]
+then
+  if MANAGER_PID=`getManagerPid`
+  then
+    # SANITY CHECKS
+    # --------------------------------------------------------------------------
+    if [ ! -d $INSTANCE_DIR ]
+    then
+      ACS_LOG_DEBUG "$COMMAND" "The lock directory '$INSTANCE_DIR' does not exist!"
+    elif [ ! -e $MANAGER_PIDFILE ]
+    then
+      ACS_LOG_DEBUG "$COMMAND" "The temporary file '$MANAGER_PIDFILE' does not exist!"
+    elif [ ! -w $INSTANCE_DIR ] # Stop user A from interfering with user B
+    then
+      ACS_LOG_ERROR "$COMMAND" "The directory '$INSTANCE_DIR' is not owned by $USER!"
+      exit $EC_CANNOTUSE
+    elif [ ! -w $MANAGER_PIDFILE ]
+    then
+      ACS_LOG_ERROR "$COMMAND" "The temporary file '$MANAGER_PIDFILE' is not owned by $USER!"
+      exit $EC_CANNOTUSE
+    fi
+
+    ACS_NAME_SERVICE=`acsstartupNSRef`
+    $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name Manager -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+
+    # MANAGER SHUTDOWN
+    # --------------------------------------------------------------------------
+    # Everything checked out so manager can really be shutdown
+    # If this command does not finish in 15 seconds, it will be killed
+
+    # The code to send to shutdown methods of all containers. 
+    # If 0, the containers' shutdown methods are not called, and the manager simply calls disconnect()
+    # TODO Think about if we want containers to actually shut down, and what value to send in that case.
+    # See COMP-2602 for more.
+    export container_shutdown_code=0
+ 
+    acsutilBlock -t 15 -k "maciManagerShutdown $container_shutdown_code"
+
+    # Assume the worst has happened...manager is hung
+    # --------------------------------------------------------------------------
+    # Delegate to this helper script. If jManager does not really go away in
+    # $MAX_TIMEOUT seconds, the helper script will forcefully kill it!
+    acsutilBlock -p $MANAGER_PID -t $MAX_TIMEOUT -k
+
+    # Some final cleanup
+    # --------------------------------------------------------------------------
+    #remove manager's pid file
+    rm -f $MANAGER_PIDFILE 
+    #remove manager's output file
+    rm -f $MANAGER_OUT
+
+    ACS_LOG_INFO "$COMMAND" "`basename $0`: done."
+  else
+    if [ "$CL_START" != "true" ]
+    then
+      exit $EC_FAILURE
+    fi
+  fi
+fi
+
+if [ "$CL_START" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  # Prevent from having the manager started more than once on the same baseport
+  if [ -e $MANAGER_OUT ]
+  then
+    ACS_LOG_ERROR "$COMMAND" "It appears as if you're trying to run the `basename $0` command twice"
+    ACS_LOG_ERROR "$COMMAND" "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
+    exit $EC_CANNOTCREATE
+  fi
+
+  # MANAGER STARTUP
+  # --------------------------------------------------------------------------
+  RECOVER_OPT=-n
+  if [ "$CL_RECOVER" ] ; then
+    RECOVER_OPT=
+  fi
+  #the real "brains" of this script is in maciManagerJ.  Only reason this script
+  #exists is to make every day use of ACS a little more consistent  as well as saving 
+  #manager's process ID
+  maciManagerJ $@ $RECOVER_OPT 2>&1 | tee $MANAGER_OUT &
+  #See tee's PID
+  echo $! >> "$INSTANCE_DIR/$ACS_PIDSFILE"
+fi
+
+if [ "$CL_WAIT" = "true" ]
+then
+  # Give manager MAX_TIMEOUT to initialize. If this does not occur, then forcibly kill it
+  # Block until the expected output shows up in the the correct file
+  if ! acsutilBlock -t $MAX_TIMEOUT -f $MANAGER_OUT -b "Manager Application initialized"
+  then
+    ACS_LOG_ERROR "$COMMAND" "Unable to start Manager in a timely fashion! Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
+    if MANAGER_PID=`getManagerPid`
+    then
+      acsKillProc $MANAGER_PID 2> /dev/null || ACS_LOG_ERROR "$COMMAND" "Cannot kill the manager"
+    fi
+    exit $EC_TIMEOUT
+  fi
+  ACS_LOG_FORCED "$COMMAND" "INFO" "Manager is up and running"
+fi
+
+
+#
+# ___oOo___

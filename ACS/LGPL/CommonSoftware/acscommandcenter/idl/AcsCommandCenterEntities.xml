@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<EntitybuilderSettings>
+
+
+    <EntitySchema schemaName="AcsCommandCenterProject.xsd" xmlNamespace="Alma/Acs/AcsCommandCenterProject"/>
+    <XmlNamespace2JPackage xmlNamespace="Alma/Acs/AcsCommandCenterProject" jPackage="alma.entity.xmlbinding.acscommandcenterproject"/>
+
+    <EntitySchema schemaName="AcsCommandCenterTools.xsd" xmlNamespace="Alma/Acs/AcsCommandCenterTools"/>
+    <XmlNamespace2JPackage xmlNamespace="Alma/Acs/AcsCommandCenterTools" jPackage="alma.entity.xmlbinding.acscommandcentertools"/>
+
+
+<!--
+    <EntitySchema schemaName="ObsProposal.xsd" xmlNamespace="Alma/ObsPrep/ObsProposal"/>
+    <EntitySchema schemaName="SchedBlock.xsd" xmlNamespace="Alma/ObsPrep/SchedBlock"/>
+    <EntitySchema schemaName="SBExecRec.xsd" xmlNamespace="Alma/ObsPrep/SBExecRec"/>    
+
+    <XmlNamespace2JPackage xmlNamespace="Alma/ObsPrep/ObsProposal" jPackage="alma.entity.xmlbinding.obsproposal"/>
+    <XmlNamespace2JPackage xmlNamespace="Alma/ObsPrep/SchedBlock" jPackage="alma.entity.xmlbinding.schedblock"/>
+    <XmlNamespace2JPackage xmlNamespace="Alma/ObsPrep/SBExecRec" jPackage="alma.entity.xmlbinding.sbexecrec"/>
+// -->
+
+</EntitybuilderSettings>
+

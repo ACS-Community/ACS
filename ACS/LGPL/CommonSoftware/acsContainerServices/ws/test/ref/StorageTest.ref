@@ -1,0 +1,61 @@
+1 - storagepolicytest::isValid_nilpointeeTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - storagepolicytest::isValid_nilcontsrvTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - storagepolicytest::isValid_nonnilTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - storagepolicytest::Destroy_nilhandleTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - storagepolicytest::Destroy_nilpointeeTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - storagepolicytest::Destroy_notstickyTest
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - storagepolicytest::Destroy_cannotreleaseexTest
+1 - 
+1 - 
+1 - 
+1 - Unable to release component
+1 - 
+1 - 
+1 - 
+1 - 
+1 - 
+1 - 
+1 -  : OK
+1 - storagepolicytest::Destroy_otherexTest
+1 - 
+1 - 
+1 - 
+1 - Unexpected exception caught when releasing component.
+1 - 
+1 - 
+1 - 
+1 - 
+1 - 
+1 - 
+1 - OK (8)
+1 -  : OK

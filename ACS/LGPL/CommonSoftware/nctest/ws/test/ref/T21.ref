@@ -1,0 +1,20 @@
+2 - Making sure there is a fridge available...
+1 - ----------T--:--:--.--- FridgeNCConsumer Main - Creating FridgeConsumer
+1 - ----------T--:--:--.--- FridgeNCConsumer Main - Waiting for events . . .
+1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+2 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
+2 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
+2 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
+2 - ----------T--:--:--.--- Python Client Main - Creating FridgeConsumer
+2 - ----------T--:--:--.--- Python Client Main - Waiting for events . . .
+2 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
+1 - ----------T--:--:--.--- FridgeNCConsumer Main - Events all done . . . exiting
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+2 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
+2 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
+2 - ----------T--:--:--.--- Python Client Main - Events all done . . . exiting
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

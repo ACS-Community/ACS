@@ -1,0 +1,93 @@
+#! /bin/ksh
+if [ "`uname`" = "Linux" ]; then enable -n echo; fi
+#
+# The list of IDL files to load is built dynamically
+# All idl files in
+#   ../idl, $INTROOT/idl, $ACSROOT/idl
+# are loaded
+
+mod_list=`/bin/ls -1 ../idl/*.idl 2>/dev/null` 
+int_list=`/bin/ls -1 $INTROOT/idl/*.idl 2>/dev/null`
+acs_list=`/bin/ls -1 $ACSROOT/idl/*.idl 2>/dev/null`
+
+intlist_list=""
+intlist_idl=""
+
+# Separation of dirs
+item_list=`echo $INTLIST | sed s/:/\ /g`
+
+# And now all .idl files for each INTLIST items
+for item in $item_list
+do
+   intlist_list=`/bin/ls -1 $item/idl/*.idl 2>/dev/null`" $intlist_list"
+   intlist_idl=$intlist_idl" -I$item/idl" 
+done
+
+
+int_mod_list=`echo $mod_list`
+
+for file in `echo $int_list`
+do
+    file_name=`basename $file` 
+    echo $mod_list | grep "\/$file_name" 1>/dev/null
+    if [ $? != 0 ]
+    then
+        int_mod_list=`echo $file; echo $int_mod_list`
+    fi
+done
+
+tot_tmp_list=`echo $int_mod_list`
+for file_tmp in $intlist_list
+do
+  file_name=`basename $file_tmp`
+  echo $int_mod_list | grep "\/$file_name" 1>/dev/null
+  if [ $? != 0 ]
+  then
+      tot_tmp_list=`echo $file_tmp; echo $tot_tmp_list`
+  fi
+done
+
+tot_list=`echo -e $tot_tmp_list`
+for file in `echo $acs_list`
+do
+    file_name=`basename $file`
+    echo $tot_tmp_list | grep "\/$file_name" 1>/dev/null
+    if [ $? != 0 ]
+    then
+        tot_list=`echo $file; echo $tot_list`
+    fi
+done
+
+echo "Generating java classes for following IDLs: "
+echo $tot_list
+
+mkdir JTMP
+
+export REL_ROOT=$ALMASW_ROOTDIR/$ALMASW_RELEASE
+
+# Here I also add alll the INTLIST dirs/idl 
+jidl -I$INTROOT/idl $intlist_idl -I$ACSROOT/idl -I$REL_ROOT/CCSLite/idl -I$REL_ROOT/Orbacus/local/idl/ -I$REL_ROOT/Orbacus/local/idl/OB -I$REL_ROOT/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs -I$REL_ROOT/TAO/ACE_wrappers/build/linux/TAO/tao --auto-package --output-dir JTMP $tot_list
+
+echo "Compileing java classes ... "
+export CLASSPATH=$REL_ROOT/Orbacus/local/lib/OB.jar:$REL_ROOT/Orbacus/local/lib/OBProperty.jar
+javac -classpath $CLASSPATH `find JTMP -name '*.java'`
+
+echo "Creating jar file acsALL.jar   ..."
+cd JTMP
+jar cvf acsALL.jar *
+
+echo "Moving acsALL into INTROOT|INTLIST"
+if [ "$XINTROOT" != "X" ]
+then
+   mv acsALL.jar $INTROOT/lib
+else
+   if  [ "$XINTLIST" != "X" ]
+   then
+       first_dir=`echo $INTLIST | awk 'BEGIN {FS=":"} {print $1}'`
+       mv acsALL.jar $first_dir/lib
+   fi
+fi
+
+echo "Removeing JTMP directory"
+cd ..
+rm -rf JTMP

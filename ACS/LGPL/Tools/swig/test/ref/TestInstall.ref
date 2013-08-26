@@ -1,0 +1,114 @@
+1 - Target Language Options
+1 -      -allegrocl      - Generate ALLEGROCL wrappers
+1 -      -chicken        - Generate CHICKEN wrappers
+1 -      -clisp          - Generate CLISP wrappers
+1 -      -cffi           - Generate CFFI wrappers
+1 -      -csharp         - Generate C# wrappers
+1 -      -guile          - Generate Guile wrappers
+1 -      -java           - Generate Java wrappers
+1 -      -lua            - Generate Lua wrappers
+1 -      -modula3        - Generate Modula 3 wrappers
+1 -      -mzscheme       - Generate Mzscheme wrappers
+1 -      -ocaml          - Generate Ocaml wrappers
+1 -      -perl           - Generate Perl wrappers
+1 -      -php4           - Generate PHP4 wrappers
+1 -      -php5           - Generate PHP5 wrappers
+1 -      -pike           - Generate Pike wrappers
+1 -      -python         - Generate Python wrappers
+1 -      -ruby           - Generate Ruby wrappers
+1 -      -sexp           - Generate Lisp S-Expressions wrappers
+1 -      -tcl            - Generate Tcl wrappers
+1 -      -uffi           - Generate Common Lisp / UFFI wrappers
+1 -      -xml            - Generate XML wrappers
+1 -      -r              - Generate R (aka GNU S) wrappers
+1 - 
+1 - General Options
+1 -      -addextern      - Add extra extern declarations
+1 -      -c++            - Enable C++ processing
+1 -      -co <file>      - Check <file> out of the SWIG library
+1 -      -copyctor       - Automatically generate copy constructors wherever possible
+1 -      -cpperraswarn   - Treat the preprocessor #error statement as #warning (default)
+1 -      -copyright      - Display copyright notices
+1 -      -debug_template - Display information for debugging templates
+1 -      -debug_typemap  - Display information for debugging typemaps
+1 -      -directors      - Turn on director mode for all the classes, mainly for testing
+1 -      -dirprot        - Turn on wrapping of protected members for director classes (default)
+1 -      -D<symbol>      - Define a symbol <symbol> (for conditional compilation)
+1 -      -dump_classes   - Display information about the classes found in the interface
+1 -      -dump_module    - Display information on the module node tree avoiding system nodes
+1 -      -dump_parse_module - Display information on the module node tree after parsing avoiding system nodes
+1 -      -dump_parse_top - Display information on the node tree after parsing including system nodes
+1 -      -dump_tags      - Display information about the tags found in the interface
+1 -      -dump_top       - Display information on the entire node tree including system nodes
+1 -      -dump_typedef   - Display information about the types and typedefs in the interface
+1 -      -E              - Preprocess only, does not generate wrapper code
+1 -      -external-runtime [file] - Export the SWIG runtime stack
+1 -      -fakeversion <v>- Make SWIG fake the program version number to <v>
+1 -      -fcompact       - Compile in compact mode
+1 -      -features <list>- Set global features, where <list> is a comma separated list of
+1 -                        features, eg -features directors,autodoc=1
+1 -                        If no explicit value is given to the feature, a default of 1 is used
+1 -      -fastdispatch   - Enable fast dispatch mode to produce faster overload dispatcher code
+1 -      -Fmicrosoft     - Display error/warning messages in Microsoft format
+1 -      -Fstandard      - Display error/warning messages in commonly used format
+1 -      -fvirtual       - Compile in virtual elimination mode
+1 -      -help           - This output
+1 -      -I-             - Don't search the current directory
+1 -      -I<dir>         - Look for SWIG files in directory <dir>
+1 -      -ignoremissing  - Ignore missing include files
+1 -      -importall      - Follow all #include statements as imports
+1 -      -includeall     - Follow all #include statements
+1 -      -l<ifile>       - Include SWIG library file <ifile>
+1 -      -makedefault    - Create default constructors/destructors (the default)
+1 -      -M              - List all dependencies
+1 -      -MD             - Is equivalent to `-M -MF <file>', except `-E' is not implied
+1 -      -MF <file>      - Generate dependencies into <file> and continue generating wrappers
+1 -      -MM             - List dependencies, but omit files in SWIG library
+1 -      -MMD            - Like `-MD', but omit files in SWIG library
+1 -      -module <name>  - Set module name to <name>
+1 -      -nocontract     - Turn off contract checking
+1 -      -nocpperraswarn - Do not treat the preprocessor #error statement as #warning
+1 -      -nodefault      - Do not generate default constructors nor default destructors
+1 -      -nodefaultctor  - Do not generate implicit default constructors
+1 -      -nodefaultdtor  - Do not generate implicit default destructors
+1 -      -nodirprot      - Do not wrap director protected members
+1 -      -noexcept       - Do not wrap exception specifiers
+1 -      -nofastdispatch - Disable fast dispatch mode (default)
+1 -      -nopreprocess   - Skip the preprocessor step
+1 -      -notemplatereduce - Disable reduction of the typedefs in templates
+1 -      -O              - Enable the optimizations options: 
+1 -                         -fastdispatch -fvirtual 
+1 -      -o <outfile>    - Set name of the output file to <outfile>
+1 -      -oh <headfile>  - Set name of the output header file to <headfile>
+1 -      -outdir <dir>   - Set language specific files output directory <dir>
+1 -      -small          - Compile in virtual elimination & compact mode
+1 -      -swiglib        - Report location of SWIG library and exit
+1 -      -templatereduce - Reduce all the typedefs in templates
+1 -      -v              - Run in verbose mode
+1 -      -version        - Display SWIG version number
+1 -      -Wall           - Enable all warning messages
+1 -      -Wallkw         - Enable keyword warnings for all the supported languages
+1 -      -Werror         - Treat warnings as errors
+1 -      -w<list>        - Suppress/add warning messages, eg -w401,+321 - see Warnings.html
+1 -      -xmlout <file>  - Write XML version of the parse tree to <file> after normal processing
+1 - 
+1 - Options can also be defined using the SWIG_FEATURES environment variable, for example:
+1 - 
+1 -   $ SWIG_FEATURES="-Wall"
+1 -   $ swig -python interface.i 
+1 - 
+1 - is equivalent to: 
+1 - 
+1 -   $ swig -Wall -python interface.i 
+1 - 
+1 - 
+1 - Tcl 8 Options (available with -tcl)
+1 -      -itcl           - Enable ITcl support
+1 -      -nosafe         - Leave out SafeInit module function.
+1 -      -prefix <name>  - Set a prefix <name> to be prepended to all names
+1 -      -namespace      - Build module into a Tcl 8 namespace
+1 -      -pkgversion     - Set package version
+1 - 
+1 - 
+1 - Note: 'swig -<lang> -help' displays options for a specific target language.
+1 - 

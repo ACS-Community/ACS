@@ -1,0 +1,75 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: c-procedure.template,v 1.22 2013/03/14 11:59:17 mpasquat Exp $" 
+#%# 
+#%# Template for c-procedure          
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gfilippi   14/01/94  created
+#%# gfilippi   20/02/95  added header and manpage
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN c_procedure(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+/*******************************************************************************
+* PPPPPPPP
+*
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* NNNNNNNN  dd/mm/yy  created
+*/
+
+/************************************************************************
+*   NAME
+* 
+*   SYNOPSIS
+* 
+*   DESCRIPTION
+*
+*   FILES
+*
+*   ENVIRONMENT
+*
+*   RETURN VALUES 
+*
+*   CAUTIONS 
+*
+*   EXAMPLES
+*
+*   SEE ALSO
+*
+*   BUGS   
+*
+*------------------------------------------------------------------------
+*/
+
+#define _POSIX_SOURCE 1
+
+
+/* 
+ * System Headers
+ */
+
+/* 
+ * Local Headers
+ */
+
+
+/* 
+ * 
+ */
+
+{
+}
+
+/*___oOo___*/

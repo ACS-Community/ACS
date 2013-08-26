@@ -1,0 +1,50 @@
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - ContainerStatusMsg: Startup ends
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] initialize() called...
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='blarIL' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
+1 - ----------T--:--:--.--- WARNING [IL_CONSUMERCOMP1] The 'blarIL' channel: the receiver object is incapable of handling 'org.omg.CosNotification.StructuredEvent' type of events! It must have a method 'public void receive(org.omg.CosNotification.StructuredEvent)'.
+1 - java.lang.NoSuchMethodException: alma.demo.test.EventILConsumerImpl.EventConsumerImpl.receive(org.omg.CosNotification.StructuredEvent)
+1 - Good...cannot subscribe to events where the receive method has not been implemented
+1 - Good...cannot add a bad filter: 'hope to god this filter doesn't work' filter is invalid for the 'blarIL' channel: IDL:omg.org/CosNotifyFilter/InvalidConstraint:1.0
+1 - Waiting for events...consumer
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] initialize() called...
+1 - Now sending simplesupplier events...
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
+1 - The component responsible for the supplier is:no name
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Maximum time to process an event is: 2.0 seconds.
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
+1 - The component responsible for the supplier is:no name
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Maximum time to process an event is: 2.0 seconds.
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
+1 - The component responsible for the supplier is:no name
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Maximum time to process an event is: 2.0 seconds.
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
+1 - The component responsible for the supplier is:no name
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Maximum time to process an event is: 2.0 seconds.
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
+1 - The component responsible for the supplier is:no name
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Maximum time to process an event is: 2.0 seconds.
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] Channel:blarIL, Publisher:IL_SUPPLIERCOMP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- INFO [IL_CONSUMERCOMP1] cleanUp() called...
+1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] cleanUp() called...

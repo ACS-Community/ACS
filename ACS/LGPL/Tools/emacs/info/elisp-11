@@ -1,0 +1,1214 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: Using Debugger,  Next: Debugger Commands,  Prev: Explicit Debug,  Up: Debugger
+
+Using the Debugger
+------------------
+
+   When the debugger is entered, it displays the previously selected
+buffer in one window and a buffer named `*Backtrace*' in another
+window.  The backtrace buffer contains one line for each level of Lisp
+function execution currently going on.  At the beginning of this buffer
+is a message describing the reason that the debugger was invoked (such
+as the error message and associated data, if it was invoked due to an
+error).
+
+   The backtrace buffer is read-only and uses a special major mode,
+Debugger mode, in which letters are defined as debugger commands.  The
+usual Emacs editing commands are available; thus, you can switch windows
+to examine the buffer that was being edited at the time of the error,
+switch buffers, visit files, or do any other sort of editing.  However,
+the debugger is a recursive editing level (*note Recursive Editing::.)
+and it is wise to go back to the backtrace buffer and exit the debugger
+(with the `q' command) when you are finished with it.  Exiting the
+debugger gets out of the recursive edit and kills the backtrace buffer.
+
+   The backtrace buffer shows you the functions that are executing and
+their argument values.  It also allows you to specify a stack frame by
+moving point to the line describing that frame.  (A stack frame is the
+place where the Lisp interpreter records information about a particular
+invocation of a function.)  The frame whose line point is on is
+considered the "current frame".  Some of the debugger commands operate
+on the current frame.
+
+   The debugger itself must be run byte-compiled, since it makes
+assumptions about how many stack frames are used for the debugger
+itself.  These assumptions are false if the debugger is running
+interpreted.
+
+
+File: elisp,  Node: Debugger Commands,  Next: Invoking the Debugger,  Prev: Using Debugger,  Up: Debugger
+
+Debugger Commands
+-----------------
+
+   Inside the debugger (in Debugger mode), these special commands are
+available in addition to the usual cursor motion commands.  (Keep in
+mind that all the usual facilities of Emacs, such as switching windows
+or buffers, are still available.)
+
+   The most important use of debugger commands is for stepping through
+code, so that you can see how control flows.  The debugger can step
+through the control structures of an interpreted function, but cannot do
+so in a byte-compiled function.  If you would like to step through a
+byte-compiled function, replace it with an interpreted definition of the
+same function.  (To do this, visit the source file for the function and
+type `C-M-x' on its definition.)
+
+   Here is a list of Debugger mode commands:
+
+`c'
+     Exit the debugger and continue execution.  When continuing is
+     possible, it resumes execution of the program as if the debugger
+     had never been entered (aside from the effect of any variables or
+     data structures you may have changed while inside the debugger).
+
+     Continuing is possible after entry to the debugger due to function
+     entry or exit, explicit invocation, or quitting.  You cannot
+     continue if the debugger was entered because of an error.
+
+`d'
+     Continue execution, but enter the debugger the next time any Lisp
+     function is called.  This allows you to step through the
+     subexpressions of an expression, seeing what values the
+     subexpressions compute, and what else they do.
+
+     The stack frame made for the function call which enters the
+     debugger in this way will be flagged automatically so that the
+     debugger will be called again when the frame is exited.  You can
+     use the `u' command to cancel this flag.
+
+`b'
+     Flag the current frame so that the debugger will be entered when
+     the frame is exited.  Frames flagged in this way are marked with
+     stars in the backtrace buffer.
+
+`u'
+     Don't enter the debugger when the current frame is exited.  This
+     cancels a `b' command on that frame.
+
+`e'
+     Read a Lisp expression in the minibuffer, evaluate it, and print
+     the value in the echo area.  The debugger alters certain important
+     variables as part of its operation; `e' temporarily restores their
+     outside-the-debugger values so you can examine them.  This makes
+     the debugger more transparent.  By contrast, `M-ESC' does nothing
+     special in the debugger; it shows you the variable values within
+     the debugger.
+
+`q'
+     Terminate the program being debugged; return to top-level Emacs
+     command execution.
+
+     If the debugger was entered due to a `C-g' but you really want to
+     quit, and not debug, use the `q' command.
+
+`r'
+     Return a value from the debugger.  The value is computed by
+     reading an expression with the minibuffer and evaluating it.
+
+     The `r' command is useful when the debugger was invoked due to exit
+     from a Lisp call frame (as requested with `b'); then the value
+     specified in the `r' command is used as the value of that frame.
+     It is also useful if you call `debug' and use its return value.
+     Otherwise, `r' has the same effect as `c', and the specified
+     return value does not matter.
+
+     You can't use `r' when the debugger was entered due to an error.
+
+
+File: elisp,  Node: Invoking the Debugger,  Next: Internals of Debugger,  Prev: Debugger Commands,  Up: Debugger
+
+Invoking the Debugger
+---------------------
+
+   Here we describe fully the function used to invoke the debugger.
+
+ - Function: debug &rest DEBUGGER-ARGS
+     This function enters the debugger.  It switches buffers to a buffer
+     named `*Backtrace*' (or `*Backtrace*<2>' if it is the second
+     recursive entry to the debugger, etc.), and fills it with
+     information about the stack of Lisp function calls.  It then
+     enters a recursive edit, showing the backtrace buffer in Debugger
+     mode.
+
+     The Debugger mode `c' and `r' commands exit the recursive edit;
+     then `debug' switches back to the previous buffer and returns to
+     whatever called `debug'.  This is the only way the function
+     `debug' can return to its caller.
+
+     If the first of the DEBUGGER-ARGS passed to `debug' is `nil' (or
+     if it is not one of the special values in the table below), then
+     `debug' displays the rest of its arguments at the the top of the
+     `*Backtrace*' buffer.  This mechanism is used to display a message
+     to the user.
+
+     However, if the first argument passed to `debug' is one of the
+     following special values, then it has special significance.
+     Normally, these values are passed to `debug' only by the internals
+     of Emacs and the debugger, and not by programmers calling `debug'.
+
+     The special values are:
+
+    `lambda'
+          A first argument of `lambda' means `debug' was called because
+          of entry to a function when `debug-on-next-call' was
+          non-`nil'.  The debugger displays `Entering:' as a line of
+          text at the top of the buffer.
+
+    `debug'
+          `debug' as first argument indicates a call to `debug' because
+          of entry to a function that was set to debug on entry.  The
+          debugger displays `Entering:', just as in the `lambda' case.
+          It also marks the stack frame for that function so that it
+          will invoke the debugger when exited.
+
+    `t'
+          When the first argument is `t', this indicates a call to
+          `debug' due to evaluation of a list form when
+          `debug-on-next-call' is non-`nil'.  The debugger displays the
+          following as the top line in the buffer:
+
+               Beginning evaluation of function call form:
+
+    `exit'
+          When the first argument is `exit', it indicates the exit of a
+          stack frame previously marked to invoke the debugger on exit.
+          The second argument given to `debug' in this case is the
+          value being returned from the frame.  The debugger displays
+          `Return value:' on the top line of the buffer, followed by
+          the value being returned.
+
+    `error'
+          When the first argument is `error', the debugger indicates
+          that it is being entered because an error or `quit' was
+          signaled and not handled, by displaying `Signaling:' followed
+          by the error signaled and any arguments to `signal'.  For
+          example,
+
+               (let ((debug-on-error t))
+                 (/ 1 0))
+               
+               ------ Buffer: *Backtrace* ------
+               Signaling: (arith-error)
+                 /(1 0)
+               ...
+               ------ Buffer: *Backtrace* ------
+
+          If an error was signaled, presumably the variable
+          `debug-on-error' is non-`nil'.  If `quit' was signaled, then
+          presumably the variable `debug-on-quit' is non-`nil'.
+
+    `nil'
+          Use `nil' as the first of the DEBUGGER-ARGS when you want to
+          enter the debugger explicitly.  The rest of the DEBUGGER-ARGS
+          are printed on the top line of the buffer.  You can use this
+          feature to display messages--for example, to remind yourself
+          of the conditions under which `debug' is called.
+
+
+File: elisp,  Node: Internals of Debugger,  Prev: Invoking the Debugger,  Up: Debugger
+
+Internals of the Debugger
+-------------------------
+
+   This section describes functions and variables used internally by the
+debugger.
+
+ - Variable: debugger
+     The value of this variable is the function to call to invoke the
+     debugger.  Its value must be a function of any number of arguments
+     (or, more typically, the name of a function).  Presumably this
+     function will enter some kind of debugger.  The default value of
+     the variable is `debug'.
+
+     The first argument that Lisp hands to the function indicates why it
+     was called.  The convention for arguments is detailed in the
+     description of `debug'.
+
+ - Command: backtrace
+     This function prints a trace of Lisp function calls currently
+     active.  This is the function used by `debug' to fill up the
+     `*Backtrace*' buffer.  It is written in C, since it must have
+     access to the stack to determine which function calls are active.
+     The return value is always `nil'.
+
+     In the following example, a Lisp expression calls `backtrace'
+     explicitly.  This prints the backtrace to the stream
+     `standard-output': in this case, to the buffer `backtrace-output'.
+     Each line of the backtrace represents one function call.  The
+     line shows the values of the function's arguments if they are all
+     known.  If they are still being computed, the line says so.  The
+     arguments of special forms are elided.
+
+          (with-output-to-temp-buffer "backtrace-output"
+            (let ((var 1))
+              (save-excursion
+                (setq var (eval '(progn
+                                   (1+ var)
+                                   (list 'testing (backtrace))))))))
+          
+               => nil
+
+          ----------- Buffer: backtrace-output ------------
+            backtrace()
+            (list ...computing arguments...)
+            (progn ...)
+            eval((progn (1+ var) (list (quote testing) (backtrace))))
+            (setq ...)
+            (save-excursion ...)
+            (let ...)
+            (with-output-to-temp-buffer ...)
+            eval-region(1973 2142 #<buffer *scratch*>)
+            byte-code("...  for eval-print-last-sexp ...")
+            eval-print-last-sexp(nil)
+          * call-interactively(eval-print-last-sexp)
+          ----------- Buffer: backtrace-output ------------
+
+     The character `*' indicates a frame whose debug-on-exit flag is
+     set.
+
+ - Variable: debug-on-next-call
+     If this variable is non-`nil', it says to call the debugger before
+     the next `eval', `apply' or `funcall'.  Entering the debugger sets
+     `debug-on-next-call' to `nil'.
+
+     The `d' command in the debugger works by setting this variable.
+
+ - Function: backtrace-debug LEVEL FLAG
+     This function sets the debug-on-exit flag of the stack frame LEVEL
+     levels down the stack, giving it the value FLAG.  If FLAG is
+     non-`nil', this will cause the debugger to be entered when that
+     frame later exits.  Even a nonlocal exit through that frame will
+     enter the debugger.
+
+     This function is used only by the debugger.
+
+ - Variable: command-debug-status
+     This variable records the debugging status of current interactive
+     command.  Each time a command is called interactively, this
+     variable is bound to `nil'.  The debugger can set this variable to
+     leave information for future debugger invocations during the same
+     command.
+
+     The advantage, for the debugger, of using this variable rather than
+     another global variable is that the data will never carry over to a
+     subsequent command invocation.
+
+ - Function: backtrace-frame FRAME-NUMBER
+     The function `backtrace-frame' is intended for use in Lisp
+     debuggers.  It returns information about what computation is
+     happening in the stack frame FRAME-NUMBER levels down.
+
+     If that frame has not evaluated the arguments yet (or is a special
+     form), the value is `(nil FUNCTION ARG-FORMS...)'.
+
+     If that frame has evaluated its arguments and called its function
+     already, the value is `(t FUNCTION ARG-VALUES...)'.
+
+     In the return value, FUNCTION is whatever was supplied as the CAR
+     of the evaluated list, or a `lambda' expression in the case of a
+     macro call.  If the function has a `&rest' argument, that is
+     represented as the tail of the list ARG-VALUES.
+
+     If FRAME-NUMBER is out of range, `backtrace-frame' returns `nil'.
+
+
+File: elisp,  Node: Syntax Errors,  Next: Compilation Errors,  Prev: Debugger,  Up: Debugging
+
+Debugging Invalid Lisp Syntax
+=============================
+
+   The Lisp reader reports invalid syntax, but cannot say where the real
+problem is.  For example, the error "End of file during parsing" in
+evaluating an expression indicates an excess of open parentheses (or
+square brackets).  The reader detects this imbalance at the end of the
+file, but it cannot figure out where the close parenthesis should have
+been.  Likewise, "Invalid read syntax: ")"" indicates an excess close
+parenthesis or missing open parenthesis, but does not say where the
+missing parenthesis belongs.  How, then, to find what to change?
+
+   If the problem is not simply an imbalance of parentheses, a useful
+technique is to try `C-M-e' at the beginning of each defun, and see if
+it goes to the place where that defun appears to end.  If it does not,
+there is a problem in that defun.
+
+   However, unmatched parentheses are the most common syntax errors in
+Lisp, and we can give further advice for those cases.
+
+* Menu:
+
+* Excess Open::     How to find a spurious open paren or missing close.
+* Excess Close::    How to find a spurious close paren or missing open.
+
+
+File: elisp,  Node: Excess Open,  Next: Excess Close,  Up: Syntax Errors
+
+Excess Open Parentheses
+-----------------------
+
+   The first step is to find the defun that is unbalanced.  If there is
+an excess open parenthesis, the way to do this is to insert a close
+parenthesis at the end of the file and type `C-M-b' (`backward-sexp').
+This will move you to the beginning of the defun that is unbalanced.
+(Then type `C-SPC C-_ C-u C-SPC' to set the mark there, undo the
+insertion of the close parenthesis, and finally return to the mark.)
+
+   The next step is to determine precisely what is wrong.  There is no
+way to be sure of this except to study the program, but often the
+existing indentation is a clue to where the parentheses should have
+been.  The easiest way to use this clue is to reindent with `C-M-q' and
+see what moves.
+
+   Before you do this, make sure the defun has enough close parentheses.
+Otherwise, `C-M-q' will get an error, or will reindent all the rest of
+the file until the end.  So move to the end of the defun and insert a
+close parenthesis there.  Don't use `C-M-e' to move there, since that
+too will fail to work until the defun is balanced.
+
+   Now you can go to the beginning of the defun and type `C-M-q'.
+Usually all the lines from a certain point to the end of the function
+will shift to the right.  There is probably a missing close parenthesis,
+or a superfluous open parenthesis, near that point.  (However, don't
+assume this is true; study the code to make sure.)  Once you have found
+the discrepancy, undo the `C-M-q' with `C-_', since the old indentation
+is probably appropriate to the intended parentheses.
+
+   After you think you have fixed the problem, use `C-M-q' again.  If
+the old indentation actually fit the intended nesting of parentheses,
+and you have put back those parentheses, `C-M-q' should not change
+anything.
+
+
+File: elisp,  Node: Excess Close,  Prev: Excess Open,  Up: Syntax Errors
+
+Excess Close Parentheses
+------------------------
+
+   To deal with an excess close parenthesis, first insert an open
+parenthesis at the beginning of the file, back up over it, and type
+`C-M-f' to find the end of the unbalanced defun.  (Then type `C-SPC C-_
+C-u C-SPC' to set the mark there, undo the insertion of the open
+parenthesis, and finally return to the mark.)
+
+   Then find the actual matching close parenthesis by typing `C-M-f' at
+the beginning of the defun.  This will leave you somewhere short of the
+place where the defun ought to end.  It is possible that you will find
+a spurious close parenthesis in that vicinity.
+
+   If you don't see a problem at that point, the next thing to do is to
+type `C-M-q' at the beginning of the defun.  A range of lines will
+probably shift left; if so, the missing open parenthesis or spurious
+close parenthesis is probably near the first of those lines.  (However,
+don't assume this is true; study the code to make sure.)  Once you have
+found the discrepancy, undo the `C-M-q' with `C-_', since the old
+indentation is probably appropriate to the intended parentheses.
+
+   After you think you have fixed the problem, use `C-M-q' again.  If
+the old indentation actually fit the intended nesting of parentheses,
+and you have put back those parentheses, `C-M-q' should not change
+anything.
+
+
+File: elisp,  Node: Compilation Errors,  Next: Edebug,  Prev: Syntax Errors,  Up: Debugging
+
+Debugging Problems in Compilation
+=================================
+
+   When an error happens during byte compilation, it is normally due to
+invalid syntax in the program you are compiling.  The compiler prints a
+suitable error message in the `*Compile-Log*' buffer, and then stops.
+The message may state a function name in which the error was found, or
+it may not.  Either way, here is how to find out where in the file the
+error occurred.
+
+   What you should do is switch to the buffer ` *Compiler Input*'.
+(Note that the buffer name starts with a space, so it does not show up
+in `M-x list-buffers'.)  This buffer contains the program being
+compiled, and point shows how far the byte compiler was able to read.
+
+   If the error was due to invalid Lisp syntax, point shows exactly
+where the invalid syntax was *detected*.  The cause of the error is not
+necessarily near by!  Use the techniques in the previous section to find
+the error.
+
+   If the error was detected while compiling a form that had been read
+successfully, then point is located at the end of the form.  In this
+case, this technique can't localize the error precisely, but can still
+show you which function to check.
+
+
+File: elisp,  Node: Edebug,  Prev: Compilation Errors,  Up: Debugging
+
+Edebug
+======
+
+   Edebug is a source-level debugger for Emacs Lisp programs with which
+you can:
+
+   * Step through evaluation, stopping before and after each expression.
+
+   * Set conditional or unconditional breakpoints.
+
+   * Stop when a specified condition is true (the global break event).
+
+   * Trace slow or fast, stopping briefly at each stop point, or at
+     each breakpoint.
+
+   * Display expression results and evaluate expressions as if outside
+     of Edebug.
+
+   * Automatically reevaluate a list of expressions and display their
+     results each time Edebug updates the display.
+
+   * Output trace info on function enter and exit.
+
+   * Stop when an error occurs.
+
+   * Display a backtrace, omitting Edebug's own frames.
+
+   * Specify argument evaluation for macros and defining forms.
+
+   * Obtain rudimentary coverage testing and frequency counts.
+
+   The first three sections below should tell you enough about Edebug to
+enable you to use it.
+
+* Menu:
+
+* Using Edebug::		Introduction to use of Edebug.
+* Instrumenting::		You must instrument your code
+				  in order to debug it with Edebug.
+* Modes: Edebug Execution Modes. Execution modes, stopping more or less often.
+* Jumping::			Commands to jump to a specified place.
+* Misc: Edebug Misc.		Miscellaneous commands.
+* Breakpoints::			Setting breakpoints to make the program stop.
+* Trapping Errors::		trapping errors with Edebug.
+* Views: Edebug Views.		Views inside and outside of Edebug.
+* Eval: Edebug Eval.			Evaluating expressions within Edebug.
+* Eval List::			Expressions whose values are displayed
+				  each time you enter Edebug.
+* Printing in Edebug::		Customization of printing.
+* Trace Buffer::		How to produce trace output in a buffer.
+* Coverage Testing::		How to test evaluation coverage.
+* The Outside Context::		Data that Edebug saves and restores.
+* Instrumenting Macro Calls::	Specifying how to handle macro calls.
+* Options: Edebug Options.	Option variables for customizing Edebug.
+
+
+File: elisp,  Node: Using Edebug,  Next: Instrumenting,  Up: Edebug
+
+Using Edebug
+------------
+
+   To debug a Lisp program with Edebug, you must first "instrument" the
+Lisp code that you want to debug.  A simple way to do this is to first
+move point into the definition of a function or macro and then do `C-u
+C-M-x' (`eval-defun' with a prefix argument).  See *Note
+Instrumenting::, for alternative ways to instrument code.
+
+   Once a function is instrumented, any call to the function activates
+Edebug.  Activating Edebug may stop execution and let you step through
+the function, or it may update the display and continue execution while
+checking for debugging commands, depending on which Edebug execution
+mode you have selected.  The default execution mode is step, which does
+stop execution.  *Note Edebug Execution Modes::.
+
+   Within Edebug, you normally view an Emacs buffer showing the source
+of the Lisp code you are debugging.  This is referred to as the "source
+code buffer".  This buffer is temporarily read-only.
+
+   An arrow at the left margin indicates the line where the function is
+executing.  Point initially shows where within the line the function is
+executing, but this ceases to be true if you move point yourself.
+
+   If you instrument the definition of `fac' (shown below) and then
+execute `(fac 3)', here is what you normally see.  Point is at the
+open-parenthesis before `if'.
+
+     (defun fac (n)
+     =>-!-(if (< 0 n)
+           (* n (fac (1- n)))
+         1))
+
+   The places within a function where Edebug can stop execution are
+called "stop points".  These occur both before and after each
+subexpression that is a list, and also after each variable reference.
+Here we show with periods the stop points found in the function `fac':
+
+     (defun fac (n)
+       .(if .(< 0 n.).
+           .(* n. .(fac (1- n.).).).
+         1).)
+
+   The special commands of Edebug are available in the source code
+buffer in addition to the commands of Emacs Lisp mode.  For example,
+you can type the Edebug command SPC to execute until the next stop
+point.  If you type SPC once after entry to `fac', here is the display
+you will see:
+
+     (defun fac (n)
+     =>(if -!-(< 0 n)
+           (* n (fac (1- n)))
+         1))
+
+   When Edebug stops execution after an expression, it displays the
+expression's value in the echo area.
+
+   Other frequently used commands are `b' to set a breakpoint at a stop
+point, `g' to execute until a breakpoint is reached, and `q' to exit
+Edebug and return to the top-level command loop.  Type `?' to display a
+list of all Edebug commands.
+
+
+File: elisp,  Node: Instrumenting,  Next: Edebug Execution Modes,  Prev: Using Edebug,  Up: Edebug
+
+Instrumenting for Edebug
+------------------------
+
+   In order to use Edebug to debug Lisp code, you must first
+"instrument" the code.  Instrumenting code inserts additional code into
+it, to invoke Edebug at the proper places.
+
+   Once you have loaded Edebug, the command `C-M-x' (`eval-defun') is
+redefined so that when invoked with a prefix argument on a definition,
+it instruments the definition before evaluating it.  (The source code
+itself is not modified.)  If the variable `edebug-all-defs' is
+non-`nil', that inverts the meaning of the prefix argument: then
+`C-M-x' instruments the definition *unless* it has a prefix argument.
+The default value of `edebug-all-defs' is `nil'.  The command `M-x
+edebug-all-defs' toggles the value of the variable `edebug-all-defs'.
+
+   If `edebug-all-defs' is non-`nil', then the commands `eval-region',
+`eval-current-buffer', and `eval-buffer' also instrument any
+definitions they evaluate.  Similarly, `edebug-all-forms' controls
+whether `eval-region' should instrument *any* form, even non-defining
+forms.  This doesn't apply to loading or evaluations in the minibuffer.
+The command `M-x edebug-all-forms' toggles this option.
+
+   Another command, `M-x edebug-eval-top-level-form', is available to
+instrument any top-level form regardless of the value of
+`edebug-all-defs' or `edebug-all-forms'.
+
+   When Edebug is about to instrument code for the first time in a
+session, it runs the hook `edebug-setup-hook', then sets it to `nil'.
+You can use this to load up Edebug specifications associated with a
+package you are using, but only when you also use Edebug.
+
+   While Edebug is active, the command `I' (`edebug-instrument-callee')
+instruments the definition of the function or macro called by the list
+form after point, if is not already instrumented.  This is possible
+only if Edebug knows where to find the source for that function; after
+loading Edebug, `eval-region' records the position of every definition
+it evaluates, even if not instrumenting it.  See also the `i' command
+(*note Jumping::.), which steps into the call after instrumenting the
+function.
+
+   Edebug knows how to instrument all the standard special forms, an
+interactive form with an expression argument, anonymous lambda
+expressions, and other defining forms.  Edebug cannot know what a
+user-defined macro will do with the arguments of a macro call, so you
+must tell it; *Note Instrumenting Macro Calls::, for details.
+
+   To remove instrumentation from a definition, simply reevaluate its
+definition in a way that does not instrument.  There are two ways of
+evaluating forms that never instrument them: from a file with `load',
+and from the minibuffer with `eval-expression' (`M-ESC').
+
+   If Edebug detects a syntax error while instrumenting, it leaves point
+at the erroneous code and signals an `invalid-read-syntax' error.
+
+   *Note Edebug Eval::, for other evaluation functions available inside
+of Edebug.
+
+
+File: elisp,  Node: Edebug Execution Modes,  Next: Jumping,  Prev: Instrumenting,  Up: Edebug
+
+Edebug Execution Modes
+----------------------
+
+   Edebug supports several execution modes for running the program you
+are debugging.  We call these alternatives "Edebug execution modes"; do
+not confuse them with major or minor modes.  The current Edebug
+execution mode determines how far Edebug continues execution before
+stopping--whether it stops at each stop point, or continues to the next
+breakpoint, for example--and how much Edebug displays the progress of
+the evaluation before it stops.
+
+   Normally, you specify the Edebug execution mode by typing a command
+to continue the program in a certain mode.  Here is a table of these
+commands.  All except for `S' resume execution of the program, at least
+for a certain distance.
+
+`S'
+     Stop: don't execute any more of the program for now, just wait for
+     more Edebug commands (`edebug-stop').
+
+`SPC'
+     Step: stop at the next stop point encountered (`edebug-step-mode').
+
+`n'
+     Next: stop at the next stop point encountered after an expression
+     (`edebug-next-mode').  Also see `edebug-forward-sexp' in *Note
+     Edebug Misc::.
+
+`t'
+     Trace: pause one second at each Edebug stop point
+     (`edebug-trace-mode').
+
+`T'
+     Rapid trace: update the display at each stop point, but don't
+     actually pause (`edebug-Trace-fast-mode').
+
+`g'
+     Go: run until the next breakpoint (`edebug-go-mode').  *Note
+     Breakpoints::.
+
+`c'
+     Continue: pause one second at each breakpoint, and then continue
+     (`edebug-continue-mode').
+
+`C'
+     Rapid continue: move point to each breakpoint, but don't pause
+     (`edebug-Continue-fast-mode').
+
+`G'
+     Go non-stop: ignore breakpoints (`edebug-Go-nonstop-mode').  You
+     can still stop the program by typing `S', or any editing command.
+
+   In general, the execution modes earlier in the above list run the
+program more slowly or stop sooner than the modes later in the list.
+
+   While executing or tracing, you can interrupt the execution by typing
+any Edebug command.  Edebug stops the program at the next stop point and
+then executes the command you typed.  For example, typing `t' during
+execution switches to trace mode at the next stop point.  You can use
+`S' to stop execution without doing anything else.
+
+   If your function happens to read input, a character you type
+intending to interrupt execution may be read by the function instead.
+You can avoid such unintended results by paying attention to when your
+program wants input.
+
+   Keyboard macros containing the commands in this section do not
+completely work: exiting from Edebug, to resume the program, loses track
+of the keyboard macro.  This is not easy to fix.  Also, defining or
+executing a keyboard macro outside of Edebug does not affect commands
+inside Edebug.  This is usually an advantage.  But see the
+`edebug-continue-kbd-macro' option (*note Edebug Options::.).
+
+   When you enter a new Edebug level, the initial execution mode comes
+from the value of the variable `edebug-initial-mode'.  By default, this
+specifies step mode.  Note that you may reenter the same Edebug level
+several times if, for example, an instrumented function is called
+several times from one command.
+
+
+File: elisp,  Node: Jumping,  Next: Edebug Misc,  Prev: Edebug Execution Modes,  Up: Edebug
+
+Jumping
+-------
+
+   The commands described in this section execute until they reach a
+specified location.  All except `i' make a temporary breakpoint to
+establish the place to stop, then switch to go mode.  Any other
+breakpoint reached before the intended stop point will also stop
+execution.  *Note Breakpoints::, for the details on breakpoints.
+
+   These commands may fail to work as expected in case of nonlocal exit,
+because a nonlocal exit can bypass the temporary breakpoint where you
+expected the program to stop.
+
+`h'
+     Proceed to the stop point near where point is (`edebug-goto-here').
+
+`f'
+     Run the program forward over one expression
+     (`edebug-forward-sexp').
+
+`o'
+     Run the program until the end of the containing sexp.
+
+`i'
+     Step into the function or macro called by the form after point.
+
+   The `h' command proceeds to the stop point near the current location
+if point, using a temporary breakpoint.  See *Note Breakpoints::, for
+more about breakpoints.
+
+   The `f' command runs the program forward over one expression.  More
+precisely, it sets a temporary breakpoint at the position that `C-M-f'
+would reach, then executes in go mode so that the program will stop at
+breakpoints.
+
+   With a prefix argument N, the temporary breakpoint is placed N sexps
+beyond point.  If the containing list ends before N more elements, then
+the place to stop is after the containing expression.
+
+   Be careful that the position `C-M-f' finds is a place that the
+program will really get to; this may not be true in a `cond', for
+example.
+
+   The `f' command does `forward-sexp' starting at point, rather than
+at the stop point, for flexibility.  If you want to execute one
+expression *from the current stop point*, type `w' first, to move point
+there, and then type `f'.
+
+   The `o' command continues "out of" an expression.  It places a
+temporary breakpoint at the end of the sexp containing point.  If the
+containing sexp is a function definition itself, `o' continues until
+just before the last sexp in the definition.  If that is where you are
+now, it returns from the function and then stops.  In other words, this
+command does not exit the currently executing function unless you are
+positioned after the last sexp.
+
+   The `i' command steps into the function or macro called by the list
+form after point, and stops at its first stop point.  Note that the form
+need not be the one about to be evaluated.  But if the form is a
+function call about to be evaluated, remember to use this command before
+any of the arguments are evaluated, since otherwise it will be too late.
+
+   The `i' command instruments the function or macro it's supposed to
+step into, if it isn't instrumented already.  This is convenient, but
+keep in mind that the function or macro remains instrumented unless you
+explicitly arrange to deinstrument it.
+
+
+File: elisp,  Node: Edebug Misc,  Next: Breakpoints,  Prev: Jumping,  Up: Edebug
+
+Miscellaneous Edebug Commands
+-----------------------------
+
+   Some miscellaneous Edebug commands are described here.
+
+`?'
+     Display the help message for Edebug (`edebug-help').
+
+`C-]'
+     Abort one level back to the previous command level
+     (`abort-recursive-edit').
+
+`q'
+     Return to the top level editor command loop (`top-level').  This
+     exits all recursive editing levels, including all levels of Edebug
+     activity.  However, instrumented code protected with
+     `unwind-protect' or `condition-case' forms may resume debugging.
+
+`Q'
+     Like `q' but don't stop even for protected code
+     (`top-level-nonstop').
+
+`r'
+     Redisplay the most recently known expression result in the echo
+     area (`edebug-previous-result').
+
+`d'
+     Display a backtrace, excluding Edebug's own functions for clarity
+     (`edebug-backtrace').
+
+     You cannot use debugger commands in the backtrace buffer in Edebug
+     as you would in the standard debugger.
+
+     The backtrace buffer is killed automatically when you continue
+     execution.
+
+   From the Edebug recursive edit, you may invoke commands that activate
+Edebug again recursively.  Any time Edebug is active, you can quit to
+the top level with `q' or abort one recursive edit level with `C-]'.
+You can display a backtrace of all the pending evaluations with `d'.
+
+
+File: elisp,  Node: Breakpoints,  Next: Trapping Errors,  Prev: Edebug Misc,  Up: Edebug
+
+Breakpoints
+-----------
+
+   Edebug's step mode stops execution at the next stop point reached.
+There are three other ways to stop Edebug execution once it has started:
+breakpoints, the global break condition, and source breakpoints.
+
+   While using Edebug, you can specify "breakpoints" in the program you
+are testing: points where execution should stop.  You can set a
+breakpoint at any stop point, as defined in *Note Using Edebug::.  For
+setting and unsetting breakpoints, the stop point that is affected is
+the first one at or after point in the source code buffer.  Here are the
+Edebug commands for breakpoints:
+
+`b'
+     Set a breakpoint at the stop point at or after point
+     (`edebug-set-breakpoint').  If you use a prefix argument, the
+     breakpoint is temporary (it turns off the first time it stops the
+     program).
+
+`u'
+     Unset the breakpoint (if any) at the stop point at or after point
+     (`edebug-unset-breakpoint').
+
+`x CONDITION RET'
+     Set a conditional breakpoint which stops the program only if
+     CONDITION evaluates to a non-`nil' value
+     (`edebug-set-conditional-breakpoint').  With a prefix argument, the
+     breakpoint is temporary.
+
+`B'
+     Move point to the next breakpoint in the definition
+     (`edebug-next-breakpoint').
+
+   While in Edebug, you can set a breakpoint with `b' and unset one
+with `u'.  First move point to the Edebug stop point of your choice,
+then type `b' or `u' to set or unset a breakpoint there.  Unsetting a
+breakpoint where none has been set has no effect.
+
+   Reevaluating or reinstrumenting a definition forgets all its
+breakpoints.
+
+   A "conditional breakpoint" tests a condition each time the program
+gets there.  Any errors that occur as a result of evaluating the
+condition are ignored, as if the result were `nil'.  To set a
+conditional breakpoint, use `x', and specify the condition expression
+in the minibuffer.  Setting a conditional breakpoint at a stop point
+that has a previously established conditional breakpoint puts the
+previous condition expression in the minibuffer so you can edit it.
+
+   You can make a conditional or unconditional breakpoint "temporary"
+by using a prefix arg with the command to set the breakpoint.  When a
+temporary breakpoint stops the program, it is automatically unset.
+
+   Edebug always stops or pauses at a breakpoint except when the Edebug
+mode is Go-nonstop.  In that mode, it ignores breakpoints entirely.
+
+   To find out where your breakpoints are, use the `B' command, which
+moves point to the next breakpoint following point, within the same
+function, or to the first breakpoint if there are no following
+breakpoints.  This command does not continue execution--it just moves
+point in the buffer.
+
+* Menu:
+
+* Global Break Condition::	Breaking on an event.
+* Source Breakpoints::  	Embedding breakpoints in source code.
+
+
+File: elisp,  Node: Global Break Condition,  Next: Source Breakpoints,  Up: Breakpoints
+
+Global Break Condition
+......................
+
+   A "global break condition" stops execution when a specified
+condition is satisfied, no matter where that may occur.  Edebug
+evaluates the global break condition at every stop point.  If it
+evaluates to a non-`nil' value, then execution stops or pauses
+depending on the execution mode, as if a breakpoint had been hit.  If
+evaluating the condition gets an error, execution does not stop.
+
+   You can set or edit the condition expression, stored in
+`edebug-global-break-condition', using the `X' command
+(`edebug-set-global-break-condition').
+
+   The global break condition is the simplest way to find where in your
+code some event occurs, but it makes code run much more slowly.  So you
+should reset the condition to `nil' when not using it.
+
+
+File: elisp,  Node: Source Breakpoints,  Prev: Global Break Condition,  Up: Breakpoints
+
+Source Breakpoints
+..................
+
+   All breakpoints in a definition are forgotten each time you
+reinstrument it.  To make a breakpoint that won't be forgotten, you can
+write a "source breakpoint", which is simply a call to the function
+`edebug' in your source code.  You can, of course, make such a call
+conditional.  For example, in the `fac' function, insert the first line
+as shown below to stop when the argument reaches zero:
+
+     (defun fac (n)
+       (if (= n 0) (edebug))
+       (if (< 0 n)
+           (* n (fac (1- n)))
+         1))
+
+   When the `fac' definition is instrumented and the function is
+called, the call to `edebug' acts as a breakpoint.  Depending on the
+execution mode, Edebug stops or pauses there.
+
+   If no instrumented code is being executed when `edebug' is called,
+that function calls `debug'.
+
+
+File: elisp,  Node: Trapping Errors,  Next: Edebug Views,  Prev: Breakpoints,  Up: Edebug
+
+Trapping Errors
+---------------
+
+   Emacs normally displays an error message when an error is signaled
+and not handled with `condition-case'.  While Edebug is active, it
+normally responds to all unhandled errors.  You can customize this with
+the options `edebug-on-error' and `edebug-on-quit'; see *Note Edebug
+Options::.
+
+   When Edebug responds to an error, it shows the last stop point
+encountered before the error.  This may be the location of a call to a
+function which was not instrumented, within which the error actually
+occurred.  For an unbound variable error, the last known stop point
+might be quite distant from the offending variable reference.  In that
+case you might want to display a full backtrace (*note Edebug Misc::.).
+
+   If you change `debug-on-error' or `debug-on-quit' while Edebug is
+active, these changes will be forgotten when Edebug becomes inactive.
+Furthermore, during Edebug's recursive edit, these variables are bound
+to the values they had outside of Edebug.
+
+
+File: elisp,  Node: Edebug Views,  Next: Edebug Eval,  Prev: Trapping Errors,  Up: Edebug
+
+Edebug Views
+------------
+
+   These Edebug commands let you view aspects of the buffer and window
+status that obtained before entry to Edebug.  The outside window
+configuration is the collection of windows and contents that were in
+effect outside of Edebug.
+
+`v'
+     Temporarily view the outside window configuration
+     (`edebug-view-outside').
+
+`p'
+     Temporarily display the outside current buffer with point at its
+     outside position (`edebug-bounce-point').  With a prefix argument
+     N, pause for N seconds instead.
+
+`w'
+     Move point back to the current stop point (`edebug-where') in the
+     source code buffer.  Also, if you use this command in a different
+     window displaying the same buffer, that window will be used
+     instead to display the current definition in the future.
+
+`W'
+     Toggle whether Edebug saves and restores the outside window
+     configuration (`edebug-toggle-save-windows').
+
+     With a prefix argument, `W' only toggles saving and restoring of
+     the selected window.  To specify a window that is not displaying
+     the source code buffer, you must use `C-x X W' from the global
+     keymap.
+
+   You can view the outside window configuration with `v' or just
+bounce to the point in the current buffer with `p', even if it is not
+normally displayed.  After moving point, you may wish to jump back to
+the stop point with `w' from a source code buffer.
+
+   Each time you use `W' to turn saving *off*, Edebug forgets the saved
+outside window configuration--so that even if you turn saving back
+*on*, the current window configuration remains unchanged when you next
+exit Edebug (by continuing the program).  However, the automatic
+redisplay of `*edebug*' and `*edebug-trace*' may conflict with the
+buffers you wish to see unless you have enough windows open.
+
+
+File: elisp,  Node: Edebug Eval,  Next: Eval List,  Prev: Edebug Views,  Up: Edebug
+
+Evaluation
+----------
+
+   While within Edebug, you can evaluate expressions "as if" Edebug were
+not running.  Edebug tries to be invisible to the expression's
+evaluation and printing.  Evaluation of expressions that cause side
+effects will work as expected except for things that Edebug explicitly
+saves and restores.  *Note The Outside Context::, for details on this
+process.
+
+`e EXP RET'
+     Evaluate expression EXP in the context outside of Edebug
+     (`edebug-eval-expression').  That is, Edebug tries to minimize its
+     interference with the evaluation.
+
+`M-ESC EXP RET'
+     Evaluate expression EXP in the context of Edebug itself.
+
+`C-x C-e'
+     Evaluate the expression before point, in the context outside of
+     Edebug (`edebug-eval-last-sexp').
+
+   Edebug supports evaluation of expressions containing references to
+lexically bound symbols created by the following constructs in `cl.el'
+(version 2.03 or later): `lexical-let', `macrolet', and
+`symbol-macrolet'.
+
+
+File: elisp,  Node: Eval List,  Next: Printing in Edebug,  Prev: Edebug Eval,  Up: Edebug
+
+Evaluation List Buffer
+----------------------
+
+   You can use the "evaluation list buffer", called `*edebug*', to
+evaluate expressions interactively.  You can also set up the
+"evaluation list" of expressions to be evaluated automatically each
+time Edebug updates the display.
+
+`E'
+     Switch to the evaluation list buffer `*edebug*'
+     (`edebug-visit-eval-list').
+
+   In the `*edebug*' buffer you can use the commands of Lisp
+Interaction mode (*note Lisp Interaction: (emacs)Lisp Interaction.) as
+well as these special commands:
+
+`LFD'
+     Evaluate the expression before point, in the outside context, and
+     insert the value in the buffer (`edebug-eval-print-last-sexp').
+
+`C-x C-e'
+     Evaluate the expression before point, in the context outside of
+     Edebug (`edebug-eval-last-sexp').
+
+`C-c C-u'
+     Build a new evaluation list from the contents of the buffer
+     (`edebug-update-eval-list').
+
+`C-c C-d'
+     Delete the evaluation list group that point is in
+     (`edebug-delete-eval-item').
+
+`C-c C-w'
+     Switch back to the source code buffer at the current stop point
+     (`edebug-where').
+
+   You can evaluate expressions in the evaluation list window with
+`LFD' or `C-x C-e', just as you would in `*scratch*'; but they are
+evaluated in the context outside of Edebug.
+
+   The expressions you enter interactively (and their results) are lost
+when you continue execution; but you can set up an "evaluation list"
+consisting of expressions to be evaluated each time execution stops.
+
+   To do this, write one or more "evaluation list groups" in the
+evaluation list buffer.  An evaluation list group consists of one or
+more Lisp expressions.  Groups are separated by comment lines.
+
+   The command `C-c C-u' (`edebug-update-eval-list') rebuilds the
+evaluation list, scanning the buffer and using the first expression of
+each group.  (The idea is that the second expression of the group is the
+value previously computed and displayed.)
+
+   Be careful not to add expressions that execute instrumented code
+since that would cause an infinite loop.
+
+   Each entry to Edebug redisplays the evaluation list by inserting each
+expression in the buffer, followed by its current value.  It also
+inserts comment lines so that each expression becomes its own group.
+Thus, if you type `C-c C-u' again without changing the buffer text, the
+evaluation list is effectively unchanged.
+
+   If an error occurs during an evaluation from the evaluation list, the
+error message is displayed in a string as if it were the result.
+Therefore, expressions that use variables not currently valid do not
+interrupt your debugging.
+
+   Here is an example of what the evaluation list window looks like
+after several expressions have been added to it:
+
+     (current-buffer)
+     #<buffer *scratch*>
+     ;---------------------------------------------------------------
+     (selected-window)
+     #<window 16 on *scratch*>
+     ;---------------------------------------------------------------
+     (point)
+     196
+     ;---------------------------------------------------------------
+     bad-var
+     "Symbol's value as variable is void: bad-var"
+     ;---------------------------------------------------------------
+     (recursion-depth)
+     0
+     ;---------------------------------------------------------------
+     this-command
+     eval-last-sexp
+     ;---------------------------------------------------------------
+
+   To delete a group, move point into it and type `C-c C-d', or simply
+delete the text for the group and update the evaluation list with `C-c
+C-u'.  To add a new expression to the evaluation list, insert the
+expression at a suitable place, and insert a new comment line.  (You
+need not insert dashes in the comment line--its contents don't matter.)
+Then type `C-c C-u'.
+
+   After selecting `*edebug*', you can return to the source code buffer
+with `C-c C-w'.  The `*edebug*' buffer is killed when you continue
+execution, and recreated next time it is needed.
+
+
+File: elisp,  Node: Printing in Edebug,  Next: Trace Buffer,  Prev: Eval List,  Up: Edebug
+
+Printing in Edebug
+------------------
+
+   If an expression in your program produces a value containing circular
+list structure, you may get an error when Edebug attempts to print it.
+
+   One way to cope with circular structure is to set `print-length' or
+`print-level' to truncate the printing.  Edebug does this for you; it
+binds `print-length' and `print-level' to 50 if they were `nil'.
+(Actually, the variables `edebug-print-length' and `edebug-print-level'
+specify the values to use within Edebug.) *Note Output Variables::.
+
+   You can also print circular structures and structures that share
+elements more informatively by using the `cust-print' package.
+
+   To load `cust-print' and activate custom printing only for Edebug,
+simply use the command `M-x edebug-install-custom-print'.  To restore
+the standard print functions, use `M-x edebug-uninstall-custom-print'.
+
+   Here is an example of code that creates a circular structure:
+
+     (setq a '(x y))
+     (setcar a a))
+
+Custom printing prints this as `Result: #1=(#1# y)'.  The `#1='
+notation labels the structure that follows it with the label `1', and
+the `#1#' notation references the previously labelled structure.  This
+notation is used for any shared elements of lists or vectors.
+
+   Other programs can also use custom printing; see `cust-print.el' for
+details.
+

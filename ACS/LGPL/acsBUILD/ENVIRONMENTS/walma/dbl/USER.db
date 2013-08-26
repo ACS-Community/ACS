@@ -1,0 +1,581 @@
+//*****************************************************************************
+//* E.S.O. - VLT project
+//*
+//* "@(#) $Id: USER.db,v 1.122 2003/01/28 16:36:57 vltsccm Exp $"
+//*
+//* who       when      what
+//* --------  --------  -----------------------------------------------
+//* gchiozzi 2002-09-18 Replaced Archive* characteristics with archive*
+//* david 2002-09-04 removed _p from properties
+//* blopez   2002-04-11 AMBSI, EPTESTDEVICE and "value" field removed.
+//* almamgr 2002-02-05 Removed DLL points. Do not exist any more.
+//* almamgr 2002-02-05 Removed PowerSupplyACS. Now only PowerSupply exist.
+//* gchiozzi 2002-01-21 Replaced mount module with acsexmpl.
+//* B.GILLI   24/02/95  Created
+//* gfilippi  25/08/95  LCU environment (SPR950407)
+//*
+//*
+//************************************************************************
+//*
+//*  This file contains CCS points that need to be customized to match
+//*  the actual configuration.
+//*
+//*  The comments are guiding you to what shall/can be changed.
+//*----------------------------------------------------------------------
+
+// Loads classes definition from standard file
+#include "CCS.db"
+
+//
+//**************************************************************************
+//   SCAN SYSTEM points
+//**************************************************************************
+//
+#ifdef MAKE_VXWORKS
+//
+// Replace hereafter "remoteEnv" by the name of the
+// workstation environment the LCU shall report to.
+//
+POINT "<VLT scan dev>" "LAN:remoteEnv"	
+BEGIN
+	ALIAS 	"remoteEnv"
+END
+#else 
+
+//
+// Replace hereafter "remoteEnv" by the name of the LCU environment
+// you want to scan data from.
+//
+POINT "<VLT scan dev>" "ccs_config:scan config:LAN:remoteEnv"
+BEGIN
+	ALIAS 	"remoteEnv"
+END
+#endif /*MAKE_VXWORKS*/
+
+
+//
+//**************************************************************************
+//   SAMPLING PLOTTING  points
+//**************************************************************************
+//
+// If you need more plots, just duplicate this point, giving:
+// - new point name
+// - new alias
+//
+
+#ifndef MAKE_VXWORKS
+POINT PLOT  "ccs_config:plot config:samplePlot"
+BEGIN
+	ALIAS "samplePlot"
+END
+#endif /*!MAKE_VXWORKS */
+
+//**************************************************************************
+//   ACS / MACI database
+//**************************************************************************
+
+#include "maci.class"
+
+#include "acsexmplMount.class"
+#include "acsexmplPowerSupply.class"
+#include "acsexmplLamp.class"
+
+
+// root point of MACI
+POINT MACI ":Appl_data:MACI"
+BEGIN
+      ATTRIBUTE vector COBs.names(256, bytes32)
+      BEGIN
+         VALUE("PBEND_B_01", "PBUMP_B_01", "PBUMP_B_02", "TEST_PS_1", "TEST_PS_2", "TEST_PS_3", "TEST_PS_4", "TEST_PS_5", "TEST_PS_6", "TEST_PS_7", "TEST_PS_8", "TEST_PS_9", "TEST_PS_10", "TEST_PS_11", "TEST_PS_12", "TEST_PS_13", "TEST_PS_14", "TEST_PS_15", "TEST_PS_16", "TEST_PS_17", "TEST_PS_18", "MOUNT1", "MOUNT2", "MOUNT3", "MOUNT4", "MOUNT5", "MOUNT6", "LAMP1")
+      END
+
+      // ------------------ COBs -------------------
+      ATTRIBUTE PS_COB    "COBs:PBEND_B_01"
+      ATTRIBUTE PS_COB    "COBs:PBUMP_B_01"
+      ATTRIBUTE PS_COB    "COBs:PBUMP_B_02"
+
+      // Test DOs
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_1"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_2"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_3"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_4"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_5"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_6"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_7"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_8"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_9"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_10"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_11"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_12"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_13"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_14"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_15"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_16"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_17"
+      ATTRIBUTE PS_COB    "COBs:TEST_PS_18"
+
+      ATTRIBUTE MOUNT_COB "COBs:MOUNT1"
+      ATTRIBUTE MOUNT_COB "COBs:MOUNT2"
+      ATTRIBUTE MOUNT_COB "COBs:MOUNT3"
+      ATTRIBUTE MOUNT_COB "COBs:MOUNT4"
+      ATTRIBUTE MOUNT_COB "COBs:MOUNT5"
+      ATTRIBUTE MOUNT_COB "COBs:MOUNT6"
+
+      ATTRIBUTE LAMP_COB "COBs:LAMP1"
+
+      // ---------------- Managers -----------------
+      ATTRIBUTE  MANAGER "Managers:Manager"
+      BEGIN
+          /// List of COBs to be created on startup (immortal COBs)
+          ATTRIBUTE vector   Startup(32, bytes32)
+          BEGIN
+               VALUE("MOUNT1")
+          END             
+      END
+
+END
+
+//**************************************************************************
+//   ACS database
+//**************************************************************************
+
+// root point
+POINT NULL_CLASS ":Appl_data:alma"
+
+POINT Mount     ":Appl_data:alma:MOUNT1"
+POINT Mount     ":Appl_data:alma:MOUNT2"
+POINT Mount     ":Appl_data:alma:MOUNT3"
+POINT Mount     ":Appl_data:alma:MOUNT4"
+POINT Mount     ":Appl_data:alma:MOUNT5"
+POINT Mount     ":Appl_data:alma:MOUNT6"
+
+POINT PowerSupply ":Appl_data:alma:PBEND_B_01"
+BEGIN
+	ATTRIBUTE uint32 	id 				1
+	
+        ATTRIBUTE RWdouble current
+	BEGIN
+		ATTRIBUTE double 	min_value 			0.0
+		ATTRIBUTE double 	max_value 			1000.0
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 			100000
+		ATTRIBUTE double 	min_delta_trig 			0.01526
+		ATTRIBUTE double 	default_value 			0.0
+		ATTRIBUTE double 	graph_min 			0.0
+		ATTRIBUTE double 	graph_max 			1000.0
+		ATTRIBUTE double 	min_step 			0.01526
+		ATTRIBUTE bytes32 	description 			"Current"
+		ATTRIBUTE bytes32 	format 				"%9.4f"
+		ATTRIBUTE bytes8 	units 				"A"
+		ATTRIBUTE uint32 	resolution 			65535
+		ATTRIBUTE uint32 	id 				2
+	END
+
+
+	ATTRIBUTE ROdouble readback
+	BEGIN
+
+		ATTRIBUTE double 	alarm_low_on 			10.0
+		ATTRIBUTE double 	alarm_low_off			20.0
+		ATTRIBUTE double 	alarm_high_on			990.0
+		ATTRIBUTE double 	alarm_high_off			980.0
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 			100000
+		ATTRIBUTE double 	min_delta_trig 			0.01526
+		ATTRIBUTE double 	default_value 			0.0
+		ATTRIBUTE double 	graph_min 			0.0
+		ATTRIBUTE double 	graph_max 			1000.0
+		ATTRIBUTE double 	min_step 			0.01526
+		ATTRIBUTE bytes32 	description 			"Readback"
+		ATTRIBUTE bytes32 	format 				"%9.4f"
+		ATTRIBUTE bytes8 	units 				"A"
+		ATTRIBUTE uint32 	resolution 			65535
+		ATTRIBUTE uint32 	id 				3
+
+                // archiving
+                ATTRIBUTE double        archive_delta                   100.0
+                ATTRIBUTE uint32        archive_priority                5
+                ATTRIBUTE uint32        archive_min_int                 1000000
+                ATTRIBUTE uint32        archive_max_int                 100000000
+
+	END
+
+        ATTRIBUTE ROlong stateIndex 
+        BEGIN
+               ATTRIBUTE int32          alarm_low_on                    10.0
+	       ATTRIBUTE int32          alarm_low_off                   20.0
+	       ATTRIBUTE int32          alarm_high_on                   990.0
+	       ATTRIBUTE int32          alarm_high_off                  980.0
+               ATTRIBUTE uint32         default_timer_trig              10000000 
+	       ATTRIBUTE uint32         min_timer_trig                  100000
+               ATTRIBUTE int32          default_value                   0
+               ATTRIBUTE int32          min_step                        1
+               ATTRIBUTE bytes32        description                     "StateIndex"           
+	       ATTRIBUTE bytes32        format                          "%d"
+               ATTRIBUTE bytes8         units                           "w/o"
+               ATTRIBUTE uint32         resolution                      3263
+	       ATTRIBUTE uint32         id                              4
+        END
+
+        ATTRIBUTE RWstring info
+        BEGIN
+               ATTRIBUTE uint32        default_timer_trig              10000000 
+ 	       ATTRIBUTE uint32        min_timer_trig                  100000
+               ATTRIBUTE bytes256      default_value                   "default value"
+	       ATTRIBUTE bytes32       description                     "Info"            
+	       ATTRIBUTE bytes32       format                          "%9.4f"
+               ATTRIBUTE bytes8        units                           "A"
+               ATTRIBUTE uint32        resolution                      65535
+	       ATTRIBUTE uint32        id                              2
+        END
+
+        ATTRIBUTE ROpattern status
+	BEGIN
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 			100000
+		ATTRIBUTE uint32 	default_value			0
+		ATTRIBUTE vector	bitDescription(32, bytes32)
+		BEGIN
+			Value ("On", "Remote", "Sum Failure", "External Interlock", "DC Overcurrent",
+			"Phase Failure", "Not Ready", "State Inconsistent", "Ramping")
+		END
+		ATTRIBUTE vector	whenSet(32, int32)
+		BEGIN
+			Value (3, 2, 0, 0, 0, 0, 1, 1, 1)
+		END
+		ATTRIBUTE vector	whenCleared(32, int32)
+		BEGIN
+			Value (2, 3, 3, 3, 3, 3, 3, 3, 3)
+		END
+		ATTRIBUTE bytes32 	description 			"Status"
+		ATTRIBUTE bytes32 	format 				"%d"
+		ATTRIBUTE bytes8 	units 				"w/o"
+		ATTRIBUTE uint32 	resolution 			3263
+		ATTRIBUTE uint32 	id 				4
+	END
+END
+
+
+POINT PowerSupply ":Appl_data:alma:PBUMP_B_01"
+BEGIN
+	ATTRIBUTE uint32 	id 				5
+
+	ATTRIBUTE RWdouble current
+	BEGIN
+		ATTRIBUTE double 	min_value 			0.0
+		ATTRIBUTE double 	max_value 			20.0
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 			100000
+		ATTRIBUTE double 	min_delta_trig 			0.0003052
+		ATTRIBUTE double 	default_value 			0.0
+		ATTRIBUTE double 	graph_min 			0.0
+		ATTRIBUTE double 	graph_max 			20.0
+		ATTRIBUTE double 	min_step 			0.0003052
+		ATTRIBUTE bytes32 	description 			"Current"
+		ATTRIBUTE bytes32 	format 				"%9.4f"
+		ATTRIBUTE bytes8 	units 				"A"
+		ATTRIBUTE uint32 	resolution 			65535
+		ATTRIBUTE uint32 	id 				6
+	END
+
+
+        ATTRIBUTE ROlong stateIndex 
+        BEGIN
+               ATTRIBUTE int32          alarm_low_on                    10.0
+	       ATTRIBUTE int32          alarm_low_off                   20.0
+	       ATTRIBUTE int32          alarm_high_on                   990.0
+	       ATTRIBUTE int32          alarm_high_off                  980.0
+               ATTRIBUTE uint32         default_timer_trig              10000000 
+	       ATTRIBUTE uint32         min_timer_trig                  100000
+               ATTRIBUTE int32          default_value                   0
+               ATTRIBUTE int32          min_step                        1
+               ATTRIBUTE bytes32        description                     "StateIndex"           
+	       ATTRIBUTE bytes32        format                          "%d"
+               ATTRIBUTE bytes8         units                           "w/o"
+               ATTRIBUTE uint32         resolution                      3263
+	       ATTRIBUTE uint32         id                              4
+        END
+
+        ATTRIBUTE RWstring info
+        BEGIN
+               ATTRIBUTE uint32        default_timer_trig              10000000 
+ 	       ATTRIBUTE uint32        min_timer_trig                  100000
+               ATTRIBUTE bytes256      default_value                   "default value"
+	       ATTRIBUTE bytes32       description                     "Info"            
+	       ATTRIBUTE bytes32       format                          "%9.4f"
+               ATTRIBUTE bytes8        units                           "A"
+               ATTRIBUTE uint32        resolution                      65535
+	       ATTRIBUTE uint32        id                              2
+        END
+
+	ATTRIBUTE ROdouble readback
+	BEGIN
+		ATTRIBUTE double 	alarm_low_on 			0.2
+		ATTRIBUTE double 	alarm_low_off			0.4
+		ATTRIBUTE double 	alarm_high_on			19.8
+		ATTRIBUTE double 	alarm_high_off			19.6
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 			100000
+		ATTRIBUTE double 	min_delta_trig 			0.0003052
+		ATTRIBUTE double 	default_value 			0.0
+		ATTRIBUTE double 	graph_min 			0.0
+		ATTRIBUTE double 	graph_max 			20.0
+		ATTRIBUTE double 	min_step 			0.0003052
+		ATTRIBUTE bytes32 	description 			"Readback"
+		ATTRIBUTE bytes32 	format 				"%9.4f"
+		ATTRIBUTE bytes8 	units 				"A"
+		ATTRIBUTE uint32 	resolution 			65535
+		ATTRIBUTE uint32 	id 				7
+	END
+
+	ATTRIBUTE ROpattern status
+	BEGIN
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 		        100000
+		ATTRIBUTE uint32 	default_value			0
+		ATTRIBUTE vector	bitDescription(32, bytes32)
+		BEGIN
+	    		Value ("On", "Remote", "Sum Failure", "External Interlock", "DC Overcurrent",
+			"Phase Failure", "Not Ready", "State Inconsistent", "Ramping")
+		END
+		ATTRIBUTE vector	whenSet(32, int32)
+		BEGIN
+			Value (3, 2, 0, 0, 0, 0, 1, 1, 1)
+		END
+		ATTRIBUTE vector	whenCleared(32, int32)
+		BEGIN
+			Value (2, 3, 3, 3, 3, 3, 3, 3, 3)
+		END
+		ATTRIBUTE bytes32 	description 			"Status"
+		ATTRIBUTE bytes32 	format 				"%d"
+		ATTRIBUTE bytes8 	units 				"w/o"
+		ATTRIBUTE uint32 	resolution 			3263
+		ATTRIBUTE uint32 	id 				8
+	END
+END
+
+POINT PowerSupply "Appl_data:alma:PBUMP_B_02"
+BEGIN
+	ATTRIBUTE uint32 	id 				9
+
+	ATTRIBUTE RWdouble current
+	BEGIN
+		ATTRIBUTE double 	min_value 			0.0
+		ATTRIBUTE double 	max_value 			20.0
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 			100000
+		ATTRIBUTE double 	min_delta_trig 			0.0003052
+		ATTRIBUTE double 	default_value 			0.0
+		ATTRIBUTE double 	graph_min 			0.0
+		ATTRIBUTE double 	graph_max 			20.0
+		ATTRIBUTE double 	min_step 			0.0003052
+		ATTRIBUTE bytes32 	description 			"Current"
+		ATTRIBUTE bytes32 	format 				"%9.4f"
+		ATTRIBUTE bytes8 	units 				"A"
+		ATTRIBUTE uint32 	resolution 			65535
+		ATTRIBUTE uint32 	id 				10
+	END
+
+	ATTRIBUTE ROdouble readback
+	BEGIN
+		ATTRIBUTE double 	alarm_low_on 			0.2
+		ATTRIBUTE double 	alarm_low_off			0.4
+		ATTRIBUTE double 	alarm_high_on			19.8
+		ATTRIBUTE double 	alarm_high_off			19.6
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 			100000
+		ATTRIBUTE double 	min_delta_trig 			0.0003052
+		ATTRIBUTE double 	default_value 			0.0
+		ATTRIBUTE double 	graph_min 			0.0
+		ATTRIBUTE double 	graph_max 			20.0
+		ATTRIBUTE double 	min_step 			0.0003052
+		ATTRIBUTE bytes32 	description 			"Readback"
+		ATTRIBUTE bytes32 	format 				"%9.4f"
+		ATTRIBUTE bytes8 	units 				"A"
+		ATTRIBUTE uint32 	resolution 			65535
+		ATTRIBUTE uint32 	id 				11
+	END
+
+	ATTRIBUTE ROpattern status
+	BEGIN
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 		        100000
+		ATTRIBUTE uint32 	default_value			0
+		ATTRIBUTE vector	bitDescription(32, bytes32)
+		BEGIN
+			Value ("On", "Remote", "Sum Failure", "External Interlock", "DC Overcurrent",
+				"Phase Failure", "Not Ready", "State Inconsistent", "Ramping")
+		END
+		ATTRIBUTE vector	whenSet(32, int32)
+		BEGIN
+			Value (3, 2, 0, 0, 0, 0, 1, 1, 1)
+		END
+		ATTRIBUTE vector	whenCleared(32, int32)
+		BEGIN
+			Value (2, 3, 3, 3, 3, 3, 3, 3, 3)
+		END
+		ATTRIBUTE bytes32 	description 			"Status"
+		ATTRIBUTE bytes32 	format 				"%d"
+		ATTRIBUTE bytes8 	units 				"w/o"
+		ATTRIBUTE uint32 	resolution 			3263
+		ATTRIBUTE uint32 	id 				12
+	END
+
+        ATTRIBUTE RWstring info
+        BEGIN
+               ATTRIBUTE uint32        default_timer_trig              10000000 
+	       ATTRIBUTE uint32        min_timer_trig                  100000
+               ATTRIBUTE bytes256      default_value                   "default value"
+	       ATTRIBUTE bytes32       description                     "Info"            
+	       ATTRIBUTE bytes32       format                          "%9.4f"
+               ATTRIBUTE bytes8        units                           "A"
+               ATTRIBUTE uint32        resolution                      65535
+	       ATTRIBUTE uint32        id                              2
+        END
+
+
+        ATTRIBUTE ROlong stateIndex 
+        BEGIN
+               ATTRIBUTE int32        alarm_low_on                    10.0
+	       ATTRIBUTE int32        alarm_low_off                   20.0
+	       ATTRIBUTE int32        alarm_high_on                   990.0
+	       ATTRIBUTE int32        alarm_high_off                  980.0
+               ATTRIBUTE uint32       default_timer_trig              10000000 
+	       ATTRIBUTE uint32       min_timer_trig                  100000
+               ATTRIBUTE int32        default_value                   0
+               ATTRIBUTE int32        min_step                        1
+               ATTRIBUTE bytes32      description                     "StateIndex"           
+	       ATTRIBUTE bytes32      format                          "%d"
+               ATTRIBUTE bytes8       units                           "w/o"
+               ATTRIBUTE uint32       resolution                      3263
+	       ATTRIBUTE uint32       id                              4
+        END
+END
+
+
+//
+// Test DOs
+//
+
+CLASS PowerSupply TestPowerSupplyACS
+BEGIN
+	ATTRIBUTE uint32 	id 				100
+	
+        ATTRIBUTE RWdouble current
+	BEGIN
+		ATTRIBUTE double 	min_value 			0.0
+		ATTRIBUTE double 	max_value 			1000.0
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 			100000
+		ATTRIBUTE double 	min_delta_trig 			0.01526
+		ATTRIBUTE double 	default_value 			0.0
+		ATTRIBUTE double 	graph_min 			0.0
+		ATTRIBUTE double 	graph_max 			1000.0
+		ATTRIBUTE double 	min_step 			0.01526
+		ATTRIBUTE bytes32 	description 			"Current"
+		ATTRIBUTE bytes32 	format 				"%9.4f"
+		ATTRIBUTE bytes8 	units 				"A"
+		ATTRIBUTE uint32 	resolution 			65535
+		ATTRIBUTE uint32 	id 				2
+	END
+
+
+	ATTRIBUTE ROdouble readback
+	BEGIN
+		ATTRIBUTE double 	alarm_low_on 			10.0
+		ATTRIBUTE double 	alarm_low_off			20.0
+		ATTRIBUTE double 	alarm_high_on			990.0
+		ATTRIBUTE double 	alarm_high_off			980.0
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 			100000
+		ATTRIBUTE double 	min_delta_trig 			0.01526
+		ATTRIBUTE double 	default_value 			0.0
+		ATTRIBUTE double 	graph_min 			0.0
+		ATTRIBUTE double 	graph_max 			1000.0
+		ATTRIBUTE double 	min_step 			0.01526
+		ATTRIBUTE bytes32 	description 			"Readback"
+		ATTRIBUTE bytes32 	format 				"%9.4f"
+		ATTRIBUTE bytes8 	units 				"A"
+		ATTRIBUTE uint32 	resolution 			65535
+		ATTRIBUTE uint32 	id 				3
+	END
+
+        ATTRIBUTE ROlong stateIndex 
+        BEGIN
+               ATTRIBUTE int32          alarm_low_on                    10.0
+	       ATTRIBUTE int32          alarm_low_off                   20.0
+	       ATTRIBUTE int32          alarm_high_on                   990.0
+	       ATTRIBUTE int32          alarm_high_off                  980.0
+               ATTRIBUTE uint32         default_timer_trig              10000000 
+	       ATTRIBUTE uint32         min_timer_trig                  100000
+               ATTRIBUTE int32          default_value                   0
+               ATTRIBUTE int32          min_step                        1
+               ATTRIBUTE bytes32        description                     "StateIndex"           
+	       ATTRIBUTE bytes32        format                          "%d"
+               ATTRIBUTE bytes8         units                           "w/o"
+               ATTRIBUTE uint32         resolution                      3263
+	       ATTRIBUTE uint32         id                              4
+        END
+
+        ATTRIBUTE RWstring info
+        BEGIN
+               ATTRIBUTE uint32        default_timer_trig              10000000 
+ 	       ATTRIBUTE uint32        min_timer_trig                  100000
+               ATTRIBUTE bytes256      default_value                   "default value"
+	       ATTRIBUTE bytes32       description                     "Info"            
+	       ATTRIBUTE bytes32       format                          "%9.4f"
+               ATTRIBUTE bytes8        units                           "A"
+               ATTRIBUTE uint32        resolution                      65535
+	       ATTRIBUTE uint32        id                              2
+        END
+
+        ATTRIBUTE ROpattern status
+	BEGIN
+		ATTRIBUTE uint32 	default_timer_trig 		10000000
+		ATTRIBUTE uint32 	min_timer_trig 			100000
+		ATTRIBUTE uint32 	default_value			0
+		ATTRIBUTE vector	bitDescription(32, bytes32)
+		BEGIN
+			Value ("On", "Remote", "Sum Failure", "External Interlock", "DC Overcurrent",
+			"Phase Failure", "Not Ready", "State Inconsistent", "Ramping")
+		END
+		ATTRIBUTE vector	whenSet(32, int32)
+		BEGIN
+			Value (3, 2, 0, 0, 0, 0, 1, 1, 1)
+		END
+		ATTRIBUTE vector	whenCleared(32, int32)
+		BEGIN
+			Value (2, 3, 3, 3, 3, 3, 3, 3, 3)
+		END
+		ATTRIBUTE bytes32 	description 			"Status"
+		ATTRIBUTE bytes32 	format 				"%d"
+		ATTRIBUTE bytes8 	units 				"w/o"
+		ATTRIBUTE uint32 	resolution 			3263
+		ATTRIBUTE uint32 	id 				4
+	END
+END
+
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_1"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_2"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_3"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_4"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_5"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_6"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_7"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_8"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_9"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_10"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_11"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_12"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_13"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_14"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_15"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_16"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_17"
+POINT PowerSupply     ":Appl_data:alma:TEST_PS_18"
+
+POINT Lamp     ":Appl_data:alma:LAMP1"
+
+//
+// ___oOo___
+

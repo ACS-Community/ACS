@@ -1,0 +1,25 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: TestList_WS.lite,v 1.99 2011/11/09 19:02:16 msekoran Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# bjeram 2002-11-26 added PROLOGUE/EPILOGUE
+# gchiozzi 2002-10-17 Commented out ENVIRONMENT
+# bjeram 2001-08-22 created
+SOURCE maciTATEnvironment
+PROLOGUE acsutilTATPrologue -l
+1 maciTestClient "startContainerWS.sh Container01 3060" "@SLEEP 20" "startMaciTest.sh Container02 3061" "@SLEEP 50" "startContainerWS.sh Container03 3062" "@SLEEP 20" "startMaciTestClient.sh @maciTest.mts"
+2 maciTestRegistrar maciTestRegistrar
+3 maciContainerServicesClient "@SLEEP 5" "startContainerWS.sh Container01 3067" "@SLEEP 20" "acsutilTATTestRunner maciContainerServicesClient MACI_CS_TEST"
+4 maciLifeCycleClient "startContainerWS.sh Container01 3063" "@SLEEP 20" "acsutilTATTestRunner maciLifeCycleClient"
+5 maciTestCheckException "maciStartStopWrongCDB.sh"
+6 maciTestLogConfig "startContainerWS.sh ContainerTestLog 3064" "@SLEEP 20" "acsutilTATTestRunner maciTestLogConfig.sh"
+7 maciTestSimpleClient "startContainerWS.sh Container01 3065" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient" "@SLEEP 20" 
+8 maciTestSimpleClientContainerServices "startContainerWS.sh Container01 3066" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient" "@SLEEP 20" 
+8 maciTestComponentSmartPtr "@SLEEP 10" "startContainerWS.sh Container01 3067" "@SLEEP 20" "acsutilTATTestRunner maciTestComponentSmartPtr"
+9 maciTestSimpleClientMulti "acsutilTATTestRunner maciTestSimpleClientMulti"
+EPILOGUE acsutilTATEpilogue

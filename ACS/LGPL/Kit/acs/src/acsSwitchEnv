@@ -1,0 +1,109 @@
+#!/bin/bash
+#************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: acsSwitchEnv,v 1.2 2010/07/09 12:48:42 alopatin Exp $"
+#
+# who       when        what
+# --------  ----------  -------------------------------------------------
+# mpasquat  2003-NOV-26 created
+# alopatin  2010-JUL-07 switched from ksh to bash
+
+#************************************************************************
+#   NAME 
+#   acsSwitchEnv - switch between acs environments
+# 
+#   SYNOPSIS
+#   acsSwitchEnv bash_profile_FileName 
+# 
+#   DESCRIPTION
+#   This script changes the acs environment 
+#   sourcing a specific bash profile defined by the user.
+#
+#   It opens a new xterminal in which the environment is re-setted.
+#   
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#   0 - no errors have been produced
+#   1 - bad options have been passed or some operation did not work
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#   acsSwitchEnv bash_profile_FileName                           
+#   The bash_profile_FileName is sourced 
+#                                       
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+
+# DISPLAY variable check
+if [[ ! -n $DISPLAY ]]
+then
+   echo " "
+   echo " *** DISPLAY variable is not set!"
+   echo " "
+   exit 1
+fi
+
+# Checking arguments
+# Only one argument MUST be a file
+if [[ $# -eq 1  ]]
+then
+   if [[ ! -f $1 ]]
+   then
+     echo " " 
+     echo "*** The argument you provided is a not a file!"
+     echo " "
+     exit 1
+   else
+     isFile="bash"
+   fi   
+fi
+
+# Arguments checking 
+if [[ $# -lt 1  || $# -gt 1 ]]
+then 
+  if  [[ $# -lt 1 ]]
+  then
+     echo " "
+     echo " *** Argument/s missing!"
+  else
+     echo " "
+     echo " *** Too many arguments!"
+  fi
+   echo " "
+   echo " usage: acsSwitchEnv bash_profile_FileName"
+   echo " "
+   echo " Examples:"
+   echo " ---------"
+   echo " acsSwitchEnv bash_profile_FileName"                          
+   echo " -The bash_profile_FileName is sourced."
+   echo " "
+   exit 1
+fi
+
+
+# There is a bash profile to be sourced
+
+#cp $HOME/.acs/.bash_profile.acs $HOME/.acs/.bash_profile.acs.temporary
+#if [[ "$?" != "0" ]]
+#then
+#   echo " "
+#   echo "*** No write permission on directory $HOME/.acs!"
+#   echo " "
+#   exit 1
+#fi
+#cp  $1 $HOME/.acs/.bash_profile.acs
+#xterm -e sh -c ". $HOME/.acs/.bash_profile.acs; mv $HOME/.acs/.bash_profile.acs.temporary $HOME/.acs/.bash_profile.acs; bash" &
+
+xterm -e sh -c ". $1; bash" &
+
+echo " "
+echo " The NEW xterm has the customized environment settings."
+echo " "

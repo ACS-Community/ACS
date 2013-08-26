@@ -1,0 +1,147 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: buildOpenSpliceDDS,v 1.1 2010/10/22 07:54:15 rbourtem Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# rbourtem  04/08/2010
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+LOG=buildOpenSpliceDDS.log
+exec > $LOG 2>&1
+
+date
+
+CURR_DIR=`pwd`
+
+if [ "$OS" = "LINUX" ]
+then 
+  OSTAG=linux
+else
+  echo "OS $OS not supported"
+  echo "OpenSplice DDS Installation aborted"
+  date
+  exit -1
+fi
+
+ARCH=`uname -m`
+if [ "$ARCH" = "x86_64" ]
+then
+#	echo "Installing OpenSpliceDDS for $OSTAG (64 bits)"
+	echo "The OpenSplice DDS installation is not yet supported in ACS on 64 bits architecture"
+	echo "OpenSplice DDS Installation aborted"
+	date
+	exit 0
+else
+	echo "Installing OpenSpliceDDS for $OSTAG (32 bits)"
+	ARCH=x86
+fi
+
+echo 
+
+if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice ]
+then
+  echo $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice directory exists already. I clean it up.
+  rm -rf $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice
+fi
+mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice
+
+#
+# Unpack the tar file
+# put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE
+#
+FILE=OpenSpliceDDSV5.3-$ARCH.linux2.6-gcc412-gnuc25-HDE
+
+ARCHIVE=`pwd`/../PRODUCTS/$FILE.tar.gz
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice
+echo "unpacking the archive $ARCHIVE"
+gzip -cd $ARCHIVE | tar -xf - 
+echo "done"
+echo ""
+
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice
+sed -i "s|@@INSTALLDIR@@|$PWD|g" HDE/$ARCH.linux2.6/release.com
+
+# Get the TAO Version
+if [ "X$ACE_ROOT" = "X" ]
+then
+	echo "ACE_ROOT environment variable not defined!"
+	echo "Installation aborted!"
+	date
+	exit -1
+fi
+TAO_VERSION=`$ACE_ROOT/bin/tao_idl -V 2>&1 | grep TAO_IDL_BE | awk '{gsub(/\./,"_",$3);print $3}'`
+
+if [ "X$TAO_ROOT" = "X" ]
+then
+ 	export TAO_ROOT=$ACE_ROOT/TAO
+fi
+
+# install patches before recompiling the libraries for our ACE TAO distribution
+echo "Patching configuration scripts for ACE TAO $TAO_VERSION"
+echo "orbdeps.mak.patch"
+cp $CURR_DIR/../PRODUCTS/OpenSpliceDDS-patches/orbdeps.mak.patch /tmp/orbdeps.mak.patch
+sed -i "s|DDS_ACE_TAO_X_Y_Z|DDS_ACE_TAO_$TAO_VERSION|g" /tmp/orbdeps.mak.patch
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice/HDE/$ARCH.linux2.6/custom_lib/ccpp
+patch -p0 < /tmp/orbdeps.mak.patch
+rm -f /tmp/orbdeps.mak.patch
+echo "setup.patch"
+cp $CURR_DIR/../PRODUCTS/OpenSpliceDDS-patches/setup.patch /tmp/setup.patch
+sed -i "s|DDS_ACE_TAO_X_Y_Z|DDS_ACE_TAO_$TAO_VERSION|g" /tmp/setup.patch
+patch -p0 < /tmp/setup.patch
+rm -f /tmp/setup.patch
+echo "release.com.patch"
+cp $CURR_DIR/../PRODUCTS/OpenSpliceDDS-patches/release.com.patch /tmp/release.com.patch
+sed -i "s|DDS_ACE_TAO_X_Y_Z|DDS_ACE_TAO_$TAO_VERSION|g" /tmp/release.com.patch
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice/HDE/$ARCH.linux2.6
+patch -p0 < /tmp/release.com.patch
+rm -f /tmp/release.com.patch
+
+# Copy ORB specific includes and templates
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice/HDE/$ARCH.linux2.6/include/dcps/C++/CCPP
+mkdir DDS_ACE_TAO_$TAO_VERSION
+cp -f DDS_OpenFusion_1_6_1/orb_abstraction.h DDS_ACE_TAO_$TAO_VERSION/orb_abstraction.h
+cp -f DDS_OpenFusion_1_6_1/ccpp.h DDS_ACE_TAO_$TAO_VERSION/ccpp.h
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice/HDE/$ARCH.linux2.6/etc/idlpp/CCPP
+cp -rf DDS_OpenFusion_1_6_1 DDS_ACE_TAO_$TAO_VERSION
+cp -f ../SAJ/* DDS_ACE_TAO_$TAO_VERSION/
+cp -f ../SAC/* DDS_ACE_TAO_$TAO_VERSION/
+
+# Prepare the environment before the compilation
+export TAO_ROOT=$ACE_ROOT/TAO
+# Add tao_idl to the path
+export PATH=$TAO_ROOT/TAO_IDL:$PATH
+
+# Compile CORBA libraries for our specific ORB
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice/HDE/$ARCH.linux2.6
+. ./release.com
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice/HDE/$ARCH.linux2.6/custom_lib/ccpp
+. ./setup
+make
+cp -f ./libdcpsccpp.so ../../lib/.
+cp -f ./*.h $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice/HDE/$ARCH.linux2.6/include/dcps/C++/CCPP/DDS_ACE_TAO_$TAO_VERSION/
+cp -f ./*.i $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice/HDE/$ARCH.linux2.6/include/dcps/C++/CCPP/DDS_ACE_TAO_$TAO_VERSION/
+
+# Compile the SACPP library for our gcc
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/OpenSplice/HDE/$ARCH.linux2.6
+. ./release.com
+cd custom_lib/sacpp
+make
+cp -f ./libdcpssacpp.so ../../lib/.
+
+# TODO?
+# Set OSPL_ORB_PATH to "CCPP/$SPLICE_ORB"
+# Maybe patch the release.com file to set this env var
+
+cd $CURR_DIR
+echo "OpenSplice DDS installation done"
+date
+

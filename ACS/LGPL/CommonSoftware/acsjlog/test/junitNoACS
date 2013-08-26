@@ -1,0 +1,14 @@
+# Pure JUnit tests that don't require an ACS infrastructure, nor TAT comparison of output.
+
+export ACS_TMP=../test
+
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.AcsLogLevelTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.formatters.AcsLogFormatterTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.AcsLoggingHandlerTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.RemoteLogDispatcherTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.ClientLogManagerTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.LogThrottleTest
+acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.config.LogConfigTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.adapters.JacORBFilterTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.adapters.Log4jAdapterTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  org.slf4j.impl.Slf4jAcsLoggerTest

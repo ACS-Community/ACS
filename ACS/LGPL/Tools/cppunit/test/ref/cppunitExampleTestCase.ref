@@ -1,0 +1,5 @@
+ExampleTestCase::example : OK
+ExampleTestCase::anotherExample : OK
+ExampleTestCase::testAdd : OK
+ExampleTestCase::testEqualsOK (4)
+ : OK

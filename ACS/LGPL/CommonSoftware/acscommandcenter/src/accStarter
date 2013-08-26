@@ -1,0 +1,79 @@
+#! /bin/bash
+
+##
+## Sets and exports env variables and runs a command.
+## ProcessID and output of the command can be stored in a file.
+##
+
+THIS=`basename $0`
+
+#
+# (2003-11-05) problem: getopt doesn't stop parsing as soon as the first
+# non-option occurs (although it should according to the doc).
+# (2003-12-08) solution: getopt works correctly when POSIXLY_CORRECT is set.
+#
+export POSIXLY_CORRECT=1
+
+set -- `getopt "e:p:o:q" "$@"` || {
+
+	echo "Usage: `basename $0` [-p pidfile] [-e var=value]* [-o outputfile] [-q]" 1>&2
+	exit 42;
+}
+
+## iterate over getopt output
+## and process immediately
+while : 
+do
+	case "$1" in
+	-e) shift; export $1 ;;
+	-p) shift; pidfile=$1 ;;
+	-o) shift; outfile=$1 ;;
+	-q) quiet=true ;;
+	--) break ;;
+	esac
+	shift
+done 
+shift
+
+function verboseInfo {
+   if [ ! "$quiet" ] ; then
+      echo "$THIS: $@"
+   fi
+}
+
+
+## helper for pidfile, outputfile, etc.
+function ensureDirExists {
+   if [ $1 ] ; then 
+      dir=`dirname $1`
+      if [ ! -d $dir ] ; then
+         verboseInfo "creating directory $dir"
+         mkdir -p $dir
+      fi
+   fi
+}
+
+
+
+## execute command
+if [ $outfile ] ; then
+   ensureDirExists $outfile
+   verboseInfo "executing $@ > $outfile &"
+   $@ > $outfile &
+else
+   verboseInfo "executing $@ &"
+   $@ &
+fi
+pid=$!
+
+## store pid in file
+if [ $pidfile ] ; then
+   ensureDirExists $pidfile
+   echo $pid >> $pidfile
+   verboseInfo "stored pid $pid in $pidfile"
+fi
+
+## Testcode
+## export ble="blubb" ; export -p ;echo $blu
+
+

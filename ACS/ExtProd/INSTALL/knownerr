@@ -1,0 +1,60 @@
+# use with 
+# egrep -i "error|fail|undefined reference" build*.log | grep -v -f knownerr
+#
+_configtest.c
+error\.h
+errors\.h
+error\.c
+Error\.c
+errors\.c
+error\.o
+errors\.o
+Error\.o
+error\.py
+errors\.py
+Errors\.py
+ErrorInfo\.
+error\.txt
+errorbar_demo\.py
+failure\.py
+test_fail\.py
+generator_failure_tests\.py
+FailoverListener
+no-importError
+no-syntaxErrors
+checking for gai_strerror
+checking for hstrerror
+Gnuplot/Errors
+Error.html
+ErrorHandler
+error\.f
+inflating
+checking for strerror
+all-fail
+jmx.fail-jboss
+jmx.fail-mx4j
+warnings.warn(AtlasNotFoundError
+ifail,info
+error,value,inform
+some build might fail!
+Please check the output for possible errors
+Please, ignore failures related to ldconfig
+Error 127 (ignored)
+don't be alarmed if a few compile errors are printed
+warning: 'lapack_liteError' defined but not used
+errors tclsh tcltest lib.exp Tcl
+errors wish tktest
+error-objects\.html
+errorbar_limits\.py
+numpy.*configtest.*undefined reference to `exp'
+lxml-2.1.5/doc
+nose-0.10.4/functional_tests
+errorclass\.py
+failuredetail\.
+failure\.html
+xmlerror\.p
+pylint-0.18.0/test/input/.*error.*
+pylint-0.18.0/test/regrtest_data/socketerror_import.py
+pylint-0.18.0/test/messages/.*error.*
+xjavadoc.TokenMgrError
+SUBROUTINE XERROR

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+   - History:
+   -   Wed Nov 15 20:51:42 UTC 2006 modified by jDAL
+   -   Wed Nov 15 20:54:39 UTC 2006 modified by jDAL
+   -   Tue Nov 21 10:09:12 UTC 2006 modified by jDAL
+-->
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<_ Name="SENDER" Code="senderPT" Type="IDL:alma/TEST_M/SenderPT:1.0" Container="SenderContainer"  ImplLang="cpp" />
+	<_ Name="RECEIVER1" Code="receiverPT" Type="IDL:alma/TEST_M/ReceiverPT:1.0" Container="Receiver1Container"  ImplLang="cpp" />
+	<_ Name="RECEIVER2" Code="receiverPT" Type="IDL:alma/TEST_M/ReceiverPT:1.0" Container="Receiver2Container"  ImplLang="cpp" />
+	<_ Name="RECEIVER3" Code="receiverPT" Type="IDL:alma/TEST_M/ReceiverPT:1.0" Container="Receiver3Container"  ImplLang="cpp" />
+	<_ Name="RECEIVER4" Code="receiver4" Type="IDL:alma/TEST_M/Receiver4:1.0" Container="Receiver4Container"  ImplLang="cpp" />
+	<_ Name="DISTRIBUTER" Code="bulkDataDistributerLib" Type="IDL:alma/bulkdata/BulkDataDistributer:1.0" Container="DistributerContainer"  ImplLang="cpp" />
+</Components>

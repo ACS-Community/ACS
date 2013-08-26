@@ -1,0 +1,9 @@
+2 - Method w/o timeout executed successfully.
+2 - exception caught, this is expected.
+2 - The exception was: CORBA.TRANSIENT(omniORB.TRANSIENT_CallTimedout, CORBA.COMPLETED_MAYBE)
+2 - Method w/o timeout executed successfully.
+2 - Method w/o timeout executed successfully.
+2 - exception caught, this is expected.
+2 - The exception was: CORBA.TRANSIENT(omniORB.TRANSIENT_CallTimedout, CORBA.COMPLETED_MAYBE)
+2 - Method w/o timeout executed successfully.
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

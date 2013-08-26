@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema targetNamespace="urn:schemas-cosylab-com:baciTest:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:baciTest:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+	<xs:complexType name="baciTest">
+		<xs:complexContent>
+			<xs:extension base="baci:CharacteristicComponent">
+				<xs:sequence>
+<xs:element name="RWdoubleWithErrorDevIOProp">	
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWdouble">
+									<xs:attribute name="description" type="xs:string" default="Current"/>
+									<xs:attribute name="default_value" type="xs:double" default="7.0"/>
+									<xs:attribute name="min_delta_trig" type="xs:double" default="0.01526"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="graph_min" type="xs:double" default="0"/>
+									<xs:attribute name="graph_max" type="xs:double" default="1000"/>
+									<xs:attribute name="min_step" type="xs:double" default="0.01526"/>
+									<xs:attribute name="min_value" type="xs:double" default="0.0"/>
+									<xs:attribute name="max_value" type="xs:double" default="1000.0"/>
+									<xs:attribute name="units" type="xs:string" default="A"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+
+					<xs:element name="RWdoubleWithDevIOProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWdouble">
+									<xs:attribute name="description" type="xs:string" default="Current"/>
+									<xs:attribute name="default_value" type="xs:double" default="7.0"/>
+									<xs:attribute name="min_delta_trig" type="xs:double" default="0.01526"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="graph_min" type="xs:double" default="0"/>
+									<xs:attribute name="graph_max" type="xs:double" default="1000"/>
+									<xs:attribute name="min_step" type="xs:double" default="0.01526"/>
+									<xs:attribute name="min_value" type="xs:double" default="0.0"/>
+									<xs:attribute name="max_value" type="xs:double" default="1000.0"/>
+									<xs:attribute name="units" type="xs:string" default="A"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWdoubleProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWdouble">
+									<xs:attribute name="description" type="xs:string" default="Current"/>
+									<xs:attribute name="default_value" type="xs:double" default="7.0"/>
+									<xs:attribute name="min_delta_trig" type="xs:double" default="0.01526"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="graph_min" type="xs:double" default="0"/>
+									<xs:attribute name="graph_max" type="xs:double" default="1000"/>
+									<xs:attribute name="min_step" type="xs:double" default="0.01526"/>
+									<xs:attribute name="min_value" type="xs:double" default="0.0"/>
+									<xs:attribute name="max_value" type="xs:double" default="1000.0"/>
+									<xs:attribute name="units" type="xs:string" default="A"/>
+                                                                        <xs:attribute name="initialize_devio" type="xs:boolean" default="1"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROdoubleProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROdouble">
+									<xs:attribute name="description" type="xs:string" default="Readback"/>
+									<xs:attribute name="default_value" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_delta_trig" type="xs:double" default="0.01526"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="graph_min" type="xs:double" default="0"/>
+									<xs:attribute name="graph_max" type="xs:double" default="1000"/>
+									<xs:attribute name="min_step" type="xs:double" default="0.01526"/>
+									<xs:attribute name="units" type="xs:string" default="A"/>
+									<xs:attribute name="alarm_high_on" type="xs:double" default="990.0"/>
+									<xs:attribute name="alarm_low_on" type="xs:double" default="10.0"/>
+									<xs:attribute name="alarm_high_off" type="xs:double" default="980.0"/>
+									<xs:attribute name="alarm_low_off" type="xs:double" default="20.0"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWfloatProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWfloat">
+									<xs:attribute name="description" type="xs:string" default="RWfloatName"/>
+									<xs:attribute name="default_value" type="xs:float" default="7.5"/>
+									<xs:attribute name="min_delta_trig" type="xs:float" default="0.01637"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="graph_min" type="xs:float" default="0"/>
+									<xs:attribute name="graph_max" type="xs:float" default="1100"/>
+									<xs:attribute name="min_step" type="xs:float" default="0.01637"/>
+									<xs:attribute name="min_value" type="xs:float" default="0.0"/>
+									<xs:attribute name="max_value" type="xs:float" default="1100.0"/>
+									<xs:attribute name="units" type="xs:string" default="A"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROfloatProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROfloat">
+									<xs:attribute name="description" type="xs:string" default="ROfloatName"/>
+									<xs:attribute name="default_value" type="xs:float" default="5.1"/>
+									<xs:attribute name="min_delta_trig" type="xs:float" default="0.01637"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="graph_min" type="xs:float" default="0"/>
+									<xs:attribute name="graph_max" type="xs:float" default="1100"/>
+									<xs:attribute name="min_step" type="xs:float" default="0.01637"/>
+									<xs:attribute name="units" type="xs:string" default="B"/>
+									<xs:attribute name="alarm_high_on" type="xs:float" default="991.0"/>
+									<xs:attribute name="alarm_low_on" type="xs:float" default="11.0"/>
+									<xs:attribute name="alarm_high_off" type="xs:float" default="981.0"/>
+									<xs:attribute name="alarm_low_off" type="xs:float" default="21.0"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWlongProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWlong">
+									<xs:attribute name="description" type="xs:string" default="step"/>
+									<xs:attribute name="units" type="xs:string" default="n/a"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="min_delta_trig" type="xs:int" default="5"/>
+									<xs:attribute name="default_value" type="xs:int" default="6"/>
+									<xs:attribute name="graph_min" type="xs:int" default="0"/>
+									<xs:attribute name="graph_max" type="xs:int" default="1000"/>
+									<xs:attribute name="min_step" type="xs:int" default="1"/>
+									<xs:attribute name="min_value" type="xs:int" default="0"/>
+									<xs:attribute name="max_value" type="xs:int" default="1000"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROlongProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROlong">
+									<xs:attribute name="description" type="xs:string" default="readbackStep"/>
+									<xs:attribute name="units" type="xs:string" default="n/a"/>
+									<xs:attribute name="default_value" type="xs:int" default="2"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="min_delta_trig" type="xs:int" default="5"/>
+									<xs:attribute name="graph_min" type="xs:int" default="0"/>
+									<xs:attribute name="graph_max" type="xs:int" default="1000"/>
+									<xs:attribute name="min_step" type="xs:int" default="1"/>
+									<xs:attribute name="alarm_high_on" type="xs:int" default="990"/>
+									<xs:attribute name="alarm_low_on" type="xs:int" default="10"/>
+									<xs:attribute name="alarm_high_off" type="xs:int" default="980"/>
+									<xs:attribute name="alarm_low_off" type="xs:int" default="20"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWpatternProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWpattern">
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_value" type="xs:unsignedLong" default="3"/>
+									<xs:attribute name="bitDescription" type="xs:string" default="On, Remote, Sum Failure, External Interlock, DC Overcurrent, Phase Failure, Not Ready, State Inconsistent, Ramping"/>
+									<xs:attribute name="whenSet" type="xs:string" default="3, 2,  0,  0,  0,  0,  1,  1,  1"/>
+									<xs:attribute name="whenCleared" type="xs:string" default="2, 3, 3, 3, 3, 3, 3, 3, 3 "/>
+									<xs:attribute name="description" type="xs:string" default="Status"/>
+									<xs:attribute name="format" type="xs:string" default="%d"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" default="3263"/>
+									<xs:attribute name="units" type="xs:string" default="w/o"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROpatternProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROpattern">
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_value" type="xs:unsignedLong" default="5"/>
+									<xs:attribute name="bitDescription" type="xs:string" default="On, Remote, Sum Failure, External Interlock, DC Overcurrent, Phase Failure, Not Ready, State Inconsistent, Ramping"/>
+									<xs:attribute name="whenSet" type="xs:string" default="3, 2,  0,  0,  0,  0,  1,  1,  1"/>
+									<xs:attribute name="whenCleared" type="xs:string" default="2, 3, 3, 3, 3, 3, 3, 3, 3 "/>
+									<xs:attribute name="description" type="xs:string" default="Status"/>
+									<xs:attribute name="format" type="xs:string" default="%d"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" default="3263"/>
+									<xs:attribute name="units" type="xs:string" default="w/o"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROstringProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROstring">
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_value" type="xs:string" default="This is a default RO message"/>
+									<xs:attribute name="description" type="xs:string" default="message"/>
+									<xs:attribute name="units" type="xs:string" default="w/o"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" default="3263"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWstringProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWstring">
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_value" type="xs:string" default="This is the default message"/>
+									<xs:attribute name="description" type="xs:string" default="message"/>
+									<xs:attribute name="units" type="xs:string" default="w/o"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" default="3263"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWdoubleSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWdoubleSeq">
+									<xs:attribute name="min_value" type="xs:double" default="0.0"/>
+									<xs:attribute name="max_value" type="xs:double" default="1000.0"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="graph_min" type="xs:double" default="0.0"/>
+									<xs:attribute name="graph_max" type="xs:double" default="1000.0"/>
+									<xs:attribute name="min_step" type="xs:double" default="0.01526"/>
+									<xs:attribute name="description" type="xs:string" default="SeqCurrent"/>
+									<xs:attribute name="units" type="xs:string" default="A"/>
+									<xs:attribute name="format" type="xs:string" default="%9.4f"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROdoubleSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROdoubleSeq">
+									<xs:attribute name="alarm_high_on" type="xs:double" default="990.0"/>
+									<xs:attribute name="alarm_high_off" type="xs:double" default="980.0"/>
+									<xs:attribute name="alarm_low_on" type="xs:double" default="10.0"/>
+									<xs:attribute name="alarm_low_off" type="xs:double" default="20.0"/>
+									<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.1"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="default_value" type="xs:double" default="5.0"/>
+									<xs:attribute name="graph_min" type="xs:double" default="0.0"/>
+									<xs:attribute name="graph_max" type="xs:double" default="1000.0"/>
+									<xs:attribute name="description" type="xs:string" default="SeqReadback"/>
+									<xs:attribute name="units" type="xs:string" default="A"/>
+									<xs:attribute name="format" type="xs:string" default="%9.4f"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWfloatSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWfloatSeq">
+									<xs:attribute name="min_value" type="xs:float" default="1.0"/>
+									<xs:attribute name="max_value" type="xs:float" default="1001.0"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="graph_min" type="xs:float" default="0.0"/>
+									<xs:attribute name="graph_max" type="xs:float" default="1200.0"/>
+									<xs:attribute name="min_step" type="xs:float" default="0.01367"/>
+									<xs:attribute name="description" type="xs:string" default="RWfloatSeqName"/>
+									<xs:attribute name="units" type="xs:string" default="B"/>
+									<xs:attribute name="format" type="xs:string" default="%9.4f"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROfloatSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROfloatSeq">
+									<xs:attribute name="alarm_high_on" type="xs:float" default="991.0"/>
+									<xs:attribute name="alarm_high_off" type="xs:float" default="981.0"/>
+									<xs:attribute name="alarm_low_on" type="xs:float" default="11.0"/>
+									<xs:attribute name="alarm_low_off" type="xs:float" default="21.0"/>
+									<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.1"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="default_value" type="xs:float" default="5.1"/>
+									<xs:attribute name="graph_min" type="xs:float" default="0.0"/>
+									<xs:attribute name="graph_max" type="xs:float" default="1000.0"/>
+									<xs:attribute name="description" type="xs:string" default="ROfloatSeqName"/>
+									<xs:attribute name="units" type="xs:string" default="B"/>
+									<xs:attribute name="format" type="xs:string" default="%9.4f"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RWlongSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWlongSeq">
+									<xs:attribute name="min_value" type="xs:int" default="0"/>
+									<xs:attribute name="max_value" type="xs:int" default="1000"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="min_delta_trig" type="xs:int" default="5"/>
+									<xs:attribute name="default_value" type="xs:int" default="6"/>
+									<xs:attribute name="graph_min" type="xs:int" default="0"/>
+									<xs:attribute name="graph_max" type="xs:int" default="1000"/>
+									<xs:attribute name="min_step" type="xs:int" default="1"/>
+									<xs:attribute name="description" type="xs:string" default="SeqStep"/>
+									<xs:attribute name="format" type="xs:string" default="%d"/>
+									<xs:attribute name="units" type="xs:string" default="n/a"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ROlongSeqProp">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROlongSeq">
+									<xs:attribute name="alarm_low_on" type="xs:int" default="10"/>
+									<xs:attribute name="alarm_low_off" type="xs:int" default="20"/>
+									<xs:attribute name="alarm_high_off" type="xs:int" default="980"/>
+									<xs:attribute name="min_delta_trig" type="xs:int" default="5"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" default="0.001"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" default="5.0"/>
+									<xs:attribute name="alarm_high_on" type="xs:int" default="990"/>
+									<xs:attribute name="graph_min" type="xs:int" default="0"/>
+									<xs:attribute name="graph_max" type="xs:int" default="1000"/>
+									<xs:attribute name="min_step" type="xs:int" default="1"/>
+									<xs:attribute name="description" type="xs:string" default="SeqReadbackStep"/>
+									<xs:attribute name="units" type="xs:string" default="n/a"/>
+									<xs:attribute name="format" type="xs:string" default="%d"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="baciTest" type="baciTest"/>
+</xs:schema>
+

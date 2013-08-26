@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>How to use the logging</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Katarina" lastname="Sigerud" ccid="73162"/>
+    <reviewers>TBD</reviewers>
+    <currentVersion>0.1 (2002/08)</currentVersion>
+    <history>
+    0.1 (2002/08) : First Draft<br/>
+    0.2 (2003/05) : Updated to commons-logging<br/>
+    </history>
+  </head>
+  
+  <!-- SECTION 1 -->
+  <section>
+    <title>Introduction</title>
+    <description>
+    <p>In GP, we have chosen to rely on the <a href="http://jakarta.apache.org/commons/logging.html">Jakarta Commons Logging</a> project for logging. This library is a thin bridge between different logging libraries, e.g. Log4j or JDK 1.4 logging, but you can also provide your own implementation for the library of your choice. In the GP project we have chosen to provide an implementation that uses the facilities in NetBeans to log and display log messages.
+    </p>
+    </description>
+  </section>
+  
+	<!-- SECTION 2 -->
+	<section>
+		<title>Logging in general</title>
+		
+		<!-- SUBSECTION 1 -->
+		<section>
+		<title>Severity levels</title>
+		<description> 
+			<p class="normal">The <code>org.apache.commons.logging.Log</code> API defines the following severity levels:
+			<ol>
+ 				<li>trace (the least serious)</li>
+ 				<li>debug</li>
+ 				<li>info</li>
+ 				<li>warn</li>
+ 				<li>error</li>
+ 				<li>fatal (the most serious)</li>
+ 			</ol>
+ 			</p>
+ 			<p class="normal">For each of these levels there is also a possibility to check if a certain level should be logged or not by calling <code>isXXXEnabled</code>, e.g. <code>isInfoEnabled</code>.
+ 			</p>
+ 		</description>
+ 		</section>
+ 		
+		<!-- SUBSECTION 2 -->
+		<section>
+		<title>The <code>LogFactory</code></title>
+		<description> 
+			<p class="normal">To find a particular <code>Log</code> implementation you will use the <code>LogFactory</code> class. This class will try to find the following implementations (in this order):
+			<ol>
+ 				<li>If <em>Log4J</em> is available, return an instance of <code>org.apache.commons.logging.impl.Log4JCategoryLog</code>.</li>
+ 				<li>If <em>JDK 1.4 or later</em> is available, return an instance of <code>org.apache.commons.logging.impl.Jdk14Logger</code>.</li>
+ 				<li>Otherwise, return an instance of <code>org.apache.commons.logging.SimpleLog</code>.</li>
+ 			</ol>
+ 			</p>
+ 		</description>
+	    <codeDescription>
+	    <title>Example of using logging</title>
+	     	<code>
+  Log log = LogFactory.getLog(Windowing.class);
+  log.trace("Setting up the switching mechanism");</code>
+	    </codeDescription>
+	    <codeDescription>
+	    <title>Example of using logging with exception</title>
+	     	<code>          
+  Log log = LogFactory.getLog(Windowing.class);
+  try {
+    Mode mode = null;	
+    // Some code using the mode
+  } catch (NullPointerException ex) {
+    log.warn("Mode not initialized.", ex);
+  }</code>
+	    </codeDescription>
+	    </section>
+	</section>
+	
+  <!-- SECTION 3 	-->
+  <section>
+    <title>Logging in GP</title>
+
+	  <!-- SUBSECTION 1 -->
+	  <section>
+	  	<title>Default logging in GP</title>
+    	<description>
+ 			<p class="normal">If you don't want any of the default implementations provided with the Jakarta Commons Logging library, you can specify what <code>Log</code> implementation to use by setting the system property <code>org.apache.commons.logging.Log</code>. See <b>Setting system properties</b> below for a description of how to set system properties for NetBeans. 
+		</p>
+    	<p class="normal">For the GP project and for use in NetBeans, we provide an implementation of the <code>Log</code> interface in <code>cern.gp.logging.NetBeansLog</code> which uses the NetBeans facilities to log messages. This implementation recognizes the following properties for configuration:
+ 		<ul>
+ 			<li><code>cern.gp.logging.defaultlog</code> - Default logging detail level for all instances of NetBeansLog. Must be one of the severity levels defined. </li>
+ 			<li><code>cern.gp.logging.log.xxxxx</code> - Logging detail level for a NetBeansLog instance named "xxxxx". Must be one of severity levels defined. If not specified, the default logging detail level is used.</li>
+ 			<li><code>cern.gp.logging.showlogname</code> - Set to <code>true</code> if you want the Log instance name to be included in output messages. Defaults to false</li>
+ 	 		<li><code>cern.gp.logging.showShortLogname</code> - Set to <code>true</code> if you want the last component of the name to be included in output messages. Defaults to true.</li>
+  			<li><code>cern.gp.logging.showdatetime</code> - Set to <code>true</code> if you want the current date and time to be included in output messages. Default is false.</li>
+  		</ul>
+  		</p>
+  		<p class="normal">
+		These properties can be set as system properties.
+		</p>
+    <p class="normal">The log messages are sent to the NetBeans log file (by default in <code>&lt;userdir&gt;/system/ide.log</code>) and to an output window (named <em>Log</em>).
+    </p>
+    </description>
+    </section>
+    
+	  <!-- SUBSECTION 2 -->
+    <section>
+    	<title>Setting system properties</title>
+    	<description>
+		<p class="normal">If you start the NetBeans platform through the <i>runidew.exe</i> command you set the system properties in the <i>&lt;NetBeans dir&gt;\bin\ide.cfg</i> file.
+		</p>
+		</description>
+	    <codeDescription>
+	    <title>Example of setting the system properties in the <i>ide.cfg</i> file</title>
+	     	<code>
+-J-Xverify:none -J-Xms24m -J-Xmx96m 
+-J-Dorg.apache.commons.logging.Log=cern.gp.logging.NetBeansLog
+			</code>
+	    </codeDescription>    
+    	<description>
+		<p class="normal">If you would like to use the Log4j log facility provided in Commons Logging, or provide your own implementation for using Log4j, and you want to configure the log with a configuration file, you need to give the location of the file with a system property called <code>log4j.configuration</code>:
+		<ul>
+		<li>If the properties file is in your module jar, you give the location as the relative package path, e.g. <code>demo/log4j.properties</code></li>
+		<li>If the properties file is not in your jar, you need to give the exact path of the file as an URL, e.g. <code>file:/c:/DEV/gp-examples/bin/demo/log4j.properties</code></li>
+		</ul>
+		</p>
+		<p>More on Log4j can be found by following <a href="http://jakarta.apache.org/log4j">this link</a>.
+		</p>
+		</description>
+	    </section>
+	</section>
+</document>
+

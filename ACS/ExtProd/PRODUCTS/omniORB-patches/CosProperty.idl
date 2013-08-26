@@ -1,0 +1,12 @@
+#ifndef __COS_PROPERTY_IDL__
+#define __COS_PROPERTY_IDL__ 
+
+/*
+This file just includes CosPropertyService.idl
+what is workaround for omniORBpy compiler which assumes that the idl module name corespond to the name of the file
+# This is not true for CosPropertyService which is in CosProperty.idl file, but module name is CosPropertyService
+*/
+
+#include <CosPropertyService.idl>
+
+#endif

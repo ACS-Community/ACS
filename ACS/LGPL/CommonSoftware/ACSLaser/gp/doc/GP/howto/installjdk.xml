@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>JDK installation</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<anchor>CHECKJDK</anchor>
+		<title>Checking JDK installation</title>
+		<description>
+      <UL>
+            First of all please check if a JDK is installed by running the command <B>cmd /k java -version</B> from the MS Windows <I>Start\run...</I> menu item as shown below.<BR/>
+            <BR/>
+            <IMG SRC="images/installjdk1.gif"/><BR/>
+            <BR/>
+            A DOS window will popup with the result of your command. 
+            <BR/>
+            <IMG SRC="images/installjdk3.gif"/> there is no JDK found in the PATH <BR/>
+            <BR/>
+            <BR/>
+            <IMG SRC="images/installjdk2.gif"/> the JDK (here version: 1.3.102b) was found in the PATH.<BR/>
+            <BR/>
+            Although a JDK is installed on your machine you must check if the "JAVA_HOME" environment variable has been set by running the command <B>cmd /k echo %JAVA_HOME%</B> from the MS Windows <I>Start\run...</I> menu item as described before.<BR/>
+            <BR/>
+            Either the JDK was correctly installed, then the jdk location will appear.<BR/>
+            <BR/>
+            <IMG SRC="images/installjdk5.gif"/><BR/>
+            <BR/>
+            Or, if the string %JAVA_HOME% appears it mean that the environment variable wasn't set.<BR/>
+            <BR/>
+            <IMG SRC="images/installjdk4.gif"/><BR/>
+            <BR/>
+            You will then have to create the JAVA_HOME environment variable from the "my computer" icon properties menu item as shown below. 
+            You may have to replace the "c:\java\jdk\" string by the right one !<BR/>
+            <IMG SRC="images/installjdk6.gif"/><BR/>
+            </UL>
+      </description>
+	</section>
+	<section>
+		<anchor>INSTALLJDK</anchor>
+		<title>Installing the JDK</title>
+		<description>
+            <UL>
+             The last officially supported JDK is the version <B>1.3.1_06</B>.<BR/>
+             <BR/>
+             Download:<BR/><BR/>
+             <UL>
+	             <LI><A HREF="http://java.sun.com/j2se/1.3/download.html">JDK installer</A>.</LI>
+             	 <BR/><BR/>
+           		 <LI><A HREF="http://java.sun.com/j2se/1.3/docs.html">Javadoc</A>.</LI>
+             </UL>  
+            </UL>
+   </description>
+	</section>
+  
+</document>
+

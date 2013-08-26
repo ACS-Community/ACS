@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>Java Coding Conventions for the GP Project</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+    <reviewers>Eric Roux</reviewers>
+    <currentVersion></currentVersion>
+    <history>Put in web format</history>
+  </head>
+	<section>
+		<description>
+We agreed on using the Javadoc specifications as published by Sun <a href="http://java.sun.com/docs/codeconv/index.html">Java Coding Conventions</a>, henceforth referred to as JCC. However, we made a few following modifications to JCC and introduced a few new conventions.
+</description>
+	</section>
+
+	<section>
+		<title>Modifications to Java Coding Conventions</title>
+		<description>
+·	<B>Line length</B>: 120 chars instead of 80 [ c.f. <a href="http://java.sun.com/docs/codeconv/html/CodeConventions.doc3.html#313">JCC 4.1</a>]<BR/><BR/>
+
+·	<B>Multi-line comments</B>: use // instead of /* */ for multi-line comments. [c.f. <a href="http://java.sun.com/docs/codeconv/html/CodeConventions.doc4.html#286">JCC 5.1.4</a>]<BR/><BR/>
+
+·	<B>Indents</B>: we'll try an indentation of 2 characters (not the usual 4) and see if it's readable for all. Don't use TABs for indenting!<BR/><BR/>
+
+·	<B>Variable declaration</B> can be done anywhere, preferably at the point in the code where the variable is used for the first time, and not exclusively at the beginning of a code block [c.f. <a href="http://java.sun.com/docs/codeconv/html/CodeConventions.doc5.html#16817">JCC 6.3</a>] <BR/><BR/>
+
+·	<B>Switch statement formatting</B>: with indentation of "case:" clauses [c.f. <a href="http://java.sun.com/docs/codeconv/html/CodeConventions.doc6.html#468">JCC 7.8</a>]<BR/><BR/>
+   </description>
+
+   <codeDescription>
+    <title>switch statement formatting</title>
+      	<code>    
+switch (condition) {
+  case abc:
+    statements;
+    break;
+  case def:
+    statements;
+    break;
+  default:
+    statements;
+    break;
+}  		
+  </code> 
+    </codeDescription>
+	</section>
+
+	<section>
+		<title>Additional conventions</title>
+   	<section>
+   		<title>Code</title>
+   		<description>
+   ·	<B>imports</B>: use explicit imports (that is, generic my.package.* imports are forbidden). Do not use fully qualified names (e.g. java.util.Vector) in the code. Exception: if FQNs are necessary because of name clashes.<BR/><BR/>
+
+   ·	<B>class and method modifiers</B>: make them as restrictive as possible. Make classes/methods private rather than protected, final for classes/methods that should not be derived from or overridden, etc. <BR/><BR/>
+
+   ·	<B>variable modifiers</B>: make them as restrictive as possible. In principle, all instance variables should be private. Use protected variables only when they are constant (i.e. final protected). Whenever you can, make variables final, e.g. when they are only assigned to and their value is not changed. This also applies to method parameters and local variables.<BR/><BR/>
+
+   ·	<B>position of main method</B>: The main method shall always be put at the end of the class.<BR/><BR/>
+      </description>
+   	</section>
+	
+   	<section>
+   		<title>Documentation</title>
+   		<description>
+·	<B>Class documentation</B>: should be composed of a header (at the beginning of the file) and Javadoc (just before the class definition). Javadoc should contain a few lines of description of what the class does as a whole.<BR/> <BR/>
+
+   ·	<B>Class Header</B>: contains the names of the author(s), creation date, but no history (CVS contains that).<BR/><BR/>
+
+   ·	<B>Obligatory Javadoc tags for classes</B>: <BR/>
+   @author   GUI Platform project (not individual person's names)<BR/>
+   @version  &lt;taken from CVS&gt; &lt;last modification date&gt;<BR/>
+   <BR/>
+
+   ·	<B>Method Javadoc</B>: In general, be sure to document what the method does, and not how it is implemented. (In other words, no information on method implementation, just on the "service" it provides to the client. Information about the implementation shall be placed as // comment inside the method.) <BR/><BR/>
+
+   When appropriate, give additional information about how the method shall be used, e.g. "to be called only from AWT event handling thread" or "to be called only from constructor", "to be called only once at initialization".<BR/><BR/>
+
+   ·	<B>Obligatory Javadoc method tags</B>: <a href="http://java.sun.com/j2se/1.4.1/docs/tooldocs/windows/javadoc.html#@param">@param</a>, <a href="http://java.sun.com/j2se/1.4.1/docs/tooldocs/windows/javadoc.html#@return">@return</a>, <a href="http://java.sun.com/j2se/1.4.1/docs/tooldocs/windows/javadoc.html#@throws">, @throws</a>, <a href="http://java.sun.com/j2se/1.4.1/docs/tooldocs/windows/javadoc.html#@see">@see</a>.<BR/>
+  <BR/>
+
+   ·	<B>Javadoc for classes that implement interfaces</B>: Leave the Javadoc of the implementing class empty. This instructs Javadoc to copy the comments from the interface to the implementing class.<BR/><BR/>
+
+   ·	<B>Grouping of implemented methods</B>: If a class implements several interfaces, group the methods by the interface they come from, i.e. first all methds of interfaces A, then all methods of interface B,etc.<BR/><BR/>
+
+   ·	<B>"Pending" tags</B>: tags to be used to comment "pending" items or temporary fixes are of two sorts: <UL>
+   (1) official things the user should know about (e.g. functionality not yet implemented) are documented with the @todo tag in the method javadoc.<br/> 
+   (2) project-internal comments (e.g. temporary work-around) shall use the // [PENDING] &lt;explanation&gt;  notation, as done in other NetBeans classes.<br/>
+   </UL> <BR/><BR/>
+
+     </description>
+   	</section>
+   </section>
+</document>
+

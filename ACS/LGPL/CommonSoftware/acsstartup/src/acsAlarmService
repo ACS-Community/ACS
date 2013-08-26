@@ -1,0 +1,283 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupPids
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsAlarmService,v 1.12 2013/03/04 09:33:07 msekoran Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# acaproni   2009-05-18 Adpated from acsConfigurationDatabase
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+PID=$$
+export HOST=`getIP`
+COMMAND=`basename $0`
+#LOGPOSTFIX=" using 'ACS_INSTANCE=$ACS_INSTANCE'"
+LOGPOSTFIX=
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_START=false
+CL_STOP=false
+CL_WAIT=false
+CL_BASEPORT=
+CL_HELP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,nameService:
+SHORTOPTS=hskwrb:t:x:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+  cat << EOF
+Starts Interface Repository for Acs
+
+Usage: $COMMAND [OPTIONS]
+Options:
+   -s | --start                      start service
+   -k | --kill                       stop service
+   -w | --wait                       wait for service to get started
+   -b | --baseport INSTANCE          the acs instance (0-9) you want to use
+   -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
+   -x | --nameService REF            set name service reference via command-line
+   -h | --help                       prints this help and exits
+EOF
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n $COMMAND -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+  printUsage
+  exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+  case "$1" in
+    --baseport)                   CL_BASEPORT=$2 ; shift ;;
+    -b)                           CL_BASEPORT=$2 ; shift ;;
+    --timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    -t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    --help)                       CL_HELP=true ;; 
+    -h)                           CL_HELP=true ;; 
+    --start)                      CL_START=true ;; 
+    -s)                           CL_START=true ;; 
+    --kill)                       CL_STOP=true ;; 
+    -k)                           CL_STOP=true ;; 
+    --wait)                       CL_WAIT=true ;; 
+    -w)                           CL_WAIT=true ;; 
+    --nameService)                export ACS_NAME_SERVICE=$2 ; shift ;;
+    -x)                           export ACS_NAME_SERVICE=$2 ; shift ;;
+    --) break ;;
+  esac
+  shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+if [ "$CL_HELP" ] ; then
+  printUsage
+  exit $EC_OK
+fi
+
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+################################
+#Set variables
+################################
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+  export ACS_INSTANCE="$CL_BASEPORT"
+fi
+
+ACS_LOG_COMMAND $@
+
+#Makes shure there is an initial value
+if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+then
+  ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+fi
+
+#maximum timeout for any given process to complete
+MAX_TIMEOUT=$(( 10 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+
+export STD_SLEEP=3
+
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+#set the filenames where binaries' output will be sent
+ALARM_SERVICE_OUT=$INSTANCE_DIR/$ACS_ALARM_SERVICE_OUT
+
+ALARM_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_ALARM_SERVICE_PIDFILE
+
+#determine the TCP ports to be used
+ALARM_SERVICE_PORT=`getAlarmServicePort`
+
+# Always use -ORBDottedDecimalAddresses=1
+if [ "X$ORBOPTS" = "X" ]
+then
+  ORBOPTS="-ORBDottedDecimalAddresses 1"
+fi
+
+
+
+
+######################################
+#   ACS alarm service
+#
+#   Note: this is started immediately after the configuration database 
+#         (which is its only dependency part of the name service) 
+#		  in the background, for performance reasons. 
+#######################################
+
+if [ "$CL_STOP" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  if [ ! -d $INSTANCE_DIR ]
+  then
+    ACS_LOG_DEBUG "$COMMAND" "Lock directory '$INSTANCE_DIR' does not exist!"
+  elif [ ! -w $INSTANCE_DIR ]
+  then
+    ACS_LOG_ERROR "$COMMAND" "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
+    exit $EC_CANNOTUSE
+  fi
+
+  # alarm service unregisters itself
+  #ACS_NAME_SERVICE=`acsstartupNSRef`
+  #$ACE_ROOT/TAO/utils/nslist/tao_nsdel --name AcsAlarmService -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+
+  # SERVICE SHUTDOWN
+  # --------------------------------------------------------------------------
+  # Since the alarm service is just a Java process, it must be treated a little differently
+  ACS_LOG_INFO "$COMMAND" "Stopping the AlarmService${LOGPOSTFIX}"
+  
+  #Try the "correct" way of shutting down the alarm service
+  if ! acsutilBlock -t 15 -k alarmServiceShutdown # &> /dev/null
+  then
+    if ALARM_SERVICE_PID=`getAlarmServicePid`
+    then
+      acsKillProc $ALARM_SERVICE_PID 2> /dev/null || (ACS_LOG_ERROR "$COMMAND" "Cannot kill the alarm service")
+    fi
+  fi
+  if [ -e $ALARM_SERVICE_PIDFILE ]
+  then
+    rm $ALARM_SERVICE_PIDFILE
+  fi
+fi
+
+if [ "$CL_START" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  # Prevent from having the service started more than once on the same baseport
+  if ALARM_SERVICE_PID=`getAlarmServicePid 2> /dev/null`
+  then
+    ACS_LOG_ERROR "$COMMAND" "It appears as if you're trying to run the `basename $0` command twice"
+    ACS_LOG_ERROR "$COMMAND" "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
+    exit $EC_FAILURE
+  fi
+
+  # Make sure that the directory for temporary ACS_INSTANCE files exists.
+  if ! createInstanceDirectory $ACS_INSTANCE
+  then
+     ACS_LOG_ERROR "$COMMAND" "Cannot create $INSTANCE_DIR"
+     exit $EC_CANNOTCREATE
+  fi
+  mkdir -p $INSTANCE_DIR/$ACS_PID_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_OUT_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_IOR_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_CNF_DIR
+  
+  # Ensure the port numbers are actually free
+  if ! checkTCPPort $ALARM_SERVICE_PORT
+  then
+    ACS_LOG_ERROR "$COMMAND" "Alarm service port is being used by another process. Cannot continue!"
+    exit $EC_NOPORT
+  fi
+
+  # SERVICE STARTUP
+  # --------------------------------------------------------------------------
+  
+  ACS_LOG_INFO "$COMMAND" "Starting ACS AlarmService${LOGPOSTFIX}"
+  if [ `searchFile lib/acsAlarmService.jar` = "#error#" ] # sanity check
+  then
+    ACS_LOG_ERROR "$COMMAND" "The alarm service implementation cannot be found. Did you build ACS/ACSLaser?"
+    exit $EC_FAILURE;
+  fi
+  
+  (alarmService -OAIAddr $HOST -OAport $ALARM_SERVICE_PORT 2>&1 & echo $! > $INSTANCE_DIR/$ACS_ALARM_SERVICE_PIDFILE) | tee $ALARM_SERVICE_OUT &
+  cd $STARTUP_DIR
+fi
+
+if [ "$CL_WAIT" = "true" ]
+then
+  # Block until the expected output shows up in the the correct file
+  if ! acsutilBlock -t $MAX_TIMEOUT -f $ALARM_SERVICE_OUT -b "The alarm service is ready and waiting"
+  then
+    ACS_LOG_ERROR "$COMMAND" "Unable to start the alarm service!"
+    ACS_LOG_ERROR "$COMMAND" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
+    exit $EC_TIMEOUT
+  fi
+fi
+
+
+#
+# ___oOo___

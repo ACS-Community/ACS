@@ -1,0 +1,75 @@
+#!/bin/sh
+# rpackBuildAll -- Build ALL ACS RPMs!
+
+# Preconditions: The CVS source tree. Possibility to ssh as Root.
+
+echo "############ Executing rpackBuildAll #################"
+
+NO_ARGS=0
+E_OPTERROR=65
+ACS_SOURCES_DIR="../../../"
+COMPILE_FARM="$PWD/../redhat/"
+USAGE="Usage: `basename $0` -r <release> [ -s <srcdir> -v <version> -c <compfarm>] | -h "
+ARCH=`uname -i`
+HELP_TEXT="rpackBuildAll -- Generates all the RPMs .
+
+Usage: `basename $0` -r <release> [ -s <srcdir> -v <version> -c <compfarm>] | -h 
+
+-r <release>  : is the release number.
+-s <srcdir>   : Base ACS Source directory, by default $ACS_SOURCES_DIR
+-v <version>  : Redefine the Version of the tarball, defined at ACS/ACS_VERSION
+-c <compfarm> : Compilefarm, by default $COMPILE_FARM
+-h            : Display this help message
+"
+
+if test $# -eq "$NO_ARGS"   # Script invoked with no command-line args?
+then
+  echo $USAGE
+  echo "### ERROR in rpackBuildAll."
+  exit $E_OPTERROR        # Exit and explain usage, if no argument(s) given.
+fi
+
+
+while getopts "hr:s:v:c:" Option
+do
+  case $Option in
+    r     ) ACS_RELEASE=$OPTARG;;
+    s     ) ACS_SOURCES_DIR=$OPTARG;;
+    v     ) ACS_VERSION=$OPTARG;;
+    c     ) COMPILE_FARM=$OPTARG;;
+    h     ) echo -e "$HELP_TEXT"; exit 0;;
+    *     ) echo "Invalid Option or missing parameter"; exit 1;;   # DEFAULT
+  esac
+done
+
+if test -z $ACS_VERSION; then
+  if ! ACS_VERSION=`cat $ACS_SOURCES_DIR/ACS_VERSION`; then exit 1; fi;
+fi
+
+if test -z $ACS_RELEASE; then
+  echo $USAGE
+  echo "### ERROR in rpackBuildAll."
+  exit $E_OPTERROR        # Exit and explain usage, if no name argument given.
+fi
+
+
+CURR_DIR=`pwd`
+if test -d $COMPILE_FARM; then
+  cd $COMPILE_FARM
+  REAL_COMP_FARM=`pwd`
+  cd ..
+  mv $REAL_COMP_FARM $REAL_COMP_FARM.old
+fi
+cd $CURR_DIR
+
+./rpackBuildFarm -c $COMPILE_FARM
+
+for target in `./rpackMakeTarball -l`; do
+    echo "### Working on package:      $target"
+    ./rpackMakeTarball -n $target -v $ACS_VERSION -s $ACS_SOURCES_DIR -d $COMPILE_FARM/SOURCES/
+    ./rpackBuildPackage -n $target -v $ACS_VERSION -r $ACS_RELEASE -c $COMPILE_FARM
+    echo "### Install package:    $target"
+    ssh -l root localhost rpm -Uvh $COMPILE_FARM/RPMS/$ARCH/$target-$ACS_VERSION-$ACS_RELEASE.$ARCH.rpm
+done
+echo "### Done rpackBuildAll."
+

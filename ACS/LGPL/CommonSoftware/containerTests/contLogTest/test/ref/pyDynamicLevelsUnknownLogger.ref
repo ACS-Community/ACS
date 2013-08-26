@@ -1,0 +1,149 @@
+2 -  -D TEST_COMP_NAMES=TESTLOG6 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
+1 - <timestamp> [GlobalLogger - ] Container: aragornContainer
+1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'TESTLOG6':
+1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
+1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
+1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
+1 - <timestamp> [GlobalLogger - ] ... failed!
+1 - <timestamp> (<ID>) EXCEPTION, Exception caught while calling remote method.
+1 - user exception, ID 'IDL:alma/Logging/LoggerDoesNotExistEx:1.0'
+1 - 
+1 - <timestamp> [GlobalLogger - ] Done all.
+2 - <timestamp> INFO [acsStartJava] Starting Java application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
+2 - .<timestamp> INFO [TestLogLevelsCompTest#testGetLevels] -------------------------------
+2 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
+2 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
+2 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] authenticate called: id=XXX; question=Identify yourself
+2 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method (hardcoded remote, local, effective): 2, 2, 3, 3, 4
+2 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully delivered a component release request for curl=TESTLOG6
+2 - .<timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] authenticate called: id=XXX; question=Identify yourself
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 1 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 11 records from logger TESTLOG6
+2 - (level=1) logDummyMessages - dummy log message for core level 1/TRACE
+2 - (level=2) logDummyMessages - dummy log message for core level 2/DELOUSE
+2 - (level=3) logDummyMessages - dummy log message for core level 3/DEBUG
+2 - (level=4) logDummyMessages - dummy log message for core level 4/INFO
+2 - (level=5) logDummyMessages - dummy log message for core level 5/NOTICE
+2 - (level=6) logDummyMessages - dummy log message for core level 6/WARNING
+2 - (level=8) logDummyMessages - dummy log message for core level 8/ERROR
+2 - (level=9) logDummyMessages - dummy log message for core level 9/CRITICAL
+2 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
+2 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
+2 - (level=11) logDummyMessages - ===last log message===
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 2 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 10 records from logger TESTLOG6
+2 - (level=2) logDummyMessages - dummy log message for core level 2/DELOUSE
+2 - (level=3) logDummyMessages - dummy log message for core level 3/DEBUG
+2 - (level=4) logDummyMessages - dummy log message for core level 4/INFO
+2 - (level=5) logDummyMessages - dummy log message for core level 5/NOTICE
+2 - (level=6) logDummyMessages - dummy log message for core level 6/WARNING
+2 - (level=8) logDummyMessages - dummy log message for core level 8/ERROR
+2 - (level=9) logDummyMessages - dummy log message for core level 9/CRITICAL
+2 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
+2 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
+2 - (level=11) logDummyMessages - ===last log message===
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 3 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 9 records from logger TESTLOG6
+2 - (level=3) logDummyMessages - dummy log message for core level 3/DEBUG
+2 - (level=4) logDummyMessages - dummy log message for core level 4/INFO
+2 - (level=5) logDummyMessages - dummy log message for core level 5/NOTICE
+2 - (level=6) logDummyMessages - dummy log message for core level 6/WARNING
+2 - (level=8) logDummyMessages - dummy log message for core level 8/ERROR
+2 - (level=9) logDummyMessages - dummy log message for core level 9/CRITICAL
+2 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
+2 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
+2 - (level=11) logDummyMessages - ===last log message===
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 4 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 8 records from logger TESTLOG6
+2 - (level=4) logDummyMessages - dummy log message for core level 4/INFO
+2 - (level=5) logDummyMessages - dummy log message for core level 5/NOTICE
+2 - (level=6) logDummyMessages - dummy log message for core level 6/WARNING
+2 - (level=8) logDummyMessages - dummy log message for core level 8/ERROR
+2 - (level=9) logDummyMessages - dummy log message for core level 9/CRITICAL
+2 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
+2 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
+2 - (level=11) logDummyMessages - ===last log message===
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 5 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 7 records from logger TESTLOG6
+2 - (level=5) logDummyMessages - dummy log message for core level 5/NOTICE
+2 - (level=6) logDummyMessages - dummy log message for core level 6/WARNING
+2 - (level=8) logDummyMessages - dummy log message for core level 8/ERROR
+2 - (level=9) logDummyMessages - dummy log message for core level 9/CRITICAL
+2 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
+2 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
+2 - (level=11) logDummyMessages - ===last log message===
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 6 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 6 records from logger TESTLOG6
+2 - (level=6) logDummyMessages - dummy log message for core level 6/WARNING
+2 - (level=8) logDummyMessages - dummy log message for core level 8/ERROR
+2 - (level=9) logDummyMessages - dummy log message for core level 9/CRITICAL
+2 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
+2 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
+2 - (level=11) logDummyMessages - ===last log message===
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 8 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 5 records from logger TESTLOG6
+2 - (level=8) logDummyMessages - dummy log message for core level 8/ERROR
+2 - (level=9) logDummyMessages - dummy log message for core level 9/CRITICAL
+2 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
+2 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
+2 - (level=11) logDummyMessages - ===last log message===
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 9 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 4 records from logger TESTLOG6
+2 - (level=9) logDummyMessages - dummy log message for core level 9/CRITICAL
+2 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
+2 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
+2 - (level=11) logDummyMessages - ===last log message===
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 10 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 3 records from logger TESTLOG6
+2 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
+2 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
+2 - (level=11) logDummyMessages - ===last log message===
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 11 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 2 records from logger TESTLOG6
+2 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
+2 - (level=11) logDummyMessages - ===last log message===
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 99 to be used by component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+2 - Got 0 records from logger TESTLOG6
+2 - Got exception for attempting to send log with level OFF, as expected.
+2 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully delivered a component release request for curl=TESTLOG6
+2 - 
+2 - Time: <seconds>
+2 - 
+2 - OK (2 tests)
+2 - 

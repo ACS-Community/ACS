@@ -1,0 +1,93 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: unpack_script,v 1.2 2010/07/06 14:21:32 alopatin Exp $"
+#
+# who       when        what
+# --------  --------    ----------------------------------------------
+# MPA       22 sep 2005 created
+#************************************************************************
+#   NAME 
+#   unpack_script
+#
+#   SYNOPSIS
+#   unpack_script $doxygen_Version $graphviz_Version
+#
+#   DESCRIPTION
+#   This script unpack the doxygen/graphviz tarballs
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+OS=`uname -s`
+OS_REV=`uname -r`
+DOX_VER=$1
+GVIZ_VER=$2
+
+case $OS in
+Linux) 
+    TAG=linux.i386
+    ;;
+SunOS)
+    TAG=sol56.sun4
+    ;;
+*)      
+    echo "Unsupported Operative System. Script aborted"
+    exit 1
+    ;;
+esac
+
+if [ "$INTLIST" != "" ] && [ "X$INTROOT" = "X" ]
+then
+    INTROOT=`echo $INTLIST | awk -F: '{print $1}'`
+fi
+
+if [ "$INTROOT" != "" ] 
+then 
+   INSTALL_DIR=$INTROOT
+elif [ "$ACSROOT" != "" ] 
+then 
+   INSTALL_DIR=$ACSROOT
+elif [ "$VLTROOT" != "" ] 
+then 
+   INSTALL_DIR=$VLTROOT
+else 
+   echo "no installation directories (INTROOT, ACSROOT, VLTROOT) have been found"
+   echo "please define one and start again" 
+   exit 1
+fi
+
+BASE=`pwd`
+
+# Untaring files
+for file in doxygen-$DOX_VER.src.tar graphviz-$GVIZ_VER.tar
+do
+   if [ ! -f $file.gz ]
+   then
+      echo "\t$file.gz . . . ERROR missing file!" 
+      exit 1
+   else
+      gtar -xzf $file.gz
+   fi
+done
+
+echo "unpacking done"
+
+
+
+

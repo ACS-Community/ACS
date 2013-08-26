@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+$Id: CDP_MASTER.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/CDP_MASTER/CDP_MASTER.xml,v $
+-->
+<fault-family name="CDP_MASTER"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="ALMA-B Correlator Team"/>
+    <fault-code value="1">
+        <priority>3</priority>
+        <cause>CDP Master failed to receive spectral results from CDP Node(s).</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CDP Master failed to receive spectral results from CDP Node(s).</problem-description>
+    </fault-code>
+    <fault-code value="2">
+        <priority>3</priority>
+        <cause>CDP Master failed to receive channel average results from CDP Node(s).</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CDP Master failed to receive channel average results from CDP Node(s).</problem-description>
+    </fault-code>
+    <fault-code value="3">
+        <priority>3</priority>
+        <cause>CDP Master failed to transmit spectral data to the ARCHIVE_CORR_DISTRIBUTOR</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CDP Master failed to transmit spectral data to the
+        ARCHIVE_CORR_DISTRIBUTOR. Perhaps this component has failed.</problem-description>
+    </fault-code>
+    <fault-code value="4">
+        <priority>3</priority>
+        <cause>CDP Master failed to transmit channel average data to the ARCHIVE_CORR_DISTRIBUTOR</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CDP Master failed to transmit channel
+        average data to the ARCHIVE_CORR_DISTRIBUTOR. Perhaps this component has failed.</problem-description>
+    </fault-code>
+    <fault-code value="5">
+        <priority>3</priority>
+        <cause>CDP Master has failed to send end-of-subscan information to DataCapturer.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>CDP Master has failed to send end-of-subscan information to DataCapturer.</problem-description>
+    </fault-code>
+    <fault-member-default> </fault-member-default>
+    <fault-member name="RECEIVED_DATA"> </fault-member>
+    <fault-member name="TRANSMIT_DATA_BDD"> </fault-member>
+    <fault-member name="TRANSMIT_DATA_DC"> </fault-member>
+</fault-family>

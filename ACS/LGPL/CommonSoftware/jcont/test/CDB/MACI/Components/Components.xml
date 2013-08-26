@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<_ Name="CONT_SERVICES_TESTER" 
+		Code="alma.jconttest.ContainerServicesTesterImpl.ContainerServicesTesterHelper" 
+		Type="IDL:alma/jconttest/ContainerServicesTester:1.0" 
+		Container="frodoContainer"
+		ImplLang="java" />
+
+	<_ Name="DefaultDummyCompWrapper"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperComponentHelper"
+		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
+		Container="frodoContainer"
+		Default="true"
+		ImplLang="java" />
+
+
+	<_ Name="DummyCompWrapper_ContainerTimeout1"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperComponentHelper"
+		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
+		Container="frodoContainerWithTimeout1"
+		ImplLang="java" />
+
+	<_ Name="DummyCompWrapper_ContainerTimeout2"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperComponentHelper"
+		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
+		Container="frodoContainerWithTimeout2"
+		ImplLang="java" />
+
+	<_ Name="DummyCompWrapper_ContainerTimeout3"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperComponentHelper"
+		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
+		Container="frodoContainerWithTimeout3"
+		ImplLang="java" />
+
+
+	<_ Name="DefaultDummyComp"
+		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
+		Type="IDL:alma/jconttest/DummyComponent:1.0" 
+		Container="silentContainer"
+		Default="true"
+		ImplLang="java" />
+
+	<_ Name="DefaultDataReceiver"
+		Code="alma.jconttest.DataReceiverImpl.DataReceiverHelper"
+		Type="IDL:alma/jconttest/DataReceiver:1.0"
+		Container="silentContainer"
+		Default="true"
+		ImplLang="java" />
+	
+	<!-- to be used for retrieving as a dynamic component. Name will be assigned to instances automatically -->	
+	<_ Name="*" 
+		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
+		Type="IDL:alma/jconttest/DummyComponent:1.0" 
+		Container="frodoContainer"
+		ImplLang="java" />
+
+	<!-- To be used for retrieving as a collocated component. 
+	     The container will be determined based on the call parameters.
+	     The usage of "*" as component name instead of using entries with names such as "MyCollocatedDummy1",
+	     as well as KeepAliveTime, is just meant to include these features also in the testing.
+	     We use component type DummyComponent2 instead of DummyComponent to avoid conflict with above "*" component for dynamic comp testing.
+	-->	
+	<_ Name="*"
+		Code="alma.jconttest.DummyComponent2Impl.DummyComponent2Helper" 
+		Type="IDL:alma/jconttest/DummyComponent2:1.0" 
+		Container="*"
+		KeepAliveTime="1"
+		ImplLang="java" />
+		
+	<_ Name="MyCollocationTargetDummy"
+		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
+		Type="IDL:alma/jconttest/DummyComponent:1.0" 
+		Container="frodoContainer"
+		ImplLang="java" />
+		
+	<_ Name="MyCollocatedDummy2"
+		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
+		Type="IDL:alma/jconttest/DummyComponent:1.0" 
+		Container="*"
+		ImplLang="java" />
+	
+	
+	<_ Name="DefaultComponentWithBadNulls" 
+		Code="alma.jconttest.ComponentWithBadNullsImpl.ComponentWithBadNullsComponentHelper"
+		Type="IDL:alma/jconttest/ComponentWithBadNulls:1.0" 
+		Container="frodoContainer" 
+		Default="true"
+		ImplLang="java" />
+		
+</Components>
+

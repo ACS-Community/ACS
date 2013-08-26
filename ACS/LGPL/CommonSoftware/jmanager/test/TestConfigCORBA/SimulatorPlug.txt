@@ -1,0 +1,5 @@
+application.ManagerImplTestEngine=ManagerSimulation.xml
+
+#application.default=
+
+debug=true

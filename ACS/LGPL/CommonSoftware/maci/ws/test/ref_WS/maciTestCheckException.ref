@@ -1,0 +1,9 @@
+1 - Will start ACS with a faulty CDB
+1 - ACS started as instance 9
+1 - Will extract the CDB error
+1 - ----------T--:--:--.--- NOTICE [CDB] Failed to read curl 'MACI/Components'.
+1 - alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx [ Curl='MACI/Components' Filename='xxx/CDB-WRONG/CDB/MACI/Components//Components.xml' ErrorString='XML parser error: Line=8, Column=150: cvc-complex-type.3.2.2: Attribute 'WrongAttribute' is not allowed to appear in element '_'.' ] 
+1 - 	at com.cosylab.cdb.jdal.DALImpl.loadRecord(DALImpl.java:xxx)
+1 - 	at com.cosylab.cdb.jdal.DALImpl.loadRecords(DALImpl.java:xxx)
+1 - 	at com.cosylab.cdb.jdal.DALImpl.internal_get_DAO(DALImpl.java:xxx)
+1 - Will stop ACS with the faulty CDB

@@ -1,0 +1,24 @@
+Version used: hibernate-distribution-3.3.1.GA
+
+Dependencies (status at ACS8.0)
+---------------------
+antlr-2.7.6.jar	- ACS/LGPL/Tools/antlr (v2.7.6)
+commons-collections-3.1.jar - ACS/LGPL/Tools/extjars (added for Hibernate)
+dom4j-1.6.1.jar - ACS/LGPL/Tools/extjars (old v1.6; upgraded for Hibernate)
+javassist-3.4.GA.jar - ACS/LGPL/Tools/extjars (added for Hibernate)
+jta-1.1.jar - unknown version of jta.jar from ALMA/ACS/LGPL/CommonSoftware/acscommandcenter (added this one to extjars, removed from acscommandcenter)
+slf4j-api-1.5.2.jar - ACS/LGPL/Tools/extjars (added for Hibernate)
+
+
+for annotations (hibernate-annotations-3.4.0.GA)
+-----------------------------------------------
+hibernate-annotations.jar - ACS/LGPL/Tools/extjars (added for Hibernate Annotations)
+
+... and its dependencies
+
+ejb3-persistence.jar - ACS/LGPL/Tools/extjars (added for Hibernate Annotations
+hibernate-commons-annotations.jar - ACS/LGPL/Tools/extjars (added for Hibernate Annotations)
+
+==============
+
+Since hibernate is very hard to build (bugs in the build system, builds only when using Java 1.5), a build from the sources is not made.

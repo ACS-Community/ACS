@@ -1,0 +1,131 @@
+1 -  --endorsed -- alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.logging.RemoteLoggingTest
+1 - 
+1 - ------------ testSimpleRemoteLogging --------------
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testNormalRemoteLogging] A healthy info log
+1 - --iso_time-- SEVERE [testNormalRemoteLogging] And a severe log that actually is not severe
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testSimpleRemoteLogging" Host="xxx" Process="testNormalRemoteLogging" SourceObject="testNormalRemoteLogging" Thread="main" LogId="1"><![CDATA[A healthy info log]]></Info>
+1 - Remote log: <Emergency TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testSimpleRemoteLogging" Host="xxx" Process="testNormalRemoteLogging" SourceObject="testNormalRemoteLogging" Thread="main" StackId="unknown" StackLevel="0" LogId="2"><![CDATA[And a severe log that actually is not severe]]></Emergency>
+1 - 
+1 - ------------ testConcurrentRemoteInitAndStop --------------
+1 - 
+1 - *** Network delay = 0 and shutdown delay = 1 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (0/1)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (0/1)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (0/1)
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="4"><![CDATA[A healthy info log before initRemoteLogging (0/1)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="5"><![CDATA[now that was a fine log before initRemoteLogging (0/1)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="6"><![CDATA[Another info log after initRemoteLogging (0/1)]]></Info>
+1 - 
+1 - *** Network delay = 0 and shutdown delay = 20 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (0/20)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (0/20)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (0/20)
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="8"><![CDATA[A healthy info log before initRemoteLogging (0/20)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="9"><![CDATA[now that was a fine log before initRemoteLogging (0/20)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="10"><![CDATA[Another info log after initRemoteLogging (0/20)]]></Info>
+1 - 
+1 - *** Network delay = 0 and shutdown delay = 106 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (0/106)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (0/106)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (0/106)
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="12"><![CDATA[A healthy info log before initRemoteLogging (0/106)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="13"><![CDATA[now that was a fine log before initRemoteLogging (0/106)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="14"><![CDATA[Another info log after initRemoteLogging (0/106)]]></Info>
+1 - 
+1 - *** Network delay = 2 and shutdown delay = 1 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (2/1)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (2/1)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (2/1)
+1 - 
+1 - *** Network delay = 2 and shutdown delay = 20 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (2/20)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (2/20)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (2/20)
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="20"><![CDATA[A healthy info log before initRemoteLogging (2/20)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="21"><![CDATA[now that was a fine log before initRemoteLogging (2/20)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="22"><![CDATA[Another info log after initRemoteLogging (2/20)]]></Info>
+1 - 
+1 - *** Network delay = 2 and shutdown delay = 106 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (2/106)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (2/106)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (2/106)
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="24"><![CDATA[A healthy info log before initRemoteLogging (2/106)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="25"><![CDATA[now that was a fine log before initRemoteLogging (2/106)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="26"><![CDATA[Another info log after initRemoteLogging (2/106)]]></Info>
+1 - 
+1 - *** Network delay = 16 and shutdown delay = 1 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (16/1)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (16/1)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (16/1)
+1 - 
+1 - *** Network delay = 16 and shutdown delay = 20 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (16/20)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (16/20)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (16/20)
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="32"><![CDATA[A healthy info log before initRemoteLogging (16/20)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="33"><![CDATA[now that was a fine log before initRemoteLogging (16/20)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="34"><![CDATA[Another info log after initRemoteLogging (16/20)]]></Info>
+1 - 
+1 - *** Network delay = 16 and shutdown delay = 106 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (16/106)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (16/106)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (16/106)
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="36"><![CDATA[A healthy info log before initRemoteLogging (16/106)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="37"><![CDATA[now that was a fine log before initRemoteLogging (16/106)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="38"><![CDATA[Another info log after initRemoteLogging (16/106)]]></Info>
+1 - 
+1 - *** Network delay = 21 and shutdown delay = 1 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (21/1)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (21/1)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (21/1)
+1 - 
+1 - *** Network delay = 21 and shutdown delay = 20 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (21/20)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (21/20)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (21/20)
+1 - 
+1 - *** Network delay = 21 and shutdown delay = 106 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (21/106)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (21/106)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (21/106)
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="48"><![CDATA[A healthy info log before initRemoteLogging (21/106)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="49"><![CDATA[now that was a fine log before initRemoteLogging (21/106)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="50"><![CDATA[Another info log after initRemoteLogging (21/106)]]></Info>
+1 - 
+1 - *** Network delay = 100 and shutdown delay = 1 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (100/1)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (100/1)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (100/1)
+1 - 
+1 - *** Network delay = 100 and shutdown delay = 20 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (100/20)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (100/20)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (100/20)
+1 - 
+1 - *** Network delay = 100 and shutdown delay = 106 ***
+1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (100/106)
+1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (100/106)
+1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (100/106)
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="60"><![CDATA[A healthy info log before initRemoteLogging (100/106)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="61"><![CDATA[now that was a fine log before initRemoteLogging (100/106)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="62"><![CDATA[Another info log after initRemoteLogging (100/106)]]></Info>
+1 - 
+1 - 
+1 - OK (2 tests)
+1 - 

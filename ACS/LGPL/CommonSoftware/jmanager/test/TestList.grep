@@ -1,0 +1,18 @@
+DAL root is
+java -classpath
+Time:
+Connected to
+Using naming reference
+Retrying to connect to
+export
+Starting Java application:
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+object is activated
+Logging configuration has been initialized, but not from CDB settings.
+Bound ID: InterfaceRepository
+jacorb@CDB
+ACS.log.minlevel.namedloggers
+processing /tmp/acsIrfeedDyn.[0-9]*\.idl
+components activated in
+Manager object serialization size after full deactivation
+Logger jacorb@[[:alpha:]]*#[[:alpha:]]* created with custom log levels local=Info, remote=Info

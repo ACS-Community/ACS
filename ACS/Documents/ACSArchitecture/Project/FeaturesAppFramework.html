@@ -1,0 +1,94 @@
+<html>
+
+<head>
+
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+
+<title>FeaturesAppFramework</title>
+
+<style><!--
+
+.Normal
+
+	{font-size:12.0pt;
+
+	font-family:"Times New Roman";}
+
+-->
+
+</style>
+
+<meta name=Template content="C:\Program Files\MSOffice\Office\html.dot">
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+
+<h2><a name=HighLevelApplicationFramework></a><a name=DeviceDrivers></a>ACS Application 
+
+  Framework</h2>
+
+<h3>The common software has to provide also an Application Framework allowing 
+  an easy implementation of a standard application (a skeleton application) with 
+  all essential features<a href="ReferenceDocuments.html#RD01">[RD01 - 5.1.1 Framework]</a>. 
+  Inheritance and other mechanisms are used to enhance and extend the basic application 
+  according to specific application needs.</h3>
+
+<h3>The application framework enforces common coding solutions and adherence to 
+
+  predefined standards. </h3>
+
+<h3>The application framework shall be implemented as a set of classes that provide:</h3>
+
+<UL>
+
+  <li style='     '>Skeleton for standard application, with standard commands 
+
+    and states </li>
+
+  <li style='     '>Implementation of typical communication Design Patterns </li>
+
+  <li style='     '>Implementation of standard startup/shutdown/configuration 
+
+    procedures</li>
+
+</ul>
+
+<h3>At the very basic level, the Component and Characteristic Component classes 
+  and design patterns, together with the services provided by ACS, constitute 
+  the core of the Framework.</h3>
+<h3>Each physical sub-system is controlled by a Master Component that implements 
+  a standard State Machine and standard commands.</h3>
+<h3>The Master Component is available in Java because it is assumed that it is 
+  an high level coordinating Component. It is used by higher level administration 
+  applications to assess and control the global state of a subsystem.</h3>
+<h4>The Master Component implements a hierarchical state machine and sub-classes 
+  can implement sub-states according to the application needs, keeping a standard 
+  top level state machine.</h4>
+<h3>A generic State Machine Component is used for the implementation of the Master 
+  Component and can be made available for applications that need to design their 
+  own Hierarchical State Machines<font color="#0000FF"> (Partially implemented, 
+  but not generally available)</font>.</h3>
+<ul>
+  <li>State Machines are designed in UML</li>
+  <li>The Open ArchitectureWare <a href="ReferenceDocuments.html#RD39">[RD39]</a> 
+    generator framework is used to generate Java code implementing the state machine</li>
+</ul>
+<h3>Plenty of examples and coding guidelines define how applications are build 
+  and assembled from the basic elements and describe basic protocols for command 
+  handling, to ensure for example command concurrence and response time. </h3>
+<h3>ALMA subsystems (following these guidelines and what defined in the high level 
+  ALMA architecture) have provided an implementation of typical designed patterns 
+  and code reviews have allowed cleaning up the implementation. For example Control 
+  has implemented base Component classes used for the implementation of all control 
+  device Components.</h3>
+<h3><font color="#0000FF"><b>In order to provide with ACS a complete application 
+  framework usable to write completely new applications, the implementation of 
+  ALMA subsystems should be distilled to extract higher level framework building 
+  blocks. This work is not foreseen for ALMA, since the core architecture of all 
+  subsystems is already in place by now.</b></font></h3>
+</body>
+
+</html>
+
+

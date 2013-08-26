@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by David Fugate (University of Calgary) -->
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by David Fugate (E.S.O.) -->
+<?altova_samplexml blah.xml?>
+<xs:schema xmlns="urn:schemas-cosylab-com:EventChannel:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:schemas-cosylab-com:EventChannel:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="EventDescriptor">
+		<xs:annotation>
+			<xs:documentation>
+			Schema describing an individual event sent by some supplier on the channel. Does not contain much 
+			at the moment.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Name" type="xs:string" use="required"/>
+		<xs:attribute name="MaxProcessTime" use="optional" default="2.0">
+			<xs:annotation>
+				<xs:documentation>
+				Defines the maximum amount of time a consumer is given to handle the given
+				event type. If the consumer fails to process the event within MaxProcessTime,
+				a warning log is sent at run-time indicating that it took too long to process the event
+				which can jeopardize the stability of the Notification Service process if it occurs
+				too often. MaxProcessTime is in floating point second units of time.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:double">
+					<xs:minExclusive value="0.0"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="EventChannel">
+		<xs:annotation>
+			<xs:documentation>
+			Schema which describes an ACS event channel. At the moment, the only info included here are some
+			Quality of Service and Administrative properties that are applicable to the type of notification channels ACS utilizes.
+			All of the inline schema documentation found here is also available in the ACS notification channel tutorial or
+			directly from OMG - http://www.omg.org/technology/documents/formal/notification_service.htm
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="0">
+			<xs:element name="Events">
+				<xs:annotation>
+					<xs:documentation>
+			Defines special properties of events. The "Name" attribute of each Event should be unique.
+			</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="_" type="EventDescriptor"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="IntegrationLogs" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>
+			Giving this attribute a true value results in INFO logs for every sending and receiving of an event.
+			This produces a huge number of log messages, and is only useful for debugging, but never in operations.
+			@TODO: rename to something like "IsTraceEventsEnabled" because the historic 
+			coupling of tracing events with software integrations can be misleading.
+			</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MaxQueueLength" use="optional" default="0">
+			<xs:annotation>
+				<xs:documentation>
+				The maximum number of events that will be queued by the
+				channel before the channel begins discarding events (according to the Discard
+				Policy QoS parameter) or rejecting new events (depending on the setting of the
+				RejectNewEvents admin property) upon receipt of each new event.
+			</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:long">
+					<xs:minInclusive value="0"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="MaxConsumers" use="optional" default="0">
+			<xs:annotation>
+				<xs:documentation>
+				The maximum number of consumers that can be connected to the
+				channel at any given time.
+			</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:long">
+					<xs:minInclusive value="0"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="MaxSuppliers" use="optional" default="0">
+			<xs:annotation>
+				<xs:documentation>
+				The maximum number of suppliers that can be connected to the
+				channel at any given time.
+			</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:long">
+					<xs:minInclusive value="0"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="RejectNewEvents" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>
+				This value associated with this property is of type Boolean, where TRUE and
+				FALSE have the following meanings:
+				*	TRUE: Attempts to push new events to the channel by push-style suppliers will result 
+					in the IMPL_LIMIT system exception being raised.
+				* 	FALSE: When the total number of undelivered events within the channel is equal to
+					MaxQueueLength, attempts to push new events to the channel by a push-style supplier will
+					result in one of the currently queued undelivered events being discarded by the
+					channel to make room for the new event. The discarded event will be chosen based
+					on the setting of the DiscardPolicy QoS property.
+			</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DiscardPolicy" use="optional" default="AnyOrder">
+			<xs:annotation>
+				<xs:documentation>
+				This QoS property enables a user of the Notification Service to specify in what order
+				the channel or a proxy supplier should begin discarding events in the case of an
+				internal buffer overflow. This property applies on a per-channel basis only if it is set on
+				a channel that has the RejectNewEvents admin property set to FALSE. If set on such a
+				channel, the chosen discard policy will be applied whenever a supplier attempts to
+				send a new event to the channel, and the total number of events already queued within
+				the channel is equal to the MaxQueueLength administrative property. If set on a per-
+				ConsumerAdmin basis, the chosen discard policy will be applied whenever the number
+				of events queued on behalf of one of the consumers connected to one of the proxy
+				suppliers created by the ConsumerAdmin exceeds the MaxEventsPerConsumer
+				setting for that consumer. If set on a per-proxy supplier basis, the chosen discard policy
+				will be applied whenever the number of events queued on behalf of the consumer
+				connected to the proxy supplier exceeds the MaxEventsPerConsumer setting for
+				that proxy supplier. Note that in these latter two cases, an event will only be
+				discarded with respect to its scheduled delivery to the consumer(s) on whose behalf
+				the policy is being applied. In other words, if the event targeted for discarding is
+				scheduled for delivery to any consumer(s) on whose behalf the discard policy was not
+				invoked, the event remains queued for those consumers.
+				Constant values to represent the following settings are defined:
+				* 	AnyOrder - Any event may be discarded on overflow. This is the default setting for this
+					property.
+				* 	FifoOrder - The first event received will be the first discarded.
+				* 	LifoOrder - The last event received will be the first discarded.
+				* 	PriorityOrder - Events should be discarded in priority order, such that lower priority
+					events will be discarded before higher priority events.
+				* 	DeadlineOrder - Events should be discarded in the order of shortest expiry deadline
+					first.
+					
+				Note that this property has no meaning if set on a per-message basis.
+			</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="AnyOrder"/>
+					<xs:enumeration value="FifoOrder"/>
+					<xs:enumeration value="PriorityOrder"/>
+					<xs:enumeration value="DeadlineOrder"/>
+					<xs:enumeration value="LifoOrder"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="EventReliability" use="optional" default="BestEffort">
+			<xs:annotation>
+				<xs:documentation>
+				The value portion of this attribute has two well-defined settings: 
+				 BestEffort (0) and  Persistent (1). If set to 0, event can be
+				treated as non-persistent and lost upon failure of the channel. At least
+				one attempt must be made to transmit the event to each registered
+				consumer, but in the case of a failure to send to any consumer, no
+				further action need be taken. If set to 1, channel should make the
+				event persistent, and attempt to retransmit upon channel recovery
+				from failure. This setting only has meaning when
+				ConnectionReliability is also set to 1, in which the combination
+				essentially means guaranteed delivery.
+			</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="BestEffort"/>
+					<xs:enumeration value="Persistent"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="ConnectionReliability" use="optional" default="BestEffort">
+			<xs:annotation>
+				<xs:documentation>
+				Connection reliability takes on the same enumerated values as EventReliability.
+				This property defines whether the connection to the Notification Service between
+				consumers and suppliers is persistent.
+			</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="BestEffort"/>
+					<xs:enumeration value="Persistent"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Priority" use="optional" default="0">
+			<xs:annotation>
+				<xs:documentation>
+				The event service does not define the order in which events are delivered to a
+				consumer. One way to be explicit is to allow delivery to be based on the priority of an
+				event. Priority is represented as a short value, where -32,767 is the lowest priority and
+				32,767 the highest. The default priority for all events is 0. By default, the notification
+				channel will attempt to deliver messages to consumers in priority order.
+			</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:long">
+					<xs:minInclusive value="-32767"/>
+					<xs:maxInclusive value="32767"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Timeout" use="optional" default="0">
+			<xs:annotation>
+				<xs:documentation>
+				Timeout, a TimeBase::TimeT encoded value, states a relative expiry time (e.g., 10
+				minutes from now), after which the event can be discarded. It is possible for a
+				consumer to override the value associated with this property through the use of
+				mapping filters. Note that the time value
+				associated with the Timeout QoS property is viewed as relative to the time when the
+				channel (i.e., the receiving proxy consumer) first received the event.
+			</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:long">
+					<xs:minInclusive value="0"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="OrderPolicy" use="optional" default="AnyOrder">
+			<xs:annotation>
+				<xs:documentation>
+				This QoS property sets the policy used by a given proxy to order the events it has
+				buffered for delivery (either to another proxy or a consumer). Constant values to
+				represent the following settings are defined:
+				* 	AnyOrder - Any ordering policy is permitted.
+				* 	FifoOrder - Events should be delivered in the order of their arrival.
+				* 	PriorityOrder - Events should be buffered in priority order, such that higher priority
+					events will be delivered before lower priority events.
+				* DeadlineOrder - Events should be buffered in the order of shortest expiry deadline
+					first, such that events that are destined to timeout soonest should be delivered first.
+
+				Note that this property has no meaning if set on a per-message basis.
+			</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="AnyOrder"/>
+					<xs:enumeration value="FifoOrder"/>
+					<xs:enumeration value="PriorityOrder"/>
+					<xs:enumeration value="DeadlineOrder"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="StartTimeSupported" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>
+					QoS property is defined which has an associated boolean value, indicating 
+					whether or not the setting of StartTime on a per-message basis is supported.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="StopTimeSupported" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>
+				QoS property is defined that has an associated boolean value, indicating whether 
+				or not the setting of StopTime on a per-message basis is supported.
+			</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MaxEventsPerConsumer" use="optional" default="0">
+			<xs:annotation>
+				<xs:documentation>
+				An administrative property can be set on the channel to bound the maximum number of
+				events a given channel is allowed to queue at any given point in time. Note, however,
+				that a single badly behaved consumer could result in the channel holding the maximum
+				number of events it is allowed to queue for an extended period of time, preventing
+				further event communication through the channel. Thus, the
+				MaximumEventsPerConsumer property helps to avoid this situation by bounding the
+				maximum number of events the channel will queue on behalf of a given consumer. If
+				set only on a per-channel basis, the value of this property applies to all consumers
+				connected to the channel. If set on a per-ConsumerAdmin basis, this property applies
+				to all consumers connected to proxy suppliers created by that ConsumerAdmin. If set
+				on a per-proxy supplier basis, this property applies to the consumer connected to the
+				given proxy supplier. Note that setting this property on a SupplierAdmin or proxy
+				consumer has no meaning. Also note that the default setting of this property is 0,
+				meaning that the proxy imposes no limits on the maximum number of events that may
+				be queued for its consumer.
+			</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:long">
+					<xs:minInclusive value="0"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="EventChannel" type="EventChannel"/>
+</xs:schema>

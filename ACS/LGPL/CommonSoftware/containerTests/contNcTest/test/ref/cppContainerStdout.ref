@@ -1,0 +1,960 @@
+1 - <timestamp> INFO [acsStartContainer] Running the container with these arguments: 'maciContainer cppContainer -ORBEndpoint iiop://<IP address>:<port> -m corbaloc::<IP address>:<port>/Manager'
+1 - Starting Container...
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+1 - Bootstrap ORB parms: maciContainer cppContainer -m corbaloc::<IP address>:<port>/Manager
+1 - ManagerReference obtained via command line: 'corbaloc::<IP address>:<port>/Manager'
+1 - Resolving reference: 'corbaloc::<IP address>:<port>/Manager'
+1 - Manager reference narrowed.
+1 - Manager hostname obtained via command line: '<IP address>'
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - <timestamp> [cppContainer - maci::ContainerImpl::getManager] Resolving manager...
+1 - <timestamp> [cppContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::<IP address>:<port>/Manager'
+1 - <timestamp> [cppContainer - maci::Container::init] Recovery enabled.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Container 'cppContainer' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Container 'cppContainer' initialized successfuly
+1 - <timestamp> [cppContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::<IP address>:<port>/Manager'
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Connected to the InterfaceRepository.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Connecting to the Manager...
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Connected to the Manager.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Connecting to the Centralized Logger...
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Connected to the Centralized Logger.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Logging into the Manager...
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
+1 - <timestamp> [cppContainer - ContainerImpl::run] Container running...
+1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Logged into the Manager.
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - <timestamp> [cppContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 0 components queued to be activated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER2_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER3_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER4_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER5_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER6_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER2_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER3_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER4_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER5_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER6_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER2_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER2_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER3_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER3_CPP' deactivated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER4_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER4_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER5_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER5_CPP' deactivated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER6_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER6_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER2_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER3_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER2_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER3_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Python supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER2_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER2_CPP' deactivated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER3_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER3_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER2_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER3_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER4_CPP' activated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: NEW -> INITIALIZING
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER5_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER6_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER2_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER3_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER4_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER5_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER6_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER2_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER2_CPP' deactivated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER3_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER3_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER4_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER4_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER5_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER5_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER6_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER6_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: NEW -> INITIALIZING
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER2_CPP' activated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: NEW -> INITIALIZING
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER3_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER2_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER3_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER2_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER2_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER3_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER3_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER2_CPP' activated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: NEW -> INITIALIZING
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER3_CPP' activated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: NEW -> INITIALIZING
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER4_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER5_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER6_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER2_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER3_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER4_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER5_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER6_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER2_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER2_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER3_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER3_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER4_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER4_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER4_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER5_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER5_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER5_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER6_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER6_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER6_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER1_CPP' activated.
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: NEW -> INITIALIZING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER2_CPP' activated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZED -> OPERATIONAL
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: INITIALIZING -> INITIALIZED
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: NEW -> INITIALIZING
+1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'CounterConsumerImpl'.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::activate_component] Component 'CONSUMER3_CPP' activated.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER1_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER2_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-Static - ] CDBProperties::cdbChannelConfigExists
+1 - <timestamp> [cppContainer-GL - ] Consumer::addSubscription subscribing to 'statusBlockEvent' events for the 'counter' channel!
+1 - <timestamp> [CONSUMER3_CPP - ] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 1 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 2 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 3 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 4 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 5 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 6 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 7 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 8 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 9 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 10 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 11 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 12 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 13 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Counter now 14 (max 15), flag will flip at 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-Static - ] Last event from Java supplier received, counter is now 15
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER1_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER1_CPP' deactivated.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER1_CPP' etherealized.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER2_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER2_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER2_CPP' deactivated.
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: DESTROYING -> DEFUNCT
+1 - <timestamp> [cppContainer-GL - ] Switched state of component CONSUMER3_CPP: OPERATIONAL -> DESTROYING
+1 - <timestamp> [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'CONSUMER3_CPP' etherealized.
+1 - <timestamp> [cppContainer - maci::ContainerImpl::deactivate_component] Component 'CONSUMER3_CPP' deactivated.

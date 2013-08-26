@@ -1,0 +1,45 @@
+#
+# "@(#) $Id: TestList,v 1.76 2003/01/09 17:51:13 vltsccm Exp $"
+#
+# tat TestList
+#
+# tat0 is the set-up for each tat test in tat/test directory:
+# it SHALL be run before every tat test.
+#
+# tat99 cleans all files produced by the other scripts and that
+# should NOT be archived. tat99 SHALL always run after all tests.
+#
+# NB: tat5 needs RHOST to be defined and to use the same 'tat version
+# on $RHOST.
+tat0
+tat1
+tat0
+tat2
+tat0
+tat3
+tat0
+tat4
+tat0
+tat5
+tat0
+tat6
+tat0
+tat7
+tat0
+tat8
+tat0
+tat9
+tat0
+tat10
+tat0
+tat11
+tat0
+tat12
+tat0
+tat13
+tat0
+tat14
+tat0
+tat15
+tat0
+tat99

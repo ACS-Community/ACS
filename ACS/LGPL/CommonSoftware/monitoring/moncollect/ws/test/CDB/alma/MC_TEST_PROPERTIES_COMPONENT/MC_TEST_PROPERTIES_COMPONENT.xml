@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!--
+   - History:
+   -   Wed May 06 09:02:21 UTC 2009 modified by jDAL
+   -   Wed May 06 09:05:40 UTC 2009 modified by jDAL
+-->
+<MCtestPropertiesComponent xmlns="urn:schemas-cosylab-com:MCtestPropertiesComponent:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<doubleROProp     default_timer_trig="1.0" description="doubleROProp"     units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<floatROProp      default_timer_trig="1.0" description="floatROProp"      units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<longROProp       default_timer_trig="1.0" description="longROProp"       units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<uLongROProp      default_timer_trig="1.0" description="uLongROProp"      units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<patternROProp    default_timer_trig="1.0" description="patternROProp"    units="deg"                               archive_min_int="0" archive_max_int="1" />
+	<stringROProp     default_timer_trig="1.0" description="stringROProp"     units="deg"                               archive_min_int="0" archive_max_int="1" default_value="TestRO"/>
+	<longLongROProp   default_timer_trig="1.0" description="longLongROProp"   units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<uLongLongROProp  default_timer_trig="1.0" description="uLongLongROProp"  units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<booleanROProp    default_timer_trig="1.0" description="booleanROProp"    units="deg" graph_min="0" graph_max="1"   archive_min_int="0" archive_max_int="1" />
+	<doubleSeqROProp  default_timer_trig="1.0" description="doubleSeqROProp"  units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<floatSeqROProp   default_timer_trig="1.0" description="floatSeqROProp"   units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<longSeqROProp    default_timer_trig="1.0" description="longSeqROProp"    units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<uLongSeqROProp   default_timer_trig="1.0" description="uLongSeqROProp"   units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<booleanSeqROProp default_timer_trig="1.0" description="booleanSeqROProp" units="deg" graph_min="0" graph_max="1"   archive_min_int="0" archive_max_int="1" />
+	<EnumTestROProp   default_timer_trig="1.0" description="EnumTestROProp"   units="deg"                               archive_min_int="0" archive_max_int="1" />
+	<doubleRWProp     default_timer_trig="1.0" description="doubleRWProp"     units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<floatRWProp      default_timer_trig="1.0" description="floatRWProp"      units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<longRWProp       default_timer_trig="1.0" description="longRWProp"       units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<uLongRWProp      default_timer_trig="1.0" description="uLongRWProp"      units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<patternRWProp    default_timer_trig="1.0" description="patternRWProp"    units="deg"                               archive_min_int="0" archive_max_int="1" />
+	<stringRWProp     default_timer_trig="1.0" description="stringRWProp"     units="deg"                               archive_min_int="0" archive_max_int="1" default_value="TestRW"/>
+	<longLongRWProp   default_timer_trig="1.0" description="longLongRWProp"   units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<uLongLongRWProp  default_timer_trig="1.0" description="uLongLongRWProp"  units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<booleanRWProp    default_timer_trig="1.0" description="booleanRWProp"    units="deg" graph_min="0" graph_max="1"   archive_min_int="0" archive_max_int="1" />
+	<doubleSeqRWProp  default_timer_trig="1.0" description="doubleSeqRWProp"  units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<floatSeqRWProp   default_timer_trig="1.0" description="floatSeqRWProp"   units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<longSeqRWProp    default_timer_trig="1.0" description="longSeqRWProp"    units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<uLongSeqRWProp   default_timer_trig="1.0" description="uLongSeqRWProp"   units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" />
+	<booleanSeqRWProp default_timer_trig="1.0" description="booleanSeqRWProp" units="deg" graph_min="0" graph_max="1"   archive_min_int="0" archive_max_int="1" />
+	<EnumTestRWProp   default_timer_trig="1.0" description="EnumTestRWProp"   units="deg"                               archive_min_int="0" archive_max_int="1" />
+</MCtestPropertiesComponent>

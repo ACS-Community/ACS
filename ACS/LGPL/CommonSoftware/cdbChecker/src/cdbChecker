@@ -1,0 +1,197 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) UTFSM - Universidad Tecnica Federico Santa Maria, 2011
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
+# cdbChecker
+#
+# "@(#) $Id: cdbChecker,v 1.13 2012/05/10 09:13:53 hsommer Exp $"
+#
+
+#************************************************************************
+#   NAME
+#   cdbChecker - checks CDB structures and files.
+# 
+#   SYNOPSIS
+#   cdbChecker [-v] [path to CDB XML files] [path to CDB XSD files] 
+# 
+#   DESCRIPTION
+#   This script runs the cdbChecker application written in Java.
+#   Pass to it the path where the CDB files are going to be found.
+#
+#   All xml files recursively found in [path to CDB XML files]
+#   are checked. The optional argument contains a ":" separated list
+#   of files and directories with absolute path.
+#
+#   Normally this command line argument points to the root 
+#   directory of the CDB to be checked, i.e. it
+#   is:
+#         $ACS_CDB/CDB
+#
+#   All xsd files are recursively found in [path to CDB XSD files]
+#   are checked in addition to the standard search path
+#   automatically build and passed in the ACS.cdbPath property.
+#   The optional argument contains a ":" separated list
+#   of files and directories with absolute path.
+#
+#   The script generates the search path for the schema files
+#   using the usual algorithms and puts the result in the
+#   ACS.cdbPath propery before calling Java virtual machine.
+#
+#   The -v (verbose) option provides details about the checking 
+#   process
+#
+#   FILES
+#
+#   ENVIRONMENT
+#   ACS_CDB : Normally ACS_CDB is set to the
+#             CDB being checked.
+#             If this variable is set, schema files are always
+#             searched also in $ACS_CDB/CDB/schemas
+#
+#   RETURN VALUES
+#     0 - Everything fine
+#     # - Errors encountered
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#   Check the documentation of the cdbChecker Java implementation 
+#   classes for specific additional parameters of the Java program,
+#   not used or usable throught this script.
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+	echo " Wrapper for the java command: CDBChecker [-flags] [XMLPath] [XSDPath]"
+  	echo "    Flags:"
+	echo "      -v | --verbose        Verbose output"
+	echo "      -r | --recursive      Disable recursive traversal of XMLPath and XSDPath"
+	echo "                            when searching for .xml/.xsd files"
+	echo "      -n | --network        Get required schemas from the network"
+	echo "	    -c | --checkIdlTypes  Check if the idl types in CDB are available"
+	echo "      -h | --help           Show this help"
+	echo "    The XMLPath and XSDPath can have multiple paths separated by \":\"."
+	echo "    The paths must be absolute (i.e. they should start with '/')"
+	echo "    The checker will search for files recursively inside the given paths,"
+	echo "    unless the -r flag is specified."
+	echo "    NOTE: 1) the value passed in as the XSDPath will be pre-pended to the"
+	echo "    value from the ACS.cdbPath property; 2) if not specified, the XMLPath"
+	echo "    will default to \$ACS_CDB/CDB (if ACS_CDB environment variable is set)."
+   	echo "    ACS_CDB is used if XMLPath is not given" 
+}
+
+
+if [ "X$1" = "X-h" ]
+then
+	printUsage;
+	exit 0;
+fi
+
+#
+# Build the schema files search path
+#
+SUB=config/CDB/schemas
+
+# Starts with ACSROOT.
+SCHEMA_PATH=$ACSROOT/$SUB
+
+# Separation of dirs
+# from INTLIST.
+item_list=`echo $INTLIST | sed s/:/\ /g`
+intlist_list=""
+for item in $item_list
+do
+   intlist_list=$intlist_list":$item/$SUB"
+done
+
+# If the intlist is empty
+# there is nothing to add!
+if [ "X$intlist_list" != "X" ]; then
+   # INTLIST search path.
+   SCHEMA_PATH=$intlist_list:$ACSROOT/$SUB
+fi
+
+# INTROOT path, if exists.
+if [ "X$INTROOT" != "X" ]; then  
+   SCHEMA_PATH=$INTROOT/$SUB:$SCHEMA_PATH
+fi
+
+# If a CDB is specified (and normally it is)
+# searches also inside it (but normally it is empty)
+if [ "X$ACS_CDB" != "X" ]; then  
+   SCHEMA_PATH=$ACS_CDB/CDB/schemas:$SCHEMA_PATH
+fi
+
+# Finally adds the current module.
+SCHEMA_PATH=$PWD/../$SUB:$SCHEMA_PATH
+echo Searching for schema files in: $SCHEMA_PATH
+
+config_path=$(searchFile config/reqSchemas.xml)
+
+#Check if we have to check idl using the IFR
+for arg in "$@"
+do
+    case $arg in
+    -c)              CHECK_IDL=true ;;
+    --checkIdlTypes) CHECK_IDL=true ;;
+    esac
+done
+if [ "X$CHECK_IDL" != "X" ]; then
+    ird_running=`ps -fea | grep "/TAO/orbsvcs/IFR_Service/" | grep "ifr_cache\.$ACS_INSTANCE"`
+    if [ "X$ird_running" == "X" ]; then
+# We may remove the automatic starting of the IFR in the future, see COMP-7232
+        echo Running Interface Repository and loading IDL files
+        RUN_IR=true
+        acsNamingService -s
+        acsInterfaceRepository -s -w
+    fi
+fi
+
+if [ "$config_path" != "#error#" ]
+then
+   export ACS_LOG_STDOUT=99
+   export CLASSPATH="$JAVA_HOME/lib/tools.jar${PATH_SEP}$CLASSPATH"
+   acsStartJava --noDirectory -endorsed -DACS.config_path=$config_path -DACS.cdbpath=$SCHEMA_PATH cl.utfsm.cdbChecker.CDBChecker $1 $2 $3 $4 $5 $6 $7 $8 $9 
+   returnCode=$?
+else
+   echo "[Error] The configuration files are missing... Do a 'make install'"	   
+   returnCode=1
+fi
+
+if [ "X$RUN_IR" != "X" ]; then
+echo Stopping Interface Repository
+acsInterfaceRepository -k
+acsNamingService -k
+fi
+
+# Final return code
+exit $returnCode
+
+#
+# ___oOo___
+

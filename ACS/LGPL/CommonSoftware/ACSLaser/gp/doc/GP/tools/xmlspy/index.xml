@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>GP project tools - XMLSPY</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<description>
+      <UL>
+        <a href="http://www.xmlspy.com/"><IMG BORDER="0" SRC="xmlspylogo.jpg"/> www.xmlspy.com</a><br/>
+        <br/>
+        <a HREF="/proj-gp/_notgenerated/tools/xmlspy/setup44.exe">Launch installer</a> (Localy stored 23.7Mb - version 4.4)
+      </UL>
+      <br/>
+      <br/>
+  		</description>
+	</section>
+</document>
+

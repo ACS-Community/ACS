@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- definitions adopted from ICD/HLA/DataModel generated schemas 2004-09-02 -->
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+
+<xsd:schema targetNamespace="AlmaTest/ObsProject" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1" xmlns:tprj="AlmaTest/ObsProject" xmlns:tval="AlmaTest/ValueTypes" xmlns:tprp="AlmaTest/ObsProposal" xmlns:tsbl="AlmaTest/SchedBlock" xmlns:ent="Alma/CommonEntity" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:import namespace="Alma/CommonEntity" schemaLocation="CommonEntity.xsd"/>
+	<xsd:import namespace="AlmaTest/ValueTypes" schemaLocation="TestValueTypes.xsd"/>
+	<xsd:import namespace="AlmaTest/ObsProposal" schemaLocation="TestObsProposal.xsd"/>
+	<xsd:import namespace="AlmaTest/SchedBlock" schemaLocation="TestSchedBlock.xsd"/>
+	<xsd:element name="ObsProject">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="ObsProjectEntity" type="tprj:ObsProjectEntityT"/>
+				<xsd:element name="ObsProposalRef" type="tprp:ObsProposalRefT"/>
+				<xsd:element name="ProjectName" type="xsd:string"/>
+				<xsd:element name="PI" type="xsd:string"/>
+				<xsd:element name="Version" type="xsd:string"/>
+				<xsd:element name="timeFirstReady" type="xsd:dateTime"/>
+				<xsd:element name="timeStartedExec" type="xsd:dateTime"/>
+				<xsd:element name="timeEndedExec" type="xsd:dateTime"/>
+				<xsd:element name="totalSBs" type="xsd:int"/>
+				<xsd:element name="successfulSBs" type="xsd:int"/>
+				<xsd:element name="failedSBs" type="xsd:int"/>
+				<xsd:element name="totalReqTime" type="tval:TimeT"/>
+				<xsd:element name="totalUsedTime" type="tval:TimeT"/>
+				<xsd:element name="code" type="xsd:string"/>
+				<xsd:element name="status" type="xsd:string"/>
+				<xsd:element name="ObsProgram" type="tprj:ObsProgramT"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- generated from dependent class 'Polygon' -->
+	<xsd:complexType name="PolygonT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:TargetAreaT">
+				<xsd:sequence>
+					<xsd:element name="points" type="tval:SkyCoordinatesT" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'SpectralElement' -->
+	<xsd:complexType name="SpectralElementT">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="FrequencySetup" type="tprj:FrequencySetupT"/>
+			<xsd:element name="CorrelatorSetup" type="tprj:CorrelatorSetupT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ImagingProcedure' -->
+	<xsd:complexType name="ImagingProcedureT">
+		<xsd:sequence>
+			<xsd:element name="imageScript" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'UserFolder' -->
+	<xsd:complexType name="UserFolderT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:UserItemT">
+				<xsd:sequence>
+					<xsd:element name="name" type="xsd:string"/>
+					<xsd:choice>
+						<xsd:element name="UserFolder" type="tprj:UserFolderT" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:element name="RegionOfInterest" type="tprj:RegionOfInterestT" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:element name="ObsDefinition" type="tprj:ObsDefinitionT" minOccurs="0" maxOccurs="unbounded"/>
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'AbstractCorrelatorSetup' -->
+	<xsd:complexType name="AbstractCorrelatorSetupT" abstract="true">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="Bandwidth" type="tval:FrequencyT"/>
+			<xsd:element name="Sensitivity" type="tval:SensitivityT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'Ellipse' -->
+	<xsd:complexType name="EllipseT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:TargetAreaT">
+				<xsd:sequence>
+					<xsd:element name="SemiMajor" type="tval:SmallAngleT"/>
+					<xsd:element name="SemiMinor" type="tval:SmallAngleT"/>
+					<xsd:element name="PAMajor" type="tval:AngleT"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'SpatialSetup' -->
+	<xsd:complexType name="SpatialSetupT">
+		<xsd:sequence>
+			<xsd:element name="TargetName" type="xsd:string"/>
+			<xsd:element name="AngularResolution" type="tval:SmallAngleT"/>
+			<xsd:element name="LargestStructure" type="tval:AngleT"/>
+			<xsd:element name="Coordinates" type="tval:SkyCoordinatesT"/>
+			<xsd:element name="NonSidereal" type="xsd:boolean"/>
+			<xsd:element name="Ephemeris" type="xsd:string"/>
+			<xsd:element name="ProperMotion" type="xsd:string"/>
+			<xsd:choice>
+				<xsd:element name="Rectangle" type="tprj:RectangleT"/>
+				<xsd:element name="Circle" type="tprj:CircleT"/>
+				<xsd:element name="Ellipse" type="tprj:EllipseT"/>
+				<xsd:element name="Polygon" type="tprj:PolygonT"/>
+			</xsd:choice>
+			<xsd:element name="TargetProperties" type="tprj:TargetPropertiesT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'SpectralSetup' -->
+	<xsd:complexType name="SpectralSetupT">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="SpectralElement" type="tprj:SpectralElementT" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ObsUnitControl' -->
+	<xsd:complexType name="ObsUnitControlT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:ControlBlockT">
+				<xsd:sequence>
+					<xsd:element name="CalibrationRequirements" type="tprj:CalibrationRequirementsT"/>
+					<xsd:element name="PerformanceGoals" type="tprj:PerformanceGoalsT"/>
+				</xsd:sequence>
+				<xsd:attribute name="schedStatus">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="waiting"/>
+							<xsd:enumeration value="ready"/>
+							<xsd:enumeration value="running"/>
+							<xsd:enumeration value="aborted"/>
+							<xsd:enumeration value="completed"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'AbstractFrequencySetup' -->
+	<xsd:complexType name="AbstractFrequencySetupT" abstract="true">
+		<xsd:sequence>
+			<xsd:element name="FrequencyResolution" type="tval:FrequencyT"/>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="LineID" type="xsd:string"/>
+			<xsd:element name="RestFrequency" type="tval:FrequencyT"/>
+			<xsd:element name="ObservingFrequency" type="tval:FrequencyT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'WeatherConstraints' -->
+	<xsd:complexType name="WeatherConstraintsT">
+		<xsd:sequence>
+			<xsd:element name="Opacity" type="xsd:string"/>
+			<xsd:element name="Seeing" type="xsd:string"/>
+			<xsd:element name="PhaseStability" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'CalibrationRequirements' -->
+	<xsd:complexType name="CalibrationRequirementsT">
+		<xsd:sequence>
+			<xsd:element name="PointingAccuracy" type="xsd:string"/>
+			<xsd:element name="Bandpass" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'Circle' -->
+	<xsd:complexType name="CircleT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:TargetAreaT">
+				<xsd:sequence>
+					<xsd:element name="Radius" type="tval:SmallAngleT"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'TargetArea' -->
+	<xsd:complexType name="TargetAreaT" abstract="true">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="Centre" type="tval:SkyCoordinatesT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'CorrelatorSetup' -->
+	<xsd:complexType name="CorrelatorSetupT">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="Bandwidth" type="tval:FrequencyT"/>
+			<xsd:element name="Sensitivity" type="tval:SensitivityT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'PointingCalTarget' -->
+	<xsd:complexType name="PointingCalTargetT">
+		<xsd:sequence/>
+	</xsd:complexType>
+	<!-- generated from dependent class 'TemporalSetup' -->
+	<xsd:complexType name="TemporalSetupT">
+		<xsd:sequence>
+			<xsd:element name="LSTRange" type="xsd:string"/>
+			<xsd:element name="DateLimits" type="xsd:string"/>
+			<xsd:element name="Repeats" type="xsd:int"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'PerformanceGoals' -->
+	<xsd:complexType name="PerformanceGoalsT">
+		<xsd:sequence>
+			<xsd:element name="rms" type="xsd:double"/>
+			<xsd:element name="DynamicRange" type="xsd:double"/>
+			<xsd:element name="IntegrationTime" type="tval:IntTimeSourceT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ObsUnitSet' -->
+	<xsd:complexType name="ObsUnitSetT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:ObsUnitT">
+				<xsd:sequence>
+					<xsd:element name="ScienceProcessingScript" type="xsd:string"/>
+					<xsd:element name="PipelineProcessingRequestId" type="xsd:string"/>
+					<xsd:element name="FlowControl" type="tprj:FlowControlT"/>
+					<xsd:choice>
+						<xsd:element name="ObsUnitSet" type="tprj:ObsUnitSetT" maxOccurs="unbounded"/>
+						<xsd:element name="SchedBlockRef" type="tsbl:SchedBlockRefT" maxOccurs="unbounded"/>
+					</xsd:choice>
+					<xsd:element name="ObsProjectRef" type="tprj:ObsProjectRefT" minOccurs="0"/>
+				</xsd:sequence>
+				<xsd:attribute name="entityPartId" type="ent:EntityPartIdT"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'TargetSpace' -->
+	<xsd:complexType name="TargetSpaceT">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="ObservationTime" type="tval:TimeT"/>
+			<xsd:element name="RegionOfInterest" type="tprj:RegionOfInterestT" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'Telescope' -->
+	<xsd:complexType name="TelescopeT">
+		<xsd:sequence>
+			<xsd:element name="Name" type="xsd:string"/>
+			<xsd:element name="ResourceSummary" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ObsDefinition' -->
+	<xsd:complexType name="ObsDefinitionT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:UserItemT">
+				<xsd:sequence>
+					<xsd:element name="NewSpectralSetup" type="tprj:NewSpectralSetupT"/>
+					<xsd:element name="TemporalSetup" type="tprj:TemporalSetupT" minOccurs="0"/>
+					<xsd:element name="PerformanceGoals" type="tprj:PerformanceGoalsT"/>
+					<xsd:element name="SpatialSetup" type="tprj:SpatialSetupT"/>
+					<xsd:element name="CalSetup" type="tprj:CalSetupT" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'Point' -->
+	<xsd:complexType name="PointT">
+		<xsd:sequence>
+			<xsd:element name="RA" type="tval:LongitudeT"/>
+			<xsd:element name="Dec" type="tval:LatitudeT"/>
+			<xsd:element name="name" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'Rectangle' -->
+	<xsd:complexType name="RectangleT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:TargetAreaT">
+				<xsd:sequence>
+					<xsd:element name="PALong" type="tval:AngleT"/>
+					<xsd:element name="Long" type="tval:SmallAngleT"/>
+					<xsd:element name="Short" type="tval:SmallAngleT"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'CalSetup' -->
+	<xsd:complexType name="CalSetupT">
+		<xsd:sequence>
+			<xsd:element name="PointingAccuracy" type="xsd:string"/>
+			<xsd:element name="Bandpass" type="xsd:string"/>
+			<xsd:element name="PhaseCalTarget" type="tprj:PhaseCalTargetT" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="FluxCalTarget" type="tprj:FluxCalTargetT" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PointingCalTarget" type="tprj:PointingCalTargetT" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'FlowControl' -->
+	<xsd:complexType name="FlowControlT">
+		<xsd:sequence>
+			<xsd:element name="controlScript" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ControlBlock' -->
+	<xsd:complexType name="ControlBlockT">
+		<xsd:sequence>
+			<xsd:element name="MaximumTime" type="tval:TimeT"/>
+			<xsd:element name="ElapsedTime" type="tval:TimeT"/>
+			<xsd:element name="scientificPriority" type="xsd:int"/>
+			<xsd:element name="runWhenReady" type="xsd:boolean"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'NewSpectralSetup' -->
+	<xsd:complexType name="NewSpectralSetupT">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:choice>
+				<xsd:element name="ALMAFrequencySetup" type="tprj:ALMAFrequencySetupT" maxOccurs="unbounded"/>
+			</xsd:choice>
+			<xsd:choice>
+				<xsd:element name="ALMACorrelatorSetup" type="tprj:ALMACorrelatorSetupT" maxOccurs="unbounded"/>
+				<xsd:element name="ACACorrelatorSetup" type="tprj:ACACorrelatorSetupT" maxOccurs="unbounded"/>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ObsProgram' -->
+	<xsd:complexType name="ObsProgramT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:ObsPhaseT">
+				<xsd:sequence/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'RegionOfInterest' -->
+	<xsd:complexType name="RegionOfInterestT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:UserItemT">
+				<xsd:sequence>
+					<xsd:element name="name" type="xsd:string"/>
+					<xsd:element name="ObsUnitSetReference" type="xsd:string"/>
+					<xsd:element name="ObservationTime" type="tval:TimeT"/>
+					<xsd:choice>
+						<xsd:element name="Rectangle" type="tprj:RectangleT"/>
+						<xsd:element name="Circle" type="tprj:CircleT"/>
+						<xsd:element name="Ellipse" type="tprj:EllipseT"/>
+						<xsd:element name="Polygon" type="tprj:PolygonT"/>
+					</xsd:choice>
+					<xsd:element name="SpectralSetup" type="tprj:SpectralSetupT"/>
+					<xsd:element name="reductionProcedure" type="tprj:ImagingProcedureT"/>
+					<xsd:element name="SpatialSetup" type="tprj:SpatialSetupT" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ObsUnit' -->
+	<xsd:complexType name="ObsUnitT" abstract="true">
+		<xsd:sequence>
+			<xsd:element name="status" type="xsd:string"/>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="Preconditions" type="tprj:PreconditionsT"/>
+			<xsd:element name="ObsUnitControl" type="tprj:ObsUnitControlT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'PhaseCalTarget' -->
+	<xsd:complexType name="PhaseCalTargetT">
+		<xsd:sequence/>
+	</xsd:complexType>
+	<!-- generated from dependent class 'TargetProperties' -->
+	<xsd:complexType name="TargetPropertiesT">
+		<xsd:sequence>
+			<xsd:element name="Flux" type="tval:FluxT"/>
+			<xsd:element name="Frequency" type="tval:FrequencyT"/>
+			<xsd:element name="Diameter" type="tval:SmallAngleT"/>
+			<xsd:element name="Velocity" type="tval:VelocityT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'FrequencySetup' -->
+	<xsd:complexType name="FrequencySetupT">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="CenterFrequency" type="tval:FrequencyT"/>
+			<xsd:element name="FrequencyResolution" type="tval:FrequencyT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ALMAFrequencySetup' -->
+	<xsd:complexType name="ALMAFrequencySetupT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:AbstractFrequencySetupT"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'Preconditions' -->
+	<xsd:complexType name="PreconditionsT">
+		<xsd:sequence>
+			<xsd:element name="BaselineCal" type="xsd:string"/>
+			<xsd:element name="Polarization" type="xsd:string"/>
+			<xsd:element name="WeatherConstraints" type="tprj:WeatherConstraintsT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ALMACorrelatorSetup' -->
+	<xsd:complexType name="ALMACorrelatorSetupT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:AbstractCorrelatorSetupT"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'UserItem' -->
+	<xsd:complexType name="UserItemT" abstract="true">
+		<xsd:sequence/>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ACACorrelatorSetup' -->
+	<xsd:complexType name="ACACorrelatorSetupT">
+		<xsd:complexContent>
+			<xsd:extension base="tprj:AbstractCorrelatorSetupT"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- generated from dependent class 'FluxCalTarget' -->
+	<xsd:complexType name="FluxCalTargetT">
+		<xsd:sequence>
+			<xsd:element name="properties" type="tprj:TargetPropertiesT" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- generated from dependent class 'ObsPhase' -->
+	<xsd:complexType name="ObsPhaseT" abstract="true">
+		<xsd:sequence>
+			<xsd:element name="TargetSpace" type="tprj:TargetSpaceT" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ObsPlan" type="tprj:ObsUnitSetT"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- 'ObsProjectEntityT' contains administration info for ObsProject -->
+	<xsd:complexType name="ObsProjectEntityT">
+		<xsd:complexContent>
+			<xsd:restriction base="ent:EntityT">
+				<xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="ObsProject"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- other classes use 'ObsProjectRefT' to reference an entity of type ObsProject -->
+	<xsd:complexType name="ObsProjectRefT">
+		<xsd:complexContent>
+			<xsd:restriction base="ent:EntityRefT">
+				<xsd:attribute name="entityTypeName" type="ent:EntityTypeNameT" use="required" fixed="ObsProject"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

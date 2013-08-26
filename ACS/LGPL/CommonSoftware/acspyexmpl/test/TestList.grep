@@ -1,0 +1,21 @@
+SUP.
+lcuboot: open
+maci::HeartbeatHandler::handle_timeout
+Grep me out
+name service error resolving
+class CosNaming.NotFound
+Running the container with these arguments
+Cache saved to
+Waiting for the container to really shutdown
+Done!
+shutdown_container
+File "./__init__.py", line 805, in __init__
+omniORB: Exception trying to create worker thread.
+Traceback \(most recent call last\)
+TypeError: 'NoneType' object is not callable
+Aborted
+terminate called after throwing an instance of 'omni_thread_fatal'
+^1 - [0-9A-Fa-f][0-9A-Fa-f] [0-9A-Fa-f][0-9A-Fa-f]
+component ERRORCOMP_JAVA activated and initialized in
+ping received, container alive. Memory usage
+ORB status:

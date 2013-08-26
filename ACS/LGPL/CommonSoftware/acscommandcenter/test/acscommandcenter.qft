@@ -1,0 +1,1395 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE RootStep>
+<RootStep id="_0" name="root" version="2.0.0">
+  <include>qfs.qft</include>
+  <variable name="Client">acscommandcenterGUITest</variable>
+  <Test catch="true" id="_1" name="acscommandcenter ">
+    <SetupSequence id="_z" name="Start the application">
+      <comment>Starts the GUI and resizes the output textbox</comment>
+      <SUTClientStarter client="$(Client)" directory="$(HOME)/tmp/"
+                        executable="acscommandcenter" id="_9S"/>
+      <ClientWaiter client="$(Client)" id="_6" timeout="15000"/>
+      <ComponentWaiter client="$(Client)"
+                       component="frame(project)_-_Acs_Command_Center"
+                       id="_v"/>
+      <MouseEventStep clicks="0" client="$(Client)"
+                      component="frame(project)_-_Acs_Command_Center.dividerVertical"
+                      event="MOUSE_MOVED" id="_4Q" modifiers="0" x="337"
+                      y="2"/>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="frame(project)_-_Acs_Command_Center.dividerVertical"
+                      event="MOUSE_PRESSED" id="_4R" modifiers="16" x="337"
+                      y="2"/>
+      <MouseEventStep clicks="0" client="$(Client)"
+                      component="splitLeft.comLeft" event="MOUSE_DRAGGED"
+                      id="_4S" modifiers="16" x="331" y="407"/>
+      <MouseEventStep clicks="0" client="$(Client)"
+                      component="splitLeft.comLeft" event="MOUSE_RELEASED"
+                      id="_4T" modifiers="16" x="331" y="407"/>
+      <MouseEventStep clicks="0" client="$(Client)"
+                      component="frame(project)_-_Acs_Command_Center.dividerVertical"
+                      event="MOUSE_MOVED" id="_4U" modifiers="0" x="372"
+                      y="6"/>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="frame(project)_-_Acs_Command_Center.dividerVertical"
+                      event="MOUSE_PRESSED" id="_4V" modifiers="16" x="372"
+                      y="6"/>
+      <MouseEventStep clicks="0" client="$(Client)"
+                      component="splitLeft.comLeft" event="MOUSE_DRAGGED"
+                      id="_4W" modifiers="16" x="367" y="349"/>
+      <MouseEventStep clicks="0" client="$(Client)"
+                      component="splitLeft.comLeft" event="MOUSE_RELEASED"
+                      id="_4X" modifiers="16" x="367" y="349"/>
+      <ComponentEventStep client="$(Client)"
+                          component="frame(project)_-_Acs_Command_Center"
+                          event="COMPONENT_MOVED" id="_4Y" param1="0"
+                          param2="5"/>
+      <ComponentEventStep client="$(Client)"
+                          component="frame(project)_-_Acs_Command_Center"
+                          event="COMPONENT_RESIZED" id="_4Z" param1="1084"
+                          param2="594"/>
+      <ProcedureCall id="_4d" procedure="Stop the application"/>
+    </SetupSequence>
+    <Test catch="true" id="_y" name="CheckBoxes, RadioButtons and Containers">
+      <BasicSequence id="_2e"
+                     name="CheckBox &#34;advanced&#34; - Services, Manager">
+        <ProcedureCall id="_2i" postdelay="2000"
+                       procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.swing.checkbox.set">
+          <variable name="id">checkAdvanced</variable>
+          <variable name="client">$(Client)</variable>
+          <variable name="check">true</variable>
+        </ProcedureCall>
+        <CheckEnabledStep client="$(Client)"
+                          component="buttonTipStart_Services_with_the_specified_Common_Settings"
+                          id="_3P" raise="true"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="buttonTipStop_the_specified_Services"
+                          id="_3Q" raise="true"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="buttonTipStart_a_Manager_with_the_specified_Common_Settings"
+                          id="_3R" raise="true"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="buttonTipStop_the_specified_Manager"
+                          id="_3S" raise="true"/>
+        <ProcedureCall id="_2m" postdelay="2000"
+                       procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.swing.checkbox.set">
+          <variable name="id">checkAdvanced</variable>
+          <variable name="client">$(Client)</variable>
+          <variable name="check">false</variable>
+        </ProcedureCall>
+        <CheckEnabledStep client="$(Client)"
+                          component="buttonTipStart_Services_with_the_specified_Common_Settings"
+                          enabled="false" id="_3T" raise="true"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="buttonTipStop_the_specified_Services"
+                          enabled="false" id="_3U" raise="true"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="buttonTipStart_a_Manager_with_the_specified_Common_Settings"
+                          enabled="false" id="_3V" raise="true"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="buttonTipStop_the_specified_Manager"
+                          enabled="false" id="_3W" raise="true"/>
+      </BasicSequence>
+      <BasicSequence id="_3a" name="RadioLocal - RadioJava - RadioRemote">
+        <ProcedureCall id="_3f"
+                       procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.swing.checkbox.set">
+          <variable name="id">radioLocal</variable>
+          <variable name="client">$(Client)</variable>
+          <variable name="check">true</variable>
+        </ProcedureCall>
+        <CheckSelectedStep client="$(Client)" component="radioJava-only_Acs"
+                           id="_3j" raise="true" selected="false"/>
+        <CheckSelectedStep client="$(Client)" component="radioRemote" id="_3k"
+                           raise="true" selected="false"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="splitLeft.comLeft.text" enabled="false"
+                          id="_3l" raise="true"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="splitLeft.comLeft.text2" enabled="false"
+                          id="_3m" raise="true"/>
+        <CheckEnabledStep client="$(Client)" component="textUsername"
+                          enabled="false" id="_3n" raise="true"/>
+        <CheckEnabledStep client="$(Client)" component="passwdPassword"
+                          enabled="false" id="_3o" raise="true"/>
+        <ProcedureCall id="_3g"
+                       procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.swing.checkbox.set">
+          <variable name="id">radioJava-only_Acs</variable>
+          <variable name="client">$(Client)</variable>
+          <variable name="check">true</variable>
+        </ProcedureCall>
+        <CheckSelectedStep client="$(Client)" component="radioLocal" id="_3s"
+                           raise="true" selected="false"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="splitLeft.comLeft.text" id="_3t"
+                          raise="true"/>
+        <CheckSelectedStep client="$(Client)" component="radioRemote" id="_3u"
+                           raise="true" selected="false"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="splitLeft.comLeft.text2" enabled="false"
+                          id="_3v" raise="true"/>
+        <CheckEnabledStep client="$(Client)" component="textUsername"
+                          enabled="false" id="_3w" raise="true"/>
+        <CheckEnabledStep client="$(Client)" component="passwdPassword"
+                          enabled="false" id="_3x" raise="true"/>
+        <ProcedureCall id="_3h"
+                       procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.swing.checkbox.set">
+          <variable name="id">radioRemote</variable>
+          <variable name="client">$(Client)</variable>
+          <variable name="check">true</variable>
+        </ProcedureCall>
+        <CheckSelectedStep client="$(Client)" component="radioLocal" id="_3z"
+                           raise="true" selected="false"/>
+        <CheckSelectedStep client="$(Client)" component="radioJava-only_Acs"
+                           id="_3+" raise="true" selected="false"/>
+        <CheckEnabledStep client="$(Client)"
+                          component="splitLeft.comLeft.text2" id="_40"
+                          raise="true"/>
+        <CheckEnabledStep client="$(Client)" component="textUsername" id="_42"
+                          raise="true"/>
+        <CheckEnabledStep client="$(Client)" component="passwdPassword"
+                          id="_43" raise="true"/>
+      </BasicSequence>
+      <BasicSequence id="_4c" name="Clear ACS output log text area">
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="buttonClear_All2" event="MOUSE_MPRC"
+                        id="_4h" modifiers="16" x="1" y="1"/>
+        <CheckStringStep client="$(Client)" component="tabAcs.text" id="_4i"
+                         raise="true"/>
+      </BasicSequence>
+      <BasicSequence id="_4+" name="Containers text area">
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9V" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9W" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9X" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9Y" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9Z" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9a" modifiers="16" x="1" y="1"/>
+        <CheckStringStep client="$(Client)" component="label6" id="_4t"
+                         raise="true">
+          <text>6</text>
+        </CheckStringStep>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9b" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9c" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9d" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9e" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9f" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Less_Containers" event="MOUSE_MPRC"
+                        id="_9h" modifiers="16" x="1" y="1"/>
+        <CheckStringStep client="$(Client)" component="label1" id="_4z"
+                         raise="true">
+          <text>1</text>
+        </CheckStringStep>
+      </BasicSequence>
+    </Test>
+    <Test catch="true" id="_53" name="ACS instances">
+      <SetupSequence id="_54" name="Start ACS instance #0">
+        <MouseEventStep clicks="1" client="$(Client)" component="radioLocal"
+                        event="MOUSE_MPRC" id="_56" modifiers="16" x="1"
+                        y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="textAcs_Instance" event="MOUSE_MPRC"
+                        id="_50" modifiers="16" x="13" y="6"/>
+        <KeyEventStep client="$(Client)" component="textAcs_Instance"
+                      event="KEY_PTR" id="_51" keychar="8" keycode="8"
+                      modifiers="0"/>
+        <TextInputStep clear="true" client="$(Client)"
+                       component="textAcs_Instance" id="_52" single="false">
+          <text>0</text>
+        </TextInputStep>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comLeft" event="MOUSE_MPRC"
+                        id="_13" modifiers="16" x="69" y="352"/>
+        <MouseEventStep clicks="1" client="$(Client)" component="buttonStart"
+                        event="MOUSE_MPRC" id="_14" modifiers="16" x="1"
+                        y="1"/>
+        <ComponentWaiter client="$(Client)"
+                         component="dialogStarting_Acs_-_Progress" id="_15"
+                         timeout="40000"/>
+        <ComponentWaiter absence="true" client="$(Client)"
+                         component="dialogStarting_Acs_-_Progress" id="_9T"
+                         postdelay="3000" timeout="40000"/>
+        <CheckStringStep client="$(Client)" component="textAcs_Instance"
+                         id="_5H" raise="true">
+          <text>0</text>
+          <comment>Check if the istance used is 0
+If not call the cleanup node</comment>
+        </CheckStringStep>
+      </SetupSequence>
+      <BasicSequence id="_5t" name="Start/Stop Containers and use the tree">
+        <CheckStringStep client="$(Client)"
+                         component="splitLeft.comRight.tree@/Manager on $(IP), port 3000"
+                         id="_5F" predelay="3000" raise="true">
+          <text>Manager on $(IP), port 3000</text>
+        </CheckStringStep>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comLeft.com3" event="MOUSE_MPRC"
+                        id="_5u" modifiers="16" x="68" y="260"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="txt_ContainerName_0" event="MOUSE_MPRC"
+                        id="_9v" modifiers="16" x="40" y="12"/>
+        <TextInputStep clear="true" client="$(Client)"
+                       component="txt_ContainerName_0" id="_9w"
+                       single="false">
+          <text>firstContainer</text>
+        </TextInputStep>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Start_Container_0" event="MOUSE_MPRC"
+                        id="_9x" modifiers="16" x="1" y="1"/>
+        <ComponentWaiter client="$(Client)"
+                         component="dialogStarting_firstContainer_-_Progress"
+                         id="_AQ"/>
+        <ComponentWaiter absence="true" client="$(Client)"
+                         component="dialogStarting_firstContainer_-_Progress"
+                         id="_AR"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_More_Containers" event="MOUSE_MPRC"
+                        id="_9z" modifiers="16" x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="txt_ContainerName_1" event="MOUSE_MPRC"
+                        id="_9+" modifiers="16" x="27" y="12"/>
+        <TextInputStep clear="true" client="$(Client)"
+                       component="txt_ContainerName_1" id="_9-"
+                       single="false">
+          <text>secondContainer</text>
+        </TextInputStep>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Start_Container_1" event="MOUSE_MPRC"
+                        id="_A0" modifiers="16" x="1" y="1"/>
+        <ComponentWaiter client="$(Client)"
+                         component="dialogStarting_secondContainer_-_Progress"
+                         id="_AS"/>
+        <ComponentWaiter absence="true" client="$(Client)"
+                         component="dialogStarting_secondContainer_-_Progress"
+                         id="_AT"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(IP), port 3000"
+                        event="MOUSE_MPRC" id="_68" modifiers="16" x="-14"
+                        y="7"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree&amp;/0/0"
+                        event="MOUSE_MPRC" id="_69" modifiers="16" x="-14"
+                        y="6"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree&amp;/0/1"
+                        event="MOUSE_MPRC" id="_6A" modifiers="16" x="-13"
+                        y="9"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree&amp;/0/2"
+                        event="MOUSE_MPRC" id="_6B" modifiers="16" x="-13"
+                        y="9"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree&amp;/0/2"
+                        event="MOUSE_MPRC" id="_6V" modifiers="16" x="-12"
+                        y="7"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree&amp;/0/1"
+                        event="MOUSE_MPRC" id="_6W" modifiers="16" x="-13"
+                        y="8"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree&amp;/0/0"
+                        event="MOUSE_MPRC" id="_6X" modifiers="16" x="-13"
+                        y="9"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(IP), port 3000"
+                        event="MOUSE_MPRC" id="_6Y" modifiers="16" x="-11"
+                        y="8"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Stop_Container_1" event="MOUSE_MPRC"
+                        id="_AE" modifiers="16" x="1" y="1"/>
+        <ComponentEventStep client="$(Client)"
+                            component="dialogStopping_secondContainer_-_Progress"
+                            disabled="true" event="COMPONENT_RESIZED" id="_AJ"
+                            param1="330" param2="119"/>
+        <ComponentWaiter client="$(Client)"
+                         component="dialogStopping_secondContainer_-_Progress"
+                         id="_AU"/>
+        <ComponentWaiter absence="true" client="$(Client)"
+                         component="dialogStopping_secondContainer_-_Progress"
+                         id="_AV"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="btn_Stop_Container_0" event="MOUSE_MPRC"
+                        id="_AG" modifiers="16" x="1" y="1"/>
+        <ComponentEventStep client="$(Client)"
+                            component="dialogStopping_firstContainer_-_Progress"
+                            disabled="true" event="COMPONENT_RESIZED" id="_AK"
+                            param1="330" param2="119"/>
+        <ComponentWaiter client="$(Client)"
+                         component="dialogStopping_firstContainer_-_Progress"
+                         id="_AW"/>
+        <ComponentWaiter absence="true" client="$(Client)"
+                         component="dialogStopping_firstContainer_-_Progress"
+                         id="_AX"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="tabbedRight.secondContainer"
+                        event="MOUSE_MPRC" id="_AI" modifiers="16" x="1"
+                        y="1"/>
+        <CheckStringStep client="$(Client)" component="txt_Output" id="_A2"
+                         regexp="true">
+          <text>(.|\n)*come back soon(.|\n)*</text>
+        </CheckStringStep>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="tabbedRight.firstContainer"
+                        event="MOUSE_MPRC" id="_A3" modifiers="16"
+                        postdelay="15000" x="1" y="1"/>
+        <CheckStringStep client="$(Client)" component="txt_Output" id="_A4"
+                         regexp="true">
+          <text>(.|\n)*come back soon(.|\n)*</text>
+        </CheckStringStep>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="tabFisrtContainer.scrollbarVertical"
+                        event="MOUSE_MOVED" id="_6j" modifiers="0"
+                        postdelay="30000" x="8" y="23"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="tabFisrtContainer.scrollbarVertical"
+                        event="MOUSE_PRESSED" id="_6k" modifiers="16" x="8"
+                        y="23"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="tabFisrtContainer.scroll"
+                        event="MOUSE_DRAGGED" id="_6l" modifiers="16" x="1059"
+                        y="95"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="tabFisrtContainer.scroll"
+                        event="MOUSE_RELEASED" id="_6m" modifiers="16"
+                        x="1059" y="95"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="tabbedRight.secondContainer"
+                        event="MOUSE_MPRC" id="_6n" modifiers="16" x="1"
+                        y="1"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="tabSecondContainer.scrollbarVertical"
+                        event="MOUSE_MOVED" id="_6o" modifiers="0" x="7"
+                        y="23"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="tabSecondContainer.scrollbarVertical"
+                        event="MOUSE_PRESSED" id="_6p" modifiers="16" x="7"
+                        y="23"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="tabSecondContainer.scrollbarVertical"
+                        event="MOUSE_DRAGGED" id="_6q" modifiers="16" x="6"
+                        y="87"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="tabSecondContainer.scrollbarVertical"
+                        event="MOUSE_RELEASED" id="_6r" modifiers="16" x="6"
+                        y="87"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="labelAcs_Command_Center2"
+                        event="MOUSE_MPRC" id="_6x" modifiers="16" x="453"
+                        y="10"/>
+        <MouseEventStep clicks="1" client="$(Client)" component="textMgr_Host"
+                        event="MOUSE_MPRC" id="_6y" modifiers="16" x="34"
+                        y="14"/>
+        <TextInputStep clear="true" client="$(Client)"
+                       component="textMgr_Host" id="_6z" single="false">
+          <text>$(HOST)</text>
+        </TextInputStep>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.text" event="MOUSE_MPRC"
+                        id="_72" modifiers="16" x="28" y="13"/>
+        <TextInputStep clear="true" client="$(Client)"
+                       component="splitLeft.comRight.text" id="_73"
+                       single="false">
+          <text>3000</text>
+        </TextInputStep>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="labelAcs_Command_Center3"
+                        event="MOUSE_MPRC" id="_75" modifiers="16" x="525"
+                        y="36"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="buttonAdd_to_View" event="MOUSE_MPRC"
+                        id="_76" modifiers="16" postdelay="6000" x="1" y="1"/>
+        <CheckStringStep client="$(Client)"
+                         component="labelAcs_Command_Center3" id="_77"
+                         predelay="3000" raise="true">
+          <text>Acs Command Center</text>
+          <comment>Check if the same istance is added as a separate tree</comment>
+        </CheckStringStep>
+        <CheckStringStep client="$(Client)"
+                         component="splitLeft.comRight.tree@/Manager on $(HOST), port 3000"
+                         id="_78" predelay="3000" raise="true">
+          <text>Manager on $(HOST), port 3000</text>
+        </CheckStringStep>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="labelAcs_Command_Center3"
+                        event="MOUSE_MPRC" id="_79" modifiers="16" x="439"
+                        y="34"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(HOST), port 3000"
+                        event="MOUSE_MPRC" id="_7A" modifiers="16" x="-11"
+                        y="6"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree&amp;/0/2"
+                        event="MOUSE_MPRC" id="_7B" modifiers="16" x="-14"
+                        y="7"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="splitLeft.comRight.scrollbarVertical"
+                        event="MOUSE_MOVED" id="_7C" modifiers="0" x="10"
+                        y="59"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.scrollbarVertical"
+                        event="MOUSE_PRESSED" id="_7D" modifiers="16" x="10"
+                        y="59"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="splitLeft.comRight.scrollbarVertical"
+                        event="MOUSE_DRAGGED" id="_7E" modifiers="16" x="4"
+                        y="23"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="splitLeft.comRight.scrollbarVertical"
+                        event="MOUSE_RELEASED" id="_7F" modifiers="16" x="4"
+                        y="23"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(IP), port 3000"
+                        event="MOUSE_MPRC" id="_7G" modifiers="16" x="-13"
+                        y="5"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree&amp;/0/2"
+                        event="MOUSE_MPRC" id="_7H" modifiers="16" x="-15"
+                        y="4"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="splitLeft.comRight.scrollbarVertical"
+                        event="MOUSE_MOVED" id="_7I" modifiers="0" x="7"
+                        y="33"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.scrollbarVertical"
+                        event="MOUSE_PRESSED" id="_7J" modifiers="16" x="7"
+                        y="33"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(IP), port 3000"
+                        event="MOUSE_DRAGGED" id="_7K" modifiers="16" x="260"
+                        y="8"/>
+        <MouseEventStep clicks="0" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(IP), port 3000"
+                        event="MOUSE_RELEASED" id="_7L" modifiers="16" x="1"
+                        y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree&amp;/0/2"
+                        event="MOUSE_MPRC" id="_7M" modifiers="16" x="-15"
+                        y="8"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree&amp;/0/2"
+                        event="MOUSE_MPRC" id="_7N" modifiers="16" x="-15"
+                        y="7"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(HOST), port 3000"
+                        event="MOUSE_MPRC" id="_7O" modifiers="16" x="-12"
+                        y="10"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(IP), port 3000"
+                        event="MOUSE_MPRC" id="_7P" modifiers="16" x="-12"
+                        y="10"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(HOST), port 3000"
+                        event="MOUSE_MPRC" id="_7Q" modifiers="16" x="-12"
+                        y="7"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="frame(project)_-_Acs_Command_Center.menubar"
+                        event="MOUSE_MPRC" id="_8u" modifiers="16" x="432"
+                        y="5"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(HOST), port 3000"
+                        event="MOUSE_MPRC" id="_8v" modifiers="16" x="-14"
+                        y="10"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(HOST), port 3000"
+                        event="MOUSE_MPRC" id="_8w" modifiers="4" popup="true"
+                        x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="menuItemRemove_from_View"
+                        event="MOUSE_MPRC" id="_8z" modifiers="16" x="1"
+                        y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="frame(project)_-_Acs_Command_Center.menubar"
+                        event="MOUSE_MPRC" id="_8+" modifiers="16" x="830"
+                        y="6"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree@/Manager on $(IP), port 3000"
+                        event="MOUSE_MPRC" id="_94" modifiers="4" popup="true"
+                        x="1" y="1"/>
+        <MouseEventStep clicks="1" client="$(Client)"
+                        component="splitLeft.comRight.tree" event="MOUSE_MPRC"
+                        id="_9R" modifiers="4" popup="true" x="93" y="94"/>
+      </BasicSequence>
+    </Test>
+    <CleanupSequence id="_+" name="Cleanup the status of the application">
+      <ProcedureCall id="_1l" procedure="Stop the application"/>
+      <ClientStopper client="$(Client)" id="_-"/>
+      <ProcessWaiter client="$(Client)" id="_10"/>
+    </CleanupSequence>
+  </Test>
+  <PackageRoot id="_2">
+    <Procedure id="_1e" name="Stop the application">
+      <ProcedureCall id="_1m"
+                     procedure="/alma/mzampare/qftest/qftest-2.0.0/include/qfs.qft#qfs.cleanup.implicitExceptionHandler">
+        <variable name="client">$(Client)</variable>
+      </ProcedureCall>
+      <TryStep id="_1f" name="Click on Stop button">
+        <CheckEnabledStep client="$(Client)" component="buttonStop"
+                          enabled="false" id="_1d" raise="true"/>
+        <CatchSequence exception="TestException" id="_1g" maxerror="0"
+                       name="Force a click on the Stop button">
+          <MouseEventStep clicks="1" client="$(Client)" component="buttonStop"
+                          event="MOUSE_MPRC" id="_1j" modifiers="16"
+                          postdelay="30000" x="1" y="1"/>
+        </CatchSequence>
+      </TryStep>
+    </Procedure>
+  </PackageRoot>
+  <ExtraSequence id="_3">
+    <BasicSequence id="_9i" name="Recorded 1/19/07 2:45 PM">
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="txt_ContainerName_0" event="MOUSE_MPRC"
+                      id="_9j" modifiers="16" x="40" y="12"/>
+      <TextInputStep clear="true" client="$(Client)"
+                     component="txt_ContainerName_0" id="_9k" single="false">
+        <text>firstContainer</text>
+      </TextInputStep>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_Start_Container_0" event="MOUSE_MPRC"
+                      id="_9l" modifiers="16" x="1" y="1"/>
+      <ComponentEventStep client="$(Client)"
+                          component="dialogStarting_firstContainer_-_Progress"
+                          event="COMPONENT_RESIZED" id="_9m" param1="330"
+                          param2="119"/>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_More_Containers" event="MOUSE_MPRC"
+                      id="_9n" modifiers="16" x="1" y="1"/>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="txt_ContainerName_1" event="MOUSE_MPRC"
+                      id="_9o" modifiers="16" x="27" y="12"/>
+      <TextInputStep clear="true" client="$(Client)"
+                     component="txt_ContainerName_1" id="_9p" single="false">
+        <text>secondContainer</text>
+      </TextInputStep>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_Start_Container_1" event="MOUSE_MPRC"
+                      id="_9q" modifiers="16" x="1" y="1"/>
+      <ComponentEventStep client="$(Client)"
+                          component="dialogStarting_secondContainer_-_Progress"
+                          event="COMPONENT_RESIZED" id="_9r" param1="330"
+                          param2="119"/>
+      <CheckStringStep client="$(Client)" component="txt_Output" id="_9s">
+        <text>INFO - Running the container with these arguments: 'acsStartJavaContainer secondContainer alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager'
+ --endorsed -D alma.MicroArchive.DbDir=/diska/alma_tmp/acsdata/config/MicroArchive -- alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager -containerName secondContainer
+INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager -containerName secondContainer
+INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/introot/vltuser8/lib/endorsed:/introot/vltuser8/lib/endorsed:
+FINER: Logging configuration has been initialized, but not from CDB settings.
+2007-01-19T13:45:05.462 INFO [AcsContainerRunner] AcsContainerRunner#run 
+[jacorb.poa] INFO : oid: 
+73 65 63 6F 6E 64 43 6F 6E 74 61 69 6E 65 72                secondContainer
+object is activated
+[jacorb.poa] INFO : oid: 
+00 15 00 48 2E 30 20 17 02 0B 48                            ...H.0 ...H
+object is activated
+[jacorb.poa] INFO : Using server ID (2150091978) for transient POA
+2007-01-19T13:45:09.522 INFO [secondContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
+2007-01-19T13:45:09.559 INFO [secondContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+</text>
+      </CheckStringStep>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="tabbedRight.firstContainer"
+                      event="MOUSE_MPRC" id="_9t" modifiers="16" x="1" y="1"/>
+      <CheckStringStep client="$(Client)" component="txt_Output" id="_9u">
+        <text>INFO - Running the container with these arguments: 'acsStartJavaContainer firstContainer alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager'
+ --endorsed -D alma.MicroArchive.DbDir=/diska/alma_tmp/acsdata/config/MicroArchive -- alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager -containerName firstContainer
+INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager -containerName firstContainer
+INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/introot/vltuser8/lib/endorsed:/introot/vltuser8/lib/endorsed:
+FINER: Logging configuration has been initialized, but not from CDB settings.
+2007-01-19T13:44:48.683 INFO [AcsContainerRunner] AcsContainerRunner#run 
+[jacorb.poa] INFO : oid: 
+66 69 72 73 74 43 6F 6E 74 61 69 6E 65 72                   firstContainer
+object is activated
+[jacorb.poa] INFO : oid: 
+00 15 00 48 2E 2B 18 06 02 1F 01                            ...H.+.....
+object is activated
+[jacorb.poa] INFO : Using server ID (43421275) for transient POA
+2007-01-19T13:44:52.768 INFO [firstContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
+2007-01-19T13:44:52.807 INFO [firstContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+ping received, container alive. Memory usage 1956 of 3136 kB (= 3.0% of JVM growth limit 65088 kB) 
+</text>
+      </CheckStringStep>
+    </BasicSequence>
+    <BasicSequence id="_A5" name="Recorded 1/19/07 3:27 PM">
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_Stop_Container_1" event="MOUSE_MPRC"
+                      id="_A6" modifiers="16" x="1" y="1"/>
+      <ComponentEventStep client="$(Client)"
+                          component="dialogStopping_secondContainer_-_Progress"
+                          event="COMPONENT_RESIZED" id="_A7" param1="330"
+                          param2="119"/>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_Stop_Container_0" event="MOUSE_MPRC"
+                      id="_A8" modifiers="16" x="1" y="1"/>
+      <ComponentEventStep client="$(Client)"
+                          component="dialogStopping_firstContainer_-_Progress"
+                          event="COMPONENT_RESIZED" id="_A9" param1="330"
+                          param2="119"/>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="tabbedRight.secondContainer"
+                      event="MOUSE_MPRC" id="_AA" modifiers="16" x="1" y="1"/>
+      <CheckStringStep client="$(Client)" component="txt_Output" id="_AB">
+        <text>INFO - Running the container with these arguments: 'acsStartJavaContainer secondContainer alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager'
+ --endorsed -D alma.MicroArchive.DbDir=/diska/alma_tmp/acsdata/config/MicroArchive -- alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager -containerName secondContainer
+INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4002 -m corbaloc::134.171.12.93:3000/Manager -containerName secondContainer
+INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/introot/vltuser8/lib/endorsed:/introot/vltuser8/lib/endorsed:
+FINER: Logging configuration has been initialized, but not from CDB settings.
+2007-01-19T14:18:00.505 INFO [AcsContainerRunner] AcsContainerRunner#run 
+[jacorb.poa] INFO : oid: 
+73 65 63 6F 6E 64 43 6F 6E 74 61 69 6E 65 72                secondContainer
+object is activated
+[jacorb.poa] INFO : oid: 
+00 15 00 48 38 0B 2E 18 01 3F 47                            ...H8....?G
+object is activated
+[jacorb.poa] INFO : Using server ID (2027021651) for transient POA
+2007-01-19T14:18:04.877 INFO [secondContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
+2007-01-19T14:18:04.915 INFO [secondContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+ping received, container alive. Memory usage 1946 of 3004 kB (= 2.9% of JVM growth limit 65088 kB) 
+2007-01-19T14:18:37.304 INFO [secondContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
+[jacorb.poa] INFO : POA ComponentPOA destroyed
+[jacorb.poa] INFO : POA ContainerPOA destroyed
+[jacorb.poa] INFO : POA RootPOA destroyed
+2007-01-19T14:18:37.346 INFO [secondContainer] about to exit the JVM...thanks for using our container, come back soon...
+</text>
+      </CheckStringStep>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="tabbedRight.firstContainer"
+                      event="MOUSE_MPRC" id="_AC" modifiers="16" x="1" y="1"/>
+      <CheckStringStep client="$(Client)" component="txt_Output" id="_AD">
+        <text>INFO - Running the container with these arguments: 'acsStartJavaContainer firstContainer alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager'
+ --endorsed -D alma.MicroArchive.DbDir=/diska/alma_tmp/acsdata/config/MicroArchive -- alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager -containerName firstContainer
+INFO - Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr 134.171.12.93 -OAport 4000 -m corbaloc::134.171.12.93:3000/Manager -containerName firstContainer
+INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/introot/vltuser8/lib/endorsed:/introot/vltuser8/lib/endorsed:
+FINER: Logging configuration has been initialized, but not from CDB settings.
+2007-01-19T14:17:41.811 INFO [AcsContainerRunner] AcsContainerRunner#run 
+[jacorb.poa] INFO : oid: 
+66 69 72 73 74 43 6F 6E 74 61 69 6E 65 72                   firstContainer
+object is activated
+[jacorb.poa] INFO : oid: 
+00 15 00 48 38 05 02 22 01 03 32                            ...H8.."..2
+object is activated
+[jacorb.poa] INFO : Using server ID (2869012891) for transient POA
+2007-01-19T14:17:45.927 INFO [firstContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
+2007-01-19T14:17:45.963 INFO [firstContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+ping received, container alive. Memory usage 1958 of 3136 kB (= 3.0% of JVM growth limit 65088 kB) 
+ping received, container alive. Memory usage 1960 of 3136 kB (= 3.0% of JVM growth limit 65088 kB) 
+ping received, container alive. Memory usage 1962 of 3136 kB (= 3.0% of JVM growth limit 65088 kB) 
+2007-01-19T14:19:32.624 INFO [firstContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
+[jacorb.poa] INFO : POA ComponentPOA destroyed
+[jacorb.poa] INFO : POA ContainerPOA destroyed
+[jacorb.poa] INFO : POA RootPOA destroyed
+2007-01-19T14:19:32.679 INFO [firstContainer] about to exit the JVM...thanks for using our container, come back soon...
+</text>
+      </CheckStringStep>
+    </BasicSequence>
+    <BasicSequence id="_AL" name="Recorded 1/22/07 8:58 AM">
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="txt_ContainerName" event="MOUSE_MPRC"
+                      id="_AM" modifiers="16" x="53" y="15"/>
+      <TextInputStep clear="true" client="$(Client)"
+                     component="txt_ContainerName" id="_AN" single="false">
+        <text>first</text>
+      </TextInputStep>
+      <MouseEventStep clicks="1" client="$(Client)"
+                      component="btn_Start_Container" event="MOUSE_MPRC"
+                      id="_AO" modifiers="16" x="1" y="1"/>
+      <ComponentEventStep client="$(Client)"
+                          component="dialogStarting_first_-_Progress"
+                          event="COMPONENT_RESIZED" id="_AP" param1="330"
+                          param2="119"/>
+    </BasicSequence>
+    <BasicSequence id="_AY" name="Recorded 1/22/07 9:06 AM">
+      <CheckStringStep client="$(Client)"
+                       component="splitLeft.comRight.tree./Manager_on_134.171.12.93,_port_3000"
+                       id="_AZ">
+        <text>Manager on 134.171.12.93, port 3000</text>
+      </CheckStringStep>
+    </BasicSequence>
+  </ExtraSequence>
+  <WindowList id="_4">
+    <WindowStep class="javax.swing.JFrame"
+                feature="(project) - Acs Command Center" height="648"
+                id="frame(project)_-_Acs_Command_Center" width="1008" x="57"
+                y="34">
+      <ComponentStep class="javax.swing.JSplitPane" classcount="2"
+                     classindex="0" height="528"
+                     id="frame(project)_-_Acs_Command_Center.split"
+                     width="1000" x="0" y="86">
+        <ComponentStep class="javax.swing.JSplitPane" classcount="1"
+                       classindex="0" feature="Split: Left" id="splitLeft"
+                       x="1" y="1">
+          <ComponentStep class="javax.swing.JPanel" classcount="36"
+                         classindex="0" feature="Split: Left"
+                         id="splitLeft.comLeft" x="1" y="1">
+            <ComponentStep class="javax.swing.JTextField" classcount="6"
+                           classindex="0" feature="Label: Acs Instance"
+                           height="19" id="textAcs_Instance" width="134"
+                           x="110" y="40"/>
+            <ComponentStep class="javax.swing.JButton" classcount="18"
+                           classindex="0" feature="Start" height="26"
+                           id="buttonStart" width="83" x="437" y="45"/>
+            <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$FixSizeScrollPane"
+                           classcount="1" classindex="0" height="85"
+                           id="splitLeft.comLeft.scroll" width="350" x="365"
+                           y="194">
+              <ComponentStep class="javax.swing.JTextField" classcount="1"
+                             classindex="0" feature="Label: 1" height="24"
+                             id="text1" width="116" x="19" y="6"/>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                             classcount="3" classindex="0"
+                             feature="ToolTip: Start this Container"
+                             height="24" id="buttonTipStart_this_Container"
+                             width="22" x="261" y="6"/>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                             classcount="3" classindex="1"
+                             feature="ToolTip: Stop this Container"
+                             height="24" id="buttonTipStop_this_Container"
+                             width="22" x="283" y="6"/>
+              <ComponentStep class="javax.swing.JComboBox" classcount="1"
+                             classindex="0" height="24"
+                             id="splitLeft.comLeft.combo" width="116" x="140"
+                             y="6"/>
+              <ComponentStep class="javax.swing.JScrollPane$ScrollBar"
+                             classcount="2" classindex="0" feature="Vertical"
+                             height="0"
+                             id="splitLeft.comLeft.scrollbarVertical"
+                             width="0"/>
+              <ComponentStep class="javax.swing.plaf.basic.BasicArrowButton"
+                             classcount="4" classindex="0" feature="Down"
+                             height="15" id="splitLeft.comLeft.buttonDown"
+                             width="15" x="333" y="68"/>
+              <ComponentStep class="javax.swing.JLabel" classcount="12"
+                             classindex="10" feature="6" height="15"
+                             id="label6" width="8" x="6" y="59"/>
+              <ComponentStep class="javax.swing.JLabel" classcount="2"
+                             classindex="0" feature="1" height="15"
+                             id="label1" width="8" x="6" y="11"/>
+              <ComponentStep class="javax.swing.JTextField" classcount="2"
+                             classindex="1" height="24"
+                             id="splitLeft.comLeft.text3" width="116" x="19"
+                             y="30"/>
+              <ComponentStep class="javax.swing.JComboBox" classcount="2"
+                             classindex="1" height="24"
+                             id="splitLeft.comLeft.combo2" width="116" x="140"
+                             y="30">
+                <ComponentStep class="javax.swing.JButton" classcount="1"
+                               classindex="0" id="splitLeft.comLeft.button"/>
+              </ComponentStep>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                             classcount="6" classindex="3"
+                             feature="ToolTip: Start this Container"
+                             height="24" id="buttonTipStart_this_Container2"
+                             width="22" x="261" y="30"/>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                             classcount="6" classindex="4"
+                             feature="ToolTip: Stop this Container"
+                             height="24" id="buttonTipStop_this_Container2"
+                             width="22" x="283" y="30"/>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                             classcount="6" classindex="1"
+                             feature="ToolTip: Stop this Container"
+                             height="24" id="buttonTipStop_this_Container3"
+                             width="22" x="283" y="6"/>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine"
+                             classcount="1" classindex="0" height="24"
+                             id="pnl_ContainerLine_0"
+                             name="pnl_ContainerLine#0" width="322" x="6"
+                             y="6">
+                <ComponentStep class="javax.swing.JTextField" classcount="1"
+                               classindex="0" feature="Label: 1" height="24"
+                               id="txt_ContainerName_0"
+                               name="txt_ContainerName#0" width="116" x="13"
+                               y="0"/>
+                <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                               classcount="3" classindex="0"
+                               feature="ToolTip: Start this Container"
+                               height="24" id="btn_Start_Container_0"
+                               name="btn_Start_Container#0" width="22" x="256"
+                               y="0"/>
+                <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                               classcount="3" classindex="1"
+                               feature="ToolTip: Stop this Container"
+                               height="24" id="btn_Stop_Container_0"
+                               name="btn_Stop_Container#0" width="22" x="278"
+                               y="0"/>
+              </ComponentStep>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine"
+                             classcount="2" classindex="1" height="24"
+                             id="pnl_ContainerLine_1"
+                             name="pnl_ContainerLine#1" width="322" x="6"
+                             y="30">
+                <ComponentStep class="javax.swing.JTextField" classcount="1"
+                               classindex="0" height="24"
+                               id="txt_ContainerName_1"
+                               name="txt_ContainerName#1" width="116" x="13"
+                               y="0"/>
+                <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                               classcount="3" classindex="0"
+                               feature="ToolTip: Start this Container"
+                               height="24" id="btn_Start_Container_1"
+                               name="btn_Start_Container#1" width="22" x="256"
+                               y="0"/>
+                <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                               classcount="3" classindex="1"
+                               feature="ToolTip: Stop this Container"
+                               height="24" id="btn_Stop_Container_1"
+                               name="btn_Stop_Container#1" width="22" x="278"
+                               y="0"/>
+              </ComponentStep>
+              <ComponentStep class="javax.swing.JTextField" classcount="1"
+                             classindex="0" feature="Label: 1" height="24"
+                             id="txt_ContainerName" name="txt_ContainerName"
+                             width="116" x="19" y="6"/>
+              <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$ContainerLine$Button"
+                             classcount="3" classindex="0"
+                             feature="ToolTip: Start this Container"
+                             height="24" id="btn_Start_Container"
+                             name="btn_Start_Container" width="22" x="262"
+                             y="6"/>
+            </ComponentStep>
+            <ComponentStep class="javax.swing.JButton" classcount="18"
+                           classindex="1" feature="Stop" height="26"
+                           id="buttonStop" width="82" x="525" y="45"/>
+            <ComponentStep class="javax.swing.JButton" classcount="18"
+                           classindex="2" feature="Kill" height="26"
+                           id="buttonKill" width="75" x="612" y="45"/>
+            <ComponentStep class="javax.swing.JCheckBox" classcount="1"
+                           classindex="0" feature="advanced" height="21"
+                           id="checkAdvanced" width="81" x="370" y="81"/>
+            <ComponentStep class="javax.swing.JPanel" classcount="29"
+                           classindex="19" height="48"
+                           id="splitLeft.comLeft.com" width="259" x="451"
+                           y="81"/>
+            <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$TwoStageEnableButton"
+                           classcount="4" classindex="0"
+                           feature="ToolTip: Start Services with the specified Common Settings"
+                           height="24"
+                           id="buttonTipStart_Services_with_the_specified_Common_Settings"
+                           width="24" x="516" y="95"/>
+            <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$TwoStageEnableButton"
+                           classcount="4" classindex="1"
+                           feature="ToolTip: Stop the specified Services"
+                           height="24"
+                           id="buttonTipStop_the_specified_Services"
+                           width="24" x="545" y="95"/>
+            <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$TwoStageEnableButton"
+                           classcount="4" classindex="2"
+                           feature="ToolTip: Start a Manager with the specified Common Settings"
+                           height="24"
+                           id="buttonTipStart_a_Manager_with_the_specified_Common_Settings"
+                           width="24" x="647" y="95"/>
+            <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$TwoStageEnableButton"
+                           classcount="4" classindex="3"
+                           feature="ToolTip: Stop the specified Manager"
+                           height="24"
+                           id="buttonTipStop_the_specified_Manager" width="24"
+                           x="676" y="95"/>
+            <ComponentStep class="javax.swing.JPanel" classcount="29"
+                           classindex="15" height="134"
+                           id="splitLeft.comLeft.com2" width="374" x="353"
+                           y="10"/>
+            <ComponentStep class="javax.swing.JLabel" classcount="18"
+                           classindex="8" feature="Services" height="24"
+                           id="labelServices" width="50" x="461" y="95"/>
+            <ComponentStep class="javax.swing.JLabel" classcount="18"
+                           classindex="9" feature="Manager" height="24"
+                           id="labelManager" width="53" x="589" y="95"/>
+            <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$MyRadioButton"
+                           classcount="3" classindex="0" feature="Local"
+                           height="23" id="radioLocal" width="319" x="22"
+                           y="80"/>
+            <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$MyRadioButton"
+                           classcount="3" classindex="1"
+                           feature="Java-only Acs" height="23"
+                           id="radioJava-only_Acs" width="319" x="22"
+                           y="119"/>
+            <ComponentStep class="alma.acs.commandcenter.gui.TabPanel$MyRadioButton"
+                           classcount="3" classindex="2" feature="Remote"
+                           height="23" id="radioRemote" width="319" x="22"
+                           y="167"/>
+            <ComponentStep class="javax.swing.JTextField" classcount="6"
+                           classindex="1" height="19"
+                           id="splitLeft.comLeft.text" width="219" x="116"
+                           y="145"/>
+            <ComponentStep class="javax.swing.JTextField" classcount="6"
+                           classindex="2" height="19"
+                           id="splitLeft.comLeft.text2" width="215" x="120"
+                           y="193"/>
+            <ComponentStep class="javax.swing.JTextField" classcount="6"
+                           classindex="3" feature="Label: Username"
+                           height="19" id="textUsername" width="215" x="120"
+                           y="214"/>
+            <ComponentStep class="javax.swing.JPasswordField" classcount="1"
+                           classindex="0" feature="Label: Password"
+                           height="19" id="passwdPassword" width="215" x="120"
+                           y="235"/>
+            <ComponentStep class="javax.swing.JPanel" classcount="29"
+                           classindex="2" height="313"
+                           id="splitLeft.comLeft.com3" width="343" x="10"
+                           y="10"/>
+            <ComponentStep class="javax.swing.JButton" classcount="18"
+                           classindex="15" feature="ToolTip: More Containers"
+                           height="24" id="buttonTipMore_Containers"
+                           width="22" x="370" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="22"
+                           classindex="19" feature="ToolTip: More Containers"
+                           height="24" id="buttonTipMore_Containers2"
+                           width="22" x="370" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="26"
+                           classindex="23" feature="ToolTip: More Containers"
+                           height="24" id="buttonTipMore_Containers3"
+                           width="22" x="370" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="30"
+                           classindex="27" feature="ToolTip: More Containers"
+                           height="24" id="buttonTipMore_Containers4"
+                           width="22" x="370" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="34"
+                           classindex="31" feature="ToolTip: More Containers"
+                           height="24" id="buttonTipMore_Containers5"
+                           width="22" x="370" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="38"
+                           classindex="36" feature="ToolTip: Less Containers"
+                           height="24" id="buttonTipLess_Containers"
+                           width="22" x="397" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="34"
+                           classindex="32" feature="ToolTip: Less Containers"
+                           height="24" id="buttonTipLess_Containers2"
+                           width="22" x="397" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="30"
+                           classindex="28" feature="ToolTip: Less Containers"
+                           height="24" id="buttonTipLess_Containers3"
+                           width="22" x="397" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="26"
+                           classindex="24" feature="ToolTip: Less Containers"
+                           height="24" id="buttonTipLess_Containers4"
+                           width="22" x="397" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="22"
+                           classindex="20" feature="ToolTip: Less Containers"
+                           height="24" id="buttonTipLess_Containers5"
+                           width="22" x="397" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="38"
+                           classindex="35" feature="ToolTip: More Containers"
+                           height="24" id="buttonTipMore_Containers6"
+                           width="22" x="370" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="42"
+                           classindex="40" feature="ToolTip: Less Containers"
+                           height="24" id="buttonTipLess_Containers6"
+                           width="22" x="397" y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="22"
+                           classindex="1" feature="Stop" height="26"
+                           id="buttonStop2" width="82" x="525" y="45"/>
+            <ComponentStep class="javax.swing.JButton" classcount="26"
+                           classindex="1" feature="Stop" height="26"
+                           id="buttonStop3" width="82" x="525" y="45"/>
+            <ComponentStep class="javax.swing.JLabel" classcount="18"
+                           classindex="2" feature=" " height="15" id="label_"
+                           width="319" x="22" y="103"/>
+            <ComponentStep class="javax.swing.JPanel" classcount="31"
+                           classindex="2" height="313"
+                           id="splitLeft.comLeft.com4" width="343" x="10"
+                           y="10"/>
+            <ComponentStep class="javax.swing.JButton" classcount="22"
+                           classindex="0" feature="Start" height="26"
+                           id="buttonStart2" width="83" x="437" y="45"/>
+            <ComponentStep class="javax.swing.JButton" classcount="22"
+                           classindex="15" feature="ToolTip: More Containers"
+                           height="24" id="btn_More_Containers"
+                           name="btn_More_Containers" width="22" x="263"
+                           y="284"/>
+            <ComponentStep class="javax.swing.JButton" classcount="46"
+                           classindex="40"
+                           feature="ToolTip: Less Containers (removes Last from List)"
+                           height="24" id="btn_Less_Containers"
+                           name="btn_Less_Containers" width="22" x="290"
+                           y="284"/>
+          </ComponentStep>
+          <ComponentStep class="javax.swing.JPanel" classcount="36"
+                         classindex="30" feature="Split: Right"
+                         id="splitLeft.comRight">
+            <ComponentStep class="javax.swing.JScrollPane" classcount="1"
+                           classindex="0" height="323"
+                           id="splitLeft.comRight.scroll" width="301" x="12"
+                           y="110">
+              <ComponentStep class="alma.acs.commandcenter.gui.DeploymentTree"
+                             classcount="1" classindex="0"
+                             id="splitLeft.comRight.tree">
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3100">
+                  <primary>/Manager on $(IP), port 3100</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3300">
+                  <primary>/Manager on $(IP), port 3300</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3000">
+                  <primary>/Manager on $(IP), port 3000</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3300/Containers">
+                  <primary>/Manager on $(IP), port 3300/Containers</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3300/Cliental_Applications">
+                  <primary>/Manager on $(IP), port 3300/Cliental Applications</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3300/Components">
+                  <primary>/Manager on $(IP), port 3300/Components</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3300/Containers/'firstContainer'_[handle_76873729]_:_0_components">
+                  <primary>/Manager on $(IP), port 3300/Containers/'firstContainer' [handle 76873729] : 0 components</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3000/Containers">
+                  <primary>/Manager on $(IP), port 3000/Containers</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3000/Cliental_Applications">
+                  <primary>/Manager on $(IP), port 3000/Cliental Applications</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3000/Components">
+                  <primary>/Manager on $(IP), port 3000/Components</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3000/Containers/'fisrtContainer'_[handle_83689473]_:_0_components">
+                  <primary>/Manager on $(IP), port 3000/Containers/'fisrtContainer' [handle 83689473] : 0 components</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_te31, port 3000">
+                  <primary>/Manager on te31, port 3000</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_te31, port 3000/Components">
+                  <primary>/Manager on te31, port 3000/Components</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 30000">
+                  <primary>/Manager on 134.171.12.236, port 3000</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3000/Components2">
+                  <primary>/Manager on 134.171.12.236, port 3000/Components</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_te31, port 3000/Cliental_Applications">
+                  <primary>/Manager on te31, port 3000/Cliental Applications</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.236, port 3000/Cliental_Applications2">
+                  <primary>/Manager on 134.171.12.236, port 3000/Cliental Applications</primary>
+                </SubItemStep>
+                <SubItemStep id="splitLeft.comRight.tree./Manager_on_134.171.12.93,_port_3000">
+                  <primary>/Manager on 134.171.12.93, port 3000</primary>
+                </SubItemStep>
+              </ComponentStep>
+              <ComponentStep class="javax.swing.JScrollPane$ScrollBar"
+                             classcount="2" classindex="0" feature="Vertical"
+                             height="0"
+                             id="splitLeft.comRight.scrollbarVertical"
+                             width="0"/>
+            </ComponentStep>
+            <ComponentStep class="javax.swing.JTextField" classcount="2"
+                           classindex="0" feature="Label: Mgr Host"
+                           height="25" id="textMgr_Host" width="114" x="17"
+                           y="50"/>
+            <ComponentStep class="javax.swing.JTextField" classcount="2"
+                           classindex="1" height="25"
+                           id="splitLeft.comRight.text" width="48" x="136"
+                           y="50"/>
+            <ComponentStep class="javax.swing.JButton" classcount="6"
+                           classindex="0" feature="Add to View" height="25"
+                           id="buttonAdd_to_View" width="110" x="189" y="50"/>
+            <ComponentStep class="javax.swing.JButton" classcount="6"
+                           classindex="1" feature="Full Refresh" height="25"
+                           id="buttonFull_Refresh" width="110" x="189"
+                           y="80"/>
+          </ComponentStep>
+        </ComponentStep>
+        <ComponentStep class="alma.acs.commandcenter.gui.FeedbackTabs"
+                       classcount="1" classindex="0" feature="Split: Right"
+                       id="tabbedRight">
+          <ComponentStep class="alma.acs.commandcenter.gui.FeedbackArea"
+                         classcount="2" classindex="1" feature="Tab: javaC"
+                         height="285" id="tabJavaC" width="996" x="2" y="2">
+            <ComponentStep class="javax.swing.JScrollPane" classcount="1"
+                           classindex="0" height="254" id="tabJavaC.scroll"
+                           width="996" x="0" y="31">
+              <ComponentStep class="javax.swing.JScrollPane$ScrollBar"
+                             classcount="2" classindex="0" feature="Vertical"
+                             height="0" id="tabJavaC.scrollbarVertical"
+                             width="0"/>
+            </ComponentStep>
+          </ComponentStep>
+          <ComponentStep class="alma.acs.commandcenter.gui.FeedbackArea"
+                         classcount="2" classindex="1" feature="Tab: Tools"
+                         height="174" id="tabTools" width="1087" x="2" y="2">
+            <ComponentStep class="javax.swing.JScrollPane" classcount="1"
+                           classindex="0" height="143" id="tabTools.scroll"
+                           width="1087" x="0" y="31">
+              <ComponentStep class="javax.swing.JTextArea" classcount="1"
+                             classindex="0" id="tabTools.text">
+                <SubItemStep id="tabTools.text.____self.cdbAccess_=_CDBaccess()">
+                  <primary>    self.cdbAccess = CDBaccess()</primary>
+                </SubItemStep>
+                <SubItemStep id="tabTools.text.____self.m_dal_=_cdb()">
+                  <primary>    self.m_dal = cdb()</primary>
+                </SubItemStep>
+                <SubItemStep id="tabTools.text.____eventAdmin_=_ACSEventAdmin()">
+                  <primary>    eventAdmin = ACSEventAdmin()</primary>
+                </SubItemStep>
+              </ComponentStep>
+            </ComponentStep>
+            <ComponentStep class="javax.swing.JToolBar" classcount="1"
+                           classindex="0" height="31" id="tabTools.toolbar"
+                           width="1069" x="0" y="0">
+              <ComponentStep class="javax.swing.JButton" classcount="5"
+                             classindex="4" feature="Clear All" height="27"
+                             id="buttonClear_All" width="65" x="1002" y="2"/>
+            </ComponentStep>
+          </ComponentStep>
+          <ComponentStep class="alma.acs.commandcenter.gui.FeedbackArea"
+                         classcount="1" classindex="0" feature="Tab: Acs"
+                         height="98" id="tabAcs" width="1069" x="2" y="2">
+            <ComponentStep class="javax.swing.JToolBar" classcount="1"
+                           classindex="0" height="31" id="tabAcs.toolbar"
+                           width="1069" x="0" y="0">
+              <ComponentStep class="javax.swing.JButton" classcount="5"
+                             classindex="4" feature="Clear All" height="27"
+                             id="buttonClear_All2" width="65" x="1002" y="2"/>
+            </ComponentStep>
+            <ComponentStep class="javax.swing.JScrollPane" classcount="1"
+                           classindex="0" height="67" id="tabAcs.scroll"
+                           width="1069" x="0" y="31">
+              <ComponentStep class="javax.swing.JTextArea" classcount="1"
+                             classindex="0" id="tabAcs.text">
+                <SubItemStep id="tabAcs.text.==&gt;_An_alternative_is_to_use_the_'killACS'_command_which_kills_all_ACS_processes_'mpasquat'_owns">
+                  <primary>==&gt; An alternative is to use the 'killACS' command which kills all ACS processes 'mpasquat' owns</primary>
+                </SubItemStep>
+                <SubItemStep id="tabAcs.text.DAO:'MACI/Components'_returned_'PYHELLODEMO1/Container'=aragornContainer">
+                  <primary>DAO:'MACI/Components' returned 'PYHELLODEMO1/Container'=aragornContainer</primary>
+                </SubItemStep>
+              </ComponentStep>
+            </ComponentStep>
+          </ComponentStep>
+          <ComponentStep class="alma.acs.commandcenter.gui.FeedbackArea"
+                         classcount="3" classindex="2"
+                         feature="Tab: secondContainer" height="143"
+                         id="tabSecondContainer" width="1069" x="2" y="2">
+            <ComponentStep class="javax.swing.JScrollPane" classcount="1"
+                           classindex="0" height="112"
+                           id="tabSecondContainer.scroll" width="1069" x="0"
+                           y="31">
+              <ComponentStep class="javax.swing.JTextArea" classcount="1"
+                             classindex="0" id="tabSecondContainer.text">
+                <SubItemStep id="tabSecondContainer.text.2005-03-16T10:52:54.585_Container_running...">
+                  <primary>2005-03-16T10:52:54.585 Container running...</primary>
+                </SubItemStep>
+                <SubItemStep id="tabSecondContainer.text.Retrieving_CDB_reference_from_Manager_using_bootstrap_ORB">
+                  <primary>Retrieving CDB reference from Manager using bootstrap ORB</primary>
+                </SubItemStep>
+                <SubItemStep id="tabSecondContainer.text.2005-03-16T10:52:54.584_Logged_into_the_Manager.">
+                  <primary>2005-03-16T10:52:54.584 Logged into the Manager.</primary>
+                </SubItemStep>
+                <SubItemStep id="tabSecondContainer.text.2005-03-16T10:55:00.454_Container_stopped.">
+                  <primary>2005-03-16T10:55:00.454 Container stopped.</primary>
+                </SubItemStep>
+                <SubItemStep id="tabSecondContainer.text.2005-03-16T13:10:34.657_Done_all.">
+                  <primary>2005-03-16T13:10:34.657 Done all.</primary>
+                </SubItemStep>
+              </ComponentStep>
+              <ComponentStep class="javax.swing.JScrollPane$ScrollBar"
+                             classcount="2" classindex="0" feature="Vertical"
+                             height="0"
+                             id="tabSecondContainer.scrollbarVertical"
+                             width="0"/>
+              <ComponentStep class="javax.swing.plaf.basic.BasicArrowButton"
+                             classcount="4" classindex="0" feature="Down"
+                             height="15" id="tabSecondContainer.buttonDown"
+                             width="15" x="1052" y="95"/>
+              <ComponentStep class="javax.swing.JTextArea" classcount="1"
+                             classindex="0" id="txt_Output"
+                             name="txt_Output"/>
+            </ComponentStep>
+            <ComponentStep class="javax.swing.JToolBar" classcount="1"
+                           classindex="0" height="31"
+                           id="tabSecondContainer.toolbar" width="1069" x="0"
+                           y="0">
+              <ComponentStep class="javax.swing.JButton" classcount="5"
+                             classindex="3" feature="Remove" height="27"
+                             id="buttonRemove" width="61" x="924" y="2"/>
+            </ComponentStep>
+          </ComponentStep>
+          <SubItemStep id="tabbedRight.fisrtContainer">
+            <primary>fisrtContainer</primary>
+          </SubItemStep>
+          <SubItemStep id="tabbedRight.secondContainer">
+            <primary>secondContainer</primary>
+          </SubItemStep>
+          <ComponentStep class="alma.acs.commandcenter.gui.FeedbackArea"
+                         classcount="3" classindex="1"
+                         feature="Tab: fisrtContainer" height="143"
+                         id="tabFisrtContainer" width="1069" x="2" y="2">
+            <ComponentStep class="javax.swing.JScrollPane" classcount="1"
+                           classindex="0" height="112"
+                           id="tabFisrtContainer.scroll" width="1069" x="0"
+                           y="31">
+              <ComponentStep class="javax.swing.JTextArea" classcount="1"
+                             classindex="0" id="tabFisrtContainer.text">
+                <SubItemStep id="tabFisrtContainer.text.2005-03-16T10:52:57.027_FINER:_ping_received.">
+                  <primary>2005-03-16T10:52:57.027 FINER: ping received.</primary>
+                </SubItemStep>
+                <SubItemStep id="tabFisrtContainer.text.2005-03-16T10:53:27.037_FINER:_ping_received.">
+                  <primary>2005-03-16T10:53:27.037 FINER: ping received.</primary>
+                </SubItemStep>
+                <SubItemStep id="tabFisrtContainer.text.2005-03-16T10:55:20.928_FINER:_RETURN">
+                  <primary>2005-03-16T10:55:20.928 FINER: RETURN</primary>
+                </SubItemStep>
+                <SubItemStep id="tabFisrtContainer.text.exported_ACS_ABEANS_CONFIG=/alma/ACS-4.0/acsdata/config/abeans/Config">
+                  <primary>exported ACS_ABEANS_CONFIG=/alma/ACS-4.0/acsdata/config/abeans/Config</primary>
+                </SubItemStep>
+              </ComponentStep>
+              <ComponentStep class="javax.swing.JScrollPane$ScrollBar"
+                             classcount="2" classindex="0" feature="Vertical"
+                             height="0"
+                             id="tabFisrtContainer.scrollbarVertical"
+                             width="0"/>
+            </ComponentStep>
+            <ComponentStep class="javax.swing.JToolBar" classcount="1"
+                           classindex="0" height="31"
+                           id="tabFisrtContainer.toolbar" width="1069" x="0"
+                           y="0">
+              <ComponentStep class="javax.swing.JButton" classcount="5"
+                             classindex="4" feature="Clear All" height="27"
+                             id="buttonClear_All3" width="65" x="1002" y="1"/>
+            </ComponentStep>
+          </ComponentStep>
+          <SubItemStep id="tabbedRight.firstContainer">
+            <primary>firstContainer</primary>
+          </SubItemStep>
+        </ComponentStep>
+        <ComponentStep class="javax.swing.plaf.basic.BasicSplitPaneDivider"
+                       classcount="2" classindex="1" feature="Vertical"
+                       id="frame(project)_-_Acs_Command_Center.dividerVertical"/>
+      </ComponentStep>
+      <ComponentStep class="javax.swing.JMenuBar" classcount="1"
+                     classindex="0" height="21"
+                     id="frame(project)_-_Acs_Command_Center.menubar"
+                     width="1084" x="71" y="126">
+        <ComponentStep class="javax.swing.JMenu" classcount="5" classindex="1"
+                       feature="Tools" height="19" id="menuTools" width="47"
+                       x="55" y="1">
+          <ComponentStep class="javax.swing.JMenuItem" classcount="10"
+                         classindex="9" feature="Event Browser" height="19"
+                         id="menuItemEvent_Browser" width="209"/>
+        </ComponentStep>
+        <ComponentStep class="javax.swing.JMenu" classcount="5" classindex="0"
+                       feature="Project" height="19" id="menuProject"
+                       width="55" x="0" y="1">
+          <ComponentStep class="javax.swing.JMenuItem" classcount="5"
+                         classindex="4" feature="Exit" height="19"
+                         id="menuItemExit" width="85"/>
+        </ComponentStep>
+      </ComponentStep>
+      <ComponentStep class="javax.swing.JLabel" classcount="23" classindex="1"
+                     feature="Acs Command Center" height="50"
+                     id="labelAcs_Command_Center" width="988" x="86" y="49"/>
+      <ComponentStep class="javax.swing.plaf.basic.BasicComboPopup"
+                     feature="InvokerClass: JComboBox" height="53"
+                     id="popupInvokerClass:_JComboBox" width="116" x="507"
+                     y="336">
+        <ComponentStep class="javax.swing.JScrollPane" classcount="1"
+                       classindex="0" height="51"
+                       id="popupInvokerClass:_JComboBox.scroll" width="114"
+                       x="1" y="1">
+          <ComponentStep class="javax.swing.JList" classcount="1"
+                         classindex="0"
+                         id="popupInvokerClass:_JComboBox.list">
+            <SubItemStep id="popupInvokerClass:_JComboBox.list.cpp">
+              <primary>cpp</primary>
+            </SubItemStep>
+          </ComponentStep>
+        </ComponentStep>
+      </ComponentStep>
+      <ComponentStep class="javax.swing.JLabel" classcount="24" classindex="1"
+                     feature="Acs Command Center" height="50"
+                     id="labelAcs_Command_Center2" width="988" x="42" y="5"/>
+      <ComponentStep class="javax.swing.JLabel" classcount="28" classindex="1"
+                     feature="Acs Command Center" height="50"
+                     id="labelAcs_Command_Center3" width="988" x="42" y="5"/>
+      <ComponentStep class="alma.acs.commandcenter.gui.DeploymentTree$ManagerContextMenu"
+                     feature="InvokerClass: DeploymentTree" height="70"
+                     id="popupInvokerClass:_DeploymentTree" width="181">
+        <ComponentStep class="javax.swing.JMenuItem" classcount="3"
+                       classindex="1" feature="Send Shutdown Request"
+                       height="19" id="menuItemSend_Shutdown_Request"
+                       width="179" x="1" y="26"/>
+        <ComponentStep class="javax.swing.JMenuItem" classcount="3"
+                       classindex="2" feature="Remove from View" height="19"
+                       id="menuItemRemove_from_View" width="179" x="1"
+                       y="49"/>
+        <ComponentStep class="javax.swing.JMenuItem" classcount="3"
+                       classindex="0" feature="Refresh Info" height="19"
+                       id="menuItemRefresh_Info" width="179" x="1" y="3"/>
+      </ComponentStep>
+      <ComponentStep class="javax.swing.JLabel" classcount="27" classindex="1"
+                     feature="Acs Command Center" height="50"
+                     id="labelAcs_Command_Center4" width="1151" x="42" y="5"/>
+    </WindowStep>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Progress" height="149" id="dialogProgress"
+                width="338" x="334" y="251"/>
+    <WindowStep class="javax.swing.JDialog"
+                feature="Auto-assigned Acs Instance" height="141"
+                id="dialogAuto-assigned_Acs_Instance" modal="true" width="513"
+                x="305" y="357">
+      <ComponentStep class="javax.swing.JButton" classcount="1" classindex="0"
+                     feature="OK" height="25" id="buttonOK" width="41" x="232"
+                     y="70"/>
+    </WindowStep>
+    <WindowStep class="javax.swing.JDialog" feature="Warning" height="996"
+                id="dialogWarning" modal="true" width="1280" x="0" y="0">
+      <ComponentStep class="javax.swing.JButton" classcount="2" classindex="0"
+                     feature="Yes" height="25" id="buttonYes" width="44"
+                     x="478" y="389"/>
+    </WindowStep>
+    <WindowStep class="javax.swing.JDialog" feature="Communication Failed"
+                height="117" id="dialogCommunication_Failed" modal="true"
+                width="516" x="652" y="253">
+      <ComponentStep class="javax.swing.JButton" classcount="2" classindex="0"
+                     feature="Yes" height="25" id="buttonYes2" width="44"
+                     x="207" y="52"/>
+      <ComponentStep class="javax.swing.JButton" classcount="1" classindex="0"
+                     feature="OK" height="25" id="buttonOK2" width="41"
+                     x="224" y="52"/>
+    </WindowStep>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Starting Acs - Progress" height="146"
+                id="dialogStarting_Acs_-_Progress" width="338" x="373"
+                y="224"/>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Starting firstContainer - Progress" height="119"
+                id="dialogStarting_firstContainer_-_Progress" width="330"
+                x="497" y="277"/>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Starting secondContainer - Progress" height="119"
+                id="dialogStarting_secondContainer_-_Progress" width="330"
+                x="497" y="277"/>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Stopping secondContainer - Progress" height="119"
+                id="dialogStopping_secondContainer_-_Progress" width="330"
+                x="497" y="277"/>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Stopping firstContainer - Progress" height="119"
+                id="dialogStopping_firstContainer_-_Progress" width="330"
+                x="497" y="277"/>
+    <WindowStep class="alma.acs.commandcenter.gui.TabPanel$FlowDialog"
+                feature="Starting first - Progress" height="119"
+                id="dialogStarting_first_-_Progress" width="330" x="497"
+                y="277"/>
+  </WindowList>
+</RootStep>

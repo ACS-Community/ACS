@@ -1,0 +1,16 @@
+#! /bin/bash
+OLD_CDB=$ACS_CDB
+ACS_CDB=../test
+
+ACS_TMP=$PWD/tmp
+#Start the ORB services and manager.
+acsutilTATPrologue
+
+acsutilAwaitContainerStart -java javaContainer
+acsutilAwaitContainerStart -py pyContainer
+acsutilAwaitContainerStart -cpp cppContainer
+
+ACS_CDB=$OLD_CDB
+
+#
+# ___oOo___

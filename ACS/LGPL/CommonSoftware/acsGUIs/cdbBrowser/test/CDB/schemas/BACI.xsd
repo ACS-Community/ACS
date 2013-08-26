@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Configuration Database Schema for BACI Types
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:BACI:1.0" 
+	   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+ 	   xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+	   xmlns="urn:schemas-cosylab-com:BACI:1.0" 
+	   elementFormDefault="qualified" 
+	   attributeFormDefault="unqualified">
+   <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd" />
+
+   <xs:complexType name="NamedComponent">
+   </xs:complexType>
+
+   <xs:complexType name="CharacteristicComponent">
+      <xs:complexContent>
+         <xs:extension base="NamedComponent" >
+            <xs:attribute name="recentCommand" type="xs:string" use="optional" default=""/>
+            <xs:attribute name="recentTimeStamp" type="xs:string" use="optional" default=""/>
+	 </xs:extension>	
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="Property">
+      <xs:complexContent>
+         <xs:extension base="NamedComponent" />
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="TypelessProperty">
+      <xs:complexContent>
+         <xs:extension base="Property">
+            <xs:attribute name="description" type="xs:string" use="optional" default="-" />
+            <xs:attribute name="format" type="xs:string" use="optional" default="-" />
+            <xs:attribute name="units" type="xs:string" use="optional" default="-" />
+            <xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="65535" />
+            <xs:attribute name="archive_priority" type="xs:int" use="optional" default="3" />
+            <xs:attribute name="archive_min_int" type="xs:double" use="optional" default="0.0" />
+            <xs:attribute name="archive_max_int" type="xs:double" use="optional" default="0.0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="Ppattern_">
+      <xs:complexContent>
+         <xs:restriction base="TypelessProperty">
+	    <!--overwrite inherited definition-->
+            <xs:attribute name="format" type="xs:string" use="optional" default="%u" />
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="Ppattern">
+      <xs:complexContent>
+         <xs:extension base="Ppattern_">
+            <xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0" />
+            <xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001" />
+            <xs:attribute name="default_value" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="min_step" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="archive_delta" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="bitDescription" type="xs:string" use="optional" default=""/>
+            <xs:attribute name="whenSet" type="xs:string" use="optional" default=""/>
+            <xs:attribute name="whenCleared" type="xs:string" use="optional" default="" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="ROpattern">
+      <xs:complexContent>
+         <xs:extension base="Ppattern">
+            <xs:attribute name="alarm_low_on" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="alarm_low_off" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="alarm_high_on" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="alarm_high_off" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="Pdouble_">
+      <xs:complexContent>
+         <xs:restriction base="TypelessProperty">
+            <!--overwrite inherited definition-->
+            <xs:attribute name="format" type="xs:string" use="optional" default="%9.4f" />
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="Pdouble">
+      <xs:complexContent>
+         <xs:extension base="Pdouble_">
+            <xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0" />
+            <xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001" />
+            <xs:attribute name="min_delta_trig" type="xs:double" use="optional" default="0" />
+            <xs:attribute name="default_value" type="xs:double" use="optional" default="0.0" />
+            <xs:attribute name="graph_min" type="xs:double" use="optional" default="-1.7976931348623157E+308" />
+            <xs:attribute name="graph_max" type="xs:double" use="optional" default="1.7976931348623157E+308" />
+            <xs:attribute name="min_step" type="xs:double" use="optional" default="0.0" />
+            <xs:attribute name="archive_delta" type="xs:double" use="optional" default="0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="ROdouble">
+      <xs:complexContent>
+         <xs:extension base="Pdouble">
+            <xs:attribute name="alarm_high_on" type="xs:double" use="optional" default="0.0" />
+            <xs:attribute name="alarm_low_on" type="xs:double" use="optional" default="0.0" />
+            <xs:attribute name="alarm_high_off" type="xs:double" use="optional" default="0.0" />
+            <xs:attribute name="alarm_low_off" type="xs:double" use="optional" default="0.0" />
+            <xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="RWdouble">
+      <xs:complexContent>
+         <xs:extension base="Pdouble">
+            <xs:attribute name="min_value" type="xs:double" use="optional" default="-1.7976931348623157E+308" />
+            <xs:attribute name="max_value" type="xs:double" use="optional" default="1.7976931348623157E+308" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="Pstring_">
+      <xs:complexContent>
+         <xs:restriction base="TypelessProperty">
+            <xs:attribute name="format" type="xs:string" use="optional" default="%s" />
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="Pstring">
+      <xs:complexContent>
+         <xs:extension base="Pstring_">
+            <xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0" />
+            <xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001" />
+            <xs:attribute name="default_value" type="xs:string" use="optional" default="" />
+            <xs:attribute name="archive_delta" type="xs:string" use="optional" default="0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="ROstring">
+      <xs:complexContent>
+         <xs:extension base="Pstring">
+            <!--one second-->	
+            <xs:attribute name="alarm_timer_trig" type="xs:double" default="1.0" />	
+	</xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="RWstring">
+      <xs:complexContent>
+         <xs:extension base="Pstring" />
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="Plong_">
+      <xs:complexContent>
+         <xs:restriction base="TypelessProperty">
+            <xs:attribute name="format" type="xs:string" use="optional" default="%d" />
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="Plong">
+      <xs:complexContent>
+         <xs:extension base="Plong_">
+            <xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0" />
+            <xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.001" />
+            <xs:attribute name="min_delta_trig" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="default_value" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="graph_min" type="xs:int" use="optional" default="-2147483648" />
+            <xs:attribute name="graph_max" type="xs:int" use="optional" default="2147483647" />
+            <xs:attribute name="min_step" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="archive_delta" type="xs:int" use="optional" default="0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="ROlong">
+      <xs:complexContent>
+         <xs:extension base="Plong">
+            <xs:attribute name="alarm_high_on" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_low_on" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_high_off" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_low_off" type="xs:int" use="optional" default="0"/>
+            <!--one second-->
+            <xs:attribute name="alarm_timer_trig" type="xs:double" default="1.0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="RWlong">
+      <xs:complexContent>
+         <xs:extension base="Plong">
+            <xs:attribute name="min_value" type="xs:int" use="optional" default="-2147483648" />
+            <xs:attribute name="max_value" type="xs:int" use="optional" default="2147483647" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+
+   <xs:complexType name="PuLongLong_">
+      <xs:complexContent>
+         <xs:restriction base="TypelessProperty">
+            <xs:attribute name="format" type="xs:string" use="optional" default="%d" />
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="PlongLong_">
+      <xs:complexContent>
+         <xs:restriction base="TypelessProperty">
+            <xs:attribute name="format" type="xs:string" use="optional" default="%d" />
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+
+
+<!--DWF-Fix my maximum/minimum values-->
+   <xs:complexType name="PuLongLong">
+      <xs:complexContent>
+         <xs:extension base="PuLongLong_">
+            <xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0" />
+            <xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001" />
+            <xs:attribute name="min_delta_trig" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="default_value" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="graph_min" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="graph_max" type="xs:int" use="optional" default="2147483647" />
+            <xs:attribute name="min_step" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="archive_delta" type="xs:int" use="optional" default="0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="PlongLong">
+      <xs:complexContent>
+         <xs:extension base="PlongLong_">
+            <xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0" />
+            <xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001" />
+            <xs:attribute name="min_delta_trig" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="default_value" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="graph_min" type="xs:int" use="optional" default="-2147483647" />
+            <xs:attribute name="graph_max" type="xs:int" use="optional" default="2147483647" />
+            <xs:attribute name="min_step" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="archive_delta" type="xs:int" use="optional" default="0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="ROuLongLong">
+      <xs:complexContent>
+         <xs:extension base="PuLongLong">
+            <xs:attribute name="alarm_high_on" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_low_on" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_high_off" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_low_off" type="xs:int" use="optional" default="0"/>
+            <!--one second-->
+            <xs:attribute name="alarm_timer_trig" type="xs:double" default="1.0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="ROlongLong">
+      <xs:complexContent>
+         <xs:extension base="PlongLong">
+            <xs:attribute name="alarm_high_on" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_low_on" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_high_off" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_low_off" type="xs:int" use="optional" default="0"/>
+            <!--one second-->
+            <xs:attribute name="alarm_timer_trig" type="xs:double" default="1.0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType> 
+
+   <xs:complexType name="RWuLongLong">
+      <xs:complexContent>
+         <xs:extension base="PuLongLong">
+            <xs:attribute name="min_value" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="max_value" type="xs:int" use="optional" default="2147483647" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="RWlongLong">
+      <xs:complexContent>
+         <xs:extension base="PlongLong">
+            <xs:attribute name="min_value" type="xs:int" use="optional" default="-2147483648" />
+            <xs:attribute name="max_value" type="xs:int" use="optional" default="2147483647" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="RWpattern">
+      <xs:complexContent>
+         <xs:extension base="Ppattern">
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="PEnum_">
+      <xs:complexContent>
+         <xs:restriction base="TypelessProperty">
+            <xs:attribute name="format" type="xs:string" use="optional" default="-" />
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="PEnum">
+      <xs:complexContent>
+         <xs:extension base="PEnum_">
+            <xs:attribute name="value" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0"/>
+            <xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001"/>
+            <xs:attribute name="default_value" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="statesDescription" type="xs:string" use="optional" default=""/>
+            <xs:attribute name="condition" type="xs:string" use="optional" default="" />
+            <xs:attribute name="archive_delta" type="xs:int" use="optional" default="0" />
+	    <xs:attribute name="graph_min" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="graph_max" type="xs:int" use="optional" default="0"/>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="ROEnum">
+      <xs:complexContent>
+         <xs:extension base="PEnum">
+            <xs:attribute name="alarm_on" type="xs:string" use="optional" default=""/>
+            <xs:attribute name="alarm_off" type="xs:string" use="optional" default=""/>
+            <xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="RWEnum">
+      <xs:complexContent>
+         <xs:extension base="PEnum">
+	 <xs:attribute name="min_value" type="xs:int" use="optional" default="0" />
+         <xs:attribute name="max_value" type="xs:int" use="optional" default="0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+  
+   <xs:complexType name="PdoubleSeq_">
+      <xs:complexContent>
+         <xs:restriction base="TypelessProperty">
+            <xs:attribute name="format" type="xs:string" use="optional" default="-" />
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+   
+   <xs:complexType name="PdoubleSeq">
+      <xs:complexContent>
+         <xs:extension base="PdoubleSeq_">
+            <xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0" />
+            <xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001" />
+            <xs:attribute name="min_delta_trig" type="xs:double" use="optional" default="0" />
+            <xs:attribute name="default_value" type="xs:double" use="optional" default="0.0" />
+            <xs:attribute name="graph_min" type="xs:double" use="optional" default="-1.7976931348623157E+308" />
+            <xs:attribute name="graph_max" type="xs:double" use="optional" default="1.7976931348623157E+308" />
+            <xs:attribute name="min_step" type="xs:double" use="optional" default="0" />
+            <xs:attribute name="archive_delta" type="xs:double" use="optional" default="0.0"/>
+            <xs:attribute name="value" type="xs:string" use="optional" default=""/>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="ROdoubleSeq">
+      <xs:complexContent>
+         <xs:extension base="PdoubleSeq">
+            <xs:attribute name="alarm_high_on" type="xs:double" use="optional" default="0.0"/>
+            <xs:attribute name="alarm_low_on" type="xs:double" use="optional" default="0.0"/>
+            <xs:attribute name="alarm_high_off" type="xs:double" use="optional" default="0.0"/>
+            <xs:attribute name="alarm_low_off" type="xs:double" use="optional" default="0.0"/>
+            <xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="RWdoubleSeq">
+      <xs:complexContent>
+         <xs:extension base="PdoubleSeq">
+            <xs:attribute name="min_value" type="xs:double" use="optional" default="-1.7976931348623157E+308" />
+            <xs:attribute name="max_value" type="xs:double" use="optional" default="1.7976931348623157E+308" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   
+   <xs:complexType name="PlongSeq_">
+      <xs:complexContent>
+         <xs:restriction base="TypelessProperty">
+            <xs:attribute name="format" type="xs:string" use="optional" default="-" />
+         </xs:restriction>
+      </xs:complexContent>
+   </xs:complexType>
+   
+   <xs:complexType name="PlongSeq">
+      <xs:complexContent>
+         <xs:extension base="PlongSeq_">
+            <xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0" />
+            <xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001" />
+            <xs:attribute name="min_delta_trig" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="default_value" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="graph_min" type="xs:int" use="optional" default="-2147483648" />
+            <xs:attribute name="graph_max" type="xs:int" use="optional" default="2147483647" />
+            <xs:attribute name="min_step" type="xs:int" use="optional" default="0" />
+            <xs:attribute name="archive_delta" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="value" type="xs:string" use="optional" default=""/>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+   
+   <xs:complexType name="ROlongSeq">
+      <xs:complexContent>
+         <xs:extension base="PlongSeq">
+            <xs:attribute name="alarm_high_on" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_low_on" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_high_off" type="xs:int" use="optional" default="0"/>
+            <xs:attribute name="alarm_low_off" type="xs:int" use="optional" default="0"/>
+            <!--one second-->
+            <xs:attribute name="alarm_timer_trig" type="xs:double" default="1.0" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:complexType name="RWlongSeq">
+      <xs:complexContent>
+         <xs:extension base="PlongSeq">
+            <xs:attribute name="min_value" type="xs:int" use="optional" default="-2147483648" />
+            <xs:attribute name="max_value" type="xs:int" use="optional" default="2147483647" />
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>   
+
+</xs:schema>
+
+

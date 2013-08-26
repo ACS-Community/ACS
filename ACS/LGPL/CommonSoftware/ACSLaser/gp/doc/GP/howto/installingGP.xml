@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>Installing GP Components</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+	 <author firstname="Lionel" lastname="Mestre" ccid="97307"/>
+  </head>
+	<section>
+		<title>Installing the Logging module</title>
+		<description>
+		<p>The GP layer as a dependence on the Logging module. So you first need to get this module from the download page and install it in your Platform and/or the IDE. Installing the module is simply done by placing the file <code>logging.jar</code> in the <code>modules</code> directory that is located in the user directory.</p>
+		</description>
+	<section>
+		<title>The user directory</title>
+		<description>
+<p>The user directory is the one that you specified in a file called <code>ide.cfg</code> located in the <code>bin</code> directory of the NetBeans distribution. In this file you just need to add the line</p>
+<pre>    -userdir C:\myDir\netbeans-platform40\user</pre>
+<p>that points to where you want to place your user directory.</p>
+<p>If not specified the user directory of NetBeans is located in the</p>
+<pre>    Document and settings\<i>username</i>\.netbeans\<i>versionNumber</i></pre>
+<p>directory.</p>
+		</description>
+	</section>
+	</section>
+	<section>
+		<title>Installing GP module</title>
+		<description>
+		<p>As for the logging module, you just need to place the file <code>GP.jar</code> in the module directory of your NetBeans user directory.</p>
+		</description>
+	</section>
+</document>
+

@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0">
+  <_ Name="TEST_1"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer1" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer1" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer2" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer3" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer4" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer5" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer6" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer7" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer8" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer9" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer10" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer11" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer12" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer13" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer14" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer15" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer16" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer17" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer18" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer19" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer20" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer21" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer22" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer23" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer24" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer25" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer26" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer27" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer28" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer29" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer30" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer31" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer32" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer33" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer34" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer35" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer36" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer37" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer38" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer39" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer40" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer41" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer42" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer43" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer44" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer45" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer46" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer47" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer48" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer49" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer50" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer51" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer52" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer53" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer54" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer55" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer56" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer57" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer58" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer59" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer60" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer61" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer62" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer63" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer64" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer65" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer66" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer67" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer68" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer69" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer70" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer71" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer72" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer73" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer74" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer75" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer76" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer77" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer78" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer79" ImplLang="java" />
+  <_ Name="*"
+     Code="alma.managertest.DummyComponentImpl.DummyComponentHelper"
+     Type="IDL:alma/managertest/DummyComponent:1.0"
+     Container="javaContainer80" ImplLang="java" />
+</Components>

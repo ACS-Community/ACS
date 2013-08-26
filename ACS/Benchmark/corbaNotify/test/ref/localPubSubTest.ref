@@ -1,0 +1,18 @@
+1 -  -- org.junit.runner.JUnitCore acs.benchmark.nc.client.LocalPubSubTest
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@LocalPubSubTest created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
+1 - .----------T--:--:--.--- INFO [LocalPubSubTest] ----------------- testOneSupplierNoSubscriber ----------------- 
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] component 'LocalPubSubTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Container 'localSupplierContainer1' is ready.
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Single supplier comp 'JavaSupplier-1' sent 10000 MountStatusData events at max speed to NC 'CONTROL_REALTIME' in xxx ms.
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] client 'LocalPubSubTest' has successfully delivered a component release request for curl=JavaSupplier-1
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@LocalPubSubTest created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] component 'LocalPubSubTest' requested AdvancedContainerServices
+1 - .----------T--:--:--.--- INFO [LocalPubSubTest] ----------------- testOneSupplierOneSubscriberMixedEvents ----------------- 
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Container 'localSupplierContainer1' is ready.
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Connected subscriber to NC CONTROL_REALTIME
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] About to call subscriber#receiveEvents in a separate thread...
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Connected supplier to NC CONTROL_REALTIME. Will now send ~200 events, one every 48 ms.
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] Subscriber component done. It received 200 events in xxx ms.
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] client 'LocalPubSubTest' has successfully delivered a component release request for curl=JavaSubscriber-1
+1 - ----------T--:--:--.--- INFO [LocalPubSubTest] client 'LocalPubSubTest' has successfully delivered a component release request for curl=JavaSupplier-1
+1 - OK (2 tests)

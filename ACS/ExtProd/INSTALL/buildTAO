@@ -1,0 +1,296 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: buildTAO,v 1.48 2012/01/09 14:39:47 tstaig Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# psivera   2002-08-21  created
+# sturolla  2005-10-09  ported to Bourne Shell and added external subroutine to determine OS
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+# Parse options
+for i in $*
+do
+	case $i in
+    	--debug)
+		DONTSTRIP="yes"
+		;;
+    	*)
+                # unknown option
+		;;
+  	esac
+done
+
+if [ "$DONTSTRIP" = "yes" ]; then
+  echo "Building TAO in debug mode, tests, examples will be preserved. Binaries will not be stripped"
+fi
+
+LOG=buildTAO.log
+exec > $LOG 2>&1
+
+date
+
+NUM_CPU=`grep -c processor  /proc/cpuinfo`
+
+CURR_DIR=`pwd`
+
+if [ "$OS" = "LINUX" ]
+then 
+  OSTAG=linux
+elif [ "$OS" = "SOLARIS" ]
+then
+  OSTAG=sun
+elif [ "$OS" = "$CYGWIN_VER" ]
+then
+  OSTAG=cygwin
+else
+  echo "OS $OS not supported"
+  exit -1
+fi
+
+echo "Installing ACE/TAO for $OSTAG using $NUM_CPU CPU(s)"
+echo 
+
+if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO ]
+then
+  echo $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO directory exists already. I clean it up.
+  rm -rf $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
+fi
+mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
+
+
+#
+# Unpack the tar file
+# put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
+#
+FILE=ACE+TAO-5.8.1
+ARCHIVE=`pwd`/../PRODUCTS/$FILE.tar.gz
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
+echo "unpacking the archive"
+gzip -cd $ARCHIVE | tar -xf - 
+echo "done"
+echo ""
+
+#
+# Apply patches
+#
+echo "patching the code"
+echo "- TAO_IDLsuppress_unique_guards_opt.patch"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IDLsuppress_unique_guards_opt.patch
+echo "- TAOLog.patch"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOLog.patch
+echo "- AVtimeout.patch"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/AVtimeout.patch
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IFR_Service_preloaded_CORBA_module.patch
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IFR_Inheritance_problems_workaround.patch
+echo "- Notify_Service stack size"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/Notify_Service_stacksize.patch
+if [ "$OS" = "$CYGWIN_VER" ]
+then
+  echo "- Cygwin specific patches"
+  patch ACE_wrappers/TAO/TAO_IDL/fe/lex.yy.cpp < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/cygwin/tao_idl.namespace.patch
+  patch ACE_wrappers/ace/config-g++-common.h < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/cygwin/declspec.dll.patch
+  patch ACE_wrappers/ace/os_include/sys/os_types.h < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/cygwin/off_t.patch
+fi
+
+echo "done"
+echo ""
+
+#
+# Create the build structure
+#
+echo "running the create_ace_build $OSTAG"
+cd ACE_wrappers
+bin/create_ace_build $OSTAG
+echo "done"
+echo ""
+
+
+#
+# Copy the proper ACE/TAO configuration files for the platform
+#
+echo "copying config.h and platform_macros.GNU"
+cp $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/$OSTAG/config.h $ACE_ROOT/ace
+cp $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/$OSTAG/platform_macros.GNU $ACE_ROOT/include/makeinclude
+if [ "$OS" = "$CYGWIN_VER" ]
+then
+  cp $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/$OSTAG/platform_g++_common.GNU $ACE_ROOT/include/makeinclude
+  chmod oug+r $ACE_ROOT/ace/config.h $ACE_ROOT/include/makeinclude/platform_macros.GNU $ACE_ROOT/include/makeinclude/platform_g++_common.GNU
+else
+  cp $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/$OSTAG/platform_linux_common.GNU $ACE_ROOT/include/makeinclude
+  chmod oug+r $ACE_ROOT/ace/config.h $ACE_ROOT/include/makeinclude/platform_macros.GNU $ACE_ROOT/include/makeinclude/platform_linux_common.GNU
+fi
+echo "done"
+echo ""
+
+echo "building ace"
+cd $ACE_ROOT/ace ; make -j $NUM_CPU
+echo "done"
+echo ""
+echo "building gperf"
+cd $ACE_ROOT/apps/gperf ; make -j $NUM_CPU
+echo "done"
+echo ""
+echo "building ACEXML"
+cd $ACE_ROOT/ACEXML ; make -j $NUM_CPU
+echo "done"
+echo ""
+echo "building Kokyu"
+cd $ACE_ROOT/Kokyu ; make -j $NUM_CPU
+echo "done"
+echo ""
+
+# check that LD_LIBRARY_PATH contains $ACE_ROOT/ace
+
+# set INSLIB=../../ace ...
+#cd $ACE_ROOT/TAO/tao ; make INSLIB=../../ace
+#cd $ACE_ROOT/TAO/TAO_IDL ; make INSLIB=../../ace
+#cd $ACE_ROOT/TAO/orbsvcs/orbsvcs ; make INSLIB=../../ace
+# ... or not
+echo "building tao"
+echo "building TAO_IDL"
+cd $ACE_ROOT/TAO/TAO_IDL ; make -j $NUM_CPU
+echo "done"
+echo ""
+
+cd $ACE_ROOT/TAO/tao ; make -j $NUM_CPU
+echo "done"
+echo ""
+
+echo "building orbsvcs"
+cd $ACE_ROOT/TAO/orbsvcs; make -j $NUM_CPU
+echo "done"
+echo ""
+
+echo "building utilities"
+cd $ACE_ROOT/TAO/utils; make -j $NUM_CPU
+echo "done"
+echo ""
+
+
+#
+# strip for saving space
+# WARNING, this also removes the makefiles from the distribution
+if [ "$DONTSTRIP" = "yes" ]; then
+  TAO_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
+  echo "going to strip files in $TAO_HOME"
+
+  for dir in "*tests" "*examples" "*.obj" "*.shobj" "*MPC" "*m4"
+  do
+    echo "removing TAO directories like $dir"
+    find $TAO_HOME -path "$dir" -exec rm -rf {} \; > /dev/null 2>&1
+  done
+
+  for pattern in "*makefile*" "*Makefile*" "*.sln" "*.vcproj"
+  do
+    echo "removing TAO files like $pattern"
+    find $TAO_HOME -name "$pattern" -exec rm -rf {} \;
+  done
+
+# WARNING: on Solaris, do this for the sun directory only
+#          not for vxworks for not to corrupt the files
+#
+  echo "stripping the code under $OSTAG"
+
+  echo "stripping TAO executables & libraries"
+  find $ACE_ROOT -executable -or -name "lib*" -exec strip {} \; > /dev/null 2>&1
+  echo "stripping done"
+
+  echo "build of ACE/TAO for $OSTAG finished"
+fi
+
+# Compilation for VxWorks: 
+#
+
+if [ ! "X$WIND_BASE" = X ]
+then
+    # With HOST_ROOT defined, the (correct) tao_idl will be selected
+    HOST_OSTAG=$OSTAG
+    HOST_ROOT=$ACE_ROOT_DIR/$HOST_OSTAG
+    OSTAG=vxworks
+    ACE_ROOT_VW=$ACE_ROOT_DIR/vxworks
+    ACE_ROOT=$ACE_ROOT_VW
+    echo "Installing ACE/TAO for $OSTAG"
+    echo "Wind Base is: $WIND_BASE"
+    cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers
+    echo "running create_ace_build vxworks"
+    bin/create_ace_build vxworks
+    echo "done"
+    echo ""
+
+    echo "copying config.h and platform_macros.GNU"
+    cp $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/$OSTAG/config.h $ACE_ROOT_VW/ace
+    cp $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/$OSTAG/platform_macros.GNU $ACE_ROOT_VW/include/makeinclude
+    chmod oug+r $ACE_ROOT_VW/ace/config.h $ACE_ROOT_VW/include/makeinclude/platform_macros.GNU
+    echo "done"
+    echo ""
+
+    echo "making links..."
+     cd $ACE_ROOT_VW/bin
+     ln -s $HOST_ROOT/bin/ace_gperf
+     ln -s $HOST_ROOT/bin/tao_idl
+#    cd $ACE_ROOT_VW/bin
+#    ln -s ../../$LINK_DEST/bin/gperf gperf
+    cd $ACE_ROOT_VW/TAO
+    rm -rf TAO_IDL
+    ln -s $HOST_ROOT/TAO/TAO_IDL .
+    echo "done"
+    echo ""
+
+    echo "building ace"
+    cd $ACE_ROOT_VW/ace ; make
+    echo "done"
+    echo ""
+    echo "building tao"
+    cd $ACE_ROOT_VW/TAO/tao ; make
+    echo "done"
+    echo ""
+
+
+    echo "building orbsvcs"
+    cd $ACE_ROOT_VW/TAO/orbsvcs/orbsvcs ; make
+    echo "done"
+    echo ""
+
+    echo "Installation of ACE/TAO for $OSTAG finished"
+
+fi
+
+
+cd $CURR_DIR
+echo ACE/TAO installation done
+date
+

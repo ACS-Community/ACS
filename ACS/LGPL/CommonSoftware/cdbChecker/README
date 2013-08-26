@@ -1,0 +1,51 @@
+
+This tool is currently under development.
+
+TODO:
+-----
+ - try to improve a flag hadler to work with separated flags, like: -r -v
+ - Documentation (user and maintenance manual)
+ - comment or suggestions to improve the reference documents.
+
+
+NOTE: For this application, Xerces is needed. It is now packaged in a separate module,
+so it depends on ACS/LGPL/Tools/extjars and ACS/LGPL/Tools/xercesj.
+
+
+USAGE:
+------
+        #java cdbChecker.CDBChecker XMLPath XSDPath
+		
+	Flags:
+		-v     Verbose output
+	        -r     Disable the recursively look of .xsd and .xml files feature
+	        -n     Get required schemas from the network
+				      
+          XMLPath and XSDPath can have multiple paths separated by ":".
+	  The paths must be absolute (i.e. starting with '/')
+          The checker will search for files recursively inside the given paths.
+
+
+NOTE: With the -n option, schema files are downloaded into a temporary
+      directory, to be used by the tool. This files are only used for this
+      instance, since these files are deleted after the tool finished.
+
+
+Examples:
+
+cdbChecker -v $ACSDATA/config/defaultCDB/ \
+              $ACSDATA/config/defaultCDB/:$ACSROOT/config/
+
+
+Now, enjoy the tool.
+
+comments are welcome.
+
+Please write to:
+		raraya@inf.utfsm.cl
+		nbarriga@inf.utfsm.cl
+
+Greetings
+
+--
+ACS-UTFSM Team

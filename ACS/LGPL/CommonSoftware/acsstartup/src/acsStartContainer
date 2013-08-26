@@ -1,0 +1,126 @@
+#! /bin/bash
+. acsstartupConstants
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+#*************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#----------------------------------------------------------------------
+ACS_COMMAND="$@"
+
+#----------------------------------------------------------------------
+#--Little hack to pickup $ACS_INSTANCE
+if [ "`echo $@ | grep \"\-b \"`" != "" ]
+then
+    ACS_INSTANCE=$@
+    ACS_INSTANCE=${ACS_INSTANCE#*-b }
+    export ACS_INSTANCE=${ACS_INSTANCE%% *}
+
+elif [ "`echo $@ | grep \"\-baseport \"`" != "" ]
+then
+    ACS_INSTANCE=$@
+    ACS_INSTANCE=${ACS_INSTANCE#*-baseport }
+    export ACS_INSTANCE=${ACS_INSTANCE%% *}
+fi
+
+ACS_LOG_COMMAND $ACS_COMMAND
+
+#--Check out the directory structure
+ACS_INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+if [ ! -d $ACS_INSTANCE_DIR ]
+then
+
+    if ! createInstanceDirectory $ACS_INSTANCE
+    then 
+	ACS_LOG_ERROR "acsStartContainer" "For some reason this script could not create `getInstanceDirName $ACS_INSTANCE`!"
+	ACS_LOG_ERROR "acsStartContainer" "    Check $ACS_INSTANCES_DIR for free base ports!"
+	exit $EC_CANNOTCREATE
+    fi
+
+#Stop user A from interfering with user B
+elif [ ! -w $ACS_INSTANCE_DIR ]
+then
+    ACS_LOG_ERROR "acsStartContainer" "The directory '`getInstanceDirName $ACS_INSTANCE`' is not writeable by $USER!"
+    ACS_LOG_ERROR "acsStartContainer" "Please specify an ACS instance that is owned by $USER"
+    exit $EC_CANNOTUSE
+fi
+
+
+#create the pids directory
+if [ -e $ACS_INSTANCE_DIR/$ACS_PID_DIR ]
+then
+	ACS_SILENT_LOG "WARNING $ACS_INSTANCE_DIR/$ACS_PID_DIR already exists!"
+
+elif [ ! -w $ACS_INSTANCE_DIR ]
+then
+	ACS_SILENT_LOG "WARNING cannot create $ACS_INSTANCE_DIR/$ACS_PID_DIR because $ACS_INSTANCE_DIR is not writeable by $USER!"
+
+else
+	mkdir $ACS_INSTANCE_DIR/$ACS_PID_DIR
+	chmod 774 $ACS_INSTANCE_DIR/$ACS_PID_DIR
+fi
+
+#-----------------------------------------------------------------------
+#--Get the correct commandline
+if ! COMMANDLINE=`acsstartupContainerPort "$@"`
+then
+    ACS_LOG_ERROR "acsStartContainer" "There was an error when trying to generate the command to start the container!"
+    ACS_LOG_ERROR "acsStartContainer" "Unable to proceed!"
+    exit $EC_CANNOTUSE
+else
+    CONTAINERNAME=`echo $COMMANDLINE | awk '{print $2}'`
+fi
+
+# Check if the command line contains -h or --help because in this case
+# there is no container to start in the command line!
+HELP_REQUESTED=`echo $@|awk '/ *-h *| *--help */ {print "COMMAND_HELP_REQUESTED"}'`
+if [ "X$HELP_REQUESTED" != "X" ]
+then
+	acsstartupContainerPort -h
+	exit
+fi
+
+#-----------------------------------------------------------------------
+#--Save the this script's process ID so the container can be forceably
+#--killed (if needed) later.
+CONTAINER_PID=$$
+PID_STRING="_PID"
+CONTAINER_PID_FILE="`echo $CONTAINERNAME | sed s/"\/"/:/g`$PID_STRING"
+echo $CONTAINER_PID >> "`getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/$CONTAINER_PID_FILE"
+
+#-----------------------------------------------------------------------
+# Now run the container
+ACS_LOG_INFO "acsStartContainer" "Running the container with these arguments: '$COMMANDLINE'"
+$COMMANDLINE
+ACS_LOG_INFO  "acsStartContainer" "Container: '$CONTAINERNAME' exited with code: $?."
+
+#-----------------------------------------------------------------------
+# The following section of code was requested by G. Chiozzi and B. Jeram
+# to ensure that when a container segfaults or is Ctrl-C'ed, the proper files
+# normally removed by acsStopContainer are removed as well. It is absolutely
+# critical this piece of code be kept in sync with what acsStopContainer does!
+
+
+#if the PID file exists for the container
+if [ -e $ACS_INSTANCE_DIR/$ACS_PID_DIR/$CONTAINER_PID_FILE ]
+then
+    rm $ACS_INSTANCE_DIR/$ACS_PID_DIR/$CONTAINER_PID_FILE
+fi

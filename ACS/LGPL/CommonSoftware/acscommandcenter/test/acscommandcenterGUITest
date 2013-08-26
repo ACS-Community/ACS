@@ -1,0 +1,8 @@
+#! /bin/bash
+export CLASSPATH=`vltMakeJavaClasspath`
+export IP=`host $HOST | awk '{print $4}'`
+
+qftest -batch  -report-old.copyicons -report-old.depth 10 -report GUIreport -systemcfg $HOME/qftestJUI.cfg -variable IP=$IP -variable HOST=$HOST -variable HOME=$HOME -libpath $HOME acscommandcenter.qft
+   
+
+echo $?

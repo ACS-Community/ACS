@@ -1,0 +1,40 @@
+Error Browser & Editor
+
+Developed by ACS-UTFSM Team
+Authors:
+        - Jorge Avarias <javarias@alumnos.inf.utfsm.cl>
+        - Mauricio Araya <maray@inf.utfsm.cl>
+
+General Information:
+
+Error Browser & Editor is a GUI application which allows browsing, editing and adding
+error definitions (types and codes). 
+
+Requirements:
+
+1. The aim is to show error definitions in the installed system or an error definition from a file. 
+
+        a. Search for error definition xml files (EDF) that comply to the XML Schema ACSError.xsd or simply that contain this 
+           (ACSError.xsd) string. Each EDF corresponds to an error type.
+        
+        b. EDF should be searched using AcsFileFinder Class that comes with ACS (see the example in jacsutil/test).
+        
+        c. The algorithm implemented in this utility function searches in idl folders in path defined by environment variables (order is important):
+
+            * $MODROOT (if defined)
+            * $INTROOT (if defined)
+            * $INTLIST (if defined where a search path which should be used is defined)
+            * $ACSROOT.
+        
+        d. Ask user for the error definition file (Open file dialog)
+
+2. Edit code information.
+Changes could be done just in the (error/completion) code display and can be possible just for error definition files in MODROOT (should be displayed differently or marked) and if user has opened specific error file! There should be option to save the changes and reminder if user wants to exit w/o saving.
+
+3. Adding new error type/codes.
+
+        a. Adding new error type: Menu or toolbar option (for ex. Create new error type) or/and an action on the mouse right click on certain subsystem User should be first asked for the subsystem (chose an item for list that is created from the rang xml file or similar). Then s/he has to type the name and the error browser should propose a unique (not yet used) number from the subsystem range. (User should have the possibility to provide his/her own one). After that the empty error definition file can be saved (asked for location where to save).
+        b. Adding new error/completion code in the error type. The tree (left panel) should point on certain type where user wants to add new error/completion code. There should be option in menu/tool bar for adding new error/completion code (one or two options?) or/and there should be an option on mouse right-click(one or two options?). User should be asker for the type: error or completion code (or this can be choosen from menu: create errro code/create completion code). After that a error display window should be open and user can enter the error information. Obligatory should be marked with star or similar. At the end user can save.
+        c. There should be option to save the new code/type as in the case of edit and reminder if user wants to exit w/o saving. In case of new there should be asked where to save EDF and reminder that user has to add ACSERRDEF tag with new EDF in the Makefile. 
+
+

@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat4,v 1.76 2003/01/09 17:51:27 vltsccm Exp $"
+#
+# tat - test4
+#
+# scan system configuration
+# 
+
+rm -f .testSession
+rm -f TestList.sed
+rm -f TestList.grep
+
+rm -f Makefile
+cp Makefile.tat4 Makefile
+rm -f TestList
+cp TestList.tat4 TestList
+
+#
+# makeEnv + cleanEnv
+#
+tat makeEnv
+
+tat -g tat41
+cat ./ref/tat41.ref
+
+tat cleanEnv
+
+

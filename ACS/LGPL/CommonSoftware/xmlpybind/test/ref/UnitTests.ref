@@ -1,0 +1,11 @@
+1 - ...Child was terminated by signal 1
+1 - ..Specification foo contains no schema information.
+1 - Specification  foo  contains no schema information.
+1 - .foo: <unknown>:1:0: no element found
+1 - .foo: File Not Found
+1 - ....Specification foo contains no schema information.
+1 - .
+1 - ----------------------------------------------------------------------
+1 - Ran xx tests in x.xxxs
+1 - 
+1 - OK

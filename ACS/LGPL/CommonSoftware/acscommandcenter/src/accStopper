@@ -1,0 +1,39 @@
+#! /bin/bash
+
+
+## Tries to kill the processes from a bunch of given PID-list files
+## using the acsKillProc script. If the kill succeeds, the
+## PID will be removed from the PID-list file. A non-existent pidfile
+## will be ignored without error.
+
+
+for pidfile in $@ ; do
+
+   if [ ! -r $pidfile ] ; then
+      echo cannot read $pidfile
+   else 
+           
+      echo going about $pidfile...
+      pids=`cat $pidfile`
+      failed=
+      
+      for pid in $pids ; do
+        
+        if [ ! "`ps -u $USER | grep $pid`" ] ; then
+           echo "  $USER doesn't run $pid"
+        else     
+           echo "  bringing down $pid..."
+           acsKillProc $pid
+        fi
+        
+        if [ ! $? == 0 ] ; then
+           failed="$failed $pid"
+        fi
+      
+      done
+      
+      #echo Failed: $failed
+      echo -n $failed > $pidfile
+   fi
+done
+

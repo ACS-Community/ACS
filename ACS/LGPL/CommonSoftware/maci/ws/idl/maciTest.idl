@@ -1,0 +1,91 @@
+#ifndef _MACI_TEST_IDL_
+#define _MACI_TEST_IDL_
+
+/** IDL interface for test classes in MACI modular test  */
+
+#include <maci.idl>
+#include <acscomponent.idl>
+
+#pragma prefix "alma"
+
+module MACI_TEST {
+
+interface MaciTestClass : ACS::ACSComponent {  
+  // Method to request execution of server-side MACI testing.
+  boolean test();
+  
+  // Request a component
+  Object get_component(in maci::CURL component_url,
+		       in boolean activate);
+  
+  // Release a component
+  long release_component(in maci::CURL component_url);
+  
+  // Release a component
+  void release_internal_component();
+  
+   // Release a component
+  void activate_internal_component();
+  
+
+};
+
+// The component to test the container services methods
+interface ContainerServicesTestClass : ACS::ACSComponent {
+  // Test the get component
+  void getComponentTest();
+
+  // Test the get component in a non sticky way
+  void getComponentNonStickyTest();
+  
+  // Test the dynamic component activation
+  void dynamicComponentTest();
+
+  // Test the collocated component activation
+  void collocatedComponentTest();
+
+  // Test the defaultComponent activation
+  void defaultComponentTest();
+  
+  // Test the get component
+  void getComponentSmartPtrTest();
+
+  // Test the get component in a non sticky way
+  void getComponentNonStickySmartPtrTest();
+  
+  // Test the dynamic component activation
+  void dynamicComponentSmartPtrTest();
+
+  // Test the collocated component activation
+  void collocatedComponentSmartPtrTest();
+
+  // Test the defaultComponent activation
+  void defaultComponentSmartPtrTest();
+  
+  // Test the request of a component descriptor
+  void componentDescriptorTest();
+
+  // Test the relase of all components
+  void releaseResourcesTest();
+  
+  // Test the component listener
+  void componentListenerTest();
+};
+
+// The Dynamic components activated by the container services test
+interface DynamicTestClass : ACS::ACSComponent {
+	// Log a message with the component of the component
+	void whoami();
+};
+
+interface LogConfigTestClass : ACS::ACSComponent {
+	void log_all();
+};
+
+interface TestOffShoot : ACS::OffShoot {
+
+};
+
+};
+
+#endif

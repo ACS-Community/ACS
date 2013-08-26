@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../Common/Documentation/Normal.xsl"?>
+
+<cosydoc xmlns="urn:schemas-cosylab-com:Document">
+  <head>
+  	
+    <title>ACS Abeans Configuration</title>
+    
+    <info file="doc/DOC-ACS_Abeans_Configuration.xml" class="doc" project="abeans" confidentiality="public" />
+    
+    <!-- List of contributors, along with their contact information -->
+    <contributor name="Documentation Generator" id="generator" email="matej.sekoranja@cosylab.com" />
+
+    <contributor name="Matej Sekoranja"
+    	id="msekoranja"
+    	email="matej.sekoranja@cosylab.com"/>
+    
+    <!-- Document's history. Elements must be ordered chronologically. -->
+    <!-- A modification -->
+    <modification version="1.0" by="generator" date="2003-11-14">
+      <section>Generated.</section>
+    </modification>
+    
+   	<modification version="1.1" by="msekoranja" date="2003-11-14">
+	  <section>Added JVM system properties.</section>
+	</modification>
+
+  </head>
+  <body>
+    <section title="DefaultCORBAService" id="DefaultCORBAService">
+      <table>
+        <tr>
+          <th>DefaultCORBAService.txt</th>
+        </tr>
+        <tr>
+          <th>Key</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>*</td>
+          <td>All properties all passed to the ORB (overriding system properties).</td>
+        </tr>
+        <tr>
+          <td>debug</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will print out additional debug information.</td>
+        </tr>
+      </table>
+    </section>
+    <section title="NamingServiceRemoteDirectory" id="NamingServiceRemoteDirectory">
+      <table>
+        <tr>
+          <th>NamingServiceRemoteDirectory.txt</th>
+        </tr>
+        <tr>
+          <th>Key</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>reference</td>
+          <td>Reference to CORBA Naming Service, use IIOP type reference - 'iiop://&lt;host&gt;[:&lt;port&gt;]'.
+          	<br/><em>NOTE: can be set/overriden by <b>NamingServiceRemoteDirectory.reference</b> JVM system property.</em></td>
+        </tr>
+        <tr>
+          <td>debug</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will print out additional debug information.</td>
+        </tr>
+      </table>
+
+    </section>
+    <section title="RemoteLoggingService" id="RemoteLoggingService">
+      <table>
+        <tr>
+          <th>RemoteLoggingService.txt</th>
+        </tr>
+        <tr>
+          <th>Key</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>CentralizedLogger</td>
+          <td>Context name of the Centralized Logger, defaults to 'Log'.</td>
+        </tr>
+        <tr>
+          <td>CacheSize</td>
+          <td>The number of log entries that can be kept in the local cache. When this number is reached, all log entries are transferred to the centralized logging, defaults to '10'.</td>
+        </tr>
+        <tr>
+          <td>MaxCacheSize</td>
+          <td>The maximum number of log entries (also for internal purposes) that can be kept in the local cache. When this number is reached, all log entries are lost, defaults to '500'.</td>
+        </tr>
+        <tr>
+          <td>MinCachePriority</td>
+          <td>Log entries whose priority is below (smaller than) the one specified with this property will be ignored (neither cached nor submitted to the centralized logging), defaults to '0'.</td>
+        </tr>
+        <tr>
+          <td>MaxCachePriority</td>
+          <td>Log entries whose priority exceeds (is greater than) the one specified with this property will be directly transmitted to the centralized logging, bypassing the local cache. If this is less than MinCachePriority, the local cache feature is disabled, defaults to '31'.</td>
+        </tr>
+        <tr>
+          <td>MaxThreads</td>
+          <td>The maximum number of threads taken from thread pool by this service, defaults to '10' (minimal 2).</td>
+        </tr>
+        <tr>
+          <td>DisableRemoteDirectoryLookup</td>
+          <td>Switch to disable remote directory lookup, defaults to 'false'.</td>
+        </tr>
+        <tr>
+          <td>debug</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will print out additional debug information.</td>
+        </tr>
+      </table>
+    </section>
+    <section title="ACS Plug" id="ACS Plug">
+
+      <table>
+        <tr>
+          <th>ACSPlug.txt</th>
+        </tr>
+        <tr>
+          <th>Key</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>Manager.defaultReference</td>
+          <td>Manager CORBA reference (corbaloc). 
+          	<br/><em>NOTE: can be set/overriden by <b>Manager.defaultReference</b> JVM system property.</em>
+          	<br/><em><b>ACS.Manager</b> JVM property overrides <b>Manager.defaultReference</b>.</em>
+          </td>
+        </tr>
+        <tr>
+          <td>debug</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will print out additional debug information.</td>
+        </tr>
+      </table>
+      
+    </section>
+    <section title="CDBDAL" id="CDBDAL">
+    	
+      <table>
+        <tr>
+          <th>CDBDALPlug.txt</th>
+        </tr>
+        <tr>
+          <th>Key</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>DAL.defaultReference</td>
+          <td>Default CORBA reference to the DAL remote object...
+          		<br/><em>NOTE: can be set/overriden by <b>DAL.defaultReference</b> JVM system property.</em>
+          	</td>
+        </tr>
+        <tr>
+          <td>DAO.remote</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will use remote DAO object, othervise local DAO implementation will be used.</td>
+        </tr>
+        <tr>
+          <td>debug</td>
+          <td>Can take values 'true' or 'false'. If 'true', plug will print out additional debug information.</td>
+        </tr>
+      </table>
+
+    </section>
+  </body>
+</cosydoc>
+

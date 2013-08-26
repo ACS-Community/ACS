@@ -1,0 +1,30 @@
+1 - ----------T--:--:--.--- Python Client Main - ADMINISTRATIVE_ARCHIVE of type IDL:alma/xmlstore/Administrative:1.0
+1 - ----------T--:--:--.--- Python Client Main - ARCHIVE_DATABASE of type IDL:alma/archiveinternal/Database:1.0
+1 - ----------T--:--:--.--- Python Client Main - CLOCK1 of type IDL:alma/acstime/Clock:1.0
+1 - ----------T--:--:--.--- Python Client Main - COBs available are: 
+1 - ----------T--:--:--.--- Python Client Main - ERRORCOMP_CPP of type IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
+1 - ----------T--:--:--.--- Python Client Main - ERRORCOMP_PY of type IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
+1 - ----------T--:--:--.--- Python Client Main - ES1 of type IDL:alma/demo/ErrorSystem:1.0
+1 - ----------T--:--:--.--- Python Client Main - FRIDGE1 of type IDL:alma/FRIDGE/FridgeControl:1.0
+1 - ----------T--:--:--.--- Python Client Main - HELLODEMO1 of type IDL:alma/demo/HelloDemo:1.0
+1 - ----------T--:--:--.--- Python Client Main - HELLODEMO2 of type IDL:alma/demo/HelloDemo:1.0
+1 - ----------T--:--:--.--- Python Client Main - HELLOWORLD1 of type IDL:alma/acsexmplHelloWorld/HelloWorld:1.0
+1 - ----------T--:--:--.--- Python Client Main - HOUSE1/PYLAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0
+1 - ----------T--:--:--.--- Python Client Main - IDENTIFIER_ARCHIVE of type IDL:alma/xmlstore/Identifier:1.0
+1 - ----------T--:--:--.--- Python Client Main - LAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0
+1 - ----------T--:--:--.--- Python Client Main - LAMPACCESS2 of type IDL:alma/demo/LampAccess:1.0
+1 - ----------T--:--:--.--- Python Client Main - LAMPCB1 of type IDL:alma/demo/LampCallback:1.0
+1 - ----------T--:--:--.--- Python Client Main - LAMPCB2 of type IDL:alma/demo/LampCallback:1.0
+1 - ----------T--:--:--.--- Python Client Main - MOUNT1 of type IDL:alma/MOUNT_ACS/Mount:1.0
+1 - ----------T--:--:--.--- Python Client Main - OPERATIONAL_ARCHIVE of type IDL:alma/xmlstore/Operational:1.0
+1 - ----------T--:--:--.--- Python Client Main - TEST_RPS_1 of type IDL:alma/RampedPS/RampedPowerSupply:1.0
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+1 - ----------T--:--:--.--- Python Client Main - ERRORCOMP_JAVA of type IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
+1 - ----------T--:--:--.--- Python Client Main - ES2 of type IDL:alma/demo/ErrorSystem:1.0
+1 - ----------T--:--:--.--- Python Client Main - LAMPACCESS1 of type IDL:alma/demo/LampAccess:1.0
+1 - ----------T--:--:--.--- Python Client Main - MOUNT1 actual azimuth: 0.0
+1 - ----------T--:--:--.--- Python Client Main - PYLAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0
+1 - ----------T--:--:--.--- Python Client Main - TEST_PS_1 of type IDL:alma/PS/PowerSupply:1.0
+1 - ----------T--:--:--.--- Python Client Main - TIMER1 of type IDL:alma/acstime/Timer:1.0
+1 - ----------T--:--:--.--- Python Client Main - We can directly manipulate a device once we get it, which is easy.
+1 - The end __oOo__

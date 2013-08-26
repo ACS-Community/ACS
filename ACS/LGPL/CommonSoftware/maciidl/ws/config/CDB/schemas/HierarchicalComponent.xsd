@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Klemen Zagar (.) -->
+<!--
+   - Configuration Database Schema for MACI Container
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:HierarchicalComponent:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" targetNamespace="urn:schemas-cosylab-com:HierarchicalComponent:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:annotation>
+        <xs:documentation>This schema file allows to specify in a single CDB file a whole hierarchy of Components. 
+This structure gives an advantage when we are 
+dealing with true hierarchical component that must be deployed always 
+together.
+In this way one single file is sufficient to 
+describe the deployment of the whole hierarchy. 
+For more details, in particular with respect to the various 
+option to describe Components configuration,  
+see the ACS CDB documentation and the 
+FAQ FAQHierarchicalComponentsAndCDBStructure in the ACS Wiki.</xs:documentation>
+    </xs:annotation>
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+    <xs:complexType name="ComponentInfo">
+        <xs:annotation>
+            <xs:documentation>Specification for a Component to be instantiated at the in the system. This definitionis identical to the one in Component.xsd. Look for the documentation there. TODO Probably we should look for a way to factorize the two definitions in a single place</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="xml:specialAttrs"/>
+        <xs:attribute name="Name" type="xs:string" use="required"/>
+        <xs:attribute name="Code" type="xs:string" use="required"/>
+        <xs:attribute name="Type" type="xs:string" use="required"/>
+        <xs:attribute name="Container" type="xs:string" use="required"/>
+        <xs:attribute name="ImplLang" use="required">
+            <xs:annotation>
+                <xs:documentation>The programming language the component is implemented in.</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="java"/>
+                    <xs:enumeration value="cpp"/>
+                    <xs:enumeration value="py"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Default" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="Autostart" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="KeepAliveTime" type="xs:int" use="optional" default="0"/>
+    </xs:complexType>
+    <xs:element name="HierarchicalComponent">
+        <xs:annotation>
+            <xs:documentation>This element describes the hierarchy of Components, with a root Component and a set of children. The name identifies the root of the hierarchy and the configuration is specified by the usual attributes. Then there is a sequence of ComponentInfo sub-elements that descrive the children.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="_" type="ComponentInfo" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="xml:specialAttrs"/>
+            <xs:attribute name="Name" type="xs:string" use="required"/>
+            <xs:attribute name="Code" type="xs:string" use="required"/>
+            <xs:attribute name="Type" type="xs:string" use="required"/>
+            <xs:attribute name="Container" type="xs:string" use="required"/>
+            <xs:attribute name="ImplLang" use="required">
+                <xs:annotation>
+                    <xs:documentation>The programming language the component is implemented in.</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="java"/>
+                        <xs:enumeration value="cpp"/>
+                        <xs:enumeration value="py"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="Default" type="xs:boolean" use="optional" default="false"/>
+            <xs:attribute name="Autostart" type="xs:boolean" use="optional" default="false"/>
+            <xs:attribute name="KeepAliveTime" type="xs:int" use="optional" default="0"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

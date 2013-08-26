@@ -1,0 +1,29 @@
+FILES=$1
+COMMA=""
+
+for f in $FILES
+do	
+#	grep 'Transfer rate' $f | awk -v M=$MACHINE '{t=substr($1,12,13)*3600+substr($1,15,16)*60+substr($1,18); printf("%s, %.3f, %s\n", substr($1,12), t, $10)}' 
+	COMMA=","
+#	egrep 'proto|cache' $f	>> $OF
+	echo "###########################################"
+#	egrep -i 'Error|Timeout' $f | grep -v setACK 
+	egrep 'Average transfer rate for all' $f | awk '{print "\t", $12, $13}' 
+#	echo -ne "\t" 
+#	echo -ne `egrep 'DataWriter proto' $f | cut -d " " -f16-30` 
+    egrep 'send data to BDD' $f | awk  '{{FS=" " } printf("COJ-CPM##### %s %s %s %s %s\n", substr($2,12,23), substr($8,9,8 ), $16, $25, $38); }'
+	egrep 'av send' $f | awk  '{FS=" |]" } { printf("NODEXXXXX %s %s %s\n", substr($2,12,23), $7, $13); }'
+	egrep 'DataWriter proto' $f | egrep ACA | awk '{FS=" |]" }
+                                        {if (index($15, "NODE_")>0) {printf("COJ-NODE")} else {printf("COJ-CPM")};
+					printf("..... %s %s ", substr($2,12,23), $15);
+					for (i=16;i<=30;i++) printf $i" "; 
+					printf("\t NACK/total: %.3f\n",  $27/$18)}'
+	egrep 'type=57' $f | awk '{	
+				printf("ERROR: %s %s ", substr($2,12,23), $7);
+				for (i=12;i<=30;i++) printf $i" ";
+				printf("\n");
+				}'
+	echo -ne "\t"
+#	egrep 'DataWriter cache' $f | cut -d " " -f7-25
+	echo ""
+done

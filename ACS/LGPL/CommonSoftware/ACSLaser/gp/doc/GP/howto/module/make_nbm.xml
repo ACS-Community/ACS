@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+	<head>
+		<title>Installing the GP and logging modules</title>
+		<section>AB/CO/AP</section>
+		<author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+		<reviewers>TBD</reviewers>
+		<currentVersion>0.1 (2003/03)</currentVersion>
+		<history>
+    0.1 (2003/03) : First Draft<br/>
+		</history>
+	</head>
+	<section>
+		<title>How to package your module as a *.nbm File</title>
+		<description>
+			<p>
+				<p>To distribute your module, you probably want to package it as a NetBeans Module (*.nbm) file so that it can be installed using the Update Center.</p><p>
+					 For this, you need to <a href="../../tools/ant/jakarta-ant-1.5-bin.zip">install ANT </a>and define the NBM Ant task. You also need the Ant external task file <a href="../../tools/netbeans/current/IDE/nbantext.jar">nbantext.jar</a> 
+				with the ant task to create a NetBeans module. Download it and put it into the Ant <code>lib </code>directory.</p>
+				<p>Then, you have to set up an Ant target in your build.xml file.</p>
+				<p>This target first creates scratch directory and below it a directory structure with the files you want to package into your 
+				*.nbm archive. The directory structure has to be exactly the same as the one below the installation directory of the NetBeans 
+				platform, namely <code>netbeans/modules</code>. (If your jar file needs libraries, things are more complicated, c.f. below). 
+		<p>Have a look at the Ant target below, the one we use to create the <code>GP.nbm</code> file. </p><p>As you can see, it creates a scratch directory, and a directory <code>netbeans/modules</code> below, into which it copies the GP.jar file. </p>
+					<p>Next, it defines a task called <code>"makenbm"</code>, which is called right after with all the information 
+					   needed to create the module:</p>
+					<ul>
+						<li>the <code>file </code> attribute indicates the nbm file to be created</li>
+						<li>the <code>topdir</code> attribute which points to the scratch directory. This is the root of all files that will be packaged into the nbm file.</li>
+						<li>the <code>module </code> attribute indicates the module's jar file , which is needed because some information is extracted from it</li>
+						<li>the <code>homepage</code> attribute indicates the URL of the GP web page </li>
+						<li>and the <code>distribution</code> attribute gives the place where the <code>*.nbm</code> file can be downloaded from.</li>
+					</ul>
+					<p>The last line of the Ant target removes the scratch directory again.</p>
+				</p>
+				<p>Here is the Ant task for GP.jar discussed above:
+				<pre><p><code>
+      &lt;property name="dist.dir" value="./dist"/&gt;		 
+      &lt;property name="scratch" value="${dist.dir}/scratch"/&gt;
+      
+      &lt;mkdir dir="${scratch}/netbeans/modules"/&gt;
+      &lt;copy file="${dist.dir}/GP.jar" tofile="${scratch}/netbeans/modules/GP.jar"/&gt;
+      
+      &lt;taskdef name="makenbm" classname="org.netbeans.nbbuild.MakeNBM" classpath="./nbantext.jar"/&gt;
+      &lt;makenbm file="${dist.dir}/GP.nbm"
+            topdir="${scratch}"
+            module="${scratch}/netbeans/modules/GP.jar"
+            homepage="http://cern.ch/gp"
+            distribution="http://proj-gp.web.cern.ch/proj-gp/download/GP.nbm"&gt;
+      &lt;/makenbm&gt;
+         
+      &lt;delete dir="${scratch}"/&gt;
+
+		</code></p></pre>
+				</p><p>
+			For your own module, it should be sufficient if you do the following adaptations:
+			<ul>
+						<li>replace all references to GP.jar or GP.nbm by the name of your module</li>
+						<li>insert your URLs for the <code>homepage </code> and <code>distribution </code> attributes </li>
+					</ul>
+			</p></p>		
+			<br></br>
+		</description>
+	</section>
+	
+					<section><title>Packaging Modules that depend on Libraries</title><description><p>
+					<p>If your Module Jar file depends on libraries, these libraries must be placed in a directory called <code>ext</code>
+		below the <code>modules </code>directory, and they must be referenced in a <code>Class-Path: </code> line in the Manifest.
+		</p>
+		<p>For instance, if you have a module MyModule.jar that uses a library myLib.jar, put them into the directories
+		<code>netbeans/modules/MyModule.jar</code> and
+		<code>netbeans/modules/ext/myLib.jar</code>. <p>Then, add the line <br><code>Class-Path: ext/myLib.jar</code></br><br> to the Manifest of your MyModule.jar archive.</br></p></p>
+			</p>	
+			</description>
+			</section>
+			
+</document>
+

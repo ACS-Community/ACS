@@ -1,0 +1,41 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: nsbrowser,v 1.2 2012/05/08 08:01:06 msekoran Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dfugate  2004-07-26  created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+#     Runs JacORB's NS explorer.
+#  
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+# NameService reference is set by acsStartJava
+acsStartJava org.jacorb.naming.namemanager.NameManager 
+
+#
+# ___oOo___

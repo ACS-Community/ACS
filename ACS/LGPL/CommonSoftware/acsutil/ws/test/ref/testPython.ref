@@ -1,0 +1,37 @@
+1 - testGetArgsCOpt
+1 - testGetArgsCOptNoCmd
+1 - testGetArgsCOptAfterCommand
+1 - testGetArgsCOptOtherOpt
+1 - testGetArgsMOpt
+1 - testGetArgsMOptNoCmd
+1 - testGetArgsMOptAfterCommand
+1 - testGetArgsMOptOtherOpt
+1 - testGetArgsDOpt
+1 - testGetArgsDOptOAfter
+1 - testGetArgsDOptOOAfter
+1 - testGetArgsDOptOOBefore
+1 - testGetArgsvOpt
+1 - testGetArgsMultivOpt
+1 - testGetArgsVOptAfter
+1 - testGetArgsQOpt
+1 - testGetArgsMultiQOpt
+1 - testGetArgsLongOpt
+1 - testSelectIntrNoCASA
+1 - testSelectIntrACS
+1 - testSelectIntrCASA
+1 - testStartIntrNoScript
+1 - 
+1 - testStartIntrCmdArgs
+1 - -V
+1 - testStartIntrCmdStr
+1 - -c print 'Hello'
+1 - testStartIntrLocalScript
+1 - bonzo.py
+1 - testStartIntrNoLocalScript
+1 - foo.py not found!
+1 - testStartIntr
+acsutilCASAPathInsert PYTHONPATH
+1 - 
+1 - Ran 27 tests.
+1 - 
+1 - OK

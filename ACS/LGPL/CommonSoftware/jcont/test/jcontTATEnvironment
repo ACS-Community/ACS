@@ -1,0 +1,21 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: jcontTATEnvironment,v 1.2 2007/03/08 09:36:36 nbarriga Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+
+set ACS_TMP $env(PWD)/tmp
+set env(ACS_TMP) $ACS_TMP
+set ACS_CDB $env(PWD)
+set env(ACS_CDB) $ACS_CDB
+set env(ACS_LOG_STDOUT) 4
+set env(MACI_RECOVERY_FILE_NAME) $ACS_TMP/maciRecovery
+set env(ACS_BACI_RECOVERY_FILE) $ACS_TMP/baciRecovery
+set env(ACS_LOG_FILE) $ACS_TMP/log_cache.dat 
+
+#
+# ___oOo___
+

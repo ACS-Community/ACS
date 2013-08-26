@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SecondLO xmlns="urn:schemas-cosylab-com:SecondLO:1.0"
+          xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+          xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <antennaID/>
+  <enableDelayTracking/>
+  <enableFringeTracking/>
+  <getFrequency/>
+  <getPhaseValues/>
+  <getVoltageStatus/>
+  <getPhaseOffset/>
+  <getModuleStatus/>
+  <getPowerSupplyValue/>
+  <getDetectedRFPower/>
+  <getDetectedIFPower/>
+  <getDetectedFTSPower/>
+  <getFMCoilVoltage/>
+  <Address NodeNumber="67"/>
+  <errors/>
+  <transactions/>
+  <temperature/>
+  <last_error_code/>
+  <protocol_rev_level/>
+</SecondLO>
+

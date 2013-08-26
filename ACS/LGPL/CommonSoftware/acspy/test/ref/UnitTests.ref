@@ -1,0 +1,256 @@
+1 - test_authenticate (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 - test_components_unavailable_data_data_common (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 - test_components_unavailable_data_data_nocommon (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 - test_components_unavailable_data_empty (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 - test_components_unavailable_empty_data (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 - test_components_unavailable_empty_empty (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 -   File "BaseClient.py", line xxx, in disconnect
+1 -     getManager().logout(self.token.h)
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Clients_BaseClient.py", line xxx, in raiser
+1 -     raise Exception()
+1 - Exception
+1 - ok
+1 -   File "BaseClient.py", line xxx, in disconnect
+1 -     getManager().logout(self.token.h)
+1 - AttributeError: 'int' object has no attribute 'h'
+1 - ok
+1 -   File "BaseClient.py", line xxx, in __init__
+1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Clients_BaseClient.py", line xxx, in raiser
+1 -     raise Exception()
+1 - Exception
+1 - ok
+1 - test_init_manager_login_no_token (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 - test_init_no_logger (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 - test_message_error (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 - test_message_information (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 - test_message_unknown (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
+1 - test_disconnect_first (test_Acspy_Clients_SimpleClient.TestSimpleClient) ... ok
+1 - test_disconnect_later (test_Acspy_Clients_SimpleClient.TestSimpleClient) ... ok
+1 - test_getInstance_first (test_Acspy_Clients_SimpleClient.TestSimpleClient) ... ok
+1 - test_getInstance_later (test_Acspy_Clients_SimpleClient.TestSimpleClient) ... ok
+1 - test_init_name (test_Acspy_Clients_SimpleClient.TestSimpleClient) ... ok
+1 - test_init_no_name (test_Acspy_Clients_SimpleClient.TestSimpleClient) ... ok
+1 - test_already_exists (test_Acspy_Container.TestActivateComponent) ... ok
+1 - test_bad_class_fault (test_Acspy_Container.TestActivateComponent) ... ok
+1 - test_bad_class_type_fault (test_Acspy_Container.TestActivateComponent) ... ok
+1 - test_bad_initialization (test_Acspy_Container.TestActivateComponent) ... ok
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYCLASS] = temp[TYPE].split(':')[1].split('/').pop() #get class name
+1 - IndexError: list index out of range
+1 - ok
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYREF].__init__()
+1 - AttributeError: MockClass instance has no attribute '__init__'
+1 - ok
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[POA].activate_object_with_id(temp[NAME], temp[PYREF])
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Container.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 - ok
+1 - test_corba_servant_fault (test_Acspy_Container.TestActivateComponent) ... ok
+1 - test_dummy_class (test_Acspy_Container.TestActivateComponent) ... ok
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYREF].execute()
+1 -   File "test_Acspy_Container.py", line xxx, in execute
+1 -     raise Acspy.Container.ComponentLifecycleException('Boom!')
+1 - ComponentLifecycleException: ('B', 'o', 'o', 'm', '!')
+1 - ok
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYREF].execute()
+1 -   File "test_Acspy_Container.py", line xxx, in execute
+1 -     raise Exception('Boom!')
+1 - Exception: Boom!
+1 - ok
+1 - test_existing_module (test_Acspy_Container.TestActivateComponent) ... ok
+1 - test_import_fault (test_Acspy_Container.TestActivateComponent) ... ok
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYREF].initialize()
+1 -   File "test_Acspy_Container.py", line xxx, in initialize
+1 -     raise Acspy.Container.ComponentLifecycleException('Boom!')
+1 - ComponentLifecycleException: ('B', 'o', 'o', 'm', '!')
+1 - ok
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYREF].initialize()
+1 -   File "test_Acspy_Container.py", line xxx, in initialize
+1 -     raise Exception('Boom!')
+1 - Exception: Boom!
+1 - ok
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[POAOFFSHOOT] = temp[POA].create_POA("OffShootPOA", ACSCorba.getPOAManager(), self.offShootPolicies)
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Container.py", line xxx, in raiser
+1 -     raise Exception('Boom!')
+1 - Exception: Boom!
+1 - ok
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[POA] = self.createPOAForComponent(name)  #POA for this component
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Container.py", line xxx, in raiser
+1 -     raise Exception('Boom!')
+1 - Exception: Boom!
+1 - ok
+1 - test_component (test_Acspy_Container.TestDeactivation) ... ok
+1 -   File "Container.py", line xxx, in deactivate_component
+1 -     reload(comp_entry[COMPMODULE])
+1 - ImportError: reload(): module MockClass not in sys.modules
+1 - ok
+1 - test_not_component (test_Acspy_Container.TestDeactivation) ... ok
+1 -   File "Container.py", line xxx, in deactivate_component
+1 -     comp_entry = self.components[self.compHandles[handle]]
+1 - KeyError: 1
+1 - ok
+1 - test_shutdown_exit (test_Acspy_Container.TestDestruction) ... ok
+1 - test_shutdown_reboot (test_Acspy_Container.TestDestruction) ... ok
+1 - test_shutdown_reload (test_Acspy_Container.TestDestruction) ... ok
+1 - test_shutdown_unknown (test_Acspy_Container.TestDestruction) ... ok
+1 - test_components_key_not_found (test_Acspy_Container.TestGetComponentInfo) ... ok
+1 - test_components_keys (test_Acspy_Container.TestGetComponentInfo) ... ok
+1 - test_components_no_keys (test_Acspy_Container.TestGetComponentInfo) ... ok
+1 - test_no_components (test_Acspy_Container.TestGetComponentInfo) ... ok
+1 -   File "BaseClient.py", line xxx, in __init__
+1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "Container.py", line xxx, in getMyCorbaRef
+1 -     raise CORBAProblemExImpl()
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=XXXX, routine='getMyCorbaRef', host=xxxx, previousError=[]))
+1 - ok
+1 -   File "Container.py", line xxx, in getMyCorbaRef
+1 -     self.corbaRef = self.containerPOA.servant_to_reference(self)
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 -   File "test_Acspy_Container.py", line xxx, in raiser
+1 -     raise Exception()
+1 - Exception
+1 -   File "BaseClient.py", line xxx, in __init__
+1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "Container.py", line xxx, in getMyCorbaRef
+1 -     raise CORBAProblemExImpl()
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=XXXX, routine='getMyCorbaRef', host=xxxx, previousError=[]))
+1 - ok
+1 - test_cdbaccess_fault (test_Acspy_Container.TestInitialization) ... ok
+1 - test_client_init_fault (test_Acspy_Container.TestInitialization) ... ok
+1 - test_container_poa_object_fault (test_Acspy_Container.TestInitialization) ... ok
+1 - test_corba_ref_fault (test_Acspy_Container.TestInitialization) ... ok
+1 - test_getCDBInfo_no_container_info (test_Acspy_Container.TestInitialization) ... ok
+1 - test_getCDBInfo_no_package_found (test_Acspy_Container.TestInitialization) ... ok
+1 - test_getCDBInfo_no_package_info (test_Acspy_Container.TestInitialization) ... ok
+1 -   File "Container.py", line xxx, in getCDBInfo
+1 -     execfile(temp_package)
+1 - IOError: [Errno 2] No such file or directory: 'bin/package1'
+1 - ok
+1 - Defined logger is configured to the CDB values. ... ok
+1 - Partially-defined (local) logger is configured to the CDB values and not CENTRAL environment value. ... ok
+1 - Partially-defined (local) logger is configured to the CDB values and not STDOUT environment value. ... ok
+1 - Partially-defined (local) logger is configured to the CDB values. ... ok
+1 - Partially-defined (local) logger is configured to the CDB values. ... ok
+1 - Unknown logger is configured to the CDB values. ... ok
+1 - test_get_logLevels_defined (test_Acspy_Container.TestLoggingConfigurableInterface) ... ok
+1 - Container log levels are correct when no CDB info present ... ok
+1 - Exception is thrown when log levels are requested for undefined logger ... ok
+1 - Container log levels are set correctly to CDB values. ... ok
+1 - Container log levels are reset correctly when no CDB info or environment vars are present ... ok
+1 - Container log levels are reset correctly when no CDB info and ACS_LOG_CENTRAL is present ... ok
+1 - Container log levels are reset correctly when no CDB info and ACS_LOG_STDOUT is present ... ok
+1 - Log levels for a named logger are set correctly ... ok
+1 - Exception is thrown when attempt to set log levels on an undefined logger ... ok
+1 - test_component_not_exist (test_Acspy_Container.TestOffShootActivation) ... ok
+1 -   File "Container.py", line xxx, in activateOffShoot
+1 -     comp[POAOFFSHOOT].activate_object(os_corba_ref)
+1 - KeyError: 'POAOFFSHOOT'
+1 - ok
+1 - test_object_not_offshoot_poa_ok (test_Acspy_Container.TestOffShootActivation) ... ok
+1 - test_exception_handling (test_Acspy_Nc_CDBProperties.TestChannelConfigExists) ... ok
+1 - test_ok (test_Acspy_Nc_CDBProperties.TestChannelConfigExists) ... ok
+1 - test_empty_config (test_Acspy_Nc_CDBProperties.TestGetChannelAdminProps) ... ok
+1 - test_reject_false (test_Acspy_Nc_CDBProperties.TestGetChannelAdminProps) ... ok
+1 - test_reject_true (test_Acspy_Nc_CDBProperties.TestGetChannelAdminProps) ... ok
+1 - test_empty_config (test_Acspy_Nc_CDBProperties.TestGetChannelQofSProps) ... ok
+1 - test_qofs_start_false_stop_false (test_Acspy_Nc_CDBProperties.TestGetChannelQofSProps) ... ok
+1 - test_qofs_start_true_stop_true (test_Acspy_Nc_CDBProperties.TestGetChannelQofSProps) ... ok
+1 - test_events (test_Acspy_Nc_CDBProperties.TestGetEventHandlerTimeoutDict) ... ok
+1 - test_no_channel (test_Acspy_Nc_CDBProperties.TestGetEventHandlerTimeoutDict) ... ok
+1 - test_no_events (test_Acspy_Nc_CDBProperties.TestGetEventHandlerTimeoutDict) ... ok
+1 - test_channel_false (test_Acspy_Nc_CDBProperties.TestGetIntegrationLogs) ... ok
+1 - test_channel_true (test_Acspy_Nc_CDBProperties.TestGetIntegrationLogs) ... ok
+1 - test_channel_unknown (test_Acspy_Nc_CDBProperties.TestGetIntegrationLogs) ... ok
+1 - test_log_exists (test_Acspy_Nc_CDBProperties.TestGetIntegrationLogs) ... ok
+1 - test_no_channel (test_Acspy_Nc_CDBProperties.TestGetIntegrationLogs) ... ok
+1 - test_exception_handling (test_Acspy_Nc_CDBProperties.TestGetNotificationServiceMapping) ... ok
+1 - test_ok (test_Acspy_Nc_CDBProperties.TestGetNotificationServiceMapping) ... ok
+1 - test_configAdminProps_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_configAdminProps_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_configQofS_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_configQofS_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - CommonNC createNotificationChannel configures event channel correctly ... ok
+1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create channel (Bad Admin) ... ok
+1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create channel (Bad QoS) ... ok
+1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create duplicate channel ... ok
+1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create mapping for channel ... ok
+1 - CommonNC createNotificationChannel throws correct exception when no EventChannelFactory defined ... ok
+1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Cannot Proceed) ... ok
+1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Invalid Name) ... ok
+1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Not Found) ... ok
+1 - CommonNC createNotificationChannel throws correct exception when wrong type returned for EventChannelFactory ... ok
+1 - CommonNC destroyNotificationChannel returns the expected value when successful ... ok
+1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(CannotProceed) ... ok
+1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(InvalidName) ... ok
+1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(NotFound) ... ok
+1 - CommonNC channel domain is correct ... ok
+1 - CommonNC channel kind is correct ... ok
+1 - test_getNotificationFactoryNameForChannel_channelFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryNameForChannel_channelNotFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryNameForChannel_default (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryNameForChannel_domainFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryNameForChannel_domainNotFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryNameForChannel_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - CommonNC getNotificationFactoryName returns default ... ok
+1 - CommonNC getNotificationFactoryName returns non-default ... ok
+1 - test_initCORBA (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_initCORBA_nameTreeEx (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_initCORBA_noChannel (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_initCORBA_noChannelDuplicate (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_initCORBA_noNamingService (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - CommonNC default initialization ... ok
+1 - CommonNC initialization with domain ... ok
+1 - CommonNC initialization with default domain ... ok
+1 - test_disconnect_ok (test_Acspy_Nc_ReconnectionCallback.TestReconnectionCallback) ... ok
+1 - test_init_no_factory (test_Acspy_Nc_ReconnectionCallback.TestReconnectionCallback) ... ok
+1 - test_init_ok (test_Acspy_Nc_ReconnectionCallback.TestReconnectionCallback) ... ok
+1 - test_init_start_fault (test_Acspy_Nc_ReconnectionCallback.TestReconnectionCallback) ... ok
+1 - test_by_code (test_Acspy_Servants_ContainerServices.TestGetComponent) ... ok
+1 - test_by_container (test_Acspy_Servants_ContainerServices.TestGetComponent) ... ok
+1 - test_by_name (test_Acspy_Servants_ContainerServices.TestGetComponent) ... ok
+1 - test_by_type (test_Acspy_Servants_ContainerServices.TestGetComponent) ... ok
+1 - test_defined (test_Acspy_Servants_ContainerServices.TestGetLogger) ... ok
+1 - test_undefined (test_Acspy_Servants_ContainerServices.TestGetLogger) ... ok
+1 - test_known_type_known_class (test_Acspy_Servants_ContainerServices.TestImportComponentStubs) ... ok
+1 - test_known_type_unknown_class (test_Acspy_Servants_ContainerServices.TestImportComponentStubs) ... ok
+1 - test_name_found_no_type (test_Acspy_Servants_ContainerServices.TestImportComponentStubs) ... ok
+1 -   File "ContainerServices.py", line xxx, in __importComponentStubs
+1 -     [comp_class]) #import it
+1 - ImportError: No module named MockUnknown
+1 - ok
+1 - test_name_not_found_no_type (test_Acspy_Servants_ContainerServices.TestImportComponentStubs) ... ok
+1 - test_no_name_no_type (test_Acspy_Servants_ContainerServices.TestImportComponentStubs) ... ok
+1 -   File "ContainerServices.py", line xxx, in __narrowComponentReference
+1 -     narrowed_ref = corba_obj._narrow(comp_class)
+1 -   File "mock.py", line xxx, in __call__
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 - TypeError: raiser() takes no arguments (1 given)
+1 - ok
+1 - test_none_corba_obj (test_Acspy_Servants_ContainerServices.TestNarrowComponentReference) ... ok
+1 - test_ok (test_Acspy_Servants_ContainerServices.TestNarrowComponentReference) ... ok
+1 - 
+1 - ----------------------------------------------------------------------
+1 - Ran xx tests in x.xxxs
+1 - 
+1 - OK

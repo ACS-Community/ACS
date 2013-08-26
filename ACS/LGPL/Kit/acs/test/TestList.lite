@@ -1,0 +1,40 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+1 acsReplaceTest    "acsReplaceTest"
+
+# normal case: just INTROOT, INTLIST, ACSROOT
+2 SOURCE acsSearchPath1.tcl acsSearchPath1 acsSearchPath
+# extend with subdirs and prepend-path, and set MODPATH to 1
+3 SOURCE acsSearchPath2.tcl acsSearchPath2 "acsSearchPath -p /first:/second -a /last lib1 lib2"
+# excess slashes and colons should get removed, but trailing colons in INTROOT/ACSROOT remain problematic
+4 SOURCE acsSearchPath3.tcl acsSearchPath3 "acsSearchPath -p /first/::/second: -a /last//: lib1 lib2"
+# blank subdirs should simply be skipped
+5 SOURCE acsSearchPath4.tcl acsSearchPath4 "acsSearchPath \" \"   \" \""
+# completely empty env vars should give blank search path
+6 SOURCE acsSearchPath5.tcl acsSearchPath5 "acsSearchPath"
+# env vars with non-existing dirs should give blank search path if clean-up is requested
+7 SOURCE acsSearchPath6.tcl acsSearchPath6 "acsSearchPath -c lib"
+
+11 makeInstallTest1 "/usr/bin/make -f MakefileInstallTest install INCLUDES=fileDoesNotExist"
+12 PROLOGUE "tclsh acsMakeInstall2.tcl" \
+   makeInstallTest2 "/usr/bin/make -f MakefileInstallTest install INCLUDES=duplicateFile" \
+   EPILOGUE "rm -Rf ../include/subdir1 ../include/subdir2 ../include/duplicateFile"

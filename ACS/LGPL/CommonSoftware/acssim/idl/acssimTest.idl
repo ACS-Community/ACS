@@ -1,0 +1,91 @@
+#ifndef _ACSSIM_TEST_IDL_
+#define _ACSSIM_TEST_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+* "@(#) $Id: acssimTest.idl,v 1.5 2004/08/26 22:31:54 dfugate Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* 
+*/
+
+#include <baci.idl>
+#include <enumpropMACRO.idl>
+#include <acsnc.idl>
+
+#pragma prefix "alma"
+
+#define MAKE_METHOD(T) \
+typedef sequence<T> T##Seq; \
+typedef T T##Array[12]; \
+T T##Plain(out T z); \
+T T##On(in T z, inout T zz, out T zzz); \
+T##Seq T##SeqOn(in T##Seq z, inout T##Seq zz, out T##Seq zzz ); \
+T##Array T##ArrayOn(in T##Array z, inout T##Array zz, out T##Array zzz); \
+attribute T T##plainAttribute; \
+readonly attribute T T##ROAttribute; \
+attribute T##Seq T##plainSeqAttribute; \
+readonly attribute T##Seq T##ROSeqAttribute; \
+attribute T##Array T##plainArrayAttribute; \
+readonly attribute T##Array T##ROArrayAttribute
+
+module acssimTest
+{
+    
+    enum OnOffStates { ONN, ONNN, ONNNN, BAR, CAR, DAR, SAR, NAR, FAR };
+    
+
+    struct garbage
+    {
+        float absoluteDiff;
+	OnOffStates status;
+    };
+
+
+    interface JunkCharComp : ACS::CharacteristicComponent {};
+    interface JunkBaciProp : ACS::RWdouble {};
+
+    struct complexStruct
+    {
+	garbage myGarbage;
+	JunkCharComp myJunkCharComp;
+    };
+
+    //typedef long otherLong;
+
+    interface JunkControl : ACS::CharacteristicComponent
+	{
+	//extremely simple
+	oneway void onewayOn();
+	void on();     
+
+	MAKE_METHOD(char);
+	MAKE_METHOD(long);
+	MAKE_METHOD(OnOffStates);
+	MAKE_METHOD(garbage);
+	MAKE_METHOD(JunkCharComp);
+	MAKE_METHOD(JunkBaciProp);
+	MAKE_METHOD(complexStruct);
+	//MAKE_METHOD(otherLong);
+	};
+};
+#endif

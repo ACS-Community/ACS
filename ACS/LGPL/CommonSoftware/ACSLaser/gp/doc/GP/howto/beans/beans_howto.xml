@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+    <head>
+        <title>Adding information and behavior to domain beans</title>
+        <section>AB/CO/AP</section>
+        <author firstname="Lionel" lastname="Mestre" ccid="97307"/>
+        <reviewers>
+            <a href="mailto:Vito.Baggiolini@cern.ch">Vito Baggiolini</a>, 
+      <a href="mailto:Katarina.Sigerud@cern.ch">Katarina Sigerud</a>
+        </reviewers>
+    </head>
+    <!--
+    
+        Section : Dynamically updating the GUI from the bean
+        
+    -->
+    <section>
+        <anchor>IntegrationDomainBeans</anchor>
+        <title>Integration of domain beans with GP layer</title>
+        <!--
+       To integrate a JavaBean in NetBeans, we saw that we build a node associated with that bean. The bean needs to provide information (the names, the icon, the actions and the default action) to the node in order to be displayed correctly. That information is not directly related to the business of the bean but is nevertheless interesting to 
+control the node. In the previous section we saw it can be provided using the <i>BeanInfo</i>. The <i>BeanInfo</i> associated to a given bean can only provide static information that is common to all bean instances of that bean class. In some cases, particularly if you want to provide information specific to a bean instance, the <i>BeanInfo</i> does not provide the right solution. Another case where you would need another mechanism than the <i>BeanInfo</i> is if you want to dynamically update the information provided to the node from the bean. 
+-->
+        <section>
+        <title>Domain beans and nodes</title>
+        <description>
+            <p>
+        Domain beans model the entities a given application is all about. For instance, for an application aimed to control equipments in an accelerator, domain beans could simply be <code>EquipmentGroupBean</code> and <code>EquipmentBean</code>. The API offered by the domain beans is dependent of the need of the application. Building a GUI using those beans could be done in a specific way writing custom GUI components. As we want to provide a generic approach of writing GUI using generic GUI components a common API is needed to interface the domain beans with the GUI components. In NetBeans this API is provided through the concept of nodes. The node is an extension of JavaBeans that provides information such as actions, icon, children and that allows dynamic modification of properties.
+</p>
+            <p>
+Domain beans are close to your application, <i>Nodes</i> are close to the NetBeans platform. In order to simplify the use of the NetBeans platform, GP Layer takes care of creating <i>Nodes</i> based on your beans. Nevertheless, there is information that is used by the NetBeans platform that has to be provided through the nodes. As GP Layer creates those nodes, it needs to get the information from your domains beans. Basically, you need to provide some extra information from your domain beans in order to integrate seamlessly in the platform. The more complex part is how to specify children and has already been explained in <a href="../nodes/nodes_howto.html">another document</a>. This document addresses the remaining part concerning the extra properties needed on the domain bean in order to interact with the node representing it.
+</p>
+        </description>
+        </section>
+        <section>
+            <title>Using JavaBeans specification</title>
+            <description>
+                <p>
+The solution we implement to provide the needed information from the bean to the node is in line with the JavaBeans specification. We have defined the set of properties that the node care about, and the node uses introspection to find the matching getters on the domain bean for those properties. In addition, for the dynamic updating of those properties, we register a <code>PropertyChangeListener</code> to the bean that the bean can use to notify the node of changes. For instance, the bean can change its description (used to display tooltip) and fire a <code>PropertyChangeEvent</code> to notify its representing node of the change. For that, as in the JavaBeans specification, the bean needs to support <code>PropertyChangeEvent</code> by implementing the methods <code>addPropertyChangeListener</code> and <code>removePropertyChangeListener</code> and firing <code>PropertyChangeEvent</code> as appropriate.
+</p>
+            </description>
+        </section>
+        <section>
+            <title>Properties recognized by the node</title>
+            <description>
+                <p>
+                Altough we advice you to inherit from <code><a href="/proj-gp/api/cern/gp/beans/BeanSupport.html">BeanSupport</a></code> when writting your domain bean, the properties recognized by the node are found by introspection on the domain bean. Therefore, there is no interface to implement or class to inherit from for a domain bean to be used for building a node. The only contract is to have the proper getters for the information the domain beans want to specified. Here is the set of properties recognized by the node and the name of the associated getter that the bean should explicitly implement in order to provide the initial value. The column, hidden, specify if the property is filtered by the node so that it
+is placed in the hidden properties and does not appear when the bean is displayed in a given property sheet. If the property can make sense for the application business we keep it (such as name), if not we hide it (such as actions). Note that all those properties are also very well defined in the API through the interface <code><a href="/proj-gp/api/cern/gp/beans/GPBean.html">GPBean</a></code> that is implemented by <code><a href="/proj-gp/api/cern/gp/beans/BeanSupport.html">BeanSupport</a></code>.
+</p>
+                <table border="1" callspacing="0" cellpadding="4" width="95%">
+                    <tr class="cellHeader">
+                        <td>property name</td>
+                        <td>type</td>
+                        <td>method name</td>
+                        <td>hidden</td>
+                        <td>description</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>name</b>
+                        </td>
+                        <td>
+                            <code>String</code>
+                        </td>
+                        <td>
+                            <code>getName()</code>
+                        </td>
+                        <td>no</td>
+                        <td>an internal name acting as an identifier</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>displayName</b>
+                        </td>
+                        <td>
+                            <code>String</code>
+                        </td>
+                        <td>
+                            <code>getDisplayName()</code>
+                        </td>
+                        <td>no</td>
+                        <td>the display name of the bean</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>shortDescription</b>
+                        </td>
+                        <td>
+                            <code>String</code>
+                        </td>
+                        <td>
+                            <code>getShortDescription()</code>
+                        </td>
+                        <td>no</td>
+                        <td>a short description of the bean (use in tooltip for instance)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>nodeIcon</b>
+                        </td>
+                        <td>
+                            <code>java.awt.Image</code>
+                        </td>
+                        <td>
+                            <code>getNodeIcon()</code>
+                        </td>
+                        <td>yes</td>
+                        <td>the icon in 16x16 size color to use to display the node representing this bean</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>nodeDefaultAction</b>
+                        </td>
+                        <td>
+                            <code>String</code>
+                        </td>
+                        <td>
+                            <code>getNodeDefaultAction()</code>
+                        </td>
+                        <td>yes</td>
+                        <td>the qualified name of the default action that is activated when the user 
+double-click on the node representing this bean</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>nodeActions</b>
+                        </td>
+                        <td>
+                            <code>String[]</code>
+                        </td>
+                        <td>
+                            <code>getNodeActions()</code>
+                        </td>
+                        <td>yes</td>
+                        <td>the array of qualified names of the actions associated to the node representing this bean</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>nodePropertiesCacheable</b>
+                        </td>
+                        <td>
+                            <code>Boolean</code>
+                        </td>
+                        <td>
+                            <code>getNodePropertiesCacheable()</code>
+                        </td>
+                        <td>yes</td>
+                        <td>
+   Returns true is the value of the properties can be cached in the node or false else. Null can be returned to specify the default behavior. By default, the value of properties are not cached.
+   <p>
+   If the value of a property is not cached, the getter method will be invoked whenever the node need to get the value of the property.
+   </p>
+                            <p>
+   If the value of the property is cached, the getter method for the property will only be invoked once to read the value. Then, whenever the node need the value of the property it will used the cached one until a <code>PropertyChangeEvent</code> for the property (or for all properties) is fired.
+   </p>
+                            <p>
+   Caching values can improve performance greatly but it adds one more responsibility on the developer who has to fire <code>PropertyChangeEvent</code> whenever the property values change.
+   </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>propertyInfo</b>
+                        </td>
+                        <td>
+                            <code>PropertyInfo[]</code>
+                        </td>
+                        <td>
+                            <code>getPropertyInfo()</code>
+                        </td>
+                        <td>yes</td>
+                        <td>
+   Returns an array of <code><a href="/proj-gp/api/cern/gp/beans/PropertyInfo.html">PropertyInfo</a></code> specifying information on some properties of the domain bean. Each <code>PropertyInfo</code> of the array returned defines information for one property of the bean. Defining a <code>PropertyInfo</code> for a given property is useful when there is no explicit BeanInfo for the bean and when the property have non default characteristics such as, for instance, a specific PropertyEditor. In order to easily create <code>PropertyInfo</code> instances you just need to instantiate <code><a href="/proj-gp/api/cern/gp/beans/PropertyInfoSupport.html">PropertyInfoSupport</a></code>.
+                        </td>
+                    </tr>
+                </table>
+                <p>
+        When any of those getters is available, it is used by the node to get the initial value of the property instead of looking in the <i>BeanInfo</i>. When a given getter is not available in this bean, the corresponding information will be looked-up in the <code>BeanInfo</code>. It will only be static, because the BeanInfo provides static information common to all beans. There is only one <i>BeanInfo</i> for a given class of beans and therefore the information founds inside is shared by all beans of that class. If the <code>BeanInfo</code> does not contain the information, a standard default value will be applied when possible.
+        </p>
+                <p>
+        In addition to provide the initial value of the property with the getter, the bean can fire <code>PropertyChangeEvent</code> to notify the node of changes in the value
+        of the properties. If the bean provides the method <code>addPropertyChangeListener</code> the node will automatically register as listener of <code>PropertyChangeEvent</code>.
+        </p>
+            </description>
+        </section>
+        </section>
+        
+        <section>
+            <anchor>UsingBeanSupport</anchor>
+            <title>Using GPBean and BeanSupport to facilitate the writing of beans</title>
+            <description>
+                <p>
+                In order to cleary define the properties we support and to provide compile time verification we have defined the interface <code><a href="/proj-gp/api/cern/gp/beans/GPBean.html">GPBean</a></code> that one could implement on a bean to check at compile time that the bean has the right method. The drawback of implementing the interface is that all methods must be implemented. Note that any of those method can return a null value to specify that no information is provided.</p>
+</description>
+            <codeDescription>
+            <title>Example of domain bean inheriting from BeanSupport</title>
+            <code>
+import cern.gp.beans.BeanSupport;
+import cern.gp.beans.PropertyInfo;
+import cern.gp.beans.PropertyInfoSupport;
+import cern.gp.beans.editors.DateTimeEditor;
+
+/**
+ * Definition of the static alarm information, according to JavaBeans specifications
+ */
+public class AlarmBean extends BeanSupport {
+  
+  private String name;
+  private String displayName;
+  private String problemDescription;
+  private int priority;
+  private java.util.Date date;
+
+  public Alarm(String problemDescription, String name, int priority, java.util.Date date) {
+    this.problemDescription = problemDescription;
+    this.displayName = name;
+    this.priority = priority;
+    this.date = date;
+  }
+
+  // property specific to the bean
+  public java.util.Date getDate() {
+    return date;
+  }
+
+  // property specific to the bean
+  public int getPriority() {
+    return priority;
+  }
+
+  // property recognized by the node
+  public String getName() {
+    return name;
+  }
+  
+  // property recognized by the node
+  public String getShortDescription() {
+    return problemDescription;
+  }
+
+  // property recognized by the node
+  public String[] getNodeActions(){
+    return new String[] {
+      "gp.example.alarm.actions.AlarmResetAction",
+      "gp.example.alarm.actions.ShowDevicePropertiesAction",
+      null,
+    };
+  }
+    
+  // property recognized by the node
+  public PropertyInfo[] getPropertyInfo() {
+    return new PropertyInfo[] {
+      new PropertyInfoSupport("date", "Alarm date", DateTimeEditor.class)
+    };
+  }
+
+}</code>
+            </codeDescription>
+            <section>
+            <anchor>FiringPropertyChangeEvent</anchor>
+            <title>Firing PropertyChangeEvent for dynamic update</title>
+            <description>
+            <p>To facilitate the writing of domain beans supporting additional properties and <code>PropertyChangeEvent</code> we provide you the class <code><a href="/proj-gp/api/cern/gp/beans/BeanSupport.html">BeanSupport</a></code>. If possible, you should make the domains beans aimed to be used with GP Layer inherit from <code>BeanSupport</code>. <code>BeanSupport</code> implements <code>GPBean</code> and return a <code>null</code> value for all methods. We just have to override the getter methods that return a non null value for your bean. <code>BeanSupport</code> also provides the implementation of <code>addPropertyChangeListener()</code> and <code>removePropertyChangeListener()</code>. Last it provides protected methods to fire events when the bean wants to update the associated node for a given property. The table below shows the name of the method associated to a given property.
+</p>
+                <table border="1" callspacing="0" cellpadding="4">
+                    <tr class="cellHeader">
+                        <td>property name</td>
+                        <td>protected method to fire the related event</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>name</b>
+                        </td>
+                        <td>
+                            <code>fireNamePropertyChange()</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>displayName</b>
+                        </td>
+                        <td>
+                            <code>fireDisplayNamePropertyChange()</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>shortDescription</b>
+                        </td>
+                        <td>
+                            <code>fireShortDescriptionPropertyChange()</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>nodeIcon</b>
+                        </td>
+                        <td>
+                            <code>fireNodeIconPropertyChange()</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>nodeDefaultAction</b>
+                        </td>
+                        <td>
+                            <code>fireNodeDefaultActionPropertyChange()</code>
+                        </td>
+                    </tr>
+                </table>
+                <p>
+                For <code>nodeActions</code>, <code>nodePropertiesCacheable</code> and <code>propertyInfo</code> the notification is not supported. The value is set once for all at initialization time.</p><p>
+        Note that if the bean fire a given event, it should provide the getter returning a non null value matching the <code>PropertyChangeEvent</code> that 
+          it fires. For instance if the bean call the protected method <code>fireNamePropertyChange</code> when a 
+          name change occurs, it should have the matching getter <code>getName()</code>.
+          </p>
+            </description>
+            <codeDescription>
+            <title>Example of dynamic updates using the methods offered by BeanSupport</title>
+            <comment>This code could complete the previous <code>AlarmBean</code> example.</comment>
+            <code>
+  // example of updating a property recognized by the node
+  protected void updateDescription(String newDescription) {
+    this.problemDescription = newDescription;
+    // this method is a protected method available in BeanSupport
+    fireShortDescriptionPropertyChange(newDescription);
+  }
+
+  // example of updating a property specific to the bean
+  protected void updatePriority(int newPriority) {
+    this.priority = newPriority;
+    // this method is a protected method available in BeanSupport
+    // null is passed instead of oldValue that is not needed here
+    firePropertyChange("priority", null, new Integer(newPriority));
+  }</code>
+            </codeDescription>
+        </section>
+        </section>
+        
+        <section>
+        <anchor>PropertiesDetails</anchor>
+        <title>Properties in details</title>
+      <section>
+            <anchor>NameProperty</anchor>
+        <title>name : specifying an unique name</title>
+        <description>
+          <p>The <i>name</i> property is used to identify the domain bean and the node associated with it. So the <code>getName()</code> method should return a string unique for that instance. Name can also be used as a display name if the <i>displayName</i> property is not provided. If no <i>name</i> is provided a default one is generated see below.</p>
+          <ul>
+          <li>Default value : a unique name generated using <code><a href="/proj-gp/api/cern/gp/beans/BeanUtils.html">BeanUtils</a>.generateUniqueBeanName()</code></li>
+          </ul>
+        </description>
+        <codeDescription>
+          <title>Example</title>
+          <code>
+  public String getName() {
+    // assuming there is a member variable name in that bean
+    return name;
+  }</code>
+        </codeDescription>
+      </section>
+      <section>
+            <anchor>DisplayNameProperty</anchor>
+        <title>displayName : specifying the name to display</title>
+        <description>
+          <p>The <i>displayName</i> property is used to display the bean as a text. For instance, in an explorer, beans will appear as an icon followed by a label given by <i>displayName</i>. If no <i>displayName</i> is provided a default one is used see below.</p>
+          <ul>
+          <li>Default value : if <code>getName()</code> is available it is used instead of <code>getDisplayName()</code>, 
+else <code>beanInfo.getBeanDescriptor().getDisplayName()</code> is used</li>
+          </ul>
+        </description>
+        <codeDescription>
+          <title>Example</title>
+          <code>
+  public String getDisplayName() {
+    // assuming there is a member variable displayName in that bean
+    return displayName;
+  }</code>
+        </codeDescription>
+      </section>
+      <section>
+            <anchor>ShortDescriptionProperty</anchor>
+        <title>shortDescription : specifying a description of the bean</title>
+        <description>
+          <p>The <i>shortDescription</i> property gives additional information on the bean. It is used as a tooltip that appears when the mouse is over the bean for a short period of time. If the <i>displayName</i> property is not provided a default one is used see below.</p>
+          <ul>
+          <li>Default value : <code>beanInfo.getBeanDescriptor().getShortDescription()</code></li>
+          </ul>
+        </description>
+        <codeDescription>
+          <title>Example</title>
+          <code>
+  public String getShortDescription() {
+    // assuming there is a member variable shortDescription in that bean
+    return shortDescription;
+  }</code>
+        </codeDescription>
+      </section>
+      <section>
+            <anchor>NodeIconProperty</anchor>
+        <title>nodeIcon : specifying the visual representation</title>
+        <description>
+          <p>The <i>nodeIcon</i> property is used to display a visual representation of the bean, for instance, in an explorer, the icon that appears next to the bean. If <i>nodeIcon</i> is not defined, a default icon will be used. As the value returned must be the icon itself as an image, there is an utility method in <code>BeanSupport</code> that can load a icon from a file (method <code>getNodeIconFromPathname()</code>). You can use it, as in the example below, when your bean inherits from <code>BeanSupport</code>. If not, you can use the method <code>loadImage</code> in <code><a href="/proj-gp/api/cern/gp/beans/BeanUtils.html">BeanUtils</a></code>.</p>
+          <ul>
+          <li>Default value : <code>beanInfo.getIcon()</code> if defined, or a default icon.</li>
+          </ul>
+        </description>
+        <codeDescription>
+          <title>Example</title>
+          <code>
+  public java.awt.Image getNodeIcon() {
+    // the method below is a protected method of BeanSupport
+    return getNodeIconFromPathname("resources/CycleIcon16.gif");
+  }</code>
+        </codeDescription>
+      </section>
+      
+        <section>
+            <anchor>NodeActionsProperty</anchor>
+        <title>nodeActions : specifying Actions</title>
+        <description>
+          <p>When domain beans are used as nodes in an explorer or in a table for instance, they can be associated with a contextual menu to provide some actions on them. Defining a contextual menu in the GP layer means associating actions to the domain bean. Those actions will define the contextual menu.</p>
+<p>Specifying actions is done by providing the method <code>getNodeActions</code> that returns an array of string containing the fully qualified class name of the actions. Null can be used to provide a separator between two actions in the resulting contextual menu.
+</p>
+          <p>
+GP Layer has some standard predefine actions that are located in the package <code>cern.gp.actions</code>.
+</p>
+          <ul>
+          <li>Default value : null (no action)</li>
+          </ul>
+        </description>
+        <codeDescription>
+          <title>Example</title>
+          <code>
+  public String[] getNodeActions() {
+    return new String[] {
+              "cern.gp.actions.PropertiesAction",
+              "cern.gp.actions.OpenLocalExplorerAction",
+              null,
+              "cern.gp.actions.ViewAction"
+           };
+  }</code>
+        </codeDescription>
+      </section>
+      
+        <section>
+            <anchor>NodeDefaultActionProperty</anchor>
+        <title>nodeDefaultAction : defining the default action</title>
+        <description>
+          <p>As we saw that domain beans can be associated with actions, it is also possible to define the default action for a given bean. The default action is the action triggered when the user double-click on the visual representation of the bean. For instance if the bean is displayed in a explorer, double-clicking on its name or icon will trigger the default action. Although related, the default action is a separate entity from the actions associated to the bean. A bean can have a default action and no other associated actions, or can have a default action that is not part of its associated actions.</p>
+          <p>Defining the default action is done with the method <code>getNodeDefaultAction</code> similarly to the actions. Below is an example.</p>
+          <ul>
+          <li>Default value : null (no default action)</li>
+          </ul>
+        </description>
+        <codeDescription>
+          <title>Example</title>
+          <code>
+  public String getNodeDefaultAction() {
+    return "cern.gp.actions.PropertiesAction";
+  }</code>
+        </codeDescription>
+      </section>
+      
+      <section>
+            <anchor>NodePropertiesCacheableProperty</anchor>
+        <title>nodePropertiesCacheable : specifying bean's caching policy</title>
+        <description>
+          <p>As a node represents a bean, all properties of the bean displayed in the GUI are accessed through the node. A node can therefore support the caching of properties' value. If not cached, each property value will be obtained by calling the corresponding getter using introspection each time they are accessed. Depending of the bean, that can trigger remote accesses and time consuming tasks. For instance, if a bean represents an equipment, it will have properties matching properties of that equipment. A naive implementation of the bean would read directly from the equipement (making a remote access) the value returned by the getters. Each call to a getter would therefore trigger a remote call. As the GUI is making heavy use of getters, calling them every time the value of the property if displayed, such an implementation would lead to disastrous performance.</p>
+<p>The solution is obviously to cache the value of the property locally and to fetch a new value from the equipment only when it is known that it has changed. <b>It is not necessary to implement that caching at the bean level</b>. It can be done directly at the node level with little effort and no additional implementation. It means that you CAN do the naive implementation as long as you activate the caching of the properties.</p>
+<p>The node has already all the code needed to cache any property value. The only thing you have to do is to activate that caching. Activiting the caching can be done at the bean level, using the property <code>nodePropertiesCacheable</code>, or at the property level using a <code>PropertyInfo</code> for the property as shown <a href="#PropertyInfoProperty">below</a>.
+</p>
+<p>Whether you activate the caching at the bean level or at the property level, you have to invalidate the cache when you want the node to refresh the cached value. This is simply done by firing a <code>PropertyChangeEvent</code> for the matching property or for all properties.
+</p>
+        </description>
+            <codeDescription>
+            <title>Updating a given property using a <code>PropertyChangeEvent</code></title>
+            <comment>We assume here that the bean inherit from <code>BeanSupport</code> so that we use the method <code>firePropertyChange</code>. If the bean does not inherit from <code>BeanSupport</code> you must have <code>java.beans.PropertyChangeSupport</code> that you can use to fire the event.</comment>
+            <code>
+  public int getCurrent() {
+    return current;
+  }
+  
+  // called each time the current needs to be updated
+  protected void updateCurrent(int newCurrent) {
+    this.current = newCurrent;
+    firePropertyChange("current", null, new Integer(newCurrent));
+  }</code>
+            </codeDescription>
+            <codeDescription>
+            <title>Updating a all properties using a <code>PropertyChangeEvent</code></title>
+            <comment>We assume again that the bean inherit from <code>BeanSupport</code>.</comment>
+            <code>
+  // called when the equipment changes its state
+  protected void cycleChanged() {
+    // signal that all properties have to be refreshed
+    // we don't pass a property name nor a property new value
+    firePropertyChange(null, null, null);
+  }</code>
+            </codeDescription>
+        <description>
+        <p>Activating the cache at the bean level is useful to give what is the general behavior for the bean. You can always override the behavior specified at the bean at the property level. The caching policy at the bean level will only be used when the caching behavior is not specified for a given property.
+        </p>
+          <ul>
+          <li>Default value : null, no caching behavior specified. The default behavior is not to cache the values.</li>
+          </ul>
+        </description>
+        <codeDescription>
+          <title>Example</title>
+          <code>
+  public Boolean getNodePropertiesCacheable() {
+    // specify that all property of this bean can be cached
+    // could also return Boolean.FALSE to specify no caching explicitly
+    // note that the behavior at the bean level can be overriden at the 
+    // property level
+    return Boolean.TRUE;
+  }</code>
+        </codeDescription>
+      </section>
+      
+      <section>
+            <anchor>PropertyInfoProperty</anchor>
+        <title>propertyInfo : additional information on properties</title>
+        <description>
+          <p>The <i>nodeIcon</i> property is used to display the bean as a text. For instance, in an explorer, beans will appear as an icon followed by a label given by <i>displayName</i>. If no <i>displayName</i> is provided a default one is used see below.</p>
+          <ul>
+          <li>Default value : null, only the information given by the <code>PropertyDescriptor</code> is used.</li>
+          </ul>
+        </description>
+        <codeDescription>
+          <title>Example</title>
+          <code>
+  public PropertyInfo[] getPropertyInfo() {
+    return new PropertyInfo[] {
+      // specify a display name and a property editor for the dateCreated property
+      new PropertyInfoSupport("dateCreated", "Date created", DateTimeEditor.class),
+      // specify a display name for the name property
+      // the constants below are defined in GPBean
+      new PropertyInfoSupport(NAME_PROPERTY_NAME, NAME_PROPERTY_DISPLAY_NAME),
+      // specify a display name for the shortDescription property
+      // the constants below are defined in GPBean
+      new PropertyInfoSupport(SHORTDESCRIPTION_PROPERTY_NAME, SHORTDESCRIPTION_PROPERTY_DISPLAY_NAME),
+    };
+  }</code>
+        </codeDescription>
+      </section>
+      </section>
+</document>
+

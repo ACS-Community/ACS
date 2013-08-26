@@ -1,0 +1,28 @@
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] initialize() called...
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='blar' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Subscribed to 'EventDescription'  types of events on channel 'blar'
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Good... attempt to subscribe twice to the same event type failed with alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx
+1 - ----------T--:--:--.--- WARNING [CONSUMERCOMP1] The 'blar' channel: the receiver object is incapable of handling 'org.omg.CosNotification.StructuredEvent' type of events! It must have a method 'public void receive(org.omg.CosNotification.StructuredEvent)'.
+1 - java.lang.NoSuchMethodException: alma.demo.test.EventConsumerImpl.EventConsumerImpl.receive(org.omg.CosNotification.StructuredEvent)
+1 - Good...cannot subscribe to events where the receive method has not been implemented
+1 - Good...cannot add a bad filter: 'hope to god this filter doesn't work' filter is invalid for the 'blar' channel: IDL:omg.org/CosNotifyFilter/InvalidConstraint:1.0
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Waiting for events...
+1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] NCPublisher for 'blar' channel created.
+1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] Now sending events via NCPublisher...
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] The component acting as EventDescription supplier is: no name
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] The component acting as EventDescription supplier is: no name
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] The component acting as EventDescription supplier is: no name
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] The component acting as EventDescription supplier is: no name
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] The component acting as EventDescription supplier is: no name
+1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] Now sending 5 NestedFridgeEvent events...
+1 - ----------T--:--:--.--- INFO [SUPPLIERCOMP1] cleanUp() called...
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] cleanUp() called...

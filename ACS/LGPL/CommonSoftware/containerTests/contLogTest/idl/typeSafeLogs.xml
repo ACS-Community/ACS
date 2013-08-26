@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<LogDefinitionType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSLogTS"	
+	name="typeSafeLogs"
+	type="10"
+	shortDescription="Type-safe logs for testing across the 3 languages"
+	description="Type-safe logs to be used in test-code that will look at the output to stdout, for the 3 implementation languages" 
+	_prefix="alma" 
+	>
+	
+	<!-- =========== Log =========== -->
+	 
+	<LogDefinition
+		logName="LOG_TEST_DummyMessage"
+		shortDescription="Successfully created a type-safe dummy message"
+		description="Successfully created a type-safe dummy message - full description"
+		priority="INFO"
+		audience="Developer">
+		<Member name="MessageName" type="string" description="Name of the message created." />
+		<Member name="Author" type="string" description="Name of the author of this message." />
+	</LogDefinition>
+	
+	
+</LogDefinitionType>
+

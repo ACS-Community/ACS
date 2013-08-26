@@ -1,0 +1,1077 @@
+2 - Running acserrTestCheckDepth s2 50 1 1
+1 - ----------T--:--:--.--- [GlobalLogger - ACS_TEST_INIT_CORBA] Initialising ORB ... 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS_TEST_INIT_CORBA] ORB initialised !
+1 - 
+1 - ----------T--:--:--.--- [GlobalLogger - errorServer] Creating test object ...
+1 - ----------T--:--:--.--- [GlobalLogger - errorServer] POA Manager -> activate
+1 - ----------T--:--:--.--- [GlobalLogger - errorServer] Writing ior to the file: s2 .... 
+1 - ----------T--:--:--.--- [GlobalLogger - errorServer] Waiting for requests ...
+2 - ----------T--:--:--.--- [GlobalLogger - ACS_TEST_INIT_CORBA] Initialising ORB ... 
+2 - ----------T--:--:--.--- [GlobalLogger - ACS_TEST_INIT_CORBA] ORB initialised !
+2 - ----------T--:--:--.--- [GlobalLogger - main] ****** Check Depth of Stack *****
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - acserrTestClient] Getting object reference ... 
+2 - ----------T--:--:--.--- [GlobalLogger - acserrTestClient] Narrowing it .... 
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (1/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (2/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (3/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (4/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (5/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (6/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (7/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (8/50)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (9/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (10/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (11/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (12/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (13/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (14/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (15/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (16/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (17/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (18/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (19/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Test error 0 (type=900901, code=1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (20/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (21/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (22/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (23/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (24/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (25/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (26/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (27/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (28/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (29/50)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (30/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (31/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (32/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (33/50)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (34/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (35/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (36/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (37/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (38/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (39/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (40/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (41/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (42/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (43/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (44/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (45/50)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (46/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (47/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (48/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (49/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] checking depth (50/50)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Performing (remote call)... (1/1)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (0)] Test error 1 (type=900901, code=2)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (1)] Test error 2 (type=900901, code=3) isErr="true" depth="0"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (2)] Test error 2 (type=900901, code=3) isErr="true" depth="1"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (3)] Test error 2 (type=900901, code=3) isErr="true" depth="2"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (4)] Test error 2 (type=900901, code=3) isErr="true" depth="3"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (5)] Test error 2 (type=900901, code=3) isErr="true" depth="4"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (10)] Test error 2 (type=900901, code=3) isErr="true" depth="9"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (11)] Test error 2 (type=900901, code=3) isErr="true" depth="10"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (12)] Test error 2 (type=900901, code=3) isErr="true" depth="11"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (6)] Test error 2 (type=900901, code=3) isErr="true" depth="5"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (7)] Test error 2 (type=900901, code=3) isErr="true" depth="6"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (8)] Test error 2 (type=900901, code=3) isErr="true" depth="7"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (9)] Test error 2 (type=900901, code=3) isErr="true" depth="8"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (13)] Test error 2 (type=900901, code=3) isErr="true" depth="12"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (14)] Test error 2 (type=900901, code=3) isErr="true" depth="13"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (15)] Test error 2 (type=900901, code=3) isErr="true" depth="14"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (16)] Test error 2 (type=900901, code=3) isErr="true" depth="15"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (17)] Test error 2 (type=900901, code=3) isErr="true" depth="16"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (18)] Test error 2 (type=900901, code=3) isErr="true" depth="17"
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::f1 (19)] Test error 2 (type=900901, code=3) isErr="true" depth="18"
+1 - ----------T--:--:--.--- [GlobalLogger - ErrorTraceHelper::ErrorTraceHelper] Error trace over limit (type=32, code=0)
+1 - ----------T--:--:--.--- [GlobalLogger - acserrTestImpl::test] Exiting...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Test performed.
+1 - ----------T--:--:--.--- [GlobalLogger - acserr TestImpl Shutdown] 
+2 - All done!

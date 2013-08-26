@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- type must be 9 otherwise we'll have problem with error libraries ((j)acserr)-->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
+      name="ACSErrTypeJavaNative"
+      type="9"
+      _prefix="alma">
+
+	<ErrorCode name="JavaAny" 
+	 shortDescription="Any Java error"
+	 description="Any Java Error"/>
+
+	<ErrorCode name="JavaLang"
+	 shortDescription="Java language error"
+	 description="Java language error"/>
+
+	<ErrorCode name="Java3edPartyLib"
+	 shortDescription="3ed Party library error"
+	 description="3ed Party library error"/>
+
+</Type>
+

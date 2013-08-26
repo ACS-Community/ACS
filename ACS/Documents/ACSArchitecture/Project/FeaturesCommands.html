@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>FeaturesCommands</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="20080604;12282400">
+	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<STYLE TYPE="text/css">
+	<!--
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<H2><A NAME="CommandHandling"></A>Command System</H2>
+<P>A command is the basic mechanism for communication from users to
+Distributed Objects and between Distributed Objects. A command is
+actually a method of a Component.</P>
+<H3>Commands are sent to Components <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 6.1.2. Commands]</A> using remote method invocation. It is based on
+CORBA<A HREF="ReferenceDocuments.html#RD01">[RD01 - 10.4.1.
+CORBA]</A><A HREF="ReferenceDocuments.html#RD01">[RD01 - 13.1.1.
+Distributed Objects and Commands]</A>.</H3>
+<H4>CORBA provides full support for inter-process communication. 
+</H4>
+<H4>CORBA objects have a public interface defined with the IDL
+language<A HREF="ReferenceDocuments.html#RD01">[RD01 - 10.3.4. IDL]</A></H4>
+<H4>CORBA objects can be remotely accessed by creating stubs and
+invoking the defined IDL interface. 
+</H4>
+<H4>Any language supported by CORBA can talk to any remote object,
+independently from implementation language and architecture. The
+Object Request Broker (ORB) does mapping of calls and marshalling. 
+</H4>
+<H4>CORBA defines a standard Internet Inter-ORB Protocol (IIOP) that
+guarantees interoperability between any CORBA implementation and
+vendor based on TCP/IP. Any implementation must comply with IIOP, but
+a vendor can choose to additionally implement high performance
+transport protocols. For example there are native ATM
+implementations. Same-process messages are usually implemented as
+direct function calls while same-CPU messages are based on operating
+system message queues. 
+</H4>
+<H4>Other non-IIOP CORBA messaging protocols, supported by the ORBs
+used in ACS, can be used to satisfy special communication and
+security requirements.</H4>
+<H4>A call to a method of a CORBA Component, based on its IDL
+interface, is what can and has to be mapped into the concept of
+Commands (the method call concept is very similar to RPC). 
+</H4>
+<H3>A command has a well-defined syntax and set of call and return
+parameters. Full context validation and syntax check of commands is
+always done when the command is received by the server
+application<A HREF="ReferenceDocuments.html#RD01">[RD01 - 6.1.4.
+Validation]</A>. A command can also be checked by the sender, but
+this is not mandatory except in the case of generic command-sending
+GUIs<A HREF="ReferenceDocuments.html#RD01">[RD01 - 6.1.3. Syntax
+Check]</A>. The syntax check would check that the command is valid
+and that the parameters are within the static ranges.</H3>
+<H3>Commands are synchronous (the caller blocks and waits for a
+return reply, up to a defined timeout) <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 6.1.7. Mode]</A> <A HREF="ReferenceDocuments.html#RD01">[RD01 -
+6.1.8. Timeout]</A>. Applications should take care of the fact that a
+synchronous call can block the whole application unless it is issued
+from a dedicated thread. Replies can be normal replies or error
+replies<A HREF="ReferenceDocuments.html#RD01">[RD01 - 6.1.1.
+Messages]</A>. 
+</H3>
+<H3>CORBA Asynchronous Method Invocation (AMI) <A HREF="ReferenceDocuments.html#RD29">[RD29]</A>
+can be used to implement asynchronous calls on the client side using
+synchronous methods on the servant side. AMI is only supported by a
+few ORBs, for example TAO and JacORB, but not by omniORB.</H3>
+<H3>Asynchronous command handling using synchronous methods on the
+servant side can also be done by starting a separate thread, which
+sends a synchronous command. This way the main thread is not blocked.</H3>
+<H3>Asynchronous command handling can also be implemented using
+callbacks, in particular when multiple replies need to be sent. ACS
+provides support for Callbacks and uses callbacks for Monitors.</H3>
+<H3>Using synchronous commands, time-outs are handled using CORBA
+messaging (implemented in TAO but not in other ORBs) <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 6.1.6 Command delivery]</A>. Intermediate replies are not handled
+by ACS, but must be taken care of by the application. ACS cannot
+therefore warranty that requirement <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 6.1.9 Intermediate replies]</A> is satisfied. This is let to
+applications.</H3>
+<H3>Commands can be invoked from generic applications, that are able
+to browse the objects in the systems, show the available commands
+with the corresponding syntax, check dynamically the syntax of
+commands and send them<A HREF="ReferenceDocuments.html#RD01">[RD01 -
+6.1.5. Programmatic use]</A>.</H3>
+<H3>A server sub-system handling a command shall continue to operate
+if the client that has issued the command disappears, e.g. between a
+command being initiated and completed. In this case the server logs a
+non-critical error, since a well-behaving client should always wait
+for replies to initiated actions, and continues.</H3>
+<H3>Components publish their interfaces via IDL interfaces. IDL
+allows use of inheritance to build new types. IDL allows only
+defining the pure interface in terms of parameters and types; it does
+not allow specifying range checking for the parameters. This checking
+has to be performed by the applications. IDL interfaces are
+registered in the CORBA Interface Repository (IREP) and made public.</H3>
+<P><A NAME="_x0000_i1025"></A><IMG SRC="Images/Command_System__Command_System_Architecture.png" WIDTH="562" HEIGHT="299"  NAME="graphics1" ALIGN=BOTTOM BORDER=0><BR><I>Figure
+3.19: Command System architecture</I> 
+</P>
+<H3>The implementation of checking functions and tools to implement
+command syntax checking both at the sender and receiving side of
+commands is provided by the Parameter package and Parameters have to
+be used when command checking is necessary.</H3>
+</BODY>
+</HTML>

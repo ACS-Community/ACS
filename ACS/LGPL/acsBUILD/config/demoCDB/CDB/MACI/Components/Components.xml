@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <_ Name="PBEND_B_01"   Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="PBUMP_B_01"   Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="PBUMP_B_02"   Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_1"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_2"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_3"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_4"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_5"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_6"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_7"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_8"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_9"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_10"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_11"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_12"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_13"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_14"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_15"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_16"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_17"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_18"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="MOUNT1"       Code="acsexmplMountImpl"	
+                             Type="IDL:alma/MOUNT_ACS/Mount:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="MOUNT2"       Code="acsexmplMountImpl"	
+                             Type="IDL:alma/MOUNT_ACS/Mount:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="MOUNT3"       Code="acsexmplMountImpl"	
+                             Type="IDL:alma/MOUNT_ACS/Mount:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="MOUNT4"       Code="acsexmplMountImpl"	
+                             Type="IDL:alma/MOUNT_ACS/Mount:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="MOUNT5"       Code="acsexmplMountImpl"	
+                             Type="IDL:alma/MOUNT_ACS/Mount:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="MOUNT6"       Code="acsexmplMountImpl"	
+                             Type="IDL:alma/MOUNT_ACS/Mount:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="LAMP1"        Code="acsexmplLampImpl"
+                             Type="IDL:alma/acsexmplLamp/Lamp:1.0"
+                             Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="HELLODEMO1" Code="alma.demo.HelloDemoImpl.HelloDemoHelper" 
+                             Type="IDL:alma/demo/HelloDemo:1.0" 
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="HELLOLAMP1"   Code="alma.demo.LampAccessImpl.LampAccessHelper" 
+                             Type="IDL:alma/demo/LampAccess:1.0" 
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="XMLCOMP1"     Code="alma.demo.XmlComponentImpl.XmlComponentHelper" 
+                             Type="IDL:alma/demo/XmlComponent:1.0" 
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="LAMPACCESS1"  Code="alma.demo.LampAccessImpl.LampAccessHelper"
+                             Type="IDL:alma/demo/LampAccess:1.0" 
+                             Container="frodoContainer" ImplLang="java" />
+      <_ Name="LAMPCALLBACK1" Code="alma.demo.LampCallbackImpl.LampCallbackHelper"
+                              Type="IDL:alma/demo/LampCallback:1.0" 
+                              Container="frodoContainer" ImplLang="java" />
+    
+</Components>
+
+

@@ -1,0 +1,172 @@
+#!/usr/bin/env perl
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: acsMakeJavaClasspath,v 1.3 2010/11/18 11:48:13 mzampare Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+#************************************************************************
+#   NAME
+#   acsMakeJavaClasspath - generate a CLASSPATH according to the standard 
+#                          order of precedence and append existing CLASSPATH
+#                          to it
+#
+# 
+#   SYNOPSIS
+#
+#   acsMakeJavaClasspath [ -endorsed ] 
+# 
+#   DESCRIPTION
+#   Utility used by acsMakefile to dynamically generate the
+#   CLASSPATH for Java stuff, prior to compilation.
+#
+#
+#   It is not intended to be used as a standalone command,
+#   and it must be executed from the module's src directory
+#
+#   (1) see also GNU Make 3.64, 4.3.5 pag 37
+#
+#   The rules is written to standard output.
+#
+#
+#   FILES
+#   $VLTROOT/include/acsMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   acsMakefile, Makefile, (GNU) make
+#
+#   GNU make - Edition 0.41, for make Version 3.64 Beta, April 93
+#   VLT Software - Programming Standard - 1.0 10/03/93
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+sub enrich { 
+    local($one) = $_[0];
+    local($two) = $_[1];
+    
+    foreach $file (split(/ /,$one) ) { 
+	local($file_name);
+	#print "Trying to enrich with: $file\n";
+	
+	# following is time consuming, but sort out later
+	#chop($file_name =`basename $file`);
+	if ( $file =~ /\/([^\/]+\.jar)$/ ) { 
+	    $file_name = $1;
+	} else {
+	    if ($file !~ /^\s*$/) { 
+		warn "acsMakeJavaClasspath: something seriously wrong $file\n";
+		next;
+	    } else {
+		next;
+	    }
+	}
+	if ( $two !~ /\/$file_name/) { 
+	    $two .= $SEPARATOR.$file;
+	} 
+    }
+    return $two;
+}
+
+# the following variable must have the same setting as in the javaMakefile
+$ACS_CO = "ACScomponents";
+$SEPARATOR=$ENV{PATH_SEP};
+
+if ($ARGV[0] eq "-endorsed") { 
+    $ENDORSED = 1;
+}
+
+if ($ARGV[0] eq "-components") { 
+    local($myRoots) = "../lib/$ACS_CO".$SEPARATOR;
+    local($tmpDir);
+
+    if ( $ENV{INTROOT} ne "") { 
+	$tmpDir = "$ENV{INTROOT}/lib/$ACS_CO";
+	if( -d $tmpDir && $myRoots !~ /$tmpDir/ ) { 
+	    $myRoots .= $tmpDir.$SEPARATOR;
+	}
+    }
+    if ( $ENV{INTLIST} ne "") { 
+	local($dir);
+	foreach $dir (split(/:/,$ENV{INTLIST})) { 
+	    $tmpDir = "$dir/lib/$ACS_CO";
+	    $myRoots .= $tmpDir.$SEPARATOR if( -d $tmpDir);
+	}
+    }
+    if ( $ENV{ACSROOT} ne "") { 
+	$tmpDir = "$ENV{ACSROOT}/lib/$ACS_CO";
+	if( -d $tmpDir && $myRoots !~ /$tmpDir/ ) { 
+	    $myRoots .= $tmpDir.$SEPARATOR;
+	}
+    }
+    if ( $ENV{VLTROOT} ne "") { 
+	$tmpDir = "$ENV{VLTROOT}/lib/$ACS_CO";
+	if( -d $tmpDir && $myRoots !~ /$tmpDir/ ) { 
+	    $myRoots .= $tmpDir.$SEPARATOR;
+	}
+    }
+    print $myRoots."\n";
+    exit;
+}
+
+@modList = glob("../lib/*.jar");
+@intList = glob("$ENV{INTROOT}/lib/*.jar");
+@acsList = glob("$ENV{ACSROOT}/lib/*.jar");
+@vltList = glob("$ENV{VLTROOT}/lib/*.jar");
+
+
+@modList = (@modList, glob("../lib/$ACS_CO/*.jar"));
+@intList = (@intList, glob("$ENV{INTROOT}/lib/$ACS_CO/*.jar"));
+@acsList = (@acsList, glob("$ENV{ACSROOT}/lib/$ACS_CO/*.jar"));
+@vltList = (@vltList, glob("$ENV{VLTROOT}/lib/$ACS_CO/*.jar"));
+
+
+
+if ($ENDORSED) { 
+}
+    
+if ($debug) { 
+    print "MODROOT:\n".join(" ",@modList)."\n";
+    print "INTROOT:\n".join(" ",@intList)."\n";
+    print "ACSROOT:\n".join(" ",@acsList)."\n";
+    print "VLTROOT:\n".join(" ",@vltList)."\n";
+}
+
+foreach $item (split(/:/,$ENV{INTLIST}))  { 
+    $intlistList .= " ".join(" ",glob("$item/lib/*.jar"));
+    if ( -d "$item/lib/$ACS_CO") { 
+	$intlistList .= " ".join(" ",glob("$item/lib/$ACS_CO/*.jar"));
+    }
+}
+
+$completeList = join($SEPARATOR,@modList);
+$completeList = enrich(join(" ",@intList), $completeList);
+$completeList = enrich($intlistList, $completeList);
+$completeList = enrich(join(" ",@acsList), $completeList);
+$completeList = enrich(join(" ",@vltList), $completeList);
+
+if ($ENDORSED) { 
+    @modListEndorsed = glob("../lib/endorsed/*.jar");
+    @intListEndorsed = glob("$ENV{INTROOT}/lib/endorsed/*.jar");
+    @acsListEndorsed = glob("$ENV{ACSROOT}/lib/endorsed/*.jar");
+    @vltListEndorsed = glob("$ENV{VLTROOT}/lib/endorsed/*.jar");
+    
+    foreach $item (split(/:/,$ENV{INTLIST}))  { 
+	$intlistListEndorsed .= join(" ",glob("$item/lib/endorsed/*.jar"));
+    }
+    
+    $completeList = enrich(join(" ",@modListEndorsed), $completeList);
+    $completeList = enrich(join(" ",@intListEndorsed), $completeList);
+    $completeList = enrich($intlistListEndorsed, $completeList);
+    $completeList = enrich(join(" ",@acsListEndorsed), $completeList);
+    $completeList = enrich(join(" ",@vltListEndorsed), $completeList);
+}
+
+
+print "$completeList$SEPARATOR$ENV{CLASSPATH}\n";

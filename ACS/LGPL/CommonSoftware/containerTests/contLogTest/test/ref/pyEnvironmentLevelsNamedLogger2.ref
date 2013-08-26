@@ -1,0 +1,8 @@
+1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
+1 - <timestamp> [GlobalLogger - ] Container: aragornContainer
+1 - <timestamp> [GlobalLogger - ] 	Log levels for logger 'aragornContainer':
+1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
+1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 4
+1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 5
+1 - <timestamp> [GlobalLogger - ] 	... done.
+1 - <timestamp> [GlobalLogger - ] Done all.

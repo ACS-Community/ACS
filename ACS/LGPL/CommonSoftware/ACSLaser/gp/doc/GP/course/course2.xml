@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP Course 2</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Katarina" lastname="Sigerud" ccid="73162"/>
+    <reviewers>TBD</reviewers>
+    <currentVersion>0.1 (2002/08)</currentVersion>
+    <history>
+    0.1 (2002/10) : First Draft<br/>
+    </history>
+  </head>
+  <!-- 
+
+    SECTION 1
+    
+  -->
+  <section>
+  <title>Abstract</title>
+     <description>
+      <p>This document contains the exercises for the second GP course.
+        </p>
+    </description>
+  </section>
+    <!--
+  
+    SECTION 2
+    
+    -->
+    <section>
+    <title>Customize bean property information</title>
+        <description> 
+            <p>In the first course, we saw how to customize information about the entire domain bean by overriding some methods, like <i>getShortDescription</i> to get the tooltip information. In the following exercises, we will customize the individual bean properties further by deciding exactly what attributes are shown, how they are displayed and how they are edited.
+            </p>
+        </description>
+        <!--
+      
+        SUBSECTION 1
+        
+        -->
+        <section>
+        <title>Exercise 1</title>
+            <description> 
+                <p>Run the <i>TreeExplorerExample</i> and open the property sheet for a node. You should see all the properties available for that bean, and the display name of the property is the attribute name.
+                </p>
+                <p>Now we will customize how the attributes of our bean are displayed and edited. In the <i>ExampleBean</i> override the method <i>getPropertyInfo()</i> from <i>cern.gp.beans.BeanSupport</i>
+                </p>
+            </description>
+            <codeDescription>
+            <title>Override getPropertyInfo</title>
+                <code>
+public PropertyInfo[] getPropertyInfo() {
+  return new PropertyInfo[] {};
+}
+                </code>
+            </codeDescription>
+            <description>
+                <p>To simplify we will use the class <i><a href="/proj-gp/api/cern/gp/beans/PropertyInfoSupport.html">cern.gp.beans.PropertyInfoSupport</a></i> which implements all the methods of the interface <i><a href="/proj-gp.web.cern.ch/proj-gp/api/cern/gp/beans/PropertyInfo.html">cern.gp.beans.PropertyInfo</a></i> with default behavior. If you want to change this behavior, you extend this class and override the corresponding method. For our purposes it is enough so we will use it as it is.             </p>
+                <p>You will create a <i>PropertyInfoSupport</i> object for every attribute you want to modify. In the constructor you can specify the name of the attribute to handle, and the display name and/or editor class to use. There is also the possibility to indicate if a property should be hidden.
+                </p>
+                <p>In the method we've just added, instantiate two <i>PropertyInfoSupport</i> objects, one with a display name and a property editor, and one which indicate that the property should be hidden.
+                </p>
+            </description>
+            <codeDescription>
+            <title>Modify getPropertyInfo example</title>
+                <code>
+public PropertyInfo[] getPropertyInfo() {
+  return new PropertyInfo[] {
+    new PropertyInfoSupport("niceExercise", "Are the exercises nice?"),
+    new PropertyInfoSupport("defaultNodeAction", true),
+  }
+}           
+                </code>
+            </codeDescription>
+            <description>
+                <p>Run the <i>TreeExplorerExample</i> and open a property sheet and verfiy that the display of the corresponding properties have changed.
+                </p>
+            </description>
+        </section>
+        <!--
+      
+        SUBSECTION 2
+        
+        -->
+        <section>
+        <title>Exercise 2</title>
+        <description>   
+                <p>As you saw in the previous exercise, the values for the <i>niceExercise</i> property were <i>true</i> or <i>false</i>. We will now add a property editor that will accept <i>yes</i> and <i>no</i> as values.
+                </p>
+                <p>In the <i>gpcourse</i> package there is a class <i>YesNoEditor</i>. Add a reference to this class in the constructor for the <i>PropertyInfoSupport</i> for the <i>niceExercise</i> attribute.
+                </p>
+            </description>
+            <codeDescription>
+            <title>Add a property editor</title>
+                <code>
+public PropertyInfo[] getPropertyInfo() {
+  return new PropertyInfo[] {
+    new PropertyInfoSupport("niceExercise", "Are the exercises nice?", gpcourse.YesNoEditor.class),
+    new PropertyInfoSupport("defaultNodeAction", true),
+  }
+}           
+                </code>
+            </codeDescription>          
+            <description>
+                <p>Run the example and open the property sheet for a bean. Try to enter something different then <i>yes</i> or <i>no</i>. An information dialog should inform you that it is an invalid value.
+                </p>
+                <p>In the previous example you might have noticed that the value was not set. This is because we have to change the implementation of the <i>getAsText</i> method in the <i>YesNoEditor</i>, which for the moment always returns the empty string.
+                </p>
+            </description>
+            <codeDescription>
+            <title>Display the property value</title>
+                <code>
+public String getAsText() {
+  Object value = getValue();
+  if (value == null) { 
+    return &quot;&lt;unknown&gt;&quot;; 
+  }
+  return ((Boolean)getValue()).booleanValue() ? YES : NO;
+}
+                </code>
+            </codeDescription>  
+            <description>
+                <p>Run the example again and test the editor.
+                </p>
+            </description>      
+        </section>
+        <!--
+      
+        SUBSECTION 3
+        
+        -->
+        <section>
+        <title>Exercise 3</title>
+            <description>
+                <p>What would be even nicer is if our editor could display the possible values to choose from, i.e. <i>yes</i> and <i>no</i>. To accomplish this, we must implement the method <i>getTags()</i> in the <i>YesNoEditor</i> and return an array of the possible options.
+                </p>
+            </description>
+            <codeDescription>
+            <title>Display a list of choices for a property</title>
+                <code>
+public class YesNoEditor extends java.beans.PropertyEditorSupport  {
+  
+  /** the tags recognized by this editor */
+  private static final String YES = "yes";
+  private static final String NO = "no";
+  
+  public String[] getTags() {
+    return new String[] {YES, NO};
+  }
+}
+                </code>
+            </codeDescription>
+            <description>
+                <p>Run the example and verify the changes.
+                </p>
+            </description>
+        </section>
+        <!--
+      
+        SUBSECTION 4
+        
+        -->
+        <section>
+        <title>Exercise 4</title>
+            <description>
+                <p>There are already some property editors provided with the GP layer. We will now use one of those, the color editor. To do this we will add an attribute to our <i>ExampleBean</i>bean of type <i>java.awt.Color</i> with its getter/setter methods.
+                </p>
+            </description>
+            <codeDescription>
+            <title>Color editor example</title>
+                <code>
+public class ExampleBean extends SimpleDemoBean implements SmileCapability {
+  ...
+  
+  private Color fontColor = Color.black;
+  ...
+  
+  public Color getFontColor() {
+    return fontColor;
+  }
+  
+  public void setFontColor(Color color) {
+    fontColor = color;
+  }
+  ...
+}
+                </code>
+            </codeDescription>
+            <description>
+                <p>Run the example and test the new editor.
+                </p>
+            </description>
+            <description>
+                <p>This is enough to continue with the exercises, but a complete example, with some other editors, can be found below.
+                </p>
+            </description>
+            <codeDescription>
+            <title>Full getPropertyInfo example</title>
+                <code>
+public PropertyInfo[] getPropertyInfo() {
+  return new PropertyInfo[] {
+      new PropertyInfoSupport("name", "Name"),
+      new PropertyInfoSupport("value", "Value", TwoDigitDoubleEditor.class),
+      new PropertyInfoSupport("niceExercise", "Are the exercises nice?", cern.gp.beans.editors.YesNoEditor.class),
+      new PropertyInfoSupport("startTime", "Start time"),
+      new PropertyInfoSupport("displayName", true),
+      new PropertyInfoSupport("shortDescription", true),
+      new PropertyInfoSupport("defaultNodeAction", true),
+  };
+}
+                </code>
+            </codeDescription>
+        </section>
+  </section>
+  <!--
+  
+    SECTION 2
+    
+    -->
+    <section>
+        <title>Exercise 5: Sorting children</title>
+        <description> 
+            <p>In the first course, we added children to a node using a <i>ChildrenListManager</i>. This time we will complete the example by making it possible to sort the children added.
+            </p>
+                <p>In the <i>ExampleChildrenListManager</i> we will change the constant <i>NUMBER_OF_CHILDREN</i> to &gt; 10, and in the method <i>getComparator()</i> you should instantiate and return a <i>ValueComparator</i> object. This class can be found in the <i>gpcourse</i> package.
+                </p>
+            </description>
+            <codeDescription>
+            <title>Modify getComparator()</title>
+                <code>
+public Comparator getComparator() {
+    return new ValueComparator();
+}
+                </code>
+            </codeDescription>
+            <description>
+                <p>Run the example and see that the children are sorted. If you want to be convinced, reverse the sorting order in the <i>ValueComparator</i> class and verify that the children are sorted differently.
+                </p>
+            </description>
+  </section>
+  <!--
+  
+    SECTION 3
+    
+    -->
+    <section>
+        <title>Add children to a node</title>
+        <description> 
+            <p>In the first course, we saw how to add a static <i>ChildrenListManager</i>. This time we will create a children manager that can handle a dynamic list of children, i.e. add and remove children depending on some event.
+            </p>
+        </description>
+      <!--
+      
+        SUBSECTION 1
+        
+        -->
+        <section>
+        <title>Exercise 6</title>
+            <description>
+                <p>To better keep track of the incoming alarm notifications, we will create a new type of children manager, one that holds a map instead of a list of children. To do this we will implement the interface <i><a href="/proj-gp/api/cern/gp/nodes/children/ChildrenMapManager.html">cern.gp.nodes.children.ChildrenMapManager</a></i> instead of as before the <i><a href="/proj-gp/api/cern/gp/nodes/children/ChildrenListManager.html">cern.gp.nodes.children.ChildrenListManager</a></i> interface. 
+                </p>
+                <p>Create a new class by right-clicking on the <i>gpcourse</i> package and selecting <i>New->Java Classes->Class</i> from the context menu. Name the new class <code>AlarmChildrenMapManager</code>. Press <i>Finish</i>.
+                </p>
+                <p>In the new class you should add a <i>cern.gp.nodes.children.NodeMap</i> attribute to hold the alarms and make it implement the <i>cern.gp.nodes.children.ChildrenMapManager</i> interface. This means implementing the methods <i>initChildrenMap(cern.gp.nodes.children.NodeMap)</i> and <i>getComparator()</i> (no comparision this time).
+                </p>
+            </description>
+            <codeDescription>
+            <title>Implementing the ChildrenMapManager interface</title>
+                <code>
+public class AlarmChildrenMapManager implements ChildrenMapManager {
+  private NodeMap nodeMap;
+  
+  public java.util.Comparator getComparator() {
+    return null;
+  }
+
+  // implements ChildrenMapManager
+  public void initChildrenMap(NodeMap nodeMap) {
+    this.nodeMap = nodeMap;
+  }
+}  
+                </code>
+            </codeDescription>
+        </section>
+      <!--
+      
+        SUBSECTION 2
+        
+        -->
+        <section>
+            <title>Exercise 7</title>
+            <description> 
+                <p>Now we will extend the children manager to be able to add and remove alarms. For this we will use some of the classes available in the package <i><a href="/proj-gp/GP-Examples/javasrc/gp.example.alarm.index.html">gp.example.alarm</a></i> to generate alarms that will be added to our parent node. 
+                </p>
+                <p>To be able to receive notification about alarms, the children manager must implement the <i><a href="/proj-gp/GP-Examples/javasrc/gp/example/alarm/AlarmListener.java.html">AlarmListener</a></i> interface. It must also inform an <i><a href="/proj-gp/GP-Examples/javasrc/gp/example/alarm/AlarmProducer.java.html">AlarmProducer</a></i> that it wants to receive notifications. We will modify the constructor to take such an object as a parameter. Then, in the <i>initChildrenMap()</i> method, we will initialize the communication by adding ourselves as a listener to this <i>AlarmProducer</i>.
+                </p>
+            </description>
+            <codeDescription>
+            <title>Implementing the AlarmListener interface</title>
+                <code>
+public class AlarmChildrenMapManager implements ChildrenMapManager, AlarmListener {
+  private NodeMap nodeMap;
+  private AlarmProducer producer;
+  
+  /** Creates a new instance of AlarmChildrenMapManager */
+  public AlarmChildrenMapManager(AlarmProducer producer) {
+    this.producer = producer;
+  }
+  ...
+    
+  public void initChildrenMap(NodeMap nodeMap) {
+    this.nodeMap = nodeMap;
+    producer.addAlarmListener(this);
+  }
+  
+  public void alarmAdded(Alarm alarm) {
+  }
+  
+  public void alarmRemoved(String alarmIdentifier) {
+  }
+  
+}               </code>
+            </codeDescription>
+            <description> 
+                <p>Now we are ready to implement what should happen when an alarm is added or removed.
+                </p>
+            </description>
+            <codeDescription>
+            <title>Adding and removing alarms</title>
+                <code>
+public class AlarmChildrenMapManager implements ChildrenMapManager, AlarmListener {
+  private AlarmProducer producer;
+  private Map nodeMap;
+  ...
+  
+  public void alarmAdded(Alarm alarm) {
+    try {
+      nodeMap.addNode(alarm.getIdentifier(), NodeFactory.createNode(alarm));
+    } catch (java.beans.IntrospectionException e) {
+      System.out.println(getClass().getName()+".alarmAdded() : " + e);
+    }
+  }
+  
+  public void alarmRemoved(String alarmIdentifier) {
+    nodeMap.removeNode(alarmIdentifier);
+  }
+}
+                </code>
+            </codeDescription>
+            <description>
+                <p>Now we are almost ready to run the example, but first we must modify our <i>main</i> slightly. We have to change the children manager to our new class and we must give it an <i>AlarmProducer</i>. Again we will use a class from the <i><a href="/proj-gp/GP-Examples/javasrc/gp.example.alarm.index.html">gp.example.alarm</a></i> package, the <i><a href="/proj-gp/GP-Examples/javasrc/gp/example/alarm/RandomAlarmGenerator.java.html">RandomAlarmGenerator</a></i>.
+                </p>
+            </description>
+            <codeDescription>
+            <title>Starting the AlarmProducer</title>
+                <code>
+public static void main(String[] args) throws IntrospectionException {   
+  ...     
+  
+  GPNode myRootNode = NodeFactory.createNode(new ExampleBean(), new AlarmChildrenMapManager(new RandomAlarmGenerator()));
+  ...
+}
+                </code>
+            </codeDescription>
+            <description>
+                <p>Run the <i>TreeExplorerExample</i> and see how the alarms are added to the parent node. To remove an alarm, right-click on the node and select <i>Reset Alarm</i>.
+                </p>
+            </description>
+        </section>
+  </section>
+  <!-- 
+
+    SECTION 4
+    
+  -->
+  <section>
+    <title>Creating a Module with NetBeans</title>
+        <description>
+            <p>To distribute an application in NetBeans, you package it into a module which is understood by the platform. A NetBeans Module is a Jar file with a Manifest and a so-called XML layer file. The manifest describes things like the name of the module, its version, and libraries it depends on. The XML layer file describes amongst others the module's menus items toolbar buttons and keyboard shortcuts, the windows and workspaces that need to be set up for the module.
+            </p>
+        </description>
+    <!--
+  
+    SUBSECTION 1
+    
+    -->
+    <section>
+    <title>Creating the module's XML layer file</title>
+        <description>
+            <p>For this example we will use the package <i>gp.example.sps</i>. To create an XML layer file right-click the package containing the module sources and choose <i>New->NetBeans Extensions->Modules API->XML Layer (Empty)</i> (see below). 
+            </p>
+        </description>
+        <!--
+      
+        SUBSUBSECTION 1
+        
+        -->
+        <section>
+        <title>Exercise 8</title>
+            <description>
+                <p align="center"><img src="images/create_empty_layer_menu.jpg"/>
+                </p>
+                <p>In the <i>New wizard</i>, specify the name layer (for instance here <code>SPSModuleLayer</code>).
+                </p>
+                <p align="center"><img src="images/create_empty_layer_wizard.jpg"/>
+                </p>
+                <p>We get an XML file named after the name you gave to the wizard and containing the <i>filesystem</i> root node.
+                </p>
+            </description>
+            <codeDescription>
+            <title>The empty module layer</title>
+                <code>
+    &lt;?xml version="1.0" encoding="UTF-8"?>
+    &lt;!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" 
+        "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+    &lt;filesystem/>
+                </code>
+            </codeDescription>
+    </section>
+        <!--
+      
+        SUBSUBSECTION 2
+        
+        -->
+        <section>
+        <title>Exercise 9</title>
+        <description>
+            <p>The layer file is a declarative way to add functionality to your NetBeans platform, i.e., does not require you to write any extra code. In this example we will add one simple   action <i><a href="/proj-gp/GP-Examples/javasrc/gp/examples/sps/StartSPSDemoAction.java.html">StartSPSDemoAction.java</a></i> in the menubar and in the toolbar. We specify the menu, and the action itself in the XML layer file. The menu called <i>SPSMenu</i> is added to the menubar with one menu item that will trigger the action <i>gp.example.sps.StartSPSDemoAction</i>. The display name of the item is given by the display of the action. The action is also added to the toolbar.
+            </p>
+        </description>
+        <codeDescription>
+        <title>Example of module layer file</title>
+            <comment>In this module layer we assume the existance of the action <code>gp.example.sps.StartSPSDemoAction</code></comment>
+            <code>
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" 
+    "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+&lt;filesystem>
+  &lt;folder name="Menu">
+    &lt;folder name="SPSMenu">
+      &lt;file name="gp-example-sps-StartSPSDemoAction.instance"/>         
+    &lt;/folder>
+  &lt;/folder>
+  &lt;folder name="Toolbars">
+    &lt;folder name="SPSDemo">
+      &lt;file name="gp-example-sps-StartSPSDemoAction.instance"/>         
+    &lt;/folder>
+  &lt;/folder>
+&lt;/filesystem>            
+            </code>
+        </codeDescription>
+    </section>
+    </section>
+    <!--
+  
+    SUBSECTION 2
+    
+    -->
+    <section>
+        <title>Exercise 10: Creating the module JAR</title>
+        <description>
+            <p>Once the layer file is ready it is possible to create the module JAR file using the wizard.
+            </p>
+            <ol>
+                <li>Start the <i>New wizard</i> from <i>File->New...</i> and then choose <i>Templates->NetBeans Extensions->Modules API->Module JAR</i> as shown below :
+                    <p align="center"><img src="images/create_module_menu.jpg"/>
+                    </p>
+                </li>
+                <li>First you choose a name for the module JAR (in the example <code>SPSModule</code>) and a place to put it. The exact location is not very important. You also    choose a display name for the module that the user will see (in the example the same name is used SPSModule). The filter just says what will be included in the module  (default is fine).
+                    <p align="center"><img src="images/module_wizard1.jpg"/>
+                    </p>
+                </li>
+                <li>Then you select what the module will include.
+                    <p align="center"><img src="images/module_wizard2.jpg"/>
+                    </p>
+                </li>
+                <li>The next step allows you to change the structure of what goes in the jar files. Do nothing not to change anything.
+                    <p align="center"><img src="images/module_wizard3.jpg"/>
+                    </p>
+                </li>
+                <li>To finish the creation of your module you need to write the manifest file, see example below. In the manifest file you can specify the location of the module JAR, a short description, and the name of the layer file. More information on layer files and manifest files can be found in the <i><a href="/proj-gp/tools/netbeans/openapi/org/openide/modules/doc-files/api.html">NetBeans API</a></i>
+                    <p align="center"><img src="images/module_wizard4.jpg"/>
+                    </p>
+                </li>
+            </ol>
+            </description>
+            <codeDescription>
+            <title>Example of module manifest file</title>
+                <code>
+Manifest-Version: 1.0
+Created-By: GUI Platform Project
+OpenIDE-Module: gp.example.sps
+OpenIDE-Module-Name: The SPS Demo module
+OpenIDE-Module-Layer: gp/example/sps/SPSModuleLayer.xml
+                </code>
+        </codeDescription>
+    </section>
+  <!--
+
+    SUBSECTION 3
+    
+    -->
+  <section>
+  <title>Exercise 11: Installing the module</title>
+    <description>
+        <p>When you've finished packaging your module, you can run it from within the NetBeans IDE by right-clicking on the module JAR and selecting <i>Execute</i> from the context menu. When the installation process is finished you should see the new menu and the toolbar added inside the IDE. This is useful for testing.
+        </p>
+    </description>
+    </section>
+  <!--
+
+    SUBSECTION 4
+    
+    -->
+  <section>
+   <title>Exercise 12: Disabling the module</title>
+    <description>
+        <p>In the IDE, to remove the menu you've just installed, you need to disable the module. Choose <i>Tools->Options</i>. In the <i>Options</i> window, go to <i>IDE Configuration->System->Modules</i>. You should find an entry for the module you've created and installed. Select it and in the <i>Properties</i> tab choose <i>Enabled</i> and set it to <code>false</code>. The menu should disappear.
+        </p>
+    </description>
+    </section>
+    <!--
+
+        SUBSECTION 5
+
+    -->
+    <section>
+    <title>Exercise 13: The NetBeans Platform</title>
+        <description>
+            <p>The NetBeans platform is essentially a stripped-down version of the NetBeans IDE, or conversely, the NetBeans IDE is the NetBeans Platform with many additional modules for Java Development.
+            </p>
+            <p>In the <i>GPCourse</i> directory there is a subdirectory called <i>netbeans_platform</i>. To install and run the module inside the NetBeans platform, you just need to copy the module jar to the <code>/user/modules</code> subdirectory of this directory. Then start the NetBeans platform by double-clicking on the file <i>nb.bat</i> in the same directory.
+            </p>
+    </description>
+  </section>
+  <!--
+
+    SUBSECTION 6
+    
+    -->
+  <section>
+   <title>Exercise 14: Creating a Module with IDE Plug-in Module wizard</title>
+    <description>
+      <p>This wizard can be found in the contextual menu <i>New->NetBeans Extensions->IDE Plug-in Module</i> (see below). It will take you in all stages of creating a module including creating the XML layer of the module, saying what menu, toolbar the module add. This wizard is well described in <i><a href="/proj-gp/_notgenerated/tools/netbeans/definitiveguide/NetBeansBook2.html#ch-hello-world">Chapter 5 : Developing Modulesthe New Module Wizard</a></i> of the <i>Extending NetBeans</i> book.
+        </p>
+        <p align="center"><img src="images/create_IDE_plugin_module_menu.jpg"/>
+        </p>
+    </description>
+  </section>
+  </section>
+</document>

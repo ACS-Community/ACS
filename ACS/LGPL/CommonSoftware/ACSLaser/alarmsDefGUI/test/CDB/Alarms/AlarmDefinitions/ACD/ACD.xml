@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+$Id: ACD.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/ACD/ACD.xml,v $
+-->
+<fault-family name="ACD"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="ATF Support Team"/>
+    <fault-code value="1">
+        <priority>3</priority>
+        <cause>Check Heat hot load values, TEMP20</cause>
+        <action>Check hot load heater</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Hot load temperature below of default value</problem-description>
+    </fault-code>
+    <fault-code value="2">
+        <priority>3</priority>
+        <cause>The temperature value used in SET_HEAT command was not allowed by hot load controller</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Value of Hot Load temperature is out range</problem-description>
+    </fault-code>
+    <fault-code value="4">
+        <priority>3</priority>
+        <cause>Alarm code 4</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Alarm code 4</problem-description>
+    </fault-code>
+    <fault-code value="8">
+        <priority>3</priority>
+        <cause>Alarm code 8</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Alarm code 8</problem-description>
+    </fault-code>
+    <fault-code value="16">
+        <priority>3</priority>
+        <cause>Alarm code 16</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Alarm code 16</problem-description>
+    </fault-code>
+    <fault-code value="32">
+        <priority>3</priority>
+        <cause>Alarm code 32</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Alarm code 32</problem-description>
+    </fault-code>
+    <fault-code value="64">
+        <priority>3</priority>
+        <cause>Alarm code 64</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Alarm code 64</problem-description>
+    </fault-code>
+    <fault-code value="128">
+        <priority>3</priority>
+        <cause>Alarm code 128</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Alarm code 128</problem-description>
+    </fault-code>
+    <fault-code value="256">
+        <priority>3</priority>
+        <cause>Alarm code 256</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Alarm code 256</problem-description>
+    </fault-code>
+    <fault-member-default>
+    </fault-member-default>
+</fault-family>

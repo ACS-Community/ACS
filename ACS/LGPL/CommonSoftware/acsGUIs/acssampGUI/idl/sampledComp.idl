@@ -1,0 +1,54 @@
+#ifndef SAMPLEDCOMPONENT_IDL_
+#define SAMPLEDCOMPONENT_IDL_
+
+/*******************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *******************************************************************************/
+#include <baci.idl>
+
+#pragma prefix "alma"
+
+module SAMP {
+
+	interface SampledComponent : ACS::CharacteristicComponent {
+
+		/**
+		 * Here we try to put all the different properties types
+		 */
+		readonly attribute ACS::ROdouble   my_ROdouble;
+		readonly attribute ACS::RWdouble   my_RWdouble;
+		readonly attribute ACS::ROfloat    my_ROfloat;
+		readonly attribute ACS::RWfloat    my_RWfloat;
+		readonly attribute ACS::ROlong     my_ROlong;
+		readonly attribute ACS::RWlong     my_RWlong;
+		readonly attribute ACS::ROstring   my_ROstring;
+		readonly attribute ACS::RWstring   my_RWstring;
+		readonly attribute ACS::ROlongLong my_ROlongLong;
+		readonly attribute ACS::RWlongLong my_RWlongLong;
+
+	};
+
+	interface ChildSampleComponent : SampledComponent {
+		readonly attribute ACS::ROlong     my_childLong;
+	};
+
+};
+
+#endif

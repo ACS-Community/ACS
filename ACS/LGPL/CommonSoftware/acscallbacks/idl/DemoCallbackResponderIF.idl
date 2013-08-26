@@ -1,0 +1,61 @@
+#ifndef _DEMOCALLBACKRESPONDER_IDL_
+#define _DEMOCALLBACKRESPONDER_IDL_
+
+#include <xmlentity.idl>
+#include <baci.idl>
+#include <acscomponent.idl>
+
+#pragma prefix "alma"
+
+
+module demo {
+
+
+	interface DemoCallbackResponder : ACS::ACSComponent {
+	
+      oneway void revertString(
+				in string text,
+				in ACS::CBstring cb,
+				in ACS::CBDescIn descIn
+		);
+		
+		oneway void countString(
+				in string text,
+				in ACS::CBlong cb,
+				in ACS::CBDescIn descIn
+		);
+
+		oneway void convertString(
+				in string text,
+				in ACS::CBlongSeq cb,
+				in ACS::CBDescIn descIn
+		);
+		
+
+
+		oneway void dummy1(
+				in string text,
+				in ACS::CBstringSeq cb,
+				in ACS::CBDescIn descIn
+		);
+		
+		oneway void dummy2(
+				in string text,
+				in ACS::CBdoubleSeq cb,
+				in ACS::CBDescIn descIn
+		);
+
+		oneway void dummy3(
+				in string text,
+				in ACS::CBdouble cb,
+				in ACS::CBDescIn descIn
+		);
+
+	    
+	};
+	
+	
+	
+};
+#endif
+

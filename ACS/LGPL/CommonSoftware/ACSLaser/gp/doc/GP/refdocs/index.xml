@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP project references documents</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<title>Documents</title>
+		<description>
+        <ul>
+          <li><a href="projdescription.html">Project description</a> <a href="projdescription.doc"><IMG BORDER="0" SRC="../images/word.gif" ALT="MS word document" width="18" height="18"/></a></li>
+          <li><a href="milestones.gif">Milestone plan</a></li>
+          <li><a href="meetings.html">Meetings and minutes</a></li>
+          <li><a href="presentations.html">Presentations</a></li>
+          <li>URD</li>
+        </ul>
+		</description>
+	</section>
+  
+	<section>
+		<title>GP Releases</title>
+		<description>
+      <ul>
+        <li>15-Oct-02 <a href="FeaturesRelease0.html">Planned Features Release 0</a><a href="FeaturesRelease0.doc"><IMG BORDER="0" SRC="../images/word.gif" ALT="MS word document" width="18" height="18"/></a></li>            
+      </ul> 
+		</description>
+	</section>
+
+</document>
+

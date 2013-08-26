@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+# Stopping the Container
+acsStopContainer Container &
+
+# Killing the DCPSInfoRepo
+kill -9  $(ps aux | grep /DCPSInfoRepo | head -1| awk '{print $2}') &
+
+acsutilTATEpilogue
+

@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>Attributes</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="20080603;17223000">
+	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<STYLE TYPE="text/css">
+	<!--
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<H1><A NAME="CommandHandling"></A>Attributes</H1>
+<H2>Security</H2>
+<P>Security requirements, stated in <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 9.1 Security]</A> are not analyzed in this document, but there is
+no indication that they cannot be met with the described
+architecture.</P>
+<H2>Safety</H2>
+<P>Requirement <A HREF="ReferenceDocuments.html#RD01">[RD01 - 9.2.1.
+Safety]</A> does not impose any particular behavior on ACS, since it
+states that software based on ACS has no direct responsibility on
+human and machine safety.</P>
+<P>Software limits will be directly supported in ACS <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 9.2.2. Software limits]</A>. Applications will handle software
+limits as alarms on Properties representing the value to be kept
+within limit. In a typical case, a value with software and hardware
+limits will be handled using a 5-state alarm (normal, high/low SW
+limit, high/low HW limit). Reaching a software limit will trigger a
+callback in the application responsible to handle the limit
+condition.</P>
+<H2>Reliability</H2>
+<P>Reliability requirements, stated in <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 9.3 Reliability]</A> are not explicitly analyzed in this document,
+but there is no indication that they cannot be met with the described
+architecture. In particular, CORBA itself has been designed having
+high reliability and availability as a key requirement.</P>
+<H2>Performance</H2>
+<P>The current choices for hardware and software platforms and the
+architecture for ACS described in the previous sections should ensure
+that the required performances are achievable.</P>
+<P>Basic performance requirements have been verified with ACS 0.0 on
+the Kitt Peak 12m antenna, with the TICS <A HREF="ReferenceDocuments.html#RD26">[RD26]</A>
+and the Protype Pipeline, at the ATF and in the laboratories.</P>
+<P>All performance requirements stated in <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 9.4. Performance]</A> are being verified. A set of performance
+measuring suites aimed at implementing a realistic system in term of
+number and size of objects <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 3.3.1 Size]</A> and of number of interactions has been implemented.
+Discussions and results of ACS performance measures are available in
+the ACS Wiki page
+<A HREF="http://almasw.hq.eso.org/almasw/bin/view/ACS/AcsPerformances">http://almasw.hq.eso.org/almasw/bin/view/ACS/AcsPerformances</A>.
+This includes a specific feasibility check of CORBA Audio Video
+Streaming service in relation to astronomical data transfer<A HREF="ReferenceDocuments.html#RD01">
+[RD01 - 10.5.9 Data transfer]</A> and tests of the event and
+notification system and logging system performance.</P>
+<P>For what concerns generic performance considerations for the ORB
+implementations we use, the corresponding web sites (referenced in
+the ACS online documentation pages <A HREF="ReferenceDocuments.html#RD41">[RD41]</A>
+) contain a sufficient amount of information.</P>
+<P>In the current implementation (ACS 6.0) XML is extensively used
+for the Configuration Database, for logging and archiving. The
+performances apper to be an issue for the logging system when low
+logging levels (trace and debug) are used. Therefore we have now
+implemented a new version of the logging system that does not use XML
+as transport protocol. We are evaluating the improvement in
+perfromance. Performance of XML does not appear to be an issue in the
+other cases, but this will have to be verified on a lager scale for
+scalability.</P>
+<H1>Life cycle aspects</H1>
+<P>ACS is being designed and implemented according to what is
+specified in <A HREF="ReferenceDocuments.html#RD01">[RD01 - 11. Life
+cycle aspects]</A>.</P>
+<P>ACS uses procedures and standards already defined by the Software
+Engineering working group. In particular the software development
+process is defined by ALMA Common Software Development Plan <A HREF="ReferenceDocuments.html#RD32">[RD32]</A>.
+This document describes also the scope and timetable of the planned
+ACS Releases.</P>
+<H2>Design requirements</H2>
+<P>Different versions of the system can exist in different places at
+the same time, with different Configuration Databases, but it must be
+possible to synchronize them (for example, development is done on a
+control model, with certain test motors, and installation is done on
+the telescope, that has different motors) <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 13.1.5 Configuration]</A>.</P>
+<P>Code does not always need to be recompiled if new IDL interfaces
+are made available or if an IDL interface is changed, for example
+adding new methods<A HREF="ReferenceDocuments.html#RD01">[RD01 -
+13.1.6. Modularity]</A>. With TAO and JacORB even if an application's
+interface changes, both client and server still work if they do not
+use the new features. It is possible to have the server exporting one
+version of the interface and the client use another version. If an
+interface changes, then re-compilation is necessary (as expected)
+only for those programs that use the new feature or the methods that
+eventually changed signature. This should work also with other ORBs,
+since it is due to the existing CORBA IIOP protocol. On the other
+hand, this behavior is not explicitly supported and, should the IIOP
+protocol ever change, different interfaces might lead to run-time
+errors. While this is a potentially useful facility, its use would
+need to be standardized and carefully monitored to avoid unpleasant
+surprises at runtime. To date, this capability has not been used in
+ALMA.&nbsp;</P>
+<P>ACS will be integrated and tested with any software specified in
+<A HREF="ReferenceDocuments.html#RD01">[RD01 - 12.3.1 The ACS shall
+be integrated and tested]</A>.</P>
+<H3>Portability and de-coupling from HW/SW platform</H3>
+<P>ACS shall be designed to be portable across Unix, Linux and RTOS
+platforms for what concerns its upper level components <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 13.1.7 Portability]</A>.</P>
+<P>The higher level of software in particular (co-ordination and user
+interface) should be as much as possible portable and de-coupled from
+any specific HW and SW platform. This pushes in the direction of the
+Java language and of the usage of a portable scripting language like
+Python<A HREF="ReferenceDocuments.html#RD24">[RD24]</A>. Java virtual
+machines and Java ORBs are available on any platform and for any web
+browser. At present time there are still compatibility issues between
+Java Virtual Machines (&quot;compile once, debug everywhere&quot;
+syndrome), particularly on a UI with live content. Most interfaces
+are not &quot;alive&quot; and do not expose the incompatibilities,
+but many ALMA interfaces will have live content. Web browsers are
+particularly sensitive to compatibility problems since they usually
+incorporate outdated Java Virtual Machines. Experience has shown that
+it is best to limit the number of target platforms and that
+real-world Java programs should run as independent applications.</P>
+<P>Java performance (initially an major reason for concern) is now
+adequate for GUIs and for high-level coordination applications with
+no real-time performance requirements. Java performance is much worse
+when running on a remote X-Server with respect to a local X-Server
+and, even more, a Microsoft Windows desktop. Java GUIs should
+therefore run preferably locally and not remotely. The ACS
+Architecture has been designed for this kind of usage.</P>
+<P>It is then suggested to use C++ in performance demanding
+applications and Java everywhere else <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 10.3.3 Compiled languages]</A>, with the exception of low level
+drivers that can be implemented in plain C language.</P>
+<P>Java and C++ interface at the network level through CORBA via IDL
+interfaces.</P>
+<P>Portability of C++ applications among different versions of UNIX
+and UNIX-like RTOSs is improved by adopting the ACE libraries<A HREF="ReferenceDocuments.html#RD23">[RD23]</A>
+and the Posix standard <A HREF="ReferenceDocuments.html#RD01">[RD01 -
+10.3.2 High level operating system]</A>, although at the RTOS level
+specific real-time features provided by the operating system (VxWorks
+for phase 1 <A HREF="ReferenceDocuments.html#RD01">[RD01 - 10.5.3
+RTOS]</A>) can be used<A HREF="ReferenceDocuments.html#RD01">[RD01 -
+10.3.1. RTOS]</A>.</P>
+<H3>Small, isolated modules for basic services</H3>
+<P>Basic services (for example logging and error system) must be
+independent from the other packages. Also, access to control system
+data must be de-coupled.</P>
+<P>CORBA is very well suited for this, since ORBs are available on
+any platform and also inside web browsers to provide the basic
+communication layer.</P>
+</BODY>
+</HTML>

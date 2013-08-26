@@ -1,0 +1,13 @@
+Local file logger: Cache saved to 
+Caught a ConcurrentModificationException from ORB shutdown. This should be harmless, see known JacORB bug
+calling orb.resolve_initial_references
+manager reference not yet available in method loginToManager
+POA activated
+Logger jacorb@.* created with custom log levels local=Info, remote=Info
+Alarm system type: ACS
+Don't need to create servant for offshoot
+offshoot of type '.*' activated as a CORBA object
+successfully activated offshoot of type
+Closing the AlarmSourceFactory
+AlarmSourceFactory closed
+TEST DEBUG: 

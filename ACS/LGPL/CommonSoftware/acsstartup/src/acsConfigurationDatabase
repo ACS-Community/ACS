@@ -1,0 +1,317 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupPids
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsConfigurationDatabase,v 1.10 2013/03/04 09:33:07 msekoran Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# azagar   2008-08-06 Extracted from acsStartORBSRVC and acsStopORBSRVC
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+PID=$$
+export HOST=`getIP`
+COMMAND=`basename $0`
+#LOGPOSTFIX=" using 'ACS_INSTANCE=$ACS_INSTANCE'"
+LOGPOSTFIX=
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_START=false
+CL_STOP=false
+CL_WAIT=false
+CL_BASEPORT=
+CL_HELP=
+CL_RECOVER=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+# Intentionally includes all options supported by acsStartORBSRVC
+#
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:,xmlcdbdir:,nameService:
+SHORTOPTS=hskwrb:t:d:x:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+  cat << EOF
+Starts Interface Repository for Acs
+
+Usage: $COMMAND [OPTIONS]
+Options:
+   -s | --start                      start service
+   -k | --kill                       stop service
+   -w | --wait                       wait for service to get started
+   -b | --baseport INSTANCE          the acs instance (0-9) you want to use
+   -t | --timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
+   -d | --xmlcdbdir ACS_CDB          the directory which contains the CDB directory, see env var ACS_CDB
+   -r | --recoverClientConnections   force services to recover client connections
+   -x | --nameService REF            set name service reference via command-line
+   -h | --help                       prints this help and exits
+EOF
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n $COMMAND -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+  printUsage
+  exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+  case "$1" in
+    --baseport)                   CL_BASEPORT=$2 ; shift ;;
+    -b)                           CL_BASEPORT=$2 ; shift ;;
+    --timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    -t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+    --recoverClientConnections)   CL_RECOVER=true ;; 
+    -r)                           CL_RECOVER=true ;; 
+    --help)                       CL_HELP=true ;; 
+    -h)                           CL_HELP=true ;; 
+    --start)                      CL_START=true ;; 
+    -s)                           CL_START=true ;; 
+    --kill)                       CL_STOP=true ;; 
+    -k)                           CL_STOP=true ;; 
+    --wait)                       CL_WAIT=true ;; 
+    -w)                           CL_WAIT=true ;; 
+    -xmlcdbdir)                   export ACS_CDB=$2 ; shift ;;
+    -d)                           export ACS_CDB=$2 ; shift ;;
+    --nameService)                export ACS_NAME_SERVICE=$2 ; shift ;;
+    -x)                           export ACS_NAME_SERVICE=$2 ; shift ;;
+    --) break ;;
+  esac
+  shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+if [ "$CL_HELP" ] ; then
+  printUsage
+  exit $EC_OK
+fi
+
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+################################
+#Set variables
+################################
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+  export ACS_INSTANCE="$CL_BASEPORT"
+fi
+
+ACS_LOG_COMMAND $@
+
+#Makes shure there is an initial value
+if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+then
+  ACS_STARTUP_TIMEOUT_MULTIPLIER=5
+fi
+
+#maximum timeout for any given process to complete
+MAX_TIMEOUT=$(( 10 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
+
+export STD_SLEEP=3
+
+export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+
+#set the filenames where binaries' output will be sent
+CDB_OUT=$INSTANCE_DIR/$ACS_CDB_OUT
+
+#determine the TCP ports to be used
+CDB_PORT=`getCDBPort`
+
+# Always use -ORBDottedDecimalAddresses=1
+if [ "X$ORBOPTS" = "X" ]
+then
+  ORBOPTS="-ORBDottedDecimalAddresses 1"
+fi
+
+
+
+
+######################################
+#   ACS Configuration Database
+#
+#   Note: this is started immediately after the naming service 
+#         (which is its only dependency) in the background, 
+#         for performance reasons. The code which
+#         checks to make sure cdbjDAL has started properly
+#         has been moved to the end of this file to improve
+#         performance.
+#######################################
+
+if [ "$CL_STOP" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  if [ ! -d $INSTANCE_DIR ]
+  then
+    ACS_LOG_DEBUG "$COMMAND" "Lock directory '$INSTANCE_DIR' does not exist!"
+  elif [ ! -w $INSTANCE_DIR ]
+  then
+    ACS_LOG_ERROR "$COMMAND" "Lock directory '$INSTANCE_DIR' is not owned by '$USER'!"
+    exit $EC_CANNOTUSE
+  fi
+
+  ACS_NAME_SERVICE=`acsstartupNSRef`
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name CDB -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+
+  # SERVICE SHUTDOWN
+  # --------------------------------------------------------------------------
+  # Since the CDB is just a Java process, it must be treated a little differently
+  ACS_LOG_INFO "$COMMAND" "Stopping the CDB${LOGPOSTFIX}"
+  ACS_CDB_PORT=`getCDBPort`
+
+  #Try the "correct" way of shutting down the CDB
+  if ! acsutilBlock -t 15 -k cdbjDALShutdown -d corbaloc::$HOST:$ACS_CDB_PORT/CDB &> /dev/null
+  then
+    if CDB_PID=`getCDBPid`
+    then
+      acsKillProc $CDB_PID 2> /dev/null || (ACS_LOG_ERROR "$COMMAND" "Cannot kill the CDB")
+    fi
+  fi
+fi
+
+if [ "$CL_START" = "true" ]
+then
+  # SANITY CHECKS
+  # --------------------------------------------------------------------------
+  # Prevent from having the service started more than once on the same baseport
+  if CDB_PID=`getCDBPid 2> /dev/null`
+  then
+    ACS_LOG_ERROR "$COMMAND" "It appears as if you're trying to run the `basename $0` command twice"
+    ACS_LOG_ERROR "$COMMAND" "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
+    exit $EC_FAILURE
+  fi
+
+  # Make sure that the directory for temporary ACS_INSTANCE files exists.
+  if ! createInstanceDirectory $ACS_INSTANCE
+  then
+     ACS_LOG_ERROR "$COMMAND" "Cannot create $INSTANCE_DIR"
+     exit $EC_CANNOTCREATE
+  fi
+  mkdir -p $INSTANCE_DIR/$ACS_PID_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_OUT_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_IOR_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_CNF_DIR
+
+  # Ensure the port numbers are actually free
+  if ! checkTCPPort $CDB_PORT
+  then
+    ACS_LOG_ERROR "$COMMAND" "CDB port is being used by another process. Cannot continue!"
+    exit $EC_NOPORT
+  fi
+
+  # SERVICE STARTUP
+  # --------------------------------------------------------------------------
+  CDB_RECOVER_OPT=-n
+  if [ "$CL_RECOVER" ] ; then
+    CDB_RECOVER_OPT=
+  fi
+
+  ENABLE_TMCDB=`echo ${ENABLE_TMCDB:-"false"} | tr "[:upper:]" "[:lower:]"`
+  if [ $ENABLE_TMCDB = "true" ] || [ $ENABLE_TMCDB = "y" ] || [ $ENABLE_TMCDB = "1" ]
+  then
+    ACS_LOG_INFO "$COMMAND" "Starting ALMA Telescope and Monitor Configuration Database${LOGPOSTFIX}"
+    if [ `searchFile lib/cdb_rdb.jar` = "#error#" ] # sanity check
+    then
+      ACS_LOG_ERROR "$COMMAND" "The TMCDB implementation cannot be found. Did you build ACS/LGPL/CommonSoftware/cdb_rdb?"
+      exit $EC_FAILURE;
+    fi
+    ACS_LOG_INFO "$COMMAND" "Using configuration $TMCDB_CONFIGURATION_NAME"
+    LOAD_FROM_XML=`echo ${LOAD_FROM_XML:-"false"} | tr "[:upper:]" "[:lower:]"`
+    if [ $LOAD_FROM_XML = "true" ] || [ $LOAD_FROM_XML = "y" ] || [ $LOAD_FROM_XML = "1" ]
+    then
+      loadfrom="-loadXMLCDB"
+      ACS_LOG_INFO "$COMMAND" "Will load TMCDB from existing XML CDB at $ACS_CDB"
+    else
+      loadfrom=""
+    fi
+    TMCDB_IN_MEMORY=`echo ${TMCDB_IN_MEMORY:-"false"} | tr "[:upper:]" "[:lower:]"`
+    if [ $TMCDB_IN_MEMORY = "true" ] || [ $TMCDB_IN_MEMORY = "y" ] || [ $TMCDB_IN_MEMORY = "1" ]
+    then
+      inmemory="-memory"
+      ACS_LOG_INFO "$COMMAND" "Will load TMCDB into memory"
+    else
+      inmemory=""
+    fi
+    hibernateCdbJDal -OAIAddr $HOST -OAport $CDB_PORT $CDB_RECOVER_OPT $loadfrom $inmemory 2>&1 | tee $CDB_OUT &
+  else
+    ACS_LOG_INFO "$COMMAND" "Starting ACS Configuration Database${LOGPOSTFIX}"
+    ACS_LOG_INFO "$COMMAND" "    CDB data is in:  $ACS_CDB"
+    cdbjDAL -OAIAddr $HOST -OAport $CDB_PORT $CDB_RECOVER_OPT 2>&1 | tee $CDB_OUT &
+  fi
+  #copy tee's PID
+  echo $! >> "$INSTANCE_DIR/$ACS_PIDSFILE"
+fi
+
+if [ "$CL_WAIT" = "true" ]
+then
+  # Block until the expected output shows up in the the correct file
+  if ! acsutilBlock -t $MAX_TIMEOUT -f $CDB_OUT -b "JDAL is ready and waiting"
+  then
+    ACS_LOG_ERROR "$COMMAND" "Unable to start the ACS CDB!"
+    ACS_LOG_ERROR "$COMMAND" "Try increasing the value of \$ACS_STARTUP_TIMEOUT_MULTIPLIER"
+    exit $EC_TIMEOUT
+  fi
+fi
+
+
+#
+# ___oOo___

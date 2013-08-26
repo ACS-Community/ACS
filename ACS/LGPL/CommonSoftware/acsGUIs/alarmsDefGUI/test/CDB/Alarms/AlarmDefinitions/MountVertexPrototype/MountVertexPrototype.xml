@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+$Id: MountVertexPrototype.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/acsGUIs/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/MountVertexPrototype/MountVertexPrototype.xml,v $
+-->
+<fault-family name="MountVertexPrototype" 
+	xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://tempuri.org</help-url>
+  <contact name="Responsible Person"/>
+  <fault-code value="0">
+    <priority>1</priority>
+    <problem-description>Shutter did not close when going to CLOUDSAT region</problem-description>
+  </fault-code>
+  <fault-code value="1">
+    <priority>1</priority>
+    <problem-description>Shutter did not reopen after leaving CLOUDSAT region</problem-description>
+  </fault-code>
+  <fault-code value="2">
+    <priority>1</priority>
+    <problem-description>Failure in the Notification Channel</problem-description>
+  </fault-code>
+  <fault-code value="3">
+    <priority>1</priority>
+    <problem-description>Communication error between ACU and ABM</problem-description>
+  </fault-code>
+  <fault-code value="4">
+    <priority>1</priority>
+    <problem-description>AMBERR received in mount status</problem-description>
+  </fault-code>
+  <fault-code value="5">
+    <priority>1</priority>
+    <problem-description>Pointing model unavailable</problem-description>
+  </fault-code>
+  <fault-code value="6">
+    <priority>1</priority>
+    <problem-description>Illegal terms in pointing model</problem-description>
+  </fault-code>
+  <fault-code value="7">
+    <priority>1</priority>
+    <problem-description>Incorrect execution time found in positions</problem-description>
+  </fault-code>
+  <fault-code value="1000">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS SAFE SWITCH</problem-description>
+  </fault-code>
+  <fault-code value="1001">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS POWER FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1002">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS 24V FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1003">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS BREAKER FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1004">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS COMM ACU PTC FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1005">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS COMM ACU PLC FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1006">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS CABINET OVERTEMPERATURE</problem-description>
+  </fault-code>
+  <fault-code value="1007">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS CABINET DOOR OPEN</problem-description>
+  </fault-code>
+  <fault-code value="1008">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS PLATFORM2 HANDRAILS NOT LOWERED</problem-description>
+  </fault-code>
+  <fault-code value="1009">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS RAMP TO RCV CABIN NOT TILTED UP</problem-description>
+  </fault-code>
+  <fault-code value="1010">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS HOIST INTERLOCK</problem-description>
+  </fault-code>
+  <fault-code value="1011">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS ACCESS BAR TO PLATFORM2 OPEN</problem-description>
+  </fault-code>
+  <fault-code value="1012">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS ACCESS DOOR TO PLATFORM1 OPEN</problem-description>
+  </fault-code>
+  <fault-code value="1013">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS RCV CABIN DOOR OPEN</problem-description>
+  </fault-code>
+  <fault-code value="1014">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS TIMING PULSE MISSING</problem-description>
+  </fault-code>
+  <fault-code value="1015">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS EMERGENCY SWITCH CABINET</problem-description>
+  </fault-code>
+  <fault-code value="1016">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS EMERGENCY SWITCH EQUIPMENT RACK</problem-description>
+  </fault-code>
+  <fault-code value="1017">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS EMERGENCY SWITCH ANTENNA BASE</problem-description>
+  </fault-code>
+  <fault-code value="1018">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS EMERGENCY SWITCH PLATFORM</problem-description>
+  </fault-code>
+  <fault-code value="1019">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS EMERGENCY SWITCH STAIRWAY TO PLATFORM1</problem-description>
+  </fault-code>
+  <fault-code value="1020">
+    <priority>1</priority>
+    <problem-description>SYSTEM STATUS EMERGENCY SWITCH RECEIVER CABIN</problem-description>
+  </fault-code>
+  <fault-code value="1021">
+    <priority>1</priority>
+    <problem-description>AZ STATUS PRELIMIT CW</problem-description>
+  </fault-code>
+  <fault-code value="1022">
+    <priority>1</priority>
+    <problem-description>AZ STATUS PRELIMIT CCW</problem-description>
+  </fault-code>
+  <fault-code value="1023">
+    <priority>1</priority>
+    <problem-description>AZ STATUS LIMIT CW</problem-description>
+  </fault-code>
+  <fault-code value="1024">
+    <priority>1</priority>
+    <problem-description>AZ STATUS LIMIT CCW</problem-description>
+  </fault-code>
+  <fault-code value="1025">
+    <priority>1</priority>
+    <problem-description>AZ STATUS EMERGENCY LIMIT CW</problem-description>
+  </fault-code>
+  <fault-code value="1026">
+    <priority>1</priority>
+    <problem-description>AZ STATUS EMERGENCY LIMIT CCW</problem-description>
+  </fault-code>
+  <fault-code value="1027">
+    <priority>1</priority>
+    <problem-description>AZ STATUS SECOND EMERGENCY LIMIT CW</problem-description>
+  </fault-code>
+  <fault-code value="1028">
+    <priority>1</priority>
+    <problem-description>AZ STATUS SECOND EMERGENCY LIMIT CCW</problem-description>
+  </fault-code>
+  <fault-code value="1029">
+    <priority>1</priority>
+    <problem-description>AZ STATUS SERVO FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1030">
+    <priority>1</priority>
+    <problem-description>AZ STATUS OVERSPEED</problem-description>
+  </fault-code>
+  <fault-code value="1031">
+    <priority>1</priority>
+    <problem-description>AZ STATUS NO MOTION</problem-description>
+  </fault-code>
+  <fault-code value="1032">
+    <priority>1</priority>
+    <problem-description>AZ STATUS SPEED ZERO</problem-description>
+  </fault-code>
+  <fault-code value="1033">
+    <priority>1</priority>
+    <problem-description>AZ STATUS STOW POSITION</problem-description>
+  </fault-code>
+  <fault-code value="1034">
+    <priority>1</priority>
+    <problem-description>AZ STATUS ENCODER FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1035">
+    <priority>1</priority>
+    <problem-description>AZ STATUS INSANE VELOCITY FEEDBACK</problem-description>
+  </fault-code>
+  <fault-code value="1036">
+    <priority>1</priority>
+    <problem-description>AZ STATUS DC BUS OVER VOLTAGE</problem-description>
+  </fault-code>
+  <fault-code value="1037">
+    <priority>1</priority>
+    <problem-description>AZ STATUS BRAKE1 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1038">
+    <priority>1</priority>
+    <problem-description>AZ STATUS BRAKE2 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1039">
+    <priority>1</priority>
+    <problem-description>AZ STATUS AMPLIFIER1 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1040">
+    <priority>1</priority>
+    <problem-description>AZ STATUS AMPLIFIER2 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1041">
+    <priority>1</priority>
+    <problem-description>AZ STATUS MOTOR1 OVER TEMPERATURE</problem-description>
+  </fault-code>
+  <fault-code value="1042">
+    <priority>1</priority>
+    <problem-description>AZ STATUS MOTOR2 OVER TEMPERATURE</problem-description>
+  </fault-code>
+  <fault-code value="1043">
+    <priority>1</priority>
+    <problem-description>AZ STATUS REGENERATION RESISTOR OVER TEMPERATURE</problem-description>
+  </fault-code>
+  <fault-code value="1044">
+    <priority>1</priority>
+    <problem-description>AZ STATUS SERVO OSCILLATION</problem-description>
+  </fault-code>
+  <fault-code value="1045">
+    <priority>1</priority>
+    <problem-description>AZ STATUS AUX MOTOR1 OFF</problem-description>
+  </fault-code>
+  <fault-code value="1046">
+    <priority>1</priority>
+    <problem-description>AZ STATUS AUX MOTOR2 OFF</problem-description>
+  </fault-code>
+  <fault-code value="1047">
+    <priority>1</priority>
+    <problem-description>AZ STATUS COMPUTER DISABLED</problem-description>
+  </fault-code>
+  <fault-code value="1048">
+    <priority>1</priority>
+    <problem-description>AZ STATUS AXIS DISABLED</problem-description>
+  </fault-code>
+  <fault-code value="1049">
+    <priority>1</priority>
+    <problem-description>AZ STATUS PCU IN OPERATION</problem-description>
+  </fault-code>
+  <fault-code value="1050">
+    <priority>1</priority>
+    <problem-description>AZ STATUS AXIS IN STOP</problem-description>
+  </fault-code>
+  <fault-code value="1051">
+    <priority>1</priority>
+    <problem-description>AZ STATUS FLIP FLOP BUFFER POSITION INCORRECTLY</problem-description>
+  </fault-code>
+  <fault-code value="1052">
+    <priority>1</priority>
+    <problem-description>EL STATUS PRELIMIT UP</problem-description>
+  </fault-code>
+  <fault-code value="1053">
+    <priority>1</priority>
+    <problem-description>EL STATUS PRELIMIT DOWN</problem-description>
+  </fault-code>
+  <fault-code value="1054">
+    <priority>1</priority>
+    <problem-description>EL STATUS LIMIT UP</problem-description>
+  </fault-code>
+  <fault-code value="1055">
+    <priority>1</priority>
+    <problem-description>EL STATUS LIMIT DOWN</problem-description>
+  </fault-code>
+  <fault-code value="1056">
+    <priority>1</priority>
+    <problem-description>EL STATUS EMERGENCY LIMIT UP</problem-description>
+  </fault-code>
+  <fault-code value="1057">
+    <priority>1</priority>
+    <problem-description>EL STATUS EMERGENCY LIMIT DOWN</problem-description>
+  </fault-code>
+  <fault-code value="1058">
+    <priority>1</priority>
+    <problem-description>EL STATUS SERVO FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1059">
+    <priority>1</priority>
+    <problem-description>EL STATUS OVERSPEED</problem-description>
+  </fault-code>
+  <fault-code value="1060">
+    <priority>1</priority>
+    <problem-description>EL STATUS NO MOTION</problem-description>
+  </fault-code>
+  <fault-code value="1061">
+    <priority>1</priority>
+    <problem-description>EL STATUS SPEED ZERO</problem-description>
+  </fault-code>
+  <fault-code value="1062">
+    <priority>1</priority>
+    <problem-description>EL STATUS STOW POSITION</problem-description>
+  </fault-code>
+  <fault-code value="1063">
+    <priority>1</priority>
+    <problem-description>EL STATUS ENCODER FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1064">
+    <priority>1</priority>
+    <problem-description>EL STATUS INSANE VELOCITY FEEDBACK</problem-description>
+  </fault-code>
+  <fault-code value="1065">
+    <priority>1</priority>
+    <problem-description>EL STATUS DC BUS OVER VOLTAGE</problem-description>
+  </fault-code>
+  <fault-code value="1066">
+    <priority>1</priority>
+    <problem-description>EL STATUS BRAKE1 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1067">
+    <priority>1</priority>
+    <problem-description>EL STATUS BRAKE2 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1068">
+    <priority>1</priority>
+    <problem-description>EL STATUS BRAKE3 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1069">
+    <priority>1</priority>
+    <problem-description>EL STATUS BRAKE4 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1070">
+    <priority>1</priority>
+    <problem-description>EL STATUS AMPLIFIER1 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1071">
+    <priority>1</priority>
+    <problem-description>EL STATUS AMPLIFIER2 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1072">
+    <priority>1</priority>
+    <problem-description>EL STATUS AMPLIFIER3 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1073">
+    <priority>1</priority>
+    <problem-description>EL STATUS AMPLIFIER4 FAILURE</problem-description>
+  </fault-code>
+  <fault-code value="1074">
+    <priority>1</priority>
+    <problem-description>EL STATUS MOTOR1 OVER TEMPERATURE</problem-description>
+  </fault-code>
+  <fault-code value="1075">
+    <priority>1</priority>
+    <problem-description>EL STATUS MOTOR2 OVER TEMPERATURE</problem-description>
+  </fault-code>
+  <fault-code value="1076">
+    <priority>1</priority>
+    <problem-description>EL STATUS MOTOR3 OVER TEMPERATURE</problem-description>
+  </fault-code>
+  <fault-code value="1077">
+    <priority>1</priority>
+    <problem-description>EL STATUS MOTOR4 OVER TEMPERATURE</problem-description>
+  </fault-code>
+  <fault-code value="1078">
+    <priority>1</priority>
+    <problem-description>EL STATUS REGENERATION RESISTOR OVER TEMPERATURE</problem-description>
+  </fault-code>
+  <fault-code value="1079">
+    <priority>1</priority>
+    <problem-description>EL STATUS SERVO OSCILLATION</problem-description>
+  </fault-code>
+  <fault-code value="1080">
+    <priority>1</priority>
+    <problem-description>EL STATUS AUX MOTOR1 OFF</problem-description>
+  </fault-code>
+  <fault-code value="1081">
+    <priority>1</priority>
+    <problem-description>EL STATUS AUX MOTOR2 OFF</problem-description>
+  </fault-code>
+  <fault-code value="1082">
+    <priority>1</priority>
+    <problem-description>EL STATUS AUX MOTOR3 OFF</problem-description>
+  </fault-code>
+  <fault-code value="1083">
+    <priority>1</priority>
+    <problem-description>EL STATUS AUX MOTOR4 OFF</problem-description>
+  </fault-code>
+  <fault-code value="1084">
+    <priority>1</priority>
+    <problem-description>EL STATUS COMPUTER DISABLED</problem-description>
+  </fault-code>
+  <fault-code value="1085">
+    <priority>1</priority>
+    <problem-description>EL STATUS AXIS DISABLED</problem-description>
+  </fault-code>
+  <fault-code value="1086">
+    <priority>1</priority>
+    <problem-description>EL STATUS PCU IN OPERATION</problem-description>
+  </fault-code>
+  <fault-code value="1087">
+    <priority>1</priority>
+    <problem-description>EL STATUS AXIS IN STOP</problem-description>
+  </fault-code>
+  <fault-code value="1088">
+    <priority>1</priority>
+    <problem-description>EL STATUS ELEVATION ABOVE 90 DEGRESS</problem-description>
+  </fault-code>
+  <fault-member-default>
+  </fault-member-default>
+</fault-family>

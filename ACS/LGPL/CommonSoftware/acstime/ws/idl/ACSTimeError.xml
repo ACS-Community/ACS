@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSTimeError" type="33" _prefix="alma">
+	<ErrorCode name="OverflowOrUnderflow" shortDescription="Numerical error" description="A number was too large to be stored in the memory allocated for it"/>
+	<ErrorCode name="ArgError" shortDescription="Bad format" description="The format of an arguement was used incorrectly"/>
+	<ErrorCode name="InvalidID" shortDescription="ID's bad"	description="The ID  either does not exist or is no longer valid"/>
+</Type>
+
+

@@ -1,0 +1,60 @@
+Emacs/W3 Installation Guide (Windows 95/NT Version)
+Copyright (c) 1998 Free Software Foundation, Inc.
+
+   Permission is granted to anyone to make or distribute verbatim copies
+   of this document as received, in any medium, provided that the
+   copyright notice and permission notice are preserved,
+   and that the distributor grants the recipient permission
+   for further redistribution as permitted by this notice.
+
+   Permission is granted to distribute modified versions
+   of this document, or of portions of it,
+   under the above conditions, provided also that they
+   carry prominent notices stating who last changed them,
+   and that any new or changed statements about the activities
+   of the Free Software Foundation are approved by the Foundation.
+
+
+ADDITIONAL DISTRIBUTION FILES
+
+* custom.tar.gz
+
+For older versions of Emacs (pre-20.x), you will need the latest and
+greatest versions of the custom and widget libraries.  This is
+distributed in a separate tar file to save users time in downloading,
+and to ease maintenance of the libraries.
+
+
+BUILDING AND INSTALLATION
+
+(This is for a Windows 95 or NT system.  For Unix or Unix-like
+systems, see the file INSTALL.  For VMS systems, see the file
+README.VMS)
+
+1) Make sure your system has enough memory to run Emacs, plus about 1
+megabyte to spare.
+
+Building Emacs/W3 requires about 2.8 Mb of disk space (including the
+sources).  Once installed, Emacs/W3 occupies about 2 Mb in the file
+system where it is installed.
+
+2) You must tell Emacs/W3 where to find the custom/widget packages
+that you have installed if you are running Emacs 19.
+
+This is done with the WIDGETDIR environment variable.  Set this to the
+directory where the lisp files are, ie:
+
+set WIDGETDIR=c:\users\blort\lisp\custom
+
+3) Run `build.bat' in the top directory of the Emacs/W3 distribution
+to finish building Emacs/W3 in the standard way.
+
+4) Add the Emacs/W3 lisp directory to your load-path.  Add the
+following line to your .emacs file.
+
+(setq load-path (cons "c:/path/to/w3-x.y.z/lisp" load-path))
+(require 'w3-auto)
+
+4) Check the file `dir' in your site's info directory (usually
+/usr/local/info) to make sure that it has a menu entry for the
+Emacs/W3 info files.

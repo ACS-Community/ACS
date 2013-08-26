@@ -1,0 +1,11 @@
+1 - Running acsexmplClientFridge FRIDGE1
+1 - Welcome to acsexmplClientFridge!
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Value: 8.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] OK
+1 - ----------T--:--:--.--- [GlobalLogger - ] Trying to create monitor for refTemperature...
+1 - ----------T--:--:--.--- [GlobalLogger - ] OK
+1 - ----------T--:--:--.--- [GlobalLogger - ] (refTemp::CBdouble::working) Value: 8.000000, desc.id_tag: xxx
+1 - ----------T--:--:--.--- [GlobalLogger - ] (refTemp::CBdouble::done) Value: 8.000000
+1 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...
+1 - All done!

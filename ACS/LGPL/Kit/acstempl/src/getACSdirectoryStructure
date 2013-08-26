@@ -1,0 +1,179 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - ACS project
+#   
+# "@(#) $Id: getACSdirectoryStructure,v 1.20 2002/12/05 19:09:16 vltsccm Exp $" 
+#
+# who       when      what
+# --------  ----------  ----------------------------------------------
+# psivera   2000-10-07  created
+# psivera   2001-06-25  added MODROOT for ws only, lcu only and ws&lcu branches
+# psivera   2002-11-08  changed VLTDATA to ACSDATA
+
+#************************************************************************
+#   NAME
+#   getACSdirectoryStructure - interactive interface to create/check ACS directory structure
+# 
+#   SYNOPSIS
+#
+#   getACSdirectoryStructure
+#
+# 
+#   DESCRIPTION
+#   Utility used ot create/check ACS directory structure for:
+#          - module
+#          - integration
+#          - root
+#          - data
+#
+#   FILES
+#
+#   ENVIRONMENT
+#     INTROOT    current integration area root directory
+#     ACSROOT    current ACS area root directory
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltDirectoryStructure, getTemplateForDirectory
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+#
+# display main menu
+while clear
+do
+    cat <<xyz
+-------------------------------------------------------------------------------
+This utility allows you to create or to check a ACS directory structure.
+(see also acsDirectoryStructure(8))
+
+Available functions are:
+
+             ______________ createWS_MODROOTarea
+
+
+             ______________ createLCU_MODROOTarea
+
+
+             ______________ createWS_LCU_MODROOTarea
+
+
+             ______________ createINTROOTarea
+
+
+             ______________ createACSROOTarea
+
+
+             ______________ createACSDATAarea
+
+
+xyz
+
+    echo "type    the function name to execute or press <Enter> to exit: \c"
+    read OPTION
+ 
+    echo " - - - - - - - - - - - - - - - - - - - - - - - -"
+
+# if the user answer is not empty process it else go to previous level
+
+    if test -n "$OPTION"
+    then
+        case $OPTION in
+        createWS_MODROOTarea)
+            # get the module name
+            echo ""
+            echo "\ntype module name or press <Enter> to quit: \c"
+            read MOD
+            if [ ! "$MOD" = "" ]
+            then
+                getTemplateForDirectory MODROOT_WS $MOD
+                echo "\n press <Enter> to continue . . . \c"
+                read a
+            fi
+            ;;
+
+        createLCU_MODROOTarea)
+            # get the module name
+            echo ""
+            echo "\ntype module name or press <Enter> to quit: \c"
+            read MOD
+            if [ ! "$MOD" = "" ]
+            then
+                getTemplateForDirectory MODROOT_LCU $MOD
+                echo "\n press <Enter> to continue . . . \c"
+                read a
+            fi
+            ;;
+
+        createWS_LCU_MODROOTarea)
+            # get the module name
+            echo ""
+            echo "\ntype module name or press <Enter> to quit: \c"
+            read MOD
+            if [ ! "$MOD" = "" ]
+            then
+                getTemplateForDirectory MODROOT_WS_LCU $MOD
+                echo "\n press <Enter> to continue . . . \c"
+                read a
+            fi
+            ;;
+
+        createINTROOTarea)
+            # get the root directory
+            echo ""
+            echo "\ntype the integration root directory or press <Enter> to quit: \c"
+            read INT
+            if [ ! "$INT" = "" ]
+            then 
+                getTemplateForDirectory INTROOT $INT
+                echo "\n press <Enter> to continue . . . \c"
+                read a
+            fi
+            ;;
+
+
+        createACSROOTarea)
+            # get the ACS root
+            echo ""
+            echo "\ntype the ACS root directory or press <Enter> to quit: \c"
+            read ACS
+            if [ ! "$ACS" = "" ]
+            then 
+                getTemplateForDirectory ACSROOT $ACS
+                echo "\n press <Enter> to continue . . . \c"
+                read a
+            fi
+            ;;
+
+
+        createACSDATAarea)
+            # get the ACS data root
+            echo ""
+            echo "\ntype the ACS data directory or press <Enter> to quit: \c"
+            read ACS
+            if [ ! "$ACS" = "" ]
+            then 
+                getTemplateForDirectory ACSDATA $ACS
+                echo "\n press <Enter> to continue . . . \c"
+                read a
+            fi
+            ;;
+
+
+        *)  
+            echo ">>$OPTION<< is an invalid choice. \c"
+            echo "Press <Enter> to continue . . .\c"
+            read a
+            ;;
+
+        esac    
+
+    else
+        exit
+    fi
+done
+#
+# ___oOo___

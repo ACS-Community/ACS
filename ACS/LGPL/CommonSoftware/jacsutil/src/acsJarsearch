@@ -1,0 +1,167 @@
+#! /bin/bash
+
+# History
+# --------
+# 2005-05 : mschilli : added to ACS
+# 2003-07 : mschilli : created
+# 
+
+##
+## import exit codes
+##
+. acsstartupConstants
+
+##
+## debug mode on/off
+##
+#set -x
+
+
+## on Linux use external $ACSROOT/bin/echo
+if [ "`uname`" = "Linux" ]; 
+	then enable -n echo
+fi
+
+
+THIS=`basename $0`
+
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_VERBOSE=
+CL_USEJAR=
+CL_HELP=
+
+
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=jar,verbose,help
+SHORTOPTS=jvh
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+    echo 'Usage: '$THIS'  [OPTIONS]  FILENAME_FRAGMENT  [DIRECTORY]'
+    echo '  where FILENAME_FRAGMENT is a case-insensitive regular expression'
+	 echo '  and DIRECTORY is the root of the filesystem tree to search (defaults to current directory)'
+    echo 'Options: -j | -jar       use jar instead of zip to read indices (slower but works everywhere)'
+    echo '         -v | -verbose   output hits as well, not only the jar names'
+    echo '         -h | -help      prints this help and exits'
+    echo 'Examples: 1.'$this' AlmaUser'
+    echo '          2.'$this' almauser (equivalent to 1)'
+    echo '          3.'$this' alm.user (superset of 1)'
+    echo '          4.'$this' almauser\.class'
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--verbose)      CL_VERBOSE=true ;;
+	-v)             CL_VERBOSE=true ;;
+	--jar)          CL_USEJAR=true ;;
+	-j)             CL_USEJAR=true ;;
+	--help)         CL_HELP=true ;; 
+	-h)             CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+
+### ---------- End of Command Line Parsing -------------
+
+
+## Check if filename_fragment was given on the command line
+
+searchstring=$1
+if [ ! $searchstring ] ; then 
+   printUsage
+	exit $EC_BADARGS
+fi
+
+## Check if directory was given on the command line
+
+directory=$2
+if [ ! $directory ] ; then 
+   directory='.'
+fi
+
+
+## Choose archiver to read jar-file indices: jar (slow) vs. unzip (fast)
+
+function readJarIndex {
+   if [ $CL_USEJAR ] ; then
+      jar tf $1
+   else
+      # unzip outputs filesize and time/date as well, we'll cut it off  
+      unzip -lqq $1 | cut -d ":" -f 2 | cut -d " " -f 4
+   fi;
+}
+
+
+###
+### --------------- Run -------------------
+
+
+echo Searching all jar files in directory tree \"$directory\" for \"$searchstring\"...
+echo
+
+total=0;
+hits=0;
+
+for i in `find $directory -name "*.jar"`; do 
+       
+    let total=$total+1;
+      hit=`readJarIndex $i | grep -i $searchstring`
+      if [ "$hit" ]; then
+         let hits=$hits+1;
+         echo $i;
+			   if [ $CL_VERBOSE ] ; then 
+					for k in $hit ; do 
+					echo '    '$k
+					done
+				fi
+
+      # msc: this can be used to show progress, but makes the output uglier
+      # else echo -n . ;
+      fi;
+ 
+done; 
+
+echo
+echo Examined $total jar file\(s\), found $hits containing \"$searchstring\".  Bye.
+
+

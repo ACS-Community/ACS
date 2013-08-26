@@ -1,0 +1,84 @@
+#%#------------------------------------------------------------------------
+#%# E.S.O. - ACS project
+#%# 
+#%# "@(#) $Id: c++-file.template,v 1.23 2013/03/14 11:59:17 mpasquat Exp $"
+#%# 
+#%# Template for c++ files         
+#%# 
+#%# who        when      what
+#%# ---------  --------  ----------------------------------------------
+#%# gchiozzi   26/04/95  created
+#%# 
+#%# 
+#%# This file has been prepared to be pre-processed by "getTemplate".
+#%# If you are using it by hand, please:
+#%#        - remove all lines starting with #%#
+#%#        - delete ">-<" in "$I>-<d$"
+#%# 
+#%#>>>
+#%#>>> INSTRUCTIONS ON HOW TO FILL THIS TEMPLATE ARE GIVEN IN c++_file(5).
+#%#>>>
+#%#------------------------------------------------------------------------
+/*******************************************************************************
+* PPPPPPPP
+*
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* NNNNNNNN  dd/mm/yy  created 
+*/
+
+/************************************************************************
+*   NAME
+*   
+* 
+*   SYNOPSIS
+*   
+* 
+*   DESCRIPTION
+*
+*   FILES
+*
+*   ENVIRONMENT
+*
+*   COMMANDS
+*
+*   RETURN VALUES
+*
+*   CAUTIONS 
+*
+*   EXAMPLES
+*
+*   SEE ALSO
+*
+*   BUGS   
+* 
+*------------------------------------------------------------------------
+*/
+
+
+
+
+/* 
+ * System Headers 
+ */
+
+/*
+ * Local Headers 
+ */
+
+/* 
+ * Signal catching functions  
+ */
+
+/* 
+ *Local functions  
+ */
+
+
+
+
+
+
+
+

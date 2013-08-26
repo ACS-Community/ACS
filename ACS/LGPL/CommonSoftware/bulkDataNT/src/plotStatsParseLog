@@ -1,0 +1,51 @@
+#! /bin/bash
+PF=CORR-datarate.plot
+PF_NODE=NodeOnly-datarate.plot
+FILES=$1
+COMMA=""
+
+echo "set title \"$1\" " > $PF
+echo "set xlabel \"time [sec.msec]\"" >> $PF
+echo "set ylabel \"Data Rate [MBytes/sec]\"" >> $PF
+echo -ne "plot " >> $PF
+
+for f in $FILES
+do	
+	echo "###########################################"
+    
+    for node_name in $(seq -w 0 16)
+    do 
+    	echo Process data for node: $node_name
+		egrep 'av send' $f | egrep N$node_name | gawk  'BEGIN {FS=" |)]]|/" } { t=substr($2,23,2)*3600+substr($2,26,2)*60+substr($2,29,6); printf("%s, %.3f, %s\n", substr($2,23,12), t, $30); }' > cpn-N$node_name.TP
+		if [ `stat -c%s cpn-N$node_name.TP` != 0 ]; then
+			echo -ne $COMMA "\"cpn-N$node_name.TP\" using 2:3 " >> $PF
+			COMMA=","
+		else
+			echo cpn-N$node_name.TP is empty!
+		fi
+	done
+	
+	cp $PF $PF_NODE
+	
+	for flow_name in FULL_RESOLUTION CHANNEL_AVERAGE
+ 	do
+ 		echo Process data fro CDPM for flow: $flow_name
+    	egrep 'through bulk-data' $f | egrep $flow_name | gawk  'BEGIN {FS=" |/" } {t=substr($2,23,2)*3600+substr($2,26,2)*60+substr($2,29,6); printf("%s, %.3f, %s\n", substr($2,23,12), t, $27); }' > cdpm-$flow_name.TP
+    	if [ `stat -c%s cdpm-$flow_name.TP` != 0 ]; then
+    		echo -ne $COMMA "\"cdpm-$flow_name.TP\" using 2:3 " >> $PF
+			COMMA=","
+		else
+			echo cdpm-$flow_name.TP is empty!
+		fi
+    done
+	
+	echo -ne "\t"
+	echo ""
+done
+
+echo "" | tee -a $PF_NODE >> $PF
+echo "set terminal png" | tee -a $PF_NODE >> $PF
+echo "set output \"result.png\"" | tee -a $PF_NODE >> $PF
+echo "replot" | tee -a $PF_NODE >> $PF
+gnuplot -p $PF
+gnuplot -p $PF_NODE

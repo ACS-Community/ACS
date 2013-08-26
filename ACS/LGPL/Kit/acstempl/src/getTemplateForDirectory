@@ -1,0 +1,384 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - ACS project
+#   
+# "@(#) $Id: getTemplateForDirectory,v 1.31 2009/09/17 16:18:17 nsaez Exp $" 
+#
+# who       when      what
+# --------  ----------  ----------------------------------------------
+# psivera   2000-10-07  created
+# psivera   2001-06-25  added lcu and ws dir structure for MODROOT
+# mzampare  2001-09-18  removed some directories for MODROOT (ALMASW2001042)
+# psivera   2002-02-11  added lib/python to dir structure
+# psivera   2002-03-14  changed permissions for INTROOT from 777 to 775
+# mzampare  2002-10-16  added support for config/CDB/schemas
+# psivera   2002-11-08  changed VLTDATA to ACSDATA
+# psivera   2003-06-03  added back the creation of msql dir for Sun OS
+# nsaez     2009-09-17  added responsible file to INTROOT
+#
+#************************************************************************
+#   NAME
+#   getTemplateForDirectory - create/check a ACS directory structure 
+# 
+#   SYNOPSIS
+#
+#   getTemplateForDirectory MODROOT_WS | MODROOT_LCU | MODROOT_WS_LCU |INTROOT|ACSROOT|ACSDATA <name>
+#
+# 
+#   DESCRIPTION
+#   Utility used to create new or missing part of ACS directory 
+#   structure for:
+#  
+#       MODROOT_WS  for a workstation only module directory structure
+#       MODROOT_LCU for a VxWorks module directory structure
+#       MODROOT_WS_LCU for a dual VxWorks/Workstation 
+#                       module directory structure
+#       INTROOT     for an Integration directory structure
+#       ACSROOT     for a ACS Root directory structure
+#       ACSDATA     for a ACS Data directory structure
+#
+#   <name> 
+#       the name of the directory from which the directory structure
+#       starts. If not existing already, directory/ies are created.
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltDirectoryStructure
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+# if input parameters are given must be 2 and in the correct format:
+
+if [ $# != 2 ]
+then 
+    echo "\n\tUsage: getTemplateForDirectory MODROOT_WS|MODROOT_LCU|MODROOT_WS_LCU|INTROOT|ACSROOT|ACSDATA <name> \n"
+    exit 1
+fi 
+
+OPTION=$1
+ROOT_NAME=$2
+
+UNAMES=`uname -s`
+
+
+# define the content of each area 
+
+# directories that shall be present in any area 
+#  - both UNIX and VxWorks levels
+
+# Removal of "dbl" dir as required by spr ALMASW2004040
+BASIC_DIRS="\
+          bin         \
+          include     \
+          idl         \
+          lib         \
+          lib/endorsed \
+          lib/python   \
+          lib/ACScomponents  \
+          lib/python/site-packages  \
+          man         \
+          man/man1    \
+          man/man2    \
+          man/man3    \
+          man/man4    \
+          man/man5    \
+          man/man6    \
+          man/man7    \
+          man/man8    \
+          man/mann    \
+          man/manl    \
+         "
+
+#  - UNIX only
+UNIX_DIRS="\
+          ALARMS      \
+          ALARMS/HELP \
+          CDT         \
+          ERRORS      \
+          ERRORS/HELP \
+          LOGS        \
+          app-defaults\
+          bitmaps     \
+	  config      \
+	  config/CDB  \
+	  config/CDB/schemas \
+          sounds      \
+         "
+
+# directories that shall be present in any module area
+MODROOT_LIST="$BASIC_DIRS  \
+         doc          \
+         object       \
+         LOGS         \
+         test         \
+         src          \
+        "
+
+# directories that shall be present in both integration and ACS area 
+INTROOT_LIST="vw"
+ACSROOT_LIST="vw"
+
+for dir in $BASIC_DIRS
+do
+    INTROOT_LIST="$INTROOT_LIST $dir vw/$dir"
+    ACSROOT_LIST="$ACSROOT_LIST $dir vw/$dir"
+done
+
+INTROOT_LIST="$INTROOT_LIST $UNIX_DIRS config vw/CIT templates rtai"
+ACSROOT_LIST="$ACSROOT_LIST $UNIX_DIRS config vw/CIT templates rtai"
+
+#
+# there is one bin and one lib for every supported CPU
+for cpu in MC68040 PPC604 MC68000
+do
+    INTROOT_LIST="$INTROOT_LIST vw/bin/$cpu vw/lib/$cpu"
+    ACSROOT_LIST="$ACSROOT_LIST vw/bin/$cpu vw/lib/$cpu"
+done
+
+#
+# Sources for INTROOT (to support debugger)
+INTROOT_LIST="$INTROOT_LIST Sources vw/Sources"
+
+
+# ACSDATA directories
+if [ "$UNAMES" = "SunOS" ]
+then
+    ACSDATA_LIST="
+    	     ENVIRONMENTS      \
+    	     config            \
+    	     msql	      \
+    	     msql/.tmp         \
+    	     msql/msqldb       \
+    	     msql/msqldb/.tmp  \
+    	     tmp               \
+             logs		\
+             dumps		\
+    	     "
+else      
+    ACSDATA_LIST="
+             ENVIRONMENTS      \
+             config            \
+             tmp               \
+             logs		\
+             dumps		\
+             "
+fi
+
+case $OPTION in
+MODROOT_WS)
+    echo "\nCreating/checking Module directory"
+    DIR_LIST="$MODROOT_LIST rtai config config/CDB config/CDB/schemas"
+    ;;
+MODROOT_LCU)
+    echo "\nCreating/checking Module directory"
+    DIR_LIST="$MODROOT_LIST"
+    ;;
+MODROOT_WS_LCU)
+    echo "\nCreating/checking Module directory"
+    for dir in $MODROOT_LIST 
+    do
+        DIR_LIST_WS="$DIR_LIST_WS \
+        ws/$dir
+        "
+        DIR_LIST_WS_LCU="$DIR_LIST_WS_LCU \
+        lcu/$dir
+        "
+    done
+    DIR_LIST_WS="$DIR_LIST_WS ws/config ws/config/CDB ws/config/CDB/schemas"
+    DIR_LIST="ws lcu $DIR_LIST_WS $DIR_LIST_WS_LCU"
+    ;;
+INTROOT)
+    echo "\nCreating/checking Integration directory"
+    DIR_LIST="$INTROOT_LIST"
+    ;;
+ACSROOT)
+    echo "\nCreating/checking ACS Root directory"
+    DIR_LIST="$ACSROOT_LIST"
+    ;;
+ACSDATA)
+    echo "\nCreating/checking ACS Data directory"
+    DIR_LIST="$ACSDATA_LIST"
+    ;;
+*)  
+    echo "ERROR >>$OPTION<< is not a valid directory structure."
+    exit 1
+    ;;
+esac
+
+if [ -f $ROOT_NAME ]
+then
+    echo "\n ERROR: I cannot create the starting directory because a file"
+    echo "          called >>$ROOT_NAME<< already exists."
+    echo "          Use another name or remove the existing file"
+    echo ""
+    exit 1
+fi
+
+if [ ! -d $ROOT_NAME ]
+then
+    if mkdir $ROOT_NAME
+    then
+        echo "   CREATED >>> |---$ROOT_NAME "
+    else
+        echo "\n ERROR: I cannot create the starting directory >>$ROOT_NAME<<"
+        echo "          Please fix the problem and try again."
+        echo ""
+        exit 1
+    fi
+else
+    echo "               |---$ROOT_NAME "
+fi
+
+#
+# if not already there, create all the needed subdirectories
+
+for dir in $DIR_LIST
+do
+    if [ ! -d $ROOT_NAME/$dir ]
+    then
+        mkdir $ROOT_NAME/$dir
+        echo "   CREATED >>>     |---$dir "
+    else
+        echo "                   |---$dir "
+    fi
+done
+
+#
+# additional case specific actions:
+MODE=644
+case $OPTION in
+MODROOT*)
+    if [ ! -f $ROOT_NAME/ChangeLog ]
+    then
+        echo "\"@(#) \$Id\$\"" > $ROOT_NAME/ChangeLog
+        chmod u+w  $ROOT_NAME/ChangeLog
+        echo "   CREATED >>>     |---ChangeLog"
+    else
+        echo "                   |---ChangeLog"
+    fi
+
+    if [ "$OPTION" = "MODROOT_WS" ]
+    then
+        echo "\nCopying Makefile template for WS code"
+        TEMPLATE=$ACSROOT/include/Makefile_WS.template
+        FILE=$ROOT_NAME/src/Makefile
+        if grep -v "#%#" $TEMPLATE > ${FILE}.BAK
+        then
+            chmod ${MODE} ${FILE}.BAK
+            #
+            # setup author and date:
+            AUTHOR=`whoami`
+            DATE=`date "+%d\/%m\/%y"`
+            sed  -e "1,$ s/NNNNNNNN/$AUTHOR/g" \
+                 -e "1,$ s/dd\/mm\/yy/$DATE/g" \
+                 -e "1,$ s/I>-<d/\Id/g"       \
+                 ${FILE}.BAK > ${FILE}
+            rm -f ${FILE}.BAK
+        else
+            echo "\ncannot create >>$FILE<<."
+        fi
+
+    elif [ "$OPTION" = "MODROOT_LCU"  ]
+    then
+        echo "\nCopying Makefile template for LCU code"
+        TEMPLATE=$ACSROOT/include/Makefile_LCU.template
+        FILE=$ROOT_NAME/src/Makefile
+        if grep -v "#%#" $TEMPLATE > ${FILE}.BAK
+        then
+            chmod ${MODE} ${FILE}.BAK
+            #
+            # setup author and date:
+            AUTHOR=`whoami`
+            DATE=`date "+%d\/%m\/%y"`
+            sed  -e "1,$ s/NNNNNNNN/$AUTHOR/g" \
+                 -e "1,$ s/dd\/mm\/yy/$DATE/g" \
+                 -e "1,$ s/I>-<d/\Id/g"       \
+                 ${FILE}.BAK > ${FILE}
+            rm -f ${FILE}.BAK
+        else
+            echo "\ncannot create >>$FILE<<."
+        fi
+
+    elif [ "$OPTION" = "MODROOT_WS_LCU" ]
+    then
+        echo "\nCopying Makefile template for WS and LCU code"
+        TEMPLATE=$ACSROOT/include/Makefile_WS.template
+        FILE=$ROOT_NAME/ws/src/Makefile
+        if grep -v "#%#" $TEMPLATE > ${FILE}.BAK
+        then
+            chmod ${MODE} ${FILE}.BAK
+            #
+            # setup author and date:
+            AUTHOR=`whoami`
+            DATE=`date "+%d\/%m\/%y"`
+            sed  -e "1,$ s/NNNNNNNN/$AUTHOR/g" \
+                 -e "1,$ s/dd\/mm\/yy/$DATE/g" \
+                 -e "1,$ s/I>-<d/\Id/g"       \
+                 ${FILE}.BAK > ${FILE}
+            rm -f ${FILE}.BAK
+        else
+            echo "\ncannot create >>$FILE<<."
+        fi
+        TEMPLATE=$ACSROOT/include/Makefile_LCU.template
+        FILE=$ROOT_NAME/lcu/src/Makefile
+        if grep -v "#%#" $TEMPLATE > ${FILE}.BAK
+        then
+            chmod ${MODE} ${FILE}.BAK
+            #
+            # setup author and date:
+            AUTHOR=`whoami`
+            DATE=`date "+%d\/%m\/%y"`
+            sed  -e "1,$ s/NNNNNNNN/$AUTHOR/g" \
+                 -e "1,$ s/dd\/mm\/yy/$DATE/g" \
+                 -e "1,$ s/I>-<d/\Id/g"       \
+                 ${FILE}.BAK > ${FILE}
+            rm -f ${FILE}.BAK
+        else
+            echo "\ncannot create >>$FILE<<."
+        fi
+
+    else
+        echo " INTERNAL ERROR"
+        exit 1
+    fi
+
+    ;;
+
+INTROOT)
+    for dir in $INTROOT_LIST
+    do
+        # directories must be writable by other developers
+        chmod 775 $ROOT_NAME/$dir
+    done
+    echo "\n Remember to define \$INTROOT to make this area accessible.\n"
+    echo "[Jira] [isInCvs: yes/no] [$USER] [comments:] [`date "+%Y/%b/%d"`]" >> $ROOT_NAME/responsible
+    ;;
+
+ACSROOT)
+    echo "\n Remember to define \$ACSROOT to make this area accessible.\n"
+    ;;
+
+ACSDATA)
+    chmod 775 $ROOT_NAME
+    for dir in $ACSDATA_LIST
+    do
+        chmod 777 $ROOT_NAME/$dir
+    done
+    echo "\n Remember to define \$ACSDATA to make this area accessible.\n"
+    ;;
+
+*)
+    echo " INTERNAL ERROR"
+    exit 1
+    ;;
+
+esac
+
+# ___oOo___

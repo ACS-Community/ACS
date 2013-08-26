@@ -1,0 +1,15 @@
+1 - Manager corbaloc: corbaloc::xxxx:xxxx/Manager
+1 - ORB: <omniORB.CORBA.ORB instance at 0xXXXX>
+1 - POA ROOT: <omniORB.PortableServer.POA instance at 0xXXXX>
+1 - POA Manager: <omniORB.PortableServer.POAManager instance at 0xXXXX>
+1 - Manager: <maci._objref_Manager instance at 0xXXXX>
+1 - Client: <Acspy.Util.ACSCorba._Client instance at 0xXXXX>
+1 - Log: <omniORB.CORBA.Object instance at 0xXXXX>
+1 - LogFactory: <Logging._objref_ACSLogFactory instance at 0xXXXX>
+1 - NotifyEventChannelFactory: <CosNotifyChannelAdmin._objref_EventChannelFactory instance at 0xXXXX>
+1 - ArchivingChannel: <omniORB.CORBA.Object instance at 0xXXXX>
+1 - LoggingChannel: <omniORB.CORBA.Object instance at 0xXXXX>
+1 - InterfaceRepository: <CORBA._objref_Repository instance at 0xXXXX>
+1 - CDB: <CDB._objref_WJDAL instance at 0xXXXX>
+1 - ACSLogSvc: <ACSLog._objref_LogSvc instance at 0xXXXX>
+1 - NameService: <CosNaming._objref_NamingContext instance at 0xXXXX>

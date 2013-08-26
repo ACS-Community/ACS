@@ -1,0 +1,6 @@
+#! /bin/sh
+# Thsi script runs xsddoc.
+#
+# See the documentation of xsddoc for details on command line and paramters.
+#
+acsStartJava --noDirectory net.sf.xframe.xsddoc.Main "$*"

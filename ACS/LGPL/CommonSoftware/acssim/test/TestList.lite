@@ -1,0 +1,107 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList.lite,v 1.19 2010/04/27 01:41:06 agrimstrup Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dave 2003-08-13 converted to eccs test driver
+# 
+SOURCE acssimTATEnvironment
+PROLOGUE acssimTATPrologue
+
+#Test Acssim.Corba.Utilities
+0 Utilities "acsutilTATTestRunner acssimUtilities"
+
+#Test Acssim.Corba.DynamicImplementation
+1 DynamicImplementation "acsutilTATTestRunner acssimDynamicImplementation"
+
+#Test Acssim.Servants.Goodies
+2 Goodies "acsutilTATTestRunner acssimGoodies"
+
+#Test Acssim.Servants.Representations.
+3 BaseRepresentation "acsutilTATTestRunner acssimBaseRepresentation"
+
+#Test Acssim.Servants.Representations.
+4 API "acsutilTATTestRunner acssimAPI"
+
+#Test Acssim.Servants.Representations.
+5 GUI "acsutilTATTestRunner acssimGUI"
+
+#Test Acssim.Servants.Representations.
+6 CDB "acsutilTATTestRunner acssimCDB"
+
+#Test Acssim.Servants.Representations.
+7 Dynamic "acsutilTATTestRunner acssimDynamic"
+
+#Test Acssim.Servants.Representations.
+8 BehaviorProxy "acsutilTATTestRunner acssimBehaviorProxy"
+
+#Test Acssim.Corba.EventDispatcher
+9 EventDispatcher "acsutilTATTestRunner acssimEventDispatcher"
+
+#Test Acssim.Corba.Generator
+10 Generator "acsutilTATTestRunner acssimGenerator"
+
+#First test to ensure that pseudo inheritance from Acspy.Servants.CharacteristicComponent actually works
+11 T1 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest MOUNT1 _get_name()"
+
+#Test a method implementation from the CDB which doesn't do anything special
+12 T2 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD1 displayMessage()"
+
+#Test a completely random implementation of a method
+13 T3 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD2 displayMessage()"
+
+#Test a method implementation from the CDB that raises an exception
+14 cdbExcept "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest HELLOWORLD1 badMethod()"
+
+#Test a method implementation from the CDB that raises an exception
+15 charCompMethod "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest MOUNT1 descriptor()"
+
+#Test the ability to dynamically generate other CORBA objects
+16 baciSimProp1 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest LAMP1 _get_brightness()"
+
+#Te the ability to invoke dynamically implemented methods of other CORBA objects
+17 baciSimProp2 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest LAMP1 _get_brightness()._get_min_value()"
+
+# Tests enumerations
+18 baciSimProp3 "@SLEEP 2" "acsutilTATTestRunner acssimGenericTest FRIDGE1 _get_powerStatus()._get_default_value()"
+
+# Tests callbacks
+19 callbackVoid1 "@SLEEP 2" "acsutilTATTestRunner acssimCallbackTest LAMP1 on"
+
+# Tests master component
+20 masterComponent "@SLEEP 2" "acsutilTATTestRunner acssimMasterCompTest"
+
+# Tests to ensure the $ACS_CDB/alma/simulated/interfaces portion of the CDB
+# is used properly
+21 interfaceInheritance "@SLEEP 2" "acsutilTATTestRunner interfaceInheritance"
+
+# Tests the Server representation and the SimServer component
+22 SimulationServerTest "@SLEEP 2" "acsutilTATTestRunner acssimServerRepresentation"
+
+# Tests to ensure in/inout parameters are accessible
+23 inParams "@SLEEP 2" "acssimInParamsHelper" "@SLEEP 20" "acsutilTATTestRunner acssimInParamsTest CLOCK2"
+
+EPILOGUE acsutilTATEpilogue

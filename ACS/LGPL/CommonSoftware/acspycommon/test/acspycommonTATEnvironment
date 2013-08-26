@@ -1,0 +1,16 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: acspycommonTATEnvironment,v 1.1.1.1 2012/03/07 17:40:45 acaproni Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+
+set ACS_TMP $env(PWD)/tmp
+set env(ACS_TMP) $ACS_TMP
+set env(ACS_LOG_STDOUT) 3
+set env(ACS_LOG_FILE) $ACS_TMP/log_cache.dat 
+
+#
+# ___oOo___

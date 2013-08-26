@@ -1,0 +1,119 @@
+<html>
+
+<head>
+
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+
+<title>FeaturesParameters</title>
+
+<style><!--
+
+.Normal
+
+	{font-size:12.0pt;
+
+	font-family:"Times New Roman";}
+
+-->
+
+</style>
+
+<meta name=Template content="C:\Program Files\MSOffice\Office\html.dot">
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+<h2>Parameters</h2>
+<h3>ACS provides support for parameter sets. </h3>
+<ul>
+  <li>In general terms, a parameter set is a group of related parameters (i.e. 
+    variables) with some additional metadata describing various aspects of the 
+    parameters. </li>
+  <li>The parameter set mechanism was designed specifically to address the needs 
+    of the Offline team in the realm of Offline tasks, wherein data processing 
+    or reduction tasks will be defined (by a task author) by formally describing 
+    the input/output parameters <font color="#0000FF">(output parameters not yet 
+    implemented)</font>, plus some additional metadata such as help information, 
+    valid ranges, default values, whether the parameters are required or optional, 
+    etc. </li>
+  <li>While the parameter set implementation was developed specifically with the 
+    Offline team's needs in mind, it is general enough in design that it may prove 
+    useful in other contexts; any application that needs to define and use sets 
+    of parameters (described in XML), with the parameter set instances parsed 
+    and validated against constraints (defined in metadata) may find it useful. 
+  </li>
+</ul>
+<h3> XML has been chosen as the description language for both parameter set meta-data 
+  and parameter set instance data. </h3>
+<ul>
+  <li>Parameter set meta-data includes things like which parameters in a parameter 
+    set are optional vs. which are required, default values for parameters, help 
+    information, valid ranges (e.g. max, min, etc.), and additional information 
+    which does not describe the actual data for a particular instance of the parameter 
+    set. </li>
+  <li>The parameter set (instance) data is a set of values describing a particular 
+    instance of a parameter set, with actual values defined for the parameters. 
+    For example, a simple parameter set metadata description might define 3 parameters: 
+    an optional integer X, a required double Y, and a required string Z, while 
+    the parameter set instance data for a particular "run" for this parameter 
+    set might be: X=1, Y=2.5, Z="vlafiller-output". </li>
+</ul>
+<h3>The following use cases are envisioned:</h3>
+<h4>Parameter set metadata is defined in XML</h4>
+<p> The metadata is described in an XML file. The metadata for a parameter set 
+  includes defining the number and types of parameters, default values, validity 
+  constraints (e.g. max, min, ranges, etc.), help information, whether a parameter 
+  is optional or required, and other such pre-runtime information about parameters. 
+  The parameter set metadata is defined in a particular XML format with the schema 
+  (xsd file) provided by ACS. A simple text editor or an XML-savvy editor such 
+  as XML Spy can be used to create the metadata XML file. </p>
+<h4>Parameter set instance data is defined in XML</h4>
+<p> The instance data for a parameter set is a set of actual values for a particular 
+  "run" or "instance" of a parameter set. This is defined in XML with the schema 
+  (xsd file) provided by ACS. A simple text editor or an XML-savvy editor such 
+  as XML Spy may be used to create the parameter set instance data XML file. It 
+  is also envisioned that parameter set data files may be created programmatically 
+  in certain contexts, e.g. a graphical user interface may prompt a user for data, 
+  then construct the XML data file based on the user's responses. </p>
+<h4>Parameter set metadata and instance data XML are parsed and validated, building 
+  an in-memory object model</h4>
+<p> This use case is performed by the system automatically, by constructing two 
+  ACS-provided classes. The input necessary to construct the classes is simply 
+  to designate the parameter set metadata and instance data XML files to be used. 
+  A set of ACS classes have been written to take the XML files as input, parse 
+  them, validate them, spit out errors or warnings (if any), and finally - upon 
+  successful validation - create an in-memory object model of both the metadata 
+  and the instance data which can be manipulated and interrogated programmatically 
+  using a well-defined API. </p>
+<h4>Parameter set metadata and instance data object model are manipulated programmatically</h4>
+<p> ACS provides two classes <font color="#0000FF">(implemented only in C++)</font> 
+  to represent the in-memory metadata and instance data for a parameter set. ParamSetDef 
+  is a class which represents the metadata for a parameter set. ParameterSet represents 
+  the instance data for a parameter set. Each of these classes has methods which 
+  may be useful for developers who need to manipulate a parameter set programmatically 
+  after it has been parsed and validated. </p>
+<h3>Architecture and design</h3>
+The object model for the in-memory representation of a parameter set's metadata 
+and instance data are depicted in the following three figures (more compact diagrams 
+are available in the online mode, but it was impossible to have them printed in 
+a readable way in this document). The API allows for querying the data in a relatively 
+straightforward manner. 
+<p align=center style='text-align:center'><img border=0
+
+ src="Images/Parameters__ParameterSet_Only.png" WIDTH="562" HEIGHT="143"  ></p>
+<p align=center style='text-align:center'><i>Figure 3.10: Parameter Set instance 
+  data (ParameterSet) and Parameter Set Metadata (ParamSetDef) classes</i></p>
+<p align=center style='text-align:center'><img border=0
+
+ src="Images/Parameters__ParamDef_subclasses.png" WIDTH="562" HEIGHT="525"  ></p>
+<p align=center style='text-align:center'><i>Figure 3.11-a: Parameter Metadata 
+  types. Subclasses of ParamDef used to build a ParamSetDef</i></p>
+<p align=center style='text-align:center'><img border=0
+
+ src="Images/Parameters__Param_subclasses.png" WIDTH="562" HEIGHT="311"  ></p>
+<p align=center style='text-align:center'><i>Figure 3.11-b: Parameter instance 
+  types. Subclasses of Param used to build a ParamSet</i></p>
+</body>
+
+</html>
+

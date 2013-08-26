@@ -1,0 +1,320 @@
+#ifndef _ACSCOURSE_MOUNT_IDL_
+#define _ACSCOURSE_MOUNT_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: acscourseMount.idl,v 1.8 2006/05/27 23:08:06 gchiozzi Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+*/
+
+#include <baci.idl>
+#include <ACSErrTypeCommon.idl>
+#include <ACSErrTypeACSCourse.idl>
+#include <xmlentity.idl> // for XML data parameters in interface MountX
+
+#pragma prefix "alma"
+
+
+/** @file acsexmplMount.idl
+ *  IDL specification of Mount object for ACS Course
+ *
+ *  There are 4 different interfaces that show the implementation
+ *  of a Mount component with increasing complexity.
+ *  At every step we add new functionality, aligned with what 
+ *  is demonstrated in the course
+ */
+
+module ACSCOURSE_MOUNT 
+{
+    /********************************************************************/
+    /** @interface Mount1
+     *  This is a simple Hello World Mount, with a very basic interface
+     *  Just one command to move the mount to a given (alt,az)
+     */
+    interface Mount1 : ACS::ACSComponent
+	{
+	/**
+	 * (Pre)sets a new non-moving position for the antenna.
+	 * The position coordinates are given in azimuth and elevation.
+	 *
+	 * @param az        position azimuth (degree)
+	 * @param elev      position elevation (degree)
+	 * @htmlonly
+	 * <br><hr>
+	 * @endhtmlonly
+	 */
+	void objfix (in double az,
+		     in double elev);
+	};    
+
+    /********************************************************************/
+    /** @interface Mount2
+     *  This adds properties to the Mount1 example.
+     *  With properties we can now have monitors, alarms
+     *  and many additional features.
+     *  We need now to inherit from the more complex 
+     *  ACS::CharacteristicComponent interface
+     *  For this example we have 2 read only and to read/write properties.
+     */
+    interface Mount2 : ACS::CharacteristicComponent
+	{
+	/**
+	 * (Pre)sets a new non-moving position for the antenna.
+	 * The position coordinates are given in azimuth and elevation.
+	 *
+	 * @param az        position azimuth (degree)
+	 * @param elev      position elevation (degree)
+	 * @htmlonly
+	 * <br><hr>
+	 * @endhtmlonly
+	 */
+	void objfix (in double az,
+		     in double elev);
+	/**
+	 * Current commanded azimuth (degree).
+	 */
+	readonly attribute ACS::RWdouble cmdAz;
+	
+	/**
+	 * Current commanded elevation (degree).
+	 */
+	readonly attribute ACS::RWdouble cmdEl;
+	
+	/**
+	 * Current actual azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble actAz;
+	
+	/**
+	 * Current actual elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble actEl;	
+	};    
+
+
+
+    /********************************************************************/
+    /** @interface Mount3
+     *  Here we have a "complete" interface, including exceptions
+     *  This time all properties are read only, because we set the values
+     *  of azimuth and elevation via commands.
+     */
+    interface Mount3: ACS::CharacteristicComponent
+	{
+	/**
+	 * (Pre)sets a new non-moving position for the antenna.
+	 * The position coordinates are given in azimuth and elevation.  A 
+	 * callback is used to inform the caller when the antenna reaches the 
+	 * new position.  If a new position is given before the previous one is 
+	 * reached then the previous callback immediately receives "aborted".
+	 *
+	 * @param az        position azimuth (degree)
+	 * @param elev      position elevation (degree)
+	 * @htmlonly
+	 * <br><hr>
+	 * @endhtmlonly
+	 */
+	void objfix (in double az,
+		     in double elev) raises (ACSErrTypeACSCourse::TargetOutOfRangeEx);
+	
+	/**
+	 * Current commanded azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble cmdAz;
+	
+	/**
+	 * Current commanded elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble cmdEl;
+	
+	/**
+	 * Current actual azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble actAz;
+	
+	/**
+	 * Current actual elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble actEl;	
+	};    
+
+
+    /********************************************************************/
+    /** @interface Mount4
+     *  Defines the interface for controlling and monitoring the antenna position.
+     *  This interface also includes aynchronous methods.
+     */
+    interface Mount4 : ACS::CharacteristicComponent
+	{
+	/**
+	 * (Pre)sets a new non-moving position for the antenna.
+	 * The position coordinates are given in azimuth and elevation.
+	 * Synchronous interface
+	 *
+	 * @param az        position azimuth (degree)
+	 * @param elev      position elevation (degree)
+	 * @htmlonly
+	 * <br><hr>
+	 * @endhtmlonly
+	 */
+	void objfix (in double az,
+		     in double elev);
+	
+	
+	/**
+	 * (Pre)sets a new non-moving position for the antenna.
+	 * The position coordinates are given in azimuth and elevation.  
+         * Asynchonous interface. 
+	 * A callback is used to inform the caller when the antenna reaches the 
+	 * new position.  If a new position is given before the previous one is 
+	 * reached then the previous callback immediately receives "aborted".
+	 *
+	 * @param az        position azimuth (degree)
+	 * @param elev      position elevation (degree)
+	 * @param callBack  callback when position is reached
+	 * @param desc      is used to negotiate timeouts between client and sever
+	 * @htmlonly
+	 * <br><hr>
+	 * @endhtmlonly
+	 */
+	void objfix_async (in double az,
+			   in double elev,
+			   in ACS::CBvoid callBack,
+			   in ACS::CBDescIn desc);
+	
+	
+	/**
+	 * Current commanded azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble cmdAz;
+	
+	/**
+	 * Current commanded elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble cmdEl;
+	
+	/**
+	 * Current actual azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble actAz;
+	
+	/**
+	 * Current actual elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble actEl;	
+	};    
+
+    /********************************************************************/
+    /** @interface Mount5
+     *  Nearly identical to Mount1 except for the fact that this example
+     *  publishes/consumes events from an event channel and that exception
+     *  handling has been ommitted.
+     */
+    interface Mount5 : ACS::CharacteristicComponent
+	{
+	/**
+	 * (Pre)sets a new non-moving position for the antenna.
+	 * The position coordinates are given in azimuth and elevation.  A 
+	 * callback is used to inform the caller when the antenna reaches the 
+	 * new position.  If a new position is given before the previous one is 
+	 * reached then the previous callback immediately receives "aborted".
+	 *
+	 * @param az        position azimuth (degree)
+	 * @param elev      position elevation (degree)
+	 * @htmlonly
+	 * <br><hr>
+	 * @endhtmlonly
+	 */
+	void objfix (in double az,
+		     in double elev) raises (ACSErrTypeACSCourse::TargetOutOfRangeEx);
+	
+	/**
+	 * Current commanded azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble cmdAz;
+	
+	/**
+	 * Current commanded elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble cmdEl;
+	
+	/**
+	 * Current actual azimuth (degree).
+	 */
+	readonly attribute ACS::ROdouble actAz;
+	
+	/**
+	 * Current actual elevation (degree).
+	 */
+	readonly attribute ACS::ROdouble actEl;	
+	};    
+
+    /**
+     * The name of the event channel our interface implementation will 
+     * send events to.  It is specified in the IDL instead of the implementation
+     * language to make it harder for the developers of Consumer applications
+     * to confuse names (i.e., using "MountChannel" instead of "mountchannel".
+     */
+    const string MOUNT_CHANNEL = "mountchannel";
+
+    /**
+     * This IDL structure defines an "event" type that will sent across the 
+     * network to any consumers subscribed to it.
+     */
+    struct MountEventData
+    {
+	double Azimuth;
+	double Elevation;
+    };
+
+
+
+    
+    /********************************************************************/
+    /** @interface Mount6
+     * Demonstrates the use of XML data as IDL parameters.
+     */
+    interface Mount6 : ACS::CharacteristicComponent
+    {
+        typedef xmlentity::XmlEntityStruct MyXmlConfigData;
+        
+        /**
+	 * Creates the example XML data of type 'MyXmlConfigData' as defined in the XML schema.
+	 */
+        MyXmlConfigData createMyXmlConfigData();
+        
+        /**
+	 * Prove that XML data transport can cooexist with Baci properties (which had not always been so...)
+	 */
+	readonly attribute ACS::ROdouble cmdAz;
+	readonly attribute ACS::ROdouble cmdEl;
+	readonly attribute ACS::ROdouble actAz;
+	readonly attribute ACS::ROdouble actEl;	        
+    };
+
+};
+
+#endif
+

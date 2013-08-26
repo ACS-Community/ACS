@@ -1,0 +1,908 @@
+1 - <timestamp> INFO [acsStartContainer] Running the container with these arguments: 'ACSStartContainerPy pythonContainer -ORBendPoint giop:tcp:<IP address>:<port> -m corbaloc::<IP address>:<port>/Manager'
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - <timestamp> pythonContainer taggedmessage - Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - <timestamp> pythonContainer taggedmessage - Info message from the manager: Startup statistics: 0 components queued to be activated.
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - <timestamp> pythonContainer __init__ - Container pythonContainer waiting for requests
+1 - ContainerStatusMsg: Startup ends
+1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
+1 - <timestamp> counter-Supplier initCORBA - Created new channel.
+1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterSupplier sendBlocks - called...
+1 - <timestamp> CounterSupplier sendBlocks - Ready to send NC events...
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 1
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 2
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 3
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 4
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 5
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 6
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 7
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 8
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 9
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 10
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 11
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 12
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
+1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
+1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER3_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER4_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER5_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER6_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterSupplier sendBlocks - called...
+1 - <timestamp> CounterSupplier sendBlocks - Ready to send NC events...
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 1
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 2
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 3
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 4
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 5
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 6
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 7
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 8
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 9
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 10
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 11
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 12
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER4_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER4_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER5_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER5_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER6_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER6_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
+1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
+1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier sendBlocks - called...
+1 - <timestamp> CounterSupplier sendBlocks - Ready to send NC events...
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 1
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 2
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 3
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 4
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 5
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 6
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 7
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 8
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 9
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 10
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 11
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 12
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
+1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
+1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
+1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier sendBlocks - called...
+1 - <timestamp> CounterSupplier sendBlocks - Ready to send NC events...
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 1
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 2
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 3
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 4
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 5
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 6
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 7
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 8
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 9
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 10
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 11
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 12
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
+1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
+1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
+1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier sendBlocks - called...
+1 - <timestamp> CounterSupplier sendBlocks - Ready to send NC events...
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 1
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 2
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 3
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 4
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 5
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 6
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 7
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 8
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 9
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 10
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 11
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 12
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
+1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
+1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
+1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier sendBlocks - called...
+1 - <timestamp> CounterSupplier sendBlocks - Ready to send NC events...
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 1
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 2
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 3
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 4
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 5
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 6
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 7
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 8
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 9
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 10
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 11
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 12
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
+1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
+1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
+1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterSupplier sendBlocks - called...
+1 - <timestamp> CounterSupplier sendBlocks - Ready to send NC events...
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 1
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 2
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 3
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 4
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 5
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 6
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 7
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 8
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 9
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 10
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 11
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 12
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
+1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
+1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER3_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterSupplier sendBlocks - called...
+1 - <timestamp> CounterSupplier sendBlocks - Ready to send NC events...
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 1
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 2
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 3
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 4
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 5
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 6
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 7
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 8
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 9
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 10
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 11
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 12
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER3_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER4_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER5_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER6_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER4_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER4_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER5_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER5_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER6_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER6_PYTHON...
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER3_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER3_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER4_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER5_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER6_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER4_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER4_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER5_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER5_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER6_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER6_PYTHON...
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER3_PYTHON
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
+1 - <timestamp> counter-Consumer addSubscription - statusBlockEvent
+1 - <timestamp> CounterConsumer getBlocks - CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 1 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 2 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 3 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 4 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 5 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 6 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 7 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 8 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 9 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 10 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 11 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 12 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 13 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...

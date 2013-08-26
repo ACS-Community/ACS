@@ -1,0 +1,76 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: buildDDS,v 1.7 2012/01/09 14:39:47 tstaig Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# bjeram    14/08/2008
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+LOG=buildDDS.log
+exec > $LOG 2>&1
+
+date
+
+CURR_DIR=`pwd`
+
+if [ "$OS" = "LINUX" ]
+then 
+  OSTAG=linux
+elif [ "$OS" = "$CYGWIN_VER" ]
+then
+  OSTAG=cygwin
+else
+  echo "OS $OS not supported"
+  exit -1
+fi
+
+echo "Installing OpenDDS for $OSTAG"
+echo 
+
+if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/DDS ]
+then
+  echo $ALMASW_ROOTDIR/$ALMASW_RELEASE/DDS directory exists already. I clean it up.
+  rm -rf $ALMASW_ROOTDIR/$ALMASW_RELEASE/DDS
+fi
+mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/DDS
+
+
+#
+# Unpack the tar file
+# put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
+#
+FILE=OpenDDS-2.2
+ARCHIVE=`pwd`/../PRODUCTS/$FILE.tar.gz
+cd $ALMASW_ROOTDIR/$ALMASW_RELEASE
+echo "unpacking the archive"
+gzip -cd $ARCHIVE | tar -xf - 
+echo "done"
+echo ""
+
+NUM_CPU=`grep -c processor  /proc/cpuinfo`
+
+cd DDS
+$ACE_ROOT/MPC/clone_build_tree.pl -f $OSTAG
+cd build/$OSTAG
+if [ "$OS" = "$CYGWIN_VER" ]
+then
+  patch -p1 -d . $CURR_DIR/../PRODUCTS/OpenDDS.cygwin.patch
+fi
+export DDS_ROOT=$PWD
+LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
+
+make -j$NUM_CPU
+
+cd $CURR_DIR
+echo DDS installation done
+date
+

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+      <!--Difficult component to simulate-->
+      <_ Name="HARDTEST1" Code="Acssim.Servants.Simulator" Type="IDL:alma/acssimTest/JunkControl:1.0" Container="pyContainer" ImplLang="py" />
+
+      <!--Standard C++ components-->
+      <_ Name="CLOCK1"	Code="Acssim.Servants.Simulator" Type="IDL:alma/acstime/Clock:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="CLOCK2"	Code="Acssim.Servants.Simulator" Type="IDL:alma/acstime/Clock:1.0" Container="pyContainer2" ImplLang="py" />
+      <_ Name="TIMER1"	Code="Acssim.Servants.Simulator" Type="IDL:alma/acstime/Timer:1.0" Container="pyContainer" ImplLang="py" />
+
+      <!--C++ components needed for various tests-->
+      <_ Name="MOUNT1"      Code="Acssim.Servants.Simulator"  Type="IDL:alma/MOUNT_ACS/Mount:1.0"	        Container="pyContainer" ImplLang="py" />
+      <_ Name="FRIDGE1"	    Code="Acssim.Servants.Simulator"  Type="IDL:alma/FRIDGE/FridgeControl:1.0"	        Container="pyContainer" ImplLang="py" />
+      <_ Name="HELLOWORLD1" Code="Acssim.Servants.Simulator"
+      Type="IDL:alma/acsexmplHelloWorld/HelloWorld:1.0"
+      Container="pyContainer" ImplLang="py" />
+      <_ Name="HELLOWORLD2" Code="Acssim.Servants.Simulator"  Type="IDL:alma/acsexmplHelloWorld/HelloWorld:1.0"	Container="pyContainer" ImplLang="py" />
+      <_ Name="LAMP1"       Code="Acssim.Servants.Simulator"  Type="IDL:alma/acsexmplLamp/Lamp:1.0"              Container="pyContainer" ImplLang="py" />
+
+      <!--Archive components needed for archive-related methods in containerServices class.-->
+      <_ Name="OPERATIONAL_ARCHIVE"    Code="Acssim.Servants.Simulator" Type="IDL:alma/xmlstore/Operational:1.0"     Container="pyContainer" ImplLang="py" />
+      <_ Name="IDENTIFIER_ARCHIVE"     Code="Acssim.Servants.Simulator" Type="IDL:alma/xmlstore/Identifier:1.0"      Container="pyContainer" ImplLang="py" />
+      <_ Name="ADMINISTRATIVE_ARCHIVE" Code="Acssim.Servants.Simulator" Type="IDL:alma/xmlstore/Administrative:1.0"  Container="pyContainer" ImplLang="py" />
+      <_ Name="ARCHIVE_DATABASE"
+      Code="Acssim.Servants.Simulator"
+      Type="IDL:alma/archiveinternal/Database:1.0"
+      Container="pyContainer" ImplLang="py" />
+<_ Name="HELLODEMO1" Code="Acssim.Servants.Simulator" Type="IDL:alma/demo/HelloDemo:1.0" Container="pyContainer" ImplLang="py" />
+      <!--the various python components-->
+      <_ Name="TESTCOMPONENT1"	Code="Acssim.Servants.Simulator"
+      Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer" ImplLang="py" />
+<_ Name="HELLODEMO2" Code="Acssim.Servants.Simulator" Type="IDL:alma/demo/HelloDemo:1.0" Container="pyContainer" ImplLang="py" />
+      <!--the various python components-->
+      <_ Name="TESTCOMPONENT1"	Code="Acssim.Servants.Simulator"
+      Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer" ImplLang="py" />
+
+      <_ Name="MS1"	Code="Acssim.Servants.Simulator" Type="IDL:alma/ACS/MasterComponent:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="MS2"	Code="Acssim.Servants.Simulator" Type="IDL:alma/ACS/MasterComponent:1.0" Container="pyContainer" ImplLang="py" />
+
+      <_ Name="MSRO1"	Code="Acssim.Servants.Simulator" Type="IDL:alma/ACS/MasterComponentReadOnly:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="MSRO2"	Code="Acssim.Servants.Simulator" Type="IDL:alma/ACS/MasterComponentReadOnly:1.0" Container="pyContainer" ImplLang="py" />
+
+<_ Name="TEST_PS_1"	    Code="Acssim.Servants.Simulator"
+Type="IDL:alma/PS/PowerSupply:1.0"
+Container="pyContainer" ImplLang="py" />
+<_ Name="TEST_RPS_1"
+      Code="Acssim.Servants.Simulator"
+      Type="IDL:alma/RampedPS/RampedPowerSupply:1.0"
+      Container="pyContainer" ImplLang="py" />
+  <_ Name="SIMULATION_SERVER"
+     Code="Acssim.SimServerImpl.SimServer"
+     Type="IDL:alma/ACSSim/Simulator:1.0"
+     Container="pyContainer"
+     Default="true" ImplLang="py" /> 
+  <_ Name="LAMP_ACCESS"
+     Code="Acssim.Servants.Simulator"
+     Type="IDL:alma/demo/LampAccess:1.0"
+     Container="pyContainer" ImplLang="py" />
+  <_ Name="*"
+     Code="Acssim.Servants.Simulator"
+     Type="IDL:alma/Control/TotalPower:1.0"
+     Container="pyContainer" ImplLang="py" />
+
+  <_ Name="ACSSIM_TESTER"
+     Code="Acssim.Servants.Simulator"
+     Type="IDL:alma/test/ACSSimTester:1.0"
+     Container="pyContainer" ImplLang="py"/>
+</Components>
+

@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat15,v 1.76 2003/01/09 17:51:25 vltsccm Exp $"
+#
+# tat15
+#
+# Option -l: loop over test directories, reuse WS env.,LCU env.
+# and reboot LCU.
+# 
+
+rm -f .testSession
+rm -f TestList.sed
+rm -f TestList.grep
+
+rm -f Makefile
+rm -f TestList
+
+# if tat -l fails, tat does not remove dot files ...
+find mod* -type f -a -name '.*' -exec rm -f {} \;
+
+# loop over mod1, mod2 and mod3
+tat -l
+
+
+
+

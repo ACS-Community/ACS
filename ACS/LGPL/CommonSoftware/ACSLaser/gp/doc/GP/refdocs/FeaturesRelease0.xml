@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>Planned Features Release 0</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<description>
+      This document contains the features we intend to provide in Release 0 of the GUI Platform, due for October 15. They are based on <i>preliminary</i> discussions with a few Operators and a few GUI experts. They have not been discussed and agreed on with all clients. <br/>
+      In release 0 we will essentially select a sub-set of NetBeans functionality, and provide example programs and explanation on Instructions how to use it. The document is structured by NetBeans functionality and those of their features that we intend to include. Some features must be newly created by the GP project team, especially in the NetBeans Explorer and Tables section. If a line contains <i><a href="../howto/">instructions how to</a></i>, this normally comprises documentation and an example program.<br/>
+      <br/>
+      <br/>
+		</description>
+	</section>
+	
+	<section>
+      <title>NetBeans Explorers and Tables</title>
+		<description>
+      <b>.</b> A simplified API to create Explorers and Tables from JavaBeans compliant business classes.<BR/>
+      <b>.</b> Instructions how to create the Tree/the Table and to modify its items.<BR/>
+      <b>.</b> Instructions how to set (and dynamically change) labels, icons, tool tips of the items.<BR/>
+      <b>.</b> Instructions how to make items sortable (only one default sorting criterion).<BR/>
+      <b>.</b> Instructions how to use provide pop-up menus using NetBeans actions.<BR/>
+      <b>.</b> Instructions how to display the properties of a JavaBean in a TreeTable or ListTable.<BR/>
+		</description>
+	</section>
+	
+	<section>
+      <title>NetBeans Property Sheet</title>
+		<description>
+      <b>.</b> Instructions how to create a property sheet from a JavaBean compliant business class.<BR/>
+      <b>.</b> Instructions how to use the necessary JavaBeans facilities like a BeanInfo description, and property editors.<BR/>
+      <b>.</b> A series of JavaBeans property editors for common types.<BR/>
+		</description>
+	</section>
+	
+	<section>
+      <title>Windowing</title>
+		<description>
+      <b>.</b> Instructions how to create/delete a NetBeans Workspace, a Mode (~ JFrame), a TopComponent (~JPanel).<BR/>
+      <b>.</b> Instructions how to find existing Workspaces, Modes, and TopComponents .<BR/>
+      <b>.</b> Instructions how to integrate an existing JPanel into NetBeans .<BR/>
+      <b>.</b> Instructions how to set the size and position of a window (NetBeans Mode).<BR/>
+      <b>.</b> Instructions how to dock a TopComponent into a NetBeans Mode.<BR/>
+      <b>.</b> Instructions how to write to the output window; to the status bar; to the logfile; .<BR/>
+      <b>.</b> Instructions how to use pop-up dialogs for information and for error messages.<BR/>
+      <b>.</b> Instructions how to detect a Workspace switch (i.e. when the user switches from one workspace to the other). Needed e.g. to freeze acquisition on the Workspace that is about to be hidden.<BR/>
+      <b>.</b> Instructions how to access properties in Swing Panels and widgets in a thread-safe manner from a thread other than the main AWT event handler.<BR/>
+      <b>.</b> Utility classes to support some of the tasks above.<BR/>
+		</description>
+	</section>
+	
+	<section>
+      <title>Menus/Actions</title>
+		<description>
+      <b>.</b> Instructions how to specify menus, toolbars and keyboard shortcuts.<BR/>
+      <b>.</b> Instructions how to specify static sub-menus (not dynamic ones).<BR/>
+      <b>.</b> Instructions how to create actions that can be added to the menu/to an explorer node.<BR/>
+      <b>.</b> Instructions how to link a JPanel to NetBeans actions callable from Menus, toolbars, Pop-Up menus, etc.<BR/>
+      <b>.</b> Instructions how to enable/disable actions according to current state of the GUI  (but no Cookie actions).<BR/>
+      <b>.</b> Instructions how to create menus described e.g. in a database.<BR/>
+		</description>
+	</section>
+	
+	<section>
+      <title>Modules</title>
+		<description>
+      <b>.</b> Step-by-step guide of Instructions how to create a NetBeans Module.<BR/>
+      <b>.</b> Instructions how to write an XML descriptor for Menus and Toolbars.<BR/>
+      <b>.</b> Instructions how to declare workspaces with XML.<BR/>
+		</description>
+	</section>
+	
+	<section>
+      <title>Misc</title>
+		<description>
+      <b>.</b> An API to log debugging and error handling information.<BR/>
+      <b>.</b> Instructions how to write stand-alone applications.<BR/>
+      <b>.</b> Instructions how to change look-and-feel of an Application.<BR/>
+      <b>.</b> Recommendations which of the utility classes of NetBeans to use.<BR/>
+  		</description>
+	</section>
+</document>
+

@@ -1,0 +1,48 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: prologue,v 1.1 2003/05/05 17:03:24 dfugate Exp $"
+#
+# who       when      what
+# hsommer 2004-09-17 copied from jcontexmpl
+# rtobar  2008-02-26 added classpath extension for JMX test
+
+export ACS_CDB=$PWD
+echo $ACS_CDB
+acsutilTATPrologue -l
+
+echo " Starting Test Java Container"
+
+AUX_JAVA_OPTIONS=$JAVA_OPTIONS
+# Todo: remove jacorb dumps once we resolved the issue with spurious COMM_FAILURE exceptions.
+export JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.debug.dump_incoming_messages=on -Djacorb.debug.dump_outgoing_messages=on" 
+acsutilAwaitContainerStart -java frodoContainer
+acsutilAwaitContainerStart -java frodoContainerWithTimeout1
+acsutilAwaitContainerStart -java silentContainer
+export JAVA_OPTIONS=$AUX_JAVA_OPTIONS
+
+acsutilAwaitContainerStart -java dynamicTestContainer
+
+export JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.connection.client.pending_reply_timeout=500000 "
+acsutilAwaitContainerStart -java frodoContainerWithTimeout2
+acsutilAwaitContainerStart -java frodoContainerWithTimeout3
+export JAVA_OPTIONS=$AUX_JAVA_OPTIONS

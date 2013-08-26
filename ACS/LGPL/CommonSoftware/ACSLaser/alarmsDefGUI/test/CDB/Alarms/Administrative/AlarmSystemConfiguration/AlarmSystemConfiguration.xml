@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+$Id: AlarmSystemConfiguration.xml,v 1.2 2013/03/08 08:49:12 acaproni Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/Administrative/AlarmSystemConfiguration/AlarmSystemConfiguration.xml,v $
+-->
+
+<alarm-system-configuration 
+   xmlns="urn:schemas-cosylab-com:acsalarm-alarmservice:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<configuration-property name="Implementation">CERN</configuration-property>
+</alarm-system-configuration>
+

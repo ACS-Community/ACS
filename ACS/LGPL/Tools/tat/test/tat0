@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# "@(#) $Id: tat0,v 1.76 2003/01/09 17:51:20 vltsccm Exp $"
+#
+# Preparation of tat tests execution
+#
+if [ -f .TestList.sed ]
+then
+	chmod u+w .TestList.sed
+fi
+if [ -f TestList ]
+then
+	chmod u+w TestList
+fi
+cp TestList.all TestList
+if [ -f Makefile ]
+then
+	chmod u+w Makefile
+fi
+cp Makefile.all Makefile
+# see tat9
+rm -f RtapScheduler

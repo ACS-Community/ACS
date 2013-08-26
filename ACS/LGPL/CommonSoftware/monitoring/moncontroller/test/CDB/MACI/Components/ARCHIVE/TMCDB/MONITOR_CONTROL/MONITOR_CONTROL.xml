@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Component  xmlns="urn:schemas-cosylab-com:Component:1.0"
+      xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+      xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      Name="ARCHIVE/TMCDB/MONITOR_CONTROL"
+      Code="alma.acs.monitoring.controller.ControllerHelper" 
+      Type="IDL:alma/MonitorArchiver/Controller:1.0"
+      Container="ARCHIVE/TMCDB/MONITOR_CONTROL/javaContainer"
+        Autostart="true"
+      Default="true"
+ImplLang="java" />

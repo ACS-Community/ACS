@@ -1,0 +1,49 @@
+46c46,77
+<     install_dir = sysconfig.get_python_lib() + os.sep + 'pychecker'
+---
+>     ##
+>     ## This forces to try installing in the Python installation tree
+>     ## but setup allows also to install in other places.
+>     ## Therefore we do not want to use this stategy
+>     ##
+>     ## install_dir = sysconfig.get_python_lib() + os.sep + 'pychecker'
+>     ## checker_py = install_dir + os.sep + 'checker.py'
+>     ##
+>     ## Instead we search the command line for the standard options
+>     ## --install-purelib or --home first and we revert to the old case
+>     ## if not found
+>     ##
+>     ##            G.Chiozzi
+>     ##
+>     args = sys.argv[:]
+> 
+>     import string
+>     
+>     install_home = ['']
+>     install_purelib = ['']
+>     for arg in args:
+>        if string.find(arg, '--install-purelib=') == 0:
+>            install_purelib = string.split(string.split(arg, '=')[1])
+>        elif string.find(arg, '--home=') == 0:
+>            install_home = string.split(string.split(arg, '=')[1])
+>     
+>     if install_purelib != [''] :
+>        install_dir = install_purelib[0] + os.sep + 'pychecker'
+>     elif install_home != [''] :
+>        install_dir = install_home[0] + os.sep + 'lib' + os.sep + 'python' + os.sep + 'site-packages' + os.sep + 'pychecker'
+>     else:
+>        install_dir = sysconfig.get_python_lib() + os.sep + 'pychecker'
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1217 @@
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link rel="Edit-Time-Data" href="index_files/editdata.mso">
+  <title>ALMA Common Software</title>
+  <o:smarttagtype
+ namespaceuri="urn:schemas-microsoft-com:office:smarttags" name="time"></o:smarttagtype>
+  <meta name="editor" content="Giorgio.Filippi@eso.org">
+  <meta name="maintainer" content="Gianluca Chiozzi gchiozzi@eso.org">
+  <meta name="organisation" content="ESO, VLT, ELE/Software Group">
+  <meta name="Template" content="D:\MSOFFICE\OFFICE\html.dot">
+</head>
+<body style="background-color: rgb(255, 255, 255);" lang="EN-US"
+ link="blue" vlink="purple">
+<div class="Section1">
+<table class="MsoNormalTable" border="0" cellpadding="0" cellspacing="0"
+ width="780">
+  <tbody>
+    <tr>
+      <td colspan="3">&nbsp; </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <p class="MsoNormal"><span style="font-size: 10pt;"><a
+ href="http://www.eso.org/projects/alma/"><span
+ style="text-decoration: none;"><img id="_x0000_i1025"
+ src="alma_art_3.jpg" alt="[ ALMA ]" border="0" height="117" width="91"></span></a></span></p>
+      </td>
+      <td>
+      <p class="MsoNormal"><b><span style="font-size: 18pt;">ALMA
+Common Software</span></b><span style="font-size: 10pt;"></span></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal"><span style="font-size: 10pt;"><a
+ href="http://www.eso.org/"><span style="text-decoration: none;"><img
+ id="_x0000_i1026" src="eso-logo.gif" border="0" height="117" width="91"></span></a></span></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div class="MsoNormal" style="text-align: center;" align="center">
+<hr align="center" size="2" width="100%"> </div>
+<h1 class="H1" style="text-align: center;" align="center">ACS Training
+- Socorro 2004 </h1>
+<p class="H2"><b>Last ACS 3.5 days Course: 2004 July the 13th &#8211;July the
+16th</b> </p>
+<p class="MsoBodyText">This document contains the Agenda for a 3.5-days
+ACS Course in Socorro. </p>
+<p class="MsoBodyText">Most of the participants to this course have
+interest in C++ development for high level software (Pipeline, Offline,
+Archive). </p>
+<p class="MsoBodyText"><i>Each item in the agenda links to the
+corresponding course material (typically Power Point presentations).
+Still a number of presentations contain little or no material, since
+the presentations have been given directly on the whiteboard or with a
+PC live demonstration, but we want to improve and extend this material
+in and for future issues of this course. If you have suggestions or
+material that can integrate what available now, you are encouraged to
+contribute it.</i></p>
+</div>
+<ul>
+  <li>
+    <div class="Section1">Day 1: </div>
+    <ul>
+      <li>
+        <div class="Section1">Get your hands on ACS</div>
+      </li>
+      <li>
+        <div class="Section1">Write your first component.</div>
+      </li>
+    </ul>
+  </li>
+  <li>Day 2:
+    <ul>
+      <li>ACS Error System</li>
+      <li>ACS Properties design patterns</li>
+    </ul>
+  </li>
+  <li>Day 3:
+    <ul>
+      <li>Asynchronous communication: Notification Channel and callbacks</li>
+      <li>Developing Java GUIs with ABeans</li>
+    </ul>
+  </li>
+  <li>Day 4:
+    <ul>
+      <li>Bulk Data transfer</li>
+      <li>ACS Logging</li>
+    </ul>
+  </li>
+</ul>
+<div class="Section1">
+<p class="MsoBodyText">Although the Agenda looks quite detailed, the
+idea is to be flexible and adapt dynamically the program to the needs
+and knowledge of the participants. This means that we expand and
+contract the time allocated to the various topics based on the feedback
+collected during the course.</p>
+<p class="MsoBodyText">We assign plenty of time for exercises, because
+we want the participants to get an actual on-hands experience. Again,
+if needs arises, exercise time can be traded with discussions and with
+extensions to tutorial topics.</p>
+<h2 class="MsoBodyText">Prerequisites:</h2>
+<p>Compressing an ACS course in just 3.5 days is really a tough job, as
+we have seen in previous occasions.</p>
+<p>We have therefore decided to skip some introductory and general
+presentations that take a relevant amount of time, but that we think
+can be replaced by requiring the participants to read in advance some
+background documents and ask questions during the first day of the
+course.</p>
+<p>These are therefore the prerequisites readings for getting the best
+out of a 3.5 days ACS course:</p>
+</div>
+<ul>
+  <li><a
+ href="http://www.eso.org/projects/alma/develop/acs/OtherDocs/ACSPapersAndSlides/SPIE2004/SPIE2004_SC644.pdf">An
+Introduction to Scalable Frameworks for Observatory Software
+Infrastructure</a><br>
+This course provides a generic introduction to software frameworks and
+gives the background and the reasons for having one.<br>
+The course itself is not specific to ACS but gives basic concepts and
+uses ACS as an example.<br>
+It has been given at <a
+ href="http://spie.org/Conferences/programs/04/as/"> SPIE 2004 -
+Astronomical Telescopes and Instrumentation<br>
+Glasgow, Scotland, UK, 21-25 June 2004</a> as Short Couse 644.</li>
+  <li>G.CHIOZZI et. al (2004) &#8211; <a
+ href="http://www.eso.org/projects/alma/develop/acs/OtherDocs/ACSPapersAndSlides/SPIE2004/SPIE2004-5496-23.pdf">The
+ALMA Common Software: a developer friendly CORBA based framework</a>, <a
+ href="http://spie.org/Conferences/programs/04/as/"><br>
+SPIE 2004 - Astronomical Telescopes and Instrumentation<br>
+Glasgow, Scotland, UK, 21-25 June 2004</a>, invited paper 5496-23<br>
+(<a href="SPIE2004/SPIE2004-5496-23.ppt">Power Point presentation, ppt</a>)
+  </li>
+  <li>Java developers should install the <a
+ href="http://www.eclipse.org/">Eclipse IDE </a> (version 3.0) on
+their machine and get familiar with the basic operation of the tool.</li>
+  <li>Developers interested in GUI building should install <a
+ href="http://www.netbeans.org/">Net Beans</a> (version 3.5) on their
+machine and get familiar with the basic operation of the tool.</li>
+  <li>A general familiarity with the <a
+ href="http://www.eso.org/projects/alma/develop/acs/">ACS Web Page</a>
+and the <a href="http://almasw.hq.eso.org/almasw/bin/view/ACS/WebHome">ACS
+Wiki</a> would help</li>
+</ul>
+<div class="Section1">
+<h2 class="MsoBodyText"><b><span>Tuesday the 13th : Get your hands on
+ACS</span></b></h2>
+<table border="1" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr align="left">
+      <td valign="top" width="10%"> <b>Time</b></td>
+      <td valign="top" width="50%"> <b>Program</b></td>
+      <td valign="top" width="40%"> <b>Notes</b></td>
+    </tr>
+    <tr align="left">
+      <td valign="top"> <st1:time minute="0" hour="11">08:30 <br>
+08:45</st1:time></td>
+      <td valign="top"> <a href="ACSCourse-Wellcome.ppt">Welcome</a><br>
+Course organization and setup.Agenda overview.</td>
+      <td valign="top">D.Fugate</td>
+    </tr>
+    <tr align="left">
+      <td valign="top"> <st1:time minute="45" hour="14">08:45<br>
+09:15</st1:time></td>
+      <td valign="top"> <a href="ACSCourse-01c-ContComp.ppt">Component
+Container and Lifecycle
+Management</a></td>
+      <td valign="top">
+      <div align="left">H.Sommer</div>
+      </td>
+    </tr>
+    <tr align="left">
+      <td valign="top">
+      <div align="left">09:15<br>
+09:30 </div>
+      </td>
+      <td valign="top">
+      <div align="left">Defining the interface for a component:<br>
+The Mount1 IDL interface</div>
+      </td>
+      <td valign="top">
+      <div align="left">B.Jeram</div>
+      </td>
+    </tr>
+    <tr align="left">
+      <td valign="top">09:30<br>
+10:00</td>
+      <td valign="top">
+      <p>Build the first component.<br>
+Watch Bogdan create a <a href="ACSCourse-ComponentCPP.ppt">MOUNT1
+implementation in C++</a></p>
+      </td>
+      <td valign="top">B.Jeram</td>
+    </tr>
+    <tr>
+      <td valign="top">10:00<br>
+10:15 </td>
+      <td valign="top">Coffee break</td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr align="left">
+      <td valign="top">10:15<br>
+10:25</td>
+      <td valign="top">
+      <p>Build the first component.<br>
+Quick notes on writing <a href="ACSCourse-ComponentJava.ppt">Java
+components</a>.</p>
+      </td>
+      <td valign="top">H.Sommer</td>
+    </tr>
+    <tr align="left">
+      <td valign="top">10:25<br>
+10:35</td>
+      <td valign="top">
+      <p>Build the first component.<br>
+Quick notes on writing Python components.<br>
+      <a href="ACSCourse-ComponentPy.ppt">Python Components</a><br>
+      </p>
+      </td>
+      <td valign="top">D.Fugate</td>
+    </tr>
+    <tr align="left">
+      <td valign="top">10:35<br>
+12:30</td>
+      <td valign="top">
+      <p>Group exercises<br>
+Build your first component<br>
+- Define your own IDL interface<br>
+- Pick a language<br>
+- Develop an implementation with support from the instructors</p>
+      </td>
+      <td valign="top">Exercise time</td>
+    </tr>
+    <tr>
+      <td valign="top">12:30<br>
+13:30</td>
+      <td valign="top">Lunch</td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr align="left">
+      <td valign="top">
+      <div align="left">13:30<br>
+14:30 </div>
+      </td>
+      <td valign="top"> <a href="ACSCourse-RunACS.ppt">Running
+ACS:</a><br>
+Starting up and stopping ACS. Running the examples<br>
+Using the basic ACS tools: Object Explorer, Logging Client<br>
+      <a href="ACSCourse-Demo.ppt">Demo Setup</a><br>
+      <a href="ACSEnvironmentVariables.htm">ACS Environment Variables</a></td>
+      <td valign="top">
+      <div align="left">D.Fugate</div>
+      </td>
+    </tr>
+    <tr align="left">
+      <td valign="top">
+      <p>14:30<br>
+15:30</p>
+      </td>
+      <td valign="top">Group exercises<br>
+Play with ACS tools and continue developing and debugging your
+Component.</td>
+      <td valign="top">Exercise time. Includes coffee break</td>
+    </tr>
+    <tr>
+      <td valign="top">15:30<br>
+15:45</td>
+      <td valign="top"><a href="ACSCourse-CDB.ppt">ACS
+Configuration Database</a>,<br>
+Basic Concepts</td>
+      <td valign="top">B.Jeram</td>
+    </tr>
+    <tr>
+      <td valign="top">15:45<br>
+16:15</td>
+      <td valign="top">
+      <p>Deployment of ACS Components, manager, multiple containers and
+CDB configuration, multiple hosts</p>
+      <p><a href="ACSCourse-MACI-CDB.ppt">Deployment Configuration
+Database</a></p>
+      </td>
+      <td valign="top">
+      <p>B.Jeram</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">16:15<br>
+16:45</td>
+      <td valign="top">Exercises:<br>
+Deployment and configuration database.<br>
+Deploy your own components across multiple machines.</td>
+      <td valign="top">Exercise time. </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <p class="MsoNormal">16:45<br>
+17:00 </p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">ACS Tutorial: <br>
+      <a href="ACSCourse-ClientPy.ppt">Developing a Python Client</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">D.Fugate</p>
+      </td>
+    </tr>
+    <tr align="left">
+      <td valign="top">17:00<br>
+17:20 </td>
+      <td valign="top">Exercises:<br>
+Develop a Python Client for you own component.</td>
+      <td valign="top">Exercise time. </td>
+    </tr>
+    <tr align="left">
+      <td valign="top">17:20<br>
+17:30 </td>
+      <td valign="top">Day wrap-up: questions and doubts</td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr align="left">
+      <td valign="top"> 17:30</td>
+      <td valign="top"> <i>End of day. Exercise/discussion
+time for the ones that want to stay</i></td>
+      <td valign="top">&nbsp; </td>
+    </tr>
+  </tbody>
+</table>
+<p class="MsoNormal">&nbsp;</p>
+<h2><b><span>Wednesday the 14th: Error System and Properties</span></b>
+</h2>
+<table border="1" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr align="left">
+      <td valign="top" width="10%"> <b>Time</b></td>
+      <td valign="top" width="50%"> <b>Program</b></td>
+      <td valign="top" width="40%"> <b>Notes</b></td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">
+      <p class="MsoNormal">08:30<br>
+08:45</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">What ACS nightmares did you have? Questions
+and answers.</p>
+      </td>
+      <td valign="top">&nbsp; </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <p>08:45<br>
+09:15 </p>
+      </td>
+      <td valign="top">Look again with fresh mind at the
+exercices</td>
+      <td valign="top">Exercise time. </td>
+    </tr>
+    <tr>
+      <td valign="top">09:15 <br>
+09:40</td>
+      <td valign="top"><a href="ACSCourse-ErrorSystem.ppt">ACS
+Error System : Concepts</a><br>
+with discussion about C++ filename conventions to track from errors
+back to files. </td>
+      <td valign="top">B. Jeram</td>
+    </tr>
+    <tr>
+      <td valign="top">09:40<br>
+10:00 </td>
+      <td valign="top">Exercise: create ACS error
+definition and add to your component</td>
+      <td valign="top">Exercise time. Includes coffee break</td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">
+      <p class="MsoNormal">10:00<br>
+10:15</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal"><span lang="FR">ACS Error System APIs: <br>
+      <a href="ACSCourse-ErrorSystemCPP.ppt">C++</a></span></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">B.Jeram</p>
+      </td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">10:15<br>
+10:25</td>
+      <td valign="top">
+      <p class="MsoNormal"><span lang="FR">ACS Error System APIs: <br>
+Quick pass on <a href="ACSCourse-ErrorSystemJava.ppt">Java</a></span></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">S.Roberts</p>
+      </td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">10:25<br>
+10:35</td>
+      <td valign="top">
+      <p class="MsoNormal"><span lang="FR">ACS Error System APIs: <br>
+Quick pass on <a href="ACSCourse-03d-ErrorSystemPy.ppt">Python</a></span></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">D.Fugate</p>
+      </td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">10:35<br>
+12:30 </td>
+      <td valign="top">Exercise:<br>
+Add error handling to the Components and Clients with the support of
+the instructors </td>
+      <td valign="top">Exercise time.</td>
+    </tr>
+    <tr>
+      <td valign="top">12:30<br>
+13:30</td>
+      <td valign="top">Lunch</td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr>
+      <td valign="top">13:30<br>
+13:50</td>
+      <td valign="top">Baci properties: <a
+ href="ACSCourse-CharComp.ppt">Concepts</a></td>
+      <td valign="top">B. Jeram</td>
+    </tr>
+    <tr>
+      <td valign="top">13:50<br>
+14:10 </td>
+      <td valign="top">Baci properties: <a href="ACSCourse-Mount2.ppt">C++
+API</a></td>
+      <td valign="top">B. Jeram</td>
+    </tr>
+    <tr>
+      <td valign="top">14:10<br>
+14:30</td>
+      <td valign="top"><s>Baci properties: Java API</s> cancelled in
+favor of presentation on typesafe handling of XML data</td>
+      <td valign="top">H.Sommer</td>
+    </tr>
+    <tr>
+      <td valign="top">14:30<br>
+15:30 </td>
+      <td valign="top">Exercises:<br>
+Extend the interface of your Component with properties and implement it
+      </td>
+      <td valign="top">Exercise time. Includes Coffee break</td>
+    </tr>
+    <tr align="left">
+      <td valign="top">15:30<br>
+16:00 </td>
+      <td valign="top"><a href="ACSCourse-ACEIntro.ppt">Introduction to
+ACE</a>.<br>
+ACS threads and multi threading and synchronisation with ACE and ACS</td>
+      <td valign="top">B.Jeram</td>
+    </tr>
+    <tr>
+      <td valign="top">16:00<br>
+17:00 </td>
+      <td valign="top">Exercises:<br>
+Make your Component multi-threaded.</td>
+      <td valign="top">Exercise time. Includes Coffee break</td>
+    </tr>
+    <tr align="left">
+      <td valign="top">17:00<br>
+17:30 </td>
+      <td valign="top">Day wrap-up: questions and doubts</td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr align="left">
+      <td valign="top"> 17:30</td>
+      <td valign="top"> <i>End of day. Exercise/discussion
+time for the ones that want to stay</i></td>
+      <td valign="top">&nbsp; </td>
+    </tr>
+  </tbody>
+</table>
+<p class="MsoNormal">&nbsp;</p>
+<h2 class="MsoNormal"><b><span>Thursday the 15<sup>th</sup>:
+Asynchronous
+communication and ABeans</span></b></h2>
+<table border="1" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr align="left">
+      <td valign="top" width="10%"> <b>Time</b></td>
+      <td valign="top" width="50%"> <b>Program</b></td>
+      <td valign="top" width="40%"> <b>Notes</b></td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">08:45<br>
+09:15 </td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-NotificationChannel.ppt">ACS
+Notification Channel: concepts of CORBA Notification Service</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">D.Fugate</p>
+      </td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">09:15<br>
+09:45 </td>
+      <td valign="top">
+      <p class="MsoNormal">ACS NotificationChannel APIs:<br>
+      <a href="ACSCourse-NCCPP.ppt">C++</a>,<a href="ACSCourse-NCPy.ppt">Python</a>,
+      <a href="ACSCourse-NCJava.ppt">Java</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">D.Fugate</p>
+      </td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">09:45<br>
+10:30 </td>
+      <td valign="top">Exercices:<br>
+Notification Channel</td>
+      <td valign="top">Includes coffee break</td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">10:30<br>
+11:00 </td>
+      <td valign="top">Adding asynchronous behavior: Mount3
+IDL interface. <a href="ACSCourse-Async.ppt">Callbacks in ACS</a></td>
+      <td valign="top">B.Jeram</td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">11:00<br>
+12:00 <br>
+      </td>
+      <td valign="top">Exercises with asynchronous behavior</td>
+      <td valign="top">Includes coffee break</td>
+    </tr>
+    <tr>
+      <td valign="top">12:00<br>
+13:00</td>
+      <td valign="top">Lunch</td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">
+      <p>13:00<br>
+13:15</p>
+      </td>
+      <td valign="top"><a href="ACSCourse-AbeansIntro.ppt">Introduction
+to ABeans</a> and </td>
+      <td valign="top">B.Jeram<br>
+      <i>Up to date for ACS 3.0</i> </td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">13:15<br>
+13:45 </td>
+      <td valign="top"><a href="ACSCourse-AbeansProgrammingTutorial.ppt">ABeans
+programming
+Tutorial</a></td>
+      <td valign="top">B.Jeram<br>
+      <i>Out of date: ACS 2.1</i> </td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">13:45<br>
+14:15 </td>
+      <td valign="top">
+      <p>Exercises:<br>
+Implementation of the exercise. Error handling. GUI building</p>
+      </td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">14:15<br>
+14:45</td>
+      <td valign="top">
+      <p>Filler presentations (see below):<br>
+Software Engineering, standards and programming practices or XML or
+other topics</p>
+      </td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">14:45<br>
+15:45 </td>
+      <td valign="top">
+      <p class="MsoNormal">Putting it all together:<br>
+Build a complete example.</p>
+      </td>
+      <td valign="top">Includes coffee break </td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">15:45<br>
+17:00 </td>
+      <td valign="top">Open for topics to be selected.</td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr class="MsoNormalTable">
+      <td valign="top">17:00<br>
+17:30 <br>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">Final round table discussion</p>
+      <p>Course summary, discussions and feedback.</p>
+      </td>
+      <td valign="top">Heiko and Bogdan will leave on
+Friday, so it is better to collect feedback here.</td>
+    </tr>
+    <tr>
+      <td valign="top">17:30</td>
+      <td valign="top">
+      <p class="MsoNormal"><i>End of day &#8211; exercise/discussion time</i></p>
+      </td>
+      <td valign="top">&nbsp; </td>
+    </tr>
+  </tbody>
+</table>
+<h2 class="MsoNormal"><b><span>Friday the 16<sup>th</sup> (1/2 day):
+Bulk
+Data and Logging System</span></b></h2>
+<table border="1" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr align="left">
+      <td valign="top" width="10%"> <b>Time</b></td>
+      <td valign="top" width="50%"> <b>Program</b></td>
+      <td valign="top" width="40%"> <b>Notes</b></td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <p class="MsoNormal">08:30<br>
+08:45</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">What ACS nightmares did you have? Questions
+and answers.</p>
+      </td>
+      <td valign="top">&nbsp; </td>
+    </tr>
+    <tr>
+      <td valign="top">08:45<br>
+09:15</td>
+      <td valign="top">Introduction to ACS Bulk Data
+transfer</td>
+      <td valign="top">S.Harrington</td>
+    </tr>
+    <tr>
+      <td valign="top">09:15<br>
+09:45 </td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-ACSLoggingSystem.ppt">ACS
+Logging System: Tutorial</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">D.Fugate</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">09:45<br>
+10:15 </td>
+      <td valign="top">
+      <p class="MsoNormal"><span lang="FR">ACS Logging System APIs: <br>
+      <a href="ACSCourse-LoggingCPP.ppt">C++</a>, <a
+ href="ACSCourse-LoggingJava.ppt">Java</a>, <a
+ href="ACSCourse-LoggingPy.ppt">Python</a></span></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">D.Fugate<br>
+      </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">10:15<br>
+11:00</td>
+      <td valign="top">Exercise:<br>
+Add logging and monitoring to the Components and Clients</td>
+      <td valign="top">Includes coffee break</td>
+    </tr>
+    <tr>
+      <td valign="top">11:00<br>
+11:30</td>
+      <td valign="top"><a href="ACSCourse-Time.ppt">ACS
+Time System</a></td>
+      <td valign="top">D.Fugate<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">11:30<br>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">Exercices and discussions</p>
+      </td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><i>Real end of course</i></p>
+      </td>
+      <td valign="top">&nbsp; </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p class="MsoNormal">&nbsp;</p>
+<h2>Filler presentations</h2>
+<p>These are presentations we would like to have but that do not fit in
+the agenda.</p>
+<p>If there will be some time holes to be filled, we will do them.</p>
+<blockquote>
+  <blockquote> </blockquote>
+</blockquote>
+<div class="Section1">
+<table class="MsoNormalTable" border="1" cellpadding="0" cellspacing="0"
+ width="100%">
+  <tbody>
+    <tr align="left">
+      <td valign="top" width="10%"> <b>Time</b></td>
+      <td valign="top" width="50%"> <b>Program</b></td>
+      <td valign="top" width="40%"> <b>Notes</b></td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-XmlByValue.ppt">Data
+entities (Java/XML binding)</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">H.Sommer<br>
+      <i>Mostly up to date for ACS 3.0</i> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-XmlTransparent.ppt">Transparent
+(de-)serialization of XML in Java</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">H.Sommer<br>
+      <i>Mostly up to date for ACS 3.0</i> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">Exercises with XML Serialisation</td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">New developments in ACS: Code
+Generation</td>
+      <td valign="top">H.Sommer</td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-DevTools.ppt">ALMA SW
+Development tools and Integration Guidelines</a></p>
+      <p class="MsoNormal">What are rules?</p>
+      <p class="MsoNormal">Why do we try to standardize everything and
+in particular platform, OS and compiler versions?</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">P.Sivera, M.Zampare</p>
+      <br>
+      <i>Mostly up to date for ACS 3.0</i> </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-SE.ppt">ACS Software
+Engineering presentation</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">M.Zamparelli, 2002/10/16<br>
+      <span lang="IT"><i>Out of date: ACS 2.1</i> </span> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-TAT.ppt">ACS Modular
+Testing: TAT</a> </p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal"><span lang="IT">G.Chiozzi, P.Sivera, H.Sommer<br>
+      <i>Out of date: ACS 2.1</i> </span></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h2 class="MsoNormal">Unused presentations</h2>
+<p class="MsoNormal"><b><span style="font-size: 11pt;">The following
+topics have not been covered in this course by explicit presentation.<br>
+Some of the argument</span></b><b><span style="font-size: 11pt;">
+discussed by these presentations have been discussed on the whiteboard
+or during the exercises. <br>
+Others have not been touched at all. They have been covered in previous
+courses and might be in upcoming courses, depending on the specific
+requirements of the course.</span></b></p>
+<p class="MsoNormal"><b><span style="font-size: 11pt;">We have left
+them here for reference, but please be aware that the information might
+refer to older versions of ACS and might not be up to date.</span></b></p>
+<table class="MsoNormalTable" border="1" cellpadding="0" cellspacing="0"
+ width="100%">
+  <tbody>
+    <tr align="left">
+      <td valign="top" width="10%"> <b>Time</b></td>
+      <td valign="top" width="50%"> <b>Program</b></td>
+      <td valign="top" width="40%"> <b>Notes</b></td>
+    </tr>
+    <tr align="left">
+      <td valign="top"> <st1:time minute="15" hour="11"></st1:time><br>
+      </td>
+      <td valign="top"> <a href="ACSCourse-01a-ACS.ppt">What
+is ACS? <br>
+Common Software and Middleware.</a>The services provided by ACS:
+Architecture Overview.ACS Packages.<br>
+Comparison with VLT CCS</td>
+      <td valign="top"> G.Chiozzi</td>
+    </tr>
+    <tr align="left">
+      <td valign="top"> <st1:time minute="15" hour="13"></st1:time><br>
+      </td>
+      <td valign="top"> <a href="ACSCourse-01b-DS.ppt">Distributed
+systems<br>
+Introduction to CORBA concepts</a></td>
+      <td valign="top"> Sommer</td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <p class="MsoNormal">&nbsp;</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-04-Docs.ppt">ACS
+documentation walkthrough</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">B.Jeram</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal">ACS Tutorial:<br>
+      <a href="ACSCourse-ComponentPy.ppt">Developing a Python Component</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">D.Fugate<br>
+      <i> Up to date for ACS 3.0</i></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal">ACS Tutorial:<br>
+An example of device. <a href="ACSCourse-ComponentJava.ppt">Developing
+a Java Component</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">H.Sommer<br>
+      <i>Up to date for ACS 3.0</i> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal">ACS Tutorial:</p>
+      <p class="MsoNormal"><a href="ACSCourse-ComponentCPP.ppt">An
+example of device. Developing a C++ Component</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">D.Fugate<br>
+      <i>Out of date: ACS 2.1</i></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal">Guided discussion: how to identify what
+should become a component? How to allocate interfaces to components?</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">G.Chiozzi, H.Sommer?<br>
+Here people should present what various subsystems have been doing and
+this should be discussed.</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-OffshootClass.ppt">Introduction
+to Offshoot classes</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">H.Hafok<br>
+      <i>Mostly up to date for ACS 3.0</i> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><span lang="FR">ACS Error System APIs: <br>
+Java, <a href="ACSCourse-03d-ErrorSystemPy.ppt">Python</a></span></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">B.Jeram, H.Sommer, D.Fugate<br>
+(parallel tables or interleaved presentations/exercices)<br>
+      <i>Mostly up to date for ACS 3.0</i> <br>
+      <i>Slides for Java nor written</i></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-DevIO.ppt">Property
+interfacing to hardware: developing DevIO interfaces</a><span
+ class="MsoHyperlink"></span></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">B.Jeram</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-08a-CompChain.ppt">Building
+hierarchies of components</a> and having components referring to other
+components. Lifecycle issues.</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">H.Sommer<br>
+      <span lang="IT"><i>Out of date: ACS 2.1</i> </span> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-VxWorks.ppt">ACS on
+VxWorks</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">B.Jeram</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-RealTimeLinux.ppt">ACS on
+Real Time Linux</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">B.Jeram</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">Exercises with DevIO</td>
+      <td valign="top">&nbsp;</td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp; </td>
+      <td valign="top">
+      <p class="MsoNormal">An example of Control System based on ACS: <a
+ href="ACSCourse-Tics.ppt">TICS</a> and/or APEX from the ACS point of
+view</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">B.Gustafsson</p>
+      <p class="MsoNormal">See also an older presentation on <a
+ href="ALMA_ControlSW_and_ACS.ppt">TICS architecture and ACS</a></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-AlarmSystem.ppt">ACS
+Alarm System and Alarm Display</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">B.Jeram<br>
+      <span lang="IT"><i>Out of date: ACS 2.1</i> </span> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal">ACS Makefile<br>
+Integration Procedures</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">P.Sivera, M.Zampare<i><br>
+No slides available</i></p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-Installation.ppt">ACS
+Linux Installation</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">P.Sivera<br>
+      <i>Out of date: ACS 2.1</i> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal">Using third party libraries with ACS:
+Makefile and linking issues</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">B.Jeram<br>
+      <i>No slides available</i> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp; </td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-05d-JUnit.ppt">JUnit</a>
+demo and ACS testing example</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">H.Sommer</p>
+      <span lang="IT"><i>Out of date: ACS 2.1</i> </span></td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top"><a href="TU-I03_talk.ppt">Introduction
+to ABeans 3</a></td>
+      <td valign="top">I.Verstovsek<br>
+      <i>Out of date: ACS 2.1</i> </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-ArchiveOverview.pdf">ALMA
+Archive Overview</a><span class="MsoHyperlink"></span></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">A.Wicenec<br>
+      <i>Out of date: ACS 2.1</i> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="ACSCourse-ArchiveTutorial.pdf">ALMA
+Archive Tutorial</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">H.Meuss<br>
+      <i>Out of date: ACS 2.1</i> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="Cosylab.ppt">Introduction to
+Cosylab development</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">M.Plesko<br>
+      <i>Out of date: October 2002</i> </p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal"><a href="HS_ALMA_ACSGROUP.ppt">ACS as the
+framework for the ALMA data flow system</a><br>
+      </p>
+      </td>
+      <td valign="top">H.Sommer<br>
+SW Technology Forum 2002<br>
+      <i>Partially in German</i></td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <p class="MsoNormal">&nbsp;</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">Discussion on High Level software, usage of
+Java, testing strategies and software engineering.<br>
+To be better specified.</p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">H.Sommer</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">&nbsp;</td>
+      <td valign="top">
+      <p class="MsoNormal">Discussion: what ACS features are supported
+by each language?</p>
+      <p class="MsoNormal"><a href="ACSCourse-CapabilityMatrix.txt">ACS
+feature matrix by language</a></p>
+      <p class="MsoNormal">or</p>
+      <p class="MsoNormal"><a href="ACSCourse-CapabilityMatrix2.pdf">Another
+version of the feature matrix</a></p>
+      </td>
+      <td valign="top">
+      <p class="MsoNormal">G.Chiozzi</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p class="MsoNormal"><b><span style="font-size: 11pt;">&nbsp;</span></b></p>
+<hr align="center" size="2" width="100%">
+<h2 class="H2">Course examples</h2>
+<p>During the whole course, the presentations will develop one single
+example (a telescope Mount).</p>
+<p>The code for the example is in the ACS CVS archive under:
+ACS/LGPL/CommonSoftware/acscourse.</p>
+<p>You can fing here:</p>
+</div>
+<ul>
+  <li>
+    <div class="Section1">The <a href="acscourse">directory structure
+of the acscourse module</a></div>
+  </li>
+  <li>The <a href="acscourse/ws/doc/idl/html/index.html">IDL</a> and <a
+ href="acscourse/ws/doc/api/html/index.html">API</a> documentation for
+the module generated by doxygen</li>
+</ul>
+<div class="Section1">
+<h2 class="H2">Course exercises</h2>
+<p class="MsoNormal">During the course we will create groups that will
+develop and exend an exercise during the whole duration of the course.</p>
+<p class="MsoNormal">This section now contains the work done for the
+previous course and the new exexcices will be put here after the course.</p>
+<p class="MsoNormal">We have therefore 3 exercises available, that are
+put here online.<br>
+The three groups are expected to cleanup and improve the exercises as a
+followup of the course.<br>
+Once the cleanup will be completed, the 3 exercises will be archived in
+the ACS CVS server for further usage and extension:</p>
+</div>
+<ol>
+  <li>
+    <div class="Section1"><b>acsVltTest</b> - This exercise consists of
+interfacing ACS with the VLT Common Software. devIO classes to access
+the database have been implemented and commands are sent to TIF using a
+Java ABeans GUI. A Mount ACS Component receives the commands from the
+GUI andconverts and re-routes them to TIF</div>
+    <ul>
+      <li><a href="Exercises/dttemp10/acsVltTest/">acsVltTest</a>
+directory structure</li>
+      <li><a href="Exercises/dttemp10.tar.gz">tar file</a> with the
+whole module</li>
+    </ul>
+  </li>
+  <li>
+    <div class="Section1"><b>asm</b> - This exercise consists of a
+component for an Astronomical Site Monitor</div>
+    <ul>
+      <li><a href="Exercises/dttemp12/asm/">asm</a> directory structure</li>
+      <li><a href="Exercises/dttemp12.tar.gz">tar file</a> with the
+whole module</li>
+    </ul>
+  </li>
+  <li>
+    <div class="Section1"><b>isabella</b> - This exercise consists of a
+Lamp device and exploits asynchronous communication and error handling</div>
+    <ul>
+      <li><a href="Exercises/dttemp13/isabella/">isabella</a> directory
+structure</li>
+      <li><a href="Exercises/dttemp13.tar.gz">tar file</a> with the
+whole module</li>
+    </ul>
+  </li>
+</ol>
+<div class="Section1">
+<h2 class="MsoNormal">Course setup and computing facilities</h2>
+<p class="MsoNormal">(This section now contains the work done for the
+previous course and the new exexcices will be put here after the
+course).</p>
+<p class="MsoNormal">We have used 4 PCs with Linux RH 9, ACS, Eclipse
+and NetBeans installed and we assume that people will work in groups of
+3.</p>
+<p class="MsoNormal">&nbsp;Other links:</p>
+<ul type="disc">
+  <li class="MsoNormal"><a href="UserHome.tar">User home directory
+configuration tar file</a><br>
+All files are unpacked in the UserHome directory.<br>
+From there they have to be copied in the home directory of the account
+to be configured.<br>
+  </li>
+</ul>
+</div>
+<div class="Section1"> </div>
+<div class="MsoNormal" style="text-align: center;" align="center">
+<hr align="center" size="2" width="100%"></div>
+<table class="MsoNormalTable" border="0" cellpadding="0" cellspacing="0"
+ width="624">
+  <tbody>
+    <tr>
+      <td colspan="2">&nbsp; </td>
+    </tr>
+    <tr>
+      <td colspan="2">&nbsp; </td>
+    </tr>
+    <tr>
+      <td>
+      <p class="MsoNormal"><span style="font-size: 10pt;"><a
+ href="mailto:gchiozzi@eso.org?subject=Page:tcs_sw/index.html">Send
+comments to <tt>&lt;Gianluca Chiozzi gchiozzi@eso.org&gt;</tt></a></span></p>
+      <p><br>
+<!-- hhmts start --> Last modified: 2004-07-04</p>
+      </td>
+      <td>&nbsp; </td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
+

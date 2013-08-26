@@ -1,0 +1,144 @@
+#! /bin/bash
+. acsstartupAcsPorts
+#--------------------------------------
+CL_RHOST=
+
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+LONGOPTS=help,rhost:
+SHORTOPTS=h
+
+# Usage info. Be nice and keep this up-to-date!
+function printUsage {
+   echo "Runs component performance tests"
+   echo ""
+	echo "Usage: `basename $0` [OPTIONS] "
+	echo "Options: "
+	echo "   -rhost remote_host        remote host"
+   echo "   -h | -help                     prints this help and exits"
+}
+
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit 43;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+# Iterate over getopt's output and set CL_XXX variables accordingly
+while : 
+do
+	case "$1" in
+	--rhost)            CL_RHOST=$2 ; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# must be unset! otherwise our custom export() function
+# that is defined below doesn't get used by the shell
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit 0
+fi
+#--------------------------------------
+rm -rf $ACS_TMP
+mkdir $ACS_TMP
+
+if [ ! $CL_RHOST ]
+then
+    export DATABASE=../doc/compLogging.dbm
+    export OUT_HTML=../doc/ComponentLoggingPerf.html
+else
+    export DATABASE=../doc/remoteCompLogging.dbm
+    export OUT_HTML=../doc/RemoteComponentLoggingPerf.html
+fi
+
+
+#Startup services/manager
+acsutilTATPrologue
+
+export ACS_INSTANCE=`cat $ACS_TMP/acs_instance` 
+
+#Startup containers
+if [ ! $CL_RHOST ]
+then
+    acsStartContainer -cpp  bilboContainer >& $ACS_TMP/bilboContainer.log&
+    sleep 15
+
+    acsStartContainer -java  frodoContainer >& $ACS_TMP/frodoContainer.log&
+    sleep 15
+
+    acsStartContainer -py  aragornContainer >& $ACS_TMP/aragornContainer.log&
+    sleep 15
+else
+    export MANAGER_REFERENCE=corbaloc::`getIP`:`getManagerPort`/Manager
+
+
+    echo "Starting remote containers on '$CL_RHOST'. It may be necessary to enter a password here..."
+    (ssh -f $USER@$CL_RHOST acsStartContainer -cpp -m $MANAGER_REFERENCE  bilboContainer) >& $ACS_TMP/bilboContainer.log
+    sleep 15
+
+    (ssh -f $USER@$CL_RHOST acsStartContainer -java -m $MANAGER_REFERENCE frodoContainer) >& $ACS_TMP/frodoContainer.log
+    sleep 15
+
+    (ssh -f $USER@$CL_RHOST acsStartContainer -py -m $MANAGER_REFERENCE aragornContainer) >& $ACS_TMP/aragornContainer.log
+    sleep 15
+fi
+
+#--Component Tests-------------------------------------------------
+#--The peformance data for the proceeding tests is retrieved from -
+#--the container output. It does not matter what programming language
+#--the client is written in.
+echo "C++ Logging system"
+componentsGenericTestPy LOG01 setup\(100L,5L,0L\) method\(\)
+componentsGenericTestPy LOG01 setup\(100L,10L,0L\) method\(\)
+componentsGenericTestPy LOG01 setup\(100L,25L,0L\) method\(\)
+componentsGenericTestPy LOG01 setup\(100L,100L,0L\) method\(\)
+componentsGenericTestPy LOG01 setup\(100L,1000L,0L\) method\(\)
+componentsGenericTestPy LOG01 setup\(100L,5000L,0L\) method\(\)
+componentsGenericTestPy LOG01 setup\(100L,50000L,0L\) method\(\)
+echo "Python Logging system"
+componentsGenericTestPy LOGPY01 setup\(100L,5L,0L\) method\(\)
+componentsGenericTestPy LOGPY01 setup\(100L,10L,0L\) method\(\)
+componentsGenericTestPy LOGPY01 setup\(100L,25L,0L\) method\(\)
+componentsGenericTestPy LOGPY01 setup\(100L,100L,0L\) method\(\)
+componentsGenericTestPy LOGPY01 setup\(100L,1000L,0L\) method\(\)
+componentsGenericTestPy LOGPY01 setup\(100L,5000L,0L\) method\(\)
+componentsGenericTestPy LOGPY01 setup\(100L,50000L,0L\) method\(\)
+echo "Java Logging system"
+componentsGenericTestPy LOGJAVA01 setup\(100L,5L,0L\) method\(\)
+componentsGenericTestPy LOGJAVA01 setup\(100L,10L,0L\) method\(\)
+componentsGenericTestPy LOGJAVA01 setup\(100L,25L,0L\) method\(\)
+componentsGenericTestPy LOGJAVA01 setup\(100L,100L,0L\) method\(\)
+componentsGenericTestPy LOGJAVA01 setup\(100L,1000L,0L\) method\(\)
+componentsGenericTestPy LOGJAVA01 setup\(100L,5000L,0L\) method\(\)
+componentsGenericTestPy LOGJAVA01 setup\(100L,50000L,0L\) method\(\)
+#-------------------------------------------------------
+#Stop containers/manager/services
+acsStopContainer aragornContainer >& /dev/null
+acsStopContainer frodoContainer >& /dev/null
+acsStopContainer bilboContainer >& /dev/null
+sleep 10
+acsutilTATEpilogue
+
+#Give everything time to finish...
+sleep 5
+
+#Load the data into the database
+ACSPerfAnalyzer $DATABASE $ACS_TMP/bilboContainer.log
+ACSPerfAnalyzer $DATABASE $ACS_TMP/frodoContainer.log
+ACSPerfAnalyzer $DATABASE $ACS_TMP/aragornContainer.log
+
+#Generate HTML report
+ACSPerfReportGen $DATABASE > $OUT_HTML

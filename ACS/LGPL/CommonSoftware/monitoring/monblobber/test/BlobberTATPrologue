@@ -1,0 +1,3 @@
+#!/bin/bash
+acsutilTATPrologue -l --noloadifr
+acsutilTATTestRunner acsStartContainer -java blobTestCont &> container.out &

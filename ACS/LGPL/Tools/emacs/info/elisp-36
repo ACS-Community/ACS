@@ -1,0 +1,1046 @@
+This is Info file elisp, produced by Makeinfo-1.55 from the input file
+elisp.texi.
+
+   This version is the edition 2.3 of the GNU Emacs Lisp Reference
+Manual.  It corresponds to Emacs Version 19.23.
+
+   Published by the Free Software Foundation 675 Massachusetts Avenue
+Cambridge, MA 02139 USA
+
+   Copyright (C) 1990, 1991, 1992, 1993, 1994 Free Software Foundation,
+Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+may be included in a translation approved by the Free Software
+Foundation instead of in the original English.
+
+
+File: elisp,  Node: Translating Input,  Next: Recording Input,  Prev: Input Modes,  Up: Terminal Input
+
+Translating Input Events
+------------------------
+
+                  This section describes features for translating input
+events into other input events before they become part of key sequences.
+
+                -- Variable: extra-keyboard-modifiers
+                    This variable lets Lisp programs ``press'' the
+                    modifier keys on the keyboard.  The value is a bit
+                    mask:
+
+                   1
+                         The SHIFT key.
+
+                   2
+                         The LOCK key.
+
+                   4
+                         The CTL key.
+
+                   8
+                         The META key.
+
+                    Each time the user types a keyboard key, it is
+                    altered as if the modifier keys specified in the
+                    bit mask were held down.
+
+                    When you use X windows, the program can ``press''
+                    any of the modifier keys in this way.  Otherwise,
+                    only the CTL and META keys can be virtually pressed.
+
+                -- Variable: keyboard-translate-table
+                    This variable is the translate table for keyboard
+                    characters.  It lets you reshuffle the keys on the
+                    keyboard without changing any command bindings.
+                    Its value must be a string or `nil'.
+
+                    If `keyboard-translate-table' is a string, then
+                    each character read from the keyboard is looked up
+                    in this string and the character in the string is
+                    used instead.  If the string is of length N,
+                    character codes N and up are untranslated.
+
+                    In the example below, we set
+                    `keyboard-translate-table' to a string of 128
+                    characters.  Then we fill it in to swap the
+                    characters `C-s' and `C-\' and the characters `C-q'
+                    and `C-^'.  Subsequently, typing `C-\' has all the
+                    usual effects of typing `C-s', and vice versa.
+                    (*Note Flow Control:: for more information on this
+                    subject.)
+
+                         (defun evade-flow-control ()
+                           "Replace C-s with C-\ and C-q with C-^."
+                           (interactive)
+                           (let ((the-table (make-string 128 0)))
+                             (let ((i 0))
+                               (while (< i 128)
+                                 (aset the-table i i)
+                                 (setq i (1+ i))))
+                             ;; Swap `C-s' and `C-\'.
+                             (aset the-table ?\034 ?\^s)
+                             (aset the-table ?\^s ?\034)
+                             ;; Swap `C-q' and `C-^'.
+                             (aset the-table ?\036 ?\^q)
+                             (aset the-table ?\^q ?\036)
+                             (setq keyboard-translate-table the-table)))
+
+                    Note that this translation is the first thing that
+                    happens to a character after it is read from the
+                    terminal.  Record-keeping features such as
+                    `recent-keys' and dribble files record the
+                    characters after translation.
+
+                -- Function: keyboard-translate FROM TO
+                    This function modifies `keyboard-translate-table'
+                    to translate character code FROM into character
+                    code TO.  It creates or enlarges the translate
+                    table if necessary.
+
+                -- Variable: function-key-map
+                    This variable holds a keymap which describes the
+                    character sequences sent by function keys on an
+                    ordinary character terminal.  This keymap uses the
+                    data structure as other keymaps, but is used
+                    differently: it specifies translations to make
+                    while reading events.
+
+                    If `function-key-map' ``binds'' a key sequence K to
+                    a vector V, then when K appears as a subsequence
+                    *anywhere* in a key sequence, it is replaced with
+                    the events in V.
+
+                    For example, VT100 terminals send `ESC O P' when the
+                    keypad PF1 key is pressed.  Therefore, we want
+                    Emacs to translate that sequence of events into the
+                    single event `pf1'.  We accomplish this by
+                    ``binding'' `ESC O P' to `[pf1]' in
+                    `function-key-map', when using a VT100.
+
+                    Thus, typing `C-c PF1' sends the character sequence
+                    `C-c ESC O P'; later the function
+                    `read-key-sequence' translates this back into `C-c
+                    PF1', which it returns as the vector `[?\C-c pf1]'.
+
+                    Entries in `function-key-map' are ignored if they
+                    conflict with bindings made in the minor mode,
+                    local, or global keymaps.  The intent is that the
+                    character sequences that function keys send should
+                    not have command bindings in their own right.
+
+                    The value of `function-key-map' is usually set up
+                    automatically according to the terminal's Terminfo
+                    or Termcap entry, but sometimes those need help
+                    from terminal-specific Lisp files.  Emacs comes with
+                    terminal-specific files for many common terminals;
+                    their main purpose is to make entries in
+                    `function-key-map' beyond those that can be deduced
+                    from Termcap and Terminfo.  *Note
+                    Terminal-Specific::.
+
+                    Emacs versions 18 and earlier used totally
+                    different means of detecting the character
+                    sequences that represent function keys.
+
+                -- Variable: key-translation-map
+                    This variable is another keymap used just like
+                    `function-key-map' to translate input events into
+                    other events.  It differs from `function-key-map'
+                    in two ways:
+
+                       * `key-translation-map' goes to work after
+                         `function-key-map' is finished; it receives
+                         the results of translation by
+                         `function-key-map'.
+
+                       * `key-translation-map' overrides actual key
+                         bindings.
+
+                    The intent of `key-translation-map' is for users to
+                    map one character set to another, including
+                    ordinary characters normally bound to
+                    `self-insert-command'.
+
+                  You can use `function-key-map' or
+`key-translation-map' for more than simple aliases, by using a
+function, instead of a key sequence, as the ``translation'' of a key.
+Then this function is called to compute the translation of that key.
+
+                  The key translation function receives one argument,
+which is the prompt that was specified in `read-key-sequence'---or
+`nil' if the key sequence is being read by the editor command loop.  In
+most cases you can ignore the prompt value.
+
+                  If the function reads input itself, it can have the
+effect of altering the event that follows.  For example, here's how to
+define `C-c h' to turn the character that follows into a Hyper
+character:
+
+                    (defun hyperify (prompt)
+                      (let ((e (read-event)))
+                        (vector (if (numberp e)
+                                    (logior (lsh 1 20) e)
+                                  (if (memq 'hyper (event-modifiers e))
+                                      e
+                                    (add-event-modifier "H-" e))))))
+                    
+                    (defun add-event-modifier (string e)
+                      (let ((symbol (if (symbolp e) e (car e))))
+                        (setq symbol (intern (concat string
+                                                     (symbol-name symbol))))
+                        (if (symbolp e)
+                            symbol
+                          (cons symbol (cdr e)))))
+                    
+                    (define-key function-key-map "\C-ch" 'hyperify)
+
+                  The `iso-transl' library uses this feature to provide
+a way of inputting non-ASCII Latin-1 characters.
+
+
+File: elisp,  Node: Recording Input,  Prev: Translating Input,  Up: Terminal Input
+
+Recording Input
+---------------
+
+                -- Function: recent-keys
+                    This function returns a vector containing the last
+                    100 input events from the keyboard or mouse.  All
+                    input events are included, whether or not they were
+                    used as parts of key sequences.  Thus, you always
+                    get the last 100 inputs, not counting keyboard
+                    macros.  (Events from keyboard macros are excluded
+                    because they are less interesting for debugging; it
+                    should be enough to see the events which invoked
+                    the macros.)
+
+                -- Command: open-dribble-file FILENAME
+                    This function opens a "dribble file" named
+                    FILENAME.  When a dribble file is open, each input
+                    event from the keyboard or mouse (but not those
+                    from keyboard macros) is written in that file.  A
+                    non-character event is expressed using its printed
+                    representation surrounded by `<...>'.
+
+                    You close the dribble file by calling this function
+                    with an argument of `nil'.
+
+                    This function is normally used to record the input
+                    necessary to trigger an Emacs bug, for the sake of
+                    a bug report.
+
+                         (open-dribble-file "~/dribble")
+                              => nil
+
+                  See also the `open-termscript' function (*note
+Terminal Output::.).
+
+
+File: elisp,  Node: Terminal Output,  Next: Special Keysyms,  Prev: Terminal Input,  Up: System Interface
+
+Terminal Output
+===============
+
+                  The terminal output functions send output to the
+terminal or keep track of output sent to the terminal.  The variable
+`baud-rate' tells you what Emacs thinks is the output speed of the
+terminal.
+
+                -- Variable: baud-rate
+                    This variable's value is the output speed of the
+                    terminal, as far as Emacs knows.  Setting this
+                    variable does not change the speed of actual data
+                    transmission, but the value is used for
+                    calculations such as padding.  It also affects
+                    decisions about whether to scroll part of the
+                    screen or repaint---even when using a window
+                    system, (We designed it this way despite the fact
+                    that a window system has no true ``output speed'',
+                    to give you a way to tune these decisions.)
+
+                    The value is measured in baud.
+
+                  If you are running across a network, and different
+parts of the network work at different baud rates, the value returned
+by Emacs may be different from the value used by your local terminal.
+Some network protocols communicate the local terminal speed to the
+remote machine, so that Emacs and other programs can get the proper
+value, but others do not.  If Emacs has the wrong value, it makes
+decisions that are less than optimal.  To fix the problem, set
+`baud-rate'.
+
+                -- Function: baud-rate
+                    This function returns the value of the variable
+                    `baud-rate'.  In Emacs versions 18 and earlier,
+                    this was the only way to find out the terminal
+                    speed.
+
+                -- Function: send-string-to-terminal STRING
+                    This function sends STRING to the terminal without
+                    alteration.  Control characters in STRING have
+                    terminal-dependent effects.
+
+                    One use of this function is to define function keys
+                    on terminals that have downloadable function key
+                    definitions.  For example, this is how on certain
+                    terminals to define function key 4 to move forward
+                    four characters (by transmitting the characters
+                    `C-u C-f' to the computer):
+
+                         (send-string-to-terminal "\eF4\^U\^F")
+                              => nil
+
+                -- Command: open-termscript FILENAME
+                    This function is used to open a "termscript file"
+                    that will record all the characters sent by Emacs
+                    to the terminal.  It returns `nil'.  Termscript
+                    files are useful for investigating problems where
+                    Emacs garbles the screen, problems that are due to
+                    incorrect Termcap entries or to undesirable
+                    settings of terminal options more often than to
+                    actual Emacs bugs.  Once you are certain which
+                    characters were actually output, you can determine
+                    reliably whether they correspond to the Termcap
+                    specifications in use.
+
+                    See also `open-dribble-file' in *Note Terminal
+                    Input::.
+
+                         (open-termscript "../junk/termscript")
+                              => nil
+
+
+File: elisp,  Node: Special Keysyms,  Next: Flow Control,  Prev: Terminal Output,  Up: System Interface
+
+System-Specific X11 Keysyms
+===========================
+
+                  To define system-specific X11 keysyms, set the
+variable `system-key-alist'.
+
+                -- Variable: system-key-alist
+                    This variable's value should be an alist with one
+                    element for each system-specific keysym.  An
+                    element has this form: `(CODE . SYMBOL)', where
+                    CODE is the numeric keysym code (not including the
+                    ``vendor specific'' bit, 1 << 28), and SYMBOL is the
+                    name for the function key.
+
+                    For example `(168 . mute-acute)' defines a
+                    system-specific key used by HP X servers whose
+                    numeric code is (1 << 28) + 168.
+
+                    It is not a problem if the alist defines keysyms
+                    for other X servers, as long as they don't conflict
+                    with the ones used by the X server actually in use.
+
+
+File: elisp,  Node: Flow Control,  Next: Batch Mode,  Prev: Special Keysyms,  Up: System Interface
+
+Flow Control
+============
+
+                  This section attempts to answer the question ``Why
+does Emacs choose to use flow-control characters in its command
+character set?''  For a second view on this issue, read the comments on
+flow control in the `emacs/INSTALL' file from the distribution; for
+help with Termcap entries and DEC terminal concentrators, see
+`emacs/etc/TERMS'.
+
+                  At one time, most terminals did not need flow
+control, and none used `C-s' and `C-q' for flow control.  Therefore,
+the choice of `C-s' and `C-q' as command characters was uncontroversial.
+Emacs, for economy of keystrokes and portability, used nearly all the
+ASCII control characters, with mnemonic meanings when possible; thus,
+`C-s' for search and `C-q' for quote.
+
+                  Later, some terminals were introduced which required
+these characters for flow control.  They were not very good terminals
+for full-screen editing, so Emacs maintainers did not pay attention.
+In later years, flow control with `C-s' and `C-q' became widespread
+among terminals, but by this time it was usually an option.  And the
+majority of users, who can turn flow control off, were unwilling to
+switch to less mnemonic key bindings for the sake of flow control.
+
+                  So which usage is ``right'', Emacs's or that of some
+terminal and concentrator manufacturers?  This question has no simple
+answer.
+
+                  One reason why we are reluctant to cater to the
+problems caused by `C-s' and `C-q' is that they are gratuitous.  There
+are other techniques (albeit less common in practice) for flow control
+that preserve transparency of the character stream.  Note also that
+their use for flow control is not an official standard.  Interestingly,
+on the model 33 teletype with a paper tape punch (which is very old),
+`C-s' and `C-q' were sent by the computer to turn the punch on and off!
+
+                  GNU Emacs version 19 provides a convenient way of
+enabling flow control if you want it: call the function
+`enable-flow-control'.
+
+                -- Function: enable-flow-control
+                    This function enables use of `C-s' and `C-q' for
+                    output flow control, and provides the characters
+                    `C-\' and `C-^' as aliases for them using
+                    `keyboard-translate-table' (*note Translating
+                    Input::.).
+
+                  You can use the function `enable-flow-control-on' in
+your `.emacs' file to enable flow control automatically on certain
+terminal types.
+
+                -- Function: enable-flow-control-on &rest TERMTYPES
+                    This function enables flow control, and the aliases
+                    `C-\' and `C-^', if the terminal type is one of
+                    TERMTYPES.  For example:
+
+                         (enable-flow-control-on "vt200" "vt300" "vt101" "vt131")
+
+                  Here is how `enable-flow-control' does its job:
+
+                 1. It sets CBREAK mode for terminal input, and tells
+                    the operating system to handle flow control, with
+                    `(set-input-mode nil t)'.
+
+                 2. It sets up `keyboard-translate-table' to translate
+                    `C-\' and `C-^' into `C-s' and `C-q' were typed.
+                    Except at its very lowest level, Emacs never knows
+                    that the characters typed were anything but `C-s'
+                    and `C-q', so you can in effect type them as `C-\'
+                    and `C-^' even when they are input for other
+                    commands.  *Note Translating Input::.
+
+                  If the terminal is the source of the flow control
+characters, then once you enable kernel flow control handling, you
+probably can make do with less padding than normal for that terminal.
+You can reduce the amount of padding by customizing the Termcap entry.
+You can also reduce it by setting `baud-rate' to a smaller value so
+that Emacs uses a smaller speed when calculating the padding needed.
+*Note Terminal Output::.
+
+
+File: elisp,  Node: Batch Mode,  Prev: Flow Control,  Up: System Interface
+
+Batch Mode
+==========
+
+                  The command line option `-batch' causes Emacs to run
+noninteractively.  In this mode, Emacs does not read commands from the
+terminal, it does not alter the terminal modes, and it does not expect
+to be outputting to an erasable screen.  The idea is that you specify
+Lisp programs to run; when they are finished, Emacs should exit.  The
+way to specify the programs to run is with `-l FILE', which loads the
+library named FILE, and `-f FUNCTION', which calls FUNCTION with no
+arguments.
+
+                  Any Lisp program output that would normally go to the
+echo area, either using `message' or using `prin1', etc., with `t' as
+the stream, goes instead to Emacs's standard output descriptor when in
+batch mode.  Thus, Emacs behaves much like a noninteractive application
+program.  (The echo area output that Emacs itself normally generates,
+such as command echoing, is suppressed entirely.)
+
+                -- Variable: noninteractive
+                    This variable is non-`nil' when Emacs is running in
+                    batch mode.
+
+
+File: elisp,  Node: Display,  Next: Calendar,  Prev: System Interface,  Up: Top
+
+Emacs Display
+*************
+
+                  This chapter describes a number of features related
+to the display that Emacs presents to the user.
+
+               * Menu:
+               
+               * Refresh Screen::      Clearing the screen and redrawing everything on it.
+               * Screen Size::         How big is the Emacs screen.
+               * Truncation::          Folding or wrapping long text lines.
+               * The Echo Area::       Where messages are displayed.
+               * Selective Display::   Hiding part of the buffer text.
+               * Overlay Arrow::       Display of an arrow to indicate position.
+               * Temporary Displays::  Displays that go away automatically.
+               * Overlays::		Use overlays to highlight parts of the buffer.
+               * Faces::		A face defines a graphics appearance: font, color, etc.
+               * Blinking::            How Emacs shows the matching open parenthesis.
+               * Inverse Video::	Specifying how the screen looks.
+               * Usual Display::	The usual conventions for displaying nonprinting chars.
+               * Display Tables::	How to specify other conventions.
+               * Beeping::             Audible signal to the user.
+               * Window Systems::      Which window system is being used.
+
+
+File: elisp,  Node: Refresh Screen,  Next: Screen Size,  Up: Display
+
+Refreshing the Screen
+=====================
+
+                  The function `redraw-frame' redisplays the entire
+contents of a given frame.  *Note Frames::.
+
+                -- Function: redraw-frame FRAME
+                    This function clears and redisplays frame FRAME.
+
+                  Even more powerful is `redraw-display':
+
+                -- Command: redraw-display
+                    This function clears and redisplays all visible
+                    frames.
+
+                  Normally, suspending and resuming Emacs also
+refreshes the screen.  Some terminal emulators record separate contents
+for display-oriented programs such as Emacs and for ordinary sequential
+display.  If you are using such a terminal, you might want to inhibit
+the redisplay on resumption.  *Note Suspending Emacs::.
+
+                -- Variable: no-redraw-on-reenter
+                    This variable controls whether Emacs redraws the
+                    entire screen after it has been suspended and
+                    resumed.  Non-`nil' means yes, `nil' means no.
+
+                  Processing user input takes absolute priority over
+redisplay.  If you call these functions when input is available, they
+do nothing immediately, but a full redisplay does happen
+eventually---after all the input has been processed.
+
+
+File: elisp,  Node: Screen Size,  Next: Truncation,  Prev: Refresh Screen,  Up: Display
+
+Screen Size
+===========
+
+                  The screen size functions report or tell Emacs the
+height or width of the terminal.  When you are using multiple frames,
+they apply to the selected frame (*note Frames::.).
+
+                -- Function: screen-height
+                    This function returns the number of lines on the
+                    screen that are available for display.
+
+                         (screen-height)
+                              => 50
+
+                -- Function: screen-width
+                    This function returns the number of columns on the
+                    screen that are available for display.
+
+                         (screen-width)
+                              => 80
+
+                -- Function: set-screen-height LINES &optional
+                         NOT-ACTUAL-SIZE
+                    This function declares that the terminal can
+                    display LINES lines.  The sizes of existing windows
+                    are altered proportionally to fit.
+
+                    If NOT-ACTUAL-SIZE is non-`nil', then Emacs displays
+                    LINES lines of output, but does not change its
+                    value for the actual height of the screen.
+                    (Knowing the correct actual size may be necessary
+                    for correct cursor positioning.)  Using a smaller
+                    height than the terminal actually implements may be
+                    useful to reproduce behavior observed on a smaller
+                    screen, or if the terminal malfunctions when using
+                    its whole screen.
+
+                    If LINES is different from what it was previously,
+                    then the entire screen is cleared and redisplayed
+                    using the new size.
+
+                    This function returns `nil'.
+
+                -- Function: set-screen-width COLUMNS &optional
+                         NOT-ACTUAL-SIZE
+                    This function declares that the terminal can
+                    display COLUMNS columns.  The details are as in
+                    `set-screen-height'.
+
+
+File: elisp,  Node: Truncation,  Next: The Echo Area,  Prev: Screen Size,  Up: Display
+
+Truncation
+==========
+
+                  When a line of text extends beyond the right edge of
+a window, the line can either be continued on the next screen line, or
+truncated to one screen line.  The additional screen lines used to
+display a long text line are called "continuation" lines.  Normally, a
+`$' in the rightmost column of the window indicates truncation; a `\' on
+the rightmost column indicates a line that ``wraps'' or is continued
+onto the next line.  (The display table can specify alternative
+indicators; see *Note Display Tables::.)
+
+                  Note that continuation is different from filling;
+continuation happens on the screen only, not in the buffer contents,
+and it breaks a line precisely at the right margin, not at a word
+boundary.  *Note Filling::.
+
+                -- User Option: truncate-lines
+                    This buffer-local variable controls how Emacs
+                    displays lines that extend beyond the right edge of
+                    the window.  The default is `nil', which specifies
+                    continuation.  If the value is non-`nil', then these
+                    lines are truncated.
+
+                    If the variable `truncate-partial-width-windows' is
+                    non-`nil', then truncation is always used for
+                    side-by-side windows (within one frame) regardless
+                    of the value of `truncate-lines'.
+
+                -- Variable: default-truncate-lines
+                    This variable is the default value for
+                    `truncate-lines', for buffers that do not have
+                    local values for it.
+
+                -- User Option: truncate-partial-width-windows
+                    This variable controls display of lines that extend
+                    beyond the right edge of the window, in
+                    side-by-side windows (*note Splitting Windows::.).
+                    If it is non-`nil', these lines are truncated;
+                    otherwise, `truncate-lines' says what to do with
+                    them.
+
+                  You can override the images that indicate
+continuation or truncation with the display table; see *Note Display
+Tables::.
+
+
+File: elisp,  Node: The Echo Area,  Next: Selective Display,  Prev: Truncation,  Up: Display
+
+The Echo Area
+=============
+
+                  The "echo area" is used for displaying messages made
+with the `message' primitive, and for echoing keystrokes.  It is not the
+same as the minibuffer, despite the fact that the minibuffer appears
+(when active) in the same place on the screen as the echo area.  The
+`GNU Emacs Manual' specifies the rules for resolving conflicts between
+the echo area and the minibuffer for use of that screen space (*note
+The Minibuffer: (emacs)Minibuffer.).  Error messages appear in the echo
+area; see *Note Errors::.
+
+                  You can write output in the echo area by using the
+Lisp printing functions with `t' as the stream (*note Output
+Functions::.), or as follows:
+
+                -- Function: message STRING &rest ARGUMENTS
+                    This function prints a one-line message in the echo
+                    area.  The argument STRING is similar to a C
+                    language `printf' control string.  See `format' in
+                    *Note String Conversion::, for the details on the
+                    conversion specifications.  `message' returns the
+                    constructed string.
+
+                    If STRING is `nil', `message' clears the echo area.
+                    If the minibuffer is active, this brings the
+                    minibuffer contents back onto the screen
+                    immediately.
+                         (message "Minibuffer depth is %d."
+                                  (minibuffer-depth))
+                          -| Minibuffer depth is 0.
+                         => "Minibuffer depth is 0."
+                         
+                         ---------- Echo Area ----------
+                         Minibuffer depth is 0.
+                         ---------- Echo Area ----------
+
+                -- Variable: cursor-in-echo-area
+                    This variable controls where the cursor appears
+                    when a message is displayed in the echo area.  If
+                    it is non-`nil', then the cursor appears at the end
+                    of the message.  Otherwise, the cursor appears at
+                    point---not in the echo area at all.
+
+                    The value is normally `nil'; Lisp programs bind it
+                    to `t' for brief periods of time.
+
+
+File: elisp,  Node: Selective Display,  Next: Overlay Arrow,  Prev: The Echo Area,  Up: Display
+
+Selective Display
+=================
+
+                  "Selective display" is a class of minor modes in
+which specially marked lines do not appear on the screen, or in which
+highly indented lines do not appear.
+
+                  The first variant, explicit selective display, is
+designed for use in a Lisp program.  The program controls which lines
+are hidden by altering the text.  Outline mode uses this variant.  In
+the second variant, the choice of lines to hide is made automatically
+based on indentation.  This variant is designed as a user-level feature.
+
+                  The way you control explicit selective display is by
+replacing a newline (control-j) with a carriage return (control-m).
+The text which was formerly a line following that newline is now
+invisible.  Strictly speaking, it is temporarily no longer a line at
+all, since only newlines can separate lines; it is now part of the
+previous line.
+
+                  Selective display does not directly affect editing
+commands.  For example, `C-f' (`forward-char') moves point
+unhesitatingly into invisible text.  However, the replacement of
+newline characters with carriage return characters affects some editing
+commands.  For example, `next-line' skips invisible lines, since it
+searches only for newlines.  Modes that use selective display can also
+define commands that take account of the newlines, or that make parts
+of the text visible or invisible.
+
+                  When you write a selectively displayed buffer into a
+file, all the control-m's are output as newlines.  This means that when
+you next read in the file, it looks OK, with nothing invisible.  The
+selective display effect is seen only within Emacs.
+
+                -- Variable: selective-display
+                    This buffer-local variable enables selective
+                    display.  This means that lines, or portions of
+                    lines, may be made invisible.
+
+                       * If the value of `selective-display' is `t',
+                         then any portion of a line that follows a
+                         control-m is not displayed.
+
+                       * If the value of `selective-display' is a
+                         positive integer, then lines that start with
+                         more than that many columns of indentation are
+                         not displayed.
+
+                    When some portion of a buffer is invisible, the
+                    vertical movement commands operate as if that
+                    portion did not exist, allowing a single
+                    `next-line' command to skip any number of invisible
+                    lines.  However, character movement commands (such
+                    as `forward-char') do not skip the invisible
+                    portion, and it is possible (if tricky) to insert
+                    or delete text in an invisible portion.
+
+                    In the examples below, we show the *display
+                    appearance* of the buffer `foo', which changes with
+                    the value of `selective-display'.  The *contents*
+                    of the buffer do not change.
+
+                         (setq selective-display nil)
+                              => nil
+                         
+                         ---------- Buffer: foo ----------
+                         1 on this column
+                          2on this column
+                           3n this column
+                           3n this column
+                          2on this column
+                         1 on this column
+                         ---------- Buffer: foo ----------
+                         
+                         (setq selective-display 2)
+                              => 2
+                         
+                         ---------- Buffer: foo ----------
+                         1 on this column
+                          2on this column
+                          2on this column
+                         1 on this column
+                         ---------- Buffer: foo ----------
+
+                -- Variable: selective-display-ellipses
+                    If this buffer-local variable is non-`nil', then
+                    Emacs displays `...' at the end of a line that is
+                    followed by invisible text.  This example is a
+                    continuation of the previous one.
+
+                         (setq selective-display-ellipses t)
+                              => t
+                         
+                         ---------- Buffer: foo ----------
+                         1 on this column
+                          2on this column ...
+                          2on this column
+                         1 on this column
+                         ---------- Buffer: foo ----------
+
+                    You can use a display table to substitute other
+                    text for the ellipsis (`...').  *Note Display
+                    Tables::.
+
+
+File: elisp,  Node: Overlay Arrow,  Next: Temporary Displays,  Prev: Selective Display,  Up: Display
+
+The Overlay Arrow
+=================
+
+                  The "overlay arrow" is useful for directing the
+user's attention to a particular line in a buffer.  For example, in the
+modes used for interface to debuggers, the overlay arrow indicates the
+line of code about to be executed.
+
+                -- Variable: overlay-arrow-string
+                    This variable holds the string to display as an
+                    arrow, or `nil' if the arrow feature is not in use.
+
+                -- Variable: overlay-arrow-position
+                    This variable holds a marker which indicates where
+                    to display the arrow.  It should point at the
+                    beginning of a line.  The arrow text appears at the
+                    beginning of that line, overlaying any text that
+                    would otherwise appear.  Since the arrow is usually
+                    short, and the line usually begins with
+                    indentation, normally nothing significant is
+                    overwritten.
+
+                    The overlay string is displayed only in the buffer
+                    which this marker points into.  Thus, only one
+                    buffer can have an overlay arrow at any given time.
+
+
+File: elisp,  Node: Temporary Displays,  Next: Overlays,  Prev: Overlay Arrow,  Up: Display
+
+Temporary Displays
+==================
+
+                  Temporary displays are used by commands to put output
+into a buffer and then present it to the user for perusal rather than
+for editing.  Many of the help commands use this feature.
+
+                -- Special Form: with-output-to-temp-buffer BUFFER-NAME
+                         FORMS...
+                    This function executes FORMS while arranging to
+                    insert any output they print into the buffer named
+                    BUFFER-NAME.  The buffer is then shown in some
+                    window for viewing, displayed but not selected.
+
+                    The string BUFFER-NAME specifies the temporary
+                    buffer, which need not already exist.  The argument
+                    must be a string, not a buffer.  The buffer is
+                    erased initially (with no questions asked), and it
+                    is marked as unmodified after
+                    `with-output-to-temp-buffer' exits.
+
+                    `with-output-to-temp-buffer' binds
+                    `standard-output' to the temporary buffer, then it
+                    evaluates the forms in FORMS.  Output using the
+                    Lisp output functions within FORMS goes by default
+                    to that buffer (but screen display and messages in
+                    the echo area, although they are ``output'' in the
+                    general sense of the word, are not affected).
+                    *Note Output Functions::.
+
+                    The value of the last form in FORMS is returned.
+
+                         ---------- Buffer: foo ----------
+                          This is the contents of foo.
+                         ---------- Buffer: foo ----------
+                         
+                         (with-output-to-temp-buffer "foo"
+                             (print 20)
+                             (print standard-output))
+                         => #<buffer foo>
+                         
+                         ---------- Buffer: foo ----------
+                         20
+                         
+                         #<buffer foo>
+                         
+                         ---------- Buffer: foo ----------
+
+                -- Variable: temp-buffer-show-function
+                    If this variable, if non-`nil',
+                    `with-output-to-temp-buffer' calls it as a function
+                    to do the job of displaying a help buffer.  The
+                    function gets one argument, which is the buffer it
+                    should display.
+
+                    In Emacs versions 18 and earlier, this variable was
+                    called `temp-buffer-show-hook'.
+
+                -- Function: momentary-string-display STRING POSITION
+                         &optional CHAR MESSAGE
+                    This function momentarily displays STRING in the
+                    current buffer at POSITION.  It has no effect on
+                    the undo list or on the buffer's modification
+                    status.
+
+                    The momentary display remains until the next input
+                    event.  If the next input event is CHAR,
+                    `momentary-string-display' ignores it and returns.
+                    Otherwise, that event remains buffered for
+                    subsequent use as input.  Thus, typing CHAR will
+                    simply remove the string from the display, while
+                    typing (say) `C-f' will remove the string from the
+                    display and later (presumably) move point forward.
+                    The argument CHAR is a space by default.
+
+                    The return value of `momentary-string-display' is
+                    not meaningful.
+
+                    If MESSAGE is non-`nil', it is displayed in the
+                    echo area while STRING is displayed in the buffer.
+                    If it is `nil', a default message says to type CHAR
+                    to continue.
+
+                    In this example, point is initially located at the
+                    beginning of the second line:
+
+                         ---------- Buffer: foo ----------
+                         This is the contents of foo.
+                         -!-Second line.
+                         ---------- Buffer: foo ----------
+                         
+                         (momentary-string-display
+                           "**** Important Message! ****"
+                           (point) ?\r
+                           "Type RET when done reading")
+                         => t
+                         
+                         ---------- Buffer: foo ----------
+                         This is the contents of foo.
+                         **** Important Message! ****Second line.
+                         ---------- Buffer: foo ----------
+                         
+                         ---------- Echo Area ----------
+                         Type RET when done reading
+                         ---------- Echo Area ----------
+
+
+File: elisp,  Node: Overlays,  Next: Faces,  Prev: Temporary Displays,  Up: Display
+
+Overlays
+========
+
+                  You can use "overlays" to alter the appearance of a
+buffer's text on the screen.  An overlay is an object which belongs to
+a particular buffer, and has a specified beginning and end.  It also
+has properties that you can examine and set; these affect the display
+of the text within the overlay.
+
+               * Menu:
+               
+               * Overlay Properties::	How to read and set properties.
+               			What properties do to the screen display.
+               * Managing Overlays::   Creating, moving, finding overlays.
+
+
+File: elisp,  Node: Overlay Properties,  Next: Managing Overlays,  Up: Overlays
+
+Overlay Properties
+------------------
+
+                  Overlay properties are like text properties in some
+respects, but the differences are more important than the similarities.
+Text properties are considered a part of the text; overlays are
+specifically considered not to be part of the text.  Thus, copying text
+between various buffers and strings preserves text properties, but does
+not try to preserve overlays.  Changing a buffer's text properties
+marks the buffer as modified, while moving an overlay or changing its
+properties does not.  Unlike text propery changes, overlay changes are
+not recorded in the buffer's undo list.
+
+              `priority'
+                    This property's value (which should be a
+                    nonnegative number) determines the priority of the
+                    overlay.  The priority matters when two or more
+                    overlays cover the same character and both specify
+                    a face for display; the one whose `priority' value
+                    is larger takes priority over the other, and its
+                    face attributes override the face attributes of the
+                    lower priority overlay.
+
+                    Currently, all overlays take priority over text
+                    properties.  Please avoid using negative priority
+                    values, as we have not yet decided just what they
+                    should mean.
+
+              `window'
+                    If the `window' property is non-`nil', then the
+                    overlay applies only on that window.
+
+              `face'
+                    This property controls the font and color of text.
+                    *Note Faces::, for more information.  This feature
+                    is temporary; in the future, we may replace it with
+                    other ways of specifying how to display text.
+
+              `mouse-face'
+                    This property is used instead of `face' when the
+                    mouse is within the range of the overlay.  This
+                    feature may be temporary, like `face'.
+
+              `modification-hooks'
+                    This property's value is a list of functions to be
+                    called if any character within the overlay is
+                    changed or if text is inserted strictly within the
+                    overlay.  Each function receives three arguments:
+                    the overlay, and the beginning and end of the part
+                    of the buffer being modified.
+
+              `insert-in-front-hooks'
+                    This property's value is a list of functions to be
+                    called if text is inserted right at the beginning
+                    of the overlay.
+
+              `insert-behind-hooks'
+                    This property's value is a list of functions to be
+                    called if text is inserted right at the end of the
+                    overlay.
+
+              `invisible'
+                    A non-`nil' `invisible' property means that the
+                    text in the overlay does not appear on the screen.
+                    This works much like selective display.  Details of
+                    this feature are likely to change in future
+                    versions, so check the `etc/NEWS' file in the
+                    version you are using.
+
+              `before-string'
+                    This property's value is a string to add to the
+                    display at the beginning of the overlay.  The
+                    string does not appear in the buffer in any
+                    sense---only on the screen.  This is not yet
+                    implemented, but will be.
+
+              `after-string'
+                    This property's value is a string to add to the
+                    display at the end of the overlay.  The string does
+                    not appear in the buffer in any sense---only on the
+                    screen.  This is not yet implemented, but will be.
+
+                  These are the functions for reading and writing the
+properties of an overlay.
+
+                -- Function: overlay-get OVERLAY PROP
+                    This function returns the value of property PROP
+                    recorded in OVERLAY.  If OVERLAY does not record
+                    any value for that property, then the value is
+                    `nil'.
+
+                -- Function: overlay-put OVERLAY PROP VALUE
+                    This function sets the value of property PROP
+                    recorded in OVERLAY to VALUE.  It returns VALUE.
+
+                  See also the function `get-char-property' which
+checks both overlay properties and text properties for a given
+character.  *Note Examining Properties::.
+

@@ -1,0 +1,10 @@
+--- mico/orb/fast_array.cc	2008-07-25 15:41:43.000000000 +0200
++++ acs-mico/orb/fast_array.cc	2010-06-28 19:48:43.000000000 +0200
+@@ -37,6 +37,7 @@
+ 
+ #include <CORBA-SMALL.h>
+ #include <mico/impl.h>
++#include <limits.h>
+ 
+ #endif // FAST_PCH
+ 

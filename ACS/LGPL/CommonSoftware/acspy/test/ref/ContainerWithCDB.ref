@@ -1,0 +1,17 @@
+1 - ContainerStatusMsg: Startup begins
+1 - ----------T--:--:--.--- AlarmSystemInterfaceFactory init - Using ACS alarm system
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ----------T--:--:--.--- PyTestCDBContainer taggedmessage - Info message from the manager: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- PyTestCDBContainer taggedmessage - Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - In acspyTestAutoLoad.py 63
+1 - In acspyTestAutoLoad.py 63
+1 - ----------T--:--:--.--- PyTestCDBContainer __init__ - Container PyTestCDBContainer waiting for requests
+1 - ContainerStatusMsg: Startup ends
+1 - Goodbye
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'PyTestCDBContainer' exited with code: 0.

@@ -1,0 +1,202 @@
+Wed Feb 27 11:25:11 2002  Gianluca Chiozzi  <gchiozzi@te4.hq.eso.org>
+
+	* src/Makefile (do_w3): Force using emacs. There are problems on
+	RH 7.2 trying to make for xemacs. 
+	(all): Added change mode to u+w for files just copied in ../bin
+
+Wed Feb 27 10:50:24 2002 <gchiozzi@te13.hq.eso.org>  emacs version: 1.26 
+Thu Feb 21 15:34:55 2002  Robert Karban  <rkarban@te30.hq.eso.org>
+
+	* src/Makefile (clean): fix target clean for W3 library
+
+Thu Feb 21 15:32:32 2002 <rkarban@te13.hq.eso.org>  emacs version: 1.25 
+Wed Feb 20 08:35:01 2002  Robert Karban  <rkarban@te30.hq.eso.org>
+
+	* src/: add support for doxygen comments introducing doxymacs
+	http://sourceforge.net/projects/doxymacs
+
+Tue Feb 19 17:08:55 2002 <rkarban@te13.hq.eso.org>  emacs version: 1.24 
+Sat Feb  9 17:12:12 2002  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* src/
+	Added python mode
+
+Sat Feb 09 15:17:38 2002 <gchiozzi@te13.hq.eso.org>  emacs version: 1.23 
+Mon Jul  3 16:02:16 2000  Robert Karban  <rkarban@te30.hq.eso.org>
+
+	* src/vlt-menu.el (vlt-menu-setup): add speedbar in VLT menu
+
+Mon Jul 03 15:52:34 2000 <rkarban@te13.hq.eso.org>  emacs version: 1.22 
+Mon Nov  8 23:25:13 1999  Stefan Sandrock  <ssandroc@pl2.pl.eso.org>
+
+	* src/vlt-menu.el (vlt-ins-any-template): put date in ISO-format;
+	the code replaces the generic date string in the template and it
+	allows both formats there, ie "yyyy-mm-dd" or "dd/mm/yy". It is
+	therefore not necessary to update the templates in VLTROOT.
+
+	NOTE: the function vlt-file-add-log-entry should also be changed,
+	but this is included in the module vltEnv now (src/Emacs)!
+
+Wed Jun  9 16:42:57 1999  Robert Karban  <rkarban@te30.hq.eso.org>
+
+	* update jde to jde-2.5.1 and rearange makefile.
+	this emacs configuration works only with emacs >= 20.3
+
+Wed Jun 09 14:56:36 1999 <rkarban@te13.hq.eso.org>  emacs version: 1.20 
+Fri Dec 11 15:12:18 1998  Robert Karban  <rkarban@te16.hq.eso.org>
+
+	* add directory jde that contains the lisp library for the JDE
+	(Java Development environment). It's an old version and only
+	usable with the current version of emacs (19.33.1). It's partly
+	precompiled and thos files are only available in precompiled
+	format.
+	When Emacs >20.1 or XEmacs is used it should be replaced by jde >
+	2.1.3 (http://sunsite.auc.dk/jde/)
+	
+
+	* src/Makefile (install): install jde libs
+
+Mon Aug 24 16:36:14 1998 <gfilippi@te13.hq.eso.org>  emacs version: 1.18 
+
+	Emacs Emacs.local moved to stdEnv
+
+Sun Oct 13 13:43:37 1996  Stefan Sandrock  <ssandroc@te49.hq.eso.org>
+
+	Revised version-control support for new RCS-based cmm:
+
+	* src/Makefile,v 1.15 (EMACS_LISP_CMP): removed cvs, rcs, rcs-mode.
+	* src/cvs.el: deleted.
+	* src/rcs.el:
+	* src/rcs-mode.el:
+	* src/rcs-menu.el:
+
+	* src/add-log.el,v 1.15 (add-change-log-entry): changed evaluation
+	of variable `revision' for inclusion of file-version in ChangeLog.
+	Now the variable `vc-mode' of the standard package `vc.el' is
+	used, the previous packages `rcs.el' and `cvs.el' are no longer
+	supported.
+
+	* src/Emacs.local,v 1.15 (vc-make-backup-files): added commented
+	option to inhibit backups for version-controlled files.
+
+	* src/Emacs,v 1.15:
+	Removed explicit loading of `ediff.el', it is anyhow there now.
+	Removed loading of obsolete `rcs.el' and `rcs-mode.el'.
+	Removed loading of obsolete `cvs.el'.
+	Load `vc' instead.
+	(vc-make-backup-files): Set this variable to have backups also for
+	version-controlled files by default.
+
+	* src/Makefile (EMACS_LISP_CMP): Obsolete files entirely removed.
+	* src/ediff.el: deleted.
+	* src/ediff.README:
+	* src/man.el: 
+	* src/man.README:
+	* src/msb.el: 
+	* src/msb.README:
+	* src/ps-print.el: 
+	* src/ps-print.README:
+
+Fri Oct  4 17:04:21 1996  Stefan Sandrock  <ssandroc@te67.hq.eso.org>
+
+	* src/add-log.el,v 1.14: adapted to Emacs 19.33 version:
+	(add-log-full-name): (user-full-name) --> nil.
+	(add-log-mailing-address): user-mail-address --> nil.
+	(add-change-log-entry): added setting of above vars.
+
+	* src/Emacs,v 1.14: disabled conflicting CVS support from vc.el.
+
+	* src/Makefile,v 1.14 (EMACS_LISP_CMP): removed obsolete modules:
+	ediff, man, msb, ps-print.
+
+Wed Oct  2 14:49:24 1996  Gianluca Chiozzi  <gchiozzi@te13.hq.eso.org>
+
+	* src/vlt-cmm.el,v 1.13: Made safer cmm commands
+
+Wed Sep 25 17:05:40 1996  Gianluca Chiozzi  <gchiozzi@te13.hq.eso.org>
+
+	* Fixed html helper mode
+
+Thu Apr 25 13:52:05 1996  Stefan Sandrock  <ssandroc@te49.hq.eso.org>
+
+	incrTcl/Tk-2 support for ChangeLog prompting and hiliting:
+
+	* src/hilit-tcl.el,v 1.10: support for new incrTcl/Tk 2 keywords.
+
+	* src/add-log.el,v 1.10 (add-log-current-defun): support for
+	new incrTcl/Tk-2, obsolete keywords removed. Special handling of
+	public/protected/private keywords, not to be included in prompt.
+
+	* src/Emacs,v 1.10 (auto-mode-alist): added entry for `.itk'
+	extension, that triggers now automatically Tcl-mode.
+
+Thu Mar 14 13:41:23 1996  Gianluca Chiozzi  <gchiozzi@te13.hq.eso.org>
+
+	* src/vlt-menu.el,v 1.8: Added new shortcuts to navigate in
+	module's directory structure
+
+	* src/Emacs,v 1.8 : Added new html helper mode and new shortcuts
+
+Fri Mar  1 15:43:35 1996  Michael Nastvogel  <mnastvog@te13.hq.eso.org>
+
+	* src/c++-browse.el ,v 1.7: Added definitions for browse mode.
+        Changed expected location of TAGS file from "." to ".."
+
+        * src/vlt-tags.el, v 1.7:   Added definitions for browse mode.
+        Stack model of browsing of function trees
+ 
+        * src/Emacs, v 1.7:         Added definitions for browse mode.
+        Key bindings for GOTO function, GO up added
+
+Sun Sep  3 17:43:35 1995  Stefan Sandrock  <ssandroc@te49.hq.eso.org>
+
+	* src/hilit-tcl.el,v 1.6: refined.
+
+Mon Jul 17 12:45:52 1995  Stefan Sandrock  <ssandroc@te49.hq.eso.org>
+
+	* src/Makefile,v 1.5 (install): removed cp of `.el' files.
+	(install): inhibited cp of `info/CVS' dir.
+	(install): `Emacs' and `Emacs.local' is now installed in 
+	"$(VLTTOP)/System", which will be created if not existing.
+	(install): added echo comment about things to do manually.
+
+	* src/vlt-menu.el,v 1.5 (vlt-act): removed duplicate def.
+
+Sun Jul 16 18:17:38 1995  Stefan Sandrock  <ssandroc@te16.hq.eso.org>
+
+	* src/add-log.el,v 1.5: commented require of `hilit19'. Batch
+	compiler cannot cope with it (?). Also `rcs' and `cvs'.
+	Log says: While compiling toplevel forms in file ...
+	  !! error (("X windows are not in use or not initialized"))
+	  WHATEVER THIS MEANS ???
+	* src/hilit-tcl.el: dto.
+	* src/hilit-change-log.el,v 1.5: dto.
+	* src/rcs-mode.el,v 1.5: dto.
+
+	* src/Makefile,v 1.5 (EMACS_LISP_CMP): added `hilit-tcl'.
+	(EMACS_LISP_CMP): removed `rcs-menu', obsolete.
+	(EMACS_LISP_CMP): moved `rcs-mode' and `add-log' here, previously
+	in list of non-compiled files.
+
+	* src/vlt-saveconf.el,v 1.5: added `provide' at the end.
+
+	* src/Emacs,v 1.5: added `-*-' header to trigger lisp mode.
+	Removed Tcl hiliting, now in separate file `hilit-tcl'.
+	`ps-print': Use `require' instead of `load'.
+	`hscroll': dto.
+	`vlt-menu': dto.
+	`vlt-saveconf': dto.
+
+	* src/Emacs.local,v 1.5: added `-*-' header to trigger lisp mode.
+
+	* src/hilit-tcl.el: new file, was previously included in `Emacs'.
+	The behaviour is different in one point: it does not hilite
+	strings as in C, because in my opinion this is not good in Tcl.
+	Instead it colors `$' in red. Might be a little bit slower.
+
+	* src/hilit-change-log.el,v 1.5: revised, added `sub-header'.
+
+	* src/add-log.el,v 1.5 (add-log-current-defun): added recognition of
+	other [incr]Tcl keywords. Full auto-prompting is now for: proc, 
+	method, public, protected, common, constructor, destructor, itcl_class.
+

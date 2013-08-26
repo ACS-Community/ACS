@@ -1,0 +1,35 @@
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# ACS/README-new-release
+#
+# "@(#) $Id: README-new-release,v 1.5 2006/07/20 12:33:04 gchiozzi Exp $"
+#
+
+This file contains notes useful when preparing a new ACS release.
+
+- The main version and patch level files are:
+     ACS_PATCH_LEVEL
+     ACS_VERSION
+  They have to be updated by hand.
+  Notice that the file ACS_TAG is instead generated automatically
+  by the build procedure.
+
+- There are a few files that have hardcoded releases and version
+  numbers.
+  These files need to be updated whenever the ACS release number
+  changes:
+  - ACS/LGPL/acsBUILD/config/rc.d/init.d/acsDHCPConfig
+    This file is executed as root at boot time and therefore 
+    there is no clean way to rely on environment variables.
+    Remember to update rc.d/init.d/acsDHCPConfig on the installed
+    machines.
+- Do not forget to update the reference files for  
+  the acsConfigReport tool in the ACS/LGPL/Kit/acs module
+- Check 
+       ACS/ExtProd/INSTALL/README.first 
+  for notes about building the basic external ACS tools.
+
+
+#
+# ___oOo___

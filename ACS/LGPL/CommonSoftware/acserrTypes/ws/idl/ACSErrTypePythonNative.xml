@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
+name="ACSErrTypePythonNative" type="7" _prefix="alma">
+ <ErrorCode name="Python" 
+	 shortDescription="A Python exception"
+	 description="Any Python exception derived from the Exception class"/>
+</Type>
+

@@ -1,0 +1,11 @@
+# TestList.lite file
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# rtobar    20080617  Created
+#
+
+SOURCE TATEnvironment
+PROLOGUE TATPrologue
+1 samplingSystemUI   testSamplingSystemUI.sh
+EPILOGUE acsutilTATEpilogue

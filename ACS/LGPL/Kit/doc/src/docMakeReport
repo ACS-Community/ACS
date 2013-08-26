@@ -1,0 +1,88 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docMakeReport,v 1.31 2002/06/08 17:20:44 vltsccm Exp $" 
+#
+# docMakeReport
+#
+# who        when      what
+# ---------  --------  ----------------------------------------------
+# GIF        12/01/94  created
+#
+
+#************************************************************************
+#   NAME
+#   docMakeReport - reports on the on the ownership of archived documents
+# 
+#   SYNOPSIS
+#       docMakeReport
+# 
+#   DESCRIPTION
+#   docMakeReport reads the current contents of the document archive 
+#   (VLT_DOCARCHIVE_ROOT) and produces a report on who is the author of what.
+#        
+#
+#   FILES
+#
+#   $VLT_DOCARCHIVE_ROOT/indexN      list of available documents.
+#
+#   ENVIRONMENT
+#   
+#     VLT_DOCARCHIVE_ROOT  IN  the archive root directory 
+#                              This directory MUST be (remotely) mounted by 
+#                              by all VLT developemnt computer.
+#
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#   doc
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+#
+cd $VLT_DOCARCHIVE_ROOT
+
+echo "Report on current documents under Doc Archive"
+#
+echo "\nScanning archive . . . \c"
+# first I get a list of all the available files under the archive. Files
+# are then sorted by owner.
+""ls -la | sort +2 > /tmp/$$_docMakeReport_1
+
+#
+# for any document number (by convention a document number uses UPPERCASE 
+# letters, digits and the "-") create a line in the format:
+#          echo "<owner> \c"; grep <docId> index?
+# in simpler words, this will search in the index file (only the general ones,
+# the index<username> are not considered) the line that contains the title of
+# the document and will produce something like:
+#     gfilippi index1:  Programming Standards . . . VLT-PRO-ESO-10000-0228
+#
+echo "retrive document titles . . . \c"
+awk '$9 ~ /^[A-Z0-9\-]+$/ {printf("echo \"%-9s\\c\"; grep %s index?\n", $3, $9)}' \
+      /tmp/$$_docMakeReport_1 >/tmp/$$_docMakeReport_2
+sh /tmp/$$_docMakeReport_2 >/tmp/$$_docMakeReport_3
+
+#
+# remove some extra character to fit 80 char/line
+#  from: gfilippi index1:  Programming Standards . . . VLT-PRO-ESO-10000-0228
+#    to: gfilippi 1  Programming Standards . . . VLT-PRO-ESO-10000-0228
+#
+echo "edit report . . . \c"
+sed -e "1,$ s/index//g" -e "1,$ s/://g" /tmp/$$_docMakeReport_3 > report
+
+#
+# clean intermediate files
+rm -f /tmp/$$_docMakeReport_*
+
+echo "\n\n $VLT_DOCARCHIVE_ROOT/report  done."
+#
+# ___oOo___

@@ -1,0 +1,9 @@
+set terminal png
+set out "CHANGE_PNG.png"
+set title "CPU Utilization for CHANGE_GRAPH_TITLE"
+set timefmt "%H:%M:%S"
+set xdata time
+set format x "%M:%S"
+set xlabel "Time (Minutes:Seconds)"
+set ylabel "Cpu usage (percent)"
+plot "CHANGE_LOGFILE.log" using CHANGE_X_LOCATION:CHANGE_Y_LOCATION title "%user" with lines

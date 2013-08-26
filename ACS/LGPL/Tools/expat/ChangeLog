@@ -1,0 +1,17 @@
+Wed May  7 11:36:10 2003  Bogdan Jeram  <bjeram@te37.hq.eso.org>
+
+	* lcu/src/Makefile,v 1.0 (USER_INC): added include path to locate stddef.h: $(WIND_BASE)/host/$(WIND_HOST_TYPE)/lib/gcc-lib/powerpc-wrs-vxworks/gcc-2.96/include
+
+Wed Jan 15 16:44:02 2003  Gianluca Chiozzi  <gchiozzi@te1.hq.eso.org>
+
+	* Changed version to 1.0 to make CVS happy
+
+Wed Jan 15 17:43:47 2003 <gchiozzi@te13.hq.eso.org>  expat version: 0.3 
+Thu Nov 28 17:15:10 2002  ALMA Project  <almamgr@te1.hq.eso.org>
+
+	* README: Added readme file
+
+	* COPYING: Added Copyright Notice
+
+Thu Nov 28 18:14:12 2002 <gchiozzi@te13.hq.eso.org>  expat version: 0.2 
+"@(#) $Id: ChangeLog,v 1.1 2003/05/07 09:37:33 bjeram Exp $"

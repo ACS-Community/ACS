@@ -1,0 +1,392 @@
+1 - <timestamp> INFO [acsStartContainer] Running the container with these arguments: 'acsStartJavaContainer javaContainer alma.acs.container.AcsContainerRunner -OAIAddr <IP address> -OAport <port> -m corbaloc::<IP address>:<port>/Manager'
+1 -  --endorsed -D ORBgiopMaxMsgSize=25000000 -D ACS.manager=corbaloc::<IP address>:<port>/Manager -- alma.acs.container.AcsContainerRunner -OAIAddr <IP address> -OAport <port> -m corbaloc::<IP address>:<port>/Manager -containerName javaContainer
+1 - <timestamp> INFO [acsStartJava] Starting Java application: alma.acs.container.AcsContainerRunner -OAIAddr <IP address> -OAport <port> -m corbaloc::<IP address>:<port>/Manager -containerName javaContainer
+1 - <timestamp> INFO [AcsContainerRunner] AcsContainerRunner#run with arguments -OAIAddr <IP address> -OAport <port> -m corbaloc::<IP address>:<port>/Manager -containerName javaContainer 
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - <timestamp> INFO [javaContainer] Info message from the manager: Startup statistics: 0 components queued to be activated.
+1 - <timestamp> INFO [javaContainer] Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [alma.acs.logging] Logger scxml@javaContainer created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER2_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER2_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER2_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER3_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER3_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER3_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER4_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER4_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER4_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER5_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER5_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER5_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER6_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER6_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER6_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER2_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER2_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER3_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER3_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER4_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER4_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER5_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER5_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER6_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER6_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER2_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER3_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER4_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER5_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER6_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER2_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER3_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER4_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER5_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER6_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER2_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER2_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER2_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER3_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER3_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER3_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER2_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER2_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER3_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER3_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER2_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER3_JAVA] Last event from Python supplier received, counter is now 15
+1 - Last event from Python supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER2_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER3_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER2_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER2_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER2_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER3_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER3_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER3_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER4_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER4_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER4_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER5_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER5_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER5_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER6_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER6_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER6_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER2_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER2_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER3_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER3_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER4_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER4_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER5_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER5_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER6_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER6_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [CONSUMER2_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [CONSUMER4_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER5_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER6_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER3_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER2_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER3_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER4_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER5_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER6_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER2_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER2_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER2_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER3_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER3_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER3_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER2_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER2_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER3_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER3_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER2_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER3_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER2_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER3_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER2_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER2_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER2_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER3_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER3_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER3_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER4_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER4_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER4_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER5_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER5_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER5_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER6_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER6_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER6_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER2_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER2_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER3_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER3_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER4_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER4_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER5_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER5_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER6_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER6_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [CONSUMER2_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER3_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER4_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER5_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER6_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER2_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER3_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER4_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER5_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER6_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] initialize() called...
+1 - <timestamp> INFO [javaContainer] component 'SUPPLIER_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [SUPPLIER_JAVA] CounterSupplier ready to send NC events...
+1 - <timestamp> INFO [SUPPLIER_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component SUPPLIER_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER1_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER1_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER1_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER2_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER2_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER2_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [CONSUMER3_JAVA] initialize() called...
+1 - <timestamp> INFO [CONSUMER3_JAVA] execute() called...
+1 - <timestamp> INFO [javaContainer] component CONSUMER3_JAVA activated and initialized in <N> ms.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER1_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER1_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER2_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER2_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [javaContainer] component 'CONSUMER3_JAVA' requested AdvancedContainerServices
+1 - <timestamp> INFO [CONSUMER3_JAVA] CounterConsumer is ready to receive 'status' events.
+1 - <timestamp> INFO [SUPPLIER_JAVA] Counter stopped, last value 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER2_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER3_JAVA] Last event from Java supplier received, counter is now 15
+1 - Last event from Java supplier received, counter is now 15
+1 - <timestamp> INFO [CONSUMER1_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER2_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [CONSUMER3_JAVA] cleanUp() called, disconnecting from channel counter
+1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter

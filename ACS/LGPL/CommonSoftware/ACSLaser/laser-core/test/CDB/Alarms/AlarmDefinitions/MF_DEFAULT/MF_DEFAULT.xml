@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fault-family name="MF_DEFAULT" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://tempuri.org</help-url>
+  <contact name="Alessandro Caproni"/>
+  <fault-code value="0">
+  	<priority>0</priority>
+  	<problem-description>The description for 0</problem-description>
+  </fault-code>
+  <fault-code value="1">
+    <priority>0</priority>
+    <problem-description>Description 1</problem-description>
+  </fault-code>
+  <fault-code value="2">
+  	<priority>0</priority>
+  	<problem-description>The description for 2</problem-description>
+  </fault-code>
+  <fault-code value="3">
+  	<priority>0</priority>
+  	<problem-description>The description for 3</problem-description>
+  </fault-code>
+  <fault-code value="4">
+  	<priority>0</priority>
+  	<problem-description>The description for 4</problem-description>
+  </fault-code>
+  <fault-code value="5">
+  	<priority>1</priority>
+  	<cause>Multiplicity reduction generated</cause>
+  	<problem-description>MR alarm</problem-description>
+  </fault-code>
+  <fault-member-default>
+  </fault-member-default>
+  <fault-member name="MULTIPLE_MF_FAILURES"></fault-member>
+  <!--  The FM generated with the default
+  	<fault-member name="ALARM_SOURCE_MF"></fault-member>
+   -->
+</fault-family>
+

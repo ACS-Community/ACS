@@ -1,0 +1,651 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>User Guide - Acs Command Center</title>
+
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" href="style.css" type="text/css"></head>
+<body style="background-color: rgb(255, 255, 255);" lang="EN-US" link="#0000ff" vlink="#800080">
+<br>
+<table class="MsoNormalTable" style="width: 585pt;" border="0" cellpadding="0" cellspacing="0" width="780">
+<caption><br>
+</caption><tbody>
+</tbody> <tbody>
+<tr style="">
+<td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/projects/alma/"><img src="images/alma_art_3.jpg" alt="[ ALMA ]" id="_x0000_i1025" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
+</td>
+<td style="padding: 0.75pt;"> <span style="font-size: 18pt;"><b>ALMA Common Software</b></span>
+<span style="font-size: 18pt;"> <b>Documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p><o:p></o:p></span>
+<u1:p></u1:p> </td>
+<td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/"><img src="images/eso-logo.gif" id="_x0000_i1026" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
+</td>
+</tr>
+</tbody>
+</table>
+<hr align="center" size="1" width="100%">
+<div align="center">
+<h1><a name="User_Guide">User Guide - Acs Command Center</a></h1>
+</div>
+<p>&nbsp;</p>
+<div align="right">
+<small>Described Versions: Acs 8.1 and later</small>&nbsp;<br>
+<small>Latest Update: 2009-12-21 M.Schilling</small>&nbsp;
+</div>
+<h2>Content</h2>
+<ol>
+<li><a href="#Overview">Overview</a></li>
+<ol>
+<li><a href="#Launching_Command_Center">Launching
+Command Center</a></li>
+<li><a href="#Starting_Acs">Starting Acs</a></li>
+<li><a href="#Running_Clients">Running Clients</a></li>
+<li><a href="#Stopping_Acs">Stopping Acs</a></li>
+</ol>
+<br>
+<li><a href="#Running_Acs">Running Acs</a> </li>
+<ol>
+<li><a href="#Deployment_Scenario_A">Deployment
+Scenario A: Using Localhost mode</a> </li>
+<li><a href="#Deployment_Scenario_B">Deployment
+Scenario B: Using Remote mode</a></li>
+</ol>
+<br>
+<li><a href="#Managing_Projects">Managing Projects</a></li>
+<br>
+<li><a href="#Extra_Tools">Tools</a></li>
+<ul>
+<li><a href="#Tools_Menu">Tools Menu</a></li>
+<li><a href="#Tool_Definitions">Tool Definitions</a><br>
+</li>
+</ul>
+<br>
+<li><a href="#Glossary">Glossary</a></li>
+<ol>
+<li><a href="#Progress_Panel">Progress Panel</a>
+</li>
+<li><a href="#Deployment_Info_View">Deployment
+Info View</a></li>
+<li><a href="#Log_Area">Log Area</a></li>
+<li><a href="#Acs_Instance">Acs Instance</a></li>
+<li><a href="#CDB">Cdb, Cdb- Root</a></li>
+</ol>
+<br>
+<li><a href="#Other_Resources">Other resources</a></li>
+<ol>
+<li><a href="#Whats_New">What's New?</a><br>
+</li>
+</ol>
+</ol>
+<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h2>1. <a name="Overview">Overview</a></h2>
+<br>
+This section describes how to launch Acs Command Center and why you
+would want to launch it.<br>
+<br>
+<h3><a name="Launching_Command_Center">Launching
+Command Center</a></h3>
+<br>
+Acs Command Center is a tool to start up, manage, and shut down Acs
+sessions. It can be launched in two ways:<br>
+<br>
+&nbsp; &nbsp;<b>a)</b> via the command "<code>acscommandcenter</code>"
+in your (Linux) shell<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">Command line options</span>:<br>
+<ul>
+<li><code>-r | -retrieve | --retrieve&nbsp;
+PROJECTFILE</code> <br>
+retrieve a project file on startup </li>
+<br>
+<li><code>-g | -geometry | --geometry&nbsp;
+WIDTHxHEIGHT+XPOS+YPOS</code> <br>
+set the size and location of the application main window </li>
+<br>
+<li><code>-x | -noexit&nbsp;&nbsp; |
+--noexit&nbsp; </code> <br>
+do not exit the Java virtual machine on quit </li>
+<br>
+</ul>
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
+<span style="text-decoration: underline;">Commandline
+arguments:</span><br>
+<ul>
+<li><code>PROJECTFILE</code> <br>
+retrieve a project file on startup</li>
+<br>
+<li><code>corbaloc::HOST:PORT/Manager</code><br>
+instantly connect to and show details of specified manager</li>
+<br>
+<li><code>HOST:INSTANCE</code><br>
+instantly connect to and show details of specified manager</li>
+<br>
+</ul>
+<br>
+<br>
+&nbsp; &nbsp;<b>b)</b> via the <a href="http://www.eso.org/projects/alma/AcsWebStart">
+Acs Java Web Start</a> <span style="font-style: italic;">[www.eso.org/projects/alma/AcsWebStart]</span>
+page. For this, your browser needs to have
+a Java Web Start plugin (the integrated help viewer of&nbsp;Acs Command
+Center does not have one, in that case please copy the given URL to
+your full-featured web browser).<br>
+<br>
+<br>
+To make clear what Acs Command Center can do for you (and what it can't
+do), we first look at the general work-flow of an Acs
+session. If you have worked with Acs on the command line before,
+you will find these steps familiar.<br>
+<br>
+Generally, a session with Acs consists of <b>four</b>
+tasks. We will give an overview here,
+and discuss them in more detail in the following sections.<br>
+<br>
+<h3><a name="Starting_Acs">Starting Acs</a></h3>
+<br>
+<strong>&nbsp; &nbsp; 1)</strong> Start the
+Services and the Manager<br>
+<strong>&nbsp; &nbsp; 2)</strong> Start one or more
+Containers<br>
+<br>
+The single workers (<i>worker = Service, Manager, or Container</i>)
+&nbsp;can be run on one single host (see figure A) or on several
+hosts (see figure B). Acs Command Center&nbsp;only
+supports scenarios
+where
+Services and Manager run on the same host.<br>
+<br>
+<table border="0" cellpadding="2" cellspacing="5" width="70%">
+<tbody>
+<tr>
+<td valign="top"><img src="images/figureA.jpg" alt="Deployment Scenario A" border="1" height="300" width="250"> <br>
+</td>
+<td valign="top"><img src="images/figureB.jpg" alt="Deployment Scenario B" border="1" height="300" width="250"> <br>
+</td>
+</tr>
+<tr>
+<td valign="top">Figure A: Simple Deployment
+Scenario A<br>
+</td>
+<td valign="top">Figure B: Complex Deployment
+Scenario B<br>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<br>
+<h3><a name="Running_Clients">Running Clients</a></h3>
+<br>
+After Acs has been started, you will want to run clients against it.
+Such a client can either be something provided by you, or be a
+preinstalled
+client (Acs comes with various popular and useful clients). These
+preinstalled clients can directly be started from within Acs Command
+Center through the <a href="#Tools_Menu">Tools Menu</a>.<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<strong>3)</strong> Run one or more clients<br>
+<br>
+<br>
+<h3><a name="Stopping_Acs">Stopping Acs</a></h3>
+After your work is done, you should shut down all workers in reverse
+order.<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<strong>4)</strong> Stop the Container(s), the Manager, and
+the Services<br>
+<br>
+<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h2>2. <a name="Running_Acs">Running Acs</a></h2>
+<br>
+Acs Command Center allows for different deployment scenarios, from
+simple ones like A to complex ones like B. In
+this&nbsp;section, you will learn how both scenarios A and B can be
+put into practice following step-by-step instructions.<br>
+<br>
+<br>
+<h3><a name="Deployment_Scenario_A">Deployment
+Scenario A: Using Localhost mode</a></h3>
+In our first deployment scenario (recall figure A), all
+workers run on localhost.<br>
+<br>
+<br>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+<tbody>
+<tr>
+<td valign="top"><img style="width: 862px; height: 804px;" src="images/figureC.jpg" alt="Figure C - Main Window"> <br>
+</td>
+</tr>
+<tr align="center">
+<td valign="top">Figure C - There and back again...
+in 7 steps<br>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<h4><u>Preparation</u></h4>
+To run Acs locally on your machine,you need a&nbsp;native Acs
+installation on your machine: Acs
+Command Center will use shell and python scripts to run your Acs
+installation.<br>
+<br>
+Make sure "Localhost" is selected in the <code>Common Settings</code>
+(<b><font color="#ff0000">1</font></b>).<br>
+<br>
+Specify the <code>Acs Instance</code> to use (<b><font color="#ff0000">2</font></b>,
+see <a href="#Acs_Instance">Acs Instance</a> in the
+glossary).<br>
+<br>
+You need to specify a directory where an Acs configuration database is
+located (see also <a href="#CDB">Cdb</a>
+in the
+glossary).
+Since you have a native Acs installation,&nbsp;Acs Command Center
+will
+attempt to figure out which Cdb to use by looking at the environment
+variables <code>$ACS_CDB and </code><code>$ACSDATA.
+</code>If
+these variables aren't set (for instance because you are running on
+Windows), you can manually enter the desired Cdb&nbsp;into the "Cdb
+Root Dir" field in the Common Settings section.<br>
+<br>
+<h4><u>Start</u><br>
+</h4>
+Press the Acs Suite's play button (<b><font color="#ff0000">3</font></b>),
+which will start the Services and the Manager. A progress panel will
+come up (see <a href="#Progress_Panel">Progress Panel</a>
+in the
+glossary for more information).&nbsp;Note that while the progress
+panel
+is
+up, some controls in the user interface are locked. When all steps have
+been completed successfully, it will close automatically.<br>
+<p>The output of
+any Acs-related
+action you
+trigger can be viewed in its own tab in the log area (<b><font color="#ff0000">L</font></b>, see <a href="#Log_Area">Log Area</a> in
+the glossary for more information).
+If all goes well, there's no need to pay much attention to these logs.<br>
+</p>
+The freshly started Manager now appears in the deployment info view (<b><font color="#ff0000">D</font></b>, see <a href="#Deployment_Info_View">Deployment
+Info View</a> in the glossary for
+more information).<br>
+<br>
+Ensure you have at least one Container visible on screen (their amount
+can be adjusted using the plus and minus buttons on the bottom, <b><font color="#ff0000">C</font></b>). Specify a name
+and a type&nbsp;(<b><font color="#ff0000">4</font></b>)
+for the
+Container, e.g., "frodoContainer" of type <code>java</code>,
+then
+press play
+to start the Container (<b><font color="#ff0000">5</font></b>).<br>
+<p class="caution">Note: The Container name you specify
+here is used by
+the Manager to associate components with the Container. It must
+therefore be the same as the name specified in the Cdb for the
+component(s) you're interested in working with. For C++, this
+traditionally is <i>bilboContainer</i>, for Java <i>frodoContainer</i>,
+and
+for Python <i>aragornContainer</i>.
+</p>
+<br>
+Acs is now up and running, and clients can be run against it.<br>
+To run one or more of the predefined clients, use the Tools menu (see <a href="#Tools_Menu">Tools Menu</a> below). For
+some of the tools, you may be asked to provide additional information.<br>
+<br>
+<h4><u>Stop</u></h4>Press the Containers' stop button (<b><font color="#ff0000">6</font></b>) and then the Acs Suite's stop button (<b><font color="#ff0000">7</font></b>).
+This will stop the Container(s), the Manager, and the Services. Once
+the Acs Suite has been stopped, the Manager will be automatically
+removed from the <a href="#Deployment_Info_View">Deployment
+Info View</a>.<br>
+<p class="caution">Note: There's an asymmetry in the
+behavior of
+starting the Acs Suite and stopping the Acs Suite: The first starts the
+Services and the Manager, the latter stops the Services, the Manager <b>plus</b> the Containers on your local host.</p>
+<br>
+Again, all output will
+go to the log
+area (<b><font color="#ff0000">L</font></b>).
+In case of problems you should check there.<br>
+<br>
+<br>
+<h4><u>Troubleshooting</u></h4>
+If you encounter problems, e.g., the progress panel presents an error
+message, and find the Acs session in an inoperable state, &nbsp;you
+can
+attempt to terminate it with the kill button (<b><font color="#ff0000">X</font></b>).
+Note, however, that this is, as
+the name implies, a brute shutdown that may kill the Acs Command Center
+as well.<br>
+<br>
+<br>
+<br>
+<br>
+<h3><a name="Deployment_Scenario_B">Deployment
+Scenario B: Using Remote mode</a></h3>
+<br>
+In our second scenario (recall figure B), the workers run distributed
+on several separate hosts. To allow for such scenarios, Acs Command Center offers the <span style="font-weight: bold;">Remote</span> mode.<br>
+<br>
+<h4><u>Preparation</u></h4>
+Acs Command Center can access other hosts
+over the network&nbsp;and run Acs on these hosts. This&nbsp;is
+similar to <b>Localhost </b>mode&nbsp;above in that
+Acs Command Center will use
+the same
+collection of scripts to run Acs on the remote hosts. This implies that
+a native Acs installation must be present on these hosts.<br>
+<br>
+<div style="margin-left: 80px;">For accessing the remote hosts, Acs
+Command Center supports different&nbsp;variants:<span style="font-style: italic;"></span><br>
+<span style="font-weight: bold;"><br>
+a)</span> P<span style="font-style: italic;">latform-independent
+ssh</span> is
+self-contained within Acs Command Center, and you get it "for free"
+without the need to configure anything. However, it&nbsp;only supports
+user/password authentication. This means, when you want to start/stop
+Acs on a remote host, you have to provide a valid accountname and a
+password for the remote host. The platform-independent variant is the
+default. Also, please note the following:
+<br><ul>
+<li>A command executed through ssh doesn't commonly run with the environment
+that a login shell gives you. While a login shell usually sources the <code>.bash_profile</code>, a remote
+command sources only <code>.bashrc</code>. This may mean the command doesn't find the environment it needs to run.</li>
+<li>One possible solution is for you to have <code>.bash_profile</code> as a symbolic link to <code>.bashrc</code>.</li>
+<li>However, since the usual setup on Alma machines is to define the environment settings for Acs in
+<code>.bash_profile</code> (directly, and by sourcing the Acs bash profile), Acs Command Center will explicitly
+source your  <code>.bash_profile</code> before running a command through ssh.</li>
+<li>The result is that <code>.bashrc</code> will be sourced first, then <code>.bash_profile</code>,
+which may again source <code>.bashrc</code>.</li>
+</ul>
+
+<span style="font-weight: bold;"><br>
+b)</span> <span style="font-style: italic;">Native
+ssh</span>, on the other hand, makes use of an <span style="font-style: italic;">ssh</span> program already
+installed on your local system. Thus, it can allow for all features of
+your native <span style="font-style: italic;">ssh</span>:
+for instance, and foremost, the public-key authentication. That means,
+if your native <span style="font-style: italic;">ssh</span>
+is configured properly, you wont' be required to provide a password for
+the remote host you want to start/stop Acs on.<br>
+The <span style="font-style: italic;">ssh</span>
+program is available for virtually all platforms (see <a href="http://openssh.org/" target="_blank">http://openssh.org/</a>),
+and many systems&nbsp;already have it installed.<br>
+Beware: If you use the native variant but you did not configure <span style="font-style: italic;">ssh</span> for public-key
+authentication, it will&nbsp;prompt for your password - and that
+prompt will be on the <span style="font-weight: bold;">terminal</span>
+(xterm, dos box) from which you started Acs Command Center. This
+behavior is part of the security concept of <span style="font-style: italic;">ssh</span>.<br>
+<br>
+<span style="font-weight: bold;">c)</span>&nbsp;<span style="font-style: italic;">Acs Daemons</span>
+are processes running on a remote host, typically started at boot-time
+but they can as well be started manually. Acs Command Center can talk
+to a daemon through the Corba protocol (thus&nbsp;avoiding ssh) and
+request it, for example, to start a container. To use this variant
+successfully, there must be a daemon running on&nbsp;each remote
+host
+you want to use.<br>
+<ul>
+<li>Daemons can be used to start and stop <span style="font-style: italic;">Acs Suite</span> and <span style="font-style: italic;">containers</span>. The
+"Kill" button and the advanced controls (allowing to start services and
+manager separately) will still use ssh.</li>
+<li>With daemons, there's no need to specify Username or
+Password. Instead,
+all Acs processes will run under the account of their respective daemon.</li>
+<li>The daemon chooses the Cdb to use (from the $ACS_CDB
+variable in its environment).</li>
+<li>Only with daemons&nbsp;you can specify Type Modifiers
+for a container (in the container's Detail Settings).</li>
+<li>The output of Acs workers (= Services, Manager, and Containers) started through daemons will not be
+available in the log area (<b><font color="#ff0000">L</font></b>).</li>
+</ul>
+<br>
+<br>To choose your remote variant, select "Remote" in the&nbsp;<code>Common Settings</code>
+(<b><font color="#ff0000">1</font></b>), then select the corresponding entry underneath.<br><br>
+</div>
+<br>
+<br>
+To continue in Remote mode, make sure "Remote" is selected
+in the <code>Common Settings</code> (<b><font color="#ff0000">1</font></b>). As for the local
+variant, you should
+specify an Acs Instance (<b><font color="#ff0000">2</font></b>).
+<br>
+<br>
+<h4><u>Start</u></h4>
+Specify a remote host (e.g., "host1") and user credentials for that
+host in the <code>Common Settings</code>. Start the
+Services and the
+Manager
+as described before by pressing the Acs Suite's play button (<b><font color="#ff0000">3</font></b>).<br>
+<br>
+Use the plus button (<b><font color="#ff0000">C</font></b>)
+to ensure
+you have at least two Containers available on screen.<br>
+<br>
+Give the first Container a name, and choose its type (<b><font color="#ff0000">4</font></b>). Then press the
+first Container's
+configure button (the one labeled with three dots) and specify a host
+(e.g., "host2") and appropriate user credentials. <br>
+<br>
+Do the same for the second Container.<br>
+<br>
+Finally, press
+play (<b><font color="#ff0000">5</font></b>)
+to start all Containers in
+the order you entered them into the list. To move a Container up or
+down within the list, select it by clicking into its name field (<b><font color="#ff0000">4</font></b>) and press the
+arrow buttons (<b><font color="#ff0000">C</font></b>).<br>
+<br>
+<h4><u>Stop</u></h4>
+Stop the containers by pressing the stop button&nbsp;(<b><font color="#ff0000">6</font></b>).
+Then, shut down&nbsp;the Acs Suite through its stop button (<b><font color="#ff0000">7</font></b>). Please refer to <b>Localhost
+</b>mode above
+if unsure.<br>
+<br>
+<h4><u>Troubleshooting</u></h4>
+As for the local variants, you can terminate Acs mercilessly through
+the kill button (<b><font color="#ff0000">X</font></b>)
+if it appears
+to hang and alike. Again, note that this will also kill the Acs Command
+Center if it is running on the same host.<br>
+<br>
+<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h2>3. <a name="Managing_Projects">Managing
+Projects</a></h2>
+<br>
+All settings you entered (in the <code>Common Settings</code>
+section,
+in the <code>Containers</code> section, etc.) can be
+stored as a <code>Project</code>.
+Projects are a neat thing that can save you a lot of typing. Their
+usage should be self-explanatory, simply use the <code>Project</code>
+menu to create, store, and load projects.<br>
+<br>
+<p class="caution">Note: Any passwords you enter as part
+of user
+credentials will not be saved when you store a project. You will have
+to reenter them the next time you use the project.</p>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h2>4.&nbsp;<a name="Extra_Tools">Tools</a></h2>
+<br>
+<h3><a name="Tools_Menu">Tools Menu</a><br>
+</h3>
+The Tools menu provides access to several useful tools dealing with Acs
+and Corba. They are invoked as separate local processes, in other
+words, they must exist as executables on your host.
+<br>
+<br>
+The necessary configuration required by the tools is
+automatically derived from your <code>Common Settings</code>
+without
+further interaction required (still some tools might ask for additional
+configuration when you launch them). If you are not satisfied with the
+default settings, a custom
+configuration for the tools can be defined in the <span style="font-style: italic;">Configure Tools...</span>
+dialog.<br>
+<br>
+<h3><a name="Tool_Definitions">Tool Definitions</a><br>
+</h3>
+The tools in the Tools menu are defined in an xml file <code>AcsCommandCenterTools.xml</code>
+that AcsCommandCenter reads in on startup.
+These definitions can be re-read at run-time. This is done through <span style="font-style: italic;">Expert -&gt; Tools Menu
+-&gt;
+Replace...</span>
+which brings up a file-search dialog to point to a new definition file.
+The default definition file contains quite exhaustive documentation in
+case you'd like to copy and accommodate it.<br>
+<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h2>5. <a name="Glossary">Glossary</a></h2>
+<br>
+<h3><a name="Progress_Panel">Progress
+Panel</a></h3>
+<br>
+&nbsp;&nbsp;&nbsp; The Progress Panel &nbsp;shows the
+single steps
+necessary to accomplish a task, and how far Acs Command
+Center has succeeded so far in performing your request. When
+an error occurs, it is also shown in the Progress Panel. Thus,
+it will (hopefully) support you in tracking down failures.<br>
+<br>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+<tbody>
+<tr>
+<td valign="top"><img style="width: 335px; height: 171px;" src="images/figureE.jpg" alt="figure E - Progress Panel"> <br>
+</td>
+</tr>
+<tr>
+<td valign="top">Figure E - Progress Panel
+indicating that a&nbsp;daemon is not running<br>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<br>
+<h3><a name="Deployment_Info_View">Deployment
+Info View</a></h3>
+<br>
+&nbsp;&nbsp;&nbsp; The Deployment Info View shows
+information about an
+Acs Manager and its related workers. When you start a Manager via the
+Acs Command Center, the Manager is automatically added
+to the Deployment Info View.
+<br><br>
+Still, you can add any Manager manually,
+provided you know which host and Acs Instance it runs on. 
+Press "Add..." to bring up a dialog that lets you enter the network
+address of an existing Acs Manager. Network addresses are understood
+in a couple of formats: the easiest being the short notation "host:instance"
+(e.g. <i>alma:0</i> for Acs Instance 0 on host alma), or alternatively
+a corbaloc (e.g. <i>corbaloc::alma:3900/Manager</i> for Acs Instance 9 on host alma),
+or a full Corba IOR (like <i>IOR:&lt;really long hex number&gt;</i>).
+<br><br>
+The shown information will be refreshed automatically. Be aware that&nbsp;this automatism cannot detect all changes on the
+server-side instantaneously, in some situations there may be delays of about 10 seconds or more. To
+refresh the display manually, press the "Refresh" button. If, opposed to that, you're overwhelmed with data you can
+pause automatic refresh through "Freeze".
+<br>
+<br>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+<tbody>
+<tr>
+<td valign="top"><img src="images/figureF.jpg" alt="Figure F - Deployment" style="width: 418px; height: 394px;" hspace="10"> <br>
+</td>
+</tr>
+<tr>
+<td valign="top">Figure F - Deployment Info View
+with a manually
+added Manager<br>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<br>
+Most elements of the Deployment Info View offer context menus.
+They&nbsp;allow to refresh the&nbsp;displayed information,
+activate a
+component, shut down a container, etc.<br>
+<br>
+<br>
+<h3><a name="Log_Area">Log Area</a></h3>
+&nbsp;&nbsp;&nbsp; The Log Area shows the logs (i.e. the
+console
+output) of started processes. It allows to view, copy, and save these
+logs.<br>
+<br>
+To prevent the Java Virtual Machine from running out of memory,
+the Log Area allows to restrict the buffer size for each log. It is
+recommended to make use of this feature -- note however that the
+<span style="font-style: italic;">Scroll Lock</span>
+for a log only
+works properly if its buffer size is "unlimited".&nbsp; The
+foregoing
+said, you should only activate the <span style="font-style: italic;">Scroll
+Lock</span>, resp. disable the buffer size limit, in special
+cases but
+not in the general case.<br>
+<br>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+<tbody>
+<tr>
+<td valign="top"><img src="images/figureG.jpg" alt="figure G - Progress Panel"> <br>
+</td>
+</tr>
+<tr>
+<td valign="top">Figure G - Log Area showing the
+console output
+of started processes<br>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<br>
+<h3><a name="Acs_Instance">Acs Instance</a></h3>
+&nbsp;&nbsp;&nbsp; Acs allows for more
+than one
+session to be run on the same machine at the same time; we speak of
+multiple Acs instances (currently up to ten). One may think of a
+collection of slots on a host, with each one being capable of holding
+one Acs instance. If you have special preference on which slot to
+occupy &nbsp;(e.g., because you made an agreement with your team
+members to avoid clashes),
+specify its number explicitly. Otherwise simply try with the default
+number 0 (zero). If the requested slot is already occupied, you will
+receive an according message. You should then try a different number.<br>
+<br>
+<br>
+<h3><a name="CDB">Cdb, Cdb-Root</a></h3>
+&nbsp;&nbsp;&nbsp; The Cdb (<i>Configuration Database</i>)
+contains
+information about schemas, Managers, and components. The Cdb's content
+is read and published by a server process (Cdb-Dal). In order to be
+readable by the server process, the Cdb needs to reside in a filesystem
+directory. This directory is called Cdb-Root.<br>
+<br>
+<br>
+<hr style="width: 100%; height: 2px;">
+<h2>6. <a name="Other_Resources">Other Resources</a></h2>
+<br>
+<h3><a name="Whats_New">What's new?</a><br>
+</h3>
+The change log for the different versions is on the <a href="AcsCommandCenter-News.html">What's New?</a> page<br>
+<br>
+<br>
+<hr size="2" width="100%"><br>
+<p>&nbsp;</p>
+</body></html>

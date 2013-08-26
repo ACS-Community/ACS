@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>How to create a module with NetBeans</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Katarina" lastname="Sigerud" ccid="73162"/>
+    <author firstname="Lionel" lastname="Mestre" ccid="97307"/>
+    <reviewers>TBD</reviewers>
+  </head>
+  <!-- 
+
+    SECTION 1
+    
+  -->
+  <section>
+    <title>Creating a Module with NetBeans</title>
+    <description>
+      <p>
+      There are two wizards that can be used to create a NetBeans Module. The first one is found in the contextual menu <i>New->NetBeans Extensions->IDE Plug-in Module</i>. It will take you in all stages of creating a module including creating the XML layer of the module, saying what menu, toolbar the module add. It is describe in the section <a href="#IDEPluginModuleWizard">below</a>.</p>
+<p>
+The second wizard allows you to create the module jar without any extra step for the XML layer of the module. This assumes that you have created the XML Layer behore hand. This document describes how to write that XML-descriptor and how to create the module using that second wizard. More information about modules can be found in the <a href="/proj-gp/_notgenerated/tools/netbeans/openapi/org/openide/modules/doc-files/api.html">NetBeans Modules API</a>.
+        </p>
+    </description>
+  </section>
+    <!--
+  
+    SECTION 3
+    
+    -->
+    <section>
+        <title>Creating the module layer</title>
+<description>
+        <p>The primary way modules install their functionality into the NetBeans platform is via virtual files defined in the modules XML filesystem layer (or module layer). This is a small XML document in the modules JAR, conforming to the NetBeans filesystems DTD. It is declared in the modules JAR manifest. Since NetBeans infrastructure allows files to actually map to Java class instances, what a module generally installs is class instances, using the .instance file convention described below. 
+</p>
+    </description>
+    <section>
+    <title>NetBeans convention for mapping Files to Java Objects</title>
+    <description>
+    <p>NetBeans defines semantics for mapping files to Java object instances. You can create a file with a name such as <code>com-mycom-MyClass.instance</code> and NetBeans will dereference it and return an instance of the named class.
+</p><p>
+Using this infrastructure, files can be factories for Java objects. This infrastructure serves two primary purposes in NetBeans:
+<ul>
+<li>First, it allows for modules to register objects with the system (for example, adding beans to the <b>Component Palette</b> or adding menu items to a menu).</li>
+<li>Second, it allows objects to be registered without the JVM actually loading the class
+in question unless it is actually needed, thus saving memory.</li>
+</ul>
+</p><p>
+We mentioned above the concept of an XML filesystem, where the contents of the filesystem are actually represented in an XML document. In a NetBeans XML filesystem, the XML to add a Java class to a filesystem looks like that :
+</p>
+    </description>
+<codeDescription>
+<title>Example of module layer</title>
+<code>
+&lt;filesystem&gt;
+  &lt;folder name="Menu"&gt;
+    &lt;folder name="View"&gt;
+      &lt;file name="org-netbeans-examples-quickpanel-ShowQuickPanelAction.instance"/&gt;
+    &lt;/folder&gt;
+  &lt;/folder&gt;
+&lt;/filesystem&gt;</code>
+</codeDescription>
+<description>
+<p>
+The effect of the above example is that when the system creates the main menu, it creates an instance of <tt>org.netbeans.examples.quickpanel.ShowQuickPanelAction</tt>, which supplies the
+icon and display name for the action on the menu, and whose <tt>actionPerformed()</tt> method will be called if the user selects the menu item.  
+</p>
+    </description>
+    </section>
+    <section>
+        <title>Principles of the module layer</title>
+        <description>
+<p>
+The files are put into folders in the system filesystem that have defined meanings to the system or to a module. The XML layer defines a hierarchy of files and folders which may or may not overlap with existing folders in the system filesystem. When a module is loaded, this small XML filesystem is merged with the system filesystem.
+</p>
+<p>
+Often a module needs to install objects that should be available to the runtime (such as action classes that define menu items to appear on the main menu), or to other modules (for example, services such as logging). The system filesystem provides a way to do this that allows loose coupling between the modules and the systemneither the runtime nor other modules need to have been coded to anticipate the presence of these specific objects.
+</p>
+<p>
+When a module is removed, its XML layer is cleanly extracted from the system filesystem, and the objects, menu items, services and such that it contained simply disappear from the system.
+</p>
+        </description>
+    </section>
+    <section>
+        <title>Creating the module layer</title>
+        <description>
+<p>
+The next step is to create the modules XML layer. This is where you will specify locations where it should install items such as menus and toolbars. Right-click the package containing the module sources and choose New->NetBeans Extensions->Modules API->XML Layer (Empty) (see below).
+</p>
+<p align="center">
+<img src="images/create_empty_layer_menu.jpg"/>
+</p>
+<p>
+In the New wizard, specify the name layer (for instance here "SPSModuleLayer").
+</p>
+<p align="center">
+<img src="images/create_empty_layer_wizard.jpg"/>
+</p>
+<p>
+We get an XML file named after the name you gave to the wizard and containing the <code>filesystem</code> root node.
+</p>
+</description>
+<codeDescription>
+<title>The empty module layer</title>
+<code>
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" 
+    "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+&lt;filesystem/></code>
+</codeDescription>
+<description>
+<p>
+The layer file is a declarative way to add functionality to your NetBeans platform, which does not require you to write any extra code. In this example we will add one simple action <code><a href="/proj-gp/GP-Examples/javasrc/gp/examples/sps/StartSPSDemoAction.java.html">StartSPSDemoAction.java</a></code> in the menubar and in the toolbar. We specify the menu, and the action itself in the XML layer file. The menu called <code>SPSMenu</code> is added to the menubar with one menu item that will trigger the action <code>gp.example.sps.StartSPSDemoAction</code>. The display name of the item is given by the display of the action. Then the action is added in the toolbar in the "view" group.</p>
+        </description>
+        <codeDescription>
+        <title>Example of module layer file</title>
+        <comment>In this module layer we assume the existance of the action <code>gp.example.sps.StartSPSDemoAction</code></comment>
+            <code>
+&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" 
+    "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+&lt;filesystem>
+  &lt;folder name="Menu">
+    &lt;folder name="SPSMenu">
+      &lt;file name="gp-example-sps-StartSPSDemoAction.instance"/>         
+    &lt;/folder>
+  &lt;/folder>
+  &lt;folder name="Toolbars">
+    &lt;folder name="SPSDemo">
+      &lt;file name="gp-example-sps-StartSPSDemoAction.instance"/>         
+    &lt;/folder>
+  &lt;/folder>
+&lt;/filesystem>            
+            </code>
+        </codeDescription>
+    </section>
+    </section>
+    <!--
+  
+    SECTION 4
+    
+    -->
+    <section>
+        <title>Creating the module JAR</title>
+        <description>
+        <p>Once the layer file is ready it is possible to create the module JAR file using the wizard.</p>
+        <ol>
+        <li><p>Start the <i>New wizard</i> from <i>File->New...</i> and then choose <i>Templates->NetBeans Extensions->Modules API->Module JAR</i> as shown below :</p>
+<p align="center">
+<img src="images/create_module_menu.jpg"/>
+</p>
+</li>
+<li>
+First you choose a name for the module JAR (in the example SPSModule) and a place to put it. The exact location is not very important. You also choose a display name for the module that the user will see (in the example the same name is used SPSModule). The filter just says what will be included in the module (default is fine).
+<p align="center">
+<img src="images/module_wizard1.jpg"/>
+</p>
+</li>
+<li>
+Then you select what the module will include.
+<p align="center">
+<img src="images/module_wizard2.jpg"/>
+</p>
+</li>
+<li>
+The next step allows you to change the structure of what goes in the jar files. Do nothing not to change anything.
+<p align="center">
+<img src="images/module_wizard3.jpg"/>
+</p>
+</li>
+<li>
+To finish the creation of your module you need to write the manifest file, see example below. In the manifest file you can specify the location of the module JAR, a short description, and the name of the layer file. More information on layer files and manifest files can be found in the <a href="/proj-gp/tools/netbeans/openapi/org/openide/modules/doc-files/api.html">NetBeans API</a>
+<p align="center">
+<img src="images/module_wizard4.jpg"/>
+</p>
+</li>
+</ol>
+<p>
+</p>
+    </description>
+        <codeDescription>
+        <title>Example of module manifest file</title>
+            <code>
+Manifest-Version: 1.0
+OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Layer: gp/example/sps/SPSModuleLayer.xml
+Created-By: GUI Platform Project
+OpenIDE-Module-Module-Dependencies: cern.gp > 1.0, cern.util.logging > 1.0
+OpenIDE-Module: gp.example.sps
+OpenIDE-Module-Name: The SPS Demo module</code>
+        </codeDescription>
+    </section>
+  <!--
+
+    SECTION 3
+    
+    -->
+  <section>
+    <anchor>IDEPluginModuleWizard</anchor>
+    <title>Creating a Module with IDE Plug-in Module wizard</title>
+    <description>
+      <p>This wizard can be found in the contextual menu <i>New->NetBeans Extensions->IDE Plug-in Module</i> (see below). It will take you in all stages of creating a module including creating the XML layer of the module, saying what menu, toolbar the module add. This wizard is well described in "<a href="/proj-gp/_notgenerated/tools/netbeans/definitiveguide/NetBeansBook2.html#ch-hello-world">Chapter 5 : Developing Modulesthe New Module Wizard</a>" of the "Extending NetBeans" book.
+</p>
+<p align="center">
+<img src="images/create_IDE_plugin_module_menu.jpg"/>
+</p>
+    </description>
+  </section>
+  <!--
+
+    SECTION 3
+    
+    -->
+  <section>
+    <title>Installing the module</title>
+    <description>
+        <p>When you've finished packaging your module, you can run it from within the NetBeans IDE by right-clicking on the module JAR and selecting <em>Execute</em> from the context menu. When the installation process is finished you should see the new menu and the toolbar added inside the IDE. This is useful for testing.
+        </p>
+        <p>
+To install and run the module inside the NetBeans platform, you just need to copy the module jar to the <code>/modules</code> subdirectory of the NetBeans user directory. The NetBeans IDE or platform has to be restarted.
+        </p>
+    </description>
+    </section>
+  <!--
+
+    SECTION 3
+    
+    -->
+  <section>
+    <title>Disabling the module</title>
+    <description>
+    <p>In the IDE, to remove the menu you've just installed, you need to disable the module. Choose <em>Tools->Options</em>. In the <em>Options</em> window, go to <em>IDE Configuration->System->Modules</em>. You should find an entry for the module you've created and installed. Select it and in the <em>Properties</em> tab choose <em>Enabled</em> and set it to <code>false</code>. The menu should disappear.
+    </p>
+    </description>
+  </section>
+</document>

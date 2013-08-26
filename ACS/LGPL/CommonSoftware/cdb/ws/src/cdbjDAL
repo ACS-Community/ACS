@@ -1,0 +1,131 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupConstants
+. acsstartupLogging.sh
+. acsstartupAcsInstance
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: cdbjDAL,v 1.50 2010/08/23 09:25:22 hsommer Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# bjeram 2002-11-20 added more cmd line arguments (8)
+# bjeram 2002-11-13 loop throug all arguments and check for -root and -OAport options
+# bjeram 2002-11-11 added support for ACS_CDB defualt root
+# gchiozzi 2002-10-04 Added /bin/ksh to select startup shell
+# almamgr 2000-09-13 created
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+CDB_PIDFILE=$INSTANCE_DIR/$ACS_CDB_PIDFILE
+
+#First save a copy of our PID
+echo $$ > $CDB_PIDFILE
+
+
+ACS_CDB_PORT=`getCDBPort`
+
+export CDB_PORT="-OAport $ACS_CDB_PORT"
+export CDB_ROOT="-root ./"
+
+if [ "X$ACS_CDB" != "X" ]; then  
+   export CDB_ROOT="-root "$ACS_CDB
+fi
+
+#
+# This makes sure that if the CDB port and/or path are passed on the command line
+# that value is used and not of the "calculated" one
+#
+for arg in $*
+do
+    case $arg in
+    -root )
+	export CDB_ROOT=""
+	;;
+    -OAport )
+	export CDB_PORT=""
+	;;
+    esac
+done
+
+#
+# Build the schema files search path
+#
+SUB=config/CDB/schemas
+
+# Starts with ACSROOT.
+SCHEMA_PATH=$ACSROOT/$SUB
+
+# Separation of dirs
+# from INTLIST.
+item_list=`echo $INTLIST | sed s/:/\ /g`
+intlist_list=""
+for item in $item_list
+do
+   intlist_list=$intlist_list":$item/$SUB"
+done
+
+# If the intlist is empty
+# there is nothing to add!
+if [ "X$intlist_list" != "X" ]; then
+   # INTLIST search path.
+   SCHEMA_PATH=$intlist_list:$ACSROOT/$SUB
+fi
+
+# INTROOT path, if exists.
+if [ "X$INTROOT" != "X" ]; then  
+   SCHEMA_PATH=$INTROOT/$SUB:$SCHEMA_PATH
+fi
+
+# If a CDB is specified (and normally it is)
+# searches also inside it (but normally it is empty)
+if [ "X$ACS_CDB" != "X" ]; then  
+   SCHEMA_PATH=$ACS_CDB/CDB/schemas:$SCHEMA_PATH
+fi
+
+# Finally adds the current module.
+SCHEMA_PATH=$PWD/../$SUB:$SCHEMA_PATH
+ACS_LOG_DEBUG "Searching for schema files in: $SCHEMA_PATH"
+
+# Set logger levels to INFO unless the env vars are set already.
+# This is to avoid especially the verbose jacorb logging we would get from the currently low schema default log levels of 2
+if [ "X$ACS_LOG_STDOUT" = "X" ]; then
+    export ACS_LOG_STDOUT=4
+fi
+if [ "X$ACS_LOG_CENTRAL" = "X" ]; then
+    export ACS_LOG_CENTRAL=4
+fi
+
+
+# Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "cdbjDAL.gclog". 
+export JVM_GC_LOG_NAME=cdbjDAL
+
+#
+# Start the CDB Java executable.
+# Allow the single POA to use 200 threads for request processing.
+# Set the client-side Corba timeout to 30 s, which is used for calling back to "DALChangeListener.object_changed" to propagate updates.
+#
+acsStartJava -endorsed \
+    -maxHeapSize 512m \
+    -Djacorb.poa.thread_pool_max=200 \
+    -Djacorb.connection.client.pending_reply_timeout=30000 \
+    -DACS.cdbpath=$SCHEMA_PATH \
+    com.cosylab.cdb.jdal.Server -jacorb $CDB_PORT $CDB_ROOT $1 $2 $3 $4 $5 $6 $7 $8

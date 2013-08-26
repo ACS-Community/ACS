@@ -1,0 +1,60 @@
+#ifndef _REFPERSIST_HELLO_WORLD_IDL_
+#define _REFPERSIST_HELLO_WORLD_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+* "@(#) $Id: HelloWorld.idl,v 1.2 2009/10/07 09:06:04 agrimstrup Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* acaproni 2008-01-04 created
+*/
+
+#include <acscomponent.idl>
+#include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
+
+/** @file HelloWorld.idl
+ *  Hello World's IDL File
+ */
+
+module CorbaRefTest 
+{
+    /** @interface HelloWorld
+     */
+    interface HelloWorld : ACS::ACSComponent
+	{
+	/** 
+	 *  Prints "HelloWorld" to the console (where the container that activated
+	 *  this component is running).
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void displayMessage();
+	
+	};
+};
+
+#endif

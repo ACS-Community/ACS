@@ -1,0 +1,23 @@
+[GlobalLogger - ] Logging proxy successfully created.
+[GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::xxx.xxx.xxx.xxx:xxxx/Manager'
+[GlobalLogger - main] Simple test.
+[GlobalLogger - main] Log A without incrementing repeatCount="0"
+[GlobalLogger - main] LogAndIncrement repeatCount="10"
+[GlobalLogger - main] LogAndIncrement repeatCount="10"
+[GlobalLogger - main] LogAndIncrement repeatCount="10"
+[GlobalLogger - main] LogAndIncrement repeatCount="10"
+[GlobalLogger - main] LogAndIncrement repeatCount="10"
+[GlobalLogger - main] Simple Log logName="simpleLog"
+[GlobalLogger - main] Simple Log logName="simpleLog" repeatCount="0"
+[GlobalLogger - main] Simple Log logName="simpleLog" repeatCount="10"
+[GlobalLogger - main] Simple Log logName="simpleLog" repeatCount="10"
+[GlobalLogger - main] Simple Log logName="simpleLog" repeatCount="10"
+[GlobalLogger - main] Simple Log logName="simpleLog" repeatCount="10"
+[GlobalLogger - main] Simple Log logName="simpleLog" repeatCount="10"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17)
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="0"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="10"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="10"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="10"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="10"
+[GlobalLogger - main] An error occurred, see ErrorDesc member (type=10, code=17) repeatCount="10"

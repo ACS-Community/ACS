@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?> 
+<!DOCTYPE hibernate-configuration PUBLIC 
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN" 
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"> 
+
+<hibernate-configuration> 
+	<session-factory> 
+	
+		<!-- Database connection settings (to be provided/overriden dynamically) --> 
+		<property name="dialect">org.hibernate.dialect.HSQLDialect</property> 
+		<property name="connection.driver_class">org.hsqldb.jdbc.JDBCDriver</property> 
+		<property name="connection.url">jdbc:hsqldb:mem:tmcdb</property> 
+		<property name="connection.username">sa</property> 
+		<property name="connection.password"></property> 
+
+		<!-- JDBC connection pool (use the built-in) --> 
+		<property name="connection.pool_size">1</property> 
+	
+		<!-- Enable Hibernate's automatic session context management --> 
+		<property name="current_session_context_class">thread</property> 
+	
+		<!-- Disable the second-level cache --> 
+		<property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property> 
+	
+		<!-- Do not echo all executed SQL to stdout, because we use ACS logging via slf4j --> 
+		<property name="hibernate.show_sql">false</property>
+		
+		<!-- Mappings -->
+		<mapping class="alma.acs.tmcdb.AlarmCategory"/>
+		<mapping class="alma.acs.tmcdb.AcsService"/>
+		<mapping class="alma.acs.tmcdb.BACIProperty"/>
+		<mapping class="alma.acs.tmcdb.Component"/>
+		<mapping class="alma.acs.tmcdb.ComponentType"/>
+		<mapping class="alma.acs.tmcdb.Computer"/>
+		<mapping class="alma.acs.tmcdb.Configuration"/>
+		<mapping class="alma.acs.tmcdb.Contact"/>
+		<mapping class="alma.acs.tmcdb.Container"/>
+		<mapping class="alma.acs.tmcdb.ContainerStartupOption"/>
+		<mapping class="alma.acs.tmcdb.DefaultMember"/>
+		<mapping class="alma.acs.tmcdb.FaultCode"/>
+		<mapping class="alma.acs.tmcdb.FaultFamily"/>
+		<mapping class="alma.acs.tmcdb.FaultMember"/>
+		<mapping class="alma.acs.tmcdb.Location"/>
+		<mapping class="alma.acs.tmcdb.LoggingConfig"/>
+		<mapping class="alma.acs.tmcdb.Manager"/>
+		<mapping class="alma.acs.tmcdb.MasterComponent"/>
+		<mapping class="alma.acs.tmcdb.NamedLoggerConfig"/>
+		<mapping class="alma.acs.tmcdb.NetworkDevice"/>
+		<mapping class="alma.acs.tmcdb.NetworkDeviceSnmpConfig"/>
+		<mapping class="alma.acs.tmcdb.NetworkPowerstrip"/>
+		<mapping class="alma.acs.tmcdb.PowerstripSocket"/>
+		<mapping class="alma.acs.tmcdb.Schemas"/>
+		<mapping class="alma.acs.tmcdb.SnmpTrapSink"/>
+		<mapping class="alma.acs.tmcdb.TMCDBVersion"/>
+		<mapping class="alma.acs.tmcdb.EventChannel"/>
+		<mapping class="alma.acs.tmcdb.Event"/>
+		<mapping class="alma.acs.tmcdb.NotificationServiceMapping"/>
+		<mapping class="alma.acs.tmcdb.DomainsMapping"/>
+		<mapping class="alma.acs.tmcdb.ChannelMapping"/>
+		<mapping class="alma.acs.tmcdb.AlarmDefinition"/>
+		<mapping class="alma.acs.tmcdb.ReductionLink"/>
+		<mapping class="alma.acs.tmcdb.ReductionThreshold"/>
+	
+		<mapping resource="alma/TMCDB/maci/hibernate-mappings-maci.hbm.xml"/> 
+		<mapping resource="alma/TMCDB/baci/hibernate-mappings-baci.hbm.xml"/>
+
+	</session-factory> 
+</hibernate-configuration>

@@ -1,0 +1,222 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakeCopySources,v 1.2 2004/09/17 14:08:03 mpasquat Exp $" 
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  30/11/93  created
+# gfilippi  09/12/93  use -r  (-R is not standard)
+# gfilippi  27/04/94  set files group writable
+# gfilippi  07/09/94  /test handling added (SPR940132)
+# gfilippi  07/09/94  supporting multiplatform module structure mod/lcu-ws
+# gfilippi  07/09/94  makeXxxx utility renamed into vltMakeXxxx
+# gfilippi  16/04/96  do not use INTROOT/vw anylonger
+# gfilippi  16/04/96  ace and dsp added (SPR960054)
+# gfilippi  16/04/96  set file explicitly writable by user and group
+# gfilippi  23/11/97  copy current files processes also include files (SPR970344)
+# gfilippi  21/02/99  do not give errors if directories are not there
+
+#************************************************************************
+#   NAME
+#   vltMakeCopySources - copy the module source files into integration area.
+# 
+#   SYNOPSIS
+#
+#   vltMakeCopySources
+#
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to copy the module source files into 
+#   integration area, when INTROOT/INTLIST is defined.
+#   It is not intended to be used as a standalone command.
+#
+#   According to the current parent directory, files are copied into:
+#
+#    <mod>
+#           <mod>/src           --->    INTROOT/Sources/<mod>/src   
+#           <mod>/test          --->    INTROOT/Sources/<mod>/test
+#           <mod>/include       --->    INTROOT/Sources/<mod>/include
+#
+#    <mod>/<platform>  where <platform> is one or more of ws, lcu, ace, dsp
+#
+#           <mod>/ws/src        --->    INTROOT/Sources/<mod>/ws/src
+#           <mod>/lcu/src       --->    INTROOT/Sources/<mod>/lcu/src
+#           <mod>/ace/src       --->    INTROOT/Sources/<mod>/ace/src
+#           <mod>/dsp/src       --->    INTROOT/Sources/<mod>/dsp/src
+#
+#           <mod>/ws/test       --->    INTROOT/Sources/<mod>/ws/test
+#           <mod>/lcu/test      --->    INTROOT/Sources/<mod>/lcu/test
+#           <mod>/ace/test      --->    INTROOT/Sources/<mod>/ace/test
+#           <mod>/dsp/test      --->    INTROOT/Sources/<mod>/dsp/test
+#
+#           <mod>/ws/include    --->    INTROOT/Sources/<mod>/ws/include
+#           <mod>/lcu/include   --->    INTROOT/Sources/<mod>/lcu/include
+#           <mod>/ace/include   --->    INTROOT/Sources/<mod>/ace/include
+#           <mod>/dsp/include   --->    INTROOT/Sources/<mod>/dsp/include
+#
+#
+#   The reason why to copy sorce file into integration area is to have
+#   the exact files that have been used for generating the software
+#   that has been installed. This for debugging purposes.
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#     INTROOT    current integration area root directory
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile, Makefile, (GNU) make
+#
+#   GNU make - Edition 0.41, for make Version 3.64 Beta, April 93
+#   VLT Software - Programming Standard - 1.0 10/03/93
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+# Select the first dir of INTLIST
+TMP_INTLIST=`echo $INTLIST | awk -F: '{print $1}'`
+
+if [ "X$INTROOT" = "X" ]
+then
+   if [ "X$TMP_INTLIST" = "X" ]
+   then
+      # Integration area is not specified --> nothing to do
+      exit 0
+   else
+      if [ ! -d $TMP_INTLIST ]
+      then
+         echo ""
+         echo " ERROR: vltMakeCopySources: INTLIST defined as >> $TMP_INTLIST << is not a directory"
+         echo ""
+         exit 1 
+      fi  
+   fi
+else
+   if [ ! -d $INTROOT ] 
+   then
+      echo ""
+      echo " ERROR: vltMakeCopySources: INTROOT defined as >> $INTROOT << is not a directory"
+      echo ""
+      exit 1
+   fi
+fi
+
+
+# WHERE_TO_COPY initialization
+WHERE_TO_COPY=""
+
+if [ "X$INTROOT" != "X" ]
+then
+   WHERE_TO_COPY=$INTROOT
+fi
+
+if [ "X$INTROOT" = "X" ] && [ "X$INTLIST" != "X" ] 
+then
+   WHERE_TO_COPY=`echo $INTLIST | awk 'BEGIN {FS=":"} {print $1}'` 
+fi
+
+
+#
+# get current directory. It should have this form: ...../<mod>/src)
+PWD=`pwd`
+
+#
+# where am I?
+SUB_DIR=`basename $PWD`
+
+# 
+# check if this is a standard VLT structure.
+if [ $SUB_DIR != "src" -a $SUB_DIR != "test" ]
+then
+    echo ""
+    echo " ERROR: vltMakeCopySources: "
+    echo "          VLT standard Makefile can be either src/ or in test/ "
+    echo "          Where are you now?"
+    echo ""
+    exit 1
+fi
+
+#
+# find module name. There are two cases:
+#    - normal modules: the module name is the parent directory
+#    - multiplatform modules: the module is structured as more than one 
+#                     submodules. Each submodule has the normal module
+#                     directory tree but fixed names are used:
+#                        <mod>/ws     for the ws  part
+#                        <mod>/lcu    for the LCU part
+#                        <mod>/ace    for the ACE part
+#                        <mod>/dsp    for the DSP part
+PARENT_DIR=`dirname $PWD`
+MODULE_NAME=`basename $PARENT_DIR`
+if [ "$MODULE_NAME" = "lcu" -o "$MODULE_NAME" = "ws" -o "$MODULE_NAME" = "ace" -o "$MODULE_NAME" = "dsp" ]
+then
+    GRANDPARENT_DIR=`dirname $PARENT_DIR`
+    MODULE_NAME="`basename $GRANDPARENT_DIR`"
+    PLATFORM_NAME="`basename $PARENT_DIR`"
+fi
+
+#
+# If Sources directory does not exists, create it (compatibility with 
+# existing INTROOT structures)
+
+for dir in Sources $MODULE_NAME $PLATFORM_NAME
+do
+    WHERE_TO_COPY=$WHERE_TO_COPY/$dir
+    if [ ! -d $WHERE_TO_COPY ]
+    then
+        if mkdir $WHERE_TO_COPY
+        then
+            continue
+        else
+            echo ""
+            echo " ERROR: vltMakeCopySources: cannot access/create $WHERE_TO_COPY"
+            echo ""
+            exit 1
+        fi
+    fi
+done
+
+echo ""
+echo " Copying current files "
+
+for dir in $SUB_DIR include
+do
+    echo "        from: $PARENT_DIR/$dir"
+    #
+    # because some modules may not follow the standard directory
+    # structure, let's check that the directory exists
+    if [ -d $PARENT_DIR/$dir ]
+    then
+        # if any, remove files currently stored in the integration area
+        if [ -d $WHERE_TO_COPY/$dir ]
+        then
+            rm -rf $WHERE_TO_COPY/$dir
+        fi
+        mkdir $WHERE_TO_COPY/$dir
+
+        echo "          to: $WHERE_TO_COPY/$dir"
+        #
+        # copy current files into integration area 
+        cp -r $PARENT_DIR/$dir $WHERE_TO_COPY
+
+        # set the files group writable (so they can be overwritten 
+        # by another team member during integration activity)
+        chmod -R 777 $WHERE_TO_COPY/$dir
+    else
+        echo "                . . . does not exists. Skipped"
+        echo "                      (probably this module is not standard)"
+    fi
+done
+
+echo "                                               . . . done "
+echo ""
+
+#
+# ___oOo___

@@ -1,0 +1,9 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+
+1 parameterTest "parameterTest -file pset.xml"

@@ -1,0 +1,12 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: xmlpybindTATEnvironment,v 1.2 2009/12/29 16:52:36 agrimstrup Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# agrimstrup 2009-12-18 created
+
+set env(ACS_TMP) $env(PWD)/tmp
+set env(PYTHONPATH) ../src:$env(PYTHONPATH) 
+

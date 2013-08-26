@@ -1,0 +1,82 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList.lite,v 1.32 2012/10/13 18:06:06 tstaig Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dave 2003-08-13 converted to eccs test driver
+# 
+SOURCE acspyTATEnvironment
+PROLOGUE acspyTATPrologue
+#-------------------------------------------------------------------
+00   UnitTests           "acsutilTATTestRunner nosetests -v"
+
+01   testQoSTimeout      "acsutilAwaitContainerStart -py pyContainer" "@SLEEP 15" \
+			"acsutilTATTestRunner acspyTestQoSTimeout" "@SLEEP 25" \
+			"acsutilTATTestRunner acsStopContainer pyContainer"
+
+02   ClientMin           "acsutilTATTestRunner acspyTestClientMinimum"
+
+03   ACSComponent        "acsutilTATTestRunner acspyTestACSComponent"
+
+04   Container           "acsutilTATTestRunner acsStartContainer -py pyContainer" "@SLEEP 10" \
+                        "acsutilTATTestRunner acspyTestContainer" "@SLEEP 20" \
+                        "acsutilTATTestRunner acsStopContainer pyContainer" "@SLEEP 10"
+
+05  ComponentLifeCycle  "acsutilTATTestRunner acspyTestComponentLifecycle"
+
+06  CS                  "acsutilTATTestRunner acspyTestContainerServices"
+
+07  Baci                "acsutilAwaitContainerStart -py pyContainer" "@SLEEP 15" \
+			"acsutilTATTestRunner acspyTestBaci" "@SLEEP 25" \
+			"acsutilTATTestRunner acsStopContainer pyContainer"
+
+08  ContainerWithCDB    "acsutilTATTestRunner acsStartContainer -py PyTestCDBContainer" "@SLEEP 10" \
+                        "acsutilTATTestRunner acsStopContainer PyTestCDBContainer" "@SLEEP 10"
+
+09  reloadComponent     "acsutilTATTestRunner acsStartContainer -py pyContainer2" "@SLEEP 10" \
+
+                        "acsutilTATTestRunner acspyTestCompReload" "@SLEEP 20" \
+
+                        "acsutilTATTestRunner acsStopContainer pyContainer2" "@SLEEP 10"
+
+10 testConsumerNoChannel  "acsutilTATTestRunner acspyTestConsumer no_name 5 0"
+
+11 testSupplierNoChannel  "acsutilTATTestRunner acspyTestSupplier no_name 5"
+
+12 testSupplierCDBChannel "acsutilTATTestRunner acspyTestSupplier cdb_channel 5"
+
+13 testSupplierConsumer   "acsutilTATTestRunner acspyTestConsumer no_name 15 1" "@SLEEP 2" \
+                          "acsutilTATTestRunner acspyTestSupplier no_name 15"
+
+14 testILSupplierConsumer   "acsutilTATTestRunner acspyTestConsumer cdb_channelIL 15 1" "@SLEEP 2" \
+                            "acsutilTATTestRunner acspyTestSupplier cdb_channelIL 15"
+
+15 testArchiveConsumer    "acsutilTATTestRunner acspyTestArchiveConsumerPS 15 1"
+16 testArchiveSupplier    "acsutilTATTestRunner acspyTestArchiveConsumer 15 11" "@SLEEP 3" "acsutilTATTestRunner acspyTestArchiveSupplier"  "@SLEEP 60"
+17 testLoggingConsumer    "acsutilTATTestRunner acspyTestLoggingConsumer 15"
+18 testNestedModules      "acsutilAwaitContainerStart -py pyContainer" "@SLEEP 15" "acsutilTATTestRunner acspyTestNestedModules" "@SLEEP 25" "acsutilTATTestRunner acsStopContainer pyContainer" 
+#-------------------------------------------------------------------
+EPILOGUE acsutilTATEpilogue

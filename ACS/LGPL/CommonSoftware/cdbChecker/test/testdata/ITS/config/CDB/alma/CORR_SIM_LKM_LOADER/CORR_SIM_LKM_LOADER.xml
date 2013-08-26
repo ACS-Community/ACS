@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  -->
+<LkmLoader xmlns="urn:schemas-cosylab-com:LkmLoader:1.0"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     configuration_file="corrSIM.lkm"/>
+

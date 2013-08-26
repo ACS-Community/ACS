@@ -1,0 +1,73 @@
+#!/usr/bin/env perl
+
+# $Id: mdExtractImages,v 1.4 2009/04/30 08:27:29 gchiozzi Exp $
+$instDir = "$ENV{MAGIC_DRAW_HOME}";
+$mdLibrary = "mdExportDiagramImages.jar";
+
+#
+# Set this to 1 to get more information!
+#
+$debug = 0;
+
+if ($#ARGV < 1) { 
+    die "Usage: $0 <model> <destination>\n";
+}
+
+$model = $ARGV[0];
+$destination = $ARGV[1];
+
+if ( ! -f $model) { 
+    die "Model $model does not exist\n";
+}
+
+if ( ! -d $destination || ! -w $destination) { 
+    die "Destination $destination does not exist or is not writable\n";
+}
+
+if ( $ENV{MAGIC_DRAW_HOME} eq "") { 
+    die "Environment variable MAGIC_DRAW_HOME is not defined. Set it to the proper installation path!\n";
+}
+
+if ( ! ( $ENV{CLASSPATH} =~ $mdLibrary ) ) { 
+    
+    print "Classpath variable does not contain $mdLibrary \n" if ($debug) ;
+
+    if ( ! -f $mdLibrary) { 
+        die $mdLibrary, "could not be found!\n";
+    } else {
+        $ENV{CLASSPATH} = $ENV{CLASSPATH}.":".$mdLibrary ;
+        print "Local $mdLibrary found and added to classpath\n"  if ($debug) ;
+    }
+}
+
+@jarfiles = `find $instDir/lib -follow -name \\*.jar`;
+
+foreach $jar (@jarfiles) { 
+    $jar =~ s/\n$//;
+    next if ($jar =~ /md_commontw/);
+    next if ($jar =~ /md_commontw_api/);
+    $ENV{CLASSPATH} = $ENV{CLASSPATH}.":$jar";
+}
+
+print "$ENV{CLASSPATH}\n" if ($debug) ;
+
+$executeClass = "com.nomagic.magicdraw.examples.imagegenerator.ExportDiagramImages";
+
+#
+# This is a check for Cygwin under windows
+# TODO: Not tested yet (GCH)
+#
+$javaClassPath = "$ENV{CLASSPATH}:." ;
+if ( `uname -a` =~ "CYGWIN_NT-5.1") {
+    print "Running under CYGWIN\n"  if ($debug) ;
+    $cygwin = 1;
+    $javaClassPath = `cygpath -wp $javaClassPath` ;
+}
+
+$command =  "java   -XX:PermSize=40M -XX:MaxPermSize=150M -Dinstall.root=$instDir -Xmx500M -Xss26M  -cp $javaClassPath $executeClass project_file=$model destination_dir=$destination ";
+print $command if ($debug);
+system $command;
+
+
+
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <_ Name="SUP1"		Code="acsncSupplierCompImpl"
+      Type="IDL:alma/demo/SupplierComp:1.0"
+      Container="bilboContainer" ImplLang="cpp" />
+
+<_ Name="IL_SUP1"		Code="acsncSupplierILCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+
+<_ Name="IL_CON1"		Code="acsncConsumerILCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+
+      <_ Name="RTSUP1"		Code="acsncRTSupplierCompImpl"    Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="CON1"		Code="acsncConsumerCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="ARCHIVECON1"     Code="acsncArchiveConsumerCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"	Container="bilboContainer" ImplLang="cpp" />
+      <_ Name="TEST_PS_1"    Code="acsexmplPowerSupplyImpl"
+                             Type="IDL:alma/PS/PowerSupply:1.0"
+                             Container="archiveContainer" ImplLang="cpp" />
+      <_ Name="CDB_PROPS"    Code="testCDBProps"  	  Type="IDL:alma/demo/ConsumerComp:1.0"	Container="bilboContainer" ImplLang="cpp" />
+</Components>

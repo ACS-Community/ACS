@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Configuration Database Entry for a ComplexBACIComponent
+   -
+   - Author: Anze Zagar
+-->
+<ComplexBACIComponent 
+xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0" 
+xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+xmlns:ComplexBACIComponent="urn:schemas-cosylab-com:ComplexBACIComponent:1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<property01 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property02 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property03 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property04 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property05 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property06 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property07 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property08 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property09 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property10 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property11 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property12 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property13 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property14 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property15 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+	<property16 xmlns="urn:schemas-cosylab-com:ComplexBACIComponent:1.0"/>
+
+</ComplexBACIComponent>
+

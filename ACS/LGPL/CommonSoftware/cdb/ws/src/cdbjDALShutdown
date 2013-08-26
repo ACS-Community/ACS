@@ -1,0 +1,146 @@
+#! /bin/bash
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupAcsInstance
+. acsstartupAcsPorts
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: cdbjDALShutdown,v 1.37 2009/02/09 12:06:00 hsommer Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# dvitas 2003-04-14 changed package name and removed unused argument
+# bjeram 2002-11-22 removed -OAport
+# bjeram 2002-10-24 created
+#
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+CDB_PIDFILE=$INSTANCE_DIR/$ACS_CDB_PIDFILE
+
+############################################################
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_DAL_REFERENCE=$DAL_REFERENCE
+CL_HELP=
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help
+SHORTOPTS=hk:d:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Wrapper for the java command: DALShutdown"
+   echo ""
+   echo "Usage: `basename $0` [OPTIONS] [PASS_OPTIONS [COMMAND_OPTIONS]]"
+   echo "Options: "
+   echo "   -d DAL_REFERENCE        uses explicity gived DAL_REFERENCE"
+   echo "   -h | -help              prints this help and exits"
+   echo ""
+   echo "  PASS_OPTIONS             the literal string that indicates more options to be passed"
+   echo "  COMMAND_OPTIONS          the options to be passed directly to the command"
+   echo ""
+   echo "Environment Variables:"
+   echo "  DAL_REFERENCE     | if the option -d is not set, then uses this variable"
+   echo "  MANAGER_REFERENCE | if the option -d is not set and DAL_REFERENCE is not "
+   echo "                      set, uses this to construct the dal reference"
+   echo "  HOST              | if neither of the above is set, this is used to      "
+   echo "                      create the value for the option -ORBInitRef"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	-d)                 CL_DAL_REFERENCE=$2 ; shift ;;
+	--help)             CL_HELP=true ;; 
+	-h)                 CL_HELP=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   echo ""
+   echo "Calling to DALShutdown whit -h option and exit"
+   acsStartJava -clientVM com.cosylab.cdb.DALShutdown -h
+   exit $EC_OK
+fi
+############################################################
+HOST=`getIP`
+ACS_CDB_PORT=`getCDBPort`
+
+if [ "X$CL_DAL_REFERENCE" = "X" ] 
+then
+  #if not set then use the MANAGER_REFERENCE to contruct it
+  #if this one is not set neither, then create it using HOST
+    if [ "X$MANAGER_REFERENCE" != "X" ]
+    then
+	extracted_corbaloc=${MANAGER_REFERENCE%:*}
+	CL_DAL_REFERENCE="$extracted_corbaloc:$ACS_CDB_PORT/CDB"
+    else
+	CL_DAL_REFERENCE="corbaloc::$HOST:$ACS_CDB_PORT/CDB"
+    fi
+fi
+
+if [ "X$1" != "X" ] && [ "X$1" != "XPASS_OPTIONS" ]
+then
+   printUsage
+   exit $EC_OK
+fi
+
+shift;
+
+#issue the CORBA shutdown command
+acsStartJava -clientVM com.cosylab.cdb.DALShutdown -d $CL_DAL_REFERENCE $*
+
+if [ -e $CDB_PIDFILE ]
+then
+    CDB_PID=`cat $CDB_PIDFILE`
+    acsKillProc $CDB_PID &> /dev/null
+    rm $CDB_PIDFILE
+fi

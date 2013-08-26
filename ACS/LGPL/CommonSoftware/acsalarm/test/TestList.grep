@@ -1,0 +1,28 @@
+Properties
+ACSAlarmSystemInterfaceFactory
+Using
+DEBUG
+INFO
+corbaloc
+clear_cache
+DAL
+created parser
+CDB
+xsd-files
+object is activated
+Returning XML
+Bound ID
+FactoryTestCase
+entering
+exiting
+loaded DLL
+: OK
+::
+1 - $
+^[0-9 ]*- [jJ]ava
+ACS.log.minlevel.namedloggers not defined
+Changed processName
+processing /tmp/acsIrfeedDyn.[0-9]*\.idl
+XML_TopologyFactory
+ TAO ([0-9]*|[0-9]*)
+^1 - 1[0-9][0-9][0-9]$

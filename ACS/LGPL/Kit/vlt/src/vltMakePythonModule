@@ -1,0 +1,63 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMakePythonModule,v 1.2 2003/06/03 17:16:34 dfugate Exp $" 
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# dfugate   2003-06-03  switched to bash
+# rschmutz  1999-04-03  created
+# psivera   1999-09-21  check the definition of MAKE_VXWORKS before adding
+#                       the "uname" command to the script
+#
+
+#************************************************************************
+#   NAME
+#   vltMakePythonModule - create a python module
+# 
+#   SYNOPSIS
+#
+#   vltMakePythonModule <modName>
+# 
+#   DESCRIPTION
+#   Utility used by vltMakefile to copy a script to ../bin.
+#   If the script is a /bin/sh script, then an instruction
+#   to disable the build-in echo command under Linux is added 
+#   to the script.
+#
+#   <modName>     The name of the module. The output is named 
+#                 ../lib/python/site-packages/<modName>.py
+#
+#   FILES
+#   $VLTROOT/include/vltMakefile   
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   SEE ALSO 
+#   vltMakefile, Makefile, (GNU) make
+#
+#   BUGS    
+#
+#----------------------------------------------------------------------
+
+if [ $# -ne 1 ]
+then
+    echo "" >&2
+    echo "vltMakePythonModule <modName>" >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# set up more readable variables:
+modName=$1
+
+OUTPUT=../lib/python/site-packages/${modName}.py
+
+cp ${modName}.py $OUTPUT
+
+#
+# ___oOo___

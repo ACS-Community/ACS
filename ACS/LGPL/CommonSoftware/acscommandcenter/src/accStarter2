@@ -1,0 +1,63 @@
+#! /bin/bash 
+
+#
+# Usage: (this) Retain-Limit Logfile-Pattern Command
+# Example: (this) 5 CONTROL/ABM001/cppContainer acsStartContainer -cpp -b 0 CONTROL/ABM001/cppContainer
+# Example: (this) 5 - acsStart -b 5
+
+retain_limit=$1   # "5"
+shift             # strip retain-limit
+cont_name=$1      # "CONTROL/ABM001/cppContainer"
+shift             # strip containername
+proc_name=$1      # "acsStartContainer"
+                  #  we don't strip it!
+command=$@        # "acsStartContainer -cpp -b 0 CONTROL/ABM001/cppContainer"
+
+
+
+logfile_basedir=~/.acs/commandcenter
+
+logfile_dir=$logfile_basedir/`dirname $cont_name`
+
+if [ $cont_name == "-" ] ; then
+   logfile_purename=$logfile_dir/${proc_name}
+else 
+   logfile_purename=$logfile_dir/${proc_name}_`basename $cont_name`
+fi
+
+
+## --- log file rotation ---
+
+## remove oldest file
+
+# this line for usage with execLimiter
+# existing=`ls -1r ${logfile_purename}_* 2>/dev/null |  gawk -F\.part* '{ print $1 }' | uniq`
+existing=`ls -1r ${logfile_purename}_* 2>/dev/null`
+
+i=0
+for file in $existing ; do
+   let i=i+1
+   if [ $i -ge $retain_limit ] ; then
+      rm $file* 2>/dev/null
+   fi
+done
+
+## make up new file
+now=`/bin/date +'%Y-%m-%d_%H.%M.%S'`
+logfile_name=${logfile_purename}_$now
+
+## --- create log ---
+
+mkdir -p $logfile_dir          # if directory doesn't exist, the redirect will fail
+touch $logfile_name            # that way, tail won't fail if the command is too slow in creating the logfile
+echo Writing log to file: $logfile_name
+
+## --- execute the command ---
+
+$command > $logfile_name 2>&1 &
+command_pid=$!
+
+# stay tuned as long as the command is running
+tail -f --pid=$command_pid $logfile_name
+
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Example Configuration Database Entry for a BulkDataReceiver
+   -
+   - Author: oat
+   -
+   - History:
+   -   2004-11-23  oat  Created
+  -->
+<BulkDataReceiver xmlns="urn:schemas-cosylab-com:BulkDataReceiver:1.0"
+	  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+	  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  recv_protocols="TCP=${HOST}:15000/TCP/TCP=${HOST}:15001/TCP"/>
+

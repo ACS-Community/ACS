@@ -1,0 +1,226 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# build
+#
+# "@(#) $Id: buildTools,v 1.39 2012/01/09 14:39:47 tstaig Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# eallaert  2007-09-03  updated for ACS 7.0, to install also Tcl/Tk
+
+#************************************************************************
+#   NAME
+#   build - build ACS software TOOLS
+#
+#   SYNOPSIS
+#   build 
+#
+#   DESCRIPTION
+#   Wrapper script to control the overall building of ACS Software TOOLS.
+#
+#   According to the current environment, the procedure builds all
+#   what can be built by calling the build<XXXX> specific procedure.
+#   
+#   Use the -vw command line option to force building VxWorks on Linux.
+#   VxWorks is built automatically only on Sun. When VxWorks is built,
+#   also msql and msqltcl will be generated.
+#
+#   FILES
+#   ./buildOutput.<host>  WRITE  file containing the stout
+#   ./buildError.<host>   WRITE  file containing the stout
+#
+#------------------------------------------------------------------------
+
+#********************************************
+# Read and execute instructions in:         *
+#  README                                   *
+#********************************************
+
+#
+# which platform?
+#
+. standardUtilities
+os_discovery
+
+setup_colors
+
+
+#
+# No INTROOT please!
+#
+if [ "$INTROOT" != "" ]
+then 
+    echo ""
+    echo " ERROR: INTROOT shall not be defined (current \$INTROOT >$INTROOT<)"
+    echo "     This installation procedure cannot handle this."
+    echo ""
+    exit 1
+fi
+
+TITLE="     ALMA Common Software TOOLS  "
+
+#
+# Some builds might failed if the tty is closed
+#
+echo "WARNING: Do not close this terminal: some build might fail!"
+
+if [ "X$DISPLAY" = "X" ]
+then
+   echo "WARNING: DISPLAY not set. Some build/tests might fail!"
+fi 
+
+
+# Read and execute instructions in:
+# README
+if [ ! -d $ALMASW_ROOTDIR/$ALMASW_RELEASE ]
+then
+     echo "Create $ALMASW_RELEASE"
+     mkdir -p $ALMASW_ROOTDIR/$ALMASW_RELEASE
+     RET=$?
+     if [ $RET -ne 0 ]
+     then
+	echo "Failed to create $ALMASW_RELEASE, cannot continue..."
+	exit 1
+     fi
+else
+     echo "Target directory $ALMASW_RELEASE already exist."
+fi
+
+
+# This is the order that must be followed when compiling the different tools
+# To be noted: if OS is not Solaris, RH9, RH 7.3 or RH 7.2 GNU tools must
+# not be compiled, but we use what is installed with the system 
+# see later on for Tcl/Tk
+if [ "$OS" != "LINUX" -a "$OS" != "$CYGWIN_VER" -o "${DISTRO}-${REL}" = "RHLX-7.2"  -o "${DISTRO}-${REL}" = "RHLX-7.3"  -o "${DISTRO}-${REL}" = "RHLX-9" ]
+then
+	echo "Build GNU tools only on RedHat 7.2, 7.3 and 9 and Solaris machines"
+	echo -n "buildGNU"
+	./buildGNU &&  echo_success || echo_failure
+fi
+
+#
+# Allow to explicitly ask to build VxWorks
+# using the -vx command line option
+# This is important the first time tool are built,
+# Otherwive WIND_BASE is not defined
+# On SUN we always build VxWorks
+#
+if [ "X$1" = "X-vw" ]
+then
+    echo "VxWorks build explicitly requested"
+    BUILD_VX_WORKS=1
+else	
+    if [ "$OS" = "SOLARIS" ]
+    then
+       echo "VxWorks always built on Solaris"
+       BUILD_VX_WORKS=1
+    fi   
+fi
+
+# if we build VxWorks, Tcl/Tk must include msqltcl - hence msql must also
+# be compiled.
+# For VxWorks this is due to dependencies in the CCSLite code (quite old).
+# TODO: We should be able to cleanup this problem in case of need,
+#       bug given the limited resources for VxWorks support we do not do it now.
+export TCLTK_ROOT=$ALMASW_INSTDIR/tcltk
+if [ "$BUILD_VX_WORKS" = "1" ]
+then
+    # for VxWorks (better: vcc/CCSLite) we still need to install msqltcl
+    echo "buildTcltk"
+    ./buildTcltk -m
+else 
+    echo -n "buildTcltk"
+    ./buildTcltk &&  echo_success || echo_failure
+fi
+
+
+# If explicitly requested or always on Solaris
+# we build VxWorks.
+if [ "$BUILD_VX_WORKS" = "1" ]
+then
+    # for SUN only: put VxWorks 5.5 and CCSLite ; prepare the msql and launch the deamon
+    # NB: CCSLite/vw/bin/PPC604 contains binaries prepared by B. Gustafsson 
+    # which work with Tornado 2.
+    echo "buildVxWorks"
+    ./buildVxWorks
+
+    #
+    # We need to re-evaluate the environment
+    # to make sure that the presence of VxWorks is detected.
+    # I have to use the --login option, because on sun -l does not work.
+    echo "buildCCSLite (ignore the following login messages and wait for buildCCSLite to complete)"
+    bash --login ./buildCCSLite
+else
+    # If we have no VxWorks, we do not use msql; although it is compiled and installed 
+    # in $TCLTK_ROOT we remove the useless directory under $ACSDATA.
+    # to clean ACSDATA cleaner
+    rm -rf $ACSDATA/msql
+fi
+
+
+# JDK is installed ONLY on RH-7 and 9.
+# It is assumed it is already installed on any other platform.
+if [ "${DISTRO}-${REL}" = "RHLX-7.2"  -o "${DISTRO}-${REL}" = "RHLX-7.3"  -o "${DISTRO}-${REL}" = "RHLX-9" ]
+then
+        echo -n "buildJava"
+        ./buildJava &&  echo_success || echo_failure
+fi
+
+#
+# We need to re-evaluate the environment
+# to make sure that the presence of VxWorks is detected.
+# I have to use the --login option, because on sun -l does not work.
+
+echo -n "buildTAO"
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  ./buildTAO &>/dev/null &&  echo_success || echo_failure
+else
+  bash --login ./buildTAO &>/dev/null &&  echo_success || echo_failure
+fi
+
+echo -n "buildDDS"
+./buildDDS  &&  echo_success || echo_failure
+echo -n "buildOpenSpliceDDS"
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
+else
+  bash --login ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
+fi
+echo -n "buildAnt"
+./buildAnt && echo_success || echo_failure
+echo  -n "buildJacORB" 
+./buildJacORB && echo_success || echo_failure
+echo -n "buildPython"
+./buildPython && echo_success || echo_failure
+echo -n "buildPyModules"
+./buildPyModules && echo_success || echo_failure
+echo -n "buildOmniORB"
+./buildOmniORB && echo_success || echo_failure
+#TODO remove mico build and also the mico files from cvs,
+# once we are sure that TAO IFR will supersede mico even for acsMakefile checks.
+echo -n "buildMico"
+./buildMico && echo_success || echo_failure
+echo -n "buildEclipse"
+./buildEclipse && echo_success || echo_failure
+echo -n "buildBoost"
+./buildBoost && echo_success || echo_failure
+#Install Cygwin Java Wrappers
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  echo "Install Cygwin Wrappers"
+  cp -r ../PRODUCTS/CygwinWrappers $ALMASW_INSTDIR/CygwinWrappers
+  chmod +x $ALMASW_INSTDIR/CygwinWrappers/*
+fi
+
+# if the user wants RTOS he/she has to build it by hand using buildRTOS
+# from the directory ../RTOS.
+# Root access will be required to complete installation.
+# cd ../RTOS
+# ./buildRTOS
+
+echo "WARNING: Now log out and login again to make sure that"
+echo "         the environment is re-evaluated!"
+echo " "
+echo "__oOo__"
+

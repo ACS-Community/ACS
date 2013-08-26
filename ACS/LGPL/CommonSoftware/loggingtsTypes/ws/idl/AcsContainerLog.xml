@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+<LogDefinitionType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSLogTS"	
+	name="AcsContainerLog" 
+	shortDescription="Logs used by the various ACS container implementations."
+	description="ACS uses these messages to log container activities such as startup, component lifecycle management. The conversion of ad-hoc logs to predefined logs is an ongoing activity." 
+	_prefix="alma" 
+	>
+	
+	<!-- =========== TODO Container lifecycle =========== -->
+	
+	
+	<!-- =========== Component lifecycle =========== 
+	    TODO: add finer logs for attempts , and also logs for failures. Now we just start with activation performance related logs.
+	-->
+
+	<LogDefinition
+		logName="LOG_CompAct_Loading_OK"
+		shortDescription="Successfully loaded component code."
+		description="Partial success during component activation: loaded component shared library (C++), or classes (Java), or ??? (Python)."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="CompName" type="string" description="Name of the component to be activated." />
+		<Member name="TimeMillis" type="long" description="Elapsed time in ms." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_CompAct_Instance_OK"
+		shortDescription="Successfully instantiated component."
+		description="Partial success during component activation: created component instance."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="CompName" type="string" description="Name of the component to be activated." />
+		<Member name="TimeMillis" type="long" description="Elapsed time in ms." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_CompAct_Corba_OK"
+		shortDescription="Successfully activated component with Corba."
+		description="Partial success during component activation: component activated as a Corba object."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="CompName" type="string" description="Name of the component to be activated." />
+		<Member name="TimeMillis" type="long" description="Elapsed time in ms." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_CompAct_Init_OK"
+		shortDescription="Successfully initialized component."
+		description="Partial success during component activation: initialized the component instance."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="CompName" type="string" description="Name of the component to be activated." />
+		<Member name="TimeMillis" type="long" description="Elapsed time in ms." />
+	</LogDefinition>
+	
+</LogDefinitionType>
+

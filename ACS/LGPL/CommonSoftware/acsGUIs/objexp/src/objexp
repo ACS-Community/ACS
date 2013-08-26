@@ -1,0 +1,16 @@
+#! /bin/sh
+. acsstartupAcsPorts
+#
+# We pass down also any other command line parameter, assumed to be given as 
+# Java VM configuration parameters.
+# The most important is 
+#    -Dobjexp.pool_timeout=<time in ms>
+# to set DSI pool timeout.
+# To run objexp in intrusive way you can set non-sticky mode at startup using
+#    -Dobjexp.connect_non_sticky=false
+# Now the default is non-sticky mode. 
+export HOST=`getIP`
+
+acsStartJava \
+    -noClassLoader -noAutoClasspath -addToClasspath abeansR2Components.jar:acscommon.jar:acscomponent.jar:acserr.jar:acserrj.jar:ACSErrTypeCommon.jar:acsjlog.jar:acstime.jar:avalon-framework.jar:baci.jar:castor.jar:cdbErrType.jar:jACSUtil.jar:logging_idl.jar:logkit.jar:maci.jar:maciErrType.jar:maciSchemaBindings.jar:objexpErrType.jar:oe.jar: \
+    $* -DOAIAddr=$HOST si.ijs.acs.objectexplorer.ObjectExplorer BACI 

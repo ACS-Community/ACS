@@ -1,0 +1,180 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupLogging.sh
+. acsstartupConstants
+. acsstartupAcsInstance
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@@(#) $Id: maciManagerJ,v 1.66 2012/05/08 16:42:11 hsommer Exp $"
+#
+# who       when      what
+# -------- ---------- ----------------------------------------------
+# msekoran 2003-05-09 Created.
+#
+
+#************************************************************************
+#   NAME	maciManagerJ
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+#
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+MANAGER_PIDFILE=$INSTANCE_DIR/$ACS_MANAGER_PIDFILE
+
+#
+# Save the process ID
+#
+ACS_MANAGER_PID=$$
+if [ ! -d $INSTANCE_DIR ]
+then
+    ACS_LOG_ERROR "Unable to save manager's PID because '$INSTANCE_DIR' does not exist!"
+
+elif [ ! -w $INSTANCE_DIR ]
+then
+    ACS_LOG_ERROR "Unable to save manager's PID because '$INSTANCE_DIR' is not owned by '$USER'!"
+
+else
+    #save the PID of this script so we can kill it later if we have to
+    echo $ACS_MANAGER_PID  > $MANAGER_PIDFILE
+fi
+
+
+# ----------------------------------------------------------------
+
+ACS_LOG_INFO "Starting jManager"
+
+#
+# Fetches the IP adress
+#
+export HOST=`getIP`
+
+#
+# If $NAMESERVICE_REFERENCE is not set, take the localhost name  
+#
+if [ "X$NAMESERVICE_REFERENCE" = "X" ]
+then  
+    ACS_NAMING_SERVICE_PORT=`getNamingServicePort`    
+    export NAMESERVICE_REFERENCE=iiop://$HOST:$ACS_NAMING_SERVICE_PORT
+fi
+
+#
+# Fetches port numbers
+#      
+export ACS_MANAGER_PORT=`getManagerPort`
+export ACS_CDB_PORT=`getCDBPort`
+
+if ! checkTCPPort $ACS_MANAGER_PORT
+then
+    ACS_LOG_ERROR "Manager port is being used by another process. Cannot continue!"
+    exit $EC_NOPORT
+fi
+                                                         
+ACS_LOG_DEBUG "ACS Naming Service: $NAMESERVICE_REFERENCE"
+ACS_LOG_DEBUG "Manager will be run on port: $ACS_MANAGER_PORT"
+
+#
+# Evaluates properties for Manager federation
+# The variable ACS_FEDERATION will remain empy if no federation
+# is requested.
+#
+ACS_FEDERATION=""
+if [ "X$ACS_DOMAINS" != "X" ]
+then  
+     ACS_FEDERATION="$ACS_FEDERATION -DACS.domains=$ACS_DOMAINS"
+fi
+if [ "X$ACS_FEDERATION_DIRECTORY" != "X" ]
+then  
+     ACS_FEDERATION="$ACS_FEDERATION -DACS.federationDirectory=$ACS_FEDERATION_DIRECTORY"
+fi
+
+#
+# Evaluates property for DAL reference
+# The variable ACS_DAL_REF will be set
+#
+ACS_DAL_REF=""
+if [ "X$DAL_REFERENCE" != "X" ]
+then
+     ACS_DAL_REF="$DAL_REFERENCE"
+else
+     ACS_DAL_REF="corbaloc::$HOST:$ACS_CDB_PORT/CDB"
+fi
+
+#
+# Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "jmanager.gclog".
+# @TODO: When using several federated manager instances, we'll have to ensure that the jmanager.gclog files don't interfere with each other!
+#
+export JVM_GC_LOG_NAME=jmanager
+
+# COMP-4114 opened the discussion about having idle connection timeout options in the manager
+# The conclusion was that we are going to use the server-side solution provided by JacORB,
+# disconnecting the clients from the Manager ORB
+export JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.connection.server.timeout=15000"
+
+if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
+then
+    # Enable JVM debugging along with debug level stdout logging.
+    # Unlike with Java containers, we let the manager JVM pick a debug port, since ACS developers should be able to find that port in the JVM output.
+    export JAVA_OPTIONS="$JAVA_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n"
+    echo "Manager will accept remote debuggers. See JVM output about the debugger port ('Listening for transport dt_socket at address: ...')."
+fi
+
+
+#
+# With ACS 8.1, more demanding testing at the OSF exposed connection problems to the manager, 
+# which  were caused by having too many open file and TCP connections. Thus we went back to using a custom classpath for starting the manager,
+# so that not all jar files from all subsystems compete with the manager's TCP connections for the limited number of handles.
+#
+# The following jar file list was generated by adding 
+#   export JAVA_OPTIONS="-verbose:class"
+# in this script, then running ACS/LGPL/CommonSoftware/ACSLaser/managerTest/test/, and grepping out the jar files from the manager JVM output.
+# This gave especially the alarm-system related jar files, which are the most difficult because of the classForName mechanism used.
+# The daemon jars had to be added on top, and can be verified in the jcontexmpl test which uses an on-demand container.
+#
+acsStartJava -endorsed \
+    -noClassLoader -noAutoClasspath -addToClasspath acsASsources.jar:acscommon.jar:acscomponent.jar:acsContainerServices.jar:acsdaemon.jar:acsdaemonErrType.jar:acserr.jar:acserrj.jar:acsErrTypeAlarmSourceFactory.jar:ACSErrTypeCommon.jar:ACSErrTypeCORBA.jar:ACSErrTypeJavaNative.jar:ACSErrTypeOK.jar:acsjlog.jar:acsjms.jar:ACSJMSMessageEntity.jar:acsnc.jar:acsncErrType.jar:AcsNCTraceLogLTS.jar:AlarmSourceSchemaBindings.jar:alarmsysteminterface.jar:avalon-framework.jar:castor.jar:cdbDAL.jar:cdbErrType.jar:CDB.jar:cmwmom.jar:commons-logging-1.1.1.jar:jACSUtil.jar:jacsutil2.jar:JavaContainerError.jar:jcontnc.jar:jmanagerErrType.jar:jManager.jar:jms.jar:laserutil.jar:log4j-1.2.15.jar:logging_idl.jar:maciErrType.jar:maci.jar:maciSchemaBindings.jar:NotifyExt.jar:NotifyMonitoringExt.jar:prevayler-1.02.001.jar:repeatGuard.jar:xalan.jar:xalan_serializer.jar \
+    -Djacorb.poa.thread_pool_max=200 \
+    -Djacorb.poa.queue_max=500 \
+    -DNamingServiceRemoteDirectory.reference=$NAMESERVICE_REFERENCE \
+    -DDAL.defaultReference=$ACS_DAL_REF \
+    -DOAPort=$ACS_MANAGER_PORT \
+    -Dmanager.debug.rememberOldHandles \
+    $ACS_FEDERATION com.cosylab.acs.maci.manager.app.Manager $1 $2 $3 $4 $5 $6 $7 $8 $9

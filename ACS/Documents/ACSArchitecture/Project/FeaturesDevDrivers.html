@@ -1,0 +1,38 @@
+<HTML>
+
+<HEAD>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+
+<TITLE>FeaturesDevDrivers</TITLE>
+
+<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+
+</HEAD>
+
+<BODY LINK="#0000ff" VLINK="#800080" bgcolor="#FFFFFF">
+
+<H2><A NAME="DeviceDrivers">Device Drivers</A></H2>
+
+<H3>Device drivers for all standard boards (motor control, analog, digital, serial…) 
+  and network protocols (serial communication, CAN bus<A HREF="ReferenceDocuments.html#RD01">[RD01 
+  - 10.5.12 Field-bus]</A>,…) are provided as part of the ACS delivery, if they 
+  are not already part of the operating system, although development of device 
+  drivers is not direct responsibility of ACS. They will be typically provided 
+  as part of M&amp;C software development and integrated into the ACS releases 
+  is considered necessary<A HREF="ReferenceDocuments.html#RD01">[RD01 - 12.2.1 
+  Hardware Interfaces]</A>. This integration must be taken into account both in 
+  the design of ACS and of Device Drivers.</H3>
+
+<H3>A communication library working over CAN is already part of the M&amp;C work<A HREF="ReferenceDocuments.html#RD12">[RD12]</A> 
+  and has been harmonized with these concepts. For every CAN device there must 
+  be one or more Objects on the CAN bus master CPU, which are the abstract Characteristic 
+  Components corresponding to the physical CAN device. </H3>
+
+<H3>Low level access to the CAN bus nodes iscompletely hidden to the general user 
+  (engineering applications can directly access the CAN nodes).</H3>
+
+</BODY>
+
+</HTML>
+

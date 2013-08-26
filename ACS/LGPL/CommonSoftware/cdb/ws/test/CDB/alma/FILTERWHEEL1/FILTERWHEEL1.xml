@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!-- The ARRAY of slots
+     It specifies the step of each slot 
+   - History:
+   -   Thu Apr 28 16:31:39 UTC 2005 modified by jDAL
+-->
+<FILTERWHEEL xmlns="urn:schemas-cosylab-com:FILTERWHEEL:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" FilterWheelDescription="Example of a dumb filter wheel" AvailableSlots="6">
+	<position />
+	<desc />
+	<slots />
+	<Filter>
+		<_ Name="Red" Delta="140" Slot="0" />
+		<_ Name="Green" Delta="-346" Slot="3" />
+		<_ Name="Blue" Delta="12" Slot="1" />
+	</Filter>
+	<SlotStep>
+		<cdb:_ long="8123"/>
+		<cdb:_ long="15432"/>
+		<cdb:_ long="23698"/>
+		<cdb:_ long="53140"/>
+		<cdb:_ long="44325"/>
+	</SlotStep>
+</FILTERWHEEL>
+

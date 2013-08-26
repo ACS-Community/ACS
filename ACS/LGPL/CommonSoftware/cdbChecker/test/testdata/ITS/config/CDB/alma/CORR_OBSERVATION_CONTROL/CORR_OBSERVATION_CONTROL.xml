@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Example Configuration Database Entry for a ObservationControl
+   -
+   - Author: J. Perez
+   -
+   - History:
+   -   2003-09-5  JP  Created
+  -->
+<ObservationControl xmlns="urn:schemas-cosylab-com:ObservationControl:1.0"
+                    xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+                    xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+

@@ -1,0 +1,53 @@
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: README,v 1.20 2002/12/05 19:09:17 vltsccm Exp $" 
+#
+# README - Available source-code templates into /vlt/templates/forCoding/
+#
+# who        when      what
+# --------  ----------  ----------------------------------------------
+# psivera   2000-10-16  created
+#
+#*******************************************************************************
+
+
+
+--------------------------------------------------------------------------------
+             Available source-code templates into /vlt/templates/forCoding/
+--------------------------------------------------------------------------------
+
+
+A) C  (for both UNIX and VxWorks)
+---------------------------------
+	c-main.template		
+	c-procedure.template	
+	h-file.template		
+	interface-file.template	
+
+
+B) Shell scripts  (for both UNIX and VxWorks):
+----------------------------------------------
+
+	script.template
+
+
+
+C) occam
+--------
+
+	occam-source.template	
+	occam-inc.template	
+
+
+D) Tcl/Tk scripts:
+------------------
+
+	tclScript.template
+
+
+E) Module release notes
+------------------------
+
+        RELEASE_NOTES	  
+                                _____oOo_____

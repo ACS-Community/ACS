@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<ASI-configuration>
+    <ASI-version>0.9</ASI-version>
+   	<alarms-topic>CMW.ALARM_SYSTEM.ALARMS.SOURCES</alarms-topic>
+   	<backup-delivery-mode>0</backup-delivery-mode>
+   	<backup-priority>9</backup-priority>
+   	<backup-time-to-live>60000</backup-time-to-live>
+   	<changes-delivery-mode>0</changes-delivery-mode>
+   	<changes-priority>9</changes-priority>
+   	<changes-time-to-live>60000</changes-time-to-live>
+    <source-name-property>SOURCE_NAME</source-name-property>
+    <source-hostname-property>SOURCE_HOSTNAME</source-hostname-property>
+    <backup-property>BACKUP</backup-property>
+    <alarms-number-property>ALARMS_NUMBER</alarms-number-property>
+	<channel-pool-size>10</channel-pool-size>
+	<channel-property>CHANNEL</channel-property>
+</ASI-configuration>

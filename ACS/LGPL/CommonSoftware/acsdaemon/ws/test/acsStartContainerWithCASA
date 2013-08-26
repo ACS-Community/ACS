@@ -1,0 +1,10 @@
+#! /bin/bash
+echo "Starting fake container with CASA ($@)"
+sleep 2
+echo "ContainerStatusMsg: Ready"
+
+echo "$@"
+while [ "1" ]
+do
+	sleep 1
+done

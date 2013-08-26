@@ -1,0 +1,43 @@
+1 - 
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] -------------------------------
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] component 'alma.acs.alarmsystem.test.BACIPatternPropertyTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] loading configuration...
+1 - ----------T--:--:--.--- WARNING [laser@BACITest:BACIPatternPropertyTest#testROPattern] could not load configuration, using defaults
+1 - -- listing properties --
+1 - cmw.mom.notification=false
+1 - cmw.mom.brokerlist=sljas1:2506
+1 - cmw.mom.loadbalancing=false
+1 - cmw.mom.timetolive=60000
+1 - cmw.mom.username=cmw_usr
+1 - cmw.mom.retry=10
+1 - cmw.mom.sequential=true
+1 - cmw.mom.ping=5
+1 - cmw.mom.selectoratbroker=false
+1 - cmw.mom.maxretry=99999
+1 - cmw.mom.priority=4
+1 - cmw.mom.persistance=false
+1 - cmw.mom.password=cmw_pwd
+1 - cmw.mom.keepalive=0
+1 - 
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] subscribe(CMW.ALARM_SYSTEM.HEARTBEAT, listener, HEARTBEAT = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] Alarm Heartbeat client check frequency : 30000 milliseconds
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] starting heartbeat check...
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] started heartbeat check
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.ROOT, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] subscribe(CMW.ALARM_SYSTEM.CLIENTS.nnnn, listener, (NOT_REDUCED_MASKED_SET = TRUE) OR LASER_INIT = TRUE)
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] unSubscribe(4)
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BaciPropTest#testPatternVar, TEST_COMPONENT, 1> ACTIVE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BaciPropTest#testPatternVar:TEST_COMPONENT:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BaciPropTest#testPatternVar, TEST_COMPONENT, 1> TERMINATE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BaciPropTest#testPatternVar:TEST_COMPONENT:1> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] stopped heartbeat check
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] stopping heartbeat check...
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIPatternPropertyTest#testROPattern] unSubscribeAll()
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] client 'alma.acs.alarmsystem.test.BACIPatternPropertyTest' has successfully delivered a component release request for curl=TEST_COMPONENT
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 

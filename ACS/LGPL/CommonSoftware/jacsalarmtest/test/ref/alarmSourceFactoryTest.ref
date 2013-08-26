@@ -1,0 +1,77 @@
+1 - ----------T--:--:----- INFO [acsStartJava] Using endorsed jar files
+1 - 
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'AlarmSourceFactoryTest#testSameReference' and updated logger names
+1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testSameReference] -------------------------------
+1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testSameReference] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@AlarmSourceFactoryTest#testSameReference created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testSameReference] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testSameReference] POA activated
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testSameReference] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testSameReference] Manager login done ...
+1 - ----------T--:--:----- DEBUG [AlarmSourceFactoryTest#testSameReference] Alarm system type: ACS
+1 - SourceFactoryTestsetUp
+1 - SourceFactoryTesttestSameReference
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testSameReference] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testSameReference] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - SourceFactoryTesttestSameReference done
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testSameReference] [alarm_osci] task finished within the specified 1 seconds
+1 - SourceFactoryTesttearDown
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testSameReference] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- DEBUG [AlarmSourceFactoryTest#testSameReference] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testSameReference] about to log out from manager
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testSameReference] logged out from manager
+1 - ----------T--:--:----- DEBUG [AlarmSourceFactoryTest#testSameReference] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'AlarmSourceFactoryTest#testReferences' and updated logger names
+1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testReferences] -------------------------------
+1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testReferences] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@AlarmSourceFactoryTest#testReferences created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testReferences] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testReferences] POA activated
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testReferences] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testReferences] Manager login done ...
+1 - ----------T--:--:----- DEBUG [AlarmSourceFactoryTest#testReferences] Alarm system type: ACS
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testReferences] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testReferences] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - SourceFactoryTestsetUp
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testReferences] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testReferences] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - SourceFactoryTesttestReferences
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testReferences] [alarm_osci] task finished within the specified 1 seconds
+1 - SourceFactoryTesttestReferences done
+1 - SourceFactoryTesttearDown
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testReferences] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testReferences] [alarm_osci] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testReferences] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- DEBUG [AlarmSourceFactoryTest#testReferences] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testReferences] about to log out from manager
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testReferences] logged out from manager
+1 - ----------T--:--:----- DEBUG [AlarmSourceFactoryTest#testReferences] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'AlarmSourceFactoryTest#testGetRelease' and updated logger names
+1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testGetRelease] -------------------------------
+1 - ----------T--:--:----- INFO [AlarmSourceFactoryTest#testGetRelease] ComponentClientTestCase#setUp()
+1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@AlarmSourceFactoryTest#testGetRelease created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testGetRelease] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testGetRelease] POA activated
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testGetRelease] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testGetRelease] Manager login done ...
+1 - ----------T--:--:----- DEBUG [AlarmSourceFactoryTest#testGetRelease] Alarm system type: ACS
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testGetRelease] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testGetRelease] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - SourceFactoryTestsetUp
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testGetRelease] [alarm_osci] task finished within the specified 1 seconds
+1 - SourceFactoryTesttestGetRelease
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testGetRelease] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testGetRelease] [alarm_osci] started task loop with FIXED_DELAY=1000 ms
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testGetRelease] [alarm_timer] started task loop with FIXED_DELAY=30000 ms
+1 - SourceFactoryTesttestGetRelease done
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testGetRelease] [alarm_osci] task finished within the specified 1 seconds
+1 - SourceFactoryTesttearDown
+1 - ----------T--:--:----- FINER [AlarmSourceFactoryTest#testGetRelease] [alarm_timer] task finished within the specified 1 seconds
+1 - ----------T--:--:----- DEBUG [AlarmSourceFactoryTest#testGetRelease] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testGetRelease] about to log out from manager
+1 - ----------T--:--:----- FINE [AlarmSourceFactoryTest#testGetRelease] logged out from manager
+1 - ----------T--:--:----- DEBUG [AlarmSourceFactoryTest#testGetRelease] AlarmSourceFactory closed
+1 - 
+1 - 
+1 - OK (3 tests)
+1 - 

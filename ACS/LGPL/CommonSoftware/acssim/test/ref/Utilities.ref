@@ -1,0 +1,4 @@
+1 - NAME: TEST_PS_1 ; ID: IDL:alma/PS/PowerSupply:1.0 ; INTERFACES: []
+1 - NAME: TEST_RPS_1 ; ID: IDL:alma/RampedPS/RampedPowerSupply:1.0 ; INTERFACES: ['IDL:alma/PS/PowerSupply:1.0']
+1 - NAME: blah ; ID: None ; INTERFACES: []
+1 - NAME:  ; ID: None ; INTERFACES: []

@@ -1,0 +1,27 @@
+This directory contains the UML Model for ACS in Magic Draw.
+
+
+In order to be able to work with the Model from Linux, 
+the environment variable
+
+        MAGIC_DRAW_HOME
+
+must be set to the path of the Magic Draw tool.
+
+For example:
+
+        /home/almamgr/MagicDraw_UML/
+
+
+The perl script mdExtractImages executes Magic Draw in batch more
+to extract the images.
+
+The mdExtractHtml is used to generate the HTML view of the model.
+
+These scripts have been tested with MagicDraw 16.0.
+The script mdExtractHtml does NOT work with MagidDraw 15.1
+
+-----------------------------------
+
+    Gianluca Chiozzi - 2009-04-28
+

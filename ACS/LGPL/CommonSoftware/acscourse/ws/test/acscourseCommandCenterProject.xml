@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<AcsCommandCenterProject xmlns="Alma/Acs/AcsCommandCenterProject"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    creator="acc-v5.0.3" xsi:type="AcsCommandCenterProject">
+    <mode>local</mode>
+    <servicesLocalJavaRoot>/diska/home/almadev/MODULES/acscourse/ws/test</servicesLocalJavaRoot>
+    <scriptBase>0</scriptBase>
+    <remoteHost></remoteHost>
+    <remoteAccount></remoteAccount>
+    <remotePassword></remotePassword>
+    <toolAgainstManagerHost></toolAgainstManagerHost>
+    <toolAgainstManagerPort></toolAgainstManagerPort>
+    <toolAgainstInterfaceRepository></toolAgainstInterfaceRepository>
+    <toolAgainstNameService></toolAgainstNameService>
+    <containers>
+        <select>2</select>
+        <againstManagerHost></againstManagerHost>
+        <againstManagerPort></againstManagerPort>
+        <againstCDB></againstCDB>
+        <againstInterfaceRepository></againstInterfaceRepository>
+        <container>
+            <name>mountContainer</name>
+            <type>cpp</type>
+            <remotePassword></remotePassword>
+        </container>
+        <container>
+            <name>mountJava</name>
+            <type>java</type>
+            <remotePassword></remotePassword>
+        </container>
+        <container>
+            <name>mountPython</name>
+            <type>py</type>
+            <remotePassword></remotePassword>
+        </container>
+    </containers>
+</AcsCommandCenterProject>
+

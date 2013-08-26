@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
+<!-- type must be 0 otherwise we'll have problem with error libraries ((j)acserr)-->
+<Type 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
+ name="ACSErrTypeOK"
+ type="0"
+ _prefix="alma">
+	
+	<Code name="ACSErrOK"
+	 shortDescription="OK"
+	 description="OK"/>
+</Type>
+

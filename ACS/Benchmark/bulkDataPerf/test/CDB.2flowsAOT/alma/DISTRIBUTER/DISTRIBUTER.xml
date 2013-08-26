@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+   - Example Configuration Database Entry for a BulkDataDistributer
+   -
+   - Author: oat
+   -
+   - History:
+   -   2004-11-23  oat  Created
+     -   Wed Nov 15 09:24:14 UTC 2006 modified by jDAL
+-->
+<BulkDataDistributer xmlns="urn:schemas-cosylab-com:BulkDataDistributer:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sender_protocols="TCP/TCP" recv_protocols="TCP/TCP" distr_timeout="500" />

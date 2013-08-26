@@ -1,0 +1,9 @@
+Thu Jul 12 09:05:37 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+	* src/Makefile: updated Makefile
+
+Tue Jun 26 11:15:03 2001  Birger Gustafsson  <bgustafs@te33.hq.eso.org>
+
+	* src/Makefile: added lcu Makefile
+
+"@(#) $Id: ChangeLog,v 1.6 2002/02/08 14:21:46 vltsccm Exp $"

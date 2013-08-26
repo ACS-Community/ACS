@@ -1,0 +1,236 @@
+2009-02-28 06:12  ahoffsta
+
+	* src/: workflow.oaw,
+	  alma/acs/genfw/UniqueNameModelElementSet.java,
+	  templates/FSMJava.xpt, templates/Root.xpt, templates/util.ext:
+	  New codegen based on openArchitectureWare 4.3.1
+
+2007-12-14 18:49  hsommer
+
+	* src/alma/acs/genfw/runtime/sm/AcsDoActivity.java: A (possibly
+	  shared) ThreadPoolExecutor is now passed to the constructor,
+	  instead of using a static ThreadPoolExecutor instance which can
+	  have ugly side effects (e.g. on collocated master components that
+	  are not loaded via the component class loader)
+
+2007-12-14 18:46  hsommer
+
+	* src/alma/acs/genfw/UniqueNameModelElementSet.java: generics
+	  cleanup
+
+2007-12-07 19:55  hsommer
+
+	* src/.cvsignore, test/.cvsignore, .classpath: [no log message]
+
+2007-12-07 19:55  hsommer
+
+	* src/alma/acs/genfw/runtime/sm/AcsDoActivity.java: Requires a
+	  logger in the constructor, and uses it instead of ugly stderr
+	  printing (an overdue change).  Now logs when the worker thread is
+	  busy, which is done with COMP-1776 in mind.
+
+2006-11-20 07:35  cparedes
+
+	* test/antGenMasterComp.launch: Changing from utf-8 to iso-8859-1
+
+2006-10-25 14:39  hsommer
+
+	* lib/: astyle.exe, astyle_darwin: was not used
+
+2006-10-25 14:38  hsommer
+
+	* .classpath: [no log message]
+
+2006-10-25 14:37  hsommer
+
+	* src/alma/acs/genfw/UniqueNameModelElementSet.java: package change
+	  of oaw4 imports; not sure if this class is still needed with oaw4
+
+2006-10-25 14:37  hsommer
+
+	* src/alma/acs/genfw/: AcsGeneratorTask.java,
+	  AlmaGeneratorPlugin.java, AlmaMetamodelPlugin.java,
+	  AlmaXMIInstantiator.java: with the now supported
+	  openArchitectureWare version 4, this file becomes obsolete
+
+2006-09-26 14:47  hsommer
+
+	* src/alma/acs/genfw/runtime/sm/AcsStateIllegalEventException.java:
+	  now deprecated, to be deleted later
+
+2006-08-02 12:47  hsommer
+
+	* src/alma/acs/genfw/runtime/sm/AcsDoActivity.java: replaced
+	  concurrent JDK 1.4 backport classes with JDK 1.5 originals
+
+2006-07-27 16:30  hsommer
+
+	* lib/.cvsignore: [no log message]
+
+2006-07-27 16:30  hsommer
+
+	* .project: renamed project to ACS_codegen for better grouping in
+	  Eclipse
+
+2005-09-27 13:27  hsommer
+
+	* src/alma/acs/genfw/runtime/sm/AcsDoActivity.java: made thread
+	  termination flag volatile
+
+2005-06-15 18:41  hsommer
+
+	* src/alma/acs/genfw/AlmaMetamodelPlugin.java: creates
+	  AlmaXMIInstantiator to support "rich XMI" checking
+
+2005-06-15 18:39  hsommer
+
+	* src/alma/acs/genfw/AlmaXMIInstantiator.java: added to check Magic
+	  Draw XMI models if they were saved as "rich XMI". The APDM.xmi
+	  generator run had gone through w/o error, but the "poor" xmi that
+	  someone erroneously had checked in did cause faulty code (missing
+	  inheritance).
+
+2005-03-29 13:32  hsommer
+
+	* test/.cvsignore: [no log message]
+
+2005-03-29 13:31  hsommer
+
+	* src/alma/acs/genfw/runtime/sm/AcsStateUtil.java: merged with
+	  now-obsolete class AcsStateUtil from module 'mastercomp'.
+
+2005-03-29 13:30  hsommer
+
+	* src/alma/acs/genfw/: AlmaGeneratorPlugin.java,
+	  runtime/sm/AcsDoActivity.java, runtime/sm/AcsSimpleState.java,
+	  runtime/sm/AcsState.java, runtime/sm/AcsStateChangeListener.java:
+	  javadoc
+
+2005-03-29 12:52  hsommer
+
+	* src/alma/acs/genfw/runtime/sm/AcsDoActivity.java: ported
+	  concurrency classes to
+	  edu.emory.mathcs.backport.java.util.concurrent package, in
+	  preparation for JDK 1.5
+
+2005-01-31 20:46  dfugate
+
+	* src/Makefile, test/Makefile: The db_all target has been
+	  deprecated for over two years (with the addition of the new ACS
+	  CDB) and has not been recognized by the ACS Makefile for quite
+	  some time. Removed.
+
+2004-11-17 18:04  hsommer
+
+	* src/alma/acs/genfw/AlmaGeneratorPlugin.java: changes for genfw
+	  version 3 rc2 compatibility
+
+2004-09-16 11:14  mpasquat
+
+	* src/Makefile, test/Makefile: changed include
+
+2004-07-27 16:44  hsommer
+
+	* test/antGenMasterComp.xml: acscodegen.jar for Plugins
+
+2004-07-23 14:48  hsommer
+
+	* test/antGenMasterComp.xml: new syntax for generator task; takes
+	  astyle linux executable from ACSROOT/bin;
+
+2004-07-23 14:45  hsommer
+
+	* src/alma/acs/genfw/AlmaGeneratorPlugin.java,
+	  src/alma/acs/genfw/AlmaMetamodelPlugin.java, log4j.properties:
+	  [no log message]
+
+2004-07-23 14:44  hsommer
+
+	* src/Makefile: removed astyle_linux (no longer in this module)
+
+2004-07-23 14:43  hsommer
+
+	* lib/astyle_linux: produced in separate module 'astyle'
+
+2004-07-19 22:59  sharring
+
+	* test/: Makefile, TestList.lite, allTests, ref/T1.ref: Added a
+	  dummy tat test.
+
+2004-05-05 10:37  hsommer
+
+	* test/Makefile: makes generateMasterComp executable in ../bin
+
+2004-05-05 10:37  hsommer
+
+	* src/Makefile: dirty fix to make astyle_linux executable
+
+2004-05-05 10:16  hsommer
+
+	* test/: Makefile, generateMasterComp: [no log message]
+
+2004-05-05 10:15  hsommer
+
+	* test/antGenMasterComp.xml: ANT build file
+
+2004-05-05 10:15  hsommer
+
+	* test/MasterComponent.xml: XMI file from Rose model of Master
+	  Component (module "mastercomp")
+
+2004-05-05 10:10  hsommer
+
+	* test/antGenMasterComp.launch: Eclipse launch file
+
+2004-05-05 10:10  hsommer
+
+	* src/Makefile: [no log message]
+
+2004-05-05 09:55  hsommer
+
+	* lib/astyle.exe: temporary solution: astyle sources + Makefile
+	  should go into ACS external tools section
+
+2004-05-05 09:50  hsommer
+
+	* src/.cvsignore: [no log message]
+
+2004-05-05 09:41  hsommer
+
+	* ChangeLog: [no log message]
+
+2004-05-05 09:40  hsommer
+
+	* test/cdplayer/: CDPlayer.mdl, CDPlayer.xml: small state machine
+	  to be used for examples; similar to the one discussed in Jiro
+	  Tanaka's state machine paper.
+
+2004-05-05 09:37  hsommer
+
+	* src/alma/acs/genfw/AcsGeneratorTask.java,
+	  src/alma/acs/genfw/UniqueNameModelElementSet.java, .classpath,
+	  .cvsignore, .project: [no log message]
+
+2004-05-05 09:35  hsommer
+
+	* src/alma/acs/genfw/runtime/sm/: AcsDoActivity.java,
+	  AcsSimpleState.java, AcsState.java, AcsStateActionException.java,
+	  AcsStateChangeListener.java, AcsStateIllegalEventException.java,
+	  AcsStateUtil.java: runtime support class for generated state
+	  machines
+
+2004-05-05 09:34  hsommer
+
+	* lib/: astyle_darwin, astyle_linux: temporary solution: astyle
+	  sources + Makefile should go into ACS external tools section
+
+2004-05-05 09:33  hsommer
+
+	* config/codegen/statemach/Check.tpl,
+	  config/codegen/statemach/FSMJava.tpl,
+	  config/codegen/statemach/Root.tpl,
+	  config/codegen/statemach/metamappings.xml,
+	  config/codegen/statemach/rose_unisys134_xmi11_sta.xml,
+	  lib/.cvsignore: [no log message]
+
+"@(#) $Id$"

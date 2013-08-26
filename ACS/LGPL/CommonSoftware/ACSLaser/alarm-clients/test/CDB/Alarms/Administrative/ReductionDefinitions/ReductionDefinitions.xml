@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  - Sample configuration of alarm reduction links.
+  -
+  - Author:
+  -    Klemen Zagar (Cosylab)
+  -
+  - History:
+  -   2005-06-13  KZ  Created
+ -->
+<reduction-definitions 
+   xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<links-to-create>
+
+		<reduction-link type="NODE">
+		<parent>
+		<alarm-definition fault-family="TEST"
+		fault-member="NODE1" fault-code="1"/>
+		</parent>
+		<child>
+		<alarm-definition fault-family="TEST"
+		fault-member="NODE2" fault-code="1"/>
+		</child>
+		</reduction-link>
+		
+		<reduction-link type="NODE">
+		<parent>
+		<alarm-definition fault-family="TEST"
+		fault-member="NODE2" fault-code="1"/>
+		</parent>
+		<child>
+		<alarm-definition fault-family="TEST"
+		fault-member="NODE3" fault-code="1"/>
+		</child>
+		</reduction-link>
+		
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="TEST" fault-member="MULTI1" fault-code="2"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="TEST" fault-member="MULTI2" fault-code="2"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="TEST" fault-member="MULTI3" fault-code="2"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="TEST" fault-member="MULTI4" fault-code="2"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="TEST" fault-member="MULTI5" fault-code="2"/>
+			</child>
+		</reduction-link>
+		
+	</links-to-create>
+
+		<thresholds>
+		<threshold value="3">
+			<alarm-definition fault-family="TEST" fault-member="MCAUSE" fault-code="1"/>
+		</threshold>
+	</thresholds>
+</reduction-definitions>
+

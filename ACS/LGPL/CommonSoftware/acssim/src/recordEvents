@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+
+from Acssim.EventRecorder import EventRecorder
+
+import sys
+
+recorder = EventRecorder(sys.argv[1])
+recorder.begin()
+print "Press a key to finish..."
+sys.stdin.read(1)
+recorder.end()

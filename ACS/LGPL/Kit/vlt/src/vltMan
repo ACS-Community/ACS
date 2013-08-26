@@ -1,0 +1,228 @@
+#! /bin/sh
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: vltMan,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+#
+# who        when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  06/03/94  created
+# gfilippi  09/02/95  SPR950021: vltMan takes parameters 
+# gfilippi  09/02/95  support of multiplatform modules
+# gfilippi  09/02/95  -verbose switch
+# rschmutz 1999-04-03 if Linux: disable bash builtin command 'echo'.
+#
+
+#************************************************************************
+#   NAME
+#   vltMan - invoke tkman browser on the VLT man pages
+# 
+#   SYNOPSIS
+#
+#        vltMan  [-verbose] [<tkmanOption> ...] [<manpage>]
+#
+# 
+#   DESCRIPTION
+#   These utilities are used to access the on-line documentation of the VLT
+#   software.
+#
+#   The utilities spawns the tkman browser giving to it as scope for 
+#   where to lacate man pages the following list:
+#
+#      - if src/ is the current directory, the current module
+#
+#      - if INTROOT is defined, the current integration area
+#
+#      - the VLT root area.
+#
+#   The tkman browser offers the following main advantages:
+#      
+#      - hypertext links to other man pages (click on a word in the text
+#        which corresponds to a man page, and you jump there), 
+#      
+#      - better navigation within long man pages with searches and jumps
+#        to section headers.
+#      
+#      - possibility to select a portion of text and copy it somewhere else.
+#      
+#      - enable/disable of directory in the man-search path.
+#      
+#   See presentation page for a complete description of tkman features.
+#
+#
+#   -verbose        if any, print out current INTROOT and module.
+#                   By default, output is produced only on error.
+#
+#   <tkmanOption>   any tkman options. See tkman documentation.
+#
+#   <manpage>       if specified, the manpage is shown at the beginning
+#                   instead of tkman presentation page
+#
+#   FILES
+#                     
+#
+#   ENVIRONMENT
+#   MODROOT  <read>  the root directory of the current module
+#
+#   INTROOT  <read>  the root directory of the current integration area
+#
+#   VLTROOT  <read>  the root directory of the VLT root area
+#                    (it should have been set at login time)
+#
+#   RETURN VALUES
+#
+#   CAUTIONS 
+#   I suggest the use of tkman with the "Mono" option enabled (in the lower 
+#   right corner) to preserve the allignement of drawings.
+#   
+#   Parameter interpretation is position dependend. If used, they must
+#   specified in the right order.
+#
+#   vltMan can recognize the current module ONLY if the current directory
+#   is set to "src/"
+#
+#   SEE ALSO 
+#   tkman
+#
+#   BUGS
+#   On HP, the "Print" option in the "Occasionals" menu does not work
+#   because the "psroff" command in not available. For the time being,
+#   use te1 to print.
+#----------------------------------------------------------------------
+
+# if Linux: disable the bash builtin command 'echo'.
+if [ "`uname`" = "Linux" ]
+then
+    enable -n echo
+fi
+
+if [ "$1" = "-verbose" ]
+then
+    VERBOSE=on
+    shift
+    echo "vltMan:"
+fi
+
+
+#----------------------------------------------------------------------
+# Put the VLT root area man pages in the scope
+#----------------------------------------------------------------------
+
+if [ -z "$VLTROOT" ] 
+then
+    echo "vltMan: ERROR - VLTROOT not defined."
+    echo ""
+    echo "        ----> It should have been defined at loggin time."
+    echo "              Ask your system manager to check login files"
+    echo ""
+    exit
+fi
+
+if [ ! -d $VLTROOT/man ] 
+then
+    echo "vltMan: ERROR - $VLTROOT/man does not exist or it is nor a directory."
+    echo ""
+    echo "        ----> It should have been correctly defined at loggin time."
+    echo "              Ask your system manager to check login files"
+    echo ""
+    exit 
+fi
+
+if [ ! -d $VLTROOT/vw/man ] 
+then
+    echo "vltMan: ERROR - $VLTROOT/vw/man does not exist or it is not a directory."
+    echo ""
+    echo "        ----> It should have been correctly defined at loggin time."
+    echo "              Ask your system manager to check login files"
+    echo ""
+    exit 
+fi
+
+# Put the VLT root area man pages in the scope
+MANPATH=$VLTROOT/man:$VLTROOT/vw/man
+
+
+#----------------------------------------------------------------------
+# if any, add the current integration area to the scope
+#----------------------------------------------------------------------
+
+if [ "$INTROOT" != "" ] 
+then
+    if [ -d $INTROOT/man  -a  -d $INTROOT/vw/man ] 
+    then
+        MANPATH=$INTROOT/man:$INTROOT/vw/man:${MANPATH}
+    else
+        echo "vltMan: WARNING - $INTROOT has not the standard structure."
+        echo "                  (man and/or vw/man missing)"
+        echo ""
+        echo "        ----> check you directory structure (getTemplate)"
+        echo ""
+    fi
+else
+    INTROOT=none
+fi
+
+if [ "$VERBOSE" = "on" ]
+then 
+    echo "  - current integration area: >>$INTROOT<<"
+fi
+
+#----------------------------------------------------------------------
+# if current directory is src/ try to figure out the module name 
+#----------------------------------------------------------------------
+
+CURRENT_DIR=`pwd`
+CURRENT_NAME=`basename $CURRENT_DIR`
+
+if [ "$CURRENT_NAME" = "src" ]
+then
+
+    #
+    # find module name. There are two cases:
+    #    - normal modules: the module name is the parent directory
+    #    - multiplatform modules: the module is structured as more than one 
+    #                     submodules. Each submodule has the normal module
+    #                     directory tree but fixed names are used:
+    #                        <mod>/lcu    for the LCU part
+    #                        <mod>/ws     for the ws  part
+    PARENT_DIR=`dirname $PWD`
+    PARENT_NAME=`basename $PARENT_DIR`
+    if [ "$PARENT_NAME" = "lcu" -o "$PARENT_NAME" = "ws" ]
+    then
+        GRANDPARENT_DIR=`dirname $PARENT_DIR`
+        GRANDPARENT_NAME=`basename $GRANDPARENT_DIR`
+        MODROOT=$GRANDPARENT_DIR
+        MANPATH=$MODROOT/ws/man:$MODROOT/lcu/man:${MANPATH}
+    else
+        MODROOT=$PARENT_DIR
+        MANPATH=$MODROOT/man:${MANPATH}
+    fi
+else 
+    MODROOT=none
+fi
+
+if [ "$VERBOSE" = "on" ]
+then 
+    echo "  - current module          : >>$MODROOT<<"
+fi
+
+export MANPATH
+
+
+#----------------------------------------------------------------------
+# invoke the tkman browser. Remaining input parameters are passed to tkman.
+#----------------------------------------------------------------------
+tkman -title "vltMan - manual page browser"  $* &
+
+if [ "$VERBOSE" = "on" ]
+then
+    echo " . . . opening tkman .\c"
+    sleep 1; echo " .\c"
+    sleep 1; echo " .\c"
+    sleep 1; echo " .\c"
+    sleep 1; echo " .\c"
+    sleep 1; echo " .\n"
+fi
+
+#
+# ___oOo___#

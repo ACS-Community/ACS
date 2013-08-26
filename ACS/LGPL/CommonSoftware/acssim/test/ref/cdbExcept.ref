@@ -1,0 +1,3 @@
+1 - Parameters to this generic test script are: HELLOWORLD1 badMethod()
+1 - The exception that occured was: ACSErrTypeCommon.UnknownEx(xxxx)
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

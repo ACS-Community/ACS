@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP project private links</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+	
+	<section>
+		<description>
+      Links contained in this web page are intended to the <a HREF="../members/index.html">GP core team members</a> only. <br/>
+      Thanks in advance for your understanding.<BR/>
+      <br/>
+		</description>
+	</section>
+
+	<section>
+		<anchor>GENDOC</anchor>
+		<title>General documentation</title>
+		<description>
+      <UL>
+      <B>.</B> <A HREF="NetBeans_vs_Eclipse.html">Netbeans vs Eclipse</A>.<br/>
+      </UL>
+      <br/>
+		</description>
+	</section>
+  
+	<section>
+		<anchor>DEV</anchor>
+		<title>Development</title>
+		<description>
+      <UL>
+      <B>.</B> <A HREF="codingconventions.html">GP coding conventions</A>.<br/>
+      <B>.</B> <A HREF="XML_documentation_howto.html">XML documentation howto</A>.<br/>
+      <B>.</B> <A HREF="http://wwwps1.cern.ch/asp/src/java/gp/todolist/">GP to do list</A>.<br/>
+      </UL>
+      <br/>
+      <br/>
+		</description>
+	</section>
+</document>
+

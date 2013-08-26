@@ -1,0 +1,51 @@
+2 -  -- alma.nctest.clients.FridgeConsumer
+3 - Welcome to acsexmplClientFridgeNC!
+5 - Getting the Supplier
+6 - Making sure there is a fridge available...
+5 - Sending events
+5 - Finished sending events
+1 - ----------T--:--:--.--- FridgeNCConsumer Main - Creating FridgeConsumer
+1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
+1 - ----------T--:--:--.--- FridgeNCConsumer Main - Waiting for events . . .
+2 - ----------T--:--:--.--- INFO [FridgeConsumer] component 'FridgeConsumer' requested AdvancedContainerServices
+2 - Waiting for events...
+2 - The Java temperature difference is ---
+2 - The Java temperature difference is ---
+2 - The Java temperature difference is ---
+2 - The Java temperature difference is ---
+2 - The Java temperature difference is ---
+2 - Done...
+3 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+3 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:---/Manager'
+3 - ----------T--:--:--.--- [GlobalLogger - ] Helper::resolveNameService wrong constructor - attempting recovery for the 'fridge' channel!
+3 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] Manager hostname generated using localhost address: 'xxx'
+3 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::initThread] Thread name: 'runOrbThread'
+3 - ----------T--:--:--.--- [GlobalLogger - ] ORBHelper::runORB the ORB is now running!
+3 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addSubscription subscribing to 'temperatureDataBlockEvent' events for the 'fridge' channel!
+3 - created a consumer
+4 - ----------T--:--:--.--- FridgeNCSupplier Main - Creating an instance of Supplier
+4 - ----------T--:--:--.--- FridgeNCSupplier Main - Ready to send NC events...
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+3 - ----------T--:--:--.--- [GlobalLogger - ] The C++ temperature difference is ---
+3 - ----------T--:--:--.--- [GlobalLogger - ] The C++ temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+3 - ----------T--:--:--.--- [GlobalLogger - ] The C++ temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+3 - ----------T--:--:--.--- [GlobalLogger - ] The C++ temperature difference is ---
+3 - ----------T--:--:--.--- [GlobalLogger - ] The C++ temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer fridgeDataHandler - The Python temperature difference is ---
+1 - ----------T--:--:--.--- FridgeNCConsumer Main - Events all done . . . exiting
+6 - ----------T--:--:--.--- Python Client Main - Creating FridgeConsumer
+6 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
+6 - ----------T--:--:--.--- Python Client Main - Waiting for events . . .
+6 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
+6 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
+6 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
+6 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
+6 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The Python temperature difference is ---
+6 - ----------T--:--:--.--- Python Client Main - Events all done . . . exiting
+6 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+3 - ----------T--:--:--.--- [GlobalLogger - ] Releasing...
+4 - ----------T--:--:--.--- FridgeNCSupplier Main - Events all done . . . exiting
+5 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

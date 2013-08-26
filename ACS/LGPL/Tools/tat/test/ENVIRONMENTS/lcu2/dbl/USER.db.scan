@@ -1,0 +1,26 @@
+//*****************************************************************************
+//* E.S.O. - VLT project
+//*
+//* "@(#) $Id: USER.db.scan,v 1.76 2003/01/09 17:50:47 vltsccm Exp $"
+//*
+//* who       when      what
+//* --------  --------  -----------------------------------------------
+//* NNNNNNNN  dd/mm/yy  created
+//*
+//**************************************************************************
+
+// Loads classes definition from standard file
+#include "CCS.db"
+
+//
+// **************************************************************************
+// Points needed by LCC, but requiring editing to match user installed config.
+// **************************************************************************
+//
+
+POINT "<VLT scan dev>" "LAN:ws2"	
+BEGIN
+	ALIAS 	"ws2"
+END
+
+// ___oOo___

@@ -1,0 +1,213 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupAcsInstance
+. acsstartupLogging.sh
+. acsstartupConstants
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: acsStartORBSRVC,v 1.78 2012/05/31 14:56:22 acaproni Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# azagar   2008-08-08 split on seperate service startup scripts
+# msekoran 2007-11-27 Added alarm notification service
+# jschwarz 2007-11-09 Added option to use TMCDB instead of (default) XML CDB
+# sharring 2004-06-23 restructured for performance
+# mschilli 2004-04-16 added proper command line parsing
+# gchiozzi 2003-06-04 Fixed usage of ORBOPTS="-ORBDottedDecimalAddresses 1"
+# david 2003-05-14 changed to bash for tat tests
+# gchiozzi 2003-04-02 Replaced nsadd in $PATH with standard $ACE_ROOT one
+# gchiozzi 2002-11-22 Added starting CDB
+# gchiozzi 2002-09-30 Removed CDB Server. Not needed any more.
+# bjeram 2002-04-10 added -silent options for acsLogSvc
+# bjeram 2002-04-10 added acslogsvc
+# almamgr 2001-11-23 Changed handling of IOR file for IR
+# gchiozzi 2001-11-16 Added acsIrfeed
+# almamgr 2001-09-20 Remove export. Did not work on Sun
+# gchiozzi 2001-09-20 Added loading of ACS IDLs in interface repository
+# gchiozzi 2001-09-19 created
+#
+
+#************************************************************************
+#   NAME
+# 
+#   SYNOPSIS
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+#
+
+COMMAND=`basename $0`
+PARAMS=$*
+
+PID=$$
+export HOST=`getIP`
+
+###
+### ----------- Command Line Parsing ---------------------
+
+#
+# These will contain the parsing results (CL_XXX, CL = command line)
+#
+CL_BASEPORT=
+CL_HELP=
+CL_RECOVER=
+CL_LOADIFR=true
+
+#
+# These options can be recognized (longopts comma-separated. colon means argument is required)
+#
+LONGOPTS=help,noloadIFR,recoverClientConnections,baseport:,timeout:
+SHORTOPTS=hrb:t:
+
+#
+# Usage info. Be nice and keep this up-to-date!
+#
+function printUsage {
+   echo "Starts Orb services for Acs; note that acsStart is an alternative for this"
+   echo ""
+	echo "Usage: `basename $0` [OPTIONS]  "
+	echo "Options: "
+	echo "   -b | -baseport INSTANCE          the acs instance (0-9) you want to use"
+	echo "   -noloadIFR                         load the CORBA Interface Repository using all the IDL files"
+	echo "   -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1"
+	echo "   -r | -recoverClientConnections   force services to recover client connections"
+	echo "   -h | -help                       prints this help and exits"
+}
+
+#
+# Run getopt (posixly_correct needed). We run twice:
+# First run is simply to check the commandline for correctness
+# Second run is the real deal which replaces the command line args with getopt's output
+export POSIXLY_CORRECT=1
+
+getopt -n `basename $0` -Q -u -a -l $LONGOPTS $SHORTOPTS "$@" || {
+   printUsage
+	exit $EC_BADARGS;
+}
+
+set -- `getopt -u -a -l $LONGOPTS $SHORTOPTS "$@"`
+
+#
+# Iterate over getopt's output and set CL_XXX variables accordingly
+#
+while : 
+do
+	case "$1" in
+	--baseport)                   CL_BASEPORT=$2 ; shift ;;
+	-b)                           CL_BASEPORT=$2 ; shift ;;
+	--noloadIFR)                   CL_LOADIFR=false ;; 
+	--timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+	-t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
+	--help)                       CL_HELP=true ;; 
+	-h)                           CL_HELP=true ;; 
+	--recoverClientConnections)   CL_RECOVER=true ;; 
+	-r)                           CL_RECOVER=true ;; 
+	--) break ;;
+	esac
+	shift
+done
+shift
+
+# restore 
+export POSIXLY_CORRECT=
+unset POSIXLY_CORRECT
+
+
+if [ "$CL_HELP" ] ; then
+   printUsage
+   exit $EC_OK
+fi
+
+
+#
+# (Note: Rest of command line now in $@ )
+#
+### ---------- End of Command Line Parsing -------------
+
+
+################################
+#Set variables
+################################
+
+#Check command-line args for baseport option
+if [ "$CL_BASEPORT" ]
+then
+  export ACS_INSTANCE=$CL_BASEPORT
+fi
+
+# Always use -ORBDottedDecimalAddresses=1
+ORBOPTS="-ORBDottedDecimalAddresses 1"
+
+ACS_LOG_COMMAND $@
+
+
+################################
+# ORB Services Startup
+################################
+
+function timeoutExit
+{
+  if [ $1 -ge 1 ]; then acsNamingService -k ; fi
+  if [ $1 -ge 4 ]; then acsNotifyService -k ; fi
+  if [ $1 -ge 5 ]; then acsNotifyService -k -n Logging ; fi
+  if [ $1 -ge 6 ]; then acsNotifyService -k -n Archive ; fi
+  if [ $1 -ge 7 ]; then acsNotifyService -k -n Alarm ; fi
+  if [ $1 -ge 8 ]; then acsLoggingService -k ; fi
+  if [ $1 -ge 2 ]; then acsInterfaceRepository -k ; fi
+  if [ $1 -ge 9 ]; then acsACSLogService -k ; fi
+  if [ $1 -ge 3 ]; then acsConfigurationDatabase -k ; fi
+  if [ $1 -ge 10 ]; then acsAlarmService -k ; fi
+  rm -rf $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "$COMMAND" "Cannot remove $INSTANCE_DIR")
+  exit $EC_TIMEOUT
+}
+
+ACS_LOG_INFO "$COMMAND" "Starting CORBA Services"
+ACS_LOG_INFO "$COMMAND" "    Orb options:  $ORBOPTS"
+
+acsNamingService -s -w $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 1; fi
+acsInterfaceRepository -s $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 2; fi
+acsConfigurationDatabase -s $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 3; fi
+acsNotifyService -s -w $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 4; fi
+acsNotifyService -s -w -n Logging $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 5; fi
+acsNotifyService -s -w -n Archive $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 6; fi
+acsNotifyService -s -w -n Alarm $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 7; fi
+acsLoggingService -s -w $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 8; fi
+acsACSLogService -s $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 9; fi
+# Check to see that the DAL actually got started (w/in the timeout). 
+# if not, clean up and exit.
+acsConfigurationDatabase -w $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 9; fi
+acsAlarmService -s -w $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 10; fi
+
+ACS_LOG_FORCED "$COMMAND" "INFO" "For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
+ACS_LOG_FORCED "$COMMAND" "INFO" "The $COMMAND script has now completed!"
+
+#
+# ___oOo___

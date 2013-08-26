@@ -1,0 +1,18 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: acsutilTATEnvironment,v 1.3 2007/12/01 14:59:27 hsommer Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+
+#set ACS_TMP $env(PWD)/tmp
+#set env(ACS_TMP) $ACS_TMP
+set env(ACS_LOG_STDOUT) 2
+#set env(MACI_RECOVERY_FILE_NAME) $ACS_TMP/maciRecovery
+#set env(ACS_BACI_RECOVERY_FILE) $ACS_TMP/baciRecovery
+set env(ACS_LOG_FILE) ./log_cache.dat 
+
+#
+# ___oOo___

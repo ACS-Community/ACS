@@ -1,0 +1,77 @@
+1 -  --noDirectory -- alma.acs.logclient.LogListener
+1 - 
+1 - Connection disconnected
+1 - Connecting
+1 - Connection established
+1 - RAW log: <Info TimeStamp="xxx" File="testLTSClient.cpp" Line="52" Routine="main" Host="xxx" Process="../bin/testLTSClient" Thread="main" Context="" SourceObject="GlobalLogger" Audience="Curious people"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[SimpleLog]]></Data></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: testLTSClient.cpp
+1 - Line: 52
+1 - Routine: main
+1 - Host: xxx
+1 - Process: xxx../bin/testLTSClient
+1 - Context: 
+1 - Thread: main
+1 - Log Message: Simple Log
+1 - Audience: Curious people
+1 - Datas: 
+1 - 	logName : SimpleLog
+1 - RAW log: <Info TimeStamp="xxx" File="testLTSClient.cpp" Line="55" Routine="main" Host="xxx" Process="../bin/testLTSClient" Thread="main" Context="" SourceObject="GlobalLogger" Audience="Curious people" Array="Array01" Antenna="Antenna01"><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[SimpleLog]]></Data></Info>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Info
+1 - Source Object: GlobalLogger
+1 - File: testLTSClient.cpp
+1 - Line: 55
+1 - Routine: main
+1 - Host: xxx
+1 - Process: xxx../bin/testLTSClient
+1 - Context: 
+1 - Thread: main
+1 - Log Message: Simple Log
+1 - Audience: Curious people
+1 - Array: Array01
+1 - Antenna: Antenna01
+1 - Datas: 
+1 - 	logName : SimpleLog
+1 - RAW log: <Warning TimeStamp="xxx" File="testLTSClient.cpp" Line="59" Routine="main" Host="xxx" Process="../bin/testLTSClient" Thread="main" Context="" SourceObject="GlobalLogger" Audience="People with too much time on their hands" StackId="" StackLevel="0"><![CDATA[Complex Log]]><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="someBooleanMember"><![CDATA[1]]></Data><Data Name="logName"><![CDATA[ComplexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data></Warning>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Warning
+1 - Source Object: GlobalLogger
+1 - File: testLTSClient.cpp
+1 - Line: 59
+1 - Routine: main
+1 - Host: xxx
+1 - Process: xxx../bin/testLTSClient
+1 - Context: 
+1 - Thread: main
+1 - Stack ID: 
+1 - Stack Level: 0
+1 - Log Message: Complex Log
+1 - Audience: People with too much time on their hands
+1 - Datas: 
+1 - 	someLongMember : 42	someStringMember : test string	someBooleanMember : 1	logName : ComplexLog	someDoubleMember : 3.14159
+1 - RAW log: <Warning TimeStamp="xxx" File="testLTSClient.cpp" Line="66" Routine="main" Host="xxx" Process="../bin/testLTSClient" Thread="main" Context="" SourceObject="GlobalLogger" Audience="People with too much time on their hands" Array="Array01" Antenna="Antenna01" StackId="" StackLevel="0"><![CDATA[Complex Log]]><Data Name="someLongMember"><![CDATA[42]]></Data><Data Name="someStringMember"><![CDATA[test string]]></Data><Data Name="someBooleanMember"><![CDATA[1]]></Data><Data Name="logName"><![CDATA[ComplexLog]]></Data><Data Name="someDoubleMember"><![CDATA[3.14159]]></Data></Warning>
+1 - Log received: --- LogEntry ---
+1 - TimeStamp: xxx
+1 - Entry Type: Warning
+1 - Source Object: GlobalLogger
+1 - File: testLTSClient.cpp
+1 - Line: 66
+1 - Routine: main
+1 - Host: xxx
+1 - Process: xxx../bin/testLTSClient
+1 - Context: 
+1 - Thread: main
+1 - Stack ID: 
+1 - Stack Level: 0
+1 - Log Message: Complex Log
+1 - Audience: People with too much time on their hands
+1 - Array: Array01
+1 - Antenna: Antenna01
+1 - Datas: 
+1 - 	someLongMember : 42	someStringMember : test string	someBooleanMember : 1	logName : ComplexLog	someDoubleMember : 3.14159

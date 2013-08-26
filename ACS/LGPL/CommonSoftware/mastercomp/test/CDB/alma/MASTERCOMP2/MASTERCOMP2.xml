@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+  Configuration for the BACI properties in the IDL interface SpecialTestMasterComponent.
+  The property 'currentStateHierarchy' is inherited from the IDL interface 'MasterComponent'.
+  This inheritance is also reflected in the XML schemas that define this XML file,
+  which are 'SpecialTestMasterComponent.xsd' and 'MasterComponent.xsd'.  
+  -->
+  
+<SpecialTestMasterComponent xmlns="urn:schemas-cosylab-com:SpecialTestMasterComponent:1.0">
+
+  <currentStateHierarchy description="Current hierarchy of subsystem states, top-down" 
+    xmlns="urn:schemas-cosylab-com:MasterComponent:1.0"/>
+    
+  <someOtherProperty
+    description="a silly read-write double property."
+    units="myUnit"
+  />
+  
+</SpecialTestMasterComponent> 
+

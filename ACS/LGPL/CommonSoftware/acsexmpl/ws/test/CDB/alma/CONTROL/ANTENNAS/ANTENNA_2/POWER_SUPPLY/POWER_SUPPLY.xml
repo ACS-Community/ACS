@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PowerSupply xmlns="urn:schemas-cosylab-com:PowerSupply:1.0"
+             xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+			 xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <current description="current" units="A" graph_min="0" graph_max="1000" min_value="0" max_value="1000"/>
+  <readback description="readback" units="A"  graph_min="0" graph_max="1000" 
+	alarm_low_on="10.0"
+	alarm_low_off="20.0"
+	alarm_high_on="990.0"
+	alarm_high_off="980.0"/>
+  <status description="status"/>
+</PowerSupply>
+

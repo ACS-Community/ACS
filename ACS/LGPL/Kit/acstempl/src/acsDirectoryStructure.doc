@@ -1,0 +1,567 @@
+#*******************************************************************************
+# E.S.O. - ACS project
+#
+# "@(#) $Id: acsDirectoryStructure.doc,v 1.19+ 2002/11/12 10:34:11 vltsccm Exp $" 
+#
+# who        when      what
+# --------  ----------  ----------------------------------------------
+# psivera   2002-11-08  changed VLTDATA to ACSDATA
+# psivera   2000-10-16  create
+#
+
+#************************************************************************
+NAME
+    acsDirectoryStructure - ACS Software standard directory structures
+ 
+DESCRIPTION
+
+
+The following areas are defined:
+         - module development area (MODROOT) 
+         - integration area        (INTROOT)
+         - ACS System area         (ACSROOT)
+         - data area               (ACSDATA)
+
+For each area a set of standard subdirectories is defined. The subdirectories
+are named consistently, so no matter the area, they contain always the same
+type(s) of files. The standardized subdirectory names are:
+
+      ALARMS = Alarm Definition File (<mod>_ALARMS)
+ ALARMS/HELP = Alarm Help Files (<modAlarmMnemonic>.hlp
+         CDT = Command Definition Table (<process>.cdt)
+         CIT = Command Interpreter Table (<process>.cit)
+ENVIRONMENTS = one subdirectory for each ws or lcu environment 
+      ERRORS = Error Definition (<mod>_ERRORS) and index (<mod>_ERRORS.IDX)
+ ERRORS/HELP = Error Help Files (<modErrorMnemonic>.hlp
+      System = startup/login files
+     Sources = original files at installation time (to support debugging) 
+app-defaults = Xresource files for GUI 
+         bin = for executable (C, C++, scripts, tcl-scripts, panels, etc.)
+    bin/$CPU = VxWorks executable (FEB99: CPU=MC68040|PPC604|MC68000)
+     bitmaps = bitmaps files used by graphical applications
+      sounds = sounds files used by interactive applications
+      config = configuration data files
+         dbl = On-Line Database files (*.db, *.class)
+         doc = documentation (User/Maintenance Manual)
+         idl = Interface definition language files
+     include = for ".h" files
+         lib = for libraries: _ar_chive files, tcl libraries
+    lib/$CPU = VxWorks libraries (FEB99: CPU=MC68040|PPC604|MC68000)
+         man = for manpages, organized in subdirectory : 
+                  - man1 for commands accessible by the user of the system 
+                  - man2 not used
+                  - man3 subroutines
+                  - man4 not used
+                  - man5 file formats
+                  - man6 not used
+                  - man7 development tools
+                  - man8 not used
+                  - mann not used
+                  - manl local man-pages
+      object = output of compilation, other intermediate files (.d, .dx, etc)
+         src = source files (C, C++, scripts, tcl-scripts, panels, etc)
+   templates = templates for documents, source files, etc.
+        test = as src, but for test software
+         tmp = temporary files
+          vw = sub-root for VxWorks directories (LCU applications).
+
+Not all the subdirectories are present in all areas and may be empty.
+
+-------------+----------+---------+------------+---------+-----------+-----------+
+Sub-directory|  MODROOT   INTROOT   INTROOT/vw   ACSROOT   ACSROOT/vw   ACSDATA
+-------------+----------+---------+------------+---------+-----------+-----------+
+      ALARMS =     *         *                      *
+ ALARMS/HELP =     *         *                      *
+         CDT =     *         *                      *
+         CIT =     *                   *                       *
+      ERRORS =     *         *                      *
+        LOGS =     *         *                      *
+ ERRORS/HELP =     *         *                      *
+ENVIRONMENTS =                                                             *
+      System =                                      *
+     Sources =               *         *
+app-defaults =     *         *                      *           
+         bin =     *         *         *            *          *
+ bin/MC68000 =                         *                       *
+ bin/MC68040 =                         *                       *
+ bin/PPC604  =                         *                       *
+     bitmaps =     *         *                      *           
+      sounds =     *         *                      *           
+      config =     *         *                      *                      *
+         doc =     *
+         dbl =     *         *         *            *          *
+         idl =     *         *         *            *          *
+     include =     *         *         *            *          *
+         lib =     *         *         *            *          *
+ lib/MC68000 =                         *                       *
+ lib/MC68040 =                         *                       *
+ lib/PPC604  =                         *                       *
+         man =     *         *         *            *          *
+      object =     *
+         src =     *                     
+        test =     *                     
+   templates =                                      *
+         tmp =     *                                                       *
+          vw =     *         *                      *
+-------------+----------+---------+------------+---------+-----------+-----------+
+
+
+
+MODULE DEVELOPMENT AREA 
+
+It is the area where the code of a module is developed and test and is 
+under the responsibility of a developer.
+Development areas can be created on any machine and in multiple copies. 
+
+The root directory of each area is called module root. The command
+'setmod' allows you to set the environmental variable MODROOT and to 
+add MODROOT/bin to PATH).
+
+There are two types of module structure:
+
+  - simple : the module has code only for one type of operating system.
+
+                   <mod>/
+                        |------src/  
+                        |------...
+                        :
+
+
+  - complex: the module is splitted in complementary parts among two or more
+             operating system. At present, the following cases are defined:
+
+                 <ws>   HP or Sun workstation running  UNIX
+                 <lcu>  Local Control Unit    running  VxWorks
+                 <ace>  Transputer boaeds     running  OCCAM software
+
+             Complex modules are organized as one complete subdirectory tree 
+             for each implementation:
+             
+                   <mod>/
+                        |-------/ws
+                        |         |------src/  
+                        |         |------...  
+                        |
+                        |-------/lcu
+                                  |------src/  
+                                  |------...      
+
+
+Any activity in the development area of a module shall be based on the 
+standard structure and all paths shall be relative to the module root.
+
+No reference to such areas can be made from other modules. 
+
+Each area (MODROOT: <mod>, <mod>/ws, <mod>/lcu) has the the following 
+subdirectory tree:
+
+   $MODROOT/
+           |------src/                       <------ MANDATORY
+           |         |------Makefile         <------ MANDATORY
+           |         |------aaaa.c
+           |         |------bbb.c
+           |         |------xxxx.c
+           |         |------script1
+           |         |------   .
+           |                  
+           |------include/                
+           |         |------mod.h      
+           |         |------modPrivate.h   
+           |         |------modErrors.h
+           |         |------   .
+           |                  
+           |------dbl/                
+           |         |------modClass1.class      
+           |         |------   .
+           |         |------modBranch.db
+           |         |------   .
+           |                  
+           |---app-default/                
+           |         |------XapplName    
+           |         |------   .
+           |                  
+           |---bitmaps/                
+           |         |------rightArrow
+           |         |------leftArrow
+           |         |------   .
+           |         
+           |---sounds/                
+           |         |------laugh.au
+           |         |------soundsWarning.au
+           |         |------   .
+           |         
+           |------CDT/                       
+           |         |------modProc1.cdt  
+           |         |------   .
+           |         
+           |------CIT/                       
+           |         |------modProc1.cit
+           |         |------   .
+           |         
+           |---ALARMS/                       
+           |         |------mod_ALARMS
+           |         |---HELP/
+           |                 |---modXXXXXXX.hlp
+           |                 |---   .
+           |         
+           |---ERRORS/                       
+           |         |------mod_ERRORS
+           |         |------modERRORS.IDX
+           |         |---HELP/
+           |                 |---modINVACCC.hlp
+           |                 |---   .
+           |-----LOGS/                       
+           |         |------mod_LOGS
+           |         |------modLOGS.IDX
+           |         
+           |------config/                       
+           |         |------mod....
+           |         |------  .
+           |         
+           |------object/                       
+           |         |------aaaa.o
+           |         |------aaaa.d
+           |         |------   .
+           |         |------bbb.o
+           |         |------bbb.d
+           |         |------llll.da
+           |         |------xxxx.dx
+           |         |------   .
+           |                  
+           |------bin/
+           |         |------xxxx
+           |         |------script1
+           |         |------   .
+           |                  
+           |------lib/
+           |         |
+           |         |------libllll.a
+           |         |------   .
+           |                  
+           |------man/man1/
+           |         |------man1/
+           |         |          |------llll.1
+           |         |          |------script1.1
+           |         |          |------xxxx.1
+           |         |                   .
+           |         |------man3/   .
+           |         |          |------aaaa.3
+           |         |          |------bbb-1.3
+           |         |          |------bbb-2.3
+           |         .          |------  .
+           |         .
+           |         |------mann/
+           |                  
+           |         
+           |------doc/ 
+           |         |------llll.inc 
+           |         |------llll.text
+           |         |        .
+           |
+           |------test/                    
+           |         |------Makefile         <------ MANDATORY
+           |         |------yyyy.c
+           |         |------scriptXxxx
+           |         |------   .
+           |         
+           |------tmp/
+                     |------ ....
+
+
+REMARK: any modification to the shown structure shall be documented 
+        in the Maintenance Manual.
+
+
+ 
+INTEGRATION AREA
+
+it is an intermediate area, shared among a group of developers,
+where to install (from the development areas) the module code in
+order to perform the integration activities.
+
+Integration areas are defined only on development computers.
+It is possible to have many ACS System areas but only one at time can 
+be active: the one defined in the environmental variable $INTROOT. 
+
+In integration areas only and to allow debugging, special directories,
+namely $INTROOT/Sources and $INTROOT/vw/Sources, are storing the sources files 
+of the module currently installed in the $INTROOT.
+When "make install" is issued and INTROOT is defined, vltMakefile copies:
+
+..../<mod-i>/src/*      --copied into-->  $INTROOT/(vw/)Sources/<mod-i>/src/*
+..../<mod-i>/test/*     --copied into-->  $INTROOT/(vw/)Sources/<mod-i>/test/*
+..../<mod-i>/include/*  --copied into-->  $INTROOT/(vw/)Sources/<mod-i>/include/*
+
+where <mod-i> can be the module name or  <mod>/ws, <mod>/lcu, etc.
+
+
+   $INTROOT/
+           |---ALARMS/                       
+           |         |---HELP/
+           |
+           |------CDT/                       
+           |ENVIRONMENTS/                       
+           |---ERRORS/                       
+           |         |---HELP/
+           |
+           |-----LOGS/                       
+           |------app-defaults/
+           |------bin/
+           |------bitmaps/
+           |------sounds/
+           |------config/                       
+           |------include/
+           |------dbl/
+           |------idl/
+           |------lib/
+           |------man/
+           |         |-----man1/
+           |         |-----man2/
+           |         |-----..../
+           |         
+           |------Sources/
+           |         |----mod1/
+           |         |        |----src/
+           |         |        |----include/
+           |         |        |----test/
+           |         |----mod2/
+           |         |        |----ws/
+           |         |        |      |----src/
+           |         |        |      |----include/
+           |         |        |      |----test/
+           |         |        |----lcu/
+           |         |               |----src/
+           |         |               |----include/
+           |         |               |----test/
+           |         |        
+           |         |----..../
+           |  
+           |----vw
+                 |------BOOT/   
+                 |------CIT/   
+                 |------bin/
+                 |         |-----MC68000
+                 |         |         |----..../
+                 |         |-----MC68040
+                 |         |         |----..../
+                 |         |-----PPC604
+                 |                   |----..../
+                 |         
+                 |------include/
+                 |------dbl/
+                 |------lib/
+                 |         |-----MC68000
+                 |         |         |----..../
+                 |         |-----MC68040
+                 |         |         |----..../
+                 |         |-----PPC604
+                 |                   |----..../
+                 |
+                 |------man/
+                 |         |-----man1/
+                 |         |-----man2/
+                 |         |----..../
+                 |         
+                 |------src/
+                 |         |----mod1/
+                 |         |----mod2-lcu/
+                 |         |----..../
+                 |
+                 |------test/
+                           |----mod1/
+                           |----mod2-lcu/
+                           |----..../
+
+     
+
+ACS SYSTEM AREA
+
+contains software that has been officially released (i.e., coming
+from the the archive). 
+
+At least one ACS System area is defined on each computer, both on target
+and development ones. (TBD whether to use physical copies or remote
+access via NFS).
+
+It is possible to have many ACS System areas but only one at time can 
+be active: the one defined in the environmental variable $ACSROOT. 
+
+   $ACSROOT/
+           |---ALARMS/                       
+           |         |---HELP/
+           |
+           |------CDT/                       
+           |ENVIRONMENTS/                       
+           |---ERRORS/                       
+           |         |---HELP/
+           |
+           |-----LOGS/                       
+           |---System/
+           |------app-defaults/
+           |------bin/
+           |------bitmaps/
+           |------sounds/
+           |------config/                       
+           |------include/
+           |------dbl/
+           |------idl/
+           |------lib/
+           |------man/
+           |         |-----man1/
+           |         |----- .
+           |         
+           |----vw
+           |     |------BOOT/   
+           |     |------CIT/   
+           |     |------bin/
+           |     |         |-----MC68000
+           |     |         |         |----..../
+           |     |         |-----MC68040
+           |     |         |         |----..../
+           |     |         |-----PPC604
+           |     |                   |----..../
+           |     |------include/
+           |     |------dbl/
+           |     |------lib/
+           |     |         |-----MC68000
+           |     |         |         |----..../
+           |     |         |-----MC68040
+           |     |         |         |----..../
+           |     |         |-----PPC604
+           |     |                   |----..../
+           |     |------man/
+           |     |         |-----man1/
+           |     .         |-----.
+           |
+           |
+           |-templates/
+
+
+
+HOW THEY ARE USED
+
+The environmental variables shall be defined as the root directory of:
+        $MODROOT        the development area where you are now working
+        $INTROOT        the integration area currently in use  
+        $ACSROOT        the ACS SW root currently in use 
+
+$MODROOT 
+      can be dinamically set using the command 'setmod'
+$INTROOT  
+      should be defined at login time by one of your startup files using:
+        - for c/tc shell:         setenv INTROOT <directory>
+        - for Bourne/Korn shell:  INTROOT=<directory>; export INTROOT
+
+$ACSROOT 
+      should be defined at login time by the system startup files (cshrc, etc.)
+
+The hierarchy in using files is: development, integration, system
+and is obtained using the following search paths:
+search path
+ for commands:  $MODROOT/bin     $INTROOT/bin     $ACSROOT/bin
+ for .h files:  $MODROOT/include $INTROOT/include $ACSROOT/include
+ for libxxx.a:  $MODROOT/lib     $INTROOT/lib     $ACSROOT/lib
+
+The same hierarchy (development, integration, system) applies for data files,
+like ERRORS, HELP, etc.
+
+
+The 'make install' command always copies files from the current area
+to either the integration area (if INTROOT is defined) or the system area.
+
+ during development:
+    - INTROOT is defined (normally in the .cshrc.local) and 'make install' 
+      is issued from $MODROOT/src. So, files are taken from the current 
+      module and installed in the integration area.
+
+ during installation:
+    - only ACSROOT is defined. So, files are copied into the ACS System area.
+
+
+Each release of a software module can be in only one of the following status:
+
+ - UNDER DEVELOPMENT
+        the sw is tested locally to the development area. 
+
+ - UNDER INTEGRATION
+        the active part of the sw, i.e., executable, libraries, headers, 
+        manpages, etc., is copied ('make install') from the development area 
+        to the integration area, therefore it is available to everybody that
+        is making reference to that integration area. 
+
+ - ACCEPTED
+        the software has past the acceptance test and then all the files
+        forming the module are moved from the development area to the archive.
+
+
+A release of a software module is INSTALLED when the active part of the sw has
+been copied in the ACSROOT area following the installation procedure, as from
+the Module User Manual.
+
+
+
+SECURITY
+
+There are three main aspects related to security: backup, editing
+and protection.
+
+Backup
+------
+Regular backup shall be provided at system level at least for:
+    - archive
+    - development areas
+    - data files under root.
+
+Editing
+-------
+changes can be made only in development areas. Except for
+data files, changes on archive or root files are not permitted.
+
+
+Protection
+----------
+It is based on the standard UNIX file protection system (using
+username and permission bits):
+
+- directories are open for read and write.
+
+- files are readable from everybody, but writable only from the
+username that performed the 'make install' (*)
+
+- data files shall be protected or not, according to the need.
+
+Being based on the UNIX protection, all the command to override 
+such system (su, chmod, etc.) are valid and can be used. Be careful
+when you step out of the defined system!
+
+------
+(*)  this implies that a modification can be done only by the
+developer responsible for a module. So, if during integration you
+discover an error in somebody else software, you should pass this
+information to him, so it can be fixed, or, if you can fix it and
+you need it urgently, fix the problem in a local copy and send it to
+him so local test can be repeated before installation to integration
+area. Do to the hierarchy in the search paths your local copy will
+have the precedence. When the problem is fixed in the integration
+area (or in the root area), remember to delete your local copy.
+
+
+
+CAUTIONS
+
+Some general considerations:
+
+- do not make copies from the root or from the integration into your
+development area of software that is not in the scope of the module
+you are developing. The local copy will override new versions
+eventually made available in the root or in integration.
+(see above for exception).
+
+- for the same reason, do not copy from root in the integration area 
+software that is not in the scope of what you are integrating (unless
+you need a version of a software that is older respect the one now
+available in the root).
+    
+#--------------------------------------------------------------------------------
+
+#___oOo___

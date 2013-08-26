@@ -1,0 +1,13 @@
+#!/bin/bash
+OLD_CDB=$ACS_CDB
+ACS_CDB=../test
+
+ACS_TMP=$PWD/tmp
+
+#Start the ORB services and manager.
+acsutilTATPrologue
+
+echo " Starting Test Java Container"
+acsutilAwaitContainerStart -java frodoContainer
+echo " Starting Test C++ Container"
+acsutilAwaitContainerStart -cpp bilboContainer

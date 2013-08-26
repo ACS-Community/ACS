@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+  <head>
+    <title>GP project Presentations</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+    <reviewers></reviewers>
+    <currentVersion></currentVersion>
+    <history></history>
+  </head>
+
+	<section>
+		<description>
+      <UL>
+      <B>File formats:</B>  <IMG SRC="../images/ppt.gif"/> Microsoft PowerPoint - <IMG SRC="../images/word.gif"/> Microsoft Word - <IMG SRC="../images/pdf.gif"/> Adobe PDF<BR/><BR/><BR/><BR/>
+      </UL>
+		</description>
+	</section>
+	
+ <!-- Please keep presentation blocks ordered by date with the most recent one at the beginning...Thanks. -->
+	<section>
+		<description>
+		<UL>
+      <A NAME="GP-Progress-TC-final"></A><a HREF="/proj-gp/_notgenerated/presentations/GP-Progress-TC-final/GP-Progress-TC-final.ppt"><IMG BORDER="0" SRC="../images/ppt.gif" ALT="MS Powerpoint document - 71kb"/></a><A HREF="/proj-gp/_notgenerated/presentations/GP-Progress-TC-final/index.html">GP Progress TC final</A> - <A HREF="http://consult.cern.ch/xwho/people/58758">Vito Baggiolini</A> + <A HREF="members/">the GP team</A> 
+      <BR/><em>Presented during the <a href="http://ab-co-tech-committee.web.cern.ch/ab-co-tech-committee/MEETINGS/MEETING-8/MINUTES-8.pdf">24/10/2002 Technical comity</a></em><BR/>
+      <BR/>
+     
+      <A NAME="Kickoff"></A><a HREF="/proj-gp/_notgenerated/presentations/Kickoff/Kickoff.ppt"><IMG BORDER="0" SRC="../images/ppt.gif" ALT="MS Powerpoint document - 71kb"/></a><A HREF="/proj-gp/_notgenerated/presentations/Kickoff/index.html">GP project Kickoff</A> - <A HREF="http://consult.cern.ch/xwho/people/58758">Vito Baggiolini</A> + <A HREF="http://consult.cern.ch/xwho/people/73162">Sigerud Katarina</A> 
+      <BR/>
+      <BR/>
+
+      <A NAME="ProjDescription"></A><a HREF="/proj-gp/_notgenerated/presentations/ProjDescription/ProjDescription.ppt"><IMG BORDER="0" SRC="../images/ppt.gif" ALT="MS Powerpoint document - 71kb"/></a><A HREF="/proj-gp/_notgenerated/presentations/ProjDescription/index.html">S2 Project Description</A> - <A HREF="http://consult.cern.ch/xwho/people/58758">Vito Baggiolini</A> 
+      <BR/>
+      <BR/>
+      
+      <A NAME="StopmiPhase-II"></A><a HREF="/proj-gp/_notgenerated/presentations/StopmiPhase-II/GP-Progress-TC-final.ppt"><IMG BORDER="0" SRC="../images/ppt.gif" ALT="MS Powerpoint document - 71kb"/></a><A HREF="/proj-gp/_notgenerated/presentations/StopmiPhase-II/index.html">Stopmi Phase II</A> - <A HREF="http://consult.cern.ch/xwho/people/58758">Vito Baggiolini</A>  
+      <BR/>
+      <BR/>
+
+      <BR/>     
+    </UL>
+    </description>
+	</section>
+  
+</document>
+

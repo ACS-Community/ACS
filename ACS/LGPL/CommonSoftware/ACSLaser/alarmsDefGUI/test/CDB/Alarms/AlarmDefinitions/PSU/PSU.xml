@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fault-family name="PSU"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="OSF Support Team"/>
+    <fault-code value="1">
+        <!-- ^GLOBAL_WARNING -->
+        <priority>3</priority>
+        <cause>Global Warning. Internal Condition Trip.</cause>
+        <action>Look for error messages, over/under voltage/current</action>
+        <consequence>PSU have a warning that needs to be investigated.</consequence>
+        <problem-description>Global Warning. Internal Condition Trip. Over/Under voltage or current</problem-description>
+    </fault-code>
+    <fault-code value="2">
+        <!--^PS_SHUTDOWN-->
+        <priority>0</priority>
+        <cause>PS Unit is in shutdown state</cause>
+        <action>Outputs can only be re-enabled by writing a 0 to SHUTDOWN_COM</action>
+        <consequence>Devices on Analog rack are down now</consequence>
+        <problem-description>PS Unit is in shutdown state. Internal condition Trip or COMMAND SHUTDOWN</problem-description>
+    </fault-code>
+    <fault-code value="3">
+        <!-- ^SHUTDOWN_CMD_RECEVIED-->
+        <priority>0</priority>
+        <cause>Shutdown command has been sended to PS</cause>
+        <action>Outputs can only be re-enabled by writing a 0 to SHUTDOWN_COM</action>
+        <consequence>Devices on Analog rack are down now</consequence>
+        <problem-description>Shutdown command has been sended to PS</problem-description>
+    </fault-code>
+    <fault-code value="4">
+        <!-- ^OVER_TEMP_OK-->
+        <priority>3</priority>
+        <cause>Over Temperature detected on PowerSupply</cause>
+        <action>Check Ventilation System (Air Conditioning). Check Fan status</action>
+        <consequence>PS will shutdown</consequence>
+        <problem-description>Over Temperature detected on PowerSupply</problem-description>
+    </fault-code>
+    <fault-code value="5">
+        <!-- ^FAN_STATUS_OK -->
+        <priority>3</priority>
+        <cause>Fan doesn't work properly on PS </cause>
+        <action>Check Fan, probably HW problem </action>
+        <consequence>Over temperature will be reported</consequence>
+        <problem-description>Fan Status on PS reported a problem</problem-description>
+    </fault-code>
+    <fault-code value="6">
+        <!--^AC_STATUS -->
+        <priority>3</priority>
+        <cause>Some AC lines reported a problem</cause>
+        <action>Check voltages and currents.Look for alarms</action>
+        <consequence></consequence>
+        <problem-description>Some AC lines reported a problem</problem-description>
+    </fault-code>
+    <fault-code value="7">
+        <!-- ^DC_STATUS_OK -->
+        <priority>3</priority>
+        <cause>Some DC lines reported a problem</cause>
+        <action></action>
+        <consequence>PS will may be will not work with correct DC</consequence>
+        <problem-description>Some DC lines reported a problem</problem-description>
+    </fault-code>
+    <fault-code value="8">
+        <!-- ^CURRENT_LIMITS_OK -->
+        <priority>3</priority>
+        <cause>Current limits are not ok. Check monitor points for current</cause>
+        <action>Check which limits is out of range !</action>
+        <consequence></consequence>
+        <problem-description>Current limits are not ok. Check monitor points for current</problem-description>
+    </fault-code>
+    <fault-code value="9">
+        <!-- ^MODULES_ALL_OK -->
+        <priority>3</priority>
+        <cause>There's a module reporting a problem</cause>
+        <action></action>
+        <consequence></consequence>
+        <problem-description>There's a module reporting a problem</problem-description>
+    </fault-code>
+    <fault-code value="10">
+        <!-- ^VOLTAGE_LIMITS_OK -->
+        <priority>3</priority>
+        <cause>There's a voltage out of operational range on PS</cause>
+        <action>Check the voltage</action>
+        <consequence></consequence>
+        <problem-description>There's a voltage out of operational range on PS</problem-description>
+    </fault-code>
+    <fault-code value="11">
+        <!--^FAN_WARNING_OK -->
+        <priority>3</priority>
+        <cause>Error detected on Fan speed</cause>
+        <action>Please take a look in PS Fan</action>
+        <consequence></consequence>
+        <problem-description>Fan Warning. Error detected on Fan speed</problem-description>
+    </fault-code>
+
+    <fault-code value="12">
+        <!--^KEEP_ALIVE -->
+        <priority>1</priority>
+        <cause>The firmware is stucked</cause>
+        <action>Please restart the PS</action>
+        <consequence>PS could not be working properly</consequence>
+        <problem-description>KeepAlive counter is stuck. PS could not be working properly</problem-description>
+    </fault-code>
+    <!-- This Alarm raise when the Alarm Service retrieve multiples alarms from others devices--> 
+    <fault-code value="999">
+        <priority>0</priority>
+        <cause>Multiple alarms from Digital Rack Devices, Its seems that the PS is in Shutdown state</cause>
+        <action>Please check PS status (may be turn on it?)</action>
+        <consequence>PSD will not work properly, therefore nothing inside this rack</consequence>
+        <problem-description>Multiple alarms from Digital Rack Devices, Its seems that the PS is in Shutdown state</problem-description>
+    </fault-code>
+
+    <fault-member name="CONTROL/LA02/PSD">
+    </fault-member>
+    <fault-member name="CONTROL/LA02/PSU">
+    </fault-member>
+    <fault-member name="CONTROL/LA02/PSA">
+    </fault-member>
+
+    <fault-member name="CONTROL/DV01/PSD">
+    </fault-member>
+    <fault-member name="CONTROL/DV01/PSU">
+    </fault-member>    
+    <fault-member name="CONTROL/DV01/PSA">
+    </fault-member>
+
+    <fault-member name="CONTROL/DV02/PSD">
+    </fault-member>
+    <fault-member name="CONTROL/DV02/PSU">
+    </fault-member>
+    <fault-member name="CONTROL/DV02/PSA">
+    </fault-member>
+
+    <fault-member name="CONTROL/PM03/PSD">
+    </fault-member>
+    <fault-member name="CONTROL/PM03/PSU">
+    </fault-member>
+
+</fault-family>
+

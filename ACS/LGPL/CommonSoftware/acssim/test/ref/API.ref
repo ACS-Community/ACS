@@ -1,0 +1,2 @@
+1 - api.getMethod('displayMessage'): None
+1 - api.getMethod('displayMessage'): {'nonempty': 'main'}

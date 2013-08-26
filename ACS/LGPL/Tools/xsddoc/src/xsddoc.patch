@@ -1,0 +1,22 @@
+diff -Naur tmp_unpack/net/sf/xframe/xsddoc/Task.java net/sf/xframe/xsddoc/Task.java
+--- tmp_unpack/net/sf/xframe/xsddoc/Task.java	2005-09-30 18:30:14.000000000 +0000
++++ net/sf/xframe/xsddoc/Task.java	2006-04-20 16:11:55.605711000 +0000
+@@ -311,7 +311,17 @@
+             System.out.println("found schema " + schemaLocation);
+         }
+         final Element importNode = mediatorSchema.createElementNS(SCHEMA_NS, "import");
+-        final String schemaLoc = (new File(base, schemaLocation)).getAbsolutePath();
++
++        /*
++         * G.Chiozzi
++         *   This code does not seem to work in our case
++         *   Actually everything goes fine in all tests I made
++         *   simply leaving the schema location as it is.
++         *   Therefore I comment out the path handling.
++         */
++        //final String schemaLoc = (new File(base, schemaLocation)).getAbsolutePath();
++        final String schemaLoc = schemaLocation;
++        
+         importNode.setAttribute("schemaLocation", schemaLoc);
+         importNode.setAttribute("namespace", namespace);
+         mediatorSchema.getDocumentElement().appendChild(importNode);

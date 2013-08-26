@@ -1,0 +1,224 @@
+#! /bin/bash
+#*******************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: buildPython,v 1.29 2013/03/01 11:37:54 eallaert Exp $"
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# psivera   2002-08-21  created
+# sturolla  2005-10-09  ported to bourne shell + add external subroutin for OS checking
+# agrimstrup 2007-07-10 modified build to create shared library for Python interpreter
+# agrimstrup 2007-08-22 updated Python to version 2.5.1 
+# eallaert  2013-03-01  determine Tcl/Tk version dynamically instead of hardcoding
+#
+
+#************************************************************************
+#   NAME
+#
+#   SYNOPSIS
+#
+#   DESCRIPTION
+#
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS
+#
+#------------------------------------------------------------------------
+#
+
+#
+# Install Python
+#
+#  See www.python.org for information.
+#
+# Retrieve the sources from: ftp.python.org
+#
+#set -x
+#export PYTHON_ROOT=/alma/$ALMASW_RELEASE/Python
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+
+LOG=buildPython.log
+CWD=`pwd`
+#
+exec > $LOG 2>&1
+
+date
+
+if [ ! -d $PYTHON_ROOT ]
+then
+    mkdir -p $PYTHON_ROOT
+    RET=$?
+    if [ "$RET" != "0" ]
+     then
+        echo "Failed to create $PYTHON_ROOT, cannot continue..."
+        exit 1
+     fi
+fi
+
+echo installing the Python distribution
+
+if [ ! -e ../PRODUCTS/Python-2.6.5.tar.bz2 ]
+then
+  echo Error: Python sources are missing
+  exit 2
+fi
+
+#
+# Python - Python-2.6.5
+#
+# Notes: See README for help
+#
+cd ../PRODUCTS
+
+rm -rf Python-2.6.5
+tar jxf Python-2.6.5.tar.bz2
+
+cd Python-2.6.5
+
+
+echo $SEPARATOR
+if [ ${OS} = "LINUX" ] 
+then
+	echo "Installing on $DISTRO $OS version $REL"
+elif [ "$OS" = "$CYGWIN_VER" ]
+then
+  echo "Installing on $OS"
+else
+	echo "Installing on $OS version $REL"
+fi
+
+if [     ${DISTRO}-${REL} != "SOLARIS-5.8"       \
+     -a  ${DISTRO}-${REL} != "RHLX-7.2"           \
+     -a  ${DISTRO}-${REL} != "RHLX-7.3"           \
+     -a  ${DISTRO}-${REL} != "RHLX-9"           \
+     -a  ${DISTRO}-${REL} != "RHEL-4"           \
+     -a  ${DISTRO}-${REL} != "RHEL-5"           \
+     -a  ${DISTRO}-${REL} != "SL-4.1"           \
+     -a  ${DISTRO}-${REL} != "SL-5.3"           \
+     -a  ${OS} != "$CYGWIN_VER"                 \
+   ]
+then
+    echo "OS not supported. Proceeding as for Linux RH 9"
+    echo ""
+fi
+
+TCL_VERSION=`echo 'puts $tcl_version; exit'| tclsh`
+
+if [ "$OS" = "SOLARIS" ]
+# SunOS: here inserted modifications in the  Modules/Setup.dist script.
+then
+   cp Modules/Setup.dist Modules/Setup.dist_backup
+   cat Modules/Setup.dist | sed "s/\#\*shared\*/\*shared\*/" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed s/\#\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/g >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+ 
+   cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/local/lib,\1$TCLTK_ROOT/lib,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/local/include,\1$TCLTK_ROOT/include,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/openwin/include,\1/usr/openwin/include,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk$TCL_VERSION -ltcl$TCL_VERSION,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/openwin/lib,\1/usr/openwin/lib,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)X11,\1X11,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+elif [ "$OS" = "LINUX" ]
+then
+   cp Modules/Setup.dist Modules/Setup.dist_backup
+   cat Modules/Setup.dist | sed "s/\#\*shared\*/\*shared\*/" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cp Modules/Setup.dist Modules/Setup.dist_backup
+   cat Modules/Setup.dist | sed "s/\#readline readline.c -lreadline -ltermcap/readline readline.c -lreadline -ltermcap/" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed s/\#\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/g >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+ 
+   cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/local/lib,\1$TCLTK_ROOT/lib,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/local/include,\1$TCLTK_ROOT/include,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/X11R6/include,\1/usr/include/X11,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk$TCL_VERSION -ltcl$TCL_VERSION,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/X11R6/lib,\1/usr/lib -L/usr/lib64,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)X11,\1X11,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+elif [ "$OS" = "$CYGWIN_VER" ]
+then
+   patch -p1 -d . < ../Python-2.6.5.cygwin.patch
+   cp Modules/Setup.dist Modules/Setup.dist_backup
+   cat Modules/Setup.dist | sed "s/\#\*shared\*/\*shared\*/" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cp Modules/Setup.dist Modules/Setup.dist_backup
+   cat Modules/Setup.dist | sed "s/\#readline readline.c -lreadline -ltermcap/readline readline.c -lreadline -lncurses/" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed s/\#\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/g >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+ 
+   cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/local/lib,\1$TCLTK_ROOT/lib,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/local/include,\1$TCLTK_ROOT/include,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/X11R6/include,\1/usr/include/X11,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk$TCL_VERSION -ltcl$TCL_VERSION,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/X11R6/lib,\1/usr/lib -L/usr/lib64,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)X11,\1X11,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+fi
+
+./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared --enable-unicode=ucs4
+#./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared 
+make
+make install
+
+cd $CWD
+echo Python installation done!
+date
+

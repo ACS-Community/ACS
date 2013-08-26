@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# number of test
+total=0
+ok=0
+
+for number in 1 10 20; do
+	echo "$number"
+
+	mkdir -p $number
+	
+	for I in $(seq $number); do
+		FILE=$(echo $I"_DDSNC")
+		ddsSubscriber >& $number/$FILE &
+	done
+	sleep 35
+	testDDSNCBenchmarkClient.py
+	sleep 35
+	# test	
+	for I in $number; do
+		echo "Processing results of test: " $I
+		cd $number/
+		b=0
+		total=$((total+1))
+		for i in $(ls);do
+			a=$(cat $i | egrep "[0-9]{1,3},[0-9]{1,3}" | sed 's/,[0-9]*//g' | sort -n | uniq | wc -l)
+
+			if [[ $a == 1000 ]];then
+				b=$((b+1))
+			else
+				b=$((b-1))
+			fi
+		done
+		if [[ $b == $number ]];then
+			echo ">>>DONE"
+			ok=$((ok+1))
+		else
+			echo ">>>FAIL"
+		fi
+		cd ..
+	done
+done
+echo "==="
+echo "Finished ($ok/$total test done properly)"

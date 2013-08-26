@@ -1,0 +1,8 @@
+1 - ----------T--:--:--.--- [GlobalLogger] ===== 1 - create DETACHED threads
+1 - ----------T--:--:--.--- [GlobalLogger] ===== 2 - create JOINABLE threads
+1 - ----------T--:--:--.--- [GlobalLogger] Created threads: 1000
+1 - ----------T--:--:--.--- [GlobalLogger] ===== 3 - join the threads
+1 - ----------T--:--:--.--- [GlobalLogger] ===== 4 - create, destroy and JOIN threads
+1 - ----------T--:--:--.--- [GlobalLogger] ===== 5 - create, destroy and join a DETACHED thread
+1 - ----------T--:--:--.--- [GlobalLogger] Join fail, return -1, as expected
+1 - ----------T--:--:--.--- [GlobalLogger] Done

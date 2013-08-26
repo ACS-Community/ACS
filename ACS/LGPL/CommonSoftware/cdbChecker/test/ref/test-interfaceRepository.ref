@@ -1,0 +1,22 @@
+1 - Checking a CDB that contains a bad idl types
+1 - Running Interface Repository and loading IDL files
+1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
+1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
+1 - ReBound ID: InterfaceRepository
+1 - ----------T--:--:--.--- INFO [acsstartupLoadIFR] Loading of IDL interfaces in Interface Repository completed OK
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
+1 - [Error] IDL: BadIdlType2:1.0 not found in Interface Repository.
+1 - [Error] IDL: BadIdlType:1.0 not found in Interface Repository.
+1 - [Error] CDBChecker exiting. Errors were found
+1 - Stopping Interface Repository
+1 - Checking a CDB that contains all good idl types
+1 - Running Interface Repository and loading IDL files
+1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
+1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
+1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Loading of IDL interfaces in Interface Repository is being skipped due to up-to-date persistence file
+1 - ReBound ID: InterfaceRepository
+1 - *** Downloading remote schemas
+1 - *** Remote schemas succesfully downloaded
+1 - CDBChecker exiting. No errors found
+1 - Stopping Interface Repository

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../../standard_stylesheet.xsl"?>
+<document location="../../">
+  <head>
+    <title>Minimal installation of the NetBeans platform</title>
+    <section>AB/CO/AP</section>
+    <author firstname="Katarina" lastname="Sigerud" ccid="73162"/>
+    <history>
+    0.1 (2003/05) : First Draft<br/>
+    </history>
+  </head>
+  <!--
+
+	SECTION 1
+	
+  -->
+  <section>
+    <title>Introduction</title>
+    <description>
+	    <p>In NetBeans you can choose to install and enable only the modules that contain the functionality that you are looking for. For example in the case where you run NetBeans as an IDE, the 	number of installed modules are quite large. You may want to just install your module though, and this is also possible. However, there is a minimum of modules that must be present for NetBeans 	to function. This document describes that minimum installation.    
+		 </p>
+    </description>
+    <section>
+    <title>Set up the minimal NetBeans platform</title>
+    <description>
+	    <p>We assume that you have the NetBeans Platform installed.
+	    </p>
+	    <p>
+	    In the NetBeans installation directory, remove
+	    <ul>
+		    <li><code>core-ui.jar</code> from the <code>modules</code> subdirectory (contains the menus)</li>
+		    <li><code>text.jar</code> from the <code>modules</code> subdirectory</li>
+		    <li><code>core-settings.jar</code> from the <code>modules/autoload</code> subdirectory</li>
+		    <li><code>core-output.jar</code> from the <code>modules/autoload</code> subdirectory</li>
+	    </ul>
+	    </p>
+	    <p>
+	    If you do not want the NetBeans Update Center functionality, remove
+	    <ul>
+		    <li><code>updater.jar </code>, from the <code>lib</code> sub-directory</li>
+		    <li><code>autoupdate.jar</code>, from the <code>modules</code> sub-directory</li>
+	    </ul>
+	    </p>
+	    <p>
+	    If you do not want use the JavaHelp, remove  
+	    <ul>
+		    <li><code>javahelp-api.jar</code>, from the <code>modules/autoload</code> sub-directory</li>
+		    <li><code>jh-1.1.3.jar</code>, from the <code>modules/autoload/ext</code> sub-directory</li>
+	    </ul>
+	 	 </p>
+    </description>
+    </section>
+  </section>
+</document>
+

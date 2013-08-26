@@ -1,0 +1,76 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+
+#
+# classloader tests need a special minimal classpath.
+# we do not know if jACSUtil.jar and the other needed
+# jar files are here in lib or somewhere else and
+# therefore we write a little function to search for them.
+# Notice that the acsstartup module provides standard and better
+# functions to search for this, but we cannot use them here because
+# that module comes after in the build sequence.
+#
+function getJarFile
+{
+if [ -e ../lib/$1 ]
+then 
+    FOUND_PATH=../lib/$1
+elif [ -e $INTROOT/lib/$1 ]
+then
+    FOUND_PATH=$INTROOT/lib/$1
+elif [ -e $ACSROOT/lib/$1 ]
+then
+    FOUND_PATH="$ACSROOT/lib/$1"
+else
+    echo "ERROR - expected to find $1 in the ALMA Software directory structure but did not!"
+    exit 42
+fi
+
+echo $FOUND_PATH
+}
+
+JACSUTIL=`getJarFile jACSUtil.jar`
+#JACSUTILTEST=`getJarFile jACSUtilTest.jar`
+
+# the following JDK invocations simulate what acsStartJava is supposed to do 
+
+PROPS_CLASSLOADER="-Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader -Dacs.system.classpath.jardirs=../lib${PATH_SEP}$INTROOT/lib${PATH_SEP}$ACSROOT/lib"
+
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.classloading.TestMain myRunArg1
+
+# AcsComponentClassLoaderEnduranceTest currently only run by hand
+#java -cp $JACSUTIL $PROPS_CLASSLOADER org.junit.runners.JUnit4 alma.acs.classloading.AcsComponentClassLoaderEnduranceTest
+
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.algorithms.TopologicalSortTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.jhelpgen.GenTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.DateConversionTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.IsoDateFormatTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.XmlNormalizerTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.AcsFileFinderForDirectoriesTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.concurrent.ThreadBurstExecutorServiceTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.concurrent.ThreadLoopRunnerTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.AcsLocationsTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.vmtools.LauncherTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.testsupport.LogRecordCollectingLoggerTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.testsupport.ProcessUtilTest
+java -cp "$JACSUTIL${PATH_SEP}$JAVA_HOME/lib/tools.jar" $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.RemoteThreadsClientTest
+java -cp "$JACSUTIL${PATH_SEP}$JAVA_HOME/lib/tools.jar" $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.RemoteThreadsMBeanTest

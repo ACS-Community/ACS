@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2012
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+
+<PubSubInfrastructureSpec>
+
+  <TestDescription>
+    A simple pub-sub setup for basic tests. It runs publishers and subscribers for a fixed time, independently of the number of events that are sent or received. See the 'Termination' element used, as opposed to 'numberOfEvents' attributes.
+  </TestDescription>
+  
+  <Container containerName="publisherContainer-1" implLang="java" />
+  <Container containerName="publisherContainer-2" implLang="java" />
+  <Container containerName="subscriberContainer" implLang="java" hostName="myStaticallySetHostName" />
+  
+  
+  <Publisher 
+      componentName="Pub-1"
+      containerName="publisherContainer-1" 
+      eventPeriodMillis="200" 
+      logMultiplesOfEventCount="1" >
+    <NC>CONTROL_REALTIME</NC>
+    <EventName>LightweightMountStatusData</EventName>
+    <EventName>SomeOtherEventType</EventName>
+  </Publisher>
+  
+  <Publisher 
+      componentName="PubMaxSpeed"
+      containerName="publisherContainer-2" >
+    <NC>MY_OTHER_NC</NC>
+    <EventName>LightweightMountStatusData</EventName>
+  </Publisher>
+  
+  
+  <Subscriber 
+      componentName="Sub-1" 
+      containerName="subscriberContainer" 
+      processingDelayMillis="2"
+      logMultiplesOfEventCount="1" >
+    <NC>CONTROL_REALTIME</NC>
+    <EventName>LightweightMountStatusData</EventName>
+    <EventName>MountStatusData</EventName>
+  </Subscriber>
+
+  <Subscriber 
+      componentName="Sub-2"
+      containerName="subscriberContainer" >
+    <NC>MY_OTHER_NC</NC>
+    <EventName>LightweightMountStatusData</EventName>
+  </Subscriber>
+
+  <Logging
+    defaultLevelMinLocal="3"
+    defaultLevelMin="4"
+    jacorbLevelMin="5"
+  />
+  
+  <Termination timeout="1" timeUnit="MINUTES" />
+  
+</PubSubInfrastructureSpec>

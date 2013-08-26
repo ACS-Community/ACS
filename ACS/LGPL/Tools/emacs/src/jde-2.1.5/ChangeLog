@@ -1,0 +1,1107 @@
+1999-03-10  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el:
+	Fixed jde-db-find-file to return the current buffer if it cannot find a file and
+	XEmacs is the editor.
+
+1999-03-05  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el:
+	Changed default value of jde-db-source-directories to be nil.
+
+	* jde-db.el:
+	Make sure that case-sensitive matching is used when extracting package names from
+	debugger breakpoint messages.
+
+
+1999-02-26  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Version 2.1.5b4
+
+	* jde-db.el:
+	Catch non-existant directory errors when searching for source
+	files and packages. Thanks to Thanh Nguyen <Thanh.Nguyen@Eng.Sun.COM>
+	for finding and providing a fix for this bug.
+
+
+1999-02-25  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el:
+	Fixed jde-db-find-file so that it displays an error when it cannot find a file instead of
+	opening an empty source buffer.
+
+	Provided a set-value function for jde-db-source-directories that appends a slash to
+	the end of each path if the path does not already end in a slash.
+
+	Defined a new command, jde-find-class-source, that finds and opens the source file
+	for a specified class.
+
+	Improved the regular expression used by jde-db-get-package to ignore tabs at the
+	beginning of a line.
+
+1999-02-17  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: 2.1.5b3 version number.
+
+	* jde-wiz.el:
+	Provided more robust error handling for the interface wizard. The wizard
+	no longer kills the bsh when it cannot create an interface and provides
+	meaningfull error messages.
+
+
+1999-02-15  paulk@mathworks.com  <paulk@homepc_paulk>
+
+	* jde.el: Updated version number.
+
+	* jde-wiz.el:
+	Fixed bug in jde-wiz-get-method-class that caused it to fail when the open bracket
+	for the class was not on the same line as the class keyworkd. Thanks to
+	P.Lord@mdx.ac.uk (Phillip Lord) for diagnosing this bug.
+
+1999-02-14  paulk@mathworks.com  <paulk@homepc_paulk>
+
+	* jde-db.el: Fixed bug in qualified-class-name-regexp.
+
+1999-02-12  paulk@mathworks.com  <paulk@homepc_paulk>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+	* jde.el:
+	Added menu item (Wizards->Import Class) for generating import statements.
+
+	* jde-wiz.el: Added jde-wiz-import function.
+
+
+1999-02-11  paulk@PAULK  <paulk@PAULK>
+
+	* jde-wiz.el: Fixed bug in jde-wiz-update-implements-clause.
+
+	* jde-wiz.el: Corrected missing parentheses.
+
+	* jde-gen.el:
+	Updated the Swing application template to the JDK 1.2 Swing package
+	scheme and expanded the template to provide a menu and scrollable
+	canvas.
+
+
+1999-02-10  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el: Added support for appletviewer -encoding and -J options.
+
+	* jde-run.el: Added support for appletviewer options.
+
+
+1999-02-08  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el:
+	jde-db-applet now supports file completion and remembers the last path entered.
+
+
+1999-02-05  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el:
+	Fixed bug and generalized regular expression in jde-db-make-qualified-class-name-regexp.
+
+	* jde-run.el:
+	Added file-completion and default-to-last-entry to jde-run-applet
+	command.
+
+1999-02-03  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el:
+	Provided a fix for ensuring that key bindings are always set. The fix is
+	to do a custom-initialize-reset on the jde-key-bindings variable in the jde-mode
+	function. The jde-mode-map is updated with the key bindings as a side effect of
+	resetting the variable.
+
+	* jde.el:
+	Fixed some keybindings. Also backed out Matthew Moore's fix for ensuring
+	that jde-mode-keymap gets set at startup since it seems to break
+	java-mode. I'll try to come up with another fix later.
+
+	* jde.el: *** empty log message ***
+
+	* jde-db.el:
+	Fixed regular expression in jde-db-get-package to eliminate spurious hits, e.g.
+	commented out package statements. Thanks to Frederic Baumann <baumann@ilog.fr>
+	for reporting this bug.
+
+	* jde-db.el:
+	Patched jde-db-get-app-args-from-user to remember arguments.
+	Thanks to Brian Burton <brian@burton-computer.com>
+
+	* jde-db.el:
+	Fixed jde-db-make-qualified-class-name-regexp to handle packages with underscores.
+	Thanks to Brian Burton <brian@burton-computer.com>.
+
+	* jde-db.el:
+	Changed jde-db-make-qualified-class-name-regexp to handle inner classes.
+	Thanks to Michael Lepore <lepore@process.com> for this fix.
+
+1999-02-02  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Minor fix to debug applet item.
+
+	* jde-db.el:
+	Fixed jde-db-applet to check the current directory for the html file to run.
+
+	* jde.el: Fixed a bug in the initialization code for jde-key-bindings.
+	Thanks to Matthew Moore <matthew.moore@Schwab.COM> for this fix.
+
+	Added a menu item for debugging applets.
+
+	* jde-run.el:
+	Enhanced jde-run-applet to look in current directory for html file
+	to display, if you do not specify a file in the minibuffer or via
+	jde-run-applet-doc. Also fixed a bug in the minibuffer version of
+	jde-run-applet that forced you always to specify the name of an
+	html document.
+
+	* jde-db.el:
+	Added the jde-db-applet command. This command allows you to debug an applet, using
+	appletviewer.
+
+	* jde-db.el: Removed unwanted space in -D (properties) debug option.
+
+1999-01-16  paulk@PAULK  <paulk@PAULK>
+
+	* jde-make.el:
+	Removed two line feeds at the end of make command as they appeared to
+	confuse GNU make for NT.
+
+	* jde-db.el:
+	Now uses gud-find-c-expr or find-c-expr, whichever is bound.
+
+1999-01-15  paulk@PAULK  <paulk@PAULK>
+
+	* beanshell.el: Added Andy Piper's NT/XEmacs compatibility changes.
+
+	* jde.el: Some XEmacs patches that I missed.
+
+	* jde-compile.el, jde-run.el:
+	Added Andy Piper's NT/XEmacs compatibility changes.
+
+	* jde.el: Added XEmacs compatibility changes from Andy Piper.
+
+1999-01-13  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el: Added Andy Piper's NT/XEmacs 21 compatibility changes.
+	Changed find-c-expr to gud-findc-expr
+
+1998-12-13  paulk@PAULK  <paulk@PAULK>
+
+	* beanshell.el:
+	Add check for chunked traffic between Emacs and the BeanShell.
+
+1998-12-08  paulk@PAULK  <paulk@PAULK>
+
+	* beanshell.el: Added a startup message for beanshell.
+
+	* jde.el: Put jde-compile variables in a new file jde-compile.el.
+
+1998-12-06  paulk@PAULK  <paulk@PAULK>
+
+	* jde-compile.el:
+	Updated compile options to reflect changes in command-line options
+	accepted by javac.
+
+1998-12-05  paulk@PAULK  <paulk@PAULK>
+
+	* jde-compile.el: New file.
+
+	* jde-run.el:
+	Fixed bug with jde-run-options-properties. (The bug was putting a space before the
+	-D switch.)
+
+1998-11-27  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+	* jde.el: Updated JDE version number to 2.1.3.
+
+	* beanshell.el:
+	Use CLASSPATH environment variable if jde-global-classpath is nil.
+
+	* jde-make.el:
+	Changed to use compile mode as suggested by Robert Grace <rmg2768@draper.com>.
+
+1998-11-22  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: Added note about BeanShell not running on Solaris.
+
+	* beanshell.el: Fixed path separator bug.
+
+	* jde-wiz.el: Fixed bug in interface wizard.
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+	* jde-db.el:
+	Made comint-prompt-regexp and  paragraph-start local variables.
+
+	* jde.el:
+	Added menu items for the BeanShell and method override and interface wizards.
+
+	* beanshell.el: Changed path to use jde.jar.
+
+1998-11-20  paulk@PAULK  <paulk@PAULK>
+
+	* jde-wiz.el: Fixed bug.
+	Added implements clause update function to interface implementation wizard.
+
+1998-11-09  paulk@PAULK  <paulk@PAULK>
+
+	* jde-wiz.el: Added smart import insertion to interface wizard.
+
+1998-11-07  paulk@PAULK  <paulk@PAULK>
+
+	* jde-wiz.el: New file.
+
+1998-11-03  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el: Corrected verbiage in Jde Debugger Options description.
+
+1998-10-21  paulk@PAULK  <paulk@PAULK>
+
+	* beanshell.el: New file.
+
+1998-09-16  paulk@PAULK  <paulk@PAULK>
+
+	* jde-gen.el: Added template for Java bean property change support.
+
+1998-09-13  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: Release notes for 2.1.1
+
+1998-09-12  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Fixed a small bug in key binding code.
+
+	* jde.el: Added support for customization of JDE key bindings via the
+	variable jde-key-bindings.
+
+	* jde-gen.el:
+	Added a template for generating a System.out.println statement.
+
+	* jde.el: Added System.out.println template to the Generate menu.
+
+1998-09-11  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el:
+	Debugger now runs application from directory specified by jde-run-working-directory.
+
+	* jde-run.el:
+	Added a jde-run-working-directory customization variable. If set to a valid
+	path, the JDE starts the application from the directory specified by the
+	path. If the value of this variable is the empty string (the default),
+	the JDE starts the application from the default directory of the current
+	source buffer. The default directory is usually the directory containing
+	the source file.
+
+1998-09-06  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el:
+	This version includes the latest version of jde-gen.el, which was inadvertently
+	replaced by an older version in the last release. This version also includes
+	a newer version of speedbar.el that seems to work better with NT/Emacs 20.3.1
+	than the one that comes with the 20.3.1 distribution.
+
+1998-08-28  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt, jde.el: *** empty log message ***
+
+	* jde.el: Updated version number.
+
+	* jde-run.el: Updated to support NT/Emacs 20.3
+
+1998-07-28  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+1998-07-27  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Removed a diagnostic message.
+
+	* jde.el: Updated version number to 2.0.9.
+
+	* jde.el: Fixed the following project file bugs:
+
+	  * JDE does not store the project name in the project file.
+	  * JDE does not save variables whose value is nil.
+	  * JDE does not reset variables to initial values when
+	    switching to a buffer that is not part of a project.
+
+1998-07-21  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+	* jde-gen.el:
+	Modified class buffer creation templates to use tempo-marks
+	to mark initial position for user to insert code. Thanks
+	to David Hull <david.hull@trw.com> for suggesting this.
+
+	* jde.el: Now requires cus-edit. This fixes custom-quote is void bug.
+
+	Fixed bug in jde-set-variables that prevented loading of
+	project files in the new format.
+
+1998-07-09  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+	* jde.el:
+	Changed jde-save-variables to mark variables that have been customized\n in the current session. Changed jde-set-variables to store the value\n of a customized variable in the customized-value property of the\n variable. This enables Custom to recognize the variable as customized.\n\n  Added jde-convert-prj-file, a function that converts old project files to \n \
+	JDE-2.0.7 format.\n\n Fixed a bug in the function that finds the JDE documentation.
+
+	* jde.el:
+	Change the way that the JDE saves and restores project-specific values of
+	customization variables to be compatible with custom. This fixes the bug
+	that caused errors when loading customized JDE variables from a .emacs file.
+
+1998-07-06  paulk@PAULK  <paulk@PAULK>
+
+	* jde-gen.el: class buffer template now prompts for super class and
+	interface
+
+	* jde-gen.el: Added boilerlate to other buffer generation templates.
+
+1998-07-04  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Should have been does not turn on font-lock if XEmacs 21.0.
+
+1998-07-03  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+	* jde.el: Now does not turn on font-lock if XEmacs 20.1.
+
+1998-07-02  paulk@PAULK  <paulk@PAULK>
+
+	* jde-run.el:
+	Added $ to the set of characters recognized by the JDE as valid
+	in vm and Java app command-line arguments.
+
+	* jde.el:
+	Fixed bugs in the jde-show-help function that prevented display
+	of help on XEmacs and NT/Emacs.
+
+1998-07-01  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+1998-06-30  paulk@PAULK  <paulk@PAULK>
+
+	* jde-gen.el: Added source file boilerplate support.
+
+	* jde-run.el: Fixed jde-run-parse-args to recognize % as an argument
+	character.
+
+	* jde-db.el:
+	Added variables `jde-db-read-vm-args' and `jde-db-read-app-args'. The use of
+	these variables is the same as the corresponding jde-run variables.
+
+1998-06-29  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el:
+	Added the customization variable `jde-read-compile-args'. If non-nil,
+	this variable causes the jde-compile command to read compilation options
+	from the minibuffer and append them to the options specified by
+	the `jde-compile-option group of customization' variables. The JDE
+	maintains a history of compiler options entered in the minibuffer.
+
+	* jde-run.el:
+	Added the variables `jde-run-read-vm-args' and `jde-run-read-app-args'.
+	The first cause the jde-run command to read vm arguments from the
+	minibuffer and append them to the vm arguments specified by
+	the `jde-run-option' group of customization variables. The second
+	causes jde-run to read arguments to be passed to the application
+	from the minibuffer and append them to the arguments specified
+	by `jde-run-applications-args'. The JDE maintains separate histories
+	for both types of arguments.
+
+1998-06-28  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+	* jde.el: Use fboundp instead of Emacs version to determine whether
+	easy-menu-create-menu is bound.
+
+	* jde-db.el: Fixed bug in marker filter.
+
+1998-06-26  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+	* jde.el: Updated release to 2.0.3
+
+	* jde.el:
+	Fixed bug where the JDE was invoking global-font-lock-mode on XEmacs,
+	where it is not defined.
+
+	Updated JDE to call easy-menu-create-menu instead of easy-menu-create-keymaps
+	on Emacs 20. (The former replaces the latter as of Emacs 20.x);
+
+	* jde-db.el:
+	Provided a hack to handle reordering of threaded messages on Solaris.
+
+	Provided code to handle case where current class has no line number
+	information.
+
+	* jde-gen.el:
+	Fixed capitalization on get-set method pair. Thanks to Jere_McDevitt@HomeDepot.COM
+
+1998-06-25  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el: Removed debug messages from jde-db-marker-filter.
+
+	* jde-db.el:
+	Modified jde-db-marker-filter to accummulate debugger output
+	in chunks. Fixes bug reported by Eric Prud'hommeaux (eric@w3.org).
+
+1998-06-22  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+1998-06-21  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el:
+	Added jde-db-startup-commands variable. This variable allows you to
+	specify debugger commands to run when the debugger is started.
+
+	* jde.el: Updated JDE version number to 2.0.2.
+
+	* jde.el: Changed buffer change code to reload a project file
+	when a user changed jde-mode buffers, not just .java
+	buffers. This allows using extensions other than .java
+	for Java source code files.
+
+	Made post-command-hook buffer local to improve performance.
+
+	Thanks to David J. Biesack( sasdjb@unx.sas.com) for the above changes.
+
+1998-06-20  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el:
+	Added a customizable feature, jde-db-set-initial-breakpoint, that causes
+	the JDE to set an initial breakpoint in an app's main routine and run
+	to the breakpoint on debugger startup. The feature is enabled by default.
+
+	* jde-db.el:
+	Made jde-db-marker-regexp a custom variable to facilitate the use of the JDE
+	with debuggers other than jdb.
+
+	Changed the marker regular expression to detect only jdb breakpoint messages,
+	i.e., messages of the form
+
+	  Breakpoint hit: qualified.class.name (class:line)
+
+	This should eliminate the problem of spurious hits when exceptions occur and
+	stack traces are printed.
+
+1998-06-18  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Added XEmacs compatibility changes requested by xemacs.org.
+
+1998-06-16  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Added support for abbreviations.
+
+	* jde-gen.el:
+	Fixed bug that caused jfc-app to be generated instead of console app.
+	Added a mouse motion listener template.
+	Added a toString method template.
+
+1998-05-28  paulk@PAULK  <paulk@PAULK>
+
+	* ReleaseNotes.txt: *** empty log message ***
+
+	* jde-make.el:
+	Added dummy function for jde-make-mode to facilitate autoloading.
+
+	* jde.el: Added no-op function for jde-mode to facilitate autoloading.
+	Thanks to Andy Piper <andyp@parallax.co.uk> for the suggestion.
+
+1998-05-27  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Updated JDE version number to 2.01.
+
+	* jde-db.el, jde-make.el, jde-run.el, jde-gen.el:
+	Added autoload comments.
+
+	* jde-gen.el: *** empty log message ***
+
+	* jde.el: Added autoload comments for JDE functions.
+
+1998-05-17  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el:
+	Changed names of the Files->JDE New->Custom and JDE-Autocode->Custom
+	to Other...
+
+	* jde-gen.el:
+	Added templates for a Swing application and an inner class.
+
+	Fixed a bug in jde-gen-buffer
+
+1998-04-19  kinnucan  <kinnucan@PAULK>
+
+	* ReleaseNotes.txt: Updated for JDE 2.0
+
+	* jde.el: Updated version number.
+
+1998-04-18  kinnucan  <kinnucan@PAULK>
+
+	* jde-gen.el: Fixes some bugs in the generated code.
+
+	* jde.el: Replace imenu--generic-function with jde-create-imenu-index
+	as the indexing function for Java source buffers.
+	jde-create-imenu-index is basically imenu--generic-function
+	with a fix for a bug that generates multiple indexes for
+	the same symbol.
+
+1998-04-10  kinnucan  <kinnucan@PAULK>
+
+	* ReleaseNotes.txt: New file.
+
+1998-04-09  kinnucan  <kinnucan@PAULK>
+
+	* jde-gen.el: * Updated some of the doc strings.
+
+	* jde.el:
+	* Added menu items for inserting custom code templates in buffers.
+	  The items are:
+
+	  Files->JDE New->Custom
+
+	  JDE->Generate->Custom
+
+	* jde-gen.el:
+	* Added the capability to define your own custom autocode templates.
+	  The facility consists of the following items:
+
+	  - jde-gen-code-templates
+
+	    Defines a list of templates for code inserted at point. The
+	    list by default contains the templates defined by the JDE.
+	    You can define your own templates and add them to the list,
+	    using the Emacs customization feature. See tempo.el for
+	    information on creating templates.
+
+	  - jde-gen-buffer-templates
+
+	    Defines a list of templates for code to be inserted in a
+	    newly created Java buffer.
+
+	  - jde-gen-code (JDE->Generate->Custom)
+
+	    This command inserts a specified code template at point.
+
+	  - jde-gen-buffer (Files->JDE New->Custom)
+
+	    This command creates the specified buffer and inserts
+	    a specified template at the beginning of the buffer.
+
+1998-04-08  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: * Fixed jde-save-variables and jde-set-variables so that they
+	  operate more like the corresponding custom functions. This
+	  was necessary to support project-by-project customization
+	  of autocode templates.
+
+	* jde-gen.el:
+	* Provided each template variable with a set function that regenerates
+	  the corresponding template command whenever the template is changed.
+
+1998-04-06  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: * Removed extraneous New option from JDE menu.
+
+1998-04-05  kinnucan  <kinnucan@PAULK>
+
+	* jde-gen.el:
+	* Added jde-gen-class-buffer and jde-gen-console-buffer functions.
+
+	* jde.el:
+	* Added JDE New submenu to the Emacs Files menu. The new submenu has
+	  commands for creating buffers with skeleton code for the following
+	  types of classes:
+
+	  - Generic class
+	  - Main class for a console application
+
+1998-04-01  kinnucan  <kinnucan@PAULK>
+
+	* jde-gen.el: New file.
+
+	* jde.el: * Added code generation for
+
+	  - new Java source file
+	  - Get/set variable method pair
+	  - Action listener
+	  - Window listener
+	  - Mouse listener
+
+1998-03-30  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: * Fixed separator code in JDE menu definition.
+
+	  Thanks to Kai Grossjohann <grossjohann@ls6.cs.uni-dortmund.de>
+	  for providing this fix.
+
+1998-03-27  kinnucan  <kinnucan@PAULK>
+
+	* makefile.sample: New file.
+
+1998-03-26  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: Added the jde-build command.
+
+	* jde-make.el: New file.
+
+	* jde-db.el:
+	Fixed typo in the code that displays the jdb menu on XEmacs.
+
+	* jde-db.el:
+	Modified jde-db-search-src-dirs to take current package as an
+	argument rather than use a global variable. This allows
+	it to be used by jde-java-build function.
+
+1998-03-23  kinnucan  <kinnucan@PAULK>
+
+	* jde.el:
+	* Set up to activate project tracking when the first Java buffer
+	  is loaded and deactivate project tracking when the last
+	  Java buffer is closed.
+
+	* Removed update buffer command as it is no longer necessary
+	  because all customization variables are now global.
+
+	* Changed save project command to prompt for a project name,
+	  which is required for automatic project tracking.
+
+1998-03-22  kinnucan  <kinnucan@PAULK>
+
+	* jde.el:
+	* Changed the way the JDE maintains project settings. Previously
+	  most JDE customization variables were buffer local. This was basically
+	  a way of letting Emacs manage project-dependent customization
+	  settings. However, this approach conflicts with the new (as of
+	  Emacs 20) Emacs customization feature. To avoid the conflict,
+	  the JDE now manages the task of keeping buffers up-to-date.
+	  In particular, all variables are global to permit easy
+	  customization. Whenever a user switches from one Java buffer to
+	  another, the JDE checks to see if the "to" buffer is part of the
+	  same project as the "from" buffer. If not the JDE loads the
+	  project file for the "to" buffer, thus updating the customization
+	  variables to the specific JDE settings for the "to" buffer's project.
+
+	* Fixed bug that prevented jde-compile-option-command-line-args
+	  from working correctly.
+
+1998-03-19  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: - Fixed bug that prevented JDE->Options->Debug from working.
+
+	- Updated version number.
+
+1998-03-17  kinnucan  <kinnucan@PAULK>
+
+	* jde-db.el: Changed jde-db-marker-regexp to account for inner classes.
+	Thanks to Andreas Rasmusson <Andreas.Rasmusson@sics.se> for
+	providing this fix.
+
+1998-03-05  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: Made jde-db-source-directories non-global again to
+	eliminate the problem of project files changing
+	its value.
+
+	* jde.el: Updated version number to 1.9.5
+
+1998-03-03  kinnucan  <kinnucan@PAULK>
+
+	* jde-db.el: Added test for jde-run-application-class = "" to jde-db
+
+	* jde-run.el: Fixed bug in jde-run.
+
+	* jde.el: - Fixed bug in imenu regexp for speedbar that falsely taggex
+	  method-like constructs in comments
+
+	- Added file: prefix to path to User's Guide.
+
+	- Fixed bug that caused setting jde-compile-option-vm-args to wipe
+	  out all other compile options.
+
+1998-02-27  kinnucan  <kinnucan@PAULK>
+
+	* jde-db.el: Changed copyright to Paul Kinnucan.
+	Have not yet assigned rights to FSF.
+
+	* jde-db.el: Added support for Emacs customization feature.
+
+	* jde-run.el: * Added support for Emacs customization feature.
+
+1998-02-25  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Added jde-show-help command. This command displays the
+	JDE User's Guide in a browser.
+
+1998-02-23  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: * Reorganized JDE menu. Eliminated the Compile Options item
+	  and added the following items:
+
+	  JDE->Options->Compile       Shows Compile Options buffer
+	  JDE->Options->Run           Shows Run Options Buffer
+	  JDE->Options->Debug         Shows Debug Options Buffer
+	  JDE->Options->Project       Show Project Options Buffer
+	  JDE->Options->Update Buffer Updates buffer to global options values
+
+	* Added the jde-save-project command.
+
+	  This command saves the values of all local JDE options (i.e.,
+	  customization) variables in the project file. This provides
+	  an easy way of creating a project file for a project.
+	  Simply set the desired options, using the JDE Options menu.
+	  Then, save the results in the project file.
+
+1998-02-18  kinnucan  <kinnucan@PAULK>
+
+	* jtags.csh: Updated to Bourne version.
+
+	* jtags: More edits to the comments.
+
+	* jtags: Cleaned up the comments.
+
+	* jtags:
+	"Kent S. Gordon" <kgor@inetspace.com> contributed the following
+	improvements
+
+	 - Change some .* expressions to [^.*] to prevent matches
+	   in source file comments and functions.
+
+	 - Removed . from class_type since declarations should never
+	   be for another package.
+
+	Thanks Kent.
+
+1998-02-17  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: Corrected some doc strings.
+
+	* jde.el: * Added customization support by redefining all customization
+	  variables, using defcustom.
+
+	* Defined two customization groups: jde and jde-compile-options.
+
+	* Replaced the jde-classpath variable with jde-global-classpath.
+
+	* Added customization option jde-quote-classpath.
+
+	* Added variable jde-project-name.
+
+	* Replace variable jde-compile-options with
+	  jde-compile-option-command-line-args.
+
+	* Added the following compile option variables:
+
+	  jde-compile-option-classpath
+	  jde-compile-option-directory
+	  jde-compile-option-deprecation
+	  jde-compile-option-debug
+	  jde-compile-option-nodebug
+	  jde-compile-option-optimize
+	  jde-compile-option-optimize-interclass
+	  jde-compile-option-option-depend
+	  jde-compile-option-vm-args
+	  jde-compile-option-verbose
+	  jde-compile-option-nowarn
+	  jde-compile-option-encoding
+
+	  All of these variables are made buffer local.
+
+	* Replaced jde-set-classpath function with
+	  jde-set-global-classpaht function.
+
+	* Added the following functions
+
+	  jde-path-string-to-list
+	  jde-build-classpath-arg
+	  jde-build-compile-vm-args
+	  jde-get-compile-options
+
+1998-02-16  kinnucan  <kinnucan@PAULK>
+
+	* jde-db.el: Fixed bug in jde-deb-set-source-paths that caused the last
+	directory to not be normalized (i.e., slash appended).
+
+1998-02-13  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: Fixed so that the JDE menu appears in the XEmacs menu bar
+	only when a Java buffer is active.
+
+	* jde.el:
+	Added jde-use-font-lock variable. If t (the default), jde turns on
+	font-locking for java files.
+
+1998-02-12  kinnucan  <kinnucan@PAULK>
+
+	* jde.el:
+	Advised imenu-default-create-index-function to set case-fold-search
+	to nil (case-sensitive) when creating indexes.
+
+	* jde.el:
+	Fixed some bugs in imenu regular expressions, including lack of a re
+	for indexing primitive type variables. Thanks to
+	David J. Biesack <sasdjb@unx.sas.com> for spotting some bugs.
+
+	* jde.el: Added fix to bug that prevented fontlocking on Emacs 20.2
+
+	* jde-db.el:
+	Changed the jde-db-search-src-dirs to search the source directory list from
+	front to back instead of back to front. The former search order did not allow newer versions of the same class to shadow older versions. Thanks to "David J. Biesack" <sasdjb@unx.sas.com> for supplying this fix.
+
+1998-02-11  kinnucan  <kinnucan@PAULK>
+
+	* jde-db.el:
+	Fixed bug in jde-db-marker-filter that sometimes prevented the JDE from
+	loading the correct source file. Thanks to David J. Biesack
+	<sasdjb@unx.sas.com> for supplying the fix.
+
+1998-01-29  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Fixed typo.
+
+	* jde.el: Made various changes to ensure compatibility with XEmacs.
+
+1998-01-20  paulk@PAULK  <paulk@PAULK>
+
+	* jde.el: Use browse-url instead of browse-url-of-file.
+
+	* jde.el: Require cc-mode.
+
+1998-01-20  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: Added code to set up andersl font locking. Necessary because
+	andersl assumes that the buffer is in java-mode.
+
+1998-01-19  kinnucan  <kinnucan@PAULK>
+
+	* jde.el:
+	* Made JDE into a major mode (jde-mode) derived from java-mode.
+	* The JDE now uses the browse-url package to display JDK documentation.
+	* Deleted the variable jde-hook (it is replaced by jde-mode-hook).
+	* Deleted the variables jde-web-browser and jde-doc-dir as they duplicate
+	  functionality provided by browse-url.
+
+1998-01-18  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: *** empty log message ***
+
+1997-12-02  kinnucan  <kinnucan@PAULK>
+
+	* jtags: Divided tagging process into three passes
+	through the source hierarchy to avoid overflowing
+	the xargs bugger.
+
+1997-10-30  kinnucan  <kinnucan@PAULK>
+
+	* jde-db.el: Made configuration variables settable.
+
+	* jde.el: 1) Made configuration variables settable.
+	2) Made jde-db-source-directories buffer local.
+
+1997-10-26  kinnucan  <kinnucan@PAULK>
+
+	* speedbar.el: New file.
+
+	* jde-run.el:
+	Fixed bug where jde-run was incorrectly parsing command line arguments
+	containing an equal (=) sign.
+
+	* jde-db.el:
+	Applied Derek Young's patch to cause jde to qualify class names
+	when setting a breakpoint.
+
+1997-10-20  kinnucan  <kinnucan@PAULK>
+
+	* jde-db.el: Removed reference to deleted function jde-db-massage-args
+
+	* jde.el:
+	Now requires andersl-java-font-lock only for Emacs versions < 20.
+
+1997-10-18  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: 1. Changed key bindings to use the two prefix keys C-c C-v.
+
+	2. Fixed infinite recursion bug in jde-find-project-file.
+
+1997-10-10  kinnucan  <kinnucan@PAULK>
+
+	* jde-db.el:
+	Fixed bug in jde-db-search-src-dirs discovered by Jonathan Payne.
+
+1997-10-06  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: Required cl.
+
+	* jde-db.el: Fixed bugs in jde-db-set-debugger command.
+
+	* jde.el: Removed last usage of obsolete bashify function.
+
+	* jtags: Replaced existing regular expressions with a new set
+	based on those contained in andersl-java-font-lock.el
+
+	* jde.el:
+	Added jde-compiler variable and associated set command. Lets you
+	configure the JDE to use the compiler of your choice on a buffer
+	by buffer basis.
+
+1997-10-05  kinnucan  <kinnucan@PAULK>
+
+	* jde-run.el:
+	Unquoted classpath as quotes are only necessary for compilation (because
+	the JDE uses a shell to run the compiler).
+
+	* jde-db.el:
+	1. Added the variables jde-db-debugger and jde-db-debugger-is-executable
+	   and the associated setter function jde-db-set-debugger. These allow
+	   you to specify a custom debugger for the JDE>
+
+	2. Added jde-db-args and jde-db-app-args and the associated setter
+	   functions. These allow you to specify debugger and application
+	   command line arguments.
+
+	* jde-run.el:
+	Added the function jde-run-set-app-args, which allows you to
+	specify command line arguments for the application you are running.
+
+	Also, changed the value of jde-run-args from a string to a list.
+
+	* jde-db.el: Fixed bug in print object menu item.
+
+1997-10-04  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: Added key bindings for menu commands.
+
+1997-10-03  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: 1. Revamped imenu regular expressions.
+	2. Stopped quoting compile command arguments for bash under Win32.
+
+1997-09-30  kinnucan  <kinnucan@PAULK>
+
+	* jde.el:
+	Changed name of JDE menu from "Java" to "JDE" to avoid conflict
+	with cc-mode 5.18 menu, which is named "Java".
+
+1997-09-15  kinnucan  <kinnucan@PAULK>
+
+	* jde-run.el:
+	Changed w32-start-process-show-window to win32-start-process-show-window
+
+1997-09-03  kinnucan  <kinnucan@PAULK>
+
+	* jde-run.el: Added jde-run-applet command, which runs a Java applet.
+
+	* jde.el: Updated version number.
+
+	* jde.el:
+	1. Made jde configuration variables buffer local to support automatic
+	   loading of project files.
+
+	2. Added Run Applet command to the jde menu.
+
+1997-08-28  kinnucan  <kinnucan@PAULK>
+
+	* jde-run.el: Fixed bug in save-w32-show-window.
+
+1997-08-27  kinnucan  <kinnucan@PAULK>
+
+	* jde.el: Eliminated single quotes around path in jde-browse-jdk-doc.
+
+1997-08-26  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el: Fixed bug in check-source-path.
+
+1997-08-26  kinnucan  <kinnucan@PAULK>
+
+	* readme.txt: Updated for JDE 1.8 release.
+
+	* jtags: Added revision number.
+
+	* jtags.csh:
+	1. Exclude RCS (version control) directories from tags search.
+	2. Added pattern for recognizing abstract classes.
+
+	* jtags: 1. Exclude RCS directories from tags search.
+	2. Added regular expression for abstract classes.
+
+	* jde-db.el: Tweaked JDE Version number for JDE 1.8 release.
+
+	* jde.el:
+	Added jde-set-classpath command, which lets you set the classpath for
+	compiling and running applications.
+
+	* jde-run.el: Tweaked version number.
+
+	* jde-run.el: Deleted superfluous comments.
+
+	* jde-run.el: 1. Ported jde-run onto comint mode.
+
+	   This allows you to interact with a Java application in the
+	   run buffer, if the application accepts command line input.
+	   You can use the comint history features to facilitate interaction
+	   with such an application.
+
+	2. Added the jde-run-set-java-vm and jde-run-set-java-vm-w
+	   commands, which let you specify the Java interpreter to use to
+	   run on non-Windows and Windows platforms, respectively.
+
+	   Note that you must use javaw on Windows platforms to avoid
+	   opening a superfluous command shell window.
+
+	3. Added the jde-run-set-args command and associated jde-run-args
+	   variable, which let you specify Java interpreter options via
+	   command-line arguments.
+
+	   jde-run passes the value of jde-classpath (defined in jde.el
+	   and set via the jde-set-classpath command) and jde-run-args
+	   to the Java interpreter.
+
+	  This means that you can use a common classpath definition for
+	  compiling and running applications, while passing other
+	  runtime arguments via jde-run-set-args.
+
+1997-07-05  kinnucan  <kinnucan@PAULK>
+
+	* jtags.csh, jtags, readme.txt: New file.
+
+	* jde-run.el:
+	Modified jde-run command to derive the class name from the name of the file in
+	the current buffer rather than the buffer name. This avoids an incorrect derivation
+	when more than one buffer is open on the same source file.
+
+	* jde-db.el:
+	Updated make-jdb-command to run either the class previously specifed with
+	the jde-run-set-app command or the class corresponding to the code in the
+	current buffer.
+
+1997-06-29  kinnucan  <kinnucan@PAULK>
+
+	* jde-run.el:
+	1. Added jde-run-set-app function, which lets you specify the application
+	   class to run.
+
+	2. Updated jde-run to run either the app specified by jde-run-set-app or
+	   the class whose source is in the current buffer. In the latter case,
+	   jde-run extracts the package of the app class from the source buffer.
+
+1997-06-18  paulk@PAULK  <paulk@PAULK>
+
+	* jde-db.el:
+	Added error-checking to jde-db-set-source-paths function. Now checks for
+	existence of specified directories and appends a terminal slash to paths
+	that lack it.
+
+	* jde.el, jde-run.el, jde-db.el: New file.
+

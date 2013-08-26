@@ -1,0 +1,189 @@
+#ifndef _ERROR_COMPONENT_IDL_
+#define _ERROR_COMPONENT_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+* "@(#) $Id: acsexmplErrorComponent.idl,v 1.10 2010/11/10 16:58:09 rbourtem Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+* david 2002-09-26 added more comments
+*/
+
+#include <acscomponent.idl>
+#include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
+
+
+module acsexmplErrorComponent 
+{
+    /** @interface ErrorComponent
+     *  Interface ErrorComponent is used to demonstrate examples of
+     *  the ACS error system.
+     *  The methods are thought to produce errors and completions
+     *  of various types.
+     *  Implementation and clients demonstrate how to deal with them.
+     */
+    interface ErrorComponent : ACS::ACSComponent
+	{
+	/** 
+	 *  Prints "ErrorComponent" to the console (where the container that activated
+	 *  this component is running).
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void displayMessage();
+	
+	/** 
+	 *  Simple method that throws an ACSException with an error trace of a given depth.
+	 *  @param depth depth of the error trace (will be interpreted as 1 if it is < 1). 
+	           In Java this corresponds to the total number of exception and causing exceptions.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void badMethod(in short depth) raises (ACSErrTypeCommon::GenericErrorEx, ACSErrTypeCommon::UnexpectedExceptionEx);
+
+
+	/** 
+	 *  Method that throws an ACSException (ACSErrTypeCommon::GenericErrorEx).
+	 *  The error trace inside the exception is added from a completion.
+	 *  @param depth depth of the error trace
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void exceptionFromCompletion(in short depth) raises (ACSErrTypeCommon::GenericErrorEx);
+
+
+       /** 
+	 *  Method that throws an ACSException on the type level 
+	 *  (ACSErrTypeCommon::ACSErrTypeCommonEx). Since we do not have hierarchy in IDL, 
+         *  we have to specify here code and type exception.
+	 *  This means that this method can throw GenericErrorEx
+	 *  but also any exception in the ACSErrTypeCommonEx type.
+	 *  @param depth depth of the error trace
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void typeException(in short depth) raises (ACSErrTypeCommon::GenericErrorEx, 
+						   ACSErrTypeCommon::ACSErrTypeCommonEx);
+
+
+       /** 
+	 *  Method that throws a CORBA::BAD_PARAM system exception
+	 *  to show how to handle CORBA System Exceptions
+	 */
+        void corbaSystemException();
+
+	/** 
+	 *  Simple method that returns an ACSErr::Completion. 
+	 *  The Error Trace in the completion is added from an exception.
+	 *  @param depth depth of the error trace, if <= 0, returns OK completion
+	 *  @return ACSErr::Completion
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+        ACSErr::Completion completionFromException(in short depth);
+
+       /** 
+	 *  Simple method that returns an ACSErr::Completion. 
+	 *  The Error Trace in the completion is added from a completion.
+	 *  @param depth depth of the error trace, if <= 0, returns OK completion
+	 *  @return ACSErr::Completion
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+        ACSErr::Completion completionFromCompletion(in short depth);
+
+
+       /** 
+	 *  Simple method that returns an ACSErr::Completion. 
+	 *  Completion is located on the stack instead on the heap.
+	 *  @param depth depth of the error trace, if <= 0, returns OK completion
+	 *  @return ACSErr::Completion
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+        ACSErr::Completion completionOnStack(in short depth);
+
+        /**
+         * a Simple method that returns an ACSErr::Completion as an out parameter
+         * @param comp Completion as out parameter
+         *  @htmlonly
+         *  <br><hr>
+         *  @endhtmlonly
+         */
+        void outCompletion(out ACSErr::Completion comp);
+
+        /**
+         * A method which will generate the SIGFPE signal
+         * This can be used to test what happens when there is a floating point 
+         * exception in a component
+         *  @param way parameter used to specify the way to generate the SIGFPE
+         *  way == 0: Send SIGFPE signal with the kill() function
+         *  way == 1: Generate a floating point exception by dividing by 0
+         *  @htmlonly
+         *  <br><hr>
+         *  @endhtmlonly
+         */
+        void generateSIGFPE (in short way);
+
+        /**
+         * A method which will generate the SIGSEGV signal
+         * This can be used to test what happens when there is a segmentation 
+         * fault in a component
+         *  @param way parameter used to specify the way to generate the SIGSEGV
+         *  way == 0: Send SIGSEGV signal with the kill() function
+         *  way == 1: Generate a segmentation fault by accessing to a null pointer
+         *  @htmlonly
+         *  <br><hr>
+         *  @endhtmlonly
+         */
+        void generateSIGSEGV (in short way);
+        
+        /**
+         * A method that will sleep during nb_seconds seconds before to return
+         * This method could be used to test the behavior of components 
+         * taking a long time before to reply.
+         * @param nb_seconds the number of seconds to sleep before to return
+         *  @htmlonly
+         *  <br><hr>
+         *  @endhtmlonly
+         */
+        void sleepingCmd(in short nb_seconds);
+        
+	};
+
+};
+
+#endif

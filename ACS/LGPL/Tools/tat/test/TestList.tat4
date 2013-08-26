@@ -1,0 +1,6 @@
+#
+# "@(#) $Id: TestList.tat4,v 1.76 2003/01/09 17:51:18 vltsccm Exp $"
+# 
+ENVIRONMENT ws2 WS
+ENVIRONMENT lcu2 LCU
+tat41

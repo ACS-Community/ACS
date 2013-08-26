@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="standard_stylesheet.xsl"?>
+<document location="">
+  <head>
+    <title>Error 404 -  Missing page !</title>
+    <section><A HREF="http://cern.ch/ab-div-co-ap/" TARGET="_top">AB/CO/AP</A></section>
+    <author firstname="Eric" lastname="Roux" ccid="13644"/>
+  </head>
+	<section>
+	<description>
+	<p><b>Ooops ! This web page doesn't exist ! [Yet]</b></p>
+	</description>
+	</section>
+</document>
+

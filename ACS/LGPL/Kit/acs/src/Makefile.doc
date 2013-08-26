@@ -1,0 +1,1301 @@
+#*******************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: Makefile.doc,v 1.63 2005/01/31 19:46:16 dfugate Exp $" 
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gfilippi  29/06/93  craeted
+# gfilippi  25/08/93  changed *PATH into *_PATH (see vltMakefile)
+# gfilippi  26/11/93  modified documentation to include VxWork
+# gfilippi  27/04/94  new definition for make clean, lib-dependency, RTAP.
+# gfilippi  22/05/94  tcl/tk added 
+# gfilippi  16/06/94  new treatment of make clean for man-page files
+# gfilippi  05/08/94  logging of make install operations
+# gfilippi  07/09/94  /test, <mod>/lcu-ws copy sources into introot (SPR940132)
+# gfilippi  07/09/94  supports local manpages (SPR940176)
+# gfilippi  07/09/94  ASCII to MIF (SPR940110)
+# gfilippi  06/10/94  documentated several changes (see vltMake)
+# gfilippi  12/10/94  version target added
+# gfilippi  13/10/94  better explanation for manl
+# gfilippi  19/10/94  man-page restructured as User Manual
+# gfilippi  06/12/94  guidelines to port Makefile from 1.2 to 1.3 added
+# gfilippi  01/02/95  remark on PURIFY added
+# gfilippi  16/02/95  "make test" added
+# gfilippi  16/02/95  database files added
+# gfilippi  17/02/95  panel files added
+# gfilippi  02/03/95  DBL_LOAD added
+# gfilippi  02/03/95  section 4 assigned to C++ routines
+# gfilippi  03/03/95  db and test changed into db_all and test_all 
+# gfilippi  04/03/95  make tcl checker customizable
+# gfilippi  30/06/95  CCS-lite documented
+# gfilippi  05/07/95  processing of panels (by vltMakeSetPanelShell)
+# gfilippi  16/11/95  C++ library flag added
+# gfilippi  20/11/95  vltMakeLogInstallation.config documented
+# gfilippi  16/12/95  INSTALL_FILES documented
+# gfilippi  11/05/96  PURECOV added
+# gfilippi  15/10/96  new compilation/link flags for shared, debug, etc.
+# gfilippi  14/04/97  shared libraries
+# gfilippi  14/04/97  correct typo: <exe-n>_NOSHARE -->  <exe-n>_NOSHARED
+# gfilippi  16/04/97  CCS_NOX11 added (EAL request)
+# gfilippi  16/04/97  use of LDFLAGS and -l<name> for shared only libraries
+# gfilippi  23/11/97  CppFiles target added (SPR 950609)
+# gfilippi  23/06/99  ALARMS added (SPR 990257)
+# gfilippi  14/07/99  ALARMS/HELP added (SPR 990257)
+# rschmutz  30/09/99  INS_ROOT_FILES, INS_ROOT_DIR added (SPR 90346).
+# psivera   17/03/00  Changed comments regarding INS_ROOT_FILES (SPR 20000085).
+# psivera   01/06/16  added clean_dist documentation
+# psivera   01/06/27  added LINK_FILES documentation
+# mzampare  02/08/07  added Java documentation
+# psivera   02/10/31  corrected information about debug and optimization
+#************************************************************************
+#   NAME
+#   Makefile - tells (GNU-)make what to do to build or to install a module.
+#
+#   DESCRIPTION
+#
+#   This man-page is the USER MANUAL for the "vltMake" software and it is
+#   part of the VLT Programming Standard and supersedes section 6.2,
+#   pag 47 of [2].
+#
+#   The "vltMake" software is a wrapper around the GNU make to support
+#   the standards defined for VLT software. 
+# 
+#   Hereafter it is  assumes that you are familiar with "GNU-make" [1] basic 
+#   concepts and the VLT Standard[2].
+#
+#     [1] GNU make - Edition 0.41, for make Version 3.64 Beta, April 93.
+#
+#     [2] VLT Programming Standard (VLT-PRO-ESO-10000-0228 - 1.0 10/03/93)
+#
+#   and the term MODULE shall always be read as SOFTWARE MODULE.
+#
+#   The man-page is structured on the following sections
+#
+#          OVERVIEW  . . . . . . . .
+#          MAKEFILE  . . . . . . . .
+#          VARIABLES . . . . . . . .
+#          SEARCH PATHS  . . . . . .
+#          MODULE DESCRIPTION. . . .
+#          UNIX OR VXWORKS . . . . .
+#          SELECTING VLTMAKEFILE . .
+#          TARGETS . . . . . . . . .
+#          CUSTOMIZATION . . . . . .
+#          DATABASE MAKEFILE . . . .
+#          EXECUTING MAKE  . . . . .
+#
+#          APPENDIX: Guideline to port existing Makefile-s
+#
+#
+#   OVERVIEW
+#   Considering that the majority of the actions done in building software
+#   are common to all modules and to have an higher degree of maintainability,
+#   the use of make in the VLT Software Project has been organizes as follows:
+#
+#     - a centralized file, "vltMakefile", containing all definitions 
+#         valid through the whole VLT Software, like standard rules and 
+#         operating system specificities, and covering both UNIX and VXWORKS
+#         applications.
+#
+#     - a file for each software module, "<module>/src/Makefile", providing
+#         module specific information, like which file have to be handled
+#         or any additional information not covered by the standard vltMakefile,
+#         like module-specific compilation flags or installation instruction.
+#
+#   The module-Makefile executes the standard vltMakefile. The standard 
+#   definitions and macros provided by vltMakefile are driven by variables, 
+#   set either by the calling Makefile or in the external environment.
+#
+#   The standard defined in vltMakefile can be integrated or overwritten 
+#   inside the Makefile, using normal (GNU)make commands.
+#
+#   MAKEFILE
+#   The Makefile is provided by the developer has part of the implementation.
+#   There is one Makefile for each directory containing source code, 
+#   namely src/ and test/. 
+#
+#   (The Makefile can also be used to build up an environment. 
+#    See DATABASE MAKEFILE on this man-page for more.)
+#
+#
+#   Each Makefile shall have the following structure:
+#
+#     1) module description: it is a list of variables telling the standard
+#        rules which files need to be treated. The variable names are fixed.
+#
+#     2) selecting UNIX or VXWORKS rules (MAKE_VXWORKS flag)
+#
+#     3) executing vltMakefile (redefining the variable MAKEDIR allows the 
+#        user to select the vltMakefile)
+#
+#     4) defining the standard target: all, man, clean, clean_dist, 
+#				       test, install.
+#
+#
+#   Normally, to create a Makefile the following is enough:
+#
+#      - get a Makefile template using getTemplate(7) 
+#
+#      - set the variables to describe the code organization.
+#      
+#      - select either UNIX or VxWorks application.
+#
+#
+#   VARIABLES 
+#   Variables are used to communicate information to make. There are:
+#
+#     environmental variables
+#          defined at shell level and used to tell make on where and how
+#          do things
+#
+#     variables defined by Makefile
+#          used to tell vltMakefile-rules which files and how to use 
+#          standard rules
+#
+#     variables defined by vltMakefile
+#          used internally to build real make commands.
+#
+#   According to make rules, external variables are overwritten by internal
+#   definitions and both may be overwritten by giving the variable as a 
+#   command argument (example: make XYZ='abcd')
+#
+#   In the following sections only the variables defined by Makefile are
+#   described. See vltMakefile(5) for the complete list of environmental
+#   and vltMakefile variables.
+# 
+# 
+#   SEARCH PATHS
+#   One of the most important feature of vltMakefile is the handling of 
+#   the include and library search path lists.
+#
+#   The system will look in the following location in the listed order:
+#
+#        - the current module
+#        - a user specified list (USER_INC or USER_LIB)
+#        - the current integartion area (INTROOT)
+#        - one or more auxiliary integration areas (INTLIST)
+#        - the VLT root area (VLTROOT)
+#
+#   CAUTIONS: 
+#
+#     - if defined, USER_INC (USER_LIB) shall be in the format used to 
+#       specify files to the compiler, i.e.,  -I<dir> ... (-L<dir> ...)
+#
+#     - INTLIST is a colon-separated list of directory. Each directory MUST
+#       have the standard structure of an integration area. The list may 
+#       be empty and is used only to building search paths. If in addition to
+#       includes and libraries, you need also binaries that are in the bin/
+#       directories, remember to insert <dir>/bin in the PATH.
+#       The usage of INTLIST is acceptable only during development and 
+#       integration or to handle module interdependencies.
+#
+#     - for every area, the system takes care of selecting the UNIX or 
+#       VxWorks sub-directories, according to the MAKE_VXWORKS flag.
+#
+#   MODULE DESCRIPTION 
+#   A software module is a set of files organized in a (fixed) structure 
+#   of directory. Each module has a name, unique in the system, and can 
+#   be one of the two following forms:
+#
+#      - single level: (either UNIX or VxWorkx)
+#
+#               <mod>/
+#                 |--src/
+#                 |--include/
+#                 :.....
+#                 :.....
+#
+#      - multi-level: both UNIX and VxWorkx
+#
+#               <mod>/
+#                 |--ws/               <<< for workstation part
+#                 |   |--src/
+#                 |   |--include/
+#                 :   :.....
+#                 :
+#                 |--lcu/              <<< for LCU part
+#                     |--src/
+#                     |--include/
+#                     :.....
+#
+#   vltMakefile supports both of the above structures, but does not allow
+#   to have mixed code, i.e., having under one src/ directory code that 
+#   must be generated as UNIX and other as VxWorks.
+#
+#
+#   Module files can be divided into two groups:
+#     - those depending on other files
+#     - those depending only from designer input
+#   The ways a file may depend to another one can be very complex and may
+#   involve several intermediate level of dependancy. 
+#   It is task of "make" to verify the relationship among files and to 
+#   execute the appropriate actions when a dependency file is more updated 
+#   than the dependent one.
+#
+#   To do that, make needs to know:
+#       - the releation of dependancy among files.
+#       - what to do to regenerate a dependant file.
+#
+#   The latest is given as standard rules for all known cases by vltMakefile.
+#   The first is the main task of the module-Makefile and it is done by mean 
+#   of a set of fixed-name variables.
+#
+#   The standard cases are: 
+#            - include files  
+#            - CCS files: ALARM files, ERROR files, CDT, CIT    
+#            - executable
+#            - library   
+#            - script       
+#            - Tcl/tk script  
+#            - Tcl/tk library
+#            - panels
+#            - (On-Line Database) Class Description Files (CDF)
+#            - (On-Line Database) Branch Config Files (BCF)
+#            - Java files 
+#            - manpage       
+#            - mif-file     
+#            - other file (for installation purposes only)
+#
+#   With the exception of: CCS files, data base files (CDF and BCF) and  
+#   mif-files, all the above may be:
+#     - public: those that need to be exported by the 'make install' command
+#     - local:  used only locally during the development and test.
+#
+#   In the detailed explanation, the following conventions are used:
+#     - the suffix '_L' indicates list of local items (for man-pages,
+#       man section "l" is used for local ones)
+#     - 'xxxname' means the filename without neither the directory, nor the 
+#       file type. 
+#
+#   Now in detail, how to fill the different sections of the standard
+#   Makefile (see Makefile_*.template):   
+#   
+#   
+#   - Link Files: this section is present in the Makefile for LCU code 
+#     only. The purpose is to give to the developer the possibility 
+#     to list here all the files in the lcu part of the module that have 
+#     to be a symbolic link to corresponding files in the ws part. 
+#     This is done using the variable 
+#     LINK_FILES. 
+#     For example, keeping in mind that we are referring to a Makefile 
+#     in the lcu/src directory: 
+#
+#     LINK_FILES = aaaa.c bbbb.cpp ../include/gggg.h
+#
+#     After running "make all", in the lcu branch aaaa.c will be a symbolic
+#     link to ../../ws/src/aaaa.c, ../include/gggg.h will be a symbolic 
+#     link to ../../ws/include/gggg.h and so on. 
+#     
+#     make clean will remove those links. 
+#
+#   - Includes (or h-) files: providing the description of the callable
+#     interface.
+#
+#     List the FILENAME of all the public h-file that you need to make 
+#     public in: 
+#
+#           INCLUDES = 
+#
+#     The simplest case is a module with the callable interface definition
+#
+#           INCLUDES = mod.h
+#
+#   
+#   - CCS files: 
+#
+#       - ALARM files: file in the ../ALARMS/HELP directory
+#       - ERROR files: file produced by errEditor in the ../ERRORS directory
+#                      and the ../include/xxxErrors.h
+#                      and ../ERRORS/HELP/* 
+#       - Command Definition Table (../CDT/*.cdt)
+#       - Command Interpreter Table (../CIT/*.cit)
+#
+#     vltMake looks for such files. If existing they are installed in the
+#     proper target directory.
+#
+#
+#   - executable: obtained linking one or more C or C++ files and/or 
+#     library files. An executable is characterized by:
+#           - one or more C-source files in the src/ directory. One file is 
+#             the main and, normally, there is one file for each routine.
+#           - standard or special compilation flags
+#           - one or more library, either belonging to the current module 
+#             or from the external environment, i.e., other modules, products
+#             and the operating system.
+#           - standard or special link flags
+#
+#     Insert the name of the program in one of the two lists:
+#
+#           EXECUTABLES   = exe1 exe2 ..... .....
+#           EXECUTABLES_L = exe3 .....
+#
+#     as appropriate. For each program add the following set of variables:
+#   
+#       <exe-n>_OBJECTS = obj1 obj2 ..... .....
+#                         the list of objects needed to build the executable
+#                         ONLY THE NAME MUST BE SPECIFIED (no ".c", no dir!) 
+#                         If not defined or empty, the standard rule is not
+#                         applied.
+#
+#       <exe-n>_LDFLAGS = additional flags in linking this program (optional)
+#
+#       <exe-n>_NOSHARED= if defined, shared libraries are not used (optional)
+#                         REMARK: defining MAKE_NOSHARED, all executable
+#                                 are build without shared libraries
+#
+#       <exe-n>_LIBS    = the list of the NAME of the libraries (optional)
+#                         ONLY THE NAME MUST BE SPECIFIED (no "-l", no ".a"!) 
+#                         In this list, special names may appear, to tell 
+#                         vltMakefile to execute some specific actions. The 
+#                         names are:
+#                            CCS:  the executable is linked to VLT/CCS libraries
+#                                  In a full CCS installation (i.e., RTAPROOT
+#                                  is defined) RTAP includes path and libraries
+#                                  are added and the rtapUnlockExe executed.
+#                                  In a CCS-lite installation, the qsemu library
+#                                  is used instead.
+#                            CCS_NOX11: same as CCS, but graphic libraries 
+#                                  are not used.
+#                            RTAP: the executable is linked to RTAP libraries
+#                                  and the rtapUnlockExe is executed on it.
+#                                  (if CCS is defined, RTAP flag is ignored)
+#                            C++:  the executable is linked to C++ libraries:
+#                                       g++ iostream iberty
+#
+#                          CAUTION: the <name>s listed in <exe-n>_LIBS are
+#                                  also used to create dependancies, but for an
+#                                  internal behaviour of GNU-make, the searched
+#                                  file is lib<name>.a. If you are using 
+#                                  libraries that are available ONLY as 
+#                                  shared, make will fail! In such a case,
+#                                  use -l<name> as part of the <exe-n>_LDFLAGS.
+#                                  Example: (from MAY97, tcl is available
+#                                     as shared)
+#                                       abcd_OBJECTS   = abcd 
+#                                       abcd_LDFLAGS   = -ltcl
+#                                       abcd_LIBS      = CCS
+#
+#     (REMARK: the following rules apply to C-Libraries too, see below)
+#     
+#     If you need special compilation flags you may:
+#        - define them in USER_CFLAGS. They will be added to EVERY C 
+#          compilation in the module
+#
+#        - define <obj-n>_CFLAGS  = flag ...         (optional)
+#          for every file <obj-n>.c that requires additional flags 
+#
+#     See vltMakefile(5) for the default applying for Unix and VxWorks code.
+#
+#     Optimization and debug
+#     By default the code is compiled with -g DEBUG and optimization (level 1)
+#
+#     To turn off debug and optimization just define (from command line or 
+#     in the Makefile or in your environment): 
+#     OPTIMIZE=0
+#     (This is equivalent to OPTIMIZE=O0)
+#     To turn off debug only and use your preferred OPTIMIZATION levels define:
+#     OPTIMIZE=number  where number is in the range 1-3
+#
+#     Example:
+#        The executable is named modExe and is made of three files: modExe.c,
+#        modRoutine1.c, modRoutine2.c (needing -DXYZ to be compiled).
+#        The CCS and the xyz (=libxyz.a) libraries are needed.
+#
+#           EXECUTABLES   = .... modExe ..... .....
+#           EXECUTABLES_L = 
+#
+#           #
+#           modExe_OBJECTS = modExe modRoutine1 modRoutine2
+#           modExe_LDFLAGS = 
+#           modExe_LIBS    = xyz CCS
+#           modRoutine2_CFLAGS =  -DXYZ
+#
+#
+#   - library: a collection of object files obtained by compiling C or C++ 
+#     source files. An library is characterized by:
+#           - one or more C-source files in the src/ directory. Normally, 
+#             there is one file for each routine.
+#           - standard or special compilation flags
+#
+#     Insert the name of the library in one of the two lists:
+#           LIBRARIES     = llll1 llll2 .... ....
+#           LIBRARIES_L   = llll3 ....
+#              (REMARK: <llll-n> is the name without "lib" prefix. 
+#                       F.i, LIBRARIES = foo will produce libfoo.a)
+#
+#     For each library add the following set of variables:
+#
+#       <llll-n>_OBJECTS = obj1 obj2 ..... .....
+#                         the list of objects needed to build the library
+#                         ONLY THE NAME MUST BE SPECIFIED (no ".c", no dir!) 
+#                         If not defined or empty, the standard rule is not
+#                         applied.
+#
+#                         As for executables, the <obj-n>_CFLAGS option can be
+#                         used to define special compilation flags to an 
+#                         object used in a library.
+#
+#       <llll-n>_NOSHARED = defined
+#                         If defined, the shared version of the library is not
+#                         build.
+#                         Shared libraries are NOT created for:
+#                           - local libraries (i.e., listed in LIBRARIES_L)
+#                           - VxWorks code (i.e., if MAKE_VXWORKS is defined)
+#
+#
+#     Example:
+#        The libray is named mod, is private and is made of two function: 
+#        modDo.c, modUndo.c (needing -DXYZ to be compiled):
+#
+#           LIBRARIES_L  = mod ..... 
+#
+#           #
+#           mod_OBJECTS = modDo modUndo
+#           modUndo_CFLAGS =  -DXYZ
+#
+#
+#   - Scripts: a shell script file, normally Bourne.
+#
+#     Insert the NAME of the script in one of the two lists, as appropriate:
+#
+#           SCRIPTS   = 
+#           SCRIPTS_L =
+#
+#     Example:
+#        There is one script named modScript and is public:
+#
+#           SCRIPTS   = modScript
+#           SCRIPTS_L =
+#
+#
+#   - Tcl/tk script  : obtained concatenating one or more files written in Tcl/tk
+#     language to a standard prologue. An Tcl/tk script is characterized by:
+#           - one or more Tcl/tk script files in the src/ directory. One file is 
+#             the main and, normally, there is one file for each procedure.
+#             The main does NOT to have the "#!/..." at the beginning
+#           - one or more tcl-library, either belonging to the current module 
+#             or from other modules.
+#           - standard or special Tcl/tk shell.
+#           - (for tk applications only) a default resource file.
+#
+#     Insert the name of each of the script as appropriate:
+#
+#           TCL_SCRIPTS   = exe1 exe2 ..... .....
+#           TCL_SCRIPTS_L = exe3 .....
+#
+#     For each script add the following set of variables:
+#
+#       <exe-n>_OBJECTS = obj1 obj2 ..... .....
+#                         the ordered list of Tcl/Tk source files that will be 
+#                         concatenated to build the executable
+#                         ONLY THE NAME MUST BE SPECIFIED (no ".tcl", no dir!) 
+#                         If not defined or empty, the standard rule is not
+#                         applied.
+#                         CAUTION: files are appended in the same order as they
+#                                  are declared. For tcl/tk, a procedure must
+#                                  be defined before being used. Therefore,
+#                                  files must be listed in the inverted order
+#                                  respect to the calling sequence (main last!)
+#       <exe-n>_TCLSH   = (optional) the required Tcl/Tk shell. 
+#                          The default value is given by $(WISH).
+#   
+#       <exe-n>_LIBS    = (optional) the list of the NAME of the 
+#                         Tcl/Tk-libraries. ONLY THE NAME MUST BE SPECIFIED 
+#                         This list is used to create the autopath. The
+#                         actual loading of the procedure is dona at runtime.
+#
+#     Remember that for each graphical application, a default resource file 
+#     called ../app-defaults/X<exe-n> must be provided.
+#
+#     Example:
+#        A tcl-application, named modTcl:
+#          - is coded as three files: modTcl.tcl, modOpen.tcl, modClose.tcl;
+#          - uses the uif (=libuif.tcl/) libraries of tcl procedures;
+#          - requires the non graphical version of the sequencer shell (seqSh)
+"            to be executed.
+#
+#           TCL_SCRIPTS   = modTcl .... .....
+#           TCL_SCRIPTS_L =
+#
+#           #
+#           modTcl_OBJECTS = modOpen modClose modTcl 
+#           modTcl_TCLSH   = seqSh -f
+#           modTcl_LIBS    = uif
+#            
+#
+#   - Tcl/tk library : obtained grouping one or more files written in Tcl/tk
+#     language into a directory and creating the index file (tclIndex). 
+#     A Tcl/tk script is characterized by:
+#           - one or more Tcl/tk script files in the src/ directory. Normally,
+#             one file for each procedure.
+#
+#     Insert the name of each of the libraries as appropriate:
+#
+#           TCL_LIBRARIES   = lib1 lib2 ..... .....
+#           TCL_LIBRARIES_L = lib3 .....
+#
+#     For each library add one variable:
+#   
+#       <lib-n>_OBJECTS = obj1 obj2 ..... .....
+#                         list of Tcl/Tk source files.
+#                         ONLY THE NAME MUST BE SPECIFIED (no ".tcl", no dir!) 
+#                         If not defined or empty, the standard rule is not
+#                         applied.
+#
+#
+#     Example:
+#        The tcl-library is named mod and is made of files: modStart.tcl, 
+#        modStop.tcl.
+#
+#           TCL_LIBRARIES   = mod .... .....
+#           TCL_LIBRARIES_L =
+#
+#           #
+#           mod_OBJECTS = modStart modStop
+#
+#           
+#   - Panels: a sequencer-script file produced by the Panel Editor:
+#
+#     Insert the NAME of the panel in one of the two lists, as appropriate:
+#
+#           PANELS   = pan1 pan2 ...
+#           PANELS_L = panA panB ... ...
+#                         ONLY THE NAME MUST BE SPECIFIED (no ".pan", no dir!) 
+#
+#     Example:
+#
+#           PANELS   = modMonitor modEditor 
+#           PANELS_L =
+#
+#
+#   - Java files: 
+#     users put *.java files in src directory, under the respective packages 
+#     directory structure. The variables JARFILES is used to specify the 
+#     jarfiles (without .jar extension) which will be
+#     generated when making this module. 
+#     For each jarfile <jjj> specified in JARFILES, 
+#     the variable <jjj>_DIRS specifies a  space-separated list of directories 
+#     containing java files to go in the jarfile <jjj>. 
+#     CLASSPATH: is generated by a custom script. 
+#     It takes the initial value of CLASSPATH from the shell and augments 
+#     it with all jarfiles contained in <module>/lib, $INTROOT/lib and 
+#     $ACSROOT/lib, in that sequence. 
+#     Java byte compiled code goes under <module>/object, possibly under 
+#     a directory structure reflecting the Java package structure. Jarfiles 
+#     are created, as specified in the JARFILES variable and moved to the lib 
+#     directory. Jarfile only contain *.class, no sources. A switch to override
+#     this behaviour might be supplied in the future. 
+#     make clean deletes all *.class files from obje
+#
+#   - man pages: man-pages are on-line documentation extracted from ASCII files 
+#     (see docDoManPages(7) for more on the required format. The conversion 
+#     program produces also LaTeX and FrameMaker formats (in doc/)
+#     Normally the input files are C-sources, scripts, text files.
+#     According to UNIX conventionts, man-pages are divided in sections.
+#     "acsMan"(1) can be used as man-page browser.
+#
+#     List the man sections you intend to use:
+#
+#           MANSECTIONS =  . . .  (possible values are: 1 2 3 4 5 6 7 8) 
+#
+#     Man-pages should be assigned as follows:
+#           section 1: user commands
+#           section 2: - not used
+#           section 3: C routines
+#           section 4: C++  routines
+#           section 5: files
+#           section 6: - not used
+#           section 7: development and test commands
+#           section 8: miscellaneous
+#
+#           section "l" (local) is reserved to man-pages of private stuffs 
+#                       (i.e., that are not part of the public interface).
+#                       "make install" does not copy them.
+#                       "l" does not need to be listed in MANSECTIONS.
+#
+#     For each section, define in a variable the list the FILENAME of the 
+#     files that have to be processed:
+#
+#           MAN<i> = ..... ..... ..... ..... 
+#
+#     FILENAME must be complete, i.e., both extention and directory must
+#     be specified. By default the file is searched in the current directory 
+#     (src/ or test/). If specified, the directory must be relative to module
+#     root directory and not going (../) higher than it.
+#
+#     Normally, the man-pages are in the files already used for other makes 
+#     actions. Make variables and make function can be used to build the list of
+#     filename to be treated, relating them to the structure of the module. 
+#
+#     Example:
+#        - a man page in section 1 (user command) for each public executable. 
+#        - a man page in section 3 (routines) for each public routine of the 
+#          module library, assuming that mod_OBJECTS has been defined
+#          as mod_OBJECTS = $(mod_OBJECTS_PUBLIC)) $(mod_OBJECTS_PRIVATE)) 
+#        - a man page in section 5 (files) obtained from an ASCII file that
+#          describe the file structure.
+#
+#           MANSECTIONS =  1 3 5 
+#           MAN1 = $(addsuffix .c, $(EXECUTABLES))
+#           MAN3 = $(addsuffix .c, $(mod_OBJECTS_PUBLIC))
+#           MAN5 = modDatafile.doc 
+#
+#        - a man page in section l (local) for each routine of the module
+#          private library modMylib
+#
+#           MANl = $(addsuffix .c, $(modMylib_OBJECTS))
+#
+# 
+#   - mif-file: obtained converting ASCII file into Framemaker format to be
+#     imported into documents. (see docA2MIF(7) for more).
+#
+#     List the FILENAME of files you want to convert (output is in ../doc)
+#
+#           ASCII_TO_MIF = ..... ..... ..... ..... 
+#
+#     FILENAME: same rules as for MAN<i>
+#
+#
+#   - INS_ROOT files: files that need to be installed in the INS_ROOT can
+#     be installed in two ways:
+#     1. list dictionaries, alias files, BOB templates files, setup files
+#        and configuration files (relative to the module directory),
+#	 wildcards are allowed in
+#
+#	    INS_ROOT_FILES = ..... ..... ..... .....
+#
+#	 Example:
+#	    INS_ROOT_FILES = ../config/ESO-VLT-DIC.XXXX_ICS \
+#			     ../config/XXXX_ICS.alias
+#
+#	 The files are copied to the following target directories:
+#	 - $INS_ROOT
+#	 - $INTROOT/config/INS_ROOT or $VLTROOT/config/INS_ROOT.
+#	 According to the name of the files, they are copied to the
+#	 following subdirectories (target $INS_ROOT shown):
+#
+#        ESO-VLT-*:      $INS_ROOT/SYSTEM/Dictionary
+#        *.alias:        $INS_ROOT/SYSTEM/Alias
+#        *.obd:          $INS_ROOT/SYSTEM/COMMON/TEMPLATES/OBD
+#        *.seq:          $INS_ROOT/SYSTEM/COMMON/TEMPLATES/SEQ
+#        *.tsf:          $INS_ROOT/SYSTEM/COMMON/TEMPLATES/TSF
+#        *.det:          $INS_ROOT/SYSTEM/COMMON/SETUPFILES/DET
+#        *.ins:          $INS_ROOT/SYSTEM/COMMON/SETUPFILES/INS
+#        *.ref:          $INS_ROOT/SYSTEM/COMMON/SETUPFILES/REF
+#        *.targ:         $INS_ROOT/SYSTEM/COMMON/SETUPFILES/TARG
+#        *.fits:         $INS_ROOT/SYSTEM/COMMON/MIDAS/REF
+#        *.prg:          $INS_ROOT/SYSTEM/COMMON/MIDAS/PROCS
+#        <other files>:  $INS_ROOT/SYSTEM/COMMON/CONFIGFILES
+#
+#     2. create a copy of the INS_ROOT inside your module (usually under
+#	 <mod>/config/INS_ROOT) and place all files there.  Register the
+#        directory
+#
+#	    INS_ROOT_DIR = ../config/INS_ROOT
+#
+#	 All files inside the directory are copied to the corresponding
+#	 location in the INS_ROOT and either $INTROOT/config/INS_ROOT
+#	 or $VLTROOT/config/INS_ROOT.  This rule can be used to install
+#	 files not supported by INS_ROOT_FILES (or files that need to
+#	 be placed in a different location within INS_ROOT).
+#
+#
+#   - other files that need to be installed. They may be configuration files,
+#     templates, bitmaps, etc.
+#     Using "src" as current directory, list the complete (relative) filename,
+#     wildcards are allowed
+#
+#           INSTALL_FILES = ..... ..... ..... ..... 
+#
+#     Example:
+#
+#           INSTALL_FILES = ../bitmaps/Circle.xbm  \
+#                           ../bitmaps/ESO.xbm     \
+#                           ../config/*.conf       \
+#                           ../app-defaults/X*
+#
+#
+#   The last information vltMakefile needs is the list of the NAME of all 
+#   possible C-sources (used to create automatic dependencies);
+#
+#        CSOURCENAMES = .....
+#
+#   The default definition considers all the objects previously declared as 
+#   part of executables or libraries.
+#        CSOURCENAMES = \
+#        $(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
+#        $(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS)) 
+#     
+#   If you have added non standard compilations and you want that your  
+#   files are treated in the automatic dependencies generation, add their 
+#   name to CSOURCENAMES 
+#  
+#   
+#   SUGGESTION: To improve the maintanibility of the Makefile, if a name needs 
+#   to appears in more than one list, it is better to use auxiliary variables 
+#   to store subset of names and to combine them to build the required variables.
+#
+#   Example:
+#         SCRIPTS1 = the scripts which man-page goes to man1
+#         SCRIPTS7 = the scripts which man-page goes to man7
+#            .
+#            .
+#         SCRIPTS  = $(SCRIPTS1) $(SCRIPTS7)
+#            .
+#            .
+#         MAN1 =  $(SCRIPTS1) 
+#         MAN7 =  $(SCRIPTS7) 
+#
+#
+#   UNIX OR VXWORKS
+#
+#   To handle VxWorks applications, Makefile shall define MAKE_VXWORKS:
+#  
+#                MAKE_VXWORKS = on  
+#
+#   To handle UNIX applications, MAKE_VXWORKS shall not be defined.
+#
+#   CAUTION: vltMakefile but does not allow to mix UNIX and VxWorks code
+#            in the same directory (src/).
+#
+#   The flags MAKE_VXWORKS is passed to the compiler and can be used
+#   in the include files to have differen behaviour when the include file
+#   is used by an LCU-application.
+#
+#   To allow allignement in the WS-LCU common parts, LCU-applications need
+#   to see include files defined for WS-applications.
+#   Compilation of LCU files looks for include files in
+#        - the local include
+#        - for modules having both ws and lcu subdirectory, the ws-part 
+#          of the local module
+#        - INTROOT/vw/include and INTROOT/include
+#        - for every <dir> in INTLIST: <dir>/vw/include and <dir>/include
+#        - VLTROOT/vw/include and VLTROOT/include.
+#
+#
+#   SELECTING VLTMAKEFILE
+#   Redefining the variable MAKEDIR allows the user to select the vltMakefile
+#   The default values is:
+#
+#        #
+#        # INCLUDE STANDARDS
+#        # -----------------
+#        MAKEDIR = $(VLTROOT)/include
+#        include $(MAKEDIR)/vltMakefile
+#
+#   Redefining the variable MAKEDIR allows the user to select a different 
+#   vltMakefile
+#
+#   CAUTION: this is allowed only for developing of vltMakefile or for 
+#            temporary fixes. 
+#
+#
+#   TARGETS
+#
+#   The following targets must be present in each Makefile:
+#  
+#     all        Make all the top-level targets the makefile knows about.
+#                (it is the default target)
+#
+#     clean      Delete all files that are normally created by running make.
+#
+#     clean_dist As clean, but a more accurate cleaning is done.
+#                To be used before module distribution
+#
+#     man        Generate documentation based on the source files
+#
+#     install    Place files in the target directory
+#
+#     test	 Run the unit test at the software module level.
+# 		 By default, the tool TAT is used.
+#
+#
+#   To define them the following code shall be part of every Makefile:
+#
+#        #
+#        # TARGETS
+#        # -------
+#        all:	do_all
+#                @echo " . . . 'all' done" 
+#        
+#        clean : clean_all 
+#                @echo " . . . clean done"
+#
+#        clean_dist : clean_all clean_dist_all
+#                     @echo " . . . clean done"
+#        
+#        man   : do_man 
+#                @echo " . . . man page(s) done"
+#        
+#        install : install_all
+#                @echo " . . . installation done"
+#
+#	 test : 
+#		tat -nc -v
+#        	@echo " . . . test done"
+#
+#
+#   In addition, vltMake provides some standard targets:
+#
+#     version    Print the version number of the current vltMake software
+#
+#   The vltMakefile targets do_all, clean_all, clean_dist_all, etc are called 
+#   from the Makefile. They are the ones providing standard rules. Internally, 
+#   vltMakefile defines other targets. For instance, there is a target 
+#   for each executable or library, therefore so you can type:
+#
+#                        make name
+#
+#   to rebuild the executable or the Tcl/Tk script ../bin/name or the 
+#   C-library ../lib/libname.a or the Tcl/Tk-library ../lib/libname.tcl.
+#
+#   NOTE: vltMakefile defines all targets as "phony" targets, i.e.,
+#         their execution is not affected by the presence of a file with the 
+#         same name.
+#
+#   Such structure (Makefile-vltMakefile) allows you to customize the way you
+#   want: 
+#
+#       Example 1:
+#
+#          EXECUTABLES = ... myprog ...  << for 'clean' and 'install'
+#          myprog_OBJECTS =              << empty, to avoid std generation
+#
+#               .
+#               .
+#               .
+#
+#           all: do_all myprog
+#                   @echo " . . . 'all' done" 
+#         
+#           myprog: ....                 << your target
+#                   ........             << how to make myprog
+#
+#
+#       Example 2:
+#                  .
+#           install : install_all
+#                   cp dataFile $(LIB)/module/dataFile
+#                   @echo " . . . installation done"
+#
+#
+#
+#   The rules offered by vltMakefile are based on the standard directory 
+#   structure defined by the VLT Programming Standards. 
+#   The directories involved by the standard rules are:
+#            .  (src/ or test/)  where Makefile and sources are
+#            include/  contains .h files
+#            object/   where to store object files (.o) cpp-files (.cpp) and
+#                      dependency files (.d*)
+#            lib/      where to create lib<name>.*
+#            bin/      where to generate executable and scripts
+#            man/man-i where to create the roff file for manpage section-i 
+#            ALARMS/   where to look for ALARMS files
+#            ERRORS/   where to look for ERROR files
+#            CDT/      where to look for Command Definition Table files
+#            CIT/      where to look for Command Interpreter Table files
+#            CIT/      where to look for Command Interpreter Table files
+#            dbl/      where to look for Point Class and Branch Config Files
+#            DB/       where to build up the Point Config File structure
+#
+#   By default, the output of each rule is filtered, so only a minimum trace 
+#   of the make activity is printed. To have executed statements printed set
+#   an environmental variable named MAKE_VERBOSE:
+#
+#          example% setenv MAKE_VERBOSE on
+#          example% make 
+#     
+#   
+#   By default, a certain number of warning flags are activated.
+#   To override this, set the environmental variable named MAKE_NO_WARNINGS
+#   as follows:
+#
+#          example% setenv MAKE_NO_WARNINGS on
+#
+#   You can also set this variable in your Makefile or in your 
+#   $HOME/config/`hostname`.cshrc.local file.
+#     
+#   By default, all commands used by "make all" stop on error.
+#   To override this use:
+#
+#          example% make -k
+#     
+#
+#   For each standard type/target, the applied rule is the following (**):
+#
+#     - include:
+#         - all    : nothing to be done
+#         - clean  : nothing to be done
+#         - install: copy all the name in the list into  $(INCLUDE)
+#
+#     - executable: 
+#         - all (<name>):
+#             - create a dependency file ../object/<o-name>.d for each 
+#               C/C++ file (*)
+#             - create a ../object/<o-name>.o for each C/C++ file
+#             - create a dependency file ../object/<name>.dx with the rule
+#               to build the executable from linking the objects and the 
+#               libraries (a special script is used) (*)
+#             - link the objects and the libraries to make ../bin/<name>
+#               If MAKE_PURIFY is defined, instead of the normal linker,
+#               Purify is used.
+#               If MAKE_PURECOV is defined, objects are instrumented fot
+#               test coverage measurement 
+#         - clean
+#             - delete ../bin/<name>, ../object/<o-name>.d, 
+#                      ../object/<o-name>.o, ../object/<name>.dx
+#         - install
+#             - if <name> is in the public list: cp ../bin/<name> $(BIN)
+#
+#     - library:
+#         - all (<name>):
+#             - create a dependency file ../object/<o-name>.d for each C/C++ 
+#               file (CC -M is used) (*)
+#             - create a ../object/<o-name>.o for each C/C++ file
+#             - create a dependency file ../object/<name>.da for the 
+#               library (a special script is used) (*)
+#             - make ../lib/lib<name>.a archiving all the objects
+#             - update the archive index
+#         - clean  :
+#             - delete ../lib/lib<name>.a, ../object/<o-name>.d, 
+#                      ../object/<o-name>.o, ../object/<name>.da
+#         - install:
+#             - if <name> is in the public list: cp ../lib/lib<name>.a $(LIB)
+#
+#     - script:
+#         - all    : 
+#              - copy all the name in the lists into ../bin 
+#              - set executable permission (chmod +x ../bin/.... )  
+#         - clean  : 
+#             - delete all the name in the lists from ../bin 
+#         - install: 
+#             - if <name> is in the public list: cp ../bin/<name> $(BIN)
+#
+#     - Tcl/tk script  : 
+#         - all (<name>):
+#             - create a dependency file ../object/<name>.dxt with the rule
+#               to build the executable script (*)
+#             - create the executable script by writing a standard prologue
+#               (that handles the autopath variable and the Xresources) and
+#               concatenating all object files in the SAME order as
+#               specified by <name>_OBJECTS.
+#               $(TCL_CHECKER) is executed on each object file. 
+#               The usage of a make variable gives the possibility to chose 
+#               the checker (by default TCL_CHECKER is assigned to "tclCheck").
+#               Use TCL_CHECKER=true to turn off the checking (Please notice 
+#               that "true" is a command that always return success and does 
+#               not produce any output!)
+#         - clean
+#             - delete ../bin/<name>, ../object/<o-name>.dxt
+#         - install
+#             - if <name> is in the public list: cp ../bin/<name> $(BIN)
+#             - if ../app-defaults/X<name> exists: 
+#                      cp ../app-defaults/X<name> $(VLTTOP)/app-defaults
+#
+#     - Tcl/tk library :  
+#         - all (<name>):
+#             - create a dependency file ../object/lib<name>.dat with the rule
+#               to build the library (*)
+#             - create the library by:
+#                - if any removing the existent ../lib/lib<name>.tcl
+#                - execute syntax checker on each object file (same rules
+#                  as for tcl scripts. See above)
+#                - copy all the files listed by <name>_OBJECTS into
+#                  a newly created directory ../lib/lib<name>.tcl
+#                - invoke the Tcl function auto_mkindex to produce
+#                  the index table ../lib/lib<name>.tcl/tclIndex
+#         - clean
+#             - delete ../lib/lib<name>.tcl, ../object/<o-name>.dat
+#         - install
+#             - if <name> is in the public list: 
+#                            cp -r ../lib/lib<name>.tcl $(LIB)
+#
+#     - Panels:
+#         - all    : 
+#              - for each <name> in the list, create executable script 
+#                ../bin/<name> from <name>.pan 
+#         - clean  : 
+#             - delete all the name in the lists from ../bin 
+#         - install: 
+#             - if <name> is in the public list: cp ../bin/<name> $(BIN)
+#
+#     - manpage:
+#         - man ( man<i>): 
+#              - invoke the docDoManPage utility on each file in the list 
+#         - clean  : 
+#             - delete from each ../man/man<i> files written by docDoManPage
+#             - delete from ../doc/ files written by docDoManPage
+#         - install: 
+#             - except for those in the "l" section (../man/manl),
+#               copy ALL THE FILES from all the sections mentioned (man<i>)
+#               to the correspondent $(MAN)/man<i>   
+#
+#     - CCS files:
+#         - man    : 
+#             - nothing
+#         - clean  : 
+#             - nothing
+#         - install: 
+#             - copy ../ALARMS/HELP/* into $(ALARMS)/HELP. i.e., the ALARMS
+#               directory of the installation target (INTROOT or 
+#               VLTROOT). Such directory exists only at workstation level.
+#             - if there is any xxxErrrors.h:
+#                 - copy xxxErrrors.h in the include/ directory at 
+#                   workstation level (so that the include file is available
+#                   for both.
+#                 - copy all files under ../ERRORS into $(ERRORS). i.e., the
+#                   ERRORS directory of the installation target (INTROOT or 
+#                   VLTROOT). Such directory exists only at workstation level.
+#             - copy ../CDT/*.cdt into $(CDT_DIR). i.e., the CDT
+#               directory of the installation target (INTROOT or 
+#               VLTROOT). Such directory exists only at workstation level.
+#             - copy ../CIT/*.cit into $(CIT_DIR). i.e., the vw/CIT
+#               directory of the installation target (INTROOT or 
+#               VLTROOT). Such directory exists only at lcu level.
+#
+#     - mif-file:
+#         - man (do_A2MIF): 
+#             - invoke the docA2MIF utility on each file in the list 
+#         - clean  : 
+#             - delete any file written by docA2MIF from ../doc/ 
+#         - install: 
+#             - nothing
+#     
+#     - other files:
+#         - man : 
+#             - nothing
+#         - clean  : 
+#             - nothing
+#         - install: 
+#             - for each <file> in INSTALL_FILES
+#                 - get "name" and "dir", i.e.: the filename and the parent 
+#                   directory
+#                 - depending on where "dir" exists, copy the file into 
+#                   VLTTOP/<dir> or in INSTALL_ROOT/<dir> accordingly
+#                 - apply the protection mask to leave the file 
+#                   overwritable by the next installation
+#     
+#     
+#    (*) NOTE: the dependency files are produced and read  by vltMakefile. 
+#              Their automatic generation, provided by the C compiler and by 
+#              ad hoc utilities, is a powerful tool to keep makefiles simple 
+#              but complete.
+#
+#    (**) NOTE: clean_dist deletes in addition from all the directories
+#               in the module:
+#                       *.o, *.so, *.sl, *.d, *.ds, *.dx, *.dxt, *.da
+#
+#
+#    In addition to the file based rules above mentioned, "make install"
+#    provides two additional features working at module level:
+#
+#      - log the installation
+#              For any "make install" operation: 
+#                - a new record is added in is added in vltMakeInstall.log
+#                - the module version is updated in vltMakeInstall.config
+#              Both files are placed either in the current $INTROOT or  
+#              in $VLTROOT.
+#
+#      - if INTROOT is defined, copy also source files.
+#              When the installation has an integration area as target, 
+#              the module source files are also copied into the integration 
+#              area according to the following table:
+#
+#                    MAKE_VXWORKS not defined:
+#                         <mod>/src       --->    INTROOT/src/<mod>
+#                         <mod>/ws/src    --->    INTROOT/src/<mod>-ws
+#                         <mod>/test      --->    INTROOT/test/<mod>
+#                         <mod>/ws/test   --->    INTROOT/test/<mod>-ws
+#
+#                     MAKE_VXWORKS defined:
+#                         <mod>/src       --->    INTROOT/vw/src/<mod>
+#                         <mod>/lcu/src   --->    INTROOT/vw/src/<mod>-ws
+#                         <mod>/test      --->    INTROOT/vw/test/<mod>
+#                         <mod>/lcu/test  --->    INTROOT/vw/test/<mod>-ws
+#
+#              The reason why to copy sorce file into integration area is
+#              to have the exact files that have been used for generating 
+#              the software that has been installed. This for debugging 
+#              purposes.
+#
+#
+#   CUSTOMIZATION
+#   If you are familiar with make, you have already understood how to play 
+#   with variables and targets to achieve the customization you need. If not,
+#   have a look to the make User Guide (150 pages) and think once more
+#   whether the standard definitions are not enough or whether your problem
+#   is general enough to be solved adding a standard rule.
+#
+#   Anyhow, if you still want to add something, here some typical cases: 
+#         - not defining the variables or leaving them empty forces 
+#           vltMakefile not to use standard rules
+#         - add targets (see previous example 1)
+#         - add additional action(s) to 'clean' or 'install' 
+#           (see previous example 2)
+#
+#   CAUTION: Please notice that the standard definition of "clean" deletes the 
+#            only files produced by the standard rules (vltMakefile). If you 
+#            create other files, remember to add their deletion to the 
+#            "clean" target.
+#
+#
+#
+#
+#   DATABASE MAKEFILE
+#   A special usage of the standard makefile is to build a CCS Database.
+#   of an environment.
+#
+#   There are two cases of environments:
+#            - workstation environments: $VLTROOT/ENVIRONMENTS/<env>
+#            - lcu vwenvironments:       $VLTROOT/vw/BOOT/<env>
+#
+#   The Makefile is located in an environment: <env>/dbl/Makefile. 
+#  
+#   As part of the environment the following files/directories must exist:
+#  
+#   In such a case, only the "db" and "clean" targets are meaningful.
+#
+#         <env>
+#           |--/dbl/
+#           |    |--Makefile         flags and special rules to build ../DB
+#           |    |                    
+#           |    |--DATABASE.db      the definition of the database structure
+#           |    |                    
+#           |    |--.....db          other files used by DATABASE.db
+#           |    |--.....db          or by special rules in Makefile
+#           |                       
+#           |--/DB                   where to build the Point Config Files
+#
+#
+#   See "CCS OnLine DataBase Loader User Manual" VLT-MAN-ESO-17210-0707,
+#   1.1 or higher, for more.
+#
+#   REMARK: for the time being not all modules have been converted into
+#           "dbl"-readable format. Some are still providing db branches as
+#           directory structures. In such a case, the structure SHALL be
+#           placed under dbl/ and Makefile should provide explicit rules
+#           to install, clean, etc.
+#
+#
+#   ERROR CHECK 
+#   A special usage of the standard makefile is to build the intermediate 
+#   CPP output files. Such files are needed by the "Error Check Utility"
+#
+#         make  CppFiles
+#
+#   will create the intermediate CPP output ../object/<o-name>.cpp
+#   for every file in CSOURCENAMES.
+#
+#
+#   EXECUTING MAKE
+#   
+#   Every file handled by vltMake is relative to the directory where "Makefile"
+#   resides. Before launching "make", remember to set your current working 
+#   directory where your "Makefile" is (either src/ or test/)!
+#
+#
+#   - to check which GNU-make you are using:
+#
+#          example%  make -version -f /dev/null
+#          GNU Make version .....
+#
+#     be sure that make version is the standard one (at present 3.70).
+#
+#
+#   - to check which vltMake you are using:
+#     
+#          example% make version
+#          vltMakefile - version 1.3 - OCT '94
+#
+#
+#   - vltMakes by defaults provides a limited output. To get all executed 
+#     statements printed define MAKE_VERBOSE environment variable: 
+#     
+#          example% setenv MAKE_VERBOSE=on
+#
+#
+#   - to make all what is not up to date:
+#     
+#          example% make 
+#
+#
+#   - to make all what is not up to date withot stopping on error:
+#     
+#          example% make -k
+#
+#
+#   - to print the commands that would be executed. This is helpful
+#     to see the actual command when there is an error without
+#     turning on the output (MAKE_VERBOSE)
+#     
+#          example% make -n
+#
+#
+#   - to make code and documentation from scratch:
+#     
+#          example% make clean all man install
+#
+#
+#   - to select optimization options (see also vltMakefile)
+#     
+#          example% make all OPTIMIZE='on' 
+#     
+#     
+#   - to override the standard definition of the compiler: 
+#     
+#          example% make all CC='cc' CFLAGS='-g'  
+#
+#
+#   - to use the vltMakefile currently in the integration area:
+#     
+#          example% make MAKEDIR=$INTROOT/include
+#
+#
+#   - to generate Purify'd executables:
+#     
+#          example% make MAKE_PURIFY=on
+#
+#
+#   The previous examples can be combined:
+#     
+#          example% make                                      \
+#                     MAKEDIR=$INTROOT/include                \ (1)
+#                     MAKE_VERBOSE=on                         \ (2)
+#                     INTLIST='../../mod1:/somewhere/CCS/1.2' \ (3)
+#                     TCL_CHECKER=true                        \ (4)
+#                     abc_NOSHARED=on                         \ (5)
+#                        all                                    (6)
+#
+#         (1) take MY "vltMake"
+#         (2) show all command lines
+#         (3) use also files currently in other areas
+#         (4) turn off syntax check on tcl files (use "true" 
+#             instead of "tclCheck") 
+#         (5) do not use shared libraries for the executable named "abc" 
+#         (6) do all 
+#     
+#     
+#   CAUTIONS
+#     - "string too long"
+#   In several places vltMakefile builds UNIX commands from list of files
+#   or other names. If such string is longer than the kenrnel limit, the
+#   "string too long" message appears. 
+#   Unfortunately, it is impossible to prevent this. It depends to the number
+#   of files, the lenght of the INTROOT and VLTROOT directory paths, etc.
+#   As a work around, try to break the module in smaller modules or
+#   to restructure the target so that shorter commands are created.
+#   For help you can contact "vltsccm" at ESO. (See Installation manual).
+#
+#
+#   APPENDIX
+#
+#   Guidelines To Update Makefile from olded versions.
+# 
+#   $VLTROOT/include/Makefile_*.template shows the up-to-date format 
+#   of a Makefile.
+# 
+#   Change your Makefile to make it compliant with the current version.
+#
+#------------------------------------------------------------------------
+
+#___oOo___

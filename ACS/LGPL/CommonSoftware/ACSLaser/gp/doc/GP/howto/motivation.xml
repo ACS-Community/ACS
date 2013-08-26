@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="../standard_stylesheet.xsl"?>
+<document location="../">
+	<head>
+		<title>Introduction and Motivation</title>
+		<section>AB/CO/AP</section>
+      <author firstname="Vito" lastname="Baggiolini" ccid="58758"/>
+		<reviewers>TBD</reviewers>
+		<currentVersion>0.1 (2002/11)</currentVersion>
+		<history>
+    0.1 (2002/11) : First Draft<br/>
+		</history>
+	</head>
+	<!--
+
+	SECTION 1
+	
+  -->
+	<section>
+		<title>Abstract</title>
+		<description>
+			<p>This section introduces to the GUI Platform (GP), and
+  explains some of the motivation for using it.</p>
+		</description>
+	</section>
+	<!--
+  
+	SECTION 2
+	
+	-->
+	<section>
+		<title>Introduction</title>
+		<description>
+			<p>This section introduces to the GUI Platform (GP), and
+  explains some of the motivation for using it.</p>
+
+  <p>As its name says, the GUI Platform is a platform for
+  developing Java Graphical User interfaces for Controls. It provides the
+  functionality a developer needs to build advanced GUIs, such as</p>
+
+    <ul>
+  
+    <li>Menus, toolbars, keyboard shortcuts</li>
+    <li>A Windowing system with functionality to create Workspaces (2a), Panels(2b),
+    Tabbed Panes(2c), Output windows(2d), Popup Windows(2e), etc.</li>
+    <li>A set of general purpose GUI components, such as Explorers (3a), Tables (3b),
+    Property Sheets (3c), Wizards, a html browser, etc.</li>
+    <li>An infrastructure for packaging related GUI functionality into modules that
+    can be plugged into a GUI</li>
+    <li>Support for cut-and-paste, drag-and-drop, printing</li>
+    <li>Support for programmatically changing the Look&amp;Feel, interactive
+    customization of the GUI settings by the user, and "save-on-exit"
+    facilities (to save the Window Layout when the user exits the GUI and restores
+    them when s/he starts it again).</li>
+    <li>A set of non-graphical utility classes that facilitate development, such as
+    error handling, execution in separate threads, help screens, etc.</li>
+    </ul>   
+  
+  <p align="center">
+  <img src="./images/intro-overview.jpg" width="601" height="451"/> </p>
+  <p>Each of the features mentioned
+  above is described in more detail in &gt;&gt;&gt;the section The
+  functionality provided by GP.</p>
+ </description>
+  </section>
+    <section>
+        <title>GP project vision</title>
+            <description>
+  <p > [ say that it's more than functionality explain the GP project vision
+  for unifying the development process, setting up an environment that allows to
+  develop an share GUI components and modules, and the idea of opening up
+  functionality rather than developing it ]</p>
+            </description>
+    </section>
+
+    <section>
+        <title>The relation between the NetBeans and the GUI Platform</title>
+            <description>
+  <p>The GUI Platform is based on the NetBeans platform. It
+  consists of a layer of software on top of NetBeans, and a set of guidelines
+  for developers.</p>
+  <p>As for NetBeans, we should first make a clear distinction
+  between the NetBeans IDE and the NetBeans Platform. The GUI Platform is based
+  on the NetBeans Platform (not on the IDE).</p>
+  <p>The NetBeans Platform provides the generic framework and
+  building blocks and to create any kind of non-trivial GUI. Using the NetBeans
+  Platform, you can build a GUI for a Mining and Coal Extraction software, a GUI
+  for a music development and delivery system, a GUI for an Accelerator control
+  system or a GUI for a Java Development Environment, to name just a few (find
+  more <a href="http://www.netbeans.org/about/third-party.html">here</a>). In fact, the
+  NetBeans IDE is just one advanced application built on top of the NetBeans
+  platform. Click &gt;&gt;&gt;here for more details about the difference between
+  the NetBeans IDE and the NetBeans Platform.</p>
+  <p>Technically speaking, the NetBeans platform consists of a
+  set of libraries, application Programming Interfaces (APIs) that a programmer
+  uses to develop their GUIs, and an architecture with development guidelines
+  which the programmer has to follow to make sure the GUIs s/he develops fit
+  into the Platform.</p>
+  <p>As already stated, the GUI Platform is a layer on top of
+  the NetBeans Platform, that hides away and simplifies some of the NetBeans
+  APIs. The GP Project team has tailored the NetBeans Platform for the needs of
+  building GUIs for Accelerator controls. The main goals were (1) to facilitate
+  the development of such GUIs, and (2) to reduce the dependency of our GUIs on
+  the NetBeans APIs. The GP project team has worked towards these goals by
+  adding a layer on top of some NetBeans APIs, and defining an API called the
+  "GP Layer API". This API facilitates the use of the generic GUI components
+  of Netbeans, like Explorers, Tables, Property sheets. It is explained in
+  detail in &gt;&gt;&gt;GP Layer. In addition to this, the project team has also
+  identified NetBeans APIs that can be used directly, and APIs that should not
+  be used at all.</p>
+            </description>
+
+            </section>
+
+    <section>
+        <title>Why use GP and not only Java/Swing?</title>
+            <description>
+  <p>Developers that are already familiar with Java/Swing
+  might wonder why they should use the GP platform.</p>
+  <p>First of all, it has to be clarified that the NetBeans
+  Platform, and therefore GP too, have been developed build using the Swing
+  library. It is therefore easy and straight-forward to integrate existing GUI
+  panels developed in Swing into the GUI Platform, as explained
+  &gt;&gt;&gt;here.</p>
+  <p>The GUI Platform provides the
+  following added value that goes beyond the functionality offered by plain
+  Swing:</p>
+  <ul>
+  <li>It has a [&gt;&gt;&gt; sound architecture] and clear development guidelines,
+  which that makes sure all parts of a non-trivial GUI are coherent and fit
+  together well.</li>
+  <li>It has a series of [&gt;&gt;&gt; general purpose GUI components Vito] such as
+  TreeExplorers, Tables, Property Sheets, etc. which have full-fledged
+  functionality, and which are designed to [&gt;&gt;&gt;cleanly separate GUI
+  functionality from domain-specific code]</li>
+  <li>It has support for developing and packaging GUI applications as [&gt;&gt;&gt;
+  pluggable Modules]. This means that applications such as an Alarm
+  screen, a WorkingSet application or the successor of the Teletext Page1 could
+  be developed once and then plugged into any Controls GUI, as described
+  &gt;&gt;&gt;above.</li>
+  </ul>
+
+  <p>In other words, Swing is a
+  library with building blocks for developing GUIs, whereas NetBeans/GP is a
+  Framework based on Swing that enforces a coherent Architecture and adds
+  functionality not available in Swing.</p>
+  <p>Last but not least, the
+  NetBeans platform is maintained by SUN Microsystems and an active developer
+  community. The quality assurance is done by SUN, and the functionality is
+  tested by the large user community that uses the NetBeans IDE and platform.</p>
+              </description>
+    </section>                
+ 
+     <section>
+        <title>Levels of Integration</title>
+            <description>
+  <p>The GP can be used with
+  different levels of integration, ranging from weak to tight. In <i>weak</i>
+  integration, existing GUI panels can be easily adapted so that they can be
+  packaged in GP plug-in modules and that they can be invoked from the GP menus.
+  It is also possible to preserve the possibility to start such GUI panels
+  stand-alone, i.e. outside the GUI platform. In other words, weakly integrated
+  GUI panels preserve a certain independence of the GUI platform, but they do
+  not benefit from most of the functionality provided by GP. With <i>strong</i>
+  integration, on the other hand, the GUI panels are be developed using all GP
+  functionality, including components (explorers, tables, property sheets).</p>
+             </description>
+    </section>                
+</document>
+

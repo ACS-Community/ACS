@@ -1,0 +1,23 @@
+
+                /*
+                 *# check if image data read length was different 
+                 *# from that expected
+                 */
+                if (stillToBeRead != 0)
+                   {
+                   /* handle error */
+                   errAdd(error, acecomMOD_NAME, acecomERR_DATA_AMOUNT, 
+                          __FILE__, "");
+                   return (FAILURE);
+                   }
+
+                /*
+                *# release semaphore
+                 */
+		/*
+		*# same
+		*/
+
+		/*
+		*# another
+		*/

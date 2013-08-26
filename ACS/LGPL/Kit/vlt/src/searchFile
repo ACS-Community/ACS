@@ -1,0 +1,66 @@
+#!/bin/sh
+#************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: searchFile,v 1.2 2010/07/09 12:48:42 alopatin Exp $"
+#
+# who       when        what
+# --------  ----------  -------------------------------------------------
+# mpasquat  2004-JUL-19 created
+# alopatin  2010-JUL-08 switched to POSIX standard /bin/sh
+
+#************************************************************************
+#   NAME 
+#   searchFile - search a file in the sequence INTROOT -> INTLIST -> ACSROOT
+# 
+#   SYNOPSIS
+#   searchFile <fileName with relative path>
+# 
+#   DESCRIPTION
+#   Script that returns the variable value (INTROOT, INTLIST, ACSROOT) where the 
+#   specified file is found or the string "#error#" if not. 
+#   
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#   #error# - no argument provided or file not found
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#  
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+
+if [ "X$1" = "X" ]
+then
+   echo "No filename provided. Usage: $0 <filename>" >&2
+   echo "#error#"
+   exit 0
+fi
+
+file=$1
+SEARCHPATH="$INTROOT:$INTLIST:$ACSROOT"
+
+if [ "X$SEARCHPATH" != "X::" ]
+then
+   PATH_LIST=`echo $SEARCHPATH | sed s/\:/\ /g`
+   for dir in $PATH_LIST
+   do
+      if  [ -f $dir/$file ]
+      then
+         echo $dir
+         exit 0
+      fi
+   done
+   echo "File $file not found in your ACS installation." >&2
+   echo "#error#"
+else
+   echo "$file not found. Environment variables INTROOT, ACSROOT and INTLIST are empty. Did you source the .bash_profile.acs?" >&2
+   echo "#error#"
+fi

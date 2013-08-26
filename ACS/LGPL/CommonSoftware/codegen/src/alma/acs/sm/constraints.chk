@@ -1,0 +1,26 @@
+import uml;
+
+context StateMachine ERROR "StateMachine must have a name" :
+	name.length != 0;
+
+context StateMachine ERROR "StateMachine must have an initial state." :
+	allOwnedElements().typeSelect(Pseudostate).select(e|e.kind.toString() == "initial").size > 0;
+	
+context StateMachine ERROR "StateMachine must have inner states" :
+	allOwnedElements().typeSelect(State).size > 0;
+
+context State ERROR "State must have a name" :
+	name.length != 0;
+	
+context Signal ERROR "Signals must have a name" :
+	name.length != 0;
+	
+context Activity ERROR "Actions must have a name" :
+	name.length != 0;
+	
+context Transition WARNING "Guard aren't supported in this version" :
+	guard == null;
+	
+context State WARNING "Orthogonal states aren't supported in this version" :
+	region.size <= 1;
+	

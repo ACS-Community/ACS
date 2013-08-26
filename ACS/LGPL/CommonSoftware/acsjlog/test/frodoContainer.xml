@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Container xmlns="urn:schemas-cosylab-com:Container:1.0" 
+           xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+           xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
+           Timeout="20000" 
+           UseIFR="1"
+	   ImplLang="java" 
+           ManagerRetry="10">
+  <Autoload>
+    <cdb:_ string="baci" />
+  </Autoload>
+  <LoggingConfig 
+             centralizedLogger="Log" 
+             minLogLevel="2" 
+             dispatchPacketSize="10" 
+             immediateDispatchLevel="11">
+
+    <!-- Some new additional attributes can be used to tweak logging, although as of ACS 6.0 some are only effective for Java logging:
+         minLogLevelLocal, maxLogQueueSize, flushPeriodSeconds.
+         With a future ACS release it will be possible to configure individual loggers by adding optional child elements, as in
+            <log:_ Name="frodoContainer" minLogLevel="4" minLogLevelLocal="2" />
+            <log:_ Name="MyMuteComponent" minLogLevel="6" minLogLevelLocal="6" />
+    -->
+  </LoggingConfig>
+</Container>
+

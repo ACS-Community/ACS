@@ -1,0 +1,56 @@
+#!/bin/bash
+#
+# acsDHCPConfig      This shell script takes care of configuring DHCP
+#                    to work with ACS when the machine is booted.
+#
+# processname: /alma/ACS-10.1/ACSSW/bin/acsDHCPBoot
+#
+# This file has to be copied in /etc/rc.d/init.d/
+#
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+
+RETVAL=0
+prog="sendmail"
+
+start() {
+	# Perform configuration
+	echo -n $"Configuring DHCP for ACS "
+        RETVAL=0
+        if [ -f /alma/ACS-10.1/ACSSW/bin/acsDHCPBoot ] ; then
+	     /alma/ACS-10.1/ACSSW/bin/acsDHCPBoot > /dev/null 2>&1
+             RETVAL=$?
+        fi
+        echo
+	return $RETVAL
+}
+
+stop() {
+	# Ignore
+	return 0
+}
+
+# See how we were called.
+RETVAL=0
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	;;
+  condrestart)
+	;;
+  status)
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|restart|condrestart|status}"
+	exit 1
+esac
+
+exit $RETVAL
+
+

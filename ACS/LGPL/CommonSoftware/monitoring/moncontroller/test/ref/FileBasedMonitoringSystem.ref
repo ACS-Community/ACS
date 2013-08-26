@@ -1,0 +1,4 @@
+1 -  -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.blobber.FileReaderControllerTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.blobber.FileReaderControllerTest
+1 - TEST_RUNNER_REPORT success/total: 1/1
+1 - JUnit test run succeeded

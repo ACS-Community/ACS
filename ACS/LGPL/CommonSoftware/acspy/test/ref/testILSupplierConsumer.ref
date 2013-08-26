@@ -1,0 +1,23 @@
+1 - ----------T--:--:--.--- cdb_channelIL-Consumer addSubscription - EventDescription
+1 - ----------T--:--:--.--- cdb_channelIL-Consumer configAdminProps - Found admin properties in the CDB
+1 - ----------T--:--:--.--- cdb_channelIL-Consumer configQofS - Found Q of S properties in the CDB
+1 - ----------T--:--:--.--- cdb_channelIL-Consumer initCORBA - Created new channel.
+1 - ----------T--:--:--.--- cdb_channelIL-Consumer push_structured_event - Receiver:Unknown, Event Type:EventDescription
+1 - ----------T--:--:--.--- cdb_channelIL-Consumer removeSubscription - EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+1 - ----------T--:--:--.--- cdb_channelIL-Consumer __process_event - Maximum time to process an event is: 1.25 seconds.
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+1 - Test passed!
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
+2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription

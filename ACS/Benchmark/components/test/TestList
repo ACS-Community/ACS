@@ -1,0 +1,61 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: TestList,v 1.4 2007/11/19 16:55:46 eallaert Exp $"
+#
+# TestList
+#
+# who       when        what
+# --------  ----------  ----------------------------------------------
+# eallaert  2007-07-02  initial version
+# 
+#*******************************************************************************
+#
+SOURCE setupTatEnvironment.tcl
+SOURCE copyReferenceFiles.tcl
+#
+# Format of remaining lines in this file:
+#   <testNr> <testName> <prog 1> [<prog 2>..<prog n>]
+# with
+#   <testNr> the integer number assigned to the test. Usually
+#         every record has a different number so that they can
+#         be executed individually.
+#   <testName> a symbolic name used to identify the test.
+#   <prog 1>...  a list of programs to be executed in order to
+#         perform the test. It is required to have at least one
+#         program. All programs in the list are executed in the
+#         background, except the last one, which is executed
+#         in the foreground. To pass parameters to a program
+#         it is enough to write the complete command line for
+#         the program in quotes.
+1 cppLoggingBenchmark    "genLoggingProcessesReport -m 2 -l cpp  --csv tmp/cppReport.csv    40000 1 0"
+2 cppPerformanceCheck    "calculatePerformance tmp/cppReport.csv     ref/cppPerformance.ref    0.9 1.1"
+
+3 javaLoggingBenchmark   "genLoggingProcessesReport -m 2 -l java --csv tmp/javaReport.csv   40000 1 0"
+4 javaPerformanceCheck   "calculatePerformance tmp/javaReport.csv    ref/javaPerformance.ref   0.9 1.1"
+
+5 pythonBenchmark        "genLoggingProcessesReport -m 2 -l py   --csv tmp/pythonReport.csv 40000 1 0"
+6 pythonPerformanceCheck "calculatePerformance tmp/pythonReport.csv  ref/pythonPerformance.ref 0.9 1.1"
+
+
+#1   dbm01         "ACSPerfAnalyzer ../doc/testDBM fakeOutput00"
+#2   reportGen01   "ACSPerfReportGen ../doc/testDBM"

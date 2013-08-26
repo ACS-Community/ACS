@@ -1,0 +1,36 @@
+#! /bin/bash
+#*************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+
+if [ -f ../config/AES2IDL.xslt ]
+then
+   IDL_XSLT=../config/AES2IDL.xslt
+else
+   # Now I look for in the other dirs
+   result=`searchFile /config/AES2IDL.xslt`
+   if [ "$result" != "#error#" ]
+   then
+      IDL_XSLT=$result/config/AES2IDL.xslt
+   fi
+fi
+
+java -cp "$ACSROOT/lib/xalan.jar${PATH_SEP}$ACSROOT/lib/xalan_serializer.jar" org.apache.xalan.xslt.Process -XSL $IDL_XSLT -IN $1 -OUT $2

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema targetNamespace="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0"
+  xmlns="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+  <xs:include schemaLocation="acs_rti_dds_qos_profiles.xsd"/>
+
+  <xs:complexType name="DDSReceiverStreamQoSType">
+    <xs:choice>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="0" name="participant_qos"
+          type="domainparticipantQosProfileChild"/>
+      </xs:sequence>
+    </xs:choice>
+    <xs:attribute name="baseQosLibrary" type="xs:string" use="optional" default="BulkDataQoSLibrary"/>
+  </xs:complexType>
+  <xs:complexType name="DDSReceiverFlowQoSType">
+    <xs:choice>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="0" name="publisher_qos" type="publisherQosProfileChild"
+        />
+      </xs:sequence>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="0" name="topic_qos" type="topicQosProfileChild"/>
+      </xs:sequence>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="0" name="datareader_qos"
+          type="datareaderQosProfileChild"/>
+      </xs:sequence>
+    </xs:choice>
+    <xs:attribute name="baseQosLibrary" type="xs:string" use="optional" default="BulkDataQoSLibrary"/>
+  </xs:complexType>
+  <xs:complexType name="ReceiverFlowType">
+    <xs:all>
+      <xs:element minOccurs="0" name="DDSReceiverFlowQoS" type="DDSReceiverFlowQoSType"/>
+    </xs:all>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="cbReceiveProcessTimeoutSec" type="xs:double" use="optional" default="0.010"/>
+    <xs:attribute name="cbReceiveAvgProcessTimeoutSec" type="xs:double" use="optional" default="0.050"/>
+    <xs:attribute name="enableMulticast" type="xs:boolean" use="optional" default="true"/>
+    <xs:attribute name="multicastAddress" type="xs:string" use="optional" default="225.3.2.1"/>
+    <xs:attribute name="unicastPort" type="xs:unsignedShort" use="optional" default="0"/>
+  </xs:complexType>
+
+  <xs:complexType name="ReceiverStreamType">
+    <xs:sequence>
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element name="ReceiverFlow" type="ReceiverFlowType"/>
+      </xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="DDSReceiverStreamQoS"
+        type="DDSReceiverStreamQoSType"/>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="participantPerStream" type="boolean" default="false" use="optional"/>
+    <xs:attribute name="baseUnicastPort" type="xs:unsignedShort" use="optional" default="48000"/>
+    <xs:attribute name="useIncrementUnicastPort" type="boolean" use="optional" default="true"/>
+  </xs:complexType>
+
+  <xs:complexType name="BulkDataNTReceiverType">
+    <xs:complexContent>
+      <xs:extension base="baci:CharacteristicComponent">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+          <xs:element name="ReceiverStream" type="ReceiverStreamType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="BulkDataNTReceiver" type="BulkDataNTReceiverType"/>
+</xs:schema>

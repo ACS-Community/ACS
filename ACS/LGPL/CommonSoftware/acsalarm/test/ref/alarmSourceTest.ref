@@ -1,0 +1,137 @@
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Logging proxy successfully created.
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - yyyy-mm-ddTHH:mm:ss.mmm Local file logger: Cache saved to...
+1 - testEnableDisable
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmEnDisFF,AlarmEnDisFM,0> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmEnDisFF,AlarmEnDisFM,1> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmEnDisFF,AlarmEnDisFM,0> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmEnDisFF,AlarmEnDisFM,1> TERMINATE
+1 - .testAlarmSending
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,0> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,1> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,2> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,3> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,4> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,5> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,6> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,7> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,8> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,9> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,0> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,1> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,2> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,3> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,4> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,5> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,6> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,7> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,8> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,9> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,11> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,12> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,13> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,14> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,15> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,16> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,17> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,18> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmSendingFF,AlarmSendingFM,19> TERMINATE
+1 - .testAlarmQueuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,0> ACTIVE
+1 - testAlarmQueuing: Start queuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,11> TERMINATE
+1 - testAlarmQueuing: Flushing queue
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,12> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,13> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,14> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,15> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,16> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,17> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,18> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,19> TERMINATE
+1 - testAlarmQueuing: sending an alarm without queuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingFF,AlarmQueuingFM,1> ACTIVE
+1 - .testAlarmQueuingStateChanged
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,0> ACTIVE
+1 - testAlarmQueuingStateChanged: Start queuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,11> TERMINATE
+1 - testAlarmQueuingStateChanged: Flushing queue
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,12> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,13> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,14> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,15> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,16> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,17> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,18> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,19> TERMINATE
+1 - testAlarmQueuingStateChanged: sending an alarm without queuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmQueuingStateChangedFF,AlarmQueuingStateChangedFF,1> ACTIVE
+1 - .testAlarmTimerQueuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,0> ACTIVE
+1 - testAlarmTimerQueuing: Start queuing for 30 seconds
+1 - testAlarmTimerQueuing: waiting
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,11> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,12> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,13> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,14> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,15> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,16> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,17> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,18> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,19> TERMINATE
+1 - testAlarmTimerQueuing: sending an alarm without queuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingFF,AlarmTimerQueuingFM,1> ACTIVE
+1 - .testTerminateAll
+1 - Activating 10 alarms
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,0> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,1> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,2> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,3> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,4> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,5> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,6> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,7> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,8> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,9> ACTIVE
+1 - Terminating alarm with code 5
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,5> TERMINATE
+1 - Terminating all alarms i.e [0-4]+[6-9]
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,0> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,1> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,2> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,3> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,4> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,6> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,7> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,8> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTerminateAllFF,AlarmTerminateAllFM,9> TERMINATE
+1 - .testAlarmQueuingWithTimerLocalThread
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,0> ACTIVE
+1 - testAlarmQueuingWithTimerLocalThread: Start queuing for 30 seconds
+1 - testAlarmQueuingWithTimerLocalThread: waiting
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,11> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,12> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,13> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,14> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,15> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,16> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,17> TERMINATE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,18> ACTIVE
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,19> TERMINATE
+1 - testAlarmQueuingWithTimerLocalThread: sending an alarm without queuing
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Alarm sent: <AlarmTimerQueuingLocalThreadFF,AlarmTimerQueuingLocalThreadFM,1> ACTIVE
+1 - OK (7 tests)
+1 - yyyy-mm-ddTHH:mm:ss.mmm [GlobalLogger - ] Flushing logs.

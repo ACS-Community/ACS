@@ -1,0 +1,41 @@
+#ifndef _IDL_COMPILATION_TIME_IDL_
+#define _IDL_COMPILATION_TIME_IDL_
+
+//Simple IDL file used to test IDL compilation time.
+//Do not add or remove anything from this file!
+
+#include <baci.idl>
+
+#pragma prefix "alma"
+
+module IdlCompilationTime
+{
+    /** @interface SimpleBACIComponent
+     *  Simple interface
+     */
+    interface SimpleBACIComponent : ACS::CharacteristicComponent
+    {
+	/** 
+	 *  Simple synchronous method
+	 */
+	void method();
+
+	/** 
+	 *  Simple asynchronous method
+	 *  @param cb callback when the action gets done.
+	 *  @param desc is used to negotiate timeouts between client and sever.
+	 *  @return void
+	 *  @htmlonly
+	 *  <br><hr>
+	 *  @endhtmlonly
+	 */
+	void action(in ACS::CBvoid cb, in ACS::CBDescIn desc);
+
+	/** 
+	 *  Simple long R/W property.
+	 */
+	readonly attribute ACS::RWlong property;
+    };
+};
+
+#endif

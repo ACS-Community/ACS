@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE map
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/map_1_0.dtd">
+
+<map version="1.0">
+	<mapID target="toplevelfolder" url="images/toplevel.gif" />
+	<mapID target="chapter" url="images/chapTopic.gif" />
+	<mapID target="topic" url="images/topic.gif" />
+
+	<mapID target="intro" url="html/Acs_Command_Center_-_User_Guide.html" />
+	
+	<mapID target="launching_acc" url="html/Acs_Command_Center_-_User_Guide.html#Launching_Command_Center" />
+	<mapID target="starting_acs" url="html/Acs_Command_Center_-_User_Guide.html#Starting_Acs" />
+	<mapID target="running_clients" url="html/Acs_Command_Center_-_User_Guide.html#Running_Clients" />
+	<mapID target="stopping_acs" url="html/Acs_Command_Center_-_User_Guide.html#Stopping_Acs" />
+	
+	<mapID target="scenario_a" url="html/Acs_Command_Center_-_User_Guide.html#Deployment_Scenario_A" />
+	<mapID target="scenario_b" url="html/Acs_Command_Center_-_User_Guide.html#Deployment_Scenario_B" />
+	
+	<mapID target="managing_projects" url="html/Acs_Command_Center_-_User_Guide.html#Managing_Projects" />
+	
+	<mapID target="tools_menu" url="html/Acs_Command_Center_-_User_Guide.html#Tools_Menu" />
+	<mapID target="tool_definitions" url="html/Acs_Command_Center_-_User_Guide.html#Tool_Definitions" />
+
+	<mapID target="progress_panel" url="html/Acs_Command_Center_-_User_Guide.html#Progress_Panel" />
+	<mapID target="deployment_info" url="html/Acs_Command_Center_-_User_Guide.html#Deployment_Info_View" />
+	<mapID target="log_area" url="html/Acs_Command_Center_-_User_Guide.html#Log_Area" />
+	<mapID target="acs_instance" url="html/Acs_Command_Center_-_User_Guide.html#Acs_Instance" />
+	<mapID target="cdb_root" url="html/Acs_Command_Center_-_User_Guide.html#CDB" />
+	
+	<mapID target="whats_new" url="html/Acs_Command_Center_-_User_Guide.html#Whats_New" />
+	
+</map>

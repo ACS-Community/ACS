@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<!-- This XML file provides the partial implementation -->
+<!-- of the IDL:alma/PS/PowerSupply:1.0 interface.     -->
+<!-- Because of this XML's location within the ACS CDB -->
+<!-- (i.e., $ACS_CDB/CDB/alma/simulated/interfaces/*), -->
+<!-- this simulated behavior description is generic    -->
+<!-- and does not tie into any specific component.     -->
+<!-- This makes it useful for defining the behavior of -->
+<!-- simulated dynamic components. Also, it is very    -->
+<!-- useful when one wants to define a component(s)    -->
+<!-- method only once for all occurences of the        -->
+<!-- component's type.                                 -->
+<!--                                                   -->
+<!-- There are several things to take note of here:    -->
+<!--   1. Everything defined within XML elements       -->
+<!--      consists of Python code. You must obey the   -->
+<!--      whitespace rules of Python within these      -->
+<!--      elements.                                    -->
+<!--   2. Not all methods and BACI properties defined  -->
+<!--      in IDL for this component are defined here.  -->
+<!--      This is unnecessary as the simulator         -->
+<!--      framework will dynamically generate methods  -->
+<!--      and properties that have not been defined by -->
+<!--      some means available to the end-user.        -->
+
+<!-- All simulated components should be derived from   -->
+<!-- the SimulatedComponent XML element                -->
+<SimulatedComponent xmlns="urn:schemas-cosylab-com:SimulatedComponent:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<!-- Section where normal Python imports are performed.-->
+<!-- By importing modules/packages here, they will be  -->
+<!-- accessible throughout the rest of the XML.        -->
+        <pythonImports>
+import ACSErr
+import ACS
+from time import sleep
+        </pythonImports>
+
+<!-- A CORBA method is implemented. This particular   -->
+<!-- method, on, accepts as its second parameter a    -->
+<!-- CallbackVoid object. We in turn play around      -->
+<!-- with the callback before returning control.      -->
+	<_corbaMethod Name="on" Timeout="0">
+print "Simulated on - messing with callback"
+
+#create the CORBA types which are used to invoke a callback's
+#methods
+compl = ACSErr.Completion(0L, 0L, 0L, ())
+cbdo  = ACS.CBDescOut(0L, 0L)
+
+#invoke the callback's working method 3 times. under normal
+#circumstances this should be done via a separate thread.
+for i in xrange(3):
+    #take special note that this comment has been indented
+    #using 4 spaces instead of a tab! you must take into 
+    #consideration Python's whitespace rules when using
+    #non-trivial Python constructs. most often developers
+    #are accustomed to editors which automatically convert
+    #a tab into four spaces for them if the file has the
+    #.py extension. this is not the case for XML files!
+
+    #IDL in/inout parameters are accessible via a Python
+    #tuple named quite appropriately, "parameters". this 
+    #tuple presents the parameters in the order they were
+    #defined within the IDL method
+    parameters[0].working(compl, cbdo)
+    sleep(1)
+
+#remember to invoke the callback's done method
+parameters[0].done(compl, cbdo)
+
+#a void IDL method maps to None in Python
+return None
+        </_corbaMethod>
+
+<!-- A BACI property is "implemented". In reality all -->
+<!-- that's being done is we provide our own impl     -->
+<!-- of a DevIO to be used for the property. DevIOs   -->
+<!-- should be implemented in real Python modules and -->
+<!-- packages where code metric tools can be used     -->
+<!-- rather than this being done directly in XML.     -->
+	<_corbaAttribute Name="current" Timeout="0">
+#since this import statement will only be called once
+#at simulated component initialization, it's OK to put
+#it here rather than inside the pythonImports XML
+#element
+from acspyexmplSimulatorExtras import CurrentDevIO
+
+#the return value of this function should always be
+#a DevIO derived object fit for use with the BACI property
+#being implemented.
+#
+#one very important item to take note of here is that
+#parameters[0] contains a reference to the component 
+#in which the property will reside in. the final object
+#within parameters will always be a reference to the 
+#simulated component for all methods that can be 
+#defined within the CDB
+return CurrentDevIO(parameters[0])
+        </_corbaAttribute>
+
+</SimulatedComponent>
+

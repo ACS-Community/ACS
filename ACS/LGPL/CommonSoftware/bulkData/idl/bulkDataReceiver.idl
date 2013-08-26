@@ -1,0 +1,212 @@
+#ifndef _BULKDATA_RECEIVER_IDL_
+#define _BULKDATA_RECEIVER_IDL_
+
+/*******************************************************************************
+ *    ALMA - Atacama Large Millimiter Array
+ *
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *    and Cosylab 2002, All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *
+ *
+ * "@(#)"
+ *
+ * who       when      what
+ * --------  --------  ----------------------------------------------
+ * oat       27/01/05  created
+ */
+
+#include <baci.idl>
+#include "ACSBulkDataError.idl"
+#include "ACSBulkDataStatus.idl"
+#include <AVStreams.idl>
+#include <bulkData.idl>
+
+#pragma prefix "alma"
+
+/** @file bulkDataReceiver.idl
+ *  Bulk Data Receiver IDL File (Receiver Component).
+ */
+
+module bulkdata
+{
+    
+    /** @interface BulkDataReceiver
+     *  Defines the interface for the Bulk Data Receiver Component
+     */
+    interface BulkDataReceiver : ACS::CharacteristicComponent
+	{
+	
+	/**
+	 *  Opens connection creating an out-of-bound channel using TAO A/V services.
+	 *  It creates the Receiver Stream End Point and Flow End Point for the
+	 *  connection with the Sender. The Receiver Stream End Point can be retrieved
+	 *  as an attribute. 
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void openReceiver()
+	    raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+	    
+	/**
+	 * Opens/creates a stream with name stream_name. 
+     * The stream has to be defined in the CDB under alma/<stream_name>.
+     * If you want to create a stream with different configuration plase use openReceiverStreamCfg.
+     * This method is implemented jsut for new bulk data based on DDS (BulkDataNT)
+     * @param stream_name name of stream that should be created
+	 * @todo throw better exception(s) 
+	 */
+	void openReceiverStream(in string stream_name)
+	raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+	
+	/**
+	 * Opens/creates a stream with name stream_name using CDB configuration stream_cfg 
+	 * There should be a stream configuration in the CDB under alma/<stream_cfg>.
+     * This method is implemented just for new bulk data based on DDS (BulkDataNT)
+	 * @param stream_name name of stream that should be created
+	 * @param stream_cfg name of stream configuration in CDB
+     * @todo throw better exception(s)
+	 */
+	void openReceiverStreamCfg(in string stream_name, in string stream_cfg)
+	raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+	
+	/**
+	 * Opens/creats a flow with name flown_name on already existing stream with name stream_name.
+	 * The flow has to be defined in the CDB under alma/<stream_name> in<stream_name>.xml file
+     * If you want to create a flow with different configuration plase use openReceiverFlowCfg.
+     * This method is implemented just for new bulk data based on DDS (BulkDataNT)
+	 * @param stream_name name of the stream where the flow shoudl be created
+     * @param flow_name name of flow that we want to create
+     * @todo throw better exceptions
+	 */
+	void openReceiverFlow(in string stream_name, in string flow_name)
+	raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+	
+	/**
+	 * Opens/creats a flow with name flown_name using CDB configuration flow_cfg on already existing stream with name stream_name.
+     * There should be a flow configuration in the CDB under alma/<stream_cfg> in<stream_name>.xml file
+	 * This method is implemented just for new bulk data based on DDS (BulkDataNT)
+	 * @param stream_name name of the stream where the flow shoudl be created
+	 * @param flow_name name of flow that we want to create
+     * @param flow_cfg  name of flow configuration in CDB.
+	 * @todo throw better exceptions
+	 */
+	void openReceiverFlowCfg(in string stream_name, in string flow_name, in string flow_cfg)
+	raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+
+
+	/** This property is the Receiver Steam End Point.
+	 */
+	BulkDataReceiverConfig getReceiverConfig()
+	    raises (ACSBulkDataError::AVReceiverConfigErrorEx);
+
+	/**
+	 *  Closes connection.......
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void closeReceiver()
+	    raises (ACSBulkDataError::AVCloseReceiverErrorEx);
+
+    void closeReceiverStream(in string stream_name)
+        raises (ACSBulkDataError::AVCloseReceiverErrorEx);
+
+	/**
+	 *  Get callback status
+	 *  @return ACSErr::Completion
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	ACSErr::Completion getCbStatus(in unsigned long flowNumber)
+	    raises (ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx);
+
+	/**
+	 *  Set receiver timeout
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void setTimeout(in unsigned long flowNumber, in unsigned long timeout)
+	    raises (ACSBulkDataError::AVInvalidFlowNumberEx, ACSBulkDataError::AVFlowEndpointErrorEx);
+
+	/**
+	 *  Set receiver name in receiver callback
+	 *  @param recName receiver name.
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void setRecvName(in string recvName)
+	    raises (ACSBulkDataError::AVSetReceiverNameErrorEx);
+
+	/**
+	 *  Subscribe to the Notification Mechanism
+	 *  @param notifCb receiver name.
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void subscribeNotification(in ACS::CBvoid notifCb)
+	    raises (ACSBulkDataError::AVNotificationMechanismErrorEx);
+	    
+	 /**
+	 *  Enable or disable that data are sent/forwarded to the user's CB.
+	 *  By default this is enable.
+	 *  This operation has to be use with caution for debugging purposes only!!!
+	 *  The operation has effect only if it is ivoked after the connection with the receiver 
+	 *  has been established i.e. the callback object has been created !!
+	 *  @param enable true -> data will be sent to the user's CB,
+	 *                false -> data will *not* be sent to the user's CB,
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void fwdData2UserCB(in boolean enable);
+
+	};
+
+    /** @interface BulkDataReceiverDistr
+     *  Defines the interface for the Bulk Data Receiver Distr Component
+     */
+    interface BulkDataReceiverDistr : BulkDataReceiver
+	{
+
+	/**
+	 *  Set the reference of the Distributer implementation
+	 *  inside the Distributer callback.
+	 *  @return void
+	 *  @param Receiver configuration 
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void setReceiver(in BulkDataReceiverConfig receiverConfig)
+	    raises (ACSBulkDataError::AVSetReceiverErrorEx);
+	};
+
+};
+
+#endif

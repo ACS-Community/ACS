@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>FeaturesSerialization</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="20080604;12093400">
+	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
+	<STYLE TYPE="text/css">
+	<!--
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<H2><A NAME="Archiving_System"></A>Serialization</H2>
+<H3><B>Entity data</B>, i.e. complex data structures of moderate
+volume, are often represented as XML in the ALMA system. According to
+the ALMA Technical Architecture described in the <I>ALMA Software
+Architecture</I><A HREF="ReferenceDocuments.html#RD33">[RD33]</A>,
+XML is used to:</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">define the content and structure
+	of the entity objects that are passed between subsystems 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">automatically generate the classes
+	needed to access the data contained in these entity objects,
+	optionally validating changes to a data value by an explicit call to
+	validate() or implicit validation during (un-)marshalling; 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">serialize these objects for
+	network transmission; 
+	</P>
+	<LI><P>facilitate the storage of these. 
+	</P>
+</UL>
+<H3>The primary language used to define data entities in ALMA is UML,
+c.f. <I>ALMA Software Architecture</I><A HREF="ReferenceDocuments.html#RD33">[RD33]</A>.
+</H3>
+<H4>UML is used as a higher-level layer, from which the previously
+hand-crafted XML Schemas are now automatically generated. The data
+transport format will remain XML though, and the XML schemas are
+still visible to developers when defining database queries. 
+</H4>
+<H4>Support for data modeling, code generation, and data handling in
+ALMA is split between ACS and the HLA subsystem: 
+</H4>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">ACS provides the generator
+	framework, 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">HLA maintains the UML model and
+	defines what code gets generated from it 
+	</P>
+	<LI><P>ACS provides generic mechanisms to generate Java binding
+	classes from XML schema, and to present instances of these classes
+	to application software, thus removing the need to explicitly deal
+	with XML data. See below on details. 
+	</P>
+</UL>
+<H4>We assume that access to entity data will be primarily of concern
+to Java high level applications, therefore ACS priority is to provide
+optimal support for Java.</H4>
+<H3>Entity data structures are conceptually defined as UML classes.
+Technically they are defined by means of XML Schemas which are
+derived automatically from UML.</H3>
+<H3>Programming language classes (for example Java, C++ and Python)
+to wrap and facilitate access to entity structures could be generated
+automatically from the XML Schema (XML binding to language-specific
+classes). The Castor<A HREF="ReferenceDocuments.html#RD36">[RD36]</A>
+open source framework is currently used for Java binding. Castor XML
+binding provides also validation code for the accessors, based on the
+XML Schema. A similar, but not as complete, open-source binding
+framework for Python, generateDS, will be delivered with ACS 8.0. No
+such facility is currently foreseen (or required) for C++.</H3>
+<H3>For data structures defined in UML, code generators are based on
+the <B>Open ArchitectureWare</B> Project <A HREF="ReferenceDocuments.html#RD39">[RD39]</A>
+generator framework. We generate from the XMI UML representation:</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">XML Schema as described in the
+	previous paragraphs 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Binding classes for Java (based on
+	Castor), C++ and Python (custom made) 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">IDL interface definition files 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">HTML documentation 
+	</P>
+	<LI><P>any other format needed, by implementing custom generators 
+	</P>
+</UL>
+<H3>Entity data is passed among Components as XML strings<A HREF="ReferenceDocuments.html#RD01">[RD01
+- 10.5.10 XML]</A>. Each Component operation that sends/receives an
+entity data structure, will have an IDL interface where the
+corresponding parameter is represented as a CORBA string. This is a
+commonly accepted way of implementing serialization. <A HREF="ReferenceDocuments.html#RD01">[RD01
+- 3.3.2. Serialization]</A> and migration<A HREF="ReferenceDocuments.html#RD01">[RD01
+- 3.3.3. Migration]</A> of objects without using CORBA Object by
+Value (ObV). As already mentioned in the Error System section, ObV is
+not implemented by most ORBs, is still immature and its usage is
+problematic.</H3>
+<H3>ACS Java Container makes (un)-marshalling transparent to the
+user, interposing a proxy class between the IDL stub/skeleton and the
+implementation:</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">Given the IDL description of a
+	Component, a code generator is used to generate a
+	&lt;Component&gt;Interface class. In this class, every EntityDataXML
+	parameter has been replaced by the corresponding EntityData binding
+	class. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Java introspection is used to
+	dynamically generate a &lt;Component&gt;DynamicProxy and a
+	&lt;Component&gt;DynamicSkeleton class. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">&lt;Component&gt;DynamicProxy is
+	used by clients and converts client side calls from the
+	EntityDataXML to the EntityData (un)-marshalled calls and forwards
+	the messages to the &lt;Component&gt;Stub class generated by the IDL
+	compiler. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">&lt;Component&gt;DynamicSkeleton
+	is a delegation class that converts servant side calls from the
+	EntityDataXML to the EntityData (un)-marshalled calls and forwards
+	the message to the user defined &lt;Componet&gt;Impl real
+	implementation class. 
+	</P>
+	<LI><P>Clients and the servant implementation of the component will
+	therefore only see the interface of the &lt;Component&gt;Interface
+	class, that does not use XML strings but binding classes. 
+	</P>
+</UL>
+<P><A NAME="_x0000_i1025"></A><IMG SRC="Images/Serialization_Plugs__XML_serialization.png" WIDTH="562" HEIGHT="426"  NAME="graphics1" ALIGN=BOTTOM BORDER=0><BR><I>Figure
+3.16: Example of class diagram showing transparent Entity Data
+serialization</I> 
+</P>
+<P>&nbsp;</P>
+<H3>The usage of the proxy approach allows the container to:</H3>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	Shortcut local calls (i.e. calls inside the same Container), so that
+	no XML serialization is needed and the binding class is passed
+	directly (<I>not implemented yet</I><SPAN STYLE="font-style: normal">)</SPAN>.
+		</P>
+	<LI><P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Intercept calls to
+	Components, allowing the implementation of the Tight Container
+	pattern (see ACS Container section). 
+	</P>
+</UL>
+<H3>For C++ and Python it is not foreseen to implement transparent
+(un-)marshalling like in Java. This choice is based on the assumption
+that Java clients and Components will be the most adequate whenever
+serialization is needed. If C++ and Python support will be necessary,
+they will be implemented at a later stage based on the code
+generation engine <B>(Not implemented yet)</B>.</H3>
+<H3>In case no XML binding generator is available (for example for
+clients written in a language different from Java, C++ or Python), we
+anyway expect that it will be acceptable to work directly on the XML
+strings with an XML parser.</H3>
+</BODY>
+</HTML>
+

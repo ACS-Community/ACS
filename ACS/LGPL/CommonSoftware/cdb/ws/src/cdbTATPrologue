@@ -1,0 +1,118 @@
+#! /bin/bash
+# (c) Associated Universities Inc., 2002 
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: cdbTATPrologue,v 1.7 2010/04/29 15:24:40 hsommer Exp $"
+#
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# gchiozzi  11/02/02  created
+#
+
+
+#
+# By default this script will use ../test as the CDB.
+# But if you pass an argument, this will used as
+# absolute path for the CDB root directory.
+# (see cdbjDAL command line below and -root command line parameter)
+#
+if [ "X$1" = "X" ]; then
+   CDB_ROOT=../test
+else
+   CDB_ROOT=$1
+fi
+
+# setup the ports
+. acsstartupAcsPorts
+. acsstartupAcsInstance
+
+
+#---------------------------------------------------------------------------
+#Pick an ACS base port to use
+
+#unset ACS_INSTANCE - we do not allow people to set this from TAT!
+unset ACS_INSTANCE
+
+#iterate through the ten possible choices
+i=0
+while [ $i -lt 10 ]
+do
+	#if the directory has not already been created.
+	if [ ! -e $ACSDATA/tmp/ACS_INSTANCE.$i ]
+	then
+		#we've found a free one and we're done
+		export ACS_INSTANCE=$i
+	        break
+ 	fi
+
+ 	i=$(( $i + 1 ))
+done
+
+if [ "X$ACS_INSTANCE" = "X" ]
+then
+    echo "No ACS instances were available!" > /dev/stderr
+    exit 42
+fi
+
+export ACS_TMP=../test/tmp
+
+echo $ACS_INSTANCE > $ACS_TMP/acs_instance
+
+_CDB_PORT_=`getCDBPort`
+echo $_CDB_PORT_ > $ACS_TMP/.cdbport
+
+_WRITE_IOR_=""
+if [ "X$WIND_BASE" != X ]; then
+  # Make sure the directory exists
+  mkdir -p ENVIRONMENTS/lcuTat
+  _WRITE_IOR_="-o ENVIRONMENTS/lcuTat/DAL.ior" 
+fi
+
+# now always needed since we wait for completion
+#if [ "X$TAT_VERBOSE" = X ]; then
+# _REDIR_=/dev/null
+#else
+ _REDIR_=cdb.log
+ echo " ****************** cdbTATPrologue *************** " >  $_REDIR_
+#fi
+
+
+ENABLE_TMCDB=`echo ${ENABLE_TMCDB:-"false"} | tr "[:upper:]" "[:lower:]"`
+if [ $ENABLE_TMCDB = "true" ] || [ $ENABLE_TMCDB = "y" ] || [ $ENABLE_TMCDB = "1" ]
+then
+  hibernateCdbJDal -root $CDB_ROOT -OAport $_CDB_PORT_ $_WRITE_IOR_ -loadXMLCDB >>$_REDIR_ 2>&1 &
+  # -configName test -acsOnly
+else
+  cdbjDAL -root $CDB_ROOT -OAport $_CDB_PORT_ $_WRITE_IOR_ >>$_REDIR_ 2>&1 &
+fi
+
+# wait until loaded
+MAX_TIMEOUT=120
+if ! acsutilBlock -t $MAX_TIMEOUT -f $_REDIR_ -b "JDAL is ready and waiting"
+then
+  echo "Unable to start the ACS CDB in $MAX_TIMEOUT seconds!"
+  exit 45
+fi
+
+exit 0
+#
+# ___oOo___
+

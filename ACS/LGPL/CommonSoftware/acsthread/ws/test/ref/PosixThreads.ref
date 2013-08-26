@@ -1,0 +1,1203 @@
+1 - Going to create 300 threads with default stack size: XXX bytes
+1 - Ret: 0 for thread #: 0
+1 - Ret: 0 for thread #: 1
+1 - Ret: 0 for thread #: 2
+1 - Ret: 0 for thread #: 3
+1 - Ret: 0 for thread #: 4
+1 - Ret: 0 for thread #: 5
+1 - Ret: 0 for thread #: 6
+1 - Ret: 0 for thread #: 7
+1 - Ret: 0 for thread #: 8
+1 - Hello from node 0
+1 - Hello from node 1
+1 - Hello from node 2
+1 - Ret: 0 for thread #: 9
+1 - Ret: 0 for thread #: 10
+1 - Ret: 0 for thread #: 11
+1 - Ret: 0 for thread #: 12
+1 - Ret: 0 for thread #: 13
+1 - Ret: 0 for thread #: 14
+1 - Ret: 0 for thread #: 15
+1 - Hello from node 3
+1 - Hello from node 4
+1 - Hello from node 5
+1 - Hello from node 6
+1 - Hello from node 7
+1 - Hello from node 8
+1 - Hello from node 9
+1 - Ret: 0 for thread #: 16
+1 - Ret: 0 for thread #: 17
+1 - Ret: 0 for thread #: 18
+1 - Ret: 0 for thread #: 19
+1 - Ret: 0 for thread #: 20
+1 - Ret: 0 for thread #: 21
+1 - Ret: 0 for thread #: 22
+1 - Hello from node 10
+1 - Hello from node 11
+1 - Hello from node 12
+1 - Hello from node 13
+1 - Hello from node 14
+1 - Hello from node 15
+1 - Hello from node 16
+1 - Hello from node 17
+1 - Hello from node 18
+1 - Hello from node 19
+1 - Hello from node 20
+1 - Hello from node 21
+1 - Hello from node 22
+1 - Hello from node 23
+1 - Ret: 0 for thread #: 23
+1 - Ret: 0 for thread #: 24
+1 - Ret: 0 for thread #: 25
+1 - Ret: 0 for thread #: 26
+1 - Ret: 0 for thread #: 27
+1 - Ret: 0 for thread #: 28
+1 - Ret: 0 for thread #: 29
+1 - Hello from node 24
+1 - Hello from node 25
+1 - Hello from node 26
+1 - Hello from node 27
+1 - Hello from node 28
+1 - Hello from node 29
+1 - Hello from node 30
+1 - Ret: 0 for thread #: 30
+1 - Ret: 0 for thread #: 31
+1 - Ret: 0 for thread #: 32
+1 - Ret: 0 for thread #: 33
+1 - Ret: 0 for thread #: 34
+1 - Ret: 0 for thread #: 35
+1 - Ret: 0 for thread #: 36
+1 - Hello from node 31
+1 - Hello from node 32
+1 - Hello from node 33
+1 - Hello from node 34
+1 - Hello from node 35
+1 - Hello from node 36
+1 - Hello from node 37
+1 - Ret: 0 for thread #: 37
+1 - Ret: 0 for thread #: 38
+1 - Ret: 0 for thread #: 39
+1 - Ret: 0 for thread #: 40
+1 - Ret: 0 for thread #: 41
+1 - Ret: 0 for thread #: 42
+1 - Ret: 0 for thread #: 43
+1 - Hello from node 38
+1 - Hello from node 39
+1 - Hello from node 40
+1 - Hello from node 41
+1 - Hello from node 42
+1 - Hello from node 43
+1 - Hello from node 44
+1 - Ret: 0 for thread #: 44
+1 - Ret: 0 for thread #: 45
+1 - Ret: 0 for thread #: 46
+1 - Ret: 0 for thread #: 47
+1 - Ret: 0 for thread #: 48
+1 - Ret: 0 for thread #: 49
+1 - Ret: 0 for thread #: 50
+1 - Hello from node 45
+1 - Hello from node 46
+1 - Hello from node 47
+1 - Hello from node 48
+1 - Hello from node 49
+1 - Hello from node 50
+1 - Ret: 0 for thread #: 51
+1 - Ret: 0 for thread #: 52
+1 - Ret: 0 for thread #: 53
+1 - Ret: 0 for thread #: 54
+1 - Ret: 0 for thread #: 55
+1 - Ret: 0 for thread #: 56
+1 - Ret: 0 for thread #: 57
+1 - Hello from node 51
+1 - Hello from node 52
+1 - Hello from node 53
+1 - Hello from node 54
+1 - Hello from node 55
+1 - Hello from node 56
+1 - Hello from node 57
+1 - Hello from node 58
+1 - Ret: 0 for thread #: 58
+1 - Ret: 0 for thread #: 59
+1 - Ret: 0 for thread #: 60
+1 - Ret: 0 for thread #: 61
+1 - Ret: 0 for thread #: 62
+1 - Ret: 0 for thread #: 63
+1 - Ret: 0 for thread #: 64
+1 - Hello from node 59
+1 - Hello from node 60
+1 - Hello from node 61
+1 - Hello from node 62
+1 - Hello from node 63
+1 - Hello from node 64
+1 - Hello from node 65
+1 - Ret: 0 for thread #: 65
+1 - Ret: 0 for thread #: 66
+1 - Ret: 0 for thread #: 67
+1 - Ret: 0 for thread #: 68
+1 - Ret: 0 for thread #: 69
+1 - Ret: 0 for thread #: 70
+1 - Ret: 0 for thread #: 71
+1 - Hello from node 66
+1 - Hello from node 67
+1 - Hello from node 68
+1 - Hello from node 69
+1 - Hello from node 70
+1 - Hello from node 71
+1 - Hello from node 72
+1 - Ret: 0 for thread #: 72
+1 - Ret: 0 for thread #: 73
+1 - Ret: 0 for thread #: 74
+1 - Ret: 0 for thread #: 75
+1 - Ret: 0 for thread #: 76
+1 - Ret: 0 for thread #: 77
+1 - Ret: 0 for thread #: 78
+1 - Hello from node 73
+1 - Hello from node 74
+1 - Hello from node 75
+1 - Hello from node 76
+1 - Hello from node 77
+1 - Hello from node 78
+1 - Hello from node 79
+1 - Ret: 0 for thread #: 79
+1 - Ret: 0 for thread #: 80
+1 - Ret: 0 for thread #: 81
+1 - Ret: 0 for thread #: 82
+1 - Ret: 0 for thread #: 83
+1 - Ret: 0 for thread #: 84
+1 - Ret: 0 for thread #: 85
+1 - Hello from node 80
+1 - Hello from node 81
+1 - Hello from node 82
+1 - Hello from node 83
+1 - Hello from node 84
+1 - Hello from node 85
+1 - Hello from node 86
+1 - Ret: 0 for thread #: 86
+1 - Ret: 0 for thread #: 87
+1 - Ret: 0 for thread #: 88
+1 - Ret: 0 for thread #: 89
+1 - Ret: 0 for thread #: 90
+1 - Ret: 0 for thread #: 91
+1 - Ret: 0 for thread #: 92
+1 - Hello from node 87
+1 - Hello from node 88
+1 - Hello from node 89
+1 - Hello from node 90
+1 - Hello from node 91
+1 - Hello from node 92
+1 - Hello from node 93
+1 - Ret: 0 for thread #: 93
+1 - Ret: 0 for thread #: 94
+1 - Ret: 0 for thread #: 95
+1 - Ret: 0 for thread #: 96
+1 - Ret: 0 for thread #: 97
+1 - Ret: 0 for thread #: 98
+1 - Ret: 0 for thread #: 99
+1 - Hello from node 94
+1 - Hello from node 95
+1 - Hello from node 96
+1 - Hello from node 97
+1 - Hello from node 98
+1 - Hello from node 99
+1 - Hello from node 100
+1 - Ret: 0 for thread #: 100
+1 - Ret: 0 for thread #: 101
+1 - Ret: 0 for thread #: 102
+1 - Ret: 0 for thread #: 103
+1 - Ret: 0 for thread #: 104
+1 - Ret: 0 for thread #: 105
+1 - Ret: 0 for thread #: 106
+1 - Hello from node 101
+1 - Hello from node 102
+1 - Hello from node 103
+1 - Hello from node 104
+1 - Hello from node 105
+1 - Hello from node 106
+1 - Hello from node 107
+1 - Ret: 0 for thread #: 107
+1 - Ret: 0 for thread #: 108
+1 - Ret: 0 for thread #: 109
+1 - Ret: 0 for thread #: 110
+1 - Ret: 0 for thread #: 111
+1 - Ret: 0 for thread #: 112
+1 - Ret: 0 for thread #: 113
+1 - Hello from node 108
+1 - Hello from node 109
+1 - Hello from node 110
+1 - Hello from node 111
+1 - Hello from node 112
+1 - Hello from node 113
+1 - Hello from node 114
+1 - Ret: 0 for thread #: 114
+1 - Ret: 0 for thread #: 115
+1 - Ret: 0 for thread #: 116
+1 - Ret: 0 for thread #: 117
+1 - Ret: 0 for thread #: 118
+1 - Ret: 0 for thread #: 119
+1 - Ret: 0 for thread #: 120
+1 - Hello from node 115
+1 - Hello from node 116
+1 - Hello from node 117
+1 - Hello from node 118
+1 - Hello from node 119
+1 - Hello from node 120
+1 - Hello from node 121
+1 - Ret: 0 for thread #: 121
+1 - Ret: 0 for thread #: 122
+1 - Ret: 0 for thread #: 123
+1 - Ret: 0 for thread #: 124
+1 - Ret: 0 for thread #: 125
+1 - Ret: 0 for thread #: 126
+1 - Ret: 0 for thread #: 127
+1 - Hello from node 122
+1 - Hello from node 123
+1 - Hello from node 124
+1 - Hello from node 125
+1 - Hello from node 126
+1 - Hello from node 127
+1 - Hello from node 128
+1 - Ret: 0 for thread #: 128
+1 - Ret: 0 for thread #: 129
+1 - Ret: 0 for thread #: 130
+1 - Hello from node 130
+1 - Ret: 0 for thread #: 131
+1 - Hello from node 131
+1 - Hello from node 129
+1 - Ret: 0 for thread #: 132
+1 - Hello from node 132
+1 - Ret: 0 for thread #: 133
+1 - Hello from node 133
+1 - Ret: 0 for thread #: 134
+1 - Hello from node 134
+1 - Ret: 0 for thread #: 135
+1 - Hello from node 135
+1 - Ret: 0 for thread #: 136
+1 - Hello from node 136
+1 - Ret: 0 for thread #: 137
+1 - Hello from node 137
+1 - Ret: 0 for thread #: 138
+1 - Hello from node 138
+1 - Ret: 0 for thread #: 139
+1 - Hello from node 139
+1 - Ret: 0 for thread #: 140
+1 - Hello from node 140
+1 - Ret: 0 for thread #: 141
+1 - Hello from node 141
+1 - Ret: 0 for thread #: 142
+1 - Hello from node 142
+1 - Ret: 0 for thread #: 143
+1 - Hello from node 143
+1 - Ret: 0 for thread #: 144
+1 - Hello from node 144
+1 - Ret: 0 for thread #: 145
+1 - Hello from node 145
+1 - Ret: 0 for thread #: 146
+1 - Hello from node 146
+1 - Ret: 0 for thread #: 147
+1 - Hello from node 147
+1 - Ret: 0 for thread #: 148
+1 - Hello from node 148
+1 - Ret: 0 for thread #: 149
+1 - Hello from node 149
+1 - Ret: 0 for thread #: 150
+1 - Hello from node 150
+1 - Ret: 0 for thread #: 151
+1 - Hello from node 151
+1 - Ret: 0 for thread #: 152
+1 - Hello from node 152
+1 - Ret: 0 for thread #: 153
+1 - Hello from node 153
+1 - Ret: 0 for thread #: 154
+1 - Hello from node 154
+1 - Ret: 0 for thread #: 155
+1 - Hello from node 155
+1 - Ret: 0 for thread #: 156
+1 - Hello from node 156
+1 - Ret: 0 for thread #: 157
+1 - Hello from node 157
+1 - Ret: 0 for thread #: 158
+1 - Hello from node 158
+1 - Ret: 0 for thread #: 159
+1 - Hello from node 159
+1 - Ret: 0 for thread #: 160
+1 - Hello from node 160
+1 - Ret: 0 for thread #: 161
+1 - Hello from node 161
+1 - Ret: 0 for thread #: 162
+1 - Hello from node 162
+1 - Ret: 0 for thread #: 163
+1 - Ret: 0 for thread #: 164
+1 - Hello from node 163
+1 - Hello from node 164
+1 - Hello from node 165
+1 - Ret: 0 for thread #: 165
+1 - Ret: 0 for thread #: 166
+1 - Ret: 0 for thread #: 167
+1 - Ret: 0 for thread #: 168
+1 - Ret: 0 for thread #: 169
+1 - Ret: 0 for thread #: 170
+1 - Ret: 0 for thread #: 171
+1 - Hello from node 166
+1 - Hello from node 167
+1 - Hello from node 168
+1 - Hello from node 169
+1 - Hello from node 170
+1 - Hello from node 171
+1 - Hello from node 172
+1 - Ret: 0 for thread #: 172
+1 - Ret: 0 for thread #: 173
+1 - Ret: 0 for thread #: 174
+1 - Ret: 0 for thread #: 175
+1 - Ret: 0 for thread #: 176
+1 - Ret: 0 for thread #: 177
+1 - Ret: 0 for thread #: 178
+1 - Hello from node 173
+1 - Hello from node 174
+1 - Hello from node 175
+1 - Hello from node 176
+1 - Hello from node 177
+1 - Hello from node 178
+1 - Hello from node 179
+1 - Ret: 0 for thread #: 179
+1 - Ret: 0 for thread #: 180
+1 - Ret: 0 for thread #: 181
+1 - Ret: 0 for thread #: 182
+1 - Ret: 0 for thread #: 183
+1 - Ret: 0 for thread #: 184
+1 - Ret: 0 for thread #: 185
+1 - Hello from node 180
+1 - Hello from node 181
+1 - Hello from node 182
+1 - Hello from node 183
+1 - Hello from node 184
+1 - Hello from node 185
+1 - Hello from node 186
+1 - Ret: 0 for thread #: 186
+1 - Ret: 0 for thread #: 187
+1 - Ret: 0 for thread #: 188
+1 - Ret: 0 for thread #: 189
+1 - Ret: 0 for thread #: 190
+1 - Ret: 0 for thread #: 191
+1 - Ret: 0 for thread #: 192
+1 - Hello from node 187
+1 - Hello from node 188
+1 - Hello from node 189
+1 - Hello from node 190
+1 - Hello from node 191
+1 - Hello from node 192
+1 - Hello from node 193
+1 - Ret: 0 for thread #: 193
+1 - Ret: 0 for thread #: 194
+1 - Ret: 0 for thread #: 195
+1 - Ret: 0 for thread #: 196
+1 - Ret: 0 for thread #: 197
+1 - Ret: 0 for thread #: 198
+1 - Ret: 0 for thread #: 199
+1 - Hello from node 194
+1 - Hello from node 195
+1 - Hello from node 196
+1 - Hello from node 197
+1 - Hello from node 198
+1 - Hello from node 199
+1 - Hello from node 200
+1 - Ret: 0 for thread #: 200
+1 - Ret: 0 for thread #: 201
+1 - Ret: 0 for thread #: 202
+1 - Ret: 0 for thread #: 203
+1 - Ret: 0 for thread #: 204
+1 - Ret: 0 for thread #: 205
+1 - Ret: 0 for thread #: 206
+1 - Hello from node 201
+1 - Hello from node 202
+1 - Hello from node 203
+1 - Hello from node 204
+1 - Hello from node 205
+1 - Hello from node 206
+1 - Hello from node 207
+1 - Ret: 0 for thread #: 207
+1 - Ret: 0 for thread #: 208
+1 - Ret: 0 for thread #: 209
+1 - Ret: 0 for thread #: 210
+1 - Ret: 0 for thread #: 211
+1 - Ret: 0 for thread #: 212
+1 - Ret: 0 for thread #: 213
+1 - Hello from node 208
+1 - Hello from node 209
+1 - Hello from node 210
+1 - Hello from node 211
+1 - Hello from node 212
+1 - Hello from node 213
+1 - Hello from node 214
+1 - Ret: 0 for thread #: 214
+1 - Ret: 0 for thread #: 215
+1 - Ret: 0 for thread #: 216
+1 - Ret: 0 for thread #: 217
+1 - Ret: 0 for thread #: 218
+1 - Ret: 0 for thread #: 219
+1 - Ret: 0 for thread #: 220
+1 - Hello from node 215
+1 - Hello from node 216
+1 - Hello from node 217
+1 - Hello from node 218
+1 - Hello from node 219
+1 - Hello from node 220
+1 - Hello from node 221
+1 - Ret: 0 for thread #: 221
+1 - Ret: 0 for thread #: 222
+1 - Ret: 0 for thread #: 223
+1 - Ret: 0 for thread #: 224
+1 - Ret: 0 for thread #: 225
+1 - Ret: 0 for thread #: 226
+1 - Ret: 0 for thread #: 227
+1 - Hello from node 222
+1 - Hello from node 223
+1 - Hello from node 224
+1 - Hello from node 225
+1 - Hello from node 226
+1 - Hello from node 227
+1 - Hello from node 228
+1 - Ret: 0 for thread #: 228
+1 - Ret: 0 for thread #: 229
+1 - Ret: 0 for thread #: 230
+1 - Ret: 0 for thread #: 231
+1 - Ret: 0 for thread #: 232
+1 - Ret: 0 for thread #: 233
+1 - Ret: 0 for thread #: 234
+1 - Hello from node 229
+1 - Hello from node 230
+1 - Hello from node 231
+1 - Hello from node 232
+1 - Hello from node 233
+1 - Hello from node 234
+1 - Hello from node 235
+1 - Ret: 0 for thread #: 235
+1 - Ret: 0 for thread #: 236
+1 - Ret: 0 for thread #: 237
+1 - Ret: 0 for thread #: 238
+1 - Ret: 0 for thread #: 239
+1 - Ret: 0 for thread #: 240
+1 - Ret: 0 for thread #: 241
+1 - Hello from node 236
+1 - Hello from node 237
+1 - Hello from node 238
+1 - Hello from node 239
+1 - Ret: 0 for thread #: 242
+1 - Hello from node 242
+1 - Hello from node 241
+1 - Ret: 0 for thread #: 243
+1 - Hello from node 240
+1 - Ret: 0 for thread #: 244
+1 - Ret: 0 for thread #: 245
+1 - Ret: 0 for thread #: 246
+1 - Ret: 0 for thread #: 247
+1 - Ret: 0 for thread #: 248
+1 - Hello from node 243
+1 - Hello from node 244
+1 - Hello from node 245
+1 - Hello from node 246
+1 - Hello from node 247
+1 - Hello from node 248
+1 - Hello from node 249
+1 - Ret: 0 for thread #: 249
+1 - Ret: 0 for thread #: 250
+1 - Ret: 0 for thread #: 251
+1 - Ret: 0 for thread #: 252
+1 - Ret: 0 for thread #: 253
+1 - Ret: 0 for thread #: 254
+1 - Ret: 0 for thread #: 255
+1 - Hello from node 250
+1 - Hello from node 251
+1 - Hello from node 252
+1 - Hello from node 253
+1 - Hello from node 254
+1 - Hello from node 255
+1 - Hello from node 256
+1 - Ret: 0 for thread #: 256
+1 - Ret: 0 for thread #: 257
+1 - Ret: 0 for thread #: 258
+1 - Ret: 0 for thread #: 259
+1 - Ret: 0 for thread #: 260
+1 - Ret: 0 for thread #: 261
+1 - Ret: 0 for thread #: 262
+1 - Hello from node 257
+1 - Hello from node 258
+1 - Hello from node 259
+1 - Hello from node 260
+1 - Hello from node 261
+1 - Hello from node 262
+1 - Hello from node 263
+1 - Ret: 0 for thread #: 263
+1 - Ret: 0 for thread #: 264
+1 - Ret: 0 for thread #: 265
+1 - Ret: 0 for thread #: 266
+1 - Ret: 0 for thread #: 267
+1 - Ret: 0 for thread #: 268
+1 - Ret: 0 for thread #: 269
+1 - Hello from node 264
+1 - Hello from node 265
+1 - Hello from node 266
+1 - Hello from node 267
+1 - Hello from node 268
+1 - Hello from node 269
+1 - Hello from node 270
+1 - Ret: 0 for thread #: 270
+1 - Ret: 0 for thread #: 271
+1 - Ret: 0 for thread #: 272
+1 - Ret: 0 for thread #: 273
+1 - Ret: 0 for thread #: 274
+1 - Ret: 0 for thread #: 275
+1 - Ret: 0 for thread #: 276
+1 - Hello from node 271
+1 - Hello from node 272
+1 - Hello from node 273
+1 - Hello from node 274
+1 - Hello from node 275
+1 - Hello from node 276
+1 - Hello from node 277
+1 - Ret: 0 for thread #: 277
+1 - Ret: 0 for thread #: 278
+1 - Ret: 0 for thread #: 279
+1 - Ret: 0 for thread #: 280
+1 - Hello from node 280
+1 - Ret: 0 for thread #: 281
+1 - Hello from node 279
+1 - Hello from node 278
+1 - Hello from node 281
+1 - Ret: 0 for thread #: 282
+1 - Hello from node 282
+1 - Ret: 0 for thread #: 283
+1 - Hello from node 283
+1 - Ret: 0 for thread #: 284
+1 - Hello from node 284
+1 - Ret: 0 for thread #: 285
+1 - Hello from node 285
+1 - Ret: 0 for thread #: 286
+1 - Hello from node 286
+1 - Ret: 0 for thread #: 287
+1 - Hello from node 287
+1 - Ret: 0 for thread #: 288
+1 - Hello from node 288
+1 - Ret: 0 for thread #: 289
+1 - Hello from node 289
+1 - Ret: 0 for thread #: 290
+1 - Hello from node 290
+1 - Ret: 0 for thread #: 291
+1 - Hello from node 291
+1 - Ret: 0 for thread #: 292
+1 - Hello from node 292
+1 - Ret: 0 for thread #: 293
+1 - Hello from node 293
+1 - Ret: 0 for thread #: 294
+1 - Hello from node 294
+1 - Ret: 0 for thread #: 295
+1 - Hello from node 295
+1 - Ret: 0 for thread #: 296
+1 - Hello from node 296
+1 - Ret: 0 for thread #: 297
+1 - Hello from node 297
+1 - Ret: 0 for thread #: 298
+1 - Hello from node 298
+1 - Ret: 0 for thread #: 299
+1 - Hello from node 299
+1 - ----------------------------------------------
+1 - Going to create 300 threads with stack size: XXX bytes
+1 - Ret: 0 for thread #: 0
+1 - Ret: 0 for thread #: 1
+1 - Ret: 0 for thread #: 2
+1 - Ret: 0 for thread #: 3
+1 - Ret: 0 for thread #: 4
+1 - Hello from node 0
+1 - Hello from node 1
+1 - Hello from node 2
+1 - Hello from node 3
+1 - Hello from node 4
+1 - Hello from node 5
+1 - Ret: 0 for thread #: 5
+1 - Ret: 0 for thread #: 6
+1 - Ret: 0 for thread #: 7
+1 - Ret: 0 for thread #: 8
+1 - Ret: 0 for thread #: 9
+1 - Ret: 0 for thread #: 10
+1 - Ret: 0 for thread #: 11
+1 - Hello from node 6
+1 - Hello from node 7
+1 - Hello from node 8
+1 - Hello from node 9
+1 - Hello from node 10
+1 - Hello from node 11
+1 - Hello from node 12
+1 - Ret: 0 for thread #: 12
+1 - Ret: 0 for thread #: 13
+1 - Ret: 0 for thread #: 14
+1 - Ret: 0 for thread #: 15
+1 - Ret: 0 for thread #: 16
+1 - Ret: 0 for thread #: 17
+1 - Ret: 0 for thread #: 18
+1 - Hello from node 13
+1 - Hello from node 14
+1 - Hello from node 15
+1 - Hello from node 16
+1 - Hello from node 17
+1 - Hello from node 18
+1 - Hello from node 19
+1 - Ret: 0 for thread #: 19
+1 - Ret: 0 for thread #: 20
+1 - Ret: 0 for thread #: 21
+1 - Ret: 0 for thread #: 22
+1 - Ret: 0 for thread #: 23
+1 - Ret: 0 for thread #: 24
+1 - Ret: 0 for thread #: 25
+1 - Hello from node 20
+1 - Hello from node 21
+1 - Hello from node 22
+1 - Hello from node 23
+1 - Hello from node 24
+1 - Hello from node 25
+1 - Hello from node 26
+1 - Ret: 0 for thread #: 26
+1 - Ret: 0 for thread #: 27
+1 - Ret: 0 for thread #: 28
+1 - Ret: 0 for thread #: 29
+1 - Ret: 0 for thread #: 30
+1 - Ret: 0 for thread #: 31
+1 - Ret: 0 for thread #: 32
+1 - Hello from node 27
+1 - Hello from node 28
+1 - Hello from node 29
+1 - Hello from node 30
+1 - Hello from node 31
+1 - Hello from node 32
+1 - Hello from node 33
+1 - Ret: 0 for thread #: 33
+1 - Ret: 0 for thread #: 34
+1 - Ret: 0 for thread #: 35
+1 - Ret: 0 for thread #: 36
+1 - Ret: 0 for thread #: 37
+1 - Ret: 0 for thread #: 38
+1 - Ret: 0 for thread #: 39
+1 - Hello from node 34
+1 - Hello from node 35
+1 - Hello from node 36
+1 - Hello from node 37
+1 - Hello from node 38
+1 - Hello from node 39
+1 - Hello from node 40
+1 - Ret: 0 for thread #: 40
+1 - Ret: 0 for thread #: 41
+1 - Ret: 0 for thread #: 42
+1 - Ret: 0 for thread #: 43
+1 - Ret: 0 for thread #: 44
+1 - Ret: 0 for thread #: 45
+1 - Ret: 0 for thread #: 46
+1 - Hello from node 41
+1 - Hello from node 42
+1 - Hello from node 43
+1 - Hello from node 44
+1 - Hello from node 45
+1 - Hello from node 46
+1 - Hello from node 47
+1 - Ret: 0 for thread #: 47
+1 - Ret: 0 for thread #: 48
+1 - Ret: 0 for thread #: 49
+1 - Ret: 0 for thread #: 50
+1 - Ret: 0 for thread #: 51
+1 - Ret: 0 for thread #: 52
+1 - Ret: 0 for thread #: 53
+1 - Hello from node 48
+1 - Hello from node 49
+1 - Hello from node 50
+1 - Hello from node 51
+1 - Hello from node 52
+1 - Hello from node 53
+1 - Hello from node 54
+1 - Ret: 0 for thread #: 54
+1 - Ret: 0 for thread #: 55
+1 - Ret: 0 for thread #: 56
+1 - Ret: 0 for thread #: 57
+1 - Ret: 0 for thread #: 58
+1 - Ret: 0 for thread #: 59
+1 - Ret: 0 for thread #: 60
+1 - Hello from node 55
+1 - Hello from node 56
+1 - Hello from node 57
+1 - Hello from node 58
+1 - Hello from node 59
+1 - Hello from node 60
+1 - Hello from node 61
+1 - Ret: 0 for thread #: 61
+1 - Ret: 0 for thread #: 62
+1 - Ret: 0 for thread #: 63
+1 - Ret: 0 for thread #: 64
+1 - Ret: 0 for thread #: 65
+1 - Ret: 0 for thread #: 66
+1 - Ret: 0 for thread #: 67
+1 - Hello from node 62
+1 - Hello from node 63
+1 - Hello from node 64
+1 - Hello from node 65
+1 - Hello from node 66
+1 - Hello from node 67
+1 - Hello from node 68
+1 - Ret: 0 for thread #: 68
+1 - Ret: 0 for thread #: 69
+1 - Ret: 0 for thread #: 70
+1 - Ret: 0 for thread #: 71
+1 - Ret: 0 for thread #: 72
+1 - Ret: 0 for thread #: 73
+1 - Ret: 0 for thread #: 74
+1 - Hello from node 69
+1 - Hello from node 70
+1 - Hello from node 71
+1 - Hello from node 72
+1 - Hello from node 73
+1 - Hello from node 74
+1 - Hello from node 75
+1 - Ret: 0 for thread #: 75
+1 - Ret: 0 for thread #: 76
+1 - Ret: 0 for thread #: 77
+1 - Ret: 0 for thread #: 78
+1 - Ret: 0 for thread #: 79
+1 - Ret: 0 for thread #: 80
+1 - Ret: 0 for thread #: 81
+1 - Hello from node 76
+1 - Hello from node 77
+1 - Hello from node 78
+1 - Hello from node 79
+1 - Hello from node 80
+1 - Hello from node 81
+1 - Hello from node 82
+1 - Ret: 0 for thread #: 82
+1 - Ret: 0 for thread #: 83
+1 - Ret: 0 for thread #: 84
+1 - Ret: 0 for thread #: 85
+1 - Ret: 0 for thread #: 86
+1 - Ret: 0 for thread #: 87
+1 - Ret: 0 for thread #: 88
+1 - Hello from node 83
+1 - Hello from node 84
+1 - Hello from node 85
+1 - Hello from node 86
+1 - Hello from node 87
+1 - Hello from node 88
+1 - Hello from node 89
+1 - Ret: 0 for thread #: 89
+1 - Ret: 0 for thread #: 90
+1 - Ret: 0 for thread #: 91
+1 - Ret: 0 for thread #: 92
+1 - Ret: 0 for thread #: 93
+1 - Ret: 0 for thread #: 94
+1 - Ret: 0 for thread #: 95
+1 - Hello from node 90
+1 - Hello from node 91
+1 - Hello from node 92
+1 - Hello from node 93
+1 - Hello from node 94
+1 - Hello from node 95
+1 - Hello from node 96
+1 - Ret: 0 for thread #: 96
+1 - Ret: 0 for thread #: 97
+1 - Ret: 0 for thread #: 98
+1 - Ret: 0 for thread #: 99
+1 - Ret: 0 for thread #: 100
+1 - Ret: 0 for thread #: 101
+1 - Ret: 0 for thread #: 102
+1 - Hello from node 97
+1 - Hello from node 98
+1 - Hello from node 99
+1 - Hello from node 100
+1 - Hello from node 101
+1 - Hello from node 102
+1 - Hello from node 103
+1 - Ret: 0 for thread #: 103
+1 - Ret: 0 for thread #: 104
+1 - Ret: 0 for thread #: 105
+1 - Ret: 0 for thread #: 106
+1 - Ret: 0 for thread #: 107
+1 - Ret: 0 for thread #: 108
+1 - Ret: 0 for thread #: 109
+1 - Hello from node 104
+1 - Hello from node 105
+1 - Hello from node 106
+1 - Hello from node 107
+1 - Hello from node 108
+1 - Hello from node 109
+1 - Hello from node 110
+1 - Ret: 0 for thread #: 110
+1 - Ret: 0 for thread #: 111
+1 - Ret: 0 for thread #: 112
+1 - Ret: 0 for thread #: 113
+1 - Ret: 0 for thread #: 114
+1 - Ret: 0 for thread #: 115
+1 - Ret: 0 for thread #: 116
+1 - Hello from node 111
+1 - Hello from node 112
+1 - Hello from node 113
+1 - Hello from node 114
+1 - Hello from node 115
+1 - Hello from node 116
+1 - Hello from node 117
+1 - Ret: 0 for thread #: 117
+1 - Ret: 0 for thread #: 118
+1 - Ret: 0 for thread #: 119
+1 - Ret: 0 for thread #: 120
+1 - Ret: 0 for thread #: 121
+1 - Ret: 0 for thread #: 122
+1 - Ret: 0 for thread #: 123
+1 - Hello from node 118
+1 - Hello from node 119
+1 - Hello from node 120
+1 - Hello from node 121
+1 - Hello from node 122
+1 - Hello from node 123
+1 - Hello from node 124
+1 - Ret: 0 for thread #: 124
+1 - Ret: 0 for thread #: 125
+1 - Ret: 0 for thread #: 126
+1 - Ret: 0 for thread #: 127
+1 - Ret: 0 for thread #: 128
+1 - Ret: 0 for thread #: 129
+1 - Ret: 0 for thread #: 130
+1 - Hello from node 125
+1 - Hello from node 126
+1 - Hello from node 127
+1 - Hello from node 128
+1 - Hello from node 129
+1 - Hello from node 130
+1 - Hello from node 131
+1 - Ret: 0 for thread #: 131
+1 - Ret: 0 for thread #: 132
+1 - Ret: 0 for thread #: 133
+1 - Ret: 0 for thread #: 134
+1 - Ret: 0 for thread #: 135
+1 - Ret: 0 for thread #: 136
+1 - Ret: 0 for thread #: 137
+1 - Hello from node 132
+1 - Hello from node 133
+1 - Hello from node 134
+1 - Hello from node 135
+1 - Hello from node 136
+1 - Hello from node 137
+1 - Hello from node 138
+1 - Ret: 0 for thread #: 138
+1 - Ret: 0 for thread #: 139
+1 - Ret: 0 for thread #: 140
+1 - Ret: 0 for thread #: 141
+1 - Ret: 0 for thread #: 142
+1 - Ret: 0 for thread #: 143
+1 - Ret: 0 for thread #: 144
+1 - Hello from node 139
+1 - Hello from node 140
+1 - Hello from node 141
+1 - Hello from node 142
+1 - Hello from node 143
+1 - Hello from node 144
+1 - Hello from node 145
+1 - Ret: 0 for thread #: 145
+1 - Ret: 0 for thread #: 146
+1 - Ret: 0 for thread #: 147
+1 - Ret: 0 for thread #: 148
+1 - Ret: 0 for thread #: 149
+1 - Ret: 0 for thread #: 150
+1 - Ret: 0 for thread #: 151
+1 - Hello from node 146
+1 - Hello from node 147
+1 - Hello from node 148
+1 - Hello from node 149
+1 - Hello from node 150
+1 - Hello from node 151
+1 - Hello from node 152
+1 - Ret: 0 for thread #: 152
+1 - Ret: 0 for thread #: 153
+1 - Ret: 0 for thread #: 154
+1 - Ret: 0 for thread #: 155
+1 - Ret: 0 for thread #: 156
+1 - Ret: 0 for thread #: 157
+1 - Ret: 0 for thread #: 158
+1 - Hello from node 153
+1 - Hello from node 154
+1 - Hello from node 155
+1 - Hello from node 156
+1 - Hello from node 157
+1 - Hello from node 158
+1 - Hello from node 159
+1 - Ret: 0 for thread #: 159
+1 - Ret: 0 for thread #: 160
+1 - Ret: 0 for thread #: 161
+1 - Ret: 0 for thread #: 162
+1 - Ret: 0 for thread #: 163
+1 - Ret: 0 for thread #: 164
+1 - Ret: 0 for thread #: 165
+1 - Hello from node 160
+1 - Hello from node 161
+1 - Hello from node 162
+1 - Hello from node 163
+1 - Hello from node 164
+1 - Hello from node 165
+1 - Hello from node 166
+1 - Ret: 0 for thread #: 166
+1 - Ret: 0 for thread #: 167
+1 - Ret: 0 for thread #: 168
+1 - Ret: 0 for thread #: 169
+1 - Ret: 0 for thread #: 170
+1 - Ret: 0 for thread #: 171
+1 - Ret: 0 for thread #: 172
+1 - Hello from node 167
+1 - Hello from node 168
+1 - Hello from node 169
+1 - Hello from node 170
+1 - Hello from node 171
+1 - Hello from node 172
+1 - Hello from node 173
+1 - Ret: 0 for thread #: 173
+1 - Ret: 0 for thread #: 174
+1 - Ret: 0 for thread #: 175
+1 - Ret: 0 for thread #: 176
+1 - Ret: 0 for thread #: 177
+1 - Ret: 0 for thread #: 178
+1 - Ret: 0 for thread #: 179
+1 - Hello from node 174
+1 - Hello from node 175
+1 - Hello from node 176
+1 - Hello from node 177
+1 - Hello from node 178
+1 - Hello from node 179
+1 - Hello from node 180
+1 - Ret: 0 for thread #: 180
+1 - Ret: 0 for thread #: 181
+1 - Ret: 0 for thread #: 182
+1 - Ret: 0 for thread #: 183
+1 - Ret: 0 for thread #: 184
+1 - Ret: 0 for thread #: 185
+1 - Ret: 0 for thread #: 186
+1 - Hello from node 181
+1 - Hello from node 182
+1 - Hello from node 183
+1 - Hello from node 184
+1 - Hello from node 185
+1 - Hello from node 186
+1 - Hello from node 187
+1 - Ret: 0 for thread #: 187
+1 - Ret: 0 for thread #: 188
+1 - Ret: 0 for thread #: 189
+1 - Ret: 0 for thread #: 190
+1 - Ret: 0 for thread #: 191
+1 - Ret: 0 for thread #: 192
+1 - Ret: 0 for thread #: 193
+1 - Hello from node 188
+1 - Hello from node 189
+1 - Hello from node 190
+1 - Hello from node 191
+1 - Hello from node 192
+1 - Hello from node 193
+1 - Hello from node 194
+1 - Ret: 0 for thread #: 194
+1 - Ret: 0 for thread #: 195
+1 - Ret: 0 for thread #: 196
+1 - Ret: 0 for thread #: 197
+1 - Ret: 0 for thread #: 198
+1 - Ret: 0 for thread #: 199
+1 - Ret: 0 for thread #: 200
+1 - Hello from node 195
+1 - Hello from node 196
+1 - Hello from node 197
+1 - Hello from node 198
+1 - Hello from node 199
+1 - Hello from node 200
+1 - Hello from node 201
+1 - Ret: 0 for thread #: 201
+1 - Ret: 0 for thread #: 202
+1 - Ret: 0 for thread #: 203
+1 - Ret: 0 for thread #: 204
+1 - Ret: 0 for thread #: 205
+1 - Ret: 0 for thread #: 206
+1 - Ret: 0 for thread #: 207
+1 - Hello from node 202
+1 - Hello from node 203
+1 - Hello from node 204
+1 - Hello from node 205
+1 - Hello from node 206
+1 - Hello from node 207
+1 - Hello from node 208
+1 - Ret: 0 for thread #: 208
+1 - Ret: 0 for thread #: 209
+1 - Ret: 0 for thread #: 210
+1 - Ret: 0 for thread #: 211
+1 - Ret: 0 for thread #: 212
+1 - Ret: 0 for thread #: 213
+1 - Ret: 0 for thread #: 214
+1 - Hello from node 209
+1 - Hello from node 210
+1 - Hello from node 211
+1 - Hello from node 212
+1 - Hello from node 213
+1 - Hello from node 214
+1 - Hello from node 215
+1 - Ret: 0 for thread #: 215
+1 - Ret: 0 for thread #: 216
+1 - Ret: 0 for thread #: 217
+1 - Ret: 0 for thread #: 218
+1 - Ret: 0 for thread #: 219
+1 - Ret: 0 for thread #: 220
+1 - Ret: 0 for thread #: 221
+1 - Hello from node 216
+1 - Hello from node 217
+1 - Hello from node 218
+1 - Hello from node 219
+1 - Hello from node 220
+1 - Hello from node 221
+1 - Hello from node 222
+1 - Ret: 0 for thread #: 222
+1 - Ret: 0 for thread #: 223
+1 - Ret: 0 for thread #: 224
+1 - Ret: 0 for thread #: 225
+1 - Ret: 0 for thread #: 226
+1 - Ret: 0 for thread #: 227
+1 - Ret: 0 for thread #: 228
+1 - Hello from node 223
+1 - Hello from node 224
+1 - Hello from node 225
+1 - Hello from node 226
+1 - Hello from node 227
+1 - Hello from node 228
+1 - Hello from node 229
+1 - Ret: 0 for thread #: 229
+1 - Ret: 0 for thread #: 230
+1 - Ret: 0 for thread #: 231
+1 - Ret: 0 for thread #: 232
+1 - Ret: 0 for thread #: 233
+1 - Ret: 0 for thread #: 234
+1 - Ret: 0 for thread #: 235
+1 - Hello from node 230
+1 - Hello from node 231
+1 - Hello from node 232
+1 - Hello from node 233
+1 - Hello from node 234
+1 - Hello from node 235
+1 - Hello from node 236
+1 - Ret: 0 for thread #: 236
+1 - Ret: 0 for thread #: 237
+1 - Ret: 0 for thread #: 238
+1 - Ret: 0 for thread #: 239
+1 - Ret: 0 for thread #: 240
+1 - Ret: 0 for thread #: 241
+1 - Ret: 0 for thread #: 242
+1 - Hello from node 237
+1 - Hello from node 238
+1 - Hello from node 239
+1 - Hello from node 240
+1 - Hello from node 241
+1 - Hello from node 242
+1 - Hello from node 243
+1 - Ret: 0 for thread #: 243
+1 - Ret: 0 for thread #: 244
+1 - Ret: 0 for thread #: 245
+1 - Ret: 0 for thread #: 246
+1 - Ret: 0 for thread #: 247
+1 - Ret: 0 for thread #: 248
+1 - Ret: 0 for thread #: 249
+1 - Hello from node 244
+1 - Hello from node 245
+1 - Hello from node 246
+1 - Hello from node 247
+1 - Hello from node 248
+1 - Hello from node 249
+1 - Hello from node 250
+1 - Ret: 0 for thread #: 250
+1 - Ret: 0 for thread #: 251
+1 - Ret: 0 for thread #: 252
+1 - Ret: 0 for thread #: 253
+1 - Ret: 0 for thread #: 254
+1 - Ret: 0 for thread #: 255
+1 - Ret: 0 for thread #: 256
+1 - Hello from node 251
+1 - Hello from node 252
+1 - Hello from node 253
+1 - Hello from node 254
+1 - Hello from node 255
+1 - Hello from node 256
+1 - Hello from node 257
+1 - Ret: 0 for thread #: 257
+1 - Ret: 0 for thread #: 258
+1 - Ret: 0 for thread #: 259
+1 - Ret: 0 for thread #: 260
+1 - Ret: 0 for thread #: 261
+1 - Ret: 0 for thread #: 262
+1 - Ret: 0 for thread #: 263
+1 - Hello from node 258
+1 - Hello from node 259
+1 - Hello from node 260
+1 - Hello from node 261
+1 - Hello from node 262
+1 - Hello from node 263
+1 - Hello from node 264
+1 - Ret: 0 for thread #: 264
+1 - Ret: 0 for thread #: 265
+1 - Ret: 0 for thread #: 266
+1 - Ret: 0 for thread #: 267
+1 - Ret: 0 for thread #: 268
+1 - Ret: 0 for thread #: 269
+1 - Ret: 0 for thread #: 270
+1 - Hello from node 265
+1 - Hello from node 266
+1 - Hello from node 267
+1 - Hello from node 268
+1 - Hello from node 269
+1 - Hello from node 270
+1 - Hello from node 271
+1 - Ret: 0 for thread #: 271
+1 - Ret: 0 for thread #: 272
+1 - Ret: 0 for thread #: 273
+1 - Ret: 0 for thread #: 274
+1 - Ret: 0 for thread #: 275
+1 - Ret: 0 for thread #: 276
+1 - Ret: 0 for thread #: 277
+1 - Hello from node 272
+1 - Hello from node 273
+1 - Hello from node 274
+1 - Hello from node 275
+1 - Hello from node 276
+1 - Hello from node 277
+1 - Hello from node 278
+1 - Ret: 0 for thread #: 278
+1 - Ret: 0 for thread #: 279
+1 - Ret: 0 for thread #: 280
+1 - Ret: 0 for thread #: 281
+1 - Ret: 0 for thread #: 282
+1 - Ret: 0 for thread #: 283
+1 - Ret: 0 for thread #: 284
+1 - Hello from node 279
+1 - Hello from node 280
+1 - Hello from node 281
+1 - Hello from node 282
+1 - Hello from node 283
+1 - Hello from node 284
+1 - Hello from node 285
+1 - Ret: 0 for thread #: 285
+1 - Ret: 0 for thread #: 286
+1 - Ret: 0 for thread #: 287
+1 - Ret: 0 for thread #: 288
+1 - Ret: 0 for thread #: 289
+1 - Ret: 0 for thread #: 290
+1 - Ret: 0 for thread #: 291
+1 - Hello from node 286
+1 - Hello from node 287
+1 - Hello from node 288
+1 - Hello from node 289
+1 - Hello from node 290
+1 - Hello from node 291
+1 - Hello from node 292
+1 - Ret: 0 for thread #: 292
+1 - Ret: 0 for thread #: 293
+1 - Ret: 0 for thread #: 294
+1 - Ret: 0 for thread #: 295
+1 - Ret: 0 for thread #: 296
+1 - Ret: 0 for thread #: 297
+1 - Ret: 0 for thread #: 298
+1 - Hello from node 293
+1 - Hello from node 294
+1 - Hello from node 295
+1 - Hello from node 296
+1 - Hello from node 297
+1 - Hello from node 298
+1 - Hello from node 299
+1 - Ret: 0 for thread #: 299

@@ -1,0 +1,55 @@
+1 - Test built
+1 - Category root topic=CMW.ALARM_SYSTEM.CATEGORIES
+1 - SynchroBuffer[minWindowSize=500,maxWindowSize=5000,windowGrowthFactor=100,duplicatePolicy=DUPLICATE_OK]
+1 - setUp done
+1 - testMultiplicity
+1 - Alarm received: MF_DEFAULT:MULTIPLE_MF_FAILURES:5 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF1:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF1:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MULTIPLE_MF_FAILURES:5 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF2:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF2:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MULTIPLE_MF_FAILURES:5 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF3:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MULTIPLE_MF_FAILURES:5 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF4:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MULTIPLE_MF_FAILURES:5 active=true, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_DEFAULT:MF4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_DEFAULT:MF1:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_DEFAULT:MF2:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_DEFAULT:MF5:0 active=true, nodeC=false, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF1:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_DEFAULT:MULTIPLE_MF_FAILURES:5 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF1:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF2:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF2:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF3:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF4:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_DEFAULT:MF5:0 active=false, nodeC=false, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - testNode
+1 - Alarm received: NODE_DEFAULT:NODE1:1 active=true, nodeC=false, nodeP=true, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE1:1 active=true, nodeC=false, nodeP=true, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE2:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE2:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE2:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE3:1 active=false, nodeC=false, nodeP=true, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE4:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE3:1 active=true, nodeC=false, nodeP=true, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE4:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE4:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE1:1 active=false, nodeC=false, nodeP=true, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE2:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE2:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE3:1 active=false, nodeC=false, nodeP=true, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE4:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_DEFAULT:NODE4:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - tearDown done
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 

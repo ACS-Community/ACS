@@ -1,0 +1,8 @@
+// "@(#) $Id: vltMakeTestCPU_CLASS.class,v 2.170.1.9 2003/02/20 10:34:29 vltsccm Exp $"
+//++ Class for vltMake test
+//
+CLASS BASE_CLASS CPU_CLASS
+BEGIN
+	STATIC_ATTRIBUTE NULL_CLASS	cpu_id
+	ATTRIBUTE float			pointId
+END

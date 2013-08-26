@@ -1,0 +1,35 @@
+1 - 
+1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] Alarm system type: CERN
+1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] cmw-mom/acs-jms initialized
+1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger scxml@DemoTest created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
+1 - ----------T--:--:--.--- INFO [DemoTest] component 'TestSendLaserSources' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- CONFIG [TestSendLaserSources] Connected to DAO 'MACI/Channels'.
+1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ChannelName='CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES' Service='NotifyEventChannelFactory' ]
+1 - Connected to source channel
+1 - Invoking methods on java components (NODE REDUCTION)
+1 - Alarm message received from source: <PS,ALARM_SOURCE_PS,1> Status: ACTIVE
+1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNT,1> Status: ACTIVE
+1 - Alarm message received from source: <Antenna,ALARM_SOURCE_ANTENNA,1> Status: ACTIVE
+1 - Alarm message received from source: <PS,ALARM_SOURCE_PS,1> Status: TERMINATE
+1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNT,1> Status: TERMINATE
+1 - Alarm message received from source: <Antenna,ALARM_SOURCE_ANTENNA,1> Status: TERMINATE
+1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully delivered a component release request for curl=ALARM_SOURCE_ANTENNA
+1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully delivered a component release request for curl=ALARM_SOURCE_MOUNT
+1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully delivered a component release request for curl=ALARM_SOURCE_PS
+1 - Invoking methods on java components (MULTIPLICITY REDUCTION)
+1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,0> Status: ACTIVE
+1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,1> Status: ACTIVE
+1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,2> Status: ACTIVE
+1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,3> Status: ACTIVE
+1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,4> Status: ACTIVE
+1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,0> Status: TERMINATE
+1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,1> Status: TERMINATE
+1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,2> Status: TERMINATE
+1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,3> Status: TERMINATE
+1 - Alarm message received from source: <MF,ALARM_SOURCE_MF,4> Status: TERMINATE
+1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully delivered a component release request for curl=MULTIPLE_FAILURES
+1 - Invoking methods on C++ components
+1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: ACTIVE
+1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: TERMINATE
+1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully delivered a component release request for curl=ALARM_SOURCE_MOUNTCPP
+1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] AlarmSourceFactory closed

@@ -1,0 +1,15 @@
+1 - testNotifiedDatesOrdered
+1 - Notification 1 received: checking for correctness... OK
+1 - testNotifiedDatesOrdered done.
+1 - testNotifiedDatesNotOrdered
+1 - Notification 1 received: checking for correctness... OK
+1 - testNotifiedDatesNotOrdered done
+1 - testNotificationsWithSeveralFiles
+1 - Notification 1 received: checking for correctness... OK
+1 - Notification 2 received: checking for correctness... OK
+1 - Notification 3 received: checking for correctness... OK
+1 - testNotificationsWithSeveralFiles done
+1 - 
+1 - 
+1 - OK (3 tests)
+1 - 

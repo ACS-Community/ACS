@@ -1,0 +1,66 @@
+#! /bin/sh
+#************************************************************************
+# E.S.O. - VLT project
+#
+# "@(#) $Id: docExDbTest,v 1.31 2002/06/08 17:20:37 vltsccm Exp $" 
+#
+# docExDbTest
+#
+# who       when      what
+# --------  --------  --------------------------------------------------
+# pforstma  03/11/94  created
+#
+#************************************************************************
+#   NAME
+#   docExDbTest - test docExDbTest
+# 
+#   SYNOPSIS
+#   doExDbTest
+# 
+#   DESCRIPTION
+#
+#   FILES
+#
+#   docExDbTest.out           write
+#   docExDbTest.ref	       read 
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#
+#   BUGS     
+#------------------------------------------------------------------------
+#
+
+# delete previous test report
+rm -rf docDoExDb.out
+
+docExDb chip
+
+#
+# compare test report with tst reference
+#
+diff chip_db docExDbTest.ref
+if [ $? -eq 0 ]
+then echo "docDoExDbTest succeeded. "
+else echo "docDoExDbTest failed. "
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+
