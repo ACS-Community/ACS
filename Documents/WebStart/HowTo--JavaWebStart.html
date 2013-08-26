@@ -1,0 +1,289 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>How To - Java Web Start</title>
+</head>
+<body>
+<!-- =====================================================
+<table border="0" cellspacing="0" cellpadding="0" width="780"
+ class="MsoNormalTable" style="width: 585pt;">
+  <caption><br>
+  </caption><tbody>
+  </tbody> <tbody>
+    <tr style="">
+      <td valign="top" style="padding: 0.75pt;"> <span
+ style="font-size: 10pt;"><span style="text-decoration: none;"><a
+ href="http://www.eso.org/projects/alma/"><img src="alma_art_3.jpg"
+ alt="[ ALMA ]" border="0" id="_x0000_i1025" height="117" width="90"> </a></span><o:p></o:p></span>
+      </td>
+      <td style="padding: 0.75pt;"> <span style="font-size: 18pt;"><b>ALMA
+Common Software</b></span> <span style="font-size: 18pt;"><b>ACS 3.1
+documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p><o:p></o:p></span>
+      <u1:p></u1:p> </td>
+      <td valign="top" style="padding: 0.75pt;"> <span
+ style="font-size: 10pt;"><span style="text-decoration: none;"><a
+ href="http://www.eso.org/"><img src="eso-logo.gif" border="0"
+ id="_x0000_i1026" height="117" width="90"> </a></span><o:p></o:p></span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr size="1" width="100%" align="center">
+ ===================================================== -->
+<br>
+<h1>How To - Java Web Start for Alma</h1>
+<br>
+Java Web Start is a technology to deploy applications to end-users
+through a Web Browser Plug-in. By clicking a link the user can install
+and run applications on their local host.
+<a href="http://java.sun.com/products/javawebstart/">Java Web Start</a>
+is smart enough to download newer versions of an application from the
+server whenever
+they are available.
+The Acs team uses it to deploy a Java-only Acs and various Acs tools
+(see <a href="http://www.eso.org/projects/alma/AcsWebStart">AcsWebStart</a>).<br>
+<br>
+<hr style="width: 100%; height: 2px;"><br>
+<h2>I. Porting</h2>
+<span style="text-decoration: underline;">From Sun&#8217;s official FAQ:<br>
+<br>
+</span><span style="font-weight: bold;">Do I need to change my
+application to work with Java Web Start? </span><br>
+<br>
+If your application is written to the Java 2 platform, and is delivered
+as a set of JAR files<sup><span style="font-weight: bold;">1</span></sup>,
+there should be no need to revise your application. <br>
+Make sure that all your application resources (such as images and
+resource bundles, for example) are retrieved from a JAR file<sup><span
+ style="font-weight: bold;">2</span></sup>, since Java
+Web Start launches an application by invoking the <code>public static
+void main(String[] args)</code> method.&nbsp; <br>
+And if your application needs unrestricted access to the system, (for
+example, network or disk access), you will need to sign your code.<sup><span
+ style="font-weight: bold;">3</span></sup>
+<br>
+<br>
+<br>
+<ol>
+  <li>All required jars will need
+to be listed in a jnlp-file. See II below.</li>
+  <li>Put simple: Do not use java.io.File,
+instead use getClassLoader.getResource()<br>
+For a full-flegded solution, see the resource loading
+toolkit Rachel in the References section below</li>
+  <li>Explained in III below</li>
+</ol>
+<br>
+<hr style="width: 100%; height: 2px;"><br>
+<h2>II. Preparing a Jnlp file</h2>
+The jnlp-file tells the Web Start Plug-in, besides some descriptive
+info,
+what jars need to be loaded from the server<br>
+<br>
+<span style="text-decoration: underline;">Example: SuperApp.jnlp</span><br>
+<br>
+<samp>&lt;?xml version="1.0" encoding="utf-8"?&gt; <br>
+&lt;jnlp <br>
+&nbsp; spec="1.0+" <br>
+&nbsp; codebase="<span style="font-weight: bold;">http://www.example.com/path/to/superapp</span>"&gt;<big><sup
+ style="font-weight: bold;">1</sup></big><br>
+&nbsp; <br>
+&nbsp; &lt;information&gt; <br>
+&nbsp;&nbsp;&nbsp; &lt;title&gt;Shortdescription&lt;/title&gt; <br>
+&nbsp;&nbsp;&nbsp; &lt;vendor&gt;Us, the Alma Team&lt;/vendor&gt; <br>
+&nbsp;&nbsp;&nbsp; &lt;description&gt;Longdescription shown in Web
+Start Manager&lt;/description&gt; <br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">&lt;offline-allowed/&gt;</span></samp><sup
+ style="font-weight: bold;">2</sup><samp><br>
+&nbsp;&lt;/information&gt; <br>
+&nbsp; <br>
+&nbsp; &lt;security&gt; <br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">&lt;all-permissions/&gt;</span></samp><sup
+ style="font-weight: bold;">3</sup><br>
+<samp>&nbsp; &lt;/security&gt; <br>
+&nbsp; <br>
+&nbsp; &lt;resources&gt; <br>
+&nbsp;&nbsp;&nbsp; &lt;j2se version="1.4+"/&gt; <br>
+<br>
+&nbsp;&nbsp;&nbsp; &lt;jar href="lib/<span style="font-weight: bold;">myApplication.jar</span>"/&gt;</samp><sup
+ style="font-weight: bold;">4</sup><br>
+<samp>&nbsp;&nbsp;&nbsp; &lt;jar href="lib/someLibrary.jar"/&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp; &lt;property name="<span style="font-weight: bold;">SuperApp.isWebstarted</span>"
+value="true"/&gt;</samp><sup style="font-weight: bold;">5</sup><br>
+<samp><br>
+&nbsp;&nbsp;&nbsp; &lt;extension href="<span style="font-weight: bold;">./Libraries.jnlp</span>"&gt;</samp><sup
+ style="font-weight: bold;">6</sup><br>
+<samp>&nbsp;&nbsp;&nbsp; &nbsp;&lt;ext-download
+ext-part="Libraries"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/extension&gt;<br>
+<br>
+&nbsp; &lt;/resources&gt;<br>
+<br>
+&nbsp; &lt;application-desc
+main-class="com.example.SuperApplication"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;argument&gt; -doExample
+&lt;/argument&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;argument&gt; -verbose
+&lt;/argument&gt;<br>
+&nbsp; &lt;/application-desc&gt; <br>
+&lt;/jnlp&gt; <br>
+</samp><br>
+<br>
+The example is pretty straightforward, however, some points require
+attention:<br>
+<ol>
+  <li>The codebase must match the location of the jnlp-file itself (due
+to how Web Start works). If this jnlp-file cannot be found under
+    <code>www.example.com/path/to/superapp/SuperApp.jnlp</code>, it
+will not work.</li>
+  <li>If your app doesn't require a network connection to run, put in <code>&lt;offline-allowed/&gt;</code></li>
+  <li>If your app needs access to the filesystem or to servers other
+than the one it was loaded from, put in <code>&lt;all-permissions/&gt;<big><big><sup><small><span
+ style="font-weight: bold;">**</span></small></sup></big></big></code></li>
+  <li>The jar <code>myApplication.jar</code> that contains the
+main-class <code>com.example.SuperApplication</code> has to be first
+in the sequence of <code>&lt;jar&gt;</code>s.</li>
+  <li>You can define your own system property values as you like. Most
+java.* system properties are write-protected however for security
+reasons.<br>
+  </li>
+  <li>If you have many libraries and if you like it modular, use
+sub-jnlp-files and include them as <code>&lt;extension&gt;</code>s<br>
+  </li>
+</ol>
+<br>
+<span style="font-weight: bold;">** </span>In that case you'll also
+need to sign the jars. See III below.<br>
+<br>
+<hr style="width: 100%; height: 2px;"><br>
+<h2>III. Preparing the jars</h2>
+If your app is considered security-critical by Java Web Start, you are
+required to sign your application jar files.<br>
+<span style="text-decoration: underline;"><br>
+</span>Things to consider:<br>
+<ol>
+  <li>All jars specified in the same jnlp-file must use the same
+security signature<sup><big><small><span style="font-weight: bold;">1</span></small></big></sup></li>
+  <li>Each of the jars must have one and only one signature</li>
+</ol>
+<br>
+<span style="text-decoration: underline;">Viewing existing signatures</span><br>
+<br>
+To get information about the security signatures of one or more jars,
+use the command <tt>acsJarSignInfo</tt> coming with ACS.<br>
+<samp><br>
+&gt; acsJarSignInfo<br>
+Scanning all jars in this directory tree for signatures...<br>
+1 (ESO) in ./acscomponent.jar<br>
+1 (ESO) in ./acsjlog.jar<br>
+1 (ESO) in ./archive_database.jar<br>
+1 (ESO) in ./archive.jar<br>
+1 (ESO) in ./archive_xmlstore_if.jar<br>
+1 (ESO) in ./cdbDAL.jar<br>
+</samp><br>
+Each jarfile in this directory has 1 signature and the names of the
+used certificates (ESO) are all the same - looks healthy.<br>
+<br>
+<span style="text-decoration: underline;">Signing</span><br>
+<br>
+To sign jars yourself, you first need a keystore. You can create one
+using the Java keytool in interactive mode:<br>
+<code><br>
+&gt; keytool&nbsp; -genkey&nbsp; -keystore MyKeyStore&nbsp; -alias
+SuperAppDeveloper</code><br>
+<br>
+Second, you sign each jar using the Java jarsigner:<br>
+<code><br>
+&gt; jarsigner&nbsp; -keystore MyKeyStore&nbsp; -storepass
+MySecretPassword&nbsp;&nbsp; myApplication.jar &nbsp; SuperAppDeveloper</code><br>
+<br>
+<br>
+<ol>
+  <li>If this imposes a problem,
+think of modularizing your jnlp files into sub-jnlp-files using the <code>&lt;extension&gt;</code>
+tag.</li>
+</ol>
+<br>
+<hr style="width: 100%; height: 2px;"><br>
+<h2>IV. Create a nice Html page</h2>
+... with a link to SuperApp.jnlp<br>
+<br>
+<hr style="width: 100%; height: 2px;"><br>
+<br>
+<h2>V. Troubleshooting</h2>
+Make your Java Web Start Manager log its output to a file. This will be
+valuable info for troubleshooting.<br>
+The following jnlp-file will launch the Manager so you can edit its
+configuration:<br>
+<samp><br>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;<br>
+&lt;player/&gt;<br>
+</samp><br>
+<br>
+<hr style="width: 100%; height: 2px;"><br>
+<br>
+<h2>References</h2>
+Java Web Start Home :&nbsp; <a
+ href="http://java.sun.com/products/javawebstart">http://java.sun.com/products/javawebstart</a><br>
+Official FAQ :&nbsp; <a
+ href="http://java.sun.com/products/javawebstart/faq.html">http://java.sun.com/products/javawebstart/faq.html</a><br>
+Unofficial FAQ :&nbsp; <a href="http://lopica.sourceforge.net/faq.html">http://lopica.sourceforge.net/faq.html</a><br>
+Resource Loading Toolkit :&nbsp; <a
+ href="http://rachel.sourceforge.net">http://rachel.sourceforge.net</a><br>
+AcsWebStart :&nbsp; <a
+ href="http://www.eso.org/projects/alma/AcsWebStart">http://www.eso.org/projects/alma/AcsWebStart</a><br>
+<br>
+<br>
+<hr width="100%" size="2"><br>
+<table cellpadding="2" cellspacing="0" border="1" width="50%">
+  <tbody>
+    <tr>
+      <td valign="top" align="center"><code>Version</code><br>
+      </td>
+      <td valign="top" align="center"><code>Author</code><code> </code><br>
+      </td>
+      <td valign="top" align="center"><code>Changes</code><br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><br>
+      </td>
+      <td valign="top"><br>
+      </td>
+      <td valign="top"><br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><br>
+      </td>
+      <td valign="top"><br>
+      </td>
+      <td valign="top"><br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">2009-11-27<br>
+      </td>
+      <td valign="top">Marcus Schilling<br>
+      </td>
+      <td valign="top">Some info was outdated<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">2004-08-05<br>
+      </td>
+      <td valign="top">Marcus Schilling<br>
+      </td>
+      <td valign="top">Created<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>&nbsp;</p>
+<br>
+</body>
+</html>
