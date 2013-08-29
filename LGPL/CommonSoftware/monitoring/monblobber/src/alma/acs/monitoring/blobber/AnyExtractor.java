@@ -29,8 +29,6 @@ import org.omg.CORBA.Any;
 import org.omg.CORBA.TypeCodePackage.BadKind;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx;
-import alma.TMCDB.anyBlobData;
-import alma.TMCDB.anyBlobDataSeqHelper;
 import alma.TMCDB.booleanBlobData;
 import alma.TMCDB.booleanBlobDataSeqHelper;
 import alma.TMCDB.booleanSeqBlobData;
@@ -517,20 +515,6 @@ class AnyExtractor
 				for (enumBlobData blobData : blobDataArray) {
 					MonitorPointValue mpv = new MonitorPointValue(blobData.time);
 					mpv.addValue(blobData.value); // Integer
-					mpTs.addMonitorPointValue(mpv);
-				}
-			}
-	
-			// anyBlobDataSeq
-			// TODO: Remove this from monicd. It does not make sense and does not seem to be used in the collector. 
-			//       The old implementation called a toString on the Corba Any inside populateContainerObject 
-			else if (inSequence.type().equal(anyBlobDataSeqHelper.type())) {
-				anyBlobData[] blobDataArray = anyBlobDataSeqHelper.extract(inSequence);
-				MonitorPointTimeSeries mpTs = new MonitorPointTimeSeries(0, anyBlobDataSeqHelper.type().id());
-				outList.add(mpTs);
-				for (anyBlobData blobData : blobDataArray) {
-					MonitorPointValue mpv = new MonitorPointValue(blobData.time);
-					mpv.addValue(blobData.value); // Any 
 					mpTs.addMonitorPointValue(mpv);
 				}
 			}

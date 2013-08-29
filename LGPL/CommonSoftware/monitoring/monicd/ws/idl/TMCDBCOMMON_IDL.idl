@@ -212,14 +212,6 @@ typedef  sequence<stringSeqBlobData> stringSeqBlobDataSeq;
   
  /**************************************************************************/
   
-  struct anyBlobData
-  {
-      ACS::Time time;
-      any value;
-  };
-
-typedef  sequence<anyBlobData> anyBlobDataSeq;
-
 
 typedef string serialNumberType;
 

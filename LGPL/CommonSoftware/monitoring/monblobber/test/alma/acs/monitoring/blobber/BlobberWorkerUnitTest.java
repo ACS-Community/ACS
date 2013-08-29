@@ -5,8 +5,6 @@ import org.omg.CORBA.Any;
 import alma.MonitorArchiver.CollectorListStatus;
 import alma.TMCDB.MonitorBlob;
 import alma.TMCDB.MonitorDataBlock;
-import alma.TMCDB.anyBlobData;
-import alma.TMCDB.anyBlobDataSeqHelper;
 import alma.TMCDB.doubleBlobData;
 import alma.TMCDB.doubleBlobDataSeqHelper;
 import alma.TMCDB.doubleSeqBlobData;
@@ -671,72 +669,6 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
                 + (BASE_TIME + 4) + "|5|" + (BASE_TIME + 5) + "|6|"
                 + (BASE_TIME + 6) + "|7|" + (BASE_TIME + 7) + "|8|"
                 + (BASE_TIME + 8) + "|9|" + (BASE_TIME + 9) + "|10\n";
-        checkData(data, clob, 10, componentName, propertyName, serialNumber,
-                startTime, stopTime);
-        checkStatistics(data);
-    }
-
-    public void testStandardAny() throws Exception {
-        blobber.setCollectorIntervalSeconds(1); // was 0, which is now illegal
-        getTestWorker().setCanHandle(true);
-        // Collector "TestCollector" is just a dummy to trick the worker to believe that 
-        // there is a collector registered and start operating. "TestCollector" is not used at all.
-        // The TestBlobberWorker creates its own single collector from which the blobber worker will get data. 
-        getTestWorker().addCollector("TestCollector");
-
-        String componentName = "CONTROL/DV01/PSA";
-        String serialNumber = "3456328928847";
-        String propertyName = "VOLTAGE_MID_1";
-
-        Any anyUp = create_any();
-        Any any1 = create_any();
-        any1.insert_boolean(true);
-        Any any2 = create_any();
-        any2.insert_char('A');
-        Any any3 = create_any();
-        any3.insert_double(1.0);
-        Any any4 = create_any();
-        any4.insert_float(2.0F);
-        Any any5 = create_any();
-        any5.insert_long(123);
-        Any any6 = create_any();
-        any6.insert_longlong(678);
-        Any any7 = create_any();
-        any7.insert_octet((byte) 11);
-        Any any8 = create_any();
-        any8.insert_short((short) 34);
-        Any any9 = create_any();
-        any9.insert_string("Q");
-        Any any10 = create_any();
-        Any[] dataArrayUp = { any1, any2, any3, any4, any5, any6, any7, any8,
-                any9, any10 };
-        anyBlobData[] dataUp = new anyBlobData[dataArrayUp.length];
-        int index = 0;
-        for (Any value : dataArrayUp) {
-            dataUp[index] = new anyBlobData(BASE_TIME + index, value);
-            index++;
-        }
-        anyBlobDataSeqHelper.insert(anyUp, dataUp);
-        MonitorBlob blobUp = new MonitorBlob(false, (short) 0, null, "wrong:"
-                + propertyName, anyUp);
-
-        MonitorBlob[] blobs = new MonitorBlob[1];
-        blobs[0] = blobUp;
-
-        long startTime = BASE_TIME + 100;
-        long stopTime = BASE_TIME + 101;
-        MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime,
-                componentName, serialNumber, blobs);
-        MonitorDataBlock[] blocks = new MonitorDataBlock[1];
-        blocks[0] = block;
-        getTestWorker().getCollector().setMonitorData(blocks);
-
-        ComponentData data = getTestWorker().fetchData();
-        String clob = BASE_TIME + "|true|" + (BASE_TIME + 1) + "|A|"
-                + (BASE_TIME + 2) + "|1.0|" + (BASE_TIME + 3) + "|2.0|"
-                + (BASE_TIME + 4) + "|123|" + (BASE_TIME + 5) + "|678|"
-                + (BASE_TIME + 6) + "|11|" + (BASE_TIME + 7) + "|34|"
-                + (BASE_TIME + 8) + "|Q|" + (BASE_TIME + 9) + "|null\n";
         checkData(data, clob, 10, componentName, propertyName, serialNumber,
                 startTime, stopTime);
         checkStatistics(data);
