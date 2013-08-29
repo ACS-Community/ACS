@@ -25,7 +25,7 @@ public class TestBlobberWorker extends BlobberWorker {
 	 * Allows a unit test to read all property data via (@link #fetchData()} 
 	 * before the next property data can be inserted.
 	 */
-	private final DataLock<ComponentData> myBlobDataLock;
+	private final DataLock<BlobData> myBlobDataLock;
 
 
 	/**
@@ -34,7 +34,7 @@ public class TestBlobberWorker extends BlobberWorker {
 	 * @param myBlobDataLock  see {@link #myBlobDataLock}.
 	 * @throws AcsJCouldntCreateObjectEx
 	 */
-	public TestBlobberWorker(ContainerServices inContainerServices, BlobberPlugin blobberPlugin, DataLock<ComponentData> myBlobDataLock) 
+	public TestBlobberWorker(ContainerServices inContainerServices, BlobberPlugin blobberPlugin, DataLock<BlobData> myBlobDataLock) 
 			throws AcsJCouldntCreateObjectEx {
 		super(inContainerServices, blobberPlugin);
 		this.myBlobDataLock = myBlobDataLock;

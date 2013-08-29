@@ -21,7 +21,7 @@
 package alma.acs.monitoring.blobber;
 
 
-import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -29,7 +29,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -40,6 +39,7 @@ import org.omg.CORBA.Any;
 import alma.TMCDB.MonitorBlob;
 import alma.TMCDB.MonitorDataBlock;
 import alma.TMCDB.booleanSeqBlobData;
+import alma.TMCDB.booleanSeqBlobDataSeqHelper;
 import alma.TMCDB.doubleBlobData;
 import alma.TMCDB.doubleBlobDataSeqHelper;
 import alma.TMCDB.doubleSeqBlobData;
@@ -53,7 +53,6 @@ import alma.TMCDB.longLongBlobDataSeqHelper;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.testsupport.JUnit4StandaloneTestBase;
 import alma.acs.monitoring.DAO.ComponentData;
-import alma.acs.monitoring.blobber.BlobberWorker.AnyDataContainer;
 import alma.acs.monitoring.blobber.TestBlobber.TestMonitorPointExpert;
 
 /**
@@ -75,6 +74,8 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 	
 	private AnyExtractor anyExtractor;
 	
+	private Clobber clobber;
+	
 	private TestMonitorPointExpert monitorPointExpert;
 	
 	/**
@@ -93,6 +94,7 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 		monitorPointExpert = new TestMonitorPointExpert();
 		
 		anyExtractor = new AnyExtractor(logger, monitorPointExpert);
+		clobber = new Clobber(logger);
 	}
 
 	@After
@@ -114,14 +116,25 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 		doubleBlobData[] doubleBlobDataArray = createDoubleBlobData(doubleDataArray);
 		doubleBlobDataSeqHelper.insert(any, doubleBlobDataArray);
 
-		List<AnyDataContainer> extractedData = anyExtractor.extractData(any, propertyName);
+		List<MonitorPointTimeSeries> extractedData = anyExtractor.extractData(any, propertyName);
 		assertThat(extractedData, hasSize(1));
 		
-		AnyDataContainer blobContainer = extractedData.get(0);
-		
-		String clobActual = blobContainer.clobBuilder.toString();
+		// Check the raw data
+		MonitorPointTimeSeries mpTs = extractedData.get(0);
+		assertThat(mpTs.getCorbaTypeId(), equalTo("IDL:alma/TMCDB/doubleBlobDataSeq:1.0"));
+		assertThat(mpTs.getMonitorPointIndex(), equalTo(0));
+		List<MonitorPointValue> dataList = mpTs.getDataList();
+		assertThat(dataList, hasSize(doubleDataArray.length));
+		for (int i = 0; i < doubleBlobDataArray.length; i++) {
+			MonitorPointValue mpVal = dataList.get(i);
+			assertThat(mpVal.getTime(), equalTo(BASE_TIME + i));
+			assertThat(mpVal.getData(), contains((Object) new Double(doubleDataArray[i])));
+		}
+
+		// Generate and check the CLOB data
+		String clobActual = clobber.generateClob(mpTs);
 		String clobExpected = 
-				BASE_TIME + "|1.0|" + 
+				 BASE_TIME      + "|1.0|" + 
 				(BASE_TIME + 1) + "|2.0|" + 
 				(BASE_TIME + 2) + "|3.0|" + 
 				(BASE_TIME + 3) + "|4.0|" + 
@@ -131,26 +144,16 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 				(BASE_TIME + 7) + "|8.0|" + 
 				(BASE_TIME + 8) + "|9.0|" + 
 				(BASE_TIME + 9) + "|10.0\n";
-		
 		assertThat(clobActual, equalTo(clobExpected));
 
-		assertThat(blobContainer.dataList.size(), equalTo(doubleDataArray.length));
-		for (int i = 0; i < doubleDataArray.length; i++) {
-			Object dataObj = blobContainer.dataList.get(i);
-			assertThat(dataObj, instanceOf(Double.class));
-			assertThat((Double)dataObj, equalTo(new Double(doubleDataArray[i])));
-		}
-
-		assertThat(blobContainer.index, equalTo(0));
-		
-		logger.info("Validated doubleBlobDataSeq clob, dataList, and index.");
+		logger.info("Validated doubleBlobDataSeq.");
 	}
 
 	/**
-	 * Test of extractData method for 'doubleSeqBlobDataSeq' data for a "unique" (multi-valued) MP.
+	 * Test of extractData method for 'doubleSeqBlobDataSeq' data for a multi-valued MP.
 	 */
 	@Test
-	public void testExtractData_doubleSeqBlobData_monitorPointUnique() throws Exception {
+	public void testExtractData_doubleSeqBlobDataSeq_multivalued() throws Exception {
 		String propertyName = "MODULE_MODE_STATUS";
 
 		Any any = create_any();
@@ -164,34 +167,35 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 		doubleSeqBlobData[] doubleSeqBlobDataArray = createDoubleSeqBlobData(doubleDataMatrix);
 		doubleSeqBlobDataSeqHelper.insert(any, doubleSeqBlobDataArray);
 		
-		monitorPointExpert.setUniqueness(propertyName, true);
+		monitorPointExpert.setMultivalued(propertyName, true);
 		
 		// Test the AnyExtractor stand-alone
-		List<AnyDataContainer> extractedData = anyExtractor.extractData(any, propertyName);
-		assertThat(extractedData, hasSize(1));
-		AnyDataContainer blobContainer = extractedData.get(0);
 		
-		String clobActual = blobContainer.clobBuilder.toString();
-		String clobExpected = 
-				 BASE_TIME      + "|1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0|" +
-				(BASE_TIME + 1) + "|11.1 12.2 13.3 14.4 15.5 16.6 17.7 18.8 19.9 20.0|" +
-				(BASE_TIME + 2) + "|21.0 22.0 23.0 24.0 25.0 26.0 27.0 28.0 29.0 30.0\n";
-		assertThat(clobActual, equalTo(clobExpected));
-
-		assertThat(blobContainer.dataList.size(), equalTo(doubleDataMatrix.length));
+		List<MonitorPointTimeSeries> extractedData = anyExtractor.extractData(any, propertyName);
+		assertThat("No demultiplexing into several MonitorPointTimeSeries instances expected", extractedData, hasSize(1));
+		
+		// Check the raw data
+		MonitorPointTimeSeries mpTs = extractedData.get(0);
+		assertThat(mpTs.getCorbaTypeId(), equalTo("IDL:alma/TMCDB/doubleSeqBlobDataSeq:1.0"));
+		assertThat(mpTs.getMonitorPointIndex(), equalTo(0));
+		List<MonitorPointValue> dataList = mpTs.getDataList();
+		assertThat(dataList, hasSize(doubleDataMatrix.length));
 		for (int i = 0; i < doubleDataMatrix.length; i++) {
-			Object dataObj = blobContainer.dataList.get(i);
-			assertThat(dataObj, instanceOf(String.class));
-			String multiValuesString = (String) dataObj;
-			String[] values = multiValuesString.split(" ");
-			assertThat(values, arrayWithSize(doubleData_time1.length));
+			MonitorPointValue mpVal = dataList.get(i);
+			assertThat(mpVal.getTime(), equalTo(BASE_TIME + i));
+			List<Object> data = mpVal.getData();
+			assertThat(data, hasSize(doubleData_time1.length));
+			for (int j = 0; j < doubleData_time1.length; j++) {
+				Object dataPart = data.get(j);
+				assertThat(dataPart, instanceOf(Double.class));
+				double dataPartExpected = doubleDataMatrix[i][j];
+				assertThat(((Double)dataPart).doubleValue(), equalTo(dataPartExpected));
+			}
 		}
-		
-		assertThat(blobContainer.index, equalTo(0));
-
-		logger.info("Validated doubleSeqBlobDataSeq_unique clob, dataList, and index.");
+		logger.info("Validated doubleSeqBlobDataSeq interpreted as coming from a multivalued MP.");
 
 		// As a variation we test also "BlobberWorker.createBlobData" which in real life surrounds the AnyExtractor call 
+		
 		String componentName = "CONTROL/DV01/PSA";
 		String serialNumber = "3456328928847";
 		MonitorBlob blob = new MonitorBlob(false, (short) 0, new String[]{}, "wrong:" + propertyName, any);
@@ -199,17 +203,21 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 		long startTime = BASE_TIME + 100;
 		long stopTime = BASE_TIME + 101;
 		MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
-		BlobData blobData = BlobberWorker.createBlobData(block, blob, extractedData.get(0), propertyName, serialNumber);
+		BlobData blobData = BlobberWorker.createBlobData(block, blob, extractedData.get(0), propertyName, serialNumber, logger);
+		String clobExpected = 
+				 BASE_TIME      + "|1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0|" +
+				(BASE_TIME + 1) + "|11.1 12.2 13.3 14.4 15.5 16.6 17.7 18.8 19.9 20.0|" +
+				(BASE_TIME + 2) + "|21.0 22.0 23.0 24.0 25.0 26.0 27.0 28.0 29.0 30.0\n";
 		checkComponentData(blobData, clobExpected, 3, componentName, propertyName, serialNumber, startTime, stopTime, 0, null);
 	}
 
 	
 	/**
-	 * Test of extractData method for 'doubleSeqBlobDataSeq' data for a "not unique" 
-	 * sequence property that expands into multiple single-valued MPs.
+	 * Test of extractData method for 'doubleSeqBlobDataSeq' data for a sequence property 
+	 * that expands into multiple single-valued MPs.
 	 */
 	@Test
-	public void testExtractData_doubleSeqBlobData_monitorPointNotUnique() throws Exception {
+	public void testExtractData_doubleSeqBlobDataSeq_singlevalued() throws Exception {
 		String propertyName = "SYSTEM_STATUS";
 
 		Any any = create_any();
@@ -220,16 +228,44 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 				doubleData_time1, 
 				doubleData_time2, 
 				doubleData_time3 };
-		
 		doubleSeqBlobData[] doubleSeqBlobDataArray = createDoubleSeqBlobData(doubleDataMatrix);
 		doubleSeqBlobDataSeqHelper.insert(any, doubleSeqBlobDataArray);
 		
-		monitorPointExpert.setUniqueness(propertyName, false);
+		monitorPointExpert.setMultivalued(propertyName, false);
 		
 		// Test the AnyExtractor stand-alone
-		List<AnyDataContainer> extractedData = anyExtractor.extractData(any, propertyName);
-		assertThat(extractedData, hasSize(doubleData_time1.length));
 		
+		List<MonitorPointTimeSeries> extractedData = anyExtractor.extractData(any, propertyName);
+		assertThat("Demultiplexing into several MonitorPointTimeSeries instances expected", extractedData, hasSize(doubleData_time1.length));
+		
+		for (int index = 0; index < extractedData.size(); index++) {
+			// check one of the expanded logical properties at a time
+			MonitorPointTimeSeries mpTs = extractedData.get(index);
+			assertThat(mpTs.getCorbaTypeId(), equalTo("IDL:alma/TMCDB/doubleBlobDataSeq:1.0"));
+			assertThat(mpTs.getMonitorPointIndex(), equalTo(index));
+			List<MonitorPointValue> dataList = mpTs.getDataList();
+			assertThat(dataList, hasSize(doubleDataMatrix.length));
+
+			for (int i = 0; i < doubleDataMatrix.length; i++) {
+				MonitorPointValue mpVal = dataList.get(i);
+				assertThat(mpVal.getTime(), equalTo(BASE_TIME + i));
+				// This should be the transpose of matrix doubleDataMatrix
+				assertThat(mpVal.getData(), contains((Object) new Double(doubleDataMatrix[i][index])));
+			}
+		}
+		
+		logger.info("Validated doubleSeqBlobDataSeq interpreted as coming from a multiple single-valued MPs.");
+
+		// As a variation we test also "BlobberWorker.createBlobData" which in real life surrounds the AnyExtractor call.
+		// It includes generation of statistics and CLOB data.
+		
+		String componentName = "CONTROL/DV01/PSA";
+		String serialNumber = "3456328928847";
+		MonitorBlob blob = new MonitorBlob(false, (short) 0, new String[]{}, "wrong:" + propertyName, any);
+		MonitorBlob[] blobs = new MonitorBlob[] {blob};
+		long startTime = BASE_TIME + 100;
+		long stopTime = BASE_TIME + 101;
+		MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
 		String[] clobsExpected = new String[] { 
 				BASE_TIME + "|1.0|"  + (BASE_TIME+1) + "|11.1|" + (BASE_TIME+2) + "|21.0\n",
 				BASE_TIME + "|2.0|"  + (BASE_TIME+1) + "|12.2|" + (BASE_TIME+2) + "|22.0\n", 
@@ -241,35 +277,6 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 				BASE_TIME + "|8.0|"  + (BASE_TIME+1) + "|18.8|" + (BASE_TIME+2) + "|28.0\n", 
 				BASE_TIME + "|9.0|"  + (BASE_TIME+1) + "|19.9|" + (BASE_TIME+2) + "|29.0\n", 
 				BASE_TIME + "|10.0|" + (BASE_TIME+1) + "|20.0|" + (BASE_TIME+2) + "|30.0\n" };
-
-		for (int i = 0; i < extractedData.size(); i++) {
-			
-			// check one of the expanded logical properties at a time
-			AnyDataContainer blobContainer = extractedData.get(i);
-			String clobActual = blobContainer.clobBuilder.toString();
-			String clobExpected = clobsExpected[i]; 
-			assertThat(clobActual, equalTo(clobExpected));
-
-			for (int j = 0; j < doubleDataMatrix.length; j++) {
-				Object dataObj = blobContainer.dataList.get(j);
-				assertThat(dataObj, instanceOf(Double.class));
-				// This should be the transpose of matrix doubleDataMatrix
-				assertThat((Double)dataObj, equalTo(new Double(doubleDataMatrix[j][i])));
-			}
-			
-			assertThat(blobContainer.index, equalTo(i));
-		}
-		
-		logger.info("Validated doubleSeqBlobDataSeq_notUnique clob, dataList, and index.");
-
-		// As a variation we test also "BlobberWorker.createBlobData" which in real life surrounds the AnyExtractor call 
-		String componentName = "CONTROL/DV01/PSA";
-		String serialNumber = "3456328928847";
-		MonitorBlob blob = new MonitorBlob(false, (short) 0, new String[]{}, "wrong:" + propertyName, any);
-		MonitorBlob[] blobs = new MonitorBlob[] {blob};
-		long startTime = BASE_TIME + 100;
-		long stopTime = BASE_TIME + 101;
-		MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
 		String[] statisticsExpected = {
 				"min: 1.0 max: 21.0 mean: 11.033333333333333 stdDev: 10.000166665277801\n",
 				"min: 2.0 max: 22.0 mean: 12.066666666666666 stdDev: 10.000666644445925\n",
@@ -283,7 +290,7 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 				"min: 10.0 max: 30.0 mean: 20.0 stdDev: 10.0\n"
 		};
 		for (int i = 0; i < extractedData.size(); i++) {
-			BlobData blobData = BlobberWorker.createBlobData(block, blob, extractedData.get(i), propertyName, serialNumber);
+			BlobData blobData = BlobberWorker.createBlobData(block, blob, extractedData.get(i), propertyName, serialNumber, logger);
 			checkComponentData(blobData, clobsExpected[i], 3, componentName, propertyName, serialNumber, startTime, stopTime, i, statisticsExpected[i]);
 		}
 	}
@@ -302,12 +309,23 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 		floatBlobData[] floatBlobDataArray = createFloatBlobData(floatDataArray);
 		floatBlobDataSeqHelper.insert(any, floatBlobDataArray);
 		
-		List<AnyDataContainer> extractedData = anyExtractor.extractData(any, propertyName);
+		List<MonitorPointTimeSeries> extractedData = anyExtractor.extractData(any, propertyName);
 		assertThat(extractedData, hasSize(1));
 
-		AnyDataContainer blobContainer = extractedData.get(0);
-		
-		String clobActual = blobContainer.clobBuilder.toString();
+		// Check the raw data
+		MonitorPointTimeSeries mpTs = extractedData.get(0);
+		assertThat(mpTs.getCorbaTypeId(), equalTo("IDL:alma/TMCDB/floatBlobDataSeq:1.0"));
+		assertThat(mpTs.getMonitorPointIndex(), equalTo(0));
+		List<MonitorPointValue> dataList = mpTs.getDataList();
+		assertThat(dataList, hasSize(floatDataArray.length));
+		for (int i = 0; i < floatBlobDataArray.length; i++) {
+			MonitorPointValue mpVal = dataList.get(i);
+			assertThat(mpVal.getTime(), equalTo(BASE_TIME + i));
+			assertThat(mpVal.getData(), contains((Object) new Float(floatDataArray[i])));
+		}
+
+		// Generate and check the CLOB data
+		String clobActual = clobber.generateClob(mpTs);
 		String clobExpected = 
 				 BASE_TIME    + "|1.0|" + 
 				(BASE_TIME+1) + "|2.1|" + 
@@ -319,27 +337,17 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 				(BASE_TIME+7) + "|8.0|" + 
 				(BASE_TIME+8) + "|9.0|" + 
 				(BASE_TIME+9) + "|10.0\n";
-		
 		assertThat(clobActual, equalTo(clobExpected));
 
-		assertThat(blobContainer.dataList.size(), equalTo(floatDataArray.length));
-		for (int i = 0; i < floatDataArray.length; i++) {
-			Object dataObj = blobContainer.dataList.get(i);
-			assertThat(dataObj, instanceOf(Float.class));
-			assertThat((Float)dataObj, equalTo(new Float(floatDataArray[i])));
-		}
-
-		assertThat(blobContainer.index, equalTo(0));
-		
-		logger.info("Validated floatBlobDataSeq clob, dataList, and index.");
+		logger.info("Validated floatBlobDataSeq.");
 	}
 	
 	
 	/**
-	 * Test of extractData method for 'floatSeqBlobDataSeq' data for a "unique" (multi-valued) MP.
+	 * Test of extractData method for 'floatSeqBlobDataSeq' data for a multi-valued MP.
 	 */
 	@Test
-	public void testExtractData_floatSeqBlobDataSeq_monitorPointUnique() throws Exception {
+	public void testExtractData_floatSeqBlobDataSeq_multivalued() throws Exception {
 		String propertyName = "MODULE_MODE_STATUS";
 
 		Any any = create_any();
@@ -353,32 +361,48 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 		floatSeqBlobData[] floatSeqBlobDataArray = createFloatSeqBlobData(floatDataMatrix);
 		floatSeqBlobDataSeqHelper.insert(any, floatSeqBlobDataArray);
 		
-		monitorPointExpert.setUniqueness(propertyName, true);
+		monitorPointExpert.setMultivalued(propertyName, true);
 		
 		// Test the AnyExtractor stand-alone
-		List<AnyDataContainer> extractedData = anyExtractor.extractData(any, propertyName);
-		assertThat(extractedData, hasSize(1));
-		AnyDataContainer blobContainer = extractedData.get(0);
 		
-		String clobActual = blobContainer.clobBuilder.toString();
+		List<MonitorPointTimeSeries> extractedData = anyExtractor.extractData(any, propertyName);
+		assertThat("No demultiplexing into several MonitorPointTimeSeries instances expected", extractedData, hasSize(1));
+		
+		// Check the raw data
+		MonitorPointTimeSeries mpTs = extractedData.get(0);
+		assertThat(mpTs.getCorbaTypeId(), equalTo("IDL:alma/TMCDB/floatSeqBlobDataSeq:1.0"));
+		assertThat(mpTs.getMonitorPointIndex(), equalTo(0));
+		List<MonitorPointValue> dataList = mpTs.getDataList();
+		assertThat(dataList, hasSize(floatDataMatrix.length));
+		for (int i = 0; i < floatDataMatrix.length; i++) {
+			MonitorPointValue mpVal = dataList.get(i);
+			assertThat(mpVal.getTime(), equalTo(BASE_TIME + i));
+			List<Object> data = mpVal.getData();
+			assertThat(data, hasSize(floatData_time1.length));
+			for (int j = 0; j < floatData_time1.length; j++) {
+				Object dataPart = data.get(j);
+				assertThat(dataPart, instanceOf(Float.class));
+				float dataPartExpected = floatDataMatrix[i][j];
+				assertThat(((Float)dataPart).floatValue(), equalTo(dataPartExpected));
+			}
+		}
+		logger.info("Validated floatSeqBlobDataSeq interpreted as coming from a multivalued MP.");
+		
+		// As a variation we test also "BlobberWorker.createBlobData" which in real life surrounds the AnyExtractor call 
+		
+		String componentName = "CONTROL/DV01/PSA";
+		String serialNumber = "3456328928847";
+		MonitorBlob blob = new MonitorBlob(false, (short) 0, new String[]{}, "wrong:" + propertyName, any);
+		MonitorBlob[] blobs = new MonitorBlob[] {blob};
+		long startTime = BASE_TIME + 100;
+		long stopTime = BASE_TIME + 101;
+		MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
+		BlobData blobData = BlobberWorker.createBlobData(block, blob, extractedData.get(0), propertyName, serialNumber, logger);
 		String clobExpected = 
 				 BASE_TIME      + "|1.111111 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0|" +
 				(BASE_TIME + 1) + "|11.0 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19.0 20.0|" +
 				(BASE_TIME + 2) + "|21.0 22.0 23.0 24.0 25.0 26.0 27.0 28.0 29.0 30.0\n";
-		assertThat(clobActual, equalTo(clobExpected));
-
-		assertThat(blobContainer.dataList.size(), equalTo(floatDataMatrix.length));
-		for (int i = 0; i < floatDataMatrix.length; i++) {
-			Object dataObj = blobContainer.dataList.get(i);
-			assertThat(dataObj, instanceOf(String.class));
-			String multiValuesString = (String) dataObj;
-			String[] values = multiValuesString.split(" ");
-			assertThat(values, arrayWithSize(floatData_time1.length));
-		}
-		
-		assertThat(blobContainer.index, equalTo(0));
-
-		logger.info("Validated floatSeqBlobDataSeq_unique clob, dataList, and index.");
+		checkComponentData(blobData, clobExpected, 3, componentName, propertyName, serialNumber, startTime, stopTime, 0, null);
 	}
 
 
@@ -387,19 +411,43 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 	 */
 	@Test
 	public void testExtractData_longLongBlobDataSeq() throws Exception {
+		
 		String propertyName = "VOLTAGE_MID_1";
 
 		Any any = create_any();
-		long[] longDataArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0x7f0fffffffffffffL };
-		longLongBlobData[] longLongBlobDataArray = createLongLongBlobData(longDataArray);
+		// We try out a rather large outlyer value. Note that for even larger numbers
+		// such as 0x7f0fffffffffffffL, the double-based statistics yield a max value wrong by +-1,
+		// which is probably acceptable, but we avoid it here in the test and use
+		// only a number of the order of a quadrillion.
+		long[] longLongDataArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0x000fffffffffffffL};
+		longLongBlobData[] longLongBlobDataArray = createLongLongBlobData(longLongDataArray);
 		longLongBlobDataSeqHelper.insert(any, longLongBlobDataArray);
 		
-		List<AnyDataContainer> extractedData = anyExtractor.extractData(any, propertyName);
+		List<MonitorPointTimeSeries> extractedData = anyExtractor.extractData(any, propertyName);
 		assertThat(extractedData, hasSize(1));
-		
-		AnyDataContainer blobContainer = extractedData.get(0);
-		
-		String clobActual = blobContainer.clobBuilder.toString();
+
+		// Check the raw data
+		MonitorPointTimeSeries mpTs = extractedData.get(0);
+		assertThat(mpTs.getCorbaTypeId(), equalTo("IDL:alma/TMCDB/longLongBlobDataSeq:1.0"));
+		assertThat(mpTs.getMonitorPointIndex(), equalTo(0));
+		List<MonitorPointValue> dataList = mpTs.getDataList();
+		assertThat(dataList, hasSize(longLongBlobDataArray.length));
+		for (int i = 0; i < longLongBlobDataArray.length; i++) {
+			MonitorPointValue mpVal = dataList.get(i);
+			assertThat(mpVal.getTime(), equalTo(BASE_TIME + i));
+			assertThat(mpVal.getData(), contains((Object) new Long(longLongDataArray[i])));
+		}
+		logger.info("Validated longLongBlobDataSeq.");
+
+		// As a variation we test also "BlobberWorker.createBlobData" which in real life surrounds the AnyExtractor call 
+		String componentName = "CONTROL/DV01/PSA";
+		String serialNumber = "3456328928847";
+		MonitorBlob blob = new MonitorBlob(false, (short) 0, new String[]{}, "wrong:" + propertyName, any);
+		MonitorBlob[] blobs = new MonitorBlob[] {blob};
+		long startTime = BASE_TIME + 100;
+		long stopTime = BASE_TIME + 101;
+		MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
+		BlobData blobData = BlobberWorker.createBlobData(block, blob, extractedData.get(0), propertyName, serialNumber, logger);
 		String clobExpected = 
 				 BASE_TIME    + "|1|" + 
 				(BASE_TIME+1) + "|2|" + 
@@ -410,22 +458,57 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 				(BASE_TIME+6) + "|7|" + 
 				(BASE_TIME+7) + "|8|" + 
 				(BASE_TIME+8) + "|9|" + 
-				(BASE_TIME+9) + "|9155818042444218367\n";
-		
-		assertThat(clobActual, equalTo(clobExpected));
+				(BASE_TIME+9) + "|4503599627370495\n";
+		String statisticsExpected = "min: 1 max: 4503599627370495 mean: 4.50359962737054E14 stdDev: 1.4241632491976338E15\n";
+		checkComponentData(blobData, clobExpected, 10, componentName, propertyName, serialNumber, startTime, stopTime, 0, statisticsExpected);
+	}
+	
+	
+	/**
+	 * Test of extractData method for 'booleanSeqBlobDataSeq' data for a sequence property 
+	 * that expands into multiple single-valued MPs.
+	 */
+	@Test
+	public void testExtractData_booleanSeqBlobDataSeq_singlevalued() throws Exception {
+		String propertyName = "SYSTEM_STATUS";
 
-		assertThat(blobContainer.dataList.size(), equalTo(longDataArray.length));
-		for (int i = 0; i < longDataArray.length; i++) {
-			Object dataObj = blobContainer.dataList.get(i);
-			assertThat(dataObj, instanceOf(Long.class));
-			assertThat((Long)dataObj, equalTo(new Long(longDataArray[i])));
+		Any any = create_any();
+		boolean[] booleanData_time1 = {false, true, false};
+		boolean[] booleanData_time2 = {true, true, true};
+		boolean[][] booleanDataMatrix = { 
+				booleanData_time1, 
+				booleanData_time2 };
+		booleanSeqBlobData[] booleanSeqBlobDataArray = createBooleanSeqBlobData(booleanDataMatrix);
+		booleanSeqBlobDataSeqHelper.insert(any, booleanSeqBlobDataArray);
+		
+		monitorPointExpert.setMultivalued(propertyName, false);
+		
+		// Test the AnyExtractor stand-alone
+		
+		List<MonitorPointTimeSeries> extractedData = anyExtractor.extractData(any, propertyName);
+		assertThat("Demultiplexing into several MonitorPointTimeSeries instances expected", extractedData, hasSize(booleanData_time1.length));
+		
+		for (int index = 0; index < extractedData.size(); index++) {
+			// check one of the expanded logical properties at a time
+			MonitorPointTimeSeries mpTs = extractedData.get(index);
+			assertThat(mpTs.getCorbaTypeId(), equalTo("IDL:alma/TMCDB/booleanBlobDataSeq:1.0"));
+			assertThat(mpTs.getMonitorPointIndex(), equalTo(index));
+			List<MonitorPointValue> dataList = mpTs.getDataList();
+			assertThat(dataList, hasSize(booleanDataMatrix.length));
+
+			for (int i = 0; i < booleanDataMatrix.length; i++) {
+				MonitorPointValue mpVal = dataList.get(i);
+				assertThat(mpVal.getTime(), equalTo(BASE_TIME + i));
+				// This should be the transpose of matrix booleanDataMatrix
+				assertThat(mpVal.getData(), contains((Object) new Boolean(booleanDataMatrix[i][index])));
+			}
 		}
-
-		assertThat(blobContainer.index, equalTo(0));
 		
-		logger.info("Validated longLongBlobDataSeq clob, dataList, and index.");
+		logger.info("Validated booleanSeqBlobDataSeq interpreted as coming from a multiple single-valued MPs.");
 
-		// As a variation we test also "BlobberWorker.createBlobData" which in real life surrounds the AnyExtractor call 
+		// As a variation we test also "BlobberWorker.createBlobData" which in real life surrounds the AnyExtractor call.
+		// It includes generation of CLOB data.
+		
 		String componentName = "CONTROL/DV01/PSA";
 		String serialNumber = "3456328928847";
 		MonitorBlob blob = new MonitorBlob(false, (short) 0, new String[]{}, "wrong:" + propertyName, any);
@@ -433,102 +516,19 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 		long startTime = BASE_TIME + 100;
 		long stopTime = BASE_TIME + 101;
 		MonitorDataBlock block = new MonitorDataBlock(startTime, stopTime, componentName, serialNumber, blobs);
-		BlobData blobData = BlobberWorker.createBlobData(block, blob, extractedData.get(0), propertyName, serialNumber);
-		String statisticsExpected = "min: 1 max: 9155818042444218368 mean: 9.1558180424442189E17 stdDev: 2.8953238856187935E18\n";
-		checkComponentData(blobData, clobExpected, 10, componentName, propertyName, serialNumber, startTime, stopTime, 0, statisticsExpected);
-	}
-	
-	
-	
-	public void testPopulateContainerNumericArrayBoolean() {
-		// Create the expected result
-		booleanSeqBlobData[] blobDataMatrix = new booleanSeqBlobData[10];
-		blobDataMatrix[0] = new booleanSeqBlobData();
-		blobDataMatrix[0].time = BASE_TIME;
-		blobDataMatrix[0].value = new boolean[3];
-		blobDataMatrix[0].value[0] = true;
-		blobDataMatrix[0].value[1] = false;
-		blobDataMatrix[0].value[2] = false;
-		blobDataMatrix[1] = new booleanSeqBlobData();
-		blobDataMatrix[1].time = BASE_TIME + 1;
-		blobDataMatrix[1].value = new boolean[3];
-		blobDataMatrix[1].value[0] = true;
-		blobDataMatrix[1].value[1] = true;
-		blobDataMatrix[1].value[2] = false;
-		blobDataMatrix[2] = new booleanSeqBlobData();
-		blobDataMatrix[2].time = BASE_TIME + 2;
-		blobDataMatrix[2].value = new boolean[3];
-		blobDataMatrix[2].value[0] = true;
-		blobDataMatrix[2].value[1] = true;
-		blobDataMatrix[2].value[2] = true;
-		blobDataMatrix[3] = new booleanSeqBlobData();
-		blobDataMatrix[3].time = BASE_TIME + 3;
-		blobDataMatrix[3].value = new boolean[3];
-		blobDataMatrix[3].value[0] = false;
-		blobDataMatrix[3].value[1] = true;
-		blobDataMatrix[3].value[2] = false;
-		blobDataMatrix[4] = new booleanSeqBlobData();
-		blobDataMatrix[4].time = BASE_TIME + 4;
-		blobDataMatrix[4].value = new boolean[3];
-		blobDataMatrix[4].value[0] = false;
-		blobDataMatrix[4].value[1] = true;
-		blobDataMatrix[4].value[2] = true;
-		blobDataMatrix[5] = new booleanSeqBlobData();
-		blobDataMatrix[5].time = BASE_TIME + 5;
-		blobDataMatrix[5].value = new boolean[3];
-		blobDataMatrix[5].value[0] = false;
-		blobDataMatrix[5].value[1] = false;
-		blobDataMatrix[5].value[2] = true;
-		blobDataMatrix[6] = new booleanSeqBlobData();
-		blobDataMatrix[6].time = BASE_TIME + 6;
-		blobDataMatrix[6].value = new boolean[3];
-		blobDataMatrix[6].value[0] = false;
-		blobDataMatrix[6].value[1] = false;
-		blobDataMatrix[6].value[2] = false;
-		blobDataMatrix[7] = new booleanSeqBlobData();
-		blobDataMatrix[7].time = BASE_TIME + 7;
-		blobDataMatrix[7].value = new boolean[3];
-		blobDataMatrix[7].value[0] = false;
-		blobDataMatrix[7].value[1] = false;
-		blobDataMatrix[7].value[2] = true;
-		blobDataMatrix[8] = new booleanSeqBlobData();
-		blobDataMatrix[8].time = BASE_TIME + 8;
-		blobDataMatrix[8].value = new boolean[3];
-		blobDataMatrix[8].value[0] = true;
-		blobDataMatrix[8].value[1] = false;
-		blobDataMatrix[8].value[2] = true;
-		blobDataMatrix[9] = new booleanSeqBlobData();
-		blobDataMatrix[9].time = BASE_TIME + 9;
-		blobDataMatrix[9].value = new boolean[3];
-		blobDataMatrix[9].value[0] = true;
-		blobDataMatrix[9].value[1] = true;
-		blobDataMatrix[9].value[2] = true;
-		List<AnyDataContainer> outList = new ArrayList<AnyDataContainer>();
-		AnyDataContainer container = new AnyDataContainer();
-		int index = 0;
-		for (booleanSeqBlobData blobDataArray : blobDataMatrix) {
-			anyExtractor.populateContainerBooleanArray(container, blobDataArray.time, blobDataArray.value, index);
+		String[] clobsExpected = new String[] { 
+				BASE_TIME + "|0|"  + (BASE_TIME+1) + "|1\n",
+				BASE_TIME + "|1|"  + (BASE_TIME+1) + "|1\n",
+				BASE_TIME + "|0|"  + (BASE_TIME+1) + "|1\n" };
+		String[] statisticsExpected = {null, null, null};
+		for (int i = 0; i < extractedData.size(); i++) {
+			BlobData blobData = BlobberWorker.createBlobData(block, blob, extractedData.get(i), propertyName, serialNumber, logger);
+			checkComponentData(blobData, clobsExpected[i], 2, componentName, propertyName, serialNumber, startTime, stopTime, i, statisticsExpected[i]);
 		}
-		outList.add(container);
-
-		assertThat((String) container.dataList.get(0), equalTo("1 0 0"));
-		assertThat((String) container.dataList.get(1), equalTo("1 1 0"));
-		assertThat((String) container.dataList.get(2), equalTo("1 1 1"));
-		assertThat((String) container.dataList.get(3), equalTo("0 1 0"));
-		assertThat((String) container.dataList.get(4), equalTo("0 1 1"));
-		assertThat((String) container.dataList.get(5), equalTo("0 0 1"));
-		assertThat((String) container.dataList.get(6), equalTo("0 0 1"));
-		assertThat((String) container.dataList.get(7), equalTo("0 0 1"));
-		assertThat((String) container.dataList.get(8), equalTo("1 0 1"));
-		assertThat((String) container.dataList.get(9), equalTo("1 1 1"));
-		assertThat(
-				container.clobBuilder.toString(),
-				equalTo(BASE_TIME + "|1 0 0|" + (BASE_TIME + 1) + "|1 1 0|" + (BASE_TIME + 2) + "|1 1 1|"
-						+ (BASE_TIME + 3) + "|0 1 0|" + (BASE_TIME + 4) + "|0 1 1|" + (BASE_TIME + 5) + "|0 0 1|"
-						+ (BASE_TIME + 6) + "|0 0 0|" + (BASE_TIME + 7) + "|0 0 1|" + (BASE_TIME + 8) + "|1 0 1|"
-						+ (BASE_TIME + 9) + "|1 1 1|")
-		);
 	}
+
+
+	
 	
 	private Any create_any() {
 		Any ret = acsCorba.getORB().create_any();
@@ -585,6 +585,17 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 		}
 		return outArray;
 	}
+
+	private booleanSeqBlobData[] createBooleanSeqBlobData(boolean[][] inValue) {
+		booleanSeqBlobData[] array = new booleanSeqBlobData[inValue.length];
+		int index = 0;
+		for (boolean[] value : inValue) {
+			array[index] = new booleanSeqBlobData(BASE_TIME + index, value);
+			index++;
+		}
+		return array;
+	}
+
 
 	private void checkComponentData(ComponentData inData, String clobExpected, int sampleSize, String componentName,
 			String propertyName, String serialNumber, long startTime, long stopTime, Integer index, String statistics) {

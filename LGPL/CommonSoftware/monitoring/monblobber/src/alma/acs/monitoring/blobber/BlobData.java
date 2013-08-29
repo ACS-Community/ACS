@@ -18,8 +18,7 @@
  */
 package alma.acs.monitoring.blobber;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 
@@ -27,23 +26,49 @@ import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 
 /**
- * Extends the ComponentData type with a list of monitor data
- * that is used only during processing by the upper blobber layer.
- * <p>
- * Up to ACS 12.0, this was an inner class of CollectorList, where it did not really fit.
+ * Extends the ComponentData type with a list of monitor data (see {@link #getMonitorPointTimeSeries()})
+ * and computes the {@link #statistics} field if the data type 
+ * is numeric and single-valued.
  * 
  * @author hsommer
  */
-class BlobData extends ComponentData
+public class BlobData extends ComponentData
 {
-	final List<Object> dataList = new ArrayList<Object>();
+	private final MonitorPointTimeSeries mpTs;
 
+	public BlobData(MonitorPointTimeSeries mpTs, Logger logger) {
+		super(logger);
+		this.mpTs = mpTs;
+		this.sampleSize = getDataSize();
+	}
+	
+	/**
+	 * This method can be used as a workaround for DAOs 
+	 * that want to access the data directly instead of the using the {@link #clob} field
+	 * (that was designed for a particular Oracle TMCDB DAO implementation).
+	 * <p>
+	 * TODO: Further refactoring should expose the data in {@link ComponentData}
+	 * to avoid the downcast. 
+	 */
+	public MonitorPointTimeSeries getMonitorPointTimeSeries() {
+		return mpTs;
+	}
+	
+	/**
+	 * Gets the number of MonitorPointValue objects
+	 * contained in the MonitorPointTimeSeries.
+	 */
+	int getDataSize() {
+		return mpTs.getDataList().size();
+	}
+	
 	@Override
 	public void reset() {
 		super.reset();
-		dataList.clear();
+		mpTs.getDataList().clear();
 	}
 
+	
 	/**
 	 * Calculates the statistics and stores it in {@link #statistics}
 	 * if our monitor point data is represented as Number objects;
@@ -52,48 +77,69 @@ class BlobData extends ComponentData
 	 * @param inDataList
 	 */
 	void calculateStatistics() {
-		if (dataList.size() > 0) {
+		if (getDataSize() > 0) {
 			
-			// We trust that the dataList is homogeneous and sample only the first value for its data type...
-			Object o = dataList.get(0);
-			if (!(o instanceof Integer || 
-				  o instanceof Long || 
-				  o instanceof Float || 
-				  o instanceof Double)) 
-			{
-				System.out.println("Cannot do statistics on " + o.getClass().getName()); 
+			// We trust that the data is homogeneous and check only the first MonitorPointValue
+			
+			MonitorPointValue sampleMonitorPointValue = mpTs.getDataList().get(0);
+			
+			if (sampleMonitorPointValue.getData().isEmpty()) {
+				logger.finer("Ignoring calculateStatistics() call for a time series of MonitorPointValue objects that hold no data."); 
 				return;
 			}
 			
-			// apache math statistics lib works only with 'double'
+			// TODO: Should we also compute statistics for multi-valued properties?
+			// This was not done in the original (= pre-ACS 12.0) implementation of BlobberWorker#calculateStatistics
+			// and so far we keep this behavior. 
+			if (sampleMonitorPointValue.isMultiValued()) {
+				logger.finer("Ignoring calculateStatistics() call for a time series of multi-valued MonitorPointValue objects."); 
+				return;
+			}
+
+			// After the above checks, there should be a single data item in our sampleMonitorPointValue
+			// We now verify that it has one of the expected numeric types.
+			Object sampleData = sampleMonitorPointValue.getData().get(0);
+			if (!(sampleData instanceof Integer || 
+				  sampleData instanceof Long || 
+				  sampleData instanceof Float || 
+				  sampleData instanceof Double)) 
+			{
+				logger.finer("Ignoring calculateStatistics() call for data type " + sampleData.getClass().getName()); 
+				return;
+			}
+			
+			// Now we calculate the statistics, 
+			// using apache math lib that works only with 'double' type
+			
 			SummaryStatistics stat = new SummaryStatistics();
-			for (Object blobData : dataList) {
-				Number value = (Number) blobData;
+			for (MonitorPointValue blobData : mpTs.getDataList()) {
+				Number value = (Number) blobData.getData().get(0);
 				stat.addValue(value.doubleValue());
 			}
 
 			statistics = new ComponentStatistics();
 			
-			// we convert the results to original data types where it makes sense
-			if (o instanceof Integer) {
+			// We store the results in a ComponentStatistics object, 
+			// converting to original data types where it makes sense
+			if (sampleData instanceof Integer) {
 				statistics.min = new Integer((int) Math.round(stat.getMin()));
 				statistics.max = new Integer((int) Math.round(stat.getMax()));
 				statistics.mean = new Double(stat.getMean()); // or Float, to indicate lower precision?
 				statistics.stdDev = new Double(stat.getStandardDeviation()); // or Float, to indicate lower precision?
 			}
-			else if (o instanceof Long) {
+			else if (sampleData instanceof Long) {
 				statistics.min = new Long(Math.round(stat.getMin()));
 				statistics.max = new Long(Math.round(stat.getMax()));
 				statistics.mean = new Double(stat.getMean()); 
 				statistics.stdDev = new Double(stat.getStandardDeviation()); 
 			}
-			else if (o instanceof Float) {
+			else if (sampleData instanceof Float) {
 				statistics.min = new Float(stat.getMin());
 				statistics.max = new Float(stat.getMax());
 				statistics.mean = new Float(stat.getMean());
 				statistics.stdDev = new Float(stat.getStandardDeviation());
 			}
-			else if (o instanceof Double) {
+			else if (sampleData instanceof Double) {
 				statistics.min = new Double(stat.getMin());
 				statistics.max = new Double(stat.getMax());
 				statistics.mean = new Double(stat.getMean());

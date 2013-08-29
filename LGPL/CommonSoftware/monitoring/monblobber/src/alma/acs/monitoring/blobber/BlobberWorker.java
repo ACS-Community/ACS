@@ -22,7 +22,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -408,14 +407,16 @@ public class BlobberWorker extends CancelableRunnable {
 					BlobData blobData = null;
 
 					try {
-						String propertyNameSimple = blob.propertyName.substring(blob.propertyName.indexOf(':') + 1);
+						String propertyName = blob.propertyName;
+						String propertyNameSimple = propertyName.substring(propertyName.indexOf(':') + 1);
 						
-						List<AnyDataContainer> containerList = anyExtractor.extractData(blob.blobDataSeq, propertyNameSimple);
-
+						// TODO: Shouldn't we pass propertyName instead of propertyNameSimple?
+						List<MonitorPointTimeSeries> containerList = anyExtractor.extractData(blob.blobDataSeq, propertyNameSimple);
+						
 						// iterate over expanded logical properties
 						for (int index = 0; index < containerList.size(); index++) {
-							AnyDataContainer container = containerList.get(index);
-							
+							MonitorPointTimeSeries container = containerList.get(index);
+
 							// The serial number by default comes from the device, 
 							// but it can be overwritten for a monitor point.
 							// In Alma this is done for correlator properties.
@@ -434,9 +435,9 @@ public class BlobberWorker extends CancelableRunnable {
 							}
 							myLogger.log(AcsLogLevel.DEBUG, "Handling data for property " + blob.propertyName);
 
-							blobData = createBlobData(block, blob, container, propertyNameSimple, serialNumber);
+							blobData = createBlobData(block, blob, container, propertyNameSimple, serialNumber, myLogger);
 
-							if (blobData.dataList.size() > 0) {
+							if (blobData.getDataSize() > 0) {
 								insertCount++;
 								
 								// hand over our blob data to the DAO(s)
@@ -498,29 +499,28 @@ public class BlobberWorker extends CancelableRunnable {
 	 * Broken out from {@link #harvestCollector(CollectorData, MonitorCollectorOperations)} 
 	 * to allow fine-grained unit testing. 
 	 */
-	static BlobData createBlobData(MonitorDataBlock block, MonitorBlob blob, AnyDataContainer container, String propertyNameSimple, String serialNumber) {
+	static BlobData createBlobData(MonitorDataBlock block, MonitorBlob blob, MonitorPointTimeSeries mpTs, 
+			String propertyNameSimple, String serialNumber, Logger logger) {
 
-		BlobData blobData = new BlobData();
+		BlobData blobData = new BlobData(mpTs, logger);
 		blobData.componentName = block.componentName;
 		blobData.serialNumber = serialNumber;
 		blobData.propertyName = propertyNameSimple;
 		blobData.startTime = block.startTime;
-
-		// Update blob data.
-		blobData.dataList.addAll(container.dataList);
-		blobData.sampleSize = blobData.dataList.size();
-		blobData.clob = container.clobBuilder.toString();
-		blobData.index = container.index;
+		blobData.index = mpTs.getMonitorPointIndex();
+		blobData.startTime = block.startTime;
 		blobData.stopTime = block.stopTime;
 
-		if (blobData.startTime == 0) {
-			/*
-			 * This construction is left from the time when several accesses to the collector were
-			 * made before storing. The construction is left in case this is activated again.
-			 */
-			blobData.startTime = block.startTime;
+		Clobber clobber = new Clobber(logger);
+		String clob = clobber.generateClob(mpTs);
+		if (clob != null) {
+			blobData.clob = clob;
 		}
-
+		else {
+			// this can happen for NaN floats/doubles
+			blobData.clob = "";
+		}
+		
 		blobData.calculateStatistics();
 		
 		return blobData;
@@ -551,23 +551,6 @@ public class BlobberWorker extends CancelableRunnable {
 		if (firstExInDAOStore != null) {
 			throw firstExInDAOStore;
 		}
-	}
-
-	/**
-	 * Holds the data of one logical monitor point.
-	 * Note that sequence data from one multi-valued monitor point
-	 * can be split into several AnyDataContainer instances.
-	 */
-	protected static class AnyDataContainer
-	{
-		/**
-		 * Gets filled homogeneously with Number, Boolean, String etc objects, depending on the monitor point type.
-		 */
-		public List<Object> dataList = new ArrayList<Object>();
-
-		public StringBuilder clobBuilder = new StringBuilder();
-
-		public int index;
 	}
 
 	/**

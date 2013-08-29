@@ -27,7 +27,7 @@ public class TestBlobber extends BlobberImpl {
 	 * Allows a unit test to read all property data via (@link TestBlobberWorker#fetchData()} 
 	 * before the next property data can be inserted in {@link TestMonitorDAO#store(ComponentData)}.
 	 */
-	private DataLock<ComponentData> myBlobDataLock;
+	private DataLock<BlobData> myBlobDataLock;
 
 	private BlobberPlugin myBlobberPlugin;
 	
@@ -40,7 +40,7 @@ public class TestBlobber extends BlobberImpl {
 	 */
 	public void initialize(ContainerServices inContainerServices, String inName) throws ComponentLifecycleException {
 		Logger tmpLogger = inContainerServices.getLogger();
-		myBlobDataLock = new DataLock<ComponentData>(tmpLogger, "blobberworker");
+		myBlobDataLock = new DataLock<BlobData>(tmpLogger, "blobberworker");
 		MonitorDAO monitorDAO = new TestMonitorDAO(tmpLogger, myBlobDataLock);
 		TestMonitorPointExpert myMonitorPointExpert = new TestMonitorPointExpert();
 		myBlobberPlugin = new TestBlobberWorker.TestBlobberPlugin(inContainerServices, monitorDAO, myMonitorPointExpert);
@@ -89,9 +89,9 @@ public class TestBlobber extends BlobberImpl {
 	private static class TestMonitorDAO implements MonitorDAO
 	{
 		private final Logger logger;
-		private final DataLock<ComponentData> myBlobDataLock;
+		private final DataLock<BlobData> myBlobDataLock;
 		
-		public TestMonitorDAO(Logger logger, DataLock<ComponentData> myBlobDataLock) {
+		public TestMonitorDAO(Logger logger, DataLock<BlobData> myBlobDataLock) {
 			this.logger = logger;
 			this.myBlobDataLock = myBlobDataLock;
 		}
@@ -103,7 +103,8 @@ public class TestBlobber extends BlobberImpl {
 		@Override
 		public void store(ComponentData inData) throws Exception {
 			logger.fine("Storing blobber data.");
-			this.myBlobDataLock.put(cloneData(inData));
+			// this cast is dirty, but so far we have ComponentData and not BlobData in the MontiorDAO interface...
+			this.myBlobDataLock.put(cloneData((BlobData)inData));
 		}
 
 		@Override
@@ -119,8 +120,11 @@ public class TestBlobber extends BlobberImpl {
 		public void closeTransactionStore() {
 		}
 
-		private BlobData cloneData(ComponentData inBlob) {
-			BlobData outBlob = new BlobData();
+		/**
+		 * TODO: Why do we clone the data? 
+		 */
+		private BlobData cloneData(BlobData inBlob) {
+			BlobData outBlob = new BlobData(inBlob.getMonitorPointTimeSeries(), logger);
 			outBlob.clob = inBlob.clob;
 			outBlob.componentName = inBlob.componentName;
 			outBlob.index = inBlob.index;
@@ -152,8 +156,8 @@ public class TestBlobber extends BlobberImpl {
 			return ( ret != null ? ret.booleanValue() : false );
 		}
 		
-		void setUniqueness(String propertyName, boolean isUnique) {
-			isMultivaluedPropertyMap.put(propertyName, isUnique);
+		void setMultivalued(String propertyName, boolean isMultivalued) {
+			isMultivaluedPropertyMap.put(propertyName, isMultivalued);
 		}
 	}
 
