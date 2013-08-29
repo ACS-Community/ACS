@@ -18,6 +18,8 @@
  */
 package alma.acs.monitoring.DAO;
 
+import java.util.logging.Logger;
+
 /**
  * Holds the "clobbed" monitor data of one logical monitor point
  * along with meta data, collected over a time interval.
@@ -44,6 +46,16 @@ public class ComponentData {
     
     public ComponentStatistics statistics = null;
 
+	protected final Logger logger;
+
+	
+    public ComponentData(Logger logger) {
+        this.logger = logger;
+    }
+    
+    /**
+     * TODO: Do we really need this method?
+     */
     public void reset() {
         clob = "";
         startTime = 0;
