@@ -65,6 +65,8 @@ import alma.TMCDB.uLongLongSeqBlobData;
 import alma.TMCDB.uLongLongSeqBlobDataSeqHelper;
 import alma.TMCDB.uLongSeqBlobData;
 import alma.TMCDB.uLongSeqBlobDataSeqHelper;
+import alma.acs.monitoring.MonitorPointTimeSeries;
+import alma.acs.monitoring.MonitorPointValue;
 
 /**
  * Processes the monitor point data that arrives to the blobber in the form of Corba Anys.

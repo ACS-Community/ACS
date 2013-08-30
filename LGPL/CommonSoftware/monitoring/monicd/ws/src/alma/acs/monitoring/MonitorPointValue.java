@@ -1,4 +1,4 @@
-package alma.acs.monitoring.blobber;
+package alma.acs.monitoring;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +21,15 @@ public class MonitorPointValue
 	private final List<Object> data = new ArrayList<Object>();
 	
 	
-	MonitorPointValue(long time) {
+	public MonitorPointValue(long time) {
 		this.time = time;
 	}
 	
-	void addValue(Object value) {
+	public void addValue(Object value) {
 		data.add(value);
 	}
 	
-	long getTime() {
+	public long getTime() {
 		return time;
 	}
 	
@@ -37,11 +37,11 @@ public class MonitorPointValue
 	 * Gets the data list that contains a single Number, Boolean, String etc object for a single-valued monitor point,
 	 * or several such objects for a multi-valued monitor point. 
 	 */
-	List<Object> getData() {
+	public List<Object> getData() {
 		return data;
 	}
 	
-	boolean isMultiValued() {
+	public boolean isMultiValued() {
 		return (data.size() > 1);
 	}
 }

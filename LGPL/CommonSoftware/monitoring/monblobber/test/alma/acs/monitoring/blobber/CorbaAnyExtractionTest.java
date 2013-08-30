@@ -52,6 +52,9 @@ import alma.TMCDB.longLongBlobData;
 import alma.TMCDB.longLongBlobDataSeqHelper;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.testsupport.JUnit4StandaloneTestBase;
+import alma.acs.monitoring.MonitorPointTimeSeries;
+import alma.acs.monitoring.MonitorPointValue;
+import alma.acs.monitoring.DAO.Clobber;
 import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.blobber.TestBlobber.TestMonitorPointExpert;
 
@@ -600,7 +603,7 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 	private void checkComponentData(ComponentData inData, String clobExpected, int sampleSize, String componentName,
 			String propertyName, String serialNumber, long startTime, long stopTime, Integer index, String statistics) {
 		
-		assertThat(inData.clob, equalTo(clobExpected));
+		assertThat(inData.getClob(), equalTo(clobExpected));
 		assertThat(inData.sampleSize, equalTo(sampleSize));
 		assertThat(inData.componentName, equalTo(componentName));
 		assertThat(inData.propertyName, equalTo(propertyName));

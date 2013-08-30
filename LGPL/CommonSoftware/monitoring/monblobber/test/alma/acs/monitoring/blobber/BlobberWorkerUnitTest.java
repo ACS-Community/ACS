@@ -1125,8 +1125,8 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
     private void checkData(ComponentData inData, String clob, int sampleSize,
             String componentName, String propertyName, String serialNumber,
             long startTime, long stopTime) {
-        assert clob.equals(inData.clob) : "\nIncorrect clob\nFound    ["
-                + inData.clob + "]\nExpected [" + clob
+        assert clob.equals(inData.getClob()) : "\nIncorrect clob\nFound    ["
+                + inData.getClob() + "]\nExpected [" + clob
                 + "] (excluding [] in both statements.)";
         assert inData.sampleSize == sampleSize : "\nIncorrect sampleSize\nFound    ["
                 + inData.sampleSize

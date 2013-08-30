@@ -125,11 +125,9 @@ public class TestBlobber extends BlobberImpl {
 		 */
 		private BlobData cloneData(BlobData inBlob) {
 			BlobData outBlob = new BlobData(inBlob.getMonitorPointTimeSeries(), logger);
-			outBlob.clob = inBlob.clob;
 			outBlob.componentName = inBlob.componentName;
 			outBlob.index = inBlob.index;
 			outBlob.propertyName = inBlob.propertyName;
-			outBlob.sampleSize = inBlob.sampleSize;
 			outBlob.serialNumber = inBlob.serialNumber;
 			outBlob.startTime = inBlob.startTime;
 			outBlob.stopTime = inBlob.stopTime;

@@ -18,11 +18,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-package alma.acs.monitoring.blobber;
+package alma.acs.monitoring.DAO;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import alma.acs.monitoring.MonitorPointTimeSeries;
+import alma.acs.monitoring.MonitorPointValue;
+
 
 
 /**
@@ -31,14 +35,14 @@ import java.util.logging.Logger;
  * 
  * @author hsommer
  */
-class Clobber
+public class Clobber
 {
 	private final Logger logger;
 
 	/**
 	 * @param logger
 	 */
-	Clobber(Logger logger) {
+	public Clobber(Logger logger) {
 		this.logger = logger;
 	}
 	
@@ -46,7 +50,7 @@ class Clobber
 	 * @param mpTs
 	 * @return The CLOB, or null if the monitor point is of a floating number type and contains NaN
 	 */
-	String generateClob(MonitorPointTimeSeries mpTs) {
+	public String generateClob(MonitorPointTimeSeries mpTs) {
 		
 		List<MonitorPointValue> timeSeriesData = mpTs.getDataList();
 		StringBuilder clobBld = new StringBuilder();

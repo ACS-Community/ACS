@@ -20,76 +20,129 @@ package alma.acs.monitoring.DAO;
 
 import java.util.logging.Logger;
 
+import alma.acs.monitoring.MonitorPointTimeSeries;
+
+
 /**
- * Holds the "clobbed" monitor data of one logical monitor point
+ * Holds the monitor data of one logical monitor point
  * along with meta data, collected over a time interval.
+ * <p>
+ * The data can be accessed as time series objects or 
+ * in the "clobbed" format which is meant only for Oracle TMCDB
+ * but for legacy reasons is supported on the interface level as well
+ * (see http://ictjira.alma.cl/browse/ICT-1167)
  * <p> 
  * Note that one baci property may have been expanded to multiple 
  * ComponentData instances. 
+ * <p>
+ * The name "ComponentData" is misleading because a device component
+ * can have many monitor points and thus produce many instances
+ * of this class for a given time interval. 
+ * However we have not bothered yet to change this legacy issue.
  */
 public class ComponentData {
-    public String componentName;
 
-    public String propertyName;
+	public final MonitorPointTimeSeries mpTs;
 
-    public Integer index;
+	public final int sampleSize;
+	
+	public String componentName;
 
-    public String serialNumber;
+	public String propertyName;
 
-    public long startTime;
+	public Integer index;
 
-    public long stopTime;
-    
-    public int sampleSize;
+	public String serialNumber;
 
-    public String clob = "";
-    
-    public ComponentStatistics statistics = null;
+	public long startTime;
+
+	public long stopTime;
+
+	private String clobCache;
+
+	public ComponentStatistics statistics = null;
 
 	protected final Logger logger;
 
-	
-    public ComponentData(Logger logger) {
-        this.logger = logger;
-    }
-    
-    /**
-     * TODO: Do we really need this method?
-     */
-    public void reset() {
-        clob = "";
-        startTime = 0;
-        stopTime = 0;
-        statistics = null;
-        index = null;
-    }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("componentName [");
-        builder.append(componentName);
-        builder.append("] propertyName: [");
-        builder.append(propertyName);
-        builder.append("] serialNumber: [");
-        builder.append(serialNumber);
-        builder.append("] startTime: [");
-        builder.append(startTime);
-        builder.append("] stopTime: [");
-        builder.append(stopTime);
-// 	HSO: logging the clob in alma.archive.tmcdb.monitor.BlobberWorker.storeData(BlobData) is too much for the current tests, so I temporarily comment it out here.
-//      	TODO: check where else it is used, or if we should log it when a special debug property is set.
-//		builder.append("] clobBuilder: [");
-//		builder.append(clob);
-        builder.append("] index: [");
-        builder.append(index);
-        builder.append("]");
-        if (statistics != null) {
-            builder.append(" ");
-            builder.append(statistics);
-        }
-        return builder.toString();
-    }
+	public ComponentData(MonitorPointTimeSeries mpTs, Logger logger) {
+		if (mpTs != null) {
+			this.mpTs = mpTs;
+			this.sampleSize = mpTs.getDataList().size();
+		}
+		else {
+			// this can happen for dummy ComponentData used in tests or as queue sentinel in class BlobDataQueue
+			this.mpTs = null;
+			this.sampleSize = -1;
+		}
+		this.logger = logger;
+	}
+
+	/**
+	 * Gets the monitor point data.
+	 */
+	public MonitorPointTimeSeries getMonitorPointTimeSeries() {
+		return mpTs;
+	}
+
+	/**
+	 * Gets the monitor point data in "clobbed" format.
+	 */
+	public synchronized String getClob() {
+		if (clobCache == null) {
+			Clobber clobber = new Clobber(logger);
+			String clob = clobber.generateClob(mpTs);
+			if (clob != null) {
+				clobCache = clob;
+			}
+			else {
+				// this can happen for NaN floats/doubles
+				clobCache = "";
+			}
+		}
+		return clobCache;
+	}
+
+	/**
+	 * Returns a formatted name-value string, including the clobbed data.
+	 */
+	public String toStringWithClob() {
+		return toString(true);
+	}
+
+	/**
+	 * Returns a formatted name-value string, excluding the clobbed data.
+	 */
+	@Override
+	public String toString() {
+		return toString(false);
+	}
+
+	protected String toString(boolean includeClobData) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("componentName [");
+		builder.append(componentName);
+		builder.append("] propertyName: [");
+		builder.append(propertyName);
+		builder.append("] serialNumber: [");
+		builder.append(serialNumber);
+		builder.append("] startTime: [");
+		builder.append(startTime);
+		builder.append("] stopTime: [");
+		builder.append(stopTime);
+		if (includeClobData) {
+			builder.append("] clob: [");
+			builder.append(getClob());
+		}
+		builder.append("] index: [");
+		builder.append(index);
+		builder.append("]");
+		if (statistics != null) {
+			builder.append(" ");
+			builder.append(statistics);
+		}
+		return builder.toString();
+	}
 
 	/**
 	 * hashCode based on {@link ComponentData#componentName}, {@link #propertyName},

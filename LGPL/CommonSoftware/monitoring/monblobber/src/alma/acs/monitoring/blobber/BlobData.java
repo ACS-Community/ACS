@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 
+import alma.acs.monitoring.MonitorPointTimeSeries;
+import alma.acs.monitoring.MonitorPointValue;
 import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 
@@ -34,24 +36,8 @@ import alma.acs.monitoring.DAO.ComponentStatistics;
  */
 public class BlobData extends ComponentData
 {
-	private final MonitorPointTimeSeries mpTs;
-
 	public BlobData(MonitorPointTimeSeries mpTs, Logger logger) {
-		super(logger);
-		this.mpTs = mpTs;
-		this.sampleSize = getDataSize();
-	}
-	
-	/**
-	 * This method can be used as a workaround for DAOs 
-	 * that want to access the data directly instead of the using the {@link #clob} field
-	 * (that was designed for a particular Oracle TMCDB DAO implementation).
-	 * <p>
-	 * TODO: Further refactoring should expose the data in {@link ComponentData}
-	 * to avoid the downcast. 
-	 */
-	public MonitorPointTimeSeries getMonitorPointTimeSeries() {
-		return mpTs;
+		super(mpTs, logger);
 	}
 	
 	/**
@@ -62,12 +48,6 @@ public class BlobData extends ComponentData
 		return mpTs.getDataList().size();
 	}
 	
-	@Override
-	public void reset() {
-		super.reset();
-		mpTs.getDataList().clear();
-	}
-
 	
 	/**
 	 * Calculates the statistics and stores it in {@link #statistics}

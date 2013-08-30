@@ -39,6 +39,7 @@ import alma.TMCDB.MonitorDataBlock;
 import alma.acs.concurrent.ThreadLoopRunner.CancelableRunnable;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.monitoring.MonitorPointTimeSeries;
 import alma.acs.monitoring.DAO.MonitorDAO;
 import alma.acs.monitoring.blobber.CollectorList.CollectorData;
 import alma.acs.util.IsoDateFormat;
@@ -462,18 +463,12 @@ public class BlobberWorker extends CancelableRunnable {
 							myLogger.log(Level.WARNING, "The data contained in the data cache: " + blobData);
 						} 
 						else {
-
 							// RK: Matthias suggested we log this too
 							// HSO commented it out again, because now instead we log this AcsJStoreFailureEx
 							// directly in alma.archive.tmcdb.DAO.MonitorDAOImpl.store(ComponentData) at level FINER
 							// myLogger.log(Level.WARNING,
 							// "Repeat of problem when handling property ["
 							// + blob.propertyName + "]", e);
-						}
-
-						// RK: Matthias fixed a mem leak by moving this here:
-						if (blobData != null) {
-							blobData.reset();
 						}
 					}
 				} // end loop over properties of a single device
@@ -511,16 +506,6 @@ public class BlobberWorker extends CancelableRunnable {
 		blobData.startTime = block.startTime;
 		blobData.stopTime = block.stopTime;
 
-		Clobber clobber = new Clobber(logger);
-		String clob = clobber.generateClob(mpTs);
-		if (clob != null) {
-			blobData.clob = clob;
-		}
-		else {
-			// this can happen for NaN floats/doubles
-			blobData.clob = "";
-		}
-		
 		blobData.calculateStatistics();
 		
 		return blobData;

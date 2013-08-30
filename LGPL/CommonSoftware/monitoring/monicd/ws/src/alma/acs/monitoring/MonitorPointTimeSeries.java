@@ -1,4 +1,4 @@
-package alma.acs.monitoring.blobber;
+package alma.acs.monitoring;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class MonitorPointTimeSeries
 	 *              It is a running integer value if multiple logical monitor points get extracted from one baci property.
 	 * @param corbaTypeId  See {@link #getCorbaTypeId()}.
 	 */
-	MonitorPointTimeSeries(int index, String corbaTypeId) {
+	public MonitorPointTimeSeries(int index, String corbaTypeId) {
 		this.index = index;
 		this.corbaTypeId = corbaTypeId;
 		dataList = new ArrayList<MonitorPointValue>();
@@ -47,11 +47,11 @@ public class MonitorPointTimeSeries
 	/**
 	 * Adds a <code>MonitorPointValue</code> to the list of time-series data.
 	 */
-	void addMonitorPointValue(MonitorPointValue value) {
+	public void addMonitorPointValue(MonitorPointValue value) {
 		dataList.add(value);
 	}
 	
-	int getMonitorPointIndex() {
+	public int getMonitorPointIndex() {
 		return index;
 	}
 
@@ -62,7 +62,7 @@ public class MonitorPointTimeSeries
 	 * Currently used only for error logs, where it could become even more useful 
 	 * if we have to debug issues with unsigned IDL type mismatches in the future.
 	 */
-	String getCorbaTypeId() {
+	public String getCorbaTypeId() {
 		return corbaTypeId;
 	}
 
@@ -71,7 +71,7 @@ public class MonitorPointTimeSeries
 	 * each of which holds one Number, Boolean, String etc object,
 	 * or several such objects, depending on the monitor point type.
 	 */
-	List<MonitorPointValue> getDataList() {
+	public List<MonitorPointValue> getDataList() {
 		return dataList;
 	}
 }
