@@ -14,6 +14,10 @@
 #    None
 #------------------------------------------------------------------------
 
+XERCESJ_VER = 2.9.1
+XERCESJ_DIR = xerces-2_9_1
+
+
 #
 # The built jar file needs to be installed
 # As well as a couple of DTDs uses by the cdbChecker.
@@ -57,7 +61,7 @@ all:	do_all unpack patch buildXerces
 
 clean : clean_all
 	rm -rf last_patched
-	rm -rf xml-xerces
+	rm -rf $(XERCESJ_DIR)
 	rm -rf ../lib/endorsed/xercesImpl.jar
 	@echo " . . . clean done"
 
@@ -75,11 +79,11 @@ install : install_all
 # after new patches have been applied/coded.
 # It assumes that the new/patched files are in
 # in 
-#     xml-xerces
+#     $(XERCESJ_DIR)
 # and unpacks the unpatched code to makethe diff
-#     tmp_unpack/xml-xerces.orig
+#     tmp_unpack/$(XERCESJ_DIR).orig
 #
-# Does not use xml-xerces as directory name but adds .orig
+# Does not use $(XERCESJ_DIR) as directory name but adds .orig
 # to make clearer reading the patch file.
 # Before preparing the patch also cleans up the code with the patches
 # Makes a copy of the previous patch file for comparison
@@ -91,40 +95,56 @@ install : install_all
 preparePatch:
 	mv xml-xerces.patch xml-xerces.patch.old
 	rm -rf tmp_unpack; mkdir -p tmp_unpack
-	cd tmp_unpack; gtar -xzf ../xml-xerces-java.tar.gz; mv xml-xerces xml-xerces.orig
-	cd xml-xerces/java; ./build.sh clean
-	LC_ALL=C TZ=UTC0 diff -Naur tmp_unpack/xml-xerces.orig xml-xerces  >xml-xerces.patch; true
+	cd tmp_unpack; gtar -xzf ../Xerces-J-src.$(XERCESJ_VER).tar.gz; mv $(XERCESJ_DIR) $(XERCESJ_DIR).orig
+	cd $(XERCESJ_DIR)/java; ./build.sh clean
+	LC_ALL=C TZ=UTC0 diff -Naur tmp_unpack/$(XERCESJ_DIR).orig $(XERCESJ_DIR)  >xml-xerces.patch; true
 	rm -rf tmp_unpack
 	@echo " . . . patch file prepared"
+
 
 #
 # Unpack the tar file with the original distribution
 #
 .NOTPARALLE: unpack
 unpack:
-	@if [ ! -d xml-xerces ]; then \
-	      echo " . . . unpack original distribution";\
-	      gtar -xzf xml-xerces-java.tar.gz; \
-        fi
+	@if [ ! -d $(XERCESJ_DIR) ]; then \
+		echo " . . . unpacking original distribution Xerces-J-src.$(XERCESJ_VER).tar.gz";\
+		gtar -xzf Xerces-J-src.$(XERCESJ_VER).tar.gz; \
+	fi
 
 #
-# Apply the patch
+# Apply the xpointer patch.
+# Delete Xerces-J java source files that should be excluded from the build (see ICT-1178).
+# Copy selected external libraries from ACSROOT and the xerces tools to the location expected by the Xerces-J build.
+#
+# TODOs: 
+# (a) See http://ictjira.alma.cl/browse/ICT-1174 about still hardcoding $ACSROOT instead of using acsGetSpecificJars.py
+# (b) Find a way of calling xercesj's build.xml so that we skip the extraction of tools/xml-commons-external-src.zip.
+#     Currently we inject the empty xml-commons-external-src-dummy.zip file because it seems easier than patching build.xml.
 #
 patch: last_patched
 
 last_patched: xml-xerces.patch
-	@cd xml-xerces; patch -p1 < ../xml-xerces.patch
-	@touch last_patched
+	@cd $(XERCESJ_DIR); patch -p1 < ../xml-xerces.patch
 	@echo " . . . patch applied";\
 
-#
+	@rm -rf $(XERCESJ_DIR)/src/org/apache/html $(XERCESJ_DIR)/src/org/w3c/dom/html
+	@echo " . . . removed HTML DOM support";\
+
+	@cd $(XERCESJ_DIR); mkdir -p tools/bin
+	@cp $(ACSROOT)/lib/commons-xml-resolver-1.2.jar $(XERCESJ_DIR)/tools/resolver.jar
+	@cp xjavac.jar $(XERCESJ_DIR)/tools/bin
+	@cp xml-commons-external-src-dummy.zip $(XERCESJ_DIR)/tools/xml-commons-external-src.zip
+	@echo " . . . Fixed external dependencies";\
+
+	@touch last_patched
+
 # Build the distribution using the standard procedure.
-# Then copy the jar file in ../lib/endorsed,
-# from where it can be installed.
+# Copy xercesImpl.jar to ../lib/endorsed, from where it can be installed.
 #
 buildXerces:
-	@cd xml-xerces/java; ./build.sh jar
+	@cd $(XERCESJ_DIR); ant jar
 	@mkdir -p ../lib/endorsed
-	@cp xml-xerces/java/build/xercesImpl.jar ../lib/endorsed
+	@cp $(XERCESJ_DIR)/build/xercesImpl.jar ../lib/endorsed
 
 #___oOo___
