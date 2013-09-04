@@ -15,7 +15,6 @@
 	<classpathentry kind="lib" path="lib/jlibeps-0.1.jar"/>
 	<classpathentry kind="lib" path="lib/jnlp.jar"/>
 	<classpathentry kind="lib" path="lib/jta-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/logkit.jar"/>
 	<classpathentry kind="lib" path="lib/openorb_tools-1.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/openorb-1.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/openorb13Debug.jar"/>
@@ -44,5 +43,6 @@
 	<classpathentry kind="lib" path="lib/junit-dep-4.10.jar"/>
 	<classpathentry kind="lib" path="lib/mockito-core-1.9.5.jar"/>
 	<classpathentry kind="lib" path="lib/objenesis-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-xml-resolver-1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

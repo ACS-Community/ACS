@@ -53,6 +53,7 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/commons-lang-2.5.jar \
 	../lib/commons-logging-1.1.1.jar \
 	../lib/commons-math-2.1.jar \
+	../lib/commons-xml-resolver-1.2.jar \
 	../lib/dom4j-1.6.1.jar \
 	../lib/ehcache-core-2.3.1.jar \
 	../lib/ejb3-persistence.jar \
