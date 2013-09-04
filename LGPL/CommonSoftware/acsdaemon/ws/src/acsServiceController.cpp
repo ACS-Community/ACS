@@ -182,7 +182,7 @@ void ServiceController::restart() {
     if (active && setState(getActualState()) && autorestart && startreq == NULL /*&& stopreq == NULL*/) {
         // restarts only if state has just changed from RUNNING/DEGRADED to NOT_EXISTING
 
-        ACS_SHORT_LOG((LM_INFO, "Restarting %s.", getServiceName().c_str()));
+        ACS_SHORT_LOG((LM_WARNING, "Restarting %s.", getServiceName().c_str()));
         stopreq = NULL;
         context->getRequestProcessor()->process(startreq = createControlledServiceRequest(START_SERVICE)); // enqueue service startup request
     }
@@ -289,7 +289,10 @@ acsdaemon::ServiceState ImpController::getActualState() {
 
         acsdaemon::ImpBase_var imp = acsdaemon::ImpBase::_narrow(obj.in());
         if (CORBA::is_nil(imp.in())) {
-            ACS_SHORT_LOG((LM_INFO, "Imp '%s' is defunct.", acsServices[service].impname));
+        	if (state != acsdaemon::DEFUNCT)
+        	{
+        		ACS_SHORT_LOG((LM_ERROR, "Imp '%s' is defunct.", acsServices[service].impname));
+        	}
             return acsdaemon::DEFUNCT;
         }
         imp->ping();
@@ -306,12 +309,18 @@ acsdaemon::ServiceState ImpController::getActualState() {
         return acsdaemon::RUNNING;
 //    } catch(CORBA::OBJECT_NOT_EXIST &ex) {
     } catch(CORBA::TRANSIENT &ex) {
-        ACS_SHORT_LOG((LM_INFO, "Imp '%s' doesn't exist.", acsServices[service].impname));
+    	if (state != acsdaemon::NOT_EXISTING)
+    	{
+    		ACS_SHORT_LOG((LM_ERROR, "Imp '%s' doesn't exist.", acsServices[service].impname));
+    	}
         return acsdaemon::NOT_EXISTING;
     } catch(CORBA::Exception &ex) {
 //        ACS_SHORT_LOG((LM_ERROR, "Failed."));
 //        ACE_PRINT_EXCEPTION (ex, ACE_TEXT ("Caught unexpected exception:"));
-        ACS_SHORT_LOG((LM_INFO, "Imp '%s' is defunct.", acsServices[service].impname));
+    	if (state != acsdaemon::DEFUNCT)
+    	{
+    		ACS_SHORT_LOG((LM_ERROR, "Imp '%s' is defunct.", acsServices[service].impname));
+    	}
         return acsdaemon::DEFUNCT;
     }
 }
@@ -385,11 +394,14 @@ acsdaemon::ServiceState ACSServiceController::getActualState() {
         obj = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, obj.in());
 
         if (obj->_non_existent()) {
-        	if (desc->getName()) {
-	            ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' with name '%s' doesn't exist.", desc->getACSServiceName(), desc->getName()));
-        	} else {	
-    	        ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' doesn't exist.", desc->getACSServiceName()));
-    	    }
+        	if (state != acsdaemon::NOT_EXISTING)
+        	{
+				if (desc->getName()) {
+					ACS_SHORT_LOG((LM_ERROR, "ACS service '%s' with name '%s' doesn't exist.", desc->getACSServiceName(), desc->getName()));
+				} else {
+					ACS_SHORT_LOG((LM_ERROR, "ACS service '%s' doesn't exist.", desc->getACSServiceName()));
+				}
+        	}
             return acsdaemon::NOT_EXISTING;
         }
     	if (desc->getName()) {
@@ -400,20 +412,26 @@ acsdaemon::ServiceState ACSServiceController::getActualState() {
         return getContext()->getDetailedServiceState(desc, obj.in()); // acsdaemon::RUNNING;
 //    } catch(CORBA::OBJECT_NOT_EXIST &ex) {
     } catch(CORBA::TRANSIENT &ex) {
-    	if (desc->getName()) {
-            ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' with name '%s' doesn't exist.", desc->getACSServiceName(), desc->getName()));
-    	} else {
-	        ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' doesn't exist.", desc->getACSServiceName()));
-	    }
+    	if (state != acsdaemon::NOT_EXISTING)
+    	{
+			if (desc->getName()) {
+				ACS_SHORT_LOG((LM_ERROR, "ACS service '%s' with name '%s' doesn't exist.", desc->getACSServiceName(), desc->getName()));
+			} else {
+				ACS_SHORT_LOG((LM_ERROR, "ACS service '%s' doesn't exist.", desc->getACSServiceName()));
+			}
+    	}
         return acsdaemon::NOT_EXISTING;
     } catch(CORBA::Exception &ex) {
 //        ACS_SHORT_LOG((LM_ERROR, "Failed."));
 //        ACE_PRINT_EXCEPTION (ex, ACE_TEXT ("Caught unexpected exception:"));
-    	if (desc->getName()) {
-            ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' with name '%s' is defunct.", desc->getACSServiceName(), desc->getName()));
-    	} else {	
-	        ACS_SHORT_LOG((LM_INFO, "ACS service '%s' is defunct.", desc->getACSServiceName()));
-	    }
+    	if (state != acsdaemon::DEFUNCT)
+    	{
+			if (desc->getName()) {
+				ACS_SHORT_LOG((LM_ERROR, "ACS service '%s' with name '%s' is defunct.", desc->getACSServiceName(), desc->getName()));
+			} else {
+				ACS_SHORT_LOG((LM_ERROR, "ACS service '%s' is defunct.", desc->getACSServiceName()));
+			}
+    	}
         return acsdaemon::DEFUNCT;
     }
 }
