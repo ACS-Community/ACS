@@ -45,7 +45,7 @@ all:	do_all clean unpack jchart2d_jar
 	@echo " . . . 'all' done" 
 
 clean : clean_all
-	@rm -rf unpacked
+	@rm -f unpacked
 	@rm -rf jchart2d/
 	@rm -rf .purifydir
 	@rm -f ../lib/jchart2d-$(JCHART2D_VER).jar
@@ -66,15 +66,18 @@ install :
 unpack : unpacked
 unpacked:
 	@echo ". . . unpacking the tar/zip files . . . "
-	mkdir jchart2d-$(JCHART2D_VER)/
-	@unzip jchart2d-eclipse-project-$(JCHART2D_VER).zip -d jchart2d-$(JCHART2D_VER)
+	@mkdir jchart2d_tmp
+	@unzip jchart2d-eclipse-project-$(JCHART2D_VER).zip -d jchart2d_tmp
 	
 #modified to accomodate junit tests 2011/02/10
-#pull out the jchart2d directory from inside jchart2d-$(JCHART2D_VER)/
-#delete the jchart2d-$(JCHART2D_VER)/
-
-	@cp -r jchart2d-$(JCHART2D_VER)/jchart2d .
-	@rm -fr jchart2d-$(JCHART2D_VER)/
+#pull out the jchart2d directory from inside jchart2d_tmp/
+#delete the jchart2d_tmp
+	@mv jchart2d_tmp/jchart2d .
+	@rm -rf jchart2d_tmp
+	
+# The external file jchart2d/ext/build/proguard-4.2.jar is not JDK 7 compatibile.
+# Thus we bring in the more recent proguard-4.10.jar in disguise, see http://ictjira.alma.cl/browse/ICT-1187 
+	cp proguard-4.10.jar jchart2d/ext/build/proguard-4.2.jar
 	
 	@touch unpacked
 
