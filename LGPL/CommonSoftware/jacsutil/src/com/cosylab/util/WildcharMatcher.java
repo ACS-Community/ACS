@@ -462,8 +462,8 @@ public class WildcharMatcher
 	 * as control characters.
 	 * <P>
 	 * Chars that are control chars for regular expression are escaped 
-	 * (i.e if for example the wildard to translate contains a '[' it is 
-	 * escaped "\[“ in the translated string).
+	 * (i.e if for example the wildcard to translate contains a '[' it is 
+	 * escaped "\[" in the translated string).
 	 *  
 	 * @param wildcard The "simple" wildcard string to translate into a regular expression
 	 * @return The regular expression produced from the "simple" wildcrad

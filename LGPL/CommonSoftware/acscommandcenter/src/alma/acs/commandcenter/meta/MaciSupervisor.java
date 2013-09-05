@@ -623,13 +623,13 @@ public class MaciSupervisor implements IMaciSupervisor {
 			if (log.isLoggable(Level.FINER)) {
 				StringBuilder sb = new StringBuilder();
 
-				sb.append("\nretrieved containers (").append(newContainers.size()).append(") = ¦ ");
+				sb.append("\nretrieved containers (").append(newContainers.size()).append(") = | ");
 				for (ContainerInfo ci : newContainers)
-					sb.append("n=").append(ci.name).append(",h=").append(ci.h).append(" ¦ ");
+					sb.append("n=").append(ci.name).append(",h=").append(ci.h).append(" | ");
 				
-				sb.append("\nknown containers (").append(maciInfo.containers.size()).append(") = ¦ ");
+				sb.append("\nknown containers (").append(maciInfo.containers.size()).append(") = | ");
 				for (ContainerInfo ci : maciInfo.containers)
-					sb.append("n=").append(ci.name).append(",h=").append(ci.h).append(" ¦ ");
+					sb.append("n=").append(ci.name).append(",h=").append(ci.h).append(" | ");
 
 				log.finer(read+"diffing container info"+sb);
 			} // ------------------------------------------------------------------
