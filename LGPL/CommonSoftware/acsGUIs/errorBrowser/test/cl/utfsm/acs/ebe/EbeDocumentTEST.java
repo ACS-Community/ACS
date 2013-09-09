@@ -54,7 +54,7 @@ public class EbeDocumentTEST extends TestCase {
 		Member m=new Member();
 		m.setAttributeValue("name","myMember");
 		m.setAttributeValue("description","My own Member");
-		e.setValue("myMember");
+		m.setValue("myMember");
 		e.putMember(m);
 		doc.putNode(e);
 		FileReader ref;
