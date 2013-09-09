@@ -92,7 +92,7 @@ import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
  * @author Rodrigo Tobar <rtobar@inf.utfsm.cl>
  * @author Alejandro Baltra <abaltra@alumnos.inf.utfsm.cl>
  * @author Arturo Hoffstadt <ahoffsta@inf.utfsm.cl>
- * @author Cristián Maureria <cmaureir@inf.utfsm.cl>
+ * @author Cristian Maureria <cmaureir@inf.utfsm.cl>
  */
 public class SamplingSystemGUI extends JFrame {
 

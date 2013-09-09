@@ -218,7 +218,7 @@ public class ParallelAlarmSender implements Runnable {
 	 */
 	public void addListener(AlarmSentListener listener) {
 		if (listener==null) {
-			throw new IllegalArgumentException("The listener can'þ be null");
+			throw new IllegalArgumentException("The listener can't be null");
 		}
 		for (AlarmSender sender: senders) {
 			sender.addListener(listener);

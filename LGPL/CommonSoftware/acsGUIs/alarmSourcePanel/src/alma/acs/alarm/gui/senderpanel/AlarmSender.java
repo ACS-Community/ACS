@@ -236,7 +236,7 @@ public class AlarmSender implements Runnable {
 	 */
 	public boolean addListener(AlarmSentListener listener) {
 		if (listener==null) {
-			throw new IllegalArgumentException("The listener can'þ be null");
+			throw new IllegalArgumentException("The listener can't be null");
 		}
 		return listeners.add(listener);
 	}
