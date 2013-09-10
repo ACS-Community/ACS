@@ -23,71 +23,55 @@ Install_Ant()
 {
     if [ -z "$ANT_HOME" ]
     then
-	echo "ANT_HOME is not set, cannot continue.\n"
-	exit 1
+        echo "ANT_HOME is not set, cannot continue.\n"
+        exit 1
     fi
-
-#    case "${DISTRO}-${REL}" 
-#    in
-#	"SOLARIS-5.8") 	ARCHIVE=`pwd`/../PRODUCTS/apache-ant-1.7.0-bin.tar.gz ;;
-#	"RHLX-9") 	ARCHIVE=`pwd`/../PRODUCTS/apache-ant-1.7.0-bin.tar.gz ;;
-#	"SL-4.1")    	ARCHIVE=`pwd`/../PRODUCTS/apache-ant-1.7.0-bin.tar.gz ;;
-#	"RHEL-4")	ARCHIVE=`pwd`/../PRODUCTS/apache-ant-1.7.0-bin.tar.gz ;;
-#	*) 		echo "OS not supported. Proceeding as for RedHat Linux 9"
-#           		ARCHIVE=`pwd`/../PRODUCTS/apache-ant-1.7.0-bin.tar.gz ;;
-#    esac
-
-    VERSION=1.7.1
-    ARCHIVE=`pwd`/../PRODUCTS/apache-ant-$VERSION-src.tar.gz 
-    JAR_ARCHIVE=`pwd`/../PRODUCTS/apache-ant-jars 
-
-    BIN_DIR=apache-ant-$VERSION
 
     if [ ! -d $ANT_HOME ]
     then
-         mkdir -p $ANT_HOME
-         RET=$?
-         if [ $RET -ne 0 ]
-         then
+        mkdir -p $ANT_HOME
+        RET=$?
+        if [ $RET -ne 0 ]
+        then
             echo "Failed to create $ANT_HOME, cannot continue..."
             exit 1
-         fi
+        fi
     fi
+    
+    JAR_ARCHIVE=`pwd`/../PRODUCTS/apache-ant-jars 
 
-    echo "Now installing Ant $VERSION... \c"
-    cd $ANT_HOME
-    tar -xzf $ARCHIVE
-    cd $BIN_DIR
-    tar cf - . | (cd ..; tar xf -)
-    cd ..
-    rm -rf $BIN_DIR
-    export CLASSPATH=$CLASSPATH:$JAR_ARCHIVE/junit.jar
-    sh build.sh install-lite || exit 1
-# HSO 2007-07-08: The patch to suppress the system-wide ant config is no longer needed
-#                 with ANT 1.7, because it respects the ANT_HOME installation.
-# 
-#    echo "Patching Ant to work with a user installation"
-#
-#    patch -p0 <<'EOF'
-#--- bin.old/ant     2004-10-15 13:42:25.000000000 +0200
-#+++ bin/ant 2004-10-15 13:38:35.000000000 +0200
-#@@ -4,9 +4,12 @@
-# #   reserved.
-# 
-# # load system-wide ant configuration
-#-if [ -f "/etc/ant.conf" ] ; then
-#-  . /etc/ant.conf
-#-fi
-#+# G.Chiozzi - 2004-10-15
-#+# This must be commented out, because it makes impossible
-#+# to install locally a different version of ANT
-#+# if [ -f "/etc/ant.conf" ] ; then
-#+#  . /etc/ant.conf
-#+# fi
-# 
-# # provide default values for people who don't use RPMs
-# if [ -z "$rpm_mode" ] ; then
-#EOF
+# TODO: Use the newer ANT_VERSION unconditionally. The following choice based on the JDK version
+#       is used as a workaround for JDK 7 evaluation (ICT-1187), 
+#       while we have not gotten the permission of the project to upgrade ANT.
+#       (The old ANT build fails on test machines with JDK 7 installed.) 
+    JAVA_VERSION=`java -version 2>&1 | awk '/version/ {print $3}' | awk -F . '{print $2}'`
+    if [ $JAVA_VERSION -ge 7 ]
+    then
+        ANT_VERSION=1.9.2
+        echo "Java SE $JAVA_VERSION detected. Will install ANT upgrade to $ANT_VERSION!"
+        tar xzf ../PRODUCTS/apache-ant-$ANT_VERSION-src.tar.gz --directory $ANT_HOME/..
+        ANT_UNPACKED_DIR=$ANT_HOME/../apache-ant-$ANT_VERSION
+        cd $ANT_UNPACKED_DIR
+        cp $JAR_ARCHIVE/junit-4.11.jar lib/optional/
+        cp $JAR_ARCHIVE/hamcrest-core-1.3.jar lib/optional/
+# TODO: 'dist-lite' produces a minimum installation in $ANT_HOME, so we might want to add sources ('jars-sources'? etc)
+        sh build.sh -Ddist.dir=$ANT_HOME dist-lite || exit 1
+        sh build.sh test || exit 1
+        rm -rf $ANT_UNPACKED_DIR
+    else
+        ANT_VERSION=1.7.1
+        echo "Now installing Ant $ANT_VERSION... \c"
+        ARCHIVE=`pwd`/../PRODUCTS/apache-ant-$ANT_VERSION-src.tar.gz 
+        BIN_DIR=apache-ant-$ANT_VERSION
+        cd $ANT_HOME
+        tar -xzf $ARCHIVE
+        cd $BIN_DIR
+        tar cf - . | (cd ..; tar xf -)
+        cd ..
+        rm -rf $BIN_DIR
+        export CLASSPATH=$CLASSPATH:$JAR_ARCHIVE/junit.jar
+        sh build.sh install-lite || exit 1
+    fi
     echo "done.\n"
 
 }
@@ -106,16 +90,6 @@ exec > $LOG 2>&1
 
 date
 
-# Check OS
-#if [     ${DISTRO}-${REL} != "SOLARIS-5.8"       \
-#     -a  ${DISTRO}-${REL} != "RHLX-9"           \
-#     -a  ${DISTRO}-${REL} != "RHEL-4"           \
-#     -a  ${DISTRO}-${REL} != "SL-4.1"           \
-#   ]
-#then
-#    echo "\n\tWARNING: this procedure has not been tested on this system\n"
-#fi
-
 CURR_DIR=`pwd`
 
 #
@@ -128,5 +102,3 @@ cd $CURR_DIR
 
 echo Ant installation done!
 date
-
-
