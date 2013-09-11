@@ -493,8 +493,10 @@ class Logger(logging.Logger):
         '''
         Helper function returns the name of the calling function or method.
         '''
+        theStack=stack()
         try:
-            func_name = stack()[3][3]
+            functions=theStack[3]
+            func_name = functions[3]
         except IndexError, ex:
             func_name = "Indeterminable Name"
 
