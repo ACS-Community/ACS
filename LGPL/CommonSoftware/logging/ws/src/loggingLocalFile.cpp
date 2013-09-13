@@ -53,7 +53,7 @@ LocalFileLogger::open (const ACE_TCHAR * filename)
 	processName = LoggingProxy::ProcessName();
 
     // only process name without any e.g. "../bin/"
-    int pos = processName.rfind(ACE_DIRECTORY_SEPARATOR_CHAR);
+    size_t pos = processName.rfind(ACE_DIRECTORY_SEPARATOR_CHAR);
     if (pos!=ACE_CString::npos)
 	processName = processName.substr(pos+1);
     
