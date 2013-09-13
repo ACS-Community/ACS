@@ -54,6 +54,7 @@
 #include "loggingLoggingTSSStorage.h"
 #include "loggingLogThrottle.h"
 #include "loggingThrottleAlarmInterface.h"
+#include <loggingCacheLogger.h>
 
 #define DYNAMIC_LOG_LEVEL 1
 #define CDB_REFRESH_LOG_LEVEL 2
@@ -364,6 +365,28 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     void sendXmlLogs(ACE_Log_Record &log_record,  const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType);
     void sendBinLogs(ACE_Log_Record &log_record,  const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType);
 
+    /// This will return the name of the file that will be used to store the logs locally
+    /// and will try to create the missing directories if they currently do not exist
+    /// This will return an empty string "" if the directory where the local log file should
+    /// have been created cannot be created or does not have the correct permissions
+    /// If ACS_LOG_FILE is defined, this will return the content of this variable unless
+    /// the file defined by this variable cannot be created (permissions problems).
+    /// In this case and if ACS_LOG_FILE is not defined, this method will return a filename
+    /// located under $ACS_TMP directory, if it is defined, or
+    /// under [$ACSDATA]/tmp/[$HOST]/[ACS_INSTANCE.$ACS_INSTANCE]
+    ACE_CString getTempFileNameAndCreateMissingDirs(const ACE_TCHAR * timestamp);
+
+    /// Creates the given directory and its parent folders
+    int makeDirectory(const ACE_TCHAR * dirname, const ACE_TCHAR * timestamp);
+
+    /// Check that the directory having the name given as parameter
+    int createMissingDirectories(const ACE_TCHAR * dirname, const ACE_TCHAR * timestamp);
+
+    /// Logs the content of the cache to the appropriate logging end point
+    int logNonCentralizedLoggerCache(CacheLogger * logger, const ACE_CString & key, const ACE_TCHAR * timestamp);
+
+    /// Returns the parent directory name of the file given as parameter
+    ACE_CString getParentFolder(const ACE_TCHAR * filename);
     ///
     /// The number of log entries that can be kept in the local cache.
     /// When this number is reached, all log entries are transferred to the centralized

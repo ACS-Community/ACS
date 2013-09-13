@@ -1,0 +1,249 @@
+#!/bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2007 
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#
+# "@(#) $Id: $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# rbourtem  2013-09-12  created
+#
+
+function displayEnvVariables(){
+	echo 
+	echo "ACS_TMP = $ACS_TMP"
+	echo "ACSDATA = $ACSDATA"
+	echo "ACS_INSTANCE=$ACS_INSTANCE"
+	echo "ACS_LOG_FILE=$ACS_LOG_FILE"
+	echo 
+}
+
+export ACS_INSTANCE=10
+export ACSDATA=$PWD/tmp/acsdata
+export ACS_TMP=$PWD/tmp/acs_tmp
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE=/dev/null"
+echo "---------------------------------------"
+export ACS_LOG_FILE=/dev/null
+displayEnvVariables
+testLoggingProxy
+echo
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE=tmp/specialLogDirectory/specialLogFile"
+echo "---------------------------------------"
+rm -rf $PWD/tmp/specialLogDirectory
+export ACS_LOG_FILE=$PWD/tmp/specialLogDirectory/specialLogFile
+displayEnvVariables
+testLoggingProxy
+echo " ---"
+echo "Log file created = `ls tmp/specialLogDirectory/specialLogFile*`:"
+cat  $PWD/tmp/specialLogDirectory/specialLogFile*
+rm -rf $PWD/tmp/specialLogDirectory
+echo
+
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE (Wrong permissions - no write permissions on directory)"
+echo "---------------------------------------"
+mkdir -p $PWD/tmp/local/logs
+export ACS_LOG_FILE=$PWD/tmp/local/logs/specialLogFile
+chmod -w $PWD/tmp/local/logs
+displayEnvVariables
+testLoggingProxy
+chmod +w $PWD/tmp/local/logs
+echo " ---"
+echo "Log file created = `ls $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/specialLogFile*`:"
+cat  $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/specialLogFile*
+rm -rf $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+echo
+
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE=/var/log/specialLogDirectory/specialLogFile (Wrong permissions - ne exec permissions on directory)"
+echo "---------------------------------------"
+chmod -x $PWD/tmp/local/logs
+displayEnvVariables
+testLoggingProxy
+chmod +x $PWD/tmp/local/logs
+echo " ---"
+echo "Log file created = `ls $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/specialLogFile*`:"
+cat  $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/specialLogFile*
+rm -rf $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+rm -rf $PWD/tmp/local
+echo
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE=tmp/wrongPermDir/specialLogFile (Directory existing but without exec permissions)"
+echo "---------------------------------------"
+mkdir $PWD/tmp/wrongPermDir
+export ACS_LOG_FILE=$PWD/tmp/wrongPermDir/specialLogFile
+chmod -x $PWD/tmp/wrongPermDir
+displayEnvVariables
+testLoggingProxy
+chmod +x tmp/wrongPermDir
+echo " ---"
+echo "Log file created = `ls $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/specialLogFile*`:"
+cat  $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/specialLogFile*
+rm -rf $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+rm -rf tmp/wrongPermDir
+echo
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE unset and ACS_TMP defined and without permissions problems"
+echo "---------------------------------------"
+unset ACS_LOG_FILE
+displayEnvVariables
+testLoggingProxy
+echo " ---"
+echo "Log file created = `ls $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/acs_local_log*`:"
+cat  $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/acs_local_log*
+rm -rf $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+echo
+
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE unset and ACS_TMP defined and having permissions problems"
+echo "---------------------------------------"
+mkdir $PWD/tmp/wrongPermDir
+export ACS_TMP=$PWD/tmp/wrongPermDir
+chmod -x $PWD/tmp/wrongPermDir
+displayEnvVariables
+testLoggingProxy
+chmod +x $PWD/tmp/wrongPermDir
+rm -rf $PWD/tmp/wrongPermDir
+echo
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE unset and ACS_TMP defined and having permissions problems on \$ACS_TMP/ACS_INSTANCE.\$ACS_INSTANCE"
+echo "---------------------------------------"
+export ACS_TMP=$PWD/tmp
+mkdir $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+chmod -w $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+displayEnvVariables
+testLoggingProxy
+chmod +w $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+rm -rf $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
+echo
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE and ACS_TMP unset with ACSDATA defined and without permissions problems"
+echo "---------------------------------------"
+unset ACS_TMP
+export ACSDATA=$PWD/tmp/acsdata
+displayEnvVariables
+testLoggingProxy
+echo " ---"
+echo "Log file created = `ls $ACSDATA/tmp/$HOST/ACS_INSTANCE.$ACS_INSTANCE/acs_local_log*`:"
+cat  $ACSDATA/tmp/$HOST/ACS_INSTANCE.$ACS_INSTANCE/acs_local_log*
+rm -rf $ACSDATA
+echo
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE, ACS_TMP and ACS_INSTANCE unset with ACSDATA defined and without permissions problems"
+echo "---------------------------------------"
+unset ACS_INSTANCE
+displayEnvVariables
+testLoggingProxy
+echo " ---"
+echo "Log file created = `ls $ACSDATA/tmp/$HOST/acs_local_log*`:"
+cat  $ACSDATA/tmp/$HOST/acs_local_log*
+rm -rf $ACSDATA
+echo
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE and ACS_INSTANCE unset with ACS_TMP defined and without permissions problems"
+echo "---------------------------------------"
+export ACS_TMP=$PWD/tmp/acs_tmp
+displayEnvVariables
+testLoggingProxy
+echo " ---"
+echo "Log file created = `ls $ACS_TMP/acs_local_log*`:"
+cat  $ACS_TMP/acs_local_log*
+rm -rf $ACS_TMP
+echo
+
+echo "---------------------------------------"
+echo "Test with ACS_TMP unset with ACS_LOG_FILE, ACSDATA and ACS_INSTANCE defined and with permissions problems on ACS_LOG_FILE path"
+echo "---------------------------------------"
+unset ACS_TMP
+export ACSDATA=$PWD/tmp/acsdata
+export ACS_INSTANCE=10
+mkdir -p $PWD/tmp/LOGDIR/test
+export ACS_LOG_FILE=$PWD/tmp/LOGDIR/test/acsLogFile
+displayEnvVariables
+chmod -x $PWD/tmp/LOGDIR
+testLoggingProxy
+chmod +x $PWD/tmp/LOGDIR
+echo " ---"
+echo "Log file created = `ls $ACSDATA/tmp/$HOST/ACS_INSTANCE.$ACS_INSTANCE/acsLogFile*`:"
+cat  $ACSDATA/tmp/$HOST/ACS_INSTANCE.$ACS_INSTANCE/acsLogFile*
+rm -rf $ACSDATA
+echo
+
+echo "---------------------------------------"
+echo "Test with ACS_LOG_FILE, ACS_TMP and ACS_INSTANCE unset with ACS_LOG_FILE and ACSDATA defined and with permissions problems on ACS_LOG_FILE path"
+echo "---------------------------------------"
+unset ACS_INSTANCE
+displayEnvVariables
+chmod -w $PWD/tmp/LOGDIR/test
+testLoggingProxy
+chmod +w $PWD/tmp/LOGDIR/test
+echo " ---"
+echo "Log file created = `ls $ACSDATA/tmp/$HOST/acsLogFile*`:"
+cat  $ACSDATA/tmp/$HOST/acsLogFile*
+rm -rf $ACSDATA
+echo
+
+echo "---------------------------------------"
+echo "Test with ACS_INSTANCE unset with ACS_TMP and ACS_LOG_FILE defined and with permissions problems on ACS_LOG_FILE path"
+echo "---------------------------------------"
+export ACS_TMP=$PWD/tmp/acs_tmp
+displayEnvVariables
+chmod -x $PWD/tmp/LOGDIR/test
+testLoggingProxy
+chmod +x $PWD/tmp/LOGDIR/test
+echo " ---"
+echo "Log file created = `ls $ACS_TMP/acsLogFile*`:"
+cat  $ACS_TMP/acsLogFile*
+rm -rf $ACS_TMP/*
+echo
+
+
+echo "---------------------------------------"
+echo "Test with ACS_INSTANCE unset with ACS_TMP and ACS_LOG_FILE defined and with permissions problems on ACS_LOG_FILE path in the middle of the test"
+echo "---------------------------------------"
+displayEnvVariables
+testLoggingProxy &
+sleep 6
+chmod -x $PWD/tmp/LOGDIR
+sleep 6
+chmod +x $PWD/tmp/LOGDIR
+echo " ---"
+echo "Log files created = `ls $ACS_LOG_FILE*` and `ls $ACS_TMP/acsLogFile*`:"
+echo "`ls $ACS_LOG_FILE*`:"
+cat $ACS_LOG_FILE*
+echo "`ls $ACS_TMP/acsLogFile*`:"
+cat  $ACS_TMP/acsLogFile*
+rm -rf $ACS_TMP
+chmod +x $PWD/tmp/LOGDIR
+rm -rf $PWD/tmp/LOGDIR
+echo
+#
+# ___oOo___

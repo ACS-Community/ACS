@@ -119,7 +119,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       =  testACS_LOG_STDOUT
+SCRIPTS_L       =  testACS_LOG_STDOUT testLocalCache
 
 #
 # TCL scripts (public and local)

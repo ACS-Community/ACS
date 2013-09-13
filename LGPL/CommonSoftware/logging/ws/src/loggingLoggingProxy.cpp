@@ -1060,10 +1060,6 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
       tss = new ACE_TSS<LoggingTSSStorage>;
   instances++;
 
-
-  // set logger filename
-  m_filename = getTempFileName("ACS_LOG_FILE", DEFAULT_LOG_FILE_NAME);
-
   char *acsSTDIO = getenv("ACS_LOG_STDOUT");
   if (acsSTDIO && *acsSTDIO)
     {
@@ -1393,103 +1389,71 @@ LoggingProxy::sendCacheInternal()
 	    }
 	// use local file
 	else
-	    {
-        if (ACE_OS::strcmp(m_filename.c_str(), "/dev/null")==0)
-            {
-                if (!m_logBin) m_cache.clear();
-                else m_bin_cache.clear();
-                return;
-            }
-        logger = new LocalFileLogger();
-        key = m_filename.c_str();
-	    }
+	{
+		if(m_filename.length() == 0)
+		{
+			// set logger filename and eventually creates missing directories
+			m_filename = getTempFileNameAndCreateMissingDirs(timestamp);
+		}
+		if(m_filename.length() == 0)
+		{
+			ACE_OS::printf ("%s Failed to save logging cache. Cache is lost!\n", timestamp);
+		}
+		if ((ACE_OS::strcmp(m_filename.c_str(), "/dev/null")==0) || (m_filename.length() == 0))
+		{
+			if (!m_logBin)
+				m_cache.clear();
+			else
+				m_bin_cache.clear();
+			return;
+		}
+		logger = new LocalFileLogger();
+		key = m_filename.c_str();
+	}
 
 	//
 	// log cache here
 	//
 
-    if (logger && (CORBA::is_nil(m_logger.ptr()))){
-        if (logger->open(key.c_str())==0){
-            if(!m_logBin)
-            {
-                XMLElement * xmlElement = 0;
-                ACE_CString str(size_t(32));
-                int prio;
-                for (LogDeque::iterator iter = m_cache.begin(); iter != m_cache.end(); iter++)
-                {
-                    prio = ACE::log2 (LM_ERROR);         // default (LM_ERROR)
-                    // parse "Priority" out
-                    xmlElement = XMLParser::parseString(iter->c_str(), true);
-                    if (xmlElement!=0){
-                        if (xmlElement->getAttribute ("Priority", str)==0){
-                            int tprio = atoi(str.c_str());
-                            if (tprio)                        // valid value
-                            prio = tprio;
-                        }else{                                     // extract from entry type
-                            const ACE_TCHAR * type = xmlElement->name();
-                            /*const int len = sizeof(m_LogEntryTypeName) / sizeof(m_LogEntryTypeName[0]);
-                            for (int i = 1; i < len; i++)
-                            if (ACE_OS::strcmp(m_LogEntryTypeName[i], type)==0)
-                                { prio = i; break; }
-                            */
-                             prio = LogLevelDefinition::fromName(type).getValue();
-                        }
-                        delete xmlElement;
-                    }
-                    logger->log(prio, iter->c_str());        // what if error occurs!!!
-                }
-            }else
-            {
-	            if (logger && (CORBA::is_nil(m_logger.ptr()))){
-                    if (logger->open(key.c_str())==0){
-
-                        ACE_CString str(size_t(32));
-                        int prio;
-
-                        for (LogBinDeque::iterator iter = m_bin_cache.begin(); iter != m_bin_cache.end(); iter++)
-                        {
-                            prio = ACE::log2 (LM_ERROR);         // default (LM_ERROR)
-                            // parse "Priority" out
-                            int tprio = (*iter)->Priority;
-                            if (tprio)                        // valid value
-                                prio = tprio;
-                            else{                                     // extract from entry type
-                                AcsLogLevels::logLevelValue type = (*iter)->type;
-                                std::string name = LogLevelDefinition::fromInteger(type).getName();
-                                if(name != AcsLogLevels::OFF_NAME) prio = type;
-
-                            }
-                            logger->log(prio,BinToXml(*iter).c_str());
-                            delete *iter;
-                        }
-                     }
-                }
-            }
-            if (!m_alreadyInformed){
-                ACE_OS::printf ("%s %s logger: Cache saved to '%s'.\n", timestamp, logger->getIdentification(), logger->getDestination());
-		ACE_OS::fflush (stdout); //(2004-01-05)msc: added
-                m_alreadyInformed=true;
-            }
-
-            logger->close();
-            if (!m_logBin){
-                m_cache.clear();
-            }else{
-                 m_bin_cache.clear();
-            }
-            delete logger;
-
-            return;
-
-        }else{
-            ACE_OS::printf ("%s %s logger: Failed to save logging cache. Cache is lost!\n", timestamp, logger->getIdentification());
-            if (!m_logBin) m_cache.clear();
-            else m_bin_cache.clear();
-
-            delete logger;
-        return;
-        }
-    }
+	if (logger && (CORBA::is_nil(m_logger.ptr())))
+	{
+		if(logNonCentralizedLoggerCache(logger,key, timestamp)!= 0)
+		{
+			if (m_syslog.length()<=0)
+			{
+				// It looks like the directory was removed or the permissions changed
+				// Retry to create the directory and save the logs immediately
+				ACE_OS::printf ("%s %s logger: Failed to save logging cache in %s! (Directory removed or permissions changed?)\n", timestamp, logger->getIdentification(),key.c_str());
+				m_filename = getTempFileNameAndCreateMissingDirs(timestamp);
+				if (m_filename.length() != 0)
+				{
+					m_alreadyInformed=false;
+					if(logNonCentralizedLoggerCache(logger,m_filename, timestamp)!= 0)
+					{
+						ACE_OS::printf ("%s %s logger: Failed to save logging cache. Cache is lost!\n", timestamp, logger->getIdentification());
+					}
+					else
+					{
+						return;
+					}
+				}
+			}
+			else
+			{
+				ACE_OS::printf ("%s %s logger: Failed to save logging cache. Cache is lost!\n", timestamp, logger->getIdentification());
+			}
+			if (!m_logBin)
+				m_cache.clear();
+			else
+				m_bin_cache.clear();
+			delete logger;
+			return;
+		} // if(logNonCentralizedLoggerCache(logger,key, timestamp)!= 0)
+		else
+		{
+			return;
+		}
+	}
     // should I retain cache or not?!!!
     ACE_OS::printf ("%s Failed to create cache logger. Logging cache is lost!\n", timestamp);
     if (!m_logBin) m_cache.clear();
@@ -1847,4 +1811,205 @@ void LoggingProxy::setCentralizedLogger(Logging::AcsLogService_ptr centralizedLo
 
 ACE_TSS<LoggingTSSStorage> *LoggingProxy::getTSS(){
 	return tss;
+}
+
+ACE_CString LoggingProxy::getTempFileNameAndCreateMissingDirs(const ACE_TCHAR * timestamp)
+{
+	ACE_CString result;
+	char * acs_log_file_env = ACE_OS::getenv("ACS_LOG_FILE");
+	ACE_CString filename = DEFAULT_LOG_FILE_NAME;
+	if(acs_log_file_env != NULL)
+	{
+		// ACS_LOG_FILE environment variable is defined
+		if (ACE_OS::strcmp(acs_log_file_env, "/dev/null")==0)
+		{
+			result = acs_log_file_env;
+			return result;
+		}
+		// Check whether the base directory exists,
+		// and that we have write permission
+		// Tries to create the base directory and its parents
+		// if they do not exist yet
+		ACE_CString baseDir = getParentFolder(acs_log_file_env);
+		if (createMissingDirectories(baseDir.c_str(), timestamp) != 0)
+		{
+			// Fallback to alternative directory
+			filename = ACE::basename(acs_log_file_env);
+			ACE_OS::printf ("%s Logging cache cannot be written in %s directory (from ACS_LOG_FILE environment variable).\nFalling back to alternate solution.\n",
+					timestamp,baseDir.c_str());
+		}
+		else
+		{
+			// The missing directories have been created
+			result = acs_log_file_env;
+			return result;
+		}
+	}
+	result = getTempFileName(0, filename.c_str());
+	ACE_CString baseDir = getParentFolder(result.c_str());
+	if (createMissingDirectories(baseDir.c_str(), timestamp) != 0)
+	{
+		ACE_OS::printf ("%s Logging cache cannot be written in %s directory.\n",
+							timestamp,baseDir.c_str());
+		return "";
+	}
+	// The missing directories have been created
+	return result;
+}
+
+/*
+ * Check that the file having the name given as parameter
+ * can be created in the specified path and tries to create the missing
+ * parent folders if they do not exists
+ */
+int LoggingProxy::createMissingDirectories(const ACE_TCHAR * dirname, const ACE_TCHAR * timestamp)
+{
+	if (makeDirectory(dirname, timestamp) != 0)
+	{
+		return -1;
+	}
+	// Check if the directory is writable and has executable permissions
+	if (ACE_OS::access(dirname,W_OK|X_OK)!=0)
+	{
+		ACE_OS::printf ("%s %s directory does not have write or exec permissions!\n",
+									timestamp,dirname);
+		return -1;
+	}
+	return 0;
+}
+
+/*
+ * Creates the given directory and its parent folders
+ */
+int LoggingProxy::makeDirectory(const ACE_TCHAR * dirname, const ACE_TCHAR * timestamp)
+{
+	if (ACE_OS::access(dirname,F_OK)==0)
+	{
+		// The directory already exists: nothing to do
+		return 0;
+	}
+	// The directory does not exist yet
+	ACE_CString baseDirName = getParentFolder(dirname);
+	if(makeDirectory(baseDirName.c_str(), timestamp) == 0)
+	{
+		// The base directory exists
+		// Creates the directory with the right permissions (O777)
+		mode_t prev_umask = ACE_OS::umask(0);
+		if (ACE_OS::mkdir(dirname, (S_IRWXU | S_IRWXG | S_IRWXO))!=0)
+		{
+			ACE_OS::printf ("%s Failed to create %s directory\n", timestamp, dirname);
+			return -1;
+		}
+		else
+		{
+			umask(prev_umask); // restore previous umask
+			// The directory could be created
+			return 0;
+		}
+	}
+	else
+	{
+		// The base directory could not be created
+		return -1;
+	}
+}
+
+int LoggingProxy::logNonCentralizedLoggerCache(CacheLogger * logger,const ACE_CString & key, const ACE_TCHAR * timestamp)
+{
+	if (logger->open(key.c_str())==0)
+	{
+		if(!m_logBin)
+		{
+			XMLElement * xmlElement = 0;
+			ACE_CString str(size_t(32));
+			int prio;
+			for (LogDeque::iterator iter = m_cache.begin(); iter != m_cache.end(); iter++)
+			{
+				prio = ACE::log2 (LM_ERROR);         // default (LM_ERROR)
+				// parse "Priority" out
+				xmlElement = XMLParser::parseString(iter->c_str(), true);
+				if (xmlElement!=0)
+				{
+					if (xmlElement->getAttribute ("Priority", str)==0)
+					{
+						int tprio = atoi(str.c_str());
+						if (tprio)                        // valid value
+							prio = tprio;
+					}
+					else
+					{                                     // extract from entry type
+						const ACE_TCHAR * type = xmlElement->name();
+						/*const int len = sizeof(m_LogEntryTypeName) / sizeof(m_LogEntryTypeName[0]);
+	                            for (int i = 1; i < len; i++)
+	                            if (ACE_OS::strcmp(m_LogEntryTypeName[i], type)==0)
+	                                { prio = i; break; }
+						 */
+						prio = LogLevelDefinition::fromName(type).getValue();
+					}
+					delete xmlElement;
+				}
+				logger->log(prio, iter->c_str());        // what if error occurs!!!
+			}
+		} // if(!m_logBin)
+		else
+		{
+			ACE_CString str(size_t(32));
+			int prio;
+
+			for (LogBinDeque::iterator iter = m_bin_cache.begin(); iter != m_bin_cache.end(); iter++)
+			{
+				prio = ACE::log2 (LM_ERROR);         // default (LM_ERROR)
+				// parse "Priority" out
+				int tprio = (*iter)->Priority;
+				if (tprio)                        // valid value
+					prio = tprio;
+				else
+				{                                     // extract from entry type
+					AcsLogLevels::logLevelValue type = (*iter)->type;
+					std::string name = LogLevelDefinition::fromInteger(type).getName();
+					if(name != AcsLogLevels::OFF_NAME)
+						prio = type;
+
+				}
+				logger->log(prio,BinToXml(*iter).c_str());
+				delete *iter;
+			}
+		}
+		if (!m_alreadyInformed)
+		{
+			ACE_OS::printf ("%s %s logger: Cache saved to '%s'.\n", timestamp, logger->getIdentification(), logger->getDestination());
+			ACE_OS::fflush (stdout); //(2004-01-05)msc: added
+			m_alreadyInformed=true;
+		}
+
+		logger->close();
+		if (!m_logBin)
+			m_cache.clear();
+		else
+			m_bin_cache.clear();
+		delete logger;
+
+		return 0;
+	}
+	else
+	{
+		// logger->open(key.c_str()) failed
+		return -1;
+	}
+}
+
+/*
+ * Method to get the parent directory name of the file given as parameter
+ * This method is preferred over ACE:dirname() which is not reentrant
+ */
+ACE_CString LoggingProxy::getParentFolder(const ACE_TCHAR * filename)
+{
+	ACE_CString dir = filename;
+	ACE_CString dirName="";
+	size_t lastSepPos = dir.rfind(ACE_DIRECTORY_SEPARATOR_CHAR);
+	if ((lastSepPos!=ACE_CString::npos) && (lastSepPos > 0))
+		dirName = dir.substr(0,lastSepPos);
+	else
+		dirName = ".";
+	return dirName;
 }
