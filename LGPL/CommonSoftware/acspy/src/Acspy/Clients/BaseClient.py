@@ -40,6 +40,7 @@ __revision__ = "$Id: BaseClient.py,v 1.17 2012/04/23 22:45:14 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
+from threading import Lock
 #--CORBA STUBS-----------------------------------------------------------------
 import maci
 from maci__POA import Client
@@ -85,14 +86,13 @@ class BaseClient(Client):
         self.managerComponents = []
         #CORBA reference to ourself
         self.corbaRef = None
+        #True if the client is logged in
+        self.loggedIn = False
+        # Ensure that login and logout are executed in mutual exclusion
+        self.loggingIn = Lock() 
         
-        try:
-            #get our token from manager
-            self.token = getManager().login(self.getMyCorbaRef())
-        except Exception, e:
-            #cannot go on if the login fails
-            print_exc()
-            raise CORBAProblemExImpl()
+        #get our token from manager
+        self.token = self.managerLogin()
         
         #sanity check
         if self.token == None:
@@ -133,13 +133,7 @@ class BaseClient(Client):
         '''
         self.logger.logInfo('Shutdown called for client')
         stopPeriodicFlush()
-        try:
-            #here we literally log out of manager
-            getManager().logout(self.token.h)
-        except Exception, e:
-            self.logger.logWarning('Failed to log out of manager: ' +
-                                   str(e))
-            print_exc()
+        self.managerLogout()
 
         return
     #--CLIENT IDL--------------------------------------------------------------
@@ -319,3 +313,55 @@ class BaseClient(Client):
         '''
         return "C"
     #--------------------------------------------------------------------------
+    def managerLogin(self):
+        '''
+        Login into the manager
+        
+        Parameters: None
+
+        Returns: The token from the manager
+        
+        Raises: CORBAProblemExImpl
+        '''
+        try:
+            with self.loggingIn:
+                token = getManager().login(self.getMyCorbaRef())
+                self.loggedIn = True
+        except Exception, e:
+            #cannot go on if the login fails
+            print_exc()
+            raise CORBAProblemExImpl()
+        
+        return token
+    #--------------------------------------------------------------------------
+    def managerLogout(self):
+        '''
+        Logout from manager
+        
+        Parameters: None
+
+        Returns: None
+        
+        Raises: Nothing
+        '''
+        try:
+            #here we literally log out of manager
+            with self.loggingIn:
+                getManager().logout(self.token.h)
+                self.loggedIn = False
+        except Exception, e:
+            self.logger.logWarning('Failed to log out of manager: ' +
+                                   str(e))
+            print_exc()
+    #--------------------------------------------------------------------------
+    def isLoggedIn(self):
+        '''
+        Returns True is the client is logged into the manager
+        and False otherwise
+        
+        Parameters: None
+        
+        Raises: Nothing
+        '''
+        with self.loggingIn:
+            return self.loggedIn
