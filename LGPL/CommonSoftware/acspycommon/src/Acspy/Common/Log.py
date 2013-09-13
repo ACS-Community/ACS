@@ -673,22 +673,6 @@ class Logger(logging.Logger):
         self.log(LEVELS[ACSLog.ACS_LOG_TRACE], msg)
         
     #------------------------------------------------------------------------
-    def logDelouse(self, msg):
-        '''
-        Log a delouse message.
-        
-        Parameters:
-        - msg is a string to be sent to the logging system
-        
-        
-        Returns: Nothing
-        
-        Raises: Nothing
-        '''
-        msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_DELOUSE], msg)
-        
-    #------------------------------------------------------------------------
     def logWarning(self, msg):
         '''
         Log a warning message.
