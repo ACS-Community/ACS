@@ -22,7 +22,7 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-LINK_FILES = $(addsuffix .cpp, $(ManagerShutdown_OBJECTS) $(Container_OBJECTS))
+LINK_FILES = $(addsuffix .cpp, $(ManagerShutdown_OBJECTS) $(Container_OBJECTS) $(SimpleClient_OBJECTS))
 
 OPTIMIZE=0
 
@@ -47,7 +47,7 @@ PROG =
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = $(PROG) Container ManagerShutdown
+EXECUTABLES     = $(PROG) Container ManagerShutdown SimpleClient
 
 EXECUTABLES_L   = 
 
@@ -62,6 +62,7 @@ Container_LIBS =
 
 ManagerShutdown_OBJECTS = maciManagerShutdown 
 
+SimpleClient_OBJECTS =  maciSimpleClient maciSimpleClientThreadHook
 
 $(PROG)_OBJECTS            = $(PROG)
 $(PROG)_LDFLAGS            =
