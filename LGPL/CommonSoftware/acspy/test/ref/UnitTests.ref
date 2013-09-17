@@ -4,7 +4,7 @@
 1 - test_components_unavailable_data_empty (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
 1 - test_components_unavailable_empty_data (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
 1 - test_components_unavailable_empty_empty (test_Acspy_Clients_BaseClient.TestBaseClient) ... ok
-1 -   File "BaseClient.py", line xxx, in disconnect
+1 -   File "BaseClient.py", line xxx, in managerLogout
 1 -     getManager().logout(self.token.h)
 1 -   File "mock.py", line xxx, in __call__
 1 -     ret_val = self.side_effect(*args, **kwargs)
@@ -12,12 +12,12 @@
 1 -     raise Exception()
 1 - Exception
 1 - ok
-1 -   File "BaseClient.py", line xxx, in disconnect
+1 -   File "BaseClient.py", line xxx, in managerLogout
 1 -     getManager().logout(self.token.h)
 1 - AttributeError: 'int' object has no attribute 'h'
 1 - ok
-1 -   File "BaseClient.py", line xxx, in __init__
-1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "BaseClient.py", line xxx, in managerLogin
+1 -     token = getManager().login(self.getMyCorbaRef())
 1 -   File "mock.py", line xxx, in __call__
 1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Clients_BaseClient.py", line xxx, in raiser
@@ -117,8 +117,8 @@
 1 - test_components_keys (test_Acspy_Container.TestGetComponentInfo) ... ok
 1 - test_components_no_keys (test_Acspy_Container.TestGetComponentInfo) ... ok
 1 - test_no_components (test_Acspy_Container.TestGetComponentInfo) ... ok
-1 -   File "BaseClient.py", line xxx, in __init__
-1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "BaseClient.py", line xxx, in managerLogin
+1 -     token = getManager().login(self.getMyCorbaRef())
 1 -   File "Container.py", line xxx, in getMyCorbaRef
 1 -     raise CORBAProblemExImpl()
 1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=XXXX, routine='getMyCorbaRef', host=xxxx, previousError=[]))
@@ -130,8 +130,8 @@
 1 -   File "test_Acspy_Container.py", line xxx, in raiser
 1 -     raise Exception()
 1 - Exception
-1 -   File "BaseClient.py", line xxx, in __init__
-1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "BaseClient.py", line xxx, in managerLogin
+1 -     token = getManager().login(self.getMyCorbaRef())
 1 -   File "Container.py", line xxx, in getMyCorbaRef
 1 -     raise CORBAProblemExImpl()
 1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=XXXX, routine='getMyCorbaRef', host=xxxx, previousError=[]))
