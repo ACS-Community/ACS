@@ -88,14 +88,15 @@ class PySimpleClient(BaseClient, ContainerServices):
             name = name
         name = str(name)
         
-        #call superclass constructors
-        ContainerServices.__init__(self)
-        if _DEBUG: # pragma: NO COVER
-            print "Got past ContainerServices in SimpleClient"
         BaseClient.__init__(self, name)
         if _DEBUG: # pragma: NO COVER
             print "Got past BaseClient in SimpleClient"
 
+        #call superclass constructors
+        ContainerServices.__init__(self)
+        if _DEBUG: # pragma: NO COVER
+            print "Got past ContainerServices in SimpleClient"
+            
         #set some things to make ContainerServices happy
         self.setAll(self.name,
                     self.token,
