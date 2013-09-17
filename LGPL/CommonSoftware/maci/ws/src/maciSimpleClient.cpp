@@ -61,7 +61,9 @@
 #include "maciContainerImpl.h"
 
 #include <acsutilTimeStamp.h>
-#include <loggingLog4cpp.h>
+#ifndef MAKE_VXWORKS
+ #include <loggingLog4cpp.h>
+#endif
 
 namespace maci {
 using namespace baci;
@@ -485,9 +487,11 @@ SimpleClient::init(int argc, char *argv[])
 	      if (logger.ptr() != Logging::AcsLogService::_nil())
 		  {
 		  m_logger->setCentralizedLogger(logger.in());
+#ifndef MAKE_VXWORKS
 		  char * disable_log4cpp = getenv("ACS_DISABLE_LOG4CPP");
 		  if (disable_log4cpp == NULL)
 		     LOGGER_FACTORY->enableRemoteAppender(100, 3, logger.ptr());
+#endif
 		  }
 	      else
 		  {
