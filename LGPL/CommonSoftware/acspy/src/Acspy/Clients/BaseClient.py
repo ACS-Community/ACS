@@ -40,18 +40,76 @@ __revision__ = "$Id: BaseClient.py,v 1.17 2012/04/23 22:45:14 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
-from threading import Lock
+from threading import Lock, Thread
+from time      import sleep
 #--CORBA STUBS-----------------------------------------------------------------
 import maci
 from maci__POA import Client
 from CORBA import TRUE
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Common.Log                 import getLogger, startPeriodicFlush,\
-    stopPeriodicFlush
-from Acspy.Util.ACSCorba              import getManager, getClient
+    stopPeriodicFlush, flush
+from Acspy.Util.ACSCorba              import getManager, getClient, invalidateManagerReference
 from ACSErrTypeCommonImpl             import CORBAProblemExImpl
 from Acspy.Common.TimeHelper          import getTimeStamp
 #--GLOBALS---------------------------------------------------------------------
+
+class ManagerConnector(Thread):
+    '''
+    Objects of this class asynchronously login the client passed in the constructor 
+    into the manager.
+    
+    The ManagerConnector should be used to log in into the manager in the following way:
+    1. instantiate the object passing the number of attempts to connect (0 means try forever)
+    2. start the thread
+    3. wait until the thread terminates
+    '''
+    #--------------------------------------------------------------------------
+    def __init__(self, client, attempts=0):
+        '''
+        Initialize the class
+        
+        Parameters: attempts The number of attempts to get the manager reference
+                    If it is 0 then it keep trying forever
+                    It must be a positive number
+                    
+                    client The BaseClient to login into the manager
+    
+        Returns: None
+            
+        Raises: Nothing
+        '''
+        #The number of attempts to login into the manager
+        self.attempts=attemps
+        
+        # The client to login into the manager
+        self.client=client  
+        
+        # The token returned by the manager when the client successfully logs in
+        self.token = None
+          
+        def run():
+            '''
+            The thread that wait until it gets the manager reference
+            '''
+            currentAttempt=self.attempts
+            while (self.attempts==0 or currentAttempt>0) and self.token ==None:
+                try:
+                    self.token = self.client.magerLogin()
+                except:
+                    print "Manager not yet available."
+                if not self.attempts==0:
+                    currentAttempt=currentAttempt-1
+                if self.token==None:
+                    sleep(3)
+                
+        def getToken():
+            '''
+            Returns the token assigned by the manager after logging in 
+                    or None if the object failed to log in into the manager
+            '''
+            return self.token
+                
 
 #------------------------------------------------------------------------------
 class BaseClient(Client): 
@@ -71,7 +129,6 @@ class BaseClient(Client):
 
         Raises: CORBAProblemExImpl
         '''
-        
         #security token given to us by the manager
         self.token = None
         #name we will call ourself when contacting the manager
@@ -131,11 +188,9 @@ class BaseClient(Client):
         
         oneway void disconnect ();
         '''
-        self.logger.logInfo('Shutdown called for client')
-        stopPeriodicFlush()
+        self.logger.logInfo('Disconnect called for client')
         self.managerLogout()
-
-        return
+        
     #--CLIENT IDL--------------------------------------------------------------
     def authenticate(self, execution_id, question):
         '''
@@ -323,16 +378,18 @@ class BaseClient(Client):
         
         Raises: CORBAProblemExImpl
         '''
+        if getManager()==None:
+            raise CORBAProblemExImpl()
         try:
             with self.loggingIn:
-                token = getManager().login(self.getMyCorbaRef())
+                self.token = getManager().login(self.getMyCorbaRef())
                 self.loggedIn = True
         except Exception, e:
             #cannot go on if the login fails
             print_exc()
             raise CORBAProblemExImpl()
         
-        return token
+        return self.token
     #--------------------------------------------------------------------------
     def managerLogout(self):
         '''
@@ -348,7 +405,9 @@ class BaseClient(Client):
             #here we literally log out of manager
             with self.loggingIn:
                 getManager().logout(self.token.h)
+                invalidateManagerReference()
                 self.loggedIn = False
+                self.token = None
         except Exception, e:
             self.logger.logWarning('Failed to log out of manager: ' +
                                    str(e))
