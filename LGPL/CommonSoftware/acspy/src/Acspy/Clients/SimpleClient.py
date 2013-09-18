@@ -66,20 +66,22 @@ class PySimpleClient(BaseClient, ContainerServices):
     '''
     #--------------------------------------------------------------------------
     
-    def __init__(self, name="Python Client"):
+    def __init__(self, name="Python Client",runAsSingleton=False):
         '''
         Initialize the client.
 
         Parameters:
         - name is what manager will refer to this client instance as
+        - runAsSingleton True if the client is a singleton
 
         Returns: Nothing
 
         Raises: CORBAProblemExImpl
         '''
         global _myInstanceCount
-        #increment our own reference counter
-        _myInstanceCount = _myInstanceCount + 1
+        
+        # Remember if the client is a singleton
+        self.runAsSingleton=runAsSingleton
         
         #just to be sure
         try:
@@ -124,10 +126,14 @@ class PySimpleClient(BaseClient, ContainerServices):
         
         #If there is no singleton yet; create one
         if _instance == None:
-            _instance = PySimpleClient(name)
+            _instance = PySimpleClient(name=name,runAsSingleton=True)
+            _myInstanceCount = _myInstanceCount + 1
             return _instance
         else:
             _myInstanceCount = _myInstanceCount + 1
+            # disconnect must be called once for each instance
+            # to force the logout when the counter drops at 0 
+            register(_instance.disconnect)
             return _instance
     #Create the real static method
     getInstance = staticmethod(getInstance)
@@ -162,10 +168,16 @@ class PySimpleClient(BaseClient, ContainerServices):
 
         Otherwise if the reference counting falls to 0, the client will really be
         disconnected from manager and the singleton client in the AcsCORBA class
-        is also destroyed. This implies when the baseclass disconnect method is
+        is also destroyed. This implies when the base class disconnect method is
         called the getInstance method of this class will cease to function!
         '''
         global _myInstanceCount, _instance
+        
+        # If this is not a singleton then disconnect from the base class must be run
+        # immediately
+        if not self.runAsSingleton:
+            BaseClient.disconnect(self)
+            return
         
         _myInstanceCount = _myInstanceCount - 1
         
@@ -173,4 +185,3 @@ class PySimpleClient(BaseClient, ContainerServices):
             BaseClient.disconnect(self)
             _instance = None
     #--------------------------------------------------------------------------
-
