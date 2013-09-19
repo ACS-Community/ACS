@@ -80,7 +80,6 @@ class TestSimpleClient(unittest.TestCase):
         self.assertEqual(True, SimpleClient._instance is None)
         sc = SimpleClient.PySimpleClient.getInstance('Foo')
         self.assertEqual(SimpleClient._instance, sc)
-        self.assertEqual(1, SimpleClient._myInstanceCount)
 
     @mock.patch_object(Acspy.Util.ACSCorba, 'getManager',
                        manager_login_value_builder)
@@ -92,12 +91,9 @@ class TestSimpleClient(unittest.TestCase):
     def test_getInstance_later(self, lgmock, cdbmock, refmock):
         refmock.return_value = True
         SimpleClient._instance = True
-        SimpleClient._myInstanceCount = 1 
         sc = SimpleClient.PySimpleClient.getInstance('Foo')
         self.assertEqual(sc, SimpleClient._instance)
-        self.assertEqual(2, SimpleClient._myInstanceCount)
         SimpleClient._instance = None
-        SimpleClient._myInstanceCount = 0
 
     @mock.patch_object(Acspy.Util.ACSCorba, 'getManager',
                        manager_login_value_builder)
@@ -109,9 +105,9 @@ class TestSimpleClient(unittest.TestCase):
     def test_disconnect_first(self, lgmock, cdbmock, refmock):
         refmock.return_value = True
         sc = SimpleClient.PySimpleClient.getInstance('Foo')
+        self.assertEqual(True, sc.isLoggedIn())
         sc.disconnect()
-        self.assertEqual(0, SimpleClient._myInstanceCount)
-        self.assertEqual(True, SimpleClient._instance is None)
+        self.assertEqual(False, sc.isLoggedIn())
         self.assertEqual(False, lgmock.logInfo.called)
 
     @mock.patch_object(Acspy.Util.ACSCorba, 'getManager',
@@ -124,14 +120,10 @@ class TestSimpleClient(unittest.TestCase):
     def test_disconnect_later(self, lgmock, cdbmock, refmock):
         refmock.return_value = True
         sc = SimpleClient.PySimpleClient.getInstance('Foo')
-        SimpleClient._myInstanceCount = 2
         sc.disconnect()
         self.assertEqual(True, SimpleClient._instance is not None)
-        self.assertEqual(1, SimpleClient._myInstanceCount)
         self.assertEqual(False, lgmock.logInfo.called)
         SimpleClient._instance = None
-        SimpleClient._myInstanceCount = 0
-
 
 if __name__ == '__main__':
     unittest.main()
