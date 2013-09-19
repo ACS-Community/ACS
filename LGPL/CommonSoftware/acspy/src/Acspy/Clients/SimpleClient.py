@@ -81,12 +81,14 @@ class PySimpleClient(BaseClient, ContainerServices):
         try:
             loginName = pwd.getpwuid(os.getuid())[0]
         except:
+            print_exc()
             print "Error getting the user name!"
             
         hostName = "UNKNOWN_HOST"
         try:
             hostName = socket.gethostname()
         except:
+            print_exc()
             print "Error getting the host name!"
         #just to be sure
         name = name + ": initialized by " + loginName + "@" + hostName
