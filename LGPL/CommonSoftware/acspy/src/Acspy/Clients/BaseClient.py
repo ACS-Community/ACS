@@ -404,7 +404,8 @@ class BaseClient(Client):
         try:
             #here we literally log out of manager
             with self.loggingIn:
-                getManager().logout(self.token.h)
+                if self.isLoggedIn and self.token!=None:
+                    getManager().logout(self.token.h)
                 invalidateManagerReference()
                 self.loggedIn = False
                 self.token = None
