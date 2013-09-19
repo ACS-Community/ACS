@@ -42,7 +42,7 @@ TODO:
 __revision__ = "$Id: SimpleClient.py,v 1.14 2011/11/29 18:43:17 nsaez Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
-import os
+import os,pwd
 import socket
 from traceback import print_exc
 from atexit import register
@@ -77,11 +77,19 @@ class PySimpleClient(BaseClient, ContainerServices):
 
         Raises: CORBAProblemExImpl
         '''
-        #just to be sure
+        loginName = "UNKNOWN_USER"
         try:
-            name = name + ": initialized by " + os.getlogin() + "@" + socket.gethostname()
+            loginName = pwd.getpwuid(os.getuid())[0]
         except:
-            name = name
+            print "Error getting the user name!"
+            
+        hostName = "UNKNOWN_HOST"
+        try:
+            hostName = socket.gethostname()
+        except:
+            print "Error getting the host name!"
+        #just to be sure
+        name = name + ": initialized by " + loginName + "@" + hostName
         name = str(name)
         
         BaseClient.__init__(self, name)
