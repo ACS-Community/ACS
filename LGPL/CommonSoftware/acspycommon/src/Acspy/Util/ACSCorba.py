@@ -516,5 +516,18 @@ def maxRetry(cookie, retries, exc): # pragma: NO COVER
     else:
         return False
 #----------------------------------------------------------------------------
-
-
+def invalidateManagerReference():
+    '''
+    Invalidate the MGR_REF: after a client logs out from the manager,
+    it has to acquire again the manager reference with getManager() and then login.
+    
+    invalidateManagerReference() set MGR_REF to None so that getManager() does not return 
+    the old reference but gets a new one.
+    
+    Params: None
+    
+    Returns: None
+    '''
+    global MGR_REF
+    
+    MGR_REF=None
