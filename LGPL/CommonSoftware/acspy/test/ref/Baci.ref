@@ -549,5 +549,6 @@
 2 - 
 2 - Testing  <ACS._objref_ROlongSeq instance at 0xXXXX>  methods...
 2 - ----------------------------------------------------------------
-2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+2 - ----------T--:--:--.--- Python Client disconnect - Disconnect called for client
 2 - The end __oOo__
+2 - ----------T--:--:--.--- Python Client disconnect - Disconnect called for client
