@@ -53,7 +53,6 @@ from Acspy.Clients.BaseClient         import BaseClient
 from Acspy.Servants.ContainerServices import ContainerServices
 from ACSErrTypeCommonImpl             import CORBAProblemExImpl
 #--GLOBALS---------------------------------------------------------------------
-_myInstanceCount = 0    #reference counting
 _instance = None    #singleton reference
 _DEBUG = 0
 #------------------------------------------------------------------------------
@@ -66,7 +65,7 @@ class PySimpleClient(BaseClient, ContainerServices):
     '''
     #--------------------------------------------------------------------------
     
-    def __init__(self, name="Python Client",runAsSingleton=False):
+    def __init__(self, name="Python Client"):
         '''
         Initialize the client.
 
@@ -78,11 +77,6 @@ class PySimpleClient(BaseClient, ContainerServices):
 
         Raises: CORBAProblemExImpl
         '''
-        global _myInstanceCount
-        
-        # Remember if the client is a singleton
-        self.runAsSingleton=runAsSingleton
-        
         #just to be sure
         try:
             name = name + ": initialized by " + os.getlogin() + "@" + socket.gethostname()
@@ -106,6 +100,8 @@ class PySimpleClient(BaseClient, ContainerServices):
                     self.__activateOffShoot)
         if _DEBUG: # pragma: NO COVER
             print "Got past Constructor in SimpleClient"
+            
+        # Ensure that disconnect is called when python exit
         register(self.disconnect)
     #--------------------------------------------------------------------------
     #The following objects and functions all deal with a singleton instance of
@@ -122,19 +118,11 @@ class PySimpleClient(BaseClient, ContainerServices):
         Raises: CORBAProblemExImpl
         '''
         global _instance
-        global _myInstanceCount
         
         #If there is no singleton yet; create one
         if _instance == None:
-            _instance = PySimpleClient(name=name,runAsSingleton=True)
-            _myInstanceCount = _myInstanceCount + 1
-            return _instance
-        else:
-            _myInstanceCount = _myInstanceCount + 1
-            # disconnect must be called once for each instance
-            # to force the logout when the counter drops at 0 
-            register(_instance.disconnect)
-            return _instance
+            _instance = PySimpleClient(name=name)
+        return _instance
     #Create the real static method
     getInstance = staticmethod(getInstance)
     #--------------------------------------------------------------------------
@@ -158,30 +146,4 @@ class PySimpleClient(BaseClient, ContainerServices):
         except:
             print_exc()
             raise CORBAProblemExImpl()
-    #--------------------------------------------------------------------------
-    def disconnect(self):
-        '''
-        Overridden from the BaseClient class.
-
-        If singletons are not being utilized (see the getInstance method), the
-        baseclass method is called.
-
-        Otherwise if the reference counting falls to 0, the client will really be
-        disconnected from manager and the singleton client in the AcsCORBA class
-        is also destroyed. This implies when the base class disconnect method is
-        called the getInstance method of this class will cease to function!
-        '''
-        global _myInstanceCount, _instance
-        
-        # If this is not a singleton then disconnect from the base class must be run
-        # immediately
-        if not self.runAsSingleton:
-            BaseClient.disconnect(self)
-            return
-        
-        _myInstanceCount = _myInstanceCount - 1
-        
-        if _myInstanceCount == 0:
-            BaseClient.disconnect(self)
-            _instance = None
     #--------------------------------------------------------------------------
