@@ -66,7 +66,7 @@ import Acspy.Common.Log as Log
 import Acsalarmpy
 from Acspy.Common.CDBAccess                 import CDBaccess
 from cdbErrType                             import CDBRecordDoesNotExistEx
-from Acspy.Clients.BaseClient               import BaseClient
+from Acspy.Clients.BaseClient               import BaseClient, ManagerAsyncConnector
 from Acspy.Servants.ContainerServices       import ContainerServices
 from Acspy.Servants.ComponentLifecycle      import ComponentLifecycle
 from Acspy.Servants.ComponentLifecycle      import ComponentLifecycleException
@@ -155,6 +155,10 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         #using said package
         self.compModuleCount = {}
         
+        # A reference to the thread to autoreconnect
+        # @see slef.disconnect()
+        self.reconnectionThread = None
+        
         # Initialize the alarm factory
         Acsalarmpy.AlarmSystemInterfaceFactory.init(ACSCorba.getManager())
         # The alarm source
@@ -197,10 +201,27 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         Disconnect from manager.
 
         oneway void disconnect ();
+        
+        The container overrides BaseClient.disconnect() because it tries 
+        to reconnect to the manager.
         '''
-        self.logger.logTrace('Shutdown called for Container: ' + self.name)
-        self.shutdown(ACTIVATOR_EXIT<<8)
-        return
+        self.logger.logTrace('Disconnect called for Container: ' + self.name)
+        BaseClient.disconnect(self)
+        self.logger.logInfo("Logged out from manager")
+        
+        # Start the thread to autoreconenct to the manager
+        retries=int(self.cdbContainerInfo[0]['ManagerRetry'])
+        if self.reconnectionThread is not None:
+            if self.reconnectionThread.isAlive():
+                # This method has been before the previous attempt terminated
+                # so we ignore the call
+                self.logger.logWarning("The thread to aysnchronously reconnect to the Manager is already running")
+                return
+            
+        self.reconnectionThread=ManagerAsyncConnector(client=self,attempts=retries,logger=self.logger)
+        self.reconnectionThread.daemon=True
+        self.reconnectionThread.start()
+        
     #--CLIENT IDL--------------------------------------------------------------
     def taggedmessage (self, message_type, message_id, message): # pragma: NO COVER
         '''
@@ -803,6 +824,11 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
 
         oneway void shutdown (in unsigned long action)
         '''
+        
+        if self.reconnectionThread is not None:
+            # Signal the thread to terminate
+            self.reconnectionThread.terminateThread()
+            
         action = (action >> 8) & 0xFF
 
         if (action == ACTIVATOR_EXIT) or (action == ACTIVATOR_REBOOT) or (action == ACTIVATOR_RELOAD):
@@ -810,7 +836,7 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             self.logger.logTrace("Shutting down container: " + self.name)
 
             #Logout from manager
-            ACSCorba.getManager().logout(self.token.h)
+            BaseClient.managerLogout(self)
 
             if (action == ACTIVATOR_REBOOT) or (action == ACTIVATOR_RELOAD):
                 print "Container.shutdown(): Action may not work correctly...-", str(action)
@@ -1025,6 +1051,9 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         frame = None
 
         print "-->Signal Interrupt caught...shutting everything down cleanly"
+        
+        if (self.reconnectionThread is not None) and self.reconnectionThread.isAlive():
+            self.reconnectionThread.terminateThread()
 
         #Destroy what manager has told us about first
         for h in self.shutdownHandles:
@@ -1034,7 +1063,6 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         #let us know about!
         for h in self.compHandles.keys():
             self.deactivate_component(h)
-
         self.shutdown(ACTIVATOR_EXIT<<8)
     #--------------------------------------------------------------------------
     def createPOAForComponent(self, comp_name): # pragma: NO COVER
@@ -1155,7 +1183,7 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             return "AR"
         else:
             return "A"
-        
+    #--------------------------------------------------------------------------
     def sendAlarm(self, family, member, code, active):
         '''
         Raise or clear an alarm with the passed triplet
@@ -1178,3 +1206,16 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         
         # The heart of the test
         self.alarmSource.push(fltstate)
+    #--------------------------------------------------------------------------
+    def setToken(self,newToken):
+        '''
+        Override BaseClient.setToken to handle the case of
+        a failure connecting to the manager
+        '''
+        if newToken is not None:
+            BaseClient.setToken(self, newToken)
+            self.logger.logInfo("Successfully reconnected to the Manager")
+        else:
+            # Terminate the container
+            self.logger.logError("Manager not available: bailing out!")
+            self.shutdown(ACTIVATOR_EXIT<<8)

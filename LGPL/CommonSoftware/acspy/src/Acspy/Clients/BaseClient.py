@@ -54,18 +54,24 @@ from ACSErrTypeCommonImpl             import CORBAProblemExImpl
 from Acspy.Common.TimeHelper          import getTimeStamp
 #--GLOBALS---------------------------------------------------------------------
 
-class ManagerConnector(Thread):
+class ManagerAsyncConnector(Thread):
     '''
     Objects of this class asynchronously login the client passed in the constructor 
     into the manager.
     
-    The ManagerConnector should be used to log in into the manager in the following way:
+    The ManagerAsyncConnector should be used to log in into the manager in the following way:
     1. instantiate the object passing the number of attempts to connect (0 means try forever)
     2. start the thread
-    3. wait until the thread terminates
+    
+    Before terminating, the thread invokes setToken to the BaseClien: if the token is None, it means
+    that the it was unable to connect and it is up to the client to decide how to handle
+    the failure.
+    
+    terminateThread() force the thread to terminate. It is safer to 
+    start the thread as daemon.
     '''
     #--------------------------------------------------------------------------
-    def __init__(self, client, attempts=0):
+    def __init__(self, client, logger, attempts=0):
         '''
         Initialize the class
         
@@ -74,43 +80,72 @@ class ManagerConnector(Thread):
                     It must be a positive number
                     
                     client The BaseClient to login into the manager
+                    
+                    logger: The logger
     
         Returns: None
             
         Raises: Nothing
         '''
+        Thread.__init__(self)
         #The number of attempts to login into the manager
-        self.attempts=attemps
+        self.attempts=attempts
+        
+        #The logger
+        self.logger=logger
         
         # The client to login into the manager
         self.client=client  
         
         # The token returned by the manager when the client successfully logs in
         self.token = None
-          
-        def run():
-            '''
-            The thread that wait until it gets the manager reference
-            '''
-            currentAttempt=self.attempts
-            while (self.attempts==0 or currentAttempt>0) and self.token ==None:
-                try:
-                    self.token = self.client.magerLogin()
-                except:
-                    print "Manager not yet available."
-                if not self.attempts==0:
-                    currentAttempt=currentAttempt-1
-                if self.token==None:
-                    sleep(3)
-                
-        def getToken():
-            '''
-            Returns the token assigned by the manager after logging in 
-                    or None if the object failed to log in into the manager
-            '''
-            return self.token
-                
-
+        
+        # Force the termination of the thread
+        self.terminate=False
+        
+    #--------------------------------------------------------------------------  
+    def run(self):
+        '''
+        The thread that wait until it gets the manager reference
+        '''
+        currentAttempt=self.attempts
+        while (self.attempts==0 or currentAttempt>0) and not self.client.isLoggedIn() and not self.terminate:
+            try:
+                self.logger.logDebug("Trying to connect to the the Manager... ")
+                self.token = self.client.managerLogin()
+            except:
+                self.logger.logWarning("Manager not responding")
+                ## Force a refresh of the manager reference
+                invalidateManagerReference()
+            if not self.attempts==0:
+                currentAttempt=currentAttempt-1
+            if self.token==None:
+                self.sleepCheckingTermination(3)
+        if not self.terminate:
+            self.client.setToken(self.token)
+    #--------------------------------------------------------------------------
+    def terminateThread(self):
+        '''
+        Tell the thread to terminate at the next iteration
+        '''
+        self.terminate=True
+    #--------------------------------------------------------------------------         
+    def getToken(self):
+        '''
+        Returns the token assigned by the manager after logging in 
+                or None if the object failed to log in into the manager
+        '''
+        return self.token
+    #--------------------------------------------------------------------------
+    def sleepCheckingTermination(self,nSecs):
+        '''
+        Helper method that returns after nSecs but checking
+        the termination every 0.5 seconds
+        '''
+        attempt=nSecs*2
+        while (not self.terminate) and (attempt>=0):
+            attempt=attempt-1
+            sleep(0.5)
 #------------------------------------------------------------------------------
 class BaseClient(Client): 
     '''
@@ -374,22 +409,22 @@ class BaseClient(Client):
         
         Parameters: None
 
-        Returns: The token from the manager
+        Returns: The token received from the manager
         
-        Raises: CORBAProblemExImpl
+        Raises: CORBAProblemExImpl If the login failed
         '''
-        if getManager()==None:
-            raise CORBAProblemExImpl()
+        token = None
         try:
+            if getManager()==None:
+                raise CORBAProblemExImpl()
             with self.loggingIn:
-                self.token = getManager().login(self.getMyCorbaRef())
+                token = getManager().login(self.getMyCorbaRef())
                 self.loggedIn = True
         except Exception, e:
             #cannot go on if the login fails
-            print_exc()
             raise CORBAProblemExImpl()
         
-        return self.token
+        return token
     #--------------------------------------------------------------------------
     def managerLogout(self):
         '''
@@ -401,18 +436,25 @@ class BaseClient(Client):
         
         Raises: Nothing
         '''
-        try:
-            #here we literally log out of manager
-            with self.loggingIn:
+        with self.loggingIn:
+            try:
+                #here we literally log out of manager
                 if self.isLoggedIn and self.token!=None:
                     getManager().logout(self.token.h)
+            except Exception, e:
+                # The manager calls disconnect when it is going to be unavailble to
+                # clients for example before shutting down
+                #
+                # A scenario that could generate this exception is when manager is about
+                # to shutdown: it calls disconnect on the clients and shuts down immediately
+                # At this point if a client tries to logout it can found the manager
+                # in a shutdown state or already disappeared: both these situations
+                # trigger a exception 
+                self.logger.logWarning('Failed to log out gracefully from the manager...')
+            finally:
                 invalidateManagerReference()
                 self.loggedIn = False
                 self.token = None
-        except Exception, e:
-            self.logger.logWarning('Failed to log out of manager: ' +
-                                   str(e))
-            print_exc()
     #--------------------------------------------------------------------------
     def isLoggedIn(self):
         '''
@@ -425,3 +467,23 @@ class BaseClient(Client):
         '''
         with self.loggingIn:
             return self.loggedIn
+    #--------------------------------------------------------------------------
+    def setToken(self, newToken):
+        '''
+        This method is called by the thread when it tries to 
+        reconnect to the manager.
+        
+        This method does not do anything if the connection failed: 
+        it must be overridden to customize (the Container wants to terminate 
+        in that case for example).
+        
+        Parameters: newToken The newToken returned by the manager
+                    A value of None means that the thread failed to reconnect
+        
+        Returns None
+        
+        Raises: Nothing
+        '''
+        with self.loggingIn:
+            if newToken is not None:
+                self.token = newToken
