@@ -282,10 +282,13 @@ class _Client (maci__POA.Client):
 
         installTransientExceptionHandler(self, maxRetry)
 
-        try:
-            self.mgr.logout(self.token.h)
-        except:
-            pass
+        if self.token is not None:
+            try:
+                self.mgr.logout(self.token.h)
+            except:
+                pass
+            finally:
+                self.token=None 
         
         #According to Duncan Grisby, maintainer of omniORBPy,
         #one should not use the textbook shutdown calls to
@@ -299,7 +302,13 @@ class _Client (maci__POA.Client):
         #does seem to fix a bug in omniORBPy (some assertion error)
         #DWF - commented out the various shutdown calls for the
         #time being.
-        self.corbaRef._release()
+        if self.corbaRef is not None:
+            try:
+                self.corbaRef._release()
+            except:
+                pass
+            finally:
+                self.corbaRef=None
         #getPOAManager().deactivate(CORBA.TRUE, CORBA.TRUE)
         #getPOARoot().destroy(CORBA.TRUE, CORBA.TRUE)
         #getORB().shutdown(CORBA.TRUE)
@@ -528,6 +537,7 @@ def invalidateManagerReference():
     
     Returns: None
     '''
-    global MGR_REF
+    global SINGLETON_CLIENT
     
-    MGR_REF=None
+    if SINGLETON_CLIENT is not None:
+        SINGLETON_CLIENT.disconnect()
