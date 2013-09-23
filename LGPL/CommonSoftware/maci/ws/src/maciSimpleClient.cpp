@@ -174,7 +174,7 @@ SimpleClient::doneCORBA()
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "Unexpected exception occure while destroying CORBA.");
+    ex._tao_print_exception("Unexpected exception occure while destroying CORBA.");
     }
   catch(...) {
     /*		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::SimpleClient::doneCORBA",
@@ -290,8 +290,7 @@ SimpleClient::initCORBA(int argc, char * argv[])
 	}
     catch( CORBA::Exception &ex )
 	{
-	ACE_PRINT_EXCEPTION(ex,
-			    "maci::SimpleClient::initCORBA");
+	ex._tao_print_exception("maci::SimpleClient::initCORBA");
 	}
     catch(...)
 	{
@@ -350,7 +349,7 @@ SimpleClient::login()
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "A CORBA Exception occurred.");
+    ex._tao_print_exception("A CORBA Exception occurred.");
     }
 
   return 0;
@@ -377,7 +376,7 @@ SimpleClient::logout()
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "A CORBA Exception occurred.");
+    ex._tao_print_exception("A CORBA Exception occurred.");
     }
 
   return 0;
@@ -506,7 +505,7 @@ SimpleClient::init(int argc, char *argv[])
       catch( CORBA::Exception &ex )
 	  {
 	  ACS_SHORT_LOG((LM_DEBUG, "Simple client are not going to use Centralized Logger (exception occured)."));
-	  ACE_PRINT_EXCEPTION(ex, "maciSimpleClient::init");
+	  ex._tao_print_exception("maciSimpleClient::init");
 	  }
 
       m_initialized = true;

@@ -218,7 +218,7 @@ MACIHelper::resolveManager(CORBA::ORB_ptr orb,
 	}
       catch( CORBA::Exception &ex )
 	{
-	  ACE_PRINT_EXCEPTION(ex, "maci::MACIHelper::resolveManager");
+	ex._tao_print_exception("maci::MACIHelper::resolveManager");
 	  ref = maci::Manager::_nil();
 	}
       catch(...)
@@ -408,7 +408,7 @@ MACIHelper::resolveInterfaceRepository(CORBA::ORB_ptr orb, maci::Manager_ptr man
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION (ex, "(maci::MACIHelper::resolveInterfaceRepository) CORBA exception caught!");
+    ex._tao_print_exception("maci::MACIHelper::resolveInterfaceRepository) CORBA exception caught!");
     }
 
   ACS_LOG(LM_RUNTIME_CONTEXT, "maci::MACIHelper::resolveInterfaceRepository",
@@ -433,7 +433,7 @@ MACIHelper::resolveInterfaceRepository(CORBA::ORB_ptr orb, maci::Manager_ptr man
       }
     catch( CORBA::Exception &ex )
       {
-	ACE_PRINT_EXCEPTION (ex, "(maci::MACIHelper::resolveInterfaceRepository) CORBA exception caught!");
+	ex._tao_print_exception ("maci::MACIHelper::resolveInterfaceRepository) CORBA exception caught!");
       }
   }
 
@@ -521,7 +521,7 @@ MACIHelper::resolveInterfaceRepository(CORBA::ORB_ptr orb,
 	}
       catch( CORBA::Exception &ex )
 	{
-	  ACE_PRINT_EXCEPTION(ex, "maci::MACIHelper::resolveInterfaceRepository");
+	ex._tao_print_exception("maci::MACIHelper::resolveInterfaceRepository");
 	  ref = CORBA::Repository::_nil();
 	}
       catch(...)

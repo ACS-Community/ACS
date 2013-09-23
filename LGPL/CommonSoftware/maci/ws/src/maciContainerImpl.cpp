@@ -587,13 +587,12 @@ ContainerImpl::initializeCORBA(int &argc, char *argv[])
 		  (LM_ERROR, "Failed to bind to specified endpoint - wrong ORB endpoint specification or port already used."));
 
 	}
-      ACE_PRINT_EXCEPTION (badex, "maci::ContainerImpl::initalizeCORBA");
+      badex._tao_print_exception( "maci::ContainerImpl::initalizeCORBA");
       return false;
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex,
-			  "maci::ContainerImpl::initalizeCORBA");
+    ex._tao_print_exception( "maci::ContainerImpl::initalizeCORBA");
       return false;
     }
   catch(...)
@@ -633,7 +632,7 @@ ContainerImpl::doneCORBA()
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "(maci::ContainerImpl::doneCORBA) Unexpected exception occured while destroying CORBA");
+      ex._tao_print_exception("maci::ContainerImpl::doneCORBA) Unexpected exception occured while destroying CORBA");
     }
   catch(...)
     {
@@ -1217,7 +1216,7 @@ ContainerImpl::init(int argc, char *argv[])
 	    {
 	      ACE_OS::fprintf (pidf,
 			       "%ld\n",
-			       ACE_static_cast (long, ACE_OS::getpid ()));
+			       static_cast<long>(ACE_OS::getpid ()));
 	      ACE_OS::fclose (pidf);
 	    }
 	}
@@ -1227,7 +1226,7 @@ ContainerImpl::init(int argc, char *argv[])
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::init");
+      ex._tao_print_exception("maci::ContainerImpl::init");
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init",
 	      (LM_ERROR, "CORBA exception caught"));
       ACS_LOG(0, "maci::ContainerImpl::init",
@@ -1299,7 +1298,7 @@ ContainerImpl::connect()
 	  catch( CORBA::Exception &ex )
 	    {
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Failed to connect to the InterfaceRepository."));
-	      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::init");
+	      ex._tao_print_exception( "maci::ContainerImpl::init");
 	    }
 	  }
       else
@@ -1377,7 +1376,7 @@ ContainerImpl::connect()
 	    {
 	      ACS_LOG(0, "maci::ContainerImpl::init", (LM_INFO, "Failed to connect to the Centralized Logger."));
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_ERROR, "Failed to connect to the Centralized Logger."));
-	      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::init");
+	      ex._tao_print_exception("maci::ContainerImpl::init");
 	    }
 
 
@@ -1409,7 +1408,7 @@ ContainerImpl::connect()
 	  catch( CORBA::Exception &ex )
 	    {
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_ERROR, "Unable to set Naming Context to Logger."));
-	      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::init");
+	      ex._tao_print_exception("maci::ContainerImpl::init");
 	    }
 
 	}
@@ -1432,7 +1431,7 @@ ContainerImpl::connect()
 	    {
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_ERROR, "Failed to login to the Manager."));
 	      //ACS_LOG(0, "maci::ContainerImpl::init", (LM_INFO, "Failed to login to the Manager."));
-	      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::init");
+	      ex._tao_print_exception("maci::ContainerImpl::init");
 	      //return false;
 	      if (loginAttempts!=0 && !m_shutdown)
 		{
@@ -1601,7 +1600,7 @@ ContainerImpl::logout ()
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::logout",
 		  (LM_INFO, "Failed to log out from the Manager."));
-	  ACE_PRINT_EXCEPTION(ex, "(maci::ContainerImpl::logout) CORBA Exception occured.");
+	  ex._tao_print_exception("maci::ContainerImpl::logout) CORBA Exception occured.");
 	}
     }
 
@@ -1717,7 +1716,7 @@ ContainerImpl::deactivateCORBAObject(CORBA::Object_ptr obj)
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "ContainerImpl::deactivateCORBAObject");
+    ex._tao_print_exception("ContainerImpl::deactivateCORBAObject");
     }
 
   return false;
@@ -1745,7 +1744,7 @@ ContainerImpl::deactivateCORBAObject(PortableServer::Servant srvnt)
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "ContainerImpl::deactivateCORBAObject (servant)");
+    ex._tao_print_exception("ContainerImpl::deactivateCORBAObject (servant)");
     }
 
   return false;
@@ -2528,7 +2527,7 @@ ContainerImpl::shutdown (
 	}
       catch( CORBA::Exception &ex )
 	{
-	  ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::shutdown");
+	  ex._tao_print_exception("maci::ContainerImpl::shutdown");
 	}
 
     }
@@ -2568,7 +2567,7 @@ ContainerImpl::shutdown (
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::shutdown");
+      ex._tao_print_exception("maci::ContainerImpl::shutdown");
     }
 */
 
@@ -2597,7 +2596,7 @@ ContainerImpl::shutdown (
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "maci::ContainerImpl::shutdown");
+    ex._tao_print_exception("maci::ContainerImpl::shutdown");
     }
 
   m_shutdownDoneSignaled = true;
@@ -2860,8 +2859,7 @@ ContainerImpl::get_object(const char *name,
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex,
-			  "maci::ContainerImpl::get_object");
+    ex._tao_print_exception("maci::ContainerImpl::get_object");
       return CORBA::Object::_nil();
     }
   catch(...)
