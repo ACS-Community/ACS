@@ -62,7 +62,7 @@ ACS::Subscription_ptr baci::ROSeqContImpl<ACS_RO_TL>::new_subscription_Alarm (TA
 	ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROSeqContImpl&lt;&gt;::new_subscription_Alarm",
 		(LM_ERROR, "Can not create alarm dispatcher for %s because alarm_timer_trig=0", 
 		 this->getProperty()->getName()));
-	ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+	throw CORBA::NO_RESOURCES();
 	}//if
 
     if (this->monitorEventDispatcher_mp==0)
@@ -72,18 +72,17 @@ ACS::Subscription_ptr baci::ROSeqContImpl<ACS_RO_TL>::new_subscription_Alarm (TA
 	this->monitorEventDispatcher_mp = new MonitorEventDispatcher<TIN, TCB, POA_CB>(descIn, this->alarmTimerTrig_m, this->property_mp);
 	
 	if (this->monitorEventDispatcher_mp==0)
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+	    throw CORBA::NO_RESOURCES();
 	}  
 
   AlarmEventStrategyContSeq<TM, PropType, TAlarm> * eventStrategy_p = 
     new AlarmEventStrategyContSeq<TM, PropType, TAlarm>(cb, desc, this->alarmTimerTrig_m, 
 				 this, this->monitorEventDispatcher_mp);
   if (eventStrategy_p==0)
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+      throw CORBA::NO_RESOURCES();
 
   ACS::Subscription_var subscription = 
     ACS::Subscription::_narrow(eventStrategy_p->getCORBAReference());
-  ACE_CHECK_RETURN(ACS::Subscription::_nil());
 
   return subscription._retn();
 }// new_subscription_Alarm

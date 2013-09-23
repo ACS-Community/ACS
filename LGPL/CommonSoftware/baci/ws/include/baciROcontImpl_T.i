@@ -155,7 +155,7 @@ ACS::Subscription_ptr baci::ROcontImpl<ACS_RO_TL>::new_subscription_Alarm (TAlar
 	ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcontImpl&lt;&gt;::new_subscription_Alarm",
 		(LM_ERROR, "Can not create alarm dispatcher for %s because alarm_timer_trig=0", 
 		 this->getProperty()->getName()));
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+	throw CORBA::NO_RESOURCES();
 	}//
 
     
@@ -167,7 +167,7 @@ ACS::Subscription_ptr baci::ROcontImpl<ACS_RO_TL>::new_subscription_Alarm (TAlar
 	
 	if (this->monitorEventDispatcher_mp==0)
 	    {
-	    ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+	    throw CORBA::NO_RESOURCES();
 	    }
 	}  
 
@@ -176,12 +176,12 @@ ACS::Subscription_ptr baci::ROcontImpl<ACS_RO_TL>::new_subscription_Alarm (TAlar
 				 this, this->monitorEventDispatcher_mp);
   if (eventStrategy_p==0)
       {
-      ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+      throw CORBA::NO_RESOURCES();
       }
 
   ACS::Subscription_var subscription = 
     ACS::Subscription::_narrow(eventStrategy_p->getCORBAReference());
-  ACE_CHECK_RETURN(ACS::Subscription::_nil());
+
 
   return subscription._retn();
 }

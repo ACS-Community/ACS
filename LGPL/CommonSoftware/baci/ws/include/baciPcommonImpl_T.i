@@ -441,7 +441,7 @@ CORBA::Long baci::PcommonImpl<ACS_P_TL>::get_history (CORBA::Long n_last_values,
   // thread lock needed
   
   if (n_last_values < 0)
-	  ACE_THROW_RETURN(CORBA::BAD_PARAM(), 0);
+      throw CORBA::BAD_PARAM();
  
   CORBA::Long length, first;
   if (historyTurnaround_m==true)
@@ -487,16 +487,15 @@ TMonitor *baci::PcommonImpl<ACS_P_TL>::create_monitor (TCB *cb,
 					     property_mp);
 
   if (monitor_p==0)
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), TMonitor::_nil());
+      throw CORBA::NO_RESOURCES();
   else if (monitor_p->initialization())
   {
-	  monitor_p->destroy();
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), TMonitor::_nil());
+  monitor_p->destroy();
+  throw CORBA::NO_RESOURCES();
   }
   
   TMonitor* mon_p = 
 	  TMonitor::_narrow(monitor_p->getCORBAReference());
-  ACE_CHECK_RETURN(TMonitor::_nil());
 
   return mon_p;
 }
@@ -516,16 +515,15 @@ TMonitor* baci::PcommonImpl<ACS_P_TL>::create_postponed_monitor (ACS::Time start
 					     start_time);
   
   if (!monitor)
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), TMonitor::_nil());
+      throw CORBA::NO_RESOURCES();
   else if (monitor->initialization())
   {
 	  monitor->destroy();
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), TMonitor::_nil());
+	  throw CORBA::NO_RESOURCES();
   }
   
   TMonitor *mon = 
 	  TMonitor::_narrow(monitor->getCORBAReference());
-  ACE_CHECK_RETURN(TMonitor::_nil());
 
   return mon;
 }

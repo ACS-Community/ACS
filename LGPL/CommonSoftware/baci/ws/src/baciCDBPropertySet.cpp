@@ -164,13 +164,11 @@ CDBPropertySet::getPropertySet(const char * propertyName)
 
   // create reference with that id
   CORBA::Object_var obj = poa_m->create_reference_with_id(id.in(), getRepositoryId());
-  ACE_CHECK_RETURN (CosPropertyService::PropertySet::_nil ());
 
   CosPropertyService::PropertySet_var set = CosPropertyService::PropertySet::_nil ();
   if (CORBA::is_nil(obj.in())==false)
     {
       set = CosPropertyService::PropertySet::_narrow (obj.in ());
-      ACE_CHECK_RETURN (CosPropertyService::PropertySet::_nil ());
     }
   else
       {
@@ -468,7 +466,6 @@ CDBPropertySet::get_properties (const CosPropertyService::PropertyNames & proper
   for (CORBA::ULong i = 0UL; i < n; i++)
     {
       any_p = get_property_value(property_names[i]);
-      ACE_CHECK_RETURN (0);
 
       if (any_p != 0)
         {

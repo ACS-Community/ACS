@@ -128,7 +128,7 @@ namespace baci {
 		    (LM_ERROR, "Can not create alarm dispatcher for %s because alarm_timer_trig=0", 
 		     this->getProperty()->getName()));
 
-	    ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+	    throw CORBA::NO_RESOURCES();
 	    }//
 
 	if (this->monitorEventDispatcher_mp==0)
@@ -138,18 +138,17 @@ namespace baci {
 	    this->monitorEventDispatcher_mp = new MonitorEventDispatcher<ACS::pattern, ACS::CBpattern, POA_ACS::CBpattern>(descIn, this->alarmTimerTrig_m, this->property_mp);
 	
 	    if (this->monitorEventDispatcher_mp==0)
-		ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+		throw CORBA::NO_RESOURCES();
 	    }  
 	
 	AlarmEventStrategyPattern * eventStrategy_p = 
 	    new AlarmEventStrategyPattern(cb, desc, this->alarmTimerTrig_m, 
 					  this, this->monitorEventDispatcher_mp);
 	if (eventStrategy_p==0)
-	    ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
+	    throw CORBA::NO_RESOURCES();
 
 	ACS::Subscription_var subscription = 
 	    ACS::Subscription::_narrow(eventStrategy_p->getCORBAReference());
-	ACE_CHECK_RETURN(ACS::Subscription::_nil());
 
 	return subscription._retn();
     }

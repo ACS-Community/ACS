@@ -52,7 +52,7 @@ DBConnector::get_characteristic_by_name (const ACE_CString& objectName,
   Table * table_p = DBConnector::getDBTable();
   if (table_p==0)
       {
-      ACE_THROW_RETURN(CORBA::NO_RESOURCES(), 0);
+      throw CORBA::NO_RESOURCES();
       }
   ACE_CString propertyName = DBConnector::getFullAddress(objectName);
 
@@ -62,7 +62,7 @@ DBConnector::get_characteristic_by_name (const ACE_CString& objectName,
       ACS::NoSuchCharacteristic * nsc_p = new ACS::NoSuchCharacteristic();
       nsc_p->characteristic_name = CORBA::string_dup(name);
       nsc_p->component_name = CORBA::string_dup(objectName.c_str());
-      ACE_THROW_RETURN(ACS::NoSuchCharacteristic(), value_p);
+      throw ACS::NoSuchCharacteristic();
     }
 
   field.GetAny(*value_p);
@@ -76,7 +76,7 @@ DBConnector::find_characteristic (const ACE_CString& name,
   Table * table_p = DBConnector::getDBTable();
   if (table_p==0)
       {
-      ACE_THROW_RETURN(CORBA::NO_RESOURCES(), 0);
+      throw CORBA::NO_RESOURCES();
       }
   ACE_CString propertyName = DBConnector::getFullAddress(name);
 
@@ -89,7 +89,7 @@ DBConnector::find_characteristic (const ACE_CString& name,
 	      (LM_ERROR, "Misconfigured configuration database "
 	       "(record '%s' field '_characteristics'): "
 	       "An array of strings expected", propertyName.c_str()));
-      ACE_THROW_RETURN(CORBA::NO_RESOURCES(), 0);
+      throw CORBA::NO_RESOURCES();
       }
   
   arry_p = fld.GetStringArray();
@@ -124,7 +124,7 @@ DBConnector::get_all_characteristics (const ACE_CString& name)
 {
   if (CDBPropertySet::getInstance()==0)
       {
-      ACE_THROW_RETURN(CORBA::NO_RESOURCES(), CosPropertyService::PropertySet::_nil());
+      throw CORBA::NO_RESOURCES();
       }
   return CDBPropertySet::getInstance()->getPropertySet(name.c_str());
 }
