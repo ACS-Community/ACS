@@ -421,7 +421,6 @@ CDB::stringSeq* DAOImpl::get_string_seq (
 	// create return value
 	CDB::stringSeq_var retSeq;
 	ACE_NEW_THROW_EX (retSeq, CDB::stringSeq, CORBA::NO_MEMORY ());
-	ACE_CHECK_RETURN (0);
 
 	StringArray * ary = fld.GetStringArray();
 	retSeq->length( ary->size() );
