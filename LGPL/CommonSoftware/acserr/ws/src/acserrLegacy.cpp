@@ -616,7 +616,7 @@ bool ACSError::init (int argc, char *argv[])
 	} 
     catch( CORBA::Exception &ex )
 	{ 
-	ACE_PRINT_EXCEPTION (ex, "Failed to initalise ORB"); 
+	ex._tao_print_exception("Failed to initalise ORB"); 
 	return -1; 
 	} 
 
