@@ -106,7 +106,7 @@ DALaccess:: DALaccess( int argc, char *argv[], CORBA::ORB_ptr orb ) : m_orb(CORB
 
 		
 	}catch(CORBA::Exception &ex){
-		ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "cdb::DALaccess::DALaccess()");
+	ex._tao_print_exception("cdb::DALaccess::DALaccess()");
 	}
 
 	if( DALior )
