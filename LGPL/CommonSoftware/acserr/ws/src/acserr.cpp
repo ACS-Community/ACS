@@ -321,7 +321,7 @@ void ErrorTraceHelper::toString (ACSErr::ErrorTrace * c, int level, std::ostring
   oss << "Error Trace Level : " << level << std::endl;
 
   char ctp[21];
-  long sec_ =  ACE_static_cast(CORBA::ULongLong, c->timeStamp) / ACE_static_cast(ACE_UINT32, 10000000u) - ACE_UINT64_LITERAL(0x2D8539C80);
+  long sec_ =  static_cast<CORBA::ULongLong>(c->timeStamp) / static_cast<ACE_UINT32>(10000000u) - ACE_UINT64_LITERAL(0x2D8539C80);
   long usec_ = (c->timeStamp % 10000000u) / 10;
   time_t tt(sec_);
   struct tm *utc_p = ACE_OS::gmtime(&tt);
