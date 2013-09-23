@@ -52,9 +52,7 @@ class baci_EXPORT PropertyImpl : public virtual POA_ACS::Property,
     virtual ~PropertyImpl();
 
 /* ------------------ [ Property interface ] ------------------ */
-    virtual char * name (
-        ACE_ENV_SINGLE_ARG_DECL_WITH_DEFAULTS
-      );
+    virtual char * name ();
  
     virtual char * characteristic_component_name ();
     
