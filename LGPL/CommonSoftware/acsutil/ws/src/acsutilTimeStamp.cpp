@@ -32,17 +32,17 @@
 ACS::Time getTimeStamp()
 {
     ACE_Time_Value tv = ACE_OS::gettimeofday();
-    return (UTCtoUNIXTimeBaseOffset + ACE_static_cast(CORBA::ULongLong, tv.sec())) *
-	ACE_static_cast(ACE_UINT32, 10000000) +
-	ACE_static_cast(CORBA::ULongLong, tv.usec() * 10);
+    return (UTCtoUNIXTimeBaseOffset + static_cast<CORBA::ULongLong>(tv.sec())) *
+	static_cast<ACE_UINT32>(10000000) +
+	static_cast<CORBA::ULongLong>(tv.usec() * 10);
 }
 
 ACS::TimeInterval getTime()
 {
     ACE_Time_Value tv = ACE_OS::gettimeofday();
-    return (ACE_static_cast(CORBA::ULongLong, tv.sec())) *
-	ACE_static_cast(ACE_UINT32, 10000000) +
-	ACE_static_cast(CORBA::ULongLong, tv.usec() * 10);
+    return (static_cast<CORBA::ULongLong>(tv.sec())) *
+	static_cast<ACE_UINT32>(10000000) +
+	static_cast<CORBA::ULongLong>(tv.usec() * 10);
 }
 
 ACE_CString getStringifiedTimeStamp()

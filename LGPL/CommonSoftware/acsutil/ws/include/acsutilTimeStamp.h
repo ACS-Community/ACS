@@ -2,7 +2,7 @@
 #define acsutilTime_H
 
 /*******************************************************************
-* ALMA - Atacama Large Millimiter Array
+* alma - atacama large millimiter Array
 * (c) European Southern Observatory, 2004 
 *
 *This library is free software; you can redistribute it and/or
@@ -114,7 +114,7 @@ inline ACE_CString getStringifiedUTC(ACS::TimeInterval time)
   ACE_TCHAR ctp[20];
 
   // convert to UNIX time
-  time -= UTCtoUNIXTimeBaseOffset * ACE_static_cast(ACE_UINT32, 10000000);
+  time -= UTCtoUNIXTimeBaseOffset * static_cast<ACE_UINT32>(10000000);
 
   ACE_Time_Value tv = UTCtoACE_Time_Value(time);
 
