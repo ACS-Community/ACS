@@ -210,7 +210,11 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         self.logger.logInfo("Logged out from manager")
         
         # Start the thread to autoreconenct to the manager
-        retries=int(self.cdbContainerInfo[0]['ManagerRetry'])
+        try:
+            retries=int(self.cdbContainerInfo[0]['ManagerRetry'])
+        except:
+            # no entry in CDB: default to 10
+            retries=10
         if self.reconnectionThread is not None:
             if self.reconnectionThread.isAlive():
                 # This method has been before the previous attempt terminated
