@@ -124,7 +124,7 @@ main (int argc, char *argv[])
 	    {
 	        ACS_SHORT_LOG((LM_INFO, "Failed."));
 		//ACE_PRINT_EXCEPTION (ex, ACE_TEXT ("Exception caught while calling Container::shutdown() method."));
-		ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION, ACE_TEXT ("Exception caught while calling Manager::shutdown_container() method."));
+		ex._tao_print_exception("Exception caught while calling Manager::shutdown_container() method.");
 	    }
 
 	}
@@ -135,8 +135,7 @@ main (int argc, char *argv[])
   catch( CORBA::Exception &ex )
   {
       ACS_SHORT_LOG((LM_INFO, "Failed."));
-      ACE_PRINT_EXCEPTION (ex,
-                           ACE_TEXT ("Caught unexpected exception:"));
+      ex._tao_print_exception("Caught unexpected exception:");
 
       return -1;
   }
