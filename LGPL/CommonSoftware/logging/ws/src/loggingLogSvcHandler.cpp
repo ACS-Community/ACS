@@ -239,7 +239,7 @@ namespace Logging {
 	LoggingProxy::SourceObject(sourceObjectName_m.c_str());
 	
 	//figure out the time
-	long sec_ =  ACE_static_cast(CORBA::ULongLong, lr.timeStamp) / ACE_static_cast(ACE_UINT32, 10000000u) - ACE_UINT64_LITERAL(0x2D8539C80); 
+	long sec_ =  static_cast<CORBA::ULongLong>( lr.timeStamp) / static_cast<ACE_UINT32>(10000000u) - ACE_UINT64_LITERAL(0x2D8539C80); 
         long usec_ = (lr.timeStamp % 10000000u) / 10; 
         ACE_Time_Value time(sec_, usec_); 
 
