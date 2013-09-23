@@ -846,14 +846,14 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
                 print "Container.shutdown(): Action may not work correctly...-", str(action)
                 self.__init__(self.name)
             else:
+                # Close the alarm interface factory
+                Acsalarmpy.AlarmSystemInterfaceFactory.done()
                 #tell the main thread of execution to stop
                 self.running = 0
                 Log.stopPeriodicFlush()
         else:
             self.logger.logWarning("Unable to process 'shutdown' request at this time: " + str(action))
         
-        # Close the alarm interface factory
-        Acsalarmpy.AlarmSystemInterfaceFactory.done()
 
     #----------------------------------------------------------------------------
     def set_component_shutdown_order(self, handles): # pragma: NO COVER
