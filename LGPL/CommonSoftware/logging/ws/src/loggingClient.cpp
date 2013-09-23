@@ -566,7 +566,7 @@ main (int argc, char *argv [])
   catch(CORBA::UserException &ue)
     {
     ACE_ERROR((LM_ERROR,"LoggingClient user error: "));
-    ACE_PRINT_EXCEPTION(ue, "TerminationSignalHandler");
+    ue._tao_print_exception("TerminationSignalHandler");
     return 1;
     }
   catch(CORBA::SystemException &se)
