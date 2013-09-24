@@ -49,7 +49,8 @@
  *  Implementation file for Building example.
  */
 
-ACE_RCSID(acsexmpl, acsexmplBuildingImpl, "$Id: acsexmplBuildingImpl.cpp,v 1.127 2008/10/09 08:41:11 cparedes Exp $")
+static char *rcsId="$Id: acsexmplBuildingImpl.cpp,v 1.127 2008/10/09 08:41:11 cparedes Exp $";
+static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace baci;
 using namespace maci;
@@ -97,7 +98,7 @@ Building::execute()
     // it sets.
     ACS::Time timestamp;
     // Write out the version number to the property.
-    m_version_sp->getDevIO()->write(rcsid_acsexmpl_acsexmplBuildingImpl, timestamp);
+    m_version_sp->getDevIO()->write(rcsId, timestamp);
     
 }
 

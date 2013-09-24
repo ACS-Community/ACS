@@ -42,12 +42,8 @@
 #include <acsexmplDoorImpl.h>
 #include <ACSErrTypeCommon.h>
 
-#ifndef MAKE_VXWORKS
-ACE_RCSID(acsexmpl, acsexmplDoorImpl, "$Id: acsexmplDoorImpl.cpp,v 1.116 2008/10/09 08:41:11 cparedes Exp $")
-#else
 static char *rcsId="$Id: acsexmplDoorImpl.cpp,v 1.116 2008/10/09 08:41:11 cparedes Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
-#endif
 
 using namespace baci;
 
@@ -168,11 +164,8 @@ Door::execute()
   
   // Set current version  
 
-#ifndef MAKE_VXWORKS
-  m_version_sp->getDevIO()->write(rcsid_acsexmpl_acsexmplDoorImpl, timestamp);
-#else
   m_version_sp->getDevIO()->write(rcsId, timestamp);
-#endif
+
   // Set current substate
   int st = DOOR_UNDEFINED;
   m_substate_sp->getDevIO()->write(st, timestamp);
@@ -396,7 +389,7 @@ Door::move (CORBA::Double pos)
 	    delete error_p;    // Memory management: object has to be released.
             // Throw an exception
             // Note: the File-Not-Found error has been chosen arbitrarily
-	    THROW_ACS_EXCEPTION(ACSErr::ACSErrTypeCommon, ACSErrTypeCommon::FileNotFound, "::Door::move");
+	    throw ACSErrTypeCommon::FileNotFoundExImpl(__FILE__, __LINE__, "::Door::move");
 	    }
         delete error_p;    // Memory management: object has to be released.
 
