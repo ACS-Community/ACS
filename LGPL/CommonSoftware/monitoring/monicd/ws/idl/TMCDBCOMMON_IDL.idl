@@ -227,13 +227,15 @@ typedef sequence<serialNumberType> serialNumberTypeSeq;
       any blobDataSeq;    /// here we put a seqence od data xyzBlobData
   };
 
- struct MonitorDataBlock
+typedef sequence<MonitorBlob> MonitorBlobSeq; 
+
+struct MonitorDataBlock
  {
      ACS::Time startTime;
      ACS::Time stopTime;
      string componentName;
      serialNumberType deviceSerialNumber;
-     sequence<MonitorBlob> monitorBlobs; ///monitored properties
+     MonitorBlobSeq monitorBlobs; ///monitored properties
  }; 
 
  typedef  sequence<MonitorDataBlock> MonitorDataBlocks;
