@@ -532,7 +532,7 @@ CORBA::Long RWEnumImpl<ACS_ENUM_T(T), SK>::get_history (CORBA::Long n_last_value
   // thread lock needed
     
   if (n_last_values < 0)
-	  ACE_THROW_RETURN(CORBA::BAD_PARAM(), 0);
+      throw CORBA::BAD_PARAM();
  
   CORBA::Long length, first;
   if (historyTurnaround_m)
@@ -574,16 +574,15 @@ ACS::Monitorpattern_ptr RWEnumImpl<ACS_ENUM_T(T), SK>::create_monitor (CBpattern
 					     property_mp);
 
   if (!monitor)
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Monitorpattern::_nil());
+      throw CORBA::NO_RESOURCES();
   else if (monitor->initialization())
   {
 	  monitor->destroy();
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Monitorpattern::_nil());
+	  throw CORBA::NO_RESOURCES();
   }
   
   ACS::Monitorpattern_var mon = 
 	  ACS::Monitorpattern::_narrow(monitor->getCORBAReference());
-  ACE_CHECK_RETURN(ACS::Monitorpattern::_nil());
 
   return mon._retn();
 }
@@ -605,16 +604,15 @@ ACS::Monitor_ptr RWEnumImpl<ACS_ENUM_T(T), SK>::create_postponed_monitor (ACS::T
 					     start_time);
   
   if (!monitor)
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Monitor::_nil());
+      throw CORBA::NO_RESOURCES();
   else if (monitor->initialization())
   {
 	  monitor->destroy();
-	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Monitor::_nil());
+	  throw CORBA::NO_RESOURCES();
   }
   
   ACS::Monitor_var mon = 
 	  ACS::Monitor::_narrow(monitor->getCORBAReference());
-  ACE_CHECK_RETURN(ACS::Monitor::_nil());
 
   return mon._retn();
 }

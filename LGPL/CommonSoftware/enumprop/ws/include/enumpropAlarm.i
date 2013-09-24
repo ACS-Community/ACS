@@ -141,13 +141,11 @@ const char* AlarmenumpropEventStrategy<T, ROT, AlarmT>::getObjectState(void)
   ACE_NEW_RETURN (buffer, ACE_TCHAR[MAX_RECORD_SIZE], 0);
   
   
-  ACE_TRY 
+  try
     {
 
       CORBA::String_var ior = BACI_CORBA::getORB()->object_to_string(callback_mp
-								     );
-      
-      
+								     ); 
       unsigned long tag = m_descIn.id_tag;
       
       // !!! VxWorks support !!! Lx is not ANSI C and since VxWorks does not support
@@ -161,11 +159,11 @@ const char* AlarmenumpropEventStrategy<T, ROT, AlarmT>::getObjectState(void)
       return buffer;
       
     }
-  ACE_CATCHANY 
-    { 
+  catch(...)
+    {
+    printf("Error in enumprop AlarmenumpropEventStrategy\n");
       // log debug
     }
-  ACE_ENDTRY;
   
   return 0;
 }
@@ -196,7 +194,7 @@ void AlarmenumpropEventStrategy<T, ROT, AlarmT>::setObjectState(const char * sta
   name_m = cname;
 
   
-  ACE_TRY 
+  try
     {
        
       CORBA::Object_var obj = BACI_CORBA::getORB()->string_to_object(ior);
@@ -231,11 +229,10 @@ void AlarmenumpropEventStrategy<T, ROT, AlarmT>::setObjectState(const char * sta
       
       BACIRecoveryManager::getInstance()->addRecoverableObject(this);
     }
-  ACE_CATCHANY 
+  catch(...)
     {
-      // error.
+    printf("Exception cought in AlarmenumpropEventStrategy<>::setObjectState \n");
     }
-  ACE_ENDTRY;
 }
 
 /* --------------- [ Subscription interface ] --------------- */ 
