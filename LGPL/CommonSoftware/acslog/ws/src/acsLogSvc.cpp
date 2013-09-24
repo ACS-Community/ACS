@@ -116,8 +116,8 @@ int main(int argc, char *argv[])
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION (ex, "Failed to initalise ORB");
-      return -1;
+    ex._tao_print_exception("Failed to initalise ORB");
+    return -1;
     }
 
 
@@ -211,8 +211,8 @@ int main(int argc, char *argv[])
     }
   catch( CORBA::Exception &__ex )
     {
-      ACE_PRINT_EXCEPTION(__ex, "Failed to get and set the centralized logger");
-      return -1;
+    __ex._tao_print_exception("Failed to get and set the centralized logger");
+    return -1;
     }
 
 
@@ -326,7 +326,7 @@ int main(int argc, char *argv[])
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");
+    ex. _tao_print_exception("EXCEPTION CAUGHT");
       return -1;
     }
   
