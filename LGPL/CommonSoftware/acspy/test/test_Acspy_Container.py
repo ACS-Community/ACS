@@ -33,7 +33,7 @@ import sys
 import omniORB
 import CDB
 import Logging
-
+from threading import Lock
 
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util import LoggingConfig_xsd
@@ -679,7 +679,7 @@ class TestOffShootActivation(unittest.TestCase):
 
 class TestDestruction(unittest.TestCase):
 
-    @mock.patch_object(Acspy.Container, 'BaseClient')
+    @mock.patch_object(Acspy.Container, 'BaseClient',spec=Acspy.Clients.BaseClient.BaseClient)
     @mock.patch_object(Acspy.Container.Container, 'configCORBA')
     @mock.patch_object(Acspy.Container.Container, 'getMyCorbaRef')
     @mock.patch_object(Acspy.Container.Container, 'getCDBInfo')
@@ -689,6 +689,8 @@ class TestDestruction(unittest.TestCase):
         self.testcontainer.token = mock.Mock()
         self.testcontainer.token.h = 123435
         self.testcontainer.__init__ = mock.Mock()
+        self.testcontainer.managerLogin = mock.Mock()
+        self.testcontainer.loggingIn = Lock()
 
     def tearDown(self):
         Acspy.Container.Log.stopPeriodicFlush()
@@ -700,7 +702,7 @@ class TestDestruction(unittest.TestCase):
         self.assertEqual(1, self.testcontainer.running)
 
     @mock.patch_object(Acspy.Container.ACSCorba, 'getManager')
-    def test_shutdown_reload(self, managermock):
+    def test_shutdown_reload(self,managermock):
         self.testcontainer.shutdown(Acspy.Container.ACTIVATOR_RELOAD << 8)
         self.assertEqual(1, self.testcontainer.running)
         self.assertEqual(True, self.testcontainer.__init__.called)
@@ -710,15 +712,17 @@ class TestDestruction(unittest.TestCase):
         self.testcontainer.shutdown(Acspy.Container.ACTIVATOR_REBOOT << 8)
         self.assertEqual(1, self.testcontainer.running)
         self.assertEqual(True, self.testcontainer.__init__.called)
+        
 
     @mock.patch_object(Acspy.Common.Log, 'stopPeriodicFlush')
     @mock.patch_object(Acspy.Container.ACSCorba, 'getManager')
-    def test_shutdown_exit(self, logmock, managermock):
+    @mock.patch_object(Acspy.Clients.BaseClient.BaseClient,'managerLogout')
+    def test_shutdown_exit(self, logmock, managermock,magerlogoutmock):
         self.testcontainer.shutdown(Acspy.Container.ACTIVATOR_EXIT << 8)
         self.assertEqual(0, self.testcontainer.running)
-        self.assertEqual(True, logmock.called)
         self.assertEqual(False, self.testcontainer.__init__.called)
-
+        self.assertEqual(True, magerlogoutmock.called)
+        self.assertEqual(True, logmock.called)
 
 class TestOperations(unittest.TestCase):
     pass
