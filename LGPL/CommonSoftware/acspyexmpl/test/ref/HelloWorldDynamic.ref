@@ -1,5 +1,5 @@
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Retrieved valid reference from manager.
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Method of dynamic component successfully invoked. Have a nice day!
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Disconnect called for client
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - Retrieved valid reference from manager.
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - Method of dynamic component successfully invoked. Have a nice day!
+1 - ----------T--:--:--.--- Python Client initialized by user@host disconnect - Disconnect called for client
 1 - The end __oOo__
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Disconnect called for client
+1 - ----------T--:--:--.--- Python Client initialized by user@host disconnect - Disconnect called for client

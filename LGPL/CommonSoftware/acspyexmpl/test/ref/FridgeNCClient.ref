@@ -1,12 +1,12 @@
 1 - Making sure there is a fridge available...
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Creating FridgeConsumer
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - Creating FridgeConsumer
 1 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Waiting for events . . .
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - Waiting for events . . .
 1 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The temperature difference is x.x
 1 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The temperature difference is x.x
 1 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The temperature difference is x.x
 1 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The temperature difference is x.x
 1 - ----------T--:--:--.--- FridgeNCClient fridgeDataHandler - The temperature difference is x.x
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Events all done . . . exiting
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Disconnect called for client
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Disconnect called for client
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - Events all done . . . exiting
+1 - ----------T--:--:--.--- Python Client initialized by user@host disconnect - Disconnect called for client
+1 - ----------T--:--:--.--- Python Client initialized by user@host disconnect - Disconnect called for client

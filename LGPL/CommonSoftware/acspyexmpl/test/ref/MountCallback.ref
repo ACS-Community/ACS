@@ -1,10 +1,10 @@
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - We can directly manipulate a device once we get it, which is easy!!
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - We can directly manipulate a device once we get it, which is easy!!
 1 - Working:  actAz  is  0.0
 1 - Working:  actAz  is  0.0
 1 - Working:  actAz  is  0.0
 1 - Working:  actAz  is  0.0
 1 - Working:  actAz  is  0.0
 1 - Done:  actAz  is  0.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Disconnect called for client
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Disconnect called for client
+1 - ----------T--:--:--.--- Python Client initialized by user@host disconnect - Disconnect called for client
 1 - The end __oOo__
+1 - ----------T--:--:--.--- Python Client initialized by user@host disconnect - Disconnect called for client

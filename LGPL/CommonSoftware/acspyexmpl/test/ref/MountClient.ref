@@ -1,31 +1,31 @@
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - COBs available are: 
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - ERRORCOMP_CPP of type IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - TIMER1 of type IDL:alma/acstime/Timer:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - HELLOWORLD1 of type IDL:alma/acsexmplHelloWorld/HelloWorld:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - MOUNT1 of type IDL:alma/MOUNT_ACS/Mount:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - FRIDGE1 of type IDL:alma/FRIDGE/FridgeControl:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - LAMPCB1 of type IDL:alma/demo/LampCallback:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - LAMPCB2 of type IDL:alma/demo/LampCallback:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - ERRORCOMP_PY of type IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - ES2 of type IDL:alma/demo/ErrorSystem:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - IDENTIFIER_ARCHIVE of type IDL:alma/xmlstore/Identifier:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - ES1 of type IDL:alma/demo/ErrorSystem:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - ARCHIVE_DATABASE of type IDL:alma/archiveinternal/Database:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - OPERATIONAL_ARCHIVE of type IDL:alma/xmlstore/Operational:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - LAMPACCESS1 of type IDL:alma/demo/LampAccess:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - HOUSE1/PYLAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - LAMPACCESS2 of type IDL:alma/demo/LampAccess:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - LAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - CLOCK1 of type IDL:alma/acstime/Clock:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - HELLODEMO2 of type IDL:alma/demo/HelloDemo:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - PYLAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - HELLODEMO1 of type IDL:alma/demo/HelloDemo:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - ADMINISTRATIVE_ARCHIVE of type IDL:alma/xmlstore/Administrative:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - ERRORCOMP_JAVA of type IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - TEST_PS_1 of type IDL:alma/PS/PowerSupply:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - TEST_RPS_1 of type IDL:alma/RampedPS/RampedPowerSupply:1.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - We can directly manipulate a device once we get it, which is easy.
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - MOUNT1 actual azimuth: 0.0
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Disconnect called for client
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - COBs available are: 
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - ERRORCOMP_CPP of type IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - TIMER1 of type IDL:alma/acstime/Timer:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - HELLOWORLD1 of type IDL:alma/acsexmplHelloWorld/HelloWorld:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - MOUNT1 of type IDL:alma/MOUNT_ACS/Mount:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - FRIDGE1 of type IDL:alma/FRIDGE/FridgeControl:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - LAMPCB1 of type IDL:alma/demo/LampCallback:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - ERRORCOMP_PY of type IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - LAMPCB2 of type IDL:alma/demo/LampCallback:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - ES2 of type IDL:alma/demo/ErrorSystem:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - ES1 of type IDL:alma/demo/ErrorSystem:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - IDENTIFIER_ARCHIVE of type IDL:alma/xmlstore/Identifier:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - ARCHIVE_DATABASE of type IDL:alma/archiveinternal/Database:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - LAMPACCESS1 of type IDL:alma/demo/LampAccess:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - OPERATIONAL_ARCHIVE of type IDL:alma/xmlstore/Operational:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - LAMPACCESS2 of type IDL:alma/demo/LampAccess:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - HOUSE1/PYLAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - LAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - CLOCK1 of type IDL:alma/acstime/Clock:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - HELLODEMO2 of type IDL:alma/demo/HelloDemo:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - HELLODEMO1 of type IDL:alma/demo/HelloDemo:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - PYLAMP1 of type IDL:alma/acsexmplLamp/Lamp:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - ERRORCOMP_JAVA of type IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - ADMINISTRATIVE_ARCHIVE of type IDL:alma/xmlstore/Administrative:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - TEST_PS_1 of type IDL:alma/PS/PowerSupply:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - TEST_RPS_1 of type IDL:alma/RampedPS/RampedPowerSupply:1.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - We can directly manipulate a device once we get it, which is easy.
+1 - ----------T--:--:--.--- Python Client initialized by user@host Main - MOUNT1 actual azimuth: 0.0
+1 - ----------T--:--:--.--- Python Client initialized by user@host disconnect - Disconnect called for client
 1 - The end __oOo__
-1 - ----------T--:--:--.--- Python Client: initialized by <user>@<host> - Disconnect called for client
+1 - ----------T--:--:--.--- Python Client initialized by user@host disconnect - Disconnect called for client
