@@ -22,7 +22,7 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 	catch(CORBA::Exception &cex)
 	{
 //TBD: improve error handling
-		ACE_PRINT_EXCEPTION(cex, "in MonitorPoint<>::MonitorPoint");
+	cex._tao_print_exception("in MonitorPoint<>::MonitorPoint");
 	}
 	valueTrigger_m = 0;
 	try
@@ -84,7 +84,7 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 			valuePercentTrigger_m = valPer;
 		}
 	} catch(CORBA::SystemException &ex) {
-		ACE_PRINT_EXCEPTION(ex, "CORBA problem in MonitorPoint<>::MonitorPoint");
+	ex._tao_print_exception("CORBA problem in MonitorPoint<>::MonitorPoint");
 	} catch(...) {
 		printf("problem in MonitorPoint<>::MonitorPoint!!!\n");
 	}//try-catch
@@ -122,7 +122,7 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::activate(maci::ContainerServ
 	}
 	catch(CORBA::Exception &ex)
 	{
-		ACE_PRINT_EXCEPTION(ex, "MonitorPoint<>::activate");
+	ex._tao_print_exception("MonitorPoint<>::activate");
 	}
 }
 
@@ -136,7 +136,7 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::deactivate(maci::ContainerSe
 	}
 	catch(CORBA::Exception &ex)
 	{
-		ACE_PRINT_EXCEPTION(ex, "MonitorPoint<>::deactivate");
+	ex._tao_print_exception("MonitorPoint<>::deactivate");
 	}
 }
 
@@ -195,7 +195,7 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::startMonitoring()
 	catch(CORBA::Exception &cex)
 	{
 		//TBD: improve error handling
-		ACE_PRINT_EXCEPTION(cex, "in MonitorPoint<>::startMonitoring");
+	cex._tao_print_exception("in MonitorPoint<>::startMonitoring");
 	}
 }//startMonitoring
 
@@ -212,7 +212,7 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::stopMonitoring()
 	catch(CORBA::Exception &cex)
 	{
 		//TBD: improve error handling
-		ACE_PRINT_EXCEPTION(cex, "in MonitorPoint<>::stopMonitoring");
+	cex._tao_print_exception("in MonitorPoint<>::stopMonitoring");
 	}
 }//stopMonitoring
 
@@ -318,7 +318,7 @@ ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::ROMonitorP
 			this->alarmTimerTrigger_m = valPer;
 		}
 	} catch(CORBA::SystemException &ex) {
-		ACE_PRINT_EXCEPTION(ex, "CORBA problem in ROMonitorPoint<>::MonitorPoint");
+	ex._tao_print_exception("CORBA problem in ROMonitorPoint<>::MonitorPoint");
 	} catch(...) {
 		printf("problem in ROMonitorPoint<>::MonitorPoint!!!\n");
 	}//try-catch
@@ -349,7 +349,7 @@ void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::activ
 	}
 	catch(CORBA::Exception &ex)
 	{
-		ACE_PRINT_EXCEPTION(ex, "ROMonitorPoint<>::activate");
+	ex._tao_print_exception("ROMonitorPoint<>::activate");
 	}
 }
 
@@ -364,7 +364,7 @@ void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::deact
 	}
 	catch(CORBA::Exception &ex)
 	{
-		ACE_PRINT_EXCEPTION(ex, "ROMonitorPoint<>::deactivate");
+	ex._tao_print_exception("ROMonitorPoint<>::deactivate");
 	}
 }
 
@@ -406,7 +406,7 @@ void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::start
 	catch(CORBA::Exception &cex)
 	{
 		//TBD: improve error handling
-		ACE_PRINT_EXCEPTION(cex, "in ROMonitorPoint<>::startMonitoring");
+	cex._tao_print_exception("in ROMonitorPoint<>::startMonitoring");
 	}
 }//startMonitoring
 
@@ -424,7 +424,7 @@ void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::stopM
 	catch(CORBA::Exception &cex)
 	{
 		//TBD: improve error handling
-		ACE_PRINT_EXCEPTION(cex, "in ROMonitorPoint<>::stopMonitoring");
+	cex._tao_print_exception("in ROMonitorPoint<>::stopMonitoring");
 	}
 }//stopMonitoring
 

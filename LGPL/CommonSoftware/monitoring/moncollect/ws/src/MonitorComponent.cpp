@@ -161,7 +161,7 @@ ACS::TimeInterval MonitorComponent::propertyArchivingInterval(ACS::PropertyDesc 
 	}
 	catch(CORBA::SystemException &ex)
 	{
-		ACE_PRINT_EXCEPTION(ex, "CORBA problem in MonitorComponent::propertyArchivingInterval");
+	ex._tao_print_exception("CORBA problem in MonitorComponent::propertyArchivingInterval");
 		return 0;
 	}
 	catch(...)

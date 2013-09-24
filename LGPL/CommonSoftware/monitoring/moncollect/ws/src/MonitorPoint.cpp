@@ -98,7 +98,7 @@ EnumMonitorPoint::EnumMonitorPoint(const char *propertyName, const ACS::TimeInte
 	catch(CORBA::Exception &cex)
 	{
 //TBD: improve error handling
-		ACE_PRINT_EXCEPTION(cex, "in EnumMonitorPoint::EnumMonitorPoint");
+	cex._tao_print_exception("in EnumMonitorPoint::EnumMonitorPoint");
 	}
 	valueTrigger_m = 0;
 	try
@@ -159,7 +159,7 @@ EnumMonitorPoint::EnumMonitorPoint(const char *propertyName, const ACS::TimeInte
 			valuePercentTrigger_m = valPer;
 		}
 	} catch(CORBA::SystemException &ex) {
-		ACE_PRINT_EXCEPTION(ex, "CORBA problem in EnumMonitorPoint::EnumMonitorPoint");
+	ex._tao_print_exception("CORBA problem in EnumMonitorPoint::EnumMonitorPoint");
 	} catch(...) {
 		printf("problem in EnumMonitorPoint::EnumMonitorPoint!!!\n");
 	}//try-catch
@@ -188,7 +188,7 @@ void EnumMonitorPoint::activate(maci::ContainerServices *cs)
 	}
 	catch(CORBA::Exception &ex)
 	{
-		ACE_PRINT_EXCEPTION(ex, "EnumMonitorPoint::activate");
+	ex._tao_print_exception("EnumMonitorPoint::activate");
 	}
 }
 
@@ -201,7 +201,7 @@ void EnumMonitorPoint::deactivate(maci::ContainerServices *cs)
 	}
 	catch(CORBA::Exception &ex)
 	{
-		ACE_PRINT_EXCEPTION(ex, "EnumMonitorPoint::deactivate");
+	ex._tao_print_exception("EnumMonitorPoint::deactivate");
 	}
 }
 
@@ -247,7 +247,7 @@ void EnumMonitorPoint::startMonitoring()
 	catch(CORBA::Exception &cex)
 	{
 		//TBD: improve error handling
-		ACE_PRINT_EXCEPTION(cex, "in EnumMonitorPoint::startMonitoring");
+	cex._tao_print_exception("in EnumMonitorPoint::startMonitoring");
 	}
 }//startMonitoring
 
@@ -263,7 +263,7 @@ void EnumMonitorPoint::stopMonitoring()
 	catch(CORBA::Exception &cex)
 	{
 		//TBD: improve error handling
-		ACE_PRINT_EXCEPTION(cex, "in EnumMonitorPoint::stopMonitoring");
+	cex._tao_print_exception("in EnumMonitorPoint::stopMonitoring");
 	}
 }//stopMonitoring
 
@@ -359,7 +359,7 @@ ROEnumMonitorPoint::ROEnumMonitorPoint(const char *propertyName, const ACS::Time
 			this->alarmTimerTrigger_m = valPer;
 		}
 	} catch(CORBA::SystemException &ex) {
-		ACE_PRINT_EXCEPTION(ex, "CORBA problem in ROEnumMonitorPoint::EnumMonitorPoint");
+	ex._tao_print_exception("CORBA problem in ROEnumMonitorPoint::EnumMonitorPoint");
 	} catch(...) {
 		printf("problem in ROEnumMonitorPoint::EnumMonitorPoint!!!\n");
 	}//try-catch
@@ -387,7 +387,7 @@ void ROEnumMonitorPoint::activate(maci::ContainerServices *cs)
 	}
 	catch(CORBA::Exception &ex)
 	{
-		ACE_PRINT_EXCEPTION(ex, "ROEnumMonitorPoint::activate");
+	ex._tao_print_exception("ROEnumMonitorPoint::activate");
 	}
 }
 
@@ -401,7 +401,7 @@ void ROEnumMonitorPoint::deactivate(maci::ContainerServices *cs)
 	}
 	catch(CORBA::Exception &ex)
 	{
-		ACE_PRINT_EXCEPTION(ex, "ROEnumMonitorPoint::deactivate");
+	ex._tao_print_exception("ROEnumMonitorPoint::deactivate");
 	}
 }
 
@@ -442,7 +442,7 @@ void ROEnumMonitorPoint::startMonitoring()
 	catch(CORBA::Exception &cex)
 	{
 		//TBD: improve error handling
-		ACE_PRINT_EXCEPTION(cex, "in ROEnumMonitorPoint::startMonitoring");
+	cex._tao_print_exception("in ROEnumMonitorPoint::startMonitoring");
 	}
 }//startMonitoring
 
@@ -459,7 +459,7 @@ void ROEnumMonitorPoint::stopMonitoring()
 	catch(CORBA::Exception &cex)
 	{
 		//TBD: improve error handling
-		ACE_PRINT_EXCEPTION(cex, "in ROEnumMonitorPoint::stopMonitoring");
+	cex._tao_print_exception("in ROEnumMonitorPoint::stopMonitoring");
 	}
 }//stopMonitoring
 
