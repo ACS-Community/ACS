@@ -128,7 +128,7 @@ void ControllerThread::exit() {
     stop();
 }
 
-void ControllerThread::runLoop() ACE_THROW_SPEC ((CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx)) {
+void ControllerThread::runLoop() throw(CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx) {
     while (running) {
         m_mutex->acquire();
         ACE_Time_Value waittime(ACE_OS::gettimeofday() + TIME_PERIOD);
@@ -189,7 +189,7 @@ void ServiceController::restart() {
     m_mutex->release();
 }
 
-bool ServiceController::start(acsdaemon::DaemonCallback_ptr callback) ACE_THROW_SPEC ((acsdaemonErrType::ServiceAlreadyRunningEx)) {
+bool ServiceController::start(acsdaemon::DaemonCallback_ptr callback) throw(acsdaemonErrType::ServiceAlreadyRunningEx) {
     m_mutex->acquire();
     setState(getActualState());
     active = true;
@@ -207,7 +207,7 @@ bool ServiceController::start(acsdaemon::DaemonCallback_ptr callback) ACE_THROW_
     return willrun;
 }
 
-void ServiceController::stop(acsdaemon::DaemonCallback_ptr callback) ACE_THROW_SPEC ((acsdaemonErrType::ServiceNotRunningEx)) {
+void ServiceController::stop(acsdaemon::DaemonCallback_ptr callback) throw(acsdaemonErrType::ServiceNotRunningEx) {
     m_mutex->acquire();
     setState(getActualState());
     active = false;
@@ -680,7 +680,7 @@ void ACSDaemonContext::dispose(CORBA::ORB_ptr iorb) {
     acsQoS::done();
 }
 
-void ACSDaemonContext::processRequest(ACSServiceRequestTarget target, ACSServiceRequestType type, ACSServiceRequestDescription *desc, acsdaemon::DaemonCallback_ptr callback) ACE_THROW_SPEC ((acsdaemonErrType::ServiceAlreadyRunningEx, acsdaemonErrType::ServiceNotRunningEx)) {
+void ACSDaemonContext::processRequest(ACSServiceRequestTarget target, ACSServiceRequestType type, ACSServiceRequestDescription *desc, acsdaemon::DaemonCallback_ptr callback) throw(acsdaemonErrType::ServiceAlreadyRunningEx, acsdaemonErrType::ServiceNotRunningEx) {
     switch (target) {
     case IMP:
         getImpController(desc->getACSService())->start();

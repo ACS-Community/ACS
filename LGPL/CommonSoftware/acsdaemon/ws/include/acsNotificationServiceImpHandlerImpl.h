@@ -63,11 +63,7 @@ public:
     void start_notification_service (
         const char * name,
         acsdaemon::DaemonCallback_ptr callback,
-        CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      )) {
+        CORBA::Short instance_number) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx) {
         if (name != NULL && strlen(name) == 0) name = NULL;
         ACS_SHORT_LOG ((LM_INFO, "Starting '%s' Notification Service on Imp (instance %d).", name == NULL ? "default" : name, instance_number));
         ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(NOTIFICATION_SERVICE, instance_number);
@@ -86,11 +82,7 @@ public:
     void stop_notification_service (
         const char * name,
         acsdaemon::DaemonCallback_ptr callback,
-        CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      )) {
+        CORBA::Short instance_number) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx) {
         if (name != NULL && strlen(name) == 0) name = NULL;
         ACS_SHORT_LOG ((LM_INFO, "Stopping '%s' Notification Service on Imp (instance %d).", name == NULL ? "default" : name, instance_number));
         ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(NOTIFICATION_SERVICE, instance_number);
@@ -98,10 +90,7 @@ public:
         context->processRequest(LOCAL, STOP_SERVICE, desc, callback);
     }
 
-    acsdaemon::ServiceState get_service_status(const char * name, CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx
-      )) {
+    acsdaemon::ServiceState get_service_status(const char * name, CORBA::Short instance_number) throw(ACSErrTypeCommon::BadParameterEx) {
         return context->getACSServiceState(instance_number, name);
     }
 

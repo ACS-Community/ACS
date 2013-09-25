@@ -48,10 +48,10 @@ public:
         acsdaemon::DaemonCallback_ptr callback,
         CORBA::Short instance_number,
         CORBA::Boolean recovery)
-      ACE_THROW_SPEC ((
+      throw (
         ACSErrTypeCommon::BadParameterEx,
         acsdaemonErrType::ServiceAlreadyRunningEx
-      )) {
+      ) {
         if (domain != NULL && strlen(domain) == 0) domain = NULL;
         ACS_SHORT_LOG ((LM_INFO, "Starting Manager on Imp (instance %d).", instance_number));
         if (domain != NULL) {
@@ -67,10 +67,10 @@ public:
         const char * domain,
         acsdaemon::DaemonCallback_ptr callback,
         CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
+      throw(
         ACSErrTypeCommon::BadParameterEx,
         acsdaemonErrType::ServiceNotRunningEx
-      )) {
+      ) {
         if (domain != NULL && strlen(domain) == 0) domain = NULL;
         ACS_SHORT_LOG ((LM_INFO, "Stopping Manager on Imp (instance %d).", instance_number));
         if (domain != NULL) {
@@ -82,9 +82,9 @@ public:
     }
 
     acsdaemon::ServiceState get_service_status(CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
+      throw(
         ACSErrTypeCommon::BadParameterEx
-      )) {
+      ) {
         return context->getACSServiceState(instance_number);
     }
 

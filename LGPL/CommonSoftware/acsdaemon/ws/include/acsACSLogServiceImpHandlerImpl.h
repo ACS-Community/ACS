@@ -45,11 +45,7 @@ public:
 
     void start_acs_log (
         acsdaemon::DaemonCallback_ptr callback,
-        CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      )) {
+        CORBA::Short instance_number) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx) {
         ACS_SHORT_LOG ((LM_INFO, "Starting ACS Log Service on Imp (instance %d).", instance_number));
         ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(ACS_LOG_SERVICE, instance_number);
         context->processRequest(LOCAL, START_SERVICE, desc, callback);
@@ -57,20 +53,14 @@ public:
 
     void stop_acs_log (
         acsdaemon::DaemonCallback_ptr callback,
-        CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      )) {
+        CORBA::Short instance_number) throw(ACSErrTypeCommon::BadParameterEx,acsdaemonErrType::ServiceNotRunningEx) {
         ACS_SHORT_LOG ((LM_INFO, "Stopping ACS Log Service on Imp (instance %d).", instance_number));
         ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(ACS_LOG_SERVICE, instance_number);
         context->processRequest(LOCAL, STOP_SERVICE, desc, callback);
     }
 
     acsdaemon::ServiceState get_service_status(CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx
-      )) {
+      throw(ACSErrTypeCommon::BadParameterEx) {
         return context->getACSServiceState(instance_number);
     }
 

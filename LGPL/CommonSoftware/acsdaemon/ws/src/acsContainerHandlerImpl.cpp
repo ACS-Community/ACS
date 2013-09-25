@@ -66,11 +66,11 @@ ACSContainerHandlerImpl::start_container (
     const ::ACS::stringSeq & type_modifiers,
     const char * additional_command_line
     )
-    ACE_THROW_SPEC ((
+    throw(
 			CORBA::SystemException,
 			::acsdaemonErrType::FailedToStartContainerEx,
 			::ACSErrTypeCommon::BadParameterEx
-			))
+			)
 {
     if (container_type == 0 ||
 	*container_type == 0)
@@ -165,11 +165,11 @@ ACSContainerHandlerImpl::start_container_sync (
     const ::ACS::stringSeq & type_modifiers,
     const char * additional_command_line
     )
-    ACE_THROW_SPEC ((
+    throw(
 			CORBA::SystemException,
 			::acsdaemonErrType::FailedToStartContainerEx,
 			::ACSErrTypeCommon::BadParameterEx
-			))
+			)
 {
     if (container_type == 0 ||
 	*container_type == 0)
@@ -268,11 +268,11 @@ void ACSContainerHandlerImpl::stop_container (
     ::CORBA::Short instance_number,
     const char * additional_command_line
     )
-    ACE_THROW_SPEC ((
+    throw(
 			CORBA::SystemException,
 			::acsdaemonErrType::FailedToStopContainerEx,
 			::ACSErrTypeCommon::BadParameterEx
-			))
+			)
 {
     if (container_name == 0 ||
 	*container_name == 0)
@@ -342,11 +342,11 @@ void ACSContainerHandlerImpl::stop_container_sync (
     ::CORBA::Short instance_number,
     const char * additional_command_line
     )
-    ACE_THROW_SPEC ((
+    throw(
 			CORBA::SystemException,
 			::acsdaemonErrType::FailedToStopContainerEx,
 			::ACSErrTypeCommon::BadParameterEx
-			))
+			)
 {
     if (container_name == 0 ||
 	*container_name == 0)
@@ -418,10 +418,10 @@ void ACSContainerHandlerImpl::stop_container_sync (
 
 void
 ACSContainerHandlerImpl::shutdown ()
-    ACE_THROW_SPEC ((
+    throw(
 			CORBA::SystemException,
 			::maciErrType::NoPermissionEx
-    ))
+    )
 {
 	if (h_service->isProtected())
 	{

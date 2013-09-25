@@ -46,11 +46,7 @@ public:
     void start_logging_service (
         const char * name,
         acsdaemon::DaemonCallback_ptr callback,
-        CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      )) {
+        CORBA::Short instance_number) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx) {
         if (name != NULL && (strlen(name) == 0 || strcmp(name, "Log") == 0)) name = NULL;
         ACS_SHORT_LOG ((LM_INFO, "Starting '%s' Logging Service on Imp (instance %d).", name == NULL ? "Log" : name, instance_number));
         if (name != NULL) {
@@ -64,11 +60,7 @@ public:
     void stop_logging_service (
         const char * name,
         acsdaemon::DaemonCallback_ptr callback,
-        CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      )) {
+        CORBA::Short instance_number) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx) {
         if (name != NULL && (strlen(name) == 0 || strcmp(name, "Log") == 0)) name = NULL;
         ACS_SHORT_LOG ((LM_INFO, "Stopping '%s' Logging Service on Imp (instance %d).", name == NULL ? "Log" : name, instance_number));
         if (name != NULL) {
@@ -79,10 +71,7 @@ public:
         context->processRequest(LOCAL, STOP_SERVICE, desc, callback);
     }
 
-    acsdaemon::ServiceState get_service_status(const char * name, CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx
-      )) {
+    acsdaemon::ServiceState get_service_status(const char * name, CORBA::Short instance_number) throw(ACSErrTypeCommon::BadParameterEx) {
         return context->getACSServiceState(instance_number, name);
     }
 

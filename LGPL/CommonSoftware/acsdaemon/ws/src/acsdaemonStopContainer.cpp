@@ -174,7 +174,7 @@ main (int argc, char *argv[])
 	catch( CORBA::Exception &ex )
 	{
 		ACS_SHORT_LOG((LM_INFO, "Failed."));
-		ACE_PRINT_EXCEPTION (ex, ACE_TEXT ("Caught unexpected exception:"));
+		ex._tao_print_exception("Caught unexpected exception:");
 		return -1;
 	}
 

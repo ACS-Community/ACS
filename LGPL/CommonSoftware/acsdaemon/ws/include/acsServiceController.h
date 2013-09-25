@@ -58,7 +58,7 @@ class ControllerThread : public ACS::Thread {
     void onStart();
     void stop();
     void exit();
-    void runLoop() ACE_THROW_SPEC ((CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx));
+    void runLoop() throw(CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx);
 };
 
 class ControlledServiceRequest;
@@ -88,8 +88,8 @@ class ServiceController {
     virtual ~ServiceController();
     ACSDaemonContext *getContext() { return context; }
     void restart();
-    bool start(acsdaemon::DaemonCallback_ptr callback = NULL) ACE_THROW_SPEC ((acsdaemonErrType::ServiceAlreadyRunningEx));
-    void stop(acsdaemon::DaemonCallback_ptr callback = NULL) ACE_THROW_SPEC ((acsdaemonErrType::ServiceNotRunningEx));
+    bool start(acsdaemon::DaemonCallback_ptr callback = NULL) throw(acsdaemonErrType::ServiceAlreadyRunningEx);
+    void stop(acsdaemon::DaemonCallback_ptr callback = NULL) throw(acsdaemonErrType::ServiceNotRunningEx);
     acsdaemon::ServiceState getLastState() { return state; }
 };
 
@@ -174,7 +174,7 @@ class ACSDaemonContext {
     ~ACSDaemonContext();
     void initialize(CORBA::ORB_ptr iorb);
     void dispose(CORBA::ORB_ptr iorb);
-    void processRequest(ACSServiceRequestTarget target, ACSServiceRequestType type, ACSServiceRequestDescription *desc, acsdaemon::DaemonCallback_ptr callback = NULL) ACE_THROW_SPEC ((acsdaemonErrType::ServiceAlreadyRunningEx, acsdaemonErrType::ServiceNotRunningEx));
+    void processRequest(ACSServiceRequestTarget target, ACSServiceRequestType type, ACSServiceRequestDescription *desc, acsdaemon::DaemonCallback_ptr callback = NULL) throw(acsdaemonErrType::ServiceAlreadyRunningEx, acsdaemonErrType::ServiceNotRunningEx);
     RequestProcessorThread *getRequestProcessor() { return reqproc; }
     CORBA::ORB_ptr getORB() { return orb; }
     void checkControllers();

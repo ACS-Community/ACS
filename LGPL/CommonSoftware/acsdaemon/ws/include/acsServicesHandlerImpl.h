@@ -185,226 +185,133 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
         const char * definition,
         ::CORBA::Boolean reuse_services,
         ::acsdaemon::DaemonSequenceCallback_ptr callback
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx
-      ));
+      )throw(ACSErrTypeCommon::BadParameterEx);
     
     void stop_services (
         const char * definition,
         ::acsdaemon::DaemonSequenceCallback_ptr callback
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx
-      ));
+	) throw (ACSErrTypeCommon::BadParameterEx);
     
     void start_naming_service (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      ));
+	) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
     
     void start_notification_service (
         const char * name,
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      ));
+      ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
     
     void start_xml_cdb (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number,
         ::CORBA::Boolean recovery,
         const char * cdb_xml_dir
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      ));
+      ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
     
     void start_rdb_cdb (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number,
         ::CORBA::Boolean recovery,
         const char * config_name
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      ));
+      ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
 
     void start_manager (
         const char * domain,
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number,
         ::CORBA::Boolean recovery
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      ));
+      ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
     
     void start_acs_log (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      ));
+      ) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
     
     void start_logging_service (
         const char * name,
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      ));
+      ) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
     
     void start_interface_repository (
         ::CORBA::Boolean load,
         ::CORBA::Boolean wait_load,
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      ));
+      ) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
     
     void stop_naming_service (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      ));
+	) throw( ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
     
     void stop_notification_service (
         const char * name,
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      ));
+      ) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
     
     void stop_cdb (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      ));
+	) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
     
     void stop_manager (
         const char * domain,
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      ));
+      ) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
     
     void stop_acs_log (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      ));
+      ) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
     
     void stop_logging_service (
         const char * name,
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      ));
+      ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
     
     void stop_interface_repository (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      ));
+      ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
     
     void start_alarm_service (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      ));
+      ) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
 
     void stop_alarm_service (
         ::acsdaemon::DaemonCallback_ptr callback,
         ::CORBA::Short instance_number
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      ));
+      ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
  
     void start_acs (
         acsdaemon::DaemonSequenceCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
-      )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::ACSErrTypeCommon::BadParameterEx
-      ));
+      )  throw(CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx);
     
     void stop_acs (
         acsdaemon::DaemonSequenceCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
-      )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::ACSErrTypeCommon::BadParameterEx
-      ));
+      ) throw (CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx);
 
      char * status_acs ( 
          ::CORBA::Short instance_number
-         )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::acsdaemonErrType::FailedToGetAcsStatusEx
-      ));
+         ) throw (CORBA::SystemException, ::acsdaemonErrType::FailedToGetAcsStatusEx);
 
-    void shutdown ()
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::maciErrType::NoPermissionEx
-      ));
+    void shutdown () throw (CORBA::SystemException,::maciErrType::NoPermissionEx);
 
 
     void set_configuration_reference (
       ::CORBA::Short instance_number,
-      const ::acsdaemon::ServiceInfoSeq & services_info)
-      ACE_THROW_SPEC ((
-        CORBA::SystemException
-      ))
+      const ::acsdaemon::ServiceInfoSeq & services_info) throw(CORBA::SystemException)
    {
        if (context)
 	   context->setConfigurationReference(instance_number, services_info);

@@ -48,11 +48,7 @@ public:
         CORBA::Short instance_number,
         CORBA::Boolean recovery,
         const char * cdb_xml_dir
-      )
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      ))
+      ) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx)
     {
         if (cdb_xml_dir != NULL && strlen(cdb_xml_dir) == 0) cdb_xml_dir = NULL;
         ACS_SHORT_LOG ((LM_INFO, "Starting Configuration Database on Imp (instance %d).", instance_number));
@@ -68,10 +64,10 @@ public:
         CORBA::Boolean recovery,
         const char * config_name
       )
-      ACE_THROW_SPEC ((
+      throw (
         ACSErrTypeCommon::BadParameterEx,
         acsdaemonErrType::ServiceAlreadyRunningEx
-      ))
+      )
     {
         if (config_name != NULL && strlen(config_name) == 0) config_name = NULL;
         ACS_SHORT_LOG ((LM_INFO, "Starting RDB Configuration Database on Imp (instance %d).", instance_number));
@@ -85,10 +81,10 @@ public:
         acsdaemon::DaemonCallback_ptr callback,
         CORBA::Short instance_number
       )
-      ACE_THROW_SPEC ((
+      throw(
         ACSErrTypeCommon::BadParameterEx,
         acsdaemonErrType::ServiceNotRunningEx
-      ))
+      )
     {
         ACS_SHORT_LOG ((LM_INFO, "Stopping Configuration Database on Imp (instance %d).", instance_number));
         ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(CDB, instance_number);
@@ -96,9 +92,9 @@ public:
     }
         
     acsdaemon::ServiceState get_service_status(CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
+      throw(
         ACSErrTypeCommon::BadParameterEx
-      )) {
+      ) {
         return context->getACSServiceState(instance_number);
     }
 

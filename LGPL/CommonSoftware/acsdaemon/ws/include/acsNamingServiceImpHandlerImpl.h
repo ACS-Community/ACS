@@ -45,11 +45,7 @@ public:
 
     void start_naming_service (
         acsdaemon::DaemonCallback_ptr callback,
-        CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceAlreadyRunningEx
-      )) {
+        CORBA::Short instance_number) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx) {
         ACS_SHORT_LOG ((LM_INFO, "Starting Naming Service on Imp (instance %d).", instance_number));
         ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(NAMING_SERVICE, instance_number);
         context->processRequest(LOCAL, START_SERVICE, desc, callback);
@@ -57,20 +53,13 @@ public:
 
     void stop_naming_service (
         acsdaemon::DaemonCallback_ptr callback,
-        CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx,
-        acsdaemonErrType::ServiceNotRunningEx
-      )) {
+        CORBA::Short instance_number) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx) {
         ACS_SHORT_LOG ((LM_INFO, "Stopping Naming Service on Imp (instance %d).", instance_number));
         ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(NAMING_SERVICE, instance_number);
         context->processRequest(LOCAL, STOP_SERVICE, desc, callback);
     }
 
-    acsdaemon::ServiceState get_service_status(CORBA::Short instance_number)
-      ACE_THROW_SPEC ((
-        ACSErrTypeCommon::BadParameterEx
-      )) {
+    acsdaemon::ServiceState get_service_status(CORBA::Short instance_number) throw(ACSErrTypeCommon::BadParameterEx) {
         return context->getACSServiceState(instance_number);
     }
 

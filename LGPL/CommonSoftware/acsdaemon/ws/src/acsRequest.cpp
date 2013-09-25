@@ -88,7 +88,7 @@ void RequestProcessorThread::exit() {
     stop();
 }
 
-void RequestProcessorThread::runLoop() ACE_THROW_SPEC ((CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx)) {
+void RequestProcessorThread::runLoop() throw (CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx) {
     Request *nowreq;
     while (running) {
         m_mutex->acquire();
@@ -622,7 +622,7 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSDaemonCont
         return failed.returnCompletion(false);
     } catch(CORBA::Exception &ex) {
         ACS_SHORT_LOG((LM_ERROR, "Failed '%s'.", corbaloc));
-        ACE_PRINT_EXCEPTION (ex, ACE_TEXT ("Caught unexpected exception:"));
+        ex._tao_print_exception("Caught unexpected exception:");
         acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
         return failed.returnCompletion(false);
     }

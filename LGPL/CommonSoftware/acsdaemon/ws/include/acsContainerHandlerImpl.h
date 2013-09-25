@@ -99,11 +99,11 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
         const ::ACS::stringSeq & type_modifiers,
         const char * additional_command_line
       )
-      ACE_THROW_SPEC ((
+      throw(
         CORBA::SystemException,
         ::acsdaemonErrType::FailedToStartContainerEx,
 	::ACSErrTypeCommon::BadParameterEx
-      ));
+      );
 
     virtual void start_container_sync (
             const char * container_type,
@@ -112,39 +112,39 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
             const ::ACS::stringSeq & type_modifiers,
             const char * additional_command_line
           )
-          ACE_THROW_SPEC ((
+          throw(
             CORBA::SystemException,
             ::acsdaemonErrType::FailedToStartContainerEx,
     	::ACSErrTypeCommon::BadParameterEx
-          ));
+          );
 
     virtual void stop_container (
         const char * container_name,
         ::CORBA::Short instance_number,
         const char * additional_command_line
       )
-      ACE_THROW_SPEC ((
+      throw(
         CORBA::SystemException,
         ::acsdaemonErrType::FailedToStopContainerEx,
 	::ACSErrTypeCommon::BadParameterEx
-      ));
+      );
 
     virtual void stop_container_sync (
             const char * container_name,
             ::CORBA::Short instance_number,
             const char * additional_command_line
           )
-          ACE_THROW_SPEC ((
+          throw(
             CORBA::SystemException,
             ::acsdaemonErrType::FailedToStopContainerEx,
     	::ACSErrTypeCommon::BadParameterEx
-          ));
+          );
 
     virtual void shutdown ()
-      ACE_THROW_SPEC ((
+      throw(
         CORBA::SystemException,
         ::maciErrType::NoPermissionEx
-      ));
+      );
 
   private:
     std::string h_name; // Name of container handler (used for logging purposes

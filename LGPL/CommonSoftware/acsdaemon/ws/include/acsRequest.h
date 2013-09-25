@@ -256,7 +256,7 @@ class RequestProcessorThread : public ACS::Thread {
     void onStart();
     void stop();
     void exit();
-    void runLoop() ACE_THROW_SPEC ((CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx));
+    void runLoop() throw(CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx);
     void process(Request* r);
 };
 

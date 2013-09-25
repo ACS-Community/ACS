@@ -233,10 +233,7 @@ void ACSServicesHandlerImpl::start_services (
     const char * definition,
     ::CORBA::Boolean reuse_services,
     ::acsdaemon::DaemonSequenceCallback_ptr callback
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx)
 {
     ACSServiceRequestChainContext *rcc = new ACSServiceRequestChainContext(context, START_SERVICE, reuse_services, callback);
     XML_Parser parser = XML_ParserCreate("UTF-8");
@@ -292,10 +289,7 @@ void ACSServicesHandlerImpl::start_services (
 void ACSServicesHandlerImpl::stop_services (
     const char * definition,
     ::acsdaemon::DaemonSequenceCallback_ptr callback
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx)
 {
     ACSServiceRequestChainContext *rcc = new ACSServiceRequestChainContext(context, STOP_SERVICE, true, callback);
     XML_Parser parser = XML_ParserCreate("UTF-8");
@@ -311,11 +305,7 @@ void ACSServicesHandlerImpl::stop_services (
 void ACSServicesHandlerImpl::start_naming_service (
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceAlreadyRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx)
 {
     ACS_SHORT_LOG ((LM_INFO, "Starting Naming Service (instance %d).", instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(NAMING_SERVICE, instance_number);
@@ -325,11 +315,7 @@ void ACSServicesHandlerImpl::start_naming_service (
 void ACSServicesHandlerImpl::start_alarm_service (
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceAlreadyRunningEx
-  ))
+  )  throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx)
 {
     ACS_SHORT_LOG ((LM_INFO, "Starting Alarm Service (instance %d).", instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(ALARM_SERVICE, instance_number);
@@ -340,11 +326,7 @@ void ACSServicesHandlerImpl::start_notification_service (
     const char * name,
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceAlreadyRunningEx
-  ))
+  )  throw ( ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx)
 {
     if (name != NULL && strlen(name) == 0) name = NULL;
     ACS_SHORT_LOG ((LM_INFO, "Starting '%s' Notification Service (instance %d).", name == NULL ? "default" : name, instance_number));
@@ -358,11 +340,7 @@ void ACSServicesHandlerImpl::start_xml_cdb (
     ::CORBA::Short instance_number,
     ::CORBA::Boolean recovery,
     const char * cdb_xml_dir
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceAlreadyRunningEx
-  ))
+  ) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx)
 {
     if (cdb_xml_dir != NULL && strlen(cdb_xml_dir) == 0) cdb_xml_dir = NULL;
     ACS_SHORT_LOG ((LM_INFO, "Starting Configuration Database (instance %d).", instance_number));
@@ -377,11 +355,7 @@ void ACSServicesHandlerImpl::start_rdb_cdb (
     ::CORBA::Short instance_number,
     ::CORBA::Boolean recovery,
     const char * config_name
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceAlreadyRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx)
 {
     if (config_name != NULL && strlen(config_name) == 0) config_name = NULL;
     ACS_SHORT_LOG ((LM_INFO, "Starting RDB Configuration Database (instance %d).", instance_number));
@@ -396,11 +370,7 @@ void ACSServicesHandlerImpl::start_manager (
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number,
     ::CORBA::Boolean recovery
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceAlreadyRunningEx
-  ))
+  ) throw (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx)
 {
     if (domain != NULL && strlen(domain) == 0) domain = NULL;
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(MANAGER, instance_number);
@@ -412,11 +382,7 @@ void ACSServicesHandlerImpl::start_manager (
 void ACSServicesHandlerImpl::start_acs_log (
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceAlreadyRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx)
 {
     ACS_SHORT_LOG ((LM_INFO, "Starting ACS Log Service (instance %d).", instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(ACS_LOG_SERVICE, instance_number);
@@ -427,11 +393,7 @@ void ACSServicesHandlerImpl::start_logging_service (
     const char * name,
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceAlreadyRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx)
 {
     if (name != NULL && (strlen(name) == 0 || strcmp(name, "Log") == 0)) name = NULL;
     ACS_SHORT_LOG ((LM_INFO, "Starting '%s' Logging Service (instance %d).", name == NULL ? "Log" : name, instance_number));
@@ -445,11 +407,7 @@ void ACSServicesHandlerImpl::start_interface_repository (
     ::CORBA::Boolean wait_load,
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceAlreadyRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx)
 {
     ACS_SHORT_LOG ((LM_INFO, "Starting Interface Repository (instance %d).", instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(INTERFACE_REPOSITORY, instance_number);
@@ -461,11 +419,7 @@ void ACSServicesHandlerImpl::start_interface_repository (
 void ACSServicesHandlerImpl::stop_naming_service (
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceNotRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx)
 {
     ACS_SHORT_LOG ((LM_INFO, "Stopping Naming Service (instance %d).", instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(NAMING_SERVICE, instance_number);
@@ -475,11 +429,7 @@ void ACSServicesHandlerImpl::stop_naming_service (
 void ACSServicesHandlerImpl::stop_alarm_service (
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceNotRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx)
 {
     ACS_SHORT_LOG ((LM_INFO, "Stopping Alarm Service (instance %d).", instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(ALARM_SERVICE, instance_number);
@@ -490,11 +440,7 @@ void ACSServicesHandlerImpl::stop_notification_service (
     const char * name,
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceNotRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx)
 {
     if (name != NULL && strlen(name) == 0) name = NULL;
     ACS_SHORT_LOG ((LM_INFO, "Stopping '%s' Notification Service (instance %d).", name == NULL ? "default" : name, instance_number));
@@ -506,11 +452,7 @@ void ACSServicesHandlerImpl::stop_notification_service (
 void ACSServicesHandlerImpl::stop_cdb (
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceNotRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx )
 {
     ACS_SHORT_LOG ((LM_INFO, "Stopping Configuration Database (instance %d).", instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(CDB, instance_number);
@@ -521,11 +463,7 @@ void ACSServicesHandlerImpl::stop_manager (
     const char * domain,
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceNotRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx)
 {
     if (domain != NULL && strlen(domain) == 0) domain = NULL;
     ACS_SHORT_LOG ((LM_INFO, "Stopping Manager (instance %d).", instance_number));
@@ -537,11 +475,7 @@ void ACSServicesHandlerImpl::stop_manager (
 void ACSServicesHandlerImpl::stop_acs_log (
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceNotRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx)
 {
     ACS_SHORT_LOG ((LM_INFO, "Stopping ACS Log Service (instance %d).", instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(ACS_LOG_SERVICE, instance_number);
@@ -552,11 +486,7 @@ void ACSServicesHandlerImpl::stop_logging_service (
     const char * name,
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceNotRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx)
 {
     if (name != NULL && (strlen(name) == 0 || strcmp(name, "Log") == 0)) name = NULL;
     ACS_SHORT_LOG ((LM_INFO, "Stopping '%s' Logging Service (instance %d).", name == NULL ? "Log" : name, instance_number));
@@ -568,11 +498,7 @@ void ACSServicesHandlerImpl::stop_logging_service (
 void ACSServicesHandlerImpl::stop_interface_repository (
     ::acsdaemon::DaemonCallback_ptr callback,
     ::CORBA::Short instance_number
-  )
-  ACE_THROW_SPEC ((
-    ACSErrTypeCommon::BadParameterEx,
-    acsdaemonErrType::ServiceNotRunningEx
-  ))
+  ) throw(ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx)
 {
     ACS_SHORT_LOG ((LM_INFO, "Stopping Interface Repository (instance %d).", instance_number));
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(INTERFACE_REPOSITORY, instance_number);
@@ -611,11 +537,7 @@ ACSServicesHandlerImpl::start_acs (
     acsdaemon::DaemonSequenceCallback_ptr callback,
     ::CORBA::Short instance_number,
     const char * additional_command_line
-  )
-  ACE_THROW_SPEC ((
-    CORBA::SystemException,
-    ::ACSErrTypeCommon::BadParameterEx
-  ))
+  ) throw (CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx)
 {
     bool recovery = additional_command_line && ACE_OS::strstr(additional_command_line, "-r");
     this->start_services(getServices(instance_number, false).c_str(), recovery, callback);
@@ -627,11 +549,7 @@ ACSServicesHandlerImpl::stop_acs (
     acsdaemon::DaemonSequenceCallback_ptr callback,
     ::CORBA::Short instance_number,
     const char * additional_command_line
-  )
-  ACE_THROW_SPEC ((
-    CORBA::SystemException,
-    ::ACSErrTypeCommon::BadParameterEx
-  ))
+  ) throw(CORBA::SystemException, ::ACSErrTypeCommon::BadParameterEx)
 {
 	// stop the containers first
 	char buf[64];
@@ -644,11 +562,7 @@ ACSServicesHandlerImpl::stop_acs (
 
 char * ACSServicesHandlerImpl::status_acs ( 
     ::CORBA::Short instance_number
-    )
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::acsdaemonErrType::FailedToGetAcsStatusEx
-      ))
+    ) throw(CORBA::SystemException, ::acsdaemonErrType::FailedToGetAcsStatusEx)
 {
     int result;
     char *acsStatus=0;
@@ -698,11 +612,7 @@ char * ACSServicesHandlerImpl::status_acs (
     return acsStatus;
 }//ACSServicesHandlerImpl::status_acs
 
-void ACSServicesHandlerImpl::shutdown ()
-      ACE_THROW_SPEC ((
-        CORBA::SystemException,
-        ::maciErrType::NoPermissionEx
-      ))
+void ACSServicesHandlerImpl::shutdown () throw(CORBA::SystemException, ::maciErrType::NoPermissionEx)
 {
     if (h_service->isProtected())
 	{
