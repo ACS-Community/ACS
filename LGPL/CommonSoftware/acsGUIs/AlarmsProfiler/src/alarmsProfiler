@@ -25,15 +25,12 @@
 
 if [ X"$MANAGER_REFERENCE" = X ]; then
    ACS_MANAGER_PORT=`getManagerPort`
-   ACS_NAMING_SERVICE_PORT=`getNamingServicePort`
    export HOST=`getIP`
    export MANAGER_REFERENCE=corbaloc::$HOST:$ACS_MANAGER_PORT/Manager
-   export ACS_NAME_SERVICE=corbaloc::$HOST:$ACS_NAMING_SERVICE_PORT/NameService
 fi
 ACS_LOG_DEBUG "alarmsProfiler" "ACS Manager: $MANAGER_REFERENCE"
 
 echo $MANAGER_REFERENCE
-echo $ACS_NAME_SERVICE
 
 dir=$(searchFile bin/alarmsProfiler)
 echo $dir
@@ -60,8 +57,7 @@ $dir/lib/AlarmsProfiler/alarmsProfiler \
 	-vmargs \
 	-DACS.data=${ACSDATA} \
 	-DACS.tmp=$ACS_TMP \
-	-DACS.manager=${MANAGER_REFERENCE} \
-	-DORBInitRef.NameService=${ACS_NAME_SERVICE}
+	-DACS.manager=${MANAGER_REFERENCE}
 
 #
 # ___oOo___
