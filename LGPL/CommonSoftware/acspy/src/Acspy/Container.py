@@ -209,6 +209,9 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         BaseClient.disconnect(self)
         self.logger.logInfo("Logged out from manager")
         
+        # Give time to the manger to shutdown or whatever else
+        sleep(10)
+        
         # Start the thread to autoreconenct to the manager
         try:
             retries=int(self.cdbContainerInfo[0]['ManagerRetry'])
