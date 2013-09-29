@@ -148,7 +148,7 @@ check_linux ()
 	OS='LINUX'
 	# Standard release files for different distributions
 	RH=/etc/redhat-release
-	DB=/etc/debian-version
+	DB=/etc/debian_version
 	SL=/etc/slackware-version
 	SU=/etc/SuSE-release
 	GT=/etc/gentoo-release

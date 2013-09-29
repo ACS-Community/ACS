@@ -213,10 +213,17 @@ then
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 fi
 
-./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared --enable-unicode=ucs4
-#./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared 
-make
-make install
+if [ "$DISTRO" = "DEBIAN" ]; then
+    mkdir -p $PYTHON_ROOT/lib/python/site-packages
+    mkdir -p $PYTHON_ROOT/bin
+    ln -s $PYTHON_ROOT/lib/python $PYTHON_ROOT/lib/python2.7
+    ln -s `which python` $PYTHON_ROOT/bin/python
+else 
+    ./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared --enable-unicode=ucs4
+    #./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared 
+    make
+    make install
+fi
 
 cd $CWD
 echo Python installation done!

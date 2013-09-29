@@ -96,8 +96,12 @@ if [ "$OS" = "LINUX" ] || [ "$OS" = "SOLARIS" ] || [ "$OS" = "$CYGWIN_VER" ]
 then
     mkdir build
     cd build
-    ../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python 
-    make
+    if [ "$DISTRO" = "DEBIAN" ]; then
+        ../configure --prefix=$OMNI_ROOT
+    else
+        ../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python
+    fi
+    make -j 2 -l 2
     make install
 else
     echo "OS $OS is not supported"
@@ -127,8 +131,12 @@ mv $OMNI_ROOT/src/lib/omniORBpy-3.4 $OMNI_ROOT/src/lib/omniORBpy
 cd $OMNI_ROOT/src/lib/omniORBpy
 mkdir -p build
 cd build
-../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python 
-make
+if [ "$DISTRO" = "DEBIAN" ]; then
+    ../configure --prefix=$OMNI_ROOT
+else
+    ../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python
+fi
+make -j 2 -l 2
 make install
 #
 # Depending on the version of python installed and used for building,
