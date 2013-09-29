@@ -113,7 +113,7 @@ install : install_all
 .PHONY:unpack
 unpack :
 	@echo " . . . unpacking antlr . . . "
-	@gtar -xzf antlr-${ANTLR_VER_2}.tar.gz
+	@tar -xzf antlr-${ANTLR_VER_2}.tar.gz
 	@patch -p0 < gcc44.patch
 #	@gtar -xzf antlr-${ANTLR_VER_3}.tar.gz
 
