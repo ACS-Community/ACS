@@ -100,7 +100,7 @@ else
   echo "== Building distribute"
   tar -zxf distribute-0.6.10.tar.gz
   pushd distribute-0.6.10
-  $PYTHON_INTR setup.py install
+  $PYTHON_INTR setup.py install --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -112,7 +112,7 @@ else
   echo "== Building PySNMP"
   tar -zxf pysnmp-4.1.13a.tar.gz
   pushd pysnmp-4.1.13a
-  $PYTHON_INTR setup.py install
+  $PYTHON_INTR setup.py install --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -126,7 +126,7 @@ else
   pushd python-ldap-2.3.11
   cat setup.cfg | sed 's/local\/openldap-REL_ENG_2_1\///' >> setup.cfg.tmp
   mv setup.cfg.tmp setup.cfg 
-  $PYTHON_INTR setup.py install
+  $PYTHON_INTR setup.py install --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -140,7 +140,7 @@ else
   tar -zxf numpy-1.7.0.tar.gz
   pushd numpy-1.7.0
   $PYTHON_INTR setup.py build --fcompiler=gnu95
-  $PYTHON_INTR setup.py install
+  $PYTHON_INTR setup.py install --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -151,7 +151,7 @@ else
   echo "== Building GnuPlot Py"
   tar -zxf gnuplot-py-1.8.tar.gz
   pushd gnuplot-py-1.8
-  $PYTHON_INTR setup.py install
+  $PYTHON_INTR setup.py install --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -181,8 +181,8 @@ else
   mv setup.py.tmp setup.py
 
   export BUILD_AGG=1
-  $PYTHON_INTR setup.py build
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py build --prefix $PYTHON_ROOT
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
 
 
   echo "== Configuring matplotlib"
@@ -203,7 +203,7 @@ else
   echo "== Building scipy"
   tar -zxf scipy-0.7.2.tar.gz
   pushd scipy-0.7.2
-  $PYTHON_INTR setup.py config_fc --fcompiler=gnu95 install
+  $PYTHON_INTR setup.py config_fc --fcompiler=gnu95 install --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -214,7 +214,7 @@ else
   echo "== Building pyephem"
   tar -zxf pyephem-3.7.5.1.tar.gz
   pushd pyephem-3.7.5.1
-  $PYTHON_INTR setup.py install
+  $PYTHON_INTR setup.py install --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -226,7 +226,7 @@ else
   echo "== Building pexpect"
   tar -zxf pexpect-2.3.tar.gz
   pushd pexpect-2.3
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -248,7 +248,7 @@ else
   echo "== Building coverage"
   tar -zxf coverage-3.3.1.tar.gz
   pushd coverage-3.3.1
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -267,7 +267,7 @@ else
   echo "== Installing Pythoscope"
   tar -zxf pythoscope-0.4.3.tar.gz
   pushd pythoscope-0.4.3
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -278,7 +278,7 @@ else
   echo "== Installing nose"
   tar -zxf nose-0.11.3.tar.gz
   pushd nose-0.11.3
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -292,15 +292,15 @@ else
   echo "== Building pylint"
   tar -xzf logilab-common-0.59.1.tar.gz
   pushd logilab-common-0.59.1
-  $PYTHON_INTR setup.py install
+  $PYTHON_INTR setup.py install --prefix $PYTHON_ROOT
   popd
   tar -xzf logilab-astng-0.24.3.tar.gz
   pushd logilab-astng-0.24.3
-  $PYTHON_INTR setup.py install
+  $PYTHON_INTR setup.py install --prefix $PYTHON_ROOT
   popd
   tar -zxf pylint-0.28.0.tar.gz
   pushd pylint-0.28.0
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -320,39 +320,39 @@ else
   echo "== Building IPython"
   tar -zxf Pygments-1.3.1.tar.gz
   pushd Pygments-1.3.1
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
   tar -zxf Jinja2-2.4.1.tar.gz
   pushd Jinja2-2.4.1
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
   tar -zxf docutils-0.6.tar.gz
   pushd docutils-0.6
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
   tar -zxf Sphinx-0.6.5.tar.gz
   pushd Sphinx-0.6.5
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
   tar -zxf zope.interface-3.6.1.tar.gz
   pushd zope.interface-3.6.1
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
   tar -jxf Twisted-10.1.0.tar.bz2
   pushd Twisted-10.1.0
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
   tar -zxf pyOpenSSL-0.10.tar.gz
   pushd pyOpenSSL-0.10
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
   tar -zxf foolscap-0.5.1.tar.gz
   pushd foolscap-0.5.1
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
   tar -zxf ipython-0.10.tar.gz
   pushd ipython-0.10
-  $PYTHON_INTR setup.py install 
+  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
 fi
 
@@ -363,7 +363,7 @@ else
   echo "== Installing snakefood"
   tar -xvzf snakefood-1.4-20100716.tgz
   pushd snakefood-1.4
-  python setup.py install 
+  python setup.py install  --prefix $PYTHON_ROOT
   popd
 fi
 
