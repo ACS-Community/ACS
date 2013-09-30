@@ -1562,7 +1562,7 @@ ContainerImpl::resolveManager(int nSecTimeout)
   ACS_TRACE("maci::ContainerImpl::resolveManager");
 
   Field fld;
-  ULong retries = 16;
+  ULong retries = 10;
   if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "ManagerRetry", fld))
     fld.GetULong(retries);
 
