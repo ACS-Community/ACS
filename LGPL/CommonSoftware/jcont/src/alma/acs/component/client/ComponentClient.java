@@ -203,7 +203,7 @@ public class ComponentClient
 		
 			m_acsManagerProxy = new AcsManagerProxy(managerLoc, acsCorba.getORB(), m_logger);
 			
-			m_acsManagerProxy.loginToManager(m_managerClient, false);
+			m_acsManagerProxy.loginToManager(m_managerClient, 1);
 
 			DAL cdb = DALHelper.narrow(m_acsManagerProxy.get_service("CDB", false));
 

@@ -35,7 +35,6 @@ import si.ijs.maci.ComponentSpec;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 import si.ijs.maci.ManagerOperations;
-
 import alma.ACS.CBDescIn;
 import alma.ACS.CBlong;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
@@ -145,7 +144,7 @@ public class AcsManagerProxy
 			
 			m_logger.fine("Manager reference not available. Trying to resolve...");
 
-			findManager(m_managerLoc, true);
+			findManager(m_managerLoc, 0);
 		}
 		
 		return m_manager;
@@ -197,7 +196,7 @@ public class AcsManagerProxy
 						
 						m_logger.finer("attempting (re-)login");						
 						
-						loginToManager(false);
+						loginToManager(1);
 						break RECONNECT; // managed to reconnect
 
 					} catch (AcsJContainerEx e) {
@@ -258,20 +257,25 @@ public class AcsManagerProxy
 	
 	/**
 	 * Finds the Manger using the supplied <code>managerLoc</code>.
-	 * If the manager can't be found and <code>keepTrying</code> is true, 
-	 * this method enters a loop and tries again after every 5 seconds. 
+	 * 
+	 * If the manager can't be found, this method enters a loop and tries again after every 3 seconds.
+	 * The number of iterations of the loop is bounded by <code>attempts</code>.
 	 * 
 	 * @param managerLoc  the corbaloc string that uniquely identifies the manager 
 	 * 						as a CORBA service.
-	 * @param keepTrying  if true, this method will only return
-	 * 						when it has successfully contacted the manager service;
-	 * 					  if false, this method will simply throw a <code>AcsJContainerServicesEx</code>
-	 * 						if it fails to resolve the manager. 
+	 * @param attempts	The number of attempts to contact the manager (0 means forever).
+	 * 					If 0, this method will only return when it has successfully contacted the manager service;
+	 * 					if greater then 0, this method will simply throw a <code>AcsJContainerServicesEx</code>
+	 * 					if it fails to resolve the manager. 
 	 * @throws AcsJContainerEx  if anything goes wrong.
 	 */
-	private synchronized void findManager(String managerLoc, boolean keepTrying) 
+	private synchronized void findManager(String managerLoc, int attempts) 
 		throws AcsJContainerEx
 	{
+		if (attempts<0) {
+			throw new IllegalArgumentException("Invalid number of attempts to contact the manager: "+attempts);
+		}
+		int currentAttempt=attempts;
 		do
 		{
 			if (m_shuttingDown) {
@@ -292,14 +296,16 @@ public class AcsManagerProxy
 					throw ex;
 				}
 				m_logger.finest("manager narrow successful.");
-				keepTrying = false; 
+				// Set attempts=1 and currentAttempt=0 to exit the loop
+				attempts=1;
+				currentAttempt=0;
 			}
 			catch (Throwable thr) {
 				String msg = "Failed to obtain the manager reference from the corbaloc '" + m_managerLoc + "'. ";
-				if (keepTrying) {
+				if (attempts==0 || currentAttempt>0) {
 					m_logger.log(Level.INFO, msg + "Will keep trying.");
 					try {
-						Thread.sleep(5000);
+						Thread.sleep(3000);
 					}
 					catch (InterruptedException e1) {
 						// nada
@@ -312,8 +318,9 @@ public class AcsManagerProxy
 					throw ex;
 				}
 			}
+			currentAttempt=(attempts==0)?0:currentAttempt-1;
 		}
-		while (keepTrying);
+		while (attempts==0 || currentAttempt>0);
 	}
 
 	/**
@@ -322,18 +329,18 @@ public class AcsManagerProxy
 	 *  
 	 * @param managerClient  the IDL-defined client of the manager (see maci.idl), 
 	 * 						 of which the container is a subclass.
-	 * @param keepTrying  refers to multiple attempts for both finding the manager and logging in to the manager. 
-	 * 				If true, a background thread is started to re-login if the connection breaks.
+	 * @param attempts	The number of attempts to find and login  (0 means forever)
+	 * 					If <code>0</code>, a background thread is started to re-login if the connection breaks.
 	 * @throws AcsJContainerServicesEx 
 	 */
-	public synchronized void loginToManager(Client managerClient, boolean keepTrying) throws AcsJContainerEx {
+	public synchronized void loginToManager(Client managerClient, int attempts) throws AcsJContainerEx {
 		this.m_managerClient = managerClient;
 		
-		loginToManager(keepTrying);
+		loginToManager(attempts);
 		
 		// if login has succeeded and keepTrying==true, then also activate the re-login thread
 		// which sleeps unless handleRuntimeException reports a problem.
-		if (keepTrying) {
+		if (attempts==0) {
 			activateReloginToManagerIfDisconnected();
 		}
 	}
@@ -344,10 +351,11 @@ public class AcsManagerProxy
 	 * Logs in to the Manager.
 	 * Only to be called from within this class (see connectorThread), when the  
 	 * 
-	 * @param keepTrying  used for the call to {@link #findManager(String, boolean)}.
+	 * @param attempts	The number of attempts to contact the manager (0 means forever)
+	 * 					used for the call to {@link #findManager(String, int)}
 	 * @throws AcsJContainerServicesEx
 	 */
-	private synchronized void loginToManager(boolean keepTrying) 
+	private synchronized void loginToManager(int attempts) 
 		throws AcsJContainerEx
 	{
 		if (m_shuttingDown) {
@@ -369,7 +377,7 @@ public class AcsManagerProxy
 			m_logger.fine("manager reference not yet available in method loginToManager; " 
 					+ "will try to find the manager first...");
 					
-			findManager(m_managerLoc, keepTrying);
+			findManager(m_managerLoc, attempts);
 		}
 		
 		try

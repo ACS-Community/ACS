@@ -175,6 +175,9 @@ public class AcsContainer extends ContainerPOA
      * Overrides {@link #useRecoveryMode} if non-null.
      */
     private Boolean recoveryModeOverride = null;
+    
+    /** See comments in {@link #disconnect()} */
+    private int m_managerRetry;
 
     /** actions for shutdown() */
     public static final int CONTAINER_RELOAD = 0;
@@ -263,7 +266,7 @@ public class AcsContainer extends ContainerPOA
 		// manager login
 		System.out.println(ContainerOperations.ContainerStatusMgrInitBeginMsg);
 		// TODO: Use CDB attributes ManagerRetry and Recovery for manager login.
-		loginToManager();
+		loginToManager(m_managerRetry);
 		System.out.println(ContainerOperations.ContainerStatusMgrInitEndMsg);
 		
 		// init logging 
@@ -403,7 +406,7 @@ public class AcsContainer extends ContainerPOA
 			m_logger.fine("Component recovery = '" + useRecoveryMode + "' (from CDB/XSD)"); 
 		}
 		
-		// @TODO: ManagerRetry etc
+		m_managerRetry=containerConfig.getManagerRetry();
 	}
 
 	/**
@@ -450,12 +453,13 @@ public class AcsContainer extends ContainerPOA
     /**
      * Will attempt to log into the manager.
      * If the manager reference is not available, will enter a loop and keep trying.
-     * If login fails on an available manager, will throw a AcsJContainerServicesEx.
      *
-     * @throws AcsJContainerServicesEx
+     * @param attempts	The number of attempts to find and login into the manager (0 means forever)
+     *
+     * @throws AcsJContainerServicesEx If login fails on an available manager
      */
-    protected void loginToManager() throws AcsJContainerEx {
-        m_managerProxy.loginToManager(m_acsCorba.getContainerCorbaRef(this), true);
+    protected void loginToManager(int attempts) throws AcsJContainerEx {
+        m_managerProxy.loginToManager(m_acsCorba.getContainerCorbaRef(this), attempts);
     }
 
 
@@ -1382,7 +1386,7 @@ public class AcsContainer extends ContainerPOA
 			public void run() {
 				try {
 					// will loop until manager ref becomes available
-					loginToManager();
+					loginToManager(m_managerRetry);
 				} catch (Exception e) {
 					m_logger.log(Level.WARNING, "Failed to re-login to the manager. Will shut down.", e);
 					// it could be that the connection failed exactly because we are shutting down, 

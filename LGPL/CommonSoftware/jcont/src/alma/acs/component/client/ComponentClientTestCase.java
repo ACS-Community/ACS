@@ -203,7 +203,7 @@ public class ComponentClientTestCase extends TestCase
 		m_managerClient = managerClientImpl._this(orb);		
 		m_acsManagerProxy = new AcsManagerProxy(m_managerLoc, orb, m_logger);
 		
-		m_acsManagerProxy.loginToManager(m_managerClient, false);
+		m_acsManagerProxy.loginToManager(m_managerClient, 1);
 	}
 
 

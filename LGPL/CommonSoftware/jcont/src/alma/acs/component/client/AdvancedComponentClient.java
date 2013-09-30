@@ -100,7 +100,7 @@ public class AdvancedComponentClient extends ComponentClient {
 			AcsManagerProxy acsManagerProxy = m_acsManagerProxy.createInstance();
 			ManagerClient clImpl = new ManagerClient(clientName, acsLogger);
 			Client managerClient = clImpl._this(acsCorba.getORB());
-			acsManagerProxy.loginToManager(managerClient, true);
+			acsManagerProxy.loginToManager(managerClient, 0);
 			int clientHandle = acsManagerProxy.getManagerHandle();
 
 			DAL cdb = DALHelper.narrow(m_acsManagerProxy.get_service("CDB", false));

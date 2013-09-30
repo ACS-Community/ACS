@@ -161,7 +161,8 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
 				AdministratorPOATie adminpoa = new AdministratorPOATie(adminOp);
 				admin = adminpoa._this(getORB());
 			}
-			acsManagerProxy.loginToManager(admin, retryConnectOnFailure);
+			int attempts=(retryConnectOnFailure)?0:1;
+			acsManagerProxy.loginToManager(admin, attempts);
 
 			adminClientsToManagerProxy.put(adminOp, acsManagerProxy);
 		}
