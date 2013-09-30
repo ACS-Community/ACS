@@ -2174,6 +2174,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public void logout(int id) throws AcsJNoPermissionEx
 	{
+		if (isShuttingDown()) {
+			// Skip because the manager is shutting down
+			logger.log(Level.FINE,"Logout "+HandleHelper.toString(id)+" skipped because the Manager is shutting down");
+			return;
+		}
 		logout(id, false);
 	}
 	
