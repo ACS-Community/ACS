@@ -9,3 +9,7 @@ s/l[a-z,A-Z,0-9]*->/LCU->/g
 s/task spawned: id = 0x[0-9,a-f]*, name = t[0-9]*/task spawned/g
 s/Cache saved to '[^']*'/Cache saved to '.\/log_cache.dat__XXXXXXXX_XXX'/g
 s/ Function took [0-9]*\.[0-9]* sec//g
+s|Log file created = /.*/tmp|Log file created = tmp|g
+s/_[0-9]*:/_XXXXX:/g
+s/ACS_INSTANCE\.[0-9][0-9]*/ACS_INSTANCE.XX/g
+s|/.*/logging/ws/test/tmp|\<logging/ws/test\>/tmp|g

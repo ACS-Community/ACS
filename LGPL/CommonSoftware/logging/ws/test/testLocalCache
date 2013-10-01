@@ -76,7 +76,7 @@ echo
 
 
 echo "---------------------------------------"
-echo "Test with ACS_LOG_FILE=/var/log/specialLogDirectory/specialLogFile (Wrong permissions - ne exec permissions on directory)"
+echo "Test with ACS_LOG_FILE=/var/log/specialLogDirectory/specialLogFile (Wrong permissions - no exec permissions on directory)"
 echo "---------------------------------------"
 chmod -x $PWD/tmp/local/logs
 displayEnvVariables
@@ -236,9 +236,10 @@ chmod -x $PWD/tmp/LOGDIR
 sleep 6
 chmod +x $PWD/tmp/LOGDIR
 echo " ---"
-echo "Log files created = `ls $ACS_LOG_FILE*` and `ls $ACS_TMP/acsLogFile*`:"
+echo "Log file created = `ls $ACS_LOG_FILE*`:"
 echo "`ls $ACS_LOG_FILE*`:"
 cat $ACS_LOG_FILE*
+echo "Log file created = `ls $ACS_TMP/acsLogFile*`:"
 echo "`ls $ACS_TMP/acsLogFile*`:"
 cat  $ACS_TMP/acsLogFile*
 rm -rf $ACS_TMP
