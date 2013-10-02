@@ -62,7 +62,7 @@ class ACSDaemonServiceImpl {
    /**
     * Constructor
     */
-    ACSDaemonServiceImpl(LoggingProxy &logProxy, bool isProtected);
+    ACSDaemonServiceImpl(LoggingProxy &logProxy, bool isProtected, int nbServiceThreads);
   
     /**
      * Destructor
@@ -148,10 +148,13 @@ class ACSDaemonServiceImpl {
 
     /** Implementation of the CORBA interface this service provides **/
     T handler;
+    
+    /** Number of service threads **/
+    int m_serverThreads;
 };
 
 template <typename T>
-ACSDaemonServiceImpl<T>::ACSDaemonServiceImpl (LoggingProxy &logProxy, bool isProtected) :
+ACSDaemonServiceImpl<T>::ACSDaemonServiceImpl (LoggingProxy &logProxy, bool isProtected, int nbServerThreads) :
     m_isInitialized(false), m_logProxy(logProxy)
 {
     // noop here
@@ -161,6 +164,8 @@ ACSDaemonServiceImpl<T>::ACSDaemonServiceImpl (LoggingProxy &logProxy, bool isPr
     m_isProtected = isProtected;
 
     m_blockTermination = false;
+    
+    m_serverThreads = nbServerThreads;
 
     ACS_CHECK_LOGGER;
     // daemon is a standalone process, replace global logger with named logger
@@ -210,7 +215,6 @@ int ACSDaemonServiceImpl<T>::run (void)
 
       // constrcut CORBA ORB request handler task
       ORBTask task (this->m_orb.in(), &m_logProxy);
-      const int m_serverThreads = 5;
 
       // activate task, i.e. spawn threads and handle requests
       if (task.activate (THR_NEW_LWP | THR_JOINABLE, m_serverThreads) == 0)
@@ -369,6 +373,9 @@ class acsDaemonImpl
 
     /** Description of where the provided service listens for requests **/
     ACE_CString ORBEndpoint;
+    
+    /** Number of threads to handle CORBA requests **/
+    int m_serverThreads;
 
     /** Configuration information for the service **/
     int nargc;
@@ -385,6 +392,7 @@ static struct option long_options[] = {
     {"outfile",     required_argument, 0, 'o'},
     {"ORBEndpoint", required_argument, 0, 'O'},
     {"unprotected", no_argument,       0, 'u'},
+    {"nthreads",    required_argument, 0, 'n'},
     {0, 0, 0, '\0'}};
 
 template <typename T>
@@ -395,6 +403,7 @@ void acsDaemonImpl<T>::usage(const char *argv)
     ACE_OS::printf ("\t   -O, --ORBEndpoint  ORB end point\n");
     ACE_OS::printf ("\t   -o, --outfile      IOR output file\n");
     ACE_OS::printf ("\t   -u, --unprotected  start in unprotected mode\n");
+    ACE_OS::printf ("\t   -n, --nthreads     number of threads to handle CORBA requests\n");
 }
 
 template <typename T>
@@ -405,13 +414,14 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     service = 0;
     m_logger = 0;
     bool unprotected = false;
+    m_serverThreads = 5;
 
     // Extract and validate command line arguments
     int c;
     for(;;)
         {
         int option_index = 0;
-        c = getopt_long (argc, argv, "ho:O:u",
+        c = getopt_long (argc, argv, "ho:O:un:",
                          long_options, &option_index); 
         if (c==-1) break;
         switch(c)
@@ -428,6 +438,9 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
                 case 'u':
                     unprotected = true;
                     break;
+		case 'n':
+		    m_serverThreads = atoi(optarg);
+		    break;
                 default:
                     ACE_OS::printf("Ignoring unrecognized option %s", 
                                     argv[option_index]);
@@ -458,10 +471,10 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     else
         ACE_OS::unsetenv("ACS_LOG_FILE");
 
-    AsyncRequestThreadPool::configure(argv[0], m_logger, 5);	// 5 threads for async
+    AsyncRequestThreadPool::configure(argv[0], m_logger, m_serverThreads);	// threads for async
 
     // Ready the service manager
-    service = new ACSDaemonServiceImpl<T>(*m_logger, !unprotected);
+    service = new ACSDaemonServiceImpl<T>(*m_logger, !unprotected, m_serverThreads);
 
     // Generate the CORBA configuration for the service
     ACE_CString argStr;
