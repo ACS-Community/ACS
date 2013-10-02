@@ -241,16 +241,13 @@ public class ManagerImplTest extends TestCase
 			System.out.println("This is OK: "+npe.toString());
 		}
 
-		// already shutdown
-		try
-		{
+		// already shutdown returns without exception
+		try {
 			manager.logout(info.getHandle());
-			fail();
-		}
-		catch (AcsJNoPermissionEx npe)
-		{
-
-			System.out.println("This is OK: "+npe.toString());
+			System.out.println("This is OK");
+		} catch (AcsJNoPermissionEx npe) {
+			System.out.println("This is NOT OK: "+npe.toString());
+			npe.printStackTrace();
 		}
 
 		// already shutdown

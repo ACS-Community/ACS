@@ -4,7 +4,7 @@
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle is not known for the last 120 minutes.' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ] 
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = ADMINISTRATOR, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Manager in shutdown state.' ] 
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Manager in shutdown state.' ] 
+1 - This is OK
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Manager in shutdown state.' ] 
 1 - This is OK: Non-null 'containerName' expected.
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle is not known for the last 120 minutes.' ] 
