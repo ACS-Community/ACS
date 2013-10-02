@@ -139,7 +139,7 @@ public class ContainerUtil
 			managerAdminClient = new ManagerAdminClient(containerServices.getName(), logger);
 			AdministratorPOATie adminpoa = new AdministratorPOATie(managerAdminClient);
 			Administrator adminCorbaObj = adminpoa._this(orb);
-			adminProxy.loginToManager(adminCorbaObj, false);
+			adminProxy.loginToManager(adminCorbaObj, 1);
 			int adminManagerHandle = adminProxy.getManagerHandle();
 			Assert.assertTrue(adminManagerHandle > 0);
 			loggedInToManager = true;
