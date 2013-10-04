@@ -117,7 +117,7 @@ RLEVELS = { logging.NOTSET    : 0,
 
 
 # Log Levels are received as integer in the range [0,11]
-# with 1 and 7 undefined.  The current code interpolates
+# with 7 undefined.  The current code interpolates
 # 1 and 7 to the next highest level, so that behaviour
 # has been incorporated in the lookup table.
 LEVELS = { 0                        : logging.NOTSET,
@@ -125,24 +125,24 @@ LEVELS = { 0                        : logging.NOTSET,
            1                        : logging.TRACE,
            ACSLog.ACS_LOG_DELOUSE   : logging.DELOUSE,
            2                        : logging.DELOUSE,  
-           ACSLog.ACS_LOG_TRACE     : logging.TRACE,
+           ACSLog.ACS_LOG_DEBUG     : logging.DEBUG,
            3                        : logging.DEBUG,  
-           ACSLog.ACS_LOG_DEBUG     : logging.DEBUG,  
-           4                        : logging.INFO,  
            ACSLog.ACS_LOG_INFO      : logging.INFO,  
-           5                        : logging.NOTICE,  
+           4                        : logging.INFO,  
            ACSLog.ACS_LOG_NOTICE    : logging.NOTICE,  
-           6                        : logging.WARNING,  
+           5                        : logging.NOTICE,  
            ACSLog.ACS_LOG_WARNING   : logging.WARNING,  
+           6                        : logging.WARNING,  
+           ACSLog.ACS_LOG_ERROR     : logging.ERROR,  
            7                        : logging.ERROR,  
            8                        : logging.ERROR,  
-           ACSLog.ACS_LOG_ERROR     : logging.ERROR,  
-           9                        : logging.CRITICAL,  
            ACSLog.ACS_LOG_CRITICAL  : logging.CRITICAL,  
-           10                       : logging.ALERT,  
+           9                        : logging.CRITICAL,  
            ACSLog.ACS_LOG_ALERT     : logging.ALERT,  
+           10                       : logging.ALERT,  
+           ACSLog.ACS_LOG_EMERGENCY : logging.EMERGENCY,  
            11                       : logging.EMERGENCY,
-           ACSLog.ACS_LOG_EMERGENCY : logging.EMERGENCY,
+           # ACSLog.ACS_LOG_OFF does not exist
            99                       : logging.OFF
            }
 
