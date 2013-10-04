@@ -62,6 +62,7 @@ import Logging
 from Acspy.Common.ACSHandler import ACSHandler
 from Acspy.Common.ACSHandler import ACSFormatter
 from Acspy.Common.ACSHandler import ACSLogRecord
+from Acspy.Common.ACSHandler import makeACSLogRecord
 from Acspy.Common.TimeHelper import TimeUtil
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
@@ -837,18 +838,10 @@ class Logger(logging.Logger):
     #------------------------------------------------------------------------
     def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
         """
-        Build the ACSLogRecord for this information.
+        Build the ACSLogRecord for this information
         """
-        rv = ACSLogRecord(name, level, fn, lno, msg, args, exc_info, func)
-        if extra:
-            for key in extra:
-                if (key in ["message", "asctime"]) or (key in rv.__dict__):
-                    raise KeyError("Attempt to overwrite %r in LogRecord" % key)
-                rv.__dict__[key] = extra[key]
-        return rv
-
-    
-    
+        return makeACSLogRecord(name, level, fn, lno, msg, args, exc_info, func=None, extra=None)
+    #------------------------------------------------------------------------
     def configureLogging(self, maxLogsPerSec, alarmSender=None):
         '''
         If alarmSender is not None, it must be a subclass of LogThrottleAlarmerBase
