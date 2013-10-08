@@ -95,7 +95,7 @@ unpack : last_unpacked
 #
 last_unpacked: xsddoc-$(XSDDOC_VER).tar.gz
 	@echo "== Extracting sources from the tar file"
-	@gtar -xzf xsddoc-$(XSDDOC_VER).tar.gz xsddoc-$(XSDDOC_VER)/src/net xsddoc-$(XSDDOC_VER)/LICENSE.txt
+	@tar -xzf xsddoc-$(XSDDOC_VER).tar.gz xsddoc-$(XSDDOC_VER)/src/net xsddoc-$(XSDDOC_VER)/LICENSE.txt
 	@mv xsddoc-$(XSDDOC_VER)/src/net xsddoc-$(XSDDOC_VER)/LICENSE.txt .
 	@touch last_unpacked
 	@rm -rf xsddoc-$(XSDDOC_VER)
@@ -123,7 +123,7 @@ preparePatch:
          fi
 	@rm -rf tmp_unpack; mkdir -p tmp_unpack
 	@cd tmp_unpack; \
-           gtar -xzf ../xsddoc-$(XSDDOC_VER).tar.gz xsddoc-$(XSDDOC_VER)/src/net; \
+           tar -xzf ../xsddoc-$(XSDDOC_VER).tar.gz xsddoc-$(XSDDOC_VER)/src/net; \
            mv xsddoc-$(XSDDOC_VER)/src/net . ;\
            rm -rf xsddoc-$(XSDDOC_VER)
 	@LC_ALL=C TZ=UTC0 diff -Naur tmp_unpack/net net  >xsddoc.patch; true
