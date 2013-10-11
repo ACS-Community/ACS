@@ -84,7 +84,7 @@ LOCAL_JARS_CLASSPATH = $(abspath ../lib/commons-el-1.0.jar):$(abspath ../lib/jsp
 unpack:
 	@if [ ! -d $(SCXML_DIR) ]; then \
 	      echo " . . . unpack original distribution";\
-	      gtar -xzf $(SCXML_TARBALL); \
+	      tar -xzf $(SCXML_TARBALL); \
 	fi
 
 
