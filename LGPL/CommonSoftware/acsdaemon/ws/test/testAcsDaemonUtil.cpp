@@ -137,6 +137,41 @@ void TestAcsDaemonUtils::testSimpleContainerName(void)
 	CPPUNIT_ASSERT_EQUAL (simpleContName.compare(daemonUtil_mp->getSimpleContainerName(hierarchicalContName)),0);
 }
 
+void TestAcsDaemonUtils::testWritePermission() {
+	CPPUNIT_ASSERT_EQUAL (daemonUtil_mp->checkWritePermission(),0);
+}
+
+void TestAcsDaemonUtils:: testWritePermissionForContainer() {
+	std::string contName="simpleContainer";
+	CPPUNIT_ASSERT_EQUAL (daemonUtil_mp->checkWritePermissionForContainer(contName),0);
+	std::string hierContName="ACS/DAEMON/hierarchicalContainer";
+	CPPUNIT_ASSERT_EQUAL (daemonUtil_mp->checkWritePermissionForContainer(hierContName),0);
+
+	// Check with a non-writable folder
+	std::string acsdataStr(ACE_OS::getenv("ACSDATA"));
+	std::string hostStr(ACE_OS::getenv("HOST"));
+	std::string contLogDir=acsdataStr+"/logs/"+hostStr+"/"+"/EXEC";
+
+	// Let the AcsDaemonUtil create the folder for us
+	daemonUtil_mp->getLogDirectoryForContainer("EXEC/testContainer1");
+	CPPUNIT_ASSERT( ACE_OS::access(contLogDir.c_str(),F_OK|W_OK) ==0 );
+
+	std::string chmod("chmod 444 ");
+	chmod+=contLogDir;
+	if (ACE_OS::system(chmod.c_str())!=0) {
+		std::cout<<"Error setting permissions of "<<contLogDir<<std::endl;
+	}
+
+	CPPUNIT_ASSERT( daemonUtil_mp->checkWritePermissionForContainer("EXEC/testContainer1") !=0);
+
+	// Restore permisisons
+	std::string chmod2("chmod 775 ");
+	chmod2+=contLogDir;
+	if (ACE_OS::system(chmod2.c_str())!=0) {
+		std::cout<<"Error setting permissions of "<<contLogDir<<std::endl;
+	}
+}
+
 int main(int argc, char *argv[])
 {
 
