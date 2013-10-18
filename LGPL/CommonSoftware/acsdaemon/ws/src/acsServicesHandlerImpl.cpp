@@ -567,9 +567,9 @@ char * ACSServicesHandlerImpl::status_acs (
     int result;
     char *acsStatus=0;
     char command[100];
-    std::string logFile="acsStatus_";
-
-    logFile += getStringifiedTimeStamp().c_str();
+    std::string logFile=m_daemonUtils.getLogDirectory();
+    logFile+="acsStatus_";
+    logFile += m_daemonUtils.getTimestamp();
 
     snprintf(command, 100, "acsStatus -b %d &> %s", instance_number, logFile.c_str());
 

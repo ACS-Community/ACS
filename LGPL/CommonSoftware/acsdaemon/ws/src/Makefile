@@ -58,7 +58,7 @@ acsdaemonStartContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemon
 acsdaemonStopContainer_OBJECTS   =	acsdaemonStopContainer
 acsdaemonStopContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
 
-acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl acsRequest acsServiceController acsdaemonORBTask
+acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl acsRequest acsServiceController acsdaemonORBTask acsDaemonUtils
 acsservicesdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread expat acsQoS maciErrType maciStubs AcsAlarmSystemStubs ACSErrTypeCORBA
 
 acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs

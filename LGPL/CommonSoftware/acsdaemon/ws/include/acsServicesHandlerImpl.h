@@ -36,6 +36,7 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+#include "acsDaemonUtils.h"
 #include "acsDaemonImpl.h"
 #include "acsRequest.h"
 #include "acsServiceController.h"
@@ -322,6 +323,8 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
     std::string h_type; // CORBA-type for this services handler
     ACSDaemonServiceImpl<ACSServicesHandlerImpl> *h_service; // ACS daemon service
     ACSDaemonContext *context;
+
+    AcsDaemonUtils m_daemonUtils; // Helper to redirect output to a file in $ACDATA/logs/..
 };
 
 
