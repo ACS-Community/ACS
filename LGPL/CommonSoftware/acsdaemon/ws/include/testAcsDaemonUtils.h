@@ -47,6 +47,8 @@ class TestAcsDaemonUtils : public CPPUNIT_NS :: TestFixture
 	CPPUNIT_TEST (testLogDirectoryForHierarchicalContainer);
 	CPPUNIT_TEST (testTimestamp);
 	CPPUNIT_TEST (testSimpleContainerName);
+	CPPUNIT_TEST (testWritePermission);
+	CPPUNIT_TEST (testWritePermissionForContainer);
 	CPPUNIT_TEST_SUITE_END ();
 
 public:
@@ -59,6 +61,8 @@ protected:
 	void testLogDirectoryForHierarchicalContainer(void);
 	void testTimestamp(void);
 	void testSimpleContainerName(void);
+	void testWritePermission();
+	void testWritePermissionForContainer();
 
 private:
 	AcsDaemonUtils* daemonUtil_mp;

@@ -21,7 +21,7 @@
 * --------  --------  ----------------------------------------------
 * almadev  2013-05-22  created 
 */
-
+#include  <cerrno>
 #include <OS.h>
 #include <iostream>
 #include "acsDaemonUtils.h"
@@ -41,7 +41,7 @@ AcsDaemonUtils::AcsDaemonUtils():
 			break;
 		}
 		case 2: {
-			std::cout<<"error creating ACSDATA/logs"<<std::endl;
+			std::cout<<"Error creating ACSDATA/logs"<<std::endl;
 			break;
 			}
 		case 3: {
@@ -49,7 +49,7 @@ AcsDaemonUtils::AcsDaemonUtils():
 			break;
 			}
 		case 4: {
-			std::cout<<"error getting the host name for HOST environment variable"<<std::endl;
+			std::cout<<"Error getting the host name for HOST environment variable"<<std::endl;
 			break;
 			}
 		case 5: {
@@ -167,10 +167,8 @@ std::string AcsDaemonUtils::getLogDirectoryForContainer(std::string containerNam
 	{
 		temp+=contName[i];
 		if (contName[i]=='/') {
-			std::cout<<"Checking folder "<<temp<<std::endl;
 			// A new folder must be created if not exists
 			if (ACE_OS::access(temp.c_str(),F_OK)!=0) {
-				std::cout<<"\tCreating folder "<<temp<<std::endl;
 				if (!makeFolder(temp)) {
 					std::cout<<getTimestamp()<<" ERROR building log folder for container "<<containerName;
 					std::cout<<" falling back to "<<getLogDirectory()<<std::endl;
@@ -203,6 +201,42 @@ std::string AcsDaemonUtils::getSimpleContainerName(std::string containerName) {
 	}
 	// The container is hierarchical
 	return containerName.substr(containerName.rfind('/')+1);
+}
+
+int AcsDaemonUtils::checkWritePermission()
+{
+	return checkWritePermission(getLogDirectory());
+}
+
+int AcsDaemonUtils::checkWritePermissionForContainer(std::string containerName) {
+	return checkWritePermission(getLogDirectoryForContainer(containerName));
+}
+
+int AcsDaemonUtils::checkWritePermission(std::string folder)
+{
+	// The name of the file is random to limit the chance of conflicts at runtime
+	std::string fileName=folder;
+	if (folder[folder.size()-1]!='/') {
+		fileName+='/';
+	}
+	fileName+=".tst-";
+	fileName+=getTimestamp();
+
+	int ret=0;
+
+	FILE *fp = fopen(fileName.c_str(), "w");
+	if (fp == NULL) {
+		// Can't write! Store and return the error
+		ret=errno;
+	} else {
+		fclose(fp);
+		// Remove the file
+		if(remove(fileName.c_str())!= 0) {
+			std::cerr<<"Warning: can't remove test file "<<fileName<<std::endl;
+		}
+	}
+
+	return ret;
 }
 
 /*___oOo___*/
