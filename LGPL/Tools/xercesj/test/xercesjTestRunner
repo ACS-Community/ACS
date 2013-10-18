@@ -1,0 +1,3 @@
+cd testXML
+acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.xercesj.test.DumpXML Components.xml
+

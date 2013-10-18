@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Components  xmlns="urn:schemas-cosylab-com:Components:1.0"
+      xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+      xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+     <_ Name="*"	    
+        Code="acsexmplPsDynamic_1"	  
+        Type="IDL:alma/PsDynamic_1:1.0"			
+        Container="Container" ImplLang="cpp" />
+     <_ Name="*"      
+        Code="acsexmplPsDynamic_2"        
+        Type="IDL:alma/PsDynamic_2:1.0"  
+        Container="bilboContainer"  ImplLang="cpp" />
+</Components>
+
