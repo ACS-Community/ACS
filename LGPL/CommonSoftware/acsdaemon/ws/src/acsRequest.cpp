@@ -396,29 +396,11 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSDaemonContext *conte
         commandline += context->getConfigurationReference(instance_number, acsServices[NAMING_SERVICE].xmltag).c_str();
     }
     if (log) {
-        ACE_CString logDirectory="~/.acs/commandcenter/";
-        char * acsdata = ACE_OS::getenv("ACSDATA");
-        if(acsdata != NULL)
-            logDirectory = ACE_CString(acsdata) + ACE_CString("/logs/");
-        ACE_CString logs = logDirectory;
-        char * host = ACE_OS::getenv("HOST");
-        if(host != NULL)
-            logDirectory = logDirectory + ACE_CString(host) + ACE_CString("/");
+    	std::string logDirectory=m_daemonUtils.getLogDirectory();
 
-        std::string timeStamp(getStringifiedTimeStamp().c_str());
+        std::string timeStamp=m_daemonUtils.getTimestamp();
 
-        if( timeStamp.find(":") != std::string::npos)
-            timeStamp.replace(timeStamp.find(":"),1,".");
-        if( timeStamp.find(":") != std::string::npos )
-            timeStamp.replace(timeStamp.find(":"),1,".");
-        if( timeStamp.find("T") != std::string::npos)
-            timeStamp.replace(timeStamp.find("T"),1,"_");
-
-        //create the directory
-        ACE_OS::system(("mkdir -p " + logDirectory).c_str());
-        ACE_OS::system(("chmod 775 " + logs).c_str());
-        ACE_OS::system(("chmod 775 " + logDirectory).c_str());
-        commandline = commandline + " &> " + logDirectory + acsServices[service].script + "_" + timeStamp.c_str();
+        commandline = commandline + " &> " + logDirectory.c_str() + acsServices[service].script + "_" + timeStamp.c_str();
     }
     return commandline;
 }

@@ -43,6 +43,8 @@
 
 #include <set>
 
+#include "acsDaemonUtils.h"
+
 // callback call timeout
 #define CORBA_TIMEOUT 5000
 
@@ -335,7 +337,10 @@ class ACSServiceRequestDescription {
     int instance_number;
     const char *host, *name, *corbalocName, *domain, *cdbxmldir;
     bool loadir, wait, recovery, async;
+    AcsDaemonUtils m_daemonUtils; // Helper to redirect output to a file in $ACDATA/logs/..
+
     ACE_CString prepareCommand(ACSDaemonContext *context, ACSServiceRequestType request_type, bool log);
+
   public:
     ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number);
     ACSServiceRequestDescription(const ACSServiceRequestDescription &desc);
