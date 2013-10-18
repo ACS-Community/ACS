@@ -91,6 +91,24 @@ public:
 	 */
 	std::string getSimpleContainerName(std::string containerName);
 
+	/**
+	 * Check if the process has permission to write in the log folder
+	 * where the log folder is returned by getLogDirectory()
+	 *
+	 * @return 0 means that the folder is writable
+	 */
+	int checkWritePermission();
+
+	/**
+		 * Check if the process has permission to write in the log folder
+		 * for the passed container name.
+		 * The folder for the logs of container is built by
+		 * AcsDaemonUtils#getLogDirectoryForContainer(...)
+		 *
+		 * @return 0 means that the folder is writable
+		 */
+		int checkWritePermissionForContainer(std::string containerName);
+
 private:
 
 	/**
@@ -117,6 +135,15 @@ private:
 	 *         false otherwise
 	 */
 	bool makeFolder(std::string path);
+
+	/**
+	 * Check if the process has permission to write in the
+	 * passed log folder.
+	 *
+	 * The test is done by creating a temporary file as this should be
+	 * the most portable way.
+	 */
+	int checkWritePermission(std::string folder);
 
 };
 
