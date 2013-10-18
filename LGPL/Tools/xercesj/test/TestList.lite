@@ -26,4 +26,4 @@
 # who       when      what
 # --------  --------  ----------------------------------------------
 SOURCE xercesjTATEnvironment
-1 xercesjTest "xercesjTestRunner"
+1 xercesjTest "xercesjTestRunner.sh"

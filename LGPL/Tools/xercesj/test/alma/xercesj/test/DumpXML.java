@@ -32,7 +32,8 @@ public class DumpXML {
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
-		factory.setXIncludeAware(true);
+		// XercesJ 2.9.1 rejects this, it supports it by default
+		//factory.setXIncludeAware(true);
 
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document xmldoc = builder.parse(new InputSource(new FileReader(args[0])));

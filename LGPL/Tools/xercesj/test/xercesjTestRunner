@@ -1,4 +1,0 @@
-cd testXML
-acsStartJava -endorsed -j ../../lib alma.xercesj.test.DumpXML Components.xml
-#-Djavax.xml.parsers.DocumentBuilderFactory=org.apache.xerces.jaxp.DocumentBuilderFactoryImpl 
-

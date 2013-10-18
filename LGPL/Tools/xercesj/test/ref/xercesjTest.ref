@@ -1,0 +1,37 @@
+1 -  --endorsed -j ../../lib -- alma.xercesj.test.DumpXML Components.xml
+1 - 
+1 - <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+1 - <Components xmlns="urn:schemas-cosylab-com:Components:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+1 -       <_ Code="acsexmplPowerSupplyImpl" Container="Container" ImplLang="cpp" Name="PBUMP_B_01" Type="IDL:alma/PS/PowerSupply:1.0"/>
+1 -       <_ Code="acsexmplPowerSupplyImpl" Container="Container" ImplLang="cpp" Name="TEST_PS_1" Type="IDL:alma/PS/PowerSupply:1.0"/>
+1 -       <_ Code="acsexmplPowerSupplyImpl" Container="Container" ImplLang="cpp" Name="TEST_PS_2" Type="IDL:alma/PS/PowerSupply:1.0"/>
+1 -       <_ Code="acsexmplMountImpl" Container="Container" ImplLang="cpp" Name="MOUNT1" Type="IDL:alma/MOUNT_ACS/Mount:1.0"/>
+1 -       <_ Code="acsexmplMountImpl" Container="Container" ImplLang="cpp" Name="MOUNT2" Type="IDL:alma/MOUNT_ACS/Mount:1.0"/>
+1 -       <_ Code="acsexmplLampImpl" Container="Container" ImplLang="cpp" Name="LAMP1" Type="IDL:alma/acsexmplLamp/Lamp:1.0"/>
+1 -       <_ Code="acsexmplAmsSeqImpl" Container="Container" ImplLang="cpp" Name="AMSSEQ1" Type="IDL:alma/AMSSEQ/AmsTestSeq:1.0"/>
+1 -       <_ Code="acsexmplCalendarImpl" Container="Container" ImplLang="cpp" Name="CALENDAR1" Type="IDL:alma/acsexmplCalendar/Calendar:1.0"/>
+1 -       <_ Code="acsexmplDoorImpl" Container="Container" ImplLang="cpp" Name="DOOR1" Type="IDL:alma/acsexmplBuilding/Door:1.0"/>
+1 -       <_ Code="acsexmplFridgeImpl" Container="Container" ImplLang="cpp" Name="FRIDGE1" Type="IDL:alma/FRIDGE/FridgeControl:1.0"/>
+1 -       <_ Code="acsexmplFridgeImpl" Container="Container" ImplLang="cpp" Name="FRIDGE2" Type="IDL:alma/FRIDGE/FridgeControl:1.0"/>
+1 -       <_ Code="acsexmplHelloWorldImpl" Container="Container" ImplLang="cpp" Name="HELLOWORLD1" Type="IDL:alma/acsexmplHelloWorld/HelloWorld:1.0"/>
+1 -       <_ Code="acsexmplErrorComponentImpl" Container="Container" ImplLang="cpp" Name="ERRORCOMP1" Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0"/>
+1 -       <_ Code="acsexmplRampedPowerSupplyImpl" Container="Container" ImplLang="cpp" Name="TEST_RPS_1" Type="IDL:alma/RampedPS/RampedPowerSupply:1.0"/>
+1 -       <_ Code="acsexmplDoorImpl" Container="Container" ImplLang="cpp" Name="ALMA_DOOR" Type="IDL:alma/acsexmplBuilding/Door:1.0"/>
+1 -       <_ Code="acsexmplDoorImpl" Container="Container" ImplLang="cpp" Name="ALMA_BACK_DOOR" Type="IDL:alma/acsexmplBuilding/Door:1.0"/>
+1 -       <_ Code="acsexmplLampImpl" Container="Container" ImplLang="cpp" Name="ALMA_BACK_DOOR/LAMP" Type="IDL:alma/acsexmplLamp/Lamp:1.0"/>
+1 -       <_ Code="acsexmplInitErrorHelloWorld" Container="Container" ImplLang="cpp" Name="INIT_ERROR" Type="IDL:alma/acsexmplInitErrorHelloWorld/InitError:1.0"/>
+1 -       <_ Code="acsexmplConstrErrorHelloWorld" Container="Container" ImplLang="cpp" Name="CONSTR_ERROR" Type="IDL:alma/acsexmplConstrErrorHelloWorld/ConstrError:1.0"/>
+1 -       
+1 -      <_ Code="acsexmplPsDynamic_1" Container="Container" ImplLang="cpp" Name="*" Type="IDL:alma/PsDynamic_1:1.0" xml:base="IncludeDynamic.xml"/>
+1 -      <_ Code="acsexmplPsDynamic_2" Container="bilboContainer" ImplLang="cpp" Name="*" Type="IDL:alma/PsDynamic_2:1.0" xml:base="IncludeDynamic.xml"/>
+1 - 
+1 -       
+1 -      <_ Code="acsexmplMountDynamic_1" Container="Container" ImplLang="cpp" Name="*" Type="IDL:alma/MountDynamic_1:1.0" xml:base="CONTROL/IncludeDynamic.xml"/>
+1 -      <_ Code="acsexmplMountDynamic_2" Container="bilboContainer" ImplLang="cpp" Name="*" Type="IDL:alma/MountDynamic_2:1.0" xml:base="CONTROL/IncludeDynamic.xml"/>
+1 - 
+1 -       
+1 -      <_ Code="acsexmplPowerSupplyImpl" Container="Container" ImplLang="cpp" Name="TestInclude_01" Type="IDL:alma/PS/PowerSupply:1.0" xml:base="IncludeExample.xml"/>
+1 -      <_ Code="acsexmplPowerSupplyImpl" Container="bilboContainer" ImplLang="cpp" Name="TestInclude_02" Type="IDL:alma/PS/PowerSupply:1.0" xml:base="IncludeExample.xml"/>
+1 -      <_ Code="acsexmplPowerSupplyImpl" Container="bilboContainer" ImplLang="cpp" Name="TestInclude_03" Type="IDL:alma/PS/PowerSupply:1.0" xml:base="IncludeExample.xml"/>
+1 - 
+1 - </Components>

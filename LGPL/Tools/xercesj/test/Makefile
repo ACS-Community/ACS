@@ -56,7 +56,7 @@ xercesjTest_DIRS = alma/xercesj/test
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = 
+SCRIPTS_L       = xercesjTestRunner.sh
 
 #>>>>> END OF standard rules
 
