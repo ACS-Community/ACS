@@ -3,7 +3,7 @@
 1 - Connection disconnected
 1 - Connecting
 1 - Connection established
-1 - RAW log: <Info TimeStamp="xxx" File="testLTSClientpy" Line="36" Routine="Unknown" Host="xxx" Process="Python Client" Thread="MainThread" Context="" SourceObject="Python Client"><![CDATA[Main - Starting test client.]]></Info>
+1 - RAW log: <Info TimeStamp="xxx" File="testLTSClientpy" Line="36" Routine="Unknown" Host="xxx" Process="Python Client: initialized by user@host" Thread="MainThread" Context="" SourceObject="Python Client: initialized by user@host"><![CDATA[Main - Starting test client.]]></Info>
 1 - RAW log: <Info TimeStamp="xxx" File="../bin/testLTSClientpy" Line="38" Routine="{module}" Host="xxx" Process="xxx" Thread="" Context="" SourceObject="" Audience="Curious people" Array="" Antenna=""><![CDATA[Simple Log]]><Data Name="logName"><![CDATA[SimpleLog]]></Data></Info>
 1 - Log received: --- LogEntry ---
 1 - TimeStamp: xxx
@@ -80,4 +80,4 @@
 1 - Antenna: Antenna01
 1 - Datas: 
 1 - 	someLongMember : 42	someStringMember : test string	someBooleanMember : True	logName : ComplexLog	someDoubleMember : 3.14159
-1 - RAW log: <Info TimeStamp="xxx" File="testLTSClientpy" Line="59" Routine="Unknown" Host="xxx" Process="Python Client" Thread="MainThread" Context="" SourceObject="Python Client"><![CDATA[Main - Exiting test client.]]></Info>
+1 - RAW log: <Info TimeStamp="xxx" File="testLTSClientpy" Line="59" Routine="Unknown" Host="xxx" Process="Python Client: initialized by user@host" Thread="MainThread" Context="" SourceObject="Python Client: initialized by user@host"><![CDATA[Main - Exiting test client.]]></Info>
