@@ -2,19 +2,19 @@
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
 1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@cdbjDALClearCache created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - ----------T--:--:--.--- INFO [cdbjDALClearCache] Cleared CDB cache for all curls.
-1 - ----------T--:--:--.--- INFO [Manager] 'Python Client: initialized by almadev@alma' requested component 'curl:///COMP99'.
+1 - ----------T--:--:--.--- INFO [Manager] 'Python Client: initialized by user@host' requested component 'curl:///COMP99'.
 1 - ----------T--:--:--.--- INFO [Manager] Activating component 'COMP99' (Handle (0x-------) = { type = COMPONENT, key = (0x0), id = (0x--) }) on container 'Container'.
 1 - ----------T--:--:--.--- INFO [Manager] 'COMP99' requested component 'curl:///CDB'.
 1 - ----------T--:--:--.--- INFO [Manager] Component 'curl:///CDB' provided to 'COMP99'.
 1 - ----------T--:--:--.--- INFO [Manager] Component 'COMP99' (Handle (0x-------) = { type = COMPONENT, key = (0x0), id = (0x--) }) activated successfully.
 1 - ----------T--:--:--.--- SEVERE [Manager] Activated component 'COMP99' does not implement specified type 'IDL:alma/TESTCDBCOMP_ACS/TestCDBComp:1.0'.
-1 - ----------T--:--:--.--- INFO [Manager] Component 'curl:///COMP99' provided to 'Python Client: initialized by almadev@alma'.
-1 - ----------T--:--:--.--- INFO [Manager] 'Python Client: initialized by almadev@alma' requested release of component 'curl:///COMP99'.
+1 - ----------T--:--:--.--- INFO [Manager] Component 'curl:///COMP99' provided to 'Python Client: initialized by user@host'.
+1 - ----------T--:--:--.--- INFO [Manager] 'Python Client: initialized by user@host' requested release of component 'curl:///COMP99'.
 1 - ----------T--:--:--.--- INFO [Manager] Deactivating component 'COMP99' (Handle (0x-------) = { type = COMPONENT, key = (0x0), id = (0x--) }) on container 'Container'.
 1 - ----------T--:--:--.--- INFO [Manager] Component 'COMP99' (Handle (0x-------) = { type = COMPONENT, key = (0x0), id = (0x--) }) deactivated.
-1 - ----------T--:--:--.--- INFO [Manager] Component 'curl:///COMP99' released by 'Python Client: initialized by almadev@alma'.
+1 - ----------T--:--:--.--- INFO [Manager] Component 'curl:///COMP99' released by 'Python Client: initialized by user@host'.
 1 -  --clientVM -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
-1 - ----------T--:--:--.--- Python Client: initialized by almadev@alma disconnect - Disconnect called for client
+1 - ----------T--:--:--.--- Python Client: initialized by user@host disconnect - Disconnect called for client
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
 1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@cdbjDALClearCache created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - ----------T--:--:--.--- INFO [cdbjDALClearCache] Cleared CDB cache for all curls.
