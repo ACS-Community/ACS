@@ -125,6 +125,18 @@ void TestAcsDaemonUtils::testTimestamp(void)
 	CPPUNIT_ASSERT_EQUAL (expected.compare(temp), 0);
 }
 
+void TestAcsDaemonUtils::testSimpleContainerName(void)
+{
+	std::string simpleContName("containerName");
+	CPPUNIT_ASSERT_EQUAL (simpleContName.compare(daemonUtil_mp->getSimpleContainerName(simpleContName)),0);
+
+	std::string folders("CONTROL/ACC/");
+	std::string hierarchicalContName(folders);
+	hierarchicalContName=hierarchicalContName+simpleContName;
+	std::cout<<"["<<daemonUtil_mp->getSimpleContainerName(hierarchicalContName)<<"]"<<std::endl;
+	CPPUNIT_ASSERT_EQUAL (simpleContName.compare(daemonUtil_mp->getSimpleContainerName(hierarchicalContName)),0);
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -151,6 +163,5 @@ int main(int argc, char *argv[])
     // return 0 if tests were successful
     return collectedresults.wasSuccessful () ? 0 : 1;
 }
-
 
 /*___oOo___*/
