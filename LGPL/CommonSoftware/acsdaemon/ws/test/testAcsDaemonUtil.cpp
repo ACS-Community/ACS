@@ -32,6 +32,7 @@
 #include <cppunit/BriefTestProgressListener.h>
 
 #include "testAcsDaemonUtils.h"
+#include "../src/acsDaemonUtils.cpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION (TestAcsDaemonUtils);
 

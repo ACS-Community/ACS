@@ -58,7 +58,7 @@ EXECUTABLES_L   = testAcsDaemonUtil
 acsServices80Test_OBJECTS   =   acsServices80Test
 acsServices80Test_LIBS      =   acscomponentStubs acsdaemonErrType acsdaemonStubs acserr maciErrType ACSErrTypeCommon
 
-testAcsDaemonUtil_OBJECTS   =  testAcsDaemonUtil ../src/acsDaemonUtils
+testAcsDaemonUtil_OBJECTS   =  testAcsDaemonUtil 
 testAcsDaemonUtil_LIBS      =  acsutil cppunit ACE
 
 #
