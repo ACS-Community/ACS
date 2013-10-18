@@ -391,14 +391,31 @@ void BulkDataNTStream::removeDDSQoSProfile(const DDSConfiguration &cfg)
 	{
 		newQoSprofiles.ensure_length(profLen-1, profLen-1); // one profile one line
 		// lets check if the library is already there
-		unsigned int i=0;
-		for (unsigned int j=0;j<profLen;j++) //loop over all profiles
+		unsigned int i=0; // index for the new profile
+		unsigned int j=0; // index for current profile
+		// first we have to get the start of QoS library
+		std::string qoSlibTag("<qos_library name=\""); // we have to search for qos_libarary TAG
+		qoSlibTag+=cfg.libraryQos;
+		qoSlibTag+="\">";
+
+		//std::cout << "seraching for: " << qoSlibTag << std::endl;
+		while (strcmp(qoSlibTag.c_str(), factory_qos.profile.string_profile[j]) != 0)
 		{
-			//what we add to the new profile
-			if (strcmp(cfg.stringProfileQoS.c_str(), factory_qos.profile.string_profile[j]) != 0 )
+			//std::cout << "try: " << factory_qos.profile.string_profile[j] << std::endl;
+			newQoSprofiles[i] = DDS::String_dup(factory_qos.profile.string_profile[j]);
+			i++;
+			j++;
+		}
+
+		bool outOfQoSLib=false; //we are inside the QoSLib section
+		for (;j<profLen;j++) //loop over all profiles
+		{
+			//we search for the profile
+			if (outOfQoSLib || strcmp(cfg.stringProfileQoS.c_str(), factory_qos.profile.string_profile[j]) != 0 )
 			{
-				newQoSprofiles[i] = DDS::String_dup(factory_qos.profile.string_profile[j]);
+				newQoSprofiles[i] = DDS::String_dup(factory_qos.profile.string_profile[j]);  // if we do not find it (or we are in different QoSlib), just copy over
 				i++;
+				if (!outOfQoSLib && strcmp("</qos_library>", factory_qos.profile.string_profile[j]) == 0) outOfQoSLib=true;
 			}else
 			{
 				if (DDSConfiguration::debugLevel>0)
