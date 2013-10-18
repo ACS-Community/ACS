@@ -26,7 +26,7 @@
 * agrimstr 2007-11-07 refactored to use daemon implementation template class
 * azagar   2008-08-12 migrated to ACS 8.0
 */
-
+#include "acsDaemonUtils.h"
 #include <acsDaemonImpl.h>
 #include <acsServicesHandlerImpl.h>
 
@@ -45,6 +45,17 @@ void TerminationSignalHandler(int)
 int
 main (int argc, char *argv[])
 {
+	// Check if the process can write logs in the folder
+	// otherwise exists reporting a message.
+	//
+	// Note that if log files can't be created then the calls to ACS_OS::system fail
+	// so it is better to fail immediately (see ICT-662)
+	AcsDaemonUtils daemonUtils;
+	if (daemonUtils.checkWritePermission()!=0) {
+		std::cerr<<"Can't write log files! Check permissions in $ACSDATA/log or ~/.acs/commandcenter/"<<std::endl;
+		return -1;
+	}
+
     acsDaemonImpl<ACSServicesHandlerImpl> daemon(argc,argv);
 
     // Daemon is to be shutdown on receipt of SIGINT or SIGTERM

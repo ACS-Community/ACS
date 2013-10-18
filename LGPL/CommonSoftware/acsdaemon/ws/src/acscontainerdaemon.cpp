@@ -26,9 +26,7 @@
 * agrimstr 2007-11-07 refactored to use daemon implementation template class
 */
 
-static char *rcsId="@ $Id: acscontainerdaemon.cpp,v 1.7 2008/11/19 11:02:44 msekoran Exp $";
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
-
+#include "acsDaemonUtils.h"
 #include <acsDaemonImpl.h>
 #include <acsContainerHandlerImpl.h>
 
@@ -47,6 +45,17 @@ void TerminationSignalHandler(int)
 int
 main (int argc, char *argv[])
 {
+	// Check if the process can write logs in the folder
+	// otherwise exists reporting a message.
+	//
+	// Note that if log files can't be created then the calls to ACS_OS::system fail
+	// so it is better to fail immediately (see ICT-662)
+	AcsDaemonUtils daemonUtils;
+	if (daemonUtils.checkWritePermission()!=0) {
+		std::cerr<<"Can't write log files! Check permissions in $ACSDATA/log or ~/.acs/commandcenter/"<<std::endl;
+		return -1;
+	}
+
     acsDaemonImpl<ACSContainerHandlerImpl> daemon(argc,argv);
 
     // Daemon is to be shutdown on receipt of SIGINT or SIGTERM
