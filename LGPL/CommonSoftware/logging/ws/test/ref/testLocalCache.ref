@@ -12,10 +12,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 3
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 5 - now will flush
-1 - LC: 0
 1 - LC: 1
 1 - LC: 2
 1 - LC: 3
+1 - LC: 0
 1 - LC: 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log to be auto-flushed
 1 - LC: 1
@@ -42,29 +42,29 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 5 - now will flush
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
-1 - LC: 0
 1 - LC: 1
 1 - LC: 2
+1 - LC: 0
 1 - LC: 3
 1 - LC: 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log to be auto-flushed
 1 - LC: 1
 1 - LC: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] emerency log - should bypass cache
-1 - ----------T--:--:--.--- [GlobalLogger - main] a log that it is not sent to the CL
 1 - ----------T--:--:--.--- [GlobalLogger - trace log - to be ignored] 
+1 - ----------T--:--:--.--- [GlobalLogger - main] a log that it is not sent to the CL
 1 - ----------T--:--:--.--- problematic log that shall not contain non empty file, line etc. fields
-1 -  ---
 1 - LC: 0
 1 - LC: 1
+1 -  ---
 1 - Log file created = tmp/specialLogDirectory/specialLogFile__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_LOG_FILE (Wrong permissions - no write permissions on directory)
@@ -83,12 +83,12 @@
 1 - ----------T--:--:--.--- <logging/ws/test>/tmp/local/logs directory does not have write or exec permissions!
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
 1 - ----------T--:--:--.--- Logging cache cannot be written in <logging/ws/test>/tmp/local/logs directory (from ACS_LOG_FILE environment variable).
-1 - Falling back to alternate solution.
-1 - LC: 0
 1 - LC: 1
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
+1 - Falling back to alternate solution.
+1 - LC: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] log to be auto-flushed
 1 - LC: 1
 1 - LC: 0
@@ -99,14 +99,14 @@
 1 -  ---
 1 - LC: 0
 1 - LC: 1
-1 - Log file created = tmp/acs_tmp/ACS_INSTANCE.10/specialLogFile__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - Log file created = <logging/ws/test>/tmp/acs_tmp/ACS_INSTANCE.10/specialLogFile__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_LOG_FILE=/var/log/specialLogDirectory/specialLogFile (Wrong permissions - no exec permissions on directory)
@@ -126,11 +126,11 @@
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
 1 - ----------T--:--:--.--- Logging cache cannot be written in <logging/ws/test>/tmp/local/logs directory (from ACS_LOG_FILE environment variable).
 1 - LC: 1
+1 - Falling back to alternate solution.
+1 - LC: 0
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
-1 - Falling back to alternate solution.
-1 - LC: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] log to be auto-flushed
 1 - LC: 1
 1 - LC: 0
@@ -141,14 +141,14 @@
 1 -  ---
 1 - LC: 0
 1 - LC: 1
-1 - Log file created = tmp/acs_tmp/ACS_INSTANCE.10/specialLogFile__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - Log file created = <logging/ws/test>/tmp/acs_tmp/ACS_INSTANCE.10/specialLogFile__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_LOG_FILE=tmp/wrongPermDir/specialLogFile (Directory existing but without exec permissions)
@@ -167,9 +167,9 @@
 1 - ----------T--:--:--.--- <logging/ws/test>/tmp/wrongPermDir directory does not have write or exec permissions!
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
 1 - ----------T--:--:--.--- Logging cache cannot be written in <logging/ws/test>/tmp/wrongPermDir directory (from ACS_LOG_FILE environment variable).
+1 - LC: 1
 1 - Falling back to alternate solution.
 1 - LC: 0
-1 - LC: 1
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
@@ -183,14 +183,14 @@
 1 -  ---
 1 - LC: 0
 1 - LC: 1
-1 - Log file created = tmp/acs_tmp/ACS_INSTANCE.10/specialLogFile__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - Log file created = <logging/ws/test>/tmp/acs_tmp/ACS_INSTANCE.10/specialLogFile__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_LOG_FILE unset and ACS_TMP defined and without permissions problems
@@ -207,8 +207,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 5 - now will flush
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
-1 - LC: 0
 1 - LC: 1
+1 - LC: 0
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
@@ -222,14 +222,14 @@
 1 -  ---
 1 - LC: 0
 1 - LC: 1
-1 - Log file created = tmp/acs_tmp/ACS_INSTANCE.10/acs_local_log__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - Log file created = <logging/ws/test>/tmp/acs_tmp/ACS_INSTANCE.10/acs_local_log__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_LOG_FILE unset and ACS_TMP defined and having permissions problems
@@ -240,16 +240,16 @@
 1 - ACS_INSTANCE=10
 1 - ACS_LOG_FILE=
 1 - 
-1 - ----------T--:--:--.--- [GlobalLogger - ] log 1
 1 - ----------T--:--:--.--- Failed to create <logging/ws/test>/tmp/wrongPermDir/ACS_INSTANCE.10 directory
 1 - ----------T--:--:--.--- Failed to save logging cache. Cache is lost!
+1 - ----------T--:--:--.--- [GlobalLogger - ] log 1
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 2
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 3
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 5 - now will flush
 1 - ----------T--:--:--.--- Logging cache cannot be written in <logging/ws/test>/tmp/wrongPermDir/ACS_INSTANCE.10 directory.
-1 - LC: 1
 1 - LC: 0
+1 - LC: 1
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
@@ -278,16 +278,16 @@
 1 - ACS_INSTANCE=10
 1 - ACS_LOG_FILE=
 1 - 
-1 - ----------T--:--:--.--- [GlobalLogger - ] log 1
 1 - ----------T--:--:--.--- Failed to save logging cache. Cache is lost!
+1 - ----------T--:--:--.--- [GlobalLogger - ] log 1
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 2
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 3
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 5 - now will flush
 1 - ----------T--:--:--.--- <logging/ws/test>/tmp/ACS_INSTANCE.10 directory does not have write or exec permissions!
 1 - ----------T--:--:--.--- Logging cache cannot be written in <logging/ws/test>/tmp/ACS_INSTANCE.10 directory.
-1 - LC: 1
 1 - LC: 0
+1 - LC: 1
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
@@ -337,14 +337,14 @@
 1 -  ---
 1 - LC: 0
 1 - LC: 1
-1 - Log file created = tmp/alma78/ACS_INSTANCE.10/acs_local_log__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - Log file created = tmp/<host>/ACS_INSTANCE.10/acs_local_log__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_LOG_FILE, ACS_TMP and ACS_INSTANCE unset with ACSDATA defined and without permissions problems
@@ -361,29 +361,29 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 5 - now will flush
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
-1 - LC: 0
 1 - LC: 1
+1 - LC: 0
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log to be auto-flushed
 1 - LC: 1
 1 - LC: 0
+1 - ----------T--:--:--.--- [GlobalLogger - trace log - to be ignored] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] emerency log - should bypass cache
 1 - ----------T--:--:--.--- [GlobalLogger - main] a log that it is not sent to the CL
-1 - ----------T--:--:--.--- [GlobalLogger - trace log - to be ignored] 
 1 - ----------T--:--:--.--- problematic log that shall not contain non empty file, line etc. fields
-1 -  ---
 1 - LC: 0
+1 -  ---
 1 - LC: 1
-1 - Log file created = tmp/alma78/acs_local_log__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - Log file created = tmp/<host>/acs_local_log__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_LOG_FILE and ACS_INSTANCE unset with ACS_TMP defined and without permissions problems
@@ -400,8 +400,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 5 - now will flush
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
-1 - LC: 0
 1 - LC: 1
+1 - LC: 0
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
@@ -415,14 +415,14 @@
 1 -  ---
 1 - LC: 0
 1 - LC: 1
-1 - Log file created = tmp/acs_tmp/acs_local_log__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - Log file created = <logging/ws/test>/tmp/acs_tmp/acs_local_log__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_TMP unset with ACS_LOG_FILE, ACSDATA and ACS_INSTANCE defined and with permissions problems on ACS_LOG_FILE path
@@ -433,17 +433,17 @@
 1 - ACS_INSTANCE=10
 1 - ACS_LOG_FILE=<logging/ws/test>/tmp/LOGDIR/test/acsLogFile
 1 - 
-1 - ----------T--:--:--.--- Failed to create <logging/ws/test>/tmp/LOGDIR/test directory
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 1
+1 - ----------T--:--:--.--- Failed to create <logging/ws/test>/tmp/LOGDIR/test directory
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 2
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 3
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 4
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 5 - now will flush
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
 1 - ----------T--:--:--.--- Logging cache cannot be written in <logging/ws/test>/tmp/LOGDIR/test directory (from ACS_LOG_FILE environment variable).
+1 - LC: 1
 1 - Falling back to alternate solution.
 1 - LC: 0
-1 - LC: 1
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
@@ -457,14 +457,14 @@
 1 -  ---
 1 - LC: 0
 1 - LC: 1
-1 - Log file created = tmp/alma78/ACS_INSTANCE.10/acsLogFile__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - Log file created = tmp/<host>/ACS_INSTANCE.10/acsLogFile__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_LOG_FILE, ACS_TMP and ACS_INSTANCE unset with ACS_LOG_FILE and ACSDATA defined and with permissions problems on ACS_LOG_FILE path
@@ -499,14 +499,14 @@
 1 -  ---
 1 - LC: 0
 1 - LC: 1
-1 - Log file created = tmp/alma78/acsLogFile__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - Log file created = tmp/<host>/acsLogFile__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_INSTANCE unset with ACS_TMP and ACS_LOG_FILE defined and with permissions problems on ACS_LOG_FILE path
@@ -525,12 +525,12 @@
 1 - ----------T--:--:--.--- <logging/ws/test>/tmp/LOGDIR/test directory does not have write or exec permissions!
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
 1 - ----------T--:--:--.--- Logging cache cannot be written in <logging/ws/test>/tmp/LOGDIR/test directory (from ACS_LOG_FILE environment variable).
+1 - Falling back to alternate solution.
+1 - LC: 0
 1 - LC: 1
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
-1 - Falling back to alternate solution.
-1 - LC: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] log to be auto-flushed
 1 - LC: 1
 1 - LC: 0
@@ -541,14 +541,14 @@
 1 -  ---
 1 - LC: 0
 1 - LC: 1
-1 - Log file created = tmp/acs_tmp/acsLogFile__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - Log file created = <logging/ws/test>/tmp/acs_tmp/acsLogFile__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
 1 - ---------------------------------------
 1 - Test with ACS_INSTANCE unset with ACS_TMP and ACS_LOG_FILE defined and with permissions problems on ACS_LOG_FILE path in the middle of the test
@@ -566,10 +566,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] log 5 - now will flush
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
 1 - LC: 1
+1 - LC: 0
 1 - LC: 2
 1 - LC: 3
 1 - LC: 4
-1 - LC: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] log to be auto-flushed
 1 - LC: 1
 1 - LC: 0
@@ -585,15 +585,15 @@
 1 - Falling back to alternate solution.
 1 - LC: 0
 1 - LC: 1
-1 - Log file created = tmp/LOGDIR/test/acsLogFile__XXXXX:
+1 - Log file created = <logging/ws/test>/tmp/LOGDIR/test/acsLogFile__XXXXX:
 1 - <logging/ws/test>/tmp/LOGDIR/test/acsLogFile__XXXXX:
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 1]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 2]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 3]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 4]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log 5 - now will flush]]></Info>
-1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger"><![CDATA[log to be auto-flushed]]></Info>
-1 - Log file created = tmp/acs_tmp/acsLogFile__XXXXX:
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="52" Routine="" Host="<host>"><![CDATA[log 1]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 2]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 3]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="61" Routine="" Host="<host>"><![CDATA[log 4]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="66" Routine="" Host="<host>"><![CDATA[log 5 - now will flush]]></Info>
+1 - <Info TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="71" Routine="" Host="<host>"><![CDATA[log to be auto-flushed]]></Info>
+1 - Log file created = <logging/ws/test>/tmp/acs_tmp/acsLogFile__XXXXX:
 1 - <logging/ws/test>/tmp/acs_tmp/acsLogFile__XXXXX:
-1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="alma78" Process="" Thread="" Context="" SourceObject="GlobalLogger" StackId="" StackLevel="0"><![CDATA[emerency log - should bypass cache]]></Emergency>
+1 - <Emergency TimeStamp="----------T--:--:--.---" File="testLoggingProxy.cpp" Line="82" Routine="" Host="<host>"><![CDATA[emerency log - should bypass cache]]></Emergency>
 1 - 
