@@ -42,7 +42,7 @@ TODO:
 __revision__ = "$Id: SimpleClient.py,v 1.14 2011/11/29 18:43:17 nsaez Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
-import os,pwd
+import os,pwd, signal
 import socket
 from traceback import print_exc
 from atexit import register
@@ -52,10 +52,48 @@ import ACS
 from Acspy.Clients.BaseClient         import BaseClient
 from Acspy.Servants.ContainerServices import ContainerServices
 from ACSErrTypeCommonImpl             import CORBAProblemExImpl
+from Acspy.Common.Log import flush as flushLogs
 #--GLOBALS---------------------------------------------------------------------
 _instance = None    #singleton reference
 _DEBUG = 0
 #------------------------------------------------------------------------------
+def handlerSIGSTP(signum, frame):
+    '''
+    The handler for the SIGSTP signal runs when the user 
+    presses CTRL-Z and suspends the script.
+    
+    This handler flushes the logs before suspending.
+    '''
+    print "Received signal SIGSTP.. flushing logs",signum
+    msg="SIGSTP received: flush logs before suspending"
+    if _instance is not None:
+        _instance.logger.logWarning(msg)
+    else:
+        print "SIGSTP received: flush logs before suspending"
+    flushLogs()
+    if origHandlerSIGSTP is not None:
+            signal.signal(signal.SIGTSTP,origHandlerSIGSTP)
+            os.kill(os.getpid(),signum)
+#------------------------------------------------------------------------------
+def handlerSIGCONT(signum, frame):
+    '''
+    The handler for the SIGCONT signal runs when the user wakes up the script
+    previously suspended with a CTRL-Z.
+    
+    This handler restores the handler for the SIGSTP
+    '''
+    msg="Python script resumed (SIGCONT)"
+    if _instance is not None:
+        _instance.logger.logInfo(msg)
+    else:
+        print msg
+    signal.signal(signal.SIGTSTP,handlerSIGSTP)
+#------------------------------------------------------------------------------
+# Original signal handlers
+origHandlerSIGSTP  = signal.signal(signal.SIGTSTP,handlerSIGSTP)
+origHandlerSIGCONT = signal.signal(signal.SIGCONT,handlerSIGCONT)
+#------------------------------------------------------------------------------
+
 class PySimpleClient(BaseClient, ContainerServices): 
     '''
     PySimpleClient class provides access to ACS components, CORBA services, etc.
@@ -113,9 +151,16 @@ class PySimpleClient(BaseClient, ContainerServices):
             
         # Ensure that disconnect is called when python exit
         register(self.disconnect)
+        
+        global _instance
+        
+        #If there is no singleton yet; create one
+        if _instance == None:
+            _instance = self
     #--------------------------------------------------------------------------
     #The following objects and functions all deal with a singleton instance of
-    #PySimpleClient    
+    #PySimpleClient
+    @staticmethod
     def getInstance(name="PySingletonClient"):
         '''
         Returns a singleton instance of the PySimpleClient class.
@@ -133,8 +178,6 @@ class PySimpleClient(BaseClient, ContainerServices):
         if _instance == None:
             _instance = PySimpleClient(name=name)
         return _instance
-    #Create the real static method
-    getInstance = staticmethod(getInstance)
     #--------------------------------------------------------------------------
     def __activateOffShoot(self,
                            comp_name,
