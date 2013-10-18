@@ -1,3 +1,4 @@
 cd testXML
-acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.xercesj.test.DumpXML Components.xml
+acsStartJava -endorsed -j ../../lib alma.xercesj.test.DumpXML Components.xml
+#-Djavax.xml.parsers.DocumentBuilderFactory=org.apache.xerces.jaxp.DocumentBuilderFactoryImpl 
 
