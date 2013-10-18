@@ -22,6 +22,7 @@
 package alma.acs.container;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -1208,19 +1209,18 @@ public class ContainerServicesImpl implements ContainerServices
 	}
 
 
-    /**
-     * @see alma.acs.container.ContainerServices#getThreadFactory()
-     */
+	/**
+	 * @see alma.acs.container.ContainerServices#getThreadFactory()
+	 */
 	@Override
-    public ThreadFactory getThreadFactory() {
-        return m_threadFactory;
-    }
+	public ThreadFactory getThreadFactory() {
+		return m_threadFactory;
+	}
 
-    
-    AcsCorba getAcsCorba() {
-    	return acsCorba;
-    }
-
+	AcsCorba getAcsCorba() {
+		return acsCorba;
+	}
+	
 	/**
 	 * With this optional call, automatic invocation logging for certain offshoot methods can be disabled.  
 	 * @param methodsExcludedFromInvocationLogging 
@@ -1365,6 +1365,9 @@ public class ContainerServicesImpl implements ContainerServices
 			ex.setContextInfo("'" + CLASSNAME_NC_SUBSCRIBER + "' class does not extend 'AcsEventSubscriber'");
 			throw ex;
 		} catch(Throwable e) {
+			if (e instanceof InvocationTargetException) { // ctor ex
+				e = e.getCause();
+			}
 			m_logger.log(AcsLogLevel.ERROR, "Unexpected error while creating new AcsEventSubscriber object", e);
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
 			throw ex;
@@ -1421,6 +1424,9 @@ public class ContainerServicesImpl implements ContainerServices
 			ex.setContextInfo("'" + CLASSNAME_NC_PUBLISHER + "' class does not extend 'AcsEventPublisher'");
 			throw ex;
 		} catch(Throwable e) {
+			if (e instanceof InvocationTargetException) { // ctor ex, seen for example in ICT-1508
+				e = e.getCause();
+			}
 			m_logger.log(AcsLogLevel.ERROR, "Unexpected error while creating new AcsEventPublisher object", e);
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
 			throw ex;
