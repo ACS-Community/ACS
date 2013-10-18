@@ -39,6 +39,7 @@
 #include "logging.h"
 #include "acsDaemonImpl.h"
 #include <acserr.h>
+#include "acsDaemonUtils.h"
 #include <acsdaemonErrType.h>
 #include <ACSErrTypeCommon.h>
 #include <acsutilPorts.h>
@@ -150,7 +151,7 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
     std::string h_name; // Name of container handler (used for logging purposes
     std::string h_type; // CORBA-type for this container handler
     ACSDaemonServiceImpl<ACSContainerHandlerImpl> *h_service; // ACS daemon service
-
+    AcsDaemonUtils m_daemonUtils;
 };
 
 

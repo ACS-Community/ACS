@@ -98,51 +98,41 @@ ACSContainerHandlerImpl::start_container (
 			isCasaContainer = 1;
 			break;
 		}
-
 	}
 
     // execute: "acsStartContainer -<type> -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
     
     //get the directory name to store the container stdout
-    std::string logDirectory="~/.acs/commandcenter/";
-    char * acsdata = ACE_OS::getenv("ACSDATA");
-    if(acsdata != 0)
-        logDirectory = std::string(acsdata) + std::string("/logs/");
-    std::string logs = logDirectory;
-    char * host = ACE_OS::getenv("HOST");
-    if(host != NULL)
-        logDirectory = logDirectory + std::string(host) + std::string("/");
-    std::string containerName(container_name);
-    std::string::size_type pos=containerName.rfind("/"); 
-    if(pos != std::string::npos){
-    	logDirectory.append(containerName,0,pos+1);
-    	containerName.erase(0,pos+1);
-    }
-    //create the directory
-    std::string mkdir("mkdir -p ");
-    mkdir.append(logDirectory);
-    ACE_OS::system(mkdir.c_str());
-    std::string chmod("chmod 775 ");
-    chmod.append(logDirectory);
-    ACE_OS::system(chmod.c_str());
-    ACE_OS::system(("chmod 775 " + logs).c_str());
-
-    std::string timeStamp(getStringifiedTimeStamp().c_str());
-
-    if( timeStamp.find(":") != std::string::npos)
-        timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find(":") != std::string::npos )
-        timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find("T") != std::string::npos)
-        timeStamp.replace(timeStamp.find("T"),1,"_");
+	std::string containerName(container_name);
+	std::string logDirectory=m_daemonUtils.getLogDirectoryForContainer(containerName);
 
 	char command[1000];
 
 	if (isCasaContainer)
-		snprintf(command, 1000, "acsStartContainerWithCASA -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+		snprintf(
+				command,
+				1000,
+				"acsStartContainerWithCASA -%s -b %d %s %s &> %sacsStartContainer_%s_%s&",
+				container_type,
+				instance_number,
+				container_name,
+				cmdln,
+				logDirectory.c_str(),
+				m_daemonUtils.getSimpleContainerName(containerName).c_str(),
+				m_daemonUtils.getTimestamp().c_str());
 	else
-		snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+		snprintf(
+				command,
+				1000,
+				"acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s&",
+				container_type,
+				instance_number,
+				container_name,
+				cmdln,
+				logDirectory.c_str(),
+				m_daemonUtils.getSimpleContainerName(containerName).c_str(),
+				m_daemonUtils.getTimestamp().c_str());
 
 	ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
@@ -204,44 +194,35 @@ ACSContainerHandlerImpl::start_container_sync (
     // TODO checks for ';', '&', '|' chars, they can run any other command!
 
     //get the directory name to store the container stdout
-    std::string logDirectory="~/.acs/commandcenter/";
-    char * acsdata = ACE_OS::getenv("ACSDATA");
-    if(acsdata != 0)
-        logDirectory = std::string(acsdata) + std::string("/logs/");
-    std::string logs = logDirectory;
-    char * host = ACE_OS::getenv("HOST");
-    if(host != NULL)
-        logDirectory = logDirectory + std::string(host) + std::string("/");
-    std::string containerName(container_name);
-    std::string::size_type pos=containerName.rfind("/");
-    if(pos != std::string::npos){
-    	logDirectory.append(containerName,0,pos+1);
-    	containerName.erase(0,pos+1);
-    }
-    //create the directory
-    std::string mkdir("mkdir -p ");
-    mkdir.append(logDirectory);
-    ACE_OS::system(mkdir.c_str());
-    std::string chmod("chmod 775 ");
-    chmod.append(logDirectory);
-    ACE_OS::system(chmod.c_str());
-    ACE_OS::system(("chmod 775 " + logs).c_str());
-
-    std::string timeStamp(getStringifiedTimeStamp().c_str());
-
-    if( timeStamp.find(":") != std::string::npos)
-        timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find(":") != std::string::npos )
-        timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find("T") != std::string::npos)
-        timeStamp.replace(timeStamp.find("T"),1,"_");
+	std::string containerName(container_name);
+	std::string logDirectory=m_daemonUtils.getLogDirectoryForContainer(containerName);
 
 	char command[1000];
 
 	if (isCasaContainer)
-		snprintf(command, 1000, "acsutilAwaitContainerStart -C -%s -b %d %s %s &> %sacsStartContainer_%s_%s", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+		snprintf(
+				command,
+				1000,
+				"acsutilAwaitContainerStart -C -%s -b %d %s %s &> %sacsStartContainer_%s_%s",
+				container_type,
+				instance_number,
+				container_name,
+				cmdln,
+				logDirectory.c_str(),
+				m_daemonUtils.getSimpleContainerName(containerName).c_str(),
+				m_daemonUtils.getTimestamp().c_str());
 	else
-		snprintf(command, 1000, "acsutilAwaitContainerStart -%s -b %d %s %s &> %sacsStartContainer_%s_%s", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+		snprintf(
+				command,
+				1000,
+				"acsutilAwaitContainerStart -%s -b %d %s %s &> %sacsStartContainer_%s_%s",
+				container_type,
+				instance_number,
+				container_name,
+				cmdln,
+				logDirectory.c_str(),
+				m_daemonUtils.getSimpleContainerName(containerName).c_str(),
+				m_daemonUtils.getTimestamp().c_str());
 
 	ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
@@ -286,42 +267,22 @@ void ACSContainerHandlerImpl::stop_container (
     const char * cmdln = (additional_command_line ? additional_command_line : "");
 
     //get the directory name to store the container stdout
-    std::string logDirectory="~/.acs/commandcenter/";
-    char * acsdata = ACE_OS::getenv("ACSDATA");
-    if(acsdata != 0)
-        logDirectory = std::string(acsdata) + std::string("/logs/");
-    std::string logs = logDirectory;
-    char * host = ACE_OS::getenv("HOST");
-    if(host != NULL)
-        logDirectory = logDirectory + std::string(host) + std::string("/");
     std::string containerName(container_name);
-    std::string::size_type pos=containerName.rfind("/");
-    if(pos != std::string::npos){
-    	logDirectory.append(containerName,0,pos+1);
-    	containerName.erase(0,pos+1);
-    }
-    //create the directory
-    std::string mkdir("mkdir -p ");
-    mkdir.append(logDirectory);
-    ACE_OS::system(mkdir.c_str());
-    std::string chmod("chmod 775 ");
-    chmod.append(logDirectory);
-    ACE_OS::system(chmod.c_str());
-    ACE_OS::system(("chmod 775 " + logs).c_str());
-
-    std::string timeStamp(getStringifiedTimeStamp().c_str());
-
-    if( timeStamp.find(":") != std::string::npos)
-        timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find(":") != std::string::npos )
-        timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find("T") != std::string::npos)
-        timeStamp.replace(timeStamp.find("T"),1,"_");
+    std::string logDirectory=m_daemonUtils.getLogDirectoryForContainer(containerName);
 
     // execute: "acsStopContainer -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
     char command[1000];
-    snprintf(command, 1000, "acsStopContainer -b %d %s %s &> %sacsStopContainer_%s_%s&", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+    snprintf(
+    		command,
+    		1000,
+    		"acsStopContainer -b %d %s %s &> %sacsStopContainer_%s_%s&",
+    		instance_number,
+    		container_name,
+    		cmdln,
+    		logDirectory.c_str(),
+    		m_daemonUtils.getSimpleContainerName(containerName).c_str(),
+    		m_daemonUtils.getTimestamp().c_str());
 
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
@@ -333,7 +294,6 @@ void ACSContainerHandlerImpl::stop_container (
 	    __FILE__, __LINE__,
 	    "::ACSContainerDaemonImpl::stop_container").getFailedToStopContainerEx();
 	}
-
 }
 
 
@@ -360,42 +320,22 @@ void ACSContainerHandlerImpl::stop_container_sync (
     const char * cmdln = (additional_command_line ? additional_command_line : "");
 
     //get the directory name to store the container stdout
-    std::string logDirectory="~/.acs/commandcenter/";
-    char * acsdata = ACE_OS::getenv("ACSDATA");
-    if(acsdata != 0)
-        logDirectory = std::string(acsdata) + std::string("/logs/");
-    std::string logs = logDirectory;
-    char * host = ACE_OS::getenv("HOST");
-    if(host != NULL)
-        logDirectory = logDirectory + std::string(host) + std::string("/");
     std::string containerName(container_name);
-    std::string::size_type pos=containerName.rfind("/"); 
-    if(pos != std::string::npos){
-    	logDirectory.append(containerName,0,pos+1);
-    	containerName.erase(0,pos+1);
-    }
-    //create the directory
-    std::string mkdir("mkdir -p ");
-    mkdir.append(logDirectory);
-    ACE_OS::system(mkdir.c_str());
-    std::string chmod("chmod 775 ");
-    chmod.append(logDirectory);
-    ACE_OS::system(chmod.c_str());
-    ACE_OS::system(("chmod 775 " + logs).c_str());
-
-    std::string timeStamp(getStringifiedTimeStamp().c_str());
-
-    if( timeStamp.find(":") != std::string::npos)
-        timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find(":") != std::string::npos )
-        timeStamp.replace(timeStamp.find(":"),1,".");
-    if( timeStamp.find("T") != std::string::npos)
-        timeStamp.replace(timeStamp.find("T"),1,"_");
+    std::string logDirectory=m_daemonUtils.getLogDirectoryForContainer(containerName);
 
     // execute: "acsStopContainer -b <instance> <name> <args>"
     // TODO checks for ';', '&', '|' chars, they can run any other command!
     char command[1000];
-    snprintf(command, 1000, "acsStopContainer -b %d %s %s &> %sacsStopContainer_%s_%s", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
+    snprintf(
+    		command,
+    		1000,
+    		"acsStopContainer -b %d %s %s &> %sacsStopContainer_%s_%s",
+    		instance_number,
+    		container_name,
+    		cmdln,
+    		logDirectory.c_str(),
+    		m_daemonUtils.getSimpleContainerName(containerName).c_str(),
+    		m_daemonUtils.getTimestamp().c_str());
 
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
