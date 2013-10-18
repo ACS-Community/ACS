@@ -82,6 +82,15 @@ public:
 	 */
 	std::string getTimestamp();
 
+	/**
+	 * Return the container name without the hierarchical part, that is:
+	 * - the name if the container if it is not hierarchical
+	 * - the last word after '\' if it is hierarchical
+	 *
+	 * @return the name of the container
+	 */
+	std::string getSimpleContainerName(std::string containerName);
+
 private:
 
 	/**
