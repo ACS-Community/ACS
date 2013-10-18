@@ -54,7 +54,7 @@ public class ContainerTestUtil
 			Administrator adminCorbaObj = adminpoa._this(containerServices.getAdvancedContainerServices().getORB());
 			
 			adminProxy = managerProxy.createInstance();
-			adminProxy.loginToManager(adminCorbaObj, false);
+			adminProxy.loginToManager(adminCorbaObj, 1);
 			int adminManagerHandle = adminProxy.getManagerHandle();
 			Assert.assertTrue(adminManagerHandle > 0);
 		}
