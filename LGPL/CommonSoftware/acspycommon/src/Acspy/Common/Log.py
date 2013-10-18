@@ -840,7 +840,7 @@ class Logger(logging.Logger):
         """
         Build the ACSLogRecord for this information
         """
-        return makeACSLogRecord(name, level, fn, lno, msg, args, exc_info, func=None, extra=None)
+        return makeACSLogRecord(name, level, fn, lno, msg, args, exc_info, func, extra)
     #------------------------------------------------------------------------
     def configureLogging(self, maxLogsPerSec, alarmSender=None):
         '''
