@@ -652,9 +652,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Once that problem is resolved, we can either hardcode the ReentrantLock here, or leave in this choice and simply
 	 * not define property <code>acs.enableReentrantLockProfiling</code> which would lead to using the ProfilingReentrantLock.
 	 */
-	private Lock componentsLock = ( ProfilingReentrantLock.isProfilingEnabled 
-									? new ProfilingReentrantLock("componentsLock")
-									: new ReentrantLock() );
+	private transient Lock componentsLock = null;
 
 	public enum WhyUnloadedReason { REMOVED, TIMEOUT, DISAPPEARED, REPLACED };
 	/**
@@ -1012,7 +1010,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			setCDBAccess(cdbAccess);
 
 		readManagerConfiguration();
-		
+
+		componentsLock = (ProfilingReentrantLock.isProfilingEnabled 
+				? new ProfilingReentrantLock("componentsLock")
+				: new ReentrantLock() );
+
 		random = new Random();
 		heartbeatTask = new Timer(true);
 		delayedDeactivationTask = new Timer(true);

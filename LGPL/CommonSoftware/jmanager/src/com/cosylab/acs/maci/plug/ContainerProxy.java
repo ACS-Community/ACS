@@ -127,11 +127,12 @@ public class ContainerProxy extends ClientProxy implements Container
 		}
 	}
 
-	private CBComponentInfoImpl componentInfoCBServant = new CBComponentInfoImpl();
+	private CBComponentInfoImpl componentInfoCBServant;
 	private CBComponentInfo componentInfoCB;
 	
 	void activateCallback()
 	{
+		componentInfoCBServant = new CBComponentInfoImpl();
 		componentInfoCB = componentInfoCBServant._this(getOrb());
 	}
 	
@@ -420,6 +421,8 @@ public class ContainerProxy extends ClientProxy implements Container
 			container = null;
 			ior = null;
 		}
+		
+		activateCallback();
     }
 
 	/**
