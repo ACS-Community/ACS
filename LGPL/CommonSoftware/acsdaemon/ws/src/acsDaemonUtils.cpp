@@ -65,6 +65,7 @@ AcsDaemonUtils::AcsDaemonUtils():
 			break;
 		}
 		}
+		std::cout<<"AcsDaemonUtils built. Log directory is: "<<m_logDirectory<<std::endl;
 	}
 }
 
@@ -166,8 +167,10 @@ std::string AcsDaemonUtils::getLogDirectoryForContainer(std::string containerNam
 	{
 		temp+=contName[i];
 		if (contName[i]=='/') {
+			std::cout<<"Checking folder "<<temp<<std::endl;
 			// A new folder must be created if not exists
 			if (ACE_OS::access(temp.c_str(),F_OK)!=0) {
+				std::cout<<"\tCreating folder "<<temp<<std::endl;
 				if (!makeFolder(temp)) {
 					std::cout<<getTimestamp()<<" ERROR building log folder for container "<<containerName;
 					std::cout<<" falling back to "<<getLogDirectory()<<std::endl;
@@ -191,6 +194,15 @@ std::string AcsDaemonUtils::getTimestamp()
 		timeStamp.replace(timeStamp.find("T"),1,"_");
 
 	return timeStamp;
+}
+
+std::string AcsDaemonUtils::getSimpleContainerName(std::string containerName) {
+	if (containerName.rfind('/')==std::string::npos) {
+		// Not hierarchical container name
+		return containerName;
+	}
+	// The container is hierarchical
+	return containerName.substr(containerName.rfind('/')+1);
 }
 
 /*___oOo___*/
