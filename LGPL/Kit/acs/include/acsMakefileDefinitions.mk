@@ -32,6 +32,8 @@ $(eval toFile_$1 = $(if $(wildcard $(PRJTOP)/$(dir_$1)), \
                $(error $(dir_$1) is not a standard directory) ) ))
 
 
+cutOffCWD = \
+$(if $(call isNotCurrentDir,$1),$1,$(notdir $1))
 ################################################################################
 # FUNCTION createJar
 #
@@ -1665,6 +1667,27 @@ endef
 ##########################################################################
 ##########################################################################
 
+######################################################
+# LINK_FILES
+######################################################
+define acsMakeLinkFileDependencies
+$(debug-enter)
+
+.PHONY:do_link_$(notdir $1)
+do_link_$(notdir $1): $(call cutOffCWD,$1)
+
+$(call cutOffCWD,$1): 
+	$(AT)if [ ! -h $1 ]; then \
+         echo "== Linking file: $1"; ln -s ../../ws/src/$1 $1; \
+	else \
+	 echo "Not feeling like doing this link $1 today\n"; \
+        fi 
+
+rm_link_$(notdir $1):
+	$(AT)if [ -h $1 ]; then $(RM) $1; fi
+
+$(debug-leave)
+endef
 
 #(info Leaving definitions.mk)
 

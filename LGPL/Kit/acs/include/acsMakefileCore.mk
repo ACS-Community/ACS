@@ -308,6 +308,45 @@ $(foreach lib,$(LIBRARY_LIST),\
 endif # 
 endif
 #################################################################
+## LINK_FILES 
+#################################################################
+
+.PHONY: make_links
+make_links: do_links_internal
+
+.PHONY: do_links
+do_links: do_links_internal
+
+ifneq ($(strip $(LINK_FILES)),)
+.PHONY : do_links_internal 
+do_links_internal: do_links_begin $(foreach lf,$(LINK_FILES),do_link_$(notdir $(lf))) 
+
+.PHONY: do_links_begin
+do_links_begin:
+	-@$(ECHO) "....do links:"
+
+$(foreach lf, $(LINK_FILES), \
+	$(foreach wc, $(wildcard ../../ws/src/$(lf)), \
+		$(eval $(call acsMakeLinkFileDependencies,$(subst ../../ws/src/,,$(wc)))) ) \
+)
+
+
+.PHONY: clean_links
+clean_links: rm_links
+
+.PHONY : rm_links_begin
+rm_links_begin:
+	$(AT) echo "Removing links ...";
+
+.PHONY: rm_links
+rm_links: rm_links_begin $(foreach lf,$(LINK_FILES),rm_link_$(notdir $(lf)))
+
+CLEAN_TARGET += rm_links
+else
+do_links_internal:
+	$(AT)$(ECHO) "No links to be done"
+endif
+#################################################################
 ## EXE
 #################################################################
 

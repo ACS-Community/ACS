@@ -1740,20 +1740,6 @@ do_indexfiles :
 	-$(AT) vltMakeIndexFilesDependencies >../object/vltMakeIndexFiles.del
 
 
-.PHONY : do_links
-do_links: 
-ifneq ($(strip $(LINK_FILES)),)
-#	-@$(ECHO) "....do links:"
-	-$(AT) for member in $(LINK_FILES) ; do \
-	if [ ! -h $${member} ]; then echo "== Linking file: $${member}"; ln -s ../../ws/src/$${member} $${member}; fi \
-	done
--include .links-restart.mk
-
-.links-restart.mk: do_links
-	$(AT)$(ECHO) "" > $@
-
-endif
-
 #
 # set standard action for 'man'
 # -----------------------------
@@ -1838,7 +1824,7 @@ clean_dist: clean  $(CLEAN_DIST_TARGET) clean_tat_session
 
 
 .PHONY : clean_all
-clean_all: clean_links  $(CLEAN_TARGET)
+clean_all: $(CLEAN_TARGET)
 	-@$(ECHO) "Cleaning up .\c"
 	-@$(ECHO) " .\c"
 	-$(AT)find .. -name \#\* -o -name core -o -name \*\.gdb_history -print | $(XARGS) -i $(RM) {}
@@ -1896,13 +1882,6 @@ endif
 .PHONY:
 clean_tat_session:
 	$(AT)if [ -f .testSessions ]; then echo "=== Cleaning TAT session ===" ; tat -nc cleanEnv;fi
-
-
-.PHONY : clean_links
-clean_links:
-ifneq ($(strip $(LINK_FILES)),)
-	$(AT) echo "Removing links ..."; $(RM) $(LINK_FILES) .links-restart.mk
-endif
 
 
 CLEAN_DIST_TARGET += clean_dist_all
@@ -2190,7 +2169,7 @@ CSOURCENAMES := $(sort $(CSOURCENAMES))
 # NOTE: the sequence of these prerequisites seem to play a role in parallelization 
 #       in particular that do_exes comes before do_libs
 #
-ALL_TARGET := do_links $(ALL_TARGET) 
+ALL_TARGET := $(if $(strip $(LINK_FILES)),do_links_internal,) $(ALL_TARGET) 
 # CHECK removed do_ERRORS do_LOGS
 
 .DEFAULT_GOAL := do_all
