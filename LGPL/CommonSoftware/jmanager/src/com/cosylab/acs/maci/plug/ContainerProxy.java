@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.TIMEOUT;
+import org.omg.CORBA.UNKNOWN;
 
 import si.ijs.maci.CBComponentInfo;
 import si.ijs.maci.CBComponentInfoPOA;
@@ -191,8 +193,14 @@ public class ContainerProxy extends ClientProxy implements Container
 				}
 				else
 				{
-					logger.log(AcsLogLevel.WARNING, "Unknown 'desc.id_tag' (" + desc.id_tag + ") parameter for CBComponentInfo.done received.");
+					NO_RESOURCES nr = new NO_RESOURCES("Unknown 'desc.id_tag' (" + desc.id_tag + ") parameter for CBComponentInfo.done received.");
+					logger.log(AcsLogLevel.WARNING, nr.getMessage(), nr);
+					throw nr;
 				}
+			}
+			catch (NO_RESOURCES nre) {
+				// simply rethrow
+				throw nre;
 			}
 			catch (Throwable thr) {
 				// See AIV-9450, AIV-11149: We may fail to call "cb.done" if some unexpected exception gets thrown here...
@@ -202,6 +210,9 @@ public class ContainerProxy extends ClientProxy implements Container
 				if (cb != null) {
 					cb.failed(null, thr);
 				}
+				
+				// report this back to the container
+				throw new UNKNOWN("Unexpected exception caught while processing CBComponentInfo.done() callback.");
 			}
 		}
 
