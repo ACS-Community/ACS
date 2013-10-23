@@ -191,6 +191,31 @@ public:
         	maciErrType::CannotReleaseComponentExImpl ex(corbaProblemEx, __FILE__, __LINE__,
         						 "maci::ActivationMethod::call");
         	corbaProblemEx.log();
+
+        	ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Call to maci::CBComponentInfo::done with descOut.id_tag = %d failed, deactivating the component.", descOut_.id_tag);
+
+			try
+			{
+				container_->deactivate_component(h_);
+			}
+	        catch (maciErrType::CannotDeactivateComponentEx &ex)
+	        {
+	        	maciErrType::CannotDeactivateComponentExImpl lex(ex, __FILE__, __LINE__,
+	        						  "maci::ActivationMethod::call");
+	        	lex.log();
+	        }
+	        catch (maciErrType::ComponentDeactivationUncleanEx &ex)
+	        {
+	        	maciErrType::ComponentDeactivationUncleanExImpl lex(ex, __FILE__, __LINE__,
+	        						  "maci::ActivationMethod::call");
+	        	lex.log();
+	        }
+	        catch (maciErrType::ComponentDeactivationFailedEx &ex)
+	        {
+	        	maciErrType::ComponentDeactivationFailedExImpl lex(ex, __FILE__, __LINE__,
+	        						  "maci::ActivationMethod::call");
+	        	lex.log();
+	        }
         	}
         catch(...)
         {
