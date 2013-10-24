@@ -52,18 +52,15 @@ import cern.laser.business.data.Alarm;
 import cern.laser.business.data.Category;
 import cern.laser.business.data.CategoryImpl;
 import cern.laser.business.data.Triplet;
-
-import com.cosylab.acs.laser.dao.xml.AlarmCategoryDefinitions;
-import com.cosylab.acs.laser.dao.xml.AlarmCategoryLink;
-import com.cosylab.acs.laser.dao.xml.AlarmDefinition;
-import com.cosylab.acs.laser.dao.xml.CategoriesToCreate;
-import com.cosylab.acs.laser.dao.xml.CategoryDefinition;
-import com.cosylab.acs.laser.dao.xml.CategoryDefinitions;
-import com.cosylab.acs.laser.dao.xml.CategoryLinksToCreate;
-
+import alma.alarmsystem.alarmmessage.generated.AlarmCategoryDefinitions;
+import alma.alarmsystem.alarmmessage.generated.AlarmCategoryLinkDefinitionListType;
+import alma.alarmsystem.alarmmessage.generated.AlarmCategoryLinkType;
+import alma.alarmsystem.alarmmessage.generated.AlarmDefinition;
+import alma.alarmsystem.alarmmessage.generated.CategoryDefinition;
+import alma.alarmsystem.alarmmessage.generated.CategoryDefinitionListType;
+import alma.alarmsystem.alarmmessage.generated.CategoryDefinitions;
 import alma.acs.alarmsystem.generated.Categories;
 import alma.acs.alarmsystem.generated.FaultFamily;
-import alma.alarmsystem.core.alarms.LaserCoreAlarms;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
@@ -627,21 +624,21 @@ public class ACSCategoryDAOImpl extends com.cosylab.acs.laser.dao.ACSCategoryDAO
 		
 		AlarmCategoryDefinitions acds;
 		try {
-			acds=(AlarmCategoryDefinitions) AlarmCategoryDefinitions.unmarshal(new StringReader(xml));
+			acds=(AlarmCategoryDefinitions) AlarmCategoryDefinitions.unmarshalAlarmCategoryDefinitions(new StringReader(xml));
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to parse "+path);
 		}
 		
-		CategoryLinksToCreate cltc=acds.getCategoryLinksToCreate();
+		AlarmCategoryLinkDefinitionListType cltc=acds.getCategoryLinksToCreate();
 		if (cltc==null)
 			throw new RuntimeException("Missing category-links-to-create in "+path);
 		
-		AlarmCategoryLink[] links=cltc.getAlarmCategoryLink();
+		AlarmCategoryLinkType[] links=cltc.getAlarmCategoryLink();
 		
 		for (int a=0; a<links.length; a++) {
-			AlarmCategoryLink l=links[a];
-			com.cosylab.acs.laser.dao.xml.Alarm linkAlarm=l.getAlarm();
-			com.cosylab.acs.laser.dao.xml.Category linkCat=l.getCategory();
+			AlarmCategoryLinkType l=links[a];
+			alma.alarmsystem.alarmmessage.generated.Alarm linkAlarm=l.getAlarm();
+			alma.alarmsystem.alarmmessage.generated.Category linkCat=l.getCategory();
 			if (linkAlarm==null || linkCat==null)
 				throw new RuntimeException("Missing alarm or category in a link in "+path);
 			
@@ -695,11 +692,11 @@ public class ACSCategoryDAOImpl extends com.cosylab.acs.laser.dao.ACSCategoryDAO
 			throw new IllegalStateException("no writable configuration accessor");
 		
 		CategoryDefinitions acds=new CategoryDefinitions();
-		CategoriesToCreate ctc=new CategoriesToCreate();
+		CategoryDefinitionListType ctc=new CategoryDefinitionListType();
 		acds.setCategoriesToCreate(ctc);
 		
 		AlarmCategoryDefinitions linksTop=new AlarmCategoryDefinitions();
-		CategoryLinksToCreate cltc=new CategoryLinksToCreate();
+		AlarmCategoryLinkDefinitionListType cltc=new AlarmCategoryLinkDefinitionListType();
 		linksTop.setCategoryLinksToCreate(cltc);
 		
 		Iterator<Category> i=catPathToCategory.values().iterator();
@@ -719,10 +716,10 @@ public class ACSCategoryDAOImpl extends com.cosylab.acs.laser.dao.ACSCategoryDAO
 				if (a==null)
 					throw new RuntimeException("Category has a link to a non-existent alarm");
 				
-				AlarmCategoryLink link=new AlarmCategoryLink();
+				AlarmCategoryLinkType link=new AlarmCategoryLinkType();
 
-				com.cosylab.acs.laser.dao.xml.Alarm linkAlarm=new com.cosylab.acs.laser.dao.xml.Alarm();
-				com.cosylab.acs.laser.dao.xml.Category linkCat=new com.cosylab.acs.laser.dao.xml.Category();
+				alma.alarmsystem.alarmmessage.generated.Alarm linkAlarm=new alma.alarmsystem.alarmmessage.generated.Alarm();
+				alma.alarmsystem.alarmmessage.generated.Category linkCat=new alma.alarmsystem.alarmmessage.generated.Category();
 				link.setAlarm(linkAlarm);
 				link.setCategory(linkCat);
 				

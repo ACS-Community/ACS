@@ -35,9 +35,8 @@ import alma.alarmsystem.alarmmessage.generated.Parent;
 import alma.alarmsystem.alarmmessage.generated.ReductionDefinitions;
 import alma.alarmsystem.alarmmessage.generated.ReductionLinkType;
 import alma.alarmsystem.alarmmessage.generated.Threshold;
-
+import alma.alarmsystem.alarmmessage.generated.types.ReductionLinkTypeTypeType;
 import cl.utfsm.acs.acg.dao.ACSAlarmDAOImpl;
-
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.data.Alarm;
 import cern.laser.business.data.Triplet;
@@ -390,9 +389,9 @@ public class ReductionManager implements EntityManager {
 				rl.setParent(gp);
 				rl.setChild(gc);
 				if(spl[2].compareTo("n") == 0)
-					rl.setType("NODE");
+					rl.setType(ReductionLinkTypeTypeType.NODE);
 				else
-					rl.setType("MULTIPLICITY");
+					rl.setType(ReductionLinkTypeTypeType.MULTIPLICITY);
 				rl.validate();
 				switch(os.getAction()){
 				case -1: //Error, no state assigned.

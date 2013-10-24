@@ -77,14 +77,15 @@ import cern.laser.business.data.Triplet;
 import cern.laser.business.definition.data.SourceDefinition;
 
 import com.cosylab.acs.laser.dao.DAOUtil;
-import com.cosylab.acs.laser.dao.xml.AlarmDefinition;
-import com.cosylab.acs.laser.dao.xml.Child;
-import com.cosylab.acs.laser.dao.xml.LinksToCreate;
-import com.cosylab.acs.laser.dao.xml.Parent;
-import com.cosylab.acs.laser.dao.xml.ReductionDefinitions;
-import com.cosylab.acs.laser.dao.xml.ReductionLink;
-import com.cosylab.acs.laser.dao.xml.Threshold;
-import com.cosylab.acs.laser.dao.xml.Thresholds;
+
+import alma.alarmsystem.alarmmessage.generated.AlarmDefinition;
+import alma.alarmsystem.alarmmessage.generated.Child;
+import alma.alarmsystem.alarmmessage.generated.Parent;
+import alma.alarmsystem.alarmmessage.generated.ReductionDefinitions;
+import alma.alarmsystem.alarmmessage.generated.ReductionLinkType;
+import alma.alarmsystem.alarmmessage.generated.Threshold;
+import alma.alarmsystem.alarmmessage.generated.Thresholds;
+import alma.alarmsystem.alarmmessage.generated.types.ReductionLinkTypeTypeType;
 
 class HardcodedBuilding extends Building
 {
@@ -145,6 +146,33 @@ class AlarmRefMatcher
 		}
 	}
 	
+	static void regexEncodeChar(StringBuffer sb, char c)
+	{
+		switch(c) {
+		case '[':
+		case ']':
+		case '^':
+		case '&':
+		case '\\':
+		case '{':
+		case '}':
+		case '(':
+		case ')':
+		case '+':
+		case '-':
+		case '*':
+		case '$':
+		case '.':
+		case '?':
+		case '|':
+			sb.append('\\');
+			sb.append(c);
+			break;
+		default:
+			sb.append(c);
+		}
+	}
+	
 	static Pattern processRef(String abase, String ref) throws PatternSyntaxException
 	{
 		Stack stack;
@@ -201,7 +229,7 @@ class AlarmRefMatcher
 					if (c=='*') {
 						sb.append("[^/]*");
 					} else {
-						DAOUtil.regexEncodeChar(sb, c);
+						regexEncodeChar(sb, c);
 					}
 				}
 			}
@@ -619,18 +647,18 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		}
 		ReductionDefinitions rds;
 		try {
-			rds=(ReductionDefinitions) ReductionDefinitions.unmarshal(new StringReader(xml));
+			rds=(ReductionDefinitions) ReductionDefinitions.unmarshalReductionDefinitions(new StringReader(xml));
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't parse "+REDUCTION_DEFINITION_PATH, e);
 		}
 		
 		// Read the links to create from the CDB
-		LinksToCreate ltc=rds.getLinksToCreate();
+		ReductionLinkDefinitionListType ltc=rds.getLinksToCreate();
 		//	Read the thresholds from the CDB
 		Thresholds thresholds = rds.getThresholds();
 		if (ltc!=null) { 
-			ReductionLink[] rls=ltc.getReductionLink();
-			for (ReductionLink link: rls) {
+			ReductionLinkType[] rls=ltc.getReductionLink();
+			for (ReductionLinkType link: rls) {
 				Parent p=link.getParent();
 				Child c=link.getChild();
 				if (p==null || c==null) {
@@ -1239,7 +1267,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		}
 	}
 	
-	public void addReductionRule(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds, alma.alarmsystem.alarmmessage.generated.ReductionLinkType rl){
+	public void addReductionRule(ReductionDefinitions rds, ReductionLinkType rl){
 		if(rl == null)
 			throw new IllegalArgumentException("Null Reduction Link argument");
 		//alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds = getReductionRules();
@@ -1254,7 +1282,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 			String n2 = new String(c1.getFaultFamily()+":"+c1.getFaultMember()+":"+c1.getFaultCode());
 			String n3 = new String(p2.getFaultFamily()+":"+p2.getFaultMember()+":"+p2.getFaultCode());
 			String n4 = new String(c2.getFaultFamily()+":"+c2.getFaultMember()+":"+c2.getFaultCode());
-			if(n1.compareTo(n3) == 0 && n2.compareTo(n4) == 0 && tmp[i].getType().compareTo(rl.getType()) == 0)
+			if(n1.compareTo(n3) == 0 && n2.compareTo(n4) == 0 && tmp[i].getType().getType()==rl.getType().getType())
 				throw new IllegalStateException("Reduction Rule already exist");
 		}
 		rds.getLinksToCreate().addReductionLink(rl);
@@ -1263,15 +1291,15 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		Alarm p = getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
 		in = rl.getChild().getAlarmDefinition();
 		Alarm c =  getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
-		if(rl.getType().compareTo("NODE") == 0)
+		if(rl.getType().getType()==ReductionLinkTypeTypeType.NODE_TYPE)
 			p.addNodeChild(c);
-		else if (rl.getType().compareTo("MULTIPLICITY") == 0)
+		else if (rl.getType().getType()==ReductionLinkTypeTypeType.MULTIPLICITY_TYPE)
 			p.addMultiplicityChild(c);
 		//Store new values in the CDB.
 		//flushReductionRules(rds);
 	}
 	
-	public void updateReductionRule(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds, alma.alarmsystem.alarmmessage.generated.ReductionLinkType rl) {
+	public void updateReductionRule(ReductionDefinitions rds, ReductionLinkType rl) {
 		if(rl == null)
 			throw new IllegalArgumentException("Null Reduction Link argument");
 		//alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds = getReductionRules();
@@ -1287,7 +1315,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 			String n2 = new String(c1.getFaultFamily()+":"+c1.getFaultMember()+":"+c1.getFaultCode());
 			String n3 = new String(p2.getFaultFamily()+":"+p2.getFaultMember()+":"+p2.getFaultCode());
 			String n4 = new String(c2.getFaultFamily()+":"+c2.getFaultMember()+":"+c2.getFaultCode());
-			if(n1.compareTo(n3) == 0 && n2.compareTo(n4) == 0 && tmp[i].getType().compareTo(rl.getType()) == 0)
+			if(n1.compareTo(n3) == 0 && n2.compareTo(n4) == 0 && tmp[i].getType().getType()==rl.getType().getType())
 				removed = rds.getLinksToCreate().removeReductionLink(tmp[i]);
 		}
 		if(!removed)
@@ -1297,7 +1325,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		//flushReductionRules(rds);
 	}
 	
-	public void deleteReductionRule(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds, alma.alarmsystem.alarmmessage.generated.ReductionLinkType rl) {
+	public void deleteReductionRule(ReductionDefinitions rds, ReductionLinkType rl) {
 		if(rl == null)
 			throw new IllegalArgumentException("Null Reduction Link argument");
 		//alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds = getReductionRules();
@@ -1312,7 +1340,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 			String n2 = new String(c1.getFaultFamily()+":"+c1.getFaultMember()+":"+c1.getFaultCode());
 			String n3 = new String(p2.getFaultFamily()+":"+p2.getFaultMember()+":"+p2.getFaultCode());
 			String n4 = new String(c2.getFaultFamily()+":"+c2.getFaultMember()+":"+c2.getFaultCode());
-			if(n1.compareTo(n3) == 0 && n2.compareTo(n4) == 0 && tmp[i].getType().compareTo(rl.getType()) == 0)
+			if(n1.compareTo(n3) == 0 && n2.compareTo(n4) == 0 && tmp[i].getType().getType()==rl.getType().getType())
 				removed = rds.getLinksToCreate().removeReductionLink(tmp[i]);
 		}
 		if(!removed)
@@ -1322,15 +1350,15 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		Alarm p = getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
 		in = rl.getChild().getAlarmDefinition();
 		Alarm c =  getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
-		if(rl.getType().compareTo("NODE") == 0)
+		if(rl.getType().getType()==ReductionLinkTypeTypeType.NODE_TYPE)
 			p.removeNodeChild(c);
-		else if (rl.getType().compareTo("MULTIPLICITY") == 0)
+		else if (rl.getType().getType()==ReductionLinkTypeTypeType.MULTIPLICITY_TYPE)
 			p.removeMultiplicityChild(c);
 		//Store new values in the CDB.
 		//flushReductionRules(rds);
 	}
 	
-	public void addThreshold(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds, alma.alarmsystem.alarmmessage.generated.Threshold th) {
+	public void addThreshold(ReductionDefinitions rds, Threshold th) {
 		if(th == null)
 			throw new IllegalArgumentException("Null Threshold argument");
 		//alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds = getReductionRules();
