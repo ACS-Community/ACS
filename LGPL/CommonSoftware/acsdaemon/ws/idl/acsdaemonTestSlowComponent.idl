@@ -1,0 +1,15 @@
+#ifndef _acsdaemonTestSlowComponent_IDL_
+#define _acsdaemonTestSlowComponent_IDL_
+
+#include <acscomponent.idl>
+
+#pragma prefix "alma"
+
+module acsdaemonSlowComponent
+{
+        interface SlowDestructionComponent : ACS::ACSComponent
+        {
+        };
+};
+
+#endif  // _acsdaemonTestSlowComponent_IDL_

@@ -3,5 +3,13 @@
        xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+       <_ Name="SLOW_01"   Code="acsdaemonTestSlowComponentImpl"
+                           Autostart="true"
+                           Type="IDL:alma/acsdaemonSlowComponent/SlowDestructionComponent:1.0"
+                           Container="slowComponentContainer" ImplLang="cpp" />
+       <_ Name="SLOW_02"   Code="acsdaemonTestSlowComponentImpl"
+                           Autostart="true"
+                           Type="IDL:alma/acsdaemonSlowComponent/SlowDestructionComponent:1.0"
+                           Container="slowComponentContainer2" ImplLang="cpp" />
 </Components>
 

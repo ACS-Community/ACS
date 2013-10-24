@@ -13,4 +13,6 @@ PROLOGUE acsdaemonTATPrologue
 3 testAcsDaemonUtil "testAcsDaemonUtil"
 #3 jdaemontest		"loglevel.sh 0 acsservicesdaemon -u" "@SLEEP 3" "acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.daemontest.ServicesDaemonTest" "@SLEEP 60" "acsStop" "@SLEEP 30" "loglevel.sh 0 acsservicesdaemonStop"
 4 daemontestsync    "testSync.sh"
+5 testNumThreadsOption1 "testacsdaemonNumThreadsOption.sh 1"
+6 testNumThreadsOption2 "testacsdaemonNumThreadsOption.sh 2"
 EPILOGUE acsdaemonTATEpilogue

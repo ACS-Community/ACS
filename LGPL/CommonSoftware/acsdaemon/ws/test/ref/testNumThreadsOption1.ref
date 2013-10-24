@@ -1,0 +1,11 @@
+1 - NUM_THREADS_OPTION = "1"
+1 - ----------T--:--:--.--- [GlobalLogger] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger] ManagerReference generated using localhost address: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger] Manager hostname generated using localhost address: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger] Manager hostname generated using localhost address: 'something'
+1 - ----------T--:--:--.--- [GlobalLogger] Failed to resolve reference 'something'
+1 - ----------T--:--:--.--- [GlobalLogger] Caught exception TIMEOUT (IDL:omg.org/CORBA/TIMEOUT:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger] Failed to get containerdaemon reference
+1 - ----------T--:--:--.--- [GlobalLogger] Error while shutting down slowComponentContainer and slowComponentContainer2 containers
+1 - OK - acsDaemonTestNumThreadsOptions expected error
+1 - HEY MATE, EVERYTHING IS A OK

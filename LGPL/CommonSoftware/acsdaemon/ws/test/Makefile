@@ -52,7 +52,7 @@
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = acsServices80Test 
+EXECUTABLES     = acsServices80Test acsDaemonTestNumThreadsOption
 EXECUTABLES_L   = testAcsDaemonUtil
 
 acsServices80Test_OBJECTS   =   acsServices80Test
@@ -60,6 +60,9 @@ acsServices80Test_LIBS      =   acscomponentStubs acsdaemonErrType acsdaemonStub
 
 testAcsDaemonUtil_OBJECTS   =  testAcsDaemonUtil 
 testAcsDaemonUtil_LIBS      =  acsutil cppunit ACE
+
+acsDaemonTestNumThreadsOption_OBJECTS = acsdaemonTestAsyncStopRequest
+acsDaemonTestNumThreadsOption_LIBS = acsdaemonErrType acsdaemonStubs maci maciClient
 
 #
 # <brief description of xxxxx program>
@@ -79,19 +82,22 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       =
+LIBRARIES       = acsdaemonTestSlowComponentImpl
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
 lllll_OBJECTS   =
 
+acsdaemonTestSlowComponentImpl_OBJECTS   = acsdaemonTestSlowComponentImpl
+acsdaemonTestSlowComponentImpl_LIBS   = acsdaemonTestSlowComponentStubs acscomponent
+
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         =	
 SCRIPTS_L       = 	acsdaemonTATPrologue acsdaemonTATEpilogue test.sh loglevel.sh testSync.sh \
-			acsStartContainerWithCASA
+			acsStartContainerWithCASA testacsdaemonNumThreadsOption.sh
 
 #
 # TCL scripts (public and local)
@@ -136,9 +142,10 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES =
+IDL_FILES = acsdaemonTestSlowComponent
 IDL_TAO_FLAGS =
 USER_IDL =
+acsdaemonTestSlowComponentStubs_LIBS = baciStubs
 #
 # Jarfiles and their directories
 #
@@ -216,7 +223,8 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	@rm -f *.log
+	@rm -f *.log 
+	@rm -rf logs
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
