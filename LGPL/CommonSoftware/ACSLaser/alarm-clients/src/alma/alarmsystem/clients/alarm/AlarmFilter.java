@@ -89,7 +89,12 @@ public class AlarmFilter {
 	public AlarmFilter(String fFRegExp, String fMRegExp, Integer min, Integer max) {
 		if (fFRegExp==null && fMRegExp==null && min==null && max==null) {
 			// No criteria: this filter will be rejected
-			throw new IllegalArgumentException("Invalid filter: at leas on constraint must be present");
+			throw new IllegalArgumentException("Invalid filter: at least one constraint must be present");
+		}
+		if (min!=null && max!=null) {
+			if (min.intValue()>max.intValue()) {
+				throw new IllegalArgumentException("Invalid filter: invalid FC range min="+min+", max="+max);
+			}
 		}
 		
 		this.faultFRegExp=fFRegExp;
