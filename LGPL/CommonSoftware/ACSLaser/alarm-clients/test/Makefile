@@ -89,7 +89,8 @@ SCRIPTS         = clientTATPrologue \
                 testCategoryClientChildren \
                 testCategoryClientActiveChildren \
                 testUserProps \
-                testSrcDumper
+                testSrcDumper \
+                testAlarmCategoryFilter
 
 SCRIPTS_L       =
 

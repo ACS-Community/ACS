@@ -4,3 +4,5 @@ s/ChannelId='.*'/ChannelId='xx'/g
 s/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/HH:MM:SS -non ISO timestamp-/g
 s/Java.*/Java... (build...)/g
 s/java version.*/java version..../g
+s/Time: .*/Time: hh:mm:ss/g
+s/-D user.dir.*/user.dir=xxxxx/g

@@ -36,5 +36,6 @@ PROLOGUE clientTATPrologue
 5 testCategoryClientActiveChildren "testCategoryClientActiveChildren"
 6 testUserProps "testUserProps"
 7 testSrcDumper "acsStartJava -endorsed alma.alarmsystem.dumpers.test.TestSourceDumper & acsStartJava -endorsed alma.alarmsystem.dumpers.test.AlarmSenderForDumperTest"
+8 testAlarmCategoryFilter "testAlarmCategoryFilter"
 
 EPILOGUE acsutilTATEpilogue

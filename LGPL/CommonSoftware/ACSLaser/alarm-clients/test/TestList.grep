@@ -16,3 +16,4 @@ ComponentClientTestCase#setUp()
 suppressRemoteLogging called
 Logger jacorb@.* created with custom log levels local=Info, remote=Info
 Logger scxml@.* created with custom log levels local=Warning, remote=Warning
+user.dir
