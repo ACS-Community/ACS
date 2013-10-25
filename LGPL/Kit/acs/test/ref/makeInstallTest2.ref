@@ -1,3 +1,3 @@
 1 - .....includes:
-1 - ==> multiple duplicateFile files under ../include: ./subdir1/subdir1.1/duplicateFile ./subdir1/duplicateFile ./subdir2/duplicateFile ./duplicateFile 
+1 - ==> multiple duplicateFile files under ../include: <subdir>duplicateFile <subdir>duplicateFile <subdir>duplicateFile <subdir>duplicateFile 
 1 - make: *** [install_include_duplicateFile] Error 1
