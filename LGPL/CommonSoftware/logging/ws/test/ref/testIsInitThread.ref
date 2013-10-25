@@ -1,0 +1,7 @@
+1 - [Main]: Before Logger initialization: isInitThread = false
+1 - ----------T--:--:--.--- [GlobalLogger - ] [Main]: After Logger initialization: isInitThread = true
+1 - ----------T--:--:--.--- [GlobalLogger - ] [Main]: testLoggingInThread done
+1 - ----------T--:--:--.--- [GlobalLogger - ] [Main]: Waiting for thread
+1 - ----------T--:--:--.--- [GlobalLogger - ] [Thread]: After Logger initialization: isInitThread = true
+1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
+1 - [Thread]: Before Logger initialization isInitThread = false

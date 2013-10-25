@@ -8,4 +8,5 @@ SOURCE loggingTATEnvironment
 7 testACS_LOG_STDOUT    "testACS_LOG_STDOUT"
 8 testLoggingProxy      "testLoggingProxy"
 9 testLog4cpp			"testLog4cpp"
-10 testLocalCache	"testLocalCache"
+10 testLocalCache	    "testLocalCache"
+11 testIsInitThread     "testIsInitThread"

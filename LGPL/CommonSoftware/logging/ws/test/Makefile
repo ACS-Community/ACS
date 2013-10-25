@@ -58,7 +58,7 @@
 EXECUTABLES     = 	
 EXECUTABLES_L   = 	testLogger testNoLogging testMacros \
 			loggingXMLParserTest testGenericLogger testLoggable testLoggingProxy \
-            testAnyLog testAUD_ARR testLog4cpp
+            testAnyLog testAUD_ARR testLog4cpp testIsInitThread
 
 loggingXMLParserTest_OBJECTS = loggingXMLParserTest
 loggingXMLParserTest_LIBS = logging
@@ -89,6 +89,9 @@ testAUD_ARR_LIBS = logging maciClient
 
 testLog4cpp_OBJECTS = testLog4cpp
 testLog4cpp_LIBS   = logging maciClient acserr
+
+testIsInitThread_OBJECTS= testIsInitThread
+testIsInitThread_LIBS	= logging
 
 #
 # <brief description of xxxxx program>

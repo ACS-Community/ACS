@@ -40,7 +40,7 @@ void BulkDataNTDDSLoggable::initalizeLogging()
 {
 	// this code is a bit dirty, but wee need to initialize loggerproxy per thread
 	//isThreadInit return 0 if it is initialized !!!
-	if (logger_mp==0 || LoggingProxy::isInitThread() )
+	if (logger_mp==0 || !LoggingProxy::isInitThread() )
 	{
 		//TBD here we have to set centralized loggger as well, but we need some support from logging
 		if (logger_mp==0) //if we do not have a logger we create one for all DDS threads

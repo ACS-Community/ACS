@@ -1665,7 +1665,7 @@ LoggingProxy::init(LoggingProxy *loggingProxy) {
 bool
 LoggingProxy::isInitThread() {
 
-  return (ACE_LOG_MSG->msg_callback () == 0);
+  return !(ACE_LOG_MSG->msg_callback () == 0);
 }
 
 void
