@@ -131,6 +131,19 @@ public class AlarmFilterTest  extends TestCase {
 		assertFalse(filter.matches("FF", "mMMaaa", 20));
 		assertFalse(filter.matches("FF", "member", 101));
 		
+		// Filters with the same min and max
+		filter = new AlarmFilter(null,null, 10, 10);
+		assertNotNull("Invalid null filter", filter);
+		
+		// These pass
+		assertTrue(filter.matches("FF0", "member", 10));
+		
+		// These do not pass
+		assertFalse(filter.matches("FF", "mMMaaa", 9));
+		assertFalse(filter.matches("FF", "member", 11));
+		assertFalse(filter.matches("FF", "mMMaaa", 0));
+		assertFalse(filter.matches("FF", "member", 1354));
+		
 	}
 	
 	/**
