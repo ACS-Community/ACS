@@ -79,8 +79,8 @@ public class AlarmStatistics {
 			throw new IllegalArgumentException("The field can't be null");
 		}
 		synchronized (values) {
-			int value = values.get(field);
-			value=(active)?value++:value--;
+			int value = values.get(field).intValue();
+			value=active?++value:--value;
 			if (value<0) value=0;
 			values.put(field, Integer.valueOf(value));
 		}
