@@ -28,7 +28,7 @@ import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.services.selection.LaserSelectionException;
 
 /**
- * The container of alarm category listenera.
+ * The container of alarm category listener.
  * <BR>
  * {@link AlarmListenersContainer} owns 2 lists of listeners: one for the alarms 
  * and another one for the statistics.
@@ -271,5 +271,14 @@ public class AlarmListenersContainer {
 				}
 			}	
 		}
+	}
+	
+	public int getAlarmListenersSize() {
+		return alarmListeners.size();
+	}
+	
+	
+	public int getStatListenersSize() {
+		return statListeners.size();
 	}
 }
