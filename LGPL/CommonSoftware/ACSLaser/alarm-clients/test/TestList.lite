@@ -39,5 +39,6 @@ PROLOGUE clientTATPrologue
 8 testAlarmCategoryFilter "testAlarmCategoryFilter"
 9 testAlarmStatistics "testAlarmStatistics"
 10 testAlarmListenerContainer "testAlarmListenerContainer"
+11 testAlarmCategoryClient "testAlarmCategoryClient"
 
 EPILOGUE acsutilTATEpilogue
