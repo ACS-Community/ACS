@@ -43,8 +43,8 @@
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] stopping heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] unSubscribeAll()
 1 - ### DefaultSubscriberImpl::unSubscribeAll
-1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] closing...
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] closed
+1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] closing...
 1 - 
 1 - 
 1 - OK (1 test)

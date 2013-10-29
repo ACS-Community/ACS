@@ -298,7 +298,19 @@ public class AlarmCategoryClientTest extends ComponentClientTestCase implements 
 	 * @throws InterruptedException 
 	 */
 	private boolean waitForMessages(CountDownLatch signal) throws InterruptedException {
-		return signal.await(MAX_TIMEOUT, TimeUnit.SECONDS);
+		if (!signal.await(MAX_TIMEOUT, TimeUnit.SECONDS)) {
+			return false;
+		}
+		int timeout =0; 
+		// Wait 10 more senconds until all alarms for filtered arrive
+		// It can happen that the signal arrived before the filtered listener receives the last 
+		// alarm
+		while (filteredLister.numAlarms!=4 && timeout<20) {
+			Thread.sleep(500);
+			timeout++;
+		}
+		assertEquals("Not all the filtered alarms have been received", 4,filteredLister.numAlarms );
+		return true;
 	}
 }
 
