@@ -55,19 +55,24 @@ import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
 /**
  * A client that listen to alarms from all the categories.
- * 
+ * It is meant to be used only by {@link AlarmCategoryClient} 
+ * and <EM>should not be instantiated directly</EM>.
+ * <P>
  * It is a wrapper to CERN classes in order to simplify
  * the usage from ACS without dealing with low level
  * details of the alarm system.
- * 
+ * <P>
  * The class connects to the alarm system as a CERN client,
  * logging in a generic user.
  * The listener receives alarms and errors from the alarm system by means 
  * of a callback.
  * The alarm system sends all the already active alarms when the user logs is.
- * 
+ * <P>
  * The close() method has to be called in order to free all the resources.
- * 
+ * <P>
+ * TODO: reduce the visibility of this class to ensure it is not used outside of
+ *       {@link AlarmCategoryClient}
+ *       
  * @author acaproni
  *
  */
