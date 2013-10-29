@@ -92,7 +92,8 @@ SCRIPTS         = clientTATPrologue \
                 testSrcDumper \
                 testAlarmCategoryFilter \
                 testAlarmStatistics \
-                testAlarmListenerContainer
+                testAlarmListenerContainer \
+                testAlarmCategoryClient
 
 SCRIPTS_L       =
 
