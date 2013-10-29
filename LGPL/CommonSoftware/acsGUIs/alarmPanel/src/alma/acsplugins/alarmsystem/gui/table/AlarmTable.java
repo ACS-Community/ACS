@@ -74,6 +74,7 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.PriorityLabel;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.viewcoordination.ViewCoordinator;
 import alma.acsplugins.alarmsystem.gui.viewcoordination.ViewCoordinator.AlarmSelectionListener;
+import alma.alarmsystem.clients.AlarmCategoryClient;
 import alma.alarmsystem.clients.CategoryClient;
 import cern.laser.client.data.Alarm;
 
@@ -697,7 +698,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
-		CategoryClient client = model.getCategoryClient();
+		AlarmCategoryClient client = model.getCategoryClient();
 		if (reducedDlg==null) {
 			reducedDlg = new ReducedChainDlg(client,alarm,panel,undocModel);
 		} else {

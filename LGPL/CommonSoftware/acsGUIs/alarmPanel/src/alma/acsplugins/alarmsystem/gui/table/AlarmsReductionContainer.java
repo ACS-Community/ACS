@@ -25,6 +25,7 @@ import java.util.Vector;
 import javax.swing.SwingWorker;
 
 import alma.acs.gui.util.threadsupport.EDTExecutor;
+import alma.alarmsystem.clients.AlarmCategoryClient;
 import alma.alarmsystem.clients.CategoryClient;
 import alma.alarmsystem.clients.alarm.AlarmClientException;
 import cern.laser.client.data.Alarm;
@@ -61,7 +62,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * It can be <code>null</code> so needs to be checked before
 	 * invoking methods.
 	 */
-	private CategoryClient categoryClient=null;
+	private AlarmCategoryClient categoryClient=null;
 
 	/**
 	 * Constructor 
@@ -187,7 +188,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * 
 	 * @param client The <code>CategoryCLient</code>; it can be <code>null</code>.
 	 */
-	public synchronized void setCategoryClient(CategoryClient client) {
+	public synchronized void setCategoryClient(AlarmCategoryClient client) {
 		this.categoryClient=client;
 	}
 	
@@ -362,7 +363,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	/**
 	 * @return the categoryClient
 	 */
-	public synchronized CategoryClient getCategoryClient() {
+	public synchronized AlarmCategoryClient getCategoryClient() {
 		return categoryClient;
 	}
 	

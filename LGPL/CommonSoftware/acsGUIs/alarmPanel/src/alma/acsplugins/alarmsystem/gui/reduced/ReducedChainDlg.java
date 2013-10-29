@@ -41,6 +41,7 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 import alma.acsplugins.alarmsystem.gui.tree.AlarmTree;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
+import alma.alarmsystem.clients.AlarmCategoryClient;
 import alma.alarmsystem.clients.CategoryClient;
 import cern.laser.client.data.Alarm;
 
@@ -89,7 +90,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	 * The {@link CategoryClient} to get the children of the root
 	 * alarm from the alarm service
 	 */
-	private final CategoryClient categoryClient;
+	private final AlarmCategoryClient categoryClient;
 	
 	/**
 	 * The rot alarm, whose children are displayed in the table
@@ -104,7 +105,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	 * @param rootAlarm The root alarm whose children appear in the table
 	 * @param panel The alarm panel
 	 */
-	public ReducedChainDlg(CategoryClient client, AlarmTableEntry rootAlarm, CernSysPanel panel,UndocAlarmTableModel undocModel) {
+	public ReducedChainDlg(AlarmCategoryClient client, AlarmTableEntry rootAlarm, CernSysPanel panel,UndocAlarmTableModel undocModel) {
 		if (client==null) {
 			throw new IllegalArgumentException("The category client can't be null");
 		}

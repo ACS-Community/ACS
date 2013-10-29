@@ -41,7 +41,8 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
-import alma.alarmsystem.clients.CategoryClient;
+import alma.alarmsystem.clients.AlarmCategoryClient;
+import alma.alarmsystem.clients.alarm.AlarmClientException;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -143,7 +144,7 @@ public class CernSysPanel extends JPanel {
     /**
      *  The client to listen alarms from categories
      */
-    private CategoryClient categoryClient=null;
+    private AlarmCategoryClient categoryClient=null;
 
     /**
      * The ORB
@@ -318,7 +319,7 @@ public class CernSysPanel extends JPanel {
 		notAvaiPnl.addMessage("Connecting to the alarm service");
 		notAvaiPnl.addMessage("Instantiating the category client");
 		try {
-			categoryClient = new CategoryClient(orb,logger);
+			categoryClient = new AlarmCategoryClient(orb,logger);
 		} catch (Throwable t) {
 			System.err.println("Error instantiating the CategoryClient: "+t.getMessage());
 			notAvaiPnl.addMessage("Error instantiating the CategoryClient: "+t.getMessage());
@@ -331,10 +332,12 @@ public class CernSysPanel extends JPanel {
 		/**
 		 * Try to connect to the alarm service until it becomes available
 		 */
+		categoryClient.addAlarmListener((AlarmSelectionListener)model);
 		while (true && !closed) {
 			notAvaiPnl.addMessage("Connecting to the categories");
+			
 			try {
-				categoryClient.connect((AlarmSelectionListener)model);
+				categoryClient.connect();
 				notAvaiPnl.addMessage("CategoryClient connected");
 				// If the connection succeeded then exit the loop
 				break;
@@ -389,9 +392,13 @@ public class CernSysPanel extends JPanel {
 		}
 		try {
 			categoryClient.close();
-		} catch (Throwable t) {
-			System.err.println("Error closinging CategoryClient: "+t.getMessage());
-			t.printStackTrace(System.err);
+		} catch (AlarmClientException e) {
+			if (logger!=null) {
+				logger.log(AcsLogLevel.WARNING,"Ignored exception closing the AlarmCategoryClient",e);
+			} else {
+				System.err.println("Ignored exception closing the AlarmCategoryClient: "+e.getMessage());
+				e.printStackTrace();
+			}
 		} finally {
 			categoryClient=null;
 			connectionListener.disconnected();

@@ -39,6 +39,7 @@ import alma.acs.util.IsoDateFormat;
 import alma.acsplugins.alarmsystem.gui.ConnectionListener;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar.ComboBoxValues;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
+import alma.alarmsystem.clients.AlarmCategoryClient;
 import alma.alarmsystem.clients.CategoryClient;
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -842,7 +843,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * 
 	 * @param client The <code>CategoryCLient</code>; it can be <code>null</code>.
 	 */
-	public void setCategoryClient(CategoryClient client) {
+	public void setCategoryClient(AlarmCategoryClient client) {
 		items.setCategoryClient(client);
 	}
 	
@@ -851,7 +852,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * 
 	 * @param client The <code>CategoryCLient</code>; it can be <code>null</code>.
 	 */
-	public CategoryClient getCategoryClient() {
+	public AlarmCategoryClient getCategoryClient() {
 		return items.getCategoryClient();
 	}
 	
