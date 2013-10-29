@@ -258,7 +258,7 @@ public class AlarmListenersContainer {
 						stats.getStatValue(AlarmStatField.PRI1), 
 						stats.getStatValue(AlarmStatField.PRI2), 
 						stats.getStatValue(AlarmStatField.PRI3), 
-						stats.getStatValue(AlarmStatField.PRI1));
+						stats.getStatValue(AlarmStatField.PRI4));
 				l.reductionAlarmsStat(
 						stats.getStatValue(AlarmStatField.REDUCED), 
 						stats.getStatValue(AlarmStatField.MASKED), 
