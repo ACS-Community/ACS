@@ -28,6 +28,8 @@ import alma.alarmsystem.clients.alarm.AlarmCategoryStatListener;
 import alma.alarmsystem.clients.alarm.AlarmListenersContainer.AlarmListener;
 import alma.alarmsystem.clients.alarm.AlarmStatistics;
 import alma.alarmsystem.clients.test.utils.AlarmForTesting;
+import alma.alarmsystem.clients.test.utils.AlarmListenerForTesting;
+import alma.alarmsystem.clients.test.utils.AlrmStatListenerForTesting;
 
 /**
  * Test if the filtering of alarms by their triplets work.
@@ -37,74 +39,6 @@ import alma.alarmsystem.clients.test.utils.AlarmForTesting;
  * @since ACS-12.2
  */
 public class AlarmListenerContainerTest  extends TestCase {
-	
-	/**
-	 * Alarm listener for this test
-	 * 
-	 * @author acaproni
-	 * @since ACS-12.2
-	 *
-	 */
-	private class AlarmListenerForTesting implements AlarmSelectionListener {
-		
-		public int numAlarms=0;
-		public int numExceptions=0;
-		
-		/**
-		 * A name associated to the listener so that we can distinguish
-		 * wich listener prints messages
-		 */
-		public final String name;
-		
-		/**
-		 * Constructor
-		 * 
-		 * @param name The name of the listener
-		 */
-		public AlarmListenerForTesting(String name) {
-			this.name=name;
-		}
-
-		@Override
-		public void onAlarm(Alarm alarm) {
-			numAlarms++;
-			System.out.println(name+": alarm received ["+alarm.getAlarmId()+"]");
-		}
-
-		@Override
-		public void onException(LaserSelectionException e) {
-			numExceptions++;
-			System.out.println(name+": exception received. Code is "+e.getCode());
-		}
-		
-	}
-	
-	/**
-	 * Alarm statistics listener for this test
-	 * 
-	 * @author acaproni
-	 * @since ACS-12.2
-	 *
-	 */
-	private class AlrmStatListener implements AlarmCategoryStatListener {
-		
-		public int numActivationNoifies=0;
-		public int numReductionNofies=0;
-
-		@Override
-		public void activationAlarmsStats(Integer active, Integer priority1,
-				Integer priority2, Integer priority3, Integer priority4) {
-			numActivationNoifies++;
-		}
-
-		@Override
-		public void reductionAlarmsStat(Integer reduced, Integer masked,
-				Integer multiplicityParent, Integer nodeParent,
-				Integer multiplicityChild, Integer nodeChield) {
-			numReductionNofies++;
-		}
-		
-	}
 	
 	/**
 	 * The container to test
@@ -182,12 +116,12 @@ public class AlarmListenerContainerTest  extends TestCase {
 		assertEquals(0, container.getStatListenersSize());
 		assertEquals(0, container.getAlarmListenersSize());
 		
-		AlrmStatListener stat1 = new AlrmStatListener();
+		AlrmStatListenerForTesting stat1 = new AlrmStatListenerForTesting();
 		assertTrue(container.addStatsListener(stat1));
 		assertEquals(0, container.getAlarmListenersSize());
 		assertEquals(1, container.getStatListenersSize());
 		
-		AlrmStatListener stat2 = new AlrmStatListener();
+		AlrmStatListenerForTesting stat2 = new AlrmStatListenerForTesting();
 		assertTrue(container.addStatsListener(stat2));
 		assertEquals(0, container.getAlarmListenersSize());
 		assertEquals(2, container.getStatListenersSize());
@@ -196,7 +130,7 @@ public class AlarmListenerContainerTest  extends TestCase {
 		assertEquals(0, container.getAlarmListenersSize());
 		assertEquals(1, container.getStatListenersSize());
 		
-		AlrmStatListener notExistsentStatL = new AlrmStatListener();
+		AlrmStatListenerForTesting notExistsentStatL = new AlrmStatListenerForTesting();
 		assertFalse(container.removeStatListener(notExistsentStatL));
 		assertEquals(0, container.getAlarmListenersSize());
 		assertEquals(1, container.getStatListenersSize());
@@ -213,10 +147,10 @@ public class AlarmListenerContainerTest  extends TestCase {
 		AlarmStatistics stats= new AlarmStatistics();
 		assertNotNull(stats);
 		
-		AlrmStatListener stat1 = new AlrmStatListener();
+		AlrmStatListenerForTesting stat1 = new AlrmStatListenerForTesting();
 		assertTrue(container.addStatsListener(stat1));
 		
-		AlrmStatListener stat2 = new AlrmStatListener();
+		AlrmStatListenerForTesting stat2 = new AlrmStatListenerForTesting();
 		assertTrue(container.addStatsListener(stat2));
 		
 		assertEquals(2, container.getStatListenersSize());
