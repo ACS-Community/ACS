@@ -27,6 +27,7 @@ import alma.alarmsystem.clients.alarm.AlarmListenersContainer;
 import alma.alarmsystem.clients.alarm.AlarmCategoryStatListener;
 import alma.alarmsystem.clients.alarm.AlarmListenersContainer.AlarmListener;
 import alma.alarmsystem.clients.alarm.AlarmStatistics;
+import alma.alarmsystem.clients.test.utils.AlarmForTesting;
 
 /**
  * Test if the filtering of alarms by their triplets work.

@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import alma.alarmsystem.clients.alarm.AlarmStatistics;
 import alma.alarmsystem.clients.alarm.AlarmStatistics.AlarmStatField;
+import alma.alarmsystem.clients.test.utils.AlarmForTesting;
 import junit.framework.TestCase;
 
 public class AlarmStatisticsTest  extends TestCase {
