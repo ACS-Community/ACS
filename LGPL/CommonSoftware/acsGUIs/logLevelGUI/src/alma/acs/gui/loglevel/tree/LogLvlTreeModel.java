@@ -37,6 +37,7 @@ import alma.acs.gui.loglevel.tree.node.TreeClientInfo;
 import alma.acs.gui.loglevel.tree.node.TreeComponentInfo;
 import alma.acs.gui.loglevel.tree.node.TreeContainerInfo;
 import alma.acs.gui.loglevel.tree.node.TreeContentInfo;
+import alma.acs.gui.util.threadsupport.EDTExecutor;
 
 /**
  * The model for the tree of containers/components
@@ -638,48 +639,54 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 	 * The new node is inserted ordered by its name.
 	 * 
 	 * @param newItem The new entry to add
-	 * @param node The node where the entry has to be addded
+	 * @param node The node where the entry has to be added
 	 * 
 	 */
-	private void addNode(TreeContentInfo newItem, DefaultMutableTreeNode node) {
+	private void addNode(final TreeContentInfo newItem, final DefaultMutableTreeNode node) {
 		if (newItem==null) {
 			throw new IllegalArgumentException("Invalid null item to add");
 		}
 		if (node==null) {
 			throw new IllegalArgumentException("Invalid null node to add the item to");
 		}
-		DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(newItem);
-		// Find the position to insert the new node
-		int pos=0;
-		boolean found=false;
-		if (node.getChildCount()!=0) {
-			for (int t=0; t<node.getChildCount(); t++) {
-				DefaultMutableTreeNode child = (DefaultMutableTreeNode)node.getChildAt(t);
-				String childName = ((TreeContentInfo)child.getUserObject()).getName();
-				if (childName.compareTo(newItem.getName())>0) {
-					pos=t;
-					found=true;
-					break;
+		EDTExecutor.instance().execute(new Runnable() {
+			@Override
+			public void run() {
+				DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(newItem);
+				// Find the position to insert the new node
+				int pos=0;
+				boolean found=false;
+				if (node.getChildCount()!=0) {
+					for (int t=0; t<node.getChildCount(); t++) {
+						DefaultMutableTreeNode child = (DefaultMutableTreeNode)node.getChildAt(t);
+						String childName = ((TreeContentInfo)child.getUserObject()).getName();
+						if (childName.compareTo(newItem.getName())>0) {
+							pos=t;
+							found=true;
+							break;
+						}
+					}
+				} 
+				// Add the node in the right position
+				if (found) {
+					node.insert(newChild, pos);
+				} else {
+					// The node must be appended at the end of the list
+					node.add(newChild);
 				}
+				// Trigger a refresh of the tree
+				int[] indexes = new int[node.getChildCount()];
+				for (int t=0; t<indexes.length; t++) {
+					indexes[t]=t;
+				}
+				Object[] children = new Object[indexes.length];
+				for (int t=0; t<indexes.length; t++) {
+					children[t]=node.getChildAt(t);
+				}
+				
+				fireTreeNodesInserted(node, node.getPath(), indexes, children);
 			}
-		} 
-		// Add the node in the right position
-		if (found) {
-			node.insert(newChild, pos);
-		} else {
-			// The node must be appended at the end of the list
-			node.add(newChild);
-		}
-		// Trigger a refresh of the tree
-		int[] indexes = new int[node.getChildCount()];
-		for (int t=0; t<indexes.length; t++) {
-			indexes[t]=t;
-		}
-		Object[] children = new Object[indexes.length];
-		for (int t=0; t<indexes.length; t++) {
-			children[t]=node.getChildAt(t);
-		}
-		fireTreeStructureChanged(node, node.getPath(), indexes, children);
+		});
 	}
 	
 	/**
