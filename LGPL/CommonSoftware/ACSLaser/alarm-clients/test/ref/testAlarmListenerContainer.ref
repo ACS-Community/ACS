@@ -2,6 +2,46 @@
 1 - Java... (build...)
 1 - Java... (build...)
 1 - 
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
 1 - AlarmListenerName: exception received. Code is Code_1
 1 - AlarmListenerName: exception received. Code is Code_2
 1 - AlarmListenerName: exception received. Code is Code_3

@@ -19,10 +19,26 @@
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] loading configuration...
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] configuration loaded
 1 - SynchroBuffer[minWindowSize=500,maxWindowSize=5000,windowGrowthFactor=100,duplicatePolicy=DUPLICATE_OK]
+1 - ActivatioStatNotification: #active=1, #pri1=0, #pri2=1, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
 1 - Filtered_listener: alarm received [TEST:TEST_MEMBER1:2]
+1 - ActivatioStatNotification: #active=2, #pri1=0, #pri2=1, #pri3=1, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=3, #pri1=0, #pri2=2, #pri3=1, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
 1 - Filtered_listener: alarm received [TEST:TEST_MEMBER2:2]
+1 - ActivatioStatNotification: #active=4, #pri1=0, #pri2=2, #pri3=2, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=3, #pri1=0, #pri2=1, #pri3=2, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
 1 - Filtered_listener: alarm received [TEST:TEST_MEMBER1:2]
+1 - ActivatioStatNotification: #active=2, #pri1=0, #pri2=1, #pri3=1, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
+1 - ActivatioStatNotification: #active=1, #pri1=0, #pri2=0, #pri3=1, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
 1 - Filtered_listener: alarm received [TEST:TEST_MEMBER2:2]
+1 - ActivatioStatNotification: #active=0, #pri1=0, #pri2=0, #pri3=0, #pri4=0
+1 - ReductionStatNotification: #reduced=0, masked=0, @multP=0, @multC=0, @nodeP=0, @nodeC=0
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] stopped heartbeat check
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] stopping heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] unSubscribeAll()

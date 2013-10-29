@@ -43,7 +43,8 @@ import alma.alarmsystem.clients.test.utils.AlrmStatListenerForTesting;;
  * and another one that gets all the alarms (the object itself).
  * <P>
  * The alarms received by the filtered listener are printed to the stdout (@see {@link AlarmListenerForTesting#onAlarm(Alarm)})
- * 
+ * <P>
+ * Notification of statistics are printed in the stdout (@see {@link AlrmStatListenerForTesting}).
  * @author acaproni
  * @since ACS-12.2
  *
