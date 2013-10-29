@@ -7,11 +7,8 @@
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] starting heartbeat check...
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] started heartbeat check
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.ROOT, listener, NOT_REDUCED_MASKED_SET = TRUE)
-1 - ----------T--:--:--.--- INFO [AlarmCategoryClientTest#testAlarmReception] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.ROOT' ChannelId='xx' ]
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1, listener, NOT_REDUCED_MASKED_SET = TRUE)
-1 - ----------T--:--:--.--- INFO [AlarmCategoryClientTest#testAlarmReception] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1' ChannelId='xx' ]
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2, listener, NOT_REDUCED_MASKED_SET = TRUE)
-1 - ----------T--:--:--.--- INFO [AlarmCategoryClientTest#testAlarmReception] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2' ChannelId='xx' ]
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] subscribe(CMW.ALARM_SYSTEM.CLIENTS.------, listener, (NOT_REDUCED_MASKED_SET = TRUE) OR LASER_INIT = TRUE)
 1 - ----------T--:--:--.--- INFO [AlarmCategoryClientTest#testAlarmReception] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CLIENTS.------' ChannelId='xx' ]
 1 - ----------T--:--:--.--- INFO [laser@AlarmCategoryClientTest#testAlarmReception] unSubscribe(5)
