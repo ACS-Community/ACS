@@ -49,6 +49,15 @@ public class AlarmSenderForDumperTest extends ComponentClient {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException ie) {}
+		// Clear active alarms to avoid interferences with other tests
+		try {
+			m_alarmSource.clearAlarm("testFamily1", "TestMember1", 12);
+			m_alarmSource.clearAlarm("testFamily2", "TestMember2", 2);
+			m_alarmSource.clearAlarm("testFamily3", "TestMember3", 40);
+		} catch (Throwable t) {
+			System.out.println("Exception caught sending an alarm: "+t.getMessage());
+			t.printStackTrace();
+		}
 	}
 	
 	public void close() throws Exception {
