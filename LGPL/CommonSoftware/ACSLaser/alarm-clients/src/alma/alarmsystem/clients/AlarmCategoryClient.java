@@ -67,7 +67,7 @@ import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
  * @author  acaproni
  * @since   ACS-12.2
  */
-class AlarmCategoryClient implements AlarmSelectionListener {
+public class AlarmCategoryClient implements AlarmSelectionListener {
 
 	/**
 	 * The {@link CategoryClient} to listen to alarms from the alarm server
