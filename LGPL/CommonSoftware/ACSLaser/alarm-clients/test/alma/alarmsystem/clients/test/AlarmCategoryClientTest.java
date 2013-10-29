@@ -216,41 +216,25 @@ public class AlarmCategoryClientTest extends ComponentClientTestCase implements 
 		
 		// Send the alarms
 		send_alarm("TEST", "TEST_MEMBER1", 1, true);
-		try {
-			Thread.sleep(5000);
-		} catch (Exception e) {}
 		send_alarm("TEST", "TEST_MEMBER1", 2, true);
-		try {
-			Thread.sleep(5000);
-		} catch (Exception e) {}
 		send_alarm("TEST", "TEST_MEMBER2", 1, true);
-		try {
-			Thread.sleep(5000);
-		} catch (Exception e) {}
 		send_alarm("TEST", "TEST_MEMBER2", 2, true);
+		/// Clear the alarms
 		try {
 			Thread.sleep(5000);
 		} catch (Exception e) {}
 		send_alarm("TEST", "TEST_MEMBER1", 1, false);
-		try {
-			Thread.sleep(5000);
-		} catch (Exception e) {}
 		send_alarm("TEST", "TEST_MEMBER1", 2, false);
-		try {
-			Thread.sleep(5000);
-		} catch (Exception e) {}
 		send_alarm("TEST", "TEST_MEMBER2", 1, false);
-		try {
-			Thread.sleep(5000);
-		} catch (Exception e) {}
 		send_alarm("TEST", "TEST_MEMBER2", 2, false);
+		
 		
 		// Wait for all the messages
 		assertTrue("TIMEOUT: not all the alarms have been received",waitForMessages(latch));
 		
 		// Check the correctness of the messages
 		for (Alarm alarm: alarmsReceived) {
-			assertEquals("Alex", alarm.getResponsiblePerson().getFirstName());
+			assertEquals("Wrong responsible person in "+alarm,"Alex", alarm.getResponsiblePerson().getFirstName());
 			assertEquals("123456", alarm.getResponsiblePerson().getGsmNumber());
 			assertEquals("http://tempuri.org", alarm.getHelpURL().toString());
 			
