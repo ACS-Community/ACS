@@ -572,9 +572,11 @@ MessageWidgetListener
 			menuBar.getViewDetailedInfoMenuItem().setSelected(getDeatailedInfoPanel().isVisible());
 			menuBar.getViewToolbarMenuItem().setSelected(toolBar.isVisible());
 			
-			// Enable diasble the menu to load from the DB
-			// if the DB is not available
-			menuBar.getLoadDBMenuItem().setEnabled(archive.getDBStatus()==DBState.DATABASE_OK);
+			// This button is always disabled since when the logs are not stored in the DB
+			// see ICT-1649
+			// If you want to enable depending on the avalability of the DB
+			// the replace false below with "archive.getDBStatus()==DBState.DATABASE_OK"
+			menuBar.getLoadDBMenuItem().setEnabled(false);
 		}
 		
 		
