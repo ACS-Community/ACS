@@ -43,5 +43,10 @@
     <_ Name="NEWCONFIG_SENDER_TEST"  Code="bdNTSenderLibTest"	
         Type="IDL:alma/bulkdata/BulkDataSender:1.0"
         Container="newConfigRecvContainer" ImplLang="cpp" />
+    
+    <_ Name="MASTER_TEST"  Code="bdNTMasterLibTest"	
+        Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+        Container="bdNTTestContainer" ImplLang="cpp" />
+    
 
 </Components>

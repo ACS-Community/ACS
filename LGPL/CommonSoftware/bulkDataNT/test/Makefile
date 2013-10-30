@@ -81,7 +81,7 @@ bdNT32SendersTest_OBJECTS = bdNT32SendersTest
 bdNT32SendersTest_LIBS = bulkDataNTSender
 
 bdNTMultiReceiversTest_OBJECTS = bdNTMultiReceiversTest
-bdNTMultiReceiversTest_LIBS= bulkDataNTReceiver
+bdNTMultiReceiversTest_LIBS= bulkDataNTReceiver 
 
 xxxxx_OBJECTS   =	
 xxxxx_LDFLAGS   =
@@ -100,7 +100,7 @@ INCLUDES        =
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       =
-LIBRARIES_L     = bdNTReceiverLibTest bdNTSenderLibTest bdNTSenderLibTestNew
+LIBRARIES_L     = bdNTReceiverLibTest bdNTSenderLibTest bdNTSenderLibTestNew bdNTMasterLibTest
 bdNTReceiverLibTest_OBJECTS = bdNTReceiverImplTest
 bdNTReceiverLibTest_LIBS = bulkDataNTReceiver bulkDataReceiverStubs baci
 
@@ -109,6 +109,10 @@ bdNTSenderLibTest_LIBS = bulkDataNTSenderImpl
 
 bdNTSenderLibTestNew_OBJECTS = bdNTSenderImplTestNew
 bdNTSenderLibTestNew_LIBS = bulkDataNTSenderImpl
+
+bdNTMasterLibTest_OBJECTS = bdNTMasterImplTest
+bdNTMasterLibTest_LIBS = bulkDataNTReceiver bulkDataReceiverStubs bulkDataNTSender baci
+
 
 #
 # <brief description of lllll library>

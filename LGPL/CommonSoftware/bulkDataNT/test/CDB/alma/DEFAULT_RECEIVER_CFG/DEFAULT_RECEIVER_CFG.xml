@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BulkDataNTReceiver
+   xmlns="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0 BulkDataNTReceiver.xsd">
+
+	<ReceiverStream Name="DefaultStreamCfg">
+		<ReceiverFlow Name="DefaultFlowCfg" cbReceiveProcessTimeoutSec="0.02" enableMulticast="true" multicastAddress="225.3.3.3">
+			<DDSReceiverFlowQoS>
+				<datareader_qos name="name1">
+					<reliability>
+						<kind>BEST_EFFORT_RELIABILITY_QOS</kind>
+						<max_blocking_time>
+							<sec>1</sec>
+							<nanosec>0</nanosec>
+						</max_blocking_time>
+					</reliability>     
+					
+				</datareader_qos>
+			</DDSReceiverFlowQoS>
+		</ReceiverFlow>
+		
+		<DDSReceiverStreamQoS>
+			<participant_qos name="ParticipantOne">
+			</participant_qos>
+		</DDSReceiverStreamQoS>
+	</ReceiverStream>
+	
+</BulkDataNTReceiver>

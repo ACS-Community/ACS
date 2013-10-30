@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BulkDataNTReceiver
+   xmlns="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0 BulkDataNTReceiver.xsd">
+
+<!-- we do not define here streams and flows because the test master component reads it from other place -->
+   <ReceiverStream Name="STREAM">
+      <ReceiverFlow Name="Flow"/>
+   </ReceiverStream>
+</BulkDataNTReceiver>

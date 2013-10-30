@@ -6,6 +6,8 @@
    
    <ReceiverStream Name="TestStream">
       <ReceiverFlow Name="FullResolutionDataFlow">
+ <DDSReceiverFlowQoS baseQosLibrary="BulkDataQoSLibrary">
+         </DDSReceiverFlowQoS>  
       </ReceiverFlow>
       <ReceiverFlow Name="ChannelAverageDataFlow">
       </ReceiverFlow>		
