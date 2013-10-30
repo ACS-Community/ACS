@@ -28,7 +28,7 @@
 #include "loggingLoggingProxy.h"
 #include "logging.h"
 
-#define CACHE_SIZE 5
+#define CACHE_SIZE 1
 #define FLUSH_PERIOD 1
 
 static void*
@@ -41,7 +41,7 @@ worker(void *arg)
 	ACS_SHORT_LOG((LM_INFO, "[Thread]: After Logger initialization: isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
 	ACE_OS::sleep(2);
 	//ACS_SHORT_LOG((LM_INFO, "[Thread]: Before LoggingProxy::done(): isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
-	LoggingProxy::done();
+	//LoggingProxy::done();
 	//ACS_SHORT_LOG((LM_INFO, "[Thread]: After LoggingProxy::done(): isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
 	return 0;
 }
@@ -66,10 +66,6 @@ int testLoggingInThread(LoggingProxy* m_logger)
 	{
 		ACS_SHORT_LOG((LM_ERROR,"Error in spawning thread"));
 	}
-
-	//ACS_SHORT_LOG((LM_INFO, "[Main]: Before LoggingProxy::done() isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
-	LoggingProxy::done();
-	//ACS_SHORT_LOG((LM_INFO, "[Main]: After LoggingProxy::done() isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
 
 	ACS_SHORT_LOG((LM_INFO,"[Main]: Waiting for thread"));
 	ACE_Thread::join(t_handle);
