@@ -94,17 +94,17 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
   AUTO_TRACE(__PRETTY_FUNCTION__);
   std::string streamName, topicName;
   streamName = senderStream_m->getName();
+  topicName =  streamName + "#" + flowName_m;
   ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Going to create Sender Flow: %s @ stream: %s ...", flowName_m.c_str(), streamName.c_str()));
 
   callback_m->setStreamName(streamName.c_str());
   callback_m->setFlowName(flowName);
 
-  senderStream_m->addDDSQoSProfile(senderFlowCfg_m);
+  senderStream_m->addDDSQoSProfile(senderFlowCfg_m, topicName.c_str());
 
   // should be reactor to have just one object for communication !! DDSDataWriter or similar
-  ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant(), sndCfg);
+  ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant(), senderFlowCfg_m);
 
-  topicName =  streamName + "#" + flowName_m;
   ddsTopic_m = ddsPublisher_m->createDDSTopic(topicName.c_str());
 
   writerReaderListener_m = new BulkDataNTWriterListener(topicName.c_str(), callback_m);

@@ -48,6 +48,7 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
   AUTO_TRACE(__PRETTY_FUNCTION__);
   std::string streamName, topicName;
   streamName = receiverStream_m->getName();
+  topicName =  streamName + "#" + flowName_m;
   ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Going to create Receiver Flow: %s @ Stream: %s ...", flowName_m.c_str(), streamName.c_str()));
 
   callback_m->setStreamName(receiverStream_m->getName().c_str());
@@ -56,7 +57,7 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
   callback_m->setCBReceiveProcessTimeout(rcvCfg.getCbReceiveProcessTimeout());
   callback_m->setCBReceiveAvgProcessTimeout(rcvCfg.getCbReceiveAvgProcessTimeout());
 
-  receiverStream->addDDSQoSProfile(rcvCfg_m);
+  receiverStream->addDDSQoSProfile(rcvCfg_m, topicName.c_str());
 
   if (!rcvCfg_m.isEnableMulticast() &&  rcvCfg_m.getUnicastPort()==ReceiverFlowConfiguration::DEFAULT_UNICAST_PORT/*=0*/) //unicast && no unicast port was defined
   {
@@ -65,7 +66,6 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
   // should be refactor to have just one object for comunication !! DDSDataWriter or similar
   ddsSubscriber_m = new BulkDataNTDDSSubscriber(receiverStream_m->getDDSParticipant(), rcvCfg_m);
 
-  topicName =  streamName + "#" + flowName_m;
   ddsTopic_m = ddsSubscriber_m->createDDSTopic(topicName.c_str());
 
   dataReaderListener_m = new BulkDataNTReaderListener(topicName.c_str(), callback_m);
