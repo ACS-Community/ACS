@@ -53,7 +53,7 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
 		  factoryRefCount_m++;
 	  }//end of critical section
 
-	  addDDSQoSProfile(configuration_m);  //add QoS profile for stream (and flows)
+	  addDDSQoSProfile(configuration_m, name);  //add QoS profile for stream (and flows)
 
 	  if (configuration_m.isParticipantPerStream())
 	  {
@@ -278,13 +278,32 @@ void BulkDataNTStream::destroyDDSParticipant(DDS::DomainParticipant* domainParti
 }//destroyDDSParticipant
 
 
-void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
+void BulkDataNTStream::addDDSQoSProfile(DDSConfiguration &cfg, const char* name)
 {
   DDS::ReturnCode_t ret;
   DDS::DomainParticipantFactoryQos factory_qos;
   unsigned int profLen;
 
   if (cfg.stringProfileQoS.length()<=0) return; // if QoSprofile is empty
+
+  // first we have to check if the configuration is a generic one, so that the profile name is different than
+  // ... name of stream/flow
+  std::string nameTag=" name=\""; //len=7
+  nameTag+=name;
+  nameTag+="\"";
+
+ std::size_t pos = cfg.stringProfileQoS.find(nameTag);
+ if (pos==std::string::npos)
+ {
+	 if (DDSConfiguration::debugLevel>0)
+	   			ACS_SHORT_LOG((LM_DEBUG, "We have to adopt QoS profile name to: %s.",name));
+	 nameTag=" name=\""; //len=7
+	 pos = cfg.stringProfileQoS.find(nameTag);
+	 std::size_t nameLen = (cfg.stringProfileQoS.find('"', pos+7)) - (pos+7); //end "
+	 cfg.stringProfileQoS.erase(pos+7, nameLen);
+	 cfg.stringProfileQoS.insert(pos+7, name);
+	 cfg.profileQos=name;
+ }
 
   // needed by RTI only
   ret = factory_m->get_qos(factory_qos);
@@ -302,13 +321,14 @@ void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
   qoSlibTag+=cfg.libraryQos;
   qoSlibTag+="\">";
 
+  bool newLib=true; //we assume that is a new QoS library has to be added. This is true even if we add the 1st profile at all
   if (profLen>0) // is it the first profile?
     {
-	  bool newLib=true;
-	  // lets check if the library is already there
-	  for (unsigned int j=1;j<profLen-2;j++)  // we can skip the first <dds> and also two </qos_library> and </dds>
+	  // lets check if the QoS library is already there
+	  unsigned int libPos;
+	  for (libPos=1;libPos<profLen-2;libPos++)  // we can skip the first <dds> and also two </qos_library> and </dds>
 	  {
-		  if (strcmp(qoSlibTag.c_str(), factory_qos.profile.string_profile[j]) == 0 )
+		  if (strcmp(qoSlibTag.c_str(), factory_qos.profile.string_profile[libPos]) == 0 )
 		  {
 			  newLib=false;
 			  break;
@@ -325,7 +345,13 @@ void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
 	  {
 		  profLen += 1; //each profile adds a new line (profile)
 		  factory_qos.profile.string_profile.ensure_length(profLen, profLen);
-	  }
+		  // first we have to move all farther profiles and tags
+		  for(unsigned int i=profLen-1; i>(libPos+1); i--)
+		  {
+			  factory_qos.profile.string_profile[i] = DDS_String_dup(factory_qos.profile.string_profile[i-1]);
+		  }
+		  // and add the profile just aftwer the position where we
+		  factory_qos.profile.string_profile[libPos+1] = DDS_String_dup(cfg.stringProfileQoS.c_str());	  }
     }
   else // first profile
     {
@@ -335,11 +361,15 @@ void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
 	  factory_qos.profile.string_profile[profLen-4] = DDS_String_dup(qoSlibTag.c_str());
     }
 
-// we assume that profile can be added to recently added library, what should be the case
-  factory_qos.profile.string_profile[profLen-3] = DDS_String_dup(cfg.stringProfileQoS.c_str());
- // factory_qos.profile.string_profile[profLen-3] = DDS_String_dup("</qos_profile>");
-  factory_qos.profile.string_profile[profLen-2] = DDS_String_dup("</qos_library>");
-  factory_qos.profile.string_profile[profLen-1] = DDS_String_dup("</dds>");
+  // now we have to add the QoS profile, just for a new QoS lib, for existing one we did already
+  if (newLib)  //new QoS lib (also first profile)
+  {
+	  factory_qos.profile.string_profile[profLen-3] = DDS_String_dup(cfg.stringProfileQoS.c_str());
+	  // factory_qos.profile.string_profile[profLen-3] = DDS_String_dup("</qos_profile>");
+	  factory_qos.profile.string_profile[profLen-2] = DDS_String_dup("</qos_library>");
+	  factory_qos.profile.string_profile[profLen-1] = DDS_String_dup("</dds>");
+  }//if
+
 
   if (DDSConfiguration::debugLevel>0)
   			ACS_SHORT_LOG((LM_DEBUG, "We are about to add QoS profile: %s.", cfg.stringProfileQoS.c_str()));
