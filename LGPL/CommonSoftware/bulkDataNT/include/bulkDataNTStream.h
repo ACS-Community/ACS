@@ -70,7 +70,9 @@ public:
 	std::string getName() { return streamName_m; }
 
 	/// adding and applying DDS QoS profile. Setting qoS from XML for a  stream or a flow
-	void addDDSQoSProfile(const DDSConfiguration &cfg);
+	///@cfg configuration
+	///@name: flow or stream name
+	void addDDSQoSProfile(DDSConfiguration &cfg, const char *name);
 
 	/// removing DDS QoS profile (from XML for a  stream or a flow)
 	void removeDDSQoSProfile(const DDSConfiguration &cfg);
@@ -86,7 +88,7 @@ protected:
 
 	std::string streamName_m;
 
-	const StreamConfiguration  configuration_m; //configuration
+	StreamConfiguration  configuration_m; //configuration
 	// those two methods and members should probably go to another class  ??
 	void createDDSFactory();
 	void destroyDDSFactory();
