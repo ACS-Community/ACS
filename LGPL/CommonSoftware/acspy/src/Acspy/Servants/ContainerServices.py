@@ -300,9 +300,6 @@ class ContainerServices:
             comp_class = temp.pop()  #"PowerSupply"
             #components module name
             comp_module = temp.pop()  #"PS"
-            #components might have nested modules. We ignore pragma prefix (first element)
-            while len(temp) > 1:
-                comp_module = temp.pop() + "." + comp_module
             
             #Now import the real module
             comp_module = __import__(comp_module,

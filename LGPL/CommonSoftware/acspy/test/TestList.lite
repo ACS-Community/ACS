@@ -77,6 +77,5 @@ PROLOGUE acspyTATPrologue
 15 testArchiveConsumer    "acsutilTATTestRunner acspyTestArchiveConsumerPS 15 1"
 16 testArchiveSupplier    "acsutilTATTestRunner acspyTestArchiveConsumer 15 11" "@SLEEP 3" "acsutilTATTestRunner acspyTestArchiveSupplier"  "@SLEEP 60"
 17 testLoggingConsumer    "acsutilTATTestRunner acspyTestLoggingConsumer 15"
-18 testNestedModules      "acsutilAwaitContainerStart -py pyContainer" "@SLEEP 15" "acsutilTATTestRunner acspyTestNestedModules" "@SLEEP 25" "acsutilTATTestRunner acsStopContainer pyContainer" 
 #-------------------------------------------------------------------
 EPILOGUE acsutilTATEpilogue

@@ -30,7 +30,6 @@
       <_ Name="TESTCOMPONENT5"	Code="acspytestImpl.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer" ImplLang="py" />
       <_ Name="RELOADCOMP1"	Code="acspytestImpl.testSubPackage.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer2" ImplLang="py" />
       <_ Name="RELOADCOMP2"	Code="acspytestImpl.testSubPackage.PyTest" Type="IDL:alma/acspytest/PyTest:1.0" Container="pyContainer2" ImplLang="py" />
-      <_ Name="TESTNESTEDCOMPONENT" Code="acspytestImpl.PyTestNestedModule" Type="IDL:alma/acspytest/nested/PyTestNestedModule:1.0" Container="pyContainer" ImplLang="py" />
 
       <_ Name="ACSEVENTADMIN"	
          Code="acsncImpl.ACSEventAdmin" 
