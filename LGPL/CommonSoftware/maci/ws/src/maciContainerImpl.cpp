@@ -158,71 +158,95 @@ public:
                                                             "maci::ActivationMethod::call");
         }
         
-        try
+        // in case of an error, we need to create valid ComponentInfo
+        if (!componentInfo.ptr())
         {
-            // in case of an error, we need to create valid ComponentInfo
-            if (!componentInfo.ptr())
-            {
-                componentInfo = new maci::ComponentInfo();
-                componentInfo->h = h_;
-                componentInfo->reference = CORBA::Object::_nil();
-                componentInfo->name = CORBA::string_dup(name_.c_str());
-                componentInfo->type = CORBA::string_dup(type_.c_str());
-                componentInfo->code = CORBA::string_dup(exe_.c_str());
-                componentInfo->container_name = CORBA::string_dup("unspecified");
-                componentInfo->container = 0;
-                componentInfo->access = 0;
-                componentInfo->interfaces.length(0);                
-            }
-            
-            ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Calling maci::CBComponentInfo::done with descOut.id_tag = %d.", descOut_.id_tag);
-            
-            cb_->done(*componentInfo, completion, descOut_);
-
-            ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Call to maci::CBComponentInfo::done with descOut.id_tag = %d completed.", descOut_.id_tag);
+            componentInfo = new maci::ComponentInfo();
+            componentInfo->h = h_;
+            componentInfo->reference = CORBA::Object::_nil();
+            componentInfo->name = CORBA::string_dup(name_.c_str());
+            componentInfo->type = CORBA::string_dup(type_.c_str());
+            componentInfo->code = CORBA::string_dup(exe_.c_str());
+            componentInfo->container_name = CORBA::string_dup("unspecified");
+            componentInfo->container = 0;
+            componentInfo->access = 0;
+            componentInfo->interfaces.length(0);
         }
-        catch( CORBA::SystemException &_ex )
-        	{
-        	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
-        							    "maci::ActivationMethod::call");
-        	corbaProblemEx.setMinor(_ex.minor());
-        	corbaProblemEx.setCompletionStatus(_ex.completed());
-        	corbaProblemEx.setInfo(_ex._info().c_str());
-        	maciErrType::CannotReleaseComponentExImpl ex(corbaProblemEx, __FILE__, __LINE__,
-        						 "maci::ActivationMethod::call");
-        	corbaProblemEx.log();
 
-        	ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Call to maci::CBComponentInfo::done with descOut.id_tag = %d failed, deactivating the component.", descOut_.id_tag);
+        const int tries = 3;
+        int tryNo = 0;
+        while (true)
+        {
+        	tryNo++;
 
 			try
 			{
-				container_->deactivate_component(h_);
+
+				ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Calling maci::CBComponentInfo::done with descOut.id_tag = %d.", descOut_.id_tag);
+
+				cb_->done(*componentInfo, completion, descOut_);
+
+				ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Call to maci::CBComponentInfo::done with descOut.id_tag = %d completed.", descOut_.id_tag);
 			}
-	        catch (maciErrType::CannotDeactivateComponentEx &ex)
-	        {
-	        	maciErrType::CannotDeactivateComponentExImpl lex(ex, __FILE__, __LINE__,
-	        						  "maci::ActivationMethod::call");
-	        	lex.log();
-	        }
-	        catch (maciErrType::ComponentDeactivationUncleanEx &ex)
-	        {
-	        	maciErrType::ComponentDeactivationUncleanExImpl lex(ex, __FILE__, __LINE__,
-	        						  "maci::ActivationMethod::call");
-	        	lex.log();
-	        }
-	        catch (maciErrType::ComponentDeactivationFailedEx &ex)
-	        {
-	        	maciErrType::ComponentDeactivationFailedExImpl lex(ex, __FILE__, __LINE__,
-	        						  "maci::ActivationMethod::call");
-	        	lex.log();
-	        }
-        	}
-        catch(...)
-        {
-            ACSErrTypeCommon::UnknownExImpl uex(__FILE__, __LINE__,
-                                                            "maci::ActivationMethod::call");
-            uex.log();
-        }    
+			catch( CORBA::SystemException &_ex )
+				{
+				ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+											"maci::ActivationMethod::call");
+				corbaProblemEx.setMinor(_ex.minor());
+				corbaProblemEx.setCompletionStatus(_ex.completed());
+				corbaProblemEx.setInfo(_ex._info().c_str());
+				maciErrType::CannotReleaseComponentExImpl ex(corbaProblemEx, __FILE__, __LINE__,
+									 "maci::ActivationMethod::call");
+				corbaProblemEx.log();
+
+				// retry in case of COMM_FAILURE or TIMEOUT
+				if (tryNo < tries &&
+					(ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/COMM_FAILURE:1.0") ||
+					 ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/TIMEOUT:1.0"))
+				)
+				{
+					ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Call to maci::CBComponentInfo::done with descOut.id_tag = %d failed, retrying...", descOut_.id_tag);
+
+					// sleep for a second
+					ACE_OS::sleep(1);
+
+					continue;
+				}
+
+				ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Call to maci::CBComponentInfo::done with descOut.id_tag = %d failed, deactivating the component.", descOut_.id_tag);
+
+				try
+				{
+					container_->deactivate_component(h_);
+				}
+				catch (maciErrType::CannotDeactivateComponentEx &ex)
+				{
+					maciErrType::CannotDeactivateComponentExImpl lex(ex, __FILE__, __LINE__,
+										  "maci::ActivationMethod::call");
+					lex.log();
+				}
+				catch (maciErrType::ComponentDeactivationUncleanEx &ex)
+				{
+					maciErrType::ComponentDeactivationUncleanExImpl lex(ex, __FILE__, __LINE__,
+										  "maci::ActivationMethod::call");
+					lex.log();
+				}
+				catch (maciErrType::ComponentDeactivationFailedEx &ex)
+				{
+					maciErrType::ComponentDeactivationFailedExImpl lex(ex, __FILE__, __LINE__,
+										  "maci::ActivationMethod::call");
+					lex.log();
+				}
+				}
+			catch(...)
+			{
+				ACSErrTypeCommon::UnknownExImpl uex(__FILE__, __LINE__,
+																"maci::ActivationMethod::call");
+				uex.log();
+			}
+
+			break;
+        }
         
         return 0;
     }
