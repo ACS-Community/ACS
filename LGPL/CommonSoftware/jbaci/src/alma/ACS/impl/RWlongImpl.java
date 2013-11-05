@@ -186,14 +186,14 @@ public class RWlongImpl
 	 * @see alma.ACS.CommonComparablePropertyImpl#lessThanDelta(java.lang.Object, java.lang.Object, java.lang.Object)
 	 */
 	public boolean lessThanDelta(Object value1, Object value2, Object delta) {
-		return Math.abs(((Long)value1).longValue()-((Long)value2).longValue()) < ((Long)delta).longValue();
+		return Math.abs(((Integer)value1).intValue()-((Integer)value2).intValue()) < ((Integer)delta).intValue();
 	}
 
 	/**
 	 * @see alma.ACS.CommonComparablePropertyImpl#noDelta(java.lang.Object)
 	 */
 	public boolean noDelta(Object value) {
-		return ((Long)value).longValue() == 0;
+		return ((Integer)value).intValue() == 0;
 	}
 
 	/**
