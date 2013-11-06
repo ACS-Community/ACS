@@ -755,13 +755,13 @@ public class AcsContainer extends ContainerPOA
 				boolean notified=false;
 				while (retry<3 && !notified) {
 					try {
-						m_logger.log(AcsLogLevel.DEBUG, "Calling maci::CBComponentInfo::done with descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"'");
+						m_logger.log(AcsLogLevel.DELOUSE, "Calling maci::CBComponentInfo::done with descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"'");
 						callback.done(componentInfo, new alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
 						notified=true;
-						m_logger.log(AcsLogLevel.DEBUG, "Call to maci::CBComponentInfo::done with descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"' completed");
+						m_logger.log(AcsLogLevel.DELOUSE, "Call to maci::CBComponentInfo::done with descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"' completed");
 					} catch (Throwable t) {
 						retry++;
-						m_logger.log(AcsLogLevel.DEBUG, "Call to maci::CBComponentInfo::done with descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"' failed, retrying...",t);
+						m_logger.log(AcsLogLevel.DELOUSE, "Call to maci::CBComponentInfo::done with descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"' failed, retrying...",t);
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException ie) {}
