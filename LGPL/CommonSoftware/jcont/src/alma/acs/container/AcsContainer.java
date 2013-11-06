@@ -709,11 +709,10 @@ public class AcsContainer extends ContainerPOA
 			public void run() {
 				m_logger.finer("activate_component_async request for '" + name + "' is being processed now.");
 				CBDescOut descOut = new CBDescOut(0, desc.id_tag);
-
+				ComponentInfo componentInfo=null;
 				try
 				{
-					ComponentInfo componentInfo = activate_component(h, execution_id, name, exe, type);
-					callback.done(componentInfo, new alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
+					componentInfo = activate_component(h, execution_id, name, exe, type);
 				}
 				catch (CannotActivateComponentEx ae)
 				{
@@ -750,6 +749,35 @@ public class AcsContainer extends ContainerPOA
 								new String[0]
 								);
 					callback.done(dummyComponentInfo, ae.toAcsJCompletion().toCorbaCompletion(), descOut);
+				}
+				// Try to invoke the callback several times before giving up
+				int retry=0;
+				boolean notified=false;
+				while (retry<3 && !notified) {
+					try {
+						m_logger.log(AcsLogLevel.DEBUG, "Calling maci::CBComponentInfo::done with descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"'");
+						callback.done(componentInfo, new alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
+						notified=true;
+						m_logger.log(AcsLogLevel.DEBUG, "Call to maci::CBComponentInfo::done with descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"' completed");
+					} catch (Throwable t) {
+						retry++;
+						m_logger.log(AcsLogLevel.DEBUG, "Call to maci::CBComponentInfo::done with descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"' failed, retrying...",t);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException ie) {}
+					}
+				}
+				if (!notified) {
+					m_logger.log(AcsLogLevel.ERROR, "Call to maci::CBComponentInfo::done with descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"' failed, deactivating the component.");
+					try {
+						deactivate_component(h);
+					} catch (ComponentDeactivationUncleanEx e) {
+						m_logger.log(AcsLogLevel.WARNING, "UNclean deactivation of component descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"'",e);
+					} catch (ComponentDeactivationFailedEx e) {
+						m_logger.log(AcsLogLevel.WARNING, "Deactivation of component failed descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"'",e);
+					} catch (Throwable t) {
+						m_logger.log(AcsLogLevel.WARNING, "Deactivation of component failed descOut.id_tag = %d."+descOut.id_tag+" for '"+name+"'",t);
+					}
 				}
 			}
 		});
