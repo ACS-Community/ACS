@@ -205,7 +205,8 @@ public:
 					 ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/TIMEOUT:1.0"))
 				)
 				{
-					ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Call to maci::CBComponentInfo::done with descOut.id_tag = %d failed, retrying...", descOut_.id_tag);
+					ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ActivationMethod::call",
+							(LM_WARNING, "Call to maci::CBComponentInfo::done for component %s with descOut.id_tag = %d failed, retrying...", name_.c_str(), descOut_.id_tag));
 
 					// sleep for a second
 					ACE_OS::sleep(1);
@@ -213,7 +214,8 @@ public:
 					continue;
 				}
 
-				ACS_DEBUG_PARAM ("maci::ActivationMethod::call", "Call to maci::CBComponentInfo::done with descOut.id_tag = %d failed, deactivating the component.", descOut_.id_tag);
+				ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ActivationMethod::call",
+						(LM_WARNING, "Call to maci::CBComponentInfo::done for component %s with descOut.id_tag = %d failed, deactivating the component.", name_.c_str(), descOut_.id_tag));
 
 				try
 				{
