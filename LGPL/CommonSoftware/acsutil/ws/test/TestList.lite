@@ -50,76 +50,76 @@ SOURCE   acsutilTATEnvironment
 5 testAnyAide     "testAnyAide"
 6 testPython   "testPython"
 # acsutilBlock Launching process that disappears immediately with the expected string
-7 testacsutilBlock1	"/bin/rm -f /tmp/testacsutilBlock1.*"\
-					"../bin/acsutilBlock -f /tmp/testacsutilBlock1.out -s -c \"ERROR\" -b \"SUCCESS\"  echo -e \"SUCCESS\"" \
-					"@SLEEP 3" \
-					"/bin/rm -f /tmp/testacsutilBlock1.*"
+7 testacsutilBlock1	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock1_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+			"../bin/acsutilBlock -f /tmp/testacsutilBlock1_$::env(USER)_$::env(ACS_INSTANCE).out -s -c \"ERROR\" -b \"SUCCESS\"  echo -e \"SUCCESS\"" \
+			"@SLEEP 3" \
+			"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock1_$::env(USER)_$::env(ACS_INSTANCE).*\"" 
 # acsutilBlock Launching process that disappears immediately with the expected error string
-8 testacsutilBlock2	"/bin/rm -f /tmp/testacsutilBlock2.*" \
-					"../bin/acsutilBlock -f /tmp/testacsutilBlock2.out -s -c \"ERROR\" -b \"SUCCESS\"  echo -e \"ERROR\"" \
+8 testacsutilBlock2	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock2_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+					"../bin/acsutilBlock -f /tmp/testacsutilBlock2_$::env(USER)_$::env(ACS_INSTANCE).out -s -c \"ERROR\" -b \"SUCCESS\"  echo -e \"ERROR\"" \
 					"@SLEEP 3" \
-					"/bin/rm -f /tmp/testacsutilBlock2.*"
+					"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock2_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that disappears immediately without the expected string and without the expected error string
-9 testacsutilBlock3	"/bin/rm -f /tmp/testacsutilBlock3.*" \
-					"../bin/acsutilBlock -f /tmp/testacsutilBlock3.out -s -k -c \"ERROR\" -b \"SUCCESS\"  echo -e \"DUMMY\"" \
+9 testacsutilBlock3	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock3_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+					"../bin/acsutilBlock -f /tmp/testacsutilBlock3_$::env(USER)_$::env(ACS_INSTANCE).out -s -k -c \"ERROR\" -b \"SUCCESS\"  echo -e \"DUMMY\"" \
 					"@SLEEP 30" \
-					"/bin/rm -f /tmp/testacsutilBlock3.*"
+					"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock3_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that will print the expected string after 10 seconds
-10 testacsutilBlock4 	"/bin/rm -f /tmp/testacsutilBlock4.*" \
-						"../bin/acsutilBlock -f /tmp/testacsutilBlock4.out -s -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"SUCCESS\" -s 10" \
+10 testacsutilBlock4 	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock4_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+						"../bin/acsutilBlock -f /tmp/testacsutilBlock4_$::env(USER)_$::env(ACS_INSTANCE).out -s -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"SUCCESS\" -s 10" \
 						"@SLEEP 12" \
-						"/bin/rm -f /tmp/testacsutilBlock4.*"
+						"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock4_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that will print the expected error string after 10 seconds
-11 testacsutilBlock5	"/bin/rm -f /tmp/testacsutilBlock5.*" \
-						"../bin/acsutilBlock -f /tmp/testacsutilBlock5.out -s -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"ERROR\" -s 10" \
+11 testacsutilBlock5	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock5_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+						"../bin/acsutilBlock -f /tmp/testacsutilBlock5_$::env(USER)_$::env(ACS_INSTANCE).out -s -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"ERROR\" -s 10" \
 						"@SLEEP 12"  \
-						"/bin/rm -f /tmp/testacsutilBlock5.*"
+						"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock5_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that will print the expected string after 5 seconds but with acsUtilBlock timeout set to 2 seconds, using acsutilBlock -s option
-12 testacsutilBlock6	"/bin/rm -f /tmp/testacsutilBlock6.*" \
-						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock6.out -s -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"SUCCESS\" -s 5" \
+12 testacsutilBlock6	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock6_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock6_$::env(USER)_$::env(ACS_INSTANCE).out -s -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"SUCCESS\" -s 5" \
 						"@SLEEP 6"  \
-						"/bin/rm -f /tmp/testacsutilBlock6.*"
+						"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock6_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that will print the expected error string after 5 seconds but with acsUtilBlock timeout set to 2 seconds, using acsutilBlock -s option
-13 testacsutilBlock7	"/bin/rm -f /tmp/testacsutilBlock7.*" \
-						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock7.out -s -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"ERROR\" -s 5" \
+13 testacsutilBlock7	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock7_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock7_$::env(USER)_$::env(ACS_INSTANCE).out -s -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"ERROR\" -s 5" \
 						"@SLEEP 6" \
-						"/bin/rm -f /tmp/testacsutilBlock7.*"
+						"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock7_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that will print the expected string after 3 seconds but with acsUtilBlock timeout set to 2 seconds, not using acsutilBlock -s option
-14 testacsutilBlock8	"/bin/rm -f /tmp/testacsutilBlock8.*" \
-						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock8.out -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"SUCCESS\" -s 3" \
+14 testacsutilBlock8	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock8_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock8_$::env(USER)_$::env(ACS_INSTANCE).out -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"SUCCESS\" -s 3" \
 						"@SLEEP 5" \
-						"/bin/cat /tmp/testacsutilBlock8.out" \
-						"/bin/rm -f /tmp/testacsutilBlock8.*"
+						"/bin/cat /tmp/testacsutilBlock8_$::env(USER)_$::env(ACS_INSTANCE).out" \
+						"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock8_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that will print the expected error string after 3 seconds but with acsUtilBlock timeout set to 2 seconds, not using acsutilBlock -s option
-15 testacsutilBlock9	"/bin/rm -f /tmp/testacsutilBlock9.*" \
-						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock9.out -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"ERROR\" -s 3" \
+15 testacsutilBlock9	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock9_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock9_$::env(USER)_$::env(ACS_INSTANCE).out -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"ERROR\" -s 3" \
 						"@SLEEP 5" \
-						"/bin/cat /tmp/testacsutilBlock9.out" \
-						"/bin/rm -f /tmp/testacsutilBlock9.*"
+						"/bin/cat /tmp/testacsutilBlock9_$::env(USER)_$::env(ACS_INSTANCE).out" \
+						"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock9_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that will print the expected string after 4 seconds but with acsUtilBlock timeout set to 2 seconds, not using acsutilBlock -s option
-16 testacsutilBlock10	"/bin/rm -f /tmp/testacsutilBlock10.*" \
-						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock10.out -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"SUCCESS\" -s 4" \
+16 testacsutilBlock10	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock10_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock10_$::env(USER)_$::env(ACS_INSTANCE).out -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"SUCCESS\" -s 4" \
 						"@SLEEP 5" \
-						"/bin/cat /tmp/testacsutilBlock10.out" \
-						"/bin/rm -f /tmp/testacsutilBlock10.*"
+						"/bin/cat /tmp/testacsutilBlock10_$::env(USER)_$::env(ACS_INSTANCE).out" \
+						"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock10_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that will print the expected error string after 4 seconds but with acsUtilBlock timeout set to 2 seconds, not using acsutilBlock -s option
-17 testacsutilBlock11	"/bin/rm -f /tmp/testacsutilBlock11.*" \
-						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock11.out -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"ERROR\" -s 4" \
+17 testacsutilBlock11	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock11_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock11_$::env(USER)_$::env(ACS_INSTANCE).out -k -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"ERROR\" -s 4" \
 						"@SLEEP 5" \
-						"/bin/cat /tmp/testacsutilBlock11.out" \
-						"/bin/rm -f /tmp/testacsutilBlock11.*"
+						"/bin/cat /tmp/testacsutilBlock11_$::env(USER)_$::env(ACS_INSTANCE).out" \
+						"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock11_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that will print the expected string after 6 seconds but with acsUtilBlock timeout set to 2 seconds, not using acsutilBlock -s and -k options
-18 testacsutilBlock12	"/bin/rm -f /tmp/testacsutilBlock12.*" \
-						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock12.out -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"SUCCESS\" -s 6" \
+18 testacsutilBlock12	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock12_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock12_$::env(USER)_$::env(ACS_INSTANCE).out -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"SUCCESS\" -s 6" \
 						"@SLEEP 7" \
-						"/bin/cat /tmp/testacsutilBlock12.out" \
-						"/bin/rm -f /tmp/testacsutilBlock12.*"
+						"/bin/cat /tmp/testacsutilBlock12_$::env(USER)_$::env(ACS_INSTANCE).out" \
+						"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock12_$::env(USER)_$::env(ACS_INSTANCE).*\""
 # acsutilBlock Launching process that will print the expected error string after 6 seconds but with acsUtilBlock timeout set to 2 seconds, not using acsutilBlock -s and -k options
-19 testacsutilBlock13	"/bin/rm -f /tmp/testacsutilBlock13.*" \
-						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock13.out -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"ERROR\" -s 6" \
+19 testacsutilBlock13	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock13_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
+						"../bin/acsutilBlock -t 2 -f /tmp/testacsutilBlock13_$::env(USER)_$::env(ACS_INSTANCE).out -c \"ERROR\" -b \"SUCCESS\" ../bin/testacsutilBlock -d \"DUMMY\" -e \"ERROR\" -s 6" \
 						"@SLEEP 7" \
-						"/bin/cat /tmp/testacsutilBlock13.out" \
-						"/bin/rm -f /tmp/testacsutilBlock13.*"
+						"/bin/cat /tmp/testacsutilBlock13_$::env(USER)_$::env(ACS_INSTANCE).out" \
+						"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock13_$::env(USER)_$::env(ACS_INSTANCE).*\""
 
 
 # EPILOGUE acsutilTATEpilogue
