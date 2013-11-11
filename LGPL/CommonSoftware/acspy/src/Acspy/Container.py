@@ -48,7 +48,7 @@ from new       import instance
 from traceback import print_exc
 import sys
 from os        import environ
-from threading import Event
+from threading import Event, Thread
 #--CORBA STUBS-----------------------------------------------------------------
 import PortableServer
 import maci
@@ -60,7 +60,9 @@ from maci  import ComponentInfo
 from ACS   import OffShoot
 import ACS
 from ACSErrTypeCommonImpl              import CORBAProblemExImpl, CouldntCreateObjectExImpl
-from maciErrTypeImpl                   import CannotActivateComponentExImpl
+from ACSErrTypeOKImpl import ACSErrOKCompletionImpl
+from maciErrTypeImpl                   import CannotActivateComponentExImpl,\
+    CannotActivateComponentCompletionImpl
 #--ACS Imports-----------------------------------------------------------------
 import Acspy.Common.Log as Log
 import Acsalarmpy
@@ -80,6 +82,7 @@ from AcsContainerLogLTS                     import LOG_CompAct_Instance_OK
 from AcsContainerLogLTS                     import LOG_CompAct_Corba_OK
 from AcsContainerLogLTS                     import LOG_CompAct_Init_OK
 from maciErrTypeImpl                        import ComponentDeactivationFailedExImpl, ComponentDeactivationUncleanExImpl
+from ACS                  import CBDescOut
 #--GLOBALS---------------------------------------------------------------------
 #Manager commands to this container
 ACTIVATOR_RELOAD = 0
@@ -112,6 +115,104 @@ class ContainerLogThrottleAlarmer(Log.LogThrottleAlarmerBase):
         See Log.LogThrottleAlarmerBase
         '''
         self.container.sendAlarm("Logging", self.container.name, 10, active)
+#------------------------------------------------------------------------------
+class AsyncComponentActivator(Thread):
+    '''
+    This thread activates the component asynchronously by delegating to
+    Container#activate_component(...) 
+    '''
+    def __init__(self,logger, container,h, execution_id, componentName, exe, type, callback, desc):
+        '''
+        Constructor
+        
+        Parameters:
+        - logger The logger
+        - container A reference to the container
+        - h is the handle the component will be given
+        - name is simply the components name
+        - exe is the name of the Python module that has to be imported for the
+              components implementation
+        - idl_type is the the IR Location for the component
+        - callback To callback to notify that the component has been activated 
+                   or report an error
+        '''
+        Thread.__init__(self,name="ComponentAsyncActivator thread for component "+componentName)
+        #The logger
+        self.logger=logger
+        
+        # The reference to the container, to call activate_component
+        self.container=container
+        
+        # Store the params to activate the component
+        self.h=h
+        self.execution_id=execution_id
+        self.componentName=componentName
+        self.exe=exe
+        self.type=type
+        self.callback=callback
+        self.desc=desc
+        
+        # It is a daemon so that it does not prevent the application to terminate
+        self.daemon=True
+    
+    def run(self):
+        self.logger.logDebug("Activating "+self.componentName+" (type "+self.type+")")
+        descOut=CBDescOut(0L,self.desc.id_tag)
+        try:
+            componentInfo=self.container.activate_component(self.h, self.execution_id, self.componentName, self.exe, self.type)
+        except Exception, e:
+            e2 = e2 = CannotActivateComponentCompletionImpl(exception=e)
+            dummyCI=ComponentInfo(type,  #string type;
+                                  self.exe,  #string code;
+                                  None,  #Object reference;
+                                  self.componentName,  #string name;
+                                  [],  #HandleSeq clients;
+                                  self.container.token.h,  #Handle activator;
+                                  self.container.name,   #string container_name;
+                                  self.h,  #Handle h;
+                                  0,  #AccessDescriptor access;
+                                  []  #stringSeq interfaces;
+                                  )
+            try:
+                self.callback.done(componentInfo, e2 , descOut)
+            finally:
+                return
+        if componentInfo is None:
+            e2 = CannotActivateComponentCompletionImpl()
+            # Error activating component
+            dummyCI=ComponentInfo(type,  #string type;
+                                  exe,  #string code;
+                                  None,  #Object reference;
+                                  self.componentName,  #string name;
+                                  [],  #HandleSeq clients;
+                                  self.container.token.h,  #Handle activator;
+                                  self.container.name,   #string container_name;
+                                  h,  #Handle h;
+                                  0,  #AccessDescriptor access;
+                                  []  #stringSeq interfaces;
+                                  )
+            try:
+                self.callback.done(componentInfo, e2, descOut)
+            finally:
+                return
+        
+        retry=0
+        while retry<3:
+            okCompletion=ACSErrOKCompletionImpl() 
+            try:
+                self.logger.logDelouse("Calling maci::CBComponentInfo::done with descOut.id_tag = "+str(descOut.id_tag)+" for '"+self.componentName+"'");
+                self.callback.done(componentInfo,okCompletion , descOut);
+                self.logger.logDelouse("Call to maci::CBComponentInfo::done with descOut.id_tag = "+str(descOut.id_tag)+" for '"+self.componentName+"' completed");
+                return
+            except Exception, e:
+                retry=retry+1
+                self.logger.logDelouse("Call to maci::CBComponentInfo::done with descOut.id_tag = "+str(descOut.id_tag)+" for '"+self.componentName+"' failed, retrying...");
+                sleep(1)
+        self.logger.logError("Call to maci::CBComponentInfo::done with descOut.id_tag = "+str(descOut.id_tag)+" for '"+self.componentName+"' failed, deactivating the component.");
+        try:
+            self.container.deactivate_component(h)
+        except:
+            self.logger.logError("Deactivation of component failed descOut.id_tag = "+str(descOut.id_tag)+" for '"+self.componentName+"'");
 #------------------------------------------------------------------------------
 class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClient):
     '''
@@ -515,8 +616,32 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         return self.components[name][COMPONENTINFO]
 
     def activate_component_async(self, h, execution_id, name, exe, type, callback, desc):
-        self.activate_component(h, execution_id, name, exe, type)
-    
+        '''
+        Activates a component asynchronously.
+        
+        Parameters:
+        - h is the handle the component will be given
+        - name is simply the components name
+        - exe is the name of the Python module that has to be imported for the
+              components implementation
+        - idl_type is the the IR Location for the component
+        - callback To callback to notify that the component has been activated 
+                   or report an error
+        '''
+        self.logger.logDelouse("Starting async activation of "+name+"(type "+type+")")
+        activatorThread=AsyncComponentActivator(
+                                                self.logger,
+                                                self,
+                                                h, 
+                                                execution_id, 
+                                                name, 
+                                                exe, 
+                                                type, 
+                                                callback, 
+                                                desc)
+        activatorThread.start()
+        
+        
     #--------------------------------------------------------------------------
     def failedActivation(self, comp_entry): # pragma: NO COVER
         '''

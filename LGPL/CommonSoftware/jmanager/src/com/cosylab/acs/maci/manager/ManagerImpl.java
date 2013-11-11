@@ -6620,8 +6620,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			logger.log(Level.INFO,"Activating component '"+name+"' (" + handleReadable + ") on container '" + containerInfo.getName() + "'.");
 
 			boolean callSyncActivate = System.getProperties().containsKey(NAME_SYNC_ACTIVATE);
-			if (containerInfo.getImplLang() == ImplLang.py)
-				callSyncActivate = true;
 			
 			if (callSyncActivate)
 				{
