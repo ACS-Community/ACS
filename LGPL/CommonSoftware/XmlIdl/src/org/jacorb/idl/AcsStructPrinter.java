@@ -146,7 +146,10 @@ public class AcsStructPrinter
 			}
 			ps.println();
 
-			// Constructor 
+			// Default constructor
+			ps.println("\tpublic " + className + "() {}");
+
+			// All-arg constructor
 			ps.print("\tpublic " + className + "(");
 			for (Iterator<StructMember> iterator = memberList.iterator(); iterator.hasNext();) {
 				StructMember structMember = iterator.next();
@@ -157,7 +160,7 @@ public class AcsStructPrinter
 			}
 			ps.println(")");
 
-			// Constructor body 
+			// All-arg constructor body 
 			ps.println("\t{");
 			for (Iterator<StructMember> iterator = memberList.iterator(); iterator.hasNext();) {
 				StructMember structMember = iterator.next();

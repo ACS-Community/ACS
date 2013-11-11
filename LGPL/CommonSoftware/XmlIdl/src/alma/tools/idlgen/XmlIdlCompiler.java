@@ -129,7 +129,7 @@ public class XmlIdlCompiler
 	/**
 	 * See {@link #translateFromOpenORB(String[])} about missing verbosity setting coming from the Makefile
 	 */
-	private boolean verbose = true;
+	private boolean verbose = false;
 	
 	private final AcsXmlNamingExpert namingExpert;
 

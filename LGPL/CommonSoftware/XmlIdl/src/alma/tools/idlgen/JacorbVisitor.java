@@ -347,6 +347,9 @@ public class JacorbVisitor extends JavaMappingGeneratingVisitor
 					ret = true;
 				}
 			}
+			else if (decl instanceof EnumType) {
+				// enums are not associated with XML. Just leave ret=false
+			}
 			else {
 				System.out.println("*** isOrHasXmlEntityStruct: Unexpected ConstrTypeSpec with TypeDeclaration subtype " + decl.getClass().getSimpleName());
 			}

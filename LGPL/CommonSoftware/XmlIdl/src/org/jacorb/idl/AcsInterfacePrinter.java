@@ -229,19 +229,26 @@ public class AcsInterfacePrinter
     }
 
 	private void sanitizeOpNames(PrintWriter ps, OpDecl opdecl, TypeSpec ts) {
-		if (!(entityTypes.contains(ts))) { 
-			ps.print(ts.toString() + " " + opdecl.name + "(");
-		} else if (ts.typeSpec() instanceof ConstrTypeSpec && ((ConstrTypeSpec)ts).c_type_spec instanceof Interface) {
-			ps.print(ts.name() + " " + opdecl.name + "(");
-		} else {
-			if (ts instanceof AliasTypeSpec) {
-				AliasTypeSpec alias = (AliasTypeSpec)ts;
-				ps.print(namingExpert.getJavaTypeForXmlTypedef(alias) + " " + opdecl.name + "(");
-			}
-			else
-			ps.print(ts.pack_name+"."+ts.name() + " " + opdecl.name + "(");
+		if (ts.typeSpec() instanceof ConstrTypeSpec) {
+			ConstrTypeSpec cts = (ConstrTypeSpec)ts;
+			if (cts.c_type_spec instanceof Interface) { // probably don't need this if clause
+				ps.print(ts.toString() + " " + opdecl.name + "(");
+			} else if (cts.c_type_spec instanceof StructType) {
+				StructType stype = (StructType)cts.c_type_spec;
+				if (xmlAwareStructs.contains(stype))
+					ps.print(namingExpert.getJavaTypeForXmlStruct(stype) + " " + opdecl.name + "(");
+				else
+					ps.print(ts.toString() + " " + opdecl.name + "(");
+			} else
+				ps.print(ts.toString() + " " + opdecl.name + "(");
+		} else if (ts instanceof AliasTypeSpec && entityTypes.contains(ts)) {
+			AliasTypeSpec alias = (AliasTypeSpec)ts;
+			ps.print(namingExpert.getJavaTypeForXmlTypedef(alias) + " " + opdecl.name + "(");
 		}
+		else
+			ps.print(ts.toString() + " " + opdecl.name + "(");
 	}
+
 		
 	    private void printParam( PrintWriter ps, ParamDecl pdecl )
 	    {
