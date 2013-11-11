@@ -15,9 +15,6 @@
 	<classpathentry kind="lib" path="lib/jlibeps-0.1.jar"/>
 	<classpathentry kind="lib" path="lib/jnlp.jar"/>
 	<classpathentry kind="lib" path="lib/jta-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/openorb_tools-1.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/openorb-1.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/openorb13Debug.jar"/>
 	<classpathentry kind="lib" path="lib/prevayler-1.02.001.jar"/>
 	<classpathentry kind="lib" path="lib/saxpath.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.8.jar"/>

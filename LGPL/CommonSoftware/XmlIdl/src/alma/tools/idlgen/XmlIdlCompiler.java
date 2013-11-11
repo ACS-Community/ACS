@@ -21,19 +21,26 @@
  */
 package alma.tools.idlgen;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.openorb.compiler.IdlCompiler;
-import org.openorb.compiler.object.IdlObject;
-import org.openorb.compiler.parser.IdlParser;
-import org.openorb.compiler.parser.IdlType;
+import org.jacorb.idl.AcsAdapterForOldJacorb;
+import org.jacorb.idl.AcsInterfacePrinter;
+import org.jacorb.idl.AcsJacorbParser;
+import org.jacorb.idl.AcsStructPrinter;
+import org.jacorb.idl.AcsTypedefPrinter;
+import org.jacorb.idl.AliasTypeSpec;
+import org.jacorb.idl.Interface;
+import org.jacorb.idl.StructType;
 
 import alma.tools.idlgen.comphelpgen.ComponentHelperGeneratorProxy;
 
-
 /**
+ * TODO: Update for JacORB!!
+ * 
  * Main class of the ACS IDL compiler that produces interfaces, structs, and holders 
  * for use with XML binding classes.
  * The generated code will be similar but different from the output of a regular CORBA IDL compiler.  
@@ -119,88 +126,72 @@ public class XmlIdlCompiler
 	public static final String PROP_DO_GENERATE_COMP_HELPERS = "alma.acs.tools.comphelpergen.doGenerate";
 	public static final String PROP_COMP_HELPERS_OUTDIR = "alma.acs.tools.comphelpergen.outRootDir";
 	
-	protected static IdlCompiler s_idlCompiler = new IdlCompiler();
-		
+	/**
+	 * See {@link #translateFromOpenORB(String[])} about missing verbosity setting coming from the Makefile
+	 */
+	private boolean verbose = true;
+	
+	private final AcsXmlNamingExpert namingExpert;
+
 
 	/**
 	 * Constructor for XmlIdlCompiler.
 	 */
-	public XmlIdlCompiler()
-	{
-		super();
+	public XmlIdlCompiler() {
+		namingExpert = new AcsXmlNamingExpert();
 	}
 
 	/** 
-	 * This operation is used to compile an IDL file
+	 * This operation is used to generate code for an IDL file that has been parsed already.
+	 * @throws Exception 
 	 */
-	public void compile_file(String file_name, IdlParser parser)
-	{
+	public void generateCode(JacorbVisitor jacorbVisitor) throws Exception {
 
 		// -- options that are outside the OpenORB command line option handling
 		
 		String idl2jbindMapping = System.getProperty("ACS.idl2jbind");
+		namingExpert.setIdlStruct2JavaBindingClassMappings(idl2jbindMapping);
 		
 		boolean doGenerateCompHelpers = Boolean.getBoolean(PROP_DO_GENERATE_COMP_HELPERS);
 		String compHelperOutDir = System.getProperty(PROP_COMP_HELPERS_OUTDIR);
 
-		if (IdlCompiler.verbose)
-		{
-			System.out.println("XmlIdl options (non-OpenORB):" +
+		if (verbose) {
+			// Print the xml affected nodes
+			System.out.println("\nXML typedefs found: ");
+			for (AliasTypeSpec type : jacorbVisitor.xmlTypedefs) {
+				System.out.println("\t"+type.name());	
+			}
+			System.out.println("\nXML-aware Structs found: ");
+			for (StructType str : jacorbVisitor.xmlAwareStructs) {
+				System.out.println("\t"+str.name());
+			}
+			System.out.println("\nXML-aware IFs found: ");
+			for (Interface interfce : jacorbVisitor.xmlAwareIFs) {
+				System.out.println("\t"+interfce.name());
+			}
+			
+			System.out.println("\nXmlIdl options (non-JacORB):" +
 								"\n  idl2jbindMapping = " + idl2jbindMapping + 
 								"\n  doGenerateCompHelpers = " + doGenerateCompHelpers +
-								"\n  compHelperOutDir = " + compHelperOutDir);		
+								"\n  compHelperOutDir = " + compHelperOutDir);
 		}
 		
-		if (doGenerateCompHelpers && compHelperOutDir == null)
-		{
-			System.err.println("can't generate component helper class(es) because " +
+		if (doGenerateCompHelpers && compHelperOutDir == null) {
+			System.err.println("\nCan't generate component helper class(es) because " +
 								"no output directory is given in alma.acs.tools.comphelpergen.outRootDir");
 			doGenerateCompHelpers = false;
 		}
 
 		
-		// -- create objects that do the work
-
-		IdlTreeManipulator treeManipulator = new IdlTreeManipulator(JavaGenerator.getNamingConventions());
-		
-		ComponentHelperGeneratorProxy compHelpGen = null;
-	
-		if (doGenerateCompHelpers)
-		{
-			compHelpGen = new ComponentHelperGeneratorProxy(compHelperOutDir, IdlCompiler.verbose);
-		}
-		else if (IdlCompiler.verbose)
-		{
-			System.out.println("no code generation for component helper classes was selected...");
-		}
-
-
-		// -- build parse tree --
-		
-		IdlObject root = parser.compile_idl(file_name);
-
-		if (IdlParser.totalError != 0)
-		{
-			String msg = "there are errors...compilation process stopped !";
-			throw new RuntimeException(msg);
-		}
-
-		if (IdlCompiler.verbose)
-		{		
-			System.out.println("\n**** the original idl parse tree ****");
-			treeManipulator.recursivePrint(root, 0);
-			System.out.println("\n**** end of original idl parse tree ****\n");
-		}
-
-		IDLComponentTester.collectInterfaces(root);
-
 		// -- init component helper generator with interfaces and Java packages --
 
-		if (compHelpGen != null)	
-		{
+		ComponentHelperGeneratorProxy compHelpGen = null;
+		
+		if (doGenerateCompHelpers) {
+			compHelpGen = new ComponentHelperGeneratorProxy(compHelperOutDir, verbose);
 			try
 			{
-				compHelpGen.setOriginalParseTree(root, IdlCompiler.packageName);
+				compHelpGen.setOriginalParseTree(jacorbVisitor.acsCompIFs);
 			}
 			catch (RuntimeException e)
 			{
@@ -211,119 +202,145 @@ public class XmlIdlCompiler
 				compHelpGen = null;
 				doGenerateCompHelpers = false;
 			}
-//			treeManipulator.resetGraph(root);
 		}
-		
-		
-		// -- identify xml entity object structs --
+		else if (verbose) {
+			System.out.println("no code generation for component helper classes was selected...");
+		}
 
-		if (IdlCompiler.verbose)
-		{
-			System.out.println("\n**** detecting typedef'd xml entity structs ****");
-		}
-		Set<IdlObject> xmlTypedefNodes = new LinkedHashSet<IdlObject>();
-		// do this separately from the previous compile_idl() pass, since some structs could be forward-declared
-		treeManipulator.findXmlTypedefNodes(root, xmlTypedefNodes); 
-		// print them 
-		if (IdlCompiler.verbose)
-		{
-			for (IdlObject node : xmlTypedefNodes) {
-				System.out.println(IdlTreeManipulator.getTypeName(node.kind()) + "::" + node.getId());
-			}
-		}
-		
-		// --  --
-
-		Set<IdlObject> nodesToBeGenerated = new LinkedHashSet<IdlObject>();
-		// unlike in OMG IDL2Java, we must generate code (holder class) for each xmlTypedefNode  
-		nodesToBeGenerated.addAll(xmlTypedefNodes);
-		if (IdlCompiler.verbose)
-		{
-			System.out.println("\n**** detecting usage of xml entity structs ****");
-		}
-		treeManipulator.findXmlEntityNodes(root, Collections.unmodifiableSet(xmlTypedefNodes), nodesToBeGenerated);
-		treeManipulator.resetGraph(root);//to align ids with parent node names
-		
-		if (IdlCompiler.verbose)
-		{
-			System.out.println("\n**** nodes that need code generation ****");
-			for (IdlObject node : nodesToBeGenerated) {
-				if (node.kind() != IdlType.e_ident)
-				{
-					System.out.println(IdlTreeManipulator.getTypeName(node.kind()) + "::" + node.name() + ": " + node.getId());
-				}
-			}
-		
-			System.out.println("\n**** the manipulated idl parse tree ****");
-			treeManipulator.recursivePrint(root, 0);
-		}
-		
 		
 		// -- Start to generate Java code, the main purpose of all this --
 		
-		if (IdlCompiler.verbose)
-		{
+		if (verbose) {
 			System.out.println("\n**** Java code generation ****"); 
 		}
-		// otherwise we get an exception from the generator (translate_type(array))
-		treeManipulator.resetGraph(root);
+
 		
-		JavaGenerator javaGen = new JavaGenerator(xmlTypedefNodes, nodesToBeGenerated);  
-		javaGen.setIdlStruct2JavaBindingClassMappings(idl2jbindMapping);
+		// -- Rename nodes affected by XML.
+		// -- We do this before starting the code generation to get also nested structs and inherited AcsJ interfaces right.
 		
-		javaGen.translateData(root, IdlCompiler.packageName);
-		
-		if (IdlCompiler.verbose)
-		{
-			System.out.println("\n**** done with Java code generation ****"); 
+		for (Interface interfce : jacorbVisitor.xmlAwareIFs) {
+			interfce.set_name(interfce.name() + "J");
 		}
 
+		// Generate code for each xml typedef
+		for (AliasTypeSpec alias : jacorbVisitor.xmlTypedefs) {
+			AcsTypedefPrinter printer = new AcsTypedefPrinter(alias, namingExpert);
+			printer.printHolderClass();
+		}
+		
+		// Generate code for each xml struct
+		for (StructType struct : jacorbVisitor.xmlAwareStructs) {
+			AcsStructPrinter printer = new AcsStructPrinter(struct, jacorbVisitor.xmlTypedefs, jacorbVisitor.xmlAwareStructs, namingExpert);
+			printer.printStructClass();
+			printer.printHolderClass();
+		}
+		
+		// Generate code for each interface
+		for (Interface interfce : jacorbVisitor.xmlAwareIFs) {
+			// AcsInterfacePrinter printer = new AcsInterfacePrinter(interfce);
+			AcsInterfacePrinter printer = new AcsInterfacePrinter(interfce, jacorbVisitor.xmlTypedefs, jacorbVisitor.xmlAwareStructs, jacorbVisitor.xmlAwareIFs, namingExpert);
+			printer.printAcsJInterface();
+		}
+		
+		if (verbose) {
+			System.out.println("\n**** done with Java code generation ****");
+		}
 
+		
 		// -- component helper code generation --
 
-		if (compHelpGen != null)	
-		{				
+		if (compHelpGen != null) {
 			System.out.println("ALMA IDL compiler done, now invoking component helper code generator...");
 			compHelpGen.generateComponentHelperCode();
-		}		
+		}
 	}
+	
 	
 
 	/**
-	 * Modelled after {@link org.openorb.compiler.IdlCompiler#main}
-	 * @param args 	same as for {@link IdlCompiler#scan_arguments(String[])}
+	 * Utility method that creates a File object for code generation.
+	 * @throws IOException 
 	 */
-	public static void main(String[] args)
-	{
-		if (args.length == 0)
-			IdlCompiler.display_help();
+	public static File createFile(String jpackage, String className) throws IOException {
+		String fname = className + ".java";
+		String path = AcsAdapterForOldJacorb.getParserOutDir() + File.separatorChar + jpackage.replace('.', File.separatorChar );
 
-		IdlParser parser = IdlCompiler.createIDLParser(args);
-
-		if (IdlCompiler.idl_file_name.length == 0)
-			IdlCompiler.display_help(); 
-
-		XmlIdlCompiler idlCompiler = new XmlIdlCompiler();
-		
-		// -- Starts the compilation --
-		try
-		{
-			java.util.Hashtable definedCopy =
-				(java.util.Hashtable) IdlCompiler.definedMacros.clone();
-
-			for (int i = 0; i < IdlCompiler.idl_file_name.length; i++)
-			{
-				IdlCompiler.definedMacros = definedCopy;
-
-				System.out.println("ACS IDL compilation for " + IdlCompiler.idl_file_name[i]);
-				idlCompiler.compile_file(IdlCompiler.idl_file_name[i], parser);
+		File dir = new File(path);
+		if (!dir.exists()) {
+			if (!dir.mkdirs()) {
+				throw new IOException("Unable to create " + path);
 			}
 		}
-		catch (Exception ex)
-		{
+		File f = new File(dir, fname);
+
+		return f;
+	}
+
+	/**
+	 * The main method gets called from ACS/LGPL/Kit/acs/include/acsMakefileCore.mk
+	 * with the following JVM properties and application arguments:
+	 * <ul>
+	 *   <li><code>-d &lt;outputDir&gt;</code> with the root of the directory tree for the generated output.
+	 *   <li>JVM property <code>ACS.idl2jbind</code> that contains the ';'-separated bindings of XmlEntityStruct typedefs 
+	 *       to XML java binding classes as obtained from the Makefile directive <code>XML_IDL</code>; <br>
+	 *       Example value: "ObsProposal=alma.xmljbind.test.obsproposal.ObsProposal; SchedBlock=alma.xmljbind.test.schedblock.SchedBlock"
+	 *   <li>Optional JVM properties <code>alma.acs.tools.comphelpergen.doGenerate<code> and <code>alma.acs.tools.comphelpergen.outRootDir</code>
+	 *   <li>The command line also contains <code>$(verboseDef)</code> but it seems to be always empty.
+	 * </ul>
+	 * It runs the JacORB IDL parser with the custom ACS plugin and generates code for the nodes involved in 
+	 * XML translation.
+	 * @param externalArgs -d &lt;outdir&gt; -I&lt;myIdlIncludePath1&gt; -I&lt;myIdlIncludePath2&gt; &lt;myIdlFile&gt;
+	 */
+	public static void main(String[] args0) {
+
+		try {
+			// TODO: Remove this once acsMakefileCore.mk has been updated to set the args for jacorb
+			String[] args = translateFromOpenORB(args0);
+	
+			JacorbVisitor jacorbVisitor = new JacorbVisitor();
+			AcsJacorbParser parser = new AcsJacorbParser();
+			parser.init(args, jacorbVisitor);
+		
+			// Run the jacorb IDL parser with the ACS plugin
+			System.out.println("ACS IDL compilation for " + parser.idlFile);
+			parser.parse();
+			
+			// XML manipulation and code generation 
+			XmlIdlCompiler inst = new XmlIdlCompiler();
+			inst.generateCode(jacorbVisitor);
+		}
+		catch (Throwable thr) {
 			System.err.println("ACS IDL compilation failed!");
-			ex.printStackTrace(System.err);
+			thr.printStackTrace(System.err);
 			System.exit(1);
 		}
 	}
+	
+	/**
+	 * Translates OpenORB to JacORB arguments, needed for tests during the transition period
+	 * in which the acsMakefile still sets the arguments as needed by the old version of XmlIdl
+	 * that was based on OpenORB.
+	 */
+	private static String[] translateFromOpenORB(String[] args) {
+		
+		List<String> argListIn = Arrays.asList(args);
+		List<String> argListOut = new ArrayList<String>();
+		
+		for (String arg : argListIn) {
+			if (arg.equals("-notie")) {
+				// ignore.. not valid nor needed for jacorb
+			}
+//			else if (.... some value of $(verboseDef) if it ever gets used...) {
+//				int jacorbDebugLevel = ... 0-4
+//				argListOut.add("-W");
+//				argListOut.add(Integer.toString(jacorbDebugLevel));
+//			}
+			else {
+				argListOut.add(arg);
+			}
+		}
+		
+		return argListOut.toArray(new String[argListOut.size()]);
+	}
+	
 }

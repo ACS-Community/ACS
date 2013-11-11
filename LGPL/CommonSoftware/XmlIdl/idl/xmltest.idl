@@ -35,7 +35,7 @@ module xmltest
 	/*********************************************************
 	 * XmlEntityStruct is defined in the module
 	 * ACS/CommonSoftware/define, file xmlentity.idl,
-	 * which we can't include here because of module built order.
+	 * which we can't include here because of module build order.
 	 *
 	 * For testing this module, it does not matter that we simply define
 	 * the struct below instead of #including xmlentity.idl.
@@ -56,12 +56,13 @@ module xmltest
 	 * typedefs for our entity objects
 	 *********************************************************/
 
-	typedef XmlEntityStruct ObsProposal;
-	typedef XmlEntityStruct SchedBlock;
+	typedef XmlEntityStruct ObsProposal; // entity typedef
+	typedef XmlEntityStruct SchedBlock; // entity typedef
 
-	typedef sequence <SchedBlock> SchedBlockSeq;
+	typedef sequence <SchedBlock> SchedBlockSeq; // typedef of sequence of entity typedef
 
-	typedef SchedBlockSeq EvenMoreHiddenEntityClass;
+	typedef SchedBlockSeq EvenMoreHiddenEntityClass; // typedef of typedef of sequence of entity typedef
+
 
 	/*********************************************************
 	 * example component
@@ -95,13 +96,41 @@ module xmltest
 		SchedBlockSeq schedBlocks;
 	};
 
+	struct NonXmlStruct 
+	{
+		string mem1;
+		boolean mem2;
+	};
+	
 	interface MyBaseInterface;
 
 	interface ReturnInterface : ACS::ACSComponent
 	{
+		typedef sequence <ObsProjectTree> ProjectTreeSeq; // typedef of sequence of struct with entity typedef
+	
+		struct StructInsideInterfaceWithXmlViaMemberStruct 
+		{
+			NonXmlStruct normalStruct; // non-xml without typedef
+			ProjectTreeSeq projectTrees; // xml with typedef
+		};
+		
+		typedef NonXmlStruct NonXmlStructTypedef;
+		
+		struct StructInsideInterfaceWithXmlViaMemberStruct2 
+		{
+			NonXmlStructTypedef normalStruct; // non-xml with typedef
+			ObsProjectTree projectTree; // xml without typedef
+		};
+		
 		ObsProposal createObsProposal();
 		MyBaseInterface createBaseInterface(in long pippo);
 	};
+
+	// TODO: This interface is currently not recognized as being affected by XML
+//	interface XMLIndirectAcsComponent : ReturnInterface
+//	{
+//		string sayHello();
+//	};
 
 	interface MyBaseInterface
 	{
@@ -131,6 +160,9 @@ module xmltest
 		void setPreferedProposal(in ObsProposal proposal);
 	};
 
+	typedef sequence <XmlOffshoot> XmlOffshootSeq; // typedef of sequence of interface
+	
+	
 	/* ------------------------------------ */
 	/* | Non-AcsComponent using Offshoots | */
 	/* ------------------------------------ */
@@ -144,6 +176,23 @@ module xmltest
 	interface NormalComponentUsingXmlOffshoot : ACS::ACSComponent {
 		XmlOffshoot getOffshoot();
 	};
+
+	
+	// forward-declare XmlOffshoot2 to test resolution of the interface definition.
+	interface XmlOffshoot2;
+	
+	interface XmlOffshootReferencingOffshoot : ACS::OffShoot {
+		void setOtherOffshoot(in XmlOffshoot2 off2);
+	};
+	
+	interface XmlOffshoot2 : ACS::OffShoot
+	{
+		ObsProposal getObsProposal();
+		
+		// two offshoots referencing each other is currently not allowed (gives IllegalArgumentException)
+		//void setOtherOffshoot(in XmlOffshootReferencingOffshoot off);
+	};
+
 
 	interface XmlComponentUsingXmlOffshoot : ACS::ACSComponent {
 		ObsProposal createObsProposal();

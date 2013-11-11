@@ -34,7 +34,7 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-SCRIPTS = xmlIdlCompiler
+SCRIPTS =
 # 
 # IDL Files and flags
 # 
@@ -45,10 +45,10 @@ USER_IDL =
 # Jarfiles and their directories
 #
 JARFILES = xmlidl 
-xmlidl_DIRS =  alma
+xmlidl_DIRS = alma org
 xmlidl_EXTRAS = 
 
-#INSTALL_FILES = ../lib/openorb13Debug.jar ../lib/logkit.jar ../lib/avalon-framework.jar
+INSTALL_FILES =
 
 #>>>>> END OF standard rules
 

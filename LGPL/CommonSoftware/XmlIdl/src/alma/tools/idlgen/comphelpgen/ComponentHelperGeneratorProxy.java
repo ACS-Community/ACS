@@ -23,17 +23,14 @@ package alma.tools.idlgen.comphelpgen;
 
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
-import org.openorb.compiler.object.IdlInterface;
-import org.openorb.compiler.object.IdlObject;
-import org.openorb.compiler.parser.IdlType;
+import org.jacorb.idl.Interface;
 
 import alma.acs.tools.comphelpergen.CompHelperGenerator;
 import alma.acs.tools.comphelpergen.generated.ComponentHelperInfo;
 import alma.acs.tools.comphelpergen.generated.ComponentInterface;
-import alma.tools.idlgen.IDLComponentTester;
 
 
 
@@ -71,11 +68,11 @@ import alma.tools.idlgen.IDLComponentTester;
  */
 public class ComponentHelperGeneratorProxy
 {
-	// key = interface name , value = interface node
-	private Map<String, IdlInterface> m_interfaceMap;
+	/**
+	 * key = interface name , value = interface node
+	 */
+	private Map<String, Interface> m_interfaceMap = new HashMap<String, Interface>();
 	
-	private JavaPackageScout m_packageScout;
-
 	private boolean m_verbose;
 	private ComponentHelperInfo m_compHelpInfo;
 	
@@ -95,106 +92,53 @@ public class ComponentHelperGeneratorProxy
 
 
 	/**
-	 * Sets the original parse tree. This method must be called before 
-	 * {@link alma.tools.idlgen.IdlTreeManipulator} does its work because we need 
-	 * the original interface names that could otherwise be altered.
-	 * @param root  the root node of the IDL parse tree
+	 * Sets the ACS component interfaces from the original parse tree 
+	 * (those from the main IDL file, not from included IDL).
+	 * <p>
+	 * This method must be called before these interfaces get renamed in the parse tree, 
+	 * because here we must store the original names for later.
+	 * The interface nodes must be "live" so that later we also see the changed names ("xxxJ"). 
 	 */
-	public void setOriginalParseTree(IdlObject root, String rootPackage)
-	{
-		HashMap<String, IdlInterface> interfaceMap = new HashMap<String, IdlInterface>();
-		collectACSComponents(root, interfaceMap);
-		m_interfaceMap = interfaceMap;
+	public void setOriginalParseTree(Set<Interface> componentInterfaces) {
 		
-		m_packageScout = new JavaPackageScout();
-
-		try
-		{
-			m_packageScout.collectInterfacePackages(root, rootPackage);
-		}
-		catch (RuntimeException e)
-		{
-			if (m_verbose)
-			{
-				e.printStackTrace();
-				throw e;
-			}
+		for (Interface interfce : componentInterfaces) {
+			m_interfaceMap.put(interfce.name(), interfce);
 		}
 		
-		if (m_verbose)
-		{
+		if (m_verbose) {
 			System.out.println("done ComponentHelperGeneratorProxy#setOriginalParseTree.");
 		}
-				
 	}
 
 
-	/**
-	 * Traverses the tree under <code>node</code> and puts all interface nodes into the map
-	 * if the interface has ACSComponent as an ancestor.
-	 * @param node  IDL parse tree node
-	 * @param interfaceMap  will get interfaces (key=name, value=IdlObject)
-	 */
-	private void collectACSComponents(IdlObject node, HashMap interfaceMap)
-	{
-		// ignore included nodes
-		if (node.included())
-		{
-			return;
-		}
-		
-		if (node.kind() == IdlType.e_interface && 
-			IDLComponentTester.isACSComponent((IdlInterface)node) )
-		{
-			// keep the name separate because it is "volatile"
-			interfaceMap.put(node.name(), node);
-		}
-		else
-		{
-			node.reset();
-			while (!node.end())
-			{
-				IdlObject child = node.current();
-				collectACSComponents(child, interfaceMap);
-				node.next();
-			}
-			// important to reset -- otherwise we'll get an ArrayIndexOutOfBounds ex later 
-			// while traversing the tree in JavaPackageScout# 
-			node.reset();
-		}		
-	}
-	
-		
 	/**
 	 * Creates the configuration XML and sends it to an
 	 * <code>alma.acs.tools.comphelpergen.CompHelperGenerator</code> for code generation.
 	 */
 	public void generateComponentHelperCode()
-	{		
-		for (Iterator<String> iter = m_interfaceMap.keySet().iterator(); iter.hasNext();)
-		{
-			String interfaceName = iter.next();
+	{
+		for (String interfaceName : m_interfaceMap.keySet()) {
 
-			IdlInterface idlInterface = m_interfaceMap.get(interfaceName);
-			String idlPackageName = m_packageScout.getPackage(idlInterface);
+			Interface idlInterface = m_interfaceMap.get(interfaceName);
+			
+			String idlPackageName = idlInterface.pack_name;
 			
 			// the name might have changed between invocations of setOriginalParseTree
 			// and generateComponentHelperCode; one is the CORBA, the other 
 			// the XML-binding interface, or "inner" interface
-			String innerInterfaceName = idlInterface.name();			
+			String innerInterfaceName = idlInterface.name();
 			
-			if (m_verbose)
-			{
+			if (m_verbose) {
 				System.out.println("Corba-IF=" + interfaceName + 
 									"  innerIF=" + innerInterfaceName +
 									"  package=" + idlPackageName );
 			}
-						
+
 			// -- CASTOR -- 
 			
 			ComponentInterface compIF = new ComponentInterface();
 			m_compHelpInfo.addComponentInterface(compIF);
-			String almostIdlInterfaceName = idlInterface.getId(); // may be 'polluted' with "J" name
+			String almostIdlInterfaceName = idlInterface.id(); // may be 'polluted' with "J" name
 			String idlInterfaceName = almostIdlInterfaceName.substring(0,almostIdlInterfaceName.lastIndexOf('/')+1) + interfaceName + ":1.0";
 			compIF.setCorbaRepositoryId(idlInterfaceName);
 			compIF.setIdlPackage(idlPackageName);
@@ -207,20 +151,17 @@ public class ComponentHelperGeneratorProxy
 		}
 
 		StringWriter xmlStringWriter = new StringWriter();
-		try
-		{
+		try {
 			m_compHelpInfo.marshal(xmlStringWriter);
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			System.err.println("failed to generate configuration file (xml) for component helper generator:");
 			e.printStackTrace(System.err);
 			System.exit(1);
 		}
 		String xmlString = xmlStringWriter.toString();
 		
-		if (m_verbose)
-		{
+		if (m_verbose) {
 			System.out.println("\n\nWill invoke component helper generator (ACS module comphelpgen).");
 			System.out.println("************ component helper xml ********");
 			System.out.println(xmlString);
@@ -232,7 +173,6 @@ public class ComponentHelperGeneratorProxy
 		CompHelperGenerator compHelpGen = new CompHelperGenerator(m_verbose);
 		compHelpGen.generate(xmlString);
 	}
-	
 	
 }
 

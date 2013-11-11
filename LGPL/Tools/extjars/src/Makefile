@@ -39,10 +39,6 @@
 #
 # jar files to be installed
 #----------------------------
-# The files: 
-#    ../lib/openorb-1.3.0.jar ../lib/openorb_tools-1.3.0.jar
-# are part of the openORB distribution, but shall NOT be installed,
-# because they would collide with JacORB
 INSTALL_FILES = ../lib/activation.jar \
 	../lib/avalon-framework.jar \
 	../lib/commons-beanutils-1.8.3.jar \
@@ -77,7 +73,6 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/logkit.jar \
 	../lib/mockito-core-1.9.5.jar \
 	../lib/objenesis-1.2.jar \
-	../lib/openorb13Debug.jar \
 	../lib/prevayler-1.02.001.jar \
 	../lib/saxpath.jar \
 	../lib/servlet-api-3.0.jar \
