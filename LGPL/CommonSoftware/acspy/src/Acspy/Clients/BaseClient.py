@@ -422,7 +422,7 @@ class BaseClient(Client):
                 self.loggedIn = True
         except Exception, e:
             #cannot go on if the login fails
-            raise CORBAProblemExImpl()
+            raise CORBAProblemExImpl(exception=e)
         
         return token
     #--------------------------------------------------------------------------
