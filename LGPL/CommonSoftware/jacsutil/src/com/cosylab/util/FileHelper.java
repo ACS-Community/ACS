@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
+import alma.acs.util.ACSPorts;
+
 /**
  * @author dvitas
  */
@@ -50,6 +52,9 @@ public class FileHelper {
 
 		final String ACS_TEMP_DIR = "ACS.tmp";
 		final String TEMP_DIR = "tmp";
+		
+		final String DEFAULT_TEMP_DIR_ENV_VAR = "ACSDATA";
+
 
 		String propertyVal;
 		String filePath = null;
@@ -71,11 +76,32 @@ public class FileHelper {
 			filePath = propertyVal;
 		// use default
 		else {
-			filePath = "";
+			
+			// resolve default env. var.
+			String defaultTempDir = System.getenv(DEFAULT_TEMP_DIR_ENV_VAR);
+			if (defaultTempDir != null)
+				filePath = defaultTempDir;
+			else
+				filePath = "";
+
+			// add TEMP_DIR name
 			filePath += File.separatorChar;
 			filePath += TEMP_DIR;
+			
+			// add host name (env. var. is being read to be consitent with scripts)
+		    String hostName = System.getenv("HOST");
+		    if (hostName != null) 
+		    {
+				filePath += File.separatorChar;
+				filePath += hostName;
+		    }
+		      
 		}
 
+		// add acs instance path (env. var. is being read to be consitent with scripts)
+		filePath += File.separatorChar;
+		filePath += "ACS_INSTANCE." + ACSPorts.getBasePort();
+		
 		filePath += File.separatorChar;
 		filePath += fileName;
 
