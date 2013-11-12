@@ -40,20 +40,21 @@ DEBUG = on
 # 
 # IDL Files and flags
 # 
-IDL_FILES = xmltest acscourseMount
+IDL_FILES = xmltest
 xmltestStubs_LIBS = acscommonStubs acscomponentStubs
-acscourseMountStubs_LIBS = baciStubs ACSErrTypeCommonStubs ACSErrTypeACSCourseStubs
 
-ACSERRDEF = ACSErrTypeACSCourse
+XML_IDL="ObsProposal=dummyentities.ObsProposal; \
+         SchedBlock=dummyentities.SchedBlock; \
+         ObsProject=dummyentities.ObsProject"
 
 
 #
 # Jarfiles and their directories
 #
 JARFILES = xmlidlTest
-xmlidlTest_DIRS = alma dummyentities
+xmlidlTest_DIRS = alma
 
-SCRIPTS_L = allTests
+SCRIPTS_L = listGeneratedClasses.sh
 
 #>>>>> END OF standard rules
 
@@ -74,6 +75,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	$(RM) tatlogs unpacked_jars
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

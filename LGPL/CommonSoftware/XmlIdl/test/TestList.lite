@@ -26,5 +26,9 @@
 # who       when      what
 # --------  --------  ----------------------------------------------
 
-# This is all need to run.
-allTests
+#SOURCE xmlIdlTatEnvironment
+#PROLOGUE xmlIdlTATPrologue
+
+1 listGeneratedClasses "listGeneratedClasses.sh"
+
+#EPILOGUE xmlIdlTATEpilogue
