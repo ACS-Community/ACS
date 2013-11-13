@@ -480,7 +480,7 @@ install_xmlerr_$1_Python:$(LIB)/python/site-packages/$1Impl.py
 $(LIB)/python/site-packages/$1Impl.py: ../lib/python/site-packages/$1Impl.py
 	$(AT)cp ../lib/python/site-packages/$1Impl.py $(LIB)/python/site-packages
 	$(AT)chmod $(P644) $(LIB)/python/site-packages/$1Impl.py
-	$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages $(OUTPUT) 
+	$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) ../lib/python/site-packages 
 	$(AT)cp ../lib/python/site-packages/$1Impl.pyc $(LIB)/python/site-packages
 	$(AT)chmod $(P644) $(LIB)/python/site-packages/$1Impl.pyc
 
@@ -555,7 +555,7 @@ do_xsdbind_Python_$1: ../lib/python/site-packages/$1
 ../lib/python/site-packages/$1: ../idl/$1.xml
 	-@echo "== XSD Compiling with pyxbgen (Python): $1"
 	-$(AT)generateXsdPythonBinding $1
-	-$(AT)(cd ../lib/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $1) $(OUTPUT)
+	-$(AT)cd ../lib/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) $1
 
 .PHONY: clean_xsdbind_$1_Python
 clean_xsdbind_$1_Python:
@@ -568,7 +568,7 @@ install_xsdbind_$1_Python:$(LIB)/python/site-packages/$1 $(LIB)/python/site-pack
 $(LIB)/python/site-packages/$1: ../lib/python/site-packages/$1
 	-$(AT)cp -pr ../lib/python/site-packages/$1 $(LIB)/python/site-packages
 	-$(AT)chmod $(P755) $(LIB)/python/site-packages/$1
-	-$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages $(OUTPUT)
+	-$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) ../lib/python/site-packages
 
 $(LIB)/python/site-packages/$1.wxs: ../lib/python/site-packages/$1.wxs
 	$(AT)echo "\t$1.wxs";
@@ -1292,14 +1292,11 @@ clean_python_package_$1:
 clean_dist_python_package_$1: clean_python_package_$1;
 
 .PHONY : install_python_package_$1
-install_python_package_$1: $$($1_python_install_files_path)
-
-
-$$($1_python_install_files_path): $$($1_python_install_files_path_req)
+install_python_package_$1:
 	$(AT)mkdir -p $(LIB)/python/site-packages/$1  
 	$(AT)echo "Compiling python $1" 
 	$(AT)cp -pr `find ../lib/python/site-packages/$1/* -maxdepth 0 -type d;find ../lib/python/site-packages/$1/* -maxdepth 0 -type f` $(LIB)/python/site-packages/$1/
-	$(AT)(cd $(LIB)/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(LIB)/python/site-packages/$1 $(OUTPUT) )
+	$(AT)cd $(LIB)/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) $(LIB)/python/site-packages/$1
 	$(AT)chmod -R $(P755) $(LIB)/python/site-packages/$1
 
 
@@ -1324,7 +1321,7 @@ $(LIB)/python/site-packages/$1.py: ../lib/python/site-packages/$1.py
 	$(AT)echo "\t$1.py";\
 	cp ../lib/python/site-packages/$1.py $(LIB)/python/site-packages
 	chmod $(P644) $(LIB)/python/site-packages/$1.py
-	python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages $(OUTPUT)
+	python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) ../lib/python/site-packages
 	cp ../lib/python/site-packages/$1.pyc $(LIB)/python/site-packages
 	chmod $(P644) $(LIB)/python/site-packages/$1.pyc
 
