@@ -151,8 +151,10 @@ protected:
 	static unsigned int DDSLogVerbosity; // log level for RTI DDS, the type should be NDDS_Config_LogVerbosity
 	static const char* const DEFAULT_QoS_FILE;
 	static std::string urlProfileQoS;
-	// here we specify where it should be looked for default values = DEFAULT_QoS_FILE
-	void fillUrlProfileQoS(const char* envVar, const char* dilim = "");
+
+	/// here we specify where it should be looked for default values = DEFAULT_QoS_FILE
+	void fillUrlProfileQoS(const char*suffix=NULL);
+	void addUrlProfileQoS(const char* envVar, const char*suffix=NULL, const char* dilim = "");
 };//DDSConfiguration
 
 

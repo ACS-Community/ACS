@@ -58,7 +58,7 @@ bool DDSConfiguration::ignoreUserProfileQoS = true;
 bool DDSConfiguration::ignoreEnvironmentProfileQoS = true;
 
 std::string DDSConfiguration::urlProfileQoS="";
-const char* const DDSConfiguration::DEFAULT_QoS_FILE="/config/bulkDataNTDefaultQosProfiles.xml";
+const char* const DDSConfiguration::DEFAULT_QoS_FILE="/config/bulkDataNTDefaultQosProfiles.";//xml";
 
 bool AcsBulkdata::isBulkDataNTEnabled()
 {
@@ -78,20 +78,75 @@ DDSConfiguration::DDSConfiguration()
 {
 	libraryQos=DDSConfiguration::DEFAULT_LIBRARY;
 	DDSConfiguration::setDebugLevelFromEnvVar();
+	char *envVar=0;
 
 	if (urlProfileQoS.empty())
 	{
 		urlProfileQoS = "[";
-		fillUrlProfileQoS("ACSDATA");
+		envVar = getenv("LOCATION");
+		if (envVar != NULL)
+		{
+			fillUrlProfileQoS(envVar); //if we have a LOCATION it has to be append to the QoS file name
+		}
+		fillUrlProfileQoS(); // QoS file name w/o suffix
 		urlProfileQoS+="]";
 		// here we are sure that this is executed just once
-		char *envVar = getenv("NDDS_DISCOVERY_PEERS");
+		envVar = getenv("NDDS_DISCOVERY_PEERS");
 		if (envVar && *envVar)
 		{
 			ACS_SHORT_LOG((LM_WARNING, "Env. variable NDDS_DISCOVERY_PEERS has been set to: %s, what could cause a problem to connect sender and receivers if it is not proprly used.", envVar));
 		}//if
 	}//if
 }//DDSConfiguration
+
+void DDSConfiguration::fillUrlProfileQoS(const char*suffix)
+{
+	char *envVarValue = getenv("MODPATH");
+	if (envVarValue != NULL)
+	{
+		urlProfileQoS += "file://..";
+		urlProfileQoS += DEFAULT_QoS_FILE;
+		if ( suffix!=NULL ) { urlProfileQoS+= suffix; urlProfileQoS+=".";}
+		urlProfileQoS += "xml";
+		urlProfileQoS += "|";
+	}
+
+	addUrlProfileQoS("MODROOT", suffix, "|");
+	addUrlProfileQoS("INTROOT", suffix, "|");
+
+	envVarValue = getenv("INTLIST");
+	if (envVarValue != NULL) {
+		char *tmpEnvVarValue = strdup(envVarValue); // we have to make copy otherwise next time the INTLIST is corupted
+		char* tok = strtok(tmpEnvVarValue, ":");
+		while (tok != NULL)
+		{
+			urlProfileQoS += "file://";
+			urlProfileQoS += tok;
+			urlProfileQoS += DEFAULT_QoS_FILE;
+			if ( suffix!=NULL ) { urlProfileQoS+= suffix; urlProfileQoS+=".";}
+			urlProfileQoS += "xml";
+			urlProfileQoS += "|";
+			tok = strtok(NULL, ":");
+		}//while
+		free(tmpEnvVarValue);
+	}//if
+
+	addUrlProfileQoS("ACSDATA", suffix);
+}//fillUrlProfileQoS
+
+void DDSConfiguration::addUrlProfileQoS(const char* envVar, const char*suffix, const char *dilim)
+{
+	char *envVarValue = getenv(envVar);
+	if (envVarValue != NULL)
+	{
+		urlProfileQoS += "file://";
+		urlProfileQoS += envVarValue;
+		urlProfileQoS += DEFAULT_QoS_FILE;
+		if ( suffix!=NULL ) { urlProfileQoS+= suffix; urlProfileQoS+=".";}
+		urlProfileQoS += "xml";
+		urlProfileQoS += dilim;
+	}
+}//fillUrlProfileQoS
 
 void DDSConfiguration::setDebugLevelFromEnvVar()
 {
@@ -110,18 +165,6 @@ void DDSConfiguration::setDebugLevelFromEnvVar()
 		}
 	}
 }//setDebugLevelFromEnvVar
-
-void DDSConfiguration::fillUrlProfileQoS(const char* envVar, const char *dilim)
-{
-	char *envVarValue = getenv(envVar);
-	if (envVarValue != NULL)
-	{
-		urlProfileQoS += "file://";
-		urlProfileQoS += envVarValue;
-		urlProfileQoS += DEFAULT_QoS_FILE;
-		urlProfileQoS += dilim;
-	}
-}//fillUrlProfileQoS
 
 void DDSConfiguration::setDDSLogVerbosity()
 {
