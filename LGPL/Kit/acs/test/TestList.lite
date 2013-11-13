@@ -35,6 +35,17 @@
 7 SOURCE acsSearchPath6.tcl acsSearchPath6 "acsSearchPath -c lib"
 
 11 makeInstallTest1 "/usr/bin/make -f MakefileInstallTest install INCLUDES=fileDoesNotExist"
+
 12 PROLOGUE "tclsh acsMakeInstall2.tcl" \
    makeInstallTest2 "/usr/bin/make -f MakefileInstallTest install INCLUDES=duplicateFile" \
    EPILOGUE "rm -Rf ../include/subdir1 ../include/subdir2 ../include/duplicateFile"
+
+# Ensure that python compilation errors get properly reported (ICT-1643)
+13 SOURCE acsMakeInstall3.tcl \
+   makeInstallTest3 "/usr/bin/make -f MakefileInstallTest clean all install PY_PACKAGES=AcsPyTestPkg1" \
+   EPILOGUE "rm -Rf ../lib/python/site-packages/AcsPyTestPkg1 myIntroot"
+
+# Ensure that python compilaton is not repeated if there is an updated script in the package (ICT-1643)
+14 SOURCE acsMakeInstall4.tcl \
+   makeInstallTest4 "/usr/bin/make -f MakefileInstallTest clean all install PY_PACKAGES=AcsPyTestPkg2" \
+   EPILOGUE "rm -Rf ../lib/python/site-packages/AcsPyTestPkg2 myIntroot"

@@ -1,0 +1,12 @@
+1 - Cleaning up . . . . . clean done
+1 - make[1]: Entering directory `<modpath>/test'
+1 - == Making python package: ../lib/python/site-packages/AcsPyTestPkg1
+1 - make[1]: Leaving directory `<modpath>/test'
+1 -  . . . 'all' done
+1 - .....exe:
+1 - .....python_package:
+1 - Compiling python AcsPyTestPkg1
+1 - Compiling <installpath>/lib/python/site-packages/AcsPyTestPkg1/A.py ...
+1 - SyntaxError: ('invalid syntax', ('<installpath>/lib/python/site-packages/AcsPyTestPkg1/A.py', 33, 22, '        skdfksdllk = $$$$\n'))
+1 - 
+1 - make: *** [install_python_package_AcsPyTestPkg1] Error 1

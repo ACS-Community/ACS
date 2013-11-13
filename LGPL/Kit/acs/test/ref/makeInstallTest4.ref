@@ -1,0 +1,10 @@
+1 - Cleaning up . . . . . clean done
+1 - make[1]: Entering directory `<modpath>/test'
+1 - == Making python package: ../lib/python/site-packages/AcsPyTestPkg2
+1 - make[1]: Leaving directory `<modpath>/test'
+1 -  . . . 'all' done
+1 - .....exe:
+1 - .....python_package:
+1 - Compiling python AcsPyTestPkg2
+1 - ...other files
+1 -  . . . installation done

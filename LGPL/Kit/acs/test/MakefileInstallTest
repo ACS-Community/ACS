@@ -83,7 +83,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = acsReplaceTest
+SCRIPTS_L       =
 
 #
 # TCL scripts (public and local)
