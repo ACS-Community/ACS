@@ -180,14 +180,14 @@ class AsyncComponentActivator(Thread):
         if componentInfo is None:
             e2 = CannotActivateComponentCompletionImpl()
             # Error activating component
-            dummyCI=ComponentInfo(type,  #string type;
-                                  exe,  #string code;
+            dummyCI=ComponentInfo(self.type,  #string type;
+                                  self.exe,  #string code;
                                   None,  #Object reference;
                                   self.componentName,  #string name;
                                   [],  #HandleSeq clients;
                                   self.container.token.h,  #Handle activator;
                                   self.container.name,   #string container_name;
-                                  h,  #Handle h;
+                                  self.h,  #Handle h;
                                   0,  #AccessDescriptor access;
                                   []  #stringSeq interfaces;
                                   )
