@@ -442,13 +442,16 @@ export INSTALL_ROOT
 # set auxiliary variables according to the verbose flag
 #    AT      is used to prefix commands
 #    OUTPUT  is where the output is redirected 
+#    PYTHON_OUTPUT is a flag determining verbosity for python code compilation
 #
 ifdef MAKE_VERBOSE
     AT = 
     OUTPUT =
+    PYTHON_OUTPUT =
 else
     AT = @
     OUTPUT = > /dev/null
+    PYTHON_OUTPUT = -q
 endif
 
 #
