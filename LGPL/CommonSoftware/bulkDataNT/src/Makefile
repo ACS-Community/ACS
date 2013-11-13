@@ -265,18 +265,10 @@ clean : clean_all dds_clean
 	@echo " . . . clean done"
 
 install : install_all
-	$(AT)cp -f ../config/bulkDataNTDefaultQosProfiles.*.xml $(ACSDATA)/config
-	$(AT)chmod $(P644) $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.*.xml
-	@if [ -f $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml ]; then \
-    	rm -rf $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml; \
-    fi
-	@if [ -f $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.$(LOCATION).xml ]; then \
-    	ln -s $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.$(LOCATION).xml $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml; \
-    else \
-    	ln -s $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.default.xml $(ACSDATA)/config/bulkDataNTDefaultQosProfiles.xml; \
-    fi
+	$(AT)cp -f ../config/bulkDataNTDefaultQosProfiles.*.xml $(PRJTOP)/config
+	$(AT)chmod $(P644) $(PRJTOP)/config/bulkDataNTDefaultQosProfiles.*.xml
 	@echo " . . . installation done"
-
+	
 else
 
 .DEFAULT_GOAL := all	
