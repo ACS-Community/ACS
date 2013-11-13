@@ -12,13 +12,13 @@
 1 - {
 1 - 	private static org.omg.CORBA.TypeCode _type = null;
 1 - 
-1 - 	public static void insert (org.omg.CORBA.Any any, alma.xmltest.XmlEntityStruct[] s)
+1 - 	public static void insert (org.omg.CORBA.Any any, alma.fakexmlentity.XmlEntityStruct[] s)
 1 - 	{
 1 - 		any.type (type ());
 1 - 		write (any.create_output_stream (), s);
 1 - 	}
 1 - 
-1 - 	public static alma.xmltest.XmlEntityStruct[] extract (final org.omg.CORBA.Any any)
+1 - 	public static alma.fakexmlentity.XmlEntityStruct[] extract (final org.omg.CORBA.Any any)
 1 - 	{
 1 - 		return read (any.create_input_stream ());
 1 - 	}
@@ -36,14 +36,14 @@
 1 - 	{
 1 - 		return "IDL:alma/xmltest/EvenMoreHiddenEntityClass:1.0";
 1 - 	}
-1 - 	public static alma.xmltest.XmlEntityStruct[] read (final org.omg.CORBA.portable.InputStream _in)
+1 - 	public static alma.fakexmlentity.XmlEntityStruct[] read (final org.omg.CORBA.portable.InputStream _in)
 1 - 	{
-1 - 		alma.xmltest.XmlEntityStruct[] _result;
+1 - 		alma.fakexmlentity.XmlEntityStruct[] _result;
 1 - 		_result = alma.xmltest.SchedBlockSeqHelper.read(_in);
 1 - 		return _result;
 1 - 	}
 1 - 
-1 - 	public static void write (final org.omg.CORBA.portable.OutputStream _out, alma.xmltest.XmlEntityStruct[] _s)
+1 - 	public static void write (final org.omg.CORBA.portable.OutputStream _out, alma.fakexmlentity.XmlEntityStruct[] _s)
 1 - 	{
 1 - 		alma.xmltest.SchedBlockSeqHelper.write(_out,_s);
 1 - 	}
@@ -224,7 +224,7 @@
 1 - {
 1 - 	/* constants */
 1 - 	/* operations  */
-1 - 	alma.xmltest.XmlEntityStruct[] methodWithEntitySequence();
+1 - 	alma.fakexmlentity.XmlEntityStruct[] methodWithEntitySequence();
 1 - 	void methodWithHiddenEntitySequence(alma.xmltest.SchedBlockSeqHolder outThing);
 1 - }
 1 - 
@@ -246,8 +246,8 @@
 1 - 	{
 1 - 		m_opsHash.put ( "_get_name", new java.lang.Integer(0));
 1 - 		m_opsHash.put ( "methodWithEntitySequence", new java.lang.Integer(1));
-1 - 		m_opsHash.put ( "methodWithHiddenEntitySequence", new java.lang.Integer(2));
-1 - 		m_opsHash.put ( "_get_componentState", new java.lang.Integer(3));
+1 - 		m_opsHash.put ( "_get_componentState", new java.lang.Integer(2));
+1 - 		m_opsHash.put ( "methodWithHiddenEntitySequence", new java.lang.Integer(3));
 1 - 	}
 1 - 	private String[] ids = {"IDL:alma/xmltest/IFWithIndirectEntityUsage:1.0","IDL:alma/ACS/ACSComponent:1.0"};
 1 - 	public alma.xmltest.IFWithIndirectEntityUsage _this()
@@ -281,18 +281,18 @@
 1 - 				alma.xmltest.SchedBlockSeqHelper.write(_out,methodWithEntitySequence());
 1 - 				break;
 1 - 			}
-1 - 			case 2: // methodWithHiddenEntitySequence
+1 - 			case 2: // _get_componentState
+1 - 			{
+1 - 			_out = handler.createReply();
+1 - 			alma.ACS.ComponentStatesHelper.write(_out,componentState());
+1 - 				break;
+1 - 			}
+1 - 			case 3: // methodWithHiddenEntitySequence
 1 - 			{
 1 - 				alma.xmltest.SchedBlockSeqHolder _arg0= new alma.xmltest.SchedBlockSeqHolder();
 1 - 				_out = handler.createReply();
 1 - 				methodWithHiddenEntitySequence(_arg0);
 1 - 				alma.xmltest.SchedBlockSeqHelper.write(_out,_arg0.value);
-1 - 				break;
-1 - 			}
-1 - 			case 3: // _get_componentState
-1 - 			{
-1 - 			_out = handler.createReply();
-1 - 			alma.ACS.ComponentStatesHelper.write(_out,componentState());
 1 - 				break;
 1 - 			}
 1 - 		}
@@ -362,19 +362,19 @@
 1 - 		return _delegate.name();
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct[] methodWithEntitySequence()
+1 - 	public alma.fakexmlentity.XmlEntityStruct[] methodWithEntitySequence()
 1 - 	{
 1 - 		return _delegate.methodWithEntitySequence();
-1 - 	}
-1 - 
-1 - 	public void methodWithHiddenEntitySequence(alma.xmltest.SchedBlockSeqHolder outThing)
-1 - 	{
-1 - _delegate.methodWithHiddenEntitySequence(outThing);
 1 - 	}
 1 - 
 1 - 	public alma.ACS.ComponentStates componentState()
 1 - 	{
 1 - 		return _delegate.componentState();
+1 - 	}
+1 - 
+1 - 	public void methodWithHiddenEntitySequence(alma.xmltest.SchedBlockSeqHolder outThing)
+1 - 	{
+1 - _delegate.methodWithHiddenEntitySequence(outThing);
 1 - 	}
 1 - 
 1 - }
@@ -445,7 +445,7 @@
 1 - 
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct[] methodWithEntitySequence()
+1 - 	public alma.fakexmlentity.XmlEntityStruct[] methodWithEntitySequence()
 1 - 	{
 1 - 		while(true)
 1 - 		{
@@ -456,7 +456,7 @@
 1 - 			{
 1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "methodWithEntitySequence", true);
 1 - 				_is = _invoke(_os);
-1 - 				alma.xmltest.XmlEntityStruct[] _result = alma.xmltest.SchedBlockSeqHelper.read(_is);
+1 - 				alma.fakexmlentity.XmlEntityStruct[] _result = alma.xmltest.SchedBlockSeqHelper.read(_is);
 1 - 				return _result;
 1 - 			}
 1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
@@ -476,7 +476,7 @@
 1 - 			if( _so == null )
 1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
 1 - 			IFWithIndirectEntityUsageOperations _localServant = (IFWithIndirectEntityUsageOperations)_so.servant;
-1 - 			alma.xmltest.XmlEntityStruct[] _result;			try
+1 - 			alma.fakexmlentity.XmlEntityStruct[] _result;			try
 1 - 			{
 1 - 			_result = _localServant.methodWithEntitySequence();
 1 - 			}
@@ -485,52 +485,6 @@
 1 - 				_servant_postinvoke(_so);
 1 - 			}
 1 - 			return _result;
-1 - 		}
-1 - 
-1 - 		}
-1 - 
-1 - 	}
-1 - 
-1 - 	public void methodWithHiddenEntitySequence(alma.xmltest.SchedBlockSeqHolder outThing)
-1 - 	{
-1 - 		while(true)
-1 - 		{
-1 - 		if(! this._is_local())
-1 - 		{
-1 - 			org.omg.CORBA.portable.InputStream _is = null;
-1 - 			try
-1 - 			{
-1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "methodWithHiddenEntitySequence", true);
-1 - 				_is = _invoke(_os);
-1 - 				outThing.value = alma.xmltest.SchedBlockSeqHelper.read(_is);
-1 - 				return;
-1 - 			}
-1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
-1 - 			catch( org.omg.CORBA.portable.ApplicationException _ax )
-1 - 			{
-1 - 				String _id = _ax.getId();
-1 - 				throw new RuntimeException("Unexpected exception " + _id );
-1 - 			}
-1 - 			finally
-1 - 			{
-1 - 				this._releaseReply(_is);
-1 - 			}
-1 - 		}
-1 - 		else
-1 - 		{
-1 - 			org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke( "methodWithHiddenEntitySequence", _opsClass );
-1 - 			if( _so == null )
-1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
-1 - 			IFWithIndirectEntityUsageOperations _localServant = (IFWithIndirectEntityUsageOperations)_so.servant;
-1 - 			try
-1 - 			{
-1 - 			_localServant.methodWithHiddenEntitySequence(outThing);
-1 - 			}
-1 - 			finally
-1 - 			{
-1 - 				_servant_postinvoke(_so);
-1 - 			}
-1 - 			return;
 1 - 		}
 1 - 
 1 - 		}
@@ -579,6 +533,52 @@
 1 - 		}
 1 - 		return _result;
 1 - 		}
+1 - 		}
+1 - 
+1 - 	}
+1 - 
+1 - 	public void methodWithHiddenEntitySequence(alma.xmltest.SchedBlockSeqHolder outThing)
+1 - 	{
+1 - 		while(true)
+1 - 		{
+1 - 		if(! this._is_local())
+1 - 		{
+1 - 			org.omg.CORBA.portable.InputStream _is = null;
+1 - 			try
+1 - 			{
+1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "methodWithHiddenEntitySequence", true);
+1 - 				_is = _invoke(_os);
+1 - 				outThing.value = alma.xmltest.SchedBlockSeqHelper.read(_is);
+1 - 				return;
+1 - 			}
+1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
+1 - 			catch( org.omg.CORBA.portable.ApplicationException _ax )
+1 - 			{
+1 - 				String _id = _ax.getId();
+1 - 				throw new RuntimeException("Unexpected exception " + _id );
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				this._releaseReply(_is);
+1 - 			}
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke( "methodWithHiddenEntitySequence", _opsClass );
+1 - 			if( _so == null )
+1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
+1 - 			IFWithIndirectEntityUsageOperations _localServant = (IFWithIndirectEntityUsageOperations)_so.servant;
+1 - 			try
+1 - 			{
+1 - 			_localServant.methodWithHiddenEntitySequence(outThing);
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				_servant_postinvoke(_so);
+1 - 			}
+1 - 			return;
+1 - 		}
+1 - 
 1 - 		}
 1 - 
 1 - 	}
@@ -3612,13 +3612,13 @@
 1 - 	public static alma.xmltest.ObsProjectTree read (final org.omg.CORBA.portable.InputStream in)
 1 - 	{
 1 - 		alma.xmltest.ObsProjectTree result = new alma.xmltest.ObsProjectTree();
-1 - 		result.prop=alma.xmltest.XmlEntityStructHelper.read(in);
+1 - 		result.prop=alma.fakexmlentity.XmlEntityStructHelper.read(in);
 1 - 		result.schedBlocks = alma.xmltest.SchedBlockSeqHelper.read(in);
 1 - 		return result;
 1 - 	}
 1 - 	public static void write (final org.omg.CORBA.portable.OutputStream out, final alma.xmltest.ObsProjectTree s)
 1 - 	{
-1 - 		alma.xmltest.XmlEntityStructHelper.write(out,s.prop);
+1 - 		alma.fakexmlentity.XmlEntityStructHelper.write(out,s.prop);
 1 - 		alma.xmltest.SchedBlockSeqHelper.write(out,s.schedBlocks);
 1 - 	}
 1 - }
@@ -3669,9 +3669,9 @@
 1 - 	implements org.omg.CORBA.portable.IDLEntity
 1 - {
 1 - 	public ObsProjectTree(){}
-1 - 	public alma.xmltest.XmlEntityStruct prop;
-1 - 	public alma.xmltest.XmlEntityStruct[] schedBlocks;
-1 - 	public ObsProjectTree(alma.xmltest.XmlEntityStruct prop, alma.xmltest.XmlEntityStruct[] schedBlocks)
+1 - 	public alma.fakexmlentity.XmlEntityStruct prop;
+1 - 	public alma.fakexmlentity.XmlEntityStruct[] schedBlocks;
+1 - 	public ObsProjectTree(alma.fakexmlentity.XmlEntityStruct prop, alma.fakexmlentity.XmlEntityStruct[] schedBlocks)
 1 - 	{
 1 - 		this.prop = prop;
 1 - 		this.schedBlocks = schedBlocks;
@@ -3725,13 +3725,13 @@
 1 - {
 1 - 	private static org.omg.CORBA.TypeCode _type = null;
 1 - 
-1 - 	public static void insert (org.omg.CORBA.Any any, alma.xmltest.XmlEntityStruct s)
+1 - 	public static void insert (org.omg.CORBA.Any any, alma.fakexmlentity.XmlEntityStruct s)
 1 - 	{
 1 - 		any.type (type ());
 1 - 		write (any.create_output_stream (), s);
 1 - 	}
 1 - 
-1 - 	public static alma.xmltest.XmlEntityStruct extract (final org.omg.CORBA.Any any)
+1 - 	public static alma.fakexmlentity.XmlEntityStruct extract (final org.omg.CORBA.Any any)
 1 - 	{
 1 - 		return read (any.create_input_stream ());
 1 - 	}
@@ -3740,7 +3740,7 @@
 1 - 	{
 1 - 		if (_type == null)
 1 - 		{
-1 - 			_type = org.omg.CORBA.ORB.init().create_alias_tc(alma.xmltest.ObsProposalHelper.id(), "ObsProposal",alma.xmltest.XmlEntityStructHelper.type());
+1 - 			_type = org.omg.CORBA.ORB.init().create_alias_tc(alma.xmltest.ObsProposalHelper.id(), "ObsProposal",alma.fakexmlentity.XmlEntityStructHelper.type());
 1 - 		}
 1 - 		return _type;
 1 - 	}
@@ -3749,16 +3749,16 @@
 1 - 	{
 1 - 		return "IDL:alma/xmltest/ObsProposal:1.0";
 1 - 	}
-1 - 	public static alma.xmltest.XmlEntityStruct read (final org.omg.CORBA.portable.InputStream _in)
+1 - 	public static alma.fakexmlentity.XmlEntityStruct read (final org.omg.CORBA.portable.InputStream _in)
 1 - 	{
-1 - 		alma.xmltest.XmlEntityStruct _result;
-1 - 		_result=alma.xmltest.XmlEntityStructHelper.read(_in);
+1 - 		alma.fakexmlentity.XmlEntityStruct _result;
+1 - 		_result=alma.fakexmlentity.XmlEntityStructHelper.read(_in);
 1 - 		return _result;
 1 - 	}
 1 - 
-1 - 	public static void write (final org.omg.CORBA.portable.OutputStream _out, alma.xmltest.XmlEntityStruct _s)
+1 - 	public static void write (final org.omg.CORBA.portable.OutputStream _out, alma.fakexmlentity.XmlEntityStruct _s)
 1 - 	{
-1 - 		alma.xmltest.XmlEntityStructHelper.write(_out,_s);
+1 - 		alma.fakexmlentity.XmlEntityStructHelper.write(_out,_s);
 1 - 	}
 1 - }
 1 - 
@@ -3937,7 +3937,7 @@
 1 - {
 1 - 	/* constants */
 1 - 	/* operations  */
-1 - 	alma.xmltest.XmlEntityStruct createObsProposal();
+1 - 	alma.fakexmlentity.XmlEntityStruct createObsProposal();
 1 - 	alma.xmltest.MyBaseInterface createBaseInterface(int pippo);
 1 - }
 1 - 
@@ -4229,10 +4229,10 @@
 1 - public final class StructInsideInterfaceWithXmlViaMemberStruct2J
 1 - {
 1 - 	public alma.xmltest.NonXmlStruct normalStruct;
-1 - 	public alma.xmltest.ReturnInterfacePackage.StructInsideInterfaceWithXmlViaMemberStruct2J projectTree;
+1 - 	public alma.xmltest.ObsProjectTreeJ projectTree;
 1 - 
 1 - 	public StructInsideInterfaceWithXmlViaMemberStruct2J() {}
-1 - 	public StructInsideInterfaceWithXmlViaMemberStruct2J(alma.xmltest.NonXmlStruct normalStruct, alma.xmltest.ReturnInterfacePackage.StructInsideInterfaceWithXmlViaMemberStruct2J projectTree)
+1 - 	public StructInsideInterfaceWithXmlViaMemberStruct2J(alma.xmltest.NonXmlStruct normalStruct, alma.xmltest.ObsProjectTreeJ projectTree)
 1 - 	{
 1 - 		this.normalStruct = normalStruct;
 1 - 		this.projectTree = projectTree;
@@ -4442,7 +4442,7 @@
 1 - 			case 3: // createObsProposal
 1 - 			{
 1 - 				_out = handler.createReply();
-1 - 				alma.xmltest.XmlEntityStructHelper.write(_out,createObsProposal());
+1 - 				alma.fakexmlentity.XmlEntityStructHelper.write(_out,createObsProposal());
 1 - 				break;
 1 - 			}
 1 - 		}
@@ -4522,7 +4522,7 @@
 1 - 		return _delegate.componentState();
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct createObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct createObsProposal()
 1 - 	{
 1 - 		return _delegate.createObsProposal();
 1 - 	}
@@ -4688,7 +4688,7 @@
 1 - 
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct createObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct createObsProposal()
 1 - 	{
 1 - 		while(true)
 1 - 		{
@@ -4699,7 +4699,7 @@
 1 - 			{
 1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "createObsProposal", true);
 1 - 				_is = _invoke(_os);
-1 - 				alma.xmltest.XmlEntityStruct _result = alma.xmltest.XmlEntityStructHelper.read(_is);
+1 - 				alma.fakexmlentity.XmlEntityStruct _result = alma.fakexmlentity.XmlEntityStructHelper.read(_is);
 1 - 				return _result;
 1 - 			}
 1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
@@ -4719,7 +4719,7 @@
 1 - 			if( _so == null )
 1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
 1 - 			ReturnInterfaceOperations _localServant = (ReturnInterfaceOperations)_so.servant;
-1 - 			alma.xmltest.XmlEntityStruct _result;			try
+1 - 			alma.fakexmlentity.XmlEntityStruct _result;			try
 1 - 			{
 1 - 			_result = _localServant.createObsProposal();
 1 - 			}
@@ -4748,13 +4748,13 @@
 1 - {
 1 - 	private static org.omg.CORBA.TypeCode _type = null;
 1 - 
-1 - 	public static void insert (org.omg.CORBA.Any any, alma.xmltest.XmlEntityStruct s)
+1 - 	public static void insert (org.omg.CORBA.Any any, alma.fakexmlentity.XmlEntityStruct s)
 1 - 	{
 1 - 		any.type (type ());
 1 - 		write (any.create_output_stream (), s);
 1 - 	}
 1 - 
-1 - 	public static alma.xmltest.XmlEntityStruct extract (final org.omg.CORBA.Any any)
+1 - 	public static alma.fakexmlentity.XmlEntityStruct extract (final org.omg.CORBA.Any any)
 1 - 	{
 1 - 		return read (any.create_input_stream ());
 1 - 	}
@@ -4763,7 +4763,7 @@
 1 - 	{
 1 - 		if (_type == null)
 1 - 		{
-1 - 			_type = org.omg.CORBA.ORB.init().create_alias_tc(alma.xmltest.SchedBlockHelper.id(), "SchedBlock",alma.xmltest.XmlEntityStructHelper.type());
+1 - 			_type = org.omg.CORBA.ORB.init().create_alias_tc(alma.xmltest.SchedBlockHelper.id(), "SchedBlock",alma.fakexmlentity.XmlEntityStructHelper.type());
 1 - 		}
 1 - 		return _type;
 1 - 	}
@@ -4772,16 +4772,16 @@
 1 - 	{
 1 - 		return "IDL:alma/xmltest/SchedBlock:1.0";
 1 - 	}
-1 - 	public static alma.xmltest.XmlEntityStruct read (final org.omg.CORBA.portable.InputStream _in)
+1 - 	public static alma.fakexmlentity.XmlEntityStruct read (final org.omg.CORBA.portable.InputStream _in)
 1 - 	{
-1 - 		alma.xmltest.XmlEntityStruct _result;
-1 - 		_result=alma.xmltest.XmlEntityStructHelper.read(_in);
+1 - 		alma.fakexmlentity.XmlEntityStruct _result;
+1 - 		_result=alma.fakexmlentity.XmlEntityStructHelper.read(_in);
 1 - 		return _result;
 1 - 	}
 1 - 
-1 - 	public static void write (final org.omg.CORBA.portable.OutputStream _out, alma.xmltest.XmlEntityStruct _s)
+1 - 	public static void write (final org.omg.CORBA.portable.OutputStream _out, alma.fakexmlentity.XmlEntityStruct _s)
 1 - 	{
-1 - 		alma.xmltest.XmlEntityStructHelper.write(_out,_s);
+1 - 		alma.fakexmlentity.XmlEntityStructHelper.write(_out,_s);
 1 - 	}
 1 - }
 1 - 
@@ -4811,13 +4811,13 @@
 1 - {
 1 - 	private static org.omg.CORBA.TypeCode _type = null;
 1 - 
-1 - 	public static void insert (org.omg.CORBA.Any any, alma.xmltest.XmlEntityStruct[] s)
+1 - 	public static void insert (org.omg.CORBA.Any any, alma.fakexmlentity.XmlEntityStruct[] s)
 1 - 	{
 1 - 		any.type (type ());
 1 - 		write (any.create_output_stream (), s);
 1 - 	}
 1 - 
-1 - 	public static alma.xmltest.XmlEntityStruct[] extract (final org.omg.CORBA.Any any)
+1 - 	public static alma.fakexmlentity.XmlEntityStruct[] extract (final org.omg.CORBA.Any any)
 1 - 	{
 1 - 		return read (any.create_input_stream ());
 1 - 	}
@@ -4835,26 +4835,26 @@
 1 - 	{
 1 - 		return "IDL:alma/xmltest/SchedBlockSeq:1.0";
 1 - 	}
-1 - 	public static alma.xmltest.XmlEntityStruct[] read (final org.omg.CORBA.portable.InputStream _in)
+1 - 	public static alma.fakexmlentity.XmlEntityStruct[] read (final org.omg.CORBA.portable.InputStream _in)
 1 - 	{
-1 - 		alma.xmltest.XmlEntityStruct[] _result;
+1 - 		alma.fakexmlentity.XmlEntityStruct[] _result;
 1 - 		int _l_result0 = _in.read_long();
-1 - 		_result = new alma.xmltest.XmlEntityStruct[_l_result0];
+1 - 		_result = new alma.fakexmlentity.XmlEntityStruct[_l_result0];
 1 - 		for (int i=0;i<_result.length;i++)
 1 - 		{
-1 - 			_result[i]=alma.xmltest.XmlEntityStructHelper.read(_in);
+1 - 			_result[i]=alma.fakexmlentity.XmlEntityStructHelper.read(_in);
 1 - 		}
 1 - 
 1 - 		return _result;
 1 - 	}
 1 - 
-1 - 	public static void write (final org.omg.CORBA.portable.OutputStream _out, alma.xmltest.XmlEntityStruct[] _s)
+1 - 	public static void write (final org.omg.CORBA.portable.OutputStream _out, alma.fakexmlentity.XmlEntityStruct[] _s)
 1 - 	{
 1 - 		
 1 - 		_out.write_long(_s.length);
 1 - 		for (int i=0; i<_s.length;i++)
 1 - 		{
-1 - 			alma.xmltest.XmlEntityStructHelper.write(_out,_s[i]);
+1 - 			alma.fakexmlentity.XmlEntityStructHelper.write(_out,_s[i]);
 1 - 		}
 1 - 
 1 - 	}
@@ -4871,12 +4871,12 @@
 1 - public final class SchedBlockSeqHolder
 1 - 	implements org.omg.CORBA.portable.Streamable
 1 - {
-1 - 	public alma.xmltest.XmlEntityStruct[] value;
+1 - 	public alma.fakexmlentity.XmlEntityStruct[] value;
 1 - 
 1 - 	public SchedBlockSeqHolder ()
 1 - 	{
 1 - 	}
-1 - 	public SchedBlockSeqHolder (final alma.xmltest.XmlEntityStruct[] initial)
+1 - 	public SchedBlockSeqHolder (final alma.fakexmlentity.XmlEntityStruct[] initial)
 1 - 	{
 1 - 		value = initial;
 1 - 	}
@@ -5070,7 +5070,7 @@
 1 - 	/* constants */
 1 - 	/* operations  */
 1 - 	java.lang.String sayHello();
-1 - 	alma.xmltest.XmlEntityStruct createObsProposal();
+1 - 	alma.fakexmlentity.XmlEntityStruct createObsProposal();
 1 - }
 1 - 
 1 - ----------------------- Java file ./alma/xmltest/XMLAcsComponentPOA.java
@@ -5135,7 +5135,7 @@
 1 - 			case 3: // createObsProposal
 1 - 			{
 1 - 				_out = handler.createReply();
-1 - 				alma.xmltest.XmlEntityStructHelper.write(_out,createObsProposal());
+1 - 				alma.fakexmlentity.XmlEntityStructHelper.write(_out,createObsProposal());
 1 - 				break;
 1 - 			}
 1 - 		}
@@ -5215,7 +5215,7 @@
 1 - 		return _delegate.componentState();
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct createObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct createObsProposal()
 1 - 	{
 1 - 		return _delegate.createObsProposal();
 1 - 	}
@@ -5380,7 +5380,7 @@
 1 - 
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct createObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct createObsProposal()
 1 - 	{
 1 - 		while(true)
 1 - 		{
@@ -5391,7 +5391,7 @@
 1 - 			{
 1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "createObsProposal", true);
 1 - 				_is = _invoke(_os);
-1 - 				alma.xmltest.XmlEntityStruct _result = alma.xmltest.XmlEntityStructHelper.read(_is);
+1 - 				alma.fakexmlentity.XmlEntityStruct _result = alma.fakexmlentity.XmlEntityStructHelper.read(_is);
 1 - 				return _result;
 1 - 			}
 1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
@@ -5411,7 +5411,7 @@
 1 - 			if( _so == null )
 1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
 1 - 			XMLAcsComponentOperations _localServant = (XMLAcsComponentOperations)_so.servant;
-1 - 			alma.xmltest.XmlEntityStruct _result;			try
+1 - 			alma.fakexmlentity.XmlEntityStruct _result;			try
 1 - 			{
 1 - 			_result = _localServant.createObsProposal();
 1 - 			}
@@ -5589,7 +5589,7 @@
 1 - {
 1 - 	/* constants */
 1 - 	/* operations  */
-1 - 	alma.xmltest.XmlEntityStruct createObsProposal();
+1 - 	alma.fakexmlentity.XmlEntityStruct createObsProposal();
 1 - 	alma.xmltest.NoXmlOffshoot getOffshoot();
 1 - }
 1 - 
@@ -5655,7 +5655,7 @@
 1 - 			case 3: // createObsProposal
 1 - 			{
 1 - 				_out = handler.createReply();
-1 - 				alma.xmltest.XmlEntityStructHelper.write(_out,createObsProposal());
+1 - 				alma.fakexmlentity.XmlEntityStructHelper.write(_out,createObsProposal());
 1 - 				break;
 1 - 			}
 1 - 		}
@@ -5735,7 +5735,7 @@
 1 - 		return _delegate.componentState();
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct createObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct createObsProposal()
 1 - 	{
 1 - 		return _delegate.createObsProposal();
 1 - 	}
@@ -5900,7 +5900,7 @@
 1 - 
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct createObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct createObsProposal()
 1 - 	{
 1 - 		while(true)
 1 - 		{
@@ -5911,7 +5911,7 @@
 1 - 			{
 1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "createObsProposal", true);
 1 - 				_is = _invoke(_os);
-1 - 				alma.xmltest.XmlEntityStruct _result = alma.xmltest.XmlEntityStructHelper.read(_is);
+1 - 				alma.fakexmlentity.XmlEntityStruct _result = alma.fakexmlentity.XmlEntityStructHelper.read(_is);
 1 - 				return _result;
 1 - 			}
 1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
@@ -5931,7 +5931,7 @@
 1 - 			if( _so == null )
 1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
 1 - 			XmlComponentUsingNormalOffshootOperations _localServant = (XmlComponentUsingNormalOffshootOperations)_so.servant;
-1 - 			alma.xmltest.XmlEntityStruct _result;			try
+1 - 			alma.fakexmlentity.XmlEntityStruct _result;			try
 1 - 			{
 1 - 			_result = _localServant.createObsProposal();
 1 - 			}
@@ -6109,7 +6109,7 @@
 1 - {
 1 - 	/* constants */
 1 - 	/* operations  */
-1 - 	alma.xmltest.XmlEntityStruct createObsProposal();
+1 - 	alma.fakexmlentity.XmlEntityStruct createObsProposal();
 1 - 	alma.xmltest.XmlOffshoot getOffshoot();
 1 - }
 1 - 
@@ -6175,7 +6175,7 @@
 1 - 			case 3: // createObsProposal
 1 - 			{
 1 - 				_out = handler.createReply();
-1 - 				alma.xmltest.XmlEntityStructHelper.write(_out,createObsProposal());
+1 - 				alma.fakexmlentity.XmlEntityStructHelper.write(_out,createObsProposal());
 1 - 				break;
 1 - 			}
 1 - 		}
@@ -6255,7 +6255,7 @@
 1 - 		return _delegate.componentState();
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct createObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct createObsProposal()
 1 - 	{
 1 - 		return _delegate.createObsProposal();
 1 - 	}
@@ -6420,7 +6420,7 @@
 1 - 
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct createObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct createObsProposal()
 1 - 	{
 1 - 		while(true)
 1 - 		{
@@ -6431,7 +6431,7 @@
 1 - 			{
 1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "createObsProposal", true);
 1 - 				_is = _invoke(_os);
-1 - 				alma.xmltest.XmlEntityStruct _result = alma.xmltest.XmlEntityStructHelper.read(_is);
+1 - 				alma.fakexmlentity.XmlEntityStruct _result = alma.fakexmlentity.XmlEntityStructHelper.read(_is);
 1 - 				return _result;
 1 - 			}
 1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
@@ -6451,7 +6451,7 @@
 1 - 			if( _so == null )
 1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
 1 - 			XmlComponentUsingXmlOffshootOperations _localServant = (XmlComponentUsingXmlOffshootOperations)_so.servant;
-1 - 			alma.xmltest.XmlEntityStruct _result;			try
+1 - 			alma.fakexmlentity.XmlEntityStruct _result;			try
 1 - 			{
 1 - 			_result = _localServant.createObsProposal();
 1 - 			}
@@ -6466,107 +6466,6 @@
 1 - 
 1 - 	}
 1 - 
-1 - }
-1 - 
-1 - ----------------------- Java file ./alma/xmltest/XmlEntityStructHelper.java
-1 - package alma.xmltest;
-1 - 
-1 - 
-1 - /**
-1 -  *	Generated from IDL definition of struct "XmlEntityStruct"
-1 -  *	@author JacORB IDL compiler 
-1 -  */
-1 - 
-1 - public final class XmlEntityStructHelper
-1 - {
-1 - 	private static org.omg.CORBA.TypeCode _type = null;
-1 - 	public static org.omg.CORBA.TypeCode type ()
-1 - 	{
-1 - 		if (_type == null)
-1 - 		{
-1 - 			_type = org.omg.CORBA.ORB.init().create_struct_tc(alma.xmltest.XmlEntityStructHelper.id(),"XmlEntityStruct",new org.omg.CORBA.StructMember[]{new org.omg.CORBA.StructMember("xmlString", org.omg.CORBA.ORB.init().create_string_tc(0), null)});
-1 - 		}
-1 - 		return _type;
-1 - 	}
-1 - 
-1 - 	public static void insert (final org.omg.CORBA.Any any, final alma.xmltest.XmlEntityStruct s)
-1 - 	{
-1 - 		any.type(type());
-1 - 		write( any.create_output_stream(),s);
-1 - 	}
-1 - 
-1 - 	public static alma.xmltest.XmlEntityStruct extract (final org.omg.CORBA.Any any)
-1 - 	{
-1 - 		return read(any.create_input_stream());
-1 - 	}
-1 - 
-1 - 	public static String id()
-1 - 	{
-1 - 		return "IDL:alma/xmltest/XmlEntityStruct:1.0";
-1 - 	}
-1 - 	public static alma.xmltest.XmlEntityStruct read (final org.omg.CORBA.portable.InputStream in)
-1 - 	{
-1 - 		alma.xmltest.XmlEntityStruct result = new alma.xmltest.XmlEntityStruct();
-1 - 		result.xmlString=in.read_string();
-1 - 		return result;
-1 - 	}
-1 - 	public static void write (final org.omg.CORBA.portable.OutputStream out, final alma.xmltest.XmlEntityStruct s)
-1 - 	{
-1 - 		out.write_string(s.xmlString);
-1 - 	}
-1 - }
-1 - 
-1 - ----------------------- Java file ./alma/xmltest/XmlEntityStructHolder.java
-1 - package alma.xmltest;
-1 - 
-1 - /**
-1 -  *	Generated from IDL definition of struct "XmlEntityStruct"
-1 -  *	@author JacORB IDL compiler 
-1 -  */
-1 - 
-1 - public final class XmlEntityStructHolder
-1 - 	implements org.omg.CORBA.portable.Streamable
-1 - {
-1 - 	public alma.xmltest.XmlEntityStruct value;
-1 - 
-1 - 	public XmlEntityStructHolder ()
-1 - 	{
-1 - 	}
-1 - 	public XmlEntityStructHolder(final alma.xmltest.XmlEntityStruct initial)
-1 - 	{
-1 - 		value = initial;
-1 - 	}
-1 - 	public org.omg.CORBA.TypeCode _type ()
-1 - 	{
-1 - 		return alma.xmltest.XmlEntityStructHelper.type ();
-1 - 	}
-1 - 	public void _read(final org.omg.CORBA.portable.InputStream _in)
-1 - 	{
-1 - 		value = alma.xmltest.XmlEntityStructHelper.read(_in);
-1 - 	}
-1 - 	public void _write(final org.omg.CORBA.portable.OutputStream _out)
-1 - 	{
-1 - 		alma.xmltest.XmlEntityStructHelper.write(_out, value);
-1 - 	}
-1 - }
-1 - 
-1 - ----------------------- Java file ./alma/xmltest/XmlEntityStruct.java
-1 - package alma.xmltest;
-1 - 
-1 - /**
-1 -  *	Generated from IDL definition of struct "XmlEntityStruct"
-1 -  *	@author JacORB IDL compiler 
-1 -  */
-1 - 
-1 - public final class XmlEntityStruct
-1 - 	implements org.omg.CORBA.portable.IDLEntity
-1 - {
-1 - 	public XmlEntityStruct(){}
-1 - 	public java.lang.String xmlString = "";
-1 - 	public XmlEntityStruct(java.lang.String xmlString)
-1 - 	{
-1 - 		this.xmlString = xmlString;
-1 - 	}
 1 - }
 1 - 
 1 - ----------------------- Java file ./alma/xmltest/XMLNonAcsComponentHelper.java
@@ -6712,7 +6611,7 @@
 1 - 	/* constants */
 1 - 	/* operations  */
 1 - 	java.lang.String sayHello();
-1 - 	alma.xmltest.XmlEntityStruct createObsProposal();
+1 - 	alma.fakexmlentity.XmlEntityStruct createObsProposal();
 1 - }
 1 - 
 1 - ----------------------- Java file ./alma/xmltest/XMLNonAcsComponentPOA.java
@@ -6763,7 +6662,7 @@
 1 - 			case 1: // createObsProposal
 1 - 			{
 1 - 				_out = handler.createReply();
-1 - 				alma.xmltest.XmlEntityStructHelper.write(_out,createObsProposal());
+1 - 				alma.fakexmlentity.XmlEntityStructHelper.write(_out,createObsProposal());
 1 - 				break;
 1 - 			}
 1 - 		}
@@ -6833,7 +6732,7 @@
 1 - 		return _delegate.sayHello();
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct createObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct createObsProposal()
 1 - 	{
 1 - 		return _delegate.createObsProposal();
 1 - 	}
@@ -6906,7 +6805,7 @@
 1 - 
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct createObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct createObsProposal()
 1 - 	{
 1 - 		while(true)
 1 - 		{
@@ -6917,7 +6816,7 @@
 1 - 			{
 1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "createObsProposal", true);
 1 - 				_is = _invoke(_os);
-1 - 				alma.xmltest.XmlEntityStruct _result = alma.xmltest.XmlEntityStructHelper.read(_is);
+1 - 				alma.fakexmlentity.XmlEntityStruct _result = alma.fakexmlentity.XmlEntityStructHelper.read(_is);
 1 - 				return _result;
 1 - 			}
 1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
@@ -6937,7 +6836,7 @@
 1 - 			if( _so == null )
 1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
 1 - 			XMLNonAcsComponentOperations _localServant = (XMLNonAcsComponentOperations)_so.servant;
-1 - 			alma.xmltest.XmlEntityStruct _result;			try
+1 - 			alma.fakexmlentity.XmlEntityStruct _result;			try
 1 - 			{
 1 - 			_result = _localServant.createObsProposal();
 1 - 			}
@@ -7114,7 +7013,7 @@
 1 - {
 1 - 	/* constants */
 1 - 	/* operations  */
-1 - 	alma.xmltest.XmlEntityStruct getObsProposal();
+1 - 	alma.fakexmlentity.XmlEntityStruct getObsProposal();
 1 - }
 1 - 
 1 - ----------------------- Java file ./alma/xmltest/XmlOffshoot2POA.java
@@ -7158,7 +7057,7 @@
 1 - 			case 0: // getObsProposal
 1 - 			{
 1 - 				_out = handler.createReply();
-1 - 				alma.xmltest.XmlEntityStructHelper.write(_out,getObsProposal());
+1 - 				alma.fakexmlentity.XmlEntityStructHelper.write(_out,getObsProposal());
 1 - 				break;
 1 - 			}
 1 - 		}
@@ -7223,7 +7122,7 @@
 1 - 			return super._default_POA();
 1 - 		}
 1 - 	}
-1 - 	public alma.xmltest.XmlEntityStruct getObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct getObsProposal()
 1 - 	{
 1 - 		return _delegate.getObsProposal();
 1 - 	}
@@ -7250,7 +7149,7 @@
 1 - 	}
 1 - 
 1 - 	public final static java.lang.Class _opsClass = alma.xmltest.XmlOffshoot2Operations.class;
-1 - 	public alma.xmltest.XmlEntityStruct getObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct getObsProposal()
 1 - 	{
 1 - 		while(true)
 1 - 		{
@@ -7261,7 +7160,7 @@
 1 - 			{
 1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "getObsProposal", true);
 1 - 				_is = _invoke(_os);
-1 - 				alma.xmltest.XmlEntityStruct _result = alma.xmltest.XmlEntityStructHelper.read(_is);
+1 - 				alma.fakexmlentity.XmlEntityStruct _result = alma.fakexmlentity.XmlEntityStructHelper.read(_is);
 1 - 				return _result;
 1 - 			}
 1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
@@ -7281,7 +7180,7 @@
 1 - 			if( _so == null )
 1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
 1 - 			XmlOffshoot2Operations _localServant = (XmlOffshoot2Operations)_so.servant;
-1 - 			alma.xmltest.XmlEntityStruct _result;			try
+1 - 			alma.fakexmlentity.XmlEntityStruct _result;			try
 1 - 			{
 1 - 			_result = _localServant.getObsProposal();
 1 - 			}
@@ -7459,8 +7358,8 @@
 1 - {
 1 - 	/* constants */
 1 - 	/* operations  */
-1 - 	alma.xmltest.XmlEntityStruct getObsProposal();
-1 - 	void setPreferedProposal(alma.xmltest.XmlEntityStruct proposal);
+1 - 	alma.fakexmlentity.XmlEntityStruct getObsProposal();
+1 - 	void setPreferedProposal(alma.fakexmlentity.XmlEntityStruct proposal);
 1 - }
 1 - 
 1 - ----------------------- Java file ./alma/xmltest/XmlOffshootPOA.java
@@ -7504,7 +7403,7 @@
 1 - 		{
 1 - 			case 0: // setPreferedProposal
 1 - 			{
-1 - 				alma.xmltest.XmlEntityStruct _arg0=alma.xmltest.XmlEntityStructHelper.read(_input);
+1 - 				alma.fakexmlentity.XmlEntityStruct _arg0=alma.fakexmlentity.XmlEntityStructHelper.read(_input);
 1 - 				_out = handler.createReply();
 1 - 				setPreferedProposal(_arg0);
 1 - 				break;
@@ -7512,7 +7411,7 @@
 1 - 			case 1: // getObsProposal
 1 - 			{
 1 - 				_out = handler.createReply();
-1 - 				alma.xmltest.XmlEntityStructHelper.write(_out,getObsProposal());
+1 - 				alma.fakexmlentity.XmlEntityStructHelper.write(_out,getObsProposal());
 1 - 				break;
 1 - 			}
 1 - 		}
@@ -7577,12 +7476,12 @@
 1 - 			return super._default_POA();
 1 - 		}
 1 - 	}
-1 - 	public void setPreferedProposal(alma.xmltest.XmlEntityStruct proposal)
+1 - 	public void setPreferedProposal(alma.fakexmlentity.XmlEntityStruct proposal)
 1 - 	{
 1 - _delegate.setPreferedProposal(proposal);
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct getObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct getObsProposal()
 1 - 	{
 1 - 		return _delegate.getObsProposal();
 1 - 	}
@@ -8063,7 +7962,7 @@
 1 - 	}
 1 - 
 1 - 	public final static java.lang.Class _opsClass = alma.xmltest.XmlOffshootOperations.class;
-1 - 	public void setPreferedProposal(alma.xmltest.XmlEntityStruct proposal)
+1 - 	public void setPreferedProposal(alma.fakexmlentity.XmlEntityStruct proposal)
 1 - 	{
 1 - 		while(true)
 1 - 		{
@@ -8073,7 +7972,7 @@
 1 - 			try
 1 - 			{
 1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "setPreferedProposal", true);
-1 - 				alma.xmltest.XmlEntityStructHelper.write(_os,proposal);
+1 - 				alma.fakexmlentity.XmlEntityStructHelper.write(_os,proposal);
 1 - 				_is = _invoke(_os);
 1 - 				return;
 1 - 			}
@@ -8109,7 +8008,7 @@
 1 - 
 1 - 	}
 1 - 
-1 - 	public alma.xmltest.XmlEntityStruct getObsProposal()
+1 - 	public alma.fakexmlentity.XmlEntityStruct getObsProposal()
 1 - 	{
 1 - 		while(true)
 1 - 		{
@@ -8120,7 +8019,7 @@
 1 - 			{
 1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "getObsProposal", true);
 1 - 				_is = _invoke(_os);
-1 - 				alma.xmltest.XmlEntityStruct _result = alma.xmltest.XmlEntityStructHelper.read(_is);
+1 - 				alma.fakexmlentity.XmlEntityStruct _result = alma.fakexmlentity.XmlEntityStructHelper.read(_is);
 1 - 				return _result;
 1 - 			}
 1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
@@ -8140,7 +8039,7 @@
 1 - 			if( _so == null )
 1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
 1 - 			XmlOffshootOperations _localServant = (XmlOffshootOperations)_so.servant;
-1 - 			alma.xmltest.XmlEntityStruct _result;			try
+1 - 			alma.fakexmlentity.XmlEntityStruct _result;			try
 1 - 			{
 1 - 			_result = _localServant.getObsProposal();
 1 - 			}

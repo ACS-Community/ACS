@@ -85,8 +85,11 @@ public class JacorbVisitor extends JavaMappingGeneratingVisitor
 	
 	/**
 	 * This stack contains the interfaces we are currently visiting, 
-	 * which can be more than one interface if an interfaces references another one. 
-	 * This stack is used to detect (and forbid) cyclic references.
+	 * which can be more than one interface if an interfaces references another one
+	 * and then back to itself, either directly or via a struct that has an interface member. 
+	 * This stack is used to break cyclic references.
+	 * Note that only interfaces can be forward declared in IDL, so that no other types 
+	 * can have circular dependencies.
 	 */
 	private final Set<Interface> interfaceStack = new LinkedHashSet<Interface>();
 
@@ -183,15 +186,21 @@ public class JacorbVisitor extends JavaMappingGeneratingVisitor
 		}
 
 		if (isAcsInterface) {
-			interfaceStack.add(interfce);
 			
-			// It's an ACS kind of interface. Let the base class do the tree descending via InterfaceBody to OpDecl.
-			// There it will be decided if our ACS interface is affected by XML.
-			super.visitInterface(interfce);
-			
-			interfaceStack.remove(interfce);
+			// avoid cyclic recursion
+			if (interfaceStack.contains(interfce)) {
+//				System.out.println("Breaking interface recursion for " + interfce.name());
+			}
+			else {
+				interfaceStack.add(interfce);
+				
+				// Let the base class do the tree descending via InterfaceBody to OpDecl,
+				// where it will be decided if our ACS interface is affected by XML.
+				super.visitInterface(interfce);
+				
+				interfaceStack.remove(interfce);
+			}
 		}
-		
 	}
 
 
@@ -326,23 +335,17 @@ public class JacorbVisitor extends JavaMappingGeneratingVisitor
 				}
 			}
 			else if (decl instanceof Interface) {
-				// This can happen in cases like 
-				// "typedef sequence <XmlOffshoot> XmlOffshootSeq;", or
-				// "void setOffshoot(in XmlOffshoot off);"
+				// Examples: Offshoot used as a struct member, in a typedef, or as an operation parameter
 				Interface interfce = (Interface) decl;
 				if (interfce.body == null) {
 					// A forward declared interface stays in the parse tree as a separate Interface object. 
 					// We must resolve the corresponding Interface definition.
-					interfce = (Interface) ((ConstrTypeSpec) AcsAdapterForOldJacorb.getFromTypeMap(interfce.pack_name + "." + interfce.name())).c_type_spec; // method Interface#full_name is not visible
+					interfce = resolveForwardDecl(interfce);
 					// Our forward declared interface may not have been processed yet. 
 					// We do it now so that we can rely on the information from "xmlAwareIFs".
 					visitInterface(interfce);
 				}
-				// Forbid cyclic interface references, which would force us to implement some kind of 2-pass search for xml types.
-				if (interfaceStack.contains(interfce)) {
-					throw new IllegalArgumentException("Detected cyclic interface dependency for " + interfce.name());
-				}
-				// Now we can trust xmlAwareIFs with regard to our interfce
+				// Now after the call to visitInterface we can trust xmlAwareIFs with regard to our interfce
 				if (xmlAwareIFs.contains(interfce)) {
 					ret = true;
 				}
@@ -384,6 +387,23 @@ public class JacorbVisitor extends JavaMappingGeneratingVisitor
 	}
 
 
+	/**
+	 * If the given interface is instantiated from a forward declaration then
+	 * this method returns the corresponding Interface object that contains the actual definition.
+	 * Otherwise the same object is returned. 
+	 */
+	public static Interface resolveForwardDecl(Interface interfce) {
+		Interface ret = interfce;
+		
+		if (interfce.body == null) {
+			String fullTypeName = interfce.pack_name + "." + interfce.name(); // method Interface#full_name is not visible
+			ret = (Interface) ((ConstrTypeSpec) AcsAdapterForOldJacorb.getFromTypeMap(fullTypeName)).c_type_spec; 
+		}
+		
+		return ret;
+	}
+	
+	
 	////////////////////////
 
 	/**

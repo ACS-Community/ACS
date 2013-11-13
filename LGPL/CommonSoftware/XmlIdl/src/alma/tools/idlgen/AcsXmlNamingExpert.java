@@ -23,6 +23,7 @@ package alma.tools.idlgen;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jacorb.idl.AcsInterfacePrinter;
 import org.jacorb.idl.AcsStructPrinter;
 import org.jacorb.idl.AliasTypeSpec;
 import org.jacorb.idl.ConstrTypeSpec;
@@ -116,6 +117,41 @@ public class AcsXmlNamingExpert
 		String ret = getJavaPackageForStruct(struct) + '.' + getClassNameForStruct(struct);
 		return ret;
 	}
+
+	
+	////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////// Interfaces ///////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Currently assumes that the trailing "J" has already been appended 
+	 * to the name of the provided <code>interfce</code>.
+	 * @TODO Change the logic to not rename interfaces in the parse tree and add suffix here to the interface name.
+	 */
+	public String getClassNameForInterface(Interface interfce) {
+//		return ( interfce.name() + suffix );
+		return ( interfce.name());
+	}
+	
+	public String getJavaPackageForInterface(Interface interfce) {
+		String fullName = AcsInterfacePrinter.java_name(interfce);
+		int index = fullName.lastIndexOf('.');
+		String jpackage = null;
+		if (index > 0) {
+			jpackage = fullName.substring(0, fullName.lastIndexOf('.'));
+		}
+		else {
+			jpackage = fullName;
+		}
+		return jpackage;
+	}
+	
+
+	public String getJavaTypeForXmlInterface(Interface interfce) {
+		String ret = getJavaPackageForInterface(interfce) + '.' + getClassNameForInterface(interfce);
+		return ret;
+	}
+
 
 	
 	////////////////////////////////////////////////////////////////////////////////////

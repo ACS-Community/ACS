@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import alma.tools.idlgen.AcsXmlNamingExpert;
+import alma.tools.idlgen.JacorbVisitor;
 import alma.tools.idlgen.XmlIdlCompiler;
 
 /**
@@ -52,14 +53,20 @@ public class AcsStructPrinter
 	 * This set is used to check whether a nested struct deals with xml.
 	 */
 	private final Set<StructType> xmlAwareStructs;
+	
+	/**
+	 * This set is used to check whether an interface (offshoot etc) member of a struct deals with xml.
+	 */
+	private final Set<Interface> xmlAwareIFs;
 
 	public AcsStructPrinter(StructType struct, 
-			Set<AliasTypeSpec> xmlTypedefs, Set<StructType> xmlAwareStructs,
+			Set<AliasTypeSpec> xmlTypedefs, Set<StructType> xmlAwareStructs, Set<Interface> xmlAwareIFs,
 			AcsXmlNamingExpert namingExpert) {
 		this.struct = struct;
 		this.namingExpert = namingExpert;
 		this.xmlTypedefs = xmlTypedefs;
 		this.xmlAwareStructs = xmlAwareStructs;
+		this.xmlAwareIFs = xmlAwareIFs;
 	}
 
 	/**
@@ -122,15 +129,26 @@ public class AcsStructPrinter
 				Member m = (Member) e.nextElement();
 				TypeSpec tspec = m.type_spec;
 				String acsTypeName = null;
-				if (tspec instanceof AliasTypeSpec
-						&& xmlTypedefs.contains(tspec)) {
-					acsTypeName = namingExpert.getJavaTypeForXmlTypedef((AliasTypeSpec)tspec);
+				if (tspec instanceof AliasTypeSpec) {
+					if (xmlTypedefs.contains(tspec)) {
+						acsTypeName = namingExpert.getJavaTypeForXmlTypedef((AliasTypeSpec)tspec);
+					}
 				}
-				else if (tspec instanceof ConstrTypeSpec 
-						&& xmlAwareStructs.contains(((ConstrTypeSpec)tspec).c_type_spec)) {
-					acsTypeName = namingExpert.getJavaTypeForXmlStruct(struct);
+				else if (tspec instanceof ConstrTypeSpec) { 
+					TypeDeclaration decl = ((ConstrTypeSpec)tspec).c_type_spec;
+					
+					if (decl instanceof StructType && xmlAwareStructs.contains(decl)) {
+						acsTypeName = namingExpert.getJavaTypeForXmlStruct((StructType)((ConstrTypeSpec)tspec).c_type_spec.declaration());
+					}
+					else if (decl instanceof Interface) {
+						Interface interfce = JacorbVisitor.resolveForwardDecl((Interface)decl);
+						if (xmlAwareIFs.contains(interfce)) {
+							acsTypeName = namingExpert.getJavaTypeForXmlInterface(interfce);
+						}
+					}
 				}
-				else {
+				// default member type output:
+				if (acsTypeName == null) {
 					// Note that Member#member_print is fancier, but its fanciness apparently does not apply 
 					// to our case because StructType#printStructClass later gets the data for the constructors 
 					// in the same simple way that we do here.

@@ -1,0 +1,18 @@
+#ifndef _FAKEXMLENTITY_IDL_
+#define _FAKEXMLENTITY_IDL_
+
+#pragma prefix "alma"
+
+module fakexmlentity
+{
+	// The real XmlEntityStruct gets defined in "xmlentity.idl" in module "define",
+	// which builds after XmlIdl. Therefore we use this fake XmlEntityStruct for XmlIdl tests.
+	
+	struct XmlEntityStruct
+	{
+		wstring xmlString;
+	};
+
+};
+
+#endif

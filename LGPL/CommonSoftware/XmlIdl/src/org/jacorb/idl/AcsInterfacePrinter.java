@@ -289,4 +289,13 @@ public class AcsInterfacePrinter
 	    }
 
 
+		/**
+		 * Exposes {@link Interface#javaName()} to other packages,
+		 * to be used by {@link AcsXmlNamingExpert}.
+		 */
+		public static String java_name(Interface interfce) {
+			return interfce.javaName();
+		}
+		
+
 }

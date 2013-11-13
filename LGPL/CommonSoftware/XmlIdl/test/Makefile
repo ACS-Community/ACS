@@ -40,7 +40,8 @@ DEBUG = on
 # 
 # IDL Files and flags
 # 
-IDL_FILES = xmltest
+IDL_FILES = fakexmlentity xmltest 
+#xmltest_MutualDep
 xmltestStubs_LIBS = acscommonStubs acscomponentStubs
 
 XML_IDL="ObsProposal=dummyentities.ObsProposal; \
@@ -75,7 +76,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	$(RM) tatlogs unpacked_jars
+	$(RM) tatlogs unpacked_jars .purifydir sed.scan
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

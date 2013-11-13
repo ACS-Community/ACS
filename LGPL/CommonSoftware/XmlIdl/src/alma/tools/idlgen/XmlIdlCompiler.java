@@ -230,15 +230,16 @@ public class XmlIdlCompiler
 		
 		// Generate code for each xml struct
 		for (StructType struct : jacorbVisitor.xmlAwareStructs) {
-			AcsStructPrinter printer = new AcsStructPrinter(struct, jacorbVisitor.xmlTypedefs, jacorbVisitor.xmlAwareStructs, namingExpert);
+			AcsStructPrinter printer = new AcsStructPrinter(struct, 
+					jacorbVisitor.xmlTypedefs, jacorbVisitor.xmlAwareStructs, jacorbVisitor.xmlAwareIFs, namingExpert);
 			printer.printStructClass();
 			printer.printHolderClass();
 		}
 		
 		// Generate code for each interface
 		for (Interface interfce : jacorbVisitor.xmlAwareIFs) {
-			// AcsInterfacePrinter printer = new AcsInterfacePrinter(interfce);
-			AcsInterfacePrinter printer = new AcsInterfacePrinter(interfce, jacorbVisitor.xmlTypedefs, jacorbVisitor.xmlAwareStructs, jacorbVisitor.xmlAwareIFs, namingExpert);
+			AcsInterfacePrinter printer = new AcsInterfacePrinter(interfce, 
+					jacorbVisitor.xmlTypedefs, jacorbVisitor.xmlAwareStructs, jacorbVisitor.xmlAwareIFs, namingExpert);
 			printer.printAcsJInterface();
 		}
 		

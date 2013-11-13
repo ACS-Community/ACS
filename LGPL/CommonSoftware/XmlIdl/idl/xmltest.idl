@@ -25,6 +25,7 @@
 
 #include <acscommon.idl>
 #include <acscomponent.idl>
+#include <fakexmlentity.idl>
 
 #pragma prefix "alma"
 
@@ -33,31 +34,11 @@ module xmltest
 {
 
 	/*********************************************************
-	 * XmlEntityStruct is defined in the module
-	 * ACS/CommonSoftware/define, file xmlentity.idl,
-	 * which we can't include here because of module build order.
-	 *
-	 * For testing this module, it does not matter that we simply define
-	 * the struct below instead of #including xmlentity.idl.
-	 * Currently even the content of XmlEntityStruct does not matter,
-	 * it just has to exist as a struct.
-	 *********************************************************/
-
-	struct XmlEntityStruct
-	{
-		string xmlString;		// works only for Latin-1 characters; otherwise use wstring!
-//    string entityId;		// unique ID, same as inside the xml, but easier to access
-//    string entityTypeName;	// unique name like "SchedBlock" (should be the schema name w/o ".xsd")
-//    string schemaVersion;	// the schema version that the entity complies with
-	};
-
-
-	/*********************************************************
 	 * typedefs for our entity objects
 	 *********************************************************/
 
-	typedef XmlEntityStruct ObsProposal; // entity typedef
-	typedef XmlEntityStruct SchedBlock; // entity typedef
+	typedef fakexmlentity::XmlEntityStruct ObsProposal; // entity typedef
+	typedef fakexmlentity::XmlEntityStruct SchedBlock; // entity typedef
 
 	typedef sequence <SchedBlock> SchedBlockSeq; // typedef of sequence of entity typedef
 
