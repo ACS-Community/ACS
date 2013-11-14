@@ -7342,6 +7342,7 @@
 1 - 	/* operations  */
 1 - 	public dummyentities.ObsProposal getObsProposal();
 1 - 	public void setPreferedProposal(dummyentities.ObsProposal  proposal);
+1 - 	public void setProjectTree(alma.xmltest.ObsProjectTreeJ  tree);
 1 - }
 1 - 
 1 - ----------------------- Java file ./alma/xmltest/XmlOffshootOperations.java
@@ -7360,6 +7361,7 @@
 1 - 	/* operations  */
 1 - 	alma.fakexmlentity.XmlEntityStruct getObsProposal();
 1 - 	void setPreferedProposal(alma.fakexmlentity.XmlEntityStruct proposal);
+1 - 	void setProjectTree(alma.xmltest.ObsProjectTree tree);
 1 - }
 1 - 
 1 - ----------------------- Java file ./alma/xmltest/XmlOffshootPOA.java
@@ -7379,7 +7381,8 @@
 1 - 	static
 1 - 	{
 1 - 		m_opsHash.put ( "setPreferedProposal", new java.lang.Integer(0));
-1 - 		m_opsHash.put ( "getObsProposal", new java.lang.Integer(1));
+1 - 		m_opsHash.put ( "setProjectTree", new java.lang.Integer(1));
+1 - 		m_opsHash.put ( "getObsProposal", new java.lang.Integer(2));
 1 - 	}
 1 - 	private String[] ids = {"IDL:alma/xmltest/XmlOffshoot:1.0","IDL:alma/ACS/OffShoot:1.0"};
 1 - 	public alma.xmltest.XmlOffshoot _this()
@@ -7408,7 +7411,14 @@
 1 - 				setPreferedProposal(_arg0);
 1 - 				break;
 1 - 			}
-1 - 			case 1: // getObsProposal
+1 - 			case 1: // setProjectTree
+1 - 			{
+1 - 				alma.xmltest.ObsProjectTree _arg0=alma.xmltest.ObsProjectTreeHelper.read(_input);
+1 - 				_out = handler.createReply();
+1 - 				setProjectTree(_arg0);
+1 - 				break;
+1 - 			}
+1 - 			case 2: // getObsProposal
 1 - 			{
 1 - 				_out = handler.createReply();
 1 - 				alma.fakexmlentity.XmlEntityStructHelper.write(_out,getObsProposal());
@@ -7479,6 +7489,11 @@
 1 - 	public void setPreferedProposal(alma.fakexmlentity.XmlEntityStruct proposal)
 1 - 	{
 1 - _delegate.setPreferedProposal(proposal);
+1 - 	}
+1 - 
+1 - 	public void setProjectTree(alma.xmltest.ObsProjectTree tree)
+1 - 	{
+1 - _delegate.setProjectTree(tree);
 1 - 	}
 1 - 
 1 - 	public alma.fakexmlentity.XmlEntityStruct getObsProposal()
@@ -7631,7 +7646,7 @@
 1 - {
 1 - 	/* constants */
 1 - 	/* operations  */
-1 - 	public void setOtherOffshoot(alma.xmltest.XmlOffshoot2  off2);
+1 - 	public void setOtherOffshoot(alma.xmltest.XmlOffshoot2J  off2);
 1 - }
 1 - 
 1 - ----------------------- Java file ./alma/xmltest/XmlOffshootReferencingOffshootOperations.java
@@ -7996,6 +8011,52 @@
 1 - 			try
 1 - 			{
 1 - 			_localServant.setPreferedProposal(proposal);
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				_servant_postinvoke(_so);
+1 - 			}
+1 - 			return;
+1 - 		}
+1 - 
+1 - 		}
+1 - 
+1 - 	}
+1 - 
+1 - 	public void setProjectTree(alma.xmltest.ObsProjectTree tree)
+1 - 	{
+1 - 		while(true)
+1 - 		{
+1 - 		if(! this._is_local())
+1 - 		{
+1 - 			org.omg.CORBA.portable.InputStream _is = null;
+1 - 			try
+1 - 			{
+1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "setProjectTree", true);
+1 - 				alma.xmltest.ObsProjectTreeHelper.write(_os,tree);
+1 - 				_is = _invoke(_os);
+1 - 				return;
+1 - 			}
+1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
+1 - 			catch( org.omg.CORBA.portable.ApplicationException _ax )
+1 - 			{
+1 - 				String _id = _ax.getId();
+1 - 				throw new RuntimeException("Unexpected exception " + _id );
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				this._releaseReply(_is);
+1 - 			}
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke( "setProjectTree", _opsClass );
+1 - 			if( _so == null )
+1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
+1 - 			XmlOffshootOperations _localServant = (XmlOffshootOperations)_so.servant;
+1 - 			try
+1 - 			{
+1 - 			_localServant.setProjectTree(tree);
 1 - 			}
 1 - 			finally
 1 - 			{

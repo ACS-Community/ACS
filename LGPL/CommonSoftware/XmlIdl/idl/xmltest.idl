@@ -139,6 +139,7 @@ module xmltest
 	{
 		ObsProposal getObsProposal();
 		void setPreferedProposal(in ObsProposal proposal);
+		void setProjectTree(in ObsProjectTree tree);
 	};
 
 	typedef sequence <XmlOffshoot> XmlOffshootSeq; // typedef of sequence of interface
