@@ -274,18 +274,28 @@ public class AcsInterfacePrinter
 	    }
 	    
 	    private void sanitizeParamNames(PrintWriter ps, ParamDecl pdecl, TypeSpec ts) {
-	    	if (!(entityTypes.contains(ts))) { 
-	    		ps.print(ts.toString() + " " + pdecl.name);
-	    	} else if (ts.typeSpec() instanceof ConstrTypeSpec && ((ConstrTypeSpec)ts).c_type_spec instanceof Interface) { // TODO: Still broken when type is Interface
-	    		ps.print(ts.name() + " " + pdecl.name);
-	    	} else {
-	    		if (ts instanceof AliasTypeSpec) {
-	    			AliasTypeSpec alias = (AliasTypeSpec)ts;
-	    			ps.print(namingExpert.getJavaTypeForXmlTypedef(alias) + " " + pdecl.name);
-	    		}
-	    		else
-	    			ps.print(ts.pack_name+"."+ts.name() + " " + pdecl.name);
-	    	}
+	    	
+	    	// The following line is copied from AcsStructPrinter to fix the type used for struct parameters, 
+	    	// where the trailing J was missing in case of xml-aware structs.
+	    	// This change also fixes an issue with forward declared interfaces as we had it 
+	    	// in XmlOffshootReferencingOffshootJ from xmltest.idl. 
+			String acsTypeName = namingExpert.getAcsTypeName(ts, entityTypes, xmlAwareStructs, xmlAwareIFs);
+			ps.print(acsTypeName + " " + pdecl.name);
+			
+			// TODO: Check if there was something else the following code was doing, otherwise delete it.
+			
+//	    	if (!(entityTypes.contains(ts))) { 
+//	    		ps.print(ts.toString() + " " + pdecl.name);
+//	    	} else if (ts.typeSpec() instanceof ConstrTypeSpec && ((ConstrTypeSpec)ts).c_type_spec instanceof Interface) { // TODO: Still broken when type is Interface
+//	    		ps.print(ts.name() + " " + pdecl.name);
+//	    	} else {
+//	    		if (ts instanceof AliasTypeSpec) {
+//	    			AliasTypeSpec alias = (AliasTypeSpec)ts;
+//	    			ps.print(namingExpert.getJavaTypeForXmlTypedef(alias) + " " + pdecl.name);
+//	    		}
+//	    		else
+//	    			ps.print(ts.pack_name+"."+ts.name() + " " + pdecl.name);
+//	    	}
 	    }
 
 

@@ -128,32 +128,7 @@ public class AcsStructPrinter
 			for (Enumeration e = struct.memberlist.v.elements(); e.hasMoreElements();) {
 				Member m = (Member) e.nextElement();
 				TypeSpec tspec = m.type_spec;
-				String acsTypeName = null;
-				if (tspec instanceof AliasTypeSpec) {
-					if (xmlTypedefs.contains(tspec)) {
-						acsTypeName = namingExpert.getJavaTypeForXmlTypedef((AliasTypeSpec)tspec);
-					}
-				}
-				else if (tspec instanceof ConstrTypeSpec) { 
-					TypeDeclaration decl = ((ConstrTypeSpec)tspec).c_type_spec;
-					
-					if (decl instanceof StructType && xmlAwareStructs.contains(decl)) {
-						acsTypeName = namingExpert.getJavaTypeForXmlStruct((StructType)((ConstrTypeSpec)tspec).c_type_spec.declaration());
-					}
-					else if (decl instanceof Interface) {
-						Interface interfce = JacorbVisitor.resolveForwardDecl((Interface)decl);
-						if (xmlAwareIFs.contains(interfce)) {
-							acsTypeName = namingExpert.getJavaTypeForXmlInterface(interfce);
-						}
-					}
-				}
-				// default member type output:
-				if (acsTypeName == null) {
-					// Note that Member#member_print is fancier, but its fanciness apparently does not apply 
-					// to our case because StructType#printStructClass later gets the data for the constructors 
-					// in the same simple way that we do here.
-					acsTypeName = tspec.toString();
-				}
+				String acsTypeName = namingExpert.getAcsTypeName(tspec, xmlTypedefs, xmlAwareStructs, xmlAwareIFs);
 				memberList.add(new StructMember(acsTypeName, m.declarator.name()));
 			}
 
@@ -193,6 +168,7 @@ public class AcsStructPrinter
 
 		ps.close();
 	}
+
 	
 	
 	public void printHolderClass() throws IOException {

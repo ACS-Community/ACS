@@ -22,6 +22,7 @@ package alma.tools.idlgen;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.jacorb.idl.AcsInterfacePrinter;
 import org.jacorb.idl.AcsStructPrinter;
@@ -44,6 +45,7 @@ public class AcsXmlNamingExpert
 	
 	public static final String suffix = "J";
 	
+
 	////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////// Java binding classes /////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////
@@ -254,6 +256,37 @@ public class AcsXmlNamingExpert
 				}
 			}
 		}
+	}
+
+	
+	public String getAcsTypeName(TypeSpec tspec, Set<AliasTypeSpec> xmlTypedefs, Set<StructType> xmlAwareStructs, Set<Interface> xmlAwareIFs) {
+		String acsTypeName = null;
+		if (tspec instanceof AliasTypeSpec) {
+			if (xmlTypedefs.contains(tspec)) {
+				acsTypeName = getJavaTypeForXmlTypedef((AliasTypeSpec)tspec);
+			}
+		}
+		else if (tspec instanceof ConstrTypeSpec) { 
+			TypeDeclaration decl = ((ConstrTypeSpec)tspec).c_type_spec;
+			
+			if (decl instanceof StructType && xmlAwareStructs.contains(decl)) {
+				acsTypeName = getJavaTypeForXmlStruct((StructType)((ConstrTypeSpec)tspec).c_type_spec.declaration());
+			}
+			else if (decl instanceof Interface) {
+				Interface interfce = JacorbVisitor.resolveForwardDecl((Interface)decl);
+				if (xmlAwareIFs.contains(interfce)) {
+					acsTypeName = getJavaTypeForXmlInterface(interfce);
+				}
+			}
+		}
+		// default member type output:
+		if (acsTypeName == null) {
+			// Note that Member#member_print is fancier, but its fanciness apparently does not apply 
+			// to our case because StructType#printStructClass later gets the data for the constructors 
+			// in the same simple way that we do here.
+			acsTypeName = tspec.toString();
+		}
+		return acsTypeName;
 	}
 
 }
