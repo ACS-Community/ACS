@@ -517,6 +517,10 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
                                             interfaces  #stringSeq interfaces;
                                             )
         
+        #Make a copy of everything for the container
+        self.compHandles[temp[HANDLE]] = temp[NAME]
+        self.components[name] = temp
+        
         #Check to see if it's derived from ComponentLifeCycle next!!!
         #If it is, we have to mess with the state model and invoke the lifecycle
         #methods accordingly.
@@ -598,10 +602,6 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             log.setCompName(name)
             log.log()
 
-        #Make a copy of everything for the container
-        self.compHandles[temp[HANDLE]] = temp[NAME]
-        self.components[name] = temp
-
         #keep track of how many components are using the package
         if not self.compModuleCount.has_key(temp[COMPMODULE]):
             self.compModuleCount[temp[COMPMODULE]] = 1
@@ -674,7 +674,10 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         except:
             pass
 
-        del self.components[comp_entry[NAME]]
+        if self.components.has_key(comp_entry[NAME]):
+            del self.components[comp_entry[NAME]]
+        if  self.compHandles.has_key(comp_entry[HANDLE]):
+            del self.compHandles[comp_entry[HANDLE]]
 
     #--ACTIVATOR IDL-----------------------------------------------------------
     def deactivate_component(self, handle):
