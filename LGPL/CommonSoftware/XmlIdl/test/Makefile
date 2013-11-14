@@ -42,7 +42,8 @@ DEBUG = on
 # 
 IDL_FILES = fakexmlentity xmltest xmltest_dep
 #xmltest_dep2 not yet included here because of 3-group-cycle-bug
-xmltestStubs_LIBS = acscommonStubs acscomponentStubs
+xmltestStubs_LIBS = acscommonStubs acscomponentStubs fakexmlentityStubs
+xmltest_depStubs_LIBS = acscommonStubs acscomponentStubs fakexmlentityStubs
 
 XML_IDL="ObsProposal=dummyentities.ObsProposal; \
          SchedBlock=dummyentities.SchedBlock; \
