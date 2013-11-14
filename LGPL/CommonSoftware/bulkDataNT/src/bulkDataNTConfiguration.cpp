@@ -87,8 +87,9 @@ DDSConfiguration::DDSConfiguration()
 		if (envVar != NULL)
 		{
 			fillUrlProfileQoS(envVar); //if we have a LOCATION it has to be append to the QoS file name
+			urlProfileQoS+="|";
 		}
-		fillUrlProfileQoS(); // QoS file name w/o suffix
+		fillUrlProfileQoS("default"); // QoS file name w/o suffix
 		urlProfileQoS+="]";
 		// here we are sure that this is executed just once
 		envVar = getenv("NDDS_DISCOVERY_PEERS");
@@ -104,15 +105,11 @@ void DDSConfiguration::fillUrlProfileQoS(const char*suffix)
 	char *envVarValue = getenv("MODPATH");
 	if (envVarValue != NULL)
 	{
-		urlProfileQoS += "file://..";
-		urlProfileQoS += DEFAULT_QoS_FILE;
-		if ( suffix!=NULL ) { urlProfileQoS+= suffix; urlProfileQoS+=".";}
-		urlProfileQoS += "xml";
-		urlProfileQoS += "|";
+		addUrlProfileQoS("..", suffix, "|");
 	}
 
-	addUrlProfileQoS("MODROOT", suffix, "|");
-	addUrlProfileQoS("INTROOT", suffix, "|");
+	addUrlProfileQoS(getenv("MODROOT"), suffix, "|");
+	addUrlProfileQoS(getenv("INTROOT"), suffix, "|");
 
 	envVarValue = getenv("INTLIST");
 	if (envVarValue != NULL) {
@@ -120,12 +117,7 @@ void DDSConfiguration::fillUrlProfileQoS(const char*suffix)
 		char* tok = strtok(tmpEnvVarValue, ":");
 		while (tok != NULL)
 		{
-			urlProfileQoS += "file://";
-			urlProfileQoS += tok;
-			urlProfileQoS += DEFAULT_QoS_FILE;
-			if ( suffix!=NULL ) { urlProfileQoS+= suffix; urlProfileQoS+=".";}
-			urlProfileQoS += "xml";
-			urlProfileQoS += "|";
+			addUrlProfileQoS(tok, suffix, "|");
 			tok = strtok(NULL, ":");
 		}//while
 		free(tmpEnvVarValue);
@@ -134,9 +126,8 @@ void DDSConfiguration::fillUrlProfileQoS(const char*suffix)
 	addUrlProfileQoS("ACSDATA", suffix);
 }//fillUrlProfileQoS
 
-void DDSConfiguration::addUrlProfileQoS(const char* envVar, const char*suffix, const char *dilim)
+void DDSConfiguration::addUrlProfileQoS(const char* envVarValue, const char*suffix, const char *dilim)
 {
-	char *envVarValue = getenv(envVar);
 	if (envVarValue != NULL)
 	{
 		urlProfileQoS += "file://";
