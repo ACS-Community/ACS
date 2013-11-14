@@ -40,8 +40,8 @@ DEBUG = on
 # 
 # IDL Files and flags
 # 
-IDL_FILES = fakexmlentity xmltest 
-#xmltest_MutualDep
+IDL_FILES = fakexmlentity xmltest xmltest_dep
+#xmltest_dep2 not yet included here because of 3-group-cycle-bug
 xmltestStubs_LIBS = acscommonStubs acscomponentStubs
 
 XML_IDL="ObsProposal=dummyentities.ObsProposal; \

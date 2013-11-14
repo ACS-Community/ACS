@@ -8,7 +8,7 @@
 # then we should also detect this in case of files getting overwritten.
 #
 
-idlJarFiles=$(find "`pwd`/../lib" -name "xmltest*.jar")
+idlJarFiles=$(find "`pwd`/../lib" -name "xmltest*.jar" | sort)
 
 mkdir -p unpacked_jars
 cd unpacked_jars

@@ -1,0 +1,70 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration),
+ *    All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ *    MA 02111-1307  USA
+ */
+
+#ifndef _XMLTEST_DEP2_IDL_
+#define _XMLTEST_DEP2_IDL_
+
+#include <acscommon.idl>
+#include <acscomponent.idl>
+#include <fakexmlentity.idl>
+
+#pragma prefix "alma"
+
+/**
+ * This test module contains cyclic dependencies that do not work yet.
+ */
+module xmltest_dep2
+{
+	typedef fakexmlentity::XmlEntityStruct ObsProposal;
+
+	/////////////////////////////////////////////////////////////////////////////////
+	// Cyclic interface dependency among three offshoots.
+	// *** This is not working yet! It is not a scenario likely ever to be used in practice, 
+	// *** but it would still be nice to fix it.
+	/////////////////////////////////////////////////////////////////////////////////
+
+	interface CyclicOffshoot3;
+	
+	// here we don't even get "CyclicOffshoot1J" generated
+	interface CyclicOffshoot1 : ACS::OffShoot
+	{
+		void takeThatOff(in CyclicOffshoot3 off3);
+	};
+	
+	// This is the offshoot that brings in XML to the cycle.
+	// Class "CyclicOffshoot2WithXmlJ" gets generated as expected, 
+	// but it consequently uses "CyclicOffshoot1" instead of "CyclicOffshoot1J" as parameter.
+	interface CyclicOffshoot2WithXml : ACS::OffShoot
+	{
+		void takeThatOff(in CyclicOffshoot1 off1);
+		ObsProposal getObsProposal();
+	};
+	
+	// All fine: "CyclicOffshoot3J" gets generated and uses "CyclicOffshoot2WithXmlJ".
+	interface CyclicOffshoot3 : ACS::OffShoot
+	{
+		void takeThatOff(in CyclicOffshoot2WithXml off2);
+	};
+	
+};
+
+#endif

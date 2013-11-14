@@ -30,7 +30,7 @@
 #pragma prefix "alma"
 
 /**
- * This test module contains cyclic dependencies that should be handled by the XmlIdl compiler by 
+ * This test module contains cyclic dependencies.
  */
 module xmltest_dep
 {
@@ -41,6 +41,22 @@ module xmltest_dep
 	// ACS forbids passing of component references in application IDLs, 
 	// but offshoot references are allowed as struct members.
 	/////////////////////////////////////////////////////////////////////////////////
+
+	// No xml in offshoot nor struct 
+	
+	interface OffshootWithStruct;
+
+	struct StructWithOffshoot {
+		OffshootWithStruct myOffshoot;
+	};
+	
+	interface OffshootWithStruct : ACS::OffShoot
+	{
+		void takeThatStruct(in StructWithOffshoot yourStruct);
+	};
+
+
+	// xml in offshoot but not in the struct 
 
 	interface XmlOffshootWithStruct;
 
@@ -54,11 +70,24 @@ module xmltest_dep
 		ObsProposal getObsProposal();
 	};
 
-	// TODO: Test the reverse case, i.e. using an xml stuct and a non-xml offshoot.
+
+	// xml in the struct but not in the offshoot
 	
+	interface OffshootWithXmlStruct;
+
+	struct XmlStructWithOffshoot {
+		OffshootWithXmlStruct myOffshoot;
+		ObsProposal oopsProposal;
+	};
+	
+	interface OffshootWithXmlStruct : ACS::OffShoot
+	{
+		void takeThatStruct(in XmlStructWithOffshoot yourStruct);
+	};
+
 	
 	/////////////////////////////////////////////////////////////////////////////////
-	// Mutual interface - struct dependency.
+	// Mutual interface - struct dependency as found in real-world IDL.
 	// ACS forbids passing of component references in application IDLs, 
 	// but CharacteristicComponentDesc as defined in baci.idl is exempt
 	// because that struct is used only internally by ACS.

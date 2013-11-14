@@ -1,3 +1,2065 @@
+1 - ======================= IDL file xmltest_dep
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/CharacteristicComponentDescHelper.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "CharacteristicComponentDesc"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class CharacteristicComponentDescHelper
+1 - {
+1 - 	private static org.omg.CORBA.TypeCode _type = null;
+1 - 	public static org.omg.CORBA.TypeCode type ()
+1 - 	{
+1 - 		if (_type == null)
+1 - 		{
+1 - 			_type = org.omg.CORBA.ORB.init().create_struct_tc(alma.xmltest_dep.CharacteristicComponentDescHelper.id(),"CharacteristicComponentDesc",new org.omg.CORBA.StructMember[]{new org.omg.CORBA.StructMember("characteristic_component_ref", org.omg.CORBA.ORB.init().create_interface_tc("IDL:alma/xmltest_dep/CharacteristicComponent:1.0", "CharacteristicComponent"), null)});
+1 - 		}
+1 - 		return _type;
+1 - 	}
+1 - 
+1 - 	public static void insert (final org.omg.CORBA.Any any, final alma.xmltest_dep.CharacteristicComponentDesc s)
+1 - 	{
+1 - 		any.type(type());
+1 - 		write( any.create_output_stream(),s);
+1 - 	}
+1 - 
+1 - 	public static alma.xmltest_dep.CharacteristicComponentDesc extract (final org.omg.CORBA.Any any)
+1 - 	{
+1 - 		return read(any.create_input_stream());
+1 - 	}
+1 - 
+1 - 	public static String id()
+1 - 	{
+1 - 		return "IDL:alma/xmltest_dep/CharacteristicComponentDesc:1.0";
+1 - 	}
+1 - 	public static alma.xmltest_dep.CharacteristicComponentDesc read (final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		alma.xmltest_dep.CharacteristicComponentDesc result = new alma.xmltest_dep.CharacteristicComponentDesc();
+1 - 		result.characteristic_component_ref=alma.xmltest_dep.CharacteristicComponentHelper.read(in);
+1 - 		return result;
+1 - 	}
+1 - 	public static void write (final org.omg.CORBA.portable.OutputStream out, final alma.xmltest_dep.CharacteristicComponentDesc s)
+1 - 	{
+1 - 		alma.xmltest_dep.CharacteristicComponentHelper.write(out,s.characteristic_component_ref);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/CharacteristicComponentDescHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "CharacteristicComponentDesc"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class CharacteristicComponentDescHolder
+1 - 	implements org.omg.CORBA.portable.Streamable
+1 - {
+1 - 	public alma.xmltest_dep.CharacteristicComponentDesc value;
+1 - 
+1 - 	public CharacteristicComponentDescHolder ()
+1 - 	{
+1 - 	}
+1 - 	public CharacteristicComponentDescHolder(final alma.xmltest_dep.CharacteristicComponentDesc initial)
+1 - 	{
+1 - 		value = initial;
+1 - 	}
+1 - 	public org.omg.CORBA.TypeCode _type ()
+1 - 	{
+1 - 		return alma.xmltest_dep.CharacteristicComponentDescHelper.type ();
+1 - 	}
+1 - 	public void _read(final org.omg.CORBA.portable.InputStream _in)
+1 - 	{
+1 - 		value = alma.xmltest_dep.CharacteristicComponentDescHelper.read(_in);
+1 - 	}
+1 - 	public void _write(final org.omg.CORBA.portable.OutputStream _out)
+1 - 	{
+1 - 		alma.xmltest_dep.CharacteristicComponentDescHelper.write(_out, value);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/CharacteristicComponentDesc.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "CharacteristicComponentDesc"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class CharacteristicComponentDesc
+1 - 	implements org.omg.CORBA.portable.IDLEntity
+1 - {
+1 - 	public CharacteristicComponentDesc(){}
+1 - 	public alma.xmltest_dep.CharacteristicComponent characteristic_component_ref;
+1 - 	public CharacteristicComponentDesc(alma.xmltest_dep.CharacteristicComponent characteristic_component_ref)
+1 - 	{
+1 - 		this.characteristic_component_ref = characteristic_component_ref;
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/CharacteristicComponentHelper.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "CharacteristicComponent"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public final class CharacteristicComponentHelper
+1 - {
+1 - 	public static void insert (final org.omg.CORBA.Any any, final alma.xmltest_dep.CharacteristicComponent s)
+1 - 	{
+1 - 			any.insert_Object(s);
+1 - 	}
+1 - 	public static alma.xmltest_dep.CharacteristicComponent extract(final org.omg.CORBA.Any any)
+1 - 	{
+1 - 		return narrow(any.extract_Object()) ;
+1 - 	}
+1 - 	public static org.omg.CORBA.TypeCode type()
+1 - 	{
+1 - 		return org.omg.CORBA.ORB.init().create_interface_tc("IDL:alma/xmltest_dep/CharacteristicComponent:1.0", "CharacteristicComponent");
+1 - 	}
+1 - 	public static String id()
+1 - 	{
+1 - 		return "IDL:alma/xmltest_dep/CharacteristicComponent:1.0";
+1 - 	}
+1 - 	public static CharacteristicComponent read(final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		return narrow(in.read_Object());
+1 - 	}
+1 - 	public static void write(final org.omg.CORBA.portable.OutputStream _out, final alma.xmltest_dep.CharacteristicComponent s)
+1 - 	{
+1 - 		_out.write_Object(s);
+1 - 	}
+1 - 	public static alma.xmltest_dep.CharacteristicComponent narrow(final java.lang.Object obj)
+1 - 	{
+1 - 		if (obj instanceof alma.xmltest_dep.CharacteristicComponent)
+1 - 		{
+1 - 			return (alma.xmltest_dep.CharacteristicComponent)obj;
+1 - 		}
+1 - 		else if (obj instanceof org.omg.CORBA.Object)
+1 - 		{
+1 - 			return narrow((org.omg.CORBA.Object)obj);
+1 - 		}
+1 - 		throw new org.omg.CORBA.BAD_PARAM("Failed to narrow in helper");
+1 - 	}
+1 - 	public static alma.xmltest_dep.CharacteristicComponent narrow(final org.omg.CORBA.Object obj)
+1 - 	{
+1 - 		if (obj == null)
+1 - 			return null;
+1 - 		try
+1 - 		{
+1 - 			return (alma.xmltest_dep.CharacteristicComponent)obj;
+1 - 		}
+1 - 		catch (ClassCastException c)
+1 - 		{
+1 - 			if (obj._is_a("IDL:alma/xmltest_dep/CharacteristicComponent:1.0"))
+1 - 			{
+1 - 				alma.xmltest_dep._CharacteristicComponentStub stub;
+1 - 				stub = new alma.xmltest_dep._CharacteristicComponentStub();
+1 - 				stub._set_delegate(((org.omg.CORBA.portable.ObjectImpl)obj)._get_delegate());
+1 - 				return stub;
+1 - 			}
+1 - 		}
+1 - 		throw new org.omg.CORBA.BAD_PARAM("Narrow failed");
+1 - 	}
+1 - 	public static alma.xmltest_dep.CharacteristicComponent unchecked_narrow(final org.omg.CORBA.Object obj)
+1 - 	{
+1 - 		if (obj == null)
+1 - 			return null;
+1 - 		try
+1 - 		{
+1 - 			return (alma.xmltest_dep.CharacteristicComponent)obj;
+1 - 		}
+1 - 		catch (ClassCastException c)
+1 - 		{
+1 - 				alma.xmltest_dep._CharacteristicComponentStub stub;
+1 - 				stub = new alma.xmltest_dep._CharacteristicComponentStub();
+1 - 				stub._set_delegate(((org.omg.CORBA.portable.ObjectImpl)obj)._get_delegate());
+1 - 				return stub;
+1 - 		}
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/CharacteristicComponentHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "CharacteristicComponent"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public final class CharacteristicComponentHolder	implements org.omg.CORBA.portable.Streamable{
+1 - 	 public CharacteristicComponent value;
+1 - 	public CharacteristicComponentHolder()
+1 - 	{
+1 - 	}
+1 - 	public CharacteristicComponentHolder (final CharacteristicComponent initial)
+1 - 	{
+1 - 		value = initial;
+1 - 	}
+1 - 	public org.omg.CORBA.TypeCode _type()
+1 - 	{
+1 - 		return CharacteristicComponentHelper.type();
+1 - 	}
+1 - 	public void _read (final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		value = CharacteristicComponentHelper.read (in);
+1 - 	}
+1 - 	public void _write (final org.omg.CORBA.portable.OutputStream _out)
+1 - 	{
+1 - 		CharacteristicComponentHelper.write (_out,value);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/CharacteristicComponent.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "CharacteristicComponent"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public interface CharacteristicComponent
+1 - 	extends CharacteristicComponentOperations, org.omg.CORBA.Object, org.omg.CORBA.portable.IDLEntity, alma.ACS.ACSComponent
+1 - {
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/CharacteristicComponentOperations.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "CharacteristicComponent"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - 
+1 - public interface CharacteristicComponentOperations
+1 - 	extends alma.ACS.ACSComponentOperations
+1 - {
+1 - 	/* constants */
+1 - 	/* operations  */
+1 - 	alma.xmltest_dep.CharacteristicComponentDesc descriptor();
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/CharacteristicComponentPOA.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "CharacteristicComponent"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - 
+1 - public abstract class CharacteristicComponentPOA
+1 - 	extends org.omg.PortableServer.Servant
+1 - 	implements org.omg.CORBA.portable.InvokeHandler, alma.xmltest_dep.CharacteristicComponentOperations
+1 - {
+1 - 	static private final java.util.Hashtable m_opsHash = new java.util.Hashtable();
+1 - 	static
+1 - 	{
+1 - 		m_opsHash.put ( "_get_name", new java.lang.Integer(0));
+1 - 		m_opsHash.put ( "descriptor", new java.lang.Integer(1));
+1 - 		m_opsHash.put ( "_get_componentState", new java.lang.Integer(2));
+1 - 	}
+1 - 	private String[] ids = {"IDL:alma/xmltest_dep/CharacteristicComponent:1.0","IDL:alma/ACS/ACSComponent:1.0"};
+1 - 	public alma.xmltest_dep.CharacteristicComponent _this()
+1 - 	{
+1 - 		return alma.xmltest_dep.CharacteristicComponentHelper.narrow(_this_object());
+1 - 	}
+1 - 	public alma.xmltest_dep.CharacteristicComponent _this(org.omg.CORBA.ORB orb)
+1 - 	{
+1 - 		return alma.xmltest_dep.CharacteristicComponentHelper.narrow(_this_object(orb));
+1 - 	}
+1 - 	public org.omg.CORBA.portable.OutputStream _invoke(String method, org.omg.CORBA.portable.InputStream _input, org.omg.CORBA.portable.ResponseHandler handler)
+1 - 		throws org.omg.CORBA.SystemException
+1 - 	{
+1 - 		org.omg.CORBA.portable.OutputStream _out = null;
+1 - 		// do something
+1 - 		// quick lookup of operation
+1 - 		java.lang.Integer opsIndex = (java.lang.Integer)m_opsHash.get ( method );
+1 - 		if ( null == opsIndex )
+1 - 			throw new org.omg.CORBA.BAD_OPERATION(method + " not found");
+1 - 		switch ( opsIndex.intValue() )
+1 - 		{
+1 - 			case 0: // _get_name
+1 - 			{
+1 - 			_out = handler.createReply();
+1 - 			_out.write_string(name());
+1 - 				break;
+1 - 			}
+1 - 			case 1: // descriptor
+1 - 			{
+1 - 				_out = handler.createReply();
+1 - 				alma.xmltest_dep.CharacteristicComponentDescHelper.write(_out,descriptor());
+1 - 				break;
+1 - 			}
+1 - 			case 2: // _get_componentState
+1 - 			{
+1 - 			_out = handler.createReply();
+1 - 			alma.ACS.ComponentStatesHelper.write(_out,componentState());
+1 - 				break;
+1 - 			}
+1 - 		}
+1 - 		return _out;
+1 - 	}
+1 - 
+1 - 	public String[] _all_interfaces(org.omg.PortableServer.POA poa, byte[] obj_id)
+1 - 	{
+1 - 		return ids;
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/CharacteristicComponentPOATie.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - import org.omg.PortableServer.POA;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "CharacteristicComponent"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public class CharacteristicComponentPOATie
+1 - 	extends CharacteristicComponentPOA
+1 - {
+1 - 	private CharacteristicComponentOperations _delegate;
+1 - 
+1 - 	private POA _poa;
+1 - 	public CharacteristicComponentPOATie(CharacteristicComponentOperations delegate)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 	}
+1 - 	public CharacteristicComponentPOATie(CharacteristicComponentOperations delegate, POA poa)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 		_poa = poa;
+1 - 	}
+1 - 	public alma.xmltest_dep.CharacteristicComponent _this()
+1 - 	{
+1 - 		return alma.xmltest_dep.CharacteristicComponentHelper.narrow(_this_object());
+1 - 	}
+1 - 	public alma.xmltest_dep.CharacteristicComponent _this(org.omg.CORBA.ORB orb)
+1 - 	{
+1 - 		return alma.xmltest_dep.CharacteristicComponentHelper.narrow(_this_object(orb));
+1 - 	}
+1 - 	public CharacteristicComponentOperations _delegate()
+1 - 	{
+1 - 		return _delegate;
+1 - 	}
+1 - 	public void _delegate(CharacteristicComponentOperations delegate)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 	}
+1 - 	public POA _default_POA()
+1 - 	{
+1 - 		if (_poa != null)
+1 - 		{
+1 - 			return _poa;
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			return super._default_POA();
+1 - 		}
+1 - 	}
+1 - 	public java.lang.String name()
+1 - 	{
+1 - 		return _delegate.name();
+1 - 	}
+1 - 
+1 - 	public alma.xmltest_dep.CharacteristicComponentDesc descriptor()
+1 - 	{
+1 - 		return _delegate.descriptor();
+1 - 	}
+1 - 
+1 - 	public alma.ACS.ComponentStates componentState()
+1 - 	{
+1 - 		return _delegate.componentState();
+1 - 	}
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/_CharacteristicComponentStub.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "CharacteristicComponent"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public class _CharacteristicComponentStub
+1 - 	extends org.omg.CORBA.portable.ObjectImpl
+1 - 	implements alma.xmltest_dep.CharacteristicComponent
+1 - {
+1 - 	private String[] ids = {"IDL:alma/xmltest_dep/CharacteristicComponent:1.0","IDL:alma/ACS/ACSComponent:1.0"};
+1 - 	public String[] _ids()
+1 - 	{
+1 - 		return ids;
+1 - 	}
+1 - 
+1 - 	public final static java.lang.Class _opsClass = alma.xmltest_dep.CharacteristicComponentOperations.class;
+1 - 	public java.lang.String name()
+1 - 	{
+1 - 		while(true)
+1 - 		{
+1 - 		if(! this._is_local())
+1 - 		{
+1 - 			org.omg.CORBA.portable.InputStream _is = null;
+1 - 			try
+1 - 			{
+1 - 				org.omg.CORBA.portable.OutputStream _os = _request("_get_name",true);
+1 - 				_is = _invoke(_os);
+1 - 				return _is.read_string();
+1 - 			}
+1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
+1 - 			catch( org.omg.CORBA.portable.ApplicationException _ax )
+1 - 			{
+1 - 				String _id = _ax.getId();
+1 - 				throw new RuntimeException("Unexpected exception " + _id );
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				this._releaseReply(_is);
+1 - 			}
+1 - 		}
+1 - 
+1 - 		else
+1 - 		{
+1 - 		org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke( "_get_name", _opsClass);
+1 - 		if( _so == null )
+1 - 			throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
+1 - 			CharacteristicComponentOperations _localServant = (CharacteristicComponentOperations)_so.servant;
+1 - 			java.lang.String _result;
+1 - 		try
+1 - 		{
+1 - 			_result = _localServant.name();
+1 - 		}
+1 - 		finally
+1 - 		{
+1 - 			_servant_postinvoke(_so);
+1 - 		}
+1 - 		return _result;
+1 - 		}
+1 - 		}
+1 - 
+1 - 	}
+1 - 
+1 - 	public alma.xmltest_dep.CharacteristicComponentDesc descriptor()
+1 - 	{
+1 - 		while(true)
+1 - 		{
+1 - 		if(! this._is_local())
+1 - 		{
+1 - 			org.omg.CORBA.portable.InputStream _is = null;
+1 - 			try
+1 - 			{
+1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "descriptor", true);
+1 - 				_is = _invoke(_os);
+1 - 				alma.xmltest_dep.CharacteristicComponentDesc _result = alma.xmltest_dep.CharacteristicComponentDescHelper.read(_is);
+1 - 				return _result;
+1 - 			}
+1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
+1 - 			catch( org.omg.CORBA.portable.ApplicationException _ax )
+1 - 			{
+1 - 				String _id = _ax.getId();
+1 - 				throw new RuntimeException("Unexpected exception " + _id );
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				this._releaseReply(_is);
+1 - 			}
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke( "descriptor", _opsClass );
+1 - 			if( _so == null )
+1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
+1 - 			CharacteristicComponentOperations _localServant = (CharacteristicComponentOperations)_so.servant;
+1 - 			alma.xmltest_dep.CharacteristicComponentDesc _result;			try
+1 - 			{
+1 - 			_result = _localServant.descriptor();
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				_servant_postinvoke(_so);
+1 - 			}
+1 - 			return _result;
+1 - 		}
+1 - 
+1 - 		}
+1 - 
+1 - 	}
+1 - 
+1 - 	public alma.ACS.ComponentStates componentState()
+1 - 	{
+1 - 		while(true)
+1 - 		{
+1 - 		if(! this._is_local())
+1 - 		{
+1 - 			org.omg.CORBA.portable.InputStream _is = null;
+1 - 			try
+1 - 			{
+1 - 				org.omg.CORBA.portable.OutputStream _os = _request("_get_componentState",true);
+1 - 				_is = _invoke(_os);
+1 - 				return alma.ACS.ComponentStatesHelper.read(_is);
+1 - 			}
+1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
+1 - 			catch( org.omg.CORBA.portable.ApplicationException _ax )
+1 - 			{
+1 - 				String _id = _ax.getId();
+1 - 				throw new RuntimeException("Unexpected exception " + _id );
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				this._releaseReply(_is);
+1 - 			}
+1 - 		}
+1 - 
+1 - 		else
+1 - 		{
+1 - 		org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke( "_get_componentState", _opsClass);
+1 - 		if( _so == null )
+1 - 			throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
+1 - 			CharacteristicComponentOperations _localServant = (CharacteristicComponentOperations)_so.servant;
+1 - 			alma.ACS.ComponentStates _result;
+1 - 		try
+1 - 		{
+1 - 			_result = _localServant.componentState();
+1 - 		}
+1 - 		finally
+1 - 		{
+1 - 			_servant_postinvoke(_so);
+1 - 		}
+1 - 		return _result;
+1 - 		}
+1 - 		}
+1 - 
+1 - 	}
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/ObsProposalHelper.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of alias "ObsProposal"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class ObsProposalHelper
+1 - {
+1 - 	private static org.omg.CORBA.TypeCode _type = null;
+1 - 
+1 - 	public static void insert (org.omg.CORBA.Any any, alma.fakexmlentity.XmlEntityStruct s)
+1 - 	{
+1 - 		any.type (type ());
+1 - 		write (any.create_output_stream (), s);
+1 - 	}
+1 - 
+1 - 	public static alma.fakexmlentity.XmlEntityStruct extract (final org.omg.CORBA.Any any)
+1 - 	{
+1 - 		return read (any.create_input_stream ());
+1 - 	}
+1 - 
+1 - 	public static org.omg.CORBA.TypeCode type ()
+1 - 	{
+1 - 		if (_type == null)
+1 - 		{
+1 - 			_type = org.omg.CORBA.ORB.init().create_alias_tc(alma.xmltest_dep.ObsProposalHelper.id(), "ObsProposal",alma.fakexmlentity.XmlEntityStructHelper.type());
+1 - 		}
+1 - 		return _type;
+1 - 	}
+1 - 
+1 - 	public static String id()
+1 - 	{
+1 - 		return "IDL:alma/xmltest_dep/ObsProposal:1.0";
+1 - 	}
+1 - 	public static alma.fakexmlentity.XmlEntityStruct read (final org.omg.CORBA.portable.InputStream _in)
+1 - 	{
+1 - 		alma.fakexmlentity.XmlEntityStruct _result;
+1 - 		_result=alma.fakexmlentity.XmlEntityStructHelper.read(_in);
+1 - 		return _result;
+1 - 	}
+1 - 
+1 - 	public static void write (final org.omg.CORBA.portable.OutputStream _out, alma.fakexmlentity.XmlEntityStruct _s)
+1 - 	{
+1 - 		alma.fakexmlentity.XmlEntityStructHelper.write(_out,_s);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/ObsProposalHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  * Holder class for IDL typedef alma.xmltest_dep.ObsProposal
+1 -  * 
+1 -  * @author ACS xml transparency layer generator
+1 -  */
+1 - public final class ObsProposalHolder
+1 - {
+1 - 	public dummyentities.ObsProposal value;
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithStructHelper.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public final class OffshootWithStructHelper
+1 - {
+1 - 	public static void insert (final org.omg.CORBA.Any any, final alma.xmltest_dep.OffshootWithStruct s)
+1 - 	{
+1 - 			any.insert_Object(s);
+1 - 	}
+1 - 	public static alma.xmltest_dep.OffshootWithStruct extract(final org.omg.CORBA.Any any)
+1 - 	{
+1 - 		return narrow(any.extract_Object()) ;
+1 - 	}
+1 - 	public static org.omg.CORBA.TypeCode type()
+1 - 	{
+1 - 		return org.omg.CORBA.ORB.init().create_interface_tc("IDL:alma/xmltest_dep/OffshootWithStruct:1.0", "OffshootWithStruct");
+1 - 	}
+1 - 	public static String id()
+1 - 	{
+1 - 		return "IDL:alma/xmltest_dep/OffshootWithStruct:1.0";
+1 - 	}
+1 - 	public static OffshootWithStruct read(final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		return narrow(in.read_Object());
+1 - 	}
+1 - 	public static void write(final org.omg.CORBA.portable.OutputStream _out, final alma.xmltest_dep.OffshootWithStruct s)
+1 - 	{
+1 - 		_out.write_Object(s);
+1 - 	}
+1 - 	public static alma.xmltest_dep.OffshootWithStruct narrow(final java.lang.Object obj)
+1 - 	{
+1 - 		if (obj instanceof alma.xmltest_dep.OffshootWithStruct)
+1 - 		{
+1 - 			return (alma.xmltest_dep.OffshootWithStruct)obj;
+1 - 		}
+1 - 		else if (obj instanceof org.omg.CORBA.Object)
+1 - 		{
+1 - 			return narrow((org.omg.CORBA.Object)obj);
+1 - 		}
+1 - 		throw new org.omg.CORBA.BAD_PARAM("Failed to narrow in helper");
+1 - 	}
+1 - 	public static alma.xmltest_dep.OffshootWithStruct narrow(final org.omg.CORBA.Object obj)
+1 - 	{
+1 - 		if (obj == null)
+1 - 			return null;
+1 - 		try
+1 - 		{
+1 - 			return (alma.xmltest_dep.OffshootWithStruct)obj;
+1 - 		}
+1 - 		catch (ClassCastException c)
+1 - 		{
+1 - 			if (obj._is_a("IDL:alma/xmltest_dep/OffshootWithStruct:1.0"))
+1 - 			{
+1 - 				alma.xmltest_dep._OffshootWithStructStub stub;
+1 - 				stub = new alma.xmltest_dep._OffshootWithStructStub();
+1 - 				stub._set_delegate(((org.omg.CORBA.portable.ObjectImpl)obj)._get_delegate());
+1 - 				return stub;
+1 - 			}
+1 - 		}
+1 - 		throw new org.omg.CORBA.BAD_PARAM("Narrow failed");
+1 - 	}
+1 - 	public static alma.xmltest_dep.OffshootWithStruct unchecked_narrow(final org.omg.CORBA.Object obj)
+1 - 	{
+1 - 		if (obj == null)
+1 - 			return null;
+1 - 		try
+1 - 		{
+1 - 			return (alma.xmltest_dep.OffshootWithStruct)obj;
+1 - 		}
+1 - 		catch (ClassCastException c)
+1 - 		{
+1 - 				alma.xmltest_dep._OffshootWithStructStub stub;
+1 - 				stub = new alma.xmltest_dep._OffshootWithStructStub();
+1 - 				stub._set_delegate(((org.omg.CORBA.portable.ObjectImpl)obj)._get_delegate());
+1 - 				return stub;
+1 - 		}
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithStructHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public final class OffshootWithStructHolder	implements org.omg.CORBA.portable.Streamable{
+1 - 	 public OffshootWithStruct value;
+1 - 	public OffshootWithStructHolder()
+1 - 	{
+1 - 	}
+1 - 	public OffshootWithStructHolder (final OffshootWithStruct initial)
+1 - 	{
+1 - 		value = initial;
+1 - 	}
+1 - 	public org.omg.CORBA.TypeCode _type()
+1 - 	{
+1 - 		return OffshootWithStructHelper.type();
+1 - 	}
+1 - 	public void _read (final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		value = OffshootWithStructHelper.read (in);
+1 - 	}
+1 - 	public void _write (final org.omg.CORBA.portable.OutputStream _out)
+1 - 	{
+1 - 		OffshootWithStructHelper.write (_out,value);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithStruct.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public interface OffshootWithStruct
+1 - 	extends OffshootWithStructOperations, org.omg.CORBA.Object, org.omg.CORBA.portable.IDLEntity, alma.ACS.OffShoot
+1 - {
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithStructOperations.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - 
+1 - public interface OffshootWithStructOperations
+1 - 	extends alma.ACS.OffShootOperations
+1 - {
+1 - 	/* constants */
+1 - 	/* operations  */
+1 - 	void takeThatStruct(alma.xmltest_dep.StructWithOffshoot yourStruct);
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithStructPOA.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - 
+1 - public abstract class OffshootWithStructPOA
+1 - 	extends org.omg.PortableServer.Servant
+1 - 	implements org.omg.CORBA.portable.InvokeHandler, alma.xmltest_dep.OffshootWithStructOperations
+1 - {
+1 - 	static private final java.util.Hashtable m_opsHash = new java.util.Hashtable();
+1 - 	static
+1 - 	{
+1 - 		m_opsHash.put ( "takeThatStruct", new java.lang.Integer(0));
+1 - 	}
+1 - 	private String[] ids = {"IDL:alma/xmltest_dep/OffshootWithStruct:1.0","IDL:alma/ACS/OffShoot:1.0"};
+1 - 	public alma.xmltest_dep.OffshootWithStruct _this()
+1 - 	{
+1 - 		return alma.xmltest_dep.OffshootWithStructHelper.narrow(_this_object());
+1 - 	}
+1 - 	public alma.xmltest_dep.OffshootWithStruct _this(org.omg.CORBA.ORB orb)
+1 - 	{
+1 - 		return alma.xmltest_dep.OffshootWithStructHelper.narrow(_this_object(orb));
+1 - 	}
+1 - 	public org.omg.CORBA.portable.OutputStream _invoke(String method, org.omg.CORBA.portable.InputStream _input, org.omg.CORBA.portable.ResponseHandler handler)
+1 - 		throws org.omg.CORBA.SystemException
+1 - 	{
+1 - 		org.omg.CORBA.portable.OutputStream _out = null;
+1 - 		// do something
+1 - 		// quick lookup of operation
+1 - 		java.lang.Integer opsIndex = (java.lang.Integer)m_opsHash.get ( method );
+1 - 		if ( null == opsIndex )
+1 - 			throw new org.omg.CORBA.BAD_OPERATION(method + " not found");
+1 - 		switch ( opsIndex.intValue() )
+1 - 		{
+1 - 			case 0: // takeThatStruct
+1 - 			{
+1 - 				alma.xmltest_dep.StructWithOffshoot _arg0=alma.xmltest_dep.StructWithOffshootHelper.read(_input);
+1 - 				_out = handler.createReply();
+1 - 				takeThatStruct(_arg0);
+1 - 				break;
+1 - 			}
+1 - 		}
+1 - 		return _out;
+1 - 	}
+1 - 
+1 - 	public String[] _all_interfaces(org.omg.PortableServer.POA poa, byte[] obj_id)
+1 - 	{
+1 - 		return ids;
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithStructPOATie.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - import org.omg.PortableServer.POA;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public class OffshootWithStructPOATie
+1 - 	extends OffshootWithStructPOA
+1 - {
+1 - 	private OffshootWithStructOperations _delegate;
+1 - 
+1 - 	private POA _poa;
+1 - 	public OffshootWithStructPOATie(OffshootWithStructOperations delegate)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 	}
+1 - 	public OffshootWithStructPOATie(OffshootWithStructOperations delegate, POA poa)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 		_poa = poa;
+1 - 	}
+1 - 	public alma.xmltest_dep.OffshootWithStruct _this()
+1 - 	{
+1 - 		return alma.xmltest_dep.OffshootWithStructHelper.narrow(_this_object());
+1 - 	}
+1 - 	public alma.xmltest_dep.OffshootWithStruct _this(org.omg.CORBA.ORB orb)
+1 - 	{
+1 - 		return alma.xmltest_dep.OffshootWithStructHelper.narrow(_this_object(orb));
+1 - 	}
+1 - 	public OffshootWithStructOperations _delegate()
+1 - 	{
+1 - 		return _delegate;
+1 - 	}
+1 - 	public void _delegate(OffshootWithStructOperations delegate)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 	}
+1 - 	public POA _default_POA()
+1 - 	{
+1 - 		if (_poa != null)
+1 - 		{
+1 - 			return _poa;
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			return super._default_POA();
+1 - 		}
+1 - 	}
+1 - 	public void takeThatStruct(alma.xmltest_dep.StructWithOffshoot yourStruct)
+1 - 	{
+1 - _delegate.takeThatStruct(yourStruct);
+1 - 	}
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/_OffshootWithStructStub.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public class _OffshootWithStructStub
+1 - 	extends org.omg.CORBA.portable.ObjectImpl
+1 - 	implements alma.xmltest_dep.OffshootWithStruct
+1 - {
+1 - 	private String[] ids = {"IDL:alma/xmltest_dep/OffshootWithStruct:1.0","IDL:alma/ACS/OffShoot:1.0"};
+1 - 	public String[] _ids()
+1 - 	{
+1 - 		return ids;
+1 - 	}
+1 - 
+1 - 	public final static java.lang.Class _opsClass = alma.xmltest_dep.OffshootWithStructOperations.class;
+1 - 	public void takeThatStruct(alma.xmltest_dep.StructWithOffshoot yourStruct)
+1 - 	{
+1 - 		while(true)
+1 - 		{
+1 - 		if(! this._is_local())
+1 - 		{
+1 - 			org.omg.CORBA.portable.InputStream _is = null;
+1 - 			try
+1 - 			{
+1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "takeThatStruct", true);
+1 - 				alma.xmltest_dep.StructWithOffshootHelper.write(_os,yourStruct);
+1 - 				_is = _invoke(_os);
+1 - 				return;
+1 - 			}
+1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
+1 - 			catch( org.omg.CORBA.portable.ApplicationException _ax )
+1 - 			{
+1 - 				String _id = _ax.getId();
+1 - 				throw new RuntimeException("Unexpected exception " + _id );
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				this._releaseReply(_is);
+1 - 			}
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke( "takeThatStruct", _opsClass );
+1 - 			if( _so == null )
+1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
+1 - 			OffshootWithStructOperations _localServant = (OffshootWithStructOperations)_so.servant;
+1 - 			try
+1 - 			{
+1 - 			_localServant.takeThatStruct(yourStruct);
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				_servant_postinvoke(_so);
+1 - 			}
+1 - 			return;
+1 - 		}
+1 - 
+1 - 		}
+1 - 
+1 - 	}
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithXmlStructHelper.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithXmlStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public final class OffshootWithXmlStructHelper
+1 - {
+1 - 	public static void insert (final org.omg.CORBA.Any any, final alma.xmltest_dep.OffshootWithXmlStruct s)
+1 - 	{
+1 - 			any.insert_Object(s);
+1 - 	}
+1 - 	public static alma.xmltest_dep.OffshootWithXmlStruct extract(final org.omg.CORBA.Any any)
+1 - 	{
+1 - 		return narrow(any.extract_Object()) ;
+1 - 	}
+1 - 	public static org.omg.CORBA.TypeCode type()
+1 - 	{
+1 - 		return org.omg.CORBA.ORB.init().create_interface_tc("IDL:alma/xmltest_dep/OffshootWithXmlStruct:1.0", "OffshootWithXmlStruct");
+1 - 	}
+1 - 	public static String id()
+1 - 	{
+1 - 		return "IDL:alma/xmltest_dep/OffshootWithXmlStruct:1.0";
+1 - 	}
+1 - 	public static OffshootWithXmlStruct read(final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		return narrow(in.read_Object());
+1 - 	}
+1 - 	public static void write(final org.omg.CORBA.portable.OutputStream _out, final alma.xmltest_dep.OffshootWithXmlStruct s)
+1 - 	{
+1 - 		_out.write_Object(s);
+1 - 	}
+1 - 	public static alma.xmltest_dep.OffshootWithXmlStruct narrow(final java.lang.Object obj)
+1 - 	{
+1 - 		if (obj instanceof alma.xmltest_dep.OffshootWithXmlStruct)
+1 - 		{
+1 - 			return (alma.xmltest_dep.OffshootWithXmlStruct)obj;
+1 - 		}
+1 - 		else if (obj instanceof org.omg.CORBA.Object)
+1 - 		{
+1 - 			return narrow((org.omg.CORBA.Object)obj);
+1 - 		}
+1 - 		throw new org.omg.CORBA.BAD_PARAM("Failed to narrow in helper");
+1 - 	}
+1 - 	public static alma.xmltest_dep.OffshootWithXmlStruct narrow(final org.omg.CORBA.Object obj)
+1 - 	{
+1 - 		if (obj == null)
+1 - 			return null;
+1 - 		try
+1 - 		{
+1 - 			return (alma.xmltest_dep.OffshootWithXmlStruct)obj;
+1 - 		}
+1 - 		catch (ClassCastException c)
+1 - 		{
+1 - 			if (obj._is_a("IDL:alma/xmltest_dep/OffshootWithXmlStruct:1.0"))
+1 - 			{
+1 - 				alma.xmltest_dep._OffshootWithXmlStructStub stub;
+1 - 				stub = new alma.xmltest_dep._OffshootWithXmlStructStub();
+1 - 				stub._set_delegate(((org.omg.CORBA.portable.ObjectImpl)obj)._get_delegate());
+1 - 				return stub;
+1 - 			}
+1 - 		}
+1 - 		throw new org.omg.CORBA.BAD_PARAM("Narrow failed");
+1 - 	}
+1 - 	public static alma.xmltest_dep.OffshootWithXmlStruct unchecked_narrow(final org.omg.CORBA.Object obj)
+1 - 	{
+1 - 		if (obj == null)
+1 - 			return null;
+1 - 		try
+1 - 		{
+1 - 			return (alma.xmltest_dep.OffshootWithXmlStruct)obj;
+1 - 		}
+1 - 		catch (ClassCastException c)
+1 - 		{
+1 - 				alma.xmltest_dep._OffshootWithXmlStructStub stub;
+1 - 				stub = new alma.xmltest_dep._OffshootWithXmlStructStub();
+1 - 				stub._set_delegate(((org.omg.CORBA.portable.ObjectImpl)obj)._get_delegate());
+1 - 				return stub;
+1 - 		}
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithXmlStructHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithXmlStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public final class OffshootWithXmlStructHolder	implements org.omg.CORBA.portable.Streamable{
+1 - 	 public OffshootWithXmlStruct value;
+1 - 	public OffshootWithXmlStructHolder()
+1 - 	{
+1 - 	}
+1 - 	public OffshootWithXmlStructHolder (final OffshootWithXmlStruct initial)
+1 - 	{
+1 - 		value = initial;
+1 - 	}
+1 - 	public org.omg.CORBA.TypeCode _type()
+1 - 	{
+1 - 		return OffshootWithXmlStructHelper.type();
+1 - 	}
+1 - 	public void _read (final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		value = OffshootWithXmlStructHelper.read (in);
+1 - 	}
+1 - 	public void _write (final org.omg.CORBA.portable.OutputStream _out)
+1 - 	{
+1 - 		OffshootWithXmlStructHelper.write (_out,value);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithXmlStruct.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithXmlStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public interface OffshootWithXmlStruct
+1 - 	extends OffshootWithXmlStructOperations, org.omg.CORBA.Object, org.omg.CORBA.portable.IDLEntity, alma.ACS.OffShoot
+1 - {
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithXmlStructJ.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithXmlStructJ"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public interface OffshootWithXmlStructJ
+1 - 	extends alma.ACS.OffShootOperations
+1 - {
+1 - 	/* constants */
+1 - 	/* operations  */
+1 - 	public void takeThatStruct(alma.xmltest_dep.XmlStructWithOffshootJ  yourStruct);
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithXmlStructOperations.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithXmlStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - 
+1 - public interface OffshootWithXmlStructOperations
+1 - 	extends alma.ACS.OffShootOperations
+1 - {
+1 - 	/* constants */
+1 - 	/* operations  */
+1 - 	void takeThatStruct(alma.xmltest_dep.XmlStructWithOffshoot yourStruct);
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithXmlStructPOA.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithXmlStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - 
+1 - public abstract class OffshootWithXmlStructPOA
+1 - 	extends org.omg.PortableServer.Servant
+1 - 	implements org.omg.CORBA.portable.InvokeHandler, alma.xmltest_dep.OffshootWithXmlStructOperations
+1 - {
+1 - 	static private final java.util.Hashtable m_opsHash = new java.util.Hashtable();
+1 - 	static
+1 - 	{
+1 - 		m_opsHash.put ( "takeThatStruct", new java.lang.Integer(0));
+1 - 	}
+1 - 	private String[] ids = {"IDL:alma/xmltest_dep/OffshootWithXmlStruct:1.0","IDL:alma/ACS/OffShoot:1.0"};
+1 - 	public alma.xmltest_dep.OffshootWithXmlStruct _this()
+1 - 	{
+1 - 		return alma.xmltest_dep.OffshootWithXmlStructHelper.narrow(_this_object());
+1 - 	}
+1 - 	public alma.xmltest_dep.OffshootWithXmlStruct _this(org.omg.CORBA.ORB orb)
+1 - 	{
+1 - 		return alma.xmltest_dep.OffshootWithXmlStructHelper.narrow(_this_object(orb));
+1 - 	}
+1 - 	public org.omg.CORBA.portable.OutputStream _invoke(String method, org.omg.CORBA.portable.InputStream _input, org.omg.CORBA.portable.ResponseHandler handler)
+1 - 		throws org.omg.CORBA.SystemException
+1 - 	{
+1 - 		org.omg.CORBA.portable.OutputStream _out = null;
+1 - 		// do something
+1 - 		// quick lookup of operation
+1 - 		java.lang.Integer opsIndex = (java.lang.Integer)m_opsHash.get ( method );
+1 - 		if ( null == opsIndex )
+1 - 			throw new org.omg.CORBA.BAD_OPERATION(method + " not found");
+1 - 		switch ( opsIndex.intValue() )
+1 - 		{
+1 - 			case 0: // takeThatStruct
+1 - 			{
+1 - 				alma.xmltest_dep.XmlStructWithOffshoot _arg0=alma.xmltest_dep.XmlStructWithOffshootHelper.read(_input);
+1 - 				_out = handler.createReply();
+1 - 				takeThatStruct(_arg0);
+1 - 				break;
+1 - 			}
+1 - 		}
+1 - 		return _out;
+1 - 	}
+1 - 
+1 - 	public String[] _all_interfaces(org.omg.PortableServer.POA poa, byte[] obj_id)
+1 - 	{
+1 - 		return ids;
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/OffshootWithXmlStructPOATie.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - import org.omg.PortableServer.POA;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithXmlStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public class OffshootWithXmlStructPOATie
+1 - 	extends OffshootWithXmlStructPOA
+1 - {
+1 - 	private OffshootWithXmlStructOperations _delegate;
+1 - 
+1 - 	private POA _poa;
+1 - 	public OffshootWithXmlStructPOATie(OffshootWithXmlStructOperations delegate)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 	}
+1 - 	public OffshootWithXmlStructPOATie(OffshootWithXmlStructOperations delegate, POA poa)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 		_poa = poa;
+1 - 	}
+1 - 	public alma.xmltest_dep.OffshootWithXmlStruct _this()
+1 - 	{
+1 - 		return alma.xmltest_dep.OffshootWithXmlStructHelper.narrow(_this_object());
+1 - 	}
+1 - 	public alma.xmltest_dep.OffshootWithXmlStruct _this(org.omg.CORBA.ORB orb)
+1 - 	{
+1 - 		return alma.xmltest_dep.OffshootWithXmlStructHelper.narrow(_this_object(orb));
+1 - 	}
+1 - 	public OffshootWithXmlStructOperations _delegate()
+1 - 	{
+1 - 		return _delegate;
+1 - 	}
+1 - 	public void _delegate(OffshootWithXmlStructOperations delegate)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 	}
+1 - 	public POA _default_POA()
+1 - 	{
+1 - 		if (_poa != null)
+1 - 		{
+1 - 			return _poa;
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			return super._default_POA();
+1 - 		}
+1 - 	}
+1 - 	public void takeThatStruct(alma.xmltest_dep.XmlStructWithOffshoot yourStruct)
+1 - 	{
+1 - _delegate.takeThatStruct(yourStruct);
+1 - 	}
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/_OffshootWithXmlStructStub.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "OffshootWithXmlStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public class _OffshootWithXmlStructStub
+1 - 	extends org.omg.CORBA.portable.ObjectImpl
+1 - 	implements alma.xmltest_dep.OffshootWithXmlStruct
+1 - {
+1 - 	private String[] ids = {"IDL:alma/xmltest_dep/OffshootWithXmlStruct:1.0","IDL:alma/ACS/OffShoot:1.0"};
+1 - 	public String[] _ids()
+1 - 	{
+1 - 		return ids;
+1 - 	}
+1 - 
+1 - 	public final static java.lang.Class _opsClass = alma.xmltest_dep.OffshootWithXmlStructOperations.class;
+1 - 	public void takeThatStruct(alma.xmltest_dep.XmlStructWithOffshoot yourStruct)
+1 - 	{
+1 - 		while(true)
+1 - 		{
+1 - 		if(! this._is_local())
+1 - 		{
+1 - 			org.omg.CORBA.portable.InputStream _is = null;
+1 - 			try
+1 - 			{
+1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "takeThatStruct", true);
+1 - 				alma.xmltest_dep.XmlStructWithOffshootHelper.write(_os,yourStruct);
+1 - 				_is = _invoke(_os);
+1 - 				return;
+1 - 			}
+1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
+1 - 			catch( org.omg.CORBA.portable.ApplicationException _ax )
+1 - 			{
+1 - 				String _id = _ax.getId();
+1 - 				throw new RuntimeException("Unexpected exception " + _id );
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				this._releaseReply(_is);
+1 - 			}
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke( "takeThatStruct", _opsClass );
+1 - 			if( _so == null )
+1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
+1 - 			OffshootWithXmlStructOperations _localServant = (OffshootWithXmlStructOperations)_so.servant;
+1 - 			try
+1 - 			{
+1 - 			_localServant.takeThatStruct(yourStruct);
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				_servant_postinvoke(_so);
+1 - 			}
+1 - 			return;
+1 - 		}
+1 - 
+1 - 		}
+1 - 
+1 - 	}
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/StructWithOffshootHelper.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "StructWithOffshoot"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class StructWithOffshootHelper
+1 - {
+1 - 	private static org.omg.CORBA.TypeCode _type = null;
+1 - 	public static org.omg.CORBA.TypeCode type ()
+1 - 	{
+1 - 		if (_type == null)
+1 - 		{
+1 - 			_type = org.omg.CORBA.ORB.init().create_struct_tc(alma.xmltest_dep.StructWithOffshootHelper.id(),"StructWithOffshoot",new org.omg.CORBA.StructMember[]{new org.omg.CORBA.StructMember("myOffshoot", org.omg.CORBA.ORB.init().create_interface_tc("IDL:alma/xmltest_dep/OffshootWithStruct:1.0", "OffshootWithStruct"), null)});
+1 - 		}
+1 - 		return _type;
+1 - 	}
+1 - 
+1 - 	public static void insert (final org.omg.CORBA.Any any, final alma.xmltest_dep.StructWithOffshoot s)
+1 - 	{
+1 - 		any.type(type());
+1 - 		write( any.create_output_stream(),s);
+1 - 	}
+1 - 
+1 - 	public static alma.xmltest_dep.StructWithOffshoot extract (final org.omg.CORBA.Any any)
+1 - 	{
+1 - 		return read(any.create_input_stream());
+1 - 	}
+1 - 
+1 - 	public static String id()
+1 - 	{
+1 - 		return "IDL:alma/xmltest_dep/StructWithOffshoot:1.0";
+1 - 	}
+1 - 	public static alma.xmltest_dep.StructWithOffshoot read (final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		alma.xmltest_dep.StructWithOffshoot result = new alma.xmltest_dep.StructWithOffshoot();
+1 - 		result.myOffshoot=alma.xmltest_dep.OffshootWithStructHelper.read(in);
+1 - 		return result;
+1 - 	}
+1 - 	public static void write (final org.omg.CORBA.portable.OutputStream out, final alma.xmltest_dep.StructWithOffshoot s)
+1 - 	{
+1 - 		alma.xmltest_dep.OffshootWithStructHelper.write(out,s.myOffshoot);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/StructWithOffshootHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "StructWithOffshoot"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class StructWithOffshootHolder
+1 - 	implements org.omg.CORBA.portable.Streamable
+1 - {
+1 - 	public alma.xmltest_dep.StructWithOffshoot value;
+1 - 
+1 - 	public StructWithOffshootHolder ()
+1 - 	{
+1 - 	}
+1 - 	public StructWithOffshootHolder(final alma.xmltest_dep.StructWithOffshoot initial)
+1 - 	{
+1 - 		value = initial;
+1 - 	}
+1 - 	public org.omg.CORBA.TypeCode _type ()
+1 - 	{
+1 - 		return alma.xmltest_dep.StructWithOffshootHelper.type ();
+1 - 	}
+1 - 	public void _read(final org.omg.CORBA.portable.InputStream _in)
+1 - 	{
+1 - 		value = alma.xmltest_dep.StructWithOffshootHelper.read(_in);
+1 - 	}
+1 - 	public void _write(final org.omg.CORBA.portable.OutputStream _out)
+1 - 	{
+1 - 		alma.xmltest_dep.StructWithOffshootHelper.write(_out, value);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/StructWithOffshoot.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "StructWithOffshoot"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class StructWithOffshoot
+1 - 	implements org.omg.CORBA.portable.IDLEntity
+1 - {
+1 - 	public StructWithOffshoot(){}
+1 - 	public alma.xmltest_dep.OffshootWithStruct myOffshoot;
+1 - 	public StructWithOffshoot(alma.xmltest_dep.OffshootWithStruct myOffshoot)
+1 - 	{
+1 - 		this.myOffshoot = myOffshoot;
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/StructWithXmlOffshootHelper.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "StructWithXmlOffshoot"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class StructWithXmlOffshootHelper
+1 - {
+1 - 	private static org.omg.CORBA.TypeCode _type = null;
+1 - 	public static org.omg.CORBA.TypeCode type ()
+1 - 	{
+1 - 		if (_type == null)
+1 - 		{
+1 - 			_type = org.omg.CORBA.ORB.init().create_struct_tc(alma.xmltest_dep.StructWithXmlOffshootHelper.id(),"StructWithXmlOffshoot",new org.omg.CORBA.StructMember[]{new org.omg.CORBA.StructMember("myOffshoot", org.omg.CORBA.ORB.init().create_interface_tc("IDL:alma/xmltest_dep/XmlOffshootWithStruct:1.0", "XmlOffshootWithStruct"), null)});
+1 - 		}
+1 - 		return _type;
+1 - 	}
+1 - 
+1 - 	public static void insert (final org.omg.CORBA.Any any, final alma.xmltest_dep.StructWithXmlOffshoot s)
+1 - 	{
+1 - 		any.type(type());
+1 - 		write( any.create_output_stream(),s);
+1 - 	}
+1 - 
+1 - 	public static alma.xmltest_dep.StructWithXmlOffshoot extract (final org.omg.CORBA.Any any)
+1 - 	{
+1 - 		return read(any.create_input_stream());
+1 - 	}
+1 - 
+1 - 	public static String id()
+1 - 	{
+1 - 		return "IDL:alma/xmltest_dep/StructWithXmlOffshoot:1.0";
+1 - 	}
+1 - 	public static alma.xmltest_dep.StructWithXmlOffshoot read (final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		alma.xmltest_dep.StructWithXmlOffshoot result = new alma.xmltest_dep.StructWithXmlOffshoot();
+1 - 		result.myOffshoot=alma.xmltest_dep.XmlOffshootWithStructHelper.read(in);
+1 - 		return result;
+1 - 	}
+1 - 	public static void write (final org.omg.CORBA.portable.OutputStream out, final alma.xmltest_dep.StructWithXmlOffshoot s)
+1 - 	{
+1 - 		alma.xmltest_dep.XmlOffshootWithStructHelper.write(out,s.myOffshoot);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/StructWithXmlOffshootHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "StructWithXmlOffshoot"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class StructWithXmlOffshootHolder
+1 - 	implements org.omg.CORBA.portable.Streamable
+1 - {
+1 - 	public alma.xmltest_dep.StructWithXmlOffshoot value;
+1 - 
+1 - 	public StructWithXmlOffshootHolder ()
+1 - 	{
+1 - 	}
+1 - 	public StructWithXmlOffshootHolder(final alma.xmltest_dep.StructWithXmlOffshoot initial)
+1 - 	{
+1 - 		value = initial;
+1 - 	}
+1 - 	public org.omg.CORBA.TypeCode _type ()
+1 - 	{
+1 - 		return alma.xmltest_dep.StructWithXmlOffshootHelper.type ();
+1 - 	}
+1 - 	public void _read(final org.omg.CORBA.portable.InputStream _in)
+1 - 	{
+1 - 		value = alma.xmltest_dep.StructWithXmlOffshootHelper.read(_in);
+1 - 	}
+1 - 	public void _write(final org.omg.CORBA.portable.OutputStream _out)
+1 - 	{
+1 - 		alma.xmltest_dep.StructWithXmlOffshootHelper.write(_out, value);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/StructWithXmlOffshoot.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "StructWithXmlOffshoot"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class StructWithXmlOffshoot
+1 - 	implements org.omg.CORBA.portable.IDLEntity
+1 - {
+1 - 	public StructWithXmlOffshoot(){}
+1 - 	public alma.xmltest_dep.XmlOffshootWithStruct myOffshoot;
+1 - 	public StructWithXmlOffshoot(alma.xmltest_dep.XmlOffshootWithStruct myOffshoot)
+1 - 	{
+1 - 		this.myOffshoot = myOffshoot;
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/StructWithXmlOffshootJHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  * Holder class for IDL struct alma.xmltest_dep.StructWithXmlOffshoot
+1 -  * 
+1 -  * @author ACS xml transparency layer generator
+1 -  */
+1 - public final class StructWithXmlOffshootJHolder
+1 - {
+1 - 	public alma.xmltest_dep.StructWithXmlOffshootJ value;
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/StructWithXmlOffshootJ.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  * Class for IDL struct alma.xmltest_dep.StructWithXmlOffshoot
+1 -  * 
+1 -  * @author ACS xml transparency layer generator
+1 -  */
+1 - public final class StructWithXmlOffshootJ
+1 - {
+1 - 	public alma.xmltest_dep.XmlOffshootWithStructJ myOffshoot;
+1 - 
+1 - 	public StructWithXmlOffshootJ() {}
+1 - 	public StructWithXmlOffshootJ(alma.xmltest_dep.XmlOffshootWithStructJ myOffshoot)
+1 - 	{
+1 - 		this.myOffshoot = myOffshoot;
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlOffshootWithStructHelper.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "XmlOffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public final class XmlOffshootWithStructHelper
+1 - {
+1 - 	public static void insert (final org.omg.CORBA.Any any, final alma.xmltest_dep.XmlOffshootWithStruct s)
+1 - 	{
+1 - 			any.insert_Object(s);
+1 - 	}
+1 - 	public static alma.xmltest_dep.XmlOffshootWithStruct extract(final org.omg.CORBA.Any any)
+1 - 	{
+1 - 		return narrow(any.extract_Object()) ;
+1 - 	}
+1 - 	public static org.omg.CORBA.TypeCode type()
+1 - 	{
+1 - 		return org.omg.CORBA.ORB.init().create_interface_tc("IDL:alma/xmltest_dep/XmlOffshootWithStruct:1.0", "XmlOffshootWithStruct");
+1 - 	}
+1 - 	public static String id()
+1 - 	{
+1 - 		return "IDL:alma/xmltest_dep/XmlOffshootWithStruct:1.0";
+1 - 	}
+1 - 	public static XmlOffshootWithStruct read(final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		return narrow(in.read_Object());
+1 - 	}
+1 - 	public static void write(final org.omg.CORBA.portable.OutputStream _out, final alma.xmltest_dep.XmlOffshootWithStruct s)
+1 - 	{
+1 - 		_out.write_Object(s);
+1 - 	}
+1 - 	public static alma.xmltest_dep.XmlOffshootWithStruct narrow(final java.lang.Object obj)
+1 - 	{
+1 - 		if (obj instanceof alma.xmltest_dep.XmlOffshootWithStruct)
+1 - 		{
+1 - 			return (alma.xmltest_dep.XmlOffshootWithStruct)obj;
+1 - 		}
+1 - 		else if (obj instanceof org.omg.CORBA.Object)
+1 - 		{
+1 - 			return narrow((org.omg.CORBA.Object)obj);
+1 - 		}
+1 - 		throw new org.omg.CORBA.BAD_PARAM("Failed to narrow in helper");
+1 - 	}
+1 - 	public static alma.xmltest_dep.XmlOffshootWithStruct narrow(final org.omg.CORBA.Object obj)
+1 - 	{
+1 - 		if (obj == null)
+1 - 			return null;
+1 - 		try
+1 - 		{
+1 - 			return (alma.xmltest_dep.XmlOffshootWithStruct)obj;
+1 - 		}
+1 - 		catch (ClassCastException c)
+1 - 		{
+1 - 			if (obj._is_a("IDL:alma/xmltest_dep/XmlOffshootWithStruct:1.0"))
+1 - 			{
+1 - 				alma.xmltest_dep._XmlOffshootWithStructStub stub;
+1 - 				stub = new alma.xmltest_dep._XmlOffshootWithStructStub();
+1 - 				stub._set_delegate(((org.omg.CORBA.portable.ObjectImpl)obj)._get_delegate());
+1 - 				return stub;
+1 - 			}
+1 - 		}
+1 - 		throw new org.omg.CORBA.BAD_PARAM("Narrow failed");
+1 - 	}
+1 - 	public static alma.xmltest_dep.XmlOffshootWithStruct unchecked_narrow(final org.omg.CORBA.Object obj)
+1 - 	{
+1 - 		if (obj == null)
+1 - 			return null;
+1 - 		try
+1 - 		{
+1 - 			return (alma.xmltest_dep.XmlOffshootWithStruct)obj;
+1 - 		}
+1 - 		catch (ClassCastException c)
+1 - 		{
+1 - 				alma.xmltest_dep._XmlOffshootWithStructStub stub;
+1 - 				stub = new alma.xmltest_dep._XmlOffshootWithStructStub();
+1 - 				stub._set_delegate(((org.omg.CORBA.portable.ObjectImpl)obj)._get_delegate());
+1 - 				return stub;
+1 - 		}
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlOffshootWithStructHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "XmlOffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public final class XmlOffshootWithStructHolder	implements org.omg.CORBA.portable.Streamable{
+1 - 	 public XmlOffshootWithStruct value;
+1 - 	public XmlOffshootWithStructHolder()
+1 - 	{
+1 - 	}
+1 - 	public XmlOffshootWithStructHolder (final XmlOffshootWithStruct initial)
+1 - 	{
+1 - 		value = initial;
+1 - 	}
+1 - 	public org.omg.CORBA.TypeCode _type()
+1 - 	{
+1 - 		return XmlOffshootWithStructHelper.type();
+1 - 	}
+1 - 	public void _read (final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		value = XmlOffshootWithStructHelper.read (in);
+1 - 	}
+1 - 	public void _write (final org.omg.CORBA.portable.OutputStream _out)
+1 - 	{
+1 - 		XmlOffshootWithStructHelper.write (_out,value);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlOffshootWithStruct.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "XmlOffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public interface XmlOffshootWithStruct
+1 - 	extends XmlOffshootWithStructOperations, org.omg.CORBA.Object, org.omg.CORBA.portable.IDLEntity, alma.ACS.OffShoot
+1 - {
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlOffshootWithStructJ.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "XmlOffshootWithStructJ"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public interface XmlOffshootWithStructJ
+1 - 	extends alma.ACS.OffShootOperations
+1 - {
+1 - 	/* constants */
+1 - 	/* operations  */
+1 - 	public void takeThatStruct(alma.xmltest_dep.StructWithXmlOffshootJ  yourStruct);
+1 - 	public dummyentities.ObsProposal getObsProposal();
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlOffshootWithStructOperations.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "XmlOffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - 
+1 - public interface XmlOffshootWithStructOperations
+1 - 	extends alma.ACS.OffShootOperations
+1 - {
+1 - 	/* constants */
+1 - 	/* operations  */
+1 - 	void takeThatStruct(alma.xmltest_dep.StructWithXmlOffshoot yourStruct);
+1 - 	alma.fakexmlentity.XmlEntityStruct getObsProposal();
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlOffshootWithStructPOA.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "XmlOffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - 
+1 - public abstract class XmlOffshootWithStructPOA
+1 - 	extends org.omg.PortableServer.Servant
+1 - 	implements org.omg.CORBA.portable.InvokeHandler, alma.xmltest_dep.XmlOffshootWithStructOperations
+1 - {
+1 - 	static private final java.util.Hashtable m_opsHash = new java.util.Hashtable();
+1 - 	static
+1 - 	{
+1 - 		m_opsHash.put ( "takeThatStruct", new java.lang.Integer(0));
+1 - 		m_opsHash.put ( "getObsProposal", new java.lang.Integer(1));
+1 - 	}
+1 - 	private String[] ids = {"IDL:alma/xmltest_dep/XmlOffshootWithStruct:1.0","IDL:alma/ACS/OffShoot:1.0"};
+1 - 	public alma.xmltest_dep.XmlOffshootWithStruct _this()
+1 - 	{
+1 - 		return alma.xmltest_dep.XmlOffshootWithStructHelper.narrow(_this_object());
+1 - 	}
+1 - 	public alma.xmltest_dep.XmlOffshootWithStruct _this(org.omg.CORBA.ORB orb)
+1 - 	{
+1 - 		return alma.xmltest_dep.XmlOffshootWithStructHelper.narrow(_this_object(orb));
+1 - 	}
+1 - 	public org.omg.CORBA.portable.OutputStream _invoke(String method, org.omg.CORBA.portable.InputStream _input, org.omg.CORBA.portable.ResponseHandler handler)
+1 - 		throws org.omg.CORBA.SystemException
+1 - 	{
+1 - 		org.omg.CORBA.portable.OutputStream _out = null;
+1 - 		// do something
+1 - 		// quick lookup of operation
+1 - 		java.lang.Integer opsIndex = (java.lang.Integer)m_opsHash.get ( method );
+1 - 		if ( null == opsIndex )
+1 - 			throw new org.omg.CORBA.BAD_OPERATION(method + " not found");
+1 - 		switch ( opsIndex.intValue() )
+1 - 		{
+1 - 			case 0: // takeThatStruct
+1 - 			{
+1 - 				alma.xmltest_dep.StructWithXmlOffshoot _arg0=alma.xmltest_dep.StructWithXmlOffshootHelper.read(_input);
+1 - 				_out = handler.createReply();
+1 - 				takeThatStruct(_arg0);
+1 - 				break;
+1 - 			}
+1 - 			case 1: // getObsProposal
+1 - 			{
+1 - 				_out = handler.createReply();
+1 - 				alma.fakexmlentity.XmlEntityStructHelper.write(_out,getObsProposal());
+1 - 				break;
+1 - 			}
+1 - 		}
+1 - 		return _out;
+1 - 	}
+1 - 
+1 - 	public String[] _all_interfaces(org.omg.PortableServer.POA poa, byte[] obj_id)
+1 - 	{
+1 - 		return ids;
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlOffshootWithStructPOATie.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - import org.omg.PortableServer.POA;
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "XmlOffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public class XmlOffshootWithStructPOATie
+1 - 	extends XmlOffshootWithStructPOA
+1 - {
+1 - 	private XmlOffshootWithStructOperations _delegate;
+1 - 
+1 - 	private POA _poa;
+1 - 	public XmlOffshootWithStructPOATie(XmlOffshootWithStructOperations delegate)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 	}
+1 - 	public XmlOffshootWithStructPOATie(XmlOffshootWithStructOperations delegate, POA poa)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 		_poa = poa;
+1 - 	}
+1 - 	public alma.xmltest_dep.XmlOffshootWithStruct _this()
+1 - 	{
+1 - 		return alma.xmltest_dep.XmlOffshootWithStructHelper.narrow(_this_object());
+1 - 	}
+1 - 	public alma.xmltest_dep.XmlOffshootWithStruct _this(org.omg.CORBA.ORB orb)
+1 - 	{
+1 - 		return alma.xmltest_dep.XmlOffshootWithStructHelper.narrow(_this_object(orb));
+1 - 	}
+1 - 	public XmlOffshootWithStructOperations _delegate()
+1 - 	{
+1 - 		return _delegate;
+1 - 	}
+1 - 	public void _delegate(XmlOffshootWithStructOperations delegate)
+1 - 	{
+1 - 		_delegate = delegate;
+1 - 	}
+1 - 	public POA _default_POA()
+1 - 	{
+1 - 		if (_poa != null)
+1 - 		{
+1 - 			return _poa;
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			return super._default_POA();
+1 - 		}
+1 - 	}
+1 - 	public void takeThatStruct(alma.xmltest_dep.StructWithXmlOffshoot yourStruct)
+1 - 	{
+1 - _delegate.takeThatStruct(yourStruct);
+1 - 	}
+1 - 
+1 - 	public alma.fakexmlentity.XmlEntityStruct getObsProposal()
+1 - 	{
+1 - 		return _delegate.getObsProposal();
+1 - 	}
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/_XmlOffshootWithStructStub.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL interface "XmlOffshootWithStruct"
+1 -  *	@author JacORB IDL compiler V 2.2.3, 10-Dec-2005
+1 -  */
+1 - 
+1 - public class _XmlOffshootWithStructStub
+1 - 	extends org.omg.CORBA.portable.ObjectImpl
+1 - 	implements alma.xmltest_dep.XmlOffshootWithStruct
+1 - {
+1 - 	private String[] ids = {"IDL:alma/xmltest_dep/XmlOffshootWithStruct:1.0","IDL:alma/ACS/OffShoot:1.0"};
+1 - 	public String[] _ids()
+1 - 	{
+1 - 		return ids;
+1 - 	}
+1 - 
+1 - 	public final static java.lang.Class _opsClass = alma.xmltest_dep.XmlOffshootWithStructOperations.class;
+1 - 	public void takeThatStruct(alma.xmltest_dep.StructWithXmlOffshoot yourStruct)
+1 - 	{
+1 - 		while(true)
+1 - 		{
+1 - 		if(! this._is_local())
+1 - 		{
+1 - 			org.omg.CORBA.portable.InputStream _is = null;
+1 - 			try
+1 - 			{
+1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "takeThatStruct", true);
+1 - 				alma.xmltest_dep.StructWithXmlOffshootHelper.write(_os,yourStruct);
+1 - 				_is = _invoke(_os);
+1 - 				return;
+1 - 			}
+1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
+1 - 			catch( org.omg.CORBA.portable.ApplicationException _ax )
+1 - 			{
+1 - 				String _id = _ax.getId();
+1 - 				throw new RuntimeException("Unexpected exception " + _id );
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				this._releaseReply(_is);
+1 - 			}
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke( "takeThatStruct", _opsClass );
+1 - 			if( _so == null )
+1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
+1 - 			XmlOffshootWithStructOperations _localServant = (XmlOffshootWithStructOperations)_so.servant;
+1 - 			try
+1 - 			{
+1 - 			_localServant.takeThatStruct(yourStruct);
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				_servant_postinvoke(_so);
+1 - 			}
+1 - 			return;
+1 - 		}
+1 - 
+1 - 		}
+1 - 
+1 - 	}
+1 - 
+1 - 	public alma.fakexmlentity.XmlEntityStruct getObsProposal()
+1 - 	{
+1 - 		while(true)
+1 - 		{
+1 - 		if(! this._is_local())
+1 - 		{
+1 - 			org.omg.CORBA.portable.InputStream _is = null;
+1 - 			try
+1 - 			{
+1 - 				org.omg.CORBA.portable.OutputStream _os = _request( "getObsProposal", true);
+1 - 				_is = _invoke(_os);
+1 - 				alma.fakexmlentity.XmlEntityStruct _result = alma.fakexmlentity.XmlEntityStructHelper.read(_is);
+1 - 				return _result;
+1 - 			}
+1 - 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
+1 - 			catch( org.omg.CORBA.portable.ApplicationException _ax )
+1 - 			{
+1 - 				String _id = _ax.getId();
+1 - 				throw new RuntimeException("Unexpected exception " + _id );
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				this._releaseReply(_is);
+1 - 			}
+1 - 		}
+1 - 		else
+1 - 		{
+1 - 			org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke( "getObsProposal", _opsClass );
+1 - 			if( _so == null )
+1 - 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
+1 - 			XmlOffshootWithStructOperations _localServant = (XmlOffshootWithStructOperations)_so.servant;
+1 - 			alma.fakexmlentity.XmlEntityStruct _result;			try
+1 - 			{
+1 - 			_result = _localServant.getObsProposal();
+1 - 			}
+1 - 			finally
+1 - 			{
+1 - 				_servant_postinvoke(_so);
+1 - 			}
+1 - 			return _result;
+1 - 		}
+1 - 
+1 - 		}
+1 - 
+1 - 	}
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlStructWithOffshootHelper.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "XmlStructWithOffshoot"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class XmlStructWithOffshootHelper
+1 - {
+1 - 	private static org.omg.CORBA.TypeCode _type = null;
+1 - 	public static org.omg.CORBA.TypeCode type ()
+1 - 	{
+1 - 		if (_type == null)
+1 - 		{
+1 - 			_type = org.omg.CORBA.ORB.init().create_struct_tc(alma.xmltest_dep.XmlStructWithOffshootHelper.id(),"XmlStructWithOffshoot",new org.omg.CORBA.StructMember[]{new org.omg.CORBA.StructMember("myOffshoot", org.omg.CORBA.ORB.init().create_interface_tc("IDL:alma/xmltest_dep/OffshootWithXmlStruct:1.0", "OffshootWithXmlStruct"), null),new org.omg.CORBA.StructMember("oopsProposal", alma.xmltest_dep.ObsProposalHelper.type(), null)});
+1 - 		}
+1 - 		return _type;
+1 - 	}
+1 - 
+1 - 	public static void insert (final org.omg.CORBA.Any any, final alma.xmltest_dep.XmlStructWithOffshoot s)
+1 - 	{
+1 - 		any.type(type());
+1 - 		write( any.create_output_stream(),s);
+1 - 	}
+1 - 
+1 - 	public static alma.xmltest_dep.XmlStructWithOffshoot extract (final org.omg.CORBA.Any any)
+1 - 	{
+1 - 		return read(any.create_input_stream());
+1 - 	}
+1 - 
+1 - 	public static String id()
+1 - 	{
+1 - 		return "IDL:alma/xmltest_dep/XmlStructWithOffshoot:1.0";
+1 - 	}
+1 - 	public static alma.xmltest_dep.XmlStructWithOffshoot read (final org.omg.CORBA.portable.InputStream in)
+1 - 	{
+1 - 		alma.xmltest_dep.XmlStructWithOffshoot result = new alma.xmltest_dep.XmlStructWithOffshoot();
+1 - 		result.myOffshoot=alma.xmltest_dep.OffshootWithXmlStructHelper.read(in);
+1 - 		result.oopsProposal=alma.fakexmlentity.XmlEntityStructHelper.read(in);
+1 - 		return result;
+1 - 	}
+1 - 	public static void write (final org.omg.CORBA.portable.OutputStream out, final alma.xmltest_dep.XmlStructWithOffshoot s)
+1 - 	{
+1 - 		alma.xmltest_dep.OffshootWithXmlStructHelper.write(out,s.myOffshoot);
+1 - 		alma.fakexmlentity.XmlEntityStructHelper.write(out,s.oopsProposal);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlStructWithOffshootHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "XmlStructWithOffshoot"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class XmlStructWithOffshootHolder
+1 - 	implements org.omg.CORBA.portable.Streamable
+1 - {
+1 - 	public alma.xmltest_dep.XmlStructWithOffshoot value;
+1 - 
+1 - 	public XmlStructWithOffshootHolder ()
+1 - 	{
+1 - 	}
+1 - 	public XmlStructWithOffshootHolder(final alma.xmltest_dep.XmlStructWithOffshoot initial)
+1 - 	{
+1 - 		value = initial;
+1 - 	}
+1 - 	public org.omg.CORBA.TypeCode _type ()
+1 - 	{
+1 - 		return alma.xmltest_dep.XmlStructWithOffshootHelper.type ();
+1 - 	}
+1 - 	public void _read(final org.omg.CORBA.portable.InputStream _in)
+1 - 	{
+1 - 		value = alma.xmltest_dep.XmlStructWithOffshootHelper.read(_in);
+1 - 	}
+1 - 	public void _write(final org.omg.CORBA.portable.OutputStream _out)
+1 - 	{
+1 - 		alma.xmltest_dep.XmlStructWithOffshootHelper.write(_out, value);
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlStructWithOffshoot.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  *	Generated from IDL definition of struct "XmlStructWithOffshoot"
+1 -  *	@author JacORB IDL compiler 
+1 -  */
+1 - 
+1 - public final class XmlStructWithOffshoot
+1 - 	implements org.omg.CORBA.portable.IDLEntity
+1 - {
+1 - 	public XmlStructWithOffshoot(){}
+1 - 	public alma.xmltest_dep.OffshootWithXmlStruct myOffshoot;
+1 - 	public alma.fakexmlentity.XmlEntityStruct oopsProposal;
+1 - 	public XmlStructWithOffshoot(alma.xmltest_dep.OffshootWithXmlStruct myOffshoot, alma.fakexmlentity.XmlEntityStruct oopsProposal)
+1 - 	{
+1 - 		this.myOffshoot = myOffshoot;
+1 - 		this.oopsProposal = oopsProposal;
+1 - 	}
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlStructWithOffshootJHolder.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  * Holder class for IDL struct alma.xmltest_dep.XmlStructWithOffshoot
+1 -  * 
+1 -  * @author ACS xml transparency layer generator
+1 -  */
+1 - public final class XmlStructWithOffshootJHolder
+1 - {
+1 - 	public alma.xmltest_dep.XmlStructWithOffshootJ value;
+1 - 
+1 - }
+1 - 
+1 - ----------------------- Java file ./alma/xmltest_dep/XmlStructWithOffshootJ.java
+1 - package alma.xmltest_dep;
+1 - 
+1 - /**
+1 -  * Class for IDL struct alma.xmltest_dep.XmlStructWithOffshoot
+1 -  * 
+1 -  * @author ACS xml transparency layer generator
+1 -  */
+1 - public final class XmlStructWithOffshootJ
+1 - {
+1 - 	public alma.xmltest_dep.OffshootWithXmlStructJ myOffshoot;
+1 - 	public dummyentities.ObsProposal oopsProposal;
+1 - 
+1 - 	public XmlStructWithOffshootJ() {}
+1 - 	public XmlStructWithOffshootJ(alma.xmltest_dep.OffshootWithXmlStructJ myOffshoot, dummyentities.ObsProposal oopsProposal)
+1 - 	{
+1 - 		this.myOffshoot = myOffshoot;
+1 - 		this.oopsProposal = oopsProposal;
+1 - 	}
+1 - }
+1 - 
 1 - ======================= IDL file xmltest
 1 - 
 1 - ----------------------- Java file ./alma/xmltest/EvenMoreHiddenEntityClassHelper.java

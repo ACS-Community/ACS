@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry excluding="dummyentities/" kind="src" path="test"/>
+	<classpathentry excluding="dummyentities/|unpacked_jars" kind="src" path="test"/>
 	<classpathentry kind="src" path="src_generated"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/xmljbind.jar"/>
@@ -18,5 +18,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="lib" path="lib/dummyentities.jar"/>
 	<classpathentry kind="lib" path="lib/fakexmlentity.jar"/>
+	<classpathentry kind="lib" path="lib/xmltest_dep.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
