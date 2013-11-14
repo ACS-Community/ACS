@@ -475,6 +475,48 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         if isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent):
             temp[PYREF].setName(temp[NAME])
 
+        #DWF-should check to see if it's derived from CharacteristicComponent next!!!
+
+        #Next activate it as a CORBA object.
+        try:
+            start = time()
+            temp[POA].activate_object_with_id(temp[NAME], temp[PYREF])
+            temp[CORBAREF] = temp[POA].servant_to_reference(temp[PYREF])
+            interval = time() - start
+
+            log = LOG_CompAct_Corba_OK()
+            log.setTimeMillis(int(interval*1000))
+            log.setCompName(name)
+            log.log()
+            if(temp[CORBAREF]==None):
+                self.logger.logWarning("CORBA object Nil for: " + name)
+                self.failedActivation(temp)
+                return None
+            #hack to give the component access to it's own CORBA reference
+            temp[PYREF]._corbaRef = temp[CORBAREF]
+        except:
+            print_exc()
+            self.logger.logWarning("Failed to create CORBA object for: " + name)
+            self.failedActivation(temp)
+            return None
+
+        #Create the structure and give it to manager
+        #DWF-FIX ME!!! The next line screws everything up for some reason!
+        #temp[PYREF]._get_interface()
+        #DWF-warning...this assumes temp[TYPE] is the IR ID...
+        interfaces = ["IDL:omg.org/CORBA/Object:1.0", temp[TYPE]]
+        temp[COMPONENTINFO] = ComponentInfo(temp[TYPE],  #string type;
+                                            temp[EXE],  #string code;
+                                            temp[CORBAREF],  #Object reference;
+                                            name,  #string name;
+                                            [],  #HandleSeq clients;
+                                            self.token.h,  #Handle activator;
+                                            self.name,   #string container_name;
+                                            temp[HANDLE],  #Handle h;
+                                            0,  #AccessDescriptor access;
+                                            interfaces  #stringSeq interfaces;
+                                            )
+        
         #Check to see if it's derived from ComponentLifeCycle next!!!
         #If it is, we have to mess with the state model and invoke the lifecycle
         #methods accordingly.
@@ -555,49 +597,6 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             log.setTimeMillis(int(interval*1000))
             log.setCompName(name)
             log.log()
-
-
-        #DWF-should check to see if it's derived from CharacteristicComponent next!!!
-
-        #Next activate it as a CORBA object.
-        try:
-            start = time()
-            temp[POA].activate_object_with_id(temp[NAME], temp[PYREF])
-            temp[CORBAREF] = temp[POA].servant_to_reference(temp[PYREF])
-            interval = time() - start
-
-            log = LOG_CompAct_Corba_OK()
-            log.setTimeMillis(int(interval*1000))
-            log.setCompName(name)
-            log.log()
-            if(temp[CORBAREF]==None):
-                self.logger.logWarning("CORBA object Nil for: " + name)
-                self.failedActivation(temp)
-                return None
-            #hack to give the component access to it's own CORBA reference
-            temp[PYREF]._corbaRef = temp[CORBAREF]
-        except:
-            print_exc()
-            self.logger.logWarning("Failed to create CORBA object for: " + name)
-            self.failedActivation(temp)
-            return None
-
-        #Create the structure and give it to manager
-        #DWF-FIX ME!!! The next line screws everything up for some reason!
-        #temp[PYREF]._get_interface()
-        #DWF-warning...this assumes temp[TYPE] is the IR ID...
-        interfaces = ["IDL:omg.org/CORBA/Object:1.0", temp[TYPE]]
-        temp[COMPONENTINFO] = ComponentInfo(temp[TYPE],  #string type;
-                                            temp[EXE],  #string code;
-                                            temp[CORBAREF],  #Object reference;
-                                            name,  #string name;
-                                            [],  #HandleSeq clients;
-                                            self.token.h,  #Handle activator;
-                                            self.name,   #string container_name;
-                                            temp[HANDLE],  #Handle h;
-                                            0,  #AccessDescriptor access;
-                                            interfaces  #stringSeq interfaces;
-                                            )
 
         #Make a copy of everything for the container
         self.compHandles[temp[HANDLE]] = temp[NAME]
