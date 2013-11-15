@@ -43,6 +43,8 @@
 #include <acserr.h>
 #include <acsdaemonErrType.h>
 #include <ACSErrTypeCommon.h>
+#include <acsutilTempFile.h>
+
 #include "acsdaemonORBTask.h"
 
 // thread-pool
@@ -469,7 +471,23 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     if (acsLogFileEnv)
         ACE_OS::setenv("ACS_LOG_FILE", acsLogFileValue.c_str(), 1);
     else
-        ACE_OS::unsetenv("ACS_LOG_FILE");
+    {
+		#define DEFAULT_LOG_FILE_NAME "acs_local_log"
+    	ACE_CString daemonsLogFileName = getTempFileName(0, DEFAULT_LOG_FILE_NAME);
+
+    	// replace "ACS_INSTANCE.x" with "daemons_" + <timestamp>
+    	ACE_CString daemonsDir = "daemons_" + getStringifiedTimeStamp();
+
+    	ACE_CString instancePart("ACS_INSTANCE.");
+    	ACE_CString::size_type pos = daemonsLogFileName.find(instancePart);
+    	daemonsLogFileName =
+    			daemonsLogFileName.substring(0, pos) +
+    			daemonsDir +
+    			daemonsLogFileName.substring(pos + instancePart.length() + 1);	// +1 for skipping instance number
+
+        ACE_OS::setenv("ACS_LOG_FILE", daemonsLogFileName.c_str(), 1);
+        //ACE_OS::unsetenv("ACS_LOG_FILE"1);
+    }
 
     AsyncRequestThreadPool::configure(argv[0], m_logger, m_serverThreads);	// threads for async
 
