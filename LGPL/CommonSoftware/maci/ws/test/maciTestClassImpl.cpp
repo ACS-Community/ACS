@@ -44,6 +44,8 @@ MaciTestClass::MaciTestClass(
   // simulate component failing initialization (e.g. w/o required configuration)
   if (ACE_OS::strcmp(name.c_str(), "MACI_FAKE") == 0)
       return;
+  else if (ACE_OS::strcmp(name.c_str(), "MACI_SLOW") == 0)
+      ACE_OS::sleep(15);
 
   // Initialization successful
   m_initialization = 0;

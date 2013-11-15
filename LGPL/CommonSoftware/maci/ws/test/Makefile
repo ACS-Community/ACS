@@ -100,7 +100,7 @@ maciDynComp_LIBS = maciTestStubs acscomponent archiveevents
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS_L         = startMaciTest.sh startMaciTestClient.sh startContainerWS.sh maciStartStopWrongCDB.sh maciTestLogConfig.sh
+SCRIPTS_L         = startMaciTest.sh startMaciTestClient.sh startContainerWS.sh stopManagerWS.sh maciStartStopWrongCDB.sh maciTestLogConfig.sh
 
 #
 # TCL scripts (public and local)

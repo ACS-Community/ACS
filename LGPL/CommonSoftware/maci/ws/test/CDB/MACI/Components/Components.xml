@@ -15,6 +15,7 @@
   <_ Name="MACI09"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0"			Container="Container03" ImplLang="cpp" />
   <_ Name="MACI10"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestConstructableClass:1.0"			Container="Container04" ImplLang="cpp" />
   <_ Name="MACI_FAKE"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestClass:1.0"			Container="Container01" ImplLang="cpp" />
+  <_ Name="MACI_SLOW"   Code="maciTestClass"    Type="IDL:alma/MACI_TEST/MaciTestClass:1.0"         Container="Container01" ImplLang="cpp" />
   <_ Name="MACI_HIER"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciHierarchicalTestClass:1.0"		Container="Container01" ImplLang="cpp" />
   <_ Name="MACI_SUB"	Code="maciTestClass"	Type="IDL:alma/MACI_TEST/MaciTestClass:1.0"			Container="Container01" ImplLang="cpp" />
 <!-- Component that test the diferent log level configurations-->
