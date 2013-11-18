@@ -59,7 +59,8 @@ SCRIPTS         = \
 		acsstartupNotifyPortViaErrorCode \
 		acsLogProcessMem \
 		ifrCacheInvalidate irquery \
-		acsstartupNSRef acsQueryNS
+		acsstartupNSRef acsQueryNS \
+		acsstartupFreeInstanceDir
 
 SCRIPTS_L       =
 
