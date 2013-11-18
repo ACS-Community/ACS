@@ -342,10 +342,6 @@ then
      echo "========= FAILED =========="
 	exit 1
 fi
-# See http://jira.alma.cl/browse/COMP-6266 about this workaround for OpenORB
-cd tao
-ln -s TimeBase.pidl TimeBase.pidl.idl
-cd ..
 
 cp $ACE_ROOT/TAO/orbsvcs/orbsvcs/AVStreams.idl .
 if [ $? -ne 0 ]
