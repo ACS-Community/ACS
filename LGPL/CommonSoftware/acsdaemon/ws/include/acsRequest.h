@@ -404,6 +404,7 @@ class ACSServiceRequestChainContext : public RequestChainContext<ACSServiceReque
     bool reuse_services;
     acsdaemon::DaemonSequenceCallback_var callback;
     int instance_number;
+    bool free_instance;
   protected:
     bool requestDone(ACSServiceRequest *request);
     void chainDone();

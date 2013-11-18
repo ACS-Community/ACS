@@ -722,7 +722,14 @@ void ACSServiceRequest::working(const ACSErr::Completion &comp) {
 
 /************************ ACSServiceRequestChainContext ***********************/
 
-ACSServiceRequestChainContext::ACSServiceRequestChainContext(ACSDaemonContext *icontext, ACSServiceRequestType itype, bool ireuse_services, acsdaemon::DaemonSequenceCallback_ptr icallback) : RequestChainContext<ACSServiceRequest>(icontext->getRequestProcessor()), context(icontext), request_type(itype), reuse_services(ireuse_services), instance_number(-1) {
+ACSServiceRequestChainContext::ACSServiceRequestChainContext(ACSDaemonContext *icontext, ACSServiceRequestType itype, bool ireuse_services, acsdaemon::DaemonSequenceCallback_ptr icallback) :
+		RequestChainContext<ACSServiceRequest>(icontext->getRequestProcessor()),
+		context(icontext),
+		request_type(itype),
+		reuse_services(ireuse_services),
+		instance_number(-1),
+		free_instance(false)
+{
     callback = icallback == NULL ? NULL : acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, icallback);
 }
 
@@ -745,6 +752,13 @@ bool ACSServiceRequestChainContext::requestDone(ACSServiceRequest *request) {
 void ACSServiceRequestChainContext::chainDone() {
     if (callback != NULL) {
         try {
+			// free ACS_INSTANCE.n directory
+        	if (free_instance)
+        	{
+        		char buf[64];
+				sprintf(buf, "acsstartupFreeInstanceDir -b %d", instance_number);
+				ACE_OS::system(buf);
+        	}
             ACSErrTypeOK::ACSErrOKCompletion ok;
             ACSErr::Completion_var comp = ok.returnCompletion(false);
             callback->done(comp.in());
@@ -780,7 +794,9 @@ void ACSServiceRequestChainContext::addRequest(const char *iservice, const char 
                     instance_number = 0;
                     ACS_SHORT_LOG((LM_WARNING, "Instance number should be between 0 and 9! Using 0!\n"));
                 }
-                return;
+            }
+            else if (strcasecmp(atts[i], "free_instance") == 0) {
+                free_instance = (strcasecmp(atts[i+1], "true") == 0);
             }
             i += 2;
         }

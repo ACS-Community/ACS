@@ -553,10 +553,17 @@ ACSServicesHandlerImpl::stop_acs (
 {
 	// stop the containers first
 	char buf[64];
-	sprintf(buf, "maciContainerShutdown \"*\" -i %d -r 0", instance_number);
+	sprintf(buf, "maciContainerShutdown \"*\" -i %d -r 3", instance_number);
 	ACE_OS::system(buf);
 
-    this->stop_services(getServices(instance_number, false).c_str(), callback);
+	std::string xml = getServices(instance_number, false);
+
+	// add free_instance attribute (not available via ServiceBuilder)
+	std::string STRING_TO_REPLACE = "<acs_services_definition";
+	std::size_t pos = xml.find(STRING_TO_REPLACE);
+	xml.replace(pos, STRING_TO_REPLACE.size(), STRING_TO_REPLACE + " free_instance=\"true\"");
+
+	this->stop_services(xml.c_str(), callback);
 }
 
 
