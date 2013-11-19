@@ -32,7 +32,7 @@ acsRootPackages = (
                       "ACSSW",
                       "acsdata")
 
-def getAcsVersion():
+def getAcsVersionFromACSROOT():
     '''
     Get the ACS version out of ACSROOT.
     
@@ -46,11 +46,78 @@ def getAcsVersion():
     strs=acsRoot.split("/")
     if len(strs)!=4:
         raise Exception("Malformed ACSROOT: "+acsRoot)
-    temp=strs[2].replace(".","")
-    temp=temp.replace("-","")
-    while len(temp)<7:
-        temp=temp+"0"
+    temp=strs[2].replace(".","_")
     return temp
+
+def getTagFromFile(tagFileName):
+    '''
+    getAcsTag() and getArchiveTag() both need to read the tag
+    in the same way but from different files in $ACSROOT
+    
+    This method return the tag from the file with the passed name
+    (i.e. ACS_TAG or ARCHIVE_TAG)
+    
+    @param tagFileName: the name of the file with the TAG to open
+    @return the TAG contained in the file
+    @throws exception in case of failure
+    '''
+    if  tagFileName is None:
+        raise Exception("Invalid empty file name")
+    
+    if os.environ.has_key('ACSROOT'):
+        acsRoot=os.environ['ACSROOT']
+    else:
+        raise Exception("ACSROOT not defined!")
+    
+    if acsRoot[len(acsRoot)-1] is not '/':
+        fileName= acsRoot+"/"
+    else:
+        fileName= acsRoot
+    
+    fileToOpen=fileName+tagFileName
+    # CHeck if the file exists and is readable
+    if not os.access(fileToOpen, os.R_OK):
+        raise Exception(fileToOpen+" unreadable")
+    
+    with open(fileToOpen) as f:
+        content = f.readlines()
+    
+    if len(content) is not 1:
+       raise Exception(fileToOpen+" is malformed") 
+    else:
+        return str(content[0]).strip()
+
+def getACSVersionFromFile():
+    '''
+    @return the ACS version from $ACSROOT/ACS_VERSION
+    '''
+    return getTagFromFile("ACS_VERSION")
+   
+def getAcsTag():
+    '''
+    Get ACS tag from $ACSROOT/ACS_TAG
+    
+    @return: The tag or  exception in case of error
+    '''
+    return getTagFromFile("ACS_TAG")
+    
+def getArchiveTag():
+    '''
+    Get ACS tag from $ACSROOT/ARCHIVE_TAG
+    
+    @return: The tag or  exception in case of error
+    '''
+    return getTagFromFile("ARCHIVE_TAG")
+
+def checkInstalledVersion(acsRoot,acsVersion):
+    '''
+    Check if the installed version of ACS in $ACSROOT matches with 
+    the content of ACS_VERSION
+    
+    @return True if the version matches
+    '''
+    temp=acsVersion.replace(".","_")
+    return acsRoot=="ACS-"+temp
 
 def getAcsDistributionFolder():
     """
@@ -80,15 +147,58 @@ def getArchitecture():
     un=os.uname()
     return un[4]
 
-if __name__=="__main__":
-    acs=getAcsVersion()
+def buildTarName(acs,archive):
+    '''
+    Build the name of the tar
+    
+    @param acs: ACS tag
+    @param archive: ARC tag or None if ARCHIVE not installed
+    '''
     date=getDate()
-    arch=getArchitecture()
+    architecture=getArchitecture()
+    
+    ret=acs
+    if archive is not None:
+        ret=ret+"-"+archive.replace("-B","")
+
+    return ret+"-"+date+"-"+architecture+".tar.gz"
+
+if __name__=="__main__":
+    
+    try:
+        acsTag=getAcsTag()
+    except Exception as e:
+         # No ACS TAG means something strange: abort
+         print "Error reading ACS TAG",e
+         exit(-1)
+    
+    try:
+        arcTag=getArchiveTag()
+    except Exception as e:
+        # This is not an error but means that ARCHIVE is not installed in ACSROOT
+        arcTag=None
+    print "ACS_TAG is",acsTag
+    if arcTag is not None:
+        print "ARCHIVE_TAG is",arcTag
+    else:
+        print "No ARCHIVE TAG found (ARCHIVE not installed in ACSROOT)"
+    
+    acsVersionFromFile=getACSVersionFromFile()
+    acsVersionFromACSROOT=getAcsVersionFromACSROOT()
+    
+    if not checkInstalledVersion(acsVersionFromACSROOT,acsVersionFromFile):
+        print "ACS version seems inconsistent:",acsVersionFromACSROOT,"does not match with",acsVersionFromFile
+        exit(1)
+    
+    print "ACS version is",acsVersionFromACSROOT
+
     currentFolder=os.getcwd()
     srcFolder=getAcsDistributionFolder()
-    print "Creating ACSROOT tar for", acs,"in",currentFolder
-    tarName=acs+"-ACSROOT-"+date+"-"+arch+".tar.gz"
+    
+    print "Creating ACSROOT tar for", acsVersionFromACSROOT,"in",currentFolder
+    tarName=buildTarName(acsVersionFromACSROOT,arcTag)
     print "Tar name",tarName
+    
     tarNameFullPath=currentFolder+"/"+tarName
     
     # Go to root /
@@ -102,6 +212,8 @@ if __name__=="__main__":
     cmd.append("tar")
     cmd.append("cpzf")
     cmd.append(tarNameFullPath)
+    cmd.append("--exclude")
+    cmd.append("Sources")
     for pkg in acsRootPackages:
         cmd.append(srcFolder+pkg)
     print "Running tar....",
