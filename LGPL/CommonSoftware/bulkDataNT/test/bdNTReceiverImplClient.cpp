@@ -51,7 +51,8 @@ int main(int argc, char *argv[]) {
 		// This is configured on the CDB, cool
 		ACS_SHORT_LOG((LM_INFO,"Opening stream 'Name1' (in CDB)"));
 		receiver->openReceiverStream("Name1");
-	
+		sleep(2);
+
 		// Open the rest of the receivers
 		ACS_SHORT_LOG((LM_INFO,"Opening all remaining streams (namely, Name7)"));
 		receiver->openReceiver();
