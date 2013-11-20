@@ -154,7 +154,8 @@ protected:
 
 	/// here we specify where it should be looked for default values = DEFAULT_QoS_FILE
 	void fillUrlProfileQoS(const char*suffix=NULL);
-	void addUrlProfileQoS(const char* envVar, const char*suffix=NULL, const char* dilim = "");
+	/// search for QoS library file with suffix in path
+	bool findProfileQoS(const char* path, const char*suffix=NULL);
 };//DDSConfiguration
 
 

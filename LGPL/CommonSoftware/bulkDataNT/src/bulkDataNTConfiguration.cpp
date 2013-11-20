@@ -87,10 +87,20 @@ DDSConfiguration::DDSConfiguration()
 		if (envVar != NULL)
 		{
 			fillUrlProfileQoS(envVar); //if we have a LOCATION it has to be append to the QoS file name
-			urlProfileQoS+="|";
 		}
-		fillUrlProfileQoS("default"); // QoS file name w/o suffix
+		// if we have not filled the urlProfileQoS yet (we have just '[')
+		if (urlProfileQoS.size()<=1 ) fillUrlProfileQoS("default"); // QoS file name w/o suffix
 		urlProfileQoS+="]";
+
+		if (urlProfileQoS.size()>2 ) // more than "[]"
+		{
+			ACS_SHORT_LOG((LM_INFO, "Going to use: %s default QoS profile.", urlProfileQoS.c_str()));
+		}
+		else
+		{
+			ACS_SHORT_LOG((LM_WARNING, "Default QoS profile file has NOT be found!!"));
+		}
+
 		// here we are sure that this is executed just once
 		envVar = getenv("NDDS_DISCOVERY_PEERS");
 		if (envVar && *envVar)
@@ -105,39 +115,47 @@ void DDSConfiguration::fillUrlProfileQoS(const char*suffix)
 	char *envVarValue = getenv("MODPATH");
 	if (envVarValue != NULL)
 	{
-		addUrlProfileQoS("..", suffix, "|");
+		if ( findProfileQoS("..", suffix) ) return;
 	}
 
-	addUrlProfileQoS(getenv("MODROOT"), suffix, "|");
-	addUrlProfileQoS(getenv("INTROOT"), suffix, "|");
+	if ( findProfileQoS(getenv("MODROOT"), suffix) ) return;
+	if ( findProfileQoS(getenv("INTROOT"), suffix) ) return;
 
 	envVarValue = getenv("INTLIST");
 	if (envVarValue != NULL) {
-		char *tmpEnvVarValue = strdup(envVarValue); // we have to make copy otherwise next time the INTLIST is corupted
+		char *tmpEnvVarValue = strdup(envVarValue); // we have to make copy otherwise next time the INTLIST is corrupted
 		char* tok = strtok(tmpEnvVarValue, ":");
 		while (tok != NULL)
 		{
-			addUrlProfileQoS(tok, suffix, "|");
+			if ( findProfileQoS(tok, suffix) ) return;
 			tok = strtok(NULL, ":");
 		}//while
 		free(tmpEnvVarValue);
 	}//if
 
-	addUrlProfileQoS("ACSDATA", suffix);
+	findProfileQoS(getenv("ACSROOT"), suffix);
 }//fillUrlProfileQoS
 
-void DDSConfiguration::addUrlProfileQoS(const char* envVarValue, const char*suffix, const char *dilim)
+bool DDSConfiguration::findProfileQoS(const char* path, const char*suffix)
 {
-	if (envVarValue != NULL)
-	{
-		urlProfileQoS += "file://";
-		urlProfileQoS += envVarValue;
-		urlProfileQoS += DEFAULT_QoS_FILE;
-		if ( suffix!=NULL ) { urlProfileQoS+= suffix; urlProfileQoS+=".";}
-		urlProfileQoS += "xml";
-		urlProfileQoS += dilim;
-	}
-}//fillUrlProfileQoS
+	std::string fullPath;
+
+		if (path != NULL)
+		{
+			fullPath += path;
+			fullPath += DEFAULT_QoS_FILE;
+			if ( suffix!=NULL ) { fullPath+= suffix; fullPath+=".";}
+			fullPath += "xml";
+
+			if (!access(fullPath.c_str(), R_OK))
+			{
+				urlProfileQoS += "file://";
+				urlProfileQoS += fullPath;
+				return true;
+			}
+		}
+		return false;
+}//findProfileQoS
 
 void DDSConfiguration::setDebugLevelFromEnvVar()
 {
