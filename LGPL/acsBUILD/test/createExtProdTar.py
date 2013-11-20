@@ -40,7 +40,7 @@ acsExtProdPackages = (
                       "tcltk",
                       "boost")
 
-def getAcsVersion():
+def getAcsVersionFromACSROOT():
     '''
     Get the ACS version out of ACSROOT.
     
@@ -54,10 +54,7 @@ def getAcsVersion():
     strs=acsRoot.split("/")
     if len(strs)!=4:
         raise Exception("Malformed ACSROOT: "+acsRoot)
-    temp=strs[2].replace(".","")
-    temp=temp.replace("-","")
-    while len(temp)<7:
-        temp=temp+"0"
+    temp=strs[2].replace(".","_")
     return temp
 
 def getAcsExtProdSrcFolder():
@@ -89,7 +86,7 @@ def getArchitecture():
     return un[4]
 
 if __name__=="__main__":
-    acs=getAcsVersion()
+    acs=getAcsVersionFromACSROOT()
     date=getDate()
     arch=getArchitecture()
     currentFolder=os.getcwd()
