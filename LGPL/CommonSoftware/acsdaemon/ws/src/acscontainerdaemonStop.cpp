@@ -22,6 +22,7 @@
 #include <acsdaemonErrType.h>
 #include <maciErrType.h>
 #include <getopt.h>
+#include <acsutilTempFile.h>
 
 static struct option long_options[] = {
         {"help",        no_argument,       0, 'h'},
@@ -66,6 +67,21 @@ main (int argc, char *argv[])
                     break;
             }
         }
+
+	#define DEFAULT_LOG_FILE_NAME "acs_local_log"
+	ACE_CString daemonsLogFileName = getTempFileName(0, DEFAULT_LOG_FILE_NAME);
+
+	// replace "ACS_INSTANCE.x" with "acscontainerdaemonStop_" + <timestamp>
+	ACE_CString daemonsDir = "acscontainerdaemonStop_" + getStringifiedTimeStamp();
+
+	ACE_CString instancePart("ACS_INSTANCE.");
+	ACE_CString::size_type pos = daemonsLogFileName.find(instancePart);
+	daemonsLogFileName =
+			daemonsLogFileName.substring(0, pos) +
+			daemonsDir +
+			daemonsLogFileName.substring(pos + instancePart.length() + 1);	// +1 for skipping instance number
+
+	ACE_OS::setenv("ACS_LOG_FILE", daemonsLogFileName.c_str(), 1);
 
 	LoggingProxy * logger = new LoggingProxy(0, 0, 31);
 	if (logger)
