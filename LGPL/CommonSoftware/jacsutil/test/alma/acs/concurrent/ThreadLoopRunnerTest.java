@@ -1,5 +1,7 @@
 package alma.acs.concurrent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -199,6 +201,50 @@ public class ThreadLoopRunnerTest extends TestCase
 		}
 	}
 
+	/**
+	 * Tests logging of the RuntimeException or Error that can be thrown by 
+	 * the user-supplied Runnable.
+	 */
+	public void testActionError() throws Exception {
+		
+		final LogRecordCollectingLogger logger2 = LogRecordCollectingLogger.getCollectingLogger("record-collecting logger");
+		logger2.setDelegateLogger(logger);
+		
+		final String errorLogMsg = "Evil error in user runnable";
+		Runnable action = new Runnable() {
+			public void run() {
+				throw new Error(errorLogMsg);
+			}
+		};
+		ThreadLoopRunner threadLoopRunner = new ThreadLoopRunner(action, 1, TimeUnit.SECONDS, tf, logger2, "testActionError");
+		assertEquals(ScheduleDelayMode.FIXED_RATE, threadLoopRunner.getDelayMode());
+		assertFalse(threadLoopRunner.isLoopRunning());
+
+		threadLoopRunner.runLoop();
+
+		assertTrue(threadLoopRunner.isLoopRunning());
+		assertFalse(threadLoopRunner.isDisabled());
+		assertEquals(ScheduleDelayMode.FIXED_RATE, threadLoopRunner.getDelayMode());
+		
+		// sleep 1.5 seconds, so that the loop can run 2 times (with our 1 sec delay) at around times 0, 1 seconds
+		int expectedNumberOfInvocations = 2;
+		Thread.sleep((expectedNumberOfInvocations-1) * 1000 + 500);
+		boolean shutdownRet = threadLoopRunner.shutdown(100, TimeUnit.MILLISECONDS);
+		assertTrue("should have finished within 100 ms", shutdownRet);
+		
+		LogRecord[] records = logger2.getCollectedLogRecords();
+		List<LogRecord> errorLogRecords = new ArrayList<LogRecord>();
+		for (LogRecord logRecord : records) {
+			if (logRecord.getMessage().equals("Uncaught error in scheduled Runnable.")) {
+				errorLogRecords.add(logRecord);
+			}
+		}
+		assertEquals("two error logs expected", expectedNumberOfInvocations, errorLogRecords.size());
+		for (LogRecord logRecord : errorLogRecords) {
+			Throwable loggedError = logRecord.getThrown();
+			assertEquals(errorLogMsg, loggedError.getMessage());
+		}
+	}
 
 
 //	public void testDetailsSuspend() throws Exception {

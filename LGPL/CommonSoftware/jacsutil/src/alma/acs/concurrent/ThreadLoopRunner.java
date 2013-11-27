@@ -30,6 +30,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -496,6 +497,12 @@ public class ThreadLoopRunner
 //				if (extraDebugLogs) logger.finest("About to call delegate#run on delegate=" + delegate.getClass().getName());
 				delegate.run();
 //				if (extraDebugLogs) logger.finest("Returned from delegate#run");
+			}
+			catch (Throwable thr) {
+				// If we just let it fly, it will get swallowed by the ScheduledExecutorService
+				// For the time being we just log this exception.
+				// TODO: Should we allow the client to register an error handler and notify it here?
+				logger.log(Level.WARNING, "Uncaught error in scheduled Runnable.", thr);
 			}
 			finally {
 				runLock.unlock();
