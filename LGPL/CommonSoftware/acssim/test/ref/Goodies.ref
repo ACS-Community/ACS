@@ -35,4 +35,4 @@
 1 - getMaxSeqSize(): 15
 1 - setMaxSeqSize(50): None
 1 - getMaxSeqSize(): 50
-1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+1 - ----------T--:--:--.--- Python Client disconnect - Disconnect called for client
