@@ -18,4 +18,4 @@ s/instance at 0x[0-9,a-z,A-Z]*/instance at 0xXXXX/g
 s/Process=[0-9]*/Process=xxx/g
 s/Handle (0x[0-9]*)/Handle (0x-------)/g
 s/id = (0x[0-9]*)/id = (0x--)/g
-s/: initialized by \w*@\S*/: initialized by user@host/g
+s/: initialized by \w*@[a-zA-Z0-9_\-]*/: initialized by user@host/g
