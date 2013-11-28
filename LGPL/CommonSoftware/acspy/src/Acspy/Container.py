@@ -174,10 +174,13 @@ class AsyncComponentActivator(Thread):
                                   []  #stringSeq interfaces;
                                   )
             try:
-                self.callback.done(componentInfo, e2 , descOut)
+                self.logger.logDelouse("Invoking callback to notify activation of "+self.componentName);
+                self.callback.done(dummyCI, e2 , descOut)
+                self.logger.logDelouse("Callback invoked for "+self.componentName);
             finally:
                 return
         if componentInfo is None:
+            self.logger.logDebug("Got a null component for "+self.componentName);
             e2 = CannotActivateComponentCompletionImpl()
             # Error activating component
             dummyCI=ComponentInfo(self.type,  #string type;
@@ -192,7 +195,9 @@ class AsyncComponentActivator(Thread):
                                   []  #stringSeq interfaces;
                                   )
             try:
-                self.callback.done(componentInfo, e2, descOut)
+                self.logger.logDelouse("Invoking callback to notify the failed activation of "+self.componentName);
+                self.callback.done(dummyCI, e2, descOut)
+                self.logger.logDelouse("Callback invoked for "+self.componentName);
             finally:
                 return
         
