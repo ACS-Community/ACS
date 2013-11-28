@@ -161,7 +161,7 @@ class AsyncComponentActivator(Thread):
         try:
             componentInfo=self.container.activate_component(self.h, self.execution_id, self.componentName, self.exe, self.type)
         except Exception, e:
-            e2 = e2 = CannotActivateComponentCompletionImpl(exception=e)
+            e2 = CannotActivateComponentCompletionImpl(exception=e)
             dummyCI=ComponentInfo(type,  #string type;
                                   self.exe,  #string code;
                                   None,  #Object reference;
