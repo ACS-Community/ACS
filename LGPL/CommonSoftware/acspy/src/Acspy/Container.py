@@ -33,7 +33,6 @@ maci::Container IDL interface.
 
 TODO LIST:
 - integrate with the new ACS Error System
-- mutex lock methods (if needed)
 - fix the interfaces param to ComponentInfo in activate_component(...)
 - a ComponentLifecycleException has been defined in IDL now...
 '''
@@ -48,7 +47,7 @@ from new       import instance
 from traceback import print_exc
 import sys
 from os        import environ
-from threading import Event, Thread, RLock
+from threading import Event, Thread
 #--CORBA STUBS-----------------------------------------------------------------
 import PortableServer
 import maci
@@ -77,6 +76,7 @@ from Acspy.Servants.CharacteristicComponent import CharacteristicComponent
 from Acspy.Util                             import ACSCorba
 from AcsutilPy.FindFile                     import findFile
 from Acspy.Util                             import LoggingConfig_xsd
+from Acspy.ContainerActivationMap           import ContainerActivationMap
 from AcsContainerLogLTS                     import LOG_CompAct_Loading_OK
 from AcsContainerLogLTS                     import LOG_CompAct_Instance_OK
 from AcsContainerLogLTS                     import LOG_CompAct_Corba_OK
@@ -243,16 +243,9 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
 
         #Member variables
         
-        # Protect shared data from concurrent access from different threads
-        # It has been introduced to access critical sections in mutual exclusion
-        # when the components are created asynchronously  
-        #
-        # This lock limits the parallelism of activation but increases the robustness
-        # Note that dictionaries and other python types are thread safe but oonly to one
-        # operation. This lock is for sure needed to avoid that activate_component is
-        # called twice to activate a component with the same name 
-        self.mutex=RLock()
-        self.mutex.acquire() # Set to delay calls to activate_component
+        # Set to delay calls to activate_component
+        self.ready=Event()
+        self.ready.clear() 
         
         self.running = 1  #As long as this is true, container is not shutdown
         self.name = name  #Container Name
@@ -306,10 +299,18 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         self.getCDBInfo()
         self.refresh_logging_config()
         self.configureComponentLogger(name)
+        
+        # The map to serialize activation/deactivation of the same component
+        #
+        # This map is used to reduce the size of the critical sections
+        # so that concurrent activations of components with different 
+        # names can proceed in parallel while the activation/deactivation of
+        # components with the same name is serialized
+        self.activationMap=ContainerActivationMap(self.logger)
 
         #Run everything
         self.logger.logInfo('Container ' + self.name + ' waiting for requests')
-        self.mutex.release()
+        self.ready.set() 
         print maci.Container.ContainerStatusStartupEndMsg
         sys.stdout.flush()
         
@@ -403,15 +404,19 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
 
         activate_component(in Handle h,in string name,in string exe,in string idl_type)
         '''
-        # Mutual exclusion because more components can be activated at the same time
-        # by different threads. Without this lock it would be possible to activate
-        # a component with the same name by 2 different threads... 
-        self.mutex.acquire()
+        # Delays the activation of components until the container has been initialized 
+        self.ready.wait()
+        
+        # Signal the map that the container is going to start a component
+        #
+        # If another thread is already activating (or deactivating) a component
+        # with this same name then aboutToActivate blocks until it finishes
+        self.activationMap.aboutToActivate(name)
 
         #Check to see if this Component already exists
         comp = self.getExistingComponent(name)
         if comp != None:
-            self.mutex.release()
+            self.activationMap.activated(name)
             return comp[COMPONENTINFO]
 
         #Create a dictionary record for this component
@@ -457,13 +462,13 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
 
             self.failedActivation(temp)
             e2.log(self.logger)
-            self.mutex.release()
+            self.activationMap.activated(name)
             raise e2
         except Exception, e:
             self.logger.logWarning("Failed to create Python object for: " + name)
             print_exc()
             self.failedActivation(temp)
-            self.mutex.release()
+            self.activationMap.activated(name)
             return None
 
         #these are some non-standard members needed by the component simulator
@@ -513,7 +518,7 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             if(temp[CORBAREF]==None):
                 self.logger.logWarning("CORBA object Nil for: " + name)
                 self.failedActivation(temp)
-                self.mutex.release()
+                self.activationMap.activated(name)
                 return None
             #hack to give the component access to it's own CORBA reference
             temp[PYREF]._corbaRef = temp[CORBAREF]
@@ -521,7 +526,7 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             print_exc()
             self.logger.logWarning("Failed to create CORBA object for: " + name)
             self.failedActivation(temp)
-            self.mutex.release()
+            self.activationMap.activated(name)
             return None
 
         #Create the structure and give it to manager
@@ -586,7 +591,7 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
                                         "ComponentLifecycle failed for the '" +
                                         temp[NAME] + "'.\n" + str(e.args) + "\nDestroying!")
                 self.failedActivation(temp)
-                self.mutex.release()
+                self.activationMap.activated(name)
                 return None
 
             try:
@@ -618,7 +623,7 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
                                         "ComponentLifecycle failed for the '" +
                                         temp[NAME] + "'.\n" + str(e.args) + "\nDestroying!")
                 self.failedActivation(temp)
-                self.mutex.release()
+                self.activationMap.activated(name)
                 return None
 
             interval = time() - start
@@ -638,8 +643,9 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
 
         self.logger.logInfo("Activated component: " + name)
 
-        self.mutex.release()
-        return self.components[name][COMPONENTINFO]
+        ret=self.components[name][COMPONENTINFO]
+        self.activationMap.activated(name)
+        return ret
 
     def activate_component_async(self, h, execution_id, name, exe, type, callback, desc):
         '''
@@ -673,11 +679,13 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         '''
         Helper method used to destroy various things if the component cannot
         be created.
+        
+        Mutual exclusion is ensured by self.activationMap that 
+        serializes activation/deactivation of components with the same name
 
         Parameters:
         comp_entry - dictionary describing the component
         '''
-        self.mutex.acquire()
         #release the corba reference
         try:
             comp_entry[CORBAREF]._release()
@@ -706,7 +714,6 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             del self.components[comp_entry[NAME]]
         if  self.compHandles.has_key(comp_entry[HANDLE]):
             del self.compHandles[comp_entry[HANDLE]]
-        self.mutex.release()
 
     #--ACTIVATOR IDL-----------------------------------------------------------
     def deactivate_component(self, handle):
@@ -721,15 +728,16 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
 
         void deactivate_component (in Handle h)
         '''
-        self.mutex.acquire()
         deactivationUncleanEx = None
         deactivationFailedEx = None
+        compName=None
         try:
             comp_entry = self.components[self.compHandles[handle]]
+            compName=comp_entry[NAME]
+            self.activationMap.aboutToDeactivate(compName)
         except:
             self.logger.logWarning("No entry for handle: " + str(handle))
             print_exc()
-            self.mutex.release()
             return
         self.logger.logInfo("Deactivating component: " + comp_entry[NAME])
 
@@ -780,8 +788,8 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         del self.components[self.compHandles[handle]]
         del self.compHandles[handle]
         
-        self.mutex.release()
-        
+        self.activationMap.deactivated(compName)
+                
         if deactivationFailedEx is not None:
             raise deactivationFailedEx
         if deactivationUncleanEx is not None:
@@ -1275,12 +1283,9 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
 
         Return: component record if found; else None.
         '''
-        temp=None
-        self.mutex.acquire()
         if self.components.has_key(name):
-            temp=self.components[name]
-        self.mutex.release()
-        return temp
+            return self.components[name]
+        return None
     #--------------------------------------------------------------------------
     #--CONTAINER SERVICES METHODS----------------------------------------------
     #--------------------------------------------------------------------------
