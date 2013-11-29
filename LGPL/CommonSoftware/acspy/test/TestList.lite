@@ -77,5 +77,6 @@ PROLOGUE acspyTATPrologue
 15 testArchiveConsumer    "acsutilTATTestRunner acspyTestArchiveConsumerPS 15 1"
 16 testArchiveSupplier    "acsutilTATTestRunner acspyTestArchiveConsumer 15 11" "@SLEEP 3" "acsutilTATTestRunner acspyTestArchiveSupplier"  "@SLEEP 60"
 17 testLoggingConsumer    "acsutilTATTestRunner acspyTestLoggingConsumer 15"
+18 acspyTestContainerActivationMap "acsutilTATTestRunner acspyTestContainerActivationMap.py"
 #-------------------------------------------------------------------
 EPILOGUE acsutilTATEpilogue

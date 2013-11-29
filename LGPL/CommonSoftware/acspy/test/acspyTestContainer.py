@@ -61,6 +61,14 @@ test2.invokeSayHello("TESTCOMPONENT3")
 test2.invokeSayHello("TESTCOMPONENT4")
 test2.invokeSayHello("TESTCOMPONENT5")
 
+# trying to get a non existent component should through a exception
+try:
+    testNotFound = simpleClient.getComponent("THIS_COMPONENT_DOES_NOT_EXIST")
+    print "This message should not appear",testNotFound
+except:
+    # This is what we expect
+    print "Failure loading a component throws a exception as expected. OK."
+
 #release everything
 sleep(5)
 print "Deactivating components"

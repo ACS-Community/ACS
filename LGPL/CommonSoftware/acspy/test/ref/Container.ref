@@ -1,8 +1,6 @@
 2 - Testing TESTCOMPONENT (i.e., immortal components)
 2 - Testing TESTCOMPONENT1 (i.e., mortal components)
 2 - Testing TESTCOMPONENT2 (i.e., getComponent() and component activation/deactivation
-2 - Deactivating components
-2 - The end __oOo__
 1 - ContainerStatusMsg: Startup begins
 1 - ----------T--:--:--.--- AlarmSystemInterfaceFactory init - Using ACS alarm system
 1 - ContainerStatusMsg: ORB initialization begins
@@ -28,8 +26,8 @@
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT4
 1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
 1 - ----------T--:--:--.--- pyContainer run - Activating TESTCOMPONENT5 (type IDL:alma/acspytest/PyTest:1.0)
-1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT5 ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT5
 1 - ----------T--:--:--.--- pyContainer taggedmessage - Info message from the manager: Startup statistics: 3 of 3 components activated.
@@ -60,8 +58,8 @@
 1 - </Manager>
 1 - getCDBElement is:  {}
 1 - ----------T--:--:--.--- TESTCOMPONENT testServices - the logger works
-1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- pyContainer run - Activating TESTCOMPONENT2 (type IDL:alma/acspytest/PyTest:1.0)
+1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
@@ -69,8 +67,8 @@
 1 - HelloWorld
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT2
 1 - ['TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT2', 'TESTCOMPONENT3', 'TESTCOMPONENT4', 'TESTCOMPONENT5', 'TEST_PS_1', 'TEST_QOS_COMPONENT']
-1 - ----------T--:--:--.--- pyContainer run - Activating TESTCOMPONENT1 (type IDL:alma/acspytest/PyTest:1.0)
 1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT1 ]
+1 - ----------T--:--:--.--- pyContainer run - Activating TESTCOMPONENT1 (type IDL:alma/acspytest/PyTest:1.0)
 1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT1 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT1 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT1 ]
@@ -87,12 +85,12 @@
 1 -         <cdb:_ string="TESTCOMPONENT5"></cdb:_>
 1 -   </Startup>
 1 -   
+1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
+1 - ----------T--:--:--.--- pyContainer run - Activating TESTCOMPONENT2 (type IDL:alma/acspytest/PyTest:1.0)
 1 -   <ServiceComponents>
 1 - 	<cdb:_ string="Log"></cdb:_>
 1 - 	<cdb:_ string="LogFactory"></cdb:_>
-1 - ----------T--:--:--.--- pyContainer run - Activating TESTCOMPONENT2 (type IDL:alma/acspytest/PyTest:1.0)
 1 - 	<cdb:_ string="NotifyEventChannelFactory"></cdb:_>
-1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - 	<cdb:_ string="InterfaceRepository"></cdb:_>
 1 - 	<cdb:_ string="CDB"></cdb:_>
 1 - 	<cdb:_ string="ACSLogSvc"></cdb:_>
@@ -111,21 +109,25 @@
 1 - ['TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT2', 'TESTCOMPONENT3', 'TESTCOMPONENT4', 'TESTCOMPONENT5', 'TEST_PS_1', 'TEST_QOS_COMPONENT']
 1 - ----------T--:--:--.--- pyContainer run - Activating TESTCOMPONENT2 (type IDL:alma/acspytest/PyTest:1.0)
 1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT2 ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
 1 - HelloWorld
 1 - HelloWorld
-1 - ----------T--:--:--.--- pyContainer run - Activating TESTCOMPONENT3 (type IDL:alma/acspytest/PyTest:1.0)
 1 - ----------T--:--:--.--- loggingts -- Successfully loaded component code. [ logName=XXXXLOG_CompAct_Loading_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
-1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
+1 - ----------T--:--:--.--- pyContainer run - Activating TESTCOMPONENT3 (type IDL:alma/acspytest/PyTest:1.0)
 1 - ----------T--:--:--.--- loggingts -- Successfully activated component with Corba. [ logName=XXXXLOG_CompAct_Corba_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
 1 - ----------T--:--:--.--- loggingts -- Successfully initialized component. [ logName=XXXXLOG_CompAct_Init_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
+1 - ----------T--:--:--.--- loggingts -- Successfully instantiated component. [ logName=XXXXLOG_CompAct_Instance_OK TimeMillis=nnn CompName=TESTCOMPONENT3 ]
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT3
 1 - HelloWorld
 1 - HelloWorld
 1 - HelloWorld
+2 - ----------T--:--:--.--- Python Client initialized by user@host __importComponentStubs - Unable to import 'THIS_COMPONENT_DOES_NOT_EXIST' component's module: Component type unavailable!
+2 - Failure loading a component throws a exception as expected. OK.
+2 - Deactivating components
+2 - The end __oOo__
 2 - ----------T--:--:--.--- Python Client initialized by user@host disconnect - Disconnect called for client
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT2
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT1

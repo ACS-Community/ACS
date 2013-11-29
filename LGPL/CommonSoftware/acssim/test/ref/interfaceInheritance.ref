@@ -1,3 +1,4 @@
 1 - Ramped PowerSupply readback value: 3.14
 1 - Ramped PowerSupply startRamping CB: working method called
-1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+1 - ----------T--:--:--.--- Python Client disconnect - Disconnect called for client
+1 - ----------T--:--:--.--- Python Client disconnect - Disconnect called for client

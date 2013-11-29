@@ -42,7 +42,7 @@ TODO:
 __revision__ = "$Id: SimpleClient.py,v 1.14 2011/11/29 18:43:17 nsaez Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
-import os,pwd, signal
+import os,pwd, signal, threading
 import socket
 from traceback import print_exc
 from atexit import register
@@ -90,8 +90,9 @@ def handlerSIGCONT(signum, frame):
     signal.signal(signal.SIGTSTP,handlerSIGSTP)
 #------------------------------------------------------------------------------
 # Original signal handlers
-origHandlerSIGSTP  = signal.signal(signal.SIGTSTP,handlerSIGSTP)
-origHandlerSIGCONT = signal.signal(signal.SIGCONT,handlerSIGCONT)
+if threading.current_thread().name == 'MainThread':
+    origHandlerSIGSTP  = signal.signal(signal.SIGTSTP,handlerSIGSTP)
+    origHandlerSIGCONT = signal.signal(signal.SIGCONT,handlerSIGCONT)
 #------------------------------------------------------------------------------
 
 class PySimpleClient(BaseClient, ContainerServices): 

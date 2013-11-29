@@ -1,0 +1,86 @@
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Testing activation of components from the main thread...
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Test of activation of components OK
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Starting threads
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Testing multiple threads against non conflicting component names...
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Waiting for thread termination
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Threads terminated
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Starting threads
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Testing multiple threads against the same set of components...
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - The map is empty
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Waiting for thread termination
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - The map is empty
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Threads terminated
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Testing nested activation...
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Testing nested activation OK
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - The map is empty
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Testing the serialization of the same component activation/deactivation
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Starting threads
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - The map is processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_0 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_1 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_2 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_3 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_4 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_5 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_6 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_7 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_8 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_9 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_10 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_11 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_12 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_14 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_13 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Threads started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_15 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_16 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_17 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_18 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_19 started
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - All threads alive
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Main thread is completing the activation of blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Waiting for other threads to terminate
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_3 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_3 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_6 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_6 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_0 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_0 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_18 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_18 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_14 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_1 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_14 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_1 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_17 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_17 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_15 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_15 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_19 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_19 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_2 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_2 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_9 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_9 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_11 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_11 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_12 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_12 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_5 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_5 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_8 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_8 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_7 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_7 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_4 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_4 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_10 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_10 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_16 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_13 processing blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_16 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host run - BlockTesterThread_13 processed blockedComponent
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Testing the serialization of the same component OK
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - The map is empty
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host Main - Threads terminated
+1 - ----------T--:--:--.--- acspyTestContainerActivationMap initialized by user@host disconnect - Disconnect called for client
