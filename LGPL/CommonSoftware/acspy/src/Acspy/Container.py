@@ -503,6 +503,50 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             temp[PYREF].setName(temp[NAME])
 
         #DWF-should check to see if it's derived from CharacteristicComponent next!!!
+        
+        #Check to see if it's derived from ComponentLifeCycle next!!!
+        #If it is, we have to mess with the state model and invoke the lifecycle
+        #methods accordingly.
+        if isinstance(temp[PYREF], ComponentLifecycle):
+
+            start = time()
+            try:
+                #Have to mess with the state model
+                if isinstance(temp[PYREF], ACSComponent):
+                    #this assumes the component's constructor will NOT change
+                    #the state!
+                    temp[PYREF].setComponentState(ACS.COMPSTATE_INITIALIZING)
+                #actually initialize the sucker
+                temp[PYREF].initialize()
+                #if it's an ACSComponent...
+                temp_state = temp[PYREF]._get_componentState()
+                if (isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent)) and (temp_state==ACS.COMPSTATE_INITIALIZED or temp_state==ACS.COMPSTATE_INITIALIZING):
+                    #good...initialize did not fail.
+                    temp[PYREF].setComponentState(ACS.COMPSTATE_INITIALIZED)
+                elif isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent):
+                    #bad...the developer has changed the state from the initialize method.  warn the user but continue
+                    self.logger.logWarning("initialize method of " +
+                                           "ComponentLifecycle failed for the '" +
+                                           temp[NAME] + "' component changed the component's state to something unexpected!")
+
+            except ComponentLifecycleException, e:
+                print_exc()
+                self.logger.logWarning("initializeComponent method of " +
+                                       "ComponentLifecycle failed for the '" +
+                                       temp[NAME] + "' component with this message: " +
+                                       str(e.args))
+                #Have to mess with the state model
+                if isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent):
+                    temp[PYREF].setComponentState(ACS.COMPSTATE_ERROR)
+
+            except Exception, e:
+                print_exc()
+                self.logger.logCritical("initializeComponent method of " +
+                                        "ComponentLifecycle failed for the '" +
+                                        temp[NAME] + "'.\n" + str(e.args) + "\nDestroying!")
+                self.failedActivation(temp)
+                self.activationMap.activated(name)
+                return None
 
         #Next activate it as a CORBA object.
         try:
@@ -554,46 +598,7 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         #If it is, we have to mess with the state model and invoke the lifecycle
         #methods accordingly.
         if isinstance(temp[PYREF], ComponentLifecycle):
-
             start = time()
-            try:
-                #Have to mess with the state model
-                if isinstance(temp[PYREF], ACSComponent):
-                    #this assumes the component's constructor will NOT change
-                    #the state!
-                    temp[PYREF].setComponentState(ACS.COMPSTATE_INITIALIZING)
-                #actually initialize the sucker
-                temp[PYREF].initialize()
-                #if it's an ACSComponent...
-                temp_state = temp[PYREF]._get_componentState()
-                if (isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent)) and (temp_state==ACS.COMPSTATE_INITIALIZED or temp_state==ACS.COMPSTATE_INITIALIZING):
-                    #good...initialize did not fail.
-                    temp[PYREF].setComponentState(ACS.COMPSTATE_INITIALIZED)
-                elif isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent):
-                    #bad...the developer has changed the state from the initialize method.  warn the user but continue
-                    self.logger.logWarning("initialize method of " +
-                                           "ComponentLifecycle failed for the '" +
-                                           temp[NAME] + "' component changed the component's state to something unexpected!")
-
-            except ComponentLifecycleException, e:
-                print_exc()
-                self.logger.logWarning("initializeComponent method of " +
-                                       "ComponentLifecycle failed for the '" +
-                                       temp[NAME] + "' component with this message: " +
-                                       str(e.args))
-                #Have to mess with the state model
-                if isinstance(temp[PYREF], ACSComponent) or isinstance(temp[PYREF], CharacteristicComponent):
-                    temp[PYREF].setComponentState(ACS.COMPSTATE_ERROR)
-
-            except Exception, e:
-                print_exc()
-                self.logger.logCritical("initializeComponent method of " +
-                                        "ComponentLifecycle failed for the '" +
-                                        temp[NAME] + "'.\n" + str(e.args) + "\nDestroying!")
-                self.failedActivation(temp)
-                self.activationMap.activated(name)
-                return None
-
             try:
                 temp[PYREF].execute()
 
