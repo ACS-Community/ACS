@@ -2,10 +2,10 @@
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
 1 - ContainerStatusMsg: Manager access initialization begins
-1 - ContainerStatusMsg: Manager access initialization ends
 1 - ContainerStatusMsg: Automatic component loading begins
-1 - ----------T--:--:--.--- pyContainer2 taggedmessage - Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Manager access initialization ends
 1 - ----------T--:--:--.--- pyContainer2 taggedmessage - Info message from the manager: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- pyContainer2 taggedmessage - Info message from the manager: Startup statistics: 0 of 0 components activated.
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
 1 - ----------T--:--:--.--- pyContainer2 __init__ - Container pyContainer2 waiting for requests
@@ -19,4 +19,5 @@
 1 - Params passed to getTimeInterval [acstime.Epoch(value=xxxxL), <Acssim.Servants.Simulator.Simulator instance at 0xXXXX>]
 1 - Params passed to toISO8601 [TSArray, acstime.Epoch(value=xxxxL), <Acssim.Servants.Simulator.Simulator instance at 0xXXXX>]
 1 - ----------T--:--:--.--- pyContainer2 deactivate_component - Deactivating component: CLOCK2
-2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+2 - ----------T--:--:--.--- Python Client disconnect - Disconnect called for client
+2 - ----------T--:--:--.--- Python Client disconnect - Disconnect called for client
