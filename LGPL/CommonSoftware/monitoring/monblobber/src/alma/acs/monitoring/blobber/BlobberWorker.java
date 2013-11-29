@@ -25,6 +25,7 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -104,7 +105,7 @@ public class BlobberWorker extends CancelableRunnable {
     /**
      * Counts how often the blobber has run in total.
      */
-    private volatile long cycleCount = 0L;
+    private final AtomicLong cycleCount = new AtomicLong(0);
 
     /**
      * Was added on ACS-9_0_0-B but then not merged to the HEAD in the old location ARCHIVE/TMCDB/.
@@ -272,7 +273,7 @@ public class BlobberWorker extends CancelableRunnable {
 	@Override
 	public void run() {
 
-		cycleCount++;
+		cycleCount.incrementAndGet();
 		myLogger.info("Running BlobberWorker cycle " + cycleCount);
 
 		int collectorCount = 0;
@@ -339,8 +340,8 @@ public class BlobberWorker extends CancelableRunnable {
 			String msg = "Processed monitoring data from " + collectorCount + " collector(s) in " + totalTimeMillis + " ms (within the time limit).";
 			myLogger.info(msg);
 			if (isProfilingEnabled) {
-				debugDataSender.sendUDPPacket(msg, cycleCount);
-				debugDataSender.sendUDPPacket("Total inserts for cycle " + cycleCount + " were " + insertCount, cycleCount);
+				debugDataSender.sendUDPPacket(msg, cycleCount.longValue());
+				debugDataSender.sendUDPPacket("Total inserts for cycle " + cycleCount + " were " + insertCount, cycleCount.longValue());
 			}
 		} 
 		else {
@@ -349,8 +350,8 @@ public class BlobberWorker extends CancelableRunnable {
 					+ " ms (exceeding the time limit of " + collectIntervalSec + " s).";
 			myLogger.warning(msg);
 			if (isProfilingEnabled) {
-				debugDataSender.sendUDPPacket(msg, cycleCount);
-				debugDataSender.sendUDPPacket("Total inserts for cycle " + cycleCount + " were " + insertCount, cycleCount);
+				debugDataSender.sendUDPPacket(msg, cycleCount.longValue());
+				debugDataSender.sendUDPPacket("Total inserts for cycle " + cycleCount + " were " + insertCount, cycleCount.longValue());
 			}
 		}
 	}
@@ -388,15 +389,15 @@ public class BlobberWorker extends CancelableRunnable {
 			myLogger.info("Received " + dataBlocks.length + " MonitorDataBlocks from collector " + collector.name());
 
 			if (isProfilingEnabled) {
-				debugDataSender.sendUDPPacket("Received " + dataBlocks.length + " MonitorDataBlocks from collector " + collector.name(), cycleCount);
+				debugDataSender.sendUDPPacket("Received " + dataBlocks.length + " MonitorDataBlocks from collector " + collector.name(), cycleCount.longValue());
 				Runtime runtime = Runtime.getRuntime();
-				debugDataSender.sendUDPPacket("Used memory: " + Long.toString((runtime.totalMemory() - runtime.freeMemory())), cycleCount);
-				debugDataSender.sendUDPPacket("Free memory: " + Long.toString(runtime.freeMemory()), cycleCount);
-				debugDataSender.sendUDPPacket("Total memory: " + Long.toString(runtime.totalMemory()), cycleCount);
+				debugDataSender.sendUDPPacket("Used memory: " + Long.toString((runtime.totalMemory() - runtime.freeMemory())), cycleCount.longValue());
+				debugDataSender.sendUDPPacket("Free memory: " + Long.toString(runtime.freeMemory()), cycleCount.longValue());
+				debugDataSender.sendUDPPacket("Total memory: " + Long.toString(runtime.totalMemory()), cycleCount.longValue());
 			}
 
 			for (MonitorDAO monitorDAO : myMonitorDAOList) {
-				monitorDAO.openTransactionStore(Long.toString(cycleCount) + "-" + collectorData.getCollectorId()); // @TODO: Should we catch / log the possible Exception, or just let it fly?
+				monitorDAO.openTransactionStore(Long.toString(cycleCount.longValue()) + "-" + collectorData.getCollectorId()); // @TODO: Should we catch / log the possible Exception, or just let it fly?
 			}
 
 			// iterate over devices

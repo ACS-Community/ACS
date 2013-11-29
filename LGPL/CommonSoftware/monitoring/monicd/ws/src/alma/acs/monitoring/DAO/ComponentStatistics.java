@@ -44,14 +44,23 @@ public class ComponentStatistics
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("min: ");
-		builder.append(min.toString());
+		appendNumberValue(min, builder);
 		builder.append(" max: ");
-		builder.append(max.toString());
+		appendNumberValue(max, builder);
 		builder.append(" mean: ");
-		builder.append(mean.toString());
+		appendNumberValue(mean, builder);
 		builder.append(" stdDev: ");
-		builder.append(stdDev.toString());
+		appendNumberValue(stdDev, builder);
 		builder.append("\n");
 		return builder.toString();
+	}
+	
+	private void appendNumberValue(Number num, StringBuilder builder) {
+		if (num != null) {
+			builder.append(num.toString());
+		}
+		else {
+			builder.append("N/A");
+		}
 	}
 }

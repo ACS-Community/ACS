@@ -171,7 +171,6 @@ public class CollectorList {
 	 */
 	protected static class CollectorData
 	{
-
 		private final String collectorId;
 
 		public CollectorData(String inCollectorId) {
@@ -191,9 +190,12 @@ public class CollectorList {
 
 		@Override
 		public boolean equals(Object inObject) {
+			if (inObject == null || !(inObject instanceof CollectorData)) {
+				return false;
+			}
 			return (collectorId.equals(((CollectorData) inObject).collectorId));
 		}
-
+		
 		/**
 		 * Must be consistent with equals(), based only on collectorId.
 		 */
