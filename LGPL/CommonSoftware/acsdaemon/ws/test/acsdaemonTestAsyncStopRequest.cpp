@@ -116,6 +116,9 @@ int TestAcsDaemonAsyncStopRequest::stopContainerOnHost(string &host, string &con
 		ACS_SHORT_LOG((LM_ERROR,"Failed to get containerdaemon reference"));
 		return -5;
 	}
+	// Give some time to be sure that all the threads managed  to get the containerdaemon
+	// reference before to try to stop the containers. This is needed to make this test reproducible.
+	ACE_OS::sleep(2);
 	//SPARTA_LOG_DEBUG("Stopping container %s on %s",containerName.c_str(),host);
 	try
 	{
