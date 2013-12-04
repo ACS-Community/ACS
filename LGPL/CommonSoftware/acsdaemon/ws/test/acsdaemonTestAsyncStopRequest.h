@@ -28,11 +28,11 @@
 class TestAcsDaemonAsyncStopRequest : public ACE_Task_Base
 {
 public:
-  TestAcsDaemonAsyncStopRequest();
+  TestAcsDaemonAsyncStopRequest(const std::string &container, const std::string &host);
   ~TestAcsDaemonAsyncStopRequest();
 
   // run the CORBA method in a seperate task
-  void run(const std::string &container, const std::string &host);
+  void run();
 
   // wait for thread completion
   int wait();
@@ -51,6 +51,8 @@ private:
 
   std::string host_m;
   std::string container_m;
+
+  acsdaemon::ContainerDaemon_var m_containerDaemon;
   
   /**
    * ACS instance to be handled by this DEPL object

@@ -34,12 +34,14 @@
 using namespace std;
 using namespace maci;
 
-TestAcsDaemonAsyncStopRequest::TestAcsDaemonAsyncStopRequest()
-
+TestAcsDaemonAsyncStopRequest::TestAcsDaemonAsyncStopRequest(const string &container, const string &host)
 {
   m_acsInstance = ACSPorts::getBasePort();
   m_managerCorbaloc = getManagerCorbaloc_();
   m_additionalCmdLine = "-m " + m_managerCorbaloc;
+  host_m = host;
+  container_m = container;
+  m_containerDaemon = getContainerDaemonRef_(host);
 }
 
 TestAcsDaemonAsyncStopRequest::~TestAcsDaemonAsyncStopRequest()
@@ -58,12 +60,10 @@ string TestAcsDaemonAsyncStopRequest::getManagerCorbaloc_()
 	return managerLoc;
 }
 
-void TestAcsDaemonAsyncStopRequest::run(const string &container, const string &host)
+void TestAcsDaemonAsyncStopRequest::run()
 {
 	completed_m = false;
 
-	host_m = host;
-	container_m = container;
 
 	// No error string
 	exceptionString_m = "";
@@ -110,20 +110,16 @@ int TestAcsDaemonAsyncStopRequest::svc()
 int TestAcsDaemonAsyncStopRequest::stopContainerOnHost(string &host, string &containerName) throw (CORBA::SystemException,acsdaemonErrType::FailedToStopContainerEx,ACSErrTypeCommon::BadParameterEx)
 {
   // Get CORBA reference of ACS Container daemon running on this host
-	acsdaemon::ContainerDaemon_var  containerDaemon = getContainerDaemonRef_(host);
-	if(CORBA::is_nil(containerDaemon.in()))
+	if(CORBA::is_nil(m_containerDaemon.in()))
 	{
 		ACS_SHORT_LOG((LM_ERROR,"Failed to get containerdaemon reference"));
 		return -5;
 	}
-	// Give some time to be sure that all the threads managed  to get the containerdaemon
-	// reference before to try to stop the containers. This is needed to make this test reproducible.
-	ACE_OS::sleep(2);
 	//SPARTA_LOG_DEBUG("Stopping container %s on %s",containerName.c_str(),host);
 	try
 	{
 		// Use stop_container synch version 
-		containerDaemon->stop_container_sync(containerName.c_str(),m_acsInstance,m_additionalCmdLine.c_str());
+		m_containerDaemon->stop_container_sync(containerName.c_str(),m_acsInstance,m_additionalCmdLine.c_str());
 	}
 	catch(acsdaemonErrType::FailedToStopContainerEx &ex)
 	{
@@ -217,7 +213,7 @@ int shutdownContainers(vector<string> containers, string host) throw (CORBA::Sys
 	asyncStop.resize(containers.size());
 	for (unsigned int i = 0; i < containers.size(); i++)
 	{
-	    asyncStop[i] = new TestAcsDaemonAsyncStopRequest;
+	    asyncStop[i] = new TestAcsDaemonAsyncStopRequest(containers[i],host);
 	    if (asyncStop[i] == NULL)
 		{
 			ACS_SHORT_LOG((LM_ERROR,"Failed to allocate asyncStopRequest number %u", i));
@@ -226,7 +222,7 @@ int shutdownContainers(vector<string> containers, string host) throw (CORBA::Sys
 	}
 	for (unsigned int i = 0; i < containers.size(); i++)
 	{
-	    asyncStop[i]->run (containers[i], host);
+	    asyncStop[i]->run ();
 	}
 	for (unsigned int i = 0; i < containers.size(); i++)
 	{
