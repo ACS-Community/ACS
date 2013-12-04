@@ -64,8 +64,8 @@ public:
      * See the CorrSimThreadLoop class and notes in the main()
      */
     CorrSimThread(const ACE_CString &name,
-		  const ACS::TimeInterval &responseTime = ThreadBase::defaultResponseTime,
-		  const ACS::TimeInterval &sleepTime = ThreadBase::defaultSleepTime) :
+		  const ACS::TimeInterval &responseTime = 100000000 /*ThreadBase::defaultResponseTime*/,
+		  const ACS::TimeInterval &sleepTime = 100000000 /*ThreadBase::defaultSleepTime*/) :
 	ACS::Thread(name)
     {
 	ACS_TRACE("CorrSimThread::CorrSimThread");
@@ -114,8 +114,7 @@ void CorrSimThread::run()
 	 * 
 	 */
 
-	// display a heart beat every 10 iterations (which is 10 seconds as
-	// the getCanMessage() waits 1 second before timing out
+	// display a heart beat every HEART_BEAT_PERIOD iterations
 	heartBeatMsgCount++;
  	if( !(heartBeatMsgCount % HEART_BEAT_PERIOD) )
  	{
@@ -136,8 +135,8 @@ void CorrSimThread::run()
 	     * in the loop or there should be a check() just after it.
 	     *
 	     */
-	    // ACE_OS::sleep(1);
-  	    sleep(10000000);   
+	    // ACE_OS::sleep(3);
+  	    sleep(30000000);
  	    ACS_SHORT_LOG((LM_INFO,"Just passing the time..."));
  	}
     }
@@ -172,8 +171,8 @@ public:
 		      const ACS::TimeInterval &ignoreST = ThreadBase::defaultSleepTime,
 		      bool del=false) :
 	ACS::Thread(name, 
-		    10000000 /* 1 sec, hardcoded according to spec */, 
-		    10000000 /* 1 sec, hardcoded according to spec */,
+		    100000000 /* 10 sec, hardcoded to 1s according to spec */,
+		    30000000 /* 3 sec, hardcoded to 1s according to spec */,
 		    del)
     {
 	ACS_TRACE("CorrSimThread::CorrSimThread");
@@ -345,12 +344,18 @@ int main(int argc, char *argv[])
 	 * already destroyed; remember: never use the pointer 
 	 * to an autodelete thread
 	 */
+	pCorrSimThread->setResponseTime(100000000);
 	tm.stop(CORR_SIM_THREAD_NAME);
-	while( threadState )
+	int maxIterations = 10;
+	while( maxIterations-- && tm.isAlive(CORR_SIM_THREAD_NAME) )
 	    {
 	    ACS_SHORT_LOG((LM_INFO,"Trying to shut down %s",CORR_SIM_THREAD_NAME));
 	    ACE_OS::sleep(1);
-	    threadState = tm.isAlive(CORR_SIM_THREAD_NAME);
+	    }
+	if(!maxIterations)
+	    {
+	    ACS_LOG(LM_SOURCE_INFO,"main",
+		    (LM_ERROR, "Error stopping thread"));
 	    }
 	ACS_SHORT_LOG((LM_INFO,"End of cleanup"));
 	ACE_OS::sleep(5);
@@ -397,10 +402,10 @@ int main(int argc, char *argv[])
 	     * This time we take advantage of the autodelete flag,
 	     * so that we do not need to handle object deletion afterwards.
 	     * The response and sleep times are ignored in the constructor, as
-	     * described in the above documentation, so I pass 0.
+	     * described in the above documentation.
 	     */
 	    pCorrSimThread = tm.create<CorrSimThreadLoop>(CORR_SIM_THREAD_NAME,
-							  0 , 0,
+							  100000000 , 30000000,
 							  true);
 	    ACS_SHORT_LOG((LM_INFO,"Spawning %s thread....", CORR_SIM_THREAD_NAME));
 	    if( pCorrSimThread != NULL )
@@ -447,7 +452,7 @@ int main(int argc, char *argv[])
 	 * But I leave it here to show how to handle a limited
 	 * number of iterations.
 	 */
-	int maxIterations = 10;
+	maxIterations = 10;
 	tm.terminate(CORR_SIM_THREAD_NAME);
 	while( maxIterations-- && tm.isAlive(CORR_SIM_THREAD_NAME))
 	    {
