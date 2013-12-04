@@ -224,7 +224,7 @@ all:	do_all
 
 clean : clean_all 
 	@rm -f *.log 
-	@rm -rf logs
+	@rm -rf logs_NUM_THREADS_OPTION_*
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
