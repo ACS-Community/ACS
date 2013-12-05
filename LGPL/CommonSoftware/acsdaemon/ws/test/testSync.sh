@@ -6,7 +6,7 @@ if [ $? -ne 0 ]; then
     echo "FAILED - starting services daemon"
     FLAG=1
 else
-    SPID=$(ps aux|grep acsservicesdaemon| grep -v grep|awk '{ print $2 }')
+    SPID=$(ps aux --width 200 |grep acsservicesdaemon| grep $USER | grep -v grep|awk '{ print $2 }')
     sleep 5
 fi
 acscontainerdaemon &> syncContainers.log &
@@ -15,7 +15,7 @@ if [ $? -ne 0 ]; then
     echo "FAILED - starting container daemon"
     FLAG=1
 else
-    CPID=$(ps aux|grep acscontainerdaemon| grep -v grep|awk '{ print $2 }')
+    CPID=$(ps aux --width 200 |grep acscontainerdaemon| grep $USER | grep -v grep|awk '{ print $2 }')
     sleep 5
 fi
 acsdaemonStartAcs -i 0 &> syncStartACS.log
@@ -85,7 +85,7 @@ if [ $? -ne 0 ]; then
     FLAG=1
 fi
 
-CASA_DUMMY_CONTAINER_PID=$(ps aux|grep "CONTROL/AMBSOCKETSERVER/pyCasaContainer" | grep acsStartContainerWithCASA | grep -v grep|awk '{ print $2 }')
+CASA_DUMMY_CONTAINER_PID=$(ps aux --width 200 |grep "CONTROL/AMBSOCKETSERVER/pyCasaContainer" | grep $USER | grep acsStartContainerWithCASA | grep -v grep|awk '{ print $2 }')
 kill $CASA_DUMMY_CONTAINER_PID
 sleep 1
 ps -p $CASA_DUMMY_CONTAINER_PID &>/dev/null
