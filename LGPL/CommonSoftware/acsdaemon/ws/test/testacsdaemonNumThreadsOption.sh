@@ -74,7 +74,7 @@ if [ $? -ne 0 ]; then
     FLAG=1
 fi
 sleep 2 
-CPID=$(ps aux|grep acscontainerdaemon| grep -v grep|awk '{ print $2 }')
+CPID=$(ps auxww|grep acscontainerdaemon| grep -v grep|awk '{ print $2 }')
 kill $CPID 
 sleep  5 
 ps -p $CPID &>/dev/null
