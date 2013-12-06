@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: checkTcltk,v 1.15 2013/02/04 09:03:35 eallaert Exp $"
+# "@(#) $Id: checkTcltk,v 1.13 2012/04/17 11:55:54 jschwarz Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -10,6 +10,7 @@
 # eallaert  2007-09-03  updated for ACS 7.0
 # eallaert  2011-06-03  updated for ACS 10.0
 # eallaert  2012-10-09  updated for use with RH5.5 and RH6.3; clean-up
+# eallaert  2013-10-15  updated for use Tcl/Tk 8.6 (cmds in namespaces)
 
 #************************************************************************
 #   NAME
@@ -154,18 +155,19 @@ fi
 
 echo $SEPARATOR
 echo "Checking on $build_OS version $build_OSV:"
-echo ""
 
 # Add here the opsys versions this has been tested on in its current version
 if [     ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.5"  \
      -a  ${build_OS}-${build_OSV} != "Linux-ScientificLinux6.2"  \
      -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise6.3"  \
+     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise6.4"  \
+     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise6.5"  \
    ]
 then
-    echo ""
-    echo "WARNING: this procedure has not been tested on this system"
-    echo ""
+    echo "(WARNING: this procedure has not yet been formally tested on this system)"
 fi
+
+echo ""
 
 
 #-------------------
@@ -213,17 +215,50 @@ echo ""
 PATH=${TCLTK_ROOT}/bin:$PATH
 LD_LIBRARY_PATH=${TCLTK_ROOT}/lib:$LD_LIBRARY_PATH
 
+TCL_SCRIPT='
+proc getNamespaces {parent} {
+    set result {};
+    foreach child [namespace children $parent] {
+	lappend result $child [getNamespaces $child]
+    };
+    return [join $result]
+};
+
+puts "\n\nCommands in global namespace";
+puts     "============================";
+puts [lsort [info commands *]];
+
+foreach namespace [lsort [getNamespaces ::]] {
+    puts      "\n\nCommands in namespace $namespace";
+    set underline "======================";
+    set namespaceLength [string length $namespace];
+    for {set i 0} {$i < $namespaceLength} {incr i} {
+	append underline =
+    };
+    puts $underline;
+    set cmds [info commands ${namespace}::*];
+    if {[llength $cmds] > 0} {
+        set strippedCmds {};
+        set start [expr {$namespaceLength + 2}];
+	foreach cmd $cmds {
+	    lappend strippedCmds [string range $cmd $start end]
+	};
+	puts [lsort $strippedCmds]
+    };
+};
+exit
+'
+
 echo $SEPARATOR
 echo "verify:"
-rm -f test.tcl
 for shell in bltwish expect tcl tclsh wish wishx
 do
     echo -n "    ${shell} . . ."
-    out=${SRC}/${shell}.out
-    ref=${TCLTK}/ref/${shell}.ref
+    out=${SRC}/${shell}-${TCLTK_VERSION}.out
+    ref=${TCLTK}/ref/${shell}-${TCLTK_VERSION}.ref
     if [ -x $PREFIX/bin/$shell ] 
     then
-	echo 'puts [lsort "[info commands] [info commands blt::*]"]; exit'  | $PREFIX/bin/$shell > $out
+	echo $TCL_SCRIPT | $PREFIX/bin/$shell > $out
         diff $out $ref
         if [ $? -ne 0 ] 
         then	
