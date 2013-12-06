@@ -292,22 +292,21 @@ public class XmlIdlCompiler
 	 * XML translation.
 	 * @param externalArgs -d &lt;outdir&gt; -I&lt;myIdlIncludePath1&gt; -I&lt;myIdlIncludePath2&gt; &lt;myIdlFile&gt;
 	 */
-	public static void main(String[] args0) {
+	public static void main(String[] args) {
 
 		try {
-			// TODO: Remove this once acsMakefileCore.mk has been updated to set the args for jacorb
-			String[] args = translateFromOpenORB(args0);
-	
+			XmlIdlCompiler inst = new XmlIdlCompiler();
+			
+			String[] jarcorbArgs = inst.processAndPruneAcsArgs(args);
 			JacorbVisitor jacorbVisitor = new JacorbVisitor();
 			AcsJacorbParser parser = new AcsJacorbParser();
-			parser.init(args, jacorbVisitor);
+			parser.init(jarcorbArgs, jacorbVisitor);
 		
 			// Run the jacorb IDL parser with the ACS plugin
 			System.out.println("ACS IDL compilation for " + parser.idlFile);
 			parser.parse();
 			
 			// XML manipulation and code generation 
-			XmlIdlCompiler inst = new XmlIdlCompiler();
 			inst.generateCode(jacorbVisitor);
 		}
 		catch (Throwable thr) {
@@ -318,24 +317,23 @@ public class XmlIdlCompiler
 	}
 	
 	/**
-	 * Translates OpenORB to JacORB arguments, needed for tests during the transition period
-	 * in which the acsMakefile still sets the arguments as needed by the old version of XmlIdl
-	 * that was based on OpenORB.
+	 * Processes those arg from the given argument list that target ACS. 
+	 * The returned list of args is meant to be passed to JacORB. 
 	 */
-	private static String[] translateFromOpenORB(String[] args) {
+	private String[] processAndPruneAcsArgs(String[] args) {
 		
 		List<String> argListIn = Arrays.asList(args);
 		List<String> argListOut = new ArrayList<String>();
 		
 		for (String arg : argListIn) {
-			if (arg.equals("-notie")) {
-				// ignore.. not valid nor needed for jacorb
+			if (arg.equals("-verbose")) {
+				// verbosity for ACS code
+				verbose = true;
+				// verbosity for jacorb code
+				int jacorbDebugLevel = 1; // 0...4
+				argListOut.add("-W");
+				argListOut.add(Integer.toString(jacorbDebugLevel));
 			}
-//			else if (.... some value of $(verboseDef) if it ever gets used...) {
-//				int jacorbDebugLevel = ... 0-4
-//				argListOut.add("-W");
-//				argListOut.add(Integer.toString(jacorbDebugLevel));
-//			}
 			else {
 				argListOut.add(arg);
 			}

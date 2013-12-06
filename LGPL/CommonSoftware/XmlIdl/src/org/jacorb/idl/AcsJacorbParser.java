@@ -67,6 +67,13 @@ public class AcsJacorbParser extends parser
 					parser.out_dir = args[++i];
 				}
 			}
+			else if (args[i].equals("-W")) {
+				if (i + 1 == args.length || args[i + 1].charAt(0) == '-') {
+					usage(args, "-W");
+				}
+				int level = Integer.parseInt(args[++i]);
+				getLogger().setPriority(Environment.intToPriority(level));
+			}
 			else if (args[i].startsWith("-I")) {
 				GlobalInputStream.setIncludePath(args[i].substring(2));
 			}
