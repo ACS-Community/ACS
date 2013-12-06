@@ -30,9 +30,7 @@ TAO_LIBRARIES:=ACE \
 OMNI_IDL = omniidl
 JAVA_IDL = $(JACORB_HOME)/bin/idl
 JACORB_MK_IDL_PATH = -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg
-XMLIDL = xmlIdlCompiler
 AlmaIDLMainClass=alma.tools.idlgen.XmlIdlCompiler
-ABEANSCOMP=abeans.models.acs.baci.generator.IDLtoAbeansCompiler
 #
 #  RTAI
 ifneq ($(strip $(RTAI_HOME)),)
@@ -61,7 +59,7 @@ else
 endif
 CompHelpOutRootDirDef=-Dalma.acs.tools.comphelpergen.outRootDir=.
 
-XMLIDL=java $(CompHelpDoGenerateDef) $(CompHelpOutRootDirDef) -DACS.idl2jbind=$(XML_IDL) $(AlmaIDLMainClass) -d $$(TMPSRC) -notie $(verboseDef) 
+XMLIDL=java $(CompHelpDoGenerateDef) $(CompHelpOutRootDirDef) -DACS.idl2jbind=$(XML_IDL) $(AlmaIDLMainClass) -d $$(TMPSRC) $(VERBOSE_DEF) 
 
 ACS_CO=ACScomponents
 JAVAC ?=javac -J-Xmx1g

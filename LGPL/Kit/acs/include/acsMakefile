@@ -443,15 +443,18 @@ export INSTALL_ROOT
 #    AT      is used to prefix commands
 #    OUTPUT  is where the output is redirected 
 #    PYTHON_OUTPUT is a flag determining verbosity for python code compilation
+#    VERBOSE_DEF gives the literal string "-verbose", to be used as an option e.g. for XMLIDL
 #
 ifdef MAKE_VERBOSE
     AT = 
     OUTPUT =
     PYTHON_OUTPUT =
+    VERBOSE_DEF = -verbose
 else
     AT = @
     OUTPUT = > /dev/null
     PYTHON_OUTPUT = -q
+    VERBOSE_DEF =
 endif
 
 #
