@@ -246,7 +246,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 
 		// get the channel
 		// @TODO: handle Corba TIMEOUT 
-		channel = helper.getNotificationChannel(getChannelKind(), getNotificationFactoryName());
+		channel = helper.getNotificationChannel(getNotificationFactoryName());
 		
 		// Corba NC spec about adminId: a unique identifier assigned by the target EventChannel instance that is unique among all 
 		// SupplierAdmin instances currently associated with the channel.
@@ -387,50 +387,6 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	}
 
 
-//	/**
-//	 * Destroys the notification channel, which may be in use by other suppliers or receivers.
-//	 * @Deprecated  This feature is luckily not used as of ALMA-5_0_1_9 (2007-12). We must first investigate 
-//	 *              when/how we can know that it is safe to destroy a channel object.
-//	 */
-//	protected void destroyNotificationChannel() throws AcsJException {
-//		helper.destroyNotificationChannel(channelName, getChannelKind(), channel);
-//	}
-
-
-
-	/**
-	 * This method returns a constant character pointer to the "kind" of
-	 * notification channel as registered with the naming service (i.e., the
-	 * kind field of a CosNaming::Name) which is normally equivalent to
-	 * acscommon::NC_KIND. The sole reason this method is provided is to
-	 * accommodate subclasses which subscribe/publish non-ICD style events (ACS
-	 * archiving channel for example). In that case, the developer would
-	 * override this method.
-	 * 
-	 * @return string
-	 * @deprecated This method has become obsolete with http://ictjira.alma.cl/browse/ICT-494
-	 */
-	protected String getChannelKind() {
-		return alma.acscommon.NC_KIND.value;
-	}
-
-	/**
-	 * Returns the NC domain as defined in acscommon.idl. For all 'normal' NCs that we use 
-	 * to send and receive event data it is given by acscommon::ALMADOMAIN. 
-	 * Notice that this domain concept is not the same as the domain given in {@link #channelNotifyServiceDomainName},
-	 * where the latter sets up optional finer-grained domains used to map NCs to NotifyService instances, 
-	 * which are then all within the same domain of the kind returned by this method.
-	 * <p>
-	 * Subclasses which subscribe/publish non-ICD style events (ACS archiving channel for
-	 * example) may override this method. 
-	 * 
-	 * @return string
-	 * @deprecated This method has become obsolete with http://ictjira.alma.cl/browse/ICT-494
-	 */
-	protected String getChannelDomain() {
-		return alma.acscommon.ALMADOMAIN.value;
-	}
-
 	/**
 	 * This method returns the notify service name as registered with the
 	 * CORBA Naming Service. This is normally equivalent to
@@ -559,7 +515,8 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		StructuredEvent event = new StructuredEvent();
 
 		// event.header.fixed_header.event_type
-		EventType event_type = new EventType(getChannelDomain(), typeName);
+		String channelDomain = alma.acscommon.ALMADOMAIN.value;
+		EventType event_type = new EventType(channelDomain, typeName);
 		FixedEventHeader fixed_header = new FixedEventHeader(event_type, eventName);
 
 		// event.header.variable_header

@@ -302,7 +302,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
 		// this call is mandatory, see base class ctor comment.
 		// It will lead to a call to 'EnvironmentActionHandler#create', 
-		// see 'createEnvironmentActionHandler' below.
+		// see 'createEnvironmentAction' below.
 		stateMachineSignalDispatcher.setUpEnvironment();
 	}
 
@@ -318,7 +318,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		try {
 
 			// get the channel
-			channel = helper.getNotificationChannel(getChannelKind(), getNotificationFactoryName());
+			channel = helper.getNotificationChannel(getNotificationFactoryName());
 
 			// get the admin object
 			
@@ -350,6 +350,8 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			// The user might create this object, and later call startReceivingEvents(), without attaching any receiver.
 			// If so, it's useless to get all the events, so we start with an all-exclusive filter in the server
 			discardAllEvents();
+//		} catch (OBJECT_NOT_EXIST ex) {
+//			TODO handle dangling NC binding in the naming service (after notify service restart)
 		} catch (Throwable thr) {
 			throw new AcsJStateMachineActionEx(thr);
 		}
@@ -846,32 +848,6 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		}
 	}
 
-	/**
-	 * This method returns a constant character pointer to the "kind" of
-	 * notification channel as registered with the naming service (i.e., the
-	 * kind field of a CosNaming::Name) which is normally equivalent to
-	 * acscommon::NC_KIND. The sole reason this method is provided is to
-	 * accommodate subclasses which subscribe/publish non-ICD style events (ACS
-	 * archiving channel for example). In that case, the developer would override
-	 * this method.
-	 * @return string
-	 * @deprecated This method has become obsolete with http://ictjira.alma.cl/browse/ICT-494
-	 */
-	protected String getChannelKind() {
-		return alma.acscommon.NC_KIND.value;
-	}
-
-//	/**
-//	 * This method returns a constant character pointer to the notification
-//	 * channel domain which is normally equivalent to acscommon::ALMADOMAIN.
-//	 * 
-//	 * @return string
-//	 * @deprecated This method has become obsolete with http://ictjira.alma.cl/browse/ICT-494
-//	 */
-//	protected String getChannelDomain() {
-//		return alma.acscommon.ALMADOMAIN.value;
-//	}
-//
 	/**
 	 * This method returns the notify service name as registered with the CORBA
 	 * Naming Service. This is normally equivalent to

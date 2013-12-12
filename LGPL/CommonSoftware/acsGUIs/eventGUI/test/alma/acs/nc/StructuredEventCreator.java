@@ -87,7 +87,8 @@ public class StructuredEventCreator {
 		StructuredEvent event = new StructuredEvent();
 
 		// event.header.fixed_header.event_type
-		EventType event_type = new EventType(getChannelDomain(), typeName);
+		String channelDomain = alma.acscommon.ALMADOMAIN.value;
+		EventType event_type = new EventType(channelDomain, typeName);
 
 		//
 		FixedEventHeader fixed_header = new FixedEventHeader(event_type, eventName);
@@ -100,19 +101,5 @@ public class StructuredEventCreator {
 
 		return event;
 	}
-	
-	/**
-	 * This method returns a constant character pointer to the notification
-	 * channel domain which is normally equivalent to acscommon::ALMADOMAIN. The
-	 * sole reason this method is provided is to accomodate subclasses which
-	 * subscribe/publish non-ICD style events (ACS archiving channel for
-	 * example).In that case, the developer would override this method.
-	 * 
-	 * @return string
-	 */
-	private String getChannelDomain() {
-		return alma.acscommon.ALMADOMAIN.value;
-	}
-	
 	
 }

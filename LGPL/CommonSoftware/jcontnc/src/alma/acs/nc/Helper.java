@@ -252,22 +252,26 @@ public class Helper {
 	}
 
 	/**
-	 * Retrieves and returns a reference to the Naming Service.
+	 * <b>This method should only be used by specialized framework code, 
+	 * not by application code that uses NCs.</b>
+	 * It retrieves and returns a reference to the Naming Service based on the
+	 * Java property <code>ORBInitRef.NameService</code>.
 	 * <p>
-	 * @TODO: The dependence of NC libs on the NamingService should be expressed in a less hidden form 
-	 * than using a property, which leads to dangerous runtime-only failures if missing.
-	 * It would already be an improvement if we would obtain the NamingService reference
-	 * from {@link AdvancedContainerServices#getORB()}.
-	 * A more radical change will be to only use NC classes integrated into the ContainerServices,
-	 * which get the namingservice reference passed.
+	 * Even specialized code that has an AcsManagerProxy instance available, 
+	 * e.g. via an AdvancedComponentClient,
+	 * should use the AcsManagerProxy to get the NamingContext reference:
+	 * <pre>
+	 * nctx = NamingContextHelper.narrow(AdvancedComponentClient.getAcsManagerProxy().get_service("NameService", false);
+	 * </pre>.
+	 * <p>
 	 * 
 	 * @return Valid reference to the Naming Service.
 	 * @throws AcsJException
 	 *            Thrown when there's a bad corbaloc given for the Naming Service
 	 *            or the reference cannot be narrowed.
 	 * @see #getNamingService()
-	 * @deprecated Should eventually be moved from ./src to ./test, 
-	 *             once all NC libs other than NCPublisher and NCSubscriber are gone.
+	 * @deprecated To be removed once we have fixed the leftover usages in modules 
+	 *             jcontnc, laser-core, acssamp, acssampGUI.
 	 */
 	public static NamingContext getNamingServiceInitial(ContainerServicesBase cs) throws AcsJException {
 		
@@ -328,13 +332,6 @@ public class Helper {
 	}
 
 	/**
-	 * Calls {@link #getNotificationChannel(String, String)} with <code>channelKind=="channels"</code>.
-	 */
-	protected EventChannel getNotificationChannel(String notifyFactoryName) throws AcsJException {
-		return getNotificationChannel(NC_KIND.value, notifyFactoryName);
-	}
-
-	/**
 	 * This method gets a reference to the event channel. If it is not already
 	 * registered with the naming service, it is created.
 	 * 
@@ -347,9 +344,11 @@ public class Helper {
 	 * @throws AcsJException
 	 *            Standard ACS Java exception.
 	 */
-	protected EventChannel getNotificationChannel(String channelKind, String notifyFactoryName) 
-		throws AcsJException 
+	protected EventChannel getNotificationChannel(String notifyFactoryName) 
+		throws AcsJException
 	{
+		String channelKind = NC_KIND.value;
+		
 		// return value
 		EventChannel retValue = null;
 		NameComponent[] t_NameSequence = { new NameComponent(combineChannelAndDomainName(channelName, domainName), channelKind) };
