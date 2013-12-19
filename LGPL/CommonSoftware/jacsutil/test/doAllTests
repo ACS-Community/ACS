@@ -62,6 +62,7 @@ java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.classloading.TestMain myRunArg1
 
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.algorithms.TopologicalSortTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.jhelpgen.GenTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.StopWatchTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.DateConversionTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.IsoDateFormatTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.XmlNormalizerTest
