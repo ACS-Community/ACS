@@ -31,10 +31,13 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.apache.commons.math.stat.descriptive.SummaryStatistics;
+
 import alma.acs.logging.adapters.JacORBFilter;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.util.StopWatch;
 import alma.maci.loggingconfig.UnnamedLogger;
 
 /**
@@ -91,6 +94,33 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 
     private final boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
 
+    /**
+     * If property <code>alma.acs.logging.profile.local</code> is set to true,
+     * we will profile the time spent by ACS logging in the client thread.
+     * This time includes stdout printing and handing over the LogRecord to the queue
+     * for remote logging, but excludes the asynchronous processing of that queue.
+     */
+    private final boolean PROFILE = Boolean.getBoolean("alma.acs.logging.profile.local");
+
+    /**
+     * If we profile logging (see {@link #PROFILE}, 
+     * then we output statistics for blocks of 100 logs.
+     */
+    private final int profileStatSize = 100;
+    
+    /**
+     * If we profile logging (see {@link #PROFILE},
+     * then this field holds the statistics. 
+     */
+    private SummaryStatistics profileLogTimeStat;
+    
+    /**
+     * If we profile logging (see {@link #PROFILE},
+     * then this field holds the WatchDog from the slowest call.
+     */
+    private StopWatch profileSlowestCallStopWatch;
+    
+    
 	/**
 	 * Standard constructor that configures this logger from <code>logConfig</code> and also registers for log config
 	 * changes.
@@ -120,7 +150,9 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 		if (DEBUG) {
 			System.out.println("*** AcsLogger running in DEBUG mode!");
 		}
-
+		if (PROFILE) {
+			profileLogTimeStat = new SummaryStatistics();
+		}
 		addLoggerClass(AcsLogger.class);
 		addLoggerClass(Logger.class);
 		if (logConfig != null) {
@@ -301,6 +333,11 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     		throw new IllegalArgumentException("Level OFF must not be used for actual logging, but only for level filtering.");
     	}
     	
+    	StopWatch sw_all = null;
+    	if (PROFILE) {
+    		sw_all = new StopWatch(null);
+    	}
+    	
     	// Level could be null and must then be inherited from the ancestor loggers, 
     	// e.g. during JDK shutdown when the log level is nulled by the JDK LogManager 
     	Logger loggerWithLevel = this;
@@ -387,12 +424,40 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
             // We haven't found a suitable frame, so just punt. This is
             // OK as we are only committed to making a "best effort" here.
         }
+
+        StopWatch sw_afterAcsLogger = null;
+        if (PROFILE) {
+            sw_afterAcsLogger = sw_all.createStopWatchForSubtask("afterAcsLogger");
+            LogParameterUtil logParamUtil = new LogParameterUtil(record);
+            logParamUtil.setStopWatch(sw_afterAcsLogger);
+        }
+
         // Let the delegate or Logger base class handle the rest.
         if (delegate != null) {
         	delegate.log(record);
         }
         else {
         	super.log(record);
+        }
+        
+        if (PROFILE) {
+        	sw_afterAcsLogger.stop();
+        	sw_all.stop();
+        	long elapsedNanos = sw_all.getLapTimeNanos();
+        	if (profileSlowestCallStopWatch == null || profileSlowestCallStopWatch.getLapTimeNanos() > elapsedNanos) {
+        		profileSlowestCallStopWatch = sw_all;
+        	}
+        	profileLogTimeStat.addValue(elapsedNanos);
+        	if (profileLogTimeStat.getN() >= profileStatSize) {
+        		String msg = "Local logging times in ms for the last " + profileStatSize + " logs: ";
+        		msg += "mean=" + profileLogTimeStat.getMean() * 1E-6;
+        		msg += ", stdev=" + profileLogTimeStat.getStandardDeviation() * 1E-6;
+        		msg += "; details of slowest log follow.";
+        		System.out.println(msg);
+        		profileSlowestCallStopWatch.logLapTimeWithSubtaskDetails("locally process a log", Level.INFO);
+        		profileSlowestCallStopWatch = null;
+        		profileLogTimeStat.clear();
+        	}
         }
     }
 

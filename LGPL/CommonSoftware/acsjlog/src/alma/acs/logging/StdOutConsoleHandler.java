@@ -28,6 +28,7 @@ import java.util.logging.StreamHandler;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.util.StopWatch;
 
 /**
  * Copied over from <code>ConsoleHandler</code>, but using <code>System.out</code> instead of <code>System.err</code>.
@@ -48,6 +49,8 @@ public class StdOutConsoleHandler extends StreamHandler implements LogConfigSubs
 	 */
 	private final LogThrottle logThrottle;
 	
+	private final boolean PROFILE = Boolean.getBoolean("alma.acs.logging.profile.local");
+
 	/**
 	 * @param logConfig  to get configuration data from, and subscribe for future updates
 	 * @param loggerName
@@ -90,9 +93,23 @@ public class StdOutConsoleHandler extends StreamHandler implements LogConfigSubs
      *            ignored and is not published
      */
 	public synchronized void publish(LogRecord record) {
+		
+		StopWatch sw_local = null;
+		if (PROFILE) {
+			LogParameterUtil logParamUtil = new LogParameterUtil(record);
+			StopWatch sw_parent = logParamUtil.getStopWatch();
+			if (sw_parent != null) {
+				sw_local = sw_parent.createStopWatchForSubtask("StdOutConsoleHandler");
+			}
+		}
+
 		if (logThrottle == null || logThrottle.checkPublishLogRecordLocal()) {
 			super.publish(record);
 			flush();
+		}
+		
+		if (PROFILE && sw_local != null) {
+			sw_local.stop();
 		}
 	}
 

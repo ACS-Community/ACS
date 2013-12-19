@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.LogRecord;
 
+import alma.acs.util.StopWatch;
+
 /**
  * Class that encapsulates access to log record parameters, and handling of a special Property-Map parameter.
  * Some conventions are necessary because we "smuggle" some extra information from the plain-JDK loggers
@@ -52,14 +54,15 @@ public class LogParameterUtil {
 
     public static final String IS_ACS_PROPERTIES_MAP_KEYNAME = "isAcsPropertiesMap";
 	public static final String PARAM_THREAD_NAME = "ThreadName";
-    public static final String PARAM_LINE = "Line";				
-    public static final String PARAM_HOSTNAME = "HostName"; 	
-    public static final String PARAM_STACK_ID = "StackId"; 	
-    public static final String PARAM_STACK_LEVEL = "StackLevel"; 	
-    public static final String PARAM_PRIORITY = "Priority"; 	
-    public static final String PARAM_URI = "Uri"; 	
-    public static final String PARAM_PROCESSNAME = "ProcessName"; 	
-    public static final String PARAM_SOURCEOBJECT = "SourceObject"; 	
+    public static final String PARAM_LINE = "Line";
+    public static final String PARAM_HOSTNAME = "HostName";
+    public static final String PARAM_STACK_ID = "StackId";
+    public static final String PARAM_STACK_LEVEL = "StackLevel";
+    public static final String PARAM_PRIORITY = "Priority";
+    public static final String PARAM_URI = "Uri";
+    public static final String PARAM_PROCESSNAME = "ProcessName";
+    public static final String PARAM_SOURCEOBJECT = "SourceObject";
+    private static final String PARAM_STOPWATCH = "StopWatch";
     private LogRecord currentLogRecord;
     
     /** 
@@ -188,7 +191,31 @@ public class LogParameterUtil {
 
 		return retVal;
 	}
-
+	
+	/**
+	 * Tries to attach the given StopWatch object to the internal specialProperties map
+	 * so that it can later be retrieved again using {@link #getStopWatch()}.
+	 * This method can be used for profiling the logging system across ACS and JDK classes.
+	 */
+	void setStopWatch(StopWatch sw) {
+		if (specialProperties != null) {
+			specialProperties.put(PARAM_STOPWATCH, sw);
+		}
+	}
+	
+	/**
+	 * Tries to get the StopWatch previously set in {@link #setStopWatch(StopWatch)}.
+	 * Otherwise returns null.
+	 * This method can be used for profiling the logging system across ACS and JDK classes.
+	 */
+	StopWatch getStopWatch() {
+		StopWatch ret = null;
+		if (specialProperties != null) {
+			ret = (StopWatch) specialProperties.get(PARAM_STOPWATCH);
+		}
+		return ret;
+	}
+	
 //	/**
 //	 * Extract property with specified name of type Map from the <code>Map</code>
 //	 * contained in the object of type <code>java.util.Map</code>.

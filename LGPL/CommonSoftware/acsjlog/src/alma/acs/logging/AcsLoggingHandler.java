@@ -28,6 +28,7 @@ import java.util.logging.LogRecord;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.util.StopWatch;
 
 /**
  * The logging handler used by ACS for remote logging.
@@ -45,6 +46,8 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
      * TODO: check if this flag should be integrated with LogConfig classes
 	 */
 	private static boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
+
+	private final boolean PROFILE = Boolean.getBoolean("alma.acs.logging.profile.local");
 
 	private LogConfig logConfig;
 	private final String loggerName;
@@ -118,6 +121,15 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
 			return;
         }
 
+		StopWatch sw_local = null;
+		if (PROFILE) {
+			LogParameterUtil logParamUtil = new LogParameterUtil(logRecord);
+			StopWatch sw_parent = logParamUtil.getStopWatch();
+			if (sw_parent != null) {
+				sw_local = sw_parent.createStopWatchForSubtask("AcsLoggingHandler");
+			}
+		}
+
         if (logThrottle == null || logThrottle.checkPublishLogRecordRemote()) {
         	// must trigger a call to LogRecord#inferCaller before the log record gets processed by a different thread
         	logRecord.getSourceClassName();
@@ -134,6 +146,10 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
         else {
 //        	System.out.println("Suppressed remote log!");
         }
+        
+		if (PROFILE && sw_local != null) {
+			sw_local.stop();
+		}
 	}
 
     
