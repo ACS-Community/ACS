@@ -140,7 +140,7 @@ public class AcsLogFormatterTest extends TestCase
 		map.put("Priority", new Long(11));
 		map.put("Context", "Testing...");
 		map.put("ThreadName", "MyThread");
-		map.put("Uri", "abeans-CDBDAL://csl01:5001/alma/gizmo/current/units?get");
+		map.put("Uri", "noMoreAbeans-CDBDAL://csl01:5001/alma/gizmo/current/units?get");
 		Map<String, String> nv = new HashMap<String, String>();
 		nv.put("name1", "value1");
 		nv.put("name2", "value2");

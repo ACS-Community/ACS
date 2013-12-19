@@ -301,7 +301,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     		throw new IllegalArgumentException("Level OFF must not be used for actual logging, but only for level filtering.");
     	}
     	
-    	// Level could be null and must be inherited from the ancestor loggers, 
+    	// Level could be null and must then be inherited from the ancestor loggers, 
     	// e.g. during JDK shutdown when the log level is nulled by the JDK LogManager 
     	Logger loggerWithLevel = this;
     	while (loggerWithLevel != null && loggerWithLevel.getLevel() == null && loggerWithLevel.getParent() != null) {
