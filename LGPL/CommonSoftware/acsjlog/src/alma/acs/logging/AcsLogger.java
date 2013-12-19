@@ -444,7 +444,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
         	sw_afterAcsLogger.stop();
         	sw_all.stop();
         	long elapsedNanos = sw_all.getLapTimeNanos();
-        	if (profileSlowestCallStopWatch == null || profileSlowestCallStopWatch.getLapTimeNanos() > elapsedNanos) {
+        	if (profileSlowestCallStopWatch == null || profileSlowestCallStopWatch.getLapTimeNanos() < elapsedNanos) {
         		profileSlowestCallStopWatch = sw_all;
         	}
         	profileLogTimeStat.addValue(elapsedNanos);
@@ -452,7 +452,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
         		String msg = "Local logging times in ms for the last " + profileStatSize + " logs: ";
         		msg += "mean=" + profileLogTimeStat.getMean() * 1E-6;
         		msg += ", stdev=" + profileLogTimeStat.getStandardDeviation() * 1E-6;
-        		msg += "; details of slowest log follow.";
+        		msg += "; details of slowest log follow."; // TODO: add timestamp of slowest log
         		System.out.println(msg);
         		profileSlowestCallStopWatch.logLapTimeWithSubtaskDetails("locally process a log", Level.INFO);
         		profileSlowestCallStopWatch = null;
