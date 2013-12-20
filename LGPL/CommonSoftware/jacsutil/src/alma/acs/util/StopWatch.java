@@ -24,6 +24,7 @@ package alma.acs.util;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -80,6 +81,11 @@ public class StopWatch
 	private long startTimeNanos;
 	
 	/**
+	 * @see #getStartTime()
+	 */
+	private long startClockTime;
+	
+	/**
 	 * Set by the optional call to {@link #stop()}, otherwise marked unset by value -1.
 	 */
 	private long stopTimeNanos = -1;
@@ -122,6 +128,7 @@ public class StopWatch
 	public void reset()
 	{
 		startTimeNanos = System.nanoTime();
+		startClockTime = System.currentTimeMillis();
 		stopTimeNanos = -1;
 		if (subtaskStopWatches != null) {
 			subtaskStopWatches.clear();
@@ -150,10 +157,22 @@ public class StopWatch
 	}
 
 	/**
+	 * Returns the time when this StopWatch was created / started.
+	 * This method can be useful for log output, to later correlate the profiled
+	 * elapsed time with other occurrences in the system.
+	 */
+	public Date getStartTime() {
+		return new Date(startClockTime);
+	}
+
+
+	/**
 	 * Stops the StopWatch. 
 	 * This method must be called for subtask StopWatches (see {@link #createStopWatchForSubtask(String)}).
 	 * It is optional in case of top-level StopWatches where it makes little difference whether or not 
-	 * we first stop the watch right before retrieving or logging the lap time. 
+	 * we first stop the watch right before retrieving or logging the lap time.
+	 * <p>
+	 * This method can be called more than once without (side) effects. 
 	 */
 	public void stop() {
 		if (stopTimeNanos < 0) {
@@ -186,7 +205,6 @@ public class StopWatch
 	/**
 	 * Converts {@link #getLapTimeNanos()} to fractional milliseconds,
 	 * using the format from {@link #millisecFormatter}. 
-	 * @return
 	 */
 	public String formattedMillis() {
 		return millisecFormatter.format(getLapTimeNanos() * 1E-6D);
@@ -269,7 +287,21 @@ public class StopWatch
 		}
 	}
 
-	
+	/**
+	 * Gets the subtask timing data as a string. 
+	 * The returned String has the same format that is also used in 
+	 * {@link #logLapTimeWithSubtaskDetails(String, Level)}.
+	 */
+	public String getSubtaskDetails() {
+		String ret = null;
+		if (subtaskStopWatches != null) {
+			StringBuilder sb = new StringBuilder();
+			recursivePrintLapTimes(sb, 0);
+			ret = sb.toString();
+		}
+		return ret;
+	}
+
 	/**
 	 * @param sb
 	 * @param depth Could be used for formatting (indentation etc)
