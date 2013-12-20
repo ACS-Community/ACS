@@ -21,6 +21,8 @@
  */
 package alma.acs.logging;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +33,13 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import org.apache.commons.math.stat.descriptive.SummaryStatistics;
+import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 import alma.acs.logging.adapters.JacORBFilter;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigSubscriber;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.util.IsoDateFormat;
 import alma.acs.util.StopWatch;
 import alma.maci.loggingconfig.UnnamedLogger;
 
@@ -111,8 +114,13 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     /**
      * If we profile logging (see {@link #PROFILE},
      * then this field holds the statistics. 
+     * <p>
+     * If we don't want the median computed, we could use the 
+     * streaming SummaryStatistics instead of DescriptiveStatistics.
      */
-    private SummaryStatistics profileLogTimeStat;
+    private DescriptiveStatistics profileLogTimeStats;
+    
+    private NumberFormat profileMillisecFormatter;
     
     /**
      * If we profile logging (see {@link #PROFILE},
@@ -151,7 +159,8 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 			System.out.println("*** AcsLogger running in DEBUG mode!");
 		}
 		if (PROFILE) {
-			profileLogTimeStat = new SummaryStatistics();
+			profileLogTimeStats = new DescriptiveStatistics();
+			profileMillisecFormatter = new DecimalFormat("#.#");
 		}
 		addLoggerClass(AcsLogger.class);
 		addLoggerClass(Logger.class);
@@ -447,16 +456,18 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
         	if (profileSlowestCallStopWatch == null || profileSlowestCallStopWatch.getLapTimeNanos() < elapsedNanos) {
         		profileSlowestCallStopWatch = sw_all;
         	}
-        	profileLogTimeStat.addValue(elapsedNanos);
-        	if (profileLogTimeStat.getN() >= profileStatSize) {
+        	profileLogTimeStats.addValue(elapsedNanos);
+        	if (profileLogTimeStats.getN() >= profileStatSize) {
         		String msg = "Local logging times in ms for the last " + profileStatSize + " logs: ";
-        		msg += "mean=" + profileLogTimeStat.getMean() * 1E-6;
-        		msg += ", stdev=" + profileLogTimeStat.getStandardDeviation() * 1E-6;
-        		msg += "; details of slowest log follow."; // TODO: add timestamp of slowest log
+        		msg += "mean=" + profileMillisecFormatter.format(profileLogTimeStats.getMean() * 1E-6);
+        		msg += ", median=" + profileMillisecFormatter.format(profileLogTimeStats.getPercentile(50) * 1E-6);
+        		msg += ", stdev=" + profileMillisecFormatter.format(profileLogTimeStats.getStandardDeviation() * 1E-6);
+        		msg += "; details of slowest log (from ";
+        		msg += IsoDateFormat.formatDate(profileSlowestCallStopWatch.getStartTime()) + "): ";
+        		msg += profileSlowestCallStopWatch.getSubtaskDetails();
         		System.out.println(msg);
-        		profileSlowestCallStopWatch.logLapTimeWithSubtaskDetails("locally process a log", Level.INFO);
         		profileSlowestCallStopWatch = null;
-        		profileLogTimeStat.clear();
+        		profileLogTimeStats.clear();
         	}
         }
     }
