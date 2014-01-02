@@ -201,8 +201,11 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
     // map<name, stream>
     typedef std::map<std::string, AcsBulkdata::BulkDataNTReceiverStream<TCallback> *> StreamMap;
 
-    // Map that stores the actualy stream objects that are actually created
+
+    // Map that stores the actually stream objects that are actually created
     StreamMap receiverStreams_m;
+    // ... and protection for the map StreamMap
+    ACE_Recursive_Thread_Mutex rcvStreamMapMutex_m;
 
     // The XML parser object, responsible of retrieving the configuration objects for a given XML document
     AcsBulkdata::BulkDataConfigurationParser *parser_m;

@@ -174,7 +174,7 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 
 		// With the old config mechanism only one stream, namely "DefaultStream", is allowed
 		if( usesOldConfigurationMechanism() ) {
-
+		    ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect1, rcvStreamMapMutex_m); // protect the rcvs map
 			if( receiverStreams_m.find("DefaultStream") != receiverStreams_m.end() )
 				return;
 
@@ -188,6 +188,7 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 		// and open them all (if not already opened)
 		std::set<const char *> streamNames = parser_m->getAllReceiverStreamNames();
 		std::set<const char *>::iterator it;
+		ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect2, rcvStreamMapMutex_m); // protect the rcvs map
 		for(it = streamNames.begin(); it != streamNames.end(); it++) {
 
 			// Double check that we don't re-create existing streams
@@ -236,6 +237,7 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiverStreamCfg (const char * stre
 		throw lcEx.getacsErrTypeLifeCycleEx();
 	}
 
+	ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect, rcvStreamMapMutex_m); // protect the rcvs map
 	// double-check that the stream is already opened
 	if( receiverStreams_m.find(stream_name) != receiverStreams_m.end() ) {
 		ACS_SHORT_LOG((LM_NOTICE,"BulkDataNTReceiverImpl<>::openReceiverStream Receiver stream '%s' is already opened, won't try to open it again", stream_name));
@@ -391,6 +393,7 @@ void BulkDataNTReceiverImpl<TCallback>::closeReceiver()
 
 	try
 	{
+		ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect, rcvStreamMapMutex_m); // protect the rcvs map
 		typename StreamMap::iterator it;
 		for( it = receiverStreams_m.begin(); it != receiverStreams_m.end(); it++ ) {
 			ACS_SHORT_LOG((LM_INFO,"BulkDataNTReceiverImpl<>::closeReceiver Closing receiver stream '%s'", it->first.c_str()));
@@ -414,6 +417,7 @@ void BulkDataNTReceiverImpl<TCallback>::closeReceiver()
 template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::closeReceiverStream(const char *stream_name)
 {
+	ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect1, rcvStreamMapMutex_m); // protect the rcvs map
 	typename StreamMap::iterator it = receiverStreams_m.find(stream_name);
 
 	// TODO: should we fail more miserably or is it OK to be good with people?
