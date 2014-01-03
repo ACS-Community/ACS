@@ -78,6 +78,10 @@ public class DispatchingLogQueue {
      */
     private final AtomicBoolean outOfCapacity;
     
+    /**
+     * True when the queue capacity is scarce (currently defined as 70% full).
+     * Undefined when {@link #LOSSLESS} is true, because then queue scarcity has no effect.
+     */
     private final AtomicBoolean scarceCapacity;
     
     private int preOverflowFlushPeriod;
@@ -189,15 +193,17 @@ public class DispatchingLogQueue {
         if (!LOSSLESS) {
 	        final int filterThreshold = maxQueueSize * 7 / 10;
 	
-	        if (oldSize >= filterThreshold && logRecord.getLevel().intValue() < Level.INFO.intValue()) {
-	        	boolean firstTimeScarce = !scarceCapacity.getAndSet(true);
-	            if (DEBUG || firstTimeScarce) {
-	                System.out.println("looming log queue overflow (" + (oldSize+1) + "/" + maxQueueSize 
-	                		+ "): low-level log record with message '" + logRecord.getMessage()
-	                		+ "' and possibly other log records below INFO level will not be sent to the remote logging service.");
-	            }
-	            return false;
-	        }
+			if (oldSize >= filterThreshold) {
+				boolean firstTimeScarce = !scarceCapacity.getAndSet(true);
+				if (logRecord.getLevel().intValue() < Level.INFO.intValue()) {
+					if (DEBUG || firstTimeScarce) {
+						System.out.println("looming log queue overflow (" + (oldSize+1) + "/" + maxQueueSize 
+								+ "): low-level log record with message '" + logRecord.getMessage()
+								+ "' and possibly other log records below INFO level will not be sent to the remote logging service.");
+						}
+					return false;
+				}
+			}
 	        else {
 	        	scarceCapacity.set(false);
 	        }
@@ -311,9 +317,9 @@ public class DispatchingLogQueue {
         if (hasRemoteDispatcher() && numRecords > 0) {
             if ( (numRecords % remoteLogDispatcher.getBufferSize() == 0) || 
                  (!conservative && (numRecords >= remoteLogDispatcher.getBufferSize())) ) {
-                flush();      
+                flush();
             }
-        }        
+        }
     }
     
     
