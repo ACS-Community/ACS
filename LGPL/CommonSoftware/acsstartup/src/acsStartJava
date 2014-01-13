@@ -497,7 +497,7 @@ if [ ! $CL_NODIRECTORY ]; then
    # If the directory is created locally, removes it at the end.
    #
    if [ ! -d $INSTANCE_DIR ]; then
-      if [ ! createInstanceDirectory $ACS_INSTANCE ]; then
+      if [ ! `createInstanceDirectory $ACS_INSTANCE` ]; then
         ACS_LOG_ERROR "acsStartJava" "For some reason this script could not create $INSTANCE_DIR!"
         ACS_LOG_ERROR "acsStartJava" "    Check $ACS_INSTANCES_DIR for free base ports!"
         exit $EC_CANNOTCREATE
