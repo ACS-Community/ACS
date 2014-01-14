@@ -1,16 +1,15 @@
-#*******************************************************************************
+# ******************************************************************************
 # E.S.O. - ALMA project
 #
 # "@(#) $Id: Makefile,v 1.13 2009/04/30 10:42:36 gchiozzi Exp $"
 #
 #
-
 #
 # This Makefile must be used from Windows
 # within a Cygwin installation
 #
-
 #
+
 # Set this variable on the calling make command line
 # to redirect the output in the desired directory
 #
@@ -41,7 +40,7 @@ listDocs:
 		    echo "   $${member}" ;\
 		done
 
-all: loginfo cvsUpdate changeLog acsarchitectureupd docs
+all: loginfo svnUpdate changeLog acsarchitectureupd docs
 
 docs: $(PDFDOCS)
 
@@ -50,8 +49,8 @@ loginfo:
 	@echo I am in: $(PWD)
 	@echo Target is: $(DESTDIR)
 
-cvsUpdate:
-	cvs update -d -P $(CVSFLAGS) .
+svnUpdate:
+	svn update
 
 acsarchitectureupd:
 	@echo "Update ACS Architecture UML Model, HTML and pictures."
@@ -63,7 +62,8 @@ changeLog:
 	@echo >> $(DESTDIR)/changeLog.txt
 	@echo "Generated:" `date` >> $(DESTDIR)/changeLog.txt
 	@echo >> $(DESTDIR)/changeLog.txt
-	@rcs2log . >> $(DESTDIR)/changeLog.txt
+	@svn log -v >> $(DESTDIR)/changeLog.txt
+	@echo "ChangeLog generated."
 
 $(DESTDIR)/%.pdf : %.doc
 	@mkdir -p out
@@ -72,8 +72,4 @@ $(DESTDIR)/%.pdf : %.doc
 $(DESTDIR)/%.pdf : %.odt
 	@mkdir -p out
 	@./OpenOfficeDocumentConverter.sh $< $@
-
-
-
-
 
