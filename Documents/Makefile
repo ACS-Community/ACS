@@ -42,10 +42,14 @@ listDocs:
 
 all: loginfo svnUpdate changeLog acsarchitectureupd docs
 
-docs: $(PDFDOCS)
+#docs: $(PDFDOCS)
+
+docs:
+	# Convert LibreOffice and MS Word docs into pdf
+	@./LibreOfficeDocumentConverter.sh $(DESTDIR) $(ALLDOCS)
 
 loginfo:
-	@echo Generating ACS Documentation on Windows
+	@echo Generating ACS Documentation 
 	@echo I am in: $(PWD)
 	@echo Target is: $(DESTDIR)
 
@@ -64,12 +68,4 @@ changeLog:
 	@echo >> $(DESTDIR)/changeLog.txt
 	@svn log -v >> $(DESTDIR)/changeLog.txt
 	@echo "ChangeLog generated."
-
-$(DESTDIR)/%.pdf : %.doc
-	@mkdir -p out
-	@./OpenOfficeDocumentConverter.sh $< $@
-
-$(DESTDIR)/%.pdf : %.odt
-	@mkdir -p out
-	@./OpenOfficeDocumentConverter.sh $< $@
 
