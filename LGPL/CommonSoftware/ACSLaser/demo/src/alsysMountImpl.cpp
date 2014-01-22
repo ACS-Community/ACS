@@ -44,49 +44,12 @@ Mount::~Mount()
 {
 }
 
-void Mount::faultMount(){ 
-	sendAlarm("Mount","ALARM_SOURCE_MOUNTCPP",1,true);
+void Mount::faultMount(){
+	getContainerServices()->getAlarmSource()->raiseAlarm("Mount","ALARM_SOURCE_MOUNTCPP",1);
 }
 
 void Mount::terminate_faultMount(){
-	sendAlarm("Mount","ALARM_SOURCE_MOUNTCPP",1,false);
-}
-
-void Mount::sendAlarm(std::string family, std::string member, int code, bool active) {
-	// constants we will use when creating the fault
-
-		// create the AlarmSystemInterface
-		AlarmSystemInterface* alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
-
-		// create the FaultState
-		auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);
-
-		// set the fault state's descriptor
-		std::string stateString;
-		if (active) 
-		{
-			stateString = faultState::ACTIVE_STRING;
-		} else {
-			stateString = faultState::TERMINATE_STRING;
-		}
-		fltstate->setDescriptor(stateString);
-		
-		// create a Timestamp and use it to configure the FaultState
-		Timestamp * tstampPtr = new Timestamp();
-		auto_ptr<Timestamp> tstampAutoPtr(tstampPtr);
-		fltstate->setUserTimestamp(tstampAutoPtr);
-
-		// create a Properties object and configure it, then assign to the FaultState
-		Properties * propsPtr = new Properties();
-		propsPtr->setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, "prefix");
-		propsPtr->setProperty(faultState::ASI_SUFFIX_PROPERTY_STRING, "suffix");
-		propsPtr->setProperty("TEST_PROPERTY", "TEST_VALUE");
-		auto_ptr<Properties> propsAutoPtr(propsPtr);
-		fltstate->setUserProperties(propsAutoPtr);
-
-		// push the FaultState using the AlarmSystemInterface previously created
-		//acsalarm::FaultState stateToPush(*fltstate);
-		alarmSource->push(*fltstate);
+	getContainerServices()->getAlarmSource()->clearAlarm("Mount","ALARM_SOURCE_MOUNTCPP",1);
 }
 
 

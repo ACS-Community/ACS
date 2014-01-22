@@ -50,14 +50,6 @@ class Mount: public acscomponent::ACSComponentImpl,
                                                                                                                        
     void terminate_faultMount() ;
     
-    /**
-     * Send an alarm active or inactive depending on the
-     * value of the parameter
-     * 
-     * 
-     */
-    void sendAlarm(std::string fFamily, std::string fMember, int code, bool active);
-
 };
 
 #endif /*!alsysMountImpl_H*/
