@@ -56,7 +56,7 @@ public class AlarmsMap {
 	 * 
 	 * @author acaproni
 	 */
-	public class AlarmInfo {
+	public static class AlarmInfo {
 		
 		/**
 		 * The time of the last update of this alarm

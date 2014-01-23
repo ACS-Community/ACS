@@ -48,7 +48,7 @@ public class AlarmQueue extends ConcurrentHashMap<String,AlarmQueue.AlarmToQueue
 	 * @author acaproni
 	 *
 	 */
-	public class AlarmToQueue {
+	public static class AlarmToQueue {
 		public final String faultFamily;
 		public final String faultMember;
 		public final int faultCode;
