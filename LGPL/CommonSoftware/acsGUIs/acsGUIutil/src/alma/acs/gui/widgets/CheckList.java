@@ -2,6 +2,7 @@ package alma.acs.gui.widgets;
 
 import java.awt.BorderLayout;
 import java.awt.FontMetrics;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -66,9 +67,9 @@ public class CheckList extends JComponent {
 		private boolean active;
 		
 		/**
-		 * The entry
+		 * The not <code>null</code> entry
 		 */
-		private final Object item;
+		private Object item;
 		
 		/**
 		 * Constructor
@@ -76,7 +77,7 @@ public class CheckList extends JComponent {
 		 * @param active The activation state
 		 * @param item The item in the list
 		 */
-		CheckListTableEntry(boolean active, Object item) {
+		public CheckListTableEntry(boolean active, Object item) {
 			if (item==null) {
 				throw new IllegalArgumentException("Null entries are not allowed");
 			}
@@ -107,6 +108,18 @@ public class CheckList extends JComponent {
 		 */
 		public Object getItem() {
 			return item;
+		}
+		
+		/**
+		 * Setter
+		 * 
+		 * @param item The not <code>null</code> item in the list
+		 */
+		public void setItem(Object item) {
+			if (item==null) {
+				throw new IllegalArgumentException("Null entries are not allowed");
+			}
+			this.item=item;
 		}
 	}
 	
@@ -338,6 +351,21 @@ public class CheckList extends JComponent {
 			}
 			return remover.ret;
 		}
+		
+		public void refreshEntry(final int index) {
+			try {
+				EDTExecutor.instance().executeSync(new Runnable() {
+					@Override
+					public void run() {
+						fireTableRowsUpdated(index, index);
+					}
+				});
+			} catch (Throwable t) {
+				System.err.println("Error refreshing entry in position "+index);
+				t.printStackTrace();
+			}
+			
+		}
 
 		/* (non-Javadoc)
 		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
@@ -515,5 +543,18 @@ public class CheckList extends JComponent {
 			return null;
 		}
 		return removeEntry(selectedRow);
+	}
+	
+	/**
+	 * Update the selected entry.
+	 * <P>
+	 * This method is meant to be called when the selected entry in the model 
+	 * has been changed to trigger a refresh of the list.  
+	 */
+	public void updateSelectedEntry() {
+		int selectedRow=table.getSelectedRow();
+		if (selectedRow>=0) {
+			model.refreshEntry(selectedRow);	
+		}
 	}
 }
