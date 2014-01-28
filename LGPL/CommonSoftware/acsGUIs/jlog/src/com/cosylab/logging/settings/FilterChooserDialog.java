@@ -165,8 +165,13 @@ public class FilterChooserDialog extends JDialog {
 			} else if (e.getSource() == buttonModify) { // Modify/Edit
 				CheckListTableEntry selectedEntry=filterList.getSelectedEntry();
 				if (selectedEntry!=null) {
-					editFilter((Filter)selectedEntry.getItem());
-					modified=true;
+					Filter editedFilter=editFilter((Filter)selectedEntry.getItem());
+					if (editedFilter!=null) {
+						modified=true;
+						selectedEntry.setItem(editedFilter);
+						filterList.updateSelectedEntry();
+					}
+					
 				} else {
 					JOptionPane.showMessageDialog(FilterChooserDialog.this,
 							"Invalid item to modify", "Error",
