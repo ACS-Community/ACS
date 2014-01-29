@@ -58,6 +58,12 @@ public class AlarmSender {
 	private final ContainerServicesBase containerServices;
 	
 	/**
+	 * This is used when no properties have been associated to a alarm
+	 * to send.
+	 */
+	private static final Properties emptyProps = new Properties();
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param containerServices The ContainerServicesBase
@@ -98,7 +104,7 @@ public class AlarmSender {
 			}
 		}
 		if (properties==null) {
-			properties = new Properties();
+			properties = emptyProps;
 		}
 		try {
 			

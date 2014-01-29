@@ -67,7 +67,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 		
 		public StringBuilder dump() {
 			StringBuilder ret = new StringBuilder("\nAlarmsMap content:\n");
-			for (String key: alarms.keySet()) {
+			for (String key: alarmsMap.keySet()) {
 				ret.append(key);
 				ret.append('\n');
 			}
@@ -105,21 +105,6 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	}
 	
 	/**
-	 * Test the clearing of alarms
-	 */
-	public void testClearMap() throws Exception {
-		System.out.println("testClearMap");
-		String keyBase="ClearListFF:ClearListFM:";
-		for (int t=0; t<10; t++) {
-			alarmsMap.raise(keyBase+t);
-		}
-		assertEquals(10, alarmsMap.size());
-		alarmsMap.clear();
-		assertEquals(0, alarmsMap.size());
-		System.out.println("testClearMap done");
-	}
-	
-	/**
 	 * Check if the map removes the items older then 
 	 * {@link AlarmsMap#ALARM_ACTIVITY_TIME}
 	 * 
@@ -127,8 +112,6 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 */
 	public void testAutoRemoval() throws Exception {
 		System.out.println("testAutoRemoval");
-		alarmsMap.clear();
-		assertEquals(0, alarmsMap.size());
 		// First test is simply done by adding elements and waiting 
 		// enough time to see if they are removed
 		String keyBase="RemovalFF:RemovalFM:";
@@ -167,7 +150,6 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 */
 	public void testRaise() throws Exception{
 		System.out.println("testRaise");
-		alarmsMap.clear();
 		// Raise one alarm and check if it is present in the list
 		String keyBase="RaiseFF:RaiseFM:";
 		alarmsMap.raise(keyBase+0);
@@ -193,7 +175,6 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 */
 	public void testClear() throws Exception {
 		System.out.println("testClear");
-		alarmsMap.clear();
 		// Clear one alarm and check if it is present in the list
 		String keyBase="ClearFF:ClearFM:";
 		alarmsMap.clear(keyBase+0);
@@ -217,7 +198,6 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 */
 	public void testAlarmUpdate() throws Exception {
 		System.out.println("testAlarmUpdate");
-		alarmsMap.clear();
 		// Clear one alarm and check if it is present in the list
 		String keyBase="UpdateFF:UpdateFM:1";
 		alarmsMap.clear(keyBase);
@@ -241,7 +221,6 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 */
 	public void testAlarmReplacement() {
 		System.out.println("testAlarmReplacement");
-		alarmsMap.clear();
 		// Clear one alarm and check if it is present in the list
 		String keyBase="ReplaceFF:replaceFM:";
 		// Adds 10 alarms

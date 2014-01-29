@@ -42,6 +42,11 @@ import alma.acs.concurrent.ThreadLoopRunner.ScheduleDelayMode;
  * <P>
  * The class is thread safe i.e. the methods can be called without any further locking.
  * <P>
+ * <EM>Implementation note</EM>: 
+ * All the methods add new entries or update existing pairs in the {@link #alarms}
+ * map with the exception of the periodic thread {@link AlarmsMapRunnable#run()}
+ * that remove elements that are in the map unchanged since more the {@link #ALARM_ACTIVITY_TIME}.
+ * <P>
  * {@link AlarmsMap} does not need any locking because the map contains immutable
  * {@link AlarmInfo} objects and the map itself is implemented by a {@link ConcurrentHashMap}.
  * 
@@ -84,20 +89,29 @@ public class AlarmsMap {
 	 * The thread to delete the alarms older than the time interval.
 	 * <P>
 	 * This thread is scheduled by the ThreadLoopRunner.
+	 * Note that this thread is the only one that removes entries from the map: 
+	 * all other methods update or add entries.
 	 * 
 	 * @author acaproni
 	 */
 	public class AlarmsMapRunnable extends CancelableRunnable {
+		/**
+		 * Check the timestamps of the entries in the map and remove those that
+		 * have not been changed since more then ALARM_ACTIVITY_TIME.
+		 */
 		public void run() {
 			for (String key: alarms.keySet()) {
+				if (shouldTerminate) {
+					return;
+				}
 				AlarmInfo info = alarms.get(key);
 				// Info can't be null because this is the only
 				// thread removing items from the map
-				if (System.currentTimeMillis()-ALARM_ACTIVITY_TIME*1000>info.time) {
-					alarms.remove(key);
-				}
-				if (shouldTerminate) {
-					return;
+				// We check nevertheless to improve safety.
+				if (info!=null) {
+					if (System.currentTimeMillis()-ALARM_ACTIVITY_TIME*1000>info.time) {
+						alarms.remove(key);
+					}	
 				}
 			}
 		}
@@ -119,7 +133,7 @@ public class AlarmsMap {
 	 * The value is an {@link AlarmInfo} with boolean set to <code>true</code> 
 	 * if the alarm has been activated, <code>false</code> otherwise.
 	 */
-	protected final Map<String, AlarmInfo> alarms = new ConcurrentHashMap<String, AlarmsMap.AlarmInfo>();
+	private final Map<String, AlarmInfo> alarms = new ConcurrentHashMap<String, AlarmsMap.AlarmInfo>();
 	
 	/**
 	 * The runner for scheduling the thread to delete old alarms
@@ -208,7 +222,7 @@ public class AlarmsMap {
 		} catch (InterruptedException ie) {
 			logger.warning("AlarmsMap thread interrupted while shutting down.");
 		}
-		alarms.clear();
+		clear();
 	}
 
 	/**
@@ -233,9 +247,14 @@ public class AlarmsMap {
 	}
 
 	/**
-	 * Empty the map
+	 * Empty the map.
+	 * <P>
+	 * This method should not be used because there is no need to clear the content of the
+	 * map during normal operations. 
+	 * Especially it must not be invoked when the periodic thread {@link AlarmsMapRunnable#run()}
+	 * is checking the timestamps of the entries because it can generate a NPE
 	 */
-	public void clear() {
+	private void clear() {
 		alarms.clear();
 	}
 
@@ -246,5 +265,17 @@ public class AlarmsMap {
 	 */
 	public AlarmInfo get(Object key) {
 		return alarms.get(key);
+	}
+	
+	/**
+	 * This method returns a set of the keys in the map at the moment when the 
+	 * method has been called. It is meant to be used for testing purposes only.
+	 * <BR>
+	 * Getting elements from the returned set could lead to <code>null</code> values
+	 * if ssuch a value has been removed by the thread.
+	 * @return A set with the key in the map
+	 */
+	public Set<String> keySet() {
+		return alarms.keySet();
 	}
 }
