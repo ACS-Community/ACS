@@ -395,9 +395,9 @@ void BulkDataNTReceiverImpl<TCallback>::closeReceiver()
 	{
 		ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect, rcvStreamMapMutex_m); // protect the rcvs map
 		typename StreamMap::iterator it;
-		for( it = receiverStreams_m.begin(); it != receiverStreams_m.end(); it++ ) {
+		for( it = receiverStreams_m.begin(); it != receiverStreams_m.end(); ) {
 			ACS_SHORT_LOG((LM_INFO,"BulkDataNTReceiverImpl<>::closeReceiver Closing receiver stream '%s'", it->first.c_str()));
-			closeStream(it);
+			closeStream(it++);
 		}
 	}
 	catch(ACSErr::ACSbaseExImpl &ex)
