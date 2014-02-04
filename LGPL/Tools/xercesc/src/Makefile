@@ -48,6 +48,7 @@ all:	do_all unpack configure build_xerces
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	@rm -rf xerces-c-$(XERCES_VER)
 	@echo " . . . clean done";\
 
 clean_dist : clean_all clean_dist_all 
@@ -88,4 +89,8 @@ configure : unpack
 build_xerces : configure
 	@echo ". . . building xerces. . . "
 	@cd xerces-c-$(XERCES_VER)/src/xercesc; make -j 1
+	@unlink xerces-c-$(XERCES_VER)/lib/libxerces-c.so.$(XERCES_MAJOR_VER)
+	@unlink xerces-c-$(XERCES_VER)/lib/libxerces-c.so
+	@unlink xerces-c-$(XERCES_VER)/lib/libxerces-depdom.so.$(XERCES_MAJOR_VER)
+	@unlink xerces-c-$(XERCES_VER)/lib/libxerces-depdom.so
 #___oOo___
