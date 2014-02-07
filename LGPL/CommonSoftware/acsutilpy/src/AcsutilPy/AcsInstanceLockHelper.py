@@ -73,13 +73,6 @@ class AcsInstanceLockHelper:
         assert instance in range(10)
         return self.__lockFilesBaseFolder+"acsInstance"+str(instance)+".lock"
         
-    def lookForAvailableInstance():
-        '''
-        This method scans the list of lock files in ACSDATA/tmp and
-        returns the first available instance
-        '''
-        pass
-    
     def isAvailableInstance(self, instance):
         '''
         Check if the instance, whose number is passed in the argument, is available
@@ -162,7 +155,7 @@ class AcsInstanceLockHelper:
                 return int(self.__instanceEnvVar)
         
         # Finally handle the case of a undefined ACS_INSTANCE
-        print "ACS_INSTANCE not defined: loking for the first available instance"
+        print "ACS_INSTANCE not defined: looking for the first available instance"
         for instance in range(10):
             print "Checking instance",instance
             ret = self.lock(int(instance))
