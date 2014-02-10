@@ -35,6 +35,7 @@ SOURCE acsutilpyTATEnvironment
 3   ACSPorts       "acsutilpyTestPorts"
 4   CmdLinePorts  "acsutilpyTestCmdLinePorts -b 8"
 5   WildcharMatcher "acsutilpyTestWildcharMatcher"
+6	TestInstanceLocker "acsutilpyTestInstanceLocker"
 #5   Import  "acsutilpyTestImport -v AImportSyntaxCheck BSingleImportCheck CDoubleImportCheck DImportSearchCheck"
 #6   IDLMImport  "acsutilpyTestImport -v EIDLImportCheck.testAModuleImport"
 #7   IDLPImport  "acsutilpyTestImport -v EIDLImportCheck.testBPackageImport"

@@ -82,7 +82,8 @@ PY_SCRIPTS         =
 PY_SCRIPTS_L       = 	acsutilpyTestFindFile \
 			acsutilpyTestPorts acsutilpyTestCmdLinePorts \
 			acsutilpyTestImport \
-			acsutilpyTestWildcharMatcher
+			acsutilpyTestWildcharMatcher \
+			acsutilpyTestInstanceLocker
 
 PY_MODULES         =
 PY_MODULES_L       =

@@ -1,0 +1,57 @@
+1 - No lock file found in ACSDATA
+1 - ----- Test 1: lock of a ACS instance -----
+1 - Locking instance 3
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Unlocking instance 3
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - No lock file found in ACSDATA
+1 - ----- Test 1 done -----
+1 - ----- Test 2: locking all possible instances -----
+1 - Locking all possible instances
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Freeing instances
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - No lock file found in ACSDATA
+1 - ----- Test 2 done -----
+1 - ----- Test 3: lock a invalid instance -----
+1 - Locking instance 11
+1 - Ok: the locking of a invalid instance has been rejected
+1 - No lock file found in ACSDATA
+1 - ----- Test 3 done -----
+1 - ----- Test 4: lock ACS_INSTANCE -----
+1 - Locking ACS_INSTANCE N
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Instance locked N
+1 - Lock file found in ACSDATA acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - No lock file found in ACSDATA
+1 - ----- Test 4 done -----

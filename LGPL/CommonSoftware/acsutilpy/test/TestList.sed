@@ -20,3 +20,9 @@ s/Process=[0-9]*/Process=xxx/g
 s/\/.*\/idl\/acscommon.idl/....\/idl\/acscommon.idl/g
 s/Ran 33 tests in [0-9].[0-9][0-9][0-9]s/Ran 33 tests in x.xxs/g
 s/Ran 1 test in [0-9].[0-9][0-9][0-9]s/Ran 1 test in x.xxxs/g
+s/Locking instance [0-9] with lock file .*/Locking instance N with lock file acsInstanceN.lock/g
+s/Freeing instance [0-9] removing lock file .*/Freeing instance N removing lock file acsInstanceN.lock/g
+s/Instance locked [0-9]/Instance locked N/g
+s/Lock file found in .*.lock/Lock file found in ACSDATA acsInstanceN.lock/g
+s/Locking ACS_INSTANCE [0-9]/Locking ACS_INSTANCE N/g
+s/No lock file found in .*/No lock file found in ACSDATA/g
