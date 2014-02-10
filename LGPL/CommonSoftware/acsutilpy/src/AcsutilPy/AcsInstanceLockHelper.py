@@ -63,6 +63,12 @@ class AcsInstanceLockHelper:
         # The path where to read and write lock files
         self.__lockFilesBaseFolder=self.__acsdataEnvVar+"/tmp/"
         
+        # The prefix to build the name of a lock file
+        self.lockFilenamePrefix="acsInstance"
+        
+        # The suffix to build the name of a lock file
+        self.lockFilenameSuffix=".lock"
+        
     def __buildLockFileName(self, instance):
         '''
         Build and return the lock file name for the passed instance.
@@ -71,7 +77,7 @@ class AcsInstanceLockHelper:
         @return The full path name of the lock file for the passed instance
         '''
         assert instance in range(10)
-        return self.__lockFilesBaseFolder+"acsInstance"+str(instance)+".lock"
+        return self.__lockFilesBaseFolder+self.lockFilenamePrefix+str(instance)+self.lockFilenameSuffix
         
     def isAvailableInstance(self, instance):
         '''
