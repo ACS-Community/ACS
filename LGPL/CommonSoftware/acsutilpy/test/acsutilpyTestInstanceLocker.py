@@ -23,6 +23,7 @@
 # acaproni  2014-02-10  created
 #
 from os import environ, listdir
+from subprocess import call
 
 from AcsutilPy.AcsInstanceLockHelper import AcsInstanceLockHelper
 
@@ -44,6 +45,22 @@ def printListOfLockFiles(prefix,suffix):
     if n==0:
         print "No lock file found in",lockFilesFolder
     return n
+
+def getLockedInstances(prefix,suffix):
+    '''
+    Read ACSDATA/tmp to get the list of locked instances
+    
+    @return The list of locked instances
+    '''
+    ret=[]
+    acsdata=environ["ACSDATA"]
+    lockFilesFolder=acsdata+"/tmp"
+    for file in listdir(lockFilesFolder):
+        if file.startswith(prefix) and file.endswith(suffix):
+            s=file.split(prefix)
+            s2=s[1].split(suffix)
+            ret.append(int(s2[0]))
+    return ret
 
 if __name__ == "__main__":
     instanceLocker = AcsInstanceLockHelper()
@@ -124,5 +141,74 @@ if __name__ == "__main__":
     if printListOfLockFiles(prefix,suffix)!=0:
         print "ERROR: the folder should not contain any lock file at this stage!"
     print "----- Test 4 done -----"
+    
+    # Try to lock a already locked instance
+    print "----- Test 5: test to lock a locked instance -----"
+    print "Locking instance 5"
+    if instanceLocker.lock(5)!=0:
+        print "ERROR: locking instance 5"
+    if printListOfLockFiles(prefix,suffix)!=1:
+        print "ERROR: the folder should contain one and only one lock file at this stage!"
+    # try to lock twice the same instance
+    print "Locking again instance 5"
+    if instanceLocker.lock(5)==0:
+        print "ERROR: OPS locked twice the same instance!"
+    else:
+        print "Ok: error returned locking twice the same instance"
+    if printListOfLockFiles(prefix,suffix)!=1:
+        print "ERROR: the folder should contain one and only one lock file at this stage!"
+    if instanceLocker.unlock(5)!=0:
+        print "ERROR freeing instance 5"
+    if printListOfLockFiles(prefix,suffix)!=0:
+        print "ERROR: the folder should not contain any lock file at this stage!"
+    print "----- Test 5 done -----"
+    
+    # Test if the script to lock/unlock a instance (acsInstanceLock) works
+    print "----- Test 6: test acsInstanceLock script -----"
+    print "Call the script to lock ACS_INSTANCE"
+    if instance==None:
+        expectedInstance=0
+    else:
+        expectedInstance=int(instance)
+    ret=call(["acsInstanceLock","-l"])
+    instances=getLockedInstances(prefix,suffix)
+    if len(instances)!=1:
+        print "ERROR: the folder should contain one and only one lock file at this stage!"
+        if instances[0]!=expectedInstance:
+            print "ERROR locked instance",instances[0],"instead of",expectedInstance
+    # Free the instance
+    ret=call(["acsInstanceLock","-u"])
+    if printListOfLockFiles(prefix,suffix)!=0:
+        print "ERROR: the folder should not contain any lock file at this stage!"
+    print "----- Test 6 done -----"
+    
+    # Test if the script to lock/unlock a instance (acsInstanceLock) with a passed baseport works
+    print "----- Test 7: test acsInstanceLock with baseport script -----"
+    print "Call the script to lock ACS_INSTANCE"
+    ret=call(["acsInstanceLock","-l","-b","4"])
+    instances=getLockedInstances(prefix,suffix)
+    if len(instances)!=1:
+        print "ERROR: the folder should contain one and only one lock file at this stage!"
+    else:
+        if instances[0]!=4:
+            print "ERROR locked instance",instances[0],"instead of 4"
+    # Free the instance
+    ret=call(["acsInstanceLock","-u","-b","4"])
+    if printListOfLockFiles(prefix,suffix)!=0:
+        print "ERROR: the folder should not contain any lock file at this stage!"
+    print "----- Test 7 done -----"  
+    
+    print "Closing test session"
+    # Before exiting check if the folder contains any lock file
+    instances=getLockedInstances(prefix,suffix)
+    if len(instances)>0:
+        print "ERROR: found locked instances:",instances
+        print "Freeing instances"
+        for i in instances:
+            print "Freeing unwanted lock file for instance",i
+            if instanceLocker.unlock(i)!=0:
+                print "Error freeing instance",i
+            
+    print "Test done"
 #
 # ___oOo___
