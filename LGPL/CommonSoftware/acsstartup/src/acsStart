@@ -205,6 +205,14 @@ then
     exit $EC_FAILURE
 fi
 
+# Lock the ACS_INSTANCE
+acsInstanceLock -l
+if [ $? -ne $ACS_INSTANCE ]
+then
+	ACS_LOG_ERROR "acsStart" "Unable to continue as there is already a lock file for ACS_INSTANCE $ACS_INSTANCE in $ACSDATA/tmp!"
+    exit $EC_FAILURE
+fi
+
 #start the ORB services
 if [ "$CL_VERBOSE" ] ; then
    export ACS_LOG_STDOUT=0

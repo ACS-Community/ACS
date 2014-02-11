@@ -70,33 +70,7 @@ then
     ACS_CDB=$PWD
 fi 
 #---------------------------------------------------------------------------
-#Pick an ACS base port to use
 
-#unset ACS_INSTANCE - we do not allow people to set this from TAT!
-unset ACS_INSTANCE
-
-#iterate through the ten possible choices
-i=0
-while [ $i -lt 10 ]
-do
-	#if the directory has not already been created.
-	if [ ! -e $ACS_TMP/ACS_INSTANCE.$i ]
-	then
-		#we've found a free one and we're done
-		export ACS_INSTANCE=$i
-	        break
- 	fi
-
- 	i=$(( $i + 1 ))
-done
-
-if [ "X$ACS_INSTANCE" = "X" ]
-then
-    echo "No ACS instances were available!" > /dev/stderr
-    exit 1
-fi
-
-#---------------------------------------------------------------------------
 #Start the services and manager
 if [ "X$ACS_TMP" == "X" ]
 then 

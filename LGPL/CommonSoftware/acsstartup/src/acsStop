@@ -232,4 +232,8 @@ acsManager -k
 #SHUTDOWN ORB SERVICES--------------------------------------------------
 acsStopORBSRVC
 
+########################################################################
+#Free the instance i.e. remove the lock---------------------------------
+acsInstanceLock -u
+
 # ___oOo___
