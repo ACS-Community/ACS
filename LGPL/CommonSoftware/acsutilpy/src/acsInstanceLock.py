@@ -67,12 +67,14 @@ if __name__ == "__main__":
     if options.baseport != None:
         # Use ACS_INSTANCE
         if options.lock:
-            lockHelper.lock(options.baseport)
+            ret=lockHelper.lock(options.baseport)
         else:
-            lockHelper.unlock(options.baseport)
+            ret=lockHelper.unlock(options.baseport)
     else:
         if options.lock:
-            lockHelper.checkAndLock()
+            ret=lockHelper.checkAndLock()
         else:
-            lockHelper.freeInstance()
+            ret=lockHelper.freeInstance()
+    
+    exit(ret)
 # ___oOo___
