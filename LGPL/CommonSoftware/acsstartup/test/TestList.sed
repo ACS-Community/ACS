@@ -1,4 +1,4 @@
-s/corbaloc::[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:/corbaloc::a.b.c.d:/g
+s/corbaloc::[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/corbaloc::a.b.c.d:xxxx/g
 s/Logging to log file: .*\/acsdata\/tmp\/acs_local_log_\([a-z,A-Z,0-9,_]*\)_[0-9]*/Logging to log file: \/-----\/acsdata\/tmp\/acs_local_log_\1_xxxx/g
 s/MainThread, acspyTestLogging, [a-z,A-Z,0-9,-]*,/MainThread, acspyTestLogging, xxxx,/g 
 s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]/----------T--:--:--.---/g 
@@ -33,3 +33,5 @@ s/-OAport [0-9][0-9][0-9][0-9]/-OAport nnnn/g
 s/Ran [0-9]* tests in [0-9]*.[0-9]*s/Ran x tests in x.xxs/g
 s/-Djava.endorsed.dirs=.*/-Djava.endorsed.dirs=xxxxx/g
 s/Endpoint: [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/Endpoint: a.b.c.d:p/g
+s/ACS_INSTANCE=[0-9]/ACS_INSTANCE=N/g
+

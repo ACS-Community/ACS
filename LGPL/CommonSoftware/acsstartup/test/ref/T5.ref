@@ -1,3 +1,5 @@
+1 - Locking instance 9 with lock file /alma/ACS-x.y/acsdata/tmp/acsInstance9.lock
+5 - Locking instance 8 with lock file /alma/ACS-x.y/acsdata/tmp/acsInstance8.lock
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] Starting CORBA Services
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC]     Orb options:  -ORBDottedDecimalAddresses 1
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
@@ -17,10 +19,10 @@
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 1 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
 1 - The alarm service is ready and waiting
-1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
+1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=N' on all terminals running ACS clients.
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] The acsStartORBSRVC script has now completed!
 1 - Manager Application initialized
-1 - ----------T--:--:--.--- INFO [acsStart] For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
+1 - ----------T--:--:--.--- INFO [acsStart] For this ACS session, please do an 'export ACS_INSTANCE=N' on all terminals running ACS clients.
 1 - ----------T--:--:--.--- INFO [acsStart] ACS is up and running
 1 - ----------T--:--:--.--- INFO [acsManager] Manager is up and running
 2 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'something'
@@ -47,10 +49,10 @@
 5 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 5 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
 5 - The alarm service is ready and waiting
-5 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=8' on all terminals running ACS clients.
+5 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=N' on all terminals running ACS clients.
 5 - ----------T--:--:--.--- INFO [acsStartORBSRVC] The acsStartORBSRVC script has now completed!
 5 - Manager Application initialized
-5 - ----------T--:--:--.--- INFO [acsStart] For this ACS session, please do an 'export ACS_INSTANCE=8' on all terminals running ACS clients.
+5 - ----------T--:--:--.--- INFO [acsStart] For this ACS session, please do an 'export ACS_INSTANCE=N' on all terminals running ACS clients.
 5 - ----------T--:--:--.--- INFO [acsStart] ACS is up and running
 5 - ----------T--:--:--.--- INFO [acsManager] Manager is up and running
 6 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'something'
@@ -59,14 +61,14 @@
 7 - Mock python container
 8 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'something'
 8 - Mock C++ container
-9 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=9'
+9 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=N'
 9 - ----------T--:--:--.--- INFO [acsStop] Shutting down containers...
 9 - ----------T--:--:--.--- INFO [acsStop] Shutting down jCont container
 2 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 9 - ----------T--:--:--.--- INFO [acsStop] Shutting down pyCont container
 3 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 9 - ----------T--:--:--.--- INFO [acsStop] Shutting down TestContainer container
-10 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=8'
+10 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=N'
 10 - ----------T--:--:--.--- INFO [acsStop] Shutting down containers...
 10 - ----------T--:--:--.--- INFO [acsStop] Shutting down jCont container
 4 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
@@ -77,7 +79,7 @@
 7 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 10 - ----------T--:--:--.--- INFO [acsStop] Shutting down TestContainer container
 9 - ----------T--:--:--.--- INFO [acsManager] acsManager: done.
-9 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=9'
+9 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=N'
 9 - ----------T--:--:--.--- INFO [acsAlarmService] Stopping the AlarmService
 9 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Stopping the CDB
 8 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
@@ -93,8 +95,9 @@
 9 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 9 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
 9 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.9
+9 - Freeing instance 9 removing lock file /alma/ACS-x.y/acsdata/tmp/acsInstance9.lock
 10 - ----------T--:--:--.--- INFO [acsManager] acsManager: done.
-10 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=8'
+10 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=N'
 10 - ----------T--:--:--.--- INFO [acsAlarmService] Stopping the AlarmService
 10 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Stopping the CDB
 10 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
@@ -107,3 +110,4 @@
 10 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 10 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
 10 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.8
+10 - Freeing instance 8 removing lock file /alma/ACS-x.y/acsdata/tmp/acsInstance8.lock

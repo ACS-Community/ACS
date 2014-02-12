@@ -1,4 +1,5 @@
 1 - Starting ACS...
+1 - Locking instance 4 with lock file /alma/ACS-x.y/acsdata/tmp/acsInstance4.lock
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] Starting CORBA Services
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC]     Orb options:  -ORBDottedDecimalAddresses 1
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
@@ -17,10 +18,10 @@
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 1 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
 1 - The alarm service is ready and waiting
-1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=0' on all terminals running ACS clients.
+1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=N' on all terminals running ACS clients.
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] The acsStartORBSRVC script has now completed!
 1 - Manager Application initialized
-1 - ----------T--:--:--.--- INFO [acsStart] For this ACS session, please do an 'export ACS_INSTANCE=0' on all terminals running ACS clients.
+1 - ----------T--:--:--.--- INFO [acsStart] For this ACS session, please do an 'export ACS_INSTANCE=N' on all terminals running ACS clients.
 1 - ----------T--:--:--.--- INFO [acsStart] ACS is up and running
 1 - ----------T--:--:--.--- INFO [acsManager] Manager is up and running
 1 - Checking for Interface...
@@ -34,12 +35,12 @@
 1 - Looking up Container Interface...
 1 - Interface is:  <CORBA._objref_Contained instance at 0xXXXX>
 1 - Shutting down ACS...
-1 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=0'
+1 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=N'
 1 - ----------T--:--:--.--- INFO [acsStop] Shutting down containers...
 1 - ----------T--:--:--.--- INFO [acsStop] Stopping Manager
 1 - Max timeout exceeded!
 1 - ----------T--:--:--.--- INFO [acsManager] acsManager: done.
-1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=0'
+1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=N'
 1 - ----------T--:--:--.--- INFO [acsAlarmService] Stopping the AlarmService
 1 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Stopping the CDB
 1 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
@@ -51,4 +52,5 @@
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
-1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.0
+1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.4
+1 - Freeing instance 4 removing lock file /alma/ACS-x.y/acsdata/tmp/acsInstance4.lock
