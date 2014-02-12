@@ -585,7 +585,7 @@ then
     if [ X"$INSTANCE_DIR" != X ]; then
         DUMP_DIR="$ACSDATA/dumps/`hostname`/ACS_INSTANCE.$ACS_INSTANCE"
         mkdir -p $DUMP_DIR
-        chmod 777 $ACSDATA/dumps/`hostname`
+        chmod -f 777 $ACSDATA/dumps/`hostname`
         JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$DUMP_DIR -XX:ErrorFile=$DUMP_DIR/jvm_fatal_error%p.log"
     fi
 fi
