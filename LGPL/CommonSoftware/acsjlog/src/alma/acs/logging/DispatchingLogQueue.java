@@ -139,13 +139,6 @@ public class DispatchingLogQueue {
      * even though the damage would be small since the treatment of queue size is somewhat arbitrary anyway.
      * Synchronization should not block callers long at all because flushing is done in a separate thread
      * and only gets triggered here.
-     * <p>
-     * TODO: there is currently a minor problem with queue overflow: log records get drained from the queue,
-     * and when they can't be sent off to the log service, they are resubmitted to the queue.
-     * It could happen that in the meantime, some other record with INFO or higher level has been added to the queue,
-     * and that resubmitting some of the even more important records may fail.
-     * The solution would be to replace the 70%-filter rule with a running priority filter: any incoming record
-     * can kick out a less important record if the queue is full. 
      * 
      * @param logRecord  to be logged
      * @return true if logRecord was added to the queue for logging. False if queue was too full for this record.
