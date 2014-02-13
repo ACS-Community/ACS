@@ -214,10 +214,6 @@ public class SynchroBuffer {
 	  return closed.get();
   }
        
-  private void setClosed(boolean value) {
-	  closed.set(value);
-  }
-
   private void setFiring(boolean value) {
     synchronized(firing) {
       firing = (value ? Boolean.TRUE : Boolean.FALSE);
