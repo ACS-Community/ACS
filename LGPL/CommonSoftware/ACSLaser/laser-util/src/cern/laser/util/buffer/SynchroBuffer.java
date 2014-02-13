@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
@@ -21,7 +22,7 @@ public class SynchroBuffer {
 
   private Thread checkingThread;
   
-  private Boolean closed = Boolean.FALSE;
+  private AtomicBoolean closed = new AtomicBoolean(false);
   private Boolean firing = Boolean.FALSE;
   private Boolean enabled = Boolean.FALSE;
     
@@ -210,15 +211,11 @@ public class SynchroBuffer {
   }
 
   private boolean isClosed() {
-    synchronized(closed)  {
-      return closed.booleanValue();
-    }
+	  return closed.get();
   }
        
   private void setClosed(boolean value) {
-    synchronized(closed) {
-      closed = (value ? Boolean.TRUE : Boolean.FALSE);
-    }
+	  closed.set(value);
   }
 
   private void setFiring(boolean value) {
@@ -254,7 +251,10 @@ public class SynchroBuffer {
   /** Close the buffer and deallocate resources.
    */
   public void close() {
-    setClosed(true);
+	  boolean wasClosed=closed.getAndSet(true);
+	  if (wasClosed) {
+		  return;
+	  }
     while ((!isEmpty() && isEnabled()) || isFiring()) {
       try {
         Thread.sleep(minWindowSize);
