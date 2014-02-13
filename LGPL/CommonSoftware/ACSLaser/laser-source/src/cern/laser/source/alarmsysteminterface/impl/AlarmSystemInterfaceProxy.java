@@ -262,15 +262,6 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
     }
   }
 
-  /** Properly close all the resources.
-   * @throws Throwable a Throwable exception
-   */
-  protected void finalize() throws Throwable {
-    cat.debug("finalizing");
-    close();
-    super.finalize();
-  }
-
   /** Publish a collection of fault states.
    * @param states the fault states collection to publish
    * @param backup the type of fault states to publish (backup or not)
