@@ -23,8 +23,8 @@ public class SynchroBuffer {
   private Thread checkingThread;
   
   private AtomicBoolean closed = new AtomicBoolean(false);
-  private Boolean firing = Boolean.FALSE;
-  private Boolean enabled = Boolean.FALSE;
+  private AtomicBoolean firing = new AtomicBoolean(false);
+  private AtomicBoolean enabled = new AtomicBoolean(false);
     
   private SynchroBufferListener listener = null;
     
@@ -96,8 +96,8 @@ public class SynchroBuffer {
         long calculated_window_size;
         long firing_time = 0;
         long wait_time = minWindowSize;
-        while ( (!isClosed()) || (!isEmpty() && isEnabled()) ) {
-          if (isEnabled()) {
+        while ( (!closed.get()) || (!isEmpty() && enabled.get()) ) {
+          if (enabled.get()) {
             objects_per_sec = (1000 * buffer.size()) / (wait_time + firing_time);
             calculated_window_size = minWindowSize + ((long)(windowGrowthFactor * objects_per_sec));
             wait_time = ( (calculated_window_size < maxWindowSize) ? calculated_window_size : maxWindowSize );
@@ -116,7 +116,7 @@ public class SynchroBuffer {
   }
     
   private long fire() {
-    setFiring(true);
+    firing.set(true);
     Collection pulled = null;
     synchronized(buffer) {
       pulled = (Collection) ((ArrayList)buffer).clone();
@@ -134,7 +134,7 @@ public class SynchroBuffer {
     }
     long time_after = System.currentTimeMillis();
     long time_elapsed = time_after-time_before;
-    setFiring(false);
+    firing.set(false);
     
     return time_elapsed;
   }
@@ -146,7 +146,7 @@ public class SynchroBuffer {
    * @param o the object to push
    */
   public void push(Object object) {
-    if (isClosed()) {
+    if (closed.get()) {
       throw new IllegalArgumentException("buffer closed");
     }
     synchronized(buffer) {
@@ -174,7 +174,7 @@ public class SynchroBuffer {
    * @param collection the collection of objects to push
    */
   public void push(Collection collection) {
-    if (isClosed()) {
+    if (closed.get()) {
       throw new IllegalArgumentException("buffer closed");
     }
     if ( (collection != null) && (collection.size() != 0) ) {
@@ -201,49 +201,21 @@ public class SynchroBuffer {
   /** Enable the listener. The listener is disabled by default.
    */
   public void enable() {
-    setEnabled(true);
+    enabled.set(true);
   }
 
   /** Disable the listener. Pushed object are kept in the buffer and delivered when the listener is enabled.
    */
   public void disable() {
-    setEnabled(false);
+    enabled.set(false);
   }
 
-  private boolean isClosed() {
-	  return closed.get();
-  }
-       
-  private void setFiring(boolean value) {
-    synchronized(firing) {
-      firing = (value ? Boolean.TRUE : Boolean.FALSE);
-    }
-  }
-    
-  private boolean isFiring() {
-    synchronized(firing) {
-      return firing.booleanValue();
-    }
-  }
-    
   private boolean isEmpty() {
     synchronized(buffer) {
       return buffer.isEmpty();
     }
   }
     
-  private boolean isEnabled() {
-    synchronized(enabled) {
-      return enabled.booleanValue();
-    }
-  }
-    
-  private void setEnabled(boolean value) {
-    synchronized(enabled) {
-      enabled = (value == true ? Boolean.TRUE : Boolean.FALSE);
-    }
-  }
-
   /** Close the buffer and deallocate resources.
    */
   public void close() {
@@ -251,7 +223,7 @@ public class SynchroBuffer {
 	  if (wasClosed) {
 		  return;
 	  }
-    while ((!isEmpty() && isEnabled()) || isFiring()) {
+    while ((!isEmpty() && enabled.get()) || firing.get()) {
       try {
         Thread.sleep(minWindowSize);
       } catch (Exception e) {}
