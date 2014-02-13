@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jms.TextMessage;
 
@@ -64,7 +65,7 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
 
   /** MOM connection flag
    */
-  private boolean connected;
+  private AtomicBoolean connected = new AtomicBoolean(false);
 
   /** Create a new instance of AlarmSystemInterfaceProxy
    * @param sourceName the name of the alarm source
@@ -75,7 +76,7 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
     /*
      * We force all the sources to use the same channel
      * 
-     * The sourceName passes as aparameter is the name of the component
+     * The sourceName passes as a parameter is the name of the component
      * and was used to create a channel where the service listen to
      * (BTW this was wrong as the channel name is defined in the CDB
      * and there is no relation between the name of a component and
@@ -85,10 +86,6 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
      * more channels
      */
     sourceName="ALARM_SYSTEM_SOURCES";
-
-    if (sourceName == null) {
-      throw (new IllegalArgumentException("source name can not be null"));
-    }
 
     Configurator configurator = new Configurator();
     configuration = configurator.getConfiguration();
@@ -108,7 +105,7 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
 
       // create a MOM publisher instance
       publisher = PubSubFactory.publisher();
-      connected = true;
+      connected.set(true);
       publisher.setExceptionListener(this);
 
       // create and start the buffer manager
@@ -162,7 +159,7 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
       publisher = null;
     }
 
-    connected = false;
+    connected.set(false);
     cat.info("closed");
   }
 
@@ -173,9 +170,9 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
    */
   public void onException(MOMException e) {
     if (e.testException(MOMException.CONNECTION_LOST_EXCEPTION)) {
-      connected = false;
+      connected.set(false);
     } else if (e.testException(MOMException.CONNECTION_RECOVERED_EXCEPTION)) {
-      connected = true;
+      connected.set(true);
     }
   }
 
@@ -196,7 +193,7 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
    * @param state the fault state to push
    */
   public void push(FaultState state) throws ASIException {
-    if (!connected) {
+    if (!connected.get()) {
       throw (new ASIException("not connected"));
     }
 
@@ -215,7 +212,7 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
    * @param states the fault states collection to push
    */
   public void push(Collection states) throws ASIException {
-    if (!connected) {
+    if (!connected.get()) {
       throw (new ASIException("not connected"));
     }
 
@@ -240,7 +237,7 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
    * @param active the source active list
    */
   public void pushActiveList(Collection active) throws ASIException {
-    if (!connected) {
+    if (!connected.get()) {
       throw (new ASIException("not connected"));
     }
 
