@@ -22,7 +22,8 @@
 # --------  --------  ----------------------------------------------
 # acaproni  2014-02-07  created
 #
-from os      import environ
+from os      import environ, makedirs, chmod
+from os.path import exists 
 from subprocess import call
 
 class AcsInstanceLockHelper:
@@ -62,6 +63,9 @@ class AcsInstanceLockHelper:
         
         # The path where to read and write lock files
         self.__lockFilesBaseFolder=self.__acsdataEnvVar+"/tmp/"
+        if not exists(self.__lockFilesBaseFolder):
+            makedirs(self.__lockFilesBaseFolder)
+            chmod(self.__lockFilesBaseFolder,777)
         
         # The prefix to build the name of a lock file
         self.lockFilenamePrefix="acsInstance"
