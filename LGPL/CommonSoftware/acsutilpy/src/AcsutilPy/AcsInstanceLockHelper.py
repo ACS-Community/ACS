@@ -24,6 +24,7 @@
 #
 from os      import environ, makedirs, chmod
 from os.path import exists 
+import stat
 from subprocess import call
 
 class AcsInstanceLockHelper:
@@ -65,7 +66,10 @@ class AcsInstanceLockHelper:
         self.__lockFilesBaseFolder=self.__acsdataEnvVar+"/tmp/"
         if not exists(self.__lockFilesBaseFolder):
             makedirs(self.__lockFilesBaseFolder)
-            chmod(self.__lockFilesBaseFolder,777)
+            mask=stat.S_IRUSR|stat.S_IXUSR|stat.S_IWUSR
+            mask=mask|stat.S_IRGRP|stat.S_IWGRP|stat.S_IXGRP
+            mask=mask|stat.S_IROTH|stat.S_IWOTH|stat.S_IXOTH
+            chmod(self.__lockFilesBaseFolder,mask)
         
         # The prefix to build the name of a lock file
         self.lockFilenamePrefix="acsInstance"
