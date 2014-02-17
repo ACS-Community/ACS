@@ -1652,11 +1652,14 @@ LoggingProxy::init(LoggingProxy *loggingProxy) {
 
  //check if callback has been already set for this thread
  // for some reson  it's problem (at thread shutdown) if we set the callback two times
+	printf ("1===>%d\n",(*tss)->refCount_m );
     if (ACE_LOG_MSG->msg_callback () == 0)
 	{
 	ACE_LOG_MSG->clr_flags (ACE_Log_Msg::STDERR);
 	ACE_LOG_MSG->set_flags (ACE_Log_Msg::MSG_CALLBACK);
 	ACE_LOG_MSG->msg_callback (loggingProxy);
+	((*tss)->refCount_m)++;
+	printf ("1.5===>%d\n",(*tss)->refCount_m );
 	setClrCount_m ++;
 	}
     initialized = true;
@@ -1672,11 +1675,17 @@ void
 LoggingProxy::done() {
     setClrCount_m --;
     // global flags can be set cleared just when all LoggingProxy have been deleted
+    ((*tss)->refCount_m)--; // should not go below 0
+    printf ("2===>%d\n",(*tss)->refCount_m );
+    if ( ((*tss)->refCount_m)==0 )
+    	{
+    	ACE_LOG_MSG->set_flags (ACE_Log_Msg::STDERR);
+    	ACE_LOG_MSG->clr_flags (ACE_Log_Msg::MSG_CALLBACK);
+        ACE_LOG_MSG->msg_callback (NULL);
+    	}
+
     if ( setClrCount_m == 0 )
 	{
-	ACE_LOG_MSG->set_flags (ACE_Log_Msg::STDERR);
-	ACE_LOG_MSG->clr_flags (ACE_Log_Msg::MSG_CALLBACK);
-    ACE_LOG_MSG->msg_callback (NULL);
 	initialized = false;
 	}
 }
@@ -1902,7 +1911,7 @@ int LoggingProxy::makeDirectory(const ACE_TCHAR * dirname, const ACE_TCHAR * tim
 		}
 		else
 		{
-			umask(prev_umask); // restore previous umask
+			ACE_OS::umask(prev_umask); // restore previous umask
 			// The directory could be created
 			return 0;
 		}
