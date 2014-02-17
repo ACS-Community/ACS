@@ -1,4 +1,4 @@
-1 - lockfile: Sorry, giving up on "/alma/ACS-12.3/acsdata/tmp/acsInstance5.lock"
+1 - lockfile: Sorry, giving up on ..acsInstanceN.lock
 1 - No lock file found in ACSDATA
 1 - ----- Test 1: lock of a ACS instance -----
 1 - Locking instance 3

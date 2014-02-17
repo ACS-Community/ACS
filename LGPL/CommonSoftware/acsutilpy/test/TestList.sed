@@ -26,3 +26,5 @@ s/Instance locked [0-9]/Instance locked N/g
 s/Lock file found in .*.lock/Lock file found in ACSDATA acsInstanceN.lock/g
 s/Locking ACS_INSTANCE [0-9]/Locking ACS_INSTANCE N/g
 s/No lock file found in .*/No lock file found in ACSDATA/g
+s/lockfile: Sorry, giving up on .*/lockfile: Sorry, giving up on ..acsInstanceN.lock/g
+
