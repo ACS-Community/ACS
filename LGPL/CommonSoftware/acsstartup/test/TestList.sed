@@ -34,4 +34,6 @@ s/Ran [0-9]* tests in [0-9]*.[0-9]*s/Ran x tests in x.xxs/g
 s/-Djava.endorsed.dirs=.*/-Djava.endorsed.dirs=xxxxx/g
 s/Endpoint: [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/Endpoint: a.b.c.d:p/g
 s/ACS_INSTANCE=[0-9]/ACS_INSTANCE=N/g
+s/Locking instance [0-9] with lock file .*/Locking instance N with lock file ..acsInstanceN.lock/g
+s/Freeing instance [0-9] removing lock file .*/Freeing instance N removing lock file ..acsInstanceN.lock/g
 

@@ -35,4 +35,4 @@
 2 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 2 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
 2 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.9
-2 - Freeing instance 9 removing lock file /alma/ACS-x.y/acsdata/tmp/acsInstance9.lock
+2 - Freeing instance N removing lock file ..acsInstanceN.lock

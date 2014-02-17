@@ -1,5 +1,5 @@
 1 - Starting ACS...
-1 - Locking instance 4 with lock file /alma/ACS-x.y/acsdata/tmp/acsInstance4.lock
+1 - Locking instance N with lock file ..acsInstanceN.lock
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] Starting CORBA Services
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC]     Orb options:  -ORBDottedDecimalAddresses 1
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
@@ -53,4 +53,4 @@
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
 1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.4
-1 - Freeing instance 4 removing lock file /alma/ACS-x.y/acsdata/tmp/acsInstance4.lock
+1 - Freeing instance N removing lock file ..acsInstanceN.lock
