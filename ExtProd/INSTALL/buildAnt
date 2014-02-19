@@ -40,38 +40,17 @@ Install_Ant()
     
     JAR_ARCHIVE=`pwd`/../PRODUCTS/apache-ant-jars 
 
-# TODO: Use the newer ANT_VERSION unconditionally. The following choice based on the JDK version
-#       is used as a workaround for JDK 7 evaluation (ICT-1187), 
-#       while we have not gotten the permission of the project to upgrade ANT.
-#       (The old ANT build fails on test machines with JDK 7 installed.) 
-    JAVA_VERSION=`java -version 2>&1 | awk '/version/ {print $3}' | awk -F . '{print $2}'`
-    if [ $JAVA_VERSION -ge 7 ]
-    then
-        ANT_VERSION=1.9.2
-        echo "Java SE $JAVA_VERSION detected. Will install ANT upgrade to $ANT_VERSION!"
-        tar xzf ../PRODUCTS/apache-ant-$ANT_VERSION-src.tar.gz --directory $ANT_HOME/..
-        ANT_UNPACKED_DIR=$ANT_HOME/../apache-ant-$ANT_VERSION
-        cd $ANT_UNPACKED_DIR
-        cp $JAR_ARCHIVE/junit-4.11.jar lib/optional/
-        cp $JAR_ARCHIVE/hamcrest-core-1.3.jar lib/optional/
+    ANT_VERSION=1.9.3
+    echo "Now installing Ant $ANT_VERSION... \c"
+    tar xzf ../PRODUCTS/apache-ant-$ANT_VERSION-src.tar.gz --directory $ANT_HOME/..
+    ANT_UNPACKED_DIR=$ANT_HOME/../apache-ant-$ANT_VERSION
+    cd $ANT_UNPACKED_DIR
+    cp $JAR_ARCHIVE/junit-4.11.jar lib/optional/
+    cp $JAR_ARCHIVE/hamcrest-core-1.3.jar lib/optional/
 # TODO: 'dist-lite' produces a minimum installation in $ANT_HOME, so we might want to add sources ('jars-sources'? etc)
-        sh build.sh -Ddist.dir=$ANT_HOME dist-lite || exit 1
-        sh build.sh test || exit 1
-        rm -rf $ANT_UNPACKED_DIR
-    else
-        ANT_VERSION=1.7.1
-        echo "Now installing Ant $ANT_VERSION... \c"
-        ARCHIVE=`pwd`/../PRODUCTS/apache-ant-$ANT_VERSION-src.tar.gz 
-        BIN_DIR=apache-ant-$ANT_VERSION
-        cd $ANT_HOME
-        tar -xzf $ARCHIVE
-        cd $BIN_DIR
-        tar cf - . | (cd ..; tar xf -)
-        cd ..
-        rm -rf $BIN_DIR
-        export CLASSPATH=$CLASSPATH:$JAR_ARCHIVE/junit.jar
-        sh build.sh install-lite || exit 1
-    fi
+    sh build.sh -Ddist.dir=$ANT_HOME dist-lite || exit 1
+    sh build.sh test || exit 1
+    rm -rf $ANT_UNPACKED_DIR
     echo "done.\n"
 
 }
