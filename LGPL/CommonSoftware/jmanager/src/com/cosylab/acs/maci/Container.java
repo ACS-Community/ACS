@@ -131,4 +131,9 @@ public interface Container extends Client
 	 */
 	public void set_component_shutdown_order(int[] handles) throws RemoteException;
 
+	/**
+	 * Get the Container handle give by the Managert at login.
+	 * @return the Container handle, 0 if not (yet) logged in.
+	 */
+	public int get_handle();
 }
