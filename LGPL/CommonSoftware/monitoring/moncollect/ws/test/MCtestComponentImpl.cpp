@@ -48,7 +48,7 @@ MCtestComponentImpl::MCtestComponentImpl(const ACE_CString& name,
     //Changed starting value to -1.0 since the value is read for initialization
     //purposes in the monitoring loop.
     for(unsigned int i=0;i<m_doubleSeqVal.length();i++)
-    	m_doubleSeqVal[i]=-1.0;
+    	m_doubleSeqVal[i]=-2.0;
     m_time1 = 134608945243381570;
     m_doubleSeqDevIO = new MCtestDevIOSeq<ACS::doubleSeq>(m_doubleSeqVal, m_time1);
     m_doubleSeqProp_p  = new ROdoubleSeq(name+":doubleSeqProp", getComponent(), m_doubleSeqDevIO);
@@ -56,7 +56,7 @@ MCtestComponentImpl::MCtestComponentImpl(const ACE_CString& name,
 
     //Changed starting value to -1.0 since the value is read for initialization
     //purposes in the monitoring loop.
-    m_doubleVal = -1.0;
+    m_doubleVal = -2.0;
     m_time2 = 134608945243381570;
     m_doubleDevIO = new MCtestDevIO<double>(m_doubleVal, m_time2);
     m_doubleProp_p  = new ROdouble(name+":doubleProp", getComponent(), m_doubleDevIO);

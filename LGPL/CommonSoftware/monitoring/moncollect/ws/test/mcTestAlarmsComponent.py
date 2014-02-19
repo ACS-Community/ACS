@@ -89,8 +89,10 @@ for d in data:
     print d.componentName, d.deviceSerialNumber 
     for blob in d.monitorBlobs:
         print "\t", blob.propertyName, blob.propertySerialNumber
+        i=0
         for blobData in any.from_any(blob.blobDataSeq):
             print "\t\t", blobData
+            
 
 mc.deregisterMonitoredDevice('MC_TEST_ALARMS_COMPONENT')
 

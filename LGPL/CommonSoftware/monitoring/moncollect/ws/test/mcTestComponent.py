@@ -43,7 +43,7 @@ try:
     mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_COMPONENT', psns)
     tc.reset();
     mc.startMonitoring('MC_TEST_COMPONENT')    
-    time.sleep(20)
+    time.sleep(22)
     mc.stopMonitoring('MC_TEST_COMPONENT')
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
@@ -56,8 +56,11 @@ for d in data:
     print d.componentName, d.deviceSerialNumber 
     for blob in d.monitorBlobs:
         print "\t", blob.propertyName, blob.propertySerialNumber
+        i=0
         for blobData in any.from_any(blob.blobDataSeq):
-            print "\t\t", blobData
+            if i<20:
+                print "\t\t", blobData
+                i+=1
 
 mc.deregisterMonitoredDevice('MC_TEST_COMPONENT')
 

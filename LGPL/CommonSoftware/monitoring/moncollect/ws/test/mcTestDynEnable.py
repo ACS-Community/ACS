@@ -43,7 +43,7 @@ try:
     mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_COMPONENT2', psns)
     tc.reset();
     mc.startMonitoring('MC_TEST_COMPONENT2')    
-    time.sleep(10)
+    time.sleep(12)
     mc.enable_archiving('MC_TEST_COMPONENT2','doubleSeqProp')
     mc.enable_archiving('MC_TEST_COMPONENT2','doubleProp')
     time.sleep(12)
