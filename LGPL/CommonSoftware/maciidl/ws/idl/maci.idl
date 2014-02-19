@@ -516,6 +516,12 @@ module maci {
 	*/
 	interface Container : Client, ::Logging::LoggingConfigurable{
 
+        /**
+         * Return a handle that was given to the Container at login into the Manager.
+         * If the container is not logged in (or never was) the method must return 0.
+         */
+        Handle get_handle ();
+        
   	    /** 
 		Activate a component whose type (class) and name (instance) are given.
 		
