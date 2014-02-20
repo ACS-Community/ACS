@@ -71,6 +71,7 @@ CL_JARS=
 CL_NAC=
 CL_NCL=
 CL_DEBUGPORT=
+CL_ALLOWFLIGHTRECORDER=
 CL_NODIRECTORY=
 CL_VMTOOLS=
 CL_SPLASHFILE=
@@ -78,7 +79,7 @@ CL_SPLASHFILE=
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,clientVM,maxHeapSize:,threadStackSize:,noexport,managerReference:,baseport:,jarpath:,endorsed,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,noDirectory,vmtools,splash:
+LONGOPTS=help,clientVM,maxHeapSize:,threadStackSize:,noexport,managerReference:,baseport:,jarpath:,endorsed,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,allowFlightRecorder,noDirectory,vmtools,splash:
 SHORTOPTS=hm:b:D:j:
 
 #
@@ -104,6 +105,7 @@ function printUsage {
 	echo "   -noClassLoader                                   do not use the special ACS class loader to find the jar files,"
 	echo "                                                       all files must be found in the CLASSPATH."
 	echo "   -debugport PORT                                  the port on which a remote debugger may access the JVM"
+	echo "   -allowFlightRecorder                             allows an attached Java Missions Control GUI to start the flight recorder for profiling tests"
 	echo "   -noDirectory                                     do not create an acs instance directory"
 	echo "   -vmtools                                         start JVM Tools together with the application"
 	echo "   -splash FILE                                     uses file FILE for splash screen (if needed)"
@@ -157,27 +159,28 @@ eval set -- "$temp"
 while : 
 do
 	case "$1" in
-	--endorsed)         CL_ENDORSED=true ;;
-	--clientVM)         CL_CLIENTVM=true ;;
-	--maxHeapSize)      CL_MAXHEAPSIZE=$2 ; shift ;;
-	--threadStackSize)  CL_THREADSTACKSIZE=$2 ; shift ;;
-	--noexport)         CL_NOEXPORT=true ;;
-	--managerReference) CL_MANAGERREF=$2 ; shift ;;
-	-m)                 CL_MANAGERREF=$2 ; shift ;;
-	--baseport)         CL_BASEPORT=$2 ; shift ;;
-	-b)                 CL_BASEPORT=$2 ; shift ;;
-	-D)                 CL_JAVAPROPS="$CL_JAVAPROPS -D'$2'" ; shift ;;
-	--jarpath)          CL_JARPATH=$2 ; shift ;;
-	-j)                 CL_JARPATH=$2 ; shift ;;
-	--addToClasspath)   CL_JARS=$2 ; shift ;;
-	--noAutoClasspath)  CL_NAC=true ;;
-	--noClassLoader)    CL_NCL=true ;;
-	--debugport)        CL_DEBUGPORT=$2 ; shift ;;
-	--noDirectory)      CL_NODIRECTORY=true ;;
-	--vmtools)          CL_VMTOOLS=true ;;
-	--splash)           CL_SPLASHFILE=$2; shift ;;
-	--help)             CL_HELP=true ;; 
-	-h)                 CL_HELP=true ;; 
+	--endorsed)            CL_ENDORSED=true ;;
+	--clientVM)            CL_CLIENTVM=true ;;
+	--maxHeapSize)         CL_MAXHEAPSIZE=$2 ; shift ;;
+	--threadStackSize)     CL_THREADSTACKSIZE=$2 ; shift ;;
+	--noexport)            CL_NOEXPORT=true ;;
+	--managerReference)    CL_MANAGERREF=$2 ; shift ;;
+	-m)                    CL_MANAGERREF=$2 ; shift ;;
+	--baseport)            CL_BASEPORT=$2 ; shift ;;
+	-b)                    CL_BASEPORT=$2 ; shift ;;
+	-D)                    CL_JAVAPROPS="$CL_JAVAPROPS -D'$2'" ; shift ;;
+	--jarpath)             CL_JARPATH=$2 ; shift ;;
+	-j)                    CL_JARPATH=$2 ; shift ;;
+	--addToClasspath)      CL_JARS=$2 ; shift ;;
+	--noAutoClasspath)     CL_NAC=true ;;
+	--noClassLoader)       CL_NCL=true ;;
+	--debugport)           CL_DEBUGPORT=$2 ; shift ;;
+	--allowFlightRecorder) CL_ALLOWFLIGHTRECORDER=true ;;
+	--noDirectory)         CL_NODIRECTORY=true ;;
+	--vmtools)             CL_VMTOOLS=true ;;
+	--splash)              CL_SPLASHFILE=$2; shift ;;
+	--help)                CL_HELP=true ;; 
+	-h)                    CL_HELP=true ;; 
 	--) break ;;
 	esac
 	shift
@@ -289,14 +292,19 @@ function export {
 ### ------------- End of "-noexport" handling --------------
 
 
-
 ACS_LOG_INFO "acsStartJava" "Starting Java application: $@"
 #
 # Checks if the first parameter is -endorsed
 # This forces using the endorsed libraries, 
-# that by default are not used
+# that by default are not used (except for $JACORB_HOME/lib/endorsed)
 #
+
 JAVA_ENDORSED=""
+if [ -d $JACORB_HOME/lib/endorsed ]
+then
+   JAVA_ENDORSED="$JACORB_HOME/lib/endorsed${PATH_SEP}$JAVA_ENDORSED"
+fi
+
 if [ "$CL_ENDORSED" ]; then
   #
   # Creates ENDORSED class path for Java
@@ -326,9 +334,10 @@ if [ "$CL_ENDORSED" ]; then
   then
      JAVA_ENDORSED="../lib/endorsed${PATH_SEP}$JAVA_ENDORSED"
   fi
-  if [ X"$JAVA_ENDORSED" != X ]; then
-     JAVA_ENDORSED="-Djava.endorsed.dirs=$JAVA_ENDORSED"
-  fi
+fi
+
+if [ X"$JAVA_ENDORSED" != X ]; then
+  JAVA_ENDORSED="-Djava.endorsed.dirs=$JAVA_ENDORSED"
   ACS_LOG_INFO "acsStartJava" "Using endorsed jar files in: $JAVA_ENDORSED"
 fi
 
@@ -428,11 +437,11 @@ if [ X"$LOG_SERVICE_USE_EXTENSIONS" != X ]; then
 fi
 
 #
-# In orb.properties we set jacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory
-# which sends filtered JacORB logs messages to the central Log service. 
-# Here we can overrule this by uncommenting the following line.
+# In orb.properties we set jacorb.log.initializer=alma.acs.logging.adapters.AcsJacorbLoggingInitializer
+# which sends filtered JacORB logs messages from the slf4j framework to the central Log service. 
+# Here we can overrule this by uncommenting and completing the following line.
 #
-#JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.log.loggerFactory="
+#JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.log.initializer="
 
 #
 # Set up apache commons logging to use the ACS adapter.
@@ -508,14 +517,28 @@ else
 fi
 
 ###
-### -------------  "remoteDebug" handling  ---------------
+### -------------  "debugport" handling  ---------------
 ###
 if [ "$CL_DEBUGPORT" ]; then
-  JAVA_OPTIONS="$JAVA_OPTIONS -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$CL_DEBUGPORT -Djava.compiler=NONE"
+  JAVA_OPTIONS="$JAVA_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=$CL_DEBUGPORT"
 
   ACS_LOG_INFO "acsStartJava" "The JVM will accept a remote debugger on port $CL_DEBUGPORT"
 fi
-### ---------- End of "remoteDebug" handling -------------
+### ---------- End of "debugport" handling -------------
+
+
+
+###
+### -------------  "Mission Control - Flight Recorder" handling  ---------------
+###                TODO: See http://docs.oracle.com/javase/7/docs/technotes/tools/solaris/java.html
+###                      about -XX:FlightRecorderOptions parameters. 
+###
+if [ "$CL_ALLOWFLIGHTRECORDER" ]; then
+  JAVA_OPTIONS="$JAVA_OPTIONS -XX:+UnlockCommercialFeatures -XX:+FlightRecorder"
+
+  ACS_LOG_INFO "acsStartJava" "The JVM will allow an attached JMC to start the Flight Recorder."
+fi
+### ---------- End of "Mission Control - Flight Recorder" handling -------------
 
 
 
@@ -547,6 +570,8 @@ fi
 # which will be used instead of the default server or client settings and will also override all GC settings, -maxHeapSize and -threadStackSize.
 #
 # TODO Decide about setting a default heap memory limit (-Xmx) in case the user does not pass the -maxHeapSize option. Otherwise JVM uses 64 MB
+#
+# TODO: With the upgrade to JDK 1.7, we could investigate the new parallel GCs and use them instead of ConcMarkSweepGC.
 #
 if [ X"$JAVA_OPTIONS_MEMORY" = X ]
 then
