@@ -6,14 +6,14 @@ import java.util.logging.LogRecord;
 
 import junit.framework.TestCase;
 
-import org.apache.avalon.framework.configuration.DefaultConfiguration;
-import org.jacorb.orb.BufferManager;
 import org.jacorb.orb.giop.ServiceContextTransportingOutputStream;
 import org.omg.CORBA.MARSHAL;
 import org.omg.CORBA.StringHolder;
 import org.omg.CORBA.portable.OutputStream;
 
 import alma.acs.container.ContainerSealant;
+import alma.acs.logging.AcsLogger;
+import alma.acs.logging.ClientLogManager;
 import alma.acs.testsupport.LogRecordCollectingLogger;
 import alma.jconttest.ComponentWithBadNullsOperations;
 import alma.jconttest.ComponentWithBadNullsImpl.ComponentWithBadNullsImpl;
@@ -35,10 +35,15 @@ public class CorbaNullFinderTest extends TestCase
 	 * If this test fails after a jacorb update, the logic of the Null Finder must be revisited.
 	 */
 	public void testJacorbNullBehavior() throws Exception {
+		
+		// Below we'll need an ORB... 
+		AcsLogger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("testOrbLogger", false);
+		AcsCorba acsCorba = new AcsCorba(logger);
+		acsCorba.initCorbaForClient(false);
+		
 		// Jacorb uses ReplyOutputStream, but its base class ServiceContextTransportingOutputStream is easier to construct
 		// and should be similar enough for this test.
-		BufferManager.configure(new DefaultConfiguration("dummy")); // otherwise jacorb exception later if unconfigured
-		OutputStream out = new ServiceContextTransportingOutputStream(); 
+		OutputStream out = new ServiceContextTransportingOutputStream(acsCorba.getORB());
 		
 		Struct2 myStruct2 = ComponentWithBadNullsImpl.createGoodStruct2();
 		// the good data should marshal without exception
@@ -52,7 +57,7 @@ public class CorbaNullFinderTest extends TestCase
 		}
 		catch (MARSHAL ex) {
 			// expected
-			assertEquals("org.omg.CORBA.MARSHAL: Null References  vmcid: 0x0  minor code: 0  completed: No", ex.toString());
+			assertEquals("org.omg.CORBA.MARSHAL: Cannot marshall null string.", ex.toString());
 		}
 			
 		// null enum

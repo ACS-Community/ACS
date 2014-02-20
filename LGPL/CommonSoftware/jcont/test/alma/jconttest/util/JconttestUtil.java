@@ -2,6 +2,7 @@ package alma.jconttest.util;
 
 import java.util.logging.Level;
 
+import org.jacorb.config.ConfigurationException;
 import org.omg.CORBA.ORB;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
@@ -36,7 +37,7 @@ public class JconttestUtil
 				if (orbLevelTimeout < 0) {
 					throw new IllegalArgumentException("system-level roundtrip timeout must be non-negative!");
 				}
-			} catch (org.apache.avalon.framework.configuration.ConfigurationException e){
+			} catch (ConfigurationException e){
 				logger.log(Level.SEVERE, "Failed to read the system-level ORB timeout setting.", e);
 				throw new AcsJCouldntPerformActionEx();
 			}

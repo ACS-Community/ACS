@@ -62,11 +62,14 @@ unset POSIXLY_CORRECT
 
 ### ---------- End of Command Line Parsing -------------
 
+
 #--------------------------------------------------------------------------------
-#figure out the remote debuggable port
+# For historical reasons we enable remote debugging if stdout debug logs are enabled.
+# If we clean this up (e.g. by using a dedicated flag), then we could also  
+# pass the -debugport flag to acsStartJava instead of setting up the JVM debug options directly.
+# The container will listen for debuggers one port above its ORB port. 
 if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
 then
-
     temp="$ORIGINAL_COMMAND_LINE"
     RDB_PORT=${temp##*OAport }
     RDB_PORT=${RDB_PORT%%' '*}
@@ -106,4 +109,4 @@ export JAVA_OPTIONS="$JAVA_OPTIONS -Dacs.components.classpath.jardirs=\"$compone
 export JVM_GC_LOG_NAME=$CONTAINER_NAME
 
 
-acsStartJava -endorsed -DORBgiopMaxMsgSize=25000000 -DACS.manager=$CL_MANAGERREF $ORIGINAL_COMMAND_LINE -containerName $CONTAINER_NAME 
+acsStartJava -endorsed -DACS.manager=$CL_MANAGERREF $ORIGINAL_COMMAND_LINE -containerName $CONTAINER_NAME 
