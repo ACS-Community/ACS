@@ -124,8 +124,7 @@ public class AcsNcReconnectionCallback extends OSReconnectionCallbackPOA {
 			throw ex2;
 		}
 		
-		// HSO: Is this _duplicate call useful, or a C++ literal translation?
-		ecf_=(EventChannelFactory) ecf._duplicate();
+		ecf_= ecf;	
 		
 		ReconnectionCallback callback = ReconnectionCallbackHelper.narrow(services.activateOffShoot(this));
 		callback_id_ = registry.register_callback(callback);

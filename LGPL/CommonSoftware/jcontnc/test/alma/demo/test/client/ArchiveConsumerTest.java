@@ -92,7 +92,8 @@ public class ArchiveConsumerTest extends ComponentClientTestCase implements Arch
 
 		String isoTimeStamp = IsoDateFormat.formatDate(new Date(UTCUtility.utcOmgToJava(timeStamp)));
 		m_logger.info("ArchivingChannel data received: timeStamp=" + isoTimeStamp + ", device=" + device + 
-				", property=" + property + ", value(type)=" + value.getClass().getSimpleName());
+				", property=" + property + 
+				", value(type)=" + ( value != null ? value.getClass().getSimpleName() : "null" ) );
 	}
 
 }

@@ -65,6 +65,25 @@ module ADMINTEST1
      * and consumers for the component.
      */
     const string CHANNELNAME_ADMINTEST1 = "testingChannel";
+    
+    
+    /**
+     * This interface is a bit unrelated, but it was convenient to not use a separate IDL file.
+     */
+    interface InterfaceForNestedEventDefinition
+    {
+        struct NestedEvent // c.f. SampDataBlock in acssamp.idl
+        {
+            any sampVal;
+        };
+        typedef sequence<NestedEvent> NestedEventSeq;
+    };
+    
+    struct NotNestedEvent 
+    {
+        any val;
+    };
+    typedef sequence<NotNestedEvent> NotNestedEventSeq;
 };
 
 #endif

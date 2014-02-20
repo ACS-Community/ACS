@@ -907,6 +907,8 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			// ignore any exception, since push_structured_event_called is only meant for 
 			// notification, to enable special tests or other exotic purposes.
 			// In this case we also keep shouldProcessEvent=true, just in case.
+			// TODO: It may be better to treat the exception like shouldProcessEvent==false
+			//       since non-struct event data will cause more errors further down.
 		}
 
 		// got a subclass 'veto'?

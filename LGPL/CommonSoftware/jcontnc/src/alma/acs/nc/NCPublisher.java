@@ -557,21 +557,20 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			throw ex;
 		}
 		IDLEntity customStructEntity = (IDLEntity)customStruct;
-		
 		String typeName = customStructEntity.getClass().getSimpleName();
-		// event to send
+		
+		// Event to send 
+		// Header: domain_name = "ALMA", type_name = simple name of IDL struct, event_name = ""
 		StructuredEvent event = getCORBAEvent(typeName, "");
 
-		// Store the info for Exec/I&T into the event.
-		// create the any
+		// Send event meta data (client name, timestamp, counter) in the accompanying EventDescription object,
+		// which we transmit as the Any field 'remainder_of_body'.
 		event.remainder_of_body = services.getAdvancedContainerServices().getAny();
-		// get the useful data which includes the component's name, timestamp, and event count
 		EventDescription descrip = new EventDescription(services.getName(),
 				alma.acs.util.UTCUtility.utcJavaToOmg(System.currentTimeMillis()), count.getAndIncrement());
-		// store the IDL struct into the structured event
 		EventDescriptionHelper.insert(event.remainder_of_body, descrip);
 
-		// preallocate one name/value pair
+		// In the 'filterable_data' field, we send our IDL struct coded as an Any
 		event.filterable_data = new Property[1];
 		event.filterable_data[0] = new Property(
 				alma.acscommon.DEFAULTDATANAME.value, anyAide.complexObjectToCorbaAny(customStructEntity));

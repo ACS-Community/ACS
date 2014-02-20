@@ -29,12 +29,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.Any;
+import org.omg.CORBA.TCKind;
+import org.omg.CORBA.TypeCode;
+import org.omg.CORBA.TypeCodePackage.BadKind;
 import org.omg.CORBA.portable.IDLEntity;
 
+import alma.ACS.booleanSeqHelper;
 import alma.ACS.doubleSeqHelper;
 import alma.ACS.floatSeqHelper;
 import alma.ACS.longSeqHelper;
 import alma.ACS.stringSeqHelper;
+import alma.ACS.uLongLongSeqHelper;
+import alma.ACS.uLongSeqHelper;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
@@ -240,8 +246,8 @@ class AnyAide {
 		}
 
 		try {
-			// get at the static insert method defined for all IDL structures
-			// and sequences.
+			// get at the static insert method defined for all IDL structures and sequences.
+			// TODO: Cache it in a struct - method map, perhaps using weak references.
 			Method insert = structHelperClass.getMethod("insert", new Class[] { Any.class, obj.getClass() });
 
 			// arguments to insert method are just the newly created Any and the
@@ -279,6 +285,9 @@ class AnyAide {
 	 * CORBA types such as long, this method will extract the long and embed it
 	 * within a java.lang.Long object. In the event of failure, a null object is
 	 * returned.
+	 * <p>
+	 * Sequences / arrays are only supported for string, float, double, long and boolean
+	 * when using the typedefs from acscommon.idl such as "typedef sequence <float> floatSeq"
 	 * 
 	 * @param any
 	 *            A CORBA any containing some sort of CORBA object
@@ -294,7 +303,6 @@ class AnyAide {
 		// get the CORBA typecode enum.
 		// we need this to deal with the simple types
 		org.omg.CORBA.TCKind anyKind = any.type().kind();
-		String anyType = any.type().toString();
 
 		// within this switch block, returnValue is set
 		// to be some real (native) Java object rather
@@ -303,127 +311,104 @@ class AnyAide {
 		// $ACSROOT/include/baciValue.h (the "Type" enum).
 		switch (anyKind.value()) {
 		case org.omg.CORBA.TCKind._tk_null:
-			// this case is quite simple. A null
-			// CORBA reference is null in Java as
-			// well
+			// this case is quite simple. A null CORBA reference is null in Java as well
 			returnValue = null;
 			break;
 
 		case org.omg.CORBA.TCKind._tk_string:
-			// simple type in which we have an
-			// extract method
+			// simple type in which we have an extract method
 			returnValue = any.extract_string();
 			break;
 
 		case org.omg.CORBA.TCKind._tk_double:
-			// simple type in which we have an
-			// extract method
+			// simple type in which we have an extract method
 			returnValue = new Double(any.extract_double());
 			break;
 
 		case org.omg.CORBA.TCKind._tk_long:
-			// simple type in which we have an
-			// extract method
+			// simple type in which we have an extract method
 			returnValue = new Integer(any.extract_long());
 			break;
 
 		case org.omg.CORBA.TCKind._tk_alias:
-			if (anyType.compareTo("alma::ACS::Pattern") == 0) {
-				// simple type in which we have an
-				// extract method
-				returnValue = new Integer(any.extract_ulong());
-			} else if (anyType.compareTo("sequence <double>") == 0 || anyType.compareTo("alma::ACS::doubleSeq") == 0) {
+			String id = null;
+			try {
+				id = any.type().id();
+			} catch (BadKind ex) {
+				// should never happen for a tk_alias
+			}
+			switch (id) {
+			case "IDL:alma/ACS/longSeq:1.0":
+				returnValue = longSeqHelper.extract(any);
+				break;
+			case "IDL:alma/ACS/uLongSeq:1.0":
+				returnValue = uLongSeqHelper.extract(any);
+				break;
+			case "IDL:alma/ACS/uLongLongSeq:1.0":
+				returnValue = uLongLongSeqHelper.extract(any);
+				break;
+			case "IDL:alma/ACS/floatSeq:1.0":
+				returnValue = floatSeqHelper.extract(any);
+				break;
+			case "IDL:alma/ACS/doubleSeq:1.0":
 				returnValue = doubleSeqHelper.extract(any);
-			}
-			// IDL://alma:ACS:longSeq:1.0
-			else if (anyType.compareTo("sequence <long>") == 0 || anyType.compareTo("alma::ACS::longSeq") == 0) {
-				returnValue = alma.ACS.longSeqHelper.extract(any);
-			}
-			// IDL://alma:ACS:strSeq:1.0
-			else if (anyType.compareTo("sequence <string>") == 0 || anyType.compareTo("alma::ACS::stringSeq") == 0) {
-				returnValue = alma.ACS.stringSeqHelper.extract(any);
-			}
-			// IDL://alma:ACS:floatSeq:1.0
-			else if (anyType.compareTo("sequence <float>") == 0 || anyType.compareTo("alma::ACS::floatSeq") == 0) {
-				returnValue = alma.ACS.floatSeqHelper.extract(any);
-			} else {
-				m_logger.severe("Alias unexpected:" + anyType);
+				break;
+			case "IDL:alma/ACS/stringSeq:1.0":
+				returnValue = stringSeqHelper.extract(any);
+				break;
+			case "IDL:alma/ACS/booleanSeq:1.0":
+				returnValue = booleanSeqHelper.extract(any);
+				break;
+			default:
+				// who knows if there could be "IDL:alma/ACS/patternSeq:1.0" etc
+				m_logger.severe("Got an unexpected tk_alias with id=" + id);
 			}
 			break;
 
 		case org.omg.CORBA.TCKind._tk_ulong:
-			// simple type in which we have an
-			// extract method
-
+			// simple type in which we have an extract method
 			returnValue = new Integer(any.extract_ulong());
 			break;
 
-		// handle all sequences here
-		case org.omg.CORBA.TCKind._tk_sequence:
-			// IDL://alma:ACS:doubleSeq:1.0
-			if (anyType.compareTo("sequence <double>") == 0) {
-				returnValue = doubleSeqHelper.extract(any);
-			}
-			// IDL://alma:ACS:longSeq:1.0
-			else if (anyType.compareTo("sequence <long>") == 0) {
-				returnValue = alma.ACS.longSeqHelper.extract(any);
-			}
-			// IDL://alma:ACS:strSeq:1.0
-			else if (anyType.compareTo("sequence <string>") == 0) {
-				returnValue = alma.ACS.stringSeqHelper.extract(any);
-			}
-			// IDL://alma:ACS:floatSeq:1.0
-			else if (anyType.compareTo("sequence <float>") == 0) {
-				returnValue = alma.ACS.floatSeqHelper.extract(any);
-			}
-			// pretty severe situation if we cannot find
-			// the sequence type using normal BACI value types
-			else {
-				m_logger.severe("Sequence unexpected:" + anyType);
-			}
-			break;
-
 		case org.omg.CORBA.TCKind._tk_longlong:
-			// simple type in which we have an
-			// extract method
+			// simple type in which we have an extract method
 			returnValue = new Long(any.extract_longlong());
 			break;
 
 		case org.omg.CORBA.TCKind._tk_ulonglong:
-			// simple type in which we have an
-			// extract method
+			// simple type in which we have an extract method
 			returnValue = new Long(any.extract_ulonglong());
 			break;
 
 		case org.omg.CORBA.TCKind._tk_float:
-			// simple type in which we have an
-			// extract method
+			// simple type in which we have an extract method
 			returnValue = new Float(any.extract_float());
 			break;
-
-		case org.omg.CORBA.TCKind._tk_enum:
-			// very special case. at the moment,
-			// we just support enumerations defined within
-			// the uppermost IDL module
-			try {
-				String localHelperName = anyType + "Helper";
-				localHelperName = localHelperName.replaceAll("::", ".");
-				Class localHelper = Class.forName(localHelperName);
-
-				// Extract method of helper class
-				// Need access to this to convert an Any to the Java language
-				// type.
-				Method extract = localHelper.getMethod("extract", new Class[] { Any.class });
-				Object[] args = { any };
-				returnValue = extract.invoke(null, args);
-			} catch (Exception ex) {
-				m_logger.log(Level.SEVERE, "Failed to extract enum!", ex);
-			}
-			break;
+			
+// not yet ported for jacorb 3.4, where any.type().toString() has changed. Let's see if we need it.
+//		case org.omg.CORBA.TCKind._tk_enum:
+//			// very special case. at the moment,
+//			// we just support enumerations defined within
+//			// the uppermost IDL module
+//			try {
+//				String localHelperName = anyType + "Helper";
+//				localHelperName = localHelperName.replaceAll("::", ".");
+//				Class localHelper = Class.forName(localHelperName);
+//
+//				// Extract method of helper class
+//				// Need access to this to convert an Any to the Java language
+//				// type.
+//				Method extract = localHelper.getMethod("extract", new Class[] { Any.class });
+//				Object[] args = { any };
+//				returnValue = extract.invoke(null, args);
+//			} catch (Exception ex) {
+//				m_logger.log(Level.SEVERE, "Failed to extract enum!", ex);
+//			}
+//			break;
 
 		// pretty bad if we get this far!
 		default:
-			m_logger.severe("Could not extract the any:" + anyType);
+			m_logger.severe("Could not extract an any of type " + any.type().toString());
 			break;
 		}
 
@@ -465,27 +450,27 @@ class AnyAide {
 				//       (which is implied by always calling complexAnyToObject in push_structured_event) 
 
 				// Derive the Java package from the id. 
-				// Note that we can't use the TypeCode#toString() method which gives a nice qualified name for JacORB, but perhaps not for other ORB impls.
 				// First assume that the type is not defined nested inside an interface 
-				qualHelperClassName = corbaStructToJavaClass(sequenceType.id(), false) + "SeqHelper";
+				qualHelperClassName = corbaStructToJavaClass(sequenceType, false) + "SeqHelper";
 				try {
 					localHelper = Class.forName(qualHelperClassName);
 				} catch (ClassNotFoundException ex) {
 					// it could be that we are dealing with a sequence of nested structs
-					qualHelperClassName = corbaStructToJavaClass(sequenceType.id(), true) + "SeqHelper";
+					qualHelperClassName = corbaStructToJavaClass(sequenceType, true) + "SeqHelper";
 					localHelper = Class.forName(qualHelperClassName);
 				}
 			} 
 			else {
-				// @TODO: check the effect of nested event structs (defined inside an interface), whether "Package" must be inserted.
-				// If necessary, also call method corbaStructToJavaClass to find the correct class name
-				qualHelperClassName = any.type() + "Helper";
+				// @TODO: if we deal with nested event structs (defined inside an interface), 
+				//        modify the boolean param in the call to corbaStructToJavaClass.
+				qualHelperClassName = corbaStructToJavaClass(any.type(), false) + "Helper";
 				qualHelperClassName = qualHelperClassName.replaceAll("::", ".");
 				localHelper = Class.forName(qualHelperClassName);
 			}
 
 			// Extract method of helper class
 			// Need access to this to convert an Any to the Java language type.
+			// TODO: Cache it in a struct - method map, perhaps using weak references.
 			Method extract = localHelper.getMethod("extract", new Class[] { Any.class });
 			Object[] args = { any };
 
@@ -517,30 +502,44 @@ class AnyAide {
 
 	/**
 	 * Derives the qualified Java class name for an IDL-defined struct from the Corba ID of that struct.
+	 * See also jacorb-specific method "TypeCode#idlTypeName"
 	 * 
 	 * @param isNestedStruct  if true, "Package" will be inserted according to 
 	 *                        <i>"IDL to Java LanguageMapping Specification" version 1.2: 1.17 Mapping for Certain Nested Types</i> apply.
 	 */
-	protected String corbaStructToJavaClass(String id, boolean isNestedStruct)
+	protected String corbaStructToJavaClass(TypeCode tc, boolean isNestedStruct)
 			throws IllegalArgumentException 
 	{
-		String prefix = "IDL:";
-		String suffix = ":1.0";
-		if (!id.startsWith(prefix) || !id.endsWith(suffix)) {
-			throw new IllegalArgumentException("Struct ID is expected to start with 'IDL:' and end with ':1.0'");
-		}
-		String qualNameWithSlashes = id.substring(prefix.length(), id.length() - suffix.length());
-		String qualName = qualNameWithSlashes.replace('/', '.');
-		if (isNestedStruct) {
-			int lastDotIndex = qualName.lastIndexOf('.');
-			if (lastDotIndex > 0) {
-				String className = qualName.substring(lastDotIndex + 1);
-				String jPackage = qualName.substring(0, lastDotIndex);
-				jPackage += "Package."; // defined in IDL-Java mapping spec
-				qualName = jPackage + className;
+		String qualName = null;
+		
+		if (tc.kind() == TCKind.tk_struct) {
+			String prefix = "IDL:";
+			String suffix = ":1.0";
+			try {
+				String id = tc.id();
+				if (!id.startsWith(prefix) || !id.endsWith(suffix)) {
+					throw new IllegalArgumentException("Struct ID is expected to start with 'IDL:' and end with ':1.0'");
+				}
+				String qualNameWithSlashes = id.substring(prefix.length(), id.length() - suffix.length());
+				qualName = qualNameWithSlashes.replace('/', '.');
+			} catch (BadKind ex) {
+				// should never happen since we call it only for tk_struct
+				throw new IllegalArgumentException(ex);
 			}
+			if (isNestedStruct) {
+				int lastDotIndex = qualName.lastIndexOf('.');
+				if (lastDotIndex > 0) {
+					String className = qualName.substring(lastDotIndex + 1);
+					String jPackage = qualName.substring(0, lastDotIndex);
+					jPackage += "Package."; // defined in IDL-Java mapping spec
+					qualName = jPackage + className;
+				}
+			}
+			return qualName;
 		}
-		return qualName;
+		else {
+			throw new IllegalArgumentException("Expected TypeCode for a struct, but got TypeCode #" + tc.kind().value());
+		}
 	}
 
 }

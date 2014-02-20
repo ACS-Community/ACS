@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/endorsed/jacorb-omgapi.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="/JACORB_HOME/src"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb-services.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ACS_acsContainerServices"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
@@ -29,7 +31,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/AcsNCTraceLogLTS.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
