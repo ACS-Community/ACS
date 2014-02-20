@@ -7,9 +7,9 @@ import static alma.acs.nc.sm.generated.EventSubscriberSignal.setUpEnvironment;
 import static alma.acs.nc.sm.generated.EventSubscriberSignal.startReceivingEvents;
 import static alma.acs.nc.sm.generated.EventSubscriberSignal.stopReceivingEvents;
 import static alma.acs.nc.sm.generated.EventSubscriberSignal.suspend;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
@@ -182,29 +182,10 @@ public class EventSubscriberSmEngineTest extends JUnit4StandaloneTestBase
 	@Test
 	public void testGetApplicableSignals() {
 		Set<EventSubscriberSignal> signals = engine.getScxmlEngine().getApplicableSignals();
-// The following works in Eclipse with J2SE 7, but not with ACS's JDK from the Makefile. Dunno why.
-//		assertThat(signals, allOf(
-//				hasSize(1), 
-//				hasItem(setUpEnvironment)
-//				));
-// Comile error: cannot find symbol
-//		symbol  : method allOf(org.hamcrest.Matcher<java.util.Collection<? extends java.lang.Object>>,org.hamcrest.Matcher<java.lang.Iterable<? super alma.acs.nc.sm.generated.EventSubscriberSignal>>
-// Instead, use two asserts as a workaround:
-		assertThat(signals, hasSize(1)); 
-		assertThat(signals, hasItem(setUpEnvironment));
-		
+		assertThat(signals, contains(setUpEnvironment));
 		engine.fireSignal(setUpEnvironment);
 		signals = engine.getScxmlEngine().getApplicableSignals();
-//		assertThat(signals, allOf(
-//				hasSize(2), 
-//				hasItem(cleanUpEnvironment),
-//				hasItem(startReceivingEvents)
-//				));
-// Same workaround again:
-		assertThat(signals, hasSize(2)); 
-		assertThat(signals, hasItem(cleanUpEnvironment));
-		assertThat(signals, hasItem(startReceivingEvents));
-
+		assertThat(signals, containsInAnyOrder(cleanUpEnvironment, startReceivingEvents)); // verifies also set size == 2
 	}
 
 	/**
