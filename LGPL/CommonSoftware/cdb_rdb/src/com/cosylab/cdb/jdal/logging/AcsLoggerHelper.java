@@ -22,6 +22,7 @@ package com.cosylab.cdb.jdal.logging;
 
 import org.slf4j.impl.ACSLoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
+import org.slf4j.impl.HibernateLoggerHelper;
 
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
@@ -89,11 +90,11 @@ public class AcsLoggerHelper {
 		
 		// default config for hibernate loggers (which are created outside of this class)
 		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		String hibernateDefaultLoggerName = ACSLoggerFactory.HIBERNATE_LOGGER_NAME_PREFIX + '@' + sharedLoggerName;
+		String hibernateDefaultLoggerName = HibernateLoggerHelper.HIBERNATE_LOGGER_NAME_PREFIX + '@' + sharedLoggerName;
 		if (!logConfig.hasCustomConfig(hibernateDefaultLoggerName)) {
 			setHibernateLogLevels(AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.WARNING);
 		}
-		String hibernateSqlLoggerName = ACSLoggerFactory.HIBERNATE_SQL_LOGGER_NAME_PREFIX + '@' + sharedLoggerName;
+		String hibernateSqlLoggerName = HibernateLoggerHelper.HIBERNATE_SQL_LOGGER_NAME_PREFIX + '@' + sharedLoggerName;
 		if (!logConfig.hasCustomConfig(hibernateSqlLoggerName)) {
 			setHibernateSqlLogLevels(AcsLogLevelDefinition.DEBUG, AcsLogLevelDefinition.DEBUG);
 		}
@@ -125,14 +126,14 @@ public class AcsLoggerHelper {
 	
 	public void setHibernateLogLevels(AcsLogLevelDefinition localLevel, AcsLogLevelDefinition remoteLevel) {
 		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		String name = ACSLoggerFactory.HIBERNATE_LOGGER_NAME_PREFIX + '@' + loggerName;
+		String name = HibernateLoggerHelper.HIBERNATE_LOGGER_NAME_PREFIX + '@' + loggerName;
 		logConfig.setMinLogLevelLocal(localLevel, name);
 		logConfig.setMinLogLevel(remoteLevel, name);
 	}
 	
 	public void setHibernateSqlLogLevels(AcsLogLevelDefinition localLevel, AcsLogLevelDefinition remoteLevel) {
 		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		String name = ACSLoggerFactory.HIBERNATE_SQL_LOGGER_NAME_PREFIX + '@' + loggerName;
+		String name = HibernateLoggerHelper.HIBERNATE_SQL_LOGGER_NAME_PREFIX + '@' + loggerName;
 		logConfig.setMinLogLevelLocal(localLevel, name);
 		logConfig.setMinLogLevel(remoteLevel, name);
 	}
