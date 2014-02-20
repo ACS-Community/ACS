@@ -62,7 +62,7 @@ basic_tools = [('gcc','gcc --version','4.1.2'),\
               ('texinfo','info --version','4.8'),\
               ('diffutils','diff --version','2.8.1'),\
               ('groff','true | groff -v','1.18.1.1'),\
-              ('java','java -version','(build 1.6.0_35'),\
+              ('java','java -version','(build 1.7.0_51'),\
               ('Tcl','echo "puts [set ::tcl_patchLevel]; exit" | tclsh','8.4.19'),\
               ('Tk','echo "package require Tk; puts [set ::tk_patchLevel]; exit" | tclsh','8.4.19'),\
               ('incr Tcl','echo "puts [package require Itcl]; exit" | tclsh','3.4'),\
@@ -77,8 +77,8 @@ basic_tools = [('gcc','gcc --version','4.1.2'),\
 
 other_tools = [('ACE','more $ACE_ROOT/VERSION','5.8.1'),\
               ('TAO','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/VERSION','1.8.1'),\
-              ('JacORB','more $JACORB_HOME/doc/REL_NOTES','2.2'),\
-              ('Ant','$ANT_HOME/bin/ant -version','1.7.1'),\
+              ('JacORB','$JACORB_HOME/bin/jaco org.jacorb.util.Version','JacORB V3.4'),\
+              ('Ant','$ANT_HOME/bin/ant -version','1.9.3'),\
               ('doxygen','doxygen --version','1.7.0'),\
               ('python','python -V','2.6.5'),\
               ('mico','cat $ALMASW_ROOTDIR/$ALMASW_RELEASE/mico/include/mico/version.h | grep MICO_VERSION | cut -d\'"\' -f2','2.3.13'),\
@@ -118,7 +118,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('ALMASW_RELEASE','--DUMP--'),\
                 ('ALMASW_ROOTDIR','--DUMP--'),\
                 ('ANT_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/ant'),\
-                ('CLASSPATH','$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar'),\
+                ('CLASSPATH','$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/jacorb-services.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar'),\
                 ('GNU_ROOT','/usr'),\
                 ('INTROOT','--DUMP--'),\
                 ('JACORB_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB'),\
