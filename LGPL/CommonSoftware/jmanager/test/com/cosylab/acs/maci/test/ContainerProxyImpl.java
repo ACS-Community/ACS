@@ -34,6 +34,11 @@ public class ContainerProxyImpl extends ContainerPOA {
 		this.name = name;
 	}
 
+	@Override
+	public int get_handle() {
+		return 0;
+	}
+	
 	/* (non-Javadoc)
 	 * @see si.ijs.maci.ContainerOperations#activate_COB(int, long, java.lang.String, java.lang.String, java.lang.String)
 	 */

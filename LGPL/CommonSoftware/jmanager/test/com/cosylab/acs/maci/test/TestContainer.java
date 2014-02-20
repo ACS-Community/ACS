@@ -57,6 +57,10 @@ public class TestContainer extends TestClient implements Container {
 		this(name, ClientType.CONTAINER, true);
 	}
 
+	@Override
+	public int get_handle() {
+		return handle;
+	}
 
 	/**
 	 * @see com.cosylab.acs.maci.Container#activate_COB(int, long executionId, java.lang.String, java.lang.String, java.lang.String)
