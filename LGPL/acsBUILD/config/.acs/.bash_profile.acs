@@ -1334,11 +1334,9 @@ else
 fi
 
 # We only add jar files to the CLASSPATH which cannot be picked up by the AcsSystemClassloader that the acsStartJava script enables.
+# For the time being we also add endorsed/jacorb-omgapi.jar because otherwise the javac compiler called by the acsMakefile would not see this jar. This may be replaced by setting the proper "endorseddirs" flag in the makefile.
 #
-# As of ACS 9.1, avalon.jar and logkit.jar installed by ACS is copied from the jacorb installation instead of keeping a copy in Tools/extjars,
-# so that we no longer add $JACORB_HOME/lib/avalon-framework-4.1.5.jar and $JACORB_HOME/lib/logkit-1.2.jar to the CLASSPATH here.
-# This avoids adding the same jar files twice on the classpath, with possible version conflicts.
-CLASSPATH=$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
+CLASSPATH=$JACORB_HOME/lib/endorsed/jacorb-omgapi.jar$PATH_SEP$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/jacorb-services.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
 
 #
 # Now that PATH and LD_LIBRARY_PATH are properly set, I first need
