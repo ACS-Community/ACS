@@ -64,8 +64,7 @@ public class AcsHolderPrinter
 		ps.println("public" + parser.getFinalString() + " class " + holderClassName);
 		ps.println("{");
 
-		// TODO-jacorb33
-		ps.println("\tpublic " + heldTypeName + " value;" + AcsAdapterForOldJacorb.getEnvironmentNL()); //Environment.NL);
+		ps.println("\tpublic " + heldTypeName + " value;" + Environment.NL);
 
 		ps.println("}");
 		

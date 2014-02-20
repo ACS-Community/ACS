@@ -3,11 +3,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry excluding="dummyentities/|unpacked_jars/" kind="src" path="test"/>
-	<classpathentry kind="src" path="src_generated"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/xmljbind.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/comphelpgen.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>

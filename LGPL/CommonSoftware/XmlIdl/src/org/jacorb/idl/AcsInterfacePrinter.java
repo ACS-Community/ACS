@@ -23,6 +23,7 @@ package org.jacorb.idl;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Set;
+import java.util.logging.Level;
 
 import alma.tools.idlgen.AcsXmlNamingExpert;
 
@@ -76,7 +77,7 @@ public class AcsInterfacePrinter
         interfce.printImport(ps);
         
         // TODO: Print ACS comment
-        interfce.printClassComment(/*"interface",*/ interfce.name, ps);
+        interfce.printClassComment("interface", interfce.name, ps);
 
         ps.println("public interface " + interfce.name);
 
@@ -115,8 +116,7 @@ public class AcsInterfacePrinter
             }
             while (e.hasMoreElements());
 
-            // TODO-jacorb33
-            ps.print(AcsAdapterForOldJacorb.getEnvironmentNL()); //Environment.NL);
+            ps.print(Environment.NL);
         }
 
         ps.println("{");
@@ -154,9 +154,8 @@ public class AcsInterfacePrinter
 
         if (! (resolvedTSpec instanceof ConstrTypeSpec))
         {
-            if (interfce.logger.isDebugEnabled())
-            {
-            	interfce.logger.debug("Illegal inheritance spec in Interface.unwindTypeDefs, not a constr. type but " +
+            if (interfce.logger.isLoggable(Level.FINE)) {
+            	interfce.logger.fine("Illegal inheritance spec in Interface.unwindTypeDefs, not a constr. type but " +
                              resolvedTSpec.getClass() + ", name " + scopedName );
             }
             parser.fatal_error("Illegal inheritance spec in Interface.unwindTypeDefs (not a constr. type): " +

@@ -218,9 +218,7 @@ public class JacorbVisitor extends JavaMappingGeneratingVisitor
 		// Visit structs defined inside the interface.
 		// TODO: Can there be the case that none of the operations contain XML and yet we find XML in the inner structs etc,
 		//       and if so, must we add the interface to xmlAwareIFs?
-		// TODO-jacorb33: body.v will become a Vector<Definition> and we can use "for (Definition def : body.v)"
-		for( Enumeration e = body.v.elements(); e.hasMoreElements(); ) {
-			Definition def = (Definition) e.nextElement();
+		for (Definition def : body.v) {
 			Declaration dec = def.get_declaration();
 			if (!(dec instanceof OpDecl)) {
 				def.accept(this);

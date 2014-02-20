@@ -44,7 +44,6 @@ public class AcsJacorbParser extends parser
 	 * We do not reuse the option parsing from {@link org.jacorb.idl.parser#compile(String[])}
 	 * because that comes bundled together with IDL parsing, which in turn calls cleanup() in the end 
 	 * and thus renders our parser useless for later code generation. 
-	 * At least this will be the case with jacorb33. 
 	 * This dependency of code generation on the parser comes from the jacorb IDL tree node classes 
 	 * that reference some static parser fields.
 	 * <p>
@@ -57,9 +56,7 @@ public class AcsJacorbParser extends parser
 	 */
 	public void init(String[] args, JacorbVisitor jacorbVisitor) throws IOException {
 		
-		// TODO-jacorb33: enable initLogging(), remove init()
-//		initLogging();
-		init();
+		initLogging();
 		
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-d")) {
@@ -113,7 +110,7 @@ public class AcsJacorbParser extends parser
 		TypeMap.init();
 		openScope();
 		
-		// Standard compiler defines -- probably only needed for jacorb33 upgrade
+		// Standard compiler defines
 		lexer.define("JACORB", "1");
 		lexer.define("_PRE_3_0_COMPILER_", "1");
 		lexer.define("GIOP_1_1", "1");
