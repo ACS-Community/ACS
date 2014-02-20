@@ -71,7 +71,7 @@ public class DefaultCORBAService implements Runnable
 		serviceConfig.put("jacorb.verbosity", "1");
 
 		serviceConfig.put("org.omg.PortableInterceptor.ORBInitializerClass.bidir_init",
-				"org.jacorb.orb.connection.BiDirConnectionInitializer");
+				"org.jacorb.orb.giop.BiDirConnectionInitializer");
 
 		// add additional properties
 		if (serviceConfig != null)
