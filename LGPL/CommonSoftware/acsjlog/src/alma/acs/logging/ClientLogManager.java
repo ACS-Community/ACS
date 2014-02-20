@@ -34,15 +34,16 @@ import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
 import org.omg.DsLogAdmin.LogOperations;
-import org.slf4j.impl.ACSLoggerFactory;
+import org.slf4j.impl.HibernateLoggerHelper;
+import org.slf4j.impl.JacorbLoggerHelper;
 
 import si.ijs.maci.Manager;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.Logging.AcsLogServiceHelper;
 import alma.Logging.AcsLogServiceOperations;
+import alma.acs.logging.adapters.AcsJacorbLoggingInitializer;
 import alma.acs.logging.adapters.CommonsLoggingFactory;
-import alma.acs.logging.adapters.JacORBLoggerFactory;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.logging.config.LogConfigSubscriber;
@@ -716,7 +717,7 @@ public class ClientLogManager implements LogConfigSubscriber
 
 			frameworkLogger = getAcsLogger(loggerName, LoggerOwnerType.FrameworkLogger);
 			
-			if (frameworkName.equals(JacORBLoggerFactory.JACORB_LOGGER_NAME)) {
+			if (frameworkName.equals(JacorbLoggerHelper.JACORB_LOGGER_NAME)) {
 				// Suppress logs inside the call to the Log service, which could happen e.g. when policies are set and jacorb-debug is enabled.
 				// As of ACS 8, that trashy log message would be "get_policy_overrides returns 1 policies"
 				frameworkLogger.addIgnoreLogs("org.omg.DsLogAdmin._LogStub", "write_records");
@@ -745,16 +746,16 @@ public class ClientLogManager implements LogConfigSubscriber
 			// does not swamp the system with log messages.
 			AcsLogLevelDefinition minCustomLevel = null;
 			
-			if (frameworkName.startsWith(ACSLoggerFactory.HIBERNATE_LOGGER_NAME_PREFIX) ||
-				frameworkName.startsWith(ACSLoggerFactory.HIBERNATE_SQL_LOGGER_NAME_PREFIX) ||
+			if (frameworkName.startsWith(HibernateLoggerHelper.HIBERNATE_LOGGER_NAME_PREFIX) ||
+				frameworkName.startsWith(HibernateLoggerHelper.HIBERNATE_SQL_LOGGER_NAME_PREFIX) ||
 				frameworkName.startsWith(CommonsLoggingFactory.SCXML_LOGGER_NAME_PREFIX)) {
 			
 				minCustomLevel = AcsLogLevelDefinition.WARNING;
 			}
-			else if (frameworkName.equals(JacORBLoggerFactory.JACORB_LOGGER_NAME)) {
+			else if (frameworkName.equals(JacorbLoggerHelper.JACORB_LOGGER_NAME)) {
 				// jacorb loggers have a special property that we can use as default, 
 				// instead of blindly going for WARNING like we do with the other loggers.
-				AcsLogLevelDefinition level = JacORBLoggerFactory.getLogLevelFromJacorbVerbosity();
+				AcsLogLevelDefinition level = AcsJacorbLoggingInitializer.getLogLevelFromJacorbVerbosity();
 				if (level != null) {
 					minCustomLevel = level;
 				}

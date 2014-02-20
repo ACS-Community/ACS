@@ -119,11 +119,17 @@ public class JacORBFilter implements Filter {
 					message.startsWith("Retrying to connect to") ||
 					message.startsWith("ClientConnectionManager: created new ClientGIOPConnection") ||
 					message.startsWith("ClientConnectionManager: found ClientGIOPConnection") ||
-					message.equals("Listener exited") ) {
+					message.startsWith("Initialising ORB with ID") ||
+					message.startsWith("Set default native char codeset to") ||
+					message.startsWith("Set default native wchar codeset to") ||
+					message.equals("Listener exiting") ||
+					message.equals("ConsumerTie exited") ) {
 				record.setLevel(Level.FINEST);
 			}
 			// from INFO to stdout shortcut
-			else if (message.startsWith("BufferDump:") || 
+			else if (( message.startsWith("ClientGIOPConnection to ") || 
+					   message.startsWith("ServerGIOPConnection to ") ) && 
+					 message.contains(" BufferDump:\n" ) ||
 					message.startsWith("sendMessages(): ")) {
 				// The jacorb dumps from org.jacorb.orb.etf.StreamConnectionBase.flush()
 				// and org.jacorb.orb.giop.GIOPConnection.getMessage() are very special.

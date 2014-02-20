@@ -31,6 +31,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -64,6 +65,8 @@ public class DispatchingLogQueue {
     
     // 
     private final ReentrantLock flushLock;
+    
+    private final AtomicLong flushedLogCount = new AtomicLong(0);
     
     private final ScheduledThreadPoolExecutor executor;
     private ScheduledFuture<?> flushScheduleFuture;
@@ -232,9 +235,15 @@ public class DispatchingLogQueue {
             }
             return;
         }
-        boolean flushSuccess = true; // not yet used
+        boolean flushSuccess = true; // not yet used other than for debugging
         
-        while (realQueueSize() > 0) {
+        // If logs are produced very fast, for example ORB debug logs that are produced while dispatching logs to the Log service, 
+        // then the queue would never be seen as fully empty by our while loop. 
+        // To avoid getting stuck in an endless loop, we only require to flush as many logs as the queue contains in the beginning.
+        int initialQueueSize = realQueueSize();
+        long targetFlushCount = flushedLogCount.get() + initialQueueSize;
+        
+        while (flushedLogCount.get() < targetFlushCount) {
             Future<Boolean> future = flush();
             try {
                 // the future.get call blocks until the flush thread has completed
@@ -248,14 +257,14 @@ public class DispatchingLogQueue {
                     Thread.sleep(100);
                 } catch (Exception e2) {
                     // ignore
-                }                
+                }
             } finally {
                 if (DEBUG) {
                     System.out.println("DispatchingLogQueue#flushAllAndWait() called flush(), success = " + flushSuccess);
                 }
             }
+			}
         }
-    }
 
     
     /**
@@ -430,8 +439,10 @@ public class DispatchingLogQueue {
 
 		// Remove successfully sent records from the queue
 		for(LogRecord e: logRecords) {
-			if( !allFailures.contains(e) )
+			if( !allFailures.contains(e) ) {
 				queue.remove(e);
+				flushedLogCount.incrementAndGet();
+			}
 		}
 
 		lastFlushFinished = System.currentTimeMillis();

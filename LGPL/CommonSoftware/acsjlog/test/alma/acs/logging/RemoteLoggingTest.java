@@ -134,7 +134,12 @@ public class RemoteLoggingTest extends TestCase
 	 * @return true if simulated remote logging was initialized successfully
 	 */
 	private boolean initRemoteLogging(ClientLogManagerStandalone clm) {
-		ORB orb = ORB.init(); // unconfigured ORB will do, just needed to produce Any objects for sending remote logs.
+		// An unconfigured ORB will do, just needed to produce Any objects for sending remote logs.
+		// There is however the ugly side effect that the constructor org.jacorb.orb.ORBSingleton
+		// will use slf4j and thus call ClientLogManager#getAcsLogManager, so that we have another
+		// instance of ClientLogManager in addition to our ClientLogManagerStandalone instance.
+		ORB orb = ORB.init(); 
+		
 		Manager managerDummy = new _ManagerStub(); // will only be used for != null check.
 		
 		return clm.initRemoteLogging(orb, managerDummy, 1, true);

@@ -73,6 +73,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 	
+	$(RM) tatlogs
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
