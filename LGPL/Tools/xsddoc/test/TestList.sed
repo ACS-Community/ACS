@@ -15,3 +15,4 @@ s/\([0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]\)/12:00:00.000/g
 s/Host=\"[a-z,A-Z,0-9]*\"/Host=\"xxxxx\"/g
 s/\[1\] [0-9]*/[1] xxxx/g
 s/from file \/.*\(\/schemas\/.*\.xsd\)/from file ...\1/g
+s/Buildfile: [^ ]*build.xml/Buildfile: xxxx\/build.xml/g

@@ -1,5 +1,5 @@
 1 - === Processing
-1 - Buildfile: build.xml
+1 - Buildfile: xxxx/build.xml
 1 - 
 1 - xsddoc:
 1 -    [xsddoc] found schema testBACI.xsd
