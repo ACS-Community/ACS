@@ -69,7 +69,8 @@ public class AcsJacorbParser extends parser
 					usage(args, "-W");
 				}
 				int level = Integer.parseInt(args[++i]);
-				getLogger().setPriority(Environment.intToPriority(level));
+				logger.setLevel(Environment.intToLevel(level));
+				handler.setLevel(Environment.intToLevel(level));
 			}
 			else if (args[i].startsWith("-I")) {
 				GlobalInputStream.setIncludePath(args[i].substring(2));
