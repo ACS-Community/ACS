@@ -78,7 +78,7 @@ module alarmsystem
 		 * then this method
 		 */
 		void submitAlarm(
-			in alarmsystem::Triplet triplet,
+			in alarmsystem::Triplet myTriplet,
 			in boolean active,
 			in string sourceHostName,
 			in string sourceName,
