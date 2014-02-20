@@ -40,7 +40,6 @@
 # jar files to be installed
 #----------------------------
 INSTALL_FILES = ../lib/activation.jar \
-	../lib/avalon-framework.jar \
 	../lib/commons-beanutils-1.8.3.jar \
 	../lib/commons-cli-1.2.jar \
 	../lib/commons-collections-3.2.1.jar \
@@ -69,14 +68,12 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/jta-1.1.jar \
 	../lib/junit-dep-4.10.jar \
 	../lib/log4j-1.2.15.jar \
-	../lib/logkit.jar \
-	../lib/logkit.jar \
 	../lib/mockito-core-1.9.5.jar \
 	../lib/objenesis-1.2.jar \
 	../lib/prevayler-1.02.001.jar \
 	../lib/saxpath.jar \
 	../lib/servlet-api-3.0.jar \
-	../lib/slf4j-api-1.5.8.jar \
+	../lib/slf4j-api-1.7.5.jar \
 	../lib/sqltool.jar \
 	../lib/tablelayout.jar \
 	../lib/xalan.jar \
@@ -98,19 +95,15 @@ endif
 #
 # TARGETS
 # -------
-all:	copy_avalon_from_jacorb copy_logkit_from_jacorb do_all
+all:	copy_slf4japi_from_jacorb do_all
 	@echo " . . . 'all' done"
 
-copy_avalon_from_jacorb :
-	@echo "== Copying avalon 4.1.5 jar file used for building jacorb to this module."
-	cp -a $(JACORB_HOME)/lib/avalon-framework-4.1.5.jar ../lib/avalon-framework.jar
-
-copy_logkit_from_jacorb :
-	@echo "== Copying logkit 1.2 jar file used for building jacorb to this module."
-	cp -a $(JACORB_HOME)/lib/logkit-1.2.jar ../lib/logkit.jar
+copy_slf4japi_from_jacorb :
+	@echo "== Copying slf4j-api-1.7.5.jar used for building jacorb to this module."
+	cp -a $(JACORB_HOME)/lib/slf4j-api-1.7.5.jar ../lib/slf4j-api-1.7.5.jar
 
 clean : clean_all
-	@rm -f ../lib/avalon-framework.jar
+	@rm -f ../lib/slf4j-api-1.7.5.jar
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all

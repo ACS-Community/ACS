@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="lib" path="lib/activation.jar"/>
-	<classpathentry kind="lib" path="lib/avalon-framework.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/ejb3-persistence.jar"/>
 	<classpathentry kind="lib" path="lib/gnu-regexp-1.1.4.jar"/>
@@ -17,7 +16,7 @@
 	<classpathentry kind="lib" path="lib/jta-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/prevayler-1.02.001.jar"/>
 	<classpathentry kind="lib" path="lib/saxpath.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/tablelayout.jar"/>
 	<classpathentry kind="lib" path="lib/xalan_serializer.jar"/>
 	<classpathentry kind="lib" path="lib/xalan.jar"/>

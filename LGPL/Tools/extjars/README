@@ -4,9 +4,6 @@ activation.jar		jaf-1.0.1		      (4)	http://java.sun.com/webapps/download/Displa
                         JavaBeans Activation 
                         Framework 
 
-avalon-framework.jar	Avalon Framework 4.1.5	      (1)        http://jakarta.apache.org/avalon/framework/
-                        To be coordinated with JacORB since 2.2.4                             
-
 cosyframework.jar	cosyframework			(5)	
 
 cosyicons.jar		cosyicons			(5)
@@ -35,15 +32,6 @@ jnlp-1.0.1		Java Network Launch		(1)
                         Protocol 
 
 junit.jar		JUnit 3.8.1		        (3)	  http://www.junit.org/index.htm
-
-logkit.jar		LogKit 1.2		        (1)	  http://avalon.apache.org/logkit/	
-                        To be coordinated with JacORB since 2.2.4                             
-
-openorb-1.3.0.jar	 OpenORB	1.3.0		 (2)  http://openorb.sourceforge.net/
-
-openorb13Debug.jar	 OpenORB	1.3.0		 (2)  http://openorb.sourceforge.net/
-	
-openorb_tools-1.3.0.jar	 OpenORB	1.3.0		 (2)  http://openorb.sourceforge.net/
 
 prevayler		 prevayler-1.02.001		 (1)
 
