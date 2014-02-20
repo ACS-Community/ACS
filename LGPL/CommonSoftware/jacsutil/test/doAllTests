@@ -57,8 +57,9 @@ PROPS_CLASSLOADER="-Djava.system.class.loader=alma.acs.classloading.AcsSystemCla
 
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.classloading.TestMain myRunArg1
 
-# AcsComponentClassLoaderEnduranceTest currently only run by hand
-#java -cp $JACSUTIL $PROPS_CLASSLOADER org.junit.runners.JUnit4 alma.acs.classloading.AcsComponentClassLoaderEnduranceTest
+# AcsComponentClassLoaderEnduranceTest currently only run by hand.
+# Note that in case of OutOfMemoryError, we do not seem to get a dump even when setting the JVM properties -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath, and -XX:ErrorFile
+#java -cp $JACSUTIL $PROPS_CLASSLOADER org.junit.runner.JUnitCore alma.acs.classloading.AcsComponentClassLoaderEnduranceTest
 
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.algorithms.TopologicalSortTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.jhelpgen.GenTest

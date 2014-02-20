@@ -32,7 +32,7 @@ public class ThreadLoopRunnerTest extends TestCase
 	
 	public void testSimple() throws Exception {
 		
-		final LogRecordCollectingLogger logger2 = LogRecordCollectingLogger.getCollectingLogger("record-collecting logger");
+		final LogRecordCollectingLogger logger2 = LogRecordCollectingLogger.getCollectingLogger("testSimple_collecting_logger");
 		logger2.setDelegateLogger(logger);
 		
 		Runnable action = new Runnable() {
@@ -207,7 +207,7 @@ public class ThreadLoopRunnerTest extends TestCase
 	 */
 	public void testActionError() throws Exception {
 		
-		final LogRecordCollectingLogger logger2 = LogRecordCollectingLogger.getCollectingLogger("record-collecting logger");
+		final LogRecordCollectingLogger logger2 = LogRecordCollectingLogger.getCollectingLogger("testActionError_collecting_logger");
 		logger2.setDelegateLogger(logger);
 		
 		final String errorLogMsg = "Evil error in user runnable";

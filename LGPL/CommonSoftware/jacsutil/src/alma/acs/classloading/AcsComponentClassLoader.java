@@ -22,14 +22,11 @@
 package alma.acs.classloading;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-// import sun.misc.ClassLoaderUtil;
 
 import alma.acs.makesupport.AcsJarFileFinder;
 
@@ -43,6 +40,12 @@ import alma.acs.makesupport.AcsJarFileFinder;
  * property. 
  * The startup scripts must set this property.
  * Other jar files (e.g. ACS jars) must be in different directories than those given by this property.  
+ * <p>
+ * It is important to call the <code>close()</code> method when done with the classloader. 
+ * Since ACS 12.3 (JDK 1.7) this method is provided by the base class. 
+ * After changes in this area, make sure to manually run AcsComponentClassLoaderEnduranceTest to verify 
+ * that there are no memory problems (non-heap OutOfMemoryError) as were seen in the past 
+ * (http://jira.alma.cl/browse/COMP-4929). 
  * <p>
  * TODO-: this class has a few things in common with {@link alma.acs.classloading.AcsSystemClassLoader}, so
  * perhaps during some future refactoring a common base class could be extracted (between URLClassLoader and these).
@@ -69,8 +72,6 @@ public class AcsComponentClassLoader extends URLClassLoader
 	private final Logger logger;
 	private final String componentName;
 
-	private ClassLoaderUtil classLoaderUtil;
-
     /**
      * @param parent  parent class loader (currently the container class loader)
      * @param logger  the container logger, for debug output (see <code>PROPERTY_CLASSLOADERVERBOSE</code>). 
@@ -81,14 +82,6 @@ public class AcsComponentClassLoader extends URLClassLoader
 	{
 		super(new URL[0], parent);
 		
-		try {
-			classLoaderUtil = new ClassLoaderUtil(logger);
-		} catch (Exception ex) {
-			// @TODO (HSO): or should we simply fail with an exception?
-			logger.log(Level.SEVERE, "Component class loader for " + componentName + " will work without " + ClassLoaderUtil.class.getName() +
-					" which may cause JVM native memory problems.", ex);
-		}
-
 		verbose = Boolean.getBoolean(PROPERTY_CLASSLOADERVERBOSE);
 		this.logger = logger;
 		this.componentName = componentName;
@@ -107,7 +100,7 @@ public class AcsComponentClassLoader extends URLClassLoader
 		
 		for (int i = 0; i < allJars.length; i++) {
 			try {
-				addURL(allJars[i].toURL());
+				addURL(allJars[i].toURI().toURL());
 				if (verbose) {
 		        	logger.finer("added " + allJars[i].getAbsolutePath() + 
 		        			" to the path of the component classloader for " + componentName);
@@ -158,7 +151,7 @@ public class AcsComponentClassLoader extends URLClassLoader
 	{
 //		System.out.println("### load " + name);
 		// First, check if the class has already been loaded by this classloader
-		Class c = findLoadedClass(name);
+		Class<?> c = findLoadedClass(name);
 		if (c == null) {
 			// try to load the component impl class before delegating to the parent class loader.
 			try {
@@ -196,7 +189,7 @@ public class AcsComponentClassLoader extends URLClassLoader
 	 */
 	protected Class<?> findClass(String name) throws ClassNotFoundException
 	{
-		Class clazz = null;
+		Class<?> clazz = null;
 		try {
 			clazz = super.findClass(name);
         }
@@ -219,6 +212,11 @@ public class AcsComponentClassLoader extends URLClassLoader
         }
         super.finalize();
     }
+
+
+    /**
+     * @see ContextFinder
+     */
     public String getSourceObject(){
         return componentName;
     }
@@ -226,6 +224,10 @@ public class AcsComponentClassLoader extends URLClassLoader
      * Taken from ClientLogManager.stripKnownLoggerNamespacePrefix(). Maybe it should be nice to generalize it and put it somewhere else. 
      * Strips the prepended constants {@link #NS_CORBA}, {@link #NS_CONTAINER}, {@link #NS_COMPONENT} etc from the logger namespace.
      * This allows for a short, but possibly not unique display of the logger name.
+     * <p>
+     * TODO: This method is probably broken and must be checked. We may just pass contextName in the ctor.
+     * 
+     * @see ContextFinder
      */
     public String getProcessName(){
             /** logger namespace for CORBA classes (ORB, POAs, etc) */
@@ -256,19 +258,5 @@ public class AcsComponentClassLoader extends URLClassLoader
             }
             return loggerName;
     }
-    
-    /**
-     * This method will be added to {@link URLClassLoader} in JDK 1.7. 
-     * Until then, we do something similar already with JDK 1.6.
-     * <p>
-     * @TODO: Test / remove this once we use JDK 1.7
-     * @since ACS 9.1 
-     */
-    public void close() throws IOException {
-    	if (classLoaderUtil != null) {
-    		classLoaderUtil.releaseLoader(this);
-    	}
-    }
-
 }
 

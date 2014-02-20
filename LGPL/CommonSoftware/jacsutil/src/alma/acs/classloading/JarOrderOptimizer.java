@@ -65,9 +65,11 @@ public class JarOrderOptimizer implements Comparator<File>
 		"maciErrType.jar",
 		"maciSchemaBindings.jar", 
 		"castor.jar",
+		// "jacorb-omgapi.jar" separate under $JACORB_HOME/endorsed/
 		"jacorb.jar",
-		"avalon-framework.jar",
-		"logkit.jar",
+		"jacorb-services.jar",
+		"slf4j-api-1.7.5.jar",
+		"slf4j-acs.jar",
 		"acscomponent.jar",
 		"acsCallbacksSupport.jar",
 		"jbaci.jar",
