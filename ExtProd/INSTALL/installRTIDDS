@@ -36,6 +36,9 @@ else
     exit 3
 fi
 
+HOST_TAR="rtidds45f-host-"$BIT_ARCH"Linux.tar.gz.gpg"
+TARGET_TAR="rtidds45f-target-"$BIT_ARCH"Linux2.6gcc"$GCC_VER".tar.gz.gpg"
+
 # do we have acrobat reader on the machine ?
 which acroread 2&>1 /dev/null
 ACRO_READER=$?
