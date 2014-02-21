@@ -22,6 +22,7 @@ package acs.benchmark.nc.client;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
@@ -226,14 +227,9 @@ public class LocalPubSubTest extends ComponentClient
 			int subscriberReceptionTimeMillis = subscriberCallFuture.get(60, TimeUnit.SECONDS);
 			m_logger.info("Subscriber component done. It received " + numEvents + " events in " + subscriberReceptionTimeMillis + " ms.");
 			int expectedReceptionTimeMillis = numEvents * eventPeriodMillis;
-			// TODO: In Eclipse with JDK 1.7 it works more compact like this: 
-			// is(both(greaterThan((int)(0.90 * expectedReceptionTimeMillis))).and(lessThan((int)(1.1 * expectedReceptionTimeMillis))))
 			assertThat("It should have taken around " + expectedReceptionTimeMillis + " ms to receive the events.",
 					subscriberReceptionTimeMillis, 
-					is(greaterThan((int)(0.80 * expectedReceptionTimeMillis))));
-			assertThat("It should have taken around " + expectedReceptionTimeMillis + " ms to receive the events.",
-					subscriberReceptionTimeMillis, 
-					is(lessThan((int)(1.1 * expectedReceptionTimeMillis))));
+					is(both(greaterThan((int)(0.90 * expectedReceptionTimeMillis))).and(lessThan((int)(1.1 * expectedReceptionTimeMillis)))));
 			
 			// stop supplier (it was in 'infinite' sending mode)
 			supplierComp.interrupt();
