@@ -73,6 +73,12 @@ if [ $pidfile ] ; then
    verboseInfo "stored pid $pid in $pidfile"
 fi
 
+# This 1 second sleep after starting the commanded process is a workaround for a problem 
+# that showed up with JDK 1.7., where most tools started by acscommandcenter would simply 
+# stop showing output after the line "accStarter: stored pid .."
+sleep 1
+
+
 ## Testcode
 ## export ble="blubb" ; export -p ;echo $blu
 
