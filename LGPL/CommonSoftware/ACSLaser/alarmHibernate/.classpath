@@ -31,7 +31,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsalarmSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/slf4j-acs.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbrdb-pojos.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ACS_cdb_rdb"/>
 	<classpathentry kind="var" path="ACSROOT/lib/tmcdbGenerator.jar"/>

@@ -10,3 +10,4 @@ getAdvancedContainerServices
 ACS.log.minlevel.namedloggers not defined
 Logger jacorb@[[:alpha:]]*#[[:alpha:]]* created with custom log levels local=Info, remote=Info
 Caught a ConcurrentModificationException from ORB shutdown. This should be harmless.*id=537
+Using endorsed jar files in: -Djava.endorsed.dirs=/alma/ACS-[0-9.]*/JacORB/lib/endorsed:$
