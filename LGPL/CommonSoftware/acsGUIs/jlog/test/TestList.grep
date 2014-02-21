@@ -10,3 +10,4 @@ Jlog will use cache for
 object is activated
 Local file logger: Cache saved to
 ACS.log.minlevel.namedloggers not defined.
+Using endorsed jar files in: -Djava.endorsed.dirs=/alma/ACS-[0-9.]*/JacORB/lib/endorsed:$
