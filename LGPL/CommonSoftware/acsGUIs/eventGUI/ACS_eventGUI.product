@@ -3,6 +3,7 @@
 
 <product name="ACS_eventGUI product" id="ACS_eventGUI.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="2.0.0" useFeatures="false" includeLaunchers="false">
 
+
    <configIni use="default">
    </configIni>
 
@@ -11,13 +12,14 @@
 -Xmx1024m
 -Duser.timezone=UTC 
 -Djava.util.logging.manager=alma.acs.logging.AcsLogManager
--Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory 
--DACS.log.minlevel.namedloggers=&quot;jacorb@eventGUI=5,5&quot;
+-Djacorb.log.initializer=alma.acs.logging.adapters.AcsJacorbLoggingInitializer
+-DACS.log.minlevel.namedloggers=&quot;jacorb@eventGUI=5,5:scxml@eventGUI=5,5&quot;
 -Dorg.apache.commons.logging.LogFactory=alma.acs.logging.adapters.CommonsLoggingFactory</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
+
 
    <launcher name="eventGUI">
       <solaris/>
@@ -26,8 +28,10 @@
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="ACS_eventGUI" version="2.0.0"/>

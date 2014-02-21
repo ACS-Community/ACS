@@ -44,6 +44,8 @@
 	--> 
 	<target name="createJarsPlugin">
 		<exec executable="acsPluginBuilder">
+			<!-- Look for jars also in endorsed folders -->
+			<arg value="--endorsedDirs" />
 			<!-- -l: the jar files are linked (as opposed to included) in the plugin -->
 			<arg value="-l" />
 			<!-- Name of the jar plugin -->

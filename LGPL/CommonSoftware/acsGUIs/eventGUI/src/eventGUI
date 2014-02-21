@@ -34,7 +34,7 @@ $dir/lib/ACS_eventGUI/eventGUI \
      -vmargs \
      -DACS.manager=$MANAGER_REFERENCE \
      -DACS.tmp=$ACS_TMP \
-     -Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory \
+     -Djacorb.log.initializer=alma.acs.logging.adapters.AcsJacorbLoggingInitializer \
      -DACS.log.minlevel.namedloggers="jacorb@eventGUI=5,5:scxml@eventGUI=5,5" \
      -Dorg.apache.commons.logging.LogFactory=alma.acs.logging.adapters.CommonsLoggingFactory \
      $JAVA_OPTIONS
