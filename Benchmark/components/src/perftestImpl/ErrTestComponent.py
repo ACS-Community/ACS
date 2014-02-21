@@ -52,9 +52,9 @@ class ErrTestComponent(perftest__POA.ErrTestComponent,
             return self.getException(depth-1,
                                      BenchmarkErrTypeImpl.BenchmarkErr0ExImpl(exception=e, create=1))
     #------------------------------------------------------------------------------
-    def testExceptions(self, depth, err):
+    def testExceptions(self, depth, isError):
         '''
-        void testExceptions(in long depth, in boolean err) raises (ACSErr::ACSException, BenchmarkErrType::BenchmarkErr0Ex);
+        void testExceptions(in long depth, in boolean isError) raises (ACSErr::ACSException, BenchmarkErrType::BenchmarkErr0Ex);
         '''
         if depth < 0:
             print "Bad depth"
@@ -63,7 +63,7 @@ class ErrTestComponent(perftest__POA.ErrTestComponent,
         e = self.getException(depth,
                               BenchmarkErrTypeImpl.BenchmarkErr0ExImpl())
 
-        if err==1:
+        if isError==1:
             raise e
         return
     #------------------------------------------------------------------------------

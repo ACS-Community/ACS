@@ -29,7 +29,7 @@ void ErrTestComponentImpl::genException(int depth, BenchmarkErrType::BenchmarkEr
 }
 
 void 
-ErrTestComponentImpl::testExceptions(CORBA::Long depth, CORBA::Boolean err) 
+ErrTestComponentImpl::testExceptions(CORBA::Long depth, CORBA::Boolean isError)
 {
 	if (depth < 1)
 	{
@@ -37,7 +37,7 @@ ErrTestComponentImpl::testExceptions(CORBA::Long depth, CORBA::Boolean err)
 		throw myException.getBenchmarkErr0Ex();
 	}
 	genException(depth-1, 
-		BenchmarkErrType::BenchmarkErr0ExImpl(__FILE__,  __LINE__, "ErrTestComponentImpl::testExceptions"), err);
+		BenchmarkErrType::BenchmarkErr0ExImpl(__FILE__,  __LINE__, "ErrTestComponentImpl::testExceptions"), isError);
 }
 
 #include <maciACSComponentDefines.h>

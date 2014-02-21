@@ -52,7 +52,7 @@ module perftest
     ///Tests error system performance
     interface ErrTestComponent : BasePerfComp
     {
-      void testExceptions(in long depth, in boolean err) raises (BenchmarkErrType::BenchmarkErr0Ex);
+      void testExceptions(in long depth, in boolean _is) raises (BenchmarkErrType::BenchmarkErr0Ex);
     };
 
     ///Tests size of method return values

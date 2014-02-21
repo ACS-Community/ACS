@@ -24,7 +24,7 @@ class ErrTestComponentImpl: public virtual BasePerfCompImpl,
     /**
      * @throw BenchmarkErrType::BenchmarkErr0Ex
      */
-    virtual void testExceptions(CORBA::Long depth, CORBA::Boolean err);
+    virtual void testExceptions(CORBA::Long depth, CORBA::Boolean isError);
 };
 
 #endif

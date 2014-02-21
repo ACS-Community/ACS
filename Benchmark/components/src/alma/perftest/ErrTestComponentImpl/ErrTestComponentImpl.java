@@ -53,7 +53,7 @@ public class ErrTestComponentImpl extends BasePerfCompImpl implements ErrTestCom
 		}
 	}
     
-    public void testExceptions(int depth, boolean err) throws BenchmarkErr0Ex
+    public void testExceptions(int depth, boolean isError) throws BenchmarkErr0Ex
 	{
 	    //sanity check
 	    if (depth < 0)
@@ -64,7 +64,7 @@ public class ErrTestComponentImpl extends BasePerfCompImpl implements ErrTestCom
 
 	    BenchmarkErr0Ex except = getException(depth, new AcsJBenchmarkErr0Ex()).toBenchmarkErr0Ex();
 	    
-	    if(err)
+	    if(isError)
 		{
 		throw except;
 		}
