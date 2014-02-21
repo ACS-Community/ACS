@@ -12,3 +12,4 @@ Retrying to connect to
 Abnormal connection termination
 POA RootPOA
 POA ManagerPOA
+Using endorsed jar files in: -Djava.endorsed.dirs=/alma/ACS-[0-9.]*/JacORB/lib/endorsed:$
