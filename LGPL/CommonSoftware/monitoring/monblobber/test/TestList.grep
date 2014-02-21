@@ -1,2 +1,3 @@
 archive.configFile=archiveConfig.properties.blobberTest
 ACS.log.minlevel.namedloggers=hibernateSQL=2,2:hibernate=2,2
+Using endorsed jar files in: -Djava.endorsed.dirs=/alma/ACS-[0-9.]*/JacORB/lib/endorsed:$

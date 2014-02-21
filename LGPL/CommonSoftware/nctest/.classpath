@@ -26,7 +26,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeJavaNative.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCORBA.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
