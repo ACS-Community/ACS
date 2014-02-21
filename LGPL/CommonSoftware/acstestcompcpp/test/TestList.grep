@@ -5,3 +5,4 @@ Grep me out
 Local file logger
 Logging to log file
 Running the container with these arguments
+Using endorsed jar files in: -Djava.endorsed.dirs=/alma/ACS-[0-9.]*/JacORB/lib/endorsed:$

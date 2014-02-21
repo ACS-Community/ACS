@@ -1,6 +1,6 @@
 2 - starting acspyexmplClientErrorComponent
 2 - Creating ClientErrorComponent
-1 -  --endorsed -D ORBgiopMaxMsgSize=25000000 -D ACS.manager=corbaloc::xxxx:xxxx/Manager -- alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
+1 -  --endorsed -D ACS.manager=corbaloc::xxxx:xxxx/Manager -- alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
 1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/somepath
 1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run with arguments -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer 
@@ -150,7 +150,7 @@
 2 -                     Line=xxx
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                         Type=10,
-1 - 	at $Proxy0.corbaSystemException(Unknown Source)
+1 - 	at com.sun.proxy.$Proxy0.corbaSystemException(Unknown Source)
 2 -                         Code=17,
 2 -                 Process=xxxjavaContainer,
 2 -                     Routine=internalBadMethod,

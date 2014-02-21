@@ -10,3 +10,5 @@ failed to flush logging queue because remote logging service has not been made a
 <Info
 ACS.log.minlevel.namedloggers not defined.
 DELOUSE
+Logger jacorb@[^ ]* created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
+Using endorsed jar files

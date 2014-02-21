@@ -4,3 +4,4 @@ object is activated
 Failed to read GIOP message
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 jacorb
+Using endorsed jar files in: -Djava.endorsed.dirs=/alma/ACS-[0-9.]*/JacORB/lib/endorsed:$

@@ -1,5 +1,5 @@
 Local file logger: Cache saved to 
-Caught a ConcurrentModificationException from ORB shutdown. This should be harmless, see known JacORB bug
+Using endorsed jar files
 calling orb.resolve_initial_references
 manager reference not yet available in method loginToManager
 POA activated

@@ -2,7 +2,6 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testNoALarmBranch' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testNoALarmBranch] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testNoALarmBranch] ComponentClientTestCase#setUp()
-1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@FactoryTest#testNoALarmBranch created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] POA activated
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -16,7 +15,6 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testACSAS' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testACSAS] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testACSAS] ComponentClientTestCase#setUp()
-1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@FactoryTest#testACSAS created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] POA activated
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -30,7 +28,6 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testCERNAS' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testCERNAS] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testCERNAS] ComponentClientTestCase#setUp()
-1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@FactoryTest#testCERNAS created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] POA activated
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -45,7 +42,6 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testWrongImplementationProp' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testWrongImplementationProp] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testWrongImplementationProp] ComponentClientTestCase#setUp()
-1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@FactoryTest#testWrongImplementationProp created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] POA activated
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -60,7 +56,6 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testFaultStateCreation' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testFaultStateCreation] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testFaultStateCreation] ComponentClientTestCase#setUp()
-1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@FactoryTest#testFaultStateCreation created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] POA activated
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] manager reference not yet available in method loginToManager; will try to find the manager first
@@ -74,7 +69,6 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testAlarmSourceCreation' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testAlarmSourceCreation] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testAlarmSourceCreation] ComponentClientTestCase#setUp()
-1 - ----------T--:--:----- INFO [almaacslogging] Logger jacorb@FactoryTest#testAlarmSourceCreation created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] POA activated
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] manager reference not yet available in method loginToManager; will try to find the manager first
