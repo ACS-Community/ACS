@@ -1868,6 +1868,8 @@ int LoggingProxy::createMissingDirectories(const ACE_TCHAR * dirname, const ACE_
 	{
 		return -1;
 	}
+#ifndef MAKE_VXWORKS
+	// for some reason access does not work in VxWorks, so we can not use it
 	// Check if the directory is writable and has executable permissions
 	if (ACE_OS::access(dirname,W_OK|X_OK)!=0)
 	{
@@ -1875,6 +1877,7 @@ int LoggingProxy::createMissingDirectories(const ACE_TCHAR * dirname, const ACE_
 									timestamp,dirname);
 		return -1;
 	}
+#endif
 	return 0;
 }
 
