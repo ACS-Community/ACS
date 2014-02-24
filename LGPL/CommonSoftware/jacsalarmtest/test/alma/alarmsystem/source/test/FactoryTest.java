@@ -20,38 +20,83 @@
  *******************************************************************************/
 package alma.alarmsystem.source.test;
 
+import java.util.logging.Logger;
+
+import junit.framework.TestCase;
+import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.acs.container.ContainerServices;
+import alma.acs.logging.ClientLogManager;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 
+import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.JDAL;
 import com.cosylab.CDB.JDALHelper;
 
-public class FactoryTest extends ComponentClientTestCase {
-	
-	
+public class FactoryTest extends TestCase {
 			
-	// The current directory
-	private String curDir=System.getProperty("user.dir");
+	/**
+	 *  The current directory
+	 */
+	private final String curDir=System.getProperty("user.dir");
+	
+	/**
+	 * The logger
+	 */
+	private Logger logger;
+	
+	/**
+	 * The manager corbaloc
+	 */
+	private final String managerLoc = System.getProperty("ACS.manager").trim();
 	
 	// The reference to the DAL (to make a clear cache)
 	private JDAL jdal; 
 	
-	public FactoryTest() throws Exception {
-		super(FactoryTest.class.getSimpleName());
-	}
+	/**
+	 * The name of the client
+	 */
+	private final String clientName = getClass().getName();
+	
+	/**
+	 * The component client will be instantiated after setting up
+	 * the type of the alarm system
+	 */
+	private AdvancedComponentClient client;
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-        org.omg.CORBA.Object cdbObj = m_acsManagerProxy.get_service("CDB", false);
-        if (cdbObj==null) {
-			throw new Exception("Error getting the CDB from the manager");
-		} 
-        jdal = JDALHelper.narrow(cdbObj);
+		
+		// Initialize the logger
+		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(clientName, true);
+		assertNotNull(logger);
+		assertNull(client);
+	}
+
+	/**
+	 * Clear the cache of the DAL
+	 * @param contSvcs ContainerServices
+	 * @throws Exception
+	 */
+	private void clearDalCache(ContainerServices contSvcs) throws Exception {
+		DAL dal=contSvcs.getCDB();
+		jdal = JDALHelper.narrow(dal);
         if (jdal==null) {
         	throw new Exception("Error narrowing the DAL");
         }
+		jdal.clear_cache_all();
+	}
+	
+	/**
+	 * Instantiating a component client trigger the initialization of the 
+	 * {@link ACSAlarmSystemInterfaceFactory}.
+	 * 
+	 * @return The component client
+	 */
+	private AdvancedComponentClient instantiateComponentClient() throws Exception {
+		return new AdvancedComponentClient(logger, managerLoc, clientName);
 	}
 	
 	/** 
@@ -59,7 +104,11 @@ public class FactoryTest extends ComponentClientTestCase {
 	 *
 	 */
 	protected void tearDown() throws Exception {
-		ACSAlarmSystemInterfaceFactory.done();
+		if (client!=null) {
+			clearDalCache(client.getContainerServices());
+			client.tearDown();
+			client=null;
+		}
 		// Restore the same version checked out from repository
 		TestUtil.setupAlarmBranch(curDir,"ACS");
 		super.tearDown();
@@ -73,34 +122,31 @@ public class FactoryTest extends ComponentClientTestCase {
 	 */
 	public void testNoALarmBranch() throws Exception {
 		TestUtil.deleteAlarmBranch(curDir);
-		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
+		client=instantiateComponentClient();
 		assertTrue("Wrong implementation in use (no Alarms in CDB case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
 	/**
-	 * Check if the ACS implementation of the AS is choosen when
+	 * Check if the ACS implementation of the AS is chosen when
 	 * there ACS is in the CDB
 	 * 
 	 * @throws Exception
 	 */
 	public void testACSAS() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
-		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
+		client=instantiateComponentClient();
 		assertTrue("Wrong implementation in use (ACS case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
 	/**
-	 * Check if the CERN implementation of the AS is choosen when
+	 * Check if the CERN implementation of the AS is chosen when
 	 * there CERN is in the CDB
 	 * 
 	 * @throws Exception
 	 */
 	public void testCERNAS() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"CERN");
-		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
+		client=instantiateComponentClient();
 		assertFalse("Wrong implementation in use (CERN case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -110,8 +156,7 @@ public class FactoryTest extends ComponentClientTestCase {
 	 */
 	public void testWrongImplementationProp() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"Wrong property");
-		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
+		client=instantiateComponentClient();
 		assertTrue("Wrong implementation in use (wrong prop case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -122,8 +167,7 @@ public class FactoryTest extends ComponentClientTestCase {
 	 */
 	public void testFaultStateCreation() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
-		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
+		client=instantiateComponentClient();
 		ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState("Family","Member",0);
 		assertNotNull("Error creating a FS",fs);
 	}
@@ -135,8 +179,7 @@ public class FactoryTest extends ComponentClientTestCase {
 	 */
 	public void testAlarmSourceCreation() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
-		jdal.clear_cache_all();
-		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
+		client=instantiateComponentClient();
 		ACSAlarmSystemInterface proxy = ACSAlarmSystemInterfaceFactory.createSource("SourceName");
 		assertNotNull("Error creating an alarm source",proxy);
 	}
