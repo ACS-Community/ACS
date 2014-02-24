@@ -1,4 +1,5 @@
 s/corbaloc::[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/corbaloc::a.b.c.d:xxxx/g
+s/corbaloc::some[a-zA-Z]*:[0-9]*/corbaloc::someXXXX:NNNN/g
 s/Logging to log file: .*\/acsdata\/tmp\/acs_local_log_\([a-z,A-Z,0-9,_]*\)_[0-9]*/Logging to log file: \/-----\/acsdata\/tmp\/acs_local_log_\1_xxxx/g
 s/MainThread, acspyTestLogging, [a-z,A-Z,0-9,-]*,/MainThread, acspyTestLogging, xxxx,/g 
 s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]/----------T--:--:--.---/g 
@@ -18,14 +19,14 @@ s/instance at 0x[0-9,a-z,A-Z]*/instance at 0xXXXX/g
 s/Process=[0-9]*/Process=xxx/g
 s/\/[a-z,A-Z,0-9,-,.,_,/]*[:] line [0-9]*[:] [0-9]* Killed/\/xxx: line xxx Killed/g
 s/Unable to shutdown because the lock directory '.*\/ACS_INSTANCE/Unable to shutdown because the lock directory '$ACS_TMP\/ACS_INSTANCE/g
-s/Freeing .*\/ACS_INSTANCE/Freeing $ACS_TMP\/ACS_INSTANCE/g
+s/Freeing .*\/ACS_INSTANCE.[0-9]/Freeing $ACS_TMP\/ACS_INSTANCE.N/g
 s/Starting ACS[.]*$/Starting ACS.../g
 s/Please see .*$/Please see \/some\/file for debug output/g
 s/'[^',=]*'/'something'/g
 s|/[-,a-z,A-Z,0-9,.,_,/]*/acsdata/|/alma/ACS-x.y/acsdata/|g
 s/ACS-[0-9].[0-9]/ACS-x.y/g
-s/iiop:\/\/[0-9]*.[0-9]*.[0-9]*.[0-9]*:/iiop:\/\/a.b.c.d:/g
-s/giop:tcp:[0-9]*.[0-9]*.[0-9]*.[0-9]*:/giop:tcp:a.b.c.d:/g
+s/iiop:\/\/[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*/iiop:\/\/a.b.c.d:xxxx/g
+s/giop:tcp:[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*/giop:tcp:a.b.c.d:xxxx/g
 s/ssh -f [a-z,A-Z,0-9]*@/ssh -f user@/g
 s/-OAIAddr [0-9]*.[0-9]*.[0-9]*.[0-9]*/-OAIAddr a.b.c.d/g
 s/java_pid[0-9]*.hprof/java_pidXXX.hprof/g

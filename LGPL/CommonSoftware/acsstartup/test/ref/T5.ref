@@ -94,7 +94,7 @@
 9 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
 9 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 9 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
-9 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.9
+9 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.N
 9 - Freeing instance N removing lock file ..acsInstanceN.lock
 10 - ----------T--:--:--.--- INFO [acsManager] acsManager: done.
 10 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=N'
@@ -109,5 +109,5 @@
 10 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
 10 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 10 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
-10 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.8
+10 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.N
 10 - Freeing instance N removing lock file ..acsInstanceN.lock

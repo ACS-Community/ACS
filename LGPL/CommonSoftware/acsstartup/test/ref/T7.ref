@@ -23,5 +23,5 @@
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine the interface repository's process ID.
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine acsLogSvc's process ID.
-1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.0
+1 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.N
 1 - Freeing instance N removing lock file ..acsInstanceN.lock

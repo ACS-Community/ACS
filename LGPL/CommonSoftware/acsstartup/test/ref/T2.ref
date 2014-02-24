@@ -38,5 +38,5 @@
 3 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
 3 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 3 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
-3 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.9
+3 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.N
 3 - Freeing instance N removing lock file ..acsInstanceN.lock
