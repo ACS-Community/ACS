@@ -279,6 +279,7 @@ then
     acsutilBlock -t $MAX_TIMEOUT -f $ACSSTARTLOG -b "acsStartORBSRVC script has now completed" -p $ORBSRVC_PID
     ACS_LOG_ERROR "acsStart" "Detected the acsStartORBSRVC process has exited with an error! Cleaning up."
     acsStopORBSRVC 2>&1 | tee -a $ACSSTARTLOG
+    acsInstanceLock -u
     ACS_LOG_ERROR "acsStart" "acsStart aborted because of error in acsStartORBSRVC."
     exit $EC_FAILURE
 fi
