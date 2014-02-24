@@ -198,6 +198,37 @@ if __name__ == "__main__":
         print "ERROR: the folder should not contain any lock file at this stage!"
     print "----- Test 7 done -----"  
     
+    # Test if the script clean all the locks when -c is in the command line
+    print "----- Test 8: test cleanAll  -----"
+    instanceLocker.lock(0)
+    instanceLocker.lock(3)
+    instanceLocker.lock(5)
+    instanceLocker.lock(8)
+    instances=getLockedInstances(prefix,suffix)
+    if len(instances)!=4:
+        print "ERROR locking instances"
+    instanceLocker.cleanAll()
+    instances=getLockedInstances(prefix,suffix)
+    if len(instances)>0:
+        print "ERROR: not all the instances have been unlocked"
+    print "----- Test 8 done -----"
+    
+    # Test the cleanAll method
+    print "----- Test 9: test acsInstanceLock to clean all -----"
+    instanceLocker.lock(2)
+    instanceLocker.lock(4)
+    instanceLocker.lock(8)
+    instanceLocker.lock(9)
+    instances=getLockedInstances(prefix,suffix)
+    if len(instances)!=4:
+        print "ERROR locking instances"
+    ret=call(["acsInstanceLock","-c"])
+    instances=getLockedInstances(prefix,suffix)
+    if len(instances)>0:
+        print "ERROR: not all the instances have been unlocked"
+    print "----- Test 9 done -----" 
+    
+    
     print "Closing test session"
     # Before exiting check if the folder contains any lock file
     instances=getLockedInstances(prefix,suffix)
@@ -208,7 +239,7 @@ if __name__ == "__main__":
             print "Freeing unwanted lock file for instance",i
             if instanceLocker.unlock(i)!=0:
                 print "Error freeing instance",i
-            
+                
     print "Test done"
 #
 # ___oOo___

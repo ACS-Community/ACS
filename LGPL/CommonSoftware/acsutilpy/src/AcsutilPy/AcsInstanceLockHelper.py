@@ -126,6 +126,19 @@ class AcsInstanceLockHelper:
         print "Freeing instance",str(instance),"removing lock file",lockFileName
         return call(["rm","-rf",lockFileName])
     
+    def cleanAll(self):
+        '''
+        Remove all the locks from $ACSDATA/tmp
+        
+        @return 0: if all the locks have been successfully removed
+        '''
+        ret=0
+        for i in range(10):
+            tempRet=self.unlock(i)
+            if tempRet!=0:
+                ret=tempRet
+        return ret
+    
     def checkAndLock(self):
         '''
         checkAndLock checks if the instance is available and create the lock file

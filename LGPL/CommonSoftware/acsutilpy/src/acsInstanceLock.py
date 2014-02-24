@@ -51,19 +51,31 @@ if __name__ == "__main__":
                       action="store_true",
                       default=False,
                       help="Unlock the instance")
+    group.add_option("-c", "--clean",
+                      action="store_true",
+                      default=False,
+                      help="Clean by removing all the lock files")
     parser.add_option_group(group)
     (options, args) = parser.parse_args()
     
-    if options.lock==options.unlock:
-        if options.lock is False:
-            print "\nERROR: at least one action must be present\n"
-        else:
-            print "\nERROR: too many actions in command line\n"
+    selectedActions=0
+    if options.lock:
+        selectedActions=selectedActions+1
+    if options.unlock:
+        selectedActions=selectedActions+1
+    if options.clean:
+        selectedActions=selectedActions+1   
+    
+    if selectedActions!=1:
+        print "\nERROR: one and only one action must be present in the command line\n"
         parser.print_help()
         os.exit(-1)
-        
     
     lockHelper = AcsInstanceLockHelper()
+    if options.clean:
+        ret=lockHelper.cleanAll()
+        exit(ret)
+        
     if options.baseport != None:
         # Use ACS_INSTANCE
         if options.lock:
