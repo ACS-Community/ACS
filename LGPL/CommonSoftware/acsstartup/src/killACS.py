@@ -38,6 +38,7 @@ from os.path import exists
 from optparse import OptionParser
 import socket
 from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
+from AcsutilPy.AcsInstanceLockHelper import AcsInstanceLockHelper
 ################################################################################################
 
 #first thing we do is create a lock so this command cannot be run again until it
@@ -162,6 +163,11 @@ if killJava==1:
     print "Killing all Java processes..."
     system('acsKillProc -C java')
     print "...done."
+
+print "Removing lock files"
+lockHelper=AcsInstanceLockHelper()
+lockHelper.cleanAll()
+print "...done."
 
 #release the lock so future invocations can be run
 if lock_file!=None:
