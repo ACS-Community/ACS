@@ -60,6 +60,8 @@ public class FactoryTest extends ComponentClientTestCase {
 	 */
 	protected void tearDown() throws Exception {
 		ACSAlarmSystemInterfaceFactory.done();
+		// Restore the same version checked out from repository
+		TestUtil.setupAlarmBranch(curDir,"ACS");
 		super.tearDown();
 	}
 	
