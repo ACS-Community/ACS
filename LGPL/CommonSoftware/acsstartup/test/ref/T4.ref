@@ -28,15 +28,12 @@
 2 - Mock Java container
 3 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'something'
 3 - Mock Java container
-2 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 5 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'something'
 5 - Mock Java container
 6 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=N'
 6 - ----------T--:--:--.--- INFO [acsStop] Shutting down containers...
 6 - ----------T--:--:--.--- INFO [acsStop] Shutting down jCont container
-5 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 6 - ----------T--:--:--.--- INFO [acsStop] Shutting down opCont container
-3 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 6 - ----------T--:--:--.--- INFO [acsStop] Stopping Manager
 6 - Max timeout exceeded!
 6 - ----------T--:--:--.--- INFO [acsManager] acsManager: done.

@@ -33,11 +33,8 @@
 5 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=N'
 5 - ----------T--:--:--.--- INFO [acsStop] Shutting down containers...
 5 - ----------T--:--:--.--- INFO [acsStop] Shutting down jCont container
-2 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 5 - ----------T--:--:--.--- INFO [acsStop] Shutting down pyCont container
-3 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 5 - ----------T--:--:--.--- INFO [acsStop] Shutting down TestContainer container
-4 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 5 - ----------T--:--:--.--- INFO [acsStop] Stopping Manager
 5 - Max timeout exceeded!
 5 - ----------T--:--:--.--- INFO [acsManager] acsManager: done.

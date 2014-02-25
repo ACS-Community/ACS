@@ -64,25 +64,19 @@
 9 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=N'
 9 - ----------T--:--:--.--- INFO [acsStop] Shutting down containers...
 9 - ----------T--:--:--.--- INFO [acsStop] Shutting down jCont container
-2 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 9 - ----------T--:--:--.--- INFO [acsStop] Shutting down pyCont container
-3 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 9 - ----------T--:--:--.--- INFO [acsStop] Shutting down TestContainer container
 10 - ----------T--:--:--.--- INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=N'
 10 - ----------T--:--:--.--- INFO [acsStop] Shutting down containers...
 10 - ----------T--:--:--.--- INFO [acsStop] Shutting down jCont container
-4 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 9 - ----------T--:--:--.--- INFO [acsStop] Stopping Manager
 9 - Max timeout exceeded!
-6 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 10 - ----------T--:--:--.--- INFO [acsStop] Shutting down pyCont container
-7 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 10 - ----------T--:--:--.--- INFO [acsStop] Shutting down TestContainer container
 9 - ----------T--:--:--.--- INFO [acsManager] acsManager: done.
 9 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=N'
 9 - ----------T--:--:--.--- INFO [acsAlarmService] Stopping the AlarmService
 9 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Stopping the CDB
-8 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'something' exited with code: 137.
 10 - ----------T--:--:--.--- INFO [acsStop] Stopping Manager
 10 - Max timeout exceeded!
 9 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
