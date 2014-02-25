@@ -23,6 +23,7 @@ acsStartContainer -cpp  bilboContainer   &> $ACS_TMP/bilboContainer.out &
 acsStartContainer -cpp  bilboContainer2  &> $ACS_TMP/bilboContainer2.out &
 sleep 10
 
+# 1 + 2 (python container has 2 connections initially) + 1 + 1 = 5
 OPENED_PORTS=$(netstat -putan 2> /dev/null | grep ":3000\>" | grep ${pid} | grep ESTABLISHED | wc -l)
 echo "There are $OPENED_PORTS opened connection to the Manager"
 

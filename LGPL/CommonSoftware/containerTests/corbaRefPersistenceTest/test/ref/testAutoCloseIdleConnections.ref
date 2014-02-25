@@ -1,10 +1,10 @@
 1 - Restarting the Manager with -Djacorb.connection.server.timeout=15000
 1 - Starting containers
-1 - There are 4 opened connection to the Manager
+1 - There are 5 opened connection to the Manager
 1 - Sleeping 15 (+2) seconds
 1 - There are 0 opened connection to the Manager
 1 - Triggering get_component() on Manager from all containers
-1 - ----------T--:--:--.--- PySingletonClient disconnect - Shutdown called for client
+1 - ----------T--:--:--.--- PySingletonClient disconnect - Disconnect called for client
 1 - There are 4 opened connection to the Manager
 1 - Sleeping 15 (+2) seconds
 1 - There are 0 opened connection to the Manager
