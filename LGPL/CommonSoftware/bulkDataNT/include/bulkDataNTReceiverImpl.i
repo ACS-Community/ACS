@@ -397,7 +397,14 @@ void BulkDataNTReceiverImpl<TCallback>::closeReceiver()
 		typename StreamMap::iterator it;
 		for( it = receiverStreams_m.begin(); it != receiverStreams_m.end(); ) {
 			ACS_SHORT_LOG((LM_INFO,"BulkDataNTReceiverImpl<>::closeReceiver Closing receiver stream '%s'", it->first.c_str()));
-			closeStream(it++);
+
+			// We increate the iterator first and then remove the previous value
+			// from the map since after calling map::erase(it) the erased it
+			// becomes invalid
+			typename StreamMap::iterator itToDelete = it;
+			it++;
+			delete itToDelete->second;
+			receiverStreams_m.erase(itToDelete);
 		}
 	}
 	catch(ACSErr::ACSbaseExImpl &ex)
@@ -429,7 +436,8 @@ void BulkDataNTReceiverImpl<TCallback>::closeReceiverStream(const char *stream_n
 	try
 	{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::closeReceiverStream Closing receiver stream '%s'", stream_name));
-		closeStream(it);
+		delete it->second;
+		receiverStreams_m.erase(it);
 	}
 	catch(ACSErr::ACSbaseExImpl &ex)
 	{
@@ -443,12 +451,6 @@ void BulkDataNTReceiverImpl<TCallback>::closeReceiverStream(const char *stream_n
 		ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,__PRETTY_FUNCTION__);
 		throw err.getAVCloseReceiverErrorEx();
 	}
-}
-
-template<class TCallback>
-void BulkDataNTReceiverImpl<TCallback>::closeStream(typename StreamMap::iterator &it) {
-	delete it->second;
-	receiverStreams_m.erase(it);
 }
 
 template<class TCallback>

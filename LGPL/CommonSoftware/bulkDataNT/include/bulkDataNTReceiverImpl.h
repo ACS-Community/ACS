@@ -219,7 +219,6 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
 
     AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createDefaultReceiverStream(const char *stream_cfg);
 
-    void closeStream(typename StreamMap::iterator &it);
 };
 
 #include "bulkDataNTReceiverImpl.i"
