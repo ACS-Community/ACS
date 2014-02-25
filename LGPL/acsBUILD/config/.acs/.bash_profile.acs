@@ -868,11 +868,23 @@ then
 
    if  [ X"$NDDSHOME" != X ]
    then
+      GCC_VERSION_MAJOR=`echo __GNUC__ | gcc -E -xc - | tail -n 1`
+      if [ $GCC_VERSION_MAJOR != 4 ]
+      then
+        echo "ERROR: not supported gcc version for RTI DDS: $GCC_VERSION_MAJOR"
+      fi
+      GCC_VERSION_MINOR=`echo __GNUC_MINOR__ | gcc -E -xc - | tail -n 1`
+      if [ $GCC_VERSION_MINOR -ge 4 ]
+      then
+       RTIDDS_GCC_VER=4.4.5
+      else
+       RTIDDS_GCC_VER=4.1.2
+      fi
       if [ "$ARCH" != "x86_64" ]
       then
-        LD_LIBRARY_PATH=$NDDSHOME/lib/i86Linux2.6gcc4.1.2:$LD_LIBRARY_PATH
+        LD_LIBRARY_PATH=$NDDSHOME/lib/i86Linux2.6gcc"$RTIDDS_GCC_VER":$LD_LIBRARY_PATH
       else
-        LD_LIBRARY_PATH=$NDDSHOME/lib/x64Linux2.6gcc4.1.2:$LD_LIBRARY_PATH
+        LD_LIBRARY_PATH=$NDDSHOME/lib/x64Linux2.6gcc"$RTIDDS_GCC_VER":$LD_LIBRARY_PATH
       fi
    fi   
 
