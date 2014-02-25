@@ -558,8 +558,10 @@ public class ManagerImplTest extends TestCase
 		}
 		assertNotNull(info2);
 		assertEquals(info.getHandle(), info2.getHandle());
+
+		container.setHandle(info2.getHandle());
 		
-		//test duplicate login (same instance name) - reject
+		//test duplicate login (same instance name, previous container alive) - reject
 		TestContainer containerSameName = new TestContainer(containerName);
 		try {
 			info2 = manager.login(containerSameName);
@@ -568,9 +570,9 @@ public class ManagerImplTest extends TestCase
 			System.out.println("This is OK: "+e.toString());
 		}
 
-		// ... now make first instance unresponsive to a ping
+		// ... now make first instance return handle 0
 		// this should allow the login
-		container.setOperative(false);
+		container.setHandle(0);
 		try {
 			info2 = manager.login(containerSameName);
 		} catch (AcsJNoPermissionEx e) {
