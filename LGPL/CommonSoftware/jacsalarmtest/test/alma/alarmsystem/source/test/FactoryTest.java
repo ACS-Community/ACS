@@ -43,11 +43,6 @@ public class FactoryTest extends TestCase {
 	private final String curDir=System.getProperty("user.dir");
 	
 	/**
-	 * The logger
-	 */
-	private Logger logger;
-	
-	/**
 	 * The manager corbaloc
 	 */
 	private final String managerLoc = System.getProperty("ACS.manager").trim();
@@ -69,9 +64,7 @@ public class FactoryTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		// Initialize the logger
-		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(clientName, true);
-		assertNotNull(logger);
+		
 		assertNull(client);
 	}
 
@@ -96,7 +89,11 @@ public class FactoryTest extends TestCase {
 	 * @return The component client
 	 */
 	private AdvancedComponentClient instantiateComponentClient() throws Exception {
-		return new AdvancedComponentClient(logger, managerLoc, clientName);
+		// Initialize the logger
+		Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(clientName, true);
+		assertNotNull(logger);
+		client=new AdvancedComponentClient(logger, managerLoc, clientName);
+		return client;
 	}
 	
 	/** 
@@ -104,11 +101,17 @@ public class FactoryTest extends TestCase {
 	 *
 	 */
 	protected void tearDown() throws Exception {
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException ie) {
+			ie.printStackTrace(System.err);
+		}
 		if (client!=null) {
 			clearDalCache(client.getContainerServices());
 			client.tearDown();
 			client=null;
 		}
+		
 		// Restore the same version checked out from repository
 		TestUtil.setupAlarmBranch(curDir,"ACS");
 		super.tearDown();
@@ -122,7 +125,7 @@ public class FactoryTest extends TestCase {
 	 */
 	public void testNoALarmBranch() throws Exception {
 		TestUtil.deleteAlarmBranch(curDir);
-		client=instantiateComponentClient();
+		instantiateComponentClient();
 		assertTrue("Wrong implementation in use (no Alarms in CDB case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -134,7 +137,7 @@ public class FactoryTest extends TestCase {
 	 */
 	public void testACSAS() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
-		client=instantiateComponentClient();
+		instantiateComponentClient();
 		assertTrue("Wrong implementation in use (ACS case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -146,7 +149,7 @@ public class FactoryTest extends TestCase {
 	 */
 	public void testCERNAS() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"CERN");
-		client=instantiateComponentClient();
+		instantiateComponentClient();
 		assertFalse("Wrong implementation in use (CERN case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -156,7 +159,7 @@ public class FactoryTest extends TestCase {
 	 */
 	public void testWrongImplementationProp() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"Wrong property");
-		client=instantiateComponentClient();
+		instantiateComponentClient();
 		assertTrue("Wrong implementation in use (wrong prop case)",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
@@ -167,7 +170,7 @@ public class FactoryTest extends TestCase {
 	 */
 	public void testFaultStateCreation() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
-		client=instantiateComponentClient();
+		instantiateComponentClient();
 		ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState("Family","Member",0);
 		assertNotNull("Error creating a FS",fs);
 	}
@@ -179,7 +182,7 @@ public class FactoryTest extends TestCase {
 	 */
 	public void testAlarmSourceCreation() throws Exception {
 		TestUtil.setupAlarmBranch(curDir,"ACS");
-		client=instantiateComponentClient();
+		instantiateComponentClient();
 		ACSAlarmSystemInterface proxy = ACSAlarmSystemInterfaceFactory.createSource("SourceName");
 		assertNotNull("Error creating an alarm source",proxy);
 	}
