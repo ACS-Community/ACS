@@ -24,6 +24,7 @@
 #
 from os import environ, listdir
 from subprocess import call
+from sys import stdout
 
 from AcsutilPy.AcsInstanceLockHelper import AcsInstanceLockHelper
 
@@ -166,10 +167,12 @@ if __name__ == "__main__":
     # Test if the script to lock/unlock a instance (acsInstanceLock) works
     print "----- Test 6: test acsInstanceLock script -----"
     print "Call the script to lock ACS_INSTANCE"
+    
     if instance==None:
         expectedInstance=0
     else:
         expectedInstance=int(instance)
+    stdout.flush()
     ret=call(["acsInstanceLock","-l"])
     instances=getLockedInstances(prefix,suffix)
     if len(instances)!=1:
@@ -177,6 +180,7 @@ if __name__ == "__main__":
         if instances[0]!=expectedInstance:
             print "ERROR locked instance",instances[0],"instead of",expectedInstance
     # Free the instance
+    stdout.flush()
     ret=call(["acsInstanceLock","-u"])
     if printListOfLockFiles(prefix,suffix)!=0:
         print "ERROR: the folder should not contain any lock file at this stage!"
@@ -185,6 +189,7 @@ if __name__ == "__main__":
     # Test if the script to lock/unlock a instance (acsInstanceLock) with a passed baseport works
     print "----- Test 7: test acsInstanceLock with baseport script -----"
     print "Call the script to lock ACS_INSTANCE"
+    stdout.flush()
     ret=call(["acsInstanceLock","-l","-b","4"])
     instances=getLockedInstances(prefix,suffix)
     if len(instances)!=1:
@@ -193,6 +198,7 @@ if __name__ == "__main__":
         if instances[0]!=4:
             print "ERROR locked instance",instances[0],"instead of 4"
     # Free the instance
+    stdout.flush()
     ret=call(["acsInstanceLock","-u","-b","4"])
     if printListOfLockFiles(prefix,suffix)!=0:
         print "ERROR: the folder should not contain any lock file at this stage!"
@@ -222,6 +228,7 @@ if __name__ == "__main__":
     instances=getLockedInstances(prefix,suffix)
     if len(instances)!=4:
         print "ERROR locking instances"
+    stdout.flush()
     ret=call(["acsInstanceLock","-c"])
     instances=getLockedInstances(prefix,suffix)
     if len(instances)>0:

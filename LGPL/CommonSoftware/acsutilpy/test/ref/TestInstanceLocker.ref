@@ -68,25 +68,15 @@
 1 - No lock file found in ACSDATA
 1 - ----- Test 5 done -----
 1 - ----- Test 6: test acsInstanceLock script -----
-1 - Call the scLocking instance N with lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Call the script to lock ACS_INSTANCE
 1 - Locking instance N with lock file acsInstanceN.lock
 1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - Freeing instance N removing lock file acsInstanceN.lock
-1 - ript to lock ACS_INSTANCE
 1 - No lock file found in ACSDATA
 1 - ----- Test 6 done -----
 1 - ----- Test 7: test acsInstanceLock with baseport script -----
 1 - Call the script to lock ACS_INSTANCE
+1 - Locking instance N with lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
 1 - No lock file found in ACSDATA
 1 - ----- Test 7 done -----
 1 - ----- Test 8: test cleanAll  -----
@@ -110,6 +100,16 @@
 1 - Locking instance N with lock file acsInstanceN.lock
 1 - Locking instance N with lock file acsInstanceN.lock
 1 - Locking instance N with lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
+1 - Freeing instance N removing lock file acsInstanceN.lock
 1 - ----- Test 9 done -----
 1 - Closing test session
 1 - Test done
