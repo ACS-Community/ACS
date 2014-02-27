@@ -399,7 +399,7 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
 
         Handle get_handle();
         '''
-        return self.token    
+        return self.token.h
     #--CONTAINER IDL-----------------------------------------------------------
     def activate_component(self, h, exeid, name, exe, idl_type):
         '''
