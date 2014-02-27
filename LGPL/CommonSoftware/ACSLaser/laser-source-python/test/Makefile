@@ -32,7 +32,8 @@
 # jagonzal: Remove non-existing test_all target
 PY_SCRIPTS_L       = test_CERNAlarmSystemInterfaceProxy \
                      test_CERNAlarmSystemInterfaceProxy_AlarmPublisher.py \
-
+					 CERNAlarmTestSender
+					 
 PY_PACKAGES_L      = UnitTests
 
 

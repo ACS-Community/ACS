@@ -28,7 +28,7 @@ SOURCE laser-source-pythonTATEnvironment
 PROLOGUE acsutilTATPrologue
 
 0    UnitTests        "acsutilTATTestRunner nosetests -v"
-1    CERNSend         "acsutilTATTestRunner python CERNAlarmTestSender.py 100" 
+1    CERNSend         "acsutilTATTestRunner CERNAlarmTestSender 100" 
 EPILOGUE acsutilTATEpilogue
 
 #
