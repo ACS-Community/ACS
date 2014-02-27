@@ -29,9 +29,11 @@ import signal
 import subprocess
 import pexpect
 from time import sleep
+from sys import stdout
 
 def start_container(cname, ctype):
     """Common container start function"""
+    stdout.flush()
     try:
         subprocess.check_call(["acsutilAwaitContainerStart", ctype, cname])
     except Exception, e:
@@ -39,6 +41,7 @@ def start_container(cname, ctype):
 
 def stop_container(cname):
     """Common container stop function"""
+    stdout.flush()
     try:
         subprocess.check_call(["acsStopContainer", cname])
     except Exception, e:
