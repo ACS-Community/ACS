@@ -1,0 +1,51 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration),
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+
+export ACS_LOG_STDOUT=4
+
+# set ACS_TMP directory
+export ACS_TMP=`pwd`/tmp
+mkdir -p $ACS_TMP
+
+#Start the services and manager
+echo " Starting ACS"
+acsStart > $ACS_TMP/acsStart.log
+#This sleep is more of a precautionary measure than anything else
+sleep 3
+
+echo "Starting containers"
+acsStartContainer -java frodoContainer   &> $ACS_TMP/frodoContainer.out &
+acsStartContainer -py   gandalfContainer &> $ACS_TMP/gandalfContainer.out &
+acsStartContainer -cpp  bilboContainer   &> $ACS_TMP/bilboContainer.out &
+sleep 10
+
+#Get the ACS_INSTANCE from the log file just written out
+export ACS_INSTANCE=`grep "\[acsStart\] For this ACS session, please do an" $ACS_TMP/acsStart.log | cut -d\' -f2 | cut -d= -f2`
+echo $ACS_INSTANCE > $ACS_TMP/acs_instance
+
+#determine the ACS instance
+export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
+
+acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
+
+acsStop > /dev/null

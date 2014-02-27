@@ -47,7 +47,7 @@ endef
 #
 # Modules in the various containerTest sub-packages.
 #
-MODULES_CTEST =  contLogTest contNcTest corbaRefPersistenceTest
+MODULES_CTEST =  contLogTest contNcTest corbaRefPersistenceTest contHandleTest
 SUBSYSTEM = "containerTest"
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
