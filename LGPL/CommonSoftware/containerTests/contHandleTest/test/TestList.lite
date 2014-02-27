@@ -1,5 +1,5 @@
 SOURCE contHandlerTatTestEnvironment
-PROLOGUE acsutilTATPrologue
+PROLOGUE contHandlerTatTestPrologue
 
 1 doAllTests doAllTests
 
