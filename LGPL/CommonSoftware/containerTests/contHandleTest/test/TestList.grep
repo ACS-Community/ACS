@@ -1,11 +1,2 @@
-java -classpath
-Time:
-export
-Starting Java application
--D user.dir=
-Jlog will use cache for
-[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
-object is activated
-Local file logger: Cache saved to
-endorsed
-alma.acs.logging
+
+

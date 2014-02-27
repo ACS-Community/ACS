@@ -1,1 +1,6 @@
+SOURCE contHandlerTatTestEnvironment
+PROLOGUE acsutilTATPrologue
+
 1 doAllTests doAllTests
+
+EPILOGUE acsutilTATEpilogue

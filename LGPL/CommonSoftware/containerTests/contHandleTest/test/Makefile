@@ -66,8 +66,8 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
-SCRIPTS_L       = doAllTests
+SCRIPTS         = 
+SCRIPTS_L       = doAllTests contHandlerTatTestPrologue
 
 #
 # TCL scripts (public and local)
@@ -191,6 +191,7 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all

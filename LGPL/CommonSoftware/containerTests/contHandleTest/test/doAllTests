@@ -20,32 +20,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
+export ACS_TMP=../test/tmp
+acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
 
-export ACS_LOG_STDOUT=4
-
-# set ACS_TMP directory
-export ACS_TMP=`pwd`/tmp
-mkdir -p $ACS_TMP
-
-#Start the services and manager
-echo " Starting ACS"
-acsStart > $ACS_TMP/acsStart.log
-#This sleep is more of a precautionary measure than anything else
-sleep 3
-
-echo "Starting containers"
-acsStartContainer -java frodoContainer   &> $ACS_TMP/frodoContainer.out &
-acsStartContainer -py   gandalfContainer &> $ACS_TMP/gandalfContainer.out &
-acsStartContainer -cpp  bilboContainer   &> $ACS_TMP/bilboContainer.out &
-sleep 10
-
-#Get the ACS_INSTANCE from the log file just written out
-export ACS_INSTANCE=`grep "\[acsStart\] For this ACS session, please do an" $ACS_TMP/acsStart.log | cut -d\' -f2 | cut -d= -f2`
-echo $ACS_INSTANCE > $ACS_TMP/acs_instance
-
-#determine the ACS instance
-export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
-
-acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
-
-acsStop > /dev/null
