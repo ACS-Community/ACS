@@ -249,6 +249,13 @@ public:
   /* ----------------------------------------------------------------*/
 
   /**
+   * Return a handle that was given to the Container at login into the Manager.
+   * If the container is not logged in (or never was) the method must return 0.
+   * @return the Container's handle.
+   */
+  virtual ::maci::Handle get_handle ();
+
+  /**
    * Activate a component whose type (class) and name (instance) are given. 
    *
    * In the process of activation, component's code-base is loaded into memory if it is not there already. 
