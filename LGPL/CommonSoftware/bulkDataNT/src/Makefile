@@ -37,6 +37,17 @@ MAKE_ONLY=C++,Python
 MAKE_NOIFR_CHECK = on # it is DDS IDL, and we do not need to check it
 
 ARCH = $(shell uname -m)
+GCC_VERSION_MAJOR = $(shell echo __GNUC__ | gcc -E -xc - | tail -n 1)
+ifneq ($(GCC_VERSION_MAJOR),4)
+        echo "ERROR: not supported gcc version for RTI DDS: $(GCC_VERSION_MAJOR)"
+endif
+GCC_VERSION_MINOR = $(shell echo __GNUC_MINOR__ | gcc -E -xc - | tail -n 1)
+ifeq ($(GCC_VERSION_MINOR),1)
+        RTIDDS_GCC_VER=4.1.2
+else
+        RTIDDS_GCC_VER=4.4.5
+endif
+
 
 # user definable C-compilation flags
 USER_CFLAGS = -DRTI_UNIX -DRTI_LINUX 
@@ -45,9 +56,9 @@ USER_CFLAGS = -DRTI_UNIX -DRTI_LINUX
 # additional include and library search paths
 USER_INC = -I$(NDDSHOME)/include -I$(NDDSHOME)/include/ndds
 ifeq ($(ARCH),x86_64)
-	USER_LIB = -L$(NDDSHOME)/lib/x64Linux2.6gcc4.1.2
+	USER_LIB = -L$(NDDSHOME)/lib/x64Linux2.6gcc$(RTIDDS_GCC_VER)
 else
-	USER_LIB = -L$(NDDSHOME)/lib/i86Linux2.6gcc4.1.2  
+	USER_LIB = -L$(NDDSHOME)/lib/i86Linux2.6gcc$(RTIDDS_GCC_VER)
 endif
 #
 # MODULE CODE DESCRIPTION:
