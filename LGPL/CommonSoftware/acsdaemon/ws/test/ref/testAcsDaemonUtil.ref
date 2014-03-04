@@ -5,5 +5,6 @@
 1 - TestAcsDaemonUtils::testSimpleContainerName[containerName]
 1 -  : OK
 1 - TestAcsDaemonUtils::testWritePermission : OK
-1 - TestAcsDaemonUtils::testWritePermissionForContainerOK (7)
-1 -  : OK
+1 - TestAcsDaemonUtils::testWritePermissionForContainer : OK
+1 - 
+1 - OK (7)

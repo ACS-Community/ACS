@@ -192,6 +192,9 @@ int main(int argc, char *argv[])
     testrunner.addTest (CPPUNIT_NS :: TestFactoryRegistry :: getRegistry ().makeTest ());
     testrunner.run (testresult);
 
+    // make output deterministic, unify with JUnit
+    std::cout << std::endl;
+
     // output results in compiler-format
     CPPUNIT_NS :: CompilerOutputter compileroutputter (&collectedresults, std::cerr);
     compileroutputter.write ();
