@@ -20,6 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
+
 export ACS_TMP=../test/tmp
 export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
 
@@ -27,7 +28,14 @@ echo " Initial test"
 acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
 
 echo " Kill all the containers"
-cat $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/pids/*Container_PID | xargs -L 1 pkill -9 -P
+CONT_PORTS=`cat $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/USED_CONTAINER_PORTS | cut -d \  -f 2`
+for PORT in $CONT_PORTS
+do
+  PID=`netstat -t -p -e -e -n -a 2> /dev/null | grep "LISTEN" | grep ":$PORT" | awk '{ printf("%s\n", $9) }' | cut -d / -f 1`
+  kill -9 $PID
+done
+
+#cat $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/pids/*Container_PID | xargs -L 1 pkill -9 -P
 
 echo " Test on killed containers"
 acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest

@@ -1,9 +1,5 @@
-1 -  Starting ACS
-1 - Starting containers
+1 -  Initial test
 1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
-1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
-1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/alma/ACS-12.3/JacORB/lib/endorsed:
-1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb@alma.containerTests.contHandleTest.ContainerHandleTest created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Using manager reference: corbaloc::xxxxxxx:yyyy/Manager
 1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Manager reference resolved and narrowed.
 1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Querying manager for container info.
@@ -12,7 +8,34 @@
 1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Manager reported handle xxxxxxx get_handle() returned xxxxxxx
 1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Manager reported handle xxxxxxx get_handle() returned xxxxxxx
 1 - 
-1 - Time: 2.497
+1 - 
+1 - OK (1 test)
+1 - 
+1 -  Kill all the containers
+1 -  Test on killed containers
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Using manager reference: corbaloc::xxxxxxx:yyyy/Manager
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Manager reference resolved and narrowed.
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Querying manager for container info.
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Got infos from 3 container(s).
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] get_handle() call failed for container with handle xxxxxxx
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] get_handle() call failed for container with handle xxxxxxx
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] get_handle() call failed for container with handle xxxxxxx
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 
+1 -  Restarting test containers
+1 -  Final test on restarted containers
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Using manager reference: corbaloc::xxxxxxx:yyyy/Manager
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Manager reference resolved and narrowed.
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Querying manager for container info.
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Got infos from 3 container(s).
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Manager reported handle xxxxxxx get_handle() returned xxxxxxx
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Manager reported handle xxxxxxx get_handle() returned xxxxxxx
+1 - ----------T--:--:--.--- INFO [alma.containerTests.contHandleTest.ContainerHandleTest] Manager reported handle xxxxxxx get_handle() returned xxxxxxx
+1 - 
 1 - 
 1 - OK (1 test)
 1 - 
