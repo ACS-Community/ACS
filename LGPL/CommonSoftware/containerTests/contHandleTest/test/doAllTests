@@ -21,5 +21,22 @@
 # MA 02111-1307  USA
 #
 export ACS_TMP=../test/tmp
+export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
+
+echo " Initial test" 
 acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
 
+echo " Kill all the containers"
+cat $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/pids/*Container_PID | xargs -L 1 pkill -9 -P
+
+echo " Test on killed containers"
+acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
+
+echo " Restarting test containers"
+##export JAVA_OPTIONS="-Djacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory"
+acsutilAwaitContainerStart -java frodoContainer > /dev/null
+acsutilAwaitContainerStart -py gandalfContainer > /dev/null
+acsutilAwaitContainerStart -cpp bilboContainer > /dev/null
+
+echo " Final test on restarted containers" 
+acsutilTATTestRunner acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner alma.containerTests.contHandleTest.ContainerHandleTest
