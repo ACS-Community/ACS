@@ -239,7 +239,21 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             print maci.Container.ContainerStatusReadyMsg
             sys.stdout.flush()
 
-    #--ACTIVATOR IDL-----------------------------------------------------------
+    #--CONTAINER IDL-----------------------------------------------------------
+    def get_handle(self):
+        '''
+        Returns the handle of this container given by the manager at login.
+        
+        Parameters: None
+
+        Returns: handle, 0 if not (yet) logged in.
+        
+        Raises: Nothing
+
+        Handle get_handle();
+        '''
+        return self.token.h
+    #--CONTAINER IDL-----------------------------------------------------------
     def activate_component(self, h, exeid, name, exe, idl_type):
         '''
         Activates a component (or returns a reference to it if already exists).

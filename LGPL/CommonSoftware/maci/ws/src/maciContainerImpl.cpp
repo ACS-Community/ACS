@@ -1801,6 +1801,13 @@ ContainerImpl::doneThread()
 /* -----------------------------------------------------------------------*/
 /**************************************************************************/
 
+::maci::Handle
+ContainerImpl::get_handle ()
+{
+  ACS_TRACE("maci::ContainerImpl::get_handle");
+  return m_handle;
+}
+
 maci::ComponentInfo *
 ContainerImpl::activate_component (
 			     maci::Handle h,

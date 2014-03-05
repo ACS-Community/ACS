@@ -79,6 +79,25 @@ public class ContainerProxy extends ClientProxy implements Container
 	}
 
 
+	@Override
+	public int get_handle() {
+		try
+		{
+			return container.get_handle();
+		}
+		catch (TIMEOUT tex)
+		{
+			TimeoutRemoteException re = new TimeoutRemoteException("Timout occured while invoking 'get_handle()' method.", tex);
+			throw re;
+		}
+		catch (Exception ex)
+		{
+			RemoteException re = new RemoteException("Failed to invoke 'get_handle()' method.", ex);
+			throw re;
+		}
+	}
+	
+	
 	/**
 	 * @see com.cosylab.acs.maci.Container#activate_component(int, long, String, String, String)
 	 */

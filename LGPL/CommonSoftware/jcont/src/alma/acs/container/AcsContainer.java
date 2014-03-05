@@ -458,8 +458,11 @@ public class AcsContainer extends ContainerPOA
         m_managerProxy.loginToManager(m_acsCorba.getContainerCorbaRef(this), true);
     }
 
-
-
+	public int get_handle()
+    {
+    	return m_managerProxy.getManagerHandle();
+    }
+    
     /////////////////////////////////////////////////////////////
     // Implementation of ContainerOperations#activate_component
     /////////////////////////////////////////////////////////////

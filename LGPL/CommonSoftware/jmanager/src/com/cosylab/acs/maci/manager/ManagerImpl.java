@@ -2862,7 +2862,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							boolean alive = false;
 							try
 							{
-								alive = loggedContainer.ping();
+								int lh = loggedContainer.get_handle();
+								if (lh != 0 && lh == loggedContainerInfo.getHandle())
+									alive = true;
 							}
 							catch (Throwable th) {
 								// noop
