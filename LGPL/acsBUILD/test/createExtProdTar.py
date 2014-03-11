@@ -113,10 +113,11 @@ if __name__=="__main__":
     acs=getAcsVersionFromACSROOT()
     date=getDate()
     arch=getArchitecture()
+    dist=getDistribution()
     currentFolder=os.getcwd()
     srcFolder=getAcsExtProdSrcFolder()
     print "Creating ExtProd tar for", acs,"in",currentFolder
-    tarName=acs+"-ExtProd-"+date+"-"+arch+".tar.gz"
+    tarName=acs+"-ExtProd-"+date+"-"+arch+"-"+dist+".tar.gz"
     print "Tar name",tarName
     tarNameFullPath=currentFolder+"/"+tarName
     
