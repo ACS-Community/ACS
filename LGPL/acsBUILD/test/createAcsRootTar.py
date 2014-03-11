@@ -147,6 +147,30 @@ def getArchitecture():
     un=os.uname()
     return un[4]
 
+def getDistribution():
+    '''
+    Get the distribution (RHEL, SL and so on)
+    by parsing /etc/redhat-release
+    
+    @return: a string describing the distribution like RH6.5
+             or UNKNOWN if /etc/redhat-release does not exist or is unreadable.
+             
+    '''
+    ret="UNKNOWN"
+    fname="/etc/redhat-release"
+    with open(fname) as f:
+        content = f.readlines()
+    distr=str(content)
+    if distr.find("Red Hat Enterprise Linux")>=0:
+        temp="RH"
+    elif distr.find("Scientific Linux")>=0:
+        temp="SL"
+    else:
+        return ret
+    parts=distr.split(" ")
+    version=parts[len(parts)-2]
+    return temp+version
+
 def buildTarName(acs,archive):
     '''
     Build the name of the tar
@@ -156,12 +180,13 @@ def buildTarName(acs,archive):
     '''
     date=getDate()
     architecture=getArchitecture()
+    dist=getDistribution()
     
     ret=acs
     if archive is not None:
         ret=ret+"-"+archive.replace("-B","")
 
-    return ret+"-"+date+"-"+architecture+".tar.gz"
+    return ret+"-"+date+"-"+architecture+"-"+dist+".tar.gz"
 
 if __name__=="__main__":
     
@@ -198,7 +223,6 @@ if __name__=="__main__":
     print "Creating ACSROOT tar for", acsVersionFromACSROOT,"in",currentFolder
     tarName=buildTarName(acsVersionFromACSROOT,arcTag)
     print "Tar name",tarName
-    
     tarNameFullPath=currentFolder+"/"+tarName
     
     # Go to root /
