@@ -30,6 +30,7 @@ TAO_LIBRARIES:=ACE \
 OMNI_IDL = omniidl
 JAVA_IDL = $(JACORB_HOME)/bin/idl
 JACORB_MK_IDL_PATH = -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg
+JACORB_ENDORSED = -endorseddirs $(JACORB_HOME)/lib/endorsed
 AlmaIDLMainClass=alma.tools.idlgen.XmlIdlCompiler
 #
 #  RTAI

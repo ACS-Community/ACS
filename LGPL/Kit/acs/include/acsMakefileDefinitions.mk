@@ -659,7 +659,8 @@ tgtDir$1=$(if $(filter on,$4),lib/ACScomponents,lib)
 CompilerFlags=$(if $(filter on,$8),$5 $6 -g,$(shell echo $5 $6 | sed -e 's/-g //;s/-g[:a-z,]*//'))
 currentLocation=$(if $1,$(shell pwd | sed "s/\/.*\///"))
 
-classMaker=$(if $(filter on,$7),acsMakeJavaClasspath -endorsed,acsMakeJavaClasspath)
+classMaker=acsMakeJavaClasspath
+J_END_DIRS= $(if $(filter on,$7),$(JACORB_ENDORSED)$$(subst $$(SPACE),,$(foreach dir,$(subst -L,,$(strip $(sort $(L_PATH)))),$(if $(wildcard $(dir)/endorsed),:$(dir)/endorsed,))),$(JACORB_ENDORSED))
 $1_FILELISTFILE=/tmp/acsMakeJavac_$1_$(UNIQUE_NUMBER)_$(USER_NAME)
 
 $1_source_file_list= $(if $2,$(shell find $2 -name \*.java -type f ! -path '*/CVS/*' ! -path '*/.svn/*' | tr '\n' ' '),)
@@ -690,7 +691,7 @@ $(CURDIR)/../$$(tgtDir$1)/$1.jar: $$($1_source_file_list) $(foreach jar,$9,$(CUR
                echo "$(strip $1)-ACS-Generated-FromModule: $(PWD)" >  ../object/$1/$(strip $1).manifest; \
              fi; \
         fi
-	$(AT) CLASSPATH="`$$(classMaker)`$(PATH_SEP)."; export CLASSPATH ; $(JAVAC) $$(CompilerFlags) -d $$(TMPSRC) @$$($1_FILELISTFILE)
+	$(AT) CLASSPATH="`$$(classMaker)`$(PATH_SEP)."; export CLASSPATH ; $(JAVAC) $$(CompilerFlags) $$(J_END_DIRS) -d $$(TMPSRC) @$$($1_FILELISTFILE)
 	$(AT) (cd $$(TMPSRC); if [ -f ../../../$$(tgtDir$1)/$1.jar ]; then JAR="jar uf"; else JAR="jar cf"; fi; $$$${JAR} ../../../$$(tgtDir$1)/$1.jar $(foreach dir,$2,$(if $(filter .,$(dir)),*.class,$(dir))) ; jar ufm ../../../$$(tgtDir$1)/$1.jar ../$(strip $1).manifest 2> /dev/null && $(RM) ../$(strip $1).manifest )
 	$(AT) $(RM) -fr $$(TMPSRC)
 	$(AT) $(RM) $$($1_FILELISTFILE)

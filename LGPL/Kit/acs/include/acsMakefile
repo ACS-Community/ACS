@@ -437,6 +437,9 @@
 
 # This variable has to be propagated to the recipes
 export INSTALL_ROOT
+COLON:= :
+EMPTY:=
+SPACE:= $(EMPTY) $(EMPTY)
 
 #
 # set auxiliary variables according to the verbose flag
@@ -752,9 +755,6 @@ ifeq ($(strip $(findstring MC68,$(CPU))),MC68)
        ifneq ($(VX_VERSION), 5.5)
 WIND_BASE_PATTERN := /vlt/$(VLTSW_RELEASE)/vw6.4%
 WIND_HOME_PATTERN := /vlt/$(VLTSW_RELEASE)/WindRiver-3.4%
-COLON:= :
-EMPTY:=
-SPACE:= $(EMPTY) $(EMPTY)
 
 PATH:=$(subst $(COLON),$(SPACE),$(PATH))
 PATH:=$(filter-out $(WIND_BASE_PATTERN),$(PATH))
