@@ -56,10 +56,12 @@ try:
         ]
     mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_ALARMS_COMPONENT', psns)
     tc.reset();
+    time.sleep(1)
     mc.startMonitoring('MC_TEST_ALARMS_COMPONENT')    
     time.sleep(1)
     tc.increase()
     time.sleep(1)
+    #mc.stopMonitoring('MC_TEST_ALARMS_COMPONENT')
     tc.increase()
     time.sleep(1)
     tc.increase()
@@ -90,8 +92,18 @@ for d in data:
     for blob in d.monitorBlobs:
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0
+        prevVal=-333
         for blobData in any.from_any(blob.blobDataSeq):
-            print "\t\t", blobData
+            # we use here a dirt trick, because we set timeout to 134608945243381570
+            # so we know if the value comes from an alarm monitor or normal monitor
+            if blobData['time'] != 134608945243381570:
+                print "Alarm: \t", blobData
+            else:
+                # here we prevent to write a value more than once what can happen during sleep of 1 s
+                # so that we have deterministic results of the test
+                if blobData['value'] != prevVal:
+                    print "\t\t", blobData
+                    prevVal = blobData['value']
             
 
 mc.deregisterMonitoredDevice('MC_TEST_ALARMS_COMPONENT')
