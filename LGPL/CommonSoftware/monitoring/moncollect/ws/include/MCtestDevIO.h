@@ -75,7 +75,7 @@ template <class T> class MCtestDevIO : public DevIO<T>
 
   protected:
     T value_m;
-    ACS::Time& timestamp_m;
+    ACS::Time timestamp_m;
 };
 
 template <class T> class MCtestDevIOSeq : public DevIO<T>
@@ -122,7 +122,7 @@ public:
 
 protected:
 	T value_m;
-	ACS::Time& timestamp_m;
+	ACS::Time timestamp_m;
 };
 
 	template <class T> class MCtestDevIONoIncremental : public DevIO<T>
@@ -156,13 +156,13 @@ protected:
 		  */
 		 virtual void write(const T& value, ACS::Time& timestamp)
 		{
-			timestamp = timestamp_m;
+			timestamp_m = timestamp;
 			value_m = value;
 		}
 	
 	  protected:
 		T value_m;
-		ACS::Time& timestamp_m;
+		ACS::Time timestamp_m;
 	};
 	
 	template <class T> class MCtestDevIOSeqNoIncremental : public DevIO<T>
@@ -198,7 +198,7 @@ protected:
 	
 	protected:
 		T value_m;
-		ACS::Time& timestamp_m;
+		ACS::Time timestamp_m;
 	};
 
 };//namespace TMCDB
