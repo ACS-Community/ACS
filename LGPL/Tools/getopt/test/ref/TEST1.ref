@@ -24,7 +24,7 @@
 1 - The rest of arguments are: 'arguments not options -a'
 1 - ################################################
 1 - getoptTestPrintArgs -n
-1 - getoptTestPrintArgs: unrecognized option `-n'
+1 - getoptTestPrintArgs: unrecognized option '-n'
 1 - Usage: getoptTestPrintArgs [OPTIONS]
 1 - Options: 
 1 -    -h | -help              prints this help and exits
