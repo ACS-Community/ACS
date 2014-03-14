@@ -12,3 +12,4 @@ s/corbaloc::[a-z,A-Z,0-9,_,.,-]*:[0-9]*/corbaloc::xxxxxxx:yyyy/g
 s/-classpath .* -Dabeans.config/-classpath ..... -Dabeans.config/g
 s/.java:[0-9]*/.java:xx/g
 s/^  ..$/ /g
+s/`/'/g
