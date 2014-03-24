@@ -85,14 +85,39 @@ def getArchitecture():
     un=os.uname()
     return un[4]
 
+def getDistribution():
+    '''
+    Get the distribution (RHEL, SL and so on)
+    by parsing /etc/redhat-release
+    
+    @return: a string describing the distribution like RH6.5
+             or UNKNOWN if /etc/redhat-release does not exist or is unreadable.
+             
+    '''
+    ret="UNKNOWN"
+    fname="/etc/redhat-release"
+    with open(fname) as f:
+        content = f.readlines()
+    distr=str(content)
+    if distr.find("Red Hat Enterprise Linux")>=0:
+        temp="RH"
+    elif distr.find("Scientific Linux")>=0:
+        temp="SL"
+    else:
+        return ret
+    parts=distr.split(" ")
+    version=parts[len(parts)-2]
+    return temp+version
+
 if __name__=="__main__":
     acs=getAcsVersionFromACSROOT()
     date=getDate()
     arch=getArchitecture()
+    dist=getDistribution()
     currentFolder=os.getcwd()
     srcFolder=getAcsExtProdSrcFolder()
     print "Creating ExtProd tar for", acs,"in",currentFolder
-    tarName=acs+"-ExtProd-"+date+"-"+arch+".tar.gz"
+    tarName=acs+"-ExtProd-"+date+"-"+arch+"-"+dist+".tar.gz"
     print "Tar name",tarName
     tarNameFullPath=currentFolder+"/"+tarName
     
