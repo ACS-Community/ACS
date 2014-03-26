@@ -66,7 +66,10 @@ public class JacORBFilter implements Filter {
 					) ) {
 				record.setLevel(Level.FINEST);
 			}
-			else if (message.startsWith("get_policy_overrides returns")) {
+			else if (
+					message.startsWith("get_policy_overrides returns") ||
+					message.startsWith("read GIOP message of size") ||
+					message.startsWith("wrote GIOP message of size")) {
 				// From ACS unit tests it seems that this message is totally harmless, 
 				// caused by a Corba stub calling org.jacorb.orb.Delegate#getRelativeRoundtripTimeout()
 				// and asking for the RELATIVE_RT_TIMEOUT_POLICY_TYPE policy.
@@ -75,7 +78,7 @@ public class JacORBFilter implements Filter {
 //				// Enable the following 2 lines to investigate for http://jira.alma.cl/browse/COMP-8302, to see where all these logs come from
 //				String stackTrace = org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(new Throwable());
 //				System.out.println("Hack for COMP-8302 debugging: 'get_policy_overrides returns' message logged with trace " + stackTrace);
-			}
+			} 
 			// from FINE to discard
 			else isLoggable = !(
 					message.endsWith("_invoke: queuing request") ||
