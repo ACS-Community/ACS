@@ -149,7 +149,7 @@ bulkDataSenderStubs_LIBS = baciStubs ACSBulkDataError bulkDataStubs bulkDataRece
 bulkDataDistributerStubs_LIBS = baciStubs ACSErrTypeCommon ACSBulkDataError bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
 
 #ACS Error System target
-ACSERRDEF = ACSBulkDataError ACSBulkDataStatus
+ACSERRDEF = ACSBulkDataStatus
 
 #
 # Jarfiles and their directories
