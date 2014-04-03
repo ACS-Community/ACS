@@ -185,8 +185,12 @@ CDB_SCHEMAS = BulkDataNTReceiver BulkDataNTSender acs_rti_dds_qos_profiles
 # 
 # IDL Files and flags
 # 
-IDL_FILES =
+IDL_FILES = bulkData bulkDataReceiver bulkDataSender bulkDataDistributer
 TAO_IDLFLAGS =
+bulkDataStubs_LIBS = TAO_AV
+bulkDataReceiverStubs_LIBS = baciStubs ACSBulkDataError ACSBulkDataStatus bulkDataStubs
+bulkDataSenderStubs_LIBS = baciStubs ACSBulkDataError bulkDataStubs bulkDataReceiverStubs
+bulkDataDistributerStubs_LIBS = baciStubs ACSErrTypeCommon ACSBulkDataError bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
 USER_IDL =
 #
 # Jarfiles and their directories

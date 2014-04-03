@@ -141,12 +141,8 @@ CDB_SCHEMAS = BulkDataReceiver BulkDataSender BulkDataDistributer
 # 
 # IDL Files and flags
 # 
-IDL_FILES = bulkData bulkDataReceiver bulkDataSender bulkDataDistributer
+IDL_FILES = 
 IDL_TAO_FLAGS =
-bulkDataStubs_LIBS = TAO_AV
-bulkDataReceiverStubs_LIBS = baciStubs ACSBulkDataError ACSBulkDataStatus bulkDataStubs
-bulkDataSenderStubs_LIBS = baciStubs ACSBulkDataError bulkDataStubs bulkDataReceiverStubs
-bulkDataDistributerStubs_LIBS = baciStubs ACSErrTypeCommon ACSBulkDataError bulkDataStubs bulkDataReceiverStubs bulkDataSenderStubs
 
 #ACS Error System target
 ACSERRDEF = ACSBulkDataStatus
