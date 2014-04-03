@@ -145,7 +145,7 @@ IDL_FILES =
 IDL_TAO_FLAGS =
 
 #ACS Error System target
-ACSERRDEF = ACSBulkDataStatus
+ACSERRDEF = 
 
 #
 # Jarfiles and their directories

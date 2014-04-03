@@ -199,7 +199,7 @@ JARFILES=
 jjj_DIRS=
 jjj_EXTRAS= 
 
-ACSERRDEF = ACS_BD_Errors ACS_DDS_Errors ACSBulkDataError
+ACSERRDEF = ACS_BD_Errors ACS_DDS_Errors ACSBulkDataError ACSBulkDataStatus
 
 
 #
