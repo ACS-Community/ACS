@@ -2350,7 +2350,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		// bind to remote directory
 		// NOTE: this could block since it is a remote call
-		bind(convertToHiearachical(name), "O", component);
+		//bind(convertToHiearachical(name), "O", component);
 
 		logger.log(Level.INFO,"Component '"+name+"' registered.");
 
@@ -3322,7 +3322,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 
 				// unbind from remote directory
-				unbind(convertToHiearachical(componentInfo.getName()), "O");
+				//unbind(convertToHiearachical(componentInfo.getName()), "O");
 			}
 
 		}
@@ -7215,7 +7215,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		//
 		// bind to remote directory
 		//
-		bind(convertToHiearachical(name), "O", componentInfo.getComponent().getObject());
+		//bind(convertToHiearachical(name), "O", componentInfo.getComponent().getObject());
 
 		//
 		// notify administrators about the activation
@@ -7600,7 +7600,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void internalNoSyncDeactivateComponent(ComponentInfo componentInfo) throws Throwable
 	{
 		// unbind from remote directory
-		unbind(convertToHiearachical(componentInfo.getName()), "O");
+		//unbind(convertToHiearachical(componentInfo.getName()), "O");
 
 		int handle = componentInfo.getHandle() & HANDLE_MASK;
 		int owners = componentInfo.getClients().size();
