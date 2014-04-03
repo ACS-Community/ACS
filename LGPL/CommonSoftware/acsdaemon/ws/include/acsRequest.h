@@ -112,7 +112,7 @@ const ACSService acsServices[] = {
 				"corbaloc::%s:%s/NameService",
 				&ACSPorts::getNamingServicePort,
 				NULL,
-				false,
+				true,
 				false,
 				noDependency
 		}, {
