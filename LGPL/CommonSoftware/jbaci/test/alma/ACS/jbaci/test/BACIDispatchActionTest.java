@@ -445,6 +445,40 @@ public class BACIDispatchActionTest extends TestCase {
 			// auto-generated method stub
 			return null;
 		}
+		
+		public org.omg.CORBA.ORB _get_orb() {
+			return null;
+		}
+		
+		public org.omg.CORBA.Object _get_component() {
+			return null;
+		}
+		
+		public boolean _validate_connection( org.omg.CORBA.PolicyListHolder inconsistent_policies ) {
+			return false;
+		}
+		
+		public org.omg.CORBA.Policy[] _get_policy_overrides( int[] types ) {
+			return null;
+		}
+		
+		public org.omg.CORBA.Policy _get_client_policy( int type ) {
+			return null;
+		}
+		
+		public org.omg.CORBA.Object _set_policy_overrides (
+				Policy[] policies,
+                SetOverrideType set_add) {
+			return null;
+		}
+		
+		public String _repository_id() {
+			return null;
+		}
+		
+		public org.omg.CORBA.InterfaceDef _get_interface() {
+			return null;
+		}
 
 		/**
 		 * @see org.omg.CORBA.Object#_set_policy_override(org.omg.CORBA.Policy[], org.omg.CORBA.SetOverrideType)
