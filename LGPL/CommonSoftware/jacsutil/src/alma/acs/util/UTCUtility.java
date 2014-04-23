@@ -26,7 +26,16 @@ import java.util.TimeZone;
 
 
 /**
- * Converts UTC times of different epochs
+ * Converts UTC times of different epochs.
+ * <p>
+ * Note that Alma uses not only the Unix/Java time and OMG time 
+ * that this class currently supports, but also "array time" 
+ * which is a variant of VMS time: Nanoseconds since Nov 17, 1858.
+ * If we ever need to convert this to Java time, the formula is 
+ * (jTime + 40587 * 86400000) * 1000000L
+ * with 40587 = number of days between 1858-11-17 and 1970-01-01
+ * and 86400000 = milliseconds per day.
+ * See also ICD/HLA/ASDM :: ArrayTime.
  * 
  * @author hsommer Jul 8, 2003 2:50:08 PM
  */
