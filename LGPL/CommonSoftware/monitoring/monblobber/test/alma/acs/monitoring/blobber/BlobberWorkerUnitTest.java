@@ -36,6 +36,7 @@ import alma.TMCDB.uLongLongSeqBlobDataSeqHelper;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.monitoring.DAO.ComponentData;
+import alma.acs.util.UTCUtility;
 
 
 /**
@@ -50,10 +51,7 @@ import alma.acs.monitoring.DAO.ComponentData;
  */
 public class BlobberWorkerUnitTest extends ComponentClientTestCase {
 
-	/**
-	 * Base time is using Array time which has an epoch of 1858, Nov 17, hence the addition.
-	 */
-	private static final long BASE_TIME = (System.currentTimeMillis() + 3506716800000L) * 1000000;
+	private static final long BASE_TIME = UTCUtility.utcJavaToOmg(System.currentTimeMillis());
 
 	private TestBlobber blobber;
 

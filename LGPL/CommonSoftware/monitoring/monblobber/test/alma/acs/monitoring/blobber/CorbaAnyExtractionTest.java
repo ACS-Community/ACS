@@ -57,6 +57,7 @@ import alma.acs.monitoring.MonitorPointValue;
 import alma.acs.monitoring.DAO.Clobber;
 import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.blobber.TestBlobber.TestMonitorPointExpert;
+import alma.acs.util.UTCUtility;
 
 /**
  * Moved here the tests from {@link BlobberWorkerUnitTest}
@@ -81,10 +82,7 @@ public class CorbaAnyExtractionTest extends JUnit4StandaloneTestBase
 	
 	private TestMonitorPointExpert monitorPointExpert;
 	
-	/**
-	 * Base time is using Array time which has an epoch of 1858, Nov 17, hence the addition.
-	 */
-	private static final long BASE_TIME = (System.currentTimeMillis() + 3506716800000L) * 1000000;
+	private static final long BASE_TIME = UTCUtility.utcJavaToOmg(System.currentTimeMillis());
 
 
 	@Before
