@@ -509,10 +509,7 @@ class Logger(logging.Logger):
         '''
         Helper function formats the message.
         '''
-        func_name = self.__getCallerName()
-        msg = func_name + " - " + msg
-        
-        return msg
+        return "%s - %s" %(self.__getCallerName(), msg)
     #------------------------------------------------------------------------
     def logAtLevel(self, lvl, msg):
         '''
