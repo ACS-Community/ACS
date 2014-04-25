@@ -75,11 +75,12 @@ CL_ALLOWFLIGHTRECORDER=
 CL_NODIRECTORY=
 CL_VMTOOLS=
 CL_SPLASHFILE=
+CL_JVMFLAGS=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,clientVM,maxHeapSize:,threadStackSize:,noexport,managerReference:,baseport:,jarpath:,endorsed,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,allowFlightRecorder,noDirectory,vmtools,splash:
+LONGOPTS=help,clientVM,maxHeapSize:,jvmFlags:,threadStackSize:,noexport,managerReference:,baseport:,jarpath:,endorsed,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,allowFlightRecorder,noDirectory,vmtools,splash:
 SHORTOPTS=hm:b:D:j:
 
 #
@@ -109,16 +110,19 @@ function printUsage {
 	echo "   -noDirectory                                     do not create an acs instance directory"
 	echo "   -vmtools                                         start JVM Tools together with the application"
 	echo "   -splash FILE                                     uses file FILE for splash screen (if needed)"
+	echo "   -jvmFlags JVMOPTS                                Flags for the JVM like '-XX:PermSize=512m -XX:MaxPermSize=512m'"
+	echo "                                                    If it is set, ignores -clientVM, -maxHeapSize, -threadStackSize and don't add any default memory"
+	echo "                                                    and garbage collector settings; instead pass through the settings from this switch."
+	echo "                                                    This switch overrides any setting in JAVA_OPTIONS_MEMORY environment variable"
 	echo "   -h | -help                                       prints this help and exits"
 	echo "Environment Variables:"
 	echo "   MANAGER_REFERENCE        if is not set, take the HOST to construct it. Used if not given as parameter"
 	echo "   JAVA_OPTIONS_MEMORY      if it is set, ignore -clientVM, -maxHeapSize, -threadStackSize and don't add any default memory"
-	echo "                                          and garbage collector settings; instead pass through the settings from this variable."
+	echo "                            and garbage collector settings; instead pass through the settings from this variable."
+	echo "                            Ignored if -jvmFlags is in the command line"
 	echo "   ACS_NAME_SERVICE         if is not set, take the computer where Manager is located"
 	echo "   ACS_INTERFACE_REPOSITORY if is not set, take the computer where Manager is located"
 }
-
-
 
 
 #
@@ -159,6 +163,7 @@ eval set -- "$temp"
 while : 
 do
 	case "$1" in
+	--jvmFlags)            CL_JVMFLAGS=$2 ;;
 	--endorsed)            CL_ENDORSED=true ;;
 	--clientVM)            CL_CLIENTVM=true ;;
 	--maxHeapSize)         CL_MAXHEAPSIZE=$2 ; shift ;;
@@ -186,6 +191,8 @@ do
 	shift
 done
 shift
+
+
 
 #
 # must be unset! otherwise our custom export() function
@@ -559,6 +566,17 @@ if [ "$CL_SPLASHFILE" ]; then
 fi
 ### ---------- End of "splash" handling -------------
 
+###
+### -------- JVM memory settings from command line--------
+###
+# If JVM settings have been passed through the command line (-jvmFlags) then
+# the passed settings override those in $JAVA_OPTIONS_MEMORY. This is 
+# accomplished by replacing the content of $JAVA_OPTIONS_MEMORY with that of $CL_JVMFLAGS
+#
+if [ X"$CL_JVMFLAGS" != X ]
+then
+	JAVA_OPTIONS_MEMORY="$CL_JVMFLAGS"
+fi
 
 ###
 ### -------------- JVM memory settings -------------------
