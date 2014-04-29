@@ -163,7 +163,7 @@ eval set -- "$temp"
 while : 
 do
 	case "$1" in
-	--jvmFlags)            CL_JVMFLAGS=$2 ;;
+	--jvmFlags)            CL_JVMFLAGS=$2 ; shift ;;
 	--endorsed)            CL_ENDORSED=true ;;
 	--clientVM)            CL_CLIENTVM=true ;;
 	--maxHeapSize)         CL_MAXHEAPSIZE=$2 ; shift ;;
