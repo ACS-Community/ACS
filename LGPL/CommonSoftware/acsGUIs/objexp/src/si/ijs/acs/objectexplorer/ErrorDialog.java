@@ -1,6 +1,6 @@
 package si.ijs.acs.objectexplorer;
 
-import com.cosylab.gui.components.r2.SmartTextPane;
+import alma.acs.gui.widgets.SmartTextPane;
 
 /**
  * Insert the type's description here.

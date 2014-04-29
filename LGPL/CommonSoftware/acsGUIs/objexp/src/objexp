@@ -12,5 +12,5 @@
 export HOST=`getIP`
 
 acsStartJava \
-    -noClassLoader -noAutoClasspath -addToClasspath abeansR2Components.jar:acscommon.jar:acscomponent.jar:acserr.jar:acserrj.jar:ACSErrTypeCommon.jar:acsjlog.jar:acstime.jar:baci.jar:castor.jar:cdbErrType.jar:jACSUtil.jar:logging_idl.jar:maci.jar:maciErrType.jar:maciSchemaBindings.jar:objexpErrType.jar:oe.jar:slf4j-acs.jar:slf4j-api-1.7.5.jar: \
+    -noClassLoader -noAutoClasspath -addToClasspath jchart2d-3.2.0.jar:acsGUIutil.jar:acscommon.jar:acscomponent.jar:acserr.jar:acserrj.jar:ACSErrTypeCommon.jar:acsjlog.jar:acstime.jar:baci.jar:castor.jar:cdbErrType.jar:jACSUtil.jar:logging_idl.jar:maci.jar:maciErrType.jar:maciSchemaBindings.jar:objexpErrType.jar:oe.jar:slf4j-acs.jar:slf4j-api-1.7.5.jar: \
     $* -DOAIAddr=$HOST si.ijs.acs.objectexplorer.ObjectExplorer BACI 

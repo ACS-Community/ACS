@@ -1,12 +1,13 @@
 package si.ijs.acs.objectexplorer.engine;
 
-import com.cosylab.gui.components.r2.DataFormatter;
-
 import java.util.HashMap;
 import java.util.Set;
 import java.util.LinkedHashSet;
 
+import alma.acs.gui.util.DataFormatter;
+
 public class DataException extends Exception implements DataElement {
+	private static final long serialVersionUID = 6575735409776282697L;
 	private String name;
 	private String id;
 	private HashMap<String, Object> members;

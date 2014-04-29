@@ -1,11 +1,11 @@
 package si.ijs.acs.objectexplorer.engine;
 
-import com.cosylab.gui.components.r2.DataFormatter;
+import alma.acs.gui.util.DataFormatter;
 
 public class DataElementFormatter {
 	public static String unpackArray(Object array, String lineStart, int level, boolean expand) {
 		StringBuffer result=new StringBuffer();
-		Class type=array.getClass().getComponentType();
+		Class<?> type=array.getClass().getComponentType();
 		Object[] list = null;
 		if (type.isPrimitive())
 			list = DataFormatter.convertPrimitiveArray(array);

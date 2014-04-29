@@ -32,6 +32,8 @@ import org.omg.DynamicAny.DynSequence;
 import org.omg.DynamicAny.DynStruct;
 import org.omg.DynamicAny.NameDynAnyPair;
 
+import alma.acs.gui.util.DataFormatter;
+
 import si.ijs.acs.objectexplorer.engine.DataElement;
 import si.ijs.acs.objectexplorer.engine.DataEnum;
 import si.ijs.acs.objectexplorer.engine.DataException;
@@ -236,7 +238,7 @@ public static void destroyInvocation(BACIInvocation invoc) {
 			e.printStackTrace();
 			return null;
 		}
-		Class cl = getClassType(tc);
+		//Class<?> cl = getClassType(tc);
 		DynStruct str = (DynStruct) dany;
 		NameDynAnyPair[] mems = str.get_members_as_dyn_any();
 		try {
@@ -270,7 +272,7 @@ public static void destroyInvocation(BACIInvocation invoc) {
 
 		java.lang.Object[] objs;
 		if (obj.getClass().getComponentType().isPrimitive())
-			objs = com.cosylab.gui.components.r2.DataFormatter.convertPrimitiveArray(obj);
+			objs = DataFormatter.convertPrimitiveArray(obj);
 		else
 			objs = (java.lang.Object[]) obj;
 		DynAny dany;
@@ -445,7 +447,7 @@ public java.lang.Object extractAny(Any argument) {
 			e.printStackTrace();
 			return null;
 		}
-		Class cl = getClassType(argument.type());
+		Class<?> cl = getClassType(argument.type());
 		Any[] els;
 		if(tc.kind() == TCKind.tk_sequence)
 			els = ((DynSequence) dany).get_elements();
@@ -457,7 +459,7 @@ public java.lang.Object extractAny(Any argument) {
 		java.lang.Object array = java.lang.reflect.Array.newInstance(cl.getComponentType(), els.length);
 		java.lang.Object[] objs;
 		if (cl.getComponentType().isPrimitive())
-			objs = com.cosylab.gui.components.r2.DataFormatter.convertPrimitiveArray(array);
+			objs = DataFormatter.convertPrimitiveArray(array);
 		else
 			objs = (java.lang.Object[]) array;
 		for(int i = 0; i < els.length; i++) {
@@ -553,11 +555,11 @@ public BACIAttribute[] getAttributes(BACIRemote target) {
 	if (target == null) throw new NullPointerException("target");
 
 	AttributeDescription[] desc = target.getIFDesc().attributes;
-	ArrayList temp = new ArrayList();
+	ArrayList<BACIAttribute> temp = new ArrayList<BACIAttribute>();
 	for (int i = 0; i < desc.length; i++)
 	{
 		if (isProperty(desc[i])) continue;
-		Class type = getClassType(desc[i].type);
+		Class<?> type = getClassType(desc[i].type);
 		temp.add(new BACIAttribute(ra, target, desc[i], new BACIDataType(type)));
 	}
 	BACIAttribute[] retVal = new BACIAttribute[temp.size()];
@@ -596,7 +598,7 @@ public BACIOperation[] getOperations(BACIRemote target) {
 	if (target == null) throw new NullPointerException("target");
 
 	OperationDescription[] operations = target.getIFDesc().operations;	
-	ArrayList tempList = new ArrayList();
+	ArrayList<BACIOperation> tempList = new ArrayList<BACIOperation>();
 	for (int i = 0; i < operations.length; i++)
 	{
 		ra.getNotifier().reportDebug("BACIIntrospector::getOperations", "Analysing operation '" + operations[i].name + "'.");
@@ -668,7 +670,7 @@ public BACIOperation[] getOperations(BACIRemote target) {
 public AttributeDescription[] getProperties(AttributeDescription[] attributes) {
 	if (attributes == null) throw new NullPointerException("attributes");
 	
-	ArrayList tempList = new ArrayList();
+	ArrayList<AttributeDescription> tempList = new ArrayList<AttributeDescription>();
 	for (int i = 0; i < attributes.length; i++)
 	{
 		if (isProperty(attributes[i]))
@@ -854,7 +856,7 @@ public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.l
 	return params;
 }
 
-	public Class getClassType(TypeCode tc) {
+	public Class<?> getClassType(TypeCode tc) {
 		switch(tc.kind().value()) {
 			case TCKind._tk_objref:
 				try {
@@ -885,7 +887,7 @@ public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.l
 				}
 			case TCKind._tk_sequence:
 			case TCKind._tk_array:
-				Class content;
+				Class<?> content;
 				try {
 					content = getClassType(tc.content_type());
 				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
@@ -1166,7 +1168,7 @@ public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.l
 		} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
 			e.printStackTrace();
 		}
-		Class cl = getClassType(argument.type());
+		//Class<?> cl = getClassType(argument.type());
 		Any[] els;
 		if(tc.kind() == TCKind.tk_sequence)
 			els = ((DynSequence) dany).get_elements();

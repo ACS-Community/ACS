@@ -1,15 +1,13 @@
 package si.ijs.acs.objectexplorer.engine;
 
-import com.cosylab.gui.components.r2.DataFormatter;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import alma.acs.util.UTCUtility;
-
 import java.util.HashMap;
-import java.util.Set;
 import java.util.LinkedHashSet;
+import java.util.Set;
+
+import alma.acs.gui.util.DataFormatter;
+import alma.acs.util.UTCUtility;
 
 public class DataStruct implements DataElement {
 	private String name;

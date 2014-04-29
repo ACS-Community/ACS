@@ -3,7 +3,8 @@ package si.ijs.acs.objectexplorer;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-import com.cosylab.gui.components.r2.SmartPanel;
+import alma.acs.gui.widgets.SmartPanel;
+
 /**
  * Insert the type's description here.
  * Creation date: (3.2.2002 14:46:22)

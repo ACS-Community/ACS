@@ -1,5 +1,9 @@
 package si.ijs.acs.objectexplorer;
 
+import info.monitorenter.gui.chart.Chart2D;
+import info.monitorenter.gui.chart.traces.Trace2DLtd;
+import info.monitorenter.gui.chart.traces.painters.TracePainterDisc;
+
 import java.awt.Color;
 import java.awt.event.InputEvent;
 import java.util.List;
@@ -23,10 +27,10 @@ import javax.swing.text.StyleConstants;
 import si.ijs.acs.objectexplorer.engine.Operation;
 import si.ijs.acs.objectexplorer.engine.RemoteCall;
 import si.ijs.acs.objectexplorer.engine.RemoteResponse;
+import alma.acs.gui.util.DataFormatter;
+import alma.acs.gui.widgets.SmartPanel;
+import alma.acs.gui.widgets.SmartTextPane;
 
-import com.cosylab.gui.components.r2.DataFormatter;
-import com.cosylab.gui.components.r2.SmartPanel;
-import com.cosylab.gui.components.r2.SmartTextPane;
 import com.cosylab.util.CircularArrayList;
 /**
  * Insert the type's description here.
@@ -35,92 +39,6 @@ import com.cosylab.util.CircularArrayList;
  */
 public class RemoteResponseWindow extends JFrame implements OperationInvocator, RemoteResponseCallbackListener {
 
-	/**
-	 * Creation date: (23.10.2001 22:42:35)
-	 * @author: 
-	 */
-	class OETrendDataModel extends com.cosylab.gui.components.r2.chart.AbstractDataModel {
-		private RemoteResponseWindow rrWindow = null;
-		private int pos = -1;
-
-		/**
-		 * OETrendDataModel constructor comment.
-		 */
-		public OETrendDataModel(RemoteResponseWindow parent) {
-			super();
-			rrWindow = parent;
-			setPreferedXScale(new com.cosylab.gui.components.r2.chart.Interval(0,1000));
-			setPreferedYScale(new com.cosylab.gui.components.r2.chart.Interval(0,1000));
-		}
-		/**
-		 * Insert the method's description here.
-		 * Creation date: (23.10.2001 22:42:35)
-		 * @return si.ijs.anka.databush.utilities.PointIterator
-		 */
-		public com.cosylab.gui.components.r2.chart.PointIterator getPointIterator() {
-			pos = -1;
-			return this;
-		}
-		/**
-		 * Creation date: (25.10.2001 21:00:57)
-		 * @return si.ijs.kgb.chart.Interval
-		 */
-		public com.cosylab.gui.components.r2.chart.Interval getXBounds() {
-			double min = getX(0);
-			double max = getX(size() - 1);
-			double ovr = (max - min) / 100;
-			return new com.cosylab.gui.components.r2.chart.Interval(min - ovr, max + ovr);
-		}
-		/**
-		 * Creation date: (25.10.2001 21:00:57)
-		 * @return si.ijs.kgb.chart.Interval
-		 */
-		public com.cosylab.gui.components.r2.chart.Interval getYBounds() {
-			com.cosylab.gui.components.r2.chart.Interval ival=rrWindow.getChartYBounds();
-			return ival;
-		}
-		/**
-		 * Insert the method's description here.
-		 * Creation date: (23.10.2001 22:42:35)
-		 * @return boolean
-		 */
-		public synchronized boolean hasNext() {
-			return (pos < size()-1);
-		}
-		/**
-		 * Insert the method's description here.
-		 * Creation date: (23.10.2001 22:42:35)
-		 * @return si.ijs.anka.databush.utilities.Point
-		 */
-		public synchronized com.cosylab.gui.components.r2.chart.Point next() {
-	        pos++;
-	        return (new com.cosylab.gui.components.r2.chart.Point(getX(pos),getY(pos)));
-		}
-		private double getX(int index){
-	        return rrWindow.getChartX(index);
-	    }
-		private double getY(int index){
- 			return rrWindow.getChartY(index);
-	    }
-		private int size(){
-	        return rrWindow.getChartSize();
-	    }
-		public void updateChartData(){
-	        getPreferedXScale().set(getXBounds());
-	        getPreferedYScale().set(getYBounds());
-	        pointCount=size();
-	        super.updateChartData();
-	    }
-		public void reloadChartData(){
-	        getPreferedXScale().set(getXBounds());
-	        getPreferedYScale().set(getYBounds());
-	        pointCount=size();
-	        super.reloadChartData();
-	    }
-		public String toString(){
-	        return " size:"+size()+" x:"+getX(0)+" y:"+getY(0);
-		}
-	}
 	private JPanel ivjJFrameContentPane = null;
 	private JPanel ivjJPanel1 = null;
 	private JLabel ivjJLabel1 = null;
@@ -138,7 +56,7 @@ public class RemoteResponseWindow extends JFrame implements OperationInvocator, 
 	private JSplitPane ivjJSplitPane1 = null;
 	private JTabbedPane ivjResultPanel = null;
 	private JPanel ivjTextPanel = null;
-	private com.cosylab.gui.components.r2.chart.BaseChart ivjTrend = null;
+	private Chart2D ivjTrend = null;
 	private JCheckBoxMenuItem ivjJCheckBoxMenuItem1 = null;
 	//BEANS
 	private ReporterBean reporter = null;
@@ -153,8 +71,7 @@ public class RemoteResponseWindow extends JFrame implements OperationInvocator, 
 	private List<double[]> chartData = new CircularArrayList<double[]>();
 	private int selectedChartValue = -1;
 	private int selectedChartXValue = -1;
-	private double[] mins=null;
-	private double[] maxs=null;
+	private Trace2DLtd trace = null;
 //OTHER    
 	private boolean enabled = true;
 	private boolean editing = false;
@@ -164,7 +81,6 @@ public class RemoteResponseWindow extends JFrame implements OperationInvocator, 
 	private JSplitPane ivjJSplitPane2 = null;
 	private SmartTextPane ivjoperationResultArea = null;
 	private JList ivjoperationsList = null;
-	private OETrendDataModel model = null;
 	private JLabel ivjJLabel5 = null;
 	private JLabel ivjJLabel6 = null;
 	private JList ivjJList2 = null;
@@ -459,12 +375,10 @@ public void disable() {
  * @param rr si.ijs.acs.objectexplorer.engine.RemoteResponse
  */
 void fillTrendList(RemoteResponse rr) {
-	getTrend().setXAxis(new com.cosylab.gui.components.r2.chart.DefaultTimeXAxis());
 	Object[] values = rr.getData();
 	String[] names = rr.getDataNames();
 	((DefaultListModel) getJList1().getModel()).addElement("[time]");
 	((DefaultListModel) getJList2().getModel()).addElement("[time]");
-	int length = 0;
 	for (int i = 0; i < values.length; i++) {
 		//if (values[i] != null && (Number.class).isAssignableFrom(values[i].getClass())) {
 		if (values[i] != null && ((Number.class).isAssignableFrom(values[i].getClass()) || 
@@ -487,18 +401,9 @@ void fillTrendList(RemoteResponse rr) {
 					}
 				}
 				numberIndexes.add(numberSubIndexes);
-				length += numberSubIndexes.size();
 			}
 		}
 	}
-	length += numberIndexes.size() + 1;
-	mins=new double[length];
-	maxs=new double[length];
-	for (int i = 0; i < mins.length; i++){
-		mins[i]=Double.MAX_VALUE;
-		maxs[i]=Double.MIN_VALUE;
-	}    
-	model = new OETrendDataModel(this);
 }
 /**
  * Creation date: (23.10.2001 19:58:56)
@@ -522,13 +427,6 @@ public double getChartX(int index) {
 public double getChartY(int index) {
 	if (selectedChartValue==-1) return 0;
 	return ((double[])chartData.get(index))[selectedChartValue];
-}
-/**
- * Creation date: (23.10.2001 19:58:56)
- * @return boolean
- */
-public com.cosylab.gui.components.r2.chart.Interval getChartYBounds() {
-	return new com.cosylab.gui.components.r2.chart.Interval(mins[selectedChartValue],maxs[selectedChartValue]);
 }
 /**
  * Return the JButton1 property value.
@@ -1303,11 +1201,21 @@ private java.awt.CardLayout getTextPanelCardLayout() {
  * @return com.cosylab.gui.chart.BaseChart
  */
 /* WARNING: THIS METHOD WILL BE REGENERATED. */
-private com.cosylab.gui.components.r2.chart.BaseChart getTrend() {
+private Chart2D getTrend() {
 	if (ivjTrend == null) {
 		try {
-			ivjTrend = new com.cosylab.gui.components.r2.chart.BaseChart();
+			ivjTrend = new Chart2D();
 			ivjTrend.setName("Trend");
+		    ivjTrend.getAxisX().getAxisTitle().setTitle("");
+		    ivjTrend.getAxisY().getAxisTitle().setTitle("");
+			
+			trace = new Trace2DLtd(maxLines);
+		    trace.setName("");
+
+		    ivjTrend.addTrace(trace);
+
+		    trace.addTracePainter(new TracePainterDisc());
+
 			// user code begin {1}
 			// user code end
 		} catch (java.lang.Throwable ivjExc) {
@@ -1527,6 +1435,9 @@ public void jTextField1_ActionPerformed() {
 			  if (lines < Integer.MAX_VALUE) maxLines=lines;
 			  else maxLines=Integer.MAX_VALUE;
 		  else maxLines=1;
+		  
+		  // limit to the last 100000
+		  trace.setMaxSize(Math.min(maxLines, 10000));
 	  }
 	  catch (NumberFormatException e) {
 		  maxLines=reportLength;
@@ -1593,7 +1504,6 @@ private void processChartValues(RemoteResponse response) {
 	length += numberIndexes.size()+1;
 	double[] newNumbers=new double[length];
 	newNumbers[0]=(double)response.getTimestamp()/1000.0;
-	maxs[0]=newNumbers[0];
 	// skip first element (time)
 	int k = 1;
 	for (int i = 0; i < numberIndexes.size(); i++) {
@@ -1608,8 +1518,6 @@ private void processChartValues(RemoteResponse response) {
 				else val=((Number)((Object [])data[numIndex])[numSubIndex]).doubleValue();
 		
 				newNumbers[k]= val;
-				if (val<mins[k]) mins[k]=val;
-				if (val>maxs[k]) maxs[k]=val;
 				k++;
 			}
 		}
@@ -1627,18 +1535,13 @@ private void processChartValues(RemoteResponse response) {
 		
 			// skip first element (time)
 			newNumbers[k]= val;
-			if (val<mins[k]) mins[k]=val;
-			if (val>maxs[k]) maxs[k]=val;
 			k++;
 		}
 	}
 	chartData.add(newNumbers);
 	if (chartData.size()>maxLines) chartData.remove(0);
 	if ((selectedChartValue!=-1) && (selectedChartXValue!=-1)){
-		model.reloadChartData();
-	}
-	else {
-		mins[0]=((double[])chartData.get(0))[0];
+		trace.addPoint(newNumbers[selectedChartXValue], newNumbers[selectedChartValue]);
 	}
 }
 /**
@@ -1791,15 +1694,8 @@ public void setDisposeOnDestroy(boolean newDisposeOnDestroy) {
  */
 public synchronized void setSelectedChartValue(int index) {
 	if (index != selectedChartValue) {
-		if ((selectedChartValue == -1) && (selectedChartXValue != -1)) {
-			model.setChartService(getTrend().getChartArea().getChartService());
-			getTrend().getChartArea().addDataModel(model);
-		}
-		else {
 		selectedChartValue = index;
-		model.reloadChartData();
-		}
-		selectedChartValue = index;
+		loadTraceData(selectedChartXValue, selectedChartValue);
 	}
 }
 /**
@@ -1809,14 +1705,19 @@ public synchronized void setSelectedChartValue(int index) {
  */
 public synchronized void setSelectedChartXValue(int newSelectedChartXValue) {
 	if (newSelectedChartXValue != selectedChartXValue) {
-		if ((selectedChartXValue == -1) && (selectedChartValue != -1)) {
-			model.setChartService(getTrend().getChartArea().getChartService());
-			getTrend().getChartArea().addDataModel(model);
-		} else {
-			selectedChartXValue = newSelectedChartXValue;
-			model.reloadChartData();
-		}
-		selectedChartXValue=newSelectedChartXValue;
+		selectedChartXValue = newSelectedChartXValue;
+		loadTraceData(selectedChartXValue, selectedChartValue);
 	}
 }
+
+private void loadTraceData(int xpos, int ypos)
+{
+	trace.removeAllPoints();
+	if (xpos < 0 || ypos < 0)
+		return;
+	
+	for (double[] d : chartData)
+		trace.addPoint(d[xpos], d[ypos]);
+}
+
 }

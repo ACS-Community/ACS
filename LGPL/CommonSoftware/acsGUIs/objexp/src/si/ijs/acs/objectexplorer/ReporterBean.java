@@ -7,16 +7,14 @@ import java.util.Hashtable;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 
-import com.cosylab.gui.components.r2.DataFormatter;
-import com.cosylab.gui.components.r2.SmartTextPane;
-
 import si.ijs.acs.objectexplorer.engine.Converter;
+import si.ijs.acs.objectexplorer.engine.DataElement;
+import si.ijs.acs.objectexplorer.engine.DataElementFormatter;
 import si.ijs.acs.objectexplorer.engine.Invocation;
 import si.ijs.acs.objectexplorer.engine.RemoteCall;
 import si.ijs.acs.objectexplorer.engine.RemoteResponse;
-import si.ijs.acs.objectexplorer.engine.DataElement;
-import si.ijs.acs.objectexplorer.engine.DataElementFormatter;
-
+import alma.acs.gui.util.DataFormatter;
+import alma.acs.gui.widgets.SmartTextPane;
 import alma.acs.util.IsoDateFormat;
 
 /**

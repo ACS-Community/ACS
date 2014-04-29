@@ -1,7 +1,15 @@
 package si.ijs.acs.objectexplorer;
 
-import javax.swing.* ;
-import si.ijs.acs.objectexplorer.engine.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+
+import si.ijs.acs.objectexplorer.engine.Attribute;
+import si.ijs.acs.objectexplorer.engine.Introspectable;
+import si.ijs.acs.objectexplorer.engine.Invocation;
+import si.ijs.acs.objectexplorer.engine.Operation;
+import si.ijs.acs.objectexplorer.engine.RemoteResponse;
+import si.ijs.acs.objectexplorer.engine.SimpleIntrospectable;
+
 /**
  * Handles Attributes and Operations of the selected Object
  *

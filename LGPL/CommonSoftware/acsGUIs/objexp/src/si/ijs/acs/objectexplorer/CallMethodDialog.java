@@ -657,10 +657,9 @@ private JLabel getTypeLabel(int n,String inType) {
  * @param exception java.lang.Throwable
  */
 private void handleException(java.lang.Throwable exception) {
+	exception.printStackTrace();
+	
   notifier.reportError("Error in parameters ",exception, true, false);
-
-  //if (exception instanceof Throwable)
-  //    ((Throwable)exception).printStackTrace();
 
   getErrorLabel().setText("Error: "+exception);
   getErrorLabel().setVisible(true);

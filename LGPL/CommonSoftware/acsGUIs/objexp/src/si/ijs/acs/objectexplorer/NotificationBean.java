@@ -7,9 +7,9 @@ import javax.swing.JFrame;
 
 import si.ijs.acs.objectexplorer.engine.Introspectable;
 import si.ijs.acs.objectexplorer.engine.NonStickyComponentReleased;
+import alma.acs.gui.widgets.SmartTextPane;
 import alma.acs.logging.ClientLogManager;
 
-import com.cosylab.gui.components.r2.SmartTextPane;
 /**
  * This bean is used for notifying the user about events that occur
  * during runtime - debug, error, message, structural access,...
