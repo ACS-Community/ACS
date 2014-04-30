@@ -31,6 +31,11 @@ OMNI_IDL = omniidl
 JAVA_IDL = $(JACORB_HOME)/bin/idl
 JACORB_MK_IDL_PATH = -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg
 JACORB_ENDORSED = -endorseddirs $(JACORB_HOME)/lib/endorsed
+JAVA_EDIRS = $(JACORB_ENDORSED)$(subst $(SPACE),,$(foreach dir,$(subst -L,,$(strip $(sort $(L_PATH)))),$(if $(wildcard $(dir)/endorsed),:$(dir)/endorsed,)))
+
+
+
+
 AlmaIDLMainClass=alma.tools.idlgen.XmlIdlCompiler
 #
 #  RTAI

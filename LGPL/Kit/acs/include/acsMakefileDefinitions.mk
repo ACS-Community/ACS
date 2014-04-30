@@ -264,7 +264,7 @@ endif #end $(strip $(XML_IDL))
         tmpFile=/tmp/acsMakeJavaStubs$(strip $1)_$(UNIQUE_NUMBER)_$(USER_NAME); \
         if [ "$$$${FILES}" != "" ] ; then \
           echo $$$${FILES} > $$$${tmpFile}; \
-          javac $(javaCompilerOptions) -d $$(TMPSRC) @$$$${tmpFile} ; \
+          $(JAVAC) $(javaCompilerOptions) $(JAVA_EDIRS) -d $$(TMPSRC) @$$$${tmpFile} ; \
           $(RM) $$$${tmpFile}; \
         else \
           echo "== WARNING, no Java source files generated for $1"; \
@@ -282,9 +282,9 @@ ifeq ($(filter $1,$(ACSERRDEF)),$1)
 	$(AT)acserrGenJava ../idl/$1.xml $(tDir)-$1/src
 	$(AT)echo "== Compiling generated Java classes (ACSERRDEF) and adding them to ../lib/$1.jar"
 ifeq ($(os),$(CYGWIN_VER))
-	$(AT)(cd $(tDir)-$1 && mkdir lib && cp ../../lib/*jar lib; cd src;  export CLASSPATH="`acsMakeJavaClasspath`$(PATH_SEP)."; javac -d . `find . -name \*.java | tr '\n' ' '` ) || exit -13
+	$(AT)(cd $(tDir)-$1 && mkdir lib && cp ../../lib/*jar lib; cd src;  export CLASSPATH="`acsMakeJavaClasspath`$(PATH_SEP)."; $(JAVAC) $(JAVA_EDIRS) -d . `find . -name \*.java | tr '\n' ' '` ) || exit -13
 else
-	$(AT)(cd $(tDir)-$1 && ln -s ../../lib lib &&  cd src;  export CLASSPATH="`acsMakeJavaClasspath`$(PATH_SEP)."; javac -d . `find . -name \*.java | tr '\n' ' '` ) || exit -13
+	$(AT)(cd $(tDir)-$1 && ln -s ../../lib lib &&  cd src;  export CLASSPATH="`acsMakeJavaClasspath`$(PATH_SEP)."; $(JAVAC) $(JAVA_EDIRS) -d . `find . -name \*.java | tr '\n' ' '` ) || exit -13
 endif
 ifeq ($(strip $(DEBUG)),on)
 	$(call createJar,$1, $1ACSERRDEF, $(tDir)-$1/src,$(tDir)-$1/src)
@@ -587,7 +587,7 @@ ifdef ACSROOT
 else
 	$(AT) CLASSPATH=`acsMakeJavaClasspath`:$(INSTALL_ROOT_LAST)/lib/endorsed/xercesImpl.jar;  export CLASSPATH; java -DACS.schemaconfigfiles="" $(CASTOR)  ../idl/$1.xml $$(TMPSRC) $(MK_IDL_PATH)	
 endif #ACSROOT
-	$(AT) CLASSPATH=`acsMakeJavaClasspath`; export CLASSPATH; FILES=`find $$(TMPSRC) -name \*.java`; export FILES;  if [ "$$$${FILES}" != "" ] ; then javac $(javaCompilerOptions) -d $$(TMPSRC) $$$${FILES}; fi;
+	$(AT) CLASSPATH=`acsMakeJavaClasspath`; export CLASSPATH; FILES=`find $$(TMPSRC) -name \*.java`; export FILES;  if [ "$$$${FILES}" != "" ] ; then $(JAVAC) $(javaCompilerOptions) $(JAVA_EDIRS) -d $$(TMPSRC) $$$${FILES}; fi;
 ifeq ($(strip $(DEBUG)),on)
 	$(call createJar,$1, $1, $$(TMPSRC),on)
 else
@@ -660,7 +660,7 @@ CompilerFlags=$(if $(filter on,$8),$5 $6 -g,$(shell echo $5 $6 | sed -e 's/-g //
 currentLocation=$(if $1,$(shell pwd | sed "s/\/.*\///"))
 
 classMaker=acsMakeJavaClasspath
-J_END_DIRS= $(if $(filter on,$7),$(JACORB_ENDORSED)$$(subst $$(SPACE),,$(foreach dir,$(subst -L,,$(strip $(sort $(L_PATH)))),$(if $(wildcard $(dir)/endorsed),:$(dir)/endorsed,))),$(JACORB_ENDORSED))
+J_END_DIRS=$(if $(filter on,$7),$(JAVA_EDIRS),$(JACORB_ENDORSED))
 $1_FILELISTFILE=/tmp/acsMakeJavac_$1_$(UNIQUE_NUMBER)_$(USER_NAME)
 
 $1_source_file_list= $(if $2,$(shell find $2 -name \*.java -type f ! -path '*/CVS/*' ! -path '*/.svn/*' | tr '\n' ' '),)
@@ -1081,7 +1081,7 @@ ifeq ($(call mustBuild,Java),true)
 	$(AT)echo "== LOGTS generating Java from ($1) XML " 
 	$(AT)loggingtsGenJava ../idl/$1.xml  || exit -2
 	-$(AT)echo "== LOGTS Compiling generated Java classes into Stub jarfile ($1)" 
-	$(AT)(cd ../object/$1;  export CLASSPATH="`acsMakeJavaClasspath`$(PATH_SEP)."; javac  `find . -name \*.java | tr '\n' ' '` ) || exit -13 ; \
+	$(AT)(cd ../object/$1;  export CLASSPATH="`acsMakeJavaClasspath`$(PATH_SEP)."; $(JAVAC) $(JAVA_EDIRS) `find . -name \*.java | tr '\n' ' '` ) || exit -13 ; \
 	    if [ xx$(DEBUG) = xxon ]; \
     then \
 		(cd ../object/$1; touch ../../lib/$1LTS.jar; find . \( -name \*.class -o -name \*.java \) -exec jar uf ../../lib/$1LTS.jar  \{\} \; ) ; \
