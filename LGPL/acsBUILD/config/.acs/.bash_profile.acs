@@ -1346,9 +1346,8 @@ else
 fi
 
 # We only add jar files to the CLASSPATH which cannot be picked up by the AcsSystemClassloader that the acsStartJava script enables.
-# For the time being we also add endorsed/jacorb-omgapi.jar because otherwise the javac compiler called by the acsMakefile would not see this jar. This may be replaced by setting the proper "endorseddirs" flag in the makefile.
 # 
-CLASSPATH=$JACORB_HOME/lib/endorsed/jacorb-omgapi.jar$PATH_SEP$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/jacorb-services.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
+CLASSPATH=$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/jacorb-services.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
 
 #
 # Now that PATH and LD_LIBRARY_PATH are properly set, I first need
