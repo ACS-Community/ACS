@@ -33,7 +33,7 @@
 #------------------------------------------------------------------------
 
 # at this moment we use bulk data (NT) just in C++, and there is just C++ implementation
-MAKE_ONLY=C++,Python
+#MAKE_ONLY=C++,Python
 MAKE_NOIFR_CHECK = on # it is DDS IDL, and we do not need to check it
 
 ARCH = $(shell uname -m)
