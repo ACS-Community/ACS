@@ -734,7 +734,13 @@ Setting this flag overrides the value of $ACS_LOG_STDOUT.
     parsed_argv.insert(i, cl_name)
     i = i + 1
 
-       
+    #add any container flags passed
+    if cl_start_options:
+        #parsed_argv.insert(i, "--passthroughProcessStart")
+        #i = i + 1
+        parsed_argv.insert(i, cl_start_options)
+        i = i + 1
+               
     #figure out the correct language first
     if cl_java:
         parsed_argv.insert(i, cl_java_container)
@@ -778,13 +784,6 @@ Setting this flag overrides the value of $ACS_LOG_STDOUT.
     else:
         stderr.write("ACS 2.1 usage of this script deprecated and removed\n")
         return 1
-        
-    # add any flags passed to the container startup executable (for example for the JVM)
-    if cl_start_options:
-        parsed_argv.insert(i, "--passthroughProcessStart")
-        i = i + 1
-        parsed_argv.insert(i, "\""+cl_start_options+"\"")
-        i = i + 1
         
     #add the manager reference
     parsed_argv.insert(i, "-m " + str(cl_manager))
