@@ -1721,8 +1721,46 @@ ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant ser
   ACS_TRACE("maci::ContainerImpl::etherealizeComponent");
   ACS_DEBUG_PARAM("maci::ContainerImpl::etherealizeComponent", "Etherealizing '%s'", id);
 
-  // remove reference (POA will now destroy servant)
-  servant->_remove_ref();
+  try{
+	  // remove reference (POA will now destroy servant - so dtor will be called)
+	  servant->_remove_ref();
+  }
+  catch(ACSErr::ACSbaseExImpl &ex)
+  {
+	  maciErrType::ComponentDeletionExImpl dex(ex, __FILE__, __LINE__,
+			  "ContainerImpl::etherealizeComponent");
+	  dex.log(LM_CRITICAL);
+  }
+  catch( CORBA::SystemException &ex )
+  {
+	  ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+			  "ContainerImpl::etherealizeComponent");
+	  corbaProblemEx.setMinor(ex.minor());
+	  corbaProblemEx.setCompletionStatus(ex.completed());
+	  corbaProblemEx.setInfo(ex._info().c_str());
+
+	  maciErrType::ComponentDeletionExImpl dex(corbaProblemEx, __FILE__, __LINE__,
+			  "ContainerImpl::etherealizeComponent");
+	  dex.log(LM_CRITICAL);
+  }
+  catch(std::exception &ex)
+  {
+	  ACSErrTypeCommon::StdExceptionExImpl stdex(__FILE__, __LINE__,
+	  			  "ContainerImpl::etherealizeComponent");
+	  stdex.setWhat(ex.what());
+
+	  maciErrType::ComponentDeletionExImpl dex(stdex, __FILE__, __LINE__,
+	  			  "ContainerImpl::etherealizeComponent");
+	  dex.log(LM_CRITICAL);
+  }
+  catch (...)
+  {
+	  ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+			  "ContainerImpl::etherealizeComponent");
+	  maciErrType::ComponentDeletionExImpl dex(uex, __FILE__, __LINE__,
+			  "ContainerImpl::etherealizeComponent");
+	  dex.log(LM_CRITICAL);
+  }//try-catch
 
   //
   // after it is destroyed, unlock library
@@ -1752,24 +1790,45 @@ ContainerImpl::deactivateCORBAObject(CORBA::Object_ptr obj)
 {
   ACS_TRACE("maci::ContainerImpl::deactivateCORBAObject");
 
-
-
   try
-    {
-      PortableServer::ObjectId_var id =
-	poaContainer->reference_to_id(obj);
+  {
+	  PortableServer::ObjectId_var id =
+			  poaContainer->reference_to_id(obj);
 
+	  poaContainer->deactivate_object(id.in());
 
-      poaContainer->deactivate_object(id.in());
+	  return true;
+  }
+  catch( CORBA::SystemException &ex )
+  {
+	  ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+			  "ContainerImpl::deactivateCORBAObject");
+	  corbaProblemEx.setMinor(ex.minor());
+	  corbaProblemEx.setCompletionStatus(ex.completed());
+	  corbaProblemEx.setInfo(ex._info().c_str());
 
-
-      return true;
-    }
+	  maciErrType::CannotDeactivateComponentExImpl dex(corbaProblemEx, __FILE__, __LINE__,
+			  "ContainerImpl::deactivateCORBAObject");
+	  dex.log(LM_ERROR);
+  }
   catch( CORBA::Exception &ex )
-    {
-    ex._tao_print_exception("ContainerImpl::deactivateCORBAObject");
-    }
+  {
+	  ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+			  "ContainerImpl::deactivateCORBAObject");
+	  corbaProblemEx.setInfo(ex._info().c_str());
 
+	  maciErrType::CannotDeactivateComponentExImpl dex(corbaProblemEx, __FILE__, __LINE__,
+			  "ContainerImpl::deactivateCORBAObject");
+	  dex.log(LM_ERROR);
+  }
+  catch(...)
+  {
+	  ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+	  			  "ContainerImpl::deactivateCORBAObject");
+	  maciErrType::CannotDeactivateComponentExImpl dex(uex, __FILE__, __LINE__,
+			  "ContainerImpl::deactivateCORBAObject");
+	  dex.log(LM_ERROR);
+  }//try-catch
   return false;
 }
 
@@ -1778,27 +1837,49 @@ ContainerImpl::deactivateCORBAObject(CORBA::Object_ptr obj)
 bool
 ContainerImpl::deactivateCORBAObject(PortableServer::Servant srvnt)
 {
-  ACS_TRACE("maci::ContainerImpl::deactivateCORBAObject (maci::Handle, PortableServer::Servant)");
+	ACS_TRACE("maci::ContainerImpl::deactivateCORBAObject (maci::Handle, PortableServer::Servant)");
 
+	try
+	{
+		PortableServer::ObjectId_var id =
+				poaContainer->servant_to_id(srvnt);
 
+		poaContainer->deactivate_object(id.in());
 
-  try
-    {
-      PortableServer::ObjectId_var id =
-	poaContainer->servant_to_id(srvnt);
+		return true;
+	}
+	catch( CORBA::SystemException &ex )
+	{
+		ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+				"ContainerImpl::deactivateCORBAObject(servant)");
+		corbaProblemEx.setMinor(ex.minor());
+		corbaProblemEx.setCompletionStatus(ex.completed());
+		corbaProblemEx.setInfo(ex._info().c_str());
 
+		maciErrType::CannotDeactivateComponentExImpl dex(corbaProblemEx, __FILE__, __LINE__,
+				"ContainerImpl::deactivateCORBAObject(servant)");
+		dex.log(LM_ERROR);
+	}
+	catch( CORBA::Exception &ex )
+	{
+		ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+				"ContainerImpl::deactivateCORBAObject(servant)");
+		corbaProblemEx.setInfo(ex._info().c_str());
 
-      poaContainer->deactivate_object(id.in());
+		maciErrType::CannotDeactivateComponentExImpl dex(corbaProblemEx, __FILE__, __LINE__,
+				"ContainerImpl::deactivateCORBAObject(servant)");
+		dex.log(LM_ERROR);
+	}
+	catch(...)
+	{
+		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+				"ContainerImpl::deactivateCORBAObject(servant)");
+		maciErrType::CannotDeactivateComponentExImpl dex(uex, __FILE__, __LINE__,
+				"ContainerImpl::deactivateCORBAObject(servant)");
+		dex.log(LM_ERROR);
+	}//try-catch
 
-
-      return true;
-    }
-  catch( CORBA::Exception &ex )
-    {
-    ex._tao_print_exception("ContainerImpl::deactivateCORBAObject (servant)");
-    }
-
-  return false;
+	return false;
 }
 
 // ************************************************************************
@@ -2377,34 +2458,42 @@ void ContainerImpl::deactivate_component(maci::Handle h
             // ContainerServices into a smart pointer
 
         }
-        servant->_remove_ref(); // Do not forget to signal we are not using the servant any more
+        try{
+        	servant->_remove_ref(); // Do not forget to signal we are not using the servant any more
 
-        ACS_LOG(
-                LM_RUNTIME_CONTEXT,
-                "maci::ContainerImpl::deactivate_component",
-                (LM_DEBUG, "Component '%s' reference set to nil.", info.info.name.in()));
+        	ACS_LOG(
+        			LM_RUNTIME_CONTEXT,
+        			"maci::ContainerImpl::deactivate_component",
+        			(LM_DEBUG, "Component '%s' reference set to nil.", info.info.name.in()));
 
-        // Real deactivation.
-        // This will also cause the call of the destructor
-        // for the component
-        if (!deactivateCORBAObject(ref)) {
-            ACS_LOG(
-                    LM_RUNTIME_CONTEXT,
-                    "maci::ContainerImpl::deactivate_component",
-                    (LM_ERROR, "Failed to deactivate component with handle %d (%s of type %s)", h, info.info.name.in(), info.info.type.in()));
+        	// Real deactivation.
+        	// This will also cause the call of the destructor
+        	// for the component
+        	if (!deactivateCORBAObject(ref)) {
+        		ACS_LOG(
+        				LM_RUNTIME_CONTEXT,
+        				"maci::ContainerImpl::deactivate_component",
+        				(LM_ERROR, "Failed to deactivate component with handle %d (%s of type %s)", h, info.info.name.in(), info.info.type.in()));
+        	}//if
+
+        	CORBA::release(ref);
+
+        	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
+        			(LM_INFO, "Component '%s' deactivated.", info.info.name.in()));
+        }catch(...)
+        {
+        	maciErrType::CannotDeactivateComponentExImpl dex(__FILE__, __LINE__,
+        			"ContainerImpl::deactivate_component");
+        	dex.log(LM_ERROR);
         }
-
-        CORBA::release(ref);
-
-        ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
-                (LM_INFO, "Component '%s' deactivated.", info.info.name.in()));
-
         //compNames[idxCompNames++] = info.info.name;
         if (cleanEx != NULL) {
             maciErrType::ComponentCleanUpEx ex = cleanEx->getComponentCleanUpEx();
             delete cleanEx;
             throw ex;
         }
+
+
     }
     //compNames.length(idxCompNames);
     //components_unavailable(compNames);
