@@ -264,5 +264,18 @@
 		/>
 	</ErrorCode>
 
+	<ErrorCode name="ComponentDeletion"
+		shortDescription="Problem to delete the component(servant)."
+		description="Thrown by the container (c++) if the component destructor failes.">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (useful especially if there is no causing exception)"
+		/>
+	</ErrorCode>
+
 </Type>
 
