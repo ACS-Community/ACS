@@ -63,5 +63,13 @@
 			type="string"
 			description="Context information about the failure."/>
 	</ErrorCode>
+	
+	<ErrorCode name="AddSubscriptionProblem"
+		shortDescription="Problem to add a subscriber"
+		description="Problem to add a new subscriber to the cahnnel">
+		<Member name="Event" type="string" description="Event"/>
+		<Member name="Channel" type="string" description="Channel name"/>
+	</ErrorCode>	
+	
 </Type>
 
