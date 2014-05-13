@@ -69,7 +69,13 @@
 		description="Problem to add a new subscriber to the cahnnel">
 		<Member name="Event" type="string" description="Event"/>
 		<Member name="Channel" type="string" description="Channel name"/>
-	</ErrorCode>	
+	</ErrorCode>
+	<ErrorCode name="RemoveSubscriptionProblem"
+		shortDescription="Problem to remove subscriber"
+		description="Problem to remove the subscriber to the cahnnel">
+		<Member name="Event" type="string" description="Event"/>
+		<Member name="Channel" type="string" description="Channel name"/>
+	</ErrorCode>		
 	
 </Type>
 
