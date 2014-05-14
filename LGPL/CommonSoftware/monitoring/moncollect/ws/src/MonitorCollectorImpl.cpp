@@ -365,10 +365,10 @@ TMCDB::MonitorDataBlocks * MonitorCollectorImpl::getMonitorData ()
     AUTO_TRACE("MonitorCollectorImpl::getMonitorData");
 
     ACE_Hash_Map_Entry <ACE_CString, MonitorComponent*> *entry;
-    ACE_Hash_Map_Iterator <ACE_CString, MonitorComponent*, ACE_Recursive_Thread_Mutex> iter(monitorComponents_m);
 
     ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, proSect, mcMutex_m, new TMCDB::MonitorDataBlocks()); // protection
 
+    ACE_Hash_Map_Iterator <ACE_CString, MonitorComponent*, ACE_Recursive_Thread_Mutex> iter(monitorComponents_m);
 
     TMCDB::MonitorDataBlocks *monitorDataBlock = new TMCDB::MonitorDataBlocks(numOfComponents_m);
     monitorDataBlock->length(numOfComponents_m);
