@@ -115,10 +115,12 @@ function printUsage {
 	echo "                                                    If it is set, ignores -clientVM, -maxHeapSize, -threadStackSize and don't add any default memory"
 	echo "                                                    and garbage collector settings; instead pass through the settings from this switch."
 	echo "                                                    This switch overrides any setting in JAVA_OPTIONS_MEMORY environment variable"
+	echo "                                                    jvmFlags are additive i.e this parameters can be used more then once in the cmd line"
 	echo "   -o | -javaOptions                                Options to pass java in addition to those already set i.e. these options"
 	echo "                                                    are added to those defined in the JAVA_OPTIONS and JAVA_OPTIONS_ADD environment variables"
 	echo "                                                    javaOptions is similar to jvmFlags but the options defined for javaOptions"
 	echo "                                                    are added to other options instead of replacing the existing ones."
+	echo "                                                    javaOptions are additive i.e this parameter can be used more then once in the cmd line"
 	echo "   -h | -help                                       prints this help and exits"
 	echo "Environment Variables:"
 	echo "   MANAGER_REFERENCE        if is not set, take the HOST to construct it. Used if not given as parameter"
@@ -170,9 +172,9 @@ eval set -- "$temp"
 while : 
 do
 	case "$1" in
-	--javaOptions)         CL_JAVAOPTIONS=$2 ; shift ;;
-	-o)                    CL_JAVAOPTIONS=$2 ; shift ;;
-	--jvmFlags)            CL_JVMFLAGS=$2 ; shift ;;
+	--javaOptions)         CL_JAVAOPTIONS="$CL_JAVAOPTIONS $2" ; shift ;;
+	-o)                    CL_JAVAOPTIONS="$CL_JAVAOPTIONS $2" ; shift ;;
+	--jvmFlags)            CL_JVMFLAGS="$CL_JVMFLAGS $2" ; shift ;;
 	--endorsed)            CL_ENDORSED=true ;;
 	--clientVM)            CL_CLIENTVM=true ;;
 	--maxHeapSize)         CL_MAXHEAPSIZE=$2 ; shift ;;
@@ -200,8 +202,6 @@ do
 	shift
 done
 shift
-
-
 
 #
 # must be unset! otherwise our custom export() function
