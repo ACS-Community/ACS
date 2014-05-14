@@ -1713,6 +1713,7 @@ ContainerImpl::activateCORBAObject(PortableServer::Servant srvnt,
 void
 ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant servant)
 {
+	bool errorStatus=false;
 
   // if etherealizing container
   if (servant==this)
@@ -1729,7 +1730,10 @@ ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant ser
   {
 	  maciErrType::ComponentDeletionExImpl dex(ex, __FILE__, __LINE__,
 			  "ContainerImpl::etherealizeComponent");
+	  dex.setCURL(id);
+	  dex.setReason("problem in servant's DTOR?. Please check component's DTOR!");
 	  dex.log(LM_CRITICAL);
+	  errorStatus = true;
   }
   catch( CORBA::SystemException &ex )
   {
@@ -1741,7 +1745,10 @@ ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant ser
 
 	  maciErrType::ComponentDeletionExImpl dex(corbaProblemEx, __FILE__, __LINE__,
 			  "ContainerImpl::etherealizeComponent");
+	  dex.setCURL(id);
+	  dex.setReason("problem in servant's DTOR?. Please check component's DTOR!");
 	  dex.log(LM_CRITICAL);
+	  errorStatus = true;
   }
   catch(std::exception &ex)
   {
@@ -1751,7 +1758,10 @@ ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant ser
 
 	  maciErrType::ComponentDeletionExImpl dex(stdex, __FILE__, __LINE__,
 	  			  "ContainerImpl::etherealizeComponent");
+	  dex.setCURL(id);
+	  dex.setReason("problem in servant's DTOR?. Please check component's DTOR!");
 	  dex.log(LM_CRITICAL);
+	  errorStatus = true;
   }
   catch (...)
   {
@@ -1759,7 +1769,10 @@ ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant ser
 			  "ContainerImpl::etherealizeComponent");
 	  maciErrType::ComponentDeletionExImpl dex(uex, __FILE__, __LINE__,
 			  "ContainerImpl::etherealizeComponent");
+	  dex.setCURL(id);
+	  dex.setReason("problem in servant's DTOR?. Please check component's DTOR!");
 	  dex.log(LM_CRITICAL);
+	  errorStatus = true;
   }//try-catch
 
   //
@@ -1771,16 +1784,29 @@ ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant ser
 
   COMPONENT_HASH_MAP_ENTRY *entry;
   for (COMPONENT_HASH_MAP_ITER hash_iter (m_activeComponents);
-       (hash_iter.next (entry) != 0); hash_iter.advance ())
-    if (ACE_OS::strcmp(id, entry->int_id_.info.name.in())==0)
-      {
-	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::etherealizeComponent",
-		(LM_INFO, "Component '%s' etherealized.", entry->int_id_.info.name.in()));
-	m_dllmgr->unlock(entry->int_id_.lib);
-	m_activeComponentList.remove(entry->int_id_.info.h);
-	m_activeComponents.unbind(entry);
-	return;
-      }
+		  (hash_iter.next (entry) != 0); hash_iter.advance ())
+	  if (ACE_OS::strcmp(id, entry->int_id_.info.name.in())==0)
+	  {
+		  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::etherealizeComponent",
+				  (LM_INFO, "Component '%s' etherealized.", entry->int_id_.info.name.in()));
+		  if (errorStatus)
+		  {
+			  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::etherealizeComponent",
+					  (LM_WARNING, "Although there was problem to etherealized (dtor) component '%s' going to TRY to unload the library what can have an unpredicted result.", entry->int_id_.info.name.in()));
+		  }//if
+		  m_dllmgr->unlock(entry->int_id_.lib);
+		  m_activeComponentList.remove(entry->int_id_.info.h);
+		  m_activeComponents.unbind(entry);
+		  break;
+		  //return;
+	  }//if
+
+  if (errorStatus)
+  {
+	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::etherealizeComponent",
+	  					  (LM_WARNING, "There was problem to etherealized (dtor) a component, so we are going to TRY to shutdown the container. This operation has unpredictable result!"));
+	  shutdown(-2);
+  }
 }
 
 // ************************************************************************
