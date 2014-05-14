@@ -283,8 +283,7 @@ Consumer::suspend()
 	}
 }
 //-----------------------------------------------------------------------------
-void 
-Consumer::addSubscription(const char* type_name)
+void Consumer::addSubscription(const char* type_name)
 {
 	ACS_TRACE("Consumer::addSubscription");
 
@@ -298,28 +297,59 @@ Consumer::addSubscription(const char* type_name)
    
 	ACS_SHORT_LOG((LM_INFO, "Consumer::addSubscription subscribing to '%s' events for the '%s' channel!",
 	static_cast<const char *>(added[0].type_name), channelName_mp));
+
+	if(CORBA::is_nil(consumerAdmin_m))
+	{
+		// log an error, then throw an exception to prevent segfault dereferencing nil consumerAdmin_m
+		ACSErrTypeCORBA::CORBAReferenceNilExImpl nEx(__FILE__, __LINE__, "nc::Consumer::addSubscription");
+		nEx.setVariable("consumerAdmin_m");
+		nEx.setContext("was init() called?");
+
+		acsncErrType::AddSubscriptionProblemExImpl aspEx(nEx, __FILE__,__LINE__,"nc::Consumer::addSubscription");
+		aspEx.setEvent(static_cast<const char *>(added[0].type_name));
+		aspEx.setChannel(channelName_mp);
+		aspEx.log(LM_DEBUG);
+		throw aspEx;
+	}//if
 	try
 	{
-		if(CORBA::is_nil(consumerAdmin_m)) 
-		{
-			// log an error, then throw an exception to prevent segfault dereferencing nil consumerAdmin_m 
-			ACS_SHORT_LOG((LM_ERROR,"Consumer::addSubscription failing due to nil consumerAdmin_m - was init() called?"));
-			throw new std::invalid_argument("Consumer::addSubscription failing due to nil consumerAdmin_m");
-		}
-
 		consumerAdmin_m->subscription_change(added, removed);
 	} 
+	catch(CORBA::SystemException &ex)
+	{
+
+		ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__, "nc::Consumer::addSubscription");
+		corbaProblemEx.setMinor(ex.minor());
+		corbaProblemEx.setCompletionStatus(ex.completed());
+		corbaProblemEx.setInfo(ex._info().c_str());
+		acsncErrType::AddSubscriptionProblemExImpl aspEx(corbaProblemEx, __FILE__,__LINE__,"nc::Consumer::addSubscription");
+		aspEx.setEvent(static_cast<const char *>(added[0].type_name));
+		aspEx.setChannel(channelName_mp);
+		aspEx.log(LM_DEBUG);
+		throw aspEx;
+	}
+	catch(CORBA::Exception &ex)
+	{
+		ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__, "nc::Consumer::addSubscription");
+		corbaProblemEx.setInfo(ex._info().c_str());
+		acsncErrType::AddSubscriptionProblemExImpl aspEx(corbaProblemEx, __FILE__,__LINE__,"nc::Consumer::addSubscription");
+		aspEx.setEvent(static_cast<const char *>(added[0].type_name));
+		aspEx.setChannel(channelName_mp);
+		aspEx.log(LM_DEBUG);
+		throw aspEx;
+	}
 	catch(...)
 	{
-		ACS_SHORT_LOG((LM_ERROR,"Consumer::addSubscription failed for the '%s' channel and '%s' event type!",
-		channelName_mp, type_name));
-		CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Consumer::addSubscription");
-		throw err.getCORBAProblemEx();
+		ACSErrTypeCommon::UnknownExImpl unEx(__FILE__, __LINE__, "nc::Consumer::addSubscription");
+		acsncErrType::AddSubscriptionProblemExImpl aspEx(unEx, __FILE__,__LINE__,"nc::Consumer::addSubscription");
+		aspEx.setEvent(static_cast<const char *>(added[0].type_name));
+		aspEx.setChannel(channelName_mp);
+		aspEx.log(LM_DEBUG);
+		throw aspEx;
 	}
-}
+}//addSubscription
 //-----------------------------------------------------------------------------
-void 
-Consumer::removeSubscription(const char* type_name)
+void Consumer::removeSubscription(const char* type_name)
 {
     ACS_TRACE("Consumer::removeSubscription");
     
@@ -336,20 +366,43 @@ Consumer::removeSubscription(const char* type_name)
 		   static_cast<const char *>(added[0].type_name), channelName_mp));
     
     try
-	{
-	consumerAdmin_m->subscription_change(added, removed);
-	}
+    {
+    	consumerAdmin_m->subscription_change(added, removed);
+    }
+    catch(CORBA::SystemException &ex)
+    {
+    	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__, "nc::Consumer::removeSubscription");
+    	corbaProblemEx.setMinor(ex.minor());
+    	corbaProblemEx.setCompletionStatus(ex.completed());
+    	corbaProblemEx.setInfo(ex._info().c_str());
+    	acsncErrType::RemoveSubscriptionProblemExImpl aspEx(corbaProblemEx, __FILE__,__LINE__,"nc::Consumer::removeSubscription");
+    	aspEx.setEvent(static_cast<const char *>(added[0].type_name));
+    	aspEx.setChannel(channelName_mp);
+    	aspEx.log(LM_DEBUG);
+    	throw aspEx;
+    }
+    catch(CORBA::Exception &ex)
+    {
+    	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__, "nc::Consumer::removeSubscription");
+    	corbaProblemEx.setInfo(ex._info().c_str());
+    	acsncErrType::RemoveSubscriptionProblemExImpl aspEx(corbaProblemEx, __FILE__,__LINE__,"nc::Consumer::removeSubscription");
+    	aspEx.setEvent(static_cast<const char *>(added[0].type_name));
+    	aspEx.setChannel(channelName_mp);
+    	aspEx.log(LM_DEBUG);
+    	throw aspEx;
+    }
     catch(...)
-	{
-	ACS_SHORT_LOG((LM_ERROR,"Consumer::removeSubscription failed for the '%s' channel and '%s' event type!",
-		       channelName_mp, type_name));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Consumer::removeSubscription");
-	throw err.getCORBAProblemEx();
-	}
-}
+    {
+    	ACSErrTypeCommon::UnknownExImpl unEx(__FILE__, __LINE__, "nc::Consumer::removeSubscription");
+    	acsncErrType::RemoveSubscriptionProblemExImpl aspEx(unEx, __FILE__,__LINE__,"nc::Consumer::removeSubscription");
+    	aspEx.setEvent(static_cast<const char *>(added[0].type_name));
+    	aspEx.setChannel(channelName_mp);
+    	aspEx.log(LM_DEBUG);
+    	throw aspEx;
+    }
+}//removeSubscription
 //-----------------------------------------------------------------------------
-int
-Consumer::addFilter(const char* type_name,
+int Consumer::addFilter(const char* type_name,
 		    const char* filterString)
 {
     ACS_TRACE("Consumer::addFilter");
