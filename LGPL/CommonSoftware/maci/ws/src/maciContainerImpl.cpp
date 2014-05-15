@@ -1793,6 +1793,7 @@ ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant ser
 		  {
 			  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::etherealizeComponent",
 					  (LM_WARNING, "Although there was problem to etherealized (dtor) component '%s' going to TRY to unload the library what can have an unpredicted result.", entry->int_id_.info.name.in()));
+			  ContainerImpl::getLoggerProxy()->flush();
 		  }//if
 		  m_dllmgr->unlock(entry->int_id_.lib);
 		  m_activeComponentList.remove(entry->int_id_.info.h);
@@ -1805,6 +1806,7 @@ ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant ser
   {
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::etherealizeComponent",
 	  					  (LM_WARNING, "There was problem to etherealized (dtor) a component, so we are going to TRY to shutdown the container. This operation has unpredictable result!"));
+	  ContainerImpl::getLoggerProxy()->flush();
 	  shutdown(-2);
   }
 }
