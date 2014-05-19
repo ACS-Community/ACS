@@ -32,6 +32,7 @@
 
 
 #include "loggingLogger.h"
+#include "loggingStopWatch.h"
 #include "loggingLogTrace.h"
 #include "loggingGetLogger.h"
 #include <iostream>
@@ -415,6 +416,16 @@ if (logger != 0) { \
  */
 #define LOG_TO_DEVELOPER_WITH_LOGGER(logPriority, logMessage, logger) \
     LOG_TO_AUDIENCE_WITH_LOGGER(logPriority, logMessage, log_audience::DEVELOPER, logger);
+
+
+/**
+ * This macro creates a SmartWatch object which in turn logs a debug level message where it is
+ * immediately declared and then logs another debug message when it is destroyed. It can
+ * only be used once per namespace.
+ * @param routine Name of the routine in which this macro is being used from (std::string)
+ */
+#define ACS_STOP_WATCH(...) \
+Logging::StopWatch::StopWatchSmartPtr __autoStopWatchSmartPtrInstance(new Logging::StopWatch(getLogger(), __FILE__, __LINE__, __VA_ARGS__));
 
 #else
 #include "loggingLog4cppMACROS.h"
