@@ -69,7 +69,7 @@ loggingService_OBJECTS = loggingService loggingACSLogFactory_i \
                          loggingACSStructuredPushSupplier \
                          loggingACSStructuredPushSupplierBin \
                          loggingACSStructuredPushSupplierXml loggingACSLog_i \
-                         loggingHelper  loggingAcsLogServiceImpl 
+                         loggingHelper  loggingAcsLogServiceImpl
 
 loggingService_LIBS = logging logging_idlStubs TAO_CosNotification_Serv
 #loggingService_LDFLAGS= -ggdb
@@ -104,13 +104,14 @@ INCLUDES        = 	logging.h loggingExport.h loggingBaseExport.h loggingXMLEleme
 			loggingAcsLogServiceImpl.h loggingStdoutlayout.h loggingXmlLayout.h\
             loggingACSCategory.h loggingACSLoggingEvent.h loggingLogThrottle.h \
             loggingACSRemoteAppender.h loggingLog4cpp.h loggingLog4cppMACROS.h \
-			loggingLog4cppACEMACROS.h loggingACSHierarchyMaintainer.h loggingThrottleAlarmInterface.h
+			loggingLog4cppACEMACROS.h loggingACSHierarchyMaintainer.h loggingThrottleAlarmInterface.h \
+			loggingStopWatch.h
 INCLUDES_L      = loggingService.h \
 		  loggingACSStructuredPushSupplier.h \
 		  loggingACSStructuredPushSupplierXml.h \
           loggingACSStructuredPushSupplierBin.h \
           loggingACSLogFactory_i.h loggingACSLog_i.h \
-		  loggingHelper.h logging ACSHierarchyMaintainer.h
+		  loggingHelper.h logging ACSHierarchyMaintainer.h 
 
 #
 # Libraries (public and local)
@@ -139,7 +140,7 @@ logging_OBJECTS 	=	logging loggingLoggable loggingXMLElement loggingXMLParser \
 						loggingACSLoggingEvent loggingXmlLayout \
 						loggingStdoutlayout loggingACSCategory \
 						loggingACSRemoteAppender loggingACSHierarchyMaintainer \
-						loggingLog4cpp
+						loggingLog4cpp loggingStopWatch
 						
 logging_LIBS    =	logging_idlStubs acsutil acscommonStubs baselogging log4cpp pthread rt
 logging_LDFLAGS =	-gdb
