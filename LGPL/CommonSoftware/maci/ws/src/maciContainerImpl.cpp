@@ -1724,6 +1724,7 @@ ContainerImpl::etherealizeComponent(const char * id, PortableServer::Servant ser
 
   try{
 	  // remove reference (POA will now destroy servant - so dtor will be called)
+	  ACS_STOP_WATCH("ContainerImpl::etherealizeComponent - _remove_ref() => destroy servant", 10.0/*s*/);
 	  servant->_remove_ref();
   }
   catch(ACSErr::ACSbaseExImpl &ex)
