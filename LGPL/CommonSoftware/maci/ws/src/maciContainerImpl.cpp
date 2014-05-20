@@ -2466,6 +2466,7 @@ void ContainerImpl::deactivate_component(maci::Handle h
                     ACS::COMPSTATE_DESTROYING);
 
             try {
+            	ACS_STOP_WATCH("ContainerImpl::deactivate_component - __cleanUp()", 10.0/*s*/);
                 tempComp->__cleanUp();
             } catch (ACSErr::ACSbaseExImpl &ex) {
                 cleanEx = new maciErrType::ComponentCleanUpExImpl(ex.getErrorTrace(),
