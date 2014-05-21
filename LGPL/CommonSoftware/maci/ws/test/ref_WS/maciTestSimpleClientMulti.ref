@@ -2,8 +2,8 @@
 1 - about to init test1
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
-1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - 
@@ -125,8 +125,8 @@
 1 - about to logout test4
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging out...
 1 - 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
 1 - about to destroy test4
 1 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
-1 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
 1 - 
 1 - ending test4
