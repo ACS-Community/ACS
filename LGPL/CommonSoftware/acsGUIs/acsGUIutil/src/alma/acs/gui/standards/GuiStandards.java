@@ -59,6 +59,7 @@ public class GuiStandards {
 
 			if (key.endsWith(".background")) {
 				if (key.startsWith("Text")
+				 || key.startsWith("FormattedText")
 				 || key.startsWith("Password")  
 				 || key.startsWith("Table") 
 				 || key.startsWith("Tree"))
