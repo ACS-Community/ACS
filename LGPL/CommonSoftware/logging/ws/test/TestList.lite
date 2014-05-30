@@ -10,3 +10,4 @@ SOURCE loggingTATEnvironment
 9 testLog4cpp			"testLog4cpp"
 10 testLocalCache	    "testLocalCache"
 11 testIsInitThread     "testIsInitThread"
+12 testMultiThreads     "testMultiThreads \"| grep -v `date +%Y`\""

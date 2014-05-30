@@ -30,59 +30,61 @@
 
 #define CACHE_SIZE 1
 #define FLUSH_PERIOD 1
+#define N_THREADS 10
+
+LoggingProxy* logger=0;
 
 static void*
 worker(void *arg)
 {
+	char msg[255];
+	unsigned threadN = (unsigned)(arg);
 	LoggingProxy::ThreadName("Thread");
-	LoggingProxy* logger=(LoggingProxy*)arg;
-	ACE_OS::printf("[Thread]: Before Logger initialization isInitThread = %s\n", LoggingProxy::isInitThread()?"true":"false");
 	LoggingProxy::init (logger);
 	ACS_SHORT_LOG((LM_INFO, "[Thread]: After Logger initialization: isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
-	//ACE_OS::sleep(2);
 
+	sprintf(msg, "Message in thread #%d",threadN);
 	for (unsigned i=0; i<1000; i++)
 	{
-		LOG_TO_DEVELOPER(LM_DEBUG, "Message #1");
+		LOG_TO_DEVELOPER(LM_DEBUG, msg);
 	}
 
-
-	//ACS_SHORT_LOG((LM_INFO, "[Thread]: Before LoggingProxy::done(): isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
-	//LoggingProxy::done();
-	//ACS_SHORT_LOG((LM_INFO, "[Thread]: After LoggingProxy::done(): isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
 	return 0;
 }
 
-int testLoggingInThread(LoggingProxy* m_logger)
+int testMultiThreads()
 {
-	ACS_SHORT_LOG((LM_INFO, "[Main]: Before Logger initialization: isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
-	LoggingProxy::init (m_logger);
-	ACS_SHORT_LOG((LM_INFO, "[Main]: After Logger initialization: isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
-	ACE_thread_t  t_id;
-	ACE_hthread_t t_handle;
+	LoggingProxy::init (logger);
+	ACE_thread_t  t_id[N_THREADS];
+	ACE_hthread_t t_handle[N_THREADS];
 	int ret=0;
-	ret = ACE_Thread::spawn(
-			(ACE_THR_FUNC)worker,
-			m_logger,
-			THR_JOINABLE|THR_NEW_LWP,
-			&t_id,
-			&t_handle,
-			ACE_DEFAULT_THREAD_PRIORITY,
-			0,0,0);
-	if (ret==-1)
+
+	for (unsigned n=0; n<N_THREADS; n++)
 	{
-		ACS_SHORT_LOG((LM_ERROR,"Error in spawning thread"));
+		ret = ACE_Thread::spawn(
+				(ACE_THR_FUNC)worker,
+				(void*)n,
+				THR_JOINABLE|THR_NEW_LWP,
+				&t_id[n],
+				&t_handle[n],
+				ACE_DEFAULT_THREAD_PRIORITY,
+				0,0,0);
+		if (ret==-1)
+		{
+			ACS_SHORT_LOG((LM_ERROR,"Error in spawning thread"));
+		}
 	}
 
 	sleep(1);
-	for (unsigned i=0; i<1000; i++)
-	   		{
-	   			LOG_TO_DEVELOPER(LM_DEBUG, "Message in testLoggingInThread");
-	   		}
+	for (unsigned i=0; i<500; i++)
+	{
+		LOG_TO_DEVELOPER(LM_DEBUG, "Message in testMultiThreads");
+	}
 
-	ACS_SHORT_LOG((LM_INFO,"[Main]: Waiting for thread"));
-	ACE_Thread::join(t_handle);
-	ACS_SHORT_LOG((LM_INFO,"[Main]: testLoggingInThread done"));
+	ACS_SHORT_LOG((LM_INFO,"[Main]: Waiting for threads"));
+	for (unsigned n=0; n<N_THREADS; n++)
+		ACE_Thread::join(t_handle[n]);
+	ACS_SHORT_LOG((LM_INFO,"[Main]: testMultiThreads done"));
 	return 0;
 }
 
@@ -93,20 +95,12 @@ int main(int argc, char *argv[])
 			LoggingProxy::ProcessName(argv[0]);
 	LoggingProxy::ThreadName("Main");
 
-	//ACS_SHORT_LOG((LM_INFO, "[Main]: Before Logger creation: isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
-	LoggingProxy* main_logger = new LoggingProxy(CACHE_SIZE, 4, 8, 0, 0, FLUSH_PERIOD);
-	//ACS_SHORT_LOG((LM_INFO, "[Main]: After Logger creation: isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
 
-   	testLoggingInThread(main_logger);
-   	//testLoggingInThread(main_logger);
-   	//testLoggingInThread(main_logger);
-/*
-   	for (unsigned i=0; i<1000; i++)
-   		{
-   			LOG_TO_DEVELOPER(LM_DEBUG, "Message in the main");
-   		}
-*/
-    delete main_logger;
-   	//ACS_SHORT_LOG((LM_INFO, "[Main]: After deleting logger isInitThread = %s", LoggingProxy::isInitThread()?"true":"false"));
+	logger = new LoggingProxy(CACHE_SIZE, 4, 8, 0, 0, FLUSH_PERIOD);
+
+   	testMultiThreads();
+
+    delete logger;
+
     return 0;
 }
