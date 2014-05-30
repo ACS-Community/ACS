@@ -57,7 +57,7 @@ int testLoggingInThread(LoggingProxy* m_logger)
 	ret = ACE_Thread::spawn(
 			(ACE_THR_FUNC)worker,
 			m_logger,
-			THR_DETACHED|THR_NEW_LWP,
+			THR_JOINABLE|THR_NEW_LWP,
 			&t_id,
 			&t_handle,
 			ACE_DEFAULT_THREAD_PRIORITY,
