@@ -75,12 +75,14 @@ CL_ALLOWFLIGHTRECORDER=
 CL_NODIRECTORY=
 CL_VMTOOLS=
 CL_SPLASHFILE=
+CL_JVMFLAGS=
+CL_JAVAOPTIONS=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,clientVM,maxHeapSize:,threadStackSize:,noexport,managerReference:,baseport:,jarpath:,endorsed,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,allowFlightRecorder,noDirectory,vmtools,splash:
-SHORTOPTS=hm:b:D:j:
+LONGOPTS=help,clientVM,maxHeapSize:,jvmFlags:,javaOptions:,threadStackSize:,noexport,managerReference:,baseport:,jarpath:,endorsed,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,allowFlightRecorder,noDirectory,vmtools,splash:
+SHORTOPTS=hm:b:D:j:o:
 
 #
 # Usage info. Be nice and keep this up-to-date!
@@ -109,16 +111,27 @@ function printUsage {
 	echo "   -noDirectory                                     do not create an acs instance directory"
 	echo "   -vmtools                                         start JVM Tools together with the application"
 	echo "   -splash FILE                                     uses file FILE for splash screen (if needed)"
+	echo "   -jvmFlags JVMOPTS                                Flags for the JVM like '-XX:PermSize=512m -XX:MaxPermSize=512m'"
+	echo "                                                    If it is set, ignores -clientVM, -maxHeapSize, -threadStackSize and don't add any default memory"
+	echo "                                                    and garbage collector settings; instead pass through the settings from this switch."
+	echo "                                                    This switch overrides any setting in JAVA_OPTIONS_MEMORY environment variable"
+	echo "                                                    jvmFlags are additive i.e this parameters can be used more then once in the cmd line"
+	echo "   -o | -javaOptions                                Options to pass java in addition to those already set i.e. these options"
+	echo "                                                    are added to those defined in the JAVA_OPTIONS and JAVA_OPTIONS_ADD environment variables"
+	echo "                                                    javaOptions is similar to jvmFlags but the options defined for javaOptions"
+	echo "                                                    are added to other options instead of replacing the existing ones."
+	echo "                                                    javaOptions are additive i.e this parameter can be used more then once in the cmd line"
 	echo "   -h | -help                                       prints this help and exits"
 	echo "Environment Variables:"
 	echo "   MANAGER_REFERENCE        if is not set, take the HOST to construct it. Used if not given as parameter"
+	echo "   JAVA_OPTIONS             Options for java; see also -o, -javaOptions"
+	echo "   JAVA_OPTIONS_ADD         Additional options for java; see also -o, -javaOptions"
 	echo "   JAVA_OPTIONS_MEMORY      if it is set, ignore -clientVM, -maxHeapSize, -threadStackSize and don't add any default memory"
-	echo "                                          and garbage collector settings; instead pass through the settings from this variable."
+	echo "                            and garbage collector settings; instead pass through the settings from this variable."
+	echo "                            Ignored if -jvmFlags is in the command line"
 	echo "   ACS_NAME_SERVICE         if is not set, take the computer where Manager is located"
 	echo "   ACS_INTERFACE_REPOSITORY if is not set, take the computer where Manager is located"
 }
-
-
 
 
 #
@@ -159,6 +172,9 @@ eval set -- "$temp"
 while : 
 do
 	case "$1" in
+	--javaOptions)         CL_JAVAOPTIONS="$CL_JAVAOPTIONS $2" ; shift ;;
+	-o)                    CL_JAVAOPTIONS="$CL_JAVAOPTIONS $2" ; shift ;;
+	--jvmFlags)            CL_JVMFLAGS="$CL_JVMFLAGS $2" ; shift ;;
 	--endorsed)            CL_ENDORSED=true ;;
 	--clientVM)            CL_CLIENTVM=true ;;
 	--maxHeapSize)         CL_MAXHEAPSIZE=$2 ; shift ;;
@@ -193,7 +209,6 @@ shift
 #
 export POSIXLY_CORRECT=
 unset POSIXLY_CORRECT
-
 
 if [ "$CL_HELP" ] ; then
    printUsage
@@ -559,6 +574,28 @@ if [ "$CL_SPLASHFILE" ]; then
 fi
 ### ---------- End of "splash" handling -------------
 
+###
+### -------- handling of JAVA_OPTIONS_ADD and CL_JAVAOPTIONS --------
+###
+if [ "$CL_JAVAOPTIONS" ]; then
+   JAVA_OPTIONS="$JAVA_OPTIONS $CL_JAVAOPTIONS"
+fi
+if [ "$JAVA_OPTIONS_ADD" ]; then
+   JAVA_OPTIONS="$JAVA_OPTIONS $JAVA_OPTIONS_ADD"
+fi
+### ----- End of handling of JAVA_OPTIONS_ADD and CL_JAVAOPTIONS -----
+
+###
+### -------- JVM memory settings from command line--------
+###
+# If JVM settings have been passed through the command line (-jvmFlags) then
+# the passed settings override those in $JAVA_OPTIONS_MEMORY. This is 
+# accomplished by replacing the content of $JAVA_OPTIONS_MEMORY with that of $CL_JVMFLAGS
+#
+if [ X"$CL_JVMFLAGS" != X ]
+then
+	JAVA_OPTIONS_MEMORY="$CL_JVMFLAGS"
+fi
 
 ###
 ### -------------- JVM memory settings -------------------

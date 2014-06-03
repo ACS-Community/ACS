@@ -1,6 +1,19 @@
 #! /bin/bash
 . acsstartupConstants
 
+#
+# The container is started by acsStartJava.
+#
+# The original command line is passed to acsStartJava but it is manipulated.
+# This script does the followings:
+#    * Get the manager reference to be set in the  ACS.manager java property
+#    * The name of the container (first param in cmd line) is prepended by 
+#      -containerName to be recognized by acsStartJava
+#    * -endorsed is added by default
+#    * optionally set debug port
+#    * optionally set an ORB profiler
+#    * set the classpath for component-impl jars
+
 ###
 ### ----------- Command Line Parsing ---------------------
 
@@ -107,6 +120,5 @@ export JAVA_OPTIONS="$JAVA_OPTIONS -Dacs.components.classpath.jardirs=\"$compone
 #--------------------------------------------------------------------------------
 #just delegate to acsStartJava
 export JVM_GC_LOG_NAME=$CONTAINER_NAME
-
 
 acsStartJava -endorsed -DACS.manager=$CL_MANAGERREF $ORIGINAL_COMMAND_LINE -containerName $CONTAINER_NAME 
