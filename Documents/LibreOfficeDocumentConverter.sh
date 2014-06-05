@@ -10,7 +10,7 @@
 echo "Converting docs in PDF using LibreOffice"
 echo "Dest dir $1"
 
-libreoffice4.1 --headless --nologo --convert-to pdf --outdir $*
+libreoffice4.2 --headless --nologo --convert-to pdf --outdir $*
 
 echo "Done PDF conversion from LibreOffice"
 
