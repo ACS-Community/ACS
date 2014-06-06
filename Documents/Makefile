@@ -40,10 +40,14 @@ listDocs:
 		    echo "   $${member}" ;\
 		done
 
-all: loginfo svnUpdate changeLog acsarchitectureupd docs
+all: prep loginfo svnUpdate changeLog acsarchitectureupd docs copyDocs
 
 #docs: $(PDFDOCS)
 
+prep:
+	if [ ! -d $(DESTDIR) ]; then \
+		mkdir $(DESTDIR); \
+	fi
 docs:
 	# Convert LibreOffice and MS Word docs into pdf
 	@./LibreOfficeDocumentConverter.sh $(DESTDIR) $(ALLDOCS)
@@ -68,4 +72,7 @@ changeLog:
 	@echo >> $(DESTDIR)/changeLog.txt
 	@svn log -v >> $(DESTDIR)/changeLog.txt
 	@echo "ChangeLog generated."
+	
+copyDocs:
+	cp $(ALLDOCS) $(DESTDIR)
 
