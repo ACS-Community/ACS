@@ -475,20 +475,19 @@ Setting this flag overrides the value of $ACS_LOG_STDOUT.
                       default=None)
     
     #Container flags
-    flags_help_msg='''Sets flags that are to be passed to the actual container
-    start executables.'''
+    flags_help_msg='''Sets flags that are to be passed to the actual container.'''
     parser.add_option("-p", "--passthrough",
                       dest="container_flags",
                       default=None,
                       help=flags_help_msg)
     
     #Start Options
-    flags_help_msg='''Sets options that are to be passed to the actual container
+    opt_help_msg='''Sets options that are to be passed to the actual container
     start executables.'''
     parser.add_option("--passthroughProcessStart",
                       dest="start_options",
                       default=None,
-                      help=flags_help_msg)
+                      help=opt_help_msg)
     
     #--------------------------------------------------------------------------
     #--Make commands backwards compatible with pre ACS 6.0 usage.

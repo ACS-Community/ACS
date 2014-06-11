@@ -1,6 +1,19 @@
 #! /bin/bash
 . acsstartupConstants
 
+#
+# The container is started by acsStartJava.
+#
+# The original command line is passed to acsStartJava but it is manipulated.
+# This script does the followings:
+#    * Get the manager reference to be set in the  ACS.manager java property
+#    * The name of the container (first param in cmd line) is prepended by 
+#      -containerName to be recognized by acsStartJava
+#    * -endorsed is added by default
+#    * optionally set debug port
+#    * optionally set an ORB profiler
+#    * set the classpath for component-impl jars
+
 ###
 ### ----------- Command Line Parsing ---------------------
 
@@ -66,7 +79,6 @@ unset POSIXLY_CORRECT
 #figure out the remote debuggable port
 if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
 then
-
     temp="$ORIGINAL_COMMAND_LINE"
     RDB_PORT=${temp##*OAport }
     RDB_PORT=${RDB_PORT%%' '*}
