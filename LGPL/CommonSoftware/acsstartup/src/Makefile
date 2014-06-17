@@ -55,7 +55,7 @@ SCRIPTS         = \
 		acsNamingService \
 		acsNotifyService acsstartupNotifyServiceStart \
 		acsAlarmService \
-		acsStartContainerWithCASA \
+		acsStartContainerWithFortran \
 		acsstartupNotifyPortViaErrorCode \
 		acsLogProcessMem \
 		ifrCacheInvalidate irquery \

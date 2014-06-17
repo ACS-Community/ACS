@@ -110,7 +110,7 @@ acsutil_LIBS    = acscommonStubs
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = acsutilTATPrologue acsutilTATEpilogue acsutilTATTestRunner acsutilProfiler acsutilDiffTrap acsutilRedo \
-		  acsutilBlock acsutilAwaitContainerStart acsutilCASAPython acsutilCASAEnv python ipython
+		  acsutilBlock acsutilAwaitContainerStart ipython
 SCRIPTS_L       = 
 
 #
@@ -122,7 +122,7 @@ TCL_SCRIPTS_L   =
 #
 # Python scripts (public and local)
 # ------------------------------
-PY_SCRIPTS     = acsutilCASAPathInsert
+PY_SCRIPTS     = 
 PY_SCRIPTS_L   =
 
 #

@@ -103,36 +103,7 @@ function get_args {
 }
 
 function select_intr {
-   # CASA_ROOT is set when .bash_profile.acs detects that CASA
-   # has been installed on the machine.  Since we are trying to
-   # run a CASA-provided Python interpreter as our first choice, 
-   # we fall back to the ACS Python if CASA isn't installed.
-   # Setting USE_ACS_PYTHON will force the use of ACS Python.
-   if [ X"$CASA_ROOT" = X -o X"$USE_ACS_PYTHON" != X ]
-   then
-      PYTHONSHELL="exec $PYTHON_ROOT/bin/python"
-   else
-
-      PYTHONSHELL="exec $CASA_ROOT/lib/casapy/bin/python"
-
-      # CASA requires the tk.tcl file from the TCL libraries it
-      # provides
-      export TCL_LIBRARY=$CASA_ROOT/share/tcl8.4
-
-      # Access to ACS-supplied modules may still be necessary so
-      # the PYTHONPATH has to include both the CASA and ACS
-      # site-package directories.  This is true for some shared
-      # libraries as well.  CASA is given priority in the
-      # ordering.
-      if [[ ! "$PYTHONPATH" =~ ".*$CASA_ROOT" ]]
-      then
-         PYTHONPATH=`acsutilCASAPathInsert PYTHONPATH`
-      fi
-      if [[ ! "$LD_LIBRARY_PATH" =~ ".*$CASA_ROOT" ]]
-      then
-         LD_LIBRARY_PATH=`acsutilCASAPathInsert LD_LIBRARY_PATH`
-      fi
-   fi
+	PYTHONSHELL="exec $PYTHON_ROOT/bin/python"
 }
 
 function start_intr {

@@ -9,7 +9,7 @@ function printUsage
 	echo ""
 	echo "Options:"
 	echo "-h, --help      Prints this message and exits"
-	echo "-C, --casa      Incorporate CASA paths in container environment"
+	echo "-F, --fortran   Preload fortran library"
 	
 }
 
@@ -18,8 +18,8 @@ CONTAINERSTARTCMD="acsStartContainer"
 if [ "$1" = "-h" -o "$1" = "--help" ] ; then
     printUsage;
     exit 0;
-elif [ "$1" = "-C" -o "$1" = "--casa" ] ; then
-    CONTAINERSTARTCMD="acsStartContainerWithCASA"
+elif [ "$1" = "-F" -o "$1" = "--fortran" ] ; then
+    CONTAINERSTARTCMD="acsStartContainerWithFortran"
     shift
 fi
 
