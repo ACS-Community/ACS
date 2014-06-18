@@ -17,6 +17,7 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
+MAKE_NOIFR_CHECK = on
 
 USER_CFLAGS =
 USER_LIB =
