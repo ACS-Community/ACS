@@ -685,12 +685,11 @@ else
 fi
 
 # CASA stuff
-if [ X"$CASA_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+if [ X"$CASAPATH" = X ] || [ X"$ACS_RETAIN" = X ]
 then
    if [ -e $ALMASW_INSTDIR/casa ]
    then
-      export CASA_ROOT=$ALMASW_INSTDIR/casa
-      export CASAPATH="$CASA_ROOT $(uname -s | tr [:upper:] [:lower:]) local $(uname -n)"
+      export CASAPATH="$ALMASW_INSTDIR/casa $(uname -s | tr [:upper:] [:lower:]) local $(uname -n)"
    fi
 fi
 
@@ -791,11 +790,6 @@ then
       PATH=$ACSROOT/bin:$PATH
    fi
 
-   if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
-   then
-      PATH=$PATH:$CASA_ROOT/bin
-   fi
-
 elif [ "$OSYSTEM" = "Linux" ]
 then
    # So it is linux
@@ -811,10 +805,6 @@ then
       PATH=$ACSROOT/bin:$PATH
    fi
 
-   if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
-   then
-      PATH=$PATH:$CASA_ROOT/bin
-   fi
 elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
    # So, we're under Cygwin
@@ -830,10 +820,6 @@ then
       PATH=$ACSROOT/bin:$PATH
    fi
 
-   if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
-   then
-      PATH=$CASA_ROOT/bin:$PATH
-   fi
 else
     PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
 fi
@@ -920,11 +906,6 @@ then
    if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
    then
        LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
-   fi
-
-   if  [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
-   then
-       LD_LIBRARY_PATH=$CASA_ROOT/lib:$LD_LIBRARY_PATH 
    fi
 
    PATH=$PATH:$LD_LIBRARY_PATH

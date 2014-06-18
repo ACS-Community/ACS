@@ -48,7 +48,6 @@ SOURCE   acsutilTATEnvironment
 3 testFindFile "testFindFile include/acsutil.h"
 4 testFindFileErr "testFindFile idl/DoesNotExist.idl"
 5 testAnyAide     "testAnyAide"
-6 testPython   "testPython"
 # acsutilBlock Launching process that disappears immediately with the expected string
 7 testacsutilBlock1	"/bin/sh -c \"/bin/rm -f /tmp/testacsutilBlock1_$::env(USER)_$::env(ACS_INSTANCE).*\"" \
 			"../bin/acsutilBlock -f /tmp/testacsutilBlock1_$::env(USER)_$::env(ACS_INSTANCE).out -s -c \"ERROR\" -b \"SUCCESS\"  echo -e \"SUCCESS\"" \

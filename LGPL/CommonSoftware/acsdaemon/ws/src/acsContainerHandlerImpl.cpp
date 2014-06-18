@@ -92,10 +92,10 @@ ACSContainerHandlerImpl::start_container (
 
     const char * cmdln = (additional_command_line ? additional_command_line : "");
 
-	int isCasaContainer = 0;
+	int isFortanContainer = 0;
 	for (unsigned int i = 0; i < type_modifiers.length(); ++i) {
-		if (!strcmp(type_modifiers[i], "casaContainer")) {
-			isCasaContainer = 1;
+		if (!strcmp(type_modifiers[i], "fortranContainer")) {
+			isFortanContainer = 1;
 			break;
 		}
 	}
@@ -109,11 +109,11 @@ ACSContainerHandlerImpl::start_container (
 
 	char command[1000];
 
-	if (isCasaContainer)
+	if (isFortanContainer)
 		snprintf(
 				command,
 				1000,
-				"acsStartContainerWithCASA -%s -b %d %s %s &> %sacsStartContainer_%s_%s&",
+				"acsStartContainerWithFortran -%s -b %d %s %s &> %sacsStartContainer_%s_%s&",
 				container_type,
 				instance_number,
 				container_name,
@@ -181,10 +181,10 @@ ACSContainerHandlerImpl::start_container_sync (
 
     const char * cmdln = (additional_command_line ? additional_command_line : "");
 
-	int isCasaContainer = 0;
+	int isFortranContainer = 0;
 	for (unsigned int i = 0; i < type_modifiers.length(); ++i) {
-		if (!strcmp(type_modifiers[i], "casaContainer")) {
-			isCasaContainer = 1;
+		if (!strcmp(type_modifiers[i], "fortranContainer")) {
+			isFortranContainer = 1;
 			break;
 		}
 
@@ -199,11 +199,11 @@ ACSContainerHandlerImpl::start_container_sync (
 
 	char command[1000];
 
-	if (isCasaContainer)
+	if (isFortranContainer)
 		snprintf(
 				command,
 				1000,
-				"acsutilAwaitContainerStart -C -%s -b %d %s %s &> %sacsStartContainer_%s_%s",
+				"acsutilAwaitContainerStart -F -%s -b %d %s %s &> %sacsStartContainer_%s_%s",
 				container_type,
 				instance_number,
 				container_name,

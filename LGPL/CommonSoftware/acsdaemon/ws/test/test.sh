@@ -47,9 +47,9 @@ if [ $? -ne 0 ]; then
     FLAG=1
 fi
 sleep 10
-acsdaemonStartContainer -t py -m casaContainer -c CONTROL/AMBSOCKETSERVER/pyCasaContainer -i 0 &> startpyCasaContainer.log
+acsdaemonStartContainer -t py -m fortranContainer -c CONTROL/AMBSOCKETSERVER/pyCasaContainer -i 0 &> startpyCasaContainer.log
 if [ $? -ne 0 ]; then
-    echo "FAILED - starting CONTROL/AMBSOCKETSERVER/pyCasaContainer"
+    echo "FAILED - starting CONTROL/AMBSOCKETSERVER/pyContainer"
     FLAG=1
 fi
 sleep 30
@@ -92,7 +92,7 @@ if [ $? -ne 0 ]; then
     FLAG=1
 fi
 sleep 10
-CASA_DUMMY_CONTAINER_PID=$(ps auxww |grep "CONTROL/AMBSOCKETSERVER/pyCasaContainer" | grep $USER |grep acsStartContainerWithCASA | grep -v grep|awk '{ print $2 }')
+CASA_DUMMY_CONTAINER_PID=$(ps auxww |grep "CONTROL/AMBSOCKETSERVER/pyCasaContainer" | grep $USER |grep acsStartContainerWithFortran | grep -v grep|awk '{ print $2 }')
 kill $CASA_DUMMY_CONTAINER_PID
 sleep 1
 ps -p $CASA_DUMMY_CONTAINER_PID &>/dev/null
