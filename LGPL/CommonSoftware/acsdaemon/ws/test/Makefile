@@ -97,7 +97,7 @@ acsdaemonTestSlowComponentImpl_LIBS   = acsdaemonTestSlowComponentStubs acscompo
 # ----------------------------
 SCRIPTS         =	
 SCRIPTS_L       = 	acsdaemonTATPrologue acsdaemonTATEpilogue test.sh loglevel.sh testSync.sh \
-			acsStartContainerWithCASA testacsdaemonNumThreadsOption.sh
+			acsStartContainerWithFortran testacsdaemonNumThreadsOption.sh
 
 #
 # TCL scripts (public and local)
