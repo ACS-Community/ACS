@@ -38,7 +38,8 @@ PROG =
 EXECUTABLES_L     = $(PROG) maciTestClient maciTestLogConfigClient maciTestRegistrar \
 			maciContainerServicesClient maciLifeCycleClient \
 			maciTestSimpleClient maciTestComponentSmartPtr \
-			maciTestSimpleClientMulti maciTestSimpleClientContainerServices 
+			maciTestSimpleClientMulti maciTestSimpleClientContainerServices \
+			dlopenTest
 
 $(PROG)_OBJECTS            = $(PROG)
 $(PROG)_LDFLAGS            =
@@ -69,6 +70,9 @@ maciTestComponentSmartPtr_OBJECTS =  maciTestComponentSmartPtr
 maciTestComponentSmartPtr_LIBS = maciClient cppunit maciTestStubs
 
 maciTestRegistrar_OBJECTS 	= maciTestRegistrar
+
+dlopenTest_OBJECTS = dlopenTest
+dlopenTest_LIBS = C++ dl
 
 #
 # Includes (.h) files (public and local)
