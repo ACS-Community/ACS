@@ -19,8 +19,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.48 2012/01/21 22:48:11 tstaig Exp $"
-#
 # who       when      what
 # --------  --------  ----------------------------------------------
 # almamgr 2003-08-29 Removed acsutil.ild
@@ -30,36 +28,6 @@
 # gchiozzi 2002-11-25 Added clean_dist target
 # gchiozzi 2002-11-25 created
 #
-
-#************************************************************************
-#   NAME
-# 
-#   SYNOPSIS
-# 
-#   DESCRIPTION
-#
-#   FILES
-#
-#   ENVIRONMENT
-#
-#   RETURN VALUES
-#
-#   CAUTIONS
-#
-#   EXAMPLES
-#
-#   SEE ALSO
-#
-#   BUGS     
-#
-#------------------------------------------------------------------------
-#
-#*******************************************************************************
-# This Makefile follows VLT Standards (see Makefile(5) for more).
-#*******************************************************************************
-# REMARKS
-#    None
-#------------------------------------------------------------------------
 
 USER_CFLAGS =
 USER_LIB =
@@ -184,7 +152,6 @@ IDL_FILES =
 # Default is UNIX, for VxVorks application next line MUST BE UNCOMMENTED
 #MAKE_VXWORKS = on   
 
-acsutilCASAPathInsert_ds_prereq=acsutilCASAPathInsert.py
 #
 # INCLUDE STANDARDS
 # -----------------
@@ -199,15 +166,12 @@ endif
 # TARGETS
 # -------
 
-acsutilCASAPathInsert.py:	acsutilCASAPathInsert.py.tmpl
-	sed "s/RLSE/${ALMASW_RELEASE}/" < $< > $@
 
-all:	acsutilCASAPathInsert.py do_all
+all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
 	$(RM) *~ ../include/*~ ../dbl/*~ ../idl/*~ ../*~ ../../*~ core
-	$(RM) acsutilCASAPathInsert.py
 	$(RM) ../doc/*
 	@echo " . . . clean done"
 
