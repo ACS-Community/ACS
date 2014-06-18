@@ -98,7 +98,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =  testacsutilBlock
-SCRIPTS_L       =  testPython 
+SCRIPTS_L       =   
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
