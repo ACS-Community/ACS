@@ -28,9 +28,8 @@ import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 
 /**
- * Extends the ComponentData type with a list of monitor data (see {@link #getMonitorPointTimeSeries()})
- * and computes the {@link #statistics} field if the data type 
- * is numeric and single-valued.
+ * Extends the ComponentData type to compute the {@link #statistics} field 
+ * if the data type is numeric and single-valued.
  * 
  * @author hsommer
  */
@@ -39,15 +38,6 @@ public class BlobData extends ComponentData
 	public BlobData(MonitorPointTimeSeries mpTs, Logger logger) {
 		super(mpTs, logger);
 	}
-	
-	/**
-	 * Gets the number of MonitorPointValue objects
-	 * contained in the MonitorPointTimeSeries.
-	 */
-	int getDataSize() {
-		return mpTs.getDataList().size();
-	}
-	
 	
 	/**
 	 * Calculates the statistics and stores it in {@link #statistics}

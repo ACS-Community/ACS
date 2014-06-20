@@ -86,6 +86,16 @@ public class ComponentData {
 	}
 
 	/**
+	 * Gets the number of MonitorPointValue objects
+	 * contained in the MonitorPointTimeSeries, 
+	 * or <code>-1</code> if in special cases this ComponentData objects holds no data.
+	 */
+	public int getDataSize() {
+		return sampleSize;
+	}
+	
+
+	/**
 	 * Gets the monitor point data in "clobbed" format.
 	 */
 	public synchronized String getClob() {
