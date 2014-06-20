@@ -119,9 +119,9 @@ inline ACE_CString getStringifiedUTC(ACS::TimeInterval time)
   ACE_Time_Value tv = UTCtoACE_Time_Value(time);
 
   time_t ut(tv.sec());
-  struct tm *utc_p = ACE_OS::gmtime(&ut);
-  ACE_OS::strftime(ctp, sizeof(ctp), "%Y-%m-%dT%H:%M:%S", utc_p);
-  
+  struct tm utc_p;
+  ACE_OS::gmtime_r(&ut, &utc_p);
+  ACE_OS::strftime(ctp, sizeof(ctp), "%Y-%m-%dT%H:%M:%S", &utc_p);
   ACE_OS::sprintf (str, ACE_TEXT ("%s.%03ld"),
 		   ctp, tv.usec () / 1000);
   
