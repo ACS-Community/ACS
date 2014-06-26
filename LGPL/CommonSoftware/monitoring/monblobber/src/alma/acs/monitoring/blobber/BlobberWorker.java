@@ -139,7 +139,7 @@ public class BlobberWorker extends CancelableRunnable {
         if (isProfilingEnabled) {
         	try {
         		debugDataSender = new DebugDataSender(myContainerServices.getName());
-                myLogger.info("Blobber profiling enabled: " + debugDataSender.toString());
+                myLogger.fine("Blobber profiling enabled: " + debugDataSender.toString());
             } catch (java.net.UnknownHostException e) {
                 isProfilingEnabled = false;
                 myLogger.warning("Failed to enable blobber profiling: " + DebugDataSender.targetHost + " could not be resolved.");
@@ -149,7 +149,7 @@ public class BlobberWorker extends CancelableRunnable {
         	}
         } 
         else {
-            myLogger.info("Blobber profiling NOT enabled.");
+            myLogger.fine("Blobber profiling NOT enabled.");
         }
     }
 
@@ -193,18 +193,20 @@ public class BlobberWorker extends CancelableRunnable {
      *         {@link CollectorListStatus#FULL}.
      */
     public CollectorListStatus addCollector(String inCollectorComponentId) {
-        myLogger.fine("Trying to add collector " + inCollectorComponentId);
+   		myLogger.fine("Trying to add collector " + inCollectorComponentId);
         CollectorListStatus outStatus = CollectorListStatus.FULL;
         if (canHandle()) {
             outStatus = this.myCollectorList.add(inCollectorComponentId);
             if (outStatus == CollectorListStatus.ADDED) {
-                myLogger.fine("Collector "  + inCollectorComponentId + " added.");
+           		myLogger.fine("Collector "  + inCollectorComponentId + " added.");
             } else {
-                myLogger.fine("Collector "  + inCollectorComponentId + " already contained in collector list, not added again.");
+            	if (myLogger.isLoggable(Level.FINE)) {
+            		myLogger.fine("Collector "  + inCollectorComponentId + " already contained in collector list, not added again.");
+            	}
             }
         } 
         else {
-            myLogger.fine("The blobber has reached its capacity, collector "  + inCollectorComponentId + " not added.");
+       		myLogger.fine("The blobber has reached its capacity, collector "  + inCollectorComponentId + " not added.");
         }
         return outStatus;
     }
@@ -225,7 +227,7 @@ public class BlobberWorker extends CancelableRunnable {
      *         {@link CollectorListStatus#REMOVED}.
      */
     public CollectorListStatus removeCollector(String inCollectorComponentId) {
-        myLogger.fine("Trying to remove collector " + inCollectorComponentId);
+    	myLogger.fine("Trying to remove collector " + inCollectorComponentId);
         CollectorListStatus outStatus = this.myCollectorList.remove(inCollectorComponentId);
         if (outStatus == CollectorListStatus.REMOVED) {
             myLogger.fine("Collector removed.");
@@ -257,7 +259,9 @@ public class BlobberWorker extends CancelableRunnable {
 	protected MonitorCollectorOperations getMonitorCollector(String inCollectorName) throws AcsJContainerServicesEx {
 		MonitorCollectorOperations ret = collectorName2ComponentReference.get(inCollectorName);
 		if (ret == null) {
-			myLogger.fine("Trying to fetch collector for container " + inCollectorName);
+			if (myLogger.isLoggable(Level.FINE)) {
+				myLogger.fine("Trying to fetch collector for container " + inCollectorName);
+			}
 			ret = MonitorCollectorHelper.narrow(myContainerServices.getComponent(inCollectorName));
 			collectorName2ComponentReference.put(inCollectorName, ret);
 		}
@@ -274,7 +278,7 @@ public class BlobberWorker extends CancelableRunnable {
 	public void run() {
 
 		cycleCount.incrementAndGet();
-		myLogger.info("Running BlobberWorker cycle " + cycleCount);
+		myLogger.fine("Running BlobberWorker cycle " + cycleCount);
 
 		int collectorCount = 0;
 		int insertCount = 0;
@@ -338,7 +342,7 @@ public class BlobberWorker extends CancelableRunnable {
 		if (totalTimeMillis < collectIntervalSec * 1000) {
 			// the good case: all collectors were processed within the foreseen time window
 			String msg = "Processed monitoring data from " + collectorCount + " collector(s) in " + totalTimeMillis + " ms (within the time limit).";
-			myLogger.info(msg);
+			myLogger.fine(msg);
 			if (isProfilingEnabled) {
 				debugDataSender.sendUDPPacket(msg, cycleCount.longValue());
 				debugDataSender.sendUDPPacket("Total inserts for cycle " + cycleCount + " were " + insertCount, cycleCount.longValue());
@@ -386,7 +390,9 @@ public class BlobberWorker extends CancelableRunnable {
 
 			// HSO TODO: do not call name() on the remote component, but use the local getCollectorId which happens to
 			// be the name.
-			myLogger.info("Received " + dataBlocks.length + " MonitorDataBlocks from collector " + collector.name());
+			if (myLogger.isLoggable(Level.FINE)) {
+				myLogger.fine("Received " + dataBlocks.length + " MonitorDataBlocks from collector " + collector.name());
+			}
 
 			if (isProfilingEnabled) {
 				debugDataSender.sendUDPPacket("Received " + dataBlocks.length + " MonitorDataBlocks from collector " + collector.name(), cycleCount.longValue());
@@ -478,9 +484,10 @@ public class BlobberWorker extends CancelableRunnable {
 			// close the transaction
 			for (MonitorDAO monitorDAO : myMonitorDAOList) {
 				try {
-					// @TODO (HSO): We do not log the matching openTransactionStore at INFO level. Shouldn't this be symmetric?
-					myLogger.info("myMonitorDAO.closeTransactionStore() for: " + dataBlocks.length
-							+ " MonitorDataBlocks from collector " + collector.name());
+					if (myLogger.isLoggable(Level.FINE)) {
+						myLogger.fine("myMonitorDAO.closeTransactionStore() for: " + dataBlocks.length
+								+ " MonitorDataBlocks from collector " + collector.name());
+					}
 					monitorDAO.closeTransactionStore();
 				} catch (Exception ex) {
 					myLogger.log(Level.WARNING, "Exception caught. Some monitoring data couldn't be archived", ex);
