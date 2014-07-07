@@ -62,7 +62,7 @@ MODULE_PREFIX_NO-LGPL = NO-LGPL
 HAS_NO-LGPL = $(shell if [ -d NO-LGPL ]; then echo "TRUE"; else echo "FALSE"; fi)
 
 ifeq ($(HAS_NO-LGPL),TRUE)
-  MODULES_NO-LGPL = cfitsio fftw 
+  MODULES_NO-LGPL = fftw 
 endif
 
 # RTOS related things are build only if they are part of distribution and RTAI_HOME is defined
