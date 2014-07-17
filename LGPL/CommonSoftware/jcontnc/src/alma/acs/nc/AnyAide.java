@@ -463,7 +463,6 @@ class AnyAide {
 			else {
 				// First assume that the type is not defined nested inside an interface
 				qualHelperClassName = corbaStructToJavaClass(any.type(), false) + "Helper";
-				System.out.println("qualHelperClassName=" + qualHelperClassName);
 				try {
 					localHelper = Class.forName(qualHelperClassName);
 				} catch(ClassNotFoundException ex) {
