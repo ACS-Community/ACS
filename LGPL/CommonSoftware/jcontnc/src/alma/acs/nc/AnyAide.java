@@ -461,9 +461,15 @@ class AnyAide {
 				}
 			} 
 			else {
-				// @TODO: if we deal with nested event structs (defined inside an interface), 
-				//        modify the boolean param in the call to corbaStructToJavaClass.
+				// First assume that the type is not defined nested inside an interface
 				qualHelperClassName = corbaStructToJavaClass(any.type(), false) + "Helper";
+				try {
+					localHelper = Class.forName(qualHelperClassName);
+				} catch(ClassNotFoundException ex) {
+					// it could be that we are dealing with a nested struct
+					qualHelperClassName = corbaStructToJavaClass(any.type(), true) + "Helper";
+					localHelper = Class.forName(qualHelperClassName);	
+				}
 				qualHelperClassName = qualHelperClassName.replaceAll("::", ".");
 				localHelper = Class.forName(qualHelperClassName);
 			}
