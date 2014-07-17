@@ -49,4 +49,6 @@ PROLOGUE acsutilTATPrologue -l
 
 9 testHelper "acsutilTATTestRunner runHelperTest.sh"
 
+10 testAnyAide "acsutilTATTestRunner runAnyAideTest.sh"
+
 EPILOGUE acsutilTATEpilogue
