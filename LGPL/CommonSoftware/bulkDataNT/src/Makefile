@@ -36,6 +36,13 @@
 #MAKE_ONLY=C++,Python
 MAKE_NOIFR_CHECK = on # it is DDS IDL, and we do not need to check it
 
+################################################################################
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#  the code from here till  ... endif
+#  will built just if NDDSHOME is defeined i.e. RTI DDS is isntalled !!!!!!!
+################################################################################
+ifdef NDDSHOME
+
 ARCH = $(shell uname -m)
 GCC_VERSION_MAJOR = $(shell echo __GNUC__ | gcc -E -xc - | tail -n 1)
 ifneq ($(GCC_VERSION_MAJOR),4)
@@ -177,6 +184,13 @@ TCL_LIBRARIES_L =
 # <brief description of tttlll library>
 tttlll_OBJECTS  = 
 
+endif #ifdef NDDSHOME
+################################################################################
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#  the code from ifdef NDDSHOME till  here
+#  .... will built just if NDDSHOME is defeined i.e. RTI DDS is isntalled !!!!!!!
+################################################################################
+
 #
 # Configuration Database Files
 # ----------------------------
@@ -287,14 +301,14 @@ install : install_all
 else
 
 .DEFAULT_GOAL := all	
-all: 
-	@echo " NDDSHOME is not defined, and thus nothing to be done for target all!" 
+all: do_all
+	@echo -e "\e[0;31m!!!!! NDDSHOME is not defined, and thus only code common to old and new BD will be build (ACSERR and IDL) for target all!!!!\e[0m" 
 
 clean : clean_all
 	@echo " . . . clean done"
 
-install :
-	@echo " NDDSHOME is not defined, and thus nothing to be installed!"
+install : install_all
+	@echo -e "\e[0;31m!!!!! NDDSHOME is not defined, and thus only code common to old and new BD will be installed (ACSERR and IDL) for target install!!!!\e[0m"
 	
 endif
 clean_dist : clean_all clean_dist_all 
