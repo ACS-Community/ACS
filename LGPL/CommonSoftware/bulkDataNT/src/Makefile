@@ -302,13 +302,13 @@ else
 
 .DEFAULT_GOAL := all	
 all: do_all
-	@echo -e "\e[0;31m!!!!! NDDSHOME is not defined, and thus only code common to old and new BD will be build (ACSERR and IDL) for target all!!!!\e[0m" 
+	@echo -e "\e[0;31mWARNING: NDDSHOME is not defined, and thus only code common to old and new BD will be build (ACSERR and IDL) for target all!!!!\e[0m" 
 
 clean : clean_all
 	@echo " . . . clean done"
 
 install : install_all
-	@echo -e "\e[0;31m!!!!! NDDSHOME is not defined, and thus only code common to old and new BD will be installed (ACSERR and IDL) for target install!!!!\e[0m"
+	@echo -e "\e[0;31mWARNING: NDDSHOME is not defined, and thus only code common to old and new BD will be installed (ACSERR and IDL) for target install!!!!\e[0m"
 	
 endif
 clean_dist : clean_all clean_dist_all 
