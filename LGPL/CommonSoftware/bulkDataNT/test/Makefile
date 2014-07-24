@@ -250,10 +250,10 @@ all:	do_all
 else
 .DEFAULT_GOAL := all	
 all: 
-	@echo " NDDSHOME not defined nothing to be done for target all!" 
+	@echo -e "\e[0;31mWARNING:  NDDSHOME not defined nothing to be done for target: all!\e[0m" 
  
 test: 
-	@echo " NDDSHOME not defined nothing to be done for target test!" 
+	@echo -e "\e[0;31mWARNING:  NDDSHOME not defined nothing to be done for target: test!\e[0m" 
 endif
 
 clean : clean_all 
