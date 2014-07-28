@@ -470,8 +470,6 @@ class AnyAide {
 					qualHelperClassName = corbaStructToJavaClass(any.type(), true) + "Helper";
 					localHelper = Class.forName(qualHelperClassName);	
 				}
-				qualHelperClassName = qualHelperClassName.replaceAll("::", ".");
-				localHelper = Class.forName(qualHelperClassName);
 			}
 
 			// Extract method of helper class
