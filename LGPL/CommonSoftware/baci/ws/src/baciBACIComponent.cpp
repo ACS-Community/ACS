@@ -223,7 +223,7 @@ void monitorThreadWorker(void* param) {
 	       n++)
 	    {
 	      property_p = component_p->getPropertyAt(n);
-	      if (property_p==0 && property_p->isInDestructionState()==false)
+	      if (property_p==0 || property_p->isInDestructionState()==true)
 		  {
 		  continue;
 		  }
