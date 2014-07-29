@@ -282,7 +282,7 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 			"%, lost calls=" + snapshotUndeliveredRequests + 
 			", requestQueueMaxUsePercent=" + snapshotRequestQueueMaxUsePercent + "% (in POA '" + snapshotRequestQueueMaxUsePOA + "').";
 			
-			logStatus(msg, Level.INFO, snapshotConnectionPoolUsePercent, 
+			logStatus(msg, Level.FINE, snapshotConnectionPoolUsePercent, 
 						snapshotUndeliveredRequests, snapshotRequestQueueMaxUsePercent, snapshotRequestQueueMaxUsePOA);
 		}
 	}
