@@ -175,7 +175,6 @@ ACS::TimeInterval MonitorComponent::propertyArchivingInterval(ACS::PropertyDesc 
 
 bool MonitorComponent::addProperty(const char *propName)
 {
-
 	AUTO_TRACE("MonitorComponent::addProperty");
 
 	//loop over all properties of the component for the right property
@@ -751,7 +750,10 @@ void MonitorComponent::startMonitoring()
 	unsigned int numOfProp = monitorPoints_m.size();
 
 	for( unsigned int i=0; i<numOfProp; i++ )
+	{
 		monitorPoints_m[i]->startMonitoring();
+	}
+
 	monitoring_m = true;
 
 	m_monitoringStartTime = getTimeStamp();

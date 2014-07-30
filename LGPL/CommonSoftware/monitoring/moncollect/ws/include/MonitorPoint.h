@@ -91,6 +91,8 @@ protected:
 	ACS::OffShoot_var alarmCallback_m; ///callback CORBA reference
 
 	unsigned int curSeqPos_m; ///current position to write in the sequence
+	unsigned int curSeqInit_m; ///current init of the circular buffer
+	bool bufferFull; ///status of buffer. If false data is sorted normally. If true buffer is full (data is stored but old data lost)
 
 	unsigned int seqLen_m; ///sequence length
 
@@ -100,7 +102,8 @@ protected:
 	bool alarmSuppressed_m;
 	double alarmTimerTrigger_m;
 
-	static const unsigned int prealocSeqLen_m = 100; // preallocated length of the seqnece. This is the step that the sequence will grow
+	static const unsigned int maxSeqSegments_m = 5; // maximum sequence segments. maxSeqSegments_m*prealocSeqLen_m defines the buffer maximum size
+	static const unsigned int prealocSeqLen_m = 100; // preallocated length of the sequence. This is the step that the sequence will grow
 
 	CORBA::Long backLogSize_m;
 	//TBD: do we need also type (as string or ..)?
@@ -142,6 +145,7 @@ public:
 protected:
 	TPROP* property_m;
 	TBLOB_SEQ blobDataSeq_m;
+	TBLOB_SEQ blobDataSeqTemp_m;
 	TBASE valueTrigger_m; // Delta value describing how much a value can change before the value should be archived (and so monitored)
 	TCB * monitorServant_m;
 };//MonitorPoint
@@ -201,6 +205,7 @@ class EnumMonitorPoint : public MonitorPointBase
 protected:
 	ACS::TypelessProperty* property_m;
 	enumBlobDataSeq blobDataSeq_m;
+	enumBlobDataSeq blobDataSeqTemp_m;
 	CORBA::ULong valueTrigger_m; // Delta value describing how much a value can change before the value should be archived (and so monitored)
 	POA_ACS::CBuLong * monitorServant_m;
 };
