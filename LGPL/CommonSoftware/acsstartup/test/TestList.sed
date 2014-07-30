@@ -37,4 +37,5 @@ s/Endpoint: [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/Endpoint: a.b.c.d:p/g
 s/ACS_INSTANCE=[0-9]/ACS_INSTANCE=N/g
 s/Locking instance [0-9] with lock file .*/Locking instance N with lock file ..acsInstanceN.lock/g
 s/Freeing instance [0-9] removing lock file .*/Freeing instance N removing lock file ..acsInstanceN.lock/g
-
+s/org.jacorb.naming.NameServer .*/org.jacorb.naming.NameServer.../g
+s/Starting Java application: org.jacorb.naming.NameServer .*/Starting Java application: org.jacorb.naming.NameServer.../g
