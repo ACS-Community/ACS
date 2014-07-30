@@ -2,6 +2,7 @@ Properties
 ACSAlarmSystemInterfaceFactory
 Using
 DEBUG
+FINE
 INFO
 corbaloc
 clear_cache
