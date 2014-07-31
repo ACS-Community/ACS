@@ -12,3 +12,5 @@ Will verify XSD files in:
 ACS.log.minlevel.namedloggers not defined
 processing /tmp/acsIrfeedDyn
 ^1 - [0-9]*$
+INFO \[jacorb\]
+INFO \[alma.acs.logging\] Logger jacorb created with custom log levels

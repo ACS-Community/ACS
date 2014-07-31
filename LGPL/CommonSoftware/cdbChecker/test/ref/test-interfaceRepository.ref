@@ -1,6 +1,7 @@
 1 - Checking a CDB that contains a bad idl types
 1 - Running Interface Repository and loading IDL files
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
+1 -  -- org.jacorb.naming.NameServer...
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
 1 - ReBound ID: InterfaceRepository
 1 - ----------T--:--:--.--- INFO [acsstartupLoadIFR] Loading of IDL interfaces in Interface Repository completed OK
@@ -13,6 +14,7 @@
 1 - Checking a CDB that contains all good idl types
 1 - Running Interface Repository and loading IDL files
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
+1 -  -- org.jacorb.naming.NameServer...
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Loading of IDL interfaces in Interface Repository is being skipped due to up-to-date persistence file
 1 - ReBound ID: InterfaceRepository
