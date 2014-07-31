@@ -525,9 +525,9 @@ fi
 ##################
 # RTI DDS #
 ##################
-if [ -d $ALMASW_INSTDIR/RTI/ndds.5.0.0 ]
+if [ -d $ALMASW_INSTDIR/RTI/ndds.5.1.0 ]
 then
-    export NDDSHOME=$ALMASW_INSTDIR/RTI/ndds.5.0.0
+    export NDDSHOME=$ALMASW_INSTDIR/RTI/ndds.5.1.0
 fi
 
 ##################

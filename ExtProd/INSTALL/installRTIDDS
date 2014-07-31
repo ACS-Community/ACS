@@ -36,8 +36,8 @@ else
     exit 3
 fi
 
-HOST_TAR="RTI_Connext_DDS_Host-5.0.0-"$BIT_ARCH"Linux.tar.gz.gpg"
-TARGET_TAR="RTI_Connext_DDS_Target-5.0.0-"$BIT_ARCH"Linux2.6gcc"$GCC_VER".tar.gz.gpg"
+HOST_TAR="RTI_Connext_DDS_Core_Host-5.1.0-"$BIT_ARCH"Linux.tar.gz.gpg"
+TARGET_TAR="RTI_Connext_DDS_Core_Target-5.1.0-"$BIT_ARCH"Linux2.6gcc"$GCC_VER".tar.gz.gpg"
 
 # do we have acrobat reader on the machine ?
 which acroread 2&>1 /dev/null
