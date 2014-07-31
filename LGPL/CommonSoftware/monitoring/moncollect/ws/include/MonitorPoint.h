@@ -102,7 +102,7 @@ protected:
 	bool alarmSuppressed_m;
 	double alarmTimerTrigger_m;
 
-	static const unsigned int maxSeqSegments_m = 5; // maximum sequence segments. maxSeqSegments_m*prealocSeqLen_m defines the buffer maximum size
+	static const unsigned int maxSeqSegments_m = 2; // maximum sequence segments. maxSeqSegments_m*prealocSeqLen_m defines the buffer maximum size
 	static const unsigned int prealocSeqLen_m = 100; // preallocated length of the sequence. This is the step that the sequence will grow
 
 	CORBA::Long backLogSize_m;

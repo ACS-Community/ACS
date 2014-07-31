@@ -68,7 +68,7 @@ for d in data:
 try:
     tc.reset();
     mc.startMonitoring('MC_TEST_COMPONENT')    
-    time.sleep(520)
+    time.sleep(220)
     mc.stopMonitoring('MC_TEST_COMPONENT')
     
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
