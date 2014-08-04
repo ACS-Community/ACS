@@ -21,4 +21,4 @@
 # MA 02111-1307  USA
 #
 export ACS_TMP=../test/tmp
-acsStartJava -Duser.dir=$PWD -Djlog.cache.size=4096 -Djlog.cache.writebuffersize=1024 junit.textui.TestRunner com.cosylab.logging.CacheTest
+acsStartJava -Duser.dir=$PWD -Djlog.cache.size=4096 -Djlog.cache.writebuffersize=1024 alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.logging.CacheTest

@@ -21,4 +21,4 @@
 # MA 02111-1307  USA
 #
 export ACS_TMP=../test
-acsStartJava -Duser.dir=$PWD junit.textui.TestRunner alma.acs.jlog.test.MultiFileCacheTest
+acsStartJava -Duser.dir=$PWD alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.jlog.test.MultiFileCacheTest
