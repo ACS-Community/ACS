@@ -1,4 +1,4 @@
-1 - .Start testFileCreation1
+1 - Start testFileCreation1
 1 - 
 1 - ACTION : Delete log from empty cache
 1 - Delete Log FAILS : cache is empty
@@ -99,7 +99,7 @@
 1 - logFile 1: log counter = 1  Range Keys [52  52] file size 65
 1 - 
 1 - 
-1 - .LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
+1 - LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 24 47
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 48 71
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 72 95
@@ -3239,7 +3239,7 @@
 1 - logFileTable : total logs = 0
 1 - 
 1 - 
-1 - .LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
+1 - LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 24 47
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 48 71
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 72 95
@@ -5326,7 +5326,7 @@
 1 - 
 1 -  Delete log key = 999 from record 0  Tot. Logs 0  Range keys = 993 999
 1 - Delete log file: recId 0 num. of logs = 0Range keys = [2147483647, -2147483648]
-1 - .LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
+1 - LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 24 47
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 48 71
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 72 95
@@ -5369,7 +5369,7 @@
 1 - LogMultiFileCache log file : fileSize 1518 logs = 23 Range keys = 924 946
 1 - LogMultiFileCache log file : fileSize 1518 logs = 23 Range keys = 947 969
 1 - LogMultiFileCache log file : fileSize 1518 logs = 23 Range keys = 970 992
-1 - .LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
+1 - LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 24 47
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 48 71
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 72 95
@@ -7456,7 +7456,7 @@
 1 - 
 1 -  Delete log key = 999 from record 0  Tot. Logs 0  Range keys = 993 999
 1 - Delete log file: recId 0 num. of logs = 0Range keys = [2147483647, -2147483648]
-1 - .LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
+1 - LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 24 47
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 48 71
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 72 95
@@ -10547,7 +10547,7 @@
 1 - logFileTable : total logs = 0
 1 - 
 1 - 
-1 - .LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
+1 - LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 24 47
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 48 71
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 72 95
@@ -12634,7 +12634,7 @@
 1 - 
 1 -  Delete log key = 964 from record 0  Tot. Logs 0  Range keys = 947 969
 1 - Delete log file: recId 0 num. of logs = 0Range keys = [2147483647, -2147483648]
-1 - .LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
+1 - LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 24 47
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 48 71
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 72 95
@@ -12851,7 +12851,7 @@
 1 - LogMultiFileCache log file : fileSize 1541 logs = 23 Range keys = 4926 4948
 1 - LogMultiFileCache log file : fileSize 1541 logs = 23 Range keys = 4949 4971
 1 - LogMultiFileCache log file : fileSize 1541 logs = 23 Range keys = 4972 4994
-1 - .LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
+1 - LogMultiFileCache log file : fileSize 1550 logs = 24 Range keys = 0 23
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 24 47
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 48 71
 1 - LogMultiFileCache log file : fileSize 1560 logs = 24 Range keys = 72 95
