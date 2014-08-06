@@ -76,7 +76,7 @@ endif
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     =  bulkDataNTGenSender bulkDataNTGenReceiver bulkDataNTGenReceiverSender
+EXECUTABLES     =  bulkDataNTGenSender bulkDataNTGenReceiver bulkDataNTGenReceiverSender ddsPubTest ddsSubTest
 EXECUTABLES_L   = 
 
 #
@@ -142,6 +142,11 @@ bulkDataNTGenReceiver_LIBS= bulkDataNTReceiver
 
 bulkDataNTGenReceiverSender_OBJECTS = bulkDataNTGenReceiverSender bulkDataNTArrayThread bulkDataNTGenStreamerThread
 bulkDataNTGenReceiverSender_LIBS= bulkDataNTSender bulkDataNTReceiver bulkDataNTThreadUtils bulkDataNTEx
+
+ddsPubTest_OBJECTS=ddsPublisher 
+ddsPubTest_LIBS=nddscpp nddsc nddscore pthread ACSErrTypeCommon
+ddsSubTest_OBJECTS=ddsSubscriber
+ddsSubTest_LIBS=nddscpp nddsc nddscore pthread ACSErrTypeCommon
 
 #
 # Scripts (public and local)
