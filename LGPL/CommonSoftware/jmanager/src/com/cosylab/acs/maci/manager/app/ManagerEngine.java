@@ -355,7 +355,9 @@ public class ManagerEngine
 			}
 			catch (Exception ex)
 			{
-				// noop
+				// Something went wrong getting the NS
+				logger.log(Level.SEVERE,"Error getting the NameServer. Manager exiting...");
+				this.shutdownImplementation.shutdown(false);
 			}
 			
 			manager.setRemoteDirectoryComponentReference(obj);
