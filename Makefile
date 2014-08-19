@@ -42,6 +42,16 @@ endef
 define makeItAux
    (( make $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
 endef
+
+# SCM tag definition
+
+ifneq ( ,$(wildcard .svn))
+	SVN_URL = "$(shell svn info '$(PWD)/Makefile' | grep URL);"
+	SCM_TAG = "$(shell $(SVN_URL) | awk 'BEGIN { FS = "/" } ; { print toupper($$(NF-2)) }')"
+else
+	SCM_TAG = "$(shell git describe --tags --always HEAD)"
+endif
+
 ###############################################
 
 #
@@ -168,7 +178,7 @@ endef
 # Per each module it executes:
 #    make clean all install
 #
-build: 	svn-tag clean_log checkModuleTree prepare update
+build: 	scm-tag clean_log checkModuleTree prepare update
 	@$(ECHO) "... done"
 
 #
@@ -177,7 +187,7 @@ build: 	svn-tag clean_log checkModuleTree prepare update
 # Per each module it executes:
 #    make clean all man install clean
 #
-build_clean:   	svn-tag clean_log checkModuleTree prepare update_clean
+build_clean:   	scm-tag clean_log checkModuleTree prepare update_clean
 	@$(ECHO) "... done"
 
 #
@@ -190,7 +200,7 @@ build_clean:   	svn-tag clean_log checkModuleTree prepare update_clean
 # This is useful to discover circular dependencies between
 # modules.
 #
-build_clean_test:   	svn-tag clean_log checkModuleTree prepare update_clean_test
+build_clean_test:   	scm-tag clean_log checkModuleTree prepare update_clean_test
 	@$(ECHO) "... done"
 
 #
@@ -199,7 +209,7 @@ build_clean_test:   	svn-tag clean_log checkModuleTree prepare update_clean_test
 # Per each module it executes:
 #    make clean all man install clean
 #
-rebuild:	svn-tag clean_log update
+rebuild:	scm-tag clean_log update
 	@$(ECHO) "... done"
 
 clean_log:
@@ -258,7 +268,7 @@ prepare:
 #   that is the LAST module fails the whole Make does not fail
 #
 
-update:	svn-tag checkModuleTree
+update:	scm-tag checkModuleTree
 	@$(ECHO) "############ (Re-)build ACS Software         #################"| tee -a build.log
 	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
 		    if [ ! -d $${member} ]; then \
@@ -458,82 +468,78 @@ show_modules:
 	@$(ECHO) ${MODULES}
 
 ################################################################
-# SVN targets.
+# SCM targets.
 # 
 # The following targets and expressions are helpers for SVN
 # operations on the ACS tree.
 ################################################################
 
 #
-# This expression extracts the SVN tag for the ACS/Makefile file
+# This expression extracts the SCM tag for the ACS/Makefile file
 # (if exists).
 # This does not warranty that all files have the same tag,
 # but it is at least an indication.
 #
-SVN_URL = $(shell svn info '$(PWD)/Makefile'|grep URL)
-SVN_TAG = $(shell echo $(SVN_URL)|awk 'BEGIN { FS = "/" } ; { print toupper($$(NF-2)) }')
-
-#
-#
-# This target puts the SVN tag for the ACS/Makefile file
+# This target puts the SCM tag for the ACS/Makefile file
 # (if exists) into a file, so that it can be used
 # to mark an installation.
 #
-svn-tag:
-	@ $(ECHO) "Evaluating current ACS TAG from $(SVN_URL)"; \
-	if [ X$(SVN_TAG) != X ]; then \
-               $(ECHO) "SVN tag is: $(SVN_TAG)"; \
-               $(ECHO) $(SVN_TAG) > ACS_TAG ; \
-            else \
-              if [ -f ACS_TAG ]; then\
-                $(ECHO) "ACS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
-              else \
-                $(ECHO) "No SVN tag available"; \
-              fi; \
-          fi
+scm-tag:
+	@ $(ECHO) "Evaluating current SCM tag"; \
+	if [ X$(SCM_TAG) != X ]; then \
+		$(ECHO) "SCM tag is $(SCM_TAG)"; \
+		$(ECHO) $(SCM_TAG) > ACS_TAG ; \
+	else \
+		if [ -f ACS_TAG ]; then \
+			$(ECHO) "ACS tag file already exist: "; \
+			cat ACS_TAG; $(ECHO) ""; \
+		else \
+			$(ECHO) "No SCM tag available"; \
+		fi; \
+	fi
 
 #
-# This target gets from SVN the correct 
+# This target gets from SCM the correct 
 # ACS_VERSION and ACS_PATCH_LEVEL files.
 #
 # I ported the cvs-get-version to work with SVN,
 # but believe that it will not be needed anymore because of
 # the diffrences between CVS and SVN.
 #
-svn-get-version:
-	@ $(ECHO) "Extracting from SVN version files"; \
-          if [ X$(SVN_TAG) != X ]; then \
-             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
+scm-get-version:
+	@ $(ECHO) "Extracting from SCM version files"; \
+          if [ X$(SCM_TAG) != X ]; then \
+             $(ECHO) "SCM tag is: $(SCM_TAG)"; \
           else \
-             $(ECHO) "No SVN tag available"; \
+             $(ECHO) "No SCM tag available"; \
           fi; \
 	  svn update --quiet ACS_PATCH_LEVEL ACS_VERSION
 
 #
-# This target gets from SVN all files needed for an LGPL distribution 
+# This target gets from SCM all files needed for an LGPL distribution 
 #
 LGPL_FILES=README README-new-release LGPL
-svn-get-lgpl: svn-tag svn-get-version
-	@ $(ECHO) "Extracting from SVN LGPL files"; \
-          if [ X$(SVN_TAG) != X ]; then \
-             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
+scm-get-lgpl: scm-tag scm-get-version
+	@ $(ECHO) "Extracting from SCM LGPL files"; \
+          if [ X$(SCM_TAG) != X ]; then \
+             $(ECHO) "SCM tag is: $(SCM_TAG)"; \
           else \
-             $(ECHO) "No SVN tag available"; \
+             $(ECHO) "No SCM tag available"; \
           fi; \
 	  svn update --quiet $(LGPL_FILES)
 
 #
-# This target gets from SVN a complete ACS code distribution 
+# This target gets from SCM a complete ACS code distribution 
 #
 NO-LGPL_FILES=Benchmark NO-LGPL
-svn-get-no-lgpl: svn-tag svn-get-version svn-get-lgpl svn-get-no-lgpl-extract 
+scm-get-no-lgpl: scm-tag scm-get-version scm-get-lgpl scm-get-no-lgpl-extract 
 
-svn-get-no-lgpl-extract: 
-	@  $(ECHO) "Extracting from SVN NO-LGPL files"; \
-          if [ X$(SVN_TAG) != X ]; then \
-             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
+scm-get-no-lgpl-extract: 
+	@  $(ECHO) "Extracting from SCM NO-LGPL files"; \
+          if [ X$(SCM_TAG) != X ]; then \
+             $(ECHO) "SCM tag is: $(SCM_TAG)"; \
           else \
-             $(ECHO) "No SVN tag available"; \
+             $(ECHO) "No SCM tag available"; \
           fi; \
 	  svn update --quiet $(NO-LGPL_FILES)
 
