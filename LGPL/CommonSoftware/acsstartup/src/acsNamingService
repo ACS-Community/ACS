@@ -166,14 +166,22 @@ export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #files where process IDs are stored in.
 NAMING_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_NAMING_SERVICE_PIDFILE
 
-#persistence dir 
-NAMING_SERVICE_PERSISTENCE_FOLDER=$INSTANCE_DIR
+#persistence filename 
+NAMING_SERVICE_PERSISTENCE_FILE=$INSTANCE_DIR/naming_persistence.data
 
 #IOR locations
 NAME_IOR=$INSTANCE_DIR/$ACS_NAMING_SERVICE_IORFILE
 
 #determine the TCP ports to be used
 NAMING_SERVICE_PORT=`getNamingServicePort`
+
+# Always use -ORBDottedDecimalAddresses=1
+if [ "X$ORBOPTS" = "X" ]
+then
+  ORBOPTS="-ORBDottedDecimalAddresses 1"
+fi
+
+
 
 
 ################################
@@ -232,12 +240,23 @@ then
     exit $EC_NOPORT
   fi
 
+  # PERSISTRNCE OPTIONS
+  # --------------------------------------------------------------------------
+  PERSISTENCE_OPTS="-f $NAMING_SERVICE_PERSISTENCE_FILE"
+  
+  DISABLE_PERSISTENCE=`echo ${ACS_DISABLE_NS_PERSISTENCE:-"false"} | tr "[:upper:]" "[:lower:]"`
+  if [ $DISABLE_PERSISTENCE = "true" ] || [ $DISABLE_PERSISTENCE = "y" ] || [ $DISABLE_PERSISTENCE = "1" ]
+  then
+    PERSISTENCE_OPTS=""
+    ACS_LOG_INFO "$COMMAND" "Naming Service persistence disabled."
+  fi
+  
   # SERVICE STARTUP
   # --------------------------------------------------------------------------
   ACS_LOG_INFO "$COMMAND" "Starting Naming Service${LOGPOSTFIX}"
-  
-  acsStartJava org.jacorb.naming.NameServer -Djacorb.naming.db_dir=$NAMING_SERVICE_PERSISTENCE_FOLDER -DOAPort=$NAMING_SERVICE_PORT -Djacorb.naming.ior_filename=$NAME_IOR &
-   NAMING_SERVICE_PID=$!
+  $ACE_ROOT/TAO/orbsvcs/Naming_Service/Naming_Service -ORBEndpoint iiop://$HOST:$NAMING_SERVICE_PORT -o $NAME_IOR $PERSISTENCE_OPTS $ORBOPTS &
+
+  NAMING_SERVICE_PID=$!
   echo $NAMING_SERVICE_PID  > $NAMING_SERVICE_PIDFILE
 fi
 
@@ -251,7 +270,6 @@ then
     exit $EC_TIMEOUT
   fi
 fi
-
 
 #
 # ___oOo___
