@@ -42,6 +42,9 @@ interface BaciPropTest :  ACS::CharacteristicComponent
 		// Set the value of the pattern property
 		void setPatternVar(in long val);
 		
+		// Set the value of the boolean property
+		void setBooleanVar(in boolean val);
+		
 		// Set the value of the enum property
 		void setEnumVar(in AlarmEnum val);
 		
@@ -62,6 +65,9 @@ interface BaciPropTest :  ACS::CharacteristicComponent
 		
 		// An enum property
 		readonly attribute ROAlarmEnum testEnumVar;
+		
+		// An boolean property
+		readonly attribute ACS::ROboolean testBooleanVar;
         };
 };
 

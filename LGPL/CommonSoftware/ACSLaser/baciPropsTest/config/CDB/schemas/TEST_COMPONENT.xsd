@@ -40,6 +40,8 @@
         </xs:complexType>
       </xs:element>
       
+      <xs:element name="testBooleanVar" type="baci:ROboolean" />
+      
     </xs:sequence>
   </xs:complexType>
   <xs:element name="TEST_COMPONENT" type="TEST_COMPONENT"/>
