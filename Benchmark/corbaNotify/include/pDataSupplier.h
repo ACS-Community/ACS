@@ -44,6 +44,11 @@ public:
 	 * Disconnect from the NC and close the ORB
 	 */
 	void shutdown ();
+
+	void run(
+			uint32_t sendInterval,
+			uint32_t nItems,
+			const std::string &iorNS);
 private:
 	CORBA::ORB_var orb;
 	PortableServer::POA_var root_poa_;

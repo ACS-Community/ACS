@@ -45,7 +45,12 @@ void printUsage() {
 	exit(1);
 }
 
-void getParams(int argc,char *argv[],uint32_t &sendInterval,uint32_t &nItems,std::string &iorNS)
+void getParams(
+		int argc,
+		char *argv[],
+		uint32_t &sendInterval,
+		uint32_t &nItems,
+		std::string &iorNS)
 {
 	if (argc!=4) {
 		std::cout << "Wrong command line!" <<std::endl;
@@ -128,6 +133,7 @@ void DataSupplier::init_ORB (int argc,
 void DataSupplier::run(uint32_t sendInterval,uint32_t nItems,
 	const std::string &iorNS)
 {
+	std::cout << "Going to send " << nItems << " (every " << sendInterval << "msec)" << std::endl;
 	CORBA::Object_var obj = orb->string_to_object(iorNS.c_str());
 
 	CosNotifyChannelAdmin::EventChannelFactory_var ecf
@@ -136,7 +142,7 @@ void DataSupplier::run(uint32_t sendInterval,uint32_t nItems,
 	if (CORBA::is_nil(ecf.in()))
 		throw std::runtime_error("no event channel factory");
 		//std::cout << "Is not an event channel factory!" << std::endl;
-        else
+    else
 		std::cout << "Event channel factory loaded!" << std::endl;
 
 	// Create a channel
@@ -210,11 +216,7 @@ void DataSupplier::run(uint32_t sendInterval,uint32_t nItems,
 	for(uint32_t i = 0;nItems == 0 || i < nItems; ++i)
 	{
 
-		std::ostringstream oss;
-		oss << "AN_" << i;
-		data.antennaName = oss.str().c_str();
-
-		std::cout << "Iteration " << data.antennaName << std::endl;
+		std::cout << "Iteration " << "AN_" << i << " of " << nItems << std::endl;
 
 		CORBA::Any any;
 		any <<= data;
@@ -222,7 +224,7 @@ void DataSupplier::run(uint32_t sendInterval,uint32_t nItems,
 
 		if(sendInterval > 0)
 		{
-			sleep(sendInterval);
+			usleep(sendInterval*1000);
 		}
 	}
 
