@@ -141,11 +141,12 @@ CDB_SCHEMAS = BulkDataReceiver BulkDataSender BulkDataDistributer
 # 
 # IDL Files and flags
 # 
-IDL_FILES = 
+IDL_FILES = bulkData bulkDataReceiver bulkDataSender bulkDataDistributer
+
 IDL_TAO_FLAGS =
 
 #ACS Error System target
-ACSERRDEF = 
+ACSERRDEF = ACS_BD_Errors ACSBulkDataError ACSBulkDataStatus
 
 #
 # Jarfiles and their directories
