@@ -52,7 +52,7 @@ mkdir $SDKDIR
 #
 VERSION=3.6.1
 echo "unpacking the archives for Eclipse "$VERSION
-SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-gtk.tar.gz
+SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-gtk-x86_64.tar.gz
 cd $SDKDIR
 tar zxf $SDKFILE
 DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip
@@ -77,7 +77,7 @@ mkdir $TOPDIR
 mkdir $SDKDIR
 VERSION=4.2.2
 echo "unpacking the archives for Eclipse "$VERSION
-SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-gtk.tar.gz
+SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-gtk-x86_64.tar.gz
 cd $SDKDIR
 tar zxf $SDKFILE
 DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip

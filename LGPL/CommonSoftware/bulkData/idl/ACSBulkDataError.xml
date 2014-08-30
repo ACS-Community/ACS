@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) -->
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACSBulkDataError" type="53" _prefix="alma">
+	<ErrorCode name="AVFlowEndpointError" shortDescription="Flow Endpoint error" description="Flow Endpoint error"/>
+	<ErrorCode name="AVStreamEndpointError" shortDescription="Stream Endpoint error" description="Stream Endpoint error"/>
+	<ErrorCode name="AVStreamBindError" shortDescription="Stream bind error" description="Stream bind error"/>
+	<ErrorCode name="AVSendFrameError" shortDescription="Send frame error" description="Send frame error"/>
+	<ErrorCode name="AVCouldNotOpenFile" shortDescription="Opening file error" description="Opening file error"/>
+	<ErrorCode name="AVObjectNotFound" shortDescription="Object not found" description="Object not found"/>
+	<ErrorCode name="AVInitError" shortDescription="Initialization error" description="Initialization error"/>
+	<ErrorCode name="AVCallbackError" shortDescription="Callback error" description="Callback error"/>
+	<ErrorCode name="AVProtocolError" shortDescription="Data Protocol error" description="Data Protocol error"/>
+	<ErrorCode name="AVInvalidFlowNumber" shortDescription="Invalid Flow Number error" description="Invalid Flow Number error"/>
+
+	<ErrorCode name="AVConnectError" shortDescription="Sender connect error" description="Sender connect error"/>
+	<ErrorCode name="AVDisconnectError" shortDescription="Sender disconnect error" description="Sender disconnect error"/>
+	<ErrorCode name="AVStartSendError" shortDescription="Sender startSend error" description="Sender startSend error"/>
+	<ErrorCode name="AVPaceDataError" shortDescription="Sender paceData error" description="Sender paceData error"/>
+	<ErrorCode name="AVStopSendError" shortDescription="Sender stopSend error" description="Sender stopSend error"/>
+
+	<ErrorCode name="AVOpenReceiverError" shortDescription="Receiver openReceiver error" description="Receiver openReceiver error"/>
+	<ErrorCode name="AVReceiverConfigError" shortDescription="Receiver getReceiverConfig error" description="Receiver getReceiverConfig error"/>
+	<ErrorCode name="AVCloseReceiverError" shortDescription="Receiver closeReceiver error" description="Receiver closeReceiver error"/>
+	<ErrorCode name="AVCbFlowTimeout" shortDescription="Callback Flow timeout" description="Callback Flow timeout"/>
+	<ErrorCode name="AVSetReceiverNameError" shortDescription="Set receiver name error" description="Set receiver name error"/>
+	<ErrorCode name="AVSetReceiverError" shortDescription="Set receiver error" description="Set receiver error"/>
+	<ErrorCode name="AVNotificationMechanismError" shortDescription="Notification Mechanism error" description="Notification Mechanism error"/>
+	<ErrorCode name="AVFlowNumbersNotMatchingError" shortDescription="Flow numbers not maching error" description="Flow numbers not maching error"/>
+	<ErrorCode name="AVCDBTimeoutError" shortDescription="CDB timeout entry error" description="CDB timeout entry error"/>
+</Type>
+
