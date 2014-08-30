@@ -33,6 +33,16 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+class DataConsumer : public POA_CosEventComm::PushConsumer {
+private:
+	CORBA::ORB_var orb;
+public:
+  DataConsumer (CORBA::ORB_ptr orb);
 
+  void push (const CORBA::Any& data);
+  void disconnect_push_consumer(void);
+
+  // details omitted
+};
 
 #endif /*!PDATACONSUMER_H*/
