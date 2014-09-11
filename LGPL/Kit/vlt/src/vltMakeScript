@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #*******************************************************************************
 # E.S.O. - VLT project
 #
@@ -21,7 +21,7 @@
 # 
 #   DESCRIPTION
 #   Utility used by vltMakefile to copy a script to ../bin.
-#   If the script is a /bin/sh script, then an instruction
+#   If the script is a /bin/bash script, then an instruction
 #   to disable the build-in echo command under Linux is added 
 #   to the script.
 #
@@ -70,21 +70,21 @@ OUTPUT=../bin/${exeName}
 #  as scripts. To allow the usual flexibility given by the mod/int/vlt-root
 #  architecture, there is the need to use the following trick:
 #  
-#      - all scripts are executed by /bin/sh (first line)
+#      - all scripts are executed by /bin/bash (first line)
 #      - the second line ends with "\"
 #      - the third line is an "exec" of the actual shell we want to use
 #        (such a command is searched according to the current PATH)
 #
 #  Therefore the header of a Tcl/Tk script is:
 #  
-#     #!/bin/sh
+#     #!/bin/bash
 #     #\
 #     exec <tclShell> "$0" ${1+"$@"}
 #  
 #  As a consequence, if the script starts with:
-#     #!/bin/sh
+#     #!/bin/bash
 #     #\
-#  then the script is _not_ assumed to be executed by /bin/sh
+#  then the script is _not_ assumed to be executed by /bin/bash
 #  and the patch is not added.
 #
 
@@ -95,7 +95,7 @@ then
 
     cp ${exeName}.py $OUTPUT
 else
-    if [ "`head -n 1 ${exeName} | grep '^#! */bin/sh'`" != "" -a \
+    if [ "`head -n 1 ${exeName} | grep '^#! */bin/bash'`" != "" -a \
          "`head -n 2 ${exeName} | grep '\\\\$'`" = "" ]
     then
         head -n 1 ${exeName} >$OUTPUT
@@ -105,7 +105,7 @@ else
         fi
         sed 1d ${exeName} >>$OUTPUT
     else
-        # not a /bin/sh script: just copy the script
+        # not a /bin/bash script: just copy the script
         cp ${exeName} $OUTPUT
     fi
 fi

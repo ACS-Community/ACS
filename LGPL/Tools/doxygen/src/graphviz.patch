@@ -21,7 +21,7 @@
 +           else
 +
 +               CC="$CC" GCC="$GCC" LDFLAGS="$LDFLAGS" LD="$LD" with_gnu_ld="$with_gnu_ld" \
-+               ${CONFIG_SHELL-/bin/sh} "$ac_aux_dir/config.rpath" "$host" > conftest.sh
++               ${CONFIG_SHELL-/bin/bash} "$ac_aux_dir/config.rpath" "$host" > conftest.sh
 +               . ./conftest.sh
 +               rm -f ./conftest.sh
 +               acl_cv_rpath=done
@@ -56,7 +56,7 @@
 -else
 -
 -    CC="$CC" GCC="$GCC" LDFLAGS="$LDFLAGS" LD="$LD" with_gnu_ld="$with_gnu_ld" \
--    ${CONFIG_SHELL-/bin/sh} "$ac_aux_dir/config.rpath" "$host" > conftest.sh
+-    ${CONFIG_SHELL-/bin/bash} "$ac_aux_dir/config.rpath" "$host" > conftest.sh
 -    . ./conftest.sh
 -    rm -f ./conftest.sh
 -    acl_cv_rpath=done

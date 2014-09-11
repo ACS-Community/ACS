@@ -22,7 +22,7 @@
 # 
 #   DESCRIPTION
 #   Utility used by vltMakefile to copy a script to ../bin.
-#   If the script is a /bin/sh script, then an instruction
+#   If the script is a /bin/bash script, then an instruction
 #   to disable the build-in echo command under Linux is added 
 #   to the script.
 #

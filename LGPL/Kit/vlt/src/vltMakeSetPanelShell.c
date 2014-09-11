@@ -196,7 +196,7 @@ else
         }
     } 
     
-fprintf(panelOut, "#!/bin/sh\n");
+fprintf(panelOut, "#!/bin/bash\n");
 fprintf(panelOut, "# Panel Executable file produced by $RCSfile: vltMakeSetPanelShell.c,v $ $Revision: 1.2 $\n");
 fprintf(panelOut, "# Define which version of the sequencer to use \\\n");
 fprintf(panelOut, "  exec seqWish \"$0\" ${1+\"$@\"}\n");

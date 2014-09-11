@@ -257,7 +257,7 @@
 #   In detail, it provides the definition of the following variables:
 #
 #   SHELL     the shell used to interpret the commands
-#             RULE: /bin/sh   (force Bourne shell)
+#             RULE: /bin/bash   (force Bourne shell)
 #
 #   CC        compiler to be used
 #

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #************************************************************************
 # E.S.O. - ALMA project
 #
@@ -7,7 +7,7 @@
 # who       when        what
 # --------  ----------  -------------------------------------------------
 # mpasquat  2004-JUL-19 created
-# alopatin  2010-JUL-08 switched to POSIX standard /bin/sh
+# alopatin  2010-JUL-08 switched to POSIX standard /bin/bash
 
 #************************************************************************
 #   NAME 

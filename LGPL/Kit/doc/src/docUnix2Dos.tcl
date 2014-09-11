@@ -348,7 +348,7 @@ set process_id [pid]
 set log_name /tmp/dos2unix.$process_id
 set log [open $log_name w]
 
-puts $log "#!/bin/sh"
+puts $log "#!/bin/bash"
 puts $log "# DO NOT DELETE OR UPDATE THIS FILE, IT IS NEEDED TO COPY BACK YOUR FILES FROM DOS TO UNIX"
 puts $log "if \[ \$# -eq 0 \]"
 puts $log "then target=$wd"

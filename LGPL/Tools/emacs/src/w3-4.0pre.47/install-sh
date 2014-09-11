@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # install - install a program, script, or datafile
 # This comes from X11R5.
@@ -83,7 +83,7 @@ while [ x"$1" != x ]; do
 	    then
 		src=$1
 	    else
-		# this colon is to work around a 386BSD /bin/sh bug
+		# this colon is to work around a 386BSD /bin/bash bug
 		:
 		dst=$1
 	    fi

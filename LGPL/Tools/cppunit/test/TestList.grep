@@ -6,7 +6,7 @@
 ^\s*\t*then
 ^\s*\t*else
 ^\s*\t*fi
-^\s*\t*/bin/sh
+^\s*\t*/bin/bash
 ^\s*\t*c++
 ^\s*\t*mkdir
 ^\s*\t*\-c \-o

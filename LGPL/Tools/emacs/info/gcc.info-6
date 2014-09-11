@@ -424,7 +424,7 @@ special things you must know:
      should install the following script as `as' in the subdirectory
      where the passes of GCC are installed:
 
-          #!/bin/sh
+          #!/bin/bash
           casm $*
 
      The default Unos library is named `libunos.a' instead of `libc.a'.

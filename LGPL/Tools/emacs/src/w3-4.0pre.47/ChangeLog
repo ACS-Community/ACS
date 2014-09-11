@@ -2858,7 +2858,7 @@ Sat Mar  8 09:13:59 1997  William M. Perry  <wmperry@aventail.com>
 
 * md5.el (md5): Ditto.
 
-* mm.el (mm-compose-type): Don't use hardcoded /bin/sh and -c - use
+* mm.el (mm-compose-type): Don't use hardcoded /bin/bash and -c - use
   shell-file-name and shell-command-switch
   (mm-viewer-passes-test): ditto.
 
@@ -3009,7 +3009,7 @@ Wed Feb 26 08:17:37 1997  William M. Perry  <wmperry@aventail.com>
   no-conversion so that running subprocesses doesn't munge the data when
   running under MULE.
   (image-normalize): Now uses call-process-region instead of
-  shell-command-on-region, and removed the explicit mention of '/bin/sh'
+  shell-command-on-region, and removed the explicit mention of '/bin/bash'
   and friends.  Uses the ability of call-process-region to specify a
   separate file to use for stderr - yipeee.
 
@@ -5086,7 +5086,7 @@ Sat Aug  3 20:09:50 1996  William M. Perry  <wmperry@cs.indiana.edu>
 Added textual representation of the 'artist formerly known as prince'
 graphical icons
 
-* md5.el: removed /bin/sh dependency in md5
+* md5.el: removed /bin/bash dependency in md5
 
 Fri Aug  2 14:08:38 1996  William M. Perry  <wmperry@cs.indiana.edu>
 

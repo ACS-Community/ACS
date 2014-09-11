@@ -51,7 +51,7 @@ differences in how faces are handled in newer Emacs versions.
 @item
 Q1.4  I get './configure: sh internal 2K buffer overflow' when configuring.
 
-On some systems (notably HP-UX 9.x), the standard /bin/sh is not quite
+On some systems (notably HP-UX 9.x), the standard /bin/bash is not quite
 up to snuff.  You should use bash to run configure if you possibly can,
 ie: bash ./configure [standard-arguments]
 

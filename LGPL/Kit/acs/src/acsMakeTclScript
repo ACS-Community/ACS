@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #*******************************************************************************
 # E.S.O. - ACS project
 #
@@ -92,20 +92,20 @@ OUTPUT=../bin/${exeName}
 #  as scripts. To allow the usual flexibility given by the mod/int/vlt-root
 #  architecture, there is the need to use the following trick:
 #  
-#      - all scripts are executed by /bin/sh (first line)
+#      - all scripts are executed by /bin/bash (first line)
 #      - the second line ends with "\"
 #      - the third line is an "exec" of the actual shell we want to use
 #        (such a command is searched according to the current PATH)
 #
 #  Thanks to a different way in handling the "\" at the end of a comment line
 #  (such line is considered a comment line for Tcl, i.e. when you "source"
-#  the file, but not for /bin/sh ) this allows to be able both to source 
+#  the file, but not for /bin/bash ) this allows to be able both to source 
 #  the script and to execute. In both cases the same shell (the one given
 #  by "which shell") is used.
 #  
 #  Therefore the header of the output file shall be:
 #  
-#     #!/bin/sh
+#     #!/bin/bash
 #     #\
 #     exec <tclShell> "$0" ${1+"$@"}
 #  
@@ -115,7 +115,7 @@ then
     tclShell=$defTclShell
 fi
 
-echo "#!/bin/sh" >$OUTPUT
+echo "#!/bin/bash" >$OUTPUT
 echo "#\\" >>$OUTPUT
 echo "exec ${tclShell} \"\$0\" \${1+\"\$@\"}" >>$OUTPUT
 

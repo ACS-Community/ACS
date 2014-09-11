@@ -241,7 +241,7 @@ Sat Apr 03 19:27:39 1999 <rschmutz@te13.hq.eso.org>  vlt version: 2.86
 	* src/vltMakeExecutableDependencies: if Linux (RedHat 5.2): do not use g++ library.
 	* src/vltMakeLibraryDependencies: use $CC instead of gcc.
 
-	- disable bash builtin command 'echo' in all /bin/sh scripts:
+	- disable bash builtin command 'echo' in all /bin/bash scripts:
 	* src/vltMakeScriptDependencies: use vltMakeScript to copy the script to ../bin.
 	* src/vltMakeScript: created.
 	* src/vltMakeIndexFilesDependencies: if Linux: disable bash builtin command 'echo'.

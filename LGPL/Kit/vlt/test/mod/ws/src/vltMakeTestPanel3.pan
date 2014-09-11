@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Define which version of the sequencer to use \
   exec seqWish -f "$0"  ${1+"$@"}
 #
