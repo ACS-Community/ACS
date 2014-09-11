@@ -70,8 +70,7 @@ ifeq ($(sctp),lksctp)
   PLATFORM_SCTP_LIBS?= -lsctp
 endif
 
-PLATFORM_AIO_SUPPORT := \
-       $(shell test "`ls -L /usr/lib/librt.so* /lib/librt.so*`" && echo -DACE_HAS_AIO_CALLS)
+PLATFORM_AIO_SUPPORT := -DACE_HAS_AIO_CALLS)
 
 # GNU_LIBPTHREAD_VERSION := $(shell getconf GNU_LIBPTHREAD_VERSION)
 # ifeq (NPTL, $(word 1,$(GNU_LIBPTHREAD_VERSION)))
