@@ -211,6 +211,7 @@ os_discovery ()
 		'SunOS' )	# Much easier, uname command is enough
 				check_solaris;;
 	esac
+	ARCH=`uname -m`
 }
 
 check_solaris ()
@@ -226,7 +227,7 @@ check_linux ()
 	OS='LINUX'
 	# Standard release files for different distributions
 	RH=/etc/redhat-release
-	DB=/etc/debian-version
+	DB=/etc/debian_version
 	SL=/etc/slackware-version
 	SU=/etc/SuSE-release
 	GT=/etc/gentoo-release
@@ -559,6 +560,15 @@ then
     if [ "$OSYSTEM" = "$CYGWIN_VER" ]
     then
       	JAVA_HOME=/Java
+    elif [ "$DISTRO" = "DEBIAN" ]
+    then
+        if [ $ARCH="X86_64" ]
+        then
+            JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
+        elif [ $ARCH="i686" ]
+        then
+            JAVA_HOME="/usr/lib/jvm/java-7-openjdk-i386"
+        fi
     else
       	JAVA_HOME=/usr/java/default
     fi
@@ -702,7 +712,12 @@ fi
 # Ant and JacORB stuff
 if [ X"$ANT_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   ANT_HOME=$ALMASW_INSTDIR/ant
+   if [ $DISTRO = "DEBIAN" ]
+   then
+      ANT_HOME=/usr/share/ant
+   else
+      ANT_HOME=$ALMASW_INSTDIR/ant
+   fi
 fi
 
 if [ X"$JACORB_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
