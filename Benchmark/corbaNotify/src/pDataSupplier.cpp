@@ -35,42 +35,78 @@
 #include "corbaNotifyTest_ifC.h"
 
 #include "pDataSupplier.h"
+#include "TimespecUtils.h"
 
 
-void printUsage() {
-	std::cout  << "USAGE: pDataSupplier sendInterval nItems IOR" << std::endl;
-	std::cout << "\tsendInterval: interval of time (msec) between 2 sends of a pData" << std::endl;
-	std::cout << "\tnItems: number of items to send (0 means forever)" << std::endl;
-	std::cout << "\tIOR: the IOR of the notify service" << std::endl << std::endl;
+void printUsage(const std::string &msgErr="") {
+
+	if(msgErr.size() > 0)
+	{
+		std::cout << std::endl << "\tERROR: " << msgErr << std::endl << std::endl;
+	}
+
+	std::cout << "\tUSAGE: pDataSupplier -i sendInterval -n nItems -r IOR -f channelFile" << std::endl;
+	std::cout << "\t\tsendInterval: interval of time (msec) between 2 sends of a pData" << std::endl;
+	std::cout << "\t\tnItems: number of items to send (0 means forever)" << std::endl;
+	std::cout << "\t\tIOR: the IOR of the notify service" << std::endl;
+	std::cout << "\t\tchannelFile: path of the file to store the channel ID used" << std::endl << std::endl;
 	exit(1);
 }
 
-void getParams(
-		int argc,
-		char *argv[],
-		uint32_t &sendInterval,
-		uint32_t &nItems,
-		std::string &iorNS)
+void getParams(int argc,char *argv[],uint32_t &sendInterval,uint32_t &nItems,std::string &iorNS,std::string &channelFile)
 {
-	if (argc!=4) {
-		std::cout << "Wrong command line!" <<std::endl;
-		printUsage();
+	int c;
+
+	sendInterval = 1000;
+	nItems = 0;
+	iorNS = "";
+	channelFile = "";
+	std::string str;
+
+	while((c = getopt(argc, argv, "i:n:r:f:")) != -1)
+	{
+		switch(c)
+		{
+		case 'i':
+			str = optarg;
+			if(str.find_first_not_of("0123456789") == std::string::npos)
+			{
+				sendInterval = atoi(str.c_str());
+			} else {
+				printUsage("Wrong send interval");
+			}
+			break;
+		case 'n':
+			str = optarg;
+			if(str.find_first_not_of("0123456789") == std::string::npos)
+			{
+				nItems = atoi(str.c_str());
+			} else {
+				printUsage("Wrong number of items");
+			}
+			break;
+		case 'r':
+			iorNS = optarg;
+			break;
+		case 'f':
+			channelFile = optarg;
+			break;
+		default:
+			printUsage("Unknown option: " + std::string(1,c));
+			break;
+		}
 	}
 
-	try {
-		sendInterval = atoi(argv[1]);
-	} catch(...) {
-		std::cout << "Wrong sendInterval value" << std::endl;
-		printUsage();
+	if(iorNS.size() <= 0)
+	{
+		printUsage("IOR of the Notify Service is required");
 	}
-	try {
-		nItems = atoi(argv[2]);
-	} catch(...) {
-		std::cout << "Wrong nItems value" << std::endl;
-		printUsage();
-	}
+}
 
-	iorNS = argv[3];
+DataSupplier ds;
+void signal_handler(int sig)
+{
+	ds.stop();
 }
 
 /**
@@ -79,74 +115,91 @@ void getParams(
  */
 int main(int argc, char *argv[])
 {
+	uint32_t ret = 0;
 	uint32_t sendInterval = 0;
 	uint32_t nItems = 0;
 	std::string iorNS;
-	getParams(argc, argv, sendInterval, nItems, iorNS);
+	std::string channelFile;
 
-	DataSupplier ds;
+	signal(SIGINT, signal_handler);
+
+	getParams(argc, argv, sendInterval, nItems, iorNS, channelFile);
 
         try {
 		ds.init_ORB(argc, argv);
-		ds.run(sendInterval, nItems, iorNS);
-		ds.shutdown();
+		ds.run(sendInterval, nItems, iorNS, channelFile);
 	} catch(std::exception &ex) {
-		std::cout << "Exception: " << ex.what() << std::endl;
-		exit(1);
+		ACE_DEBUG((LM_ERROR, "%T Exception: %s\n", ex.what()));
+		ret = 1;
 	} catch(...) {
-		std::cout << "An unknown exception has been thrown!" << std::endl;
-		exit(1);
+		ACE_DEBUG((LM_ERROR, "%T An unknown exception has been thrown!\n"));
+		ret = 1;
 	}
 
-	std::cout << "The supplier ends ..." << std::endl;
+	ds.shutdown();
 
-	exit(0);
+	ACE_DEBUG((LM_INFO, "%T Supplier ends ...\n"));
+
+	exit(ret);
+}
+
+DataSupplier::DataSupplier()
+	: m_stop(false)
+{
+}
+
+DataSupplier::~DataSupplier()
+{
 }
 
 void DataSupplier::init_ORB (int argc,
                       char *argv []
                       )
 {
-  this->orb = CORBA::ORB_init (argc,  argv, "");
+	this->orb = CORBA::ORB_init (argc,  argv, "");
 
 
-  CORBA::Object_ptr poa_object  =
-    this->orb->resolve_initial_references("RootPOA");
+	CORBA::Object_ptr poa_object  =
+		this->orb->resolve_initial_references("RootPOA");
 
 
-  if (CORBA::is_nil (poa_object))
-    {
-      ACE_ERROR ((LM_ERROR, " (%P|%t) Unable to initialize the POA.\n"));
-      return;
-    }
-  this->root_poa_ =
-    PortableServer::POA::_narrow (poa_object);
+	if (CORBA::is_nil (poa_object))
+	{
+		ACE_ERROR ((LM_ERROR, " (%P|%t) Unable to initialize the POA.\n"));
+		return;
+	}
+	this->root_poa_ =
+		PortableServer::POA::_narrow (poa_object);
 
-  PortableServer::POAManager_var poa_manager =
-    root_poa_->the_POAManager ();
+	PortableServer::POAManager_var poa_manager =
+		root_poa_->the_POAManager ();
 
-  poa_manager->activate ();
-
+	poa_manager->activate ();
 }
 
+void DataSupplier::stop()
+{
+	m_stop = true;
+}
 
 void DataSupplier::run(uint32_t sendInterval,uint32_t nItems,
-	const std::string &iorNS)
+	const std::string &iorNS,const std::string &channelFile)
 {
-	std::cout << "Going to send " << nItems << " (every " << sendInterval << "msec)" << std::endl;
 	CORBA::Object_var obj = orb->string_to_object(iorNS.c_str());
 
 	CosNotifyChannelAdmin::EventChannelFactory_var ecf
 	  = CosNotifyChannelAdmin::EventChannelFactory::_narrow(obj.in());
 
+	//NotifyMonitoringExt::EventChannelFactory_var ecf
+	//  = NotifyMonitoringExt::EventChannelFactory::_narrow(ecf1.in());
+
 	if (CORBA::is_nil(ecf.in()))
 		throw std::runtime_error("no event channel factory");
-		//std::cout << "Is not an event channel factory!" << std::endl;
-    else
+        else
 		std::cout << "Event channel factory loaded!" << std::endl;
 
 	// Create a channel
-	std::cout << "Creating a channel ..." << std::endl;
+	ACE_DEBUG((LM_INFO, "%T Creating a channel ...\n"));
 	CosNotifyChannelAdmin::ChannelID id; 
 	CosNotification::QoSProperties init_qos(0); 
 	CosNotification::AdminProperties init_admin(0); 
@@ -156,7 +209,18 @@ void DataSupplier::run(uint32_t sendInterval,uint32_t nItems,
 	if(CORBA::is_nil(channel.in()))
 		throw std::runtime_error("channel cannot be created!");
 	else
-		std::cout << "Channel created: " << id << std::endl;
+		ACE_DEBUG((LM_INFO, "%T Channel created: %d\n", id));
+
+	// Store the channel ID in a file
+	if(channelFile.size() > 0)
+	{
+		std::ofstream f(channelFile.c_str(), ios::out | ios::trunc);
+		if(f.is_open() == true)
+		{
+			f << id;
+			f.close();
+		}
+	}
 
 	// Get the admin object to the event channel 
 	CosEventChannelAdmin::SupplierAdmin_var supplierAdmin 
@@ -174,8 +238,11 @@ void DataSupplier::run(uint32_t sendInterval,uint32_t nItems,
 
 	benchmark::MountStatusData data;
 
+	timespec currTime;
+	TimespecUtils::get_current_timespec(currTime);
+
 	data.antennaName = "DV01";   // The name of the antenna e.g., "DV01"
-        //data.timestamp;     // ACS::Time The timestamp of the current value 
+        data.timestamp = TimespecUtils::timespec_2_100ns(currTime);     // ACS::Time The timestamp of the current value 
         data.onSource = true; // true if the commanded and measured positions are close
         data.azCommanded = 1.3;   // The commanded Az position
         data.elCommanded = 1.5;   // The commanded El position
@@ -212,11 +279,18 @@ void DataSupplier::run(uint32_t sendInterval,uint32_t nItems,
         data.subrefCmdTilt = 5.5; // Commanded tilt of the subreflector
         data.subrefRotationCmdValid = true; // true if a command was sent to rotate the subreflector
 
-
-	for(uint32_t i = 0;nItems == 0 || i < nItems; ++i)
+	for(uint32_t i = 0;(nItems == 0 || i < nItems) && m_stop == false; ++i)
 	{
 
-		std::cout << "Iteration " << "AN_" << i << " of " << nItems << std::endl;
+		std::ostringstream oss;
+		oss << "AN_" << i;
+		data.antennaName = oss.str().c_str();
+
+		TimespecUtils::get_current_timespec(currTime);
+		data.timestamp = TimespecUtils::timespec_2_100ns(currTime);
+
+		ACE_DEBUG((LM_INFO, "%T Iteration %d in channel %d with timestamp %s\n", i, id, 
+			TimespecUtils::timespec_2_str(currTime).c_str()));
 
 		CORBA::Any any;
 		any <<= data;
@@ -224,21 +298,27 @@ void DataSupplier::run(uint32_t sendInterval,uint32_t nItems,
 
 		if(sendInterval > 0)
 		{
-			usleep(sendInterval*1000);
+			usleep(sendInterval * 1000);
 		}
+	}
+
+	if(m_stop == true)
+	{
+		ACE_DEBUG((LM_INFO, "%T Stopping it ...\n"));
 	}
 
 	consumer->disconnect_push_consumer();
 
-	std::cout << "Deleting the channel ..." << std::endl;
+	ACE_DEBUG((LM_INFO, "%T Deleting the channel %d ...\n", id));
 	channel->destroy();
 }
 
-void DataSupplier::shutdown () {
-   // shutdown the ORB.
-  if (!CORBA::is_nil (this->orb.in ()))
-    {
-      this->orb->shutdown(true);
-      this->orb->destroy();
-    }
+void DataSupplier::shutdown () 
+{
+	// shutdown the ORB.
+	if (!CORBA::is_nil (this->orb.in ()))
+	{
+		this->orb->shutdown(true);
+		this->orb->destroy();
+	}
 }
