@@ -40,13 +40,13 @@ EXECUTABLES_L   =
 
 #
 # <brief description of xxxxx program>
-pDataConsumer_OBJECTS   =	pDataConsumer
+pDataConsumer_OBJECTS   =	pDataConsumer TimespecUtils
 xxxxx_LDFLAGS   = 
-pDataConsumer_LIBS      = corbaNotifyTest_ifStubs TAO_CosNotification_Serv
+pDataConsumer_LIBS      = corbaNotifyTest_ifStubs TAO_CosNotification_Serv TAO_CosNotification_MC_Ext
 
-pDataSupplier_OBJECTS   = 	pDataSupplier
+pDataSupplier_OBJECTS   = 	pDataSupplier TimespecUtils
 xxxxx_LDFLAGS   =
-pDataSupplier_LIBS      = corbaNotifyTest_ifStubs TAO_CosNotification_Serv
+pDataSupplier_LIBS      = corbaNotifyTest_ifStubs TAO_CosNotification_Serv TAO_CosNotification_MC_Ext
 
 corbaNotifyTest_ifStubs_LIBS = baciStubs maciStubs
 

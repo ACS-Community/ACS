@@ -33,16 +33,41 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-class DataConsumer : public POA_CosEventComm::PushConsumer {
-private:
-	CORBA::ORB_var orb;
+#include <orbsvcs/CosNotifyCommS.h>
+//#include <orbsvcs/CosEventCommS.h>
+//#include <orbsvcs/CosEventChannelAdminC.h>
+#include <orbsvcs/CosNamingC.h>
+#include <orbsvcs/CosNotificationC.h>
+#include <orbsvcs/CosNotifyChannelAdminS.h>
+#include <orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExtC.h>
+#include "corbaNotifyTest_ifC.h"
+
+class Consumer : public POA_CosNotifyComm::PushConsumer
+{
 public:
-  DataConsumer (CORBA::ORB_ptr orb);
+	Consumer(void);
 
-  void push (const CORBA::Any& data);
-  void disconnect_push_consumer(void);
+	bool run (int argc, ACE_TCHAR* argv[],
+		  CosNotifyChannelAdmin::ChannelID channelID,
+		  const std::string &iorNS,double maxDelaySec,
+		  const std::string &delayType);
 
-  // details omitted
+	virtual void push (const CORBA::Any &event);
+	virtual void disconnect_push_consumer (void);
+	virtual void offer_change(const CosNotification::EventTypeSeq&, const CosNotification::EventTypeSeq&);
+
+protected:
+	bool init_ORB(int argc, ACE_TCHAR* argv[]);
+	bool getNotificationChannel(const std::string &iorNS,
+			CosNotifyChannelAdmin::ChannelID channelID,
+			CosNotifyChannelAdmin::EventChannel_var &channel,
+			std::string &errMsg);
+
+	CORBA::ORB_ptr m_orb;
+	timespec m_tLastEvent;
+	timespec m_maxDelay;
+	ACS::Time m_lastEventTimestamp;
+	std::string m_delayType;
 };
 
 #endif /*!PDATACONSUMER_H*/
