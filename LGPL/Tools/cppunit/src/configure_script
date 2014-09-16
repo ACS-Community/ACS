@@ -19,6 +19,7 @@ CPP_UNIT_VER=$2
 echo  "   cppunit tar file is: $CPP_UNIT_TAR"
 echo  "   cppunit version  is: $CPP_UNIT_VER"
 
+export LDFLAGS="-Wl,--no-as-needed"
 #
 # Check for installation directories
 #
