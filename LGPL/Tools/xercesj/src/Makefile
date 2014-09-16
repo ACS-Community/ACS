@@ -95,7 +95,7 @@ install : install_all
 preparePatch:
 	mv xml-xerces.patch xml-xerces.patch.old
 	rm -rf tmp_unpack; mkdir -p tmp_unpack
-	cd tmp_unpack; gtar -xzf ../Xerces-J-src.$(XERCESJ_VER).tar.gz; mv $(XERCESJ_DIR) $(XERCESJ_DIR).orig
+	cd tmp_unpack; tar -xzf ../Xerces-J-src.$(XERCESJ_VER).tar.gz; mv $(XERCESJ_DIR) $(XERCESJ_DIR).orig
 	cd $(XERCESJ_DIR)/java; ./build.sh clean
 	LC_ALL=C TZ=UTC0 diff -Naur tmp_unpack/$(XERCESJ_DIR).orig $(XERCESJ_DIR)  >xml-xerces.patch; true
 	rm -rf tmp_unpack
@@ -109,7 +109,7 @@ preparePatch:
 unpack:
 	@if [ ! -d $(XERCESJ_DIR) ]; then \
 		echo " . . . unpacking original distribution Xerces-J-src.$(XERCESJ_VER).tar.gz";\
-		gtar -xzf Xerces-J-src.$(XERCESJ_VER).tar.gz; \
+		tar -xzf Xerces-J-src.$(XERCESJ_VER).tar.gz; \
 	fi
 
 #
