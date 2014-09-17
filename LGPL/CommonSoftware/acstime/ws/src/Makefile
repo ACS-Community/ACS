@@ -87,7 +87,7 @@ _acstimeSWIG_OBJECTS   = $(shell if [ $(shell uname) = Linux -o $(shell uname) =
 			 acstimeTimeUtil \
 			 acstimeDurationHelper acstimeEpochHelper \
 			 acstimeC acstimeS
-_acstimeSWIG_LIBS      = baci ACSTimeError maciErrType python2.6
+_acstimeSWIG_LIBS      = baci ACSTimeError maciErrType python2.7
 
 
 
