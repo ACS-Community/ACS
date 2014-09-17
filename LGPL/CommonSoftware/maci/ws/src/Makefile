@@ -47,22 +47,24 @@ EXECUTABLES     = $(PROG) maciContainer maciManagerShutdown maciContainerShutdow
 EXECUTABLES_L   = 
 
 maciContainer_OBJECTS   = maciContainer 
-maciContainer_LIBS = maci acsContainerServices acsComponentListener TAO_CosNotification_MC_Ext TAO_DynamicInterface
+maciContainer_LIBS = maci acsContainerServices acsComponentListener TAO_CosNotification_MC_Ext TAO_DynamicInterface logging \
+		TAO_PortableServer TAO ACE baselogging acsutil loki
 
 maciManagerShutdown_OBJECTS = maciManagerShutdown
-maciManagerShutdown_LIBS = maci
+maciManagerShutdown_LIBS = maci maciStubs ACE TAO TAO_PortableServer baselogging acsutil loki logging baselogging
 
 maciContainerShutdown_OBJECTS = maciContainerShutdown
-maciContainerShutdown_LIBS = maci
+maciContainerShutdown_LIBS = maci maciStubs ACE TAO TAO_PortableServer loki logging baselogging 
 
 maciReleaseComponent_OBJECTS = maciReleaseComponent
-maciReleaseComponent_LIBS = maci
+maciReleaseComponent_LIBS = maci maciStubs ACE TAO TAO_PortableServer loki acsutil logging baselogging
 
 maciContainerLogLevel_OBJECTS = maciContainerLogLevel
-maciContainerLogLevel_LIBS = maci
+maciContainerLogLevel_LIBS = maci maciStubs ACE TAO TAO_PortableServer loki logging baselogging
 
 maciComponentRefDump_OBJECTS = maciComponentRefDump
-maciComponentRefDump_LIBS= maciClient
+maciComponentRefDump_LIBS= maciClient maciStubs ACSErrTypeCommon ACE TAO TAO_PortableServer loki logging baselogging \
+			acserr acserrStubs
 
 # <brief description of xxxxx program>
 
