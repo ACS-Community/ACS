@@ -710,6 +710,12 @@ then
    JACORB_HOME=$ALMASW_INSTDIR/JacORB
 fi
 
+# Maven stuff
+if [ X"$M2_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   M2_HOME=$ALMASW_INSTDIR/maven
+fi
+
 # RTOS
 if [ X"$RTAI_HOME" = X ] || [ X"$LINUX_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
@@ -778,7 +784,7 @@ fi
 
 if [ "$OSYSTEM" = "SunOS" ]
 then
-   PATH=$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$JAVA_HOME/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/ccs/bin:/usr/5bin:/usr/ucb:/usr/dt/bin:/usr/openwin/bin:$PATH
+   PATH=$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$M2_HOME/bin:$OMNI_ROOT/bin:$JAVA_HOME/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/ccs/bin:/usr/5bin:/usr/ucb:/usr/dt/bin:/usr/openwin/bin:$PATH
 
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
@@ -793,7 +799,7 @@ then
 elif [ "$OSYSTEM" = "Linux" ]
 then
    # So it is linux
-   PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$PATH
+   PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$M2_HOME/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$PATH
    
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
@@ -808,7 +814,7 @@ then
 elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
    # So, we're under Cygwin
-   PATH=$ACE_ROOT/bin:$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$PATH
+   PATH=$ACE_ROOT/bin:$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$M2_HOME/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$PATH
    
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
@@ -1405,7 +1411,7 @@ export ORIG_PATH PATH LD_LIBRARY_PATH INTLIST
 export ORIG_MANPATH MANPATH IDL_PATH CLASSPATH HOST ALMASW_RELEASE ALMASW_ROOTDIR ORIG_LD_LIBRARY_PATH
 export ALMASW_INSTDIR ACSROOT ACE_ROOT_DIR ACE_ROOT_VW ACE_ROOT DDS_ROOT INTROOT USER LOG_SERVICE_USE_EXTENSIONS
 export GNU_ROOT TCLTK_ROOT JAVA_HOME VLTROOT ACSDATA VLTDATA ACS_CDB RTAPENV CMM_PORT CMM_HOST
-export ANT_HOME JACORB_HOME PYTHON_ROOT OMNI_ROOT OMNIORB_CONFIG PYTHONPATH MICO_HOME PYTHONINC
+export M2_HOME ANT_HOME JACORB_HOME PYTHON_ROOT OMNI_ROOT OMNIORB_CONFIG PYTHONPATH MICO_HOME PYTHONINC
 export ACS_STARTUP_TIMEOUT_MULTIPLIER
 export ACS_INSTANCE
 export OSYSTEM
