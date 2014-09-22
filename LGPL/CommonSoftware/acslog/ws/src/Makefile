@@ -66,7 +66,7 @@ EXECUTABLES_L   =
 #
 # <brief description of xxxxx program>
 acsLogSvc_OBJECTS   = acsLogSvc acslogSvcImpl
-acsLogSvc_LIBS      = acserr maci logging acsutil acslogStubs
+acsLogSvc_LIBS      = acserr maci logging acsutil acslogStubs TAO_IORTable
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
