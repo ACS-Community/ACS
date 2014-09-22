@@ -857,7 +857,7 @@ $(CURDIR)/../lib/lib$2.$(SHLIB_EXT): $$(xyz_$2_OBJ) $$($2_lList)
 ifeq ($(platform),Cygwin)
 	$(AT)$(CXX) -shared -fPIC $$($2_sharedLibName) -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc $(L_PATH) -Wl,--whole-archive $$(xyz_$2_OBJ) -Wl,--no-whole-archive $(sort $($2_libraryList)) $4 -o ../lib/lib$2.$(SHLIB_EXT)
 else
-	$(AT)$(CXX) -shared -fPIC $$($2_sharedLibName) $(L_PATH) $4 -o ../lib/lib$2.$(SHLIB_EXT) $$(xyz_$2_OBJ) $($2_libraryList)
+	$(AT)$(CXX) -shared -fPIC $$($2_sharedLibName) -Wl,--copy-dt-needed-entries $(L_PATH) $4 -o ../lib/lib$2.$(SHLIB_EXT) $$(xyz_$2_OBJ) $($2_libraryList)
 endif
 	$(AT) if [ "$$$$MAKE_NOSYMBOL_CHECK" == "" ]; then acsMakeCheckUnresolvedSymbols -w ../lib/lib$2.$(SHLIB_EXT); fi 
 	$(AT) chmod a-w+x ../lib/lib$2.$(SHLIB_EXT)
@@ -1013,7 +1013,7 @@ ifeq ($(strip $(MAKE_NOSHARED) $($2_NOSHARED)),)
 ifeq ($(platform),Cygwin)
 	$(AT)$(PURIFY) $(PURECOV) $(LD) $(CFLAGS) -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc -Wl,--whole-archive $($2_exe_objList) -Wl,--no-whole-archive $(LDFLAGS) $(L_PATH) $4 $($2_libraryList)  -o ../bin/$2
 else
-	$(AT)$(PURIFY) $(PURECOV) $(LD) $(CFLAGS) $(LDFLAGS) $(L_PATH) $4 $($2_exe_objList)  $($2_libraryList)  -o ../bin/$2
+	$(AT)$(PURIFY) $(PURECOV) $(LD) $(CFLAGS) -Wl,--copy-dt-needed-entries $(LDFLAGS) $(L_PATH) $4 $($2_exe_objList)  $($2_libraryList)  -o ../bin/$2
 endif
 else
 	$(AT)$(PURIFY) $(PURECOV) $(LD) $(CFLAGS) $(LDFLAGS) $(L_PATH) $4  $($2_exe_objList) $($2_libraryListNoshared)  -o ../bin/$2
