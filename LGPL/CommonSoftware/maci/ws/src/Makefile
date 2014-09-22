@@ -48,7 +48,7 @@ EXECUTABLES_L   =
 
 maciContainer_OBJECTS   = maciContainer 
 maciContainer_LIBS = maci acsContainerServices acsComponentListener TAO_CosNotification_MC_Ext TAO_DynamicInterface logging \
-		TAO_PortableServer TAO ACE baselogging acsutil loki
+		TAO_PortableServer TAO ACE baselogging acsutil loki TAO_DynamicAny TAO_IFR_Client
 
 maciManagerShutdown_OBJECTS = maciManagerShutdown
 maciManagerShutdown_LIBS = maci maciStubs ACE TAO TAO_PortableServer baselogging acsutil loki logging baselogging
@@ -99,7 +99,8 @@ LIBRARIES_L     =
 maci_OBJECTS   = maciLibraryManager maciORBTask  maciContainerThreadHook \
 		 maciServantManager maciContainerServices maciContainerImpl \
 		 maciHelper maciComponentStateManager maciLogThrottleAlarmImpl
-maci_LIBS = acsContainerServices maciErrType acsErrTypeContainerServices maciStubs acsAlSysSource acsErrTypeAlarmSourceFactory AcsContainerLogLTS alarmSource acscomponent acsQoS archiveevents
+maci_LIBS = acsContainerServices maciErrType acsErrTypeContainerServices maciStubs acsAlSysSource acsErrTypeAlarmSourceFactory AcsContainerLogLTS \
+		alarmSource acscomponent acsQoS archiveevents TAO_IFR_Client
 maci_LDFLAGS = -ggdb
 maci_CFLAGS = -DMACI_BUILD_DLL
 
