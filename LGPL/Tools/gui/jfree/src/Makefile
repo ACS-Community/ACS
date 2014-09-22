@@ -71,8 +71,8 @@ install :
 unpack : unpacked
 unpacked:
 	@echo ". . . unpacking the tar files . . . "
-	@gtar -xzf jcommon-$(JCOMMON_VER).tar.gz
-	@gtar -xzf jfreechart-$(JFREECHART_VER).tar.gz
+	@tar -xzf jcommon-$(JCOMMON_VER).tar.gz
+	@tar -xzf jfreechart-$(JFREECHART_VER).tar.gz
 	@touch unpacked
 
 # build the jcommon jar jar file.
