@@ -50,70 +50,64 @@ EXECUTABLES_L   =
 #
 # <brief description of xxxxx program>
 acscontainerdaemon_OBJECTS   =  acscontainerdaemon acsContainerHandlerImpl acsdaemonORBTask acsRequest acsServiceController acsDaemonUtils
-acscontainerdaemon_LIBS      =  acscomponentStubs acsdaemonErrType acsdaemonStubs ACSErrTypeCommon acsThread acsQoS ACSErrTypeCommon ACSErrTypeCORBA maciErrType maciStubs AcsAlarmSystemStubs \
-		ACE TAO
+acscontainerdaemon_LIBS      =  acscomponentStubs acsdaemonErrType acsdaemonStubs ACSErrTypeCommon acsThread acsQoS ACSErrTypeCommon ACSErrTypeCORBA maciErrType maciStubs AcsAlarmSystemStubs ACE TAO ACE TAO TAO_IORTable acserr maciStubs
 
 acsdaemonStartContainer_OBJECTS   =	acsdaemonStartContainer
-acsdaemonStartContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs \
-		ACE TAO
+acsdaemonStartContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO ACE TAO TAO_IORTable acserr maciStubs
+
 acsdaemonStopContainer_OBJECTS   =	acsdaemonStopContainer
-acsdaemonStopContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs \
+acsdaemonStopContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl acsRequest acsServiceController acsdaemonORBTask acsDaemonUtils
-acsservicesdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread expat acsQoS maciErrType maciStubs AcsAlarmSystemStubs ACSErrTypeCORBA \
-		ACE
+acsservicesdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread expat acsQoS maciErrType maciStubs AcsAlarmSystemStubs \
+		ACSErrTypeCORBA ACE TAO_IORTable TAO acserr
 
 acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs
-acsdaemonStartAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
+acsdaemonStartAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 
 acsdaemonStopAcs_OBJECTS   =	acsdaemonStopAcs
-acsdaemonStopAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
+acsdaemonStopAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 acsdaemonStatusAcs_OBJECTS   =	acsdaemonStatusAcs
-acsdaemonStatusAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
+acsdaemonStatusAcs_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 acscontainerdaemonStop_OBJECTS   =	acscontainerdaemonStop
-acscontainerdaemonStop_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
+acscontainerdaemonStop_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs loki logging
 
 acscontainerdaemonSmartStart_OBJECTS   =	acscontainerdaemonSmartStart
-acscontainerdaemonSmartStart_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
+acscontainerdaemonSmartStart_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs loki logging
 
 acsservicesdaemonStop_OBJECTS   =	acsservicesdaemonStop
-acsservicesdaemonStop_LIBS      =	acscomponentStubs logging acsdaemonErrType acsdaemonStubs maciErrType acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
+acsservicesdaemonStop_LIBS      =	acscomponentStubs logging acsdaemonErrType acsdaemonStubs maciErrType acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 acsdaemonNamingServiceImp_OBJECTS   =	acsdaemonNamingServiceImp acsRequest acsServiceController acsdaemonORBTask acsDaemonUtils
-acsdaemonNamingServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs \
-		ACE
+acsdaemonNamingServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE ACE TAO_IORTable TAO acserr maciStubs
 
 acsdaemonNotificationServiceImp_OBJECTS   =	acsdaemonNotificationServiceImp acsRequest acsServiceController acsdaemonORBTask acsDaemonUtils
-acsdaemonNotificationServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs TAO_CosNotification_Serv \
-		ACE
+acsdaemonNotificationServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable TAO_CosNotification_Skel TAO_CosNotification_Serv TAO_CosNotification acserr maciStubs 
 
 acsdaemonInterfaceRepositoryImp_OBJECTS   =	acsdaemonInterfaceRepositoryImp acsRequest acsServiceController acsdaemonORBTask acsDaemonUtils
-acsdaemonInterfaceRepositoryImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs \
-		ACE
+acsdaemonInterfaceRepositoryImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 acsdaemonLoggingServiceImp_OBJECTS   =	acsdaemonLoggingServiceImp acsRequest acsServiceController acsdaemonORBTask acsDaemonUtils
-acsdaemonLoggingServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs \
-		ACE
+acsdaemonLoggingServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 acsdaemonACSLogServiceImp_OBJECTS   =	acsdaemonACSLogServiceImp acsRequest acsServiceController acsdaemonORBTask acsDaemonUtils
-acsdaemonACSLogServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs \
-		ACE
+acsdaemonACSLogServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 acsdaemonConfigurationDatabaseImp_OBJECTS   =	acsdaemonConfigurationDatabaseImp acsRequest acsServiceController acsdaemonORBTask acsDaemonUtils
-acsdaemonConfigurationDatabaseImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
+acsdaemonConfigurationDatabaseImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 acsdaemonManagerImp_OBJECTS   =	acsdaemonManagerImp acsRequest acsServiceController acsdaemonORBTask acsDaemonUtils
-acsdaemonManagerImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
+acsdaemonManagerImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 acsdaemonAlarmServiceImp_OBJECTS   = acsdaemonAlarmServiceImp acsRequest acsServiceController acsdaemonORBTask acsDaemonUtils
-acsdaemonAlarmServiceImp_LIBS      = acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
+acsdaemonAlarmServiceImp_LIBS      = acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs
 
 
 acsdaemonImpStop_OBJECTS   =       acsdaemonImpStop
-acsdaemonImpStop_LIBS      =       acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs
+acsdaemonImpStop_LIBS      =       acscomponentStubs acsdaemonErrType acsdaemonStubs acsutil ACSErrTypeCommon ACSErrTypeCORBA acsQoS acsAlSysSource AcsAlarmSystemStubs ACE TAO TAO_IORTable acserr maciStubs loki logging
 
 #
 # special compilation flags for single c sources
