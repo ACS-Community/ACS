@@ -188,8 +188,8 @@ if [ "$OS" = "$CYGWIN_VER" ]; then
 else
   bash --login ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
 fi
-echo -n "buildAnt"
-./buildAnt && echo_success || echo_failure
+#echo -n "buildAnt"
+#./buildAnt && echo_success || echo_failure
 echo  -n "buildJacORB" 
 ./buildJacORB && echo_success || echo_failure
 echo -n "buildPython"
@@ -204,8 +204,8 @@ echo -n "buildMico"
 ./buildMico && echo_success || echo_failure
 echo -n "buildEclipse"
 ./buildEclipse && echo_success || echo_failure
-echo -n "buildBoost"
-./buildBoost && echo_success || echo_failure
+#echo -n "buildBoost"
+#./buildBoost && echo_success || echo_failure
 #Install Cygwin Java Wrappers
 if [ "$OS" = "$CYGWIN_VER" ]; then
   echo "Install Cygwin Wrappers"
