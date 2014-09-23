@@ -218,6 +218,7 @@ if [ "$DISTRO" = "DEBIAN" ]; then
     mkdir -p $PYTHON_ROOT/bin
     ln -s $PYTHON_ROOT/lib/python $PYTHON_ROOT/lib/python2.7
     ln -s `which python` $PYTHON_ROOT/bin/python
+    cp /usr/lib/python2.7/compileall.py $PYTHON_ROOT/lib/python
 else 
     ./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared --enable-unicode=ucs4
     #./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared 
