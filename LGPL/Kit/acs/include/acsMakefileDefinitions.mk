@@ -692,7 +692,7 @@ $(CURDIR)/../$$(tgtDir$1)/$1.jar: $$($1_source_file_list) $(foreach jar,$9,$(CUR
              fi; \
         fi
 	$(AT) CLASSPATH="`$$(classMaker)`$(PATH_SEP)."; export CLASSPATH ; $(JAVAC) $$(CompilerFlags) $$(J_END_DIRS) -d $$(TMPSRC) @$$($1_FILELISTFILE)
-	$(AT) (cd $$(TMPSRC); if [ -f ../../../$$(tgtDir$1)/$1.jar ]; then JAR="jar uf"; else JAR="jar cf"; fi; $$$${JAR} ../../../$$(tgtDir$1)/$1.jar $(foreach dir,$2,$(if $(filter .,$(dir)),*.class,$(dir))) ; jar ufm ../../../$$(tgtDir$1)/$1.jar ../$(strip $1).manifest 2> /dev/null && $(RM) ../$(strip $1).manifest )
+	$(AT) (cd $$(TMPSRC); if [ -f ../../../$$(tgtDir$1)/$1.jar ]; then JAR="jar uf"; else JAR="jar cf"; fi; $$$${JAR} ../../../$$(tgtDir$1)/$1.jar $(foreach dir,$2,$(if $(filter .,$(dir)),*.class,$(dir))) && jar ufm ../../../$$(tgtDir$1)/$1.jar ../$(strip $1).manifest 2> /dev/null && $(RM) ../$(strip $1).manifest )
 	$(AT) $(RM) -fr $$(TMPSRC)
 	$(AT) $(RM) $$($1_FILELISTFILE)
 ifeq ($(strip $(DEBUG)),on)
