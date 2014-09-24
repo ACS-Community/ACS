@@ -118,6 +118,8 @@ patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IFR_Service_preloaded_CORB
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IFR_Inheritance_problems_workaround.patch
 echo "- Notify_Service stack size"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/Notify_Service_stacksize.patch
+echo "- ICT-94"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ict94.patch
 if [ "$OS" = "$CYGWIN_VER" ]
 then
   echo "- Cygwin specific patches"
