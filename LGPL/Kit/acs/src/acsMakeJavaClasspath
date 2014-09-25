@@ -77,6 +77,7 @@ sub enrich {
 # the following variable must have the same setting as in the javaMakefile
 $ACS_CO = "ACScomponents";
 $SEPARATOR=$ENV{PATH_SEP};
+$JACORB_ENDORSED_JARS_DIR="$ENV{JACORB_HOME}/lib/endorsed/";
 
 if ($ARGV[0] eq "-endorsed") { 
     $ENDORSED = 1;
@@ -167,6 +168,11 @@ if ($ENDORSED) {
     $completeList = enrich(join(" ",@acsListEndorsed), $completeList);
     $completeList = enrich(join(" ",@vltListEndorsed), $completeList);
 }
+
+if( -d $JACORB_ENDORSED_JARS_DIR) { 
+    $completeList = enrich(join(" ",glob("$JACORB_ENDORSED_JARS_DIR/*.jar"),
+				$completeList));
+} 
 
 
 print "$completeList$SEPARATOR$ENV{CLASSPATH}\n";
