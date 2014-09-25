@@ -54,6 +54,8 @@ import string
 import platform
 import logging
 
+from os.path import join
+
 ###################################
 # Command line argument parsing
 #
@@ -125,16 +127,20 @@ acs_tag=commands.getoutput('cat $ACSROOT/ACS_TAG')
 # if selected on command line
 #       
 
+acsRoot = os.getenv('ACSROOT')
+rpmDirPath = join(acsRoot, 'config') if acsRoot else join(os.path.pardir, 'config')
+
 if generate == True:
     if standardRedHat == False:
         print 'No Red Hat or Scientific Linux distribution!!!'
     else:
-        rpmFilename='./acsPackageInfo-' + releaseNum + '.rpmref'
-        rpmCommand='rpm -q -a | sort > '+ rpmFilename
-        output=commands.getoutput(rpmCommand)
+        rpmFilename = 'acsPackageInfo-%s.%s' %(releaseNum, 'rpmref')
+        rpmrefPath = join(rpmDirPath, rpmFilename)
+        rpmQuery='rpm -qa --queryformat "%{NAME} %{VERSION} %{RELEASE}\n"'
+        fullCommand = '%s | sort > %s' %(rpmQuery, rpmFilename)
+        output=commands.getoutput(fullCommand)
         print ' '
-        print 'File ' + rpmFilename + ' created in local directory.'
-        print 'Please move it to ../config directory.'
+        print 'File %s created in %s' %(rpmFilename, rpmDirPath)
         print ' '
         sys.exit(1)
 
@@ -155,9 +161,9 @@ if standardRedHat == False:
     rpmFilename=rpmDefaultFilename
     print 'No Red Hat distribution!!! Using default file:' + rpmFilename
 else:
-    rpmFilename='./acsPackageInfo-' + releaseNum + '.rpmref'
+    rpmFilename = 'acsPackageInfo-' + releaseNum + '.rpmref'
 
-rpmrefPath=os.getenv('PWD')+'/../config/' + rpmFilename
+rpmrefPath = join(rpmDirPath, rpmFilename)
 fileExistence=os.access(rpmrefPath,os.F_OK)
 
 if fileExistence == False:
@@ -175,14 +181,14 @@ if fileExistence == False:
         intlistPaths=string.split(variableExistence)
         intlistPath=intlistPaths[0]
  
-        rpmrefPath=intlistPath+'/config/' + rpmFilename
+        rpmrefPath=join(intlistPath, 'config', rpmFilename)
         fileExistence=os.access(rpmrefPath,os.F_OK)
 
 if fileExistence == False:
     # $ACSROOT/config directory
     variableExistence=os.getenv('ACSROOT','NOT DEFINED')
     if  variableExistence != 'NOT DEFINED':
-        rpmrefPath=os.getenv('ACSROOT')+'/config/' + rpmFilename
+        rpmrefPath = join(rpmDirPath, rpmFilename)
         fileExistence=os.access(rpmrefPath,os.F_OK)
 
 #
@@ -194,14 +200,14 @@ if fileExistence == False:
 if fileExistence == False:
     rpmFilename=rpmDefaultFilename
     print 'No Red Hat specific file found!!! Searching for default file:' + rpmFilename
-    rpmrefPath=os.getenv('PWD')+'/../config/' + rpmFilename
+    rpmrefPath = join(rpmDirPath, rpmFilename)
     fileExistence=os.access(rpmrefPath,os.F_OK)
 
 if fileExistence == False:
     # $INTROOT/config directory
     variableExistence=os.getenv('INTROOT','NOT DEFINED')
     if  variableExistence != 'NOT DEFINED':
-        rpmrefPath=os.getenv('INTROOT')+'/config/' + rpmFilename
+        rpmrefPath=join(os.getenv('INTROOT'), 'config', rpmFilename)
         fileExistence=os.access(rpmrefPath,os.F_OK)
 
 if fileExistence == False:
@@ -212,14 +218,14 @@ if fileExistence == False:
         intlistPaths=string.split(variableExistence)
         intlistPath=intlistPaths[0]
 
-        rpmrefPath=intlistPath+'/config/' + rpmFilename
+        rpmrefPath = join(intlistPath, 'config', rpmFilename)
         fileExistence=os.access(rpmrefPath,os.F_OK)
 
 if fileExistence == False:
     # $ACSROOT/config directory
     variableExistence=os.getenv('ACSROOT','NOT DEFINED')
     if  variableExistence != 'NOT DEFINED':
-        rpmrefPath=os.getenv('ACSROOT')+'/config/' + rpmFilename
+        rpmrefPath = join(os.getenv('ACSROOT'), 'config', rpmFilename)
         fileExistence=os.access(rpmrefPath,os.F_OK)
 
 # If goOn is still equal to 'True' it means that the file was not found
