@@ -291,7 +291,7 @@ javadoc:
 	$(AT)mkdir -p ../doc/api/html
 	$(AT)for member in $(foreach jarfile, $(JARFILES_LIST), $($(jarfile)_DIRS)) ;\
 		do \
-		javadoc $(JavadocOptions) -classpath `vltMakeJavaClasspath` -d ../doc/api/html `find $${member} -type f -name \*.java` > /dev/null 2>&1 ;\
+		javadoc $(JavadocOptions) -classpath `acsMakeJavaClasspath` -d ../doc/api/html `find $${member} -type f -name \*.java` > /dev/null 2>&1 ;\
 		done
 
 
