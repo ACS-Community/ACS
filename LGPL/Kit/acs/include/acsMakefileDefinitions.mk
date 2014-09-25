@@ -31,6 +31,8 @@ $(eval toFile_$1 = $(if $(wildcard $(PRJTOP)/$(dir_$1)), \
                $(INSTALL_ROOT)/$(dir_$1)/$(name_$1), \
                $(error $(dir_$1) is not a standard directory) ) ))
 
+isNotCurrentDir = \
+$(if $(subst $(abspath $(dir $1)),,$(abspath .)),T,)
 
 cutOffCWD = \
 $(if $(call isNotCurrentDir,$1),$1,$(notdir $1))
@@ -227,7 +229,9 @@ endif
 
 endif
 
-$(if $(wildcard ../idl/$1.midl), 
+# Note: this assumes file already available early on, and not generated
+# by a make target (like do_links)
+$(if $(wildcard ../idl/$1.midl),
 $(CURDIR)/../idl/$1.idl: ../idl/$1.midl $($1_MIDLprereq)
 	-@echo "== (preprocessing MIDL => IDL) $1"
 	$(AT) JacPrep $$< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) $(MIDL_FLAGS)" >  ../idl/$1.idl
