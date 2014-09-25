@@ -288,6 +288,9 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::working(T value, const ACSEr
 	// Protection
 	ACE_GUARD(ACE_Thread_Mutex, mut, switchMutex_m);
 
+	// we check value (double) if are non-physical see: ICT-3207
+	checkMonitorValue<T>(value);
+
     // Still place in current available buffer segments
     if ( curSeqPos_m < seqLen_m )
     {

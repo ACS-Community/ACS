@@ -37,6 +37,13 @@
 namespace TMCDB
 {
 
+/**
+ * Template function to check the monitor value (=in working method) if it is non-physical see: ICT-3207
+ * @param value given by the monitor
+ * We need this function just for double, for the rest could be jsut empty
+ */
+template <class T>
+void checkMonitorValue(T value){}
 
 /**
  * Class to hold data of a monitor point
