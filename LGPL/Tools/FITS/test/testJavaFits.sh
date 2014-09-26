@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #*******************************************************************************
 
-java -classpath `vltMakeJavaClasspath` alma.eso.org.FITStest $1
+java -classpath `acsMakeJavaClasspath` alma.eso.org.FITStest $1
 
 #
 # ___oOo___
