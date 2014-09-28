@@ -88,6 +88,7 @@ tar -zxf omniORB-4.1.4.tar.gz
 mv  omniORB-4.1.4 $OMNI_ROOT
 
 cd $OMNI_ROOT
+NUM_CPU=`grep -c processor  /proc/cpuinfo`
 
 #
 # change configuration files
@@ -98,10 +99,12 @@ then
     cd build
     if [ "$DISTRO" = "DEBIAN" ]; then
         ../configure --prefix=$OMNI_ROOT
+    elif [ "$DISTRO" = "CENTOS" -o "$DISTRO" = "SL" -o "$DISTRO" = "RHEL" -a "$REL" = "6" ]; then
+        ../configure --prefix=$OMNI_ROOT
     else
         ../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python
     fi
-    make -j 2 -l 2
+    make -j $NUM_CPU -l $NUM_CPU
     make install
 else
     echo "OS $OS is not supported"
@@ -133,10 +136,12 @@ mkdir -p build
 cd build
 if [ "$DISTRO" = "DEBIAN" ]; then
     ../configure --prefix=$OMNI_ROOT
+elif [ "$DISTRO" = "CENTOS" -o "$DISTRO" = "SL" -o "$DISTRO" = "RHEL" -a "$REL" = "6" ]; then
+    ../configure --prefix=$OMNI_ROOT
 else
     ../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python
 fi
-make -j 2 -l 2
+make -j $NUM_CPU -l $NUM_CPU
 make install
 #
 # Depending on the version of python installed and used for building,
