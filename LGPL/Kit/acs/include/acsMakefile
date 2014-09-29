@@ -57,6 +57,7 @@
 #     TCL_SCRIPTS 	tcl_script
 #     TCL_LIBRARIES 	tcl_lib
 #     RTAI_MODULES 	rtai
+#     KERNEL_MODULES 	kernel_module
 #
 #   If the building of one specific part of the module is desired, 
 #   the above targets may be used in conjunction with overriding the 
@@ -259,7 +260,7 @@
 #
 #   RTAI
 #
-#   The rtaiMakefile handles the targets to make, install and clean 
+#   The acsMakefile handles the targets to make, install and clean 
 #   RTAI kernel modules code.
 #   
 #   The main variable to be defined in the Makefile is RTAI_MODULES.
@@ -278,6 +279,37 @@
 #   Support for modules load/unload:
 #
 #   for each module listed in RTAI_MODULES or RTAI_MODULES_L, 
+#   the makefile assumes
+#   the existence of two corresponding C++ files called 
+#   load<LKM>.cpp and unload<LKM>.cpp
+#
+#   These files are built into two binaries.
+#   Also, an additional script called "installLKM" is built, which contains 
+#   instructions on how to copy the LKM into the suitable system directories 
+#   and makes the load/unload binaries setuid root.
+#   This script must be executed as root.
+#
+#   KERNEL MODULES
+#
+#   The acsMakefile handles the targets to make, install and clean 
+#   standard Linux kernel modules code.
+#   
+#   The main variable to be defined in the Makefile is KERNEL_MODULES.
+#   It behaves similarly to the EXECUTABLES or LIBRARIES variables,
+#   and allows the customary specification of object files, compiler and
+#   linking options.
+#
+#   For kernel modules to be build, installed or cleaned, the environment 
+#   variable LINUX_HOME must be defined.
+#
+#   To customize compiling options USER_KERNEL_MODULE_CFLAGS can be used.
+#   Also available is the tag KERNEL_MODULES_L which keeps the modules local
+#   without installing them.
+#   The clean target deletes all files from the kernel subdirectory.
+#
+#   Support for modules load/unload:
+#
+#   for each module listed in KERNEL_MODULES or KERNEL_MODULES_L, 
 #   the makefile assumes
 #   the existence of two corresponding C++ files called 
 #   load<LKM>.cpp and unload<LKM>.cpp
@@ -395,7 +427,6 @@
 #
 #     GNU_ROOT     where to look for GNU stuff. NO DEFAULT!
 #     TCLTK_ROOT   where to look for TCL/TK stuff. NO DEFAULT!
-#     DFLOW_ROOT   where to look for Data Flow stuff. NO DEFAULT!
 #     MAKEDIR      where to look for the acsMakefile.all
 #                  default: $(ACSROOT)/include/acsMakefile.all
 #     MAKE_VERBOSE if defined all commands are printed, by default only the
@@ -419,7 +450,6 @@
 #     USER_LIB     list of additional libraries      (formated as  -L<dir> ...)
 #     XINC         X11 includes  
 #     XLIB         X11 libraries
-#     RTAPROOT     root directory for HP-RTAP product
 #     WIND_BASE    root directory for WINDRIVER VxWorks TORNADO product 
 #     MODVERSION   version identification
 #
@@ -481,7 +511,7 @@ PWD = $(shell pwd)
 os     = $(shell uname)
 osrev  = $(shell uname -r)
 ifdef LINUX_HOME
-rtai_install_subfold := $(shell egrep --regexp="define[[:space:]]+UTS_RELEASE" $(LINUX_HOME)/include/linux/* | cut --delimiter="\"" --fields=2)
+kernel_install_subfold := $(shell egrep --regexp="define[[:space:]]+UTS_RELEASE" $(LINUX_HOME)/include/linux/* | cut --delimiter="\"" --fields=2)
 endif
 
 mustBuild = $(if $(MAKE_ONLY),$(if $(findstring $(1),$(MAKE_ONLY)),true,false),true)
@@ -563,15 +593,6 @@ ifndef MAKE_VXWORKS
     AR      = ar
     RANLIB  = ranlib
 
-    # set flags for NOCCS and CCSlite
-    ifdef NOCCS
-        CCS_CFLAGS = -DNOCCS
-    else
-        ifndef RTAPROOT
-            CCS_CFLAGS = -DCCS_LIGHT
-        endif
-    endif
-    
     CC         = gcc -ansi
     CXX        = gcc -ansi
     #
@@ -1563,7 +1584,7 @@ endif
 # features
 # *********************************************
 
-CREATE_DIRS = include object doc rtai/$(rtai_install_subfold) bin lib lib/ACScomponents lib/python/site-packages idl config  $(if $(VLTSW_ROOT_DIR),dbl,)
+CREATE_DIRS = include object doc $(if $(RTAI_HOME),rtai/$(kernel_install_subfold),) $(if $(RTAI_HOME),,$(if $(LINUX_HOME),kernel/$(kernel_install_subfold),)) bin lib lib/ACScomponents lib/python/site-packages idl config  $(if $(VLTSW_ROOT_DIR),dbl,)
 
 ifneq ($(strip $(MAKE_VXWORKS)),)
 CREATE_DIRS += src/.obj
@@ -1580,7 +1601,6 @@ _MKDIRS:= $(shell for dir in $(CREATE_DIRS); \
 	do \
 	  [[ -d ../$$dir ]] || mkdir -p ../$$dir; \
 	done)
-
 
 CHECKS1 := $(foreach idl, $(IDL_FILES), $(foreach jar, $(JARFILES), $(if $(filter $(idl),$(jar)),$(error "$(idl) is duplicated in JARFILES and IDL_FILES",)) ) )
 CHECKS2 := $(foreach cjar, $(COMPONENT_JARFILES), $(foreach jar, $(JARFILES), $(if $(filter $(cjar),$(jar)),$(error "$(cjar) is duplicated in JARFILES and COMPONENT_JARFILES",)) ) )
@@ -1663,7 +1683,7 @@ endif
 
 ../object/%.d: %.c
 	@echo "== Dependencies C: $@"
-	$(AT)$(CCDEP)  $(CFLAGS) $(I_PATH) $(RTAI_CFLAGS) $($*_CFLAGS) $<   |  \
+	$(AT)$(CCDEP)  $(CFLAGS) $(I_PATH) $(RTAI_CFLAGS) $(KERNEL_MODULE_CFLAGS) $($*_CFLAGS) $<   |  \
 	               sed -e "s/$*\.o/..\/object\/$*.o ..\/object\/$*.d /" \
 	                   -e "s/:/: Makefile /" > $@ ;                     \
                        if [ ! -s $@ ]; then $(RM) $@ ; fi

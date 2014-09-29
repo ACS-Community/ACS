@@ -1553,15 +1553,15 @@ define acsMakeRTAIDependencies
 rtai_$1_auxprogs = $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),1,)
 
 .PHONY:
-do_rtai_$1: ../rtai/$(rtai_install_subfold)/$1.ko $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),do_exe_load$1 do_exe_unload$1,);
+do_rtai_$1: ../rtai/$(kernel_install_subfold)/$1.ko $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),do_exe_load$1 do_exe_unload$1,);
 
 
 xyz_$1_SRC = $(addsuffix .c,$2)
 
 rtai_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2))),,$1-objs := $(addsuffix .o,$2))
 
-#.NOTPARALLEL:../rtai/$(rtai_install_subfold)/$1.ko
-../rtai/$(rtai_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1
+#.NOTPARALLEL:../rtai/$(kernel_install_subfold)/$1.ko
+../rtai/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1
 	@$(ECHO) "== Making RTAI Module: $1" 
 # here we have to generate the hineous Kbuild file
 	$(AT)lockfile -s 2 -r 10 Kbuild.lock || echo "WARNING, ignoring lock Kbuild.lock"
@@ -1577,19 +1577,19 @@ else
 	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=0 modules
 endif
 	$(AT)$(RM) Kbuild.lock
-	$(AT)mv $1.ko ../rtai/$(rtai_install_subfold)
+	$(AT)mv $1.ko ../rtai/$(kernel_install_subfold)
 
 # LKM Support binaries
 .PHONY: clean_rtai_$1
 clean_rtai_$1:
 	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
-	$(AT)$(RM) ../rtai/$(rtai_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
+	$(AT)$(RM) ../rtai/$(kernel_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
 
 #../bin/installLKM-$1: 
 #	@$(ECHO) "echo 'installing $1 into $(PRJTOP)/rtai/$(osrev)..'" > ../bin/installLKM-$1
 #	@$(ECHO) "if [ ! -d $(PRJTOP)/rtai/$(osrev) ]; then mkdir $(PRJTOP)/rtai/$(osrev); fi" >> $$@
 #	@$(ECHO) "install -d $(PRJTOP)/rtai/$(osrev)" >> $$@
-#	@$(ECHO) "install -m 664 -c $(PWD)/../rtai/$(rtai_install_subfold)/$1.ko $(PRJTOP)/rtai/$(osrev)" >> $$@
+#	@$(ECHO) "install -m 664 -c $(PWD)/../rtai/$(kernel_install_subfold)/$1.ko $(PRJTOP)/rtai/$(osrev)" >> $$@
 #ifeq ($$(rtai_$1_auxprogs),1)
 #	@$(ECHO) "echo 'setting uid permissions and ownership..'" >> $$@
 #	@$(ECHO) "chown root:root $(BIN)/load$1" >> $$@
@@ -1599,10 +1599,10 @@ clean_rtai_$1:
 #endif
 #The following works on an STE
 ../bin/installLKM-$1:
-	@$(ECHO) "echo 'installing $1 into ${PRJTOP}/rtai/${rtai_install_subfold}..'" > ../bin/installLKM-$1
-	@$(ECHO) "if [ ! -d $(PRJTOP)/rtai/${rtai_install_subfold} ]; then mkdir $(PRJTOP)/rtai/${rtai_install_subfold}; fi" >> $$@
-	@$(ECHO) "install -d $(PRJTOP)/rtai/${rtai_install_subfold}" >> $$@
-	@$(ECHO) "install -m 664 -c $(PWD)/../rtai/$(rtai_install_subfold)/$1.ko $(PRJTOP)/rtai/${rtai_install_subfold}" >> $$@
+	@$(ECHO) "echo 'installing $1 into ${PRJTOP}/rtai/${kernel_install_subfold}..'" > ../bin/installLKM-$1
+	@$(ECHO) "if [ ! -d $(PRJTOP)/rtai/${kernel_install_subfold} ]; then mkdir $(PRJTOP)/rtai/${kernel_install_subfold}; fi" >> $$@
+	@$(ECHO) "install -d $(PRJTOP)/rtai/${kernel_install_subfold}" >> $$@
+	@$(ECHO) "install -m 664 -c $(PWD)/../rtai/$(kernel_install_subfold)/$1.ko $(PRJTOP)/rtai/${kernel_install_subfold}" >> $$@
 ifeq ($$(rtai_$1_auxprogs),1)
 	@$(ECHO) "echo 'setting uid permissions and ownership..'" >> $$@
 	@$(ECHO) "chown root:root $(BIN)/load$1" >> $$@
@@ -1613,11 +1613,11 @@ endif
 	@chmod a+x $$@
 
 .PHONY: install_rtai_$1
-install_rtai_$1: $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),install_exe_load$1 install_exe_unload$1,) $(PRJTOP)/rtai/$(rtai_install_subfold)/$1.ko 
+install_rtai_$1: $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),install_exe_load$1 install_exe_unload$1,) $(PRJTOP)/rtai/$(kernel_install_subfold)/$1.ko 
 
-$(PRJTOP)/rtai/$(rtai_install_subfold)/$1.ko: ../rtai/$(rtai_install_subfold)/$1.ko
+$(PRJTOP)/rtai/$(kernel_install_subfold)/$1.ko: ../rtai/$(kernel_install_subfold)/$1.ko
 	-$(AT)$(ECHO) "\t$1.ko"
-	-$(AT)if [ ! -d \$(PRJTOP)/rtai/\$(rtai_install_subfold) ]; then mkdir \$(PRJTOP)/rtai/\$(rtai_install_subfold) ; fi
+	-$(AT)if [ ! -d \$(PRJTOP)/rtai/\$(kernel_install_subfold) ]; then mkdir \$(PRJTOP)/rtai/\$(kernel_install_subfold) ; fi
 	$(AT)if [ -f load$1.cpp ]; then \
 	    if [ "$(MAKE_RTAI_IGNORE_INSTALL_FAILURE)" != "" ]; then  \
 	      if ssh -q -oPasswordAuthentication=no  root@$(HOST) $(PWD)/../bin/installLKM-$1; then \
@@ -1639,6 +1639,92 @@ $(PRJTOP)/rtai/$(rtai_install_subfold)/$1.ko: ../rtai/$(rtai_install_subfold)/$1
 
 .PHONY: clean_dist_rtai_$1
 clean_dist_rtai_$1:
+
+endef
+
+##########################################################################
+##########################################################################
+# acsMakeKernelDependencies
+
+define acsMakeKernelDependencies
+
+kernel_module_$1_auxprogs = $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),1,)
+
+.PHONY:
+do_kernel_module_$1: ../kernel/$(kernel_install_subfold)/$1.ko $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),do_exe_load$1 do_exe_unload$1,);
+
+
+xyz_$1_SRC = $(addsuffix .c,$2)
+
+kernel_module_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2))),,$1-objs := $(addsuffix .o,$2))
+
+#.NOTPARALLEL:../kernel/$(kernel_install_subfold)/$1.ko
+../kernel/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1
+	@$(ECHO) "== Making KERNEL Module: $1" 
+# here we have to generate the hineous Kbuild file
+	$(AT)lockfile -s 2 -r 10 Kbuild.lock || echo "WARNING, ignoring lock Kbuild.lock"
+	$(AT)$(ECHO) "obj-m += $1.o" > Kbuild
+	$(AT)$(ECHO) "$$(kernel_module_$1_components)" >> Kbuild
+	$(AT)$(ECHO) "" >> Kbuild
+	$(AT)$(ECHO) "USR_INC := $(USR_INC)"   >> Kbuild
+	$(AT)$(ECHO) "EXTRA_CFLAGS := $(EXTRA_CFLAGS)" >> Kbuild
+	$(AT)$(ECHO) "KBUILD_EXTRA_SYMBOLS=\"$(LINUX_HOME)/modules/Module.symvers\"" >> Kbuild
+ifdef MAKE_VERBOSE
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) V=2 modules
+else
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) V=0 modules
+endif
+	$(AT)$(RM) Kbuild.lock
+	$(AT)mv $1.ko ../kernel/$(kernel_install_subfold)
+
+# LKM Support binaries
+.PHONY: clean_kernel_module_$1
+clean_kernel_module_$1:
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) clean ; fi
+	$(AT)$(RM) ../kernel/$(kernel_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
+
+#The following works on an STE
+../bin/installLKM-$1:
+	@$(ECHO) "echo 'installing $1 into ${PRJTOP}/kernel/${kernel_install_subfold}..'" > ../bin/installLKM-$1
+	@$(ECHO) "if [ ! -d $(PRJTOP)/kernel/${kernel_install_subfold} ]; then mkdir $(PRJTOP)/kernel/${kernel_install_subfold}; fi" >> $$@
+	@$(ECHO) "install -d $(PRJTOP)/kernel/${kernel_install_subfold}" >> $$@
+	@$(ECHO) "install -m 664 -c $(PWD)/../kernel/$(kernel_install_subfold)/$1.ko $(PRJTOP)/kernel/${kernel_install_subfold}" >> $$@
+ifeq ($$(kernel_module_$1_auxprogs),1)
+	@$(ECHO) "echo 'setting uid permissions and ownership..'" >> $$@
+	@$(ECHO) "chown root:root $(BIN)/load$1" >> $$@
+	@$(ECHO) "chmod u+s $(BIN)/load$1" >> $$@
+	@$(ECHO) "chown root:root $(BIN)/unload$1" >> $$@
+	@$(ECHO) "chmod u+s $(BIN)/unload$1" >> $$@
+endif
+	@chmod a+x $$@
+
+.PHONY: install_kernel_module_$1
+install_kernel_module_$1: $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),install_exe_load$1 install_exe_unload$1,) $(PRJTOP)/kernel/$(kernel_install_subfold)/$1.ko 
+
+$(PRJTOP)/kernel/$(kernel_install_subfold)/$1.ko: ../kernel/$(kernel_install_subfold)/$1.ko
+	-$(AT)$(ECHO) "\t$1.ko"
+	-$(AT)if [ ! -d \$(PRJTOP)/kernel/\$(kernel_install_subfold) ]; then mkdir \$(PRJTOP)/kernel/\$(kernel_install_subfold) ; fi
+	$(AT)if [ -f load$1.cpp ]; then \
+	    if [ "$(MAKE_KERNEL_IGNORE_INSTALL_FAILURE)" != "" ]; then  \
+	      if ssh -q -oPasswordAuthentication=no  root@$(HOST) $(PWD)/../bin/installLKM-$1; then \
+                echo "Kernel module $1 installed.";  \
+              else \
+                echo "WARNING: Kernel module $1 not installed"; \
+              fi; \
+            else  \
+             if ssh -q -oPasswordAuthentication=no  root@$(HOST) $(PWD)/../bin/installLKM-$1; then \
+                echo "Kernel module $1 installed."; \
+             else \
+                echo "FAILURE: Kernel module $1 not installed. Check your SSH configuration"; \
+                /bin/false;  \
+             fi; \
+            fi; \
+        else \
+	$(PWD)/../bin/installLKM-$1; \
+        fi 
+
+.PHONY: clean_dist_kernel_module_$1
+clean_dist_kernel_module_$1:
 
 endef
 

@@ -48,6 +48,17 @@ USR_INC = -I$(RTAI_HOME)/include  $(patsubst -I..%,-I$(PWD)/..%,$(I_PATH))
 EXTRA_CFLAGS = $(shell $(RTAI_CONFIG) --module-cflags) -Werror-implicit-function-declaration  $(patsubst ..%,$(PWD)/..%,$(USR_INC)) $(USER_RTAI_CFLAGS) -DRTAI_HOME
 endif
 #
+#  Kernel modules
+ifeq ($(strip $(RTAI_HOME)),)
+ifneq ($(strip $(LINUX_HOME)),)
+KERNEL_MODULE_CFLAGS = -D__KERNEL__ -DMODULE -O2 -Wall -Wstrict-prototypes -Wno-trigraphs  -fomit-frame-pointer -fno-strict-aliasing -fno-common -pipe  -march=i686 -falign-functions=4 -I$(LINUX_HOME)/include/linux -I$(LINUX_HOME)/include/asm-i386/mach-default $(USER_KERNEL_MODULE_CFLAGS) 
+KDIR := /lib/modules/$(kernel_install_subfold)/build
+CCKERNEL:=cc
+USR_INC = -I$(LINUX_HOME)/include  $(patsubst -I..%,-I$(PWD)/..%,$(I_PATH))
+EXTRA_CFLAGS = -I. -D_FORTIFY_SOURCE=0 -ffast-math -mhard-float -Werror-implicit-function-declaration  $(patsubst ..%,$(PWD)/..%,$(USR_INC)) $(USER_KERNEL_MODULE_CFLAGS) -DLINUX_HOME
+endif
+endif
+#
 ifeq ($(strip $(DEBUG)),on)
   javaCompilerOptions=-g
 else
@@ -518,11 +529,39 @@ clean_rtais: clean_rtai_final
 
 .PHONY:
 clean_rtai_final:
-	$(AT)$(RM) Kbuild ../rtai/$(rtai_install_subfold)
+	$(AT)$(RM) Kbuild ../rtai/$(kernel_install_subfold)
 
 endif
 # some target needs to be assigned this task
-#	-$(AT)$(RM) ../rtai/$(rtai_install_subfold)
+#	-$(AT)$(RM) ../rtai/$(kernel_install_subfold)
+
+
+#################################################################
+## Kernel modules
+#################################################################
+
+##
+# - for Automatic Dependencies for Kernel Modules
+#
+KERNEL_MODULES_LIST = $(KERNEL_MODULES) $(KERNEL_MODULES_L)
+ifneq "$(strip $(KERNEL_MODULES_LIST))" "" 
+$(eval $(call top-level,kernel_module,$(KERNEL_MODULES_LIST),$(KERNEL_MODULES)))
+
+$(foreach km,$(KERNEL_MODULES_LIST), \
+   $(eval $(call acsMakeExecutableDependencies,,load$(km),load$(km),$(load$(km)_LDFLAGS),on,LKM C++ )))
+$(foreach km,$(KERNEL_MODULES_LIST), \
+   $(eval $(call acsMakeExecutableDependencies,,unload$(km),unload$(km),$(unload$(km)_LDFLAGS),on,LKM C++ )))
+$(foreach km,$(KERNEL_MODULES_LIST), \
+   $(eval $(call acsMakeKernelDependencies,$(km),$($(km)_OBJECTS) ) ) )
+
+# enhancing the clean target further
+clean_kernel_modules: clean_kernel_module_final
+
+.PHONY:
+clean_kernel_module_final:
+	$(AT)$(RM) Kbuild ../kernel/$(kernel_install_subfold)
+
+endif
 
 
 #################################################################
