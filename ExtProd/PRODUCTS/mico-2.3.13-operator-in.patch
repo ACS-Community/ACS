@@ -1,0 +1,36 @@
+diff -Naur mico_old/orb/poa_impl.cc mico/orb/poa_impl.cc
+--- mico_old/orb/poa_impl.cc	2008-07-25 09:41:43.000000000 -0400
++++ mico/orb/poa_impl.cc	2014-09-29 18:24:40.125690663 -0300
+@@ -1936,7 +1936,7 @@
+       = TransportSecurity::ObjectCredentialsPolicy::_nil();
+   for (CORBA::ULong i = 0; i < policies.length(); i++) {
+       if (policies[i]->policy_type() == TransportSecurity::ObjectCredentialsPolicyType) {
+-          ocp = TransportSecurity::ObjectCredentialsPolicy::_narrow(policies[i]);
++          ocp = TransportSecurity::ObjectCredentialsPolicy::_narrow(policies[i].in());
+           assert(!CORBA::is_nil(ocp));
+           break;
+       }
+diff -Naur mico_old/orb/security/securitylevel3_impl.cc mico/orb/security/securitylevel3_impl.cc
+--- mico_old/orb/security/securitylevel3_impl.cc	2008-07-25 09:41:43.000000000 -0400
++++ mico/orb/security/securitylevel3_impl.cc	2014-09-29 18:24:04.900500058 -0300
+@@ -272,7 +272,7 @@
+     initiator_ = CredsInitiator::_duplicate(initiator);
+     acceptor_ = CredsAcceptor::_duplicate(acceptor);
+     for (CORBA::ULong i = 0; i < observers.length(); i++) {
+-	this->add_observer(observers[i]);
++	this->add_observer(observers[i].in());
+     }
+     observers_ = observers;
+     this->notify_creation();
+diff -Naur mico_old/orb/security/sl3aqargs_impl.cc mico/orb/security/sl3aqargs_impl.cc
+--- mico_old/orb/security/sl3aqargs_impl.cc	2008-07-25 09:41:43.000000000 -0400
++++ mico/orb/security/sl3aqargs_impl.cc	2014-09-29 18:24:15.599557959 -0300
+@@ -89,7 +89,7 @@
+ {
+     this->check();
+     for (ULong i = 0; i < args.length(); i++) {
+-	this->add_arg(args[i]);
++	this->add_arg(args[i].in());
+     }
+ }
+ 
