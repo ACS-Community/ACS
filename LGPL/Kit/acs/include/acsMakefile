@@ -654,7 +654,7 @@ endif
         CCDEP         = gcc -MM -MG
         CC            = gcc
         CXX           = g++
-        LD            = g++
+        LD            = g++ -Wl,--copy-dt-needed-entries
         NOSHARED_ON   = -Xlinker -Bstatic 
         NOSHARED_OFF  = -Xlinker -Bdynamic
         SHLIB_EXT     = so

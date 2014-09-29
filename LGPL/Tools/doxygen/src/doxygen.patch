@@ -1,6 +1,18 @@
+diff -Naur tmp_unpack/doxygen-1.7.0.orig/qtools/qvaluestack.h doxygen-1.7.0/qtools/qvaluestack.h
+--- tmp_unpack/doxygen-1.7.0.orig/qtools/qvaluestack.h	2009-08-25 11:26:15.000000000 +0000
++++ doxygen-1.7.0/qtools/qvaluestack.h	2014-09-17 18:43:26.116052306 +0000
+@@ -49,7 +49,7 @@
+ public:
+     QValueStack() {}
+    ~QValueStack() {}
+-    void  push( const T& d ) { append(d); }
++    void  push( const T& d ) { this->append(d); }
+     T pop()
+     {
+ 	T elem( this->last() );
 diff -Naur tmp_unpack/doxygen-1.7.0.orig/src/util.cpp doxygen-1.7.0/src/util.cpp
 --- tmp_unpack/doxygen-1.7.0.orig/src/util.cpp	2010-06-14 09:15:31.000000000 +0000
-+++ doxygen-1.7.0/src/util.cpp	2010-07-06 15:28:12.000000000 +0000
++++ doxygen-1.7.0/src/util.cpp	2014-09-17 18:43:11.196790540 +0000
 @@ -6434,6 +6434,7 @@
  {
    g_extLookup.setAutoDelete(TRUE);
