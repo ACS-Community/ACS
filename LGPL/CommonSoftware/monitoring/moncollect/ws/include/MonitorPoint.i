@@ -294,7 +294,7 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::working(T value, const ACSEr
     // Still place in current available buffer segments
     if ( curSeqPos_m < seqLen_m )
     {
-        ACS_SHORT_LOG((LM_DEBUG, "Adding data to buffer"));
+        //ACS_SHORT_LOG((LM_DEBUG, "Adding data to buffer"));
         // Add data to current position
         blobDataSeq_m[curSeqPos_m].value = value;
 	    blobDataSeq_m[curSeqPos_m].time = comp.timeStamp;
