@@ -42,19 +42,40 @@
 #include <orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExtC.h>
 #include "corbaNotifyTest_ifC.h"
 
+static const std::string DT_CONSUMER = "CONSUMER";
+static const std::string DT_SUPPLIER = "SUPPLIER";
+static const std::string DT_SUPP_CON = "SUPP_CON";
+
+
+static const CosNotifyChannelAdmin::ChannelID DEFAULT_CHANNEL_ID = -1;
+static const std::string DEFAULT_IOR_NS = "";
+static const double DEFAULT_MAX_DELAY_SEC = 0;
+static const std::string DEFAULT_DELAY_TYPE = DT_SUPP_CON;
+static const int32_t DEFAULT_INTERVAL = 0;
+
+
+struct ConsumerParams {
+	CosNotifyChannelAdmin::ChannelID channelID;
+	std::string iorNS;
+	double maxDelaySec;
+	std::string delayType;
+	int32_t interval;
+	std::string ORBOptions;
+};
+
 class Consumer : public POA_CosNotifyComm::PushConsumer
 {
 public:
 	Consumer(void);
+	virtual ~Consumer();
 
-	bool run (int argc, ACE_TCHAR* argv[],
-		  CosNotifyChannelAdmin::ChannelID channelID,
-		  const std::string &iorNS,double maxDelaySec,
-		  const std::string &delayType);
+	bool run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params);
 
 	virtual void push (const CORBA::Any &event);
 	virtual void disconnect_push_consumer (void);
 	virtual void offer_change(const CosNotification::EventTypeSeq&, const CosNotification::EventTypeSeq&);
+
+	uint64_t getNumEventsReceived() const;
 
 protected:
 	bool init_ORB(int argc, ACE_TCHAR* argv[]);
@@ -68,6 +89,7 @@ protected:
 	timespec m_maxDelay;
 	ACS::Time m_lastEventTimestamp;
 	std::string m_delayType;
+	uint64_t m_numEventsReceived;
 };
 
 #endif /*!PDATACONSUMER_H*/

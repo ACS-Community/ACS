@@ -33,6 +33,30 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+#include <ORB.h>
+#include <PortableServer.h>
+#include <orbsvcs/CosNotifyChannelAdminC.h>
+#include <stdint.h>
+
+static const uint32_t DEFAULT_SEND_INTERVAL = 1000;
+static const uint32_t DEFAULT_NUM_ITEMS = 0;
+static const std::string DEFAULT_IOR_NS = "";
+static const std::string DEFAULT_CHANNEL_FILE = "";
+static const uint32_t DEFAULT_OUTPUT_DELAY = 1;
+static const int32_t DEFAULT_CHANNEL_ID = -1;
+static const std::string DEFAULT_ANTENNA_PREFIX_NAME = "ANTENNA_";
+
+struct SuppParams {
+	uint32_t sendInterval;
+	uint32_t nItems;
+	std::string iorNS;
+	std::string channelFile;
+	uint32_t outputDelay;
+	int32_t channelID;
+	std::string antennaPrefixName;
+	std::string ORBOptions;
+};
+
 class DataSupplier {
 public:
 	DataSupplier();
@@ -43,19 +67,24 @@ public:
 	 */
 	void init_ORB (int argc, char *argv []);
 
-	void run(uint32_t sendInterval,uint32_t nItems,const std::string &iorNS,
-		 const std::string &channelFile); 
+	void run(const SuppParams &params);
 
 	void stop();
+
+	uint64_t getNumEventsSent() const;
 
 	/**
 	 * Disconnect from the NC and close the ORB
 	 */
 	void shutdown ();
 private:
+
+	void saveChannelId(const std::string &file,CosNotifyChannelAdmin::ChannelID channelID);
+
 	CORBA::ORB_var orb;
 	PortableServer::POA_var root_poa_;
 	bool m_stop;
+	uint64_t m_numEventsSent;
 };
 
 #endif /*!PDATASUPPLIER_H*/
