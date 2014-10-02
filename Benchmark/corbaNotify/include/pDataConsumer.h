@@ -85,8 +85,8 @@ protected:
 			std::string &errMsg);
 
 	CORBA::ORB_ptr m_orb;
-	timespec m_tLastEvent;
-	timespec m_maxDelay;
+	timeval m_tLastEvent;
+	int64_t m_maxDelay;
 	ACS::Time m_lastEventTimestamp;
 	std::string m_delayType;
 	uint64_t m_numEventsReceived;

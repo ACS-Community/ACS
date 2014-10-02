@@ -22,7 +22,7 @@
 * almadev  2014-08-28  created 
 */
 #include "pDataConsumer.h"
-#include "TimespecUtils.h"
+#include "TimevalUtils.h"
 #include "ORBTask.h"
 #include "ConsumerTimer.h"
 #include "CorbaNotifyUtils.h"
@@ -180,8 +180,8 @@ int main(int argc, char *argv[])
 
 Consumer::Consumer()
 {
-	TimespecUtils::set_timespec(m_tLastEvent, 0, 0);
-	TimespecUtils::set_timespec(m_maxDelay, 0, 0);
+	TimevalUtils::set_timeval(m_tLastEvent, 0, 0);
+	m_maxDelay = 0;
 	m_lastEventTimestamp = 0;
 	m_delayType = DT_SUPP_CON;
 	m_numEventsReceived = 0;
@@ -195,8 +195,8 @@ Consumer::~Consumer()
 bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 {
 	
-	TimespecUtils::double_2_timespec(params.maxDelaySec, m_maxDelay);
-	ACE_DEBUG((LM_INFO, "Max delay: %s s\n", TimespecUtils::timespec_2_str(m_maxDelay).c_str()));
+	m_maxDelay = params.maxDelaySec * 1000;
+	ACE_DEBUG((LM_INFO, "Max delay: %q ms\n", m_maxDelay));
 	m_delayType = params.delayType;
 
 	try {
@@ -263,12 +263,12 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 void Consumer::push (const CORBA::Any &event)
 {
 	uint64_t currTimestamp;
-	ACS::Time tsDiff;
-	ACS::Time tsSuppConDiff;
-	timespec tConsumerDiff;
-	timespec tSupplierDiff;
-	timespec tSuppConDiff;
-	timespec tEvent;
+	int64_t tsSupplierDiff;
+	int64_t tSuppConDiff;
+	int64_t tConsumerDiff;
+	//timeval tSupplierDiff;
+	//timeval tSuppConDiff;
+	timeval tEvent;
 
 	benchmark::MountStatusData *data;
 	if(event >>= data)
@@ -276,60 +276,49 @@ void Consumer::push (const CORBA::Any &event)
 		++m_numEventsReceived;
 
 		// Calculate current event time
-		TimespecUtils::get_current_timespec(tEvent);
-		currTimestamp = TimespecUtils::timespec_2_100ns(tEvent);
+		TimevalUtils::get_current_timeval(tEvent);
+		currTimestamp = TimevalUtils::timeval_2_ms(tEvent);
 
 		// Check the delay of the current event
-		if(m_tLastEvent.tv_sec > 0 || m_tLastEvent.tv_nsec > 0)
+		if(m_tLastEvent.tv_sec > 0 || m_tLastEvent.tv_usec > 0)
 		{
 			// Calculate delay between consecutive events in the consumer
-			tConsumerDiff = TimespecUtils::diff_timespec(tEvent, m_tLastEvent);
+			tConsumerDiff = TimevalUtils::diff_timeval(tEvent, m_tLastEvent);
 
 			// Calculate delay between consecutive events in the supplier
-			tsDiff = data->timestamp - m_lastEventTimestamp;
-			TimespecUtils::ns100_2_timespec(tsDiff, tSupplierDiff);
+			tsSupplierDiff = (int64_t)data->timestamp - (int64_t)m_lastEventTimestamp;
 
 			// Calculate delay between supplier and consumer
-			tsSuppConDiff = currTimestamp - data->timestamp;
-			TimespecUtils::ns100_2_timespec(tsSuppConDiff, tSuppConDiff);
-		
+			tSuppConDiff = (int64_t)currTimestamp - (int64_t)data->timestamp;
 
-			if(m_maxDelay.tv_sec > 0 || m_maxDelay.tv_nsec > 0)
+			if(m_maxDelay > 0)
 			{
-				//uint64_t maxDelay100ns = TimespecUtils::timespec_2_100ns(m_maxDelay);
-				if(m_maxDelay < tSupplierDiff && m_delayType == DT_SUPPLIER)
+				if(m_maxDelay < tsSupplierDiff && m_delayType == DT_SUPPLIER)
 				{
-					//std::cout << "tSupplierDiff: " << tSupplierDiff.tv_sec << " " << tSupplierDiff.tv_nsec << std::endl;
-					ACE_DEBUG((LM_NOTICE, "%T Event received %s with supplier delay %s but maximum allowed is %s s\n", 
-						data->antennaName.in(), TimespecUtils::timespec_2_str(tSupplierDiff).c_str(), 
-						TimespecUtils::timespec_2_str(m_maxDelay).c_str()));
+					ACE_DEBUG((LM_NOTICE, "%T Event received %s with supplier delay %q ms but maximum allowed is %q ms\n",
+						data->antennaName.in(), tsSupplierDiff, m_maxDelay));
 				}
 
 				if(m_maxDelay < tConsumerDiff && m_delayType == DT_CONSUMER)
 				{
-					ACE_DEBUG((LM_NOTICE, "%T Event received %s with consumer delay %s but maximum allowed is %s s\n", 
-						data->antennaName.in(), TimespecUtils::timespec_2_str(tConsumerDiff).c_str(), 
-						TimespecUtils::timespec_2_str(m_maxDelay).c_str()));
+					ACE_DEBUG((LM_NOTICE, "%T Event received %s with consumer delay %q ms but maximum allowed is %q ms\n",
+						data->antennaName.in(), tConsumerDiff, m_maxDelay));
 				}
 
 				if(m_maxDelay < tSuppConDiff && m_delayType == DT_SUPP_CON)
 				{
-					ACE_DEBUG((LM_NOTICE, "%T Event received %s with delay %s but maximum allowed is %s s\n", 
-						data->antennaName.in(), TimespecUtils::timespec_2_str(tSuppConDiff).c_str(), 
-						TimespecUtils::timespec_2_str(m_maxDelay).c_str()));
+					ACE_DEBUG((LM_NOTICE, "%T Event received %s with delay %q ms but maximum allowed is %q ms\n",
+						data->antennaName.in(), tSuppConDiff, m_maxDelay));
 				}
 
 			} else {
-				ACE_DEBUG((LM_INFO, "%T Event received: %s with delay %s s, supplier delay %s s and consumer delay %s s\n", 
-					data->antennaName.in(), 
-					TimespecUtils::timespec_2_str(tSuppConDiff).c_str(),
-					TimespecUtils::timespec_2_str(tSupplierDiff).c_str(),
-					TimespecUtils::timespec_2_str(tConsumerDiff).c_str()));
+				ACE_DEBUG((LM_INFO, "%T Event received: %s with delay %q ms, supplier delay %q ms and consumer delay %q ms\n",
+					data->antennaName.in(), tSuppConDiff, tsSupplierDiff, tConsumerDiff));
 			}
 		}
 
 		// Update last event received time
-		TimespecUtils::set_timespec(m_tLastEvent, tEvent.tv_sec, tEvent.tv_nsec);
+		TimevalUtils::set_timeval(m_tLastEvent, tEvent.tv_sec, tEvent.tv_usec);
 		m_lastEventTimestamp = data->timestamp;
 
 	} else {

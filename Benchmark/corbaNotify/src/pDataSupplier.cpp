@@ -37,7 +37,7 @@
 #include "corbaNotifyTest_ifC.h"
 
 #include "pDataSupplier.h"
-#include "TimespecUtils.h"
+#include "TimevalUtils.h"
 #include "SupplierTimer.h"
 #include "CorbaNotifyUtils.h"
 
@@ -292,13 +292,13 @@ void DataSupplier::run(const SuppParams &params)
 	ACE_Time_Value timeout(params.outputDelay* 60, 0);
 	this->orb->orb_core()->reactor()->schedule_timer(timer, 0, timeout, timeout);
 
-	timespec currTime;
-	TimespecUtils::get_current_timespec(currTime);
+	timeval currTime;
+	TimevalUtils::get_current_timeval(currTime);
 
 	// Create the object to be sent through the channel
 	benchmark::MountStatusData data;
 	data.antennaName = params.antennaPrefixName.c_str();   // The name of the antenna e.g., "DV01"
-	data.timestamp = TimespecUtils::timespec_2_100ns(currTime);     // ACS::Time The timestamp of the current value
+	data.timestamp = TimevalUtils::timeval_2_ms(currTime);     // ACS::Time The timestamp of the current value
     data.onSource = true; // true if the commanded and measured positions are close
     data.azCommanded = 1.3;   // The commanded Az position
     data.elCommanded = 1.5;   // The commanded El position
@@ -342,11 +342,10 @@ void DataSupplier::run(const SuppParams &params)
 		oss << params.antennaPrefixName << i;
 		data.antennaName = oss.str().c_str();
 
-		TimespecUtils::get_current_timespec(currTime);
-		data.timestamp = TimespecUtils::timespec_2_100ns(currTime);
+		TimevalUtils::get_current_timeval(currTime);
+		data.timestamp = TimevalUtils::timeval_2_ms(currTime);
 
-//		ACE_DEBUG((LM_INFO, "%T Iteration %d in channel %d with timestamp %s\n", i, id,
-//			TimespecUtils::timespec_2_str(currTime).c_str()));
+		//ACE_DEBUG((LM_INFO, "%T Iteration %d in channel %d with timestamp %q\n", i, id, (int64_t)data.timestamp));
 
 		CORBA::Any any;
 		any <<= data;
