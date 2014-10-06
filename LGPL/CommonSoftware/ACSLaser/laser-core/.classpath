@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry excluding="CDB/|ref/" kind="src" path="test"/>
 	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.15.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/mail.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jcont.jar"/>
@@ -48,5 +48,5 @@
 	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
-	<classpathentry kind="output" path="src"/>
+	<classpathentry kind="output" path="lib"/>
 </classpath>
