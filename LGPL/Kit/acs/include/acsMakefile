@@ -593,6 +593,15 @@ ifndef MAKE_VXWORKS
     AR      = ar
     RANLIB  = ranlib
 
+    # set flags for NOCCS and CCSlite
+    ifdef NOCCS
+        CCS_CFLAGS = -DNOCCS
+    else
+        ifndef RTAPROOT
+            CCS_CFLAGS = -DCCS_LIGHT
+        endif
+    endif
+    
     CC         = gcc -ansi
     CXX        = gcc -ansi
     #
