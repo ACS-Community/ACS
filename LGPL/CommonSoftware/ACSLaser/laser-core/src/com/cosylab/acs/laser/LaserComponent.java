@@ -104,7 +104,6 @@ import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.AlarmSystemInterfaceProxy;
 import cern.laser.source.alarmsysteminterface.impl.Configurator;
 import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
-import cern.laser.source.alarmsysteminterface.impl.TimestampHelper;
 import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
 
 import com.cosylab.acs.jms.ACSJMSTextMessage;
@@ -119,6 +118,8 @@ import com.cosylab.acs.laser.dao.ACSResponsiblePersonDAOImpl;
 import com.cosylab.acs.laser.dao.ACSSourceDAOImpl;
 import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
+
+import alma.acs.util.IsoDateFormat;
 
 
 public class LaserComponent extends CERNAlarmServicePOA implements SourceListener {
@@ -1063,9 +1064,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 		long seconds = javaTime/1000;
 		long milliseconds = javaTime % 1000;
 		
-		cern.laser.source.alarmsysteminterface.impl.message.Timestamp tStamp = new cern.laser.source.alarmsysteminterface.impl.message.Timestamp();
-		tStamp.setSeconds(seconds);
-		tStamp.setMicroseconds(milliseconds*1000);
+		String tStamp = IsoDateFormat.formatCurrentDate();
 		fs.setUserTimestamp(tStamp);
 		// Descriptor
 		if (active) {
@@ -1120,7 +1119,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 	    asi_message.setFaultStates(states);
 	    asi_message.setSourceName("ALARM_SYSTEM_SOURCES");
 	    asi_message.setSourceHostname(hostName);
-	    asi_message.setSourceTimestamp(TimestampHelper.marshalSourceTimestamp(new java.sql.Timestamp(System.currentTimeMillis())));
+	    asi_message.setSourceTimestamp(IsoDateFormat.formatCurrentDate());
 	    asi_message.setBackup(false);
 	    
 	    Configurator configurator = new Configurator();

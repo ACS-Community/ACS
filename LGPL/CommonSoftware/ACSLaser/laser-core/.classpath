@@ -48,5 +48,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jacsutil2.jar"/>
 	<classpathentry kind="output" path="lib"/>
 </classpath>

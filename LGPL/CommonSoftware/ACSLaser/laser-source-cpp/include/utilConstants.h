@@ -32,12 +32,8 @@ namespace laserSource
 	const char* const GREATER_THAN_SIGN = ">";
 
 	const char* const USER_TIMESTAMP_ELEMENT_NAME = "user-timestamp";
-	const char* const USER_TIMESTAMP_SECONDS_ATTRIBUTE_NAME = "seconds";
-	const char* const USER_TIMESTAMP_MICROSECONDS_ATTRIBUTE_NAME = "microseconds";
 
 	const char* const SOURCE_TIMESTAMP_ELEMENT_NAME = "source-timestamp";
-	const char* const SOURCE_TIMESTAMP_SECONDS_ATTRIBUTE_NAME = USER_TIMESTAMP_SECONDS_ATTRIBUTE_NAME;
-	const char* const SOURCE_TIMESTAMP_MICROSECONDS_ATTRIBUTE_NAME = USER_TIMESTAMP_MICROSECONDS_ATTRIBUTE_NAME;
 
 	const char* const USER_PROPERTIES_ELEMENT_NAME = "user-properties";
 	const char* const USER_PROPERTIES_PROPERTY_ELEMENT_NAME = "property";

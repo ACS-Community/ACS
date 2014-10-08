@@ -147,9 +147,8 @@ void AcsAlarmTestCase::testTimestamp()
 	laserSource::CERNASIMessage cernMsg(message);
 
 	// test timestampToXML method
-	long secs=SECONDS_VALUE;
-	long usecs=MICROSECONDS_VALUE;
-	verifyTimestampXML(cernMsg.timestampToXML(secs, usecs,std::string("user-timestamp"),3));
+	acsalarm::Timestamp tstamp(SECONDS_VALUE,MICROSECONDS_VALUE);
+	verifyTimestampXML(cernMsg.timestampToXML(&tstamp,std::string("user-timestamp"),3));
 }
 
 /*
@@ -582,27 +581,8 @@ void AcsAlarmTestCase::verifyUserTimestampElement(DOMDocument * doc)
 
 	// verify that there are 2 attributes
 	DOMNamedNodeMap * attributesMap = userTimestampNodes->item(0)->getAttributes();
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp element does not contain 2 attributes",
-		(NULL!= attributesMap && attributesMap->getLength() == 2));
-
-	// check for seconds attribute
-	DOMNode * secondsValueNode = attributesMap->getNamedItem(SECONDS_TAG_NAME);
-	const XMLCh * secondsValue = secondsValueNode->getNodeValue();
-	char *secondsCharValue = XMLString::transcode(secondsValue);
-	int secondsIntValue = atoi(secondsCharValue);
-	XMLString::release(&secondsCharValue);
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp element, 'seconds' attribute value is not correct",
-		(NULL!= secondsValue && secondsIntValue == SECONDS_VALUE));
-
-	// check for microseconds attribute
-	DOMNode * microsecondsValueNode = attributesMap->getNamedItem(MICROSECONDS_TAG_NAME);
-	const XMLCh * microsecondsValue = microsecondsValueNode->getNodeValue();
-	char *microsecondsCharValue = XMLString::transcode(microsecondsValue);
-	int microsecondsIntValue = atoi(microsecondsCharValue);
-	XMLString::release(&microsecondsCharValue);
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp element, 'microseconds' attribute value is not correct",
-		(NULL!= microsecondsValue && microsecondsIntValue == MICROSECONDS_VALUE));
-
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp contain attributes",
+		(NULL!= attributesMap && attributesMap->getLength() == 0));
 }
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AcsAlarmTestCase);

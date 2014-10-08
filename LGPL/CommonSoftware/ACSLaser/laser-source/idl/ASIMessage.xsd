@@ -12,7 +12,7 @@
             <xsd:sequence>
                 <xsd:element name="source-name" type="xsd:string" maxOccurs="1" minOccurs="1"/>
         	<xsd:element name="source-hostname" type="xsd:string" maxOccurs="1" minOccurs="1"/>
-        	<xsd:element name="source-timestamp" type="asimsg:timestamp" maxOccurs="1" minOccurs="1"/>
+        	<xsd:element name="source-timestamp" type="xsd:string" maxOccurs="1" minOccurs="1"/>
         	<xsd:element ref="asimsg:fault-states" maxOccurs="1" minOccurs="1"/>
             </xsd:sequence>
             <xsd:attributeGroup ref="asimsg:ASI-message-attributes"/>
@@ -32,7 +32,7 @@
             <xsd:all>
 				<xsd:element name="descriptor" type="asimsg:descriptor-type"/>
 				<xsd:element name="user-properties" type="asimsg:properties"/>
-				<xsd:element name="user-timestamp" type="asimsg:timestamp"/>
+				<xsd:element name="user-timestamp" type="xsd:string"/>
 				<xsd:element name="activatedByBackup" type="xsd:boolean"/>
 				<xsd:element name="terminatedByBackup" type="xsd:boolean"/>
             </xsd:all>
@@ -74,13 +74,4 @@
 		<xsd:attribute name="version" type="xsd:string"/>
     </xsd:attributeGroup>   	
 
-    <xsd:complexType name="timestamp">
-            <xsd:attributeGroup ref="asimsg:timestamp-attributes"/>
-    </xsd:complexType>   	
-   
-    <xsd:attributeGroup name="timestamp-attributes">
-        <xsd:attribute name="seconds" type="xsd:long"/>
-   	<xsd:attribute name="microseconds" type="xsd:long"/>
-    </xsd:attributeGroup>   	
-   
 </xsd:schema>
