@@ -21,6 +21,8 @@ package alma.acs.lasercore.test.stress.category;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import alma.acs.util.IsoDateFormat;
+
 /**
  * The view of an alarm in the table
  * 
@@ -79,8 +81,7 @@ public class AlarmView {
 		this.cause=cause;
 		this.hostName=hostName;
 		// Get the date
-		long nsec=Long.parseLong(timestamp);
-		 sourceTimestamp=new Date(nsec);
+		sourceTimestamp=IsoDateFormat.parseIsoTimestamp(timestamp);
 		// Get the status
 		active=Boolean.parseBoolean(act);
 		// Get the priority

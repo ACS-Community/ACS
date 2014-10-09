@@ -52,11 +52,11 @@ public class CategorySubscriber   implements MessageListener {
 	
 	public static final String NOT_AVAILABLE = "N/A";
 	// Container services
-	private ContainerServices acsCS;
+	private final ContainerServices acsCS;
 	
 	// Root and path names
-	private String rootName;
-	private String pathName;
+	private final String rootName;
+	private final String pathName;
 	
 	// The variables for JMS 
 	private ACSJMSTopicSubscriber consumer;
@@ -67,7 +67,7 @@ public class CategorySubscriber   implements MessageListener {
 	private DocumentBuilder builder = null;
 	
 	// The listener of alarms
-	private CategoryClient categoryClient;
+	private final CategoryClient categoryClient;
 	
 	// Remember if the Subscriber has been closed
 	private volatile boolean closed=false;
@@ -195,7 +195,7 @@ public class CategorySubscriber   implements MessageListener {
 	private void adddAlarmView(String xmlString) {
 		String alarmID=""; // Triplet
 		String priority = ""; // Priority
-		String sourceTimestamp=null; // Source timestamp
+		String sourceTimestamp=null; // Source timestamp (ISO 8601 string)
 		String description=NOT_AVAILABLE; // Problem description
 		String cause=NOT_AVAILABLE; // The cause of the alarm
 		String active=NOT_AVAILABLE; // Active
@@ -273,14 +273,8 @@ public class CategorySubscriber   implements MessageListener {
 						masked=activeNode.getNodeValue();
 					}
 					if (statusNode.getNodeName().equals("sourceTimestamp")) {
-						NodeList timestampNodeList=statusNode.getChildNodes();
-						for (int m=0; m<timestampNodeList.getLength(); m++) {
-							Node timeNode=timestampNodeList.item(m);
-							if (timeNode.getNodeName().equals("date")) {
-								Node dateNode=timeNode.getLastChild();
-								sourceTimestamp=dateNode.getNodeValue();
-							}
-						}
+						Node srcTstampNode = statusNode.getLastChild();
+						sourceTimestamp=srcTstampNode.getNodeValue();
 					}
 				}	
 			}
@@ -335,7 +329,8 @@ public class CategorySubscriber   implements MessageListener {
 							reduced,
 							masked));
 		} catch (Throwable t) {
-			System.out.println("Error building alarm "+t.getMessage());
+			System.err.println("Error building alarm "+t.getMessage());
+			t.printStackTrace(System.err);
 		}
 	}
 }
