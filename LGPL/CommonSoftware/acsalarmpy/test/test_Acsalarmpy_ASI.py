@@ -65,7 +65,7 @@ class TestASIMessage(unittest.TestCase):
         msg.faultStates = [FaultState.FaultState("Family","Member",1)]
         msg.sourceHostname = 'foo'
         msg.sourceTimestamp = Timestamp.Timestamp(1222887968,813309)
-        self.assertEqual('<?xml version="1.0" encoding="ISO-8859-1"?>\n<ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">\n   <source-name>ALARM_SYSTEM_SOURCES</source-name>\n   <source-hostname>foo</source-hostname>\n   <source-timestamp seconds="1222887968" microseconds="813308"/>\n   <fault-states>\n   <fault-state family="Family" member="Member" code="1">\n</fault-state>\n   </fault-states>\n</ASI-message>\n',msg.toXML())
+        self.assertEqual('<?xml version="1.0" encoding="ISO-8859-1"?>\n<ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">\n   <source-name>ALARM_SYSTEM_SOURCES</source-name>\n   <source-hostname>foo</source-hostname>\n   <source-timestamp>2008-10-01T19:06:08.813</source-timestamp>\n   <fault-states>\n   <fault-state family="Family" member="Member" code="1">\n</fault-state>\n   </fault-states>\n</ASI-message>\n',msg.toXML())
 
 if __name__ == '__main__':
     unittest.main()
