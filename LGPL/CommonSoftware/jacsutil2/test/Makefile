@@ -45,33 +45,23 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES = lcTest
-lcTest_DIRS = com alma
+JARFILES = utils2Test
+utils2Test_DIRS = alma
 
 USER_LIB =
 
-EXECUTABLES = logClient
-logClient_OBJECTS = logClient
-logClient_LIBS = maciClient
+EXECUTABLES = 
 
 #
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       =	jlogLogEntryTest \
-					jlogTestXMLParser \
-					jlogTestDispatcher \
-					jlogTestEngine \
-					jlogTATPrologue \
-					jlogEngineStressTest \
-					jlogTestRun.sh \
-					jlogTestEngineFiltering \
-					jlogTestEngineAudience \
-					LoadSaveTest \
-					jlogEngineProfiler \
-					jlogTestFilter \
-					jlogTestFiltersVector \
-					jlogLongRunTest
+SCRIPTS_L       =	acsutil2TATPrologue \
+					testTimestampedStringQueue \
+					testEntriesQueue \
+					testQueueFile \
+					testStringQueueNotification \
+					testDefaultFileHandler
 
 #>>>>> END OF standard rules
   

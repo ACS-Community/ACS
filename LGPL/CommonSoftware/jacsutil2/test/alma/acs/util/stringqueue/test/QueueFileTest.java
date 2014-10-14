@@ -16,27 +16,27 @@ ALMA - Atacama Large Millimiter Array
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
-package alma.acs.jlog.test;
+package alma.acs.util.stringqueue.test;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 
 import junit.framework.TestCase;
 
-import com.cosylab.logging.engine.LogEngineException;
-import com.cosylab.logging.engine.cache.CacheEntry;
-import com.cosylab.logging.engine.cache.CacheFile;
-import com.cosylab.logging.engine.cache.LogQueueFileHandlerImpl;
+import alma.acs.util.stringqueue.StringQueueException;
+import alma.acs.util.stringqueue.QueueEntry;
+import alma.acs.util.stringqueue.QueueFile;
+import alma.acs.util.stringqueue.DefaultQueueFileHandlerImpl;
 
 /**
- * Test the {@link CacheFile}.
+ * Test the {@link QueueFile}.
  *   
  * @author  acaproni
  * 
- * @version $Id: CacheFileTest.java,v 1.2 2012/11/09 17:01:54 acaproni Exp $
+ * @version $Id: QueueFileTest.java,v 1.2 2012/11/09 17:01:54 acaproni Exp $
  * @since ACS 10.2    
  */
-public class CacheFileTest  extends TestCase {
+public class QueueFileTest  extends TestCase {
 	
 	/**
 	 * The file to test. It is removed when the test terminates.
@@ -51,11 +51,11 @@ public class CacheFileTest  extends TestCase {
 	/**
 	 * The object to test
 	 */
-	private CacheFile cacheFile;
+	private QueueFile cacheFile;
 	
 	/**
-	 * Each {@link CacheFile} has a key i.e. a unique identifier used to join
-	 * a {@link CacheEntry} to a file.
+	 * Each {@link QueueFile} has a key i.e. a unique identifier used to join
+	 * a {@link QueueEntry} to a file.
 	 */
 	private final int key=Integer.valueOf(0);
 	
@@ -68,7 +68,7 @@ public class CacheFileTest  extends TestCase {
 	 * <code>fileHandler</code> is used to create a new file. 
 	 * It is also in charge of deleting the file when the test terminates.
 	 */
-	private final LogQueueFileHandlerImpl fileHandler = new LogQueueFileHandlerImpl();
+	private final DefaultQueueFileHandlerImpl fileHandler = new DefaultQueueFileHandlerImpl();
 	
 	/**
 	 * A log for testing
@@ -98,7 +98,7 @@ public class CacheFileTest  extends TestCase {
 		raFile = new RandomAccessFile(file,"rw");
 		assertNotNull("Error building the RandomAccessFile",raFile);
 		
-		cacheFile=new CacheFile(file.getName(), key, raFile, file);
+		cacheFile=new QueueFile(file.getName(), key, raFile, file,"TIMESTAMP=\"");
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class CacheFileTest  extends TestCase {
 	}
 	
 	/**
-	 * When the cache file contains no logs, the oldest and newst dates
+	 * When the cache file contains no logs, the oldest and newest dates
 	 * are <code>null</code>.
 	 * 
 	 * @throws Exception
@@ -131,10 +131,11 @@ public class CacheFileTest  extends TestCase {
 		System.out.println("testLogWithMalformedDate");
 		
 		try {
-			CacheEntry entry = cacheFile.writeOnFile("WrongLog", key);
+			QueueEntry entry = cacheFile.writeOnFile("WrongLog", key);
 			throw new Exception("This line should be unreachable!!! Log with wrong date has been accepetd by the cache");
-		} catch (LogEngineException lee) {
+		} catch (StringQueueException lee) {
 			// This is expected!!!
+			System.out.println("Expected exception received: "+lee.getMessage());
 		}
 		// min date and max date must be both null
 		assertNull("Initial min date schould be null", cacheFile.minDate());
@@ -150,7 +151,7 @@ public class CacheFileTest  extends TestCase {
 	public void testDatesWithOneLog() throws Exception {
 		System.out.println("testDatesWithOneLog");
 		
-		CacheEntry entry = cacheFile.writeOnFile(log1, key);
+		QueueEntry entry = cacheFile.writeOnFile(log1, key);
 		String minDate = cacheFile.minDate();
 		assertNotNull("Invalid null youngest date", minDate);
 		String maxDate = cacheFile.maxDate();
@@ -168,9 +169,9 @@ public class CacheFileTest  extends TestCase {
 	public void testDatesSeveralLogs() throws Exception {
 		System.out.println("testDatesSeveralLogs");
 		
-		CacheEntry entry1 = cacheFile.writeOnFile(log1, key);
-		CacheEntry entry2 = cacheFile.writeOnFile(log2, key);
-		CacheEntry entry3 = cacheFile.writeOnFile(log3, key);
+		QueueEntry entry1 = cacheFile.writeOnFile(log1, key);
+		QueueEntry entry2 = cacheFile.writeOnFile(log2, key);
+		QueueEntry entry3 = cacheFile.writeOnFile(log3, key);
 		String minDate = cacheFile.minDate();
 		assertNotNull("Invalid null youngest date", minDate);
 		String maxDate = cacheFile.maxDate();
@@ -188,9 +189,9 @@ public class CacheFileTest  extends TestCase {
 	public void testReadWrite() throws Exception {
 		System.out.println("testReadWrite");
 		
-		CacheEntry entry1 = cacheFile.writeOnFile(log1, key);
-		CacheEntry entry2 = cacheFile.writeOnFile(log2, key);
-		CacheEntry entry3 = cacheFile.writeOnFile(log3, key);
+		QueueEntry entry1 = cacheFile.writeOnFile(log1, key);
+		QueueEntry entry2 = cacheFile.writeOnFile(log2, key);
+		QueueEntry entry3 = cacheFile.writeOnFile(log3, key);
 		
 		String log1readFromCache = cacheFile.readFromFile(entry1);
 		assertNotNull(log1readFromCache);

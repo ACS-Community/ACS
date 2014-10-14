@@ -16,7 +16,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-package com.cosylab.logging.engine.cache;
+package alma.acs.util.stringqueue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,38 +28,45 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.cosylab.logging.engine.LogEngineException;
 
 /**
- * Objects from this class implement a FIFO cache of String objects. 
+ * Objects from this class implement a FIFO queue of strings.
+ * The strings stored in the queue must be timestamped i.e. they always contain a ISO timestamp 
+ * in a definite position. Example of such strings in ACS are the XML logs and the alarms.
+ * Implementors of {@link TimestampedStringQueueFileHandler} are notified of the min
+ * and max timestamp contained in each file of the cache through 
+ * {@link TimestampedStringQueueFileHandler#fileProcessed(File, String, String)}.
+ * <BR>
+ * <code>TimestampedStringQueue</code> does not assume any format for the strings pushed
+ * in the queue. It assumes that the timestamp immediately follows a string, passed in the constructor.
+ * <P>
  * The strings are written on disk by using several files: a new file is created whenever
  * the dimension of the current file becomes greater then a fixed size.
- * For each entry in cache, a record is created and kept in a in-memory list. 
+ * For each entry in the queue, a record is created and kept in a in-memory list. 
  * <P>
- * The logs are stored in a set of files and their ending position saved.
- * When all the logs in a file have been red, the file is deleted optimizing 
- * the usage disk space.
+ * The strings are stored in a set of files; when all the strings in a file have been red, 
+ * the file is deleted to reduce the disk usage. 
  * The deletion of unused files is done by a thread. 
  * <P>
- * The length of each file of cache can be specified by a parameter in the constructor
- * or by a java property. If both those values are not given, a default length is used.
+ * The length of each file of cache can be customized by passing a parameter in the constructor
+ * or setting a java property. If both those values are not given, a default length is used.
  * <P> 
  * <code>files</code> contains all the files used by the cache, identified by a key.
  * When a file does not contain unread entries then its key is pushed into <code>filesToDelete</code> 
  * and deleted. 
- * The thread that deletes the files from disk, removes the {@link CacheFile} object from
+ * The thread that deletes the files from disk, removes the {@link QueueFile} object from
  * <code>files</code> too.
- * 
  * <P>
- * Life cycle: {@link #start()} must be called at the beginning and {@link #stop()} at the end. 
+ * Life cycle: {@link #start()} must be called at the beginning and {@link #close(boolean)} at the end. 
  *  
  * @author acaproni
  *
  */
-public class EngineCache extends Thread {
-
+public class TimestampedStringQueue extends Thread {
+	
 	/**
 	 * Each file of the cache is identified by a key.
 	 * <P>
@@ -72,13 +79,32 @@ public class EngineCache extends Thread {
 	 * When the size of this file is greater then <code>maxSize</code> then a new file
 	 * is created for output.
 	 */
-	private volatile CacheFile outCacheFile=null;
+	private volatile QueueFile outCacheFile=null;
+	
+	/**
+	 * The timestamp in each string pushed in the queue must follow this string
+	 * otherwise it is not find.
+	 * <P>
+	 * The queue dues not assume any format for the strings it contains so it can't 
+	 * for example parse it to look for a XML TGA because the string can or cannot
+	 * be XML. 
+	 * This choice implies that all the strings follow the same pattern.
+	 * <P>
+	 * In the case of logs, they all have the same pattern:
+	 * &lt;LEVEL Timestamp="...."....&gt;
+	 * In this example tstampIdentifier must be set to <code>Timestamp="</code>.
+	 * <P>
+	 * To improve performances, the queue looks for this string in the push (case insensitive)
+	 * and assume that he timestamp starts from the next character in the string.
+	 * A better solution could be to use a regular expression but it would be less performant. 
+	 */
+	private final String tstampIdentifier;
 	
 	/**
 	 * The file used to read the previous record.
 	 * It is used to know when all the records in a file have been read.
 	 */
-	private volatile CacheFile inCacheFile=null;
+	private volatile QueueFile inCacheFile=null;
 	
 	/**
 	 * The entries in the cache.
@@ -87,14 +113,14 @@ public class EngineCache extends Thread {
 	 * This is particularly important because this order is used to know when a file
 	 * is not used anymore and can be deleted.
 	 * 
-	 * @see {@link EngineCache.files}
+	 * @see {@link TimestampedStringQueue.files}
 	 */
-	private final CacheEntriesQueue entries = new CacheEntriesQueue();
+	private final EntriesQueue entries = new EntriesQueue();
 	
 	/**
 	 * A list of keys of unused files to delete.
 	 */
-	private final LinkedBlockingQueue<CacheFile> filesToDelete = new LinkedBlockingQueue<CacheFile>();
+	private final LinkedBlockingQueue<QueueFile> filesToDelete = new LinkedBlockingQueue<QueueFile>();
 	
 	/**
 	 * The files used by the cache.
@@ -105,61 +131,77 @@ public class EngineCache extends Thread {
 	 * This property can be used to verify for the correctness of the computation because
 	 * every time we have to delete a file, it must be the first item of this vector 
 	 * 
-	 * @see {@link EngineCache.entries}
+	 * @see {@link TimestampedStringQueue.entries}
 	 */
-	private final Map<Integer,CacheFile> files = Collections.synchronizedMap(new LinkedHashMap<Integer,CacheFile>());
+	private final Map<Integer,QueueFile> files = Collections.synchronizedMap(new LinkedHashMap<Integer,QueueFile>());
 	
 	/** 
 	 * <code>true</code> if the cache is closed.
 	 * It signals the thread to terminate.
 	 */
-	private volatile boolean closed=false;
+	private volatile AtomicBoolean closed=new AtomicBoolean(false);
 	
 	/**
 	 * The handler to create and delete the file of the this cache.
 	 */
-	private final ILogQueueFileHandler fileHandler;
+	private final TimestampedStringQueueFileHandler fileHandler;
 	
 	/**
-	 * Build a cache.
+	 * Build a cache with the default file handler {@link DefaultQueueFileHandlerImpl}
+	 * @param timestampIdentifier The string to find the timestamp in each pushed string
 	 */
-	public EngineCache() {
-		super("EngineCache");
-		fileHandler=new LogQueueFileHandlerImpl();
+	public TimestampedStringQueue(String timestampIdentifier) {
+		super("TimestampedStringQueue");
+		fileHandler=new DefaultQueueFileHandlerImpl();
+		if (timestampIdentifier==null || timestampIdentifier.isEmpty()) {
+			throw new IllegalArgumentException("Invalid timestamp identifier.");
+		}
+		this.tstampIdentifier=timestampIdentifier;
 	}
 	
 	/**
 	 * Build the cache with the passed maximum size for each file of the cache.
 	 * <P>
-	 * This constructor must be used to instantiate the default file handler ({@link LogQueueFileHandlerImpl})
+	 * This constructor must be used to instantiate the default file handler ({@link DefaultQueueFileHandlerImpl})
 	 * with a customized file size. 
 	 * 
 	 * @param size The max size of each file of the cache
+	 * @param timestampIdentifier The string to find the timestamp in each pushed string
 	 */
-	public EngineCache(long size) {
-		super("EngineCache");
+	public TimestampedStringQueue(long size, String timestampIdentifier) {
+		super("TimestampedStringQueue");
 		if (size<=1024) {
 			throw new IllegalArgumentException("The size can't be less then 1024");
 		}
-		fileHandler=new LogQueueFileHandlerImpl(size);
+		fileHandler=new DefaultQueueFileHandlerImpl(size);
+		if (timestampIdentifier==null || timestampIdentifier.isEmpty()) {
+			throw new IllegalArgumentException("Invalid timestamp identifier.");
+		}
+		this.tstampIdentifier=timestampIdentifier;
 	}
 	
 	/**
 	 * Build the cache with the passed file handler. This method should be used 
 	 * <OL>
-	 * 	<LI>when a custom implementation of the {@link ILogQueueFileHandler}
+	 * 	<LI>when a custom implementation of {@link StringQueueFileHandler}
 	 *  <LI>when the default handler with the default size of files must be instantiated. 
-	 *      The default size means {@link ILogQueueFileHandler#DEFAULT_SIZE} or whatever is 
-	 *      set in the  {@value ILogQueueFileHandler#MAXSIZE_PROPERTY_NAME} java property. 
+	 *      The default size means {@link StringQueueFileHandler#DEFAULT_SIZE} or whatever is 
+	 *      set in the  {@value StringQueueFileHandler#MAXSIZE_PROPERTY_NAME} java property. 
 	 * </OL>
-	 * If you want to customize the size of the files in the default cache, use {@link #EngineCache(long)} instead.
 	 * 
-	 * @param handler The handler to create and delete the files.
-	 * 				  If <code>null</code>, the default implementation ({@link LogQueueFileHandlerImpl}) will be instantiated. 
+	 * @param handler The not <code>null</code> handler to create and delete the files.
+	 * @param timestampIdentifier The string to find the timestamp in each pushed string
 	 */
-	public EngineCache(ILogQueueFileHandler handler) {
-		super("EngineCache");
-		fileHandler=(handler==null)?new LogQueueFileHandlerImpl():handler;
+	public TimestampedStringQueue(TimestampedStringQueueFileHandler handler, String timestampIdentifier) {
+		super("TimestampedStringQueue");
+		if (handler==null) {
+			throw new IllegalArgumentException("The file handler can't be null.");
+		}
+		fileHandler=handler;
+		if (timestampIdentifier==null || timestampIdentifier.isEmpty()) {
+			throw new IllegalArgumentException("Invalid timestamp identifier.");
+		}
+		this.tstampIdentifier=timestampIdentifier;
 	}
 	
 	/**
@@ -181,48 +223,23 @@ public class EngineCache extends Thread {
 	 * @param itemToDel The item to delete
 	 * @return true if the file is deleted
 	 */
-	private void releaseFile(CacheFile itemToDel) {
+	private void releaseFile(QueueFile itemToDel) {
 		if (itemToDel==null) {
 			throw new IllegalArgumentException("The item to delete can't be null");
 		}
 		itemToDel.close();
-		File f=null;
 		try {
-			f = itemToDel.getFile();
+			File f = itemToDel.getFile();
 		} catch (FileNotFoundException fnfe) {
 			System.err.println("Error deleting "+itemToDel.fileName+" (key "+itemToDel.key+")");
-			System.err.println("Will try to notify the ILogQueuFileHandler anyhow...");
+			System.err.println("Will try to notify the QueueFileHandler anyhow...");
 			fnfe.printStackTrace(System.err);
 		}
 		try {
-			fileHandler.fileProcessed(f,itemToDel.minDate(), itemToDel.maxDate());
+			fileHandler.fileProcessed(itemToDel.getFile(),itemToDel.minDate(), itemToDel.maxDate());
 		} catch (Throwable t) {
-			System.err.println("Error calling filePrcessed in the ILogQueueFileHandler: "+t.getMessage());
+			System.err.println("Error calling fileProcessed in the QueueFileHandler: "+t.getMessage());
 			t.printStackTrace(System.err);
-		}
-	}
-	
-	/**
-	 * The method to get and delete unused files
-	 */
-	public void run() {
-		while (!closed) {
-			CacheFile cacheFile;
-			try {
-				cacheFile = filesToDelete.poll(1, TimeUnit.HOURS);
-			} catch (InterruptedException ie) {
-				continue;
-			}
-			if (cacheFile==null) {
-				// timeout elapsed
-				continue;
-			}
-			releaseFile(cacheFile);
-		}
-		// release all the files in cache before exiting
-		CacheFile cf=null;
-		while ((cf=filesToDelete.poll())!=null) {
-			releaseFile(cf);
 		}
 	}
 	
@@ -272,12 +289,13 @@ public class EngineCache extends Thread {
 	 * 
 	 * @param string The string to write in the cache
 	 * @throws IOException In case of error writing the string on disk
+	 * @throws StringQueueException
 	 */
-	public synchronized void push(String string) throws IOException, LogEngineException {
+	public synchronized void push(String string) throws IOException, StringQueueException {
 		if (string==null || string.length()==0) {
 			throw new IllegalArgumentException("The string can't be null nor empty");
 		}
-		if (closed) {
+		if (closed.get()) {
 			return;
 		}
 		// Check if a new file must be created
@@ -286,12 +304,9 @@ public class EngineCache extends Thread {
 			if (f==null) {
 				throw new IOException("Error creating a cache file");
 			}
-			if (outCacheFile!=null) {
-				outCacheFile.setWritingMode(false);
-			}
 			String name = f.getAbsolutePath();
 			RandomAccessFile raF = new RandomAccessFile(f,"rw");
-			outCacheFile = new CacheFile(name,getNextFileKey(), raF,f);
+			outCacheFile = new QueueFile(name,getNextFileKey(), raF,f,tstampIdentifier);
 			outCacheFile.setWritingMode(true);
 			files.put(outCacheFile.key,outCacheFile);
 		}
@@ -299,7 +314,7 @@ public class EngineCache extends Thread {
 			string=string+"\n";
 		}
 		// Write the string in the file
-		CacheEntry entry = outCacheFile.writeOnFile(string, outCacheFile.key);
+		QueueEntry entry = outCacheFile.writeOnFile(string, outCacheFile.key);
 		entries.put(entry);
 	}
 	
@@ -312,10 +327,10 @@ public class EngineCache extends Thread {
 	 * @throws InterruptedException When the call to <code>poll</code> is interrupted
 	 */
 	public String pop() throws IOException, InterruptedException {
-		if (closed) {
+		if (closed.get()) {
 			return null;
 		}
-		CacheEntry entry=null;
+		QueueEntry entry=null;
 		entry = entries.get();
 		if (entry==null) {
 			// Timeout
@@ -359,7 +374,7 @@ public class EngineCache extends Thread {
 	 * @param sync <code>true</code> if must wait the termination of the threads before exiting
 	 */
 	public void close(boolean sync) {
-		closed=true;
+		closed.set(true);
 		interrupt();
 		if (inCacheFile!=null) {
 			inCacheFile.close();
@@ -377,10 +392,34 @@ public class EngineCache extends Thread {
 			if (!files.isEmpty()) {
 				Set<Integer> keys = files.keySet();
 				for (Integer key: keys) {
-					CacheFile cf = files.get(key);
+					QueueFile cf = files.get(key);
 					releaseFile(cf);
 				}
 			}	
+		}
+	}
+	
+	/**
+	 * The method to get and delete unused files
+	 */
+	public void run() {
+		while (!closed.get()) {
+			QueueFile cacheFile;
+			try {
+				cacheFile = filesToDelete.poll(15, TimeUnit.MINUTES);
+			} catch (InterruptedException ie) {
+				continue;
+			}
+			if (cacheFile==null) {
+				// timeout elapsed
+				continue;
+			}
+			releaseFile(cacheFile);
+		}
+		// release all the files in cache before exiting
+		QueueFile cf=null;
+		while ((cf=filesToDelete.poll())!=null) {
+			releaseFile(cf);
 		}
 	}
 }

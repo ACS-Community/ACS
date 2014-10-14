@@ -21,4 +21,4 @@
 # MA 02111-1307  USA
 #
 export ACS_TMP=../test/tmp
-acsutilTATTestRunner acsStartJava -Duser.dir=$PWD -Djlog.cache.size=4096 -Djlog.cache.writebuffersize=1024 alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.jlog.test.TestEngineCacheEntriesQueue
+acsStartJava -Duser.dir=$PWD -Dacs.util.stringqueue.maxFilesSize=4096 alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.util.stringqueue.test.TimestampedStringQueueTest

@@ -1,8 +1,7 @@
-#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration),
+# Copyright by ESO (in the framework of the ALMA collaboration)
 # and Cosylab 2002, All rights reserved
 #
 # This library is free software; you can redistribute it and/or
@@ -20,5 +19,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-export ACS_TMP=../test/tmp
-acsutilTATTestRunner acsStartJava -Duser.dir=$PWD alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.jlog.test.CacheFileTest
+SOURCE acsutil2TATEnvironment
+PROLOGUE acsutil2TATPrologue
+
+1 testTimestampedStringQueue "testTimestampedStringQueue"
+2 testEntriesQueue "testEntriesQueue"
+3 testQueueFile "testQueueFile"
+4 testStringQueueNotification "testStringQueueNotification"
+5  testDefaultFileHandler "testDefaultFileHandler"

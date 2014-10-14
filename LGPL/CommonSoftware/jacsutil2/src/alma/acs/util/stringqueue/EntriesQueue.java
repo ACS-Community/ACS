@@ -16,7 +16,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-package com.cosylab.logging.engine.cache;
+package alma.acs.util.stringqueue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,20 +31,20 @@ import java.util.concurrent.LinkedBlockingQueue;
  * The queue of entries.
  * <P>
  * This class has been introduced to avoid keeping in memory a
- * never ending queue of {@link CacheEntry} and reduce the
+ * never ending queue of {@link QueueEntry} and reduce the
  * chance to face an out of memory at run-time.
  * <BR>
  * This class is composed of two lists and a file.
  * <code>inMemoryQueue</code> is the list of the entries to get.
  * When this list contains few items then some more items are read from the file.
  * <BR>
- * The other list, <code>CacheEntriesQueue</code>, is a buffer where the entries
+ * The other list, <code>EntriesQueue</code>, is a buffer where the entries
  * are stored ready to be flushed on disk. 
  * This is done to write more entries at once reducing the I/O and increasing
  * the performances.
  * <P>
  * <B>Implementation note</B><BR>
- * <code>CacheEntry</code> items  are read only with the <code>get</code> 
+ * <code>QueueEntry</code> items  are read only with the <code>get</code> 
  * method and pushed with the <code>put</code>.
  * <P>
  * <I>Adding entries</I>:<BR>
@@ -68,12 +68,12 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @author acaproni
  *
  */
-public class CacheEntriesQueue {
+public class EntriesQueue {
 	
 	/**
 	 * The entries to keep in memory.
 	 */
-	private final List<CacheEntry> inMemoryQueue =new LinkedList<CacheEntry>();
+	private final List<QueueEntry> inMemoryQueue =new LinkedList<QueueEntry>();
 	
 	/**
 	 * The max number of entries kept in memory.
@@ -81,7 +81,7 @@ public class CacheEntriesQueue {
 	public static final int MAX_QUEUE_LENGTH = 20000;
 	
 	/**
-	 * The number of {@link CacheEntry} to read/write from/to disk 
+	 * The number of {@link QueueEntry} to read/write from/to disk 
 	 * on each I/O
 	 */
 	public static final int PAGE_LEN = 5000;
@@ -89,7 +89,7 @@ public class CacheEntriesQueue {
 	/**
 	 * The size (in bytes) of a page
 	 */
-	private static final int PAGE_SIZE = PAGE_LEN*CacheEntry.ENTRY_LENGTH;
+	private static final int PAGE_SIZE = PAGE_LEN*QueueEntry.ENTRY_LENGTH;
 	
 	/**
 	 * When in the {@link LinkedBlockingQueue} there are less 
@@ -104,16 +104,16 @@ public class CacheEntriesQueue {
 	private byte[] fileBuffer = new byte[PAGE_SIZE];
 	
 	/**
-	 * The buffer containing the hexadecimal string of a <code>CacheEntry</code> 
+	 * The buffer containing the hexadecimal string of a <code>QueueEntry</code> 
 	 */
-	private byte[] entryBuffer =new byte[CacheEntry.ENTRY_LENGTH];
+	private byte[] entryBuffer =new byte[QueueEntry.ENTRY_LENGTH];
 	
 	/**
 	 * 
 	 * This Vector contains the entries that will be written on the file.
 	 * 
 	 */
-	private List<CacheEntry> cachedEntries=new LinkedList<CacheEntry>();
+	private List<QueueEntry> cachedEntries=new LinkedList<QueueEntry>();
 	
 	/**
 	 * The file to buffer entries on disk.
@@ -153,10 +153,10 @@ public class CacheEntriesQueue {
 	 * <P>
 	 * If the cache is full the entry is added to the buffer.
 	 * 
-	 * @param entry The not <code>null</code> {@link CacheEntry} to add to the queue 
+	 * @param entry The not <code>null</code> {@link QueueEntry} to add to the queue 
 	 * @throws IOException In case of I/O error while flushing the cache on disk
 	 */
-	public synchronized void put(CacheEntry entry) throws IOException {
+	public synchronized void put(QueueEntry entry) throws IOException {
 		if (entry==null) {
 			throw new IllegalArgumentException("The queue do not contain null items!");
 		}
@@ -179,11 +179,11 @@ public class CacheEntriesQueue {
 	 * 
 	 * @throws IOException In case of error during I/O
 	 */
-	public synchronized CacheEntry get() throws IOException {
+	public synchronized QueueEntry get() throws IOException {
 		if (inMemoryQueue.isEmpty()) {
 			return null;
 		}
-		CacheEntry e = inMemoryQueue.remove(0);
+		QueueEntry e = inMemoryQueue.remove(0);
 		if (e!=null && inMemoryQueue.size()<THRESHOLD && (cachedEntries.size()>0 || pagesOnFile>0)) {
 			flushEntriesInQueue();
 		}
@@ -285,7 +285,7 @@ public class CacheEntriesQueue {
 	}
 	
 	/**
-	 * Read page from the file putting all the <code>CacheEntry</code> it contains
+	 * Read page from the file putting all the <code>QueueEntry</code> it contains
 	 * in the queue.
 	 * 
 	 * @throws IOException In case of error during I/O
@@ -318,11 +318,11 @@ public class CacheEntriesQueue {
 		}
 		nextPageToRead++;
 		pagesOnFile--;
-		for (int t=0; t<fileBuffer.length; t+=CacheEntry.ENTRY_LENGTH) {
-			for (int y=t; y<t+CacheEntry.ENTRY_LENGTH; y++) {
+		for (int t=0; t<fileBuffer.length; t+=QueueEntry.ENTRY_LENGTH) {
+			for (int y=t; y<t+QueueEntry.ENTRY_LENGTH; y++) {
 				entryBuffer[y-t]=fileBuffer[y];
 			}
-			CacheEntry e = new CacheEntry(new String(entryBuffer));
+			QueueEntry e = new QueueEntry(new String(entryBuffer));
 			if (!inMemoryQueue.add(e)) {
 				System.err.println("Failed adding item "+t+" to the queue");
 			}
@@ -336,7 +336,7 @@ public class CacheEntriesQueue {
 	}
 	
 	/**
-	 * Write a page of <code>CacheEntry</code> in the file
+	 * Write a page of <code>QueueEntry</code> in the file
 	 * 
 	 * @throws IOException In case of error creating a new temporary file
 	 */
@@ -359,10 +359,10 @@ public class CacheEntriesQueue {
 			throw new IllegalStateException("Not enough entries in vector");
 		}
 		for (int t=0; t<PAGE_LEN; t++) {
-			CacheEntry e = cachedEntries.get(t);
+			QueueEntry e = cachedEntries.get(t);
 			byte[] hexBytes=e.toHexadecimal().getBytes();
 			for (int y=0; y<hexBytes.length; y++) {
-				fileBuffer[t*CacheEntry.ENTRY_LENGTH+y]=hexBytes[y];
+				fileBuffer[t*QueueEntry.ENTRY_LENGTH+y]=hexBytes[y];
 			}
 			
 		}

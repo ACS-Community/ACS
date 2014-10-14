@@ -16,96 +16,107 @@ ALMA - Atacama Large Millimiter Array
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
-package alma.acs.jlog.test;
+package alma.acs.util.stringqueue.test;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
-
-import com.cosylab.logging.engine.cache.EngineCache;
-import com.cosylab.logging.engine.cache.ILogQueueFileHandler;
-import com.cosylab.logging.engine.cache.LogQueueFileHandlerImpl;
+import alma.acs.util.IsoDateFormat;
+import alma.acs.util.stringqueue.QueueEntry;
+import alma.acs.util.stringqueue.TimestampedStringQueue;
+import alma.acs.util.stringqueue.DefaultQueueFileHandlerImpl;
+import alma.acs.util.stringqueue.TimestampedStringQueueFileHandler;
 
 /** 
  * @author  acaproni
  * 
- * Tests the notification of {@link EngineCache} through {@link ILogQueueFileHandler}.
+ * Tests the notification of {@link TimestampedStringQueue} through {@link IStringQueueFileHandler}.
  * 
- * @version $Id: EngineCacheNotification.java,v 1.5 2012/11/09 17:01:54 acaproni Exp $
+ * @version $Id: StringQueueNotification.java,v 1.5 2012/11/09 17:01:54 acaproni Exp $
  * @since ACS 10.2    
  */
-public class EngineCacheNotification extends TestCase {
+public class StringQueueNotification extends TestCase {
 	
 	/**
-	 * The {@link ILogQueueFileHandler} for the test.
-	 * <P>
-	 * <code>TestFileHandler</code> reuses {@link LogQueueFileHandlerImpl} but overrides
-	 * {@link ILogQueueFileHandler#fileProcessed(File, String, String)} in order to test
-	 * the notifications.
+	 * The file handler for the test extends {@link DefaultQueueFileHandlerImpl}
+	 * to instrument {@link #getNewFile()} and {@link #fileProcessed(File, String, String)}
+	 * in order to know when they are really executed.
 	 * 
 	 * @author acaproni
 	 *
 	 */
-	public class TestFileHandler implements ILogQueueFileHandler {
+	public class TestFileHandler extends TimestampedStringQueueFileHandler {
 		
-		/**
-		 * The size of each file of the cache.
-		 * <P>
-		 * Note that when this size is reached then a new file is created and a notification
-		 * sent to the listener.
-		 * <P>
-		 * {@link #fileProcessed(File, String, String)} checks the dates received 
-		 * in the notification with those expected.
-		 */
-		private final long cacheFileSize=1024*50; // 50K
-		
-		/**
-		 * The file handler used by jlog
-		 */
-		private final LogQueueFileHandlerImpl fileHandler;
 		
 		/**
 		 * The timestamp of the oldest log in cache to compare 
 		 * with that received in {@link #fileProcessed(File, String, String)}.
 		 */
-		private String oldestDate;
+		private String oldestDate=null;
 		
 		/**
 		 * The timestamp of the youngest log in cache to compare 
 		 * with that received in {@link #fileProcessed(File, String, String)}.
 		 */
-		private String youngestDate;
+		private String youngestDate=null;
 		
 		/**
 		 * Track the number of notifications received.
 		 */
 		private int receivedNotifications=0;
 		
-		public TestFileHandler() {
-			fileHandler=new LogQueueFileHandlerImpl(cacheFileSize);
+		/**
+		 * Constructor
+		 * 
+		 * @param maxSize The size of each file of the cache
+		 */
+		public TestFileHandler(long maxSize) {
+			super(maxSize);
 			youngestDate=oldestDate=null;
 		}
-
+		
 		@Override
 		public File getNewFile() throws IOException {
-			// Delegate to LogQueueFileHandlerImpl
-			return fileHandler.getNewFile();
+			File f=null;
+			String acstmp = System.getProperty("ACS.tmp");
+			try {
+				// Try to create the file in $ACS_TMP
+				
+				if (!acstmp.endsWith(File.separator)) {
+					acstmp=acstmp+File.separator;
+				}
+				File dir = new File(acstmp);
+				f = File.createTempFile(prefix,".tmp",dir);
+			} catch (IOException ioe) {
+				System.out.println("Error creating a file for cache in "+acstmp);
+				ioe.printStackTrace(System.err);
+				return null;
+			}
+			f.deleteOnExit();
+			System.out.println("New queue file created with name: "+f.getAbsolutePath());
+			return f;
 		}
 
 		@Override
-		public void fileProcessed(File filePointer, String minTime,
+		public void fileProcessed(
+				File filePointer, 
+				String minTime,
 				String maxTime) {
+			assertNotNull("minTime should never be null", minTime);
+			assertNotNull("maxTime should never be null", maxTime);
+			assertTrue("Error deleting "+filePointer.getAbsolutePath(),filePointer.delete());
 			receivedNotifications++;
-			fileHandler.fileProcessed(filePointer, minTime, maxTime);
+			System.out.println("Notification "+receivedNotifications+" received for file "+filePointer.getAbsolutePath());
 			if (checkNotification) {
-				System.out.print("Notification "+receivedNotifications+" received: checking for correctness... ");
+				System.out.print("Checking for correctness of the notification... ");
 				try {
 					assertEquals("Youngest date differ", youngestDate,minTime);
 					assertEquals("Oldest date differ", oldestDate,maxTime);
@@ -121,12 +132,6 @@ public class EngineCacheNotification extends TestCase {
 			}
 		}
 
-		@Override
-		public long getMaxFileSize() {
-			// Delegate to LogQueueFileHandlerImpl
-			return fileHandler.getMaxFileSize();
-		}
-		
 		/**
 		 * Set the dates to compare with those received
 		 *  in {@link #fileProcessed(File, String, String)}.
@@ -210,13 +215,13 @@ public class EngineCacheNotification extends TestCase {
 			if (minDate==-1) {
 				ret.append(minDate);
 			} else {
-				ret.append(formatDate(minDate));
+				ret.append(IsoDateFormat.formatDate(new Date(minDate)));
 			}
 			ret.append(", ");
 			if (maxDate==-1) {
 				ret.append(maxDate);
 			} else {
-				ret.append(formatDate(maxDate));
+				ret.append(IsoDateFormat.formatDate(new Date(maxDate)));
 			}
 			ret. append(']');
 			return ret.toString();
@@ -228,7 +233,18 @@ public class EngineCacheNotification extends TestCase {
 	/**
 	 * The cache used to stress the file handler
 	 */
-	private EngineCache engineCache;
+	private TimestampedStringQueue stringQueue;
+	
+	/**
+	 * The size of each file of the cache.
+	 * <P>
+	 * Note that when this size is reached then a new file is created and a notification
+	 * sent to the listener.
+	 * <P>
+	 * {@link #fileProcessed(File, String, String)} checks the dates received 
+	 * in the notification with those expected.
+	 */
+	private final long cacheFileSize=1024*50; // 50K
 	
 	/**
 	 * The file handler of the test
@@ -243,7 +259,7 @@ public class EngineCacheNotification extends TestCase {
 	/**
 	 * Notifications must be checked only when performing a test.
 	 * <BR>
-	 * In fact when the {@link EngineCache} is closed it sends a notification before
+	 * In fact when the {@link TimestampedStringQueue} is closed it sends a notification before
 	 * deleting a file but in that case the dates must not be tested.
 	 */
 	private volatile boolean checkNotification=false;
@@ -252,7 +268,7 @@ public class EngineCacheNotification extends TestCase {
 	 * Set to wait for a notification.
 	 * <P>
 	 * This is needed because the deletion of the file (and the related
-	 * notification) is done by a dedicated thread: see {@link EngineCache#run()}
+	 * notification) is done by a dedicated thread: see {@link TimestampedStringQueue#run()}
 	 */
 	private volatile CountDownLatch notificationArrived=null;
 	
@@ -264,62 +280,75 @@ public class EngineCacheNotification extends TestCase {
 	/**
 	 * Constructor
 	 */
-	public EngineCacheNotification() {
-		super(EngineCacheNotification.class.getName());
+	public StringQueueNotification() {
+		super(StringQueueNotification.class.getName());
 	}
 	
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		checkNotification=true;
-		testFileHandler = new TestFileHandler();
+		testFileHandler = new TestFileHandler(cacheFileSize);
 		assertNotNull(testFileHandler);
-		engineCache = new EngineCache(testFileHandler);
-		assertNotNull(engineCache);
-		engineCache.start();
+		assertEquals("Size max size of cache differs from the passed one", testFileHandler.maxFilesSize,cacheFileSize );
+		stringQueue = new TimestampedStringQueue(testFileHandler,"TIMESTAMP=\"");
+		assertNotNull(stringQueue);
+		stringQueue.start();
+		System.out.println("Queue started: now the test begins");
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
 		checkNotification=false;
-		engineCache.close(true);
+		stringQueue.close(true);
+		System.out.println("Queue closed");
 		super.tearDown();
 	}
 	
 	/**
-	 * Add logs to the cache until the file handler is notified and then checks the 
-	 * youngest and oldest date of the logs in cache.
+	 * Add timestamped strings until a new file is created then
+	 * check if the timestamp reported by the notification
+	 * are the right ones
 	 * <P>
-	 * In this test, logs are added ordered by timestamp.
+	 * In this test, strings are added ordered by timestamp.
 	 *  
 	 * @throws Exception
 	 */
 	public void testNotifiedDatesOrdered() throws Exception {
-		System.out.println("testNotifiedDatesOrdered");
+		System.out.println("testNotifiedDatesOrdered started");
+		
+		// The date of the first log in the queue
+		// This is also the timestamp of the first log of the first created file
 		long startDate=System.currentTimeMillis();
+		// The timestamp of the last log added in the queue
 		long lastTimestamp = startDate;
 		
 		LogDates logDates = new LogDates();
 		LogDates notUsedlogDates = new LogDates();
-		// Add the first log before the loop because it triggers
-    	// the creation of a new cache file
-		addLogToCache(lastTimestamp, new LogDates(), logDates);
-		int logsInCache=1;
 		
-		
-		while (engineCache.getActiveFilesSize()<=1) {
-			addLogToCache(lastTimestamp, logDates,notUsedlogDates);
+		// Add logs in cache
+		int logsInCache=0;
+		while (stringQueue.getActiveFilesSize()<=1) {
+			addLogToCache(lastTimestamp, logDates, notUsedlogDates);
 			lastTimestamp+=250;
 			logsInCache++;
-			assertEquals(logsInCache, engineCache.size());
+			assertEquals(logsInCache, stringQueue.size());
 		}
-		// Pop logs to trigger the notification
-		testFileHandler.setExpectedDates(formatDate(logDates.minDate), formatDate(logDates.maxDate));
+		assertEquals("The queue does NOT contain the expected number of strings!",logsInCache, stringQueue.size());
+		System.out.println("Stopped pushing; "+stringQueue.getActiveFilesSize()+" files used by the cache to store "+stringQueue.size()+" entries");
+		// The timestamp expected for thefirst notification are:
+		// startDate: the initial log added in the cache
+		// lastTimestamp-500: in fact 250 is added by the loop and must be subtracted; the other 250 beloengs to the last added log
+		//                    but this log belongs to the new file
+		testFileHandler.setExpectedDates(IsoDateFormat.formatDate(new Date(startDate)), IsoDateFormat.formatDate(new Date(lastTimestamp-500)));
 		notificationArrived=new CountDownLatch(1);
+		// Pop logs to trigger the notification
 		for (int t=0; t<logsInCache; t++) {
-			assertNotNull(engineCache.pop());
+			assertNotNull(stringQueue.pop());
 		}
+		assertEquals("The queue should be empty!",0, stringQueue.size());
 		// wait for the notification
+		System.out.println("testNotifiedDatesOrdered awaiting for notification");
 		if (!notificationArrived.await(2, TimeUnit.MINUTES)) {
 			// Timeout :-(
 			throw new Exception("Notification (fileProcessed) never called!");
@@ -347,21 +376,23 @@ public class EngineCacheNotification extends TestCase {
 		addLogToCache(timestamp+rnd.nextInt(), new LogDates(), logDates);
 		int logsInCache=1;
 		
-		while (engineCache.getActiveFilesSize()<=1) {
+		while (stringQueue.getActiveFilesSize()<=1) {
 			int timeStampInc=rnd.nextInt();
 			timestamp=timestamp+timeStampInc;
 			addLogToCache(timestamp, logDates,notUsedlogDates);
 			logsInCache++;
-			assertEquals(logsInCache, engineCache.size());
+			assertEquals(logsInCache, stringQueue.size());
 			//System.out.println("\t=>"+timeStampInc+", actual="+formatDate(timestamp)+"youngest="+formatDate(youngestTime)+", oldest="+formatDate(oldestTime));
 		}
-		testFileHandler.setExpectedDates(formatDate(logDates.minDate), formatDate(logDates.maxDate));
+		System.out.println("Stopped pushing; "+stringQueue.getActiveFilesSize()+" files used by the cache to store "+stringQueue.size()+" entries");
+		testFileHandler.setExpectedDates(IsoDateFormat.formatDate(new Date(logDates.minDate)), IsoDateFormat.formatDate(new Date(logDates.maxDate)));
 		notificationArrived=new CountDownLatch(1);
 		// Pop logs to trigger the notification
-		while (engineCache.size()>0) {
-			assertNotNull(engineCache.pop());
+		while (stringQueue.size()>0) {
+			assertNotNull(stringQueue.pop());
 		}
 		// wait for the notification
+		System.out.println("testNotifiedDatesNotOrdered awaiting for notification");
 		if (!notificationArrived.await(2, TimeUnit.MINUTES)) {
 			// Timeout :-(
 			throw new Exception("Notification (fileProcessed) never called!");
@@ -378,7 +409,7 @@ public class EngineCacheNotification extends TestCase {
 		System.out.println("testNotificationsWithSeveralFiles");
 		
 		// The vector will contain one LogDates for each file of the cache
-		Vector<LogDates> logDatesVector = new Vector<EngineCacheNotification.LogDates>();
+		Vector<LogDates> logDatesVector = new Vector<StringQueueNotification.LogDates>();
 
 		// The number of logs in each file of the cache
  		int[] logsInCache = new int[3];
@@ -389,7 +420,7 @@ public class EngineCacheNotification extends TestCase {
 		LogDates actualFileLogDates = new LogDates();
 		LogDates newFileLogDates = new LogDates();
 		
-		while (engineCache.getActiveFilesSize()<=3) {
+		while (stringQueue.getActiveFilesSize()<=3) {
 			int timeStampInc=rnd.nextInt();
 			timestamp=timestamp+timeStampInc;
 			boolean newFileCreated=addLogToCache(timestamp, actualFileLogDates, newFileLogDates);
@@ -403,14 +434,15 @@ public class EngineCacheNotification extends TestCase {
 		// Pop the logs to trigger a notification for each of the files in cache
 		int idx=1; // Skip index 0 created when the first log has been inserted
 		testFileHandler.setExpectedDates(
-				formatDate(logDatesVector.get(idx).minDate), 
-				formatDate(logDatesVector.get(idx).maxDate));
-		while (engineCache.size()>0) {
+				IsoDateFormat.formatDate(new Date(logDatesVector.get(idx).minDate)), 
+				IsoDateFormat.formatDate(new Date(logDatesVector.get(idx).maxDate)));
+		while (stringQueue.size()>0) {
 			notificationArrived=new CountDownLatch(1);
-			int filesInCache=engineCache.getActiveFilesSize();
-			assertNotNull(engineCache.pop());
-			if (filesInCache!=engineCache.getActiveFilesSize()) {
+			int filesInCache=stringQueue.getActiveFilesSize();
+			assertNotNull(stringQueue.pop());
+			if (filesInCache!=stringQueue.getActiveFilesSize()) {
 				// wait for the notification
+				System.out.println("testNotificationsWithSeveralFiles awaiting for notification");
 				if (!notificationArrived.await(2, TimeUnit.MINUTES)) {
 					// Timeout :-(
 					throw new Exception("Notification (fileProcessed) never called!");
@@ -420,8 +452,8 @@ public class EngineCacheNotification extends TestCase {
 					continue;
 				}
 				testFileHandler.setExpectedDates(
-						formatDate(logDatesVector.get(idx).minDate), 
-						formatDate(logDatesVector.get(idx).maxDate));
+						IsoDateFormat.formatDate(new Date(logDatesVector.get(idx).minDate)), 
+						IsoDateFormat.formatDate(new Date(logDatesVector.get(idx).maxDate)));
 			}
 		}
 		System.out.println("testNotificationsWithSeveralFiles done");
@@ -441,27 +473,8 @@ public class EngineCacheNotification extends TestCase {
 		cal.setTimeInMillis(timestamp);
 		return String.format("%s%s%s",
 				logHdrTemplate,
-				formatDate(timestamp),
+				IsoDateFormat.formatDate(new Date(timestamp)),
 				logFooterTemplate);
-	}
-	
-	/**
-	 * Format the date.
-	 * 
-	 * @param time The time of the log in msec
-	 * @return A string representing the date
-	 */
-	public static String formatDate(long time) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(time);
-		return String.format("%4d-%02d-%02dT%02d:%02d:%02d.%03d",
-				cal.get(Calendar.YEAR),
-				cal.get(Calendar.MONTH)+1,
-				cal.get(Calendar.DAY_OF_MONTH),
-				cal.get(Calendar.HOUR_OF_DAY),
-				cal.get(Calendar.MINUTE),
-				cal.get(Calendar.SECOND),
-				cal.get(Calendar.MILLISECOND));
 	}
 	
 	/**
@@ -485,10 +498,10 @@ public class EngineCacheNotification extends TestCase {
 		if (logDates==null || newLogDates==null) {
 			throw new InvalidParameterException("LogDates params can't be null");
 		}
-		int numoOfLogFilesBefore=engineCache.getActiveFilesSize();
+		int numoOfLogFilesBefore=stringQueue.getActiveFilesSize();
 		String newLog=generateLog(timestamp);
-		engineCache.push(newLog);
-		int numoOfLogFilesAfter=engineCache.getActiveFilesSize();
+		stringQueue.push(newLog);
+		int numoOfLogFilesAfter=stringQueue.getActiveFilesSize();
 		boolean aNewFileHasBeenCreated=numoOfLogFilesBefore!=numoOfLogFilesAfter;
 		if (!aNewFileHasBeenCreated) {
 			logDates.updateTimestamps(timestamp);
@@ -496,6 +509,58 @@ public class EngineCacheNotification extends TestCase {
 			newLogDates.updateTimestamps(timestamp);
 		}
 		return aNewFileHasBeenCreated;
+	}
+	
+	/**
+	 * Check if a new file is created when expected by checking the size of 
+	 * strings in cache against the max length of the file handler.
+	 * It also implicitly test it the queue works with a generic time-stamped string instead of a log.
+	 * <P>
+	 * For this test the dates are not important but only the total
+	 * length of the strings pushed in the queue. 
+	 * In fact, now we push generic time-stamped strings instead of logs.
+	 * <P>
+	 * testFilesCreation pushes a set of generic string each of each 
+	 * has a unique integer ID. When the size of the pushed string
+	 * is greater then the max length of the file, we expect the cache to create new file.
+	 * The test will ten also get out all the strings and check for their 
+	 * integrity, checking the value of their IDs.
+	 * @throws Exception
+	 */
+	public void testFilesCreation() throws Exception {
+		System.out.println("testFilesCreation started");
+		String strHdr="A generic timestamped string to push in queue "+"TIMESTAMP=\"";
+		String strFooter="\" End of generic String ";
+		
+		assertEquals("A newly created cache should have 0 files!",stringQueue.getActiveFilesSize(), 0);
+		// The size of the strings pushed in the queue
+		long size=0;
+		// The unique ID of each string (the first string in queue has ID=1)
+		int ID=0;
+		while (size<=cacheFileSize) {
+			ID++;
+			String now = IsoDateFormat.formatDate(new Date(System.currentTimeMillis()));
+			String strToPush=strHdr+now+strFooter+ID;
+			stringQueue.push(strToPush);
+			size+=strToPush.length();
+			assertEquals("The size of the cache differs from the number of pushed strings", ID, stringQueue.size());
+		}
+		// Now there should be 2 files in the cache
+		assertEquals("Wrong number of files in queue",stringQueue.getActiveFilesSize(), 2);
+		// Get the strings out and checks their IDs
+		for (int t=1; t<=ID; t++) {
+			String str=stringQueue.pop();
+			assertNotNull(str);
+			assertEquals("The size of the cache differs from expected", ID-t, stringQueue.size());
+			// Check the integrity of the string
+			assertTrue(str.startsWith(strHdr));
+			assertTrue("Str red from queue is ["+str+"] but we expect it to have iD="+t,str.endsWith(strFooter+t));
+		}
+		// The queue should be empty here
+		assertEquals("The queue should be empty!",0, stringQueue.size());
+		// And should have no files
+		assertEquals("The queue should have 0 files!",1, stringQueue.getActiveFilesSize());
+		System.out.println("testFilesCreation done");
 	}
 	
 }

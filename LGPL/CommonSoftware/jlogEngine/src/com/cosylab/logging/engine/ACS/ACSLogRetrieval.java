@@ -36,8 +36,10 @@ import alma.acs.logging.engine.utils.ResourceChecker;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.LogMatcher;
-import com.cosylab.logging.engine.cache.EngineCache;
-import com.cosylab.logging.engine.cache.ILogQueueFileHandler;
+
+import alma.acs.util.stringqueue.TimestampedStringQueue;
+import alma.acs.util.stringqueue.TimestampedStringQueueFileHandler;
+
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
@@ -123,7 +125,7 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	/**
 	 * The cache
 	 */
-	private final EngineCache cache;
+	private final TimestampedStringQueue cache;
 	
 	/**
 	 * The thread sending logs to the listeners
@@ -234,30 +236,25 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 * 
 	 * @param listenersDispatcher The object to send messages to the listeners
 	 *                            Can't be null
-	 * @param binFormat true if the lags are binary, 
-	 *                  false if XML format is used 
 	 */
 	public ACSLogRetrieval(ACSListenersDispatcher listenersDispatcher) {
 		if (listenersDispatcher==null) {
 			throw new IllegalArgumentException("The ACSListenersDispatcher can't be null");
 		}
-		cache=new EngineCache();
+		cache=new TimestampedStringQueue("TIMESTAMP=\"");
 		this.listenersDispatcher=listenersDispatcher;
 	}
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param listenersDispatcher The object to send messages to the listeners
-	 *                            Can't be null
-	 * @param binFormat true if the lags are binary, 
-	 *                  false if XML format is used
-	 * @param The handler for the files of the cache 
+	 * @param listenersDispatcher The not <code>null</code> object to send messages to the listeners
+	 * @param The fileHandler the files of the cache
 	 */
 	public ACSLogRetrieval(
 			ACSListenersDispatcher listenersDispatcher,
-			ILogQueueFileHandler fileHandler) {
-		cache=new EngineCache(fileHandler);
+			TimestampedStringQueueFileHandler fileHandler) {
+		cache=new TimestampedStringQueue(fileHandler,"TIMESTAMP=\"");
 		this.listenersDispatcher=listenersDispatcher;
 	}
 	

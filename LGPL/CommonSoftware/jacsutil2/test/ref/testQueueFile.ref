@@ -1,6 +1,6 @@
 1 - testintialDates
 1 - testLogWithMalformedDate
-1 - TIMESTAMP=" not found in XML: [WRONGLOG]
+1 - Expected exception received: TIMESTAMP=" not found in: [WRONGLOG]!!!
 1 - testDatesWithOneLog
 1 - testDatesSeveralLogs
 1 - testReadWrite

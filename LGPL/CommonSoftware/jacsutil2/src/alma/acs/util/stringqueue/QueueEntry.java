@@ -16,7 +16,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-package com.cosylab.logging.engine.cache;
+package alma.acs.util.stringqueue;
 
 /**
  * An entry of the cache.
@@ -32,7 +32,7 @@ package com.cosylab.logging.engine.cache;
  * @author acaproni
  *
  */
-public class CacheEntry {
+public class QueueEntry {
 	
 	/**
 	 * The length of the bytes representing each entry.
@@ -65,7 +65,7 @@ public class CacheEntry {
 	 * @param startPos The starting position of the entry in the file
 	 * @param endPos The ending position of the entry in the file
 	 */
-	public CacheEntry(Integer key, long startPos, long endPos) {
+	public QueueEntry(Integer key, long startPos, long endPos) {
 		if (key==null || key<0) {
 			throw new IllegalArgumentException("The key must be not null and greater or equal to 0");
 		}
@@ -86,7 +86,7 @@ public class CacheEntry {
 	 * 
 	 * @see toHexadecimal()
 	 */
-	public CacheEntry(String hexadecimal) {
+	public QueueEntry(String hexadecimal) {
 		key=Integer.decode("0X"+hexadecimal.substring(0, 8));
 		start=Long.decode("0X"+hexadecimal.substring(8, 24));
 		end=Long.decode("0X"+hexadecimal.substring(24, 40));

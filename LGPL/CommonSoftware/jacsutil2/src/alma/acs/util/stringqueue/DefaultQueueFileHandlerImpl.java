@@ -16,30 +16,25 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-package com.cosylab.logging.engine.cache;
+package alma.acs.util.stringqueue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
 /**
- * A default implementation of {@link ILogQueueFileHandler} to create 
+ * A default implementation of {@link IStringQueueFileHandler} to create 
  * and delete cache files locally.
+ * <P>
+ * <code>DefaultQueueFileHandlerImpl</code> should be used when the queue 
+ * contains plain strings or, more in general, when the files of the queue
+ * do not contain a header and a footer as it happens for example if the files
+ * contain XML strings. In this last case, prefer {@link DefaultXmlQueueFileHandler}
  * 
  * @author acaproni
  * @since ACS 9.0
  */
-public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
-	
-	/**
-	 * The prefix of each file of the cache.
-	 */
-	private final String fileNamePrefix;
-	
-	/**
-	 * The max size of the files of the cache.
-	 */
-	private final long maxFileSize;
+public class DefaultQueueFileHandlerImpl extends TimestampedStringQueueFileHandler {
 	
 	/**
 	 * The random number generator
@@ -49,32 +44,31 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 	/**
 	 * Build the handler with the default size  and prefix.
 	 * 
-	 * The max size of each file of the cache is calculated in the following way:
-	 * 1. if the java property is present, the size is taken from such a property
-	 * 2. the default size is used
+	 * @see StringQueueFileHandler
 	 */
-	public LogQueueFileHandlerImpl() {
-		this(Long.getLong(MAXSIZE_PROPERTY_NAME,DEFAULT_SIZE));
+	public DefaultQueueFileHandlerImpl() {
+		super();
 	}
 	
 	/**
 	 * Build the handler with the passed size for the files.
 	 * 
 	 * @param maxFileSize The max size of the files of the cache.
+	 * @see StringQueueFileHandler
 	 */
-	public LogQueueFileHandlerImpl(long maxFileSize) {
-		this(maxFileSize,"jlogEngineCache");
+	public DefaultQueueFileHandlerImpl(long maxFileSize) {
+		super(maxFileSize);
 	}
 	
 	/**
 	 * Build the handler with the default size for the files
 	 * and the passed prefix
 	 * 
-	 * @param maxFileSize The max size of the files of the cache.
 	 * @param prefix The prefix of the name of the cache files
+	 * @see StringQueueFileHandler
 	 */
-	public LogQueueFileHandlerImpl(String prefix) {
-		this(Long.getLong(MAXSIZE_PROPERTY_NAME,DEFAULT_SIZE),prefix);
+	public DefaultQueueFileHandlerImpl(String prefix) {
+		super(prefix);
 	}
 	
 	/**
@@ -82,22 +76,14 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 	 * 
 	 * @param maxFileSize The max size of the files of the cache.
 	 * @param prefix The prefix of the name of the cache files
+	 * @see StringQueueFileHandler
 	 */
-	public LogQueueFileHandlerImpl(long maxFileSize, String prefix) {
-		this.maxFileSize=maxFileSize;
-		fileNamePrefix=prefix;
-	}
-
-	/**
-	 * @return the maximum size of each file of the cache
-	 */
-	@Override
-	public long getMaxFileSize() {
-		return maxFileSize;
+	public DefaultQueueFileHandlerImpl(long maxFileSize, String prefix) {
+		super(maxFileSize,prefix);
 	}
 
 	/** 
-	 * @see com.cosylab.logging.engine.cache.ILogQueueFileHandler#fileProcessed(java.io.File, java.lang.String, java.lang.String)
+	 * @see alma.acs.util.stringqueue.IStringQueueFileHandler#fileProcessed(java.io.File, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void fileProcessed(File filePointer, String minTime, String maxTime) {
@@ -113,7 +99,7 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 	 * Attempts to create the file for the strings in several places
 	 * before giving up.
 	 * 
-	 * @see com.cosylab.logging.engine.cache.ILogQueueFileHandler#getNewFile()
+	 * @see alma.acs.util.stringqueue.IStringQueueFileHandler#getNewFile()
 	 */
 	@Override
 	public File getNewFile() throws IOException {
@@ -126,7 +112,7 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 				acstmp=acstmp+File.separator;
 			}
 			File dir = new File(acstmp);
-			f = File.createTempFile(fileNamePrefix,".tmp",dir);
+			f = File.createTempFile(prefix,".tmp",dir);
 			name=f.getAbsolutePath();
 		} catch (IOException ioe) {
 			// An error :-O
@@ -137,12 +123,12 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 				do {
 					// Try to create the file in the home directory
 					int random = randomNumGenerator.nextInt();
-					name = homeDir + File.separator+fileNamePrefix+random+".jlog";
+					name = homeDir + File.separator+prefix+random+".jlog";
 					f = new File(name);
 				} while (f.exists());
 			} else {
 				// The home folder is not writable: try to get a system temp file
-				f=File.createTempFile(fileNamePrefix,".tmp");
+				f=File.createTempFile(prefix,".tmp");
 				name=f.getAbsolutePath();
 			}
 		}

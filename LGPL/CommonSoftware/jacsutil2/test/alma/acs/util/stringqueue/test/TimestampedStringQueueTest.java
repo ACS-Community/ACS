@@ -19,32 +19,32 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  *    MA 02111-1307  USA
  */
-package alma.acs.jlog.test;
+package alma.acs.util.stringqueue.test;
 
 import java.util.Random;
 import java.util.Vector;
 
-import com.cosylab.logging.engine.cache.CacheEntry;
-import com.cosylab.logging.engine.cache.EngineCache;
+import alma.acs.util.stringqueue.QueueEntry;
+import alma.acs.util.stringqueue.TimestampedStringQueue;
 
 import junit.framework.TestCase;
 
 /**
- * A class to test <code>EngineCache</code>.
+ * A class to test <code>TimestampedStringQueue</code>.
  * 
  * @author acaproni
  *
  */
-public class EngineCacheTest extends TestCase {
+public class TimestampedStringQueueTest extends TestCase {
 	
 	// The size of each file of the cache
 	private static final int CACHE_SIZE=30000;
 	
 	// The cache to test
-	private EngineCache cache;
+	private TimestampedStringQueue cache;
 	
-	public EngineCacheTest() {
-		super("EngineCacheTest");
+	public TimestampedStringQueueTest() {
+		super("TimestampedStringQueueTest");
 	}
 
 	/* (non-Javadoc)
@@ -54,7 +54,7 @@ public class EngineCacheTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		// Build the cache
-		cache = new EngineCache(CACHE_SIZE);
+		cache = new TimestampedStringQueue(CACHE_SIZE,"TIMESTAMP=\"");
 		assertNotNull(cache);
 		assertEquals(0, cache.getActiveFilesSize());
 		assertEquals(0, cache.size());
@@ -149,25 +149,25 @@ public class EngineCacheTest extends TestCase {
 	}
 	
 	/**
-	 * Check the conversion in CacheEntry between the key, start and end position
+	 * Check the conversion in QueueEntry between the key, start and end position
 	 * and their representations as an hexadecimal string.
 	 */
 	public void testCacheEntryTranslation() throws Exception {
 		// Check for 0, 0, 1 (end must be greater then 0)
-		CacheEntry zeroCE = new CacheEntry(0,0,1);
+		QueueEntry zeroCE = new QueueEntry(0,0,1);
 		
 		String zeroStr = zeroCE.toHexadecimal();
-		assertEquals(CacheEntry.ENTRY_LENGTH,zeroStr.length());
-		CacheEntry check = new CacheEntry(zeroStr);
+		assertEquals(QueueEntry.ENTRY_LENGTH,zeroStr.length());
+		QueueEntry check = new QueueEntry(zeroStr);
 		assertEquals(zeroCE.key, check.key);
 		assertEquals(zeroCE.start, check.start);
 		assertEquals(zeroCE.end, check.end);
 		
 		// Check for to values
-		CacheEntry topCE = new CacheEntry(Integer.MAX_VALUE,Long.MAX_VALUE-1,Long.MAX_VALUE);
+		QueueEntry topCE = new QueueEntry(Integer.MAX_VALUE,Long.MAX_VALUE-1,Long.MAX_VALUE);
 		String topStr = topCE.toHexadecimal();
-		assertEquals(CacheEntry.ENTRY_LENGTH,topStr.length());
-		check= new CacheEntry(topStr);
+		assertEquals(QueueEntry.ENTRY_LENGTH,topStr.length());
+		check= new QueueEntry(topStr);
 		assertEquals(topCE.key, check.key);
 		assertEquals(topCE.start, check.start);
 		assertEquals(topCE.end, check.end);
@@ -181,10 +181,10 @@ public class EngineCacheTest extends TestCase {
 				start = Math.abs(rnd.nextLong());
 				end = Math.abs(rnd.nextLong());
 			}
-			CacheEntry test = new CacheEntry(Math.abs(rnd.nextInt()),start,end);
+			QueueEntry test = new QueueEntry(Math.abs(rnd.nextInt()),start,end);
 			String testStr = test.toHexadecimal();
-			assertEquals(CacheEntry.ENTRY_LENGTH,testStr.length());
-			check= new CacheEntry(testStr);
+			assertEquals(QueueEntry.ENTRY_LENGTH,testStr.length());
+			check= new QueueEntry(testStr);
 			assertEquals(test.key, check.key);
 			assertEquals(test.start, check.start);
 			assertEquals(test.end, check.end);

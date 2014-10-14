@@ -16,18 +16,16 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-package com.cosylab.logging.engine.cache;
+package alma.acs.util.stringqueue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import alma.acs.util.IsoDateFormat;
-
-import com.cosylab.logging.engine.LogEngineException;
 
 /**
  * Each file used by the cache.
@@ -44,12 +42,7 @@ import com.cosylab.logging.engine.LogEngineException;
  * @author acaproni
  *
  */
-public class CacheFile {
-	
-	/**
-	 * The simple date format used to write and read dates from a string
-	 */
-	public static final SimpleDateFormat dateFormat = new IsoDateFormat();
+public class QueueFile {
 	
 	/**
 	 * The name of the file
@@ -88,19 +81,9 @@ public class CacheFile {
 	private boolean writing=false;
 	
 	/**
-	 * The date of the oldest log in this file in ISO format
-	 */
-	private String dateOfOldestLog=null;
-	
-	/**
 	 * The date of the oldest log in this file in milliseconds
 	 */
 	private long oldestLogDateMillis=0;
-	
-	/**
-	 * The date of the youngest log in this file in ISO format
-	 */
-	private String dateOfYoungestLog=null;
 	
 	/**
 	 * The date of the youngest log in this file in milliseconds
@@ -108,19 +91,18 @@ public class CacheFile {
 	private long youngestLogDateMillis=0;
 	
 	/**
-	 * The string to look for in the XML log while getting the date
+	 * The (case insensitive) string to look for in the pushed string while getting the date.
+	 * <P>
+	 * For example, if the queue is used to store logs, this string is 
+	 * <code>TIMESTAMP="</code>
 	 */
-	private static final String timestampStrTag="TIMESTAMP=\"";
+	private final String timestampStrTag;
 	
 	/**
-	 * The header for XML 
+	 * All ISO timestamps like ("2014-10-09T14:04:25.984")
+	 * have the same size!
 	 */
-	private static final String xmlHeader= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Log>\n<Header Name=\"Logs written by jlogEngine\" Type=\"LOGFILE\" />\n";
-	
-	/**
-	 * The footer for XML 
-	 */
-	private static final String xmlFooter = "</Log>";
+	private static final int timeStampLength=23;
 	
 	/**
 	 * Constructor 
@@ -129,12 +111,13 @@ public class CacheFile {
 	 * @param key The key of this entry
 	 * @param rf The <code>RandomAccessFile</code> used for I/O
 	 * @param f The <code>File</code> used to get the length
-	 * 
+	 * @param tstampStrTag The string to find the timestamp in each pushed string
 	 * @throws IOException In case of error writing in the file
 	 * 
-	 * @see {@link CacheFile(String fName, Integer key)}
+	 * @see {@link QueueFile(String fName, Integer key)}
 	 */
-	public CacheFile(String fName, Integer key, RandomAccessFile rf, File f) throws IOException {
+	public QueueFile(String fName, Integer key, RandomAccessFile rf, File f, String tstampStrTag) 
+			throws IOException {
 		if (fName==null || fName.isEmpty()) {
 			throw new IllegalArgumentException("The file name can't be null not empty");
 		}
@@ -144,13 +127,14 @@ public class CacheFile {
 		if (rf==null) {
 			throw new IllegalArgumentException("Invalid null random file");
 		}
+		if (tstampStrTag==null || tstampStrTag.isEmpty()) {
+			throw new IllegalArgumentException("Invalid timestamp identifier.");
+		}
 		fileName=fName;
 		this.key=key;
 		raFile=rf;
 		file=f;
-		synchronized (raFile) {
-			raFile.writeBytes(xmlHeader);
-		}
+		this.timestampStrTag=tstampStrTag.toUpperCase();
 	}
 	
 	/**
@@ -198,11 +182,8 @@ public class CacheFile {
 	 */
 	public void close() {
 		if (raFile!=null) {
-			
 			try {
 				synchronized (raFile) {
-					raFile.seek(file.length());
-					raFile.writeBytes(xmlFooter);
 					raFile.close();
 				}
 			} catch (Throwable t) {
@@ -252,10 +233,9 @@ public class CacheFile {
 	 * @return The ending position of the string in the file
 	 * 
 	 * @throws IOException In case of error while performing I/O
-	 * @throws LogEngineException In case of error reading the date of the 
-	 *                            log from str
+	 * @throws StringQueueException In case of error reading the date of the log from str
 	 */
-	public synchronized CacheEntry writeOnFile(String str, Integer key) throws IOException, LogEngineException {
+	public synchronized QueueEntry writeOnFile(String str, Integer key) throws IOException, StringQueueException {
 		if (str==null || str.isEmpty()) {
 			throw new IllegalArgumentException("Invalid string to write on file");
 		}
@@ -275,7 +255,7 @@ public class CacheFile {
 			endPos = file.length();	
 		}
 		updateLogDates(str);
-		return new CacheEntry(key,startPos,endPos);
+		return new QueueEntry(key,startPos,endPos);
 	}
 	
 	/**
@@ -285,9 +265,9 @@ public class CacheFile {
 	 * 
 	 * @return The string read from the file
 	 */
-	public synchronized String readFromFile(CacheEntry entry) throws IOException {
+	public synchronized String readFromFile(QueueEntry entry) throws IOException {
 		if (entry==null) {
-			throw new IllegalArgumentException("The CacheEntry can't be null");
+			throw new IllegalArgumentException("The QueueEntry can't be null");
 		}
 		if (entry.key!=key) {
 			throw new IllegalArgumentException("Wrong key while reading");
@@ -331,41 +311,33 @@ public class CacheFile {
 	 * 
 	 * @param str The string representing the log
 	 */
-	private void updateLogDates(String str) throws LogEngineException{
+	private void updateLogDates(String str) throws StringQueueException{
 		long millis=0; // Date of current log read from str
-		String timestamp; // Date of current log ISO format
 
-		// To improve performances I don't want to parse the log
-		// in this method so I parse the string knowing that the
-		// timestamp has always the same format
+		// To improve performances I don't want to parse the string
+		// in this method so I look for the
+		// timestamp that has always the same format
 		str=str.toUpperCase();
 		int pos=str.indexOf(timestampStrTag);
 		if (pos==-1) {
-			String msg=timestampStrTag+" not found in XML: ["+str+"]";
-			System.err.println(msg);
-			throw new LogEngineException(msg);
+			String msg=timestampStrTag+" not found in: ["+str+"]!!!";
+			throw new StringQueueException(msg);
 		}
 		// switch to the end of the TIMESTAMP string
 		int startPosOfTimestamp=pos+timestampStrTag.length();
-		int endPos=str.indexOf('"', startPosOfTimestamp);
-		timestamp=str.substring(startPosOfTimestamp, endPos);
+		String timestamp=str.substring(startPosOfTimestamp, startPosOfTimestamp+timeStampLength);
 		try {
-			synchronized (dateFormat) {
-				millis=dateFormat.parse(timestamp).getTime();
-			}
+			millis=IsoDateFormat.parseIsoTimestamp(timestamp).getTime();
 		} catch (ParseException e) {
-			System.err.println("Error parsing the date from: ["+timestamp+"]");
-			throw new LogEngineException(e);
+			throw new StringQueueException("Error parsing the date from: ["+timestamp+"]",e);
 		}
 		
 		// check and store the date
-		if (millis<youngestLogDateMillis ||youngestLogDateMillis==0) {
+		if (millis<youngestLogDateMillis || youngestLogDateMillis==0) {
 			youngestLogDateMillis=millis;
-			dateOfYoungestLog=timestamp;
 		}
 		if (millis>oldestLogDateMillis || oldestLogDateMillis==0) {
 			oldestLogDateMillis=millis;
-			dateOfOldestLog=timestamp;
 		}
 	}
 	
@@ -374,7 +346,11 @@ public class CacheFile {
 	 * in ISO format
 	 */
 	public String minDate() {
-		return dateOfYoungestLog;
+		if (youngestLogDateMillis==0) {
+			return null;
+		} else {
+			return IsoDateFormat.formatDate(new Date(youngestLogDateMillis));
+		}
 	}
 	
 	/**
@@ -382,6 +358,10 @@ public class CacheFile {
 	 * in ISO format
 	 */
 	public String maxDate() {
-		return dateOfOldestLog;
+		if (oldestLogDateMillis==0) {
+			return null;
+		} else {
+			return IsoDateFormat.formatDate(new Date(oldestLogDateMillis));
+		}
 	}
 }

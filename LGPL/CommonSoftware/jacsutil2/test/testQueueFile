@@ -1,7 +1,8 @@
+#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
+# Copyright by ESO (in the framework of the ALMA collaboration),
 # and Cosylab 2002, All rights reserved
 #
 # This library is free software; you can redistribute it and/or
@@ -19,27 +20,5 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.40 2013/02/25 16:19:30 acaproni Exp $"
-#
-# TestList
-#
-# who       when      what
-# --------  --------  ----------------------------------------------
-# david 2002-10-04 commented out ENVIRONMENT
-# almamgr 2000-09-13 created
-SOURCE jlogTATEnvironment
-PROLOGUE jlogTATPrologue
-
-1  jlogLogEntryTest "jlogLogEntryTest"
-2  jlogTestXMLParser "jlogTestXMLParser"
-3  jlogTestDispatcher "jlogTestDispatcher"
-4  jlogLCEngineTest "jlogTestEngine" "@SLEEP 15" "acsutilTATTestRunner logClient 1"
-5  jlogTestEngineFiltering "jlogTestEngineFiltering"
-6  jlogTestEngineAudience "jlogTestEngineAudience"
-7  LoadSaveTest "LoadSaveTest" 
-8 jlogTestFilter "jlogTestFilter"
-9 jlogTestFiltersVector "jlogTestFiltersVector"
-
-#12 jlogEngineStressTest "jlogEngineStressTest" "@SLEEP 15" "jlogTestRun.sh"
-
-EPILOGUE acsutilTATEpilogue
+export ACS_TMP=../test/tmp
+acsStartJava -Duser.dir=$PWD alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.util.stringqueue.test.QueueFileTest

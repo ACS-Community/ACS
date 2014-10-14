@@ -18,52 +18,52 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-package alma.acs.jlog.test;
+package alma.acs.util.stringqueue.test;
 
 import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
-import com.cosylab.logging.engine.cache.CacheEntriesQueue;
-import com.cosylab.logging.engine.cache.CacheEntry;
+import alma.acs.util.stringqueue.EntriesQueue;
+import alma.acs.util.stringqueue.QueueEntry;
 
 import junit.framework.TestCase;
 
 /**
- * Test the CacheEntriesQueue
+ * Test the EntriesQueue
  * 
  * @author acaproni
  *
  */
-public class TestEngineCacheEntriesQueue  extends TestCase {
+public class TestEntriesQueue  extends TestCase {
 	
 	/**
-	 * The number of <code>CacheEntry</code> for testing
+	 * The number of <code>QueueEntry</code> for testing
 	 */
 	private static final int TEST_ENTRIES = 100000;
 	
 	/**
-	 * The vector of <code>CacheEntry</code> sent and read from the queue
+	 * The vector of <code>QueueEntry</code> sent and read from the queue
 	 */
-	private Vector<CacheEntry> entries = new Vector<CacheEntry>();
+	private Vector<QueueEntry> entries = new Vector<QueueEntry>();
 	
 	/**
 	 * The queue to test
 	 */
-	private CacheEntriesQueue queue;
+	private EntriesQueue queue;
 
 	/**
 	 * Constructor
 	 */
-	 public TestEngineCacheEntriesQueue() {
-		 super("TestEngineCacheEntriesQueue");
+	 public TestEntriesQueue() {
+		 super("TestEntriesQueue");
 	 }
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		populateEntries();
-		queue=new CacheEntriesQueue();
+		queue=new EntriesQueue();
 		assertNotNull(queue);
 	}
 
@@ -89,7 +89,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 				start = Math.abs(rnd.nextLong());
 				end = Math.abs(rnd.nextLong());
 			}
-			entries.add(new CacheEntry(key,start,end));
+			entries.add(new QueueEntry(key,start,end));
 		}
 	}
 	
@@ -106,14 +106,14 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 	 * </OL>
 	 */
 	public void testPushPopQueue() throws Exception {
-		for (int t=0; t<CacheEntriesQueue.THRESHOLD-1; t++) {
+		for (int t=0; t<EntriesQueue.THRESHOLD-1; t++) {
 			queue.put(entries.get(t));
 		}
-		assertEquals(queue.size(), CacheEntriesQueue.THRESHOLD-1);
+		assertEquals(queue.size(), EntriesQueue.THRESHOLD-1);
 		// Get the entries from the queue and compare each entry with the 
 		// original in the vector
-		for (int t=0; t<CacheEntriesQueue.THRESHOLD-1; t++) {
-			CacheEntry e = queue.get();
+		for (int t=0; t<EntriesQueue.THRESHOLD-1; t++) {
+			QueueEntry e = queue.get();
 			assertNotNull("Item "+t+" not found", e);
 			assertEquals(entries.get(t).key, e.key);
 			assertEquals(entries.get(t).start, e.start);
@@ -134,14 +134,14 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 	 * </OL>
 	 */
 	public void testPushPopQueueVector() throws Exception {
-		for (int t=0; t<CacheEntriesQueue.THRESHOLD+CacheEntriesQueue.PAGE_LEN-1; t++) {
+		for (int t=0; t<EntriesQueue.THRESHOLD+EntriesQueue.PAGE_LEN-1; t++) {
 			queue.put(entries.get(t));
 		}
-		assertEquals(queue.size(), CacheEntriesQueue.THRESHOLD+CacheEntriesQueue.PAGE_LEN-1);
+		assertEquals(queue.size(), EntriesQueue.THRESHOLD+EntriesQueue.PAGE_LEN-1);
 		// Get the entries from the queue and compare each entry with the 
 		// original in the vector
-		for (int t=0; t<CacheEntriesQueue.THRESHOLD+CacheEntriesQueue.PAGE_LEN-1; t++) {
-			CacheEntry e = queue.get();
+		for (int t=0; t<EntriesQueue.THRESHOLD+EntriesQueue.PAGE_LEN-1; t++) {
+			QueueEntry e = queue.get();
 			assertNotNull("Item "+t+" not found", e);
 			assertEquals(entries.get(t).key, e.key);
 			assertEquals(entries.get(t).start, e.start);
@@ -171,7 +171,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 		// Get the entries from the queue and compare each entry with the 
 		// original in the vector
 		for (int t=0; t<TEST_ENTRIES; t++) {
-			CacheEntry e = queue.get();
+			QueueEntry e = queue.get();
 			assertNotNull("Item "+t+" not found", e);
 			assertEquals("Item "+t,entries.get(t).key, e.key);
 			assertEquals("Item "+t,entries.get(t).start, e.start);
@@ -183,7 +183,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 	 * Test the clearing of the queue
 	 */
 	public void testClear() throws Exception {
-		for (CacheEntry e: entries) {
+		for (QueueEntry e: entries) {
 			queue.put(e);
 		}
 		assertEquals(entries.size(), queue.size());
@@ -203,7 +203,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 		// One push, one pop
 		for (writeCount=0; writeCount<1000; writeCount++) {
 			queue.put(entries.get(writeCount));
-			CacheEntry e = queue.get();
+			QueueEntry e = queue.get();
 			assertNotNull(e);
 			assertEquals("Item "+writeCount,entries.get(writeCount).key, e.key);
 			assertEquals("Item "+writeCount,entries.get(writeCount).start, e.start);
@@ -215,12 +215,12 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 		for (int t=0; t<TEST_ENTRIES; t+=4500) {
 			// Put 4500 entries
 			for (int i=0; i<4500 && writeCount<TEST_ENTRIES; i++) {
-				CacheEntry e = entries.get(writeCount++);
+				QueueEntry e = entries.get(writeCount++);
 				queue.put(e);
 			}
 			// read 2000 entries
 			for (int y=0; y<3000; y++) {
-				CacheEntry e = queue.get();
+				QueueEntry e = queue.get();
 				assertEquals("Item "+readCount,entries.get(readCount).key, e.key);
 				assertEquals("Item "+readCount,entries.get(readCount).start, e.start);
 				assertEquals("Item "+readCount,entries.get(readCount).end, e.end);
@@ -230,7 +230,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 		boolean dump=false;
 		// Get all remaining entries
 		for (; readCount<TEST_ENTRIES; readCount++) {
-			CacheEntry e = queue.get();
+			QueueEntry e = queue.get();
 			assertNotNull(e);
 			assertEquals("Item "+readCount,entries.get(readCount).key, e.key);
 			assertEquals("Item "+readCount,entries.get(readCount).start, e.start);

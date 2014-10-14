@@ -1,7 +1,7 @@
 #! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
-# (c) European Southern Observatory, 2013
+# (c) European Southern Observatory, 2002
 # Copyright by ESO (in the framework of the ALMA collaboration),
 # and Cosylab 2002, All rights reserved
 #
@@ -21,5 +21,4 @@
 # MA 02111-1307  USA
 #
 export ACS_TMP=../test/tmp
-acsStartJava -Duser.dir=$PWD alma.acs.jlog.test.cachefile.CacheFileNotification
-
+acsStartJava -Duser.dir=$PWD -Dacs.util.stringqueue.maxFilesSize=4096 alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.util.stringqueue.test.TestEntriesQueue
