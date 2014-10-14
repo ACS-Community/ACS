@@ -330,16 +330,13 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::working(T value, const ACSEr
             bufferFull = true;
             // Increment buffer initial position
             curSeqInit_m++;
-            std::cout  << "1.- blobData position is " << curSeqPos_m << std::endl;
             // Reset buffer current position
             curSeqPos_m = 0;
             // Add data to current position
             blobDataSeq_m[curSeqPos_m].value = value;
 	        blobDataSeq_m[curSeqPos_m].time = comp.timeStamp;
-	        std::cout  << "2.- blobData position is " << curSeqPos_m << std::endl;
 	        // Increment current position pointer
             curSeqPos_m++;
-            std::cout  << "3.- blobData position is " << curSeqPos_m << std::endl;
         }
     }
    
