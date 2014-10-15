@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The queue of entries.
@@ -64,6 +65,9 @@ import java.util.concurrent.LinkedBlockingQueue;
  * In fact <code>cachedEntries</code>, contains the last received entries, 
  * packed to be transferred on a new page on disk while the first entries to push
  * in the queue are on a page disk (if any).
+ * <BR>
+ * {@link #get()} returns immediately a new entry if it exists; if the queue is empty, 
+ * it waits until a new element is added or a timeout elapses.
  * 
  * @author acaproni
  *
@@ -149,6 +153,25 @@ public class EntriesQueue {
 	private final Random randomNumberGenerator = new Random(System.currentTimeMillis());
 	
 	/**
+	 * The property to set the timeout while getting a string
+	 * through {@link #pop()}.
+	 */
+	private static final String TIMEOUT_PROPERTY_NAME= "acs.util.stringqueue.maxFilesSize";
+	
+	/**
+	 * The default timeout (msecs) to wait when getting a string through {@link #pop()}.
+	 */
+	private static final int DEFAULT_TIMEOUT=250;
+	
+	/**
+	 * The max amount of time (msecs) to wait for a new element when the queue is empty.
+	 * 
+	 * @see TimestampedStringQueue#pop().
+	 * 
+	 */
+	private final AtomicInteger maxWaitingTime = new AtomicInteger(Integer.getInteger(TIMEOUT_PROPERTY_NAME, DEFAULT_TIMEOUT));
+	
+	/**
 	 * Put an entry in Cache.
 	 * <P>
 	 * If the cache is full the entry is added to the buffer.
@@ -169,19 +192,34 @@ public class EntriesQueue {
 				writePageOnFile();
 			}
 		}
+		// Is there a thread waiting to get?
+		notifyAll();
 	}
 	
 	/**
 	 * Get the next value from the queue.
+	 * If there are no entries, <code>get()</code> waits until a new item is inserted
+	 * or a timeout elapses (or interrupted)
 	 * 
 	 * @return The next item in the queue or <code>null</code> if the
-	 * 			queue is empty
+	 * 			queue is empty (after a timeout)
 	 * 
 	 * @throws IOException In case of error during I/O
 	 */
 	public synchronized QueueEntry get() throws IOException {
 		if (inMemoryQueue.isEmpty()) {
-			return null;
+			if (maxWaitingTime.get()==0) {
+				return null;
+			}
+			try {
+				wait(maxWaitingTime.get());
+			} catch (InterruptedException ie) {
+				return null;
+			}
+			// If still empty then return
+			if (inMemoryQueue.isEmpty()) {
+				return null;
+			}
 		}
 		QueueEntry e = inMemoryQueue.remove(0);
 		if (e!=null && inMemoryQueue.size()<THRESHOLD && (cachedEntries.size()>0 || pagesOnFile>0)) {
@@ -239,7 +277,7 @@ public class EntriesQueue {
 			String acsdata = System.getProperty("ACS.data");
 			acsdata=acsdata+File.separator+"tmp"+File.separator;
 			File dir = new File(acsdata);
-			f = File.createTempFile("jlogEngineCache",".tmp",dir);
+			f = File.createTempFile("entriesQueue",".tmp",dir);
 			name=f.getAbsolutePath();
 		} catch (IOException ioe) {
 			// Another error :-O
@@ -249,12 +287,12 @@ public class EntriesQueue {
 				do {
 					// Try to create the file in the home directory
 					int random = randomNumberGenerator.nextInt();
-					name = homeDir +File.separator + "jlogEngineCache"+random+".jlog";
+					name = homeDir +File.separator + "entriesQueue"+random+".jlog";
 					f = new File(name);
 				} while (f.exists());
 			} else {
 				// last hope, try to get a system temp file
-				f = File.createTempFile("jlogEngineCache",".tmp");
+				f = File.createTempFile("entriesQueue",".tmp");
 				name=f.getAbsolutePath();
 			}
 		}
@@ -375,6 +413,22 @@ public class EntriesQueue {
 			cachedEntries.remove(0);
 		}
 		pagesOnFile++;		
+	}
+	
+	/**
+	 * Set a new timeout when getting new element and the queue is empty.
+	 * <P>
+	 *  If  the timeout is <code>0</code>, then {@link #pop()} returns immediately
+	 *  if the queue is empty.
+	 *  
+	 * @param val The new timeout (must be equal or greater then <code>0</code>).
+	 * @see #pop()
+	 */
+	public void setTimeout(int val) {
+		if (val<0) {
+			throw new IllegalArgumentException("Invalid timeout "+val);
+		}
+		maxWaitingTime.set(val);
 	}
 	
 }

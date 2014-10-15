@@ -36,23 +36,32 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Objects from this class implement a FIFO queue of strings.
  * The strings stored in the queue must be timestamped i.e. they always contain a ISO timestamp 
  * in a definite position. Example of such strings in ACS are the XML logs and the alarms.
- * Implementors of {@link TimestampedStringQueueFileHandler} are notified of the min
- * and max timestamp contained in each file of the cache through 
- * {@link TimestampedStringQueueFileHandler#fileProcessed(File, String, String)}.
  * <BR>
  * <code>TimestampedStringQueue</code> does not assume any format for the strings pushed
  * in the queue. It assumes that the timestamp immediately follows a string, passed in the constructor.
  * <P>
- * The strings are written on disk by using several files: a new file is created whenever
+ * The main purpose of this class is to write on files all the strings pushed in the queue and let the
+ * user able to reuse such files knowing the timestamps of the strings it contains.
+ * Implementors of {@link TimestampedStringQueueFileHandler} are notified of the min
+ * and max timestamps contained in each file of the cache through 
+ * {@link TimestampedStringQueueFileHandler#fileProcessed(File, String, String)}.
+ * <P> 
+ * Users of this class pushes string by invoking {@link #push(String)} and get strings out of the queue
+ * by calling {@link #pop()}.
+ * The insertion of a new string is immediate.
+ * Getting a string returns immediately if the queue contains at least one string; otherwise it waits for
+ * a new element until a timeout happens.
+ * <P>
+ * The strings are written on disk by using a set of files: a new file is created whenever
  * the dimension of the current file becomes greater then a fixed size.
  * For each entry in the queue, a record is created and kept in a in-memory list. 
  * <P>
- * The strings are stored in a set of files; when all the strings in a file have been red, 
- * the file is deleted to reduce the disk usage. 
+ * When all the strings in a file have been red, the file is deleted to reduce the disk usage. 
  * The deletion of unused files is done by a thread. 
  * <P>
  * The length of each file of cache can be customized by passing a parameter in the constructor
- * or setting a java property. If both those values are not given, a default length is used.
+ * or setting {@value TimestampedStringQueueFileHandler#MAXSIZE_PROPERTY_NAME} java property. 
+ * If both those values are not given, a default length is used ({@value TimestampedStringQueueFileHandler#DEFAULT_SIZE}).
  * <P> 
  * <code>files</code> contains all the files used by the cache, identified by a key.
  * When a file does not contain unread entries then its key is pushed into <code>filesToDelete</code> 
@@ -66,6 +75,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  */
 public class TimestampedStringQueue extends Thread {
+	
+	
 	
 	/**
 	 * Each file of the cache is identified by a key.
@@ -139,7 +150,7 @@ public class TimestampedStringQueue extends Thread {
 	 * <code>true</code> if the cache is closed.
 	 * It signals the thread to terminate.
 	 */
-	private volatile AtomicBoolean closed=new AtomicBoolean(false);
+	private AtomicBoolean closed=new AtomicBoolean(false);
 	
 	/**
 	 * The handler to create and delete the file of the this cache.
@@ -320,22 +331,26 @@ public class TimestampedStringQueue extends Thread {
 	
 	/**
 	 * Get and remove the next string from the cache.
+	 * <P>
+	 * This method returns immediately if the queue is not empty otherwise
+	 * waits until a new element is inserted in the queue or a timeout elapses ({@link QueueEntry#maxWaitingTime}).
+	 * However, a timeout of 0 let this method return immediately even if the queue is empty.
 	 * 
 	 * @return The next string entry in cache.
 	 *         <code>null</code> If the timeout happened
 	 * @throws IOException In case of error reading from the file
-	 * @throws InterruptedException When the call to <code>poll</code> is interrupted
 	 */
-	public String pop() throws IOException, InterruptedException {
+	public synchronized String pop() throws IOException {
 		if (closed.get()) {
 			return null;
 		}
-		QueueEntry entry=null;
-		entry = entries.get();
+		// Get a new entry if it exists or wait until timeout
+		QueueEntry entry=entries.get();
 		if (entry==null) {
-			// Timeout
+			// No entry in QueueEntry
 			return null;
 		}
+		
 		if (inCacheFile==null) {
 			inCacheFile=files.get(entry.key);
 			inCacheFile.setReadingMode(true);
@@ -421,5 +436,18 @@ public class TimestampedStringQueue extends Thread {
 		while ((cf=filesToDelete.poll())!=null) {
 			releaseFile(cf);
 		}
+	}
+	
+	/**
+	 * Set a new timeout when getting new element and the queue is empty.
+	 * <P>
+	 *  If  the timeout is <code>0</code>, then {@link #pop()} returns immediately
+	 *  if the queue is empty.
+	 *  
+	 * @param val The new timeout (must be equal or greater then <code>0</code>).
+	 * @see #pop()
+	 */
+	public void setTimeout(int val) {
+		entries.setTimeout(val);
 	}
 }
