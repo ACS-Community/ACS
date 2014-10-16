@@ -57,6 +57,7 @@ ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
 MICO_SOURCES=`pwd`/../PRODUCTS
 CUR_DIR=`pwd`
 
+NUM_CPU=`grep -c processor  /proc/cpuinfo`
 #MICO_FINAL_DEST=$ALMASW_ROOTDIR/$ALMASW_RELEASE/mico
 
 if [ "X$MICO_HOME" = X ]
@@ -99,6 +100,7 @@ echo ==== Configuring mico
 cd mico
 # Use this command line if you want to build also CORBA CCM support
 #./configure --prefix=$MICO_HOME --enable-ccm
+export LDFLAGS="-Wl,--no-as-needed"
 ./configure --prefix=$MICO_HOME --disable-optimize
 
 if [ $? -ne 0 ]
@@ -110,7 +112,7 @@ echo "done Configuring mico ===="
 echo ""
 
 echo ==== Building mico
-make
+make -j $NUM_CPU
 if [ $? -ne 0 ]
 then
      echo "========= FAILED make all =========="
