@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import alma.acs.util.IsoDateFormat;
 
@@ -159,7 +160,8 @@ public class QueueFile {
 		if (!f.canRead() || !f.canWrite()) {
 			throw new IllegalStateException("Impossible to read/write "+fileName);
 		}
-		return f;
+		file=f;
+		return file;
 	}
 	
 	/**

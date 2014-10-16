@@ -23,10 +23,11 @@ package alma.acs.util.stringqueue.test;
 
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import alma.acs.util.stringqueue.QueueEntry;
 import alma.acs.util.stringqueue.TimestampedStringQueue;
-
 import junit.framework.TestCase;
 
 /**
@@ -36,6 +37,109 @@ import junit.framework.TestCase;
  *
  */
 public class TimestampedStringQueueTest extends TestCase {
+	
+	/**
+	 * A runnable to push strings in the queue
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class StringPusher implements Runnable {
+		
+		/**
+		 * The string to push in the queue
+		 */
+		private final Vector<String> strsToPush=new Vector<String>();
+		
+		private final CountDownLatch latch;
+		
+		private final String name;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param numOfStringsToPush
+		 */
+		public StringPusher(int numOfStringsToPush, CountDownLatch latch, String name) {
+			if (numOfStringsToPush<=0) {
+				throw new IllegalArgumentException("numOfStringsToPush must be greater the 0");
+			}
+			populateStringsVector(strsToPush,numOfStringsToPush);
+			this.latch=latch;
+			this.name=name;
+		}
+
+		@Override
+		public void run() {
+			System.out.println(name+" started. Pushing "+strsToPush.size()+" strings in the queue");
+			for (int t=0; t<strsToPush.size(); t++) {
+				try {
+					cache.push(strsToPush.elementAt(t));
+				} catch (Throwable th) {
+					th.printStackTrace();
+				}
+			}
+			strsToPush.clear();
+			latch.countDown();
+			System.out.println(name+" terminated");
+		}
+		
+	}
+	
+	/**
+	 * A runnable to get strings out the queue
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class StringPopper implements Runnable {
+		/**
+		 * The string read from the queue
+		 */
+		private final Vector<String> poppedStrings= new Vector<String>();
+		
+		private final int numOfStrsToGet;
+		
+		private final CountDownLatch latch;
+		
+		private final String name;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param numOfStrsToGet
+		 */
+		public StringPopper(int numOfStrsToGet, CountDownLatch latch, String name) {
+			if (numOfStrsToGet<=0) {
+				throw new IllegalArgumentException("numOfStringsToPush must be greater the 0");
+			}
+			this.numOfStrsToGet=numOfStrsToGet;
+			this.latch=latch;
+			this.name=name;
+		}
+		
+		@Override
+		public void run() {
+			System.out.println(name+" started");
+			int read=0;
+			
+			while (read<numOfStrsToGet) {
+				String str=null;
+				try {
+					str=cache.pop();
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+				if (str==null) {
+					continue;
+				}
+				poppedStrings.add(str);
+				read++;
+			}
+			latch.countDown();
+			System.out.println(name+" terminated");
+		}
+	}
 	
 	// The size of each file of the cache
 	private static final int CACHE_SIZE=30000;
@@ -71,8 +175,8 @@ public class TimestampedStringQueueTest extends TestCase {
 	
 	/**
 	 * Generate the strings to put in the cache.
-	 * 
-	 * The number of strings to put in the vector depends by the passed
+	 * <P>
+	 * The number of strings to put in the vector depends on the passed
 	 * parameter. The sum of the length of all the strings in the
 	 * vector is equal or greater to the passed parameter.
 	 * In this way it is possible to check if the cache creates/deletes a
@@ -92,6 +196,20 @@ public class TimestampedStringQueueTest extends TestCase {
 			strings.add(str);
 		}
 		return strings;
+	}
+	
+	/**
+	 * Generate a vector of size strings.
+	 * 
+	 * @param strings
+	 * @param size The number of strings to put in the vector
+	 */
+	private void populateStringsVector(Vector<String> strings, int size) {
+		long t=0;
+		while (strings.size()<size) {
+			String str = "A string to test with threads, TimeStamp=\"2005-12-02T13:45:02.761\" "+(t++);
+			strings.add(str);
+		}
 	}
 	
 	/**
@@ -119,6 +237,7 @@ public class TimestampedStringQueueTest extends TestCase {
 		// No more items and files in cache
 		assertEquals(0, cache.size());
 		assertEquals(1, cache.getActiveFilesSize());
+		System.out.println("testPushPopSingleFile done");
 	}
 	
 	/**
@@ -146,6 +265,7 @@ public class TimestampedStringQueueTest extends TestCase {
 		// No more items and files in cache
 		assertEquals(0, cache.size());
 		assertEquals(1, cache.getActiveFilesSize());
+		System.out.println("testPushPopSeveralFiles done");
 	}
 	
 	/**
@@ -189,6 +309,146 @@ public class TimestampedStringQueueTest extends TestCase {
 			assertEquals(test.start, check.start);
 			assertEquals(test.end, check.end);
 		}
+		System.out.println("testCacheEntryTranslation done");
+	}
+	
+	/**
+	 * Check if getting an entry from an empty queue returns <code>null</code>
+	 * after the timout elapses
+	 */
+	public void testEmptyTimeout() throws Exception {
+		// Set the timeout to 1 sec.
+		cache.setTimeout(1000);
+		long now = System.currentTimeMillis();
+		String str = cache.pop();
+		long after = System.currentTimeMillis();
+		assertTrue("The queue returned too early! No timeout? ", after-now>=1000);
+		assertNull("The queue shall return NULL when empty!",str);
+	}
+	
+	/**
+	 * Test if the cache works as expected by running 5 threads in parallel
+	 * to push .strings asynchronously.
+	 */
+	public void testAsyncPush() throws Exception {
+		System.out.println("testAsyncPush started");
+		cache.start();
+		int numOfPushers=5;
+		CountDownLatch latch = new CountDownLatch(numOfPushers);
+		// Instantiate 5 threads to push 1000 items each
+		StringPusher[] pushers = new StringPusher[numOfPushers];
+		for (int t=0; t<pushers.length; t++) {
+			pushers[t]=new StringPusher(1000, latch,"StringPusher-"+t);
+		}
+		
+		// Create and run all the threads
+		System.out.println("testAsyncPush creating threads");
+		Vector<Thread> threads = new Vector<Thread>();
+		for (int t=0; t<pushers.length; t++) {
+			threads.add(new Thread(pushers[t]));
+		}
+		System.out.println("testAsyncPush starting threads");
+		for (int t=0; t<threads.size(); t++) {
+			threads.elementAt(t).start();
+		}
+		System.out.println("testAsyncPush waiting until all threads terminate");
+		while (!latch.await(1,TimeUnit.MINUTES)) {
+			System.out.println("Strings in cache: "+cache.size()+", files="+cache.getActiveFilesSize());
+		}
+		System.out.println("testAsyncPush pusher threads terminated");
+		assertEquals("The cahce does not contain the expected number of strings!",5000, cache.size());
+		System.out.println("testAsyncPush done");
+	}
+	
+	/**
+	 * Test if the cache works as expected by running 5 threads in parallel
+	 * to pop strings asynchronously. 
+	 */
+	public void testAsyncPop() throws Exception {
+		System.out.println("testAsyncPop started");
+		cache.start();
+		int numOfPoppers=5;
+		CountDownLatch latch = new CountDownLatch(numOfPoppers);
+		
+		// Piush the strings in the cache
+		Vector<String> strsToPush = new Vector<String>();
+		populateStringsVector(strsToPush, 5000);
+		for (String str: strsToPush) {
+			cache.push(str);
+		}
+		assertEquals(5000, cache.size());
+		
+		// Instantiate the threads to read 1000 items each
+		StringPopper[] poppers = new StringPopper[numOfPoppers];
+		for (int t=0; t<poppers.length; t++) {
+			poppers[t]=new StringPopper(1000, latch,"StringPopper-"+t);
+		}
+		
+		// Create and run all the threads
+		System.out.println("testAsyncPop creating threads");
+		Vector<Thread> threads = new Vector<Thread>();
+		for (int t=0; t<poppers.length; t++) {
+			threads.add(new Thread(poppers[t]));
+		}
+		System.out.println("testAsyncPop starting threads");
+		for (int t=0; t<threads.size(); t++) {
+			threads.elementAt(t).start();
+		}
+		System.out.println("testAsyncPop waiting until all threads terminate");
+		// Wait the thread to terminate with a timeout of 3 minutes
+		while (!latch.await(1,TimeUnit.MINUTES)) {
+			// This is an error!!!!
+			System.out.println("Not all the threads to get strings from the cache terminated!");
+			System.out.println("Strings in cache: "+cache.size()+", files="+cache.getActiveFilesSize());
+		}
+		// Here all the strings should have been read from the cache!
+		assertTrue(cache.size()==0);
+		System.out.println("testAsyncPop done");
+	}
+	
+	/**
+	 * Test if the cache works as expected by running 13 threads in parallel
+	 * to push and pop strings asynchronously
+	 */
+	public void testAsyncPushPop() throws Exception {
+		System.out.println("testAsyncPushPop started");
+		cache.start();
+		int numOfPushers=5;
+		int numOfPoppers=8;
+		CountDownLatch latch = new CountDownLatch(numOfPushers+numOfPoppers);
+		// Instantiate 5 threads to push 1000 items each
+		StringPusher[] pushers = new StringPusher[numOfPushers];
+		for (int t=0; t<pushers.length; t++) {
+			pushers[t]=new StringPusher(1000, latch,"StringPusher-"+t);
+		}
+		
+		// Instantiate 8 threads to read 625 items each
+		StringPopper[] poppers = new StringPopper[numOfPoppers];
+		for (int t=0; t<poppers.length; t++) {
+			poppers[t]=new StringPopper(625, latch,"StringPopper-"+t);
+		}
+		
+		// Create and run all the threads
+		System.out.println("testAsyncPushPop creating threads");
+		Vector<Thread> threads = new Vector<Thread>();
+		for (int t=0; t<poppers.length; t++) {
+			threads.add(new Thread(poppers[t]));
+		}
+		for (int t=0; t<pushers.length; t++) {
+			threads.add(new Thread(pushers[t]));
+		}
+		System.out.println("testAsyncPushPop starting threads");
+		for (int t=0; t<threads.size(); t++) {
+			threads.elementAt(t).start();
+		}
+		System.out.println("testAsyncPushPop waiting until all threads terminate");
+		while (!latch.await(3,TimeUnit.MINUTES)) {
+			// This is an error!!!!
+			System.out.println("Not all the threads terminated!");
+			System.out.println("Strings in cache: "+cache.size()+", files="+cache.getActiveFilesSize());
+		}
+		assertTrue(cache.size()==0);
+		System.out.println("testAsyncPushPop done");
 	}
 
 }

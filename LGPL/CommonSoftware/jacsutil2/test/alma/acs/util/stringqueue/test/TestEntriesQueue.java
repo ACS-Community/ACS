@@ -187,24 +187,10 @@ public class TestEntriesQueue  extends TestCase {
 			queue.put(e);
 		}
 		assertEquals(entries.size(), queue.size());
+		assertFalse(queue.isEmpty());
 		queue.clear();
 		assertEquals(0, queue.size());
-	}
-	
-	/**
-	 * Check if getting an entry from an empty queue returns <code>null</code>
-	 * after the timout elapses
-	 */
-	public void testEmptyTimeout() throws Exception {
-		queue.clear();
-		assertEquals(0, queue.size());
-		// Set the timeout to 1 sec.
-		queue.setTimeout(1000);
-		long now = System.currentTimeMillis();
-		QueueEntry entry = queue.get();
-		long after = System.currentTimeMillis();
-		assertTrue("The queue returned too early! No timeout? ", after-now>=1000);
-		assertNull("The queue shall return NULL when empty!",entry);
+		assertTrue(queue.isEmpty());
 	}
 	
 	/**

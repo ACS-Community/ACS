@@ -65,9 +65,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * In fact <code>cachedEntries</code>, contains the last received entries, 
  * packed to be transferred on a new page on disk while the first entries to push
  * in the queue are on a page disk (if any).
- * <BR>
- * {@link #get()} returns immediately a new entry if it exists; if the queue is empty, 
- * it waits until a new element is added or a timeout elapses.
+ * 
  * 
  * @author acaproni
  *
@@ -153,25 +151,6 @@ public class EntriesQueue {
 	private final Random randomNumberGenerator = new Random(System.currentTimeMillis());
 	
 	/**
-	 * The property to set the timeout while getting a string
-	 * through {@link #pop()}.
-	 */
-	private static final String TIMEOUT_PROPERTY_NAME= "acs.util.stringqueue.maxFilesSize";
-	
-	/**
-	 * The default timeout (msecs) to wait when getting a string through {@link #pop()}.
-	 */
-	private static final int DEFAULT_TIMEOUT=250;
-	
-	/**
-	 * The max amount of time (msecs) to wait for a new element when the queue is empty.
-	 * 
-	 * @see TimestampedStringQueue#pop().
-	 * 
-	 */
-	private final AtomicInteger maxWaitingTime = new AtomicInteger(Integer.getInteger(TIMEOUT_PROPERTY_NAME, DEFAULT_TIMEOUT));
-	
-	/**
 	 * Put an entry in Cache.
 	 * <P>
 	 * If the cache is full the entry is added to the buffer.
@@ -198,28 +177,15 @@ public class EntriesQueue {
 	
 	/**
 	 * Get the next value from the queue.
-	 * If there are no entries, <code>get()</code> waits until a new item is inserted
-	 * or a timeout elapses (or interrupted)
 	 * 
 	 * @return The next item in the queue or <code>null</code> if the
-	 * 			queue is empty (after a timeout)
+	 * 			queue is empty 
 	 * 
 	 * @throws IOException In case of error during I/O
 	 */
 	public synchronized QueueEntry get() throws IOException {
 		if (inMemoryQueue.isEmpty()) {
-			if (maxWaitingTime.get()==0) {
-				return null;
-			}
-			try {
-				wait(maxWaitingTime.get());
-			} catch (InterruptedException ie) {
-				return null;
-			}
-			// If still empty then return
-			if (inMemoryQueue.isEmpty()) {
-				return null;
-			}
+			return null;
 		}
 		QueueEntry e = inMemoryQueue.remove(0);
 		if (e!=null && inMemoryQueue.size()<THRESHOLD && (cachedEntries.size()>0 || pagesOnFile>0)) {
@@ -259,6 +225,15 @@ public class EntriesQueue {
 	 */
 	public synchronized int size() {
 		return inMemoryQueue.size()+cachedEntries.size()+pagesOnFile*PAGE_LEN;
+	}
+	
+	/**
+	 * 
+	 * @return <code>true</code> if the queue is empty;
+	 *         <code>false</code> otherwise.
+	 */
+	public synchronized boolean isEmpty() {
+		return size()==0;
 	}
 	
 	/**
@@ -415,20 +390,6 @@ public class EntriesQueue {
 		pagesOnFile++;		
 	}
 	
-	/**
-	 * Set a new timeout when getting new element and the queue is empty.
-	 * <P>
-	 *  If  the timeout is <code>0</code>, then {@link #pop()} returns immediately
-	 *  if the queue is empty.
-	 *  
-	 * @param val The new timeout (must be equal or greater then <code>0</code>).
-	 * @see #pop()
-	 */
-	public void setTimeout(int val) {
-		if (val<0) {
-			throw new IllegalArgumentException("Invalid timeout "+val);
-		}
-		maxWaitingTime.set(val);
-	}
+	
 	
 }
