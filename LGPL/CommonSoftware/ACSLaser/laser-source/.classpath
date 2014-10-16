@@ -39,5 +39,5 @@
 	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/AlarmSourceSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
-	<classpathentry kind="output" path="idl"/>
+	<classpathentry kind="output" path="lib"/>
 </classpath>
