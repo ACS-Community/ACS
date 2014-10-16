@@ -73,7 +73,7 @@ loggingService_OBJECTS   = logging loggingXMLElement loggingXMLParser loggingLoc
 			   loggingACSLogger  loggingLogSvcHandler \
                            loggingLoggable \
 			   loggingBaseLog loggingHandler loggingLogger loggingLogTrace loggingGetLogger loggingGenericLogger loggingStdoutHandler \
-			   loggingLogThrottle
+			   loggingLogThrottle loggingStopWatch
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
