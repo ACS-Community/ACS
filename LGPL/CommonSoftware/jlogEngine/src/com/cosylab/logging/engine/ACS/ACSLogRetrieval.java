@@ -386,8 +386,6 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 			String tempStr = null;
 			try {
 				tempStr=cache.pop();
-			} catch (InterruptedException ie) {
-				continue;
 			} catch (Throwable t) {
 				System.err.println("Exception from cache.pop: "+t.getMessage());
 				t.printStackTrace();
