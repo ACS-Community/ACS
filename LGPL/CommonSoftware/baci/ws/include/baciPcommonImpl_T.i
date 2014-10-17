@@ -24,6 +24,7 @@
 template<ACS_P_C> 
 baci::PcommonImpl<ACS_P_TL>::PcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
         CharacteristicModelImpl(name, component_p->getCharacteristicModel()), 
+        checkDevIOValue_m(name),
 	property_mp(0), devIO_mp(0), initialization_m(1), destroyed_m(false), 
 	reference_mp(CORBA::Object::_nil()),
 	historyStart_m(-1), historyTurnaround_m(false)
@@ -225,6 +226,7 @@ void baci::PcommonImpl<ACS_P_TL>::getValue(BACIProperty* property,
   ACS::Time ts  = getTimeStamp();
   try {
 	nval = devIO_mp->read(ts);
+	checkDevIOValue_m.checkValue(nval);
   } catch (ACSErr::ACSbaseExImpl& ex) {
 	completion = baciErrTypeDevIO::ReadErrorCompletion (ex, __FILE__, __LINE__,"PcommonImpl::getValue(...)");
 	return;
