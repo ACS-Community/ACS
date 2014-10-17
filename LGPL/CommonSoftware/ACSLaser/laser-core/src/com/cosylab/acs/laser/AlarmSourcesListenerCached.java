@@ -18,11 +18,13 @@ ALMA - Atacama Large Millimiter Array
 */
 package com.cosylab.acs.laser;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.util.stringqueue.DefaultXmlQueueFileHandlerImpl;
+import alma.acs.util.stringqueue.TimestampedStringQueue;
 import alma.acsnc.EventDescription;
 
 import com.cosylab.acs.jms.ACSJMSMessageEntity;
@@ -47,11 +49,6 @@ import com.cosylab.acs.jms.ACSJMSMessageEntity;
 public class AlarmSourcesListenerCached extends AlarmSourcesListener implements Runnable {
 	
 	/**
-	 * Max number of items in queue
-	 */
-	private final int MAX_QUEUE_SIZE=15000;
-	
-	/**
 	 * The thread of this class;
 	 */
 	private final Thread thread;
@@ -59,13 +56,13 @@ public class AlarmSourcesListenerCached extends AlarmSourcesListener implements 
 	/**
 	 * The boolean to signal the thread to terminate
 	 */
-	private volatile boolean terminateThread=false; 
+	private final AtomicBoolean terminateThread = new AtomicBoolean(false); 
 	
 	/**
 	 * The cache where the <code>AlarmSourcesListenerCached</code> pushed the alarms 
 	 * it receives from the sources NCs.
 	 */
-	private final LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>(MAX_QUEUE_SIZE);
+	private final TimestampedStringQueue queue = new TimestampedStringQueue(new DefaultXmlQueueFileHandlerImpl("Alarm"),"<source-timestamp>");
 	
 	/**
 	 * Constructor. 
@@ -93,6 +90,7 @@ public class AlarmSourcesListenerCached extends AlarmSourcesListener implements 
 	
 	
 	public void start() {
+		queue.start();
 		thread.setDaemon(true);
 		thread.start();
 	}
@@ -100,7 +98,8 @@ public class AlarmSourcesListenerCached extends AlarmSourcesListener implements 
 	@Override
 	public void shutdown() {
 		logger.log(AcsLogLevel.DEBUG,"AlarmSourceListenerCached shutting down");
-		terminateThread=true;
+		queue.close(true);
+		terminateThread.set(true);
 		thread.interrupt();
 		super.shutdown();
 		logger.log(AcsLogLevel.DEBUG,"AlarmSourceListenerCached shut down");
@@ -109,14 +108,15 @@ public class AlarmSourcesListenerCached extends AlarmSourcesListener implements 
 	@Override
 	public void run() {
 		long lastTimeUpdate=System.currentTimeMillis();
-		while (!terminateThread) {
+		while (!terminateThread.get()) {
 			String xml=null;
 			try {
-				xml = queue.take();
-			} catch (InterruptedException ie) {
-				continue;
+				// The pop returns after a timeout if the queue is empty
+				xml=queue.pop();
+			}catch (Throwable t) {
+				t.printStackTrace();
 			}
-			if (xml != null) {
+			if (xml != null && !xml.isEmpty()) {
 				notifyListeners(xml);
 			}
 			if (System.currentTimeMillis()-lastTimeUpdate>60000) {
@@ -139,9 +139,10 @@ public class AlarmSourcesListenerCached extends AlarmSourcesListener implements 
 		// Extract the XML and cache it
 		if (message.text!=null && !message.text.isEmpty()) {
 			try {
-				// It waits if the queue is full!
-				queue.put(message.text);
-			} catch (InterruptedException ie) {}
+				queue.push(message.text);
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
