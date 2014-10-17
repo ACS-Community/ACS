@@ -96,7 +96,7 @@ public:
 	CheckDevIOValue(const ACE_CString& n){ propName_m = n;}
 
 	template <class T>
-	void checkValue(T value){}
+	void checkValue(T value);
 private:
 	ACE_CString propName_m;
 };

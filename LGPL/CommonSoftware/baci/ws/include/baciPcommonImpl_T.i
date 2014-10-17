@@ -21,6 +21,10 @@
 #include <string.h>
 #include <sstream>
 
+template<class T>
+void baci::CheckDevIOValue::checkValue(T value){}
+
+
 template<ACS_P_C> 
 baci::PcommonImpl<ACS_P_TL>::PcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
         CharacteristicModelImpl(name, component_p->getCharacteristicModel()), 
