@@ -62,7 +62,7 @@ public class AlarmSourcesListenerCached extends AlarmSourcesListener implements 
 	 * The cache where the <code>AlarmSourcesListenerCached</code> pushed the alarms 
 	 * it receives from the sources NCs.
 	 */
-	private final TimestampedStringQueue queue = new TimestampedStringQueue(new DefaultXmlQueueFileHandlerImpl("Alarm"),"<source-timestamp>");
+	private final TimestampedStringQueue queue = new TimestampedStringQueue(new DefaultXmlQueueFileHandlerImpl("Alarm","Alarm"),"<source-timestamp>");
 	
 	/**
 	 * Constructor. 
