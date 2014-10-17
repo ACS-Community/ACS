@@ -404,7 +404,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 
 		alarmDAO.setAlarmProcessor(alarmMessageProcessor);
 		
-		// Subscribe to aCouldn't read alarm XML:/Alarms/AlarmDefinitionsll the source channels
+		// Subscribe to all the source NCs
 		sourcesListener = new AlarmSourcesListenerCached(alSysContSvcs,logger,this);
 		sourcesListener.start();
 		try {
