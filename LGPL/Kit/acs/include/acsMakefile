@@ -2204,7 +2204,7 @@ CSOURCENAMES := $(sort $(CSOURCENAMES))
 # NOTE: the sequence of these prerequisites seem to play a role in parallelization 
 #       in particular that do_exes comes before do_libs
 #
-ALL_TARGET := $(if $(strip $(LINK_FILES)),do_links_internal,) $(ALL_TARGET) 
+#!#ALL_TARGET := $(if $(strip $(LINK_FILES)),do_links_internal,) $(ALL_TARGET) 
 # CHECK removed do_ERRORS do_LOGS
 
 .DEFAULT_GOAL := do_all
@@ -2213,7 +2213,8 @@ do_all_aux : $(_MKDIR) $(ALL_TARGET)
 
 
 .PHONY : do_all
-do_all : 
+#!#do_all :
+do_all : $(if $(strip $(LINK_FILES)),do_links_internal,)
 	$(AT) $(MAKE) -f $(THIS_MAKEFILE) DEPENDENCIES=on $(MAKE_FLAGS) do_all_aux
 
 .PHONY : CppFiles
