@@ -60,7 +60,7 @@ man   : do_man
 
 install : install_all
 	@echo " . . . installation done"
-	@cp -r ../lib/python/site-packages/* $(VLTTOP)/lib/python/site-packages/
+	@cp -r ../lib/python/site-packages/* $(PRJTOP)/lib/python/site-packages/
 
 do_pidl:
 	$(AT) $(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C../lib/python/site-packages  ../idl/TimeBase.pidl
