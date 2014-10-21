@@ -144,10 +144,10 @@ fi
 #
 # current compiler
 #
+echo "    . . . gcc version:"
 gcc -v
 
-TCLVER=`tcl -c "puts [ info tclversion ] "`
-echo "    . . . tcl version: " $TCLVER
+echo "    . . . tcl version: `tcl -c 'puts [ info tclversion ]'`"
 
 #
 # Checks first if the installation has to be done in an
@@ -278,7 +278,7 @@ then
     # When CCS is not available, we need to replace seqSh and
     # seqWish with the original TCL shells.
     # TODO: to be cleaned up
-    if [ -f "$ACSROOT/bin/seqSh" ] || [ -h "$ACSROOT/bin/seqSh" ] || [ -f "$VLTROOT/bin/seqSh" ]
+    if [ -f "$ACSROOT/bin/seqSh" ] || [ -h "$ACSROOT/bin/seqSh" ] 
     then
           echo "... seqSh already available."
     else
