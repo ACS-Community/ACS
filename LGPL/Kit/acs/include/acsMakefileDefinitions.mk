@@ -1,6 +1,27 @@
 #
 # $Id: acsMakefileDefinitions.mk,v 1.30 2012/03/06 19:16:56 tstaig Exp $
 #
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2014
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
+
 #(info Entering definitions.mk)
 
 #
@@ -772,25 +793,34 @@ endif
 .PHONY: clean_lib_$2 
 .PHONY: clean_dist_lib_$2
 
+#!#$(if $(or $3,$6), \
+#!#	$(if $(findstring Cygwin, $(platform)), \
+#!#	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o$(eval $(obj)_CFLAGS += $($2_CFLAGS))), \
+#!#	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o) ) \
+#!#	$(foreach lib, $6, \
+#!#	  $(if $(filter CCS,$(lib)), \
+#!#	   $(eval ccs=yes) $(eval rtap=yes), \
+#!#	    $(if $(filter CCS_NOX11,$(lib)), \
+#!#	     $(eval ccs=yes) $(eval rtap=yes), \
+#!#              $(if $(filter stdc++,$(lib)), \
+#!#	       $(eval $2_lList += -l$(lib)  MESSAGE += somemessage ), \
+#!#                $(if $(filter g++,$(lib)), \
+#!#                 $(eval MESSAGE += ecgs does not provide), \
+#!#                  $(if $(filter iostream,$(lib)), \
+#!#                   $(eval MESSAGE += please remove iostream), \
+#!#	                 $(if $(findstring Cygwin, $(platform)), \
+#!#	                  $(eval $2_lList += -l$(lib) $(eval $2_dList += $(call deps,$(lib)))), \
+#!#                     $(eval $2_lList += -l$(lib)) )  ) ) ) ) ) ) \
+#!#	  $(if $(findstring Cygwin, $(platform)), \
+#!#	   $(eval $2_dList = $(strip $(sort $($2_dList)))) \
+#!#	   $(eval $2_lList = $(strip $(sort $($2_lList)))) \
+#!#	  ) \
+#!#	)
 $(if $(or $3,$6), \
 	$(if $(findstring Cygwin, $(platform)), \
 	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o$(eval $(obj)_CFLAGS += $($2_CFLAGS))), \
 	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o) ) \
-	$(foreach lib, $6, \
-	  $(if $(filter CCS,$(lib)), \
-	   $(eval ccs=yes) $(eval rtap=yes), \
-	    $(if $(filter CCS_NOX11,$(lib)), \
-	     $(eval ccs=yes) $(eval rtap=yes), \
-              $(if $(filter stdc++,$(lib)), \
-	       $(eval $2_lList += -l$(lib)  MESSAGE += somemessage ), \
-                $(if $(filter g++,$(lib)), \
-                 $(eval MESSAGE += ecgs does not provide), \
-                  $(if $(filter iostream,$(lib)), \
-                   $(eval MESSAGE += please remove iostream), \
-	                 $(if $(findstring Cygwin, $(platform)), \
-	                  $(eval $2_lList += -l$(lib) $(eval $2_dList += $(call deps,$(lib)))), \
-                     $(eval $2_lList += -l$(lib)) )  ) ) ) ) ) ) \
-	  $(if $(findstring Cygwin, $(platform)), \
+	$(if $(findstring Cygwin, $(platform)), \
 	   $(eval $2_dList = $(strip $(sort $($2_dList)))) \
 	   $(eval $2_lList = $(strip $(sort $($2_lList)))) \
 	  ) \
@@ -809,17 +839,17 @@ $(if $($2_lList), \
 	) \
 )
 
-$(if $(filter yes,$(ccs)), \
-    $(eval $2_libraryList += $(CCS_LIBLIST)) \
-    $(eval $2_libraryListNoshared += $(CCS_LIBLIST_NOSHARED)   ) )
-
-$(if $(filter yes,$(rtap)), \
-  $(if $(filter yes,$(noX11)) \, 
-        $(eval $2_libraryList += $(RTAP_NOX11_FLAGS)) \
-        $(eval $2_libraryListNoshared += $(RTAP_NOX11_FLAGS_NOSHARED) ), \
-	$(eval $2_libraryList +=$(RTAP_FLAGS)) \
-	$(eval $2_libraryListNoshared += $(RTAP_FLAGS_NOSHARED))  ) \
-  )
+#!#$(if $(filter yes,$(ccs)), \
+#!#    $(eval $2_libraryList += $(CCS_LIBLIST)) \
+#!#    $(eval $2_libraryListNoshared += $(CCS_LIBLIST_NOSHARED)   ) )
+#!#
+#!#$(if $(filter yes,$(rtap)), \
+#!#  $(if $(filter yes,$(noX11)) \, 
+#!#        $(eval $2_libraryList += $(RTAP_NOX11_FLAGS)) \
+#!#        $(eval $2_libraryListNoshared += $(RTAP_NOX11_FLAGS_NOSHARED) ), \
+#!#	$(eval $2_libraryList +=$(RTAP_FLAGS)) \
+#!#	$(eval $2_libraryListNoshared += $(RTAP_FLAGS_NOSHARED))  ) \
+#!#  )
 
 $(if $(filter /vw,$1),,
 $(if $5, \
@@ -955,25 +985,32 @@ endif
 
 
 $(eval $2_exe_lList = ) 
+#!#$(if $(or $3,$6),
+#!#	$(eval $2_oList = $(foreach obj,$3,../object/$(obj).o)) \
+#!#	$(foreach lib, $6, \
+#!#	  $(if $(filter CCS,$(lib)), \
+#!#	   $(eval ccs=yes) $(eval rtap=yes), 
+#!#	    $(if $(filter CCS_NOX11,$(lib)), \
+#!#	     $(eval ccs=yes) $(eval rtap=yes), 
+#!#              $(if $(filter stdc++,$(lib)), \
+#!#	       $(eval $2_exe_lList += -l$(lib)  MESSAGE += somemessage ), \
+#!#                $(if $(filter g++,$(lib)), \
+#!#                 $(eval MESSAGE += ecgs does not provide), \
+#!#                  $(if $(filter iostream,$(lib)), \
+#!#                   $(eval MESSAGE += please remove iostream),
+#!#                    $(if $(filter C++,$(lib)), \
+#!#                     $(eval $2_exe_lList += -lstdc++), \
+#!#	                   $(if $(findstring Cygwin, $(platform)), \
+#!#	                    $(eval $2_exe_lList += -l$(lib) $(eval $2_exe_dList += $(call deps,$(lib)))), \
+#!#                       $(eval $2_exe_lList += -l$(lib)) )  ) ) ) ) ) ) ) \
+#!#	  $(if $(findstring Cygwin, $(platform)), \
+#!#	   $(eval $2_exe_dList = $(strip $(sort $($2_exe_dList)))) \
+#!#	   $(eval $2_exe_lList = $(strip $(sort $($2_exe_lList)))) \
+#!#	  ) \
+#!#)
 $(if $(or $3,$6),
 	$(eval $2_oList = $(foreach obj,$3,../object/$(obj).o)) \
-	$(foreach lib, $6, \
-	  $(if $(filter CCS,$(lib)), \
-	   $(eval ccs=yes) $(eval rtap=yes), 
-	    $(if $(filter CCS_NOX11,$(lib)), \
-	     $(eval ccs=yes) $(eval rtap=yes), 
-              $(if $(filter stdc++,$(lib)), \
-	       $(eval $2_exe_lList += -l$(lib)  MESSAGE += somemessage ), \
-                $(if $(filter g++,$(lib)), \
-                 $(eval MESSAGE += ecgs does not provide), \
-                  $(if $(filter iostream,$(lib)), \
-                   $(eval MESSAGE += please remove iostream),
-                    $(if $(filter C++,$(lib)), \
-                     $(eval $2_exe_lList += -lstdc++), \
-	                   $(if $(findstring Cygwin, $(platform)), \
-	                    $(eval $2_exe_lList += -l$(lib) $(eval $2_exe_dList += $(call deps,$(lib)))), \
-                       $(eval $2_exe_lList += -l$(lib)) )  ) ) ) ) ) ) ) \
-	  $(if $(findstring Cygwin, $(platform)), \
+	$(if $(findstring Cygwin, $(platform)), \
 	   $(eval $2_exe_dList = $(strip $(sort $($2_exe_dList)))) \
 	   $(eval $2_exe_lList = $(strip $(sort $($2_exe_lList)))) \
 	  ) \
@@ -991,17 +1028,17 @@ $(if $($2_exe_lList), \
 	) \
 )
 
-$(if $(filter yes,$(ccs)), \
-    $(eval $2_libraryList += $(CCS_LIBLIST)) \
-    $(eval $2_libraryListNoshared += $(CCS_LIBLIST_NOSHARED))   ) 
-
-$(if $(filter yes,$(rtap)), \
-  $(if $(filter yes,$(noX11)), \
-        $(eval $2_libraryList += $(RTAP_NOX11_FLAGS) ) \
-	$(eval $2_libraryListNoshared += $(RTAP_NOX11_FLAGS_NOSHARED)),\
-	$(eval $2_libraryList +=$(RTAP_FLAGS)) \
-	$(eval $2_libraryListNoshared += $(RTAP_FLAGS_NOSHARED) ) ) \
-  )
+#!#$(if $(filter yes,$(ccs)), \
+#!#    $(eval $2_libraryList += $(CCS_LIBLIST)) \
+#!#    $(eval $2_libraryListNoshared += $(CCS_LIBLIST_NOSHARED))   ) 
+#!#
+#!#$(if $(filter yes,$(rtap)), \
+#!#  $(if $(filter yes,$(noX11)), \
+#!#        $(eval $2_libraryList += $(RTAP_NOX11_FLAGS) ) \
+#!#	$(eval $2_libraryListNoshared += $(RTAP_NOX11_FLAGS_NOSHARED)),\
+#!#	$(eval $2_libraryList +=$(RTAP_FLAGS)) \
+#!#	$(eval $2_libraryListNoshared += $(RTAP_FLAGS_NOSHARED) ) ) \
+#!#  )
 
 
 .PHONY: $2 
@@ -1284,7 +1321,7 @@ $1_python_install_files_path_req := $(if $1,$(shell find  $1 ! -path '*/.svn/*' 
 	@echo "== Making python package: $$(OUTPUT)" 
 	$(AT)mkdir -p $$(OUTPUT)
 	$(AT)chmod 755 $$(OUTPUT)
-	$(AT)tar cf -  $(filter-out Makefile,$$? ) | (cd  $$(OUTPUT)/..; tar xf - )
+	$(AT)tar cf -  $$(filter-out Makefile, $$? ) | (cd  $$(OUTPUT)/..; tar xf - )
 	$(AT)touch ../lib/python/site-packages/$1
 
 
@@ -1533,7 +1570,9 @@ clean_panel_$1:
 	$(AT)$(RM) ../bin/$1
 
 ../bin/$1: $1.pan Makefile
-	$(AT)echo "== Making panel: ../bin/$1"; vltMakeSetPanelShell $1
+	$(AT)echo "== Making panel: ../bin/$1"
+	$(AT)cp $1.pan ../bin/$1;
+	$(AT)chmod $(P755) ../bin/$1
 
 install_panel_$1: $(BIN)/$1
 
@@ -1742,7 +1781,7 @@ $(toFile_$1): $1
 install_file_$1: $(toFile_$1)
 	$(AT)if [ ! -f $1 ];  then \
 	    echo "" >&2 ;\
-	    echo " ERROR: vltMakeInstallFiles: " >&2 ;\
+	    echo " ERROR: acsMakeInstallFiles: " >&2 ;\
 	    echo "  >>$1<< file not found " >&2 ;\
 	    echo "" >&2 ;\
 	    exit 1 ;\
