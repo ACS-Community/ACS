@@ -6,6 +6,28 @@
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
+
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2014
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
+
 #************************************************************************
 #   NAME
 #   acsMakeJavaClasspath - generate a CLASSPATH according to the standard 
@@ -31,7 +53,7 @@
 #
 #
 #   FILES
-#   $VLTROOT/include/acsMakefile   
+#   $ACSROOT/include/acsMakefile   
 #
 #   ENVIRONMENT
 #
@@ -41,7 +63,6 @@
 #   acsMakefile, Makefile, (GNU) make
 #
 #   GNU make - Edition 0.41, for make Version 3.64 Beta, April 93
-#   VLT Software - Programming Standard - 1.0 10/03/93
 #
 #   BUGS    
 #
@@ -106,12 +127,12 @@ if ($ARGV[0] eq "-components") {
 	    $myRoots .= $tmpDir.$SEPARATOR;
 	}
     }
-    if ( $ENV{VLTROOT} ne "") { 
-	$tmpDir = "$ENV{VLTROOT}/lib/$ACS_CO";
-	if( -d $tmpDir && $myRoots !~ /$tmpDir/ ) { 
-	    $myRoots .= $tmpDir.$SEPARATOR;
-	}
-    }
+#!#    if ( $ENV{VLTROOT} ne "") { 
+#!#	$tmpDir = "$ENV{VLTROOT}/lib/$ACS_CO";
+#!#	if( -d $tmpDir && $myRoots !~ /$tmpDir/ ) { 
+#!#	    $myRoots .= $tmpDir.$SEPARATOR;
+#!#	}
+#!#    }
     print $myRoots."\n";
     exit;
 }
@@ -119,13 +140,13 @@ if ($ARGV[0] eq "-components") {
 @modList = glob("../lib/*.jar");
 @intList = glob("$ENV{INTROOT}/lib/*.jar");
 @acsList = glob("$ENV{ACSROOT}/lib/*.jar");
-@vltList = glob("$ENV{VLTROOT}/lib/*.jar");
+#!#@vltList = glob("$ENV{VLTROOT}/lib/*.jar");
 
 
 @modList = (@modList, glob("../lib/$ACS_CO/*.jar"));
 @intList = (@intList, glob("$ENV{INTROOT}/lib/$ACS_CO/*.jar"));
 @acsList = (@acsList, glob("$ENV{ACSROOT}/lib/$ACS_CO/*.jar"));
-@vltList = (@vltList, glob("$ENV{VLTROOT}/lib/$ACS_CO/*.jar"));
+#!#@vltList = (@vltList, glob("$ENV{VLTROOT}/lib/$ACS_CO/*.jar"));
 
 
 
@@ -136,7 +157,7 @@ if ($debug) {
     print "MODROOT:\n".join(" ",@modList)."\n";
     print "INTROOT:\n".join(" ",@intList)."\n";
     print "ACSROOT:\n".join(" ",@acsList)."\n";
-    print "VLTROOT:\n".join(" ",@vltList)."\n";
+#!#    print "VLTROOT:\n".join(" ",@vltList)."\n";
 }
 
 foreach $item (split(/:/,$ENV{INTLIST}))  { 
@@ -150,13 +171,13 @@ $completeList = join($SEPARATOR,@modList);
 $completeList = enrich(join(" ",@intList), $completeList);
 $completeList = enrich($intlistList, $completeList);
 $completeList = enrich(join(" ",@acsList), $completeList);
-$completeList = enrich(join(" ",@vltList), $completeList);
+#!#$completeList = enrich(join(" ",@vltList), $completeList);
 
 if ($ENDORSED) { 
     @modListEndorsed = glob("../lib/endorsed/*.jar");
     @intListEndorsed = glob("$ENV{INTROOT}/lib/endorsed/*.jar");
     @acsListEndorsed = glob("$ENV{ACSROOT}/lib/endorsed/*.jar");
-    @vltListEndorsed = glob("$ENV{VLTROOT}/lib/endorsed/*.jar");
+#!#    @vltListEndorsed = glob("$ENV{VLTROOT}/lib/endorsed/*.jar");
     
     foreach $item (split(/:/,$ENV{INTLIST}))  { 
 	$intlistListEndorsed .= join(" ",glob("$item/lib/endorsed/*.jar"));
@@ -166,7 +187,7 @@ if ($ENDORSED) {
     $completeList = enrich(join(" ",@intListEndorsed), $completeList);
     $completeList = enrich($intlistListEndorsed, $completeList);
     $completeList = enrich(join(" ",@acsListEndorsed), $completeList);
-    $completeList = enrich(join(" ",@vltListEndorsed), $completeList);
+#!#    $completeList = enrich(join(" ",@vltListEndorsed), $completeList);
 }
 
 if( -d $JACORB_ENDORSED_JARS_DIR) { 
