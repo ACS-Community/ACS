@@ -262,13 +262,13 @@ then
 
     echo "making links..."
      cd $ACE_ROOT_VW/bin
-     ln -s $HOST_ROOT/bin/ace_gperf
-     ln -s $HOST_ROOT/bin/tao_idl
+     ln -s  ../../$HOST_OSTAG/bin/ace_gperf
+     ln -s ../../$HOST_OSTAG/bin/tao_idl
 #    cd $ACE_ROOT_VW/bin
 #    ln -s ../../$LINK_DEST/bin/gperf gperf
     cd $ACE_ROOT_VW/TAO
     rm -rf TAO_IDL
-    ln -s $HOST_ROOT/TAO/TAO_IDL .
+    ln -s ../../$HOST_OSTAG/TAO/TAO_IDL .
     echo "done"
     echo ""
 
