@@ -1762,9 +1762,9 @@ define acsMakeLinkFileDependencies
 $(debug-enter)
 
 .PHONY:do_link_$(notdir $1)
-do_link_$(notdir $1): $(call cutOffCWD,$1)
+do_link_$(notdir $1): $(abspath .)/$(call cutOffCWD,$1)
 
-$(call cutOffCWD,$1): 
+$(abspath .)/$(call cutOffCWD,$1): 
 	$(AT)if [ ! -h $1 ]; then \
          echo "== Linking file: $1"; ln -s ../../ws/src/$1 $1; \
 	else \
