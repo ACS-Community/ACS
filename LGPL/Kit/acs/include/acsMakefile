@@ -1803,59 +1803,59 @@ $(if $(wildcard ../ALARMS/HELP/* ),$(eval INSTALL_TARGET += install_alarms),)
 #
 #    foreach section in the MANSECTIONS list, extract the man pages
 #    from the appropriate input file list
-.PHONY : do_man
-do_man:  do_pythondoc doxygen do_man_hello $(addprefix man, $(MANSECTIONS)) manl do_A2MIF 
-
+#!#.PHONY : do_man
+#!#do_man:  do_pythondoc doxygen do_man_hello $(addprefix man, $(MANSECTIONS)) manl do_A2MIF 
+#!#
 .PHONY : do_man_hello
 do_man_hello:
 	-@$(ECHO) "\nman-pages..."
 
-.PHONY : man1
-man1:
-	-@$(ECHO) "....section 1:"
-	-$(AT) for member in $(MAN1) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 1 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man2
-man2:
-	-@$(ECHO) "....section 2:"
-	-$(AT) for member in $(MAN2) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 2 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man3
-man3:
-	-@$(ECHO) "....section 3:"
-	-$(AT) for member in $(MAN3) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 3 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man4
-man4:
-	-@$(ECHO) "....section 4:"
-	-$(AT) for member in $(MAN4) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 4 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man5
-man5:
-	-@$(ECHO) "....section 5:"
-	-$(AT) for member in $(MAN5) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 5 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man6
-man6:
-	-@$(ECHO) "....section 6:"
-	-$(AT) for member in $(MAN6) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 6 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man7
-man7:
-	-@$(ECHO) "....section 7:"
-	-$(AT) for member in $(MAN7) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 7 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man8
-man8:
-	-@$(ECHO) "....section 8:"
-	-$(AT) for member in $(MAN8) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 8 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : mann
-mann:
-	-@$(ECHO) "....section n:"
-	-$(AT) for member in $(MANn) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} n $(LASTCHANGE) $(OUTPUT); done
-
-#
-# generate local manpages (not to be installed)
-# 
-.PHONY : manl
-manl:
-	-@$(ECHO) "..local pages:"
-ifneq ($(strip $(MANl)),)
-	-$(AT) for member in $(MANl) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} l $(LASTCHANGE) $(OUTPUT); done
-endif
+#!#.PHONY : man1
+#!#man1:
+#!#	-@$(ECHO) "....section 1:"
+#!#	-$(AT) for member in $(MAN1) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 1 $(LASTCHANGE) $(OUTPUT); done
+#!#.PHONY : man2
+#!#man2:
+#!#	-@$(ECHO) "....section 2:"
+#!#	-$(AT) for member in $(MAN2) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 2 $(LASTCHANGE) $(OUTPUT); done
+#!#.PHONY : man3
+#!#man3:
+#!#	-@$(ECHO) "....section 3:"
+#!#	-$(AT) for member in $(MAN3) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 3 $(LASTCHANGE) $(OUTPUT); done
+#!#.PHONY : man4
+#!#man4:
+#!#	-@$(ECHO) "....section 4:"
+#!#	-$(AT) for member in $(MAN4) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 4 $(LASTCHANGE) $(OUTPUT); done
+#!#.PHONY : man5
+#!#man5:
+#!#	-@$(ECHO) "....section 5:"
+#!#	-$(AT) for member in $(MAN5) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 5 $(LASTCHANGE) $(OUTPUT); done
+#!#.PHONY : man6
+#!#man6:
+#!#	-@$(ECHO) "....section 6:"
+#!#	-$(AT) for member in $(MAN6) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 6 $(LASTCHANGE) $(OUTPUT); done
+#!#.PHONY : man7
+#!#man7:
+#!#	-@$(ECHO) "....section 7:"
+#!#	-$(AT) for member in $(MAN7) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 7 $(LASTCHANGE) $(OUTPUT); done
+#!#.PHONY : man8
+#!#man8:
+#!#	-@$(ECHO) "....section 8:"
+#!#	-$(AT) for member in $(MAN8) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 8 $(LASTCHANGE) $(OUTPUT); done
+#!#.PHONY : mann
+#!#mann:
+#!#	-@$(ECHO) "....section n:"
+#!#	-$(AT) for member in $(MANn) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} n $(LASTCHANGE) $(OUTPUT); done
+#!#
+#!##
+#!## generate local manpages (not to be installed)
+#!## 
+#!#.PHONY : manl
+#!#manl:
+#!#	-@$(ECHO) "..local pages:"
+#!#ifneq ($(strip $(MANl)),)
+#!#	-$(AT) for member in $(MANl) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} l $(LASTCHANGE) $(OUTPUT); done
+#!#endif
 
 #
 # generate doxygen documentation
@@ -1874,6 +1874,26 @@ do_A2MIF:
 ifneq ($(strip $(ASCII_TO_MIF)),)
 	-$(AT) for member in $(ASCII_TO_MIF) ; do $(ECHO) "\t$${member}"; docA2MIF $${member} ../doc/`basename $${member}`.mif $(OUTPUT); done
 	-@$(ECHO) ""
+endif
+
+.PHONY : do_man
+do_man:  do_pythondoc doxygen do_man_hello $(addprefix man, $(MANSECTIONS)) manl do_A2MIF
+
+
+.PHONY : man%
+man%:
+	-@$(ECHO) "....section $*:"
+	-$(AT) mkdir -p ../doc ../man/man$*
+	-$(AT) for member in $(MAN$*) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 1 $(LASTCHANGE) $(OUTPUT); done
+
+#
+# generate local manpages (not to be installed)
+#
+.PHONY : manl
+manl:
+	-@$(ECHO) "..local pages:"
+ifneq ($(strip $(MANl)),)
+	-$(AT) for member in $(MANl) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} l $(LASTCHANGE) $(OUTPUT); done
 endif
 
 .PHONY : clean_dist
