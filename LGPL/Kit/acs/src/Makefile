@@ -106,9 +106,10 @@ pppppp_MODULES     =
 #
 # man pages to be done
 # --------------------
-MANSECTIONS = 1 5 
+MANSECTIONS = 1 5 n
 MAN1 = acsMan acsConfigReport.py
 MAN5 = ../include/acsMakefile Makefile.doc
+MANn = acsReplace.tcl
 
 #
 # local man pages
