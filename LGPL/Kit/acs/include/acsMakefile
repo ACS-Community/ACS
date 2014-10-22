@@ -1884,7 +1884,7 @@ do_man:  do_pythondoc doxygen do_man_hello $(addprefix man, $(MANSECTIONS)) manl
 man%:
 	-@$(ECHO) "....section $*:"
 	-$(AT) mkdir -p ../doc ../man/man$*
-	-$(AT) for member in $(MAN$*) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 1 $(LASTCHANGE) $(OUTPUT); done
+	-$(AT) for member in $(MAN$*) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} $* $(LASTCHANGE) $(OUTPUT); done
 
 #
 # generate local manpages (not to be installed)
@@ -1893,6 +1893,7 @@ man%:
 manl:
 	-@$(ECHO) "..local pages:"
 ifneq ($(strip $(MANl)),)
+	-$(AT) mkdir -p ../man/manl
 	-$(AT) for member in $(MANl) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} l $(LASTCHANGE) $(OUTPUT); done
 endif
 
