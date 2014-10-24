@@ -14,4 +14,6 @@
    <longSeqProp default_timer_trig="1.0" description="long Seq Prop" units="deg" graph_min="0" graph_max="360"
       min_value="0"  max_value="1000"
       archive_min_int="0" archive_max_int="0" archive_delta="10" />
+   
+   <patternProp default_timer_trig="1.0" description="pattern Prop" units="bits" archive_min_int="0" archive_max_int="0" archive_delta="4" />
 </MCtestComponent>

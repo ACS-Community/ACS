@@ -16,7 +16,8 @@
       
       <xs:element name="longProp" type="baci:RWlong" />
       <xs:element name="longSeqProp" type="baci:RWlongSeq" />
-     
+      
+      <xs:element name="patternProp" type="baci:ROpattern"/>
     </xs:sequence>
   </xs:complexType>
 
