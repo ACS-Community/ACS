@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
     
     try
 	{
-    client.run();
+    //client.run();
 	//must cleanly release the component and log out from manager	
 	ACS_SHORT_LOG((LM_INFO,"Releasing..."));
 	client.releaseComponent(argv[1]);
