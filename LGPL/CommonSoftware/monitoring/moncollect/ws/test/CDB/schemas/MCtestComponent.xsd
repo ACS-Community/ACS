@@ -13,6 +13,9 @@
 
       <xs:element name="doubleProp" type="baci:ROdouble" />
       <xs:element name="doubleSeqProp" type="baci:ROdoubleSeq" />
+      
+      <xs:element name="longProp" type="baci:RWlong" />
+      <xs:element name="longSeqProp" type="baci:RWlongSeq" />
      
     </xs:sequence>
   </xs:complexType>

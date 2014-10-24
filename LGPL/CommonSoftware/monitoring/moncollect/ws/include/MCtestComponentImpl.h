@@ -34,6 +34,8 @@
 #include <baciCharacteristicComponentImpl.h>
 #include <baciROdoubleSeq.h>
 #include <baciROdouble.h>
+#include <baciRWlongSeq.h>
+#include <baciRWlong.h>
 
 namespace TMCDB
 {
@@ -62,6 +64,10 @@ public:
 
 	 ACS::ROdouble_ptr doubleProp ();
 
+	 ACS::RWlongSeq_ptr longSeqProp ();
+
+	 ACS::RWlong_ptr longProp ();
+
 	 void reset();
 
 private:
@@ -76,6 +82,18 @@ private:
 	    double m_doubleVal;
 	    ACS::Time m_time2;
 	    MCtestDevIO<double> *m_doubleDevIO;
+
+
+	    baci::RWlongSeq *m_longSeqProp_p;
+	    ACS::longSeq m_longSeqVal;
+	    ACS::Time m_time3;
+	    MCtestDevIOSeq<ACS::longSeq> *m_longSeqDevIO;
+
+	    baci::RWlong *m_longProp_p;
+	    int m_longVal;
+	    ACS::Time m_time4;
+	    MCtestDevIO<int> *m_longDevIO;
+
 
 
 	    /**
