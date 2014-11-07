@@ -28,16 +28,19 @@ import alma.ACS.Bool;
 import alma.ACS.BoolSeqHolder;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
+import alma.ACS.CBboolean;
+import alma.ACS.Alarmboolean;
 import alma.ACS.CBfloat;
 import alma.ACS.CBpattern;
 import alma.ACS.Callback;
 import alma.ACS.Condition;
 import alma.ACS.Monitor;
-import alma.ACS.Monitorpattern;
-import alma.ACS.MonitorpatternHelper;
-import alma.ACS.MonitorpatternPOATie;
+import alma.ACS.Monitorboolean;
+import alma.ACS.MonitorbooleanHelper;
+import alma.ACS.MonitorbooleanPOATie;
 import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.ROBoolOperations;
+import alma.ACS.RObooleanOperations;
 import alma.ACS.Subscription;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.jbaci.CallbackDispatcher;
@@ -57,7 +60,7 @@ import alma.acs.exceptions.AcsJException;
  */
 public class ROBoolImpl
 	extends ROCommonPropertyImpl
-	implements ROBoolOperations {
+	implements RObooleanOperations {
 
 	/**
 	 * @param propertyType
@@ -96,10 +99,10 @@ public class ROBoolImpl
 	}
 
 	/**
-	 * @see alma.ACS.PBoolOperations#default_value()
+	 * @see alma.ACS.PbooleanOperations#default_value()
 	 */
-	public Bool default_value() {
-		return ((Bool)defaultValue);
+	public boolean default_value() {
+		return ((boolean)defaultValue);
 	}
 	/**
 	 * @see alma.ACS.ROBoolOperations#alarm_off()
@@ -145,9 +148,9 @@ public class ROBoolImpl
 	}
 	
 	/**
-	 * @see alma.ACS.ROBoolOperations#new_subscription_AlarmEnum(alma.ACS.Alarmpattern, alma.ACS.CBDescIn)
+	 * @see alma.ACS.ROBooleanOperations#new_subscription_Alarm(alma.ACS.Alarmboolean, alma.ACS.CBDescIn)
 	 */
-	public Subscription new_subscription_AlarmEnum(Alarmpattern cb,
+	public Subscription new_subscription_Alarm(Alarmboolean cb,
 			CBDescIn desc) {
 		throw new NO_IMPLEMENT();
 	}
@@ -189,48 +192,48 @@ public class ROBoolImpl
 
 
 	/**
-	 * @see alma.ACS.PBoolOperations#create_monitor(alma.ACS.CBpattern, alma.ACS.CBDescIn)
+	 * @see alma.ACS.PbooleanOperations#create_monitor(alma.ACS.CBboolean, alma.ACS.CBDescIn)
 	 */
-	public Monitorpattern create_monitor(CBpattern cb, CBDescIn desc) {
-		return (Monitorpattern) create_postponed_monitor(0, cb, desc);
+	public Monitorboolean create_monitor(CBboolean cb, CBDescIn desc) {
+		return (Monitorboolean) create_postponed_monitor(0, cb, desc);
 	}
 
 	
 	/**
-	 * @see alma.ACS.PBoolOperations#create_postponed_monitor(long, alma.ACS.CBpattern, alma.ACS.CBDescIn)
+	 * @see alma.ACS.PbooleanOperations#create_postponed_monitor(long, alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
-	public Monitor create_postponed_monitor(long start_time, CBpattern cb,CBDescIn desc) {
+	public Monitor create_postponed_monitor(long start_time, CBboolean cb,CBDescIn desc) {
 		// create monitor and its servant
-		MonitorpatternImpl monitorImpl = new MonitorpatternImpl(this, cb, desc, start_time);
-		MonitorpatternPOATie monitorTie = new MonitorpatternPOATie(monitorImpl);
+		MonitorbooleanImpl monitorImpl = new MonitorbooleanImpl(this, cb, desc, start_time);
+		MonitorbooleanPOATie monitorTie = new MonitorbooleanPOATie(monitorImpl);
 
 		// register and activate		
-		return MonitorpatternHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
+		return MonitorbooleanHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
 	
 	}
 
 	/**
      * @see alma.ACS.PBoolOperations#get_async(alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
-	public void get_async(CBpattern cb, CBDescIn desc) {
+	public void get_async(CBboolean cb, CBDescIn desc) {
 		getAsync(cb, desc);
 	}
 
 	/**
-	 * @see alma.ACS.PBoolOperations#get_history(int, alma.ACS.BoolSeqHolder, alma.ACS.TimeSeqHolder)
+	 * @see alma.ACS.PbooleanOperations#get_history(int, alma.ACS.booleanSeqHolder, alma.ACS.TimeSeqHolder)
 	 */ 
-	public int get_history(int n_last_values, BoolSeqHolder vs, TimeSeqHolder ts) {
-		vs.value = (Bool[])getHistory(n_last_values, ts);
+	public int get_history(int n_last_values, alma.ACS.booleanSeqHolder vs, alma.ACS.TimeSeqHolder ts) {
+		vs.value = (boolean[])getHistory(n_last_values, ts);
 		return vs.value.length;
 	}
 
 	/**
-	 * @see alma.ACS.PBoolOperations#get_sync(alma.ACSErr.CompletionHolder)
+	 * @see alma.ACS.PBooleanOperations#get_sync(alma.ACSErr.CompletionHolder)
 	 */
-	public Bool get_sync(CompletionHolder c) {
+	public boolean get_sync(CompletionHolder c) {
 	try
 		{
-			return ((Bool)getSync(c));
+			return ((boolean)getSync(c));
 		}
 		catch (AcsJException acsex)
 		{
@@ -274,5 +277,30 @@ public class ROBoolImpl
 			return false;
 		}
 	}
+	
+	/**
+	 * @see alma.ACS.ROdoubleOperations#enable_alarm_system()
+	 */
+	public void enable_alarm_system() {
+		// TODO NO_IMPLEMENT
+		throw new NO_IMPLEMENT();
+	}
+	
+	/**
+	 * @see alma.ACS.ROdoubleOperations#disable_alarm_system() throws alma.baciErrTypeProperty.DisableAlarmsErrorEx
+	 */
+	public void disable_alarm_system() throws alma.baciErrTypeProperty.DisableAlarmsErrorEx {
+		// TODO NO_IMPLEMENT
+		throw new NO_IMPLEMENT();
+	}
+	
+	/**
+	 * @see alma.ACS.ROdoubleOperations#alarm_system_enabled()
+	 */
+	public boolean alarm_system_enabled() {
+		// TODO NO_IMPLEMENT
+		throw new NO_IMPLEMENT();
+	}
+	
 }
 
