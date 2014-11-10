@@ -213,9 +213,10 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 			{
 				// TODO make PriorityBlockingQueue bounded!!! (to MAX_REQUESTS)
 				// TODO should I use PooledExecutorWithWaitInNewThreadWhenBlocked...?
-				threadPool = new ThreadPoolExecutor(1, MAX_POOL_THREADS, 1, TimeUnit.MINUTES,
+				threadPool = new ThreadPoolExecutor(MAX_POOL_THREADS, MAX_POOL_THREADS, 1, TimeUnit.MINUTES,
 										new PriorityBlockingQueue<Runnable>(MAX_REQUESTS, new PrioritizedRunnableComparator<Runnable>()),
 										m_containerServices.getThreadFactory());
+				threadPool.allowCoreThreadTimeOut(true);
 			}
 			
 			threadPool.execute(action);
