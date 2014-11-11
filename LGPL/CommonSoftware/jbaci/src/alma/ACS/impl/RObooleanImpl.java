@@ -23,16 +23,11 @@ package alma.ACS.impl;
 
 import org.omg.CORBA.NO_IMPLEMENT;
 
-import alma.ACS.Alarmpattern;
-import alma.ACS.Bool;
-import alma.ACS.BoolSeqHolder;
+import alma.ACS.Alarmboolean;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBboolean;
-import alma.ACS.Alarmboolean;
 import alma.ACS.Callback;
-import alma.ACS.Condition;
-import alma.ACS.Monitor;
 import alma.ACS.Monitorboolean;
 import alma.ACS.MonitorbooleanHelper;
 import alma.ACS.MonitorbooleanPOATie;
@@ -61,7 +56,6 @@ public class RObooleanImpl
 	implements RObooleanOperations {
 
 	/**
-	 * @param propertyType
 	 * @param name
 	 * @param parentComponent
 	 * @throws PropertyInitializationFailed
@@ -74,7 +68,6 @@ public class RObooleanImpl
 	}
 
 	/**
-	 * @param propertyType
 	 * @param name
 	 * @param parentComponent
 	 * @param dataAccess
@@ -100,49 +93,7 @@ public class RObooleanImpl
 	 * @see alma.ACS.PbooleanOperations#default_value()
 	 */
 	public boolean default_value() {
-		return ((boolean)defaultValue);
-	}
-	/**
-	 * @see alma.ACS.ROBoolOperations#alarm_off()
-	 */
-	public Bool[] alarm_off() {
-		try {
-			int[] temp = characteristicModelImpl.getIntegerSeq("alarm_off");
-			Bool[] ret = new Bool[temp.length];
-			
-			for (int i=0;i<temp.length;i++){
-				ret[i] = Bool.from_int(temp[i]);
-				
-				return ret;
-			}
-			
-		} catch (NoSuchCharacteristic e) {
-			//noop
-		}
-			
-			return null;
-		
-	}
-	/**
-	 * @see alma.ACS.ROBoolOperations#alarm_on()
-	 */
-	
-	public Bool[] alarm_on() {
-		try{
-		int[] temp = characteristicModelImpl.getIntegerSeq("alarm_on");
-		Bool[] ret = new Bool[temp.length];
-		
-		for (int i=0;i<temp.length;i++){
-			ret[i] = Bool.from_int(temp[i]);
-			
-			return ret;
-		}
-		
-	} catch (NoSuchCharacteristic e) {
-		//noop
-	}
-		
-		return null;
+		return ((Boolean)defaultValue).booleanValue();
 	}
 	
 	/**
@@ -152,55 +103,19 @@ public class RObooleanImpl
 			CBDescIn desc) {
 		throw new NO_IMPLEMENT();
 	}
-	
-	/**
-	 * @see alma.ACS.PBoolOperations#allStates()
-	 */
-	public Bool[] allStates() {
-		try {
-			String[] tmp = characteristicModelImpl.getStringSeq("statesDescription");
-			Bool[] ret = new Bool[tmp.length];
-			 for (int i=0; i<tmp.length; i++)
-			        ret[i] = Bool.from_int(i);
-			        
-			 return ret;
-			
-		} catch (NoSuchCharacteristic e) {
-		//noop
-		}
-		return null;
-	}
-
-	/**
-	 * @see alma.ACS.PBoolOperations#condition()
-	 */
-	public Condition[] condition() {
-		try {
-			int [] tmp = characteristicModelImpl.getLongSeq("statesDescription");
-			Condition[] ret = new Condition[tmp.length];
-			for(int i=0;i<tmp.length;i++){
-				ret[i] = Condition.from_int(tmp[i]);
-			}
-		
-		} catch (NoSuchCharacteristic e) {
-			//noop
-		}
-		return null;
-	}
-
 
 	/**
 	 * @see alma.ACS.PbooleanOperations#create_monitor(alma.ACS.CBboolean, alma.ACS.CBDescIn)
 	 */
 	public Monitorboolean create_monitor(CBboolean cb, CBDescIn desc) {
-		return (Monitorboolean) create_postponed_monitor(0, cb, desc);
+		return create_postponed_monitor(0, cb, desc);
 	}
 
 	
 	/**
 	 * @see alma.ACS.PbooleanOperations#create_postponed_monitor(long, alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
-	public Monitor create_postponed_monitor(long start_time, CBboolean cb,CBDescIn desc) {
+	public Monitorboolean create_postponed_monitor(long start_time, CBboolean cb,CBDescIn desc) {
 		// create monitor and its servant
 		MonitorbooleanImpl monitorImpl = new MonitorbooleanImpl(this, cb, desc, start_time);
 		MonitorbooleanPOATie monitorTie = new MonitorbooleanPOATie(monitorImpl);
@@ -231,7 +146,7 @@ public class RObooleanImpl
 	public boolean get_sync(CompletionHolder c) {
 	try
 		{
-			return ((boolean)getSync(c));
+			return ((Boolean)getSync(c)).booleanValue();
 		}
 		catch (AcsJException acsex)
 		{
@@ -241,18 +156,6 @@ public class RObooleanImpl
 			// return default value in case of error
 			return default_value();
 		}
-	}
-
-	/**
-	 * @see alma.ACS.PBoolOperations#statesDescription()
-	 */
-	public String[] statesDescription() {
-		try {
-			return characteristicModelImpl.getStringSeq("statesDescription");
-		} catch (NoSuchCharacteristic e) {
-			//noop
-		}
-		return null;
 	}
 
 	/**
