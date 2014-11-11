@@ -86,7 +86,7 @@ public class RObooleanImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 		throws NoSuchCharacteristic {
-		return new Integer(characteristicModelImpl.getInteger(name));
+		return Boolean.valueOf(characteristicModelImpl.getBoolean(name));
 	}
 
 	/**
