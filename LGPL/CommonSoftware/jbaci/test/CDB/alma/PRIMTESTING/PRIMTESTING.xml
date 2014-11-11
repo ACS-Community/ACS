@@ -105,6 +105,17 @@
              archive_min_int    =	"0"
              archive_max_int    =	"10"
            />
+  <booleanRO 
+  	description 	=	"boolean RO"
+  	default_timer_trig 	=	"4.0"
+  	min_timer_trig = "0.004"
+  	default_value = "1" />
+  <booleanRW 
+  	default_timer_trig 	=	"3.5"
+  	min_timer_trig = "0.0036"
+  	default_value 	=	"1"
+  	description 	=	"boolean RW"
+  />
   <status description		=	"Status"
           format 		=	"%d"
           units 		=	"w/o"
