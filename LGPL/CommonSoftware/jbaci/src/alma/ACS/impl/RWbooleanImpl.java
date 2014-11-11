@@ -21,22 +21,21 @@
 
 package alma.ACS.impl;
 
+import org.omg.CORBA.NO_IMPLEMENT;
 
-import alma.ACS.Bool;
-import alma.ACS.BoolSeqHolder;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
+import alma.ACS.CBboolean;
 import alma.ACS.CBfloat;
-import alma.ACS.CBpattern;
 import alma.ACS.CBvoid;
 import alma.ACS.Callback;
 import alma.ACS.Condition;
 import alma.ACS.Monitor;
-import alma.ACS.Monitorpattern;
-import alma.ACS.MonitorpatternHelper;
-import alma.ACS.MonitorpatternPOATie;
+import alma.ACS.Monitorboolean;
+import alma.ACS.MonitorbooleanHelper;
+import alma.ACS.MonitorbooleanPOATie;
 import alma.ACS.NoSuchCharacteristic;
-import alma.ACS.RWBoolOperations;
+import alma.ACS.RWbooleanOperations;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.jbaci.CallbackDispatcher;
 import alma.ACS.jbaci.CompletionUtil;
@@ -54,8 +53,8 @@ import alma.acs.exceptions.AcsJException;
  * @version $id$
  */
 public class RWbooleanImpl
-	extends RWCommonPropertyImpl
-	implements RWBoolOperations {
+	extends RWCommonComparablePropertyImpl
+	implements RWbooleanOperations {
 	
 	/**
 	 * @param propertyType
@@ -67,7 +66,7 @@ public class RWbooleanImpl
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent);
+		super(boolean.class, name, parentComponent);
 	}
 
 	/**
@@ -82,7 +81,7 @@ public class RWbooleanImpl
 		CharacteristicComponentImpl parentComponent,
 		DataAccess dataAccess)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent, dataAccess);
+		super(boolean.class, name, parentComponent, dataAccess);
 	}
 
 	/**
@@ -90,20 +89,21 @@ public class RWbooleanImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 		throws NoSuchCharacteristic {
-		return new Integer(characteristicModelImpl.getInteger(name));
+		System.out.println("Reading characteristic of "+name);
+		return Boolean.valueOf((characteristicModelImpl.getBoolean(name)));
 	}
 
 	/**
      * @see alma.ACS.PBoolOperations#set_async(alma.acs.Bool,alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
-	public void set_async(Bool value, CBvoid cb, CBDescIn desc) {
+	public void set_async(boolean value, CBvoid cb, CBDescIn desc) {
 		setAsync(value, cb, desc);
 	}
 
 	/**
 	 * @see alma.ACS.RWBoolOperations#set_nonblocking(alma.acs.Bool)
 	 */
-	public void set_nonblocking(Bool value) {
+	public void set_nonblocking(boolean value) {
 		setNonblocking(value);
 		
 	}
@@ -111,7 +111,7 @@ public class RWbooleanImpl
 	/**
 	 * @see alma.ACS.RWBoolOperations#set_sync(alma.acs.Bool)
 	 */
-	public Completion set_sync(Bool value) {
+	public Completion set_sync(boolean value) {
 		try
 		{
 			return setSync(value);
@@ -124,90 +124,90 @@ public class RWbooleanImpl
 		}
 	}
 	
-	/**
-	 * @see alma.ACS.PBoolOperations#allStates()
-	 */
-	public Bool[] allStates() {
-		try {
-			String[] tmp = characteristicModelImpl.getStringSeq("statesDescription");
-			Bool[] ret = new Bool[tmp.length];
-			 for (int i=0; i<tmp.length; i++)
-			        ret[i] = Bool.from_int(i);
-			        
-			 return ret;
-			
-		} catch (NoSuchCharacteristic e) {
-		//noop
-		}
-		return null;
-	}
-
-	/**
-	 * @see alma.ACS.PBoolOperations#condition()
-	 */
-	public Condition[] condition() {
-		try {
-			int [] tmp = characteristicModelImpl.getLongSeq("statesDescription");
-			Condition[] ret = new Condition[tmp.length];
-			for(int i=0;i<tmp.length;i++){
-				ret[i] = Condition.from_int(tmp[i]);
-			}
-		
-		} catch (NoSuchCharacteristic e) {
-			//noop
-		}
-		return null;
-	}
+//	/**
+//	 * @see alma.ACS.PBoolOperations#allStates()
+//	 */
+//	public Bool[] allStates() {
+//		try {
+//			String[] tmp = characteristicModelImpl.getStringSeq("statesDescription");
+//			Bool[] ret = new Bool[tmp.length];
+//			 for (int i=0; i<tmp.length; i++)
+//			        ret[i] = Bool.from_int(i);
+//			        
+//			 return ret;
+//			
+//		} catch (NoSuchCharacteristic e) {
+//		//noop
+//		}
+//		return null;
+//	}
+//
+//	/**
+//	 * @see alma.ACS.PBoolOperations#condition()
+//	 */
+//	public Condition[] condition() {
+//		try {
+//			int [] tmp = characteristicModelImpl.getLongSeq("statesDescription");
+//			Condition[] ret = new Condition[tmp.length];
+//			for(int i=0;i<tmp.length;i++){
+//				ret[i] = Condition.from_int(tmp[i]);
+//			}
+//		
+//		} catch (NoSuchCharacteristic e) {
+//			//noop
+//		}
+//		return null;
+//	}
 
 	/**
 	 * @see alma.ACS.PBoolOperations#create_monitor(alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
-	public Monitorpattern create_monitor(CBpattern cb, CBDescIn desc) {
-		return (Monitorpattern) create_postponed_monitor(0, cb, desc);
+	public Monitorboolean create_monitor(CBboolean cb, CBDescIn desc) {
+		return (Monitorboolean) create_postponed_monitor(0, cb, desc);
 	}
 
 	/**
 	 * @see alma.ACS.PBoolOperations#create_postponed_monitor(long, alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
-	public Monitor create_postponed_monitor(long start_time, CBpattern cb,CBDescIn desc) {
+	public Monitor create_postponed_monitor(long start_time, CBboolean cb,CBDescIn desc) {
 		// create monitor and its servant
-		MonitorpatternImpl monitorImpl = new MonitorpatternImpl(this, cb, desc, start_time);
-		MonitorpatternPOATie monitorTie = new MonitorpatternPOATie(monitorImpl);
+		MonitorbooleanImpl monitorImpl = new MonitorbooleanImpl(this, cb, desc, start_time);
+		MonitorbooleanPOATie monitorTie = new MonitorbooleanPOATie(monitorImpl);
 
 		// register and activate		
-		return MonitorpatternHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
+		return MonitorbooleanHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
 	
 	}
 
 	/**
 	 * @see alma.ACS.PBoolOperations#default_value()
 	 */
-	public Bool default_value() {
-		return ((Bool)defaultValue);
+	public boolean default_value() {
+		return ((Boolean)defaultValue).booleanValue();
 	}
 
 	/**
      * @see alma.ACS.PBoolOperations#get_async(alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
-	public void get_async(CBpattern cb, CBDescIn desc) {
+	public void get_async(CBboolean cb, CBDescIn desc) {
 		getAsync(cb, desc);
 	}
 
 	/**
 	 * @see alma.ACS.PBoolOperations#get_history(int, alma.ACS.BoolSeqHolder, alma.ACS.TimeSeqHolder)
 	 */ 
-	public int get_history(int n_last_values, BoolSeqHolder vs, TimeSeqHolder ts) {
-		vs.value = (Bool[])getHistory(n_last_values, ts);
+	public int get_history(int n_last_values, alma.ACS.booleanSeqHolder vs, TimeSeqHolder ts) {
+		vs.value = (boolean[])getHistory(n_last_values, ts);
 		return vs.value.length;
 	}
 
 	/**
 	 * @see alma.ACS.PBoolOperations#get_sync(alma.ACSErr.CompletionHolder)
 	 */
-	public Bool get_sync(CompletionHolder c) {
-	try
+	public boolean get_sync(CompletionHolder c) {
+		try
 		{
-			return ((Bool)getSync(c));
+			return ((Boolean)getSync(c)).booleanValue();
 		}
 		catch (AcsJException acsex)
 		{
@@ -252,4 +252,35 @@ public class RWbooleanImpl
 		}
 	}
 	
+	/**
+	 * TODO: (Ale) what is the meaning of min_value for a boolean?
+	 *       Is it <code>false</code>?
+	 */
+	public boolean min_value() {
+		return ((Boolean)minValue).booleanValue();
+	}
+	
+	/**
+	 * TODO: (Ale) what is the meaning of max_value for a boolean?
+	 *       Is it <code>true</code>?
+	 */
+	public boolean max_value() {
+		return ((Boolean)maxValue).booleanValue();
+	}
+	
+	/**
+	 * (Ale) What is the meaning of summing/subtracting booleans?
+	 * I will throw an exception
+	 */
+	public Object sum(Object value1, Object value2, boolean substract) {
+		throw new NO_IMPLEMENT();
+	}
+	
+	public boolean noDelta(Object value) {
+		throw new NO_IMPLEMENT();
+	}
+	
+	public boolean lessThanDelta(Object value1, Object value2, Object delta) {
+		throw new NO_IMPLEMENT();
+	}
 }
