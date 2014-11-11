@@ -346,6 +346,26 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	}
 	
 	/**
+	 * Read boolean characteristic.
+	 * @param name	characteristic name.
+	 * @throws NoSuchCharacteristic is thrown if characterstic does not exist.
+	 */
+	public boolean getBoolean(String name)
+		throws NoSuchCharacteristic
+	{
+
+		try
+		{
+			String str=dao.get_string(prefix+name);
+			return Boolean.parseBoolean(str);
+		}
+		catch (Throwable th)
+		{
+			throw new NoSuchCharacteristic(name, modelName);
+		}
+	}
+	
+	/**
 	 * Read sequence long characteristic.
 	 * @param name	characteristic name.
 	 * @throws NoSuchCharacteristic is thrown if characterstic does not exist.
