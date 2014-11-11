@@ -30,8 +30,6 @@ import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBboolean;
 import alma.ACS.Alarmboolean;
-import alma.ACS.CBfloat;
-import alma.ACS.CBpattern;
 import alma.ACS.Callback;
 import alma.ACS.Condition;
 import alma.ACS.Monitor;
@@ -58,7 +56,7 @@ import alma.acs.exceptions.AcsJException;
  * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
  * @version $id$
  */
-public class ROBooleanImpl
+public class RObooleanImpl
 	extends ROCommonPropertyImpl
 	implements RObooleanOperations {
 
@@ -68,7 +66,7 @@ public class ROBooleanImpl
 	 * @param parentComponent
 	 * @throws PropertyInitializationFailed
 	 */
-	public ROBooleanImpl(
+	public RObooleanImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
@@ -82,7 +80,7 @@ public class ROBooleanImpl
 	 * @param dataAccess
 	 * @throws PropertyInitializationFailed
 	 */
-	public ROBooleanImpl(
+	public RObooleanImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent,
 		DataAccess dataAccess)
@@ -264,9 +262,9 @@ public class ROBooleanImpl
 		try
 		{	
 			if (type == CallbackDispatcher.DONE_TYPE)
-				((CBfloat)callback).done(((Float)value).floatValue(), completion, desc);
+				((CBboolean)callback).done(((Boolean)value).booleanValue(), completion, desc);
 			else if (type == CallbackDispatcher.WORKING_TYPE)
-				((CBfloat)callback).working(((Float)value).floatValue(), completion, desc);
+				((CBboolean)callback).working(((Boolean)value).booleanValue(), completion, desc);
 			else 
 				return false;
 				
