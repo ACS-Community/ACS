@@ -53,7 +53,7 @@ import alma.acs.exceptions.AcsJException;
  * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
  * @version $id$
  */
-public class RWBoolImpl
+public class RWBooleanImpl
 	extends RWCommonPropertyImpl
 	implements RWBoolOperations {
 	
@@ -63,7 +63,7 @@ public class RWBoolImpl
 	 * @param parentComponent
 	 * @throws PropertyInitializationFailed
 	 */
-	public RWBoolImpl(
+	public RWBooleanImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
@@ -77,7 +77,7 @@ public class RWBoolImpl
 	 * @param dataAccess
 	 * @throws PropertyInitializationFailed
 	 */
-	public RWBoolImpl(
+	public RWBooleanImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent,
 		DataAccess dataAccess)

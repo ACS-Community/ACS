@@ -58,7 +58,7 @@ import alma.acs.exceptions.AcsJException;
  * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
  * @version $id$
  */
-public class ROBoolImpl
+public class ROBooleanImpl
 	extends ROCommonPropertyImpl
 	implements RObooleanOperations {
 
@@ -68,11 +68,11 @@ public class ROBoolImpl
 	 * @param parentComponent
 	 * @throws PropertyInitializationFailed
 	 */
-	public ROBoolImpl(
+	public ROBooleanImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent);
+		super(boolean.class, name, parentComponent);
 	}
 
 	/**
@@ -82,12 +82,12 @@ public class ROBoolImpl
 	 * @param dataAccess
 	 * @throws PropertyInitializationFailed
 	 */
-	public ROBoolImpl(
+	public ROBooleanImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent,
 		DataAccess dataAccess)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent, dataAccess);
+		super(boolean.class, name, parentComponent, dataAccess);
 	}
 
 	/**
