@@ -26,7 +26,6 @@ import org.omg.CORBA.NO_IMPLEMENT;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBboolean;
-import alma.ACS.CBfloat;
 import alma.ACS.CBvoid;
 import alma.ACS.Callback;
 import alma.ACS.Condition;
@@ -89,7 +88,6 @@ public class RWbooleanImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 		throws NoSuchCharacteristic {
-		System.out.println("Reading characteristic of "+name);
 		return Boolean.valueOf((characteristicModelImpl.getBoolean(name)));
 	}
 
@@ -123,53 +121,18 @@ public class RWbooleanImpl
 			return CompletionUtil.generateCompletion(cpa);
 		}
 	}
-	
-//	/**
-//	 * @see alma.ACS.PBoolOperations#allStates()
-//	 */
-//	public Bool[] allStates() {
-//		try {
-//			String[] tmp = characteristicModelImpl.getStringSeq("statesDescription");
-//			Bool[] ret = new Bool[tmp.length];
-//			 for (int i=0; i<tmp.length; i++)
-//			        ret[i] = Bool.from_int(i);
-//			        
-//			 return ret;
-//			
-//		} catch (NoSuchCharacteristic e) {
-//		//noop
-//		}
-//		return null;
-//	}
-//
-//	/**
-//	 * @see alma.ACS.PBoolOperations#condition()
-//	 */
-//	public Condition[] condition() {
-//		try {
-//			int [] tmp = characteristicModelImpl.getLongSeq("statesDescription");
-//			Condition[] ret = new Condition[tmp.length];
-//			for(int i=0;i<tmp.length;i++){
-//				ret[i] = Condition.from_int(tmp[i]);
-//			}
-//		
-//		} catch (NoSuchCharacteristic e) {
-//			//noop
-//		}
-//		return null;
-//	}
 
 	/**
 	 * @see alma.ACS.PBoolOperations#create_monitor(alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
 	public Monitorboolean create_monitor(CBboolean cb, CBDescIn desc) {
-		return (Monitorboolean) create_postponed_monitor(0, cb, desc);
+		return  create_postponed_monitor(0, cb, desc);
 	}
 
 	/**
 	 * @see alma.ACS.PBoolOperations#create_postponed_monitor(long, alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
-	public Monitor create_postponed_monitor(long start_time, CBboolean cb,CBDescIn desc) {
+	public Monitorboolean create_postponed_monitor(long start_time, CBboolean cb,CBDescIn desc) {
 		// create monitor and its servant
 		MonitorbooleanImpl monitorImpl = new MonitorbooleanImpl(this, cb, desc, start_time);
 		MonitorbooleanPOATie monitorTie = new MonitorbooleanPOATie(monitorImpl);
@@ -238,9 +201,9 @@ public class RWbooleanImpl
 		try
 		{	
 			if (type == CallbackDispatcher.DONE_TYPE)
-				((CBfloat)callback).done(((Float)value).floatValue(), completion, desc);
+				((CBboolean)callback).done(((Boolean)value).booleanValue(), completion, desc);
 			else if (type == CallbackDispatcher.WORKING_TYPE)
-				((CBfloat)callback).working(((Float)value).floatValue(), completion, desc);
+				((CBboolean)callback).working(((Boolean)value).booleanValue(), completion, desc);
 			else 
 				return false;
 				
