@@ -9,10 +9,6 @@
 3 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
-1 -  -- org.jacorb.naming.NameServer...
-1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: org.jacorb.naming.NameServer...
-1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=xxxxx
-1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TESTNotifyEventChannelFactory Notify Service
 2 - ReBound ID: MC_TESTNotifyEventChannelFactory
 4 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
