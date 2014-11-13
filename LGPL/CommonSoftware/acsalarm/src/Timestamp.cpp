@@ -22,6 +22,7 @@
 #include <sys/time.h>
 #include <sstream>
 #include <iostream>
+#include <stdio.h>
 
 using std::stringstream;
 using std::string;
