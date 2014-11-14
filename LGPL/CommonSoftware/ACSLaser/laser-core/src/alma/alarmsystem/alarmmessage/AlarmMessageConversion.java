@@ -23,7 +23,10 @@
 package alma.alarmsystem.alarmmessage;
 
 import java.io.StringWriter;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -45,6 +48,7 @@ import cern.laser.business.data.Triplet;
 import cern.laser.business.data.StatusImpl;
 import cern.laser.business.data.AlarmImpl;
 import cern.laser.business.data.CategoryImpl;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * This class manages the conversion between the ACSAlarmMessage
@@ -186,19 +190,16 @@ public class AlarmMessageConversion {
 	}
 	
 	/**
-	 * Generate an ACSTimestamp from a java.sql.Timestamp
+	 * Generate an ISO 8601 string from a java.sql.Timestamp
 	 * 
 	 * @param sqlStamp The java.sql.Timestamp
 	 * @return The ACSTimestamp
 	 */
-	private static ACSTimestamp createACSTimestamp(Timestamp sqlStamp) {
+	private static String createACSTimestamp(Timestamp sqlStamp) {
 		if (sqlStamp==null) {
 			return null;
 		}
-		ACSTimestamp stamp = new ACSTimestamp();
-		stamp.setDate(sqlStamp.getTime());
-		stamp.setNanos(sqlStamp.getNanos());
-		return stamp;
+		return IsoDateFormat.formatDate(new Date(sqlStamp.getTime()));
 	}
 	
 	/**
@@ -400,7 +401,7 @@ public class AlarmMessageConversion {
 	}
 	
 	public static synchronized AlarmImpl getAlarm(String xml) 
-	throws ValidationException, MarshalException  {
+	throws ValidationException, MarshalException, ParseException  {
 		if (xml==null) {
 			throw new IllegalArgumentException();
 		}
@@ -496,8 +497,8 @@ public class AlarmMessageConversion {
 		source.setAlarmIds(set);
 		Timestamp lastContact = null;
 		if (alarm.getSource().getSourceStatus().getLastContact()!=null) {
-			lastContact = new Timestamp(alarm.getSource().getSourceStatus().getLastContact().getDate());
-			lastContact.setNanos(alarm.getSource().getSourceStatus().getLastContact().getNanos());
+			Date date=IsoDateFormat.parseIsoTimestamp(alarm.getSource().getSourceStatus().getLastContact());
+			lastContact = new Timestamp(date.getTime());
 		}
 		SourceStatus sourceStatus = new SourceStatus(
 				new Boolean(alarm.getSource().getSourceStatus().getConnected()),
@@ -506,12 +507,9 @@ public class AlarmMessageConversion {
 		source.setStatus(sourceStatus);
 		
 		// The Status
-		Timestamp sourceTimestamp = new Timestamp(alarm.getStatus().getSourceTimestamp().getDate());
-		sourceTimestamp.setNanos(alarm.getStatus().getSourceTimestamp().getNanos());
-		Timestamp userTimestamp= new Timestamp(alarm.getStatus().getUserTimestamp().getDate());
-		userTimestamp.setNanos(alarm.getStatus().getUserTimestamp().getNanos());
-		Timestamp systemTimestamp = new Timestamp(alarm.getStatus().getSystemTimestamp().getDate());
-		systemTimestamp.setNanos(alarm.getStatus().getSystemTimestamp().getNanos());
+		Timestamp sourceTimestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(alarm.getStatus().getSourceTimestamp()).getTime());
+		Timestamp userTimestamp= new Timestamp(IsoDateFormat.parseIsoTimestamp(alarm.getStatus().getUserTimestamp()).getTime());
+		Timestamp systemTimestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(alarm.getStatus().getSystemTimestamp()).getTime());
 		
 		// The properties
 		ACSProperty[] props = alarm.getStatus().getPersistentUserProperties();

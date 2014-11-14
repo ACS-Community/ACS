@@ -1,0 +1,69 @@
+1 - testPushPopSingleFile done
+1 - testPushPopSeveralFiles done
+1 - testCacheEntryTranslation done
+1 - testAsyncPush started
+1 - testAsyncPush creating threads
+1 - testAsyncPush starting threads
+1 - StringPusher-0 started. Pushing 1000 strings in the queue
+1 - StringPusher-1 started. Pushing 1000 strings in the queue
+1 - StringPusher-2 started. Pushing 1000 strings in the queue
+1 - StringPusher-3 started. Pushing 1000 strings in the queue
+1 - testAsyncPush waiting until all threads terminate
+1 - StringPusher-4 started. Pushing 1000 strings in the queue
+1 - StringPusher-0 terminated
+1 - StringPusher-1 terminated
+1 - StringPusher-4 terminated
+1 - StringPusher-2 terminated
+1 - testAsyncPush pusher threads terminated
+1 - testAsyncPush done
+1 - testAsyncPop started
+1 - StringPusher-3 terminated
+1 - testAsyncPop creating threads
+1 - testAsyncPop starting threads
+1 - StringPopper-0 started
+1 - StringPopper-1 started
+1 - StringPopper-2 started
+1 - StringPopper-3 started
+1 - testAsyncPop waiting until all threads terminate
+1 - StringPopper-0 terminated
+1 - StringPopper-4 started
+1 - StringPopper-3 terminated
+1 - StringPopper-2 terminated
+1 - StringPopper-1 terminated
+1 - testAsyncPop done
+1 - testAsyncPushPop started
+1 - StringPopper-4 terminated
+1 - testAsyncPushPop creating threads
+1 - testAsyncPushPop starting threads
+1 - StringPopper-0 started
+1 - StringPopper-1 started
+1 - StringPopper-2 started
+1 - StringPopper-3 started
+1 - StringPopper-4 started
+1 - StringPopper-5 started
+1 - StringPopper-6 started
+1 - StringPopper-7 started
+1 - StringPusher-0 started. Pushing 1000 strings in the queue
+1 - StringPusher-0 terminated
+1 - StringPusher-2 started. Pushing 1000 strings in the queue
+1 - testAsyncPushPop waiting until all threads terminate
+1 - StringPusher-4 started. Pushing 1000 strings in the queue
+1 - StringPusher-3 started. Pushing 1000 strings in the queue
+1 - StringPusher-1 started. Pushing 1000 strings in the queue
+1 - StringPusher-2 terminated
+1 - StringPusher-1 terminated
+1 - StringPusher-3 terminated
+1 - StringPusher-4 terminated
+1 - StringPopper-0 terminated
+1 - StringPopper-1 terminated
+1 - StringPopper-2 terminated
+1 - StringPopper-7 terminated
+1 - StringPopper-6 terminated
+1 - StringPopper-5 terminated
+1 - StringPopper-4 terminated
+1 - StringPopper-3 terminated
+1 - testAsyncPushPop done
+1 - 
+1 - 
+1 - OK (7 tests)
+1 - 

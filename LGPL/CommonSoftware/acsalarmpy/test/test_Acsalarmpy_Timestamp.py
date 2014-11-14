@@ -68,7 +68,7 @@ class TestTimestamp(unittest.TestCase):
         """Timestamp generates XML"""
         mocktime.return_value = 1222887968.813309
         ts = Timestamp.Timestamp()
-        self.assertEqual('   <source-timestamp seconds="1222887968" microseconds="813308"/>\n', ts.toXML('source-timestamp', 3))
+        self.assertEqual('   <source-timestamp>2008-10-01T19:06:08.813</source-timestamp>\n', ts.toXML('source-timestamp', 3))
 
 if __name__ == '__main__':
     unittest.main()

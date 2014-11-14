@@ -1,5 +1,26 @@
 # $Id: acsMakefileCore.mk,v 1.12 2012/03/02 13:07:58 tstaig Exp $
 #
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2014
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
+
 ##################################################################
 ## DEFINITIONS
 ##################################################################
@@ -46,6 +67,17 @@ KDIR := $(shell $(RTAI_CONFIG) --linux-dir)
 CCRTAI:=$(shell $(RTAI_CONFIG) --cc)
 USR_INC = -I$(RTAI_HOME)/include  $(patsubst -I..%,-I$(PWD)/..%,$(I_PATH))
 EXTRA_CFLAGS = $(shell $(RTAI_CONFIG) --module-cflags) -Werror-implicit-function-declaration  $(patsubst ..%,$(PWD)/..%,$(USR_INC)) $(USER_RTAI_CFLAGS) -DRTAI_HOME
+endif
+#
+#  Kernel modules
+ifeq ($(strip $(RTAI_HOME)),)
+ifneq ($(strip $(LINUX_HOME)),)
+KERNEL_MODULE_CFLAGS = -D__KERNEL__ -DMODULE -O2 -Wall -Wstrict-prototypes -Wno-trigraphs  -fomit-frame-pointer -fno-strict-aliasing -fno-common -pipe  -march=i686 -falign-functions=4 -I$(LINUX_HOME)/include/linux -I$(LINUX_HOME)/include/asm-i386/mach-default $(USER_KERNEL_MODULE_CFLAGS) 
+KDIR := /lib/modules/$(kernel_install_subfold)/build
+CCKERNEL:=cc
+USR_INC = -I$(LINUX_HOME)/include  $(patsubst -I..%,-I$(PWD)/..%,$(I_PATH))
+EXTRA_CFLAGS = -I. -D_FORTIFY_SOURCE=0 -ffast-math -mhard-float -Werror-implicit-function-declaration  $(patsubst ..%,$(PWD)/..%,$(USR_INC)) $(USER_KERNEL_MODULE_CFLAGS) -DLINUX_HOME
+endif
 endif
 #
 ifeq ($(strip $(DEBUG)),on)
@@ -181,6 +213,45 @@ $(foreach xml,$(ACSERRDEF),$(eval $(call acsMakeIDLDependencies,$(xml),idl)))
 
 
 #################################################################
+## LINK_FILES 
+#################################################################
+
+.PHONY: make_links
+make_links: do_links_internal
+
+.PHONY: do_links
+do_links: do_links_internal
+
+ifneq ($(strip $(LINK_FILES)),)
+.PHONY : do_links_internal 
+do_links_internal: do_links_begin $(foreach lf,$(LINK_FILES),do_link_$(notdir $(lf))) 
+
+.PHONY: do_links_begin
+do_links_begin:
+	-@$(ECHO) "....do links:"
+
+$(foreach lf, $(LINK_FILES), \
+	$(foreach wc, $(wildcard ../../ws/src/$(lf)), \
+		$(eval $(call acsMakeLinkFileDependencies,$(subst ../../ws/src/,,$(wc)))) ) \
+)
+
+
+.PHONY: clean_links
+clean_links: rm_links
+
+.PHONY : rm_links_begin
+rm_links_begin:
+	$(AT) echo "Removing links ...";
+
+.PHONY: rm_links
+rm_links: rm_links_begin $(foreach lf,$(LINK_FILES),rm_link_$(notdir $(lf)))
+
+CLEAN_TARGET += rm_links
+else
+do_links_internal:
+	$(AT)$(ECHO) "No links to be done"
+endif
+#################################################################
 ## IDL
 #################################################################
 # set search path for idl files
@@ -252,7 +323,7 @@ javadoc:
 	$(AT)mkdir -p ../doc/api/html
 	$(AT)for member in $(foreach jarfile, $(JARFILES_LIST), $($(jarfile)_DIRS)) ;\
 		do \
-		javadoc $(JavadocOptions) -classpath `vltMakeJavaClasspath` -d ../doc/api/html `find $${member} -type f -name \*.java` > /dev/null 2>&1 ;\
+		javadoc $(JavadocOptions) -classpath `acsMakeJavaClasspath` -d ../doc/api/html `find $${member} -type f -name \*.java` > /dev/null 2>&1 ;\
 		done
 
 
@@ -310,45 +381,6 @@ $(foreach lib,$(LIBRARY_LIST),\
  ) \
 )
 endif # 
-endif
-#################################################################
-## LINK_FILES 
-#################################################################
-
-.PHONY: make_links
-make_links: do_links_internal
-
-.PHONY: do_links
-do_links: do_links_internal
-
-ifneq ($(strip $(LINK_FILES)),)
-.PHONY : do_links_internal 
-do_links_internal: do_links_begin $(foreach lf,$(LINK_FILES),do_link_$(notdir $(lf))) 
-
-.PHONY: do_links_begin
-do_links_begin:
-	-@$(ECHO) "....do links:"
-
-$(foreach lf, $(LINK_FILES), \
-	$(foreach wc, $(wildcard ../../ws/src/$(lf)), \
-		$(eval $(call acsMakeLinkFileDependencies,$(subst ../../ws/src/,,$(wc)))) ) \
-)
-
-
-.PHONY: clean_links
-clean_links: rm_links
-
-.PHONY : rm_links_begin
-rm_links_begin:
-	$(AT) echo "Removing links ...";
-
-.PHONY: rm_links
-rm_links: rm_links_begin $(foreach lf,$(LINK_FILES),rm_link_$(notdir $(lf)))
-
-CLEAN_TARGET += rm_links
-else
-do_links_internal:
-	$(AT)$(ECHO) "No links to be done"
 endif
 #################################################################
 ## EXE
@@ -518,11 +550,39 @@ clean_rtais: clean_rtai_final
 
 .PHONY:
 clean_rtai_final:
-	$(AT)$(RM) Kbuild ../rtai/$(rtai_install_subfold)
+	$(AT)$(RM) Kbuild ../rtai/$(kernel_install_subfold)
 
 endif
 # some target needs to be assigned this task
-#	-$(AT)$(RM) ../rtai/$(rtai_install_subfold)
+#	-$(AT)$(RM) ../rtai/$(kernel_install_subfold)
+
+
+#################################################################
+## Kernel modules
+#################################################################
+
+##
+# - for Automatic Dependencies for Kernel Modules
+#
+KERNEL_MODULES_LIST = $(KERNEL_MODULES) $(KERNEL_MODULES_L)
+ifneq "$(strip $(KERNEL_MODULES_LIST))" "" 
+$(eval $(call top-level,kernel_module,$(KERNEL_MODULES_LIST),$(KERNEL_MODULES)))
+
+$(foreach km,$(KERNEL_MODULES_LIST), \
+   $(eval $(call acsMakeExecutableDependencies,,load$(km),load$(km),$(load$(km)_LDFLAGS),on,LKM C++ )))
+$(foreach km,$(KERNEL_MODULES_LIST), \
+   $(eval $(call acsMakeExecutableDependencies,,unload$(km),unload$(km),$(unload$(km)_LDFLAGS),on,LKM C++ )))
+$(foreach km,$(KERNEL_MODULES_LIST), \
+   $(eval $(call acsMakeKernelDependencies,$(km),$($(km)_OBJECTS) ) ) )
+
+# enhancing the clean target further
+clean_kernel_modules: clean_kernel_module_final
+
+.PHONY:
+clean_kernel_module_final:
+	$(AT)$(RM) Kbuild ../kernel/$(kernel_install_subfold)
+
+endif
 
 
 #################################################################

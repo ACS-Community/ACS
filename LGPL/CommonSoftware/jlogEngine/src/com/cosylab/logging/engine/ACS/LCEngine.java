@@ -27,9 +27,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.omg.CORBA.ORB;
 
 import si.ijs.maci.Manager;
-
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.util.stringqueue.DefaultXmlQueueFileHandlerImpl;
+import alma.acs.util.stringqueue.TimestampedStringQueueFileHandler;
 
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.Filterable;
@@ -37,7 +38,6 @@ import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.RemoteAccess;
 import com.cosylab.logging.engine.audience.Audience;
-import com.cosylab.logging.engine.cache.ILogQueueFileHandler;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -291,7 +291,7 @@ public class LCEngine implements Filterable {
 	 * @see ILogQueueFileHandler
 	 * @see #LCEngine(boolean, FiltersVector, ILogQueueFileHandler)
 	 */
-	public LCEngine(ILogQueueFileHandler cacheFileHandler) throws LogEngineException {
+	public LCEngine(TimestampedStringQueueFileHandler cacheFileHandler) throws LogEngineException {
 		this(false,null,cacheFileHandler);
 	}
 	
@@ -304,7 +304,7 @@ public class LCEngine implements Filterable {
 	 * @see ILogQueueFileHandler
 	 * @see #LCEngine(boolean, FiltersVector, ILogQueueFileHandler)
 	 */
-	public LCEngine(boolean autoReconn, ILogQueueFileHandler cacheFileHandler)throws LogEngineException  {
+	public LCEngine(boolean autoReconn, TimestampedStringQueueFileHandler cacheFileHandler)throws LogEngineException  {
 		this(autoReconn,null,cacheFileHandler);
 	}
 
@@ -319,7 +319,7 @@ public class LCEngine implements Filterable {
 	 * @param filters
 	 *            The filters to apply to the incoming logs.
 	 *            <code>filters</code> can also be either <code>null</code> or empty.
-	 * @param cacheFileHandler The handler of the files of the cache or <
+	 * @param cacheFileHandler The handler of the files of the cache or 
 	 * 						   <code>null</code> if do not want to register for notification
 	 * 
 	 * @see ILogQueueFileHandler
@@ -327,8 +327,11 @@ public class LCEngine implements Filterable {
 	public LCEngine(
 			boolean autoReconn,
 			FiltersVector filters,
-			ILogQueueFileHandler cacheFileHandler) throws LogEngineException {
+			TimestampedStringQueueFileHandler cacheFileHandler) throws LogEngineException {
 		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("jlogEngine", false);
+		if (cacheFileHandler==null) {
+			cacheFileHandler = new DefaultXmlQueueFileHandlerImpl("Log");
+		}
 		//ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 		logRetrieval=new ACSLogRetrieval(
 				listenersDispatcher,

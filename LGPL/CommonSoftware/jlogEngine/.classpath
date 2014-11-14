@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry excluding="lc.jar.extras/" kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry excluding="CDB/|ref/|tatlogs/|tmp/" kind="src" path="test"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/abeansR2Components.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit-dep-4.10.jar"/>
@@ -19,6 +19,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jacsutil2.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/jacsutil2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

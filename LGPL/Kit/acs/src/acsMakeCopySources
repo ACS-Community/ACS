@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
@@ -7,13 +7,34 @@
 # who       when      what
 # --------  --------  ----------------------------------------------
 
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2014
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
+
 #************************************************************************
 #   NAME
 #   acsMakeCopySources - copy the module source files into integration area.
 # 
 #   SYNOPSIS
 #
-#   vltMakeCopySources
+#   acsMakeCopySources
 #
 # 
 #   DESCRIPTION
@@ -63,7 +84,6 @@
 #   acsMakefile, Makefile, (GNU) make
 #
 #   GNU make - Edition 0.41, for make Version 3.64 Beta, April 93
-#   VLT Software - Programming Standard - 1.0 10/03/93
 #
 #   BUGS    
 #
@@ -82,7 +102,7 @@ then
       if [ ! -d $TMP_INTLIST ]
       then
          echo ""
-         echo " ERROR: vltMakeCopySources: INTLIST defined as >> $TMP_INTLIST << is not a directory"
+         echo " ERROR: acsMakeCopySources: INTLIST defined as >> $TMP_INTLIST << is not a directory"
          echo ""
          exit 1 
       fi  
@@ -91,7 +111,7 @@ else
    if [ ! -d $INTROOT ] 
    then
       echo ""
-      echo " ERROR: vltMakeCopySources: INTROOT defined as >> $INTROOT << is not a directory"
+      echo " ERROR: acsMakeCopySources: INTROOT defined as >> $INTROOT << is not a directory"
       echo ""
       exit 1
    fi
@@ -121,12 +141,12 @@ PWD=`pwd`
 SUB_DIR=`basename $PWD`
 
 # 
-# check if this is a standard VLT structure.
+# check if this is a standard ACS structure.
 if [ $SUB_DIR != "src" -a $SUB_DIR != "test" ]
 then
     echo ""
-    echo " ERROR: vltMakeCopySources: "
-    echo "          VLT standard Makefile can be either src/ or in test/ "
+    echo " ERROR: acsMakeCopySources: "
+    echo "          ACS standard Makefile can be either src/ or in test/ "
     echo "          Where are you now?"
     echo ""
     exit 1
@@ -165,7 +185,7 @@ do
             continue
         else
             echo ""
-            echo " ERROR: vltMakeCopySources: cannot access/create $WHERE_TO_COPY"
+            echo " ERROR: acsMakeCopySources: cannot access/create $WHERE_TO_COPY"
             echo ""
             exit 1
         fi

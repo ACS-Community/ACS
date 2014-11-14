@@ -22,18 +22,23 @@
 * almadev  2014-08-28  created 
 */
 #include "pDataConsumer.h"
-#include "TimespecUtils.h"
+#include "TimevalUtils.h"
+#include "ORBTask.h"
+#include "ConsumerTimer.h"
+#include "CorbaNotifyUtils.h"
+
+#include <ORB_Core.h>
+#include <Reactor.h>
 
 #include <stdint.h>
 #include <stdexcept>
 #include <sstream>
+#include <vector>
 #include <syslog.h>
 
 #include "corbaNotifyTest_ifC.h"
 
-static const std::string DT_CONSUMER = "CONSUMER";
-static const std::string DT_SUPPLIER = "SUPPLIER";
-static const std::string DT_SUPP_CON = "SUPP_CON";
+
 
 void printUsage(const std::string &errMsg="") 
 {
@@ -43,7 +48,7 @@ void printUsage(const std::string &errMsg="")
 		std::cout << std::endl << "\tERROR: " << errMsg << std::endl << std::endl;
 	}
 
-	std::cout << "\tUSAGE: pDataConsummer -c channel -r IOR -d maxDelaySec -t delayType" << std::endl;
+	std::cout << "\tUSAGE: pDataConsummer -c channel -r IOR -d maxDelaySec -t delayType -i intervalMin -o ORBOptions" << std::endl;
 	std::cout << "\t\tchannel: the ID of the notification channel or the path where the channel ID is stored" << std::endl;
 	std::cout << "\t\tIOR: the IOR of the Notify Service" << std::endl;
 	std::cout << "\t\tmaxDelaySec: maximum delay allowed in seconds" << std::endl;
@@ -52,69 +57,86 @@ void printUsage(const std::string &errMsg="")
 	std::cout << "\t\t\tSUPPLIER: elapsed time between consecutive events in the supplier" << std::endl;
 	std::cout << "\t\t\tSUPP_CON: delay of one event" << std::endl;
 	std::cout << "\t\t\tDefault is SUPP_CON" << std::endl;
+	std::cout << "\t\tintervalMin: time interval in minutes between consecutive output messages showing the number of events received" << std::endl;
+	std::cout << "\t\tORBOptions: options passed in the initialization of ORB" << std::endl;
 
 	std::cout << std::endl;
 	exit(1);
 }
 
-void getParams(int argc,char *argv[],CosNotifyChannelAdmin::ChannelID &channelID,std::string &iorNS,
-	double &maxDelaySec,std::string &delayType)
+void getParams(int argc,char *argv[],ConsumerParams &params)
 	 
 {
 	int c;
-	std::string channel;
+	std::string str;
+	/*std::string channel;
 	std::string sdelay;
+	std::string sinterval;*/
 
-	channelID = -1;
-	iorNS = "";
-	maxDelaySec = 0;
-	delayType = DT_SUPP_CON;
+	params.channelID = DEFAULT_CHANNEL_ID;
+	params.iorNS = DEFAULT_IOR_NS;
+	params.maxDelaySec = DEFAULT_MAX_DELAY_SEC;
+	params.delayType = DEFAULT_DELAY_TYPE;
+	params.interval = DEFAULT_INTERVAL;
 
-	while((c = getopt(argc, argv, "c:r:d:t:")) != -1)
+	while((c = getopt(argc, argv, "c:i:o:r:d:t:")) != -1)
 	{
 		switch(c)
 		{
 		case 'c':
-			channel = optarg;
+			str = optarg;
 
-			if(channel.find_first_not_of("0123456789") != std::string::npos)
+			if(str.find_first_not_of("0123456789") != std::string::npos)
 			{
-				std::ifstream f(channel.c_str());
+				std::ifstream f(str.c_str());
 				if(f.is_open() == true)
 				{
 					std::string sch;
 					std::getline(f, sch);
 					f.close();
 					try {
-						channelID = atoi(sch.c_str());
+						params.channelID = atoi(sch.c_str());
 
 					} catch(...) {
 						printUsage("Wrong channel ID: " + sch);
 					}
 				} else {
-					printUsage("Wrong channel ID file: " + channel);
+					printUsage("Wrong channel ID file: " + str);
 				}
 			} else {
-				channelID = atoi(channel.c_str());
+				params.channelID = atoi(str.c_str());
 			}
 			break;
+		case 'i':
+			str = optarg;
+			if(str.find_first_not_of("0123456789") != std::string::npos)
+			{
+				printUsage("Wrong interval. Must be an integer");
+			}
+			params.interval = atoi(str.c_str());
+			break;
+		case 'o':
+			params.ORBOptions = optarg;
+			break;
 		case 'r':
-			iorNS = optarg;
+			params.iorNS = optarg;
 			break;
 		case 'd':
-			sdelay = optarg;
-			if(sdelay.find_first_not_of("0123456789.") != std::string::npos)
+			str = optarg;
+			if(str.find_first_not_of("0123456789.") != std::string::npos)
 			{
 				printUsage("Wrong delay. Must be a number");
 			} else {
-				maxDelaySec = atof(sdelay.c_str());
+				params.maxDelaySec = atof(str.c_str());
 			}
 			break;
 		case 't':
-			delayType = optarg;
-			if(delayType != DT_CONSUMER && delayType != DT_SUPPLIER && delayType != DT_SUPP_CON)
+			str = optarg;
+			if(str != DT_CONSUMER && str != DT_SUPPLIER && str != DT_SUPP_CON)
 			{
-				printUsage("Unknown delay type: " + delayType);
+				printUsage("Unknown delay type: " + str);
+			} else {
+				params.delayType = str;
 			}
 			break;
 		default:
@@ -123,12 +145,12 @@ void getParams(int argc,char *argv[],CosNotifyChannelAdmin::ChannelID &channelID
 		}
 	}
 
-	if(channelID == -1)
+	if(params.channelID == -1)
 	{
 		printUsage("A channel ID is required");
 	}
 
-	if(iorNS.size() <= 0)
+	if(params.iorNS.size() <= 0)
 	{
 		printUsage("IOR of the Notify Service is required");
 	}
@@ -144,16 +166,13 @@ void signal_handler(int sig)
 
 int main(int argc, char *argv[])
 {
-	CosNotifyChannelAdmin::ChannelID channelID;
-	std::string iorNS;
-	double maxDelaySec;
-	std::string delayType;
+	ConsumerParams params;
 
 	signal(SIGINT, signal_handler);
 
-	getParams(argc, argv, channelID, iorNS, maxDelaySec, delayType);
+	getParams(argc, argv, params);
 
-	consumer.run(argc, argv, channelID, iorNS, maxDelaySec, delayType);
+	consumer.run(argc, argv, params);
 
 	ACE_DEBUG((LM_INFO, "Consumer ends ...\n"));
 	return EXIT_SUCCESS;
@@ -161,24 +180,35 @@ int main(int argc, char *argv[])
 
 Consumer::Consumer()
 {
-	TimespecUtils::set_timespec(m_tLastEvent, 0, 0);
-	TimespecUtils::set_timespec(m_maxDelay, 0, 0);
+	TimevalUtils::set_timeval(m_tLastEvent, 0, 0);
+	m_maxDelay = 0;
 	m_lastEventTimestamp = 0;
 	m_delayType = DT_SUPP_CON;
+	m_numEventsReceived = 0;
+}
+
+Consumer::~Consumer()
+{
 }
 
 
-bool Consumer::run (int argc, ACE_TCHAR* argv[],CosNotifyChannelAdmin::ChannelID channelID,
-		    const std::string &iorNS,double maxDelaySec,const std::string &delayType)
+bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 {
 	
-	TimespecUtils::double_2_timespec(maxDelaySec, m_maxDelay);
-	ACE_DEBUG((LM_INFO, "Max delay: %s s\n", TimespecUtils::timespec_2_str(m_maxDelay).c_str()));
-	m_delayType = delayType;
+	m_maxDelay = params.maxDelaySec * 1000;
+	ACE_DEBUG((LM_INFO, "Max delay: %q ms\n", m_maxDelay));
+	m_delayType = params.delayType;
 
 	try {
+		int orbArgc = 0;
+		ACE_TCHAR **orbArgv = NULL;
+		CorbaNotifyUtils::getORBOptions("pDataConsumer", params.ORBOptions, orbArgc, &orbArgv);
+
 		std::string errMsg;
-		if(init_ORB(argc, argv) == false)
+		bool initialized = init_ORB(orbArgc, orbArgv);
+		CorbaNotifyUtils::delORBOptions(orbArgc, &orbArgv);
+
+		if(initialized == false)
 		{
 			return false;	
 		}
@@ -188,7 +218,7 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],CosNotifyChannelAdmin::ChannelID
 		CosEventChannelAdmin::ProxyPushSupplier_var supplier;
 		CosEventComm::PushConsumer_var consumer;
 
-		if(getNotificationChannel(iorNS,channelID,channel,errMsg) == false)
+		if(getNotificationChannel(params.iorNS,params.channelID,channel,errMsg) == false)
 		{
 			ACE_DEBUG((LM_ERROR, "Error: %s", errMsg.c_str()));
 			return false;
@@ -199,10 +229,25 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],CosNotifyChannelAdmin::ChannelID
 		consumer = this->_this ();
 		supplier->connect_push_consumer (consumer.in ());
 
-		// Wait for events, using work_pending()/perform_work() may help
-		// or using another thread, this example is too simple for that.
-		ACE_DEBUG((LM_INFO, "Waiting for events in channel %d ...\n", channelID));
-		m_orb->run ();
+		ACE_DEBUG((LM_INFO, "Waiting for events in channel %d ...\n", params.channelID));
+
+		// Create & schedule the timer
+		ConsumerTimer *timer = new ConsumerTimer(*this);
+		ACE_Time_Value timeout(params.interval * 60, 0);
+		m_orb->orb_core()->reactor()->schedule_timer(timer, 0, timeout, timeout);
+
+		ORB_Task task(m_orb);
+
+		int retval = task.activate (THR_NEW_LWP | THR_JOINABLE);
+		if (retval != 0)
+		{
+			ACE_ERROR((LM_ERROR,"Failed to activate the ORB task"));
+			return false;
+		}
+
+		task.wait();
+
+		m_orb->destroy();
 
 	} catch(CORBA::Exception &ex) {
 		ex._tao_print_exception ("Consumer::run");
@@ -218,71 +263,62 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],CosNotifyChannelAdmin::ChannelID
 void Consumer::push (const CORBA::Any &event)
 {
 	uint64_t currTimestamp;
-	ACS::Time tsDiff;
-	ACS::Time tsSuppConDiff;
-	timespec tConsumerDiff;
-	timespec tSupplierDiff;
-	timespec tSuppConDiff;
-	timespec tEvent;
+	int64_t tsSupplierDiff;
+	int64_t tSuppConDiff;
+	int64_t tConsumerDiff;
+	//timeval tSupplierDiff;
+	//timeval tSuppConDiff;
+	timeval tEvent;
 
 	benchmark::MountStatusData *data;
 	if(event >>= data)
 	{
+		++m_numEventsReceived;
+
 		// Calculate current event time
-		TimespecUtils::get_current_timespec(tEvent);
-		currTimestamp = TimespecUtils::timespec_2_100ns(tEvent);
+		TimevalUtils::get_current_timeval(tEvent);
+		currTimestamp = TimevalUtils::timeval_2_ms(tEvent);
 
 		// Check the delay of the current event
-		if(m_tLastEvent.tv_sec > 0 || m_tLastEvent.tv_nsec > 0)
+		if(m_tLastEvent.tv_sec > 0 || m_tLastEvent.tv_usec > 0)
 		{
 			// Calculate delay between consecutive events in the consumer
-			tConsumerDiff = TimespecUtils::diff_timespec(tEvent, m_tLastEvent);
+			tConsumerDiff = TimevalUtils::diff_timeval(tEvent, m_tLastEvent);
 
 			// Calculate delay between consecutive events in the supplier
-			tsDiff = data->timestamp - m_lastEventTimestamp;
-			TimespecUtils::ns100_2_timespec(tsDiff, tSupplierDiff);
+			tsSupplierDiff = (int64_t)data->timestamp - (int64_t)m_lastEventTimestamp;
 
 			// Calculate delay between supplier and consumer
-			tsSuppConDiff = currTimestamp - data->timestamp;
-			TimespecUtils::ns100_2_timespec(tsSuppConDiff, tSuppConDiff);
-		
+			tSuppConDiff = (int64_t)currTimestamp - (int64_t)data->timestamp;
 
-			if(m_maxDelay.tv_sec > 0 || m_maxDelay.tv_nsec > 0)
+			if(m_maxDelay > 0)
 			{
-				//uint64_t maxDelay100ns = TimespecUtils::timespec_2_100ns(m_maxDelay);
-				if(m_maxDelay < tSupplierDiff && m_delayType == DT_SUPPLIER)
+				if(m_maxDelay < tsSupplierDiff && m_delayType == DT_SUPPLIER)
 				{
-					//std::cout << "tSupplierDiff: " << tSupplierDiff.tv_sec << " " << tSupplierDiff.tv_nsec << std::endl;
-					ACE_DEBUG((LM_NOTICE, "%T Event received %s with supplier delay %s but maximum allowed is %s s\n", 
-						data->antennaName.in(), TimespecUtils::timespec_2_str(tSupplierDiff).c_str(), 
-						TimespecUtils::timespec_2_str(m_maxDelay).c_str()));
+					ACE_DEBUG((LM_NOTICE, "%T Event received %s with supplier delay %q ms but maximum allowed is %q ms\n",
+						data->antennaName.in(), tsSupplierDiff, m_maxDelay));
 				}
 
 				if(m_maxDelay < tConsumerDiff && m_delayType == DT_CONSUMER)
 				{
-					ACE_DEBUG((LM_NOTICE, "%T Event received %s with consumer delay %s but maximum allowed is %s s\n", 
-						data->antennaName.in(), TimespecUtils::timespec_2_str(tConsumerDiff).c_str(), 
-						TimespecUtils::timespec_2_str(m_maxDelay).c_str()));
+					ACE_DEBUG((LM_NOTICE, "%T Event received %s with consumer delay %q ms but maximum allowed is %q ms\n",
+						data->antennaName.in(), tConsumerDiff, m_maxDelay));
 				}
 
 				if(m_maxDelay < tSuppConDiff && m_delayType == DT_SUPP_CON)
 				{
-					ACE_DEBUG((LM_NOTICE, "%T Event received %s with delay %s but maximum allowed is %s s\n", 
-						data->antennaName.in(), TimespecUtils::timespec_2_str(tSuppConDiff).c_str(), 
-						TimespecUtils::timespec_2_str(m_maxDelay).c_str()));
+					ACE_DEBUG((LM_NOTICE, "%T Event received %s with delay %q ms but maximum allowed is %q ms\n",
+						data->antennaName.in(), tSuppConDiff, m_maxDelay));
 				}
 
 			} else {
-				ACE_DEBUG((LM_INFO, "%T Event received: %s with delay %s s, supplier delay %s s and consumer delay %s s\n", 
-					data->antennaName.in(), 
-					TimespecUtils::timespec_2_str(tSuppConDiff).c_str(),
-					TimespecUtils::timespec_2_str(tSupplierDiff).c_str(),
-					TimespecUtils::timespec_2_str(tConsumerDiff).c_str()));
+				ACE_DEBUG((LM_INFO, "%T Event received: %s with delay %q ms, supplier delay %q ms and consumer delay %q ms\n",
+					data->antennaName.in(), tSuppConDiff, tsSupplierDiff, tConsumerDiff));
 			}
 		}
 
 		// Update last event received time
-		TimespecUtils::set_timespec(m_tLastEvent, tEvent.tv_sec, tEvent.tv_nsec);
+		TimevalUtils::set_timeval(m_tLastEvent, tEvent.tv_sec, tEvent.tv_usec);
 		m_lastEventTimestamp = data->timestamp;
 
 	} else {
@@ -292,6 +328,12 @@ void Consumer::push (const CORBA::Any &event)
 
 void Consumer::offer_change(const CosNotification::EventTypeSeq&, const CosNotification::EventTypeSeq&)
 {
+
+}
+
+uint64_t Consumer::getNumEventsReceived() const
+{
+	return m_numEventsReceived;
 }
 
 void Consumer::disconnect_push_consumer (void)

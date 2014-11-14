@@ -23,7 +23,7 @@
 # On-Line Database Files
 # ----------------------
 # DBL_FLAGS = -v0 -DTARGET_TCS=${TARGET_TCS} -DTCSID=$(TCSID) -I$(VLTTOP)/vw/dbl -I$(VLTTOP)/vw/include -I$(ACSROOT)/dbl -I$(ACSROOT)/vw/dbl
-DBL_FLAGS = -v0 -I$(VLTTOP)/vw/dbl -I$(VLTTOP)/vw/include -I$(ACSROOT)/dbl -I$(ACSROOT)/vw/dbl
+DBL_FLAGS = -v0 -I$(PRJTOP)/vw/dbl -I$(PRJTOP)/vw/include -I$(ACSROOT)/dbl -I$(ACSROOT)/vw/dbl
 
 #
 #>>>>> END OF standard rules

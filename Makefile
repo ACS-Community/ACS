@@ -13,7 +13,8 @@ os     = $(shell uname)
 ###############################################
 
 MODULE_PREFIX = LGPL
-MODULES_KIT = vlt doc acs acstempl
+#!#MODULES_KIT = vlt doc acs acstempl
+MODULES_KIT = doc acs acstempl
 #
 # I skip doxygen, that should be after compat and before tat,
 # because it is already built in the prepare phase.
@@ -91,19 +92,19 @@ MODULES =  $(foreach kit, $(MODULES_KIT), $(MODULE_PREFIX)/Kit/$(kit)) \
 	   $(addprefix $(MODULE_PREFIX_VW)/, $(MODULES_VW)) \
            $(MODULE_PREFIX)/acsBUILD
 
-#
-# No VLT Central Common Software (CCS) is available.
-# Some modules in the KIT and TOOLS sub-packages
-# come from the VLT CCS and use the NOCCS flag to
-# compile when the core of CCS is not available 
-#
-
-# Commented out empty MAKE_FLAGS, because it does not work on SUN
-# MAKE_FLAGS = ""
-
-ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
-    MAKE_FLAGS = "NOCCS=1"
-endif
+#!##
+#!## No VLT Central Common Software (CCS) is available.
+#!## Some modules in the KIT and TOOLS sub-packages
+#!## come from the VLT CCS and use the NOCCS flag to
+#!## compile when the core of CCS is not available 
+#!##
+#!#
+#!## Commented out empty MAKE_FLAGS, because it does not work on SUN
+#!## MAKE_FLAGS = ""
+#!#
+#!#ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
+#!#    MAKE_FLAGS = "NOCCS=1"
+#!#endif
 
 SHELL=/bin/ksh
 ECHO=echo
@@ -237,9 +238,10 @@ checkModuleTree:
 
 #
 # Before being able to cleanly build and install ACS I need to have available
-# - the directory trre
-# - the Kit modules: vlt doc acs acstempl
-#   Nodice that vlt and doc have a circular dependency
+# - the directory tree
+#!## - the Kit modules: vlt doc acs acstempl
+# - the Kit modules: doc acs acstempl
+#   Notice that vlt and doc have a circular dependency
 #   and therefore they are built "ad hoc" by the prepare kit script
 # - doxygen
 prepare:	
@@ -251,11 +253,11 @@ prepare:
 
 #
 # Update of all core components
-# According to SE standards does not make man and does not clenup at the end.
+# According to SE standards does not make man and does not cleanup at the end.
 #
 # GCH 2005-02-02
 #   Added a 'true' at the end of the look to ensure
-#   that is the LAST module fails the whole Make does not fail
+#   that if the LAST module fails the whole Make does not fail
 #
 
 update:	svn-tag checkModuleTree

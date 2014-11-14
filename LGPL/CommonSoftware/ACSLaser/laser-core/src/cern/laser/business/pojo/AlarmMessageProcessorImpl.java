@@ -1,6 +1,7 @@
 package cern.laser.business.pojo;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,13 +27,14 @@ import cern.laser.business.data.Triplet;
 import cern.laser.source.alarmsysteminterface.AlarmSystemInterfaceFactory;
 import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
-import cern.laser.source.alarmsysteminterface.impl.TimestampHelper;
 import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 import cern.laser.util.LogTimeStamp;
 
 import com.cosylab.acs.laser.LaserComponent;
 import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
+
+import alma.acs.util.IsoDateFormat;
 
 /**
  * CERN documentation is missing unfortunately... Below you can find ACS documentation of the changes
@@ -230,7 +232,13 @@ public class AlarmMessageProcessorImpl {
       alarmsProcessed.incrementAndGet();
       // Check for the delay comparing the actual time with the timestamp
       // of the processed message
-      alarmsDelayHelper.updateDelay(TimeUnit.MILLISECONDS.convert(asi_message.getSourceTimestamp().getSeconds(),TimeUnit.SECONDS));
+      try {
+    	  long timestamp = IsoDateFormat.parseIsoTimestamp(asi_message.getSourceTimestamp()).getTime();
+    	  alarmsDelayHelper.updateDelay(timestamp);
+      } catch (ParseException pe) {
+    	  LOGGER.error("Error parsing a ISO timestamp: "+asi_message.getSourceTimestamp(), pe);
+      }
+      
   }
 
   public void processChange(FaultState faultState, String sourceName, String sourceHostname, Timestamp sourceTimestamp)
@@ -475,7 +483,7 @@ public class AlarmMessageProcessorImpl {
   private void processBackup(ASIMessage asiMessage) throws Exception {
     String source_name = asiMessage.getSourceName();
     String source_hostname = asiMessage.getSourceHostname();
-    Timestamp source_timestamp = TimestampHelper.unmarshalSourceTimestamp(asiMessage.getSourceTimestamp());
+    String source_timestamp = asiMessage.getSourceTimestamp();
     LOGGER.info("processing backup from " + source_name + "@" + source_hostname + " [" + source_timestamp + "]");
     Source source = sourceDAO.findSource(source_name);
   
@@ -532,7 +540,8 @@ public class AlarmMessageProcessorImpl {
             fault_state.setDescriptor(FaultState.ACTIVE);
             fault_state.setActivatedByBackup(true);
             try {
-              processChange(fault_state, source_name, source_hostname, source_timestamp);
+            	Timestamp timestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(source_timestamp).getTime());
+            	processChange(fault_state, source_name, source_hostname, timestamp);
             } catch (Exception e) {
               LOGGER.error("unable to activate alarm by backup", e);
             }
@@ -553,9 +562,10 @@ public class AlarmMessageProcessorImpl {
             fault_state.setDescriptor(FaultState.TERMINATE);
             fault_state.setTerminatedByBackup(true);
             try {
-              processChange(fault_state, source_name, source_hostname, source_timestamp);
+            	Timestamp timestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(source_timestamp).getTime());
+            	processChange(fault_state, source_name, source_hostname, timestamp);
             } catch (Exception e) {
-              LOGGER.error("unable to terminate alarm by backup", e);
+            	LOGGER.error("unable to terminate alarm by backup", e);
             }
           }
         }
@@ -571,7 +581,7 @@ public class AlarmMessageProcessorImpl {
   private void processChanges(ASIMessage asiMessage) {
     String source_name = asiMessage.getSourceName();
     String source_hostname = asiMessage.getSourceHostname();
-    Timestamp source_timestamp = TimestampHelper.unmarshalSourceTimestamp(asiMessage.getSourceTimestamp());
+    String source_timestamp = asiMessage.getSourceTimestamp();
     LOGGER.info("processing changes from " + source_name + "@" + source_hostname + " [" + source_timestamp + "]");
     Collection change_fault_states = ASIMessageHelper.unmarshal(asiMessage);
 
@@ -580,7 +590,8 @@ public class AlarmMessageProcessorImpl {
     while (iterator.hasNext()) {
       FaultState fault_state = (FaultState) iterator.next();
       try {
-        processChange(fault_state, source_name, source_hostname, source_timestamp);
+    	  Timestamp timestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(source_timestamp).getTime());
+    	  processChange(fault_state, source_name, source_hostname, timestamp);
       } catch (Exception e) {
         LOGGER.error("exception caught processing fault state : \n" + fault_state, e);
       }

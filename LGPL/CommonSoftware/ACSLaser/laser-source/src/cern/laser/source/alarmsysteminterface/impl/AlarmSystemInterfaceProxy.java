@@ -6,7 +6,6 @@
 package cern.laser.source.alarmsysteminterface.impl;
 
 import java.net.UnknownHostException;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,6 +28,7 @@ import cern.laser.util.buffer.PullException;
 import cern.laser.util.buffer.SynchroBuffer;
 import cern.laser.util.buffer.SynchroBufferListener;
 
+import alma.acs.util.IsoDateFormat;
 
 /**
  * This class is the implementation of the interface between an alarm source
@@ -66,7 +66,7 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
   /** MOM connection flag
    */
   private AtomicBoolean connected = new AtomicBoolean(false);
-
+  
   /** Create a new instance of AlarmSystemInterfaceProxy
    * @param sourceName the name of the alarm source
    */
@@ -274,7 +274,7 @@ public class AlarmSystemInterfaceProxy implements AlarmSystemInterface, SynchroB
     ASIMessage asi_message = ASIMessageHelper.marshal(states);
     asi_message.setSourceName(getSourceName());
     asi_message.setSourceHostname(hostName);
-    asi_message.setSourceTimestamp(TimestampHelper.marshalSourceTimestamp(new Timestamp(System.currentTimeMillis())));
+   	asi_message.setSourceTimestamp(IsoDateFormat.formatCurrentDate());
     asi_message.setBackup(backup);
     asi_message.setVersion(configuration.getASIVersion());
 

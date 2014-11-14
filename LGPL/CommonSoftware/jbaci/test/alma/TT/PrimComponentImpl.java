@@ -23,6 +23,7 @@ package alma.TT;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import alma.ACS.ROboolean;
 import alma.ACS.ROdouble;
 import alma.ACS.ROdoubleHelper;
 import alma.ACS.ROdoublePOATie;
@@ -35,6 +36,11 @@ import alma.ACS.ROlongPOATie;
 import alma.ACS.ROpattern;
 import alma.ACS.ROpatternHelper;
 import alma.ACS.ROpatternPOATie;
+import alma.ACS.RWboolean;
+import alma.ACS.RWbooleanHelper;
+import alma.ACS.RObooleanHelper;
+import alma.ACS.RObooleanPOATie;
+import alma.ACS.RWbooleanPOATie;
 import alma.ACS.RWdouble;
 import alma.ACS.RWdoubleHelper;
 import alma.ACS.RWdoublePOATie;
@@ -46,10 +52,12 @@ import alma.ACS.RWlongHelper;
 import alma.ACS.RWlongPOATie;
 import alma.ACS.impl.CharacteristicComponentImpl;
 import alma.ACS.impl.ROdoubleImpl;
+import alma.ACS.impl.RObooleanImpl;
 import alma.ACS.impl.ROfloatImpl;
 import alma.ACS.impl.ROlongImpl;
 import alma.ACS.impl.ROpatternImpl;
 import alma.ACS.impl.RWdoubleImpl;
+import alma.ACS.impl.RWbooleanImpl;
 import alma.ACS.impl.RWfloatImpl;
 import alma.ACS.impl.RWlongImpl;
 import alma.ACS.jbaci.DataAccess;
@@ -78,6 +86,8 @@ public class PrimComponentImpl extends CharacteristicComponentImpl
 	protected RWdouble doubleRW;
 	protected ROfloat floatRO;
 	protected RWfloat floatRW;
+	protected ROboolean booleanRO;
+	protected RWboolean booleanRW;
 
 	
 	/**
@@ -124,10 +134,21 @@ public class PrimComponentImpl extends CharacteristicComponentImpl
 			ROfloatPOATie readbackFloatROTie = new ROfloatPOATie(readbackFloatROImpl);
 			floatRO = ROfloatHelper.narrow(this.registerProperty(readbackFloatROImpl, readbackFloatROTie));
 			
-			/* Patter property */
+			/* Pattern property */
 			ROpatternImpl statusImpl = new ROpatternImpl("status", this, new StatusDataAccess());
 			ROpatternPOATie statusTie = new ROpatternPOATie(statusImpl);
 			status = ROpatternHelper.narrow(this.registerProperty(statusImpl, statusTie));
+			
+			/* Boolean properties */
+			DataAccess rwBooleanDataAccess = new MemoryDataAccess();
+			RWbooleanImpl booleanRWImpl = new RWbooleanImpl("booleanRW", this, rwBooleanDataAccess);
+			RWbooleanPOATie booleanRWTie = new RWbooleanPOATie(booleanRWImpl);
+			booleanRW = RWbooleanHelper.narrow(this.registerProperty(booleanRWImpl, booleanRWTie));
+			
+			DataAccess roBooleanDataAccess = new MemoryDataAccess();
+			RObooleanImpl booleanROImpl = new RObooleanImpl("booleanRO", this, roBooleanDataAccess);
+			RObooleanPOATie booleanROTie = new RObooleanPOATie(booleanROImpl);
+			booleanRO = RObooleanHelper.narrow(this.registerProperty(booleanROImpl, booleanROTie));
 
 		}
 		catch (Throwable th)
@@ -239,6 +260,14 @@ public class PrimComponentImpl extends CharacteristicComponentImpl
 		return longRW;
 	}
 
+	public ROboolean booleanRO() {
+		return booleanRO;
+	}
+	
+	public RWboolean booleanRW() {
+		return booleanRW;
+	}
+
 	public ROlong longRO() {
 		return longRO;
 	}
@@ -247,6 +276,6 @@ public class PrimComponentImpl extends CharacteristicComponentImpl
 		return status;
 	}
 
-
+	
 
 }

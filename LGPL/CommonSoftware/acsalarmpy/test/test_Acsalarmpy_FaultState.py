@@ -108,7 +108,7 @@ class TestFaultState(unittest.TestCase):
         """FaultState creates XML with timestamp"""
         fs = FaultState.FaultState("Family", "Member", 1)
         fs.userTimestamp = Timestamp.Timestamp(1222887968, 813309)
-        self.assertEquals('<fault-state family="Family" member="Member" code="1">\n   <user-timestamp seconds="1222887968" microseconds="813309"/>\n</fault-state>\n', fs.toXML())
+        self.assertEquals('<fault-state family="Family" member="Member" code="1">\n   <user-timestamp>2008-10-01T19:06:08.813</user-timestamp>\n</fault-state>\n', fs.toXML())
 
 if __name__ == '__main__':
     unittest.main()

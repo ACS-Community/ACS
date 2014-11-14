@@ -66,16 +66,11 @@ SCRIPTS_L       =	jlogLogEntryTest \
 					jlogEngineStressTest \
 					jlogTestRun.sh \
 					jlogTestEngineFiltering \
-					jlogTestEngineCache \
-					jlogTestEngineCacheEntriesQueue \
 					jlogTestEngineAudience \
 					LoadSaveTest \
 					jlogEngineProfiler \
-					jlogTestCacheFile \
-					jlogTestEngineCacheNotification \
 					jlogTestFilter \
 					jlogTestFiltersVector \
-					jlogStressCacheFile \
 					jlogLongRunTest
 
 #>>>>> END OF standard rules

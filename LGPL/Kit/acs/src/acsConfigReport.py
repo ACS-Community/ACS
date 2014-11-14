@@ -9,6 +9,28 @@
 # --------  --------     ----------------------------------------------
 # mpasquat  26 SEP 2003  created
 #
+
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2014
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
+
 #************************************************************************
 #   NAME
 #   acsConfigReport - Generates a report with the ACS ocnfiguration
@@ -386,7 +408,7 @@ for x in range(0, len(acs_variables)):
 # The type of test here performed is inherited from .bash_profile.acs
 ########################################################################
 
-tmp_vltroot=commands.getoutput('echo $VLTROOT')
+#!#tmp_vltroot=commands.getoutput('echo $VLTROOT')
 tmp_acsroot=commands.getoutput('echo $ACSROOT')
 
 tmp_intlist_oneword=commands.getoutput('echo $INTLIST')
@@ -406,10 +428,11 @@ tmp_windbase=os.getenv('WIND_BASE','NOT_DEFINED')
 commands.getoutput('echo " <br>" >> ./report.html')
 tmp_idl_path='-I$ACE_ROOT/TAO/orbsvcs/orbsvcs -I$ACE_ROOT/TAO/orbsvcs -I$ACE_ROOT/TAO -I$ACE_ROOT/TAO/tao'
 
-if ((tmp_vltroot != '') and (tmp_vltroot != tmp_intlistPath)):
-   tmp_idl_path='-I$VLTROOT/idl '+tmp_idl_path	
+#!#if ((tmp_vltroot != '') and (tmp_vltroot != tmp_intlistPath)):
+#!#   tmp_idl_path='-I$VLTROOT/idl '+tmp_idl_path	
 
-if ((tmp_acsroot != '') and (tmp_vltroot != tmp_acsroot)):
+#!#if ((tmp_acsroot != '') and (tmp_vltroot != tmp_acsroot)):
+if ((tmp_acsroot != '') and (tmp_acsroot != tmp_intlistPath)):
    tmp_idl_path='-I$ACSROOT/idl '+tmp_idl_path
 
 if tmp_intlist[0] != '':
@@ -483,10 +506,11 @@ if tmp_os == 'Linux':
    # So it is linux
    tmp_PATH='$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$ORIG_PATH'
 
-   if ((tmp_vltroot != '') and (tmp_vltroot !=  tmp_intlistPath)): 
-      tmp_PATH='$VLTROOT/bin:'+tmp_PATH
+#!#   if ((tmp_vltroot != '') and (tmp_vltroot !=  tmp_intlistPath)): 
+#!#      tmp_PATH='$VLTROOT/bin:'+tmp_PATH
 
-   if ((tmp_acsroot != '') and (tmp_vltroot != tmp_acsroot)):
+#!#   if ((tmp_acsroot != '') and (tmp_vltroot != tmp_acsroot)):
+   if ((tmp_acsroot != '') and (tmp_acsroot != tmp_intlistPath)):
       tmp_PATH='$ACSROOT/bin:'+tmp_PATH
 else:
    tmp_PATH='IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED'
@@ -530,10 +554,11 @@ if tmp_os == 'Linux':
      tmp_LD_LIBRARY_PATH=tmp_LD_LIBRARY_PATH+'$GNU_ROOT/lib:'
    tmp_LD_LIBRARY_PATH=tmp_LD_LIBRARY_PATH+'$ORIG_LD_LIBRARY_PATH'
 
-   if ((tmp_vltroot != '') and (tmp_vltroot != tmp_intlistPath)):
-      tmp_LD_LIBRARY_PATH='$VLTROOT/lib:'+tmp_LD_LIBRARY_PATH
+#!#   if ((tmp_vltroot != '') and (tmp_vltroot != tmp_intlistPath)):
+#!#      tmp_LD_LIBRARY_PATH='$VLTROOT/lib:'+tmp_LD_LIBRARY_PATH
 
-   if ((tmp_acsroot != '') and (tmp_vltroot != tmp_acsroot)):
+#!#   if ((tmp_acsroot != '') and (tmp_vltroot != tmp_acsroot)):
+   if ((tmp_acsroot != '') and (tmp_acsroot != tmp_intlistPath)):
       tmp_LD_LIBRARY_PATH='$ACSROOT/lib:'+tmp_LD_LIBRARY_PATH 
 else:
    LD_LIBRARY_PATH='IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED'

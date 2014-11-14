@@ -516,5 +516,18 @@ Helper::integrationLog(const std::string& log)
 }
 //-----------------------------------------------------------------------------
 
+std::string Helper::createRandomizedClientName(const std::string& clientName)
+{
+	ACE_OS::srand((unsigned int)ACE_OS::gettimeofday().msec());
+	std::stringstream ss;
+	ss << clientName << "-" << ACE_OS::rand();
+	std::string ret(ss.str());
+	size_t start_pos = 0;
+	while((start_pos = ret.find('/')) != std::string::npos) {
+		ret.replace(start_pos, 1, "_");
+	}
+	return ret;
+}
+
  };
 /*___oOo___*/

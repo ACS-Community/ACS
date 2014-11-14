@@ -1,6 +1,6 @@
-#! /bin/sh
+#! /bin/bash
 #*******************************************************************************
-# E.S.O. - VLT project
+# E.S.O. - ALMA project
 #
 # "@(#) $Id: acsMakeTclLib,v 1.2 2010/09/20 14:25:08 mzampare Exp $" 
 #
@@ -19,6 +19,28 @@
 # eallaert  1999-03-16  remove use of TMP_FILE (suggested long ago!)
 # eallaert  2001-05-04  updated for use with Tcl-versions > 8.0
 #
+
+
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2002
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
 
 #************************************************************************
 #   NAME
@@ -50,7 +72,7 @@
 #                 (Without neither directory nor .a suffix)
 #
 #   FILES
-#   $VLTROOT/include/acsMakefile   
+#   $ACSROOT/include/acsMakefile   
 #
 #   ENVIRONMENT
 #
@@ -96,12 +118,7 @@ do
 done
 
 # We need to determine the Tcl-shell to use for the tclIndex generation.
-# itclsh does no longer exist for Tcl > 8.0; use tclsh in this case (only).
-# Remark that arithmetic expressions ("-le" etc) only work on integers; 
-# let's therefore do the arithmetic work in Tcl itself.
-# This can be hardcoded once we're sure this version of the "vlt" module
-# will only be used with a Tcl-versions > 8.0.
-TCL_SHELL=`echo 'if {$tcl_version > 8.0} {puts tclsh} else {puts itclsh}' | tclsh`
+TCL_SHELL=tclsh
 
 echo "package require Itcl; auto_mkindex $LIBRARY *.tcl; exit" | $TCL_SHELL
 

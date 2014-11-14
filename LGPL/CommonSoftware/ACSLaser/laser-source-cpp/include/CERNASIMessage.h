@@ -74,17 +74,16 @@ namespace laserSource
 		  * Returns an XML fragment (NOT a complete document) representing the timestamp, for
 		  * use in the message that is transported from alarm source to alarm server.
 		  *
+		  * @param timestamp The timestamp
 		  * @param elementName the element name when generating the XML fragment,
 		  *        for instance in the example below the elementName is "source-timestamp"
 		  *
 		  * For example:
-		  *
-		  * <source-timestamp seconds="1129902763" microseconds="132000"/>
-		  *
+		  *   <source-timestamp>2014-10-07T13:39:34.658</source-timestamp>
 		  *
 		  * @param amountToIndent - used to specify a level of indentation (in spaces) for readability
 		  */
-		 std::string timestampToXML(long secs, long usecs, std::string elementName, int amountToIndent);
+		 std::string timestampToXML(const acsalarm::Timestamp* timestamp, std::string elementName, int amountToIndent) const;
 
 		 /**
 		  * Returns an XML representation of the fault state. NOTE: this

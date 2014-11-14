@@ -32,6 +32,19 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace TMCDB;
 
+namespace TMCDB {
+//specialization for double
+template<>
+void checkMonitorValue<double>(double value)
+{
+	double absValue = fabs(value);
+	if (absValue > 1.0e14 || (absValue > 0.0 && absValue < 1.0e-9))
+	{
+		ACS_LOG(LM_FULL_INFO ,"checkMonitorValue", (LM_WARNING, "Value (%f) got from monitor (working) has non meaningful physical value. Probably problem in DevIO impl!", value));
+	}
+}//checkMonitorValue<double>
+
+}//namespace TMCDB
 
 MonitorPointBase::MonitorPointBase(const char *propertyName, const ACS::TimeInterval &archivingInterval, TMCDB::DataValueType typeOfData, MonitorBlob& mb) :
 	propertyName_m(propertyName),
@@ -367,16 +380,13 @@ void EnumMonitorPoint::working(CORBA::ULong value, const ACSErr::Completion& com
             bufferFull = true;
             // Increment buffer initial position
             curSeqInit_m++;
-            std::cout  << "1.- blobData position is " << curSeqPos_m << std::endl;
             // Reset buffer current position
             curSeqPos_m = 0;
             // Add data to current position
             blobDataSeq_m[curSeqPos_m].value = value;
 	        blobDataSeq_m[curSeqPos_m].time = comp.timeStamp;
-	        std::cout  << "2.- blobData position is " << curSeqPos_m << std::endl;
 	        // Increment current position pointer
             curSeqPos_m++;
-            std::cout  << "3.- blobData position is " << curSeqPos_m << std::endl;
         }
     }
 }
