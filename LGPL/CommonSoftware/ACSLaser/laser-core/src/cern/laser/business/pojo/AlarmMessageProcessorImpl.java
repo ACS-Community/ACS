@@ -233,8 +233,8 @@ public class AlarmMessageProcessorImpl {
       // Check for the delay comparing the actual time with the timestamp
       // of the processed message
       try {
-    	  Timestamp timestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(asi_message.getSourceTimestamp()).getTime());
-    	  alarmsDelayHelper.updateDelay(TimeUnit.MILLISECONDS.convert(timestamp.getSeconds(),TimeUnit.SECONDS));
+    	  long timestamp = IsoDateFormat.parseIsoTimestamp(asi_message.getSourceTimestamp()).getTime();
+    	  alarmsDelayHelper.updateDelay(timestamp);
       } catch (ParseException pe) {
     	  LOGGER.error("Error parsing a ISO timestamp: "+asi_message.getSourceTimestamp(), pe);
       }
