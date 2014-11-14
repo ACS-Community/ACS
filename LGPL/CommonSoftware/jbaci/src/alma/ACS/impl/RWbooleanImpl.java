@@ -47,9 +47,8 @@ import alma.acs.exceptions.AcsJException;
 
 /**
  * Implementation of <code>alma.ACS.ROpattern</code>.
- * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
- * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
- * @version $id$
+ * 
+ * @author <a href="mailto:acaproniATeso.org">Alessandro Caproni</a>
  */
 public class RWbooleanImpl
 	extends RWCommonComparablePropertyImpl
@@ -92,14 +91,14 @@ public class RWbooleanImpl
 	}
 
 	/**
-     * @see alma.ACS.PBoolOperations#set_async(alma.acs.Bool,alma.ACS.CBpattern, alma.ACS.CBDescIn)
+     * @see alma.ACS.PBooleanOperations#set_async(boolean,alma.ACS.CBvoid, alma.ACS.CBDescIn)
 	 */
 	public void set_async(boolean value, CBvoid cb, CBDescIn desc) {
 		setAsync(value, cb, desc);
 	}
 
 	/**
-	 * @see alma.ACS.RWBoolOperations#set_nonblocking(alma.acs.Bool)
+	 * @see alma.ACS.RWBooleanOperations#set_nonblocking(boolean)
 	 */
 	public void set_nonblocking(boolean value) {
 		setNonblocking(value);
@@ -107,7 +106,7 @@ public class RWbooleanImpl
 	}
 
 	/**
-	 * @see alma.ACS.RWBoolOperations#set_sync(alma.acs.Bool)
+	 * @see alma.ACS.RWBooleanOperations#set_sync(boolean)
 	 */
 	public Completion set_sync(boolean value) {
 		try
@@ -123,14 +122,14 @@ public class RWbooleanImpl
 	}
 
 	/**
-	 * @see alma.ACS.PBoolOperations#create_monitor(alma.ACS.CBpattern, alma.ACS.CBDescIn)
+	 * @see alma.ACS.PBooleanOperations#create_monitor(alma.ACS.CBboolean, alma.ACS.CBDescIn)
 	 */
 	public Monitorboolean create_monitor(CBboolean cb, CBDescIn desc) {
 		return  create_postponed_monitor(0, cb, desc);
 	}
 
 	/**
-	 * @see alma.ACS.PBoolOperations#create_postponed_monitor(long, alma.ACS.CBpattern, alma.ACS.CBDescIn)
+	 * @see alma.ACS.PBooleanOperations#create_postponed_monitor(long, alma.ACS.CBboolean, alma.ACS.CBDescIn)
 	 */
 	public Monitorboolean create_postponed_monitor(long start_time, CBboolean cb,CBDescIn desc) {
 		// create monitor and its servant
@@ -143,14 +142,14 @@ public class RWbooleanImpl
 	}
 
 	/**
-	 * @see alma.ACS.PBoolOperations#default_value()
+	 * @see alma.ACS.PBooleanOperations#default_value()
 	 */
 	public boolean default_value() {
 		return ((Boolean)defaultValue).booleanValue();
 	}
 
 	/**
-     * @see alma.ACS.PBoolOperations#get_async(alma.ACS.CBpattern, alma.ACS.CBDescIn)
+     * @see alma.ACS.PBooleanOperations#get_async(alma.ACS.CBboolean, alma.ACS.CBDescIn)
 	 */
 	public void get_async(CBboolean cb, CBDescIn desc) {
 		getAsync(cb, desc);
@@ -165,7 +164,7 @@ public class RWbooleanImpl
 	}
 
 	/**
-	 * @see alma.ACS.PBoolOperations#get_sync(alma.ACSErr.CompletionHolder)
+	 * @see alma.ACS.PBooleanOperations#get_sync(alma.ACSErr.CompletionHolder)
 	 */
 	public boolean get_sync(CompletionHolder c) {
 		try
@@ -183,7 +182,7 @@ public class RWbooleanImpl
 	}
 
 	/**
-	 * @see alma.ACS.PBoolOperations#statesDescription()
+	 * @see alma.ACS.PBooleanOperations#statesDescription()
 	 */
 	public String[] statesDescription() {
 		try {
