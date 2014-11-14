@@ -1,6 +1,6 @@
 1 - Checking all xml and xsd files with encode different from ISO-8859-1
 1 - grep: /diska/home/almadev/introot/idl/*.xsd: No such file or directory
 1 - grep: /diska/home/almadev/introot/idl/*.xml: No such file or directory
-1 - /alma/ACS-2014.6/ACSSW/idl/ASIConfiguration.xsd:<?xml version="1.0" encoding="UTF-8"?>
-1 - /alma/ACS-2014.6/ACSSW/idl/ASIMessage.xsd:<?xml version="1.0" encoding="UTF-8"?>
+...ASIConfiguration.xsd:<?xml version="1.0" encoding="UTF-8"?>
+...ASIMessage.xsd:<?xml version="1.0" encoding="UTF-8"?>
 1 - ---------o0o-----------
