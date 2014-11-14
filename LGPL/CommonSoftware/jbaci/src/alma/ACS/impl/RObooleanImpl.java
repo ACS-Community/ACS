@@ -46,10 +46,11 @@ import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.exceptions.AcsJException;
 
 /**
- * Implementation of <code>alma.ACS.ROpattern</code>.
- * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
- * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
- * @version $id$
+ * Implementation of <code>alma.ACS.ROboolean</code>.
+ * 
+ * @author <a href="mailto:joseph.schwarzATbrera.inaf.it">Joseph Schwarz</a>
+ * @author <a href="mailto:gchiozziATeso.org">Gianluca Chiozzi</a>
+ * @author <a href="mailto:acaproniATeso.org">Alessandro Caproni</a>
  */
 public class RObooleanImpl
 	extends ROCommonPropertyImpl
@@ -126,7 +127,7 @@ public class RObooleanImpl
 	}
 
 	/**
-     * @see alma.ACS.PBoolOperations#get_async(alma.ACS.CBpattern, alma.ACS.CBDescIn)
+     * @see alma.ACS.PbooleanOperations#get_async(alma.ACS.CBboolean, alma.ACS.CBDescIn)
 	 */
 	public void get_async(CBboolean cb, CBDescIn desc) {
 		getAsync(cb, desc);
