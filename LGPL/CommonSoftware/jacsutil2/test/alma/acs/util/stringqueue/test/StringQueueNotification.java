@@ -30,9 +30,8 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 import alma.acs.util.IsoDateFormat;
-import alma.acs.util.stringqueue.QueueEntry;
-import alma.acs.util.stringqueue.TimestampedStringQueue;
 import alma.acs.util.stringqueue.DefaultQueueFileHandlerImpl;
+import alma.acs.util.stringqueue.TimestampedStringQueue;
 import alma.acs.util.stringqueue.TimestampedStringQueueFileHandler;
 
 /** 
@@ -110,6 +109,14 @@ public class StringQueueNotification extends TestCase {
 				File filePointer, 
 				String minTime,
 				String maxTime) {
+			// Check if the oldest and youngest dates have been correctly set
+			// otherwise there is no point to check the timestamps
+			if (youngestDate==null || youngestDate.isEmpty()) {
+				throw new IllegalStateException("Youngest timestamp has not been set for comparison");
+			}
+			if (oldestDate==null || oldestDate.isEmpty()) {
+				throw new IllegalStateException("Oldest timestamp has not been set for comparison");
+			}
 			assertNotNull("minTime should never be null", minTime);
 			assertNotNull("maxTime should never be null", maxTime);
 			assertTrue("Error deleting "+filePointer.getAbsolutePath(),filePointer.delete());
@@ -522,9 +529,10 @@ public class StringQueueNotification extends TestCase {
 	 * <P>
 	 * testFilesCreation pushes a set of generic string each of each 
 	 * has a unique integer ID. When the size of the pushed string
-	 * is greater then the max length of the file, we expect the cache to create new file.
+	 * is greater then the max length of the file, we expect the cache to create a new file.
 	 * The test will ten also get out all the strings and check for their 
 	 * integrity, checking the value of their IDs.
+	 * 
 	 * @throws Exception
 	 */
 	public void testFilesCreation() throws Exception {
@@ -537,29 +545,36 @@ public class StringQueueNotification extends TestCase {
 		long size=0;
 		// The unique ID of each string (the first string in queue has ID=1)
 		int ID=0;
+		
+		// We instantiate another queue for the test because we are not
+		// interested in checking the timestamps (TestFileHandler#fileProcessed would return
+		// error without setting the oldest and newest timestamp and with another queue
+		// this test is simpler)
+		TimestampedStringQueue queue = new TimestampedStringQueue(cacheFileSize, "TIMESTAMP=\"");
 		while (size<=cacheFileSize) {
 			ID++;
 			String now = IsoDateFormat.formatDate(new Date(System.currentTimeMillis()));
 			String strToPush=strHdr+now+strFooter+ID;
-			stringQueue.push(strToPush);
+			queue.push(strToPush);
 			size+=strToPush.length();
-			assertEquals("The size of the cache differs from the number of pushed strings", ID, stringQueue.size());
+			assertEquals("The size of the cache differs from the number of pushed strings", ID, queue.size());
 		}
 		// Now there should be 2 files in the cache
-		assertEquals("Wrong number of files in queue",stringQueue.getActiveFilesSize(), 2);
+		assertEquals("Wrong number of files in queue",2, queue.getActiveFilesSize());
 		// Get the strings out and checks their IDs
 		for (int t=1; t<=ID; t++) {
-			String str=stringQueue.pop();
+			String str=queue.pop();
 			assertNotNull(str);
-			assertEquals("The size of the cache differs from expected", ID-t, stringQueue.size());
+			assertEquals("The size of the cache differs from expected", ID-t, queue.size());
 			// Check the integrity of the string
 			assertTrue(str.startsWith(strHdr));
 			assertTrue("Str red from queue is ["+str+"] but we expect it to have iD="+t,str.endsWith(strFooter+t));
 		}
 		// The queue should be empty here
-		assertEquals("The queue should be empty!",0, stringQueue.size());
+		assertEquals("The queue should be empty!",0, queue.size());
 		// And should have no files
-		assertEquals("The queue should have 0 files!",1, stringQueue.getActiveFilesSize());
+		assertEquals("The queue should have 0 files!",1, queue.getActiveFilesSize());
+		queue.close(true);
 		System.out.println("testFilesCreation done");
 	}
 	

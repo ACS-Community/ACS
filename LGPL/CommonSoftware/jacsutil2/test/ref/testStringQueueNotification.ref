@@ -3,9 +3,9 @@
 1 - New queue file created with name: NAME
 1 - New queue file created with name: NAME
 1 - Stopped pushing; N files used by the cache to store X entries
-1 - testNotifiedDatesOrdered awaiting for notification
 1 - Notification N received for file NAME
 1 - Checking for correctness of the notification... OK
+1 - testNotifiedDatesOrdered awaiting for notification
 1 - testNotifiedDatesOrdered done.
 1 - Notification N received for file NAME
 1 - Queue closed
@@ -40,11 +40,7 @@
 1 - Queue closed
 1 - Queue started: now the test begins
 1 - testFilesCreation started
-1 - New queue file created with name: NAME
-1 - New queue file created with name: NAME
 1 - testFilesCreation done
-1 - Notification N received for file NAME
-1 - Notification N received for file NAME
 1 - Queue closed
 1 - 
 1 - 
