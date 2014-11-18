@@ -172,6 +172,7 @@ public class QueueFileTest  extends TestCase {
 		QueueEntry entry1 = cacheFile.writeOnFile(log1, key);
 		QueueEntry entry2 = cacheFile.writeOnFile(log2, key);
 		QueueEntry entry3 = cacheFile.writeOnFile(log3, key);
+		assertEquals("Wrong number of string in the file!",3, cacheFile.getNumOfStringsInFile());
 		String minDate = cacheFile.minDate();
 		assertNotNull("Invalid null youngest date", minDate);
 		String maxDate = cacheFile.maxDate();
