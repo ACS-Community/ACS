@@ -25,6 +25,7 @@ import java.io.RandomAccessFile;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import alma.acs.util.IsoDateFormat;
 
@@ -104,6 +105,11 @@ public class QueueFile {
 	 * have the same size!
 	 */
 	private static final int timeStampLength=23;
+	
+	/**
+	 * The number of strings in this file
+	 */
+	private final AtomicLong stringsInFile = new AtomicLong();
 	
 	/**
 	 * Constructor 
@@ -247,6 +253,12 @@ public class QueueFile {
 		if (raFile==null) {
 			openFile();
 		}
+		// Update the timestamps
+		//
+		// It is better to update the timestamps before writing in the file
+		// because if the string is malformed we get a exception and do not
+		// add in the file
+		updateLogDates(str);
 		writing=true;
 		long startPos;
 		long endPos;
@@ -256,7 +268,9 @@ public class QueueFile {
 			raFile.writeBytes(str);
 			endPos = file.length();	
 		}
-		updateLogDates(str);
+		// The file has one more string!
+		stringsInFile.incrementAndGet();
+		
 		return new QueueEntry(key,startPos,endPos);
 	}
 	
@@ -353,6 +367,13 @@ public class QueueFile {
 		} else {
 			return IsoDateFormat.formatDate(new Date(youngestLogDateMillis));
 		}
+	}
+	
+	/**
+	 * @return The number of strings in this file
+	 */
+	public long getNumOfStringsInFile() {
+		return stringsInFile.get();
 	}
 	
 	/**
