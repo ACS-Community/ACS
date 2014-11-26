@@ -555,17 +555,17 @@ fi
 #   that you have a totally wrong JDK installed and don't notice this immediately.
 #   Please check the ACS documentation, or acsConfigReport output, 
 #   to ensure that you have a supported JDK installed.
-if [ X"$JAVA_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+if [ -z "$JAVA_HOME" ] || [ -z "$ACS_RETAIN" ]
 then
     if [ "$OSYSTEM" = "$CYGWIN_VER" ]
     then
       	JAVA_HOME=/Java
     elif [ "$DISTRO" = "DEBIAN" ]
     then
-        if [ $ARCH="X86_64" ]
+        if [ "$ARCH" = "x86_64" ]
         then
             JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
-        elif [ $ARCH="i686" ]
+        elif [ "$ARCH" = "i686" ]
         then
             JAVA_HOME="/usr/lib/jvm/java-7-openjdk-i386"
         fi
@@ -712,7 +712,7 @@ fi
 # Ant and JacORB stuff
 if [ X"$ANT_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   if [ $DISTRO = "DEBIAN" ]
+   if [ "$DISTRO" = "DEBIAN" ]
    then
       ANT_HOME=/usr/share/ant
    else
