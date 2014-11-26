@@ -117,13 +117,13 @@ else
 fi
 
 
-if [ ! -e ../PRODUCTS/python-ldap-2.3.11.tar.gz ]
+if [ ! -e ../PRODUCTS/python-ldap-2.4.15.tar.gz ]
 then
   echo Error: Python LDAP sources are missing
 else
   echo "== Building Python LDAP"
-  tar -zxf python-ldap-2.3.11.tar.gz
-  pushd python-ldap-2.3.11
+  tar -zxf python-ldap-2.4.15.tar.gz
+  pushd python-ldap-2.4.15
   cat setup.cfg | sed 's/local\/openldap-REL_ENG_2_1\///' >> setup.cfg.tmp
   mv setup.cfg.tmp setup.cfg 
   $PYTHON_INTR setup.py install --prefix $PYTHON_ROOT
@@ -356,12 +356,12 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/snakefood-1.4-20100716.tgz ]
+if [ ! -e ../PRODUCTS/snakefood-1.4.tar.gz ]
 then
   echo Error: snakefood sources are missing
 else
   echo "== Installing snakefood"
-  tar -xvzf snakefood-1.4-20100716.tgz
+  tar -xvzf snakefood-1.4.tar.gz
   pushd snakefood-1.4
   python setup.py install  --prefix $PYTHON_ROOT
   popd
