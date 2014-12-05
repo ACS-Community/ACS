@@ -23,24 +23,24 @@
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
-* bjeram    20003/02/18 removed everthing
+* pcolomer  2014/11/27  converted to a new class to handle alarm_on characteristic
+* bjeram    2003/02/18  removed everthing
 * msekoran  2001/02/10  created
 */
-
-/** 
- * @file 
- * Header file for BACI Read-only Long Sequence Property.
- */
 
 #ifndef __cplusplus
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
 #include <baciMonitor_T.h>
-#include <baciROSeqContImpl_T.h>
+#include <baciROcommonImpl_T.h>
+#include <baciPcontImpl_T.h>
+#include "baciAlarm_T.h"
+
 
 namespace baci {
-/** @defgroup MonitorbooleanSeqTemplate MonitorbooleanSeq Class
+/**
+ * @defgroup MonitorbooleanSeqTemplate MonitorbooleanSeq Class
  * The MonitorbooleanSeq class is a templated typedef so there is no actual inline doc generated for it per-se.
  *  @{
  * The MonitorbooleanSeq class is an implementation of the ACS::MonitorbooleanSeq IDL interface.
@@ -48,15 +48,71 @@ namespace baci {
 typedef  Monitor<ACS_MONITOR_SEQ(boolean, CORBA::Boolean)> MonitorbooleanSeq;
 /** @} */
 
-/** @defgroup RObooleanSeqTemplate RObooleanSeq Class
- * The RObooleanSeq class is a templated typedef so there is no actual inline doc generated for it per-se.
- *  @{
- * The RObooleanSeq class is an implementation of the ACS::RObooleanSeq IDL interface.
- */
-typedef  ROSeqContImpl<ACS_RO_SEQ_T(boolean, CORBA::Boolean)> RObooleanSeq;
-/** @} */
 
- }; 
+#define ACS_RO_BOOLSEQ_TL \
+	ACS::booleanSeq*/*T*/,              ACS::CBbooleanSeq/*TCB*/,           ACS::booleanSeqSeq/*TSeq*/, \
+	ACS::booleanSeqSeq_out/*TSeq_out*/, ACS::Monitorboolean/*TMonitor*/,    baci::MonitorbooleanSeq/*TMonitorImpl*/, \
+	ACS::booleanSeq/*TM*/,              CORBA::Boolean/*TS*/,               CORBA::Boolean/*TSM*/, \
+	POA_ACS::RObooleanSeq/*POA_SK*/,    ACS::Alarmboolean/*TAlarm*/,        POA_ACS::CBbooleanSeq/*POA_CB*/, \
+	const ACS::booleanSeq&/*TIN*/
+
+
+#define ACS_RO_BOOLSEQ_P ACS::booleanSeq*/*T*/, ACS::CBbooleanSeq/*TCB*/, ACS::booleanSeqSeq/*TSeq*/, \
+		ACS::booleanSeqSeq_out/*TSeq_out*/, ACS::Monitorboolean/*TMonitor*/, baci::MonitorbooleanSeq/*TMonitorImpl*/, \
+		ACS::booleanSeq/*TM*/, CORBA::Boolean/*TS*/, CORBA::Boolean/*TSM*/, POA_ACS::RObooleanSeq/*POA_SK*/
+
+
+class RObooleanSeq : public virtual PortableServer::RefCountServantBase,
+		public ROcommonImpl<ACS_RO_BOOLSEQ_TL/*ACS_RO_TL*/>,
+		public PcontImpl<ACS_RO_BOOLSEQ_P>
+{
+  public:
+	/**
+	 * Constructor
+	 */
+    RObooleanSeq(const ACE_CString& name, BACIComponent *component_p, DevIO<ACS::booleanSeq> *devIO=0, bool flagdeldevIO=false);
+
+    /**
+      * Constuctor that has to be used from subclasses
+      * @param name property name (e.q. AMSMount:decliantion)
+      */
+    RObooleanSeq(bool init, const ACE_CString& name, BACIComponent *component_p, DevIO<ACS::booleanSeq> *devIO=0, bool flagdeldevIO=false );
+
+    /**
+     * Destructor
+     */
+    virtual ~RObooleanSeq();
+
+    /**
+     * Get the value of the alarm_on attribute
+     */
+    virtual CORBA::Boolean alarm_on ();
+
+    /**
+     * Subscriber method to be notified when an alarm is raised or removed
+     */
+    virtual ACS::Subscription_ptr new_subscription_Alarm (
+    		ACS::Alarmboolean *cb, const ACS::CBDescIn & desc);
+
+  protected:
+
+    /**
+     * Read characteristics from the CDB
+     * @return true on success, false on failure
+     */
+    virtual bool readCharacteristics();
+
+  private:
+
+    /**
+     * Value to be checked in order to raise an alarm
+     */
+    CORBA::Boolean	alarmOn_m;
+};
+
+
+
+}
 
 #endif  /* baciRObooleanSeq */
 

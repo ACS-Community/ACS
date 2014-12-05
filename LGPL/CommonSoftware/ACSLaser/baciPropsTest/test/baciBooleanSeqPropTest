@@ -1,7 +1,8 @@
+#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
+# Copyright by ESO (in the framework of the ALMA collaboration),
 # and Cosylab 2002, All rights reserved
 #
 # This library is free software; you can redistribute it and/or
@@ -19,22 +20,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.5 2009/10/13 10:28:25 acaproni Exp $"
-#
-# TestList
-#
-# who       when      what
-# --------  --------  ----------------------------------------------
-# acaproni 2006-10-10 created
+export ACS_TMP=../test/tmp
+acsutilTATTestRunner acsStartJava -endorsed -Duser.dir=$PWD junit.textui.TestRunner alma.acs.alarmsystem.test.BACIBooleanSeqPropertyTest
 
-SOURCE baciPropsTATEnvironment
-PROLOGUE baciPropsTATPrologue
-
-1 baciDoublePropTest	"baciDoublePropTest"
-2 baciEnumPropTest	"baciEnumPropTest"
-3 baciPatternPropTest	"baciPatternPropTest"
-4 baciDoublePropCompleteTest "baciDoublePropCompleteTest"
-5 baciBooleanPropTest "baciBooleanPropTest"
-6 baciBooleanSeqPropTest "baciBooleanSeqPropTest"
-
-EPILOGUE acsutilTATEpilogue

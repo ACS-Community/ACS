@@ -41,7 +41,10 @@ BaciPropTest::BaciPropTest(ACE_CString name, maci::ContainerServices * container
     m_testDoubleVar_sp(new ROdouble(name+":testDoubleVar", getComponent()),this),
     m_testBooleanVar_sp(new ROboolean(name+":testBooleanVar", getComponent()),this),
     m_testPatternVar_sp(new ROpattern(name+":testPatternVar", getComponent()),this),
-    m_testEnumVar_sp(new ROEnumImpl<ACS_ENUM_T(alarmsystemPropTest::AlarmEnum), POA_alarmsystemPropTest::ROAlarmEnum>(name+":testEnumVar",getComponent()),this)
+    m_testEnumVar_sp(new ROEnumImpl<ACS_ENUM_T(alarmsystemPropTest::AlarmEnum), POA_alarmsystemPropTest::ROAlarmEnum>(name+":testEnumVar",getComponent()),this),
+	m_testAnotherBooleanVar_sp(new ROboolean(name+":testAnotherBooleanVar", getComponent()),this),
+	m_testBooleanNoAlarmsVar_sp(new ROboolean(name+":testBooleanNoAlarmsVar", getComponent()), this),
+	m_testBooleanSeqVar_sp(new RObooleanSeq(name+":testBooleanSeqVar", getComponent()), this)
 {
     ACS_TRACE("::BaciPropTest::BaciPropTest");
 }
@@ -58,6 +61,17 @@ void BaciPropTest::execute()
 	m_testDoubleVar_sp->getDevIO()->write(0, timestamp);
 	m_testEnumVar_sp->getDevIO()->write(alarmsystemPropTest::Ok, timestamp);
 	m_testPatternVar_sp->getDevIO()->write(0, timestamp);
+	m_testBooleanVar_sp->getDevIO()->write(false, timestamp);
+	m_testAnotherBooleanVar_sp->getDevIO()->write(true, timestamp);
+	m_testBooleanNoAlarmsVar_sp->getDevIO()->write(false, timestamp);
+
+	ACS::booleanSeq boolSeq;
+	boolSeq.length(3);
+	boolSeq[0] = false;
+	boolSeq[1] = false;
+	boolSeq[2] = false;
+
+	m_testBooleanSeqVar_sp->getDevIO()->write(boolSeq, timestamp);
 }
 
 /* --------------------- [ CORBA interface ] ----------
@@ -76,7 +90,7 @@ ACS::ROdouble_ptr BaciPropTest::testDoubleVar ()
 
 ACS::ROboolean_ptr BaciPropTest::testBooleanVar()
 {
-	if (m_testDoubleVar_sp == 0)
+	if (m_testBooleanVar_sp == 0)
 	{
 	return ACS::ROboolean::_nil();
 	}
@@ -107,6 +121,40 @@ ACS::ROpattern_ptr BaciPropTest::testPatternVar ()
     return prop._retn();
 }
 
+ACS::ROboolean_ptr BaciPropTest::testAnotherBooleanVar()
+{
+	if (m_testAnotherBooleanVar_sp == 0)
+	{
+	return ACS::ROboolean::_nil();
+	}
+
+	ACS::ROboolean_var prop = ACS::ROboolean::_narrow(m_testAnotherBooleanVar_sp->getCORBAReference());
+	return prop._retn();
+}
+
+ACS::ROboolean_ptr BaciPropTest::testBooleanNoAlarmsVar()
+{
+	if (m_testBooleanNoAlarmsVar_sp == 0)
+	{
+	return ACS::ROboolean::_nil();
+	}
+
+	ACS::ROboolean_var prop = ACS::ROboolean::_narrow(m_testBooleanNoAlarmsVar_sp->getCORBAReference());
+	return prop._retn();
+}
+
+ACS::RObooleanSeq_ptr BaciPropTest::testBooleanSeqVar()
+{
+	if (m_testBooleanSeqVar_sp == 0)
+	{
+	return ACS::RObooleanSeq::_nil();
+	}
+
+	ACS::RObooleanSeq_var prop = ACS::RObooleanSeq::_narrow(m_testBooleanSeqVar_sp->getCORBAReference());
+	return prop._retn();
+}
+
+
 void BaciPropTest::setDoubleVar(CORBA::Float val) {
 	ACS::Time timestamp;
 	    
@@ -117,6 +165,29 @@ void BaciPropTest::setBooleanVar(CORBA::Boolean val) {
 	ACS::Time timestamp;
 
 	m_testBooleanVar_sp->getDevIO()->write(val, timestamp);
+}
+
+void BaciPropTest::setAnotherBooleanVar(CORBA::Boolean val)
+{
+	ACS::Time timestamp;
+	m_testAnotherBooleanVar_sp->getDevIO()->write(val, timestamp);
+}
+
+void BaciPropTest::setBooleanNoAlarmsVar(CORBA::Boolean val)
+{
+	ACS::Time timestamp;
+	m_testBooleanNoAlarmsVar_sp->getDevIO()->write(val, timestamp);
+}
+
+void BaciPropTest::setBooleanSeqVar(const ACS::booleanSeq &val)
+{
+	ACS_SHORT_LOG((LM_INFO, "BaciPropTest::setBooleanSeqVar"));
+	for(int i = 0;i < val.length();++i)
+	{
+		ACS_SHORT_LOG((LM_INFO, "\tvalue[%d] = %d", i, val[i]));
+	}
+	ACS::Time timestamp;
+	m_testBooleanSeqVar_sp->getDevIO()->write(val, timestamp);
 }
 
 void BaciPropTest::setPatternVar(CORBA::Long val) {
