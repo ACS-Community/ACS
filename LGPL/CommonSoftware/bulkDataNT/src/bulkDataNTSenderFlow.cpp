@@ -377,6 +377,10 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	if( ret != DDS::RETCODE_OK)
 	{
 		dumpStatistics(LM_ERROR);
+		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+		ACS_SHORT_LOG((LM_ERROR, "unacknowledged_sample_count (%s) %d for flow: %s",
+			dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
+			// RTI	cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
 		if (ret==DDS::RETCODE_TIMEOUT)
 		{
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -397,15 +401,14 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			throw sfEx;
 		}//if-else
 
-		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
-		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) %d for flow: %s", 
-			       dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
-		// RTI	cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-		
 		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);		
 		if( ret != DDS::RETCODE_OK)
 		{
 			dumpStatistics(LM_ERROR);
+			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+			ACS_SHORT_LOG((LM_ERROR, "unacknowledged_sample_count (%s) %d for flow: %s",
+				dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
+				// RTI	cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
@@ -434,6 +437,10 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		if( ret != DDS::RETCODE_OK)
 		{
 			dumpStatistics(LM_ERROR);
+			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+			ACS_SHORT_LOG((LM_ERROR, "unacknowledged_sample_count (%s) %d for flow: %s",
+					dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
+					// RTI	cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
