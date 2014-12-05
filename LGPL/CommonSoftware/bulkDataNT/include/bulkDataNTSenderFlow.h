@@ -107,15 +107,15 @@ public:
 	void stopSend();
 
 	/**
-	 * Logs statistics for denbugging
+	 * Logs statistics for debugging
 	 * <P>
-	 * This log is usually submitted at the DEBUG level to avoid imacting
-	 * performances but in case of error we wish to force this log at INFO
+	 * This log is usually submitted at the DEBUG level to avoid impacting
+	 * performances but in case of error we wish to force this log at ERROR
 	 * level.
 	 * <P>
-	 * @param force if true the message is published at INFO level; otherwise DEBUG
+	 * @param force: if true the message is published at ERROR level; otherwise DEBUG
 	 */
-	void dumpStatistics(bool force=false);
+	void dumpStatistics(bool error=false);
 
 protected:
 

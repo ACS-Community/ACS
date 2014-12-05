@@ -447,12 +447,12 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	}//if (waitForACKs || restFrameCount==0)
 }//writeFrame
 
-void BulkDataNTSenderFlow::dumpStatistics(bool force)
+void BulkDataNTSenderFlow::dumpStatistics(bool error)
 {
 	DDS::DataWriterProtocolStatus dwps;
 	DDS::DataWriterCacheStatus dwcs;
 
-	ACE_Log_Priority level = (force)?LM_INFO:LM_DEBUG;
+	ACE_Log_Priority level = (error)?LM_ERROR:LM_DEBUG;
 
 	ddsDataWriter_m->get_datawriter_protocol_status(dwps);
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
