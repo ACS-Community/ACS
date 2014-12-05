@@ -23,9 +23,6 @@
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.57 2013/03/05 15:19:33 gchiozzi Exp $";
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
-
 #include "bulkDataNTSenderFlow.h"
 #include <iostream>
 #include "ACS_BD_Errors.h"
@@ -379,7 +376,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 
 	if( ret != DDS::RETCODE_OK)
 	{
-		dumpStatistics();
+		dumpStatistics(true);
 		if (ret==DDS::RETCODE_TIMEOUT)
 		{
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -408,7 +405,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);		
 		if( ret != DDS::RETCODE_OK)
 		{
-			dumpStatistics();
+			dumpStatistics(true);
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
@@ -436,7 +433,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 
 		if( ret != DDS::RETCODE_OK)
 		{
-			dumpStatistics();
+			dumpStatistics(true);
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
@@ -450,14 +447,16 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	}//if (waitForACKs || restFrameCount==0)
 }//writeFrame
 
-void BulkDataNTSenderFlow::dumpStatistics()
+void BulkDataNTSenderFlow::dumpStatistics(bool force)
 {
 	DDS::DataWriterProtocolStatus dwps;
 	DDS::DataWriterCacheStatus dwcs;
 
+	ACE_Log_Priority level = (force)?LM_INFO:LM_DEBUG;
+
 	ddsDataWriter_m->get_datawriter_protocol_status(dwps);
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-			(LM_DEBUG, "DataWriter protocol status for flow: %s [sample pushed: %lld (%lld) HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld) Rejected: %lld]",
+			(level, "DataWriter protocol status for flow: %s [sample pushed: %lld (%lld) HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld) Rejected: %lld]",
 					flowName_m.c_str(),
 					dwps.pushed_sample_count_change, dwps.pushed_sample_bytes_change,
 					dwps.sent_heartbeat_count_change, dwps.sent_heartbeat_bytes_change,
