@@ -376,7 +376,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 
 	if( ret != DDS::RETCODE_OK)
 	{
-		dumpStatistics(true);
+		dumpStatistics(LM_ERROR);
 		if (ret==DDS::RETCODE_TIMEOUT)
 		{
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -405,7 +405,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);		
 		if( ret != DDS::RETCODE_OK)
 		{
-			dumpStatistics(true);
+			dumpStatistics(LM_ERROR);
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
@@ -433,7 +433,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 
 		if( ret != DDS::RETCODE_OK)
 		{
-			dumpStatistics(true);
+			dumpStatistics(LM_ERROR);
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
@@ -447,12 +447,10 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	}//if (waitForACKs || restFrameCount==0)
 }//writeFrame
 
-void BulkDataNTSenderFlow::dumpStatistics(bool error)
+void BulkDataNTSenderFlow::dumpStatistics(ACE_Log_Priority level)
 {
 	DDS::DataWriterProtocolStatus dwps;
 	DDS::DataWriterCacheStatus dwcs;
-
-	ACE_Log_Priority level = (error)?LM_ERROR:LM_DEBUG;
 
 	ddsDataWriter_m->get_datawriter_protocol_status(dwps);
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
@@ -466,8 +464,7 @@ void BulkDataNTSenderFlow::dumpStatistics(bool error)
 
 	ddsDataWriter_m->get_datawriter_cache_status(dwcs);
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-			(LM_DEBUG, "DataWriter cache Status: sample count (peak): %lld (%lld)", dwcs.sample_count, dwcs.sample_count_peak));
-
+			(level, "DataWriter cache Status: sample count (peak): %lld (%lld)", dwcs.sample_count, dwcs.sample_count_peak));
 }//void dumpStatistics()
 
 /*___oOo___*/

@@ -112,10 +112,11 @@ public:
 	 * This log is usually submitted at the DEBUG level to avoid impacting
 	 * performances but in case of error we wish to force this log at ERROR
 	 * level.
+	 * With the parameter the user can freely customize the level of this log.
 	 * <P>
-	 * @param force: if true the message is published at ERROR level; otherwise DEBUG
+	 * @param level: The level of the log
 	 */
-	void dumpStatistics(bool error=false);
+	void dumpStatistics(ACE_Log_Priority level=LM_DEBUG);
 
 protected:
 
