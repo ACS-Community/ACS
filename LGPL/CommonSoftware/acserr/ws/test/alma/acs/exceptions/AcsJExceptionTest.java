@@ -168,7 +168,7 @@ public class AcsJExceptionTest extends TestCase
      */
     private void checkWrapperAcsJEx(AcsJACSErrTest0Ex ex) {
         assertEquals("remote call failed", ex.getMessage());
-        assertEquals("ClientServerExceptionExample.java", ex.getFile());
+        assertEquals("alma.acs.exceptions.ClientServerExceptionExample", ex.getFile());
         assertEquals(3, ex.getTraceDepth());
         assertEquals(hostName, ex.getHost());
         String threadName = ex.getThreadName();
@@ -183,11 +183,11 @@ public class AcsJExceptionTest extends TestCase
         assertTrue(cause1 instanceof AcsJACSErrTest0Ex && cause1 != ex);
         assertEquals("low level ex", cause1.getMessage());
         AcsJACSErrTest0Ex acsJCause1 = (AcsJACSErrTest0Ex) cause1;
-        assertEquals("ClientServerExceptionExample.java", acsJCause1.getFile());
+        assertEquals("alma.acs.exceptions.ClientServerExceptionExample", acsJCause1.getFile());
         assertEquals("Poverty", acsJCause1.getProperty("MyStupidProperty"));
         assertEquals(2, acsJCause1.getTraceDepth());
         long timeCause1 = acsJCause1.getTimestampMillis();
-        assertEquals("ClientServerExceptionExample.java", acsJCause1.getFile());
+        assertEquals("alma.acs.exceptions.ClientServerExceptionExample", acsJCause1.getFile());
         assertEquals(hostName, acsJCause1.getHost());
         assertEquals(threadName, acsJCause1.getThreadName());
         assertTrue(acsJCause1.getLine() > 0);
@@ -200,7 +200,7 @@ public class AcsJExceptionTest extends TestCase
         assertEquals("mean NPE", cause2.getMessage());
         assertEquals("java.lang.NullPointerException", ((DefaultAcsJException)cause2).getShortDescription());
         DefaultAcsJException acsJCause2 = (DefaultAcsJException) cause2;
-        assertEquals("ClientServerExceptionExample.java", acsJCause2.getFile());
+        assertEquals("alma.acs.exceptions.ClientServerExceptionExample", acsJCause2.getFile());
         assertEquals(timeCause1 - 1, acsJCause2.getTimestampMillis());
         assertEquals(1, acsJCause2.getTraceDepth());
         assertEquals(hostName, acsJCause2.getHost());
@@ -379,9 +379,9 @@ public class AcsJExceptionTest extends TestCase
 			jex2.printStackTrace(new PrintWriter(wr));
 			String linesep = System.getProperty("line.separator");
 			String expectedTrace = "alma.ACSErrTypeTest.wrappers.AcsJACSErrTest0Ex: low level ex [ MyStupidProperty='Poverty' ] " + linesep
-				+ "	at ---.throwOriginalAcsJACSErrTest0Ex(ClientServerExceptionExample.java:48)" + linesep
+				+ "	at ---.throwOriginalAcsJACSErrTest0Ex(alma.acs.exceptions.ClientServerExceptionExample:48)" + linesep
 				+ "Caused by: alma.acs.exceptions.DefaultAcsJException (java.lang.NullPointerException): mean NPE" + linesep
-				+ "	at ---.throwOriginalAcsJACSErrTest0Ex(ClientServerExceptionExample.java:47)" + linesep;
+				+ "	at ---.throwOriginalAcsJACSErrTest0Ex(alma.acs.exceptions.ClientServerExceptionExample:47)" + linesep;
 			assertEquals(expectedTrace, wr.toString());
 		}
 	}
