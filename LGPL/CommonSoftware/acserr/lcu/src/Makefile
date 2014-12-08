@@ -38,8 +38,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES = $(foreach exe, $(acserr_COMMON), $(exe).cpp) \
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES = $(foreach exe, $(acserr_COMMON), $(exe).cpp) \
 		../idl/acserrHandlersErr.xml ../idl/ErrorSystemErrType.xml \
 		../config/AES2IDL.xslt ../config/AES2CPP.xslt ../config/AES2H.xslt
 #

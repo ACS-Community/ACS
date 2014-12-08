@@ -85,8 +85,8 @@ IDL_FILES =
 
 #
 # handle links to common source files (in MODNAME/ws/src)
-#
-LINK_FILES= $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES))) \
+# 
+#!# (ICT-3855: commented out) LINK_FILES= $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES))) \
 	    $(addsuffix .cpp, $(cdb_OBJECTS_COMMON)) \
 	    $(addprefix ../idl/, $(addsuffix .xml, $(ACSERRDEF)))
 #

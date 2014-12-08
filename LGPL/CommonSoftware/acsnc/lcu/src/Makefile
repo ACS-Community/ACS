@@ -24,8 +24,8 @@
 #
 # Makefile for base class push structured event supplier & consumer
 #    None
-#------------------------------------------------------------------------
-LINK_FILES = acsncCDBProperties.cpp acsncArchiveConsumer.cpp acsncConsumerImpl.cpp acsncSupplierImpl.cpp acsncHelperImpl.cpp acsncORBHelperImpl.cpp acsncSimpleSupplierImpl.cpp acsncRTSupplierImpl.cpp acsncSimpleConsumerImpl.cpp acsncCircularQueue.cpp acsncReconnectionCallback.cpp
+#------------------------------------------------------------------------ 
+#!# (ICT-3855: commented out) LINK_FILES = acsncCDBProperties.cpp acsncArchiveConsumer.cpp acsncConsumerImpl.cpp acsncSupplierImpl.cpp acsncHelperImpl.cpp acsncORBHelperImpl.cpp acsncSimpleSupplierImpl.cpp acsncRTSupplierImpl.cpp acsncSimpleConsumerImpl.cpp acsncCircularQueue.cpp acsncReconnectionCallback.cpp
 
 
 #

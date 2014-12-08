@@ -16,8 +16,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES = lokiSingleton.cpp lokiSmallObj.cpp
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES = lokiSingleton.cpp lokiSmallObj.cpp
 #
 
 #

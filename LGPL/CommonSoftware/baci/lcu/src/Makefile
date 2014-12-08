@@ -41,8 +41,8 @@
 #*******************************************************************************
 # REMARKS
 #    None
-#------------------------------------------------------------------------
-LINK_FILES= $(addprefix ../idl/, $(addsuffix .xml, $(ACSERRDEF))) \
+#------------------------------------------------------------------------ 
+#!# (ICT-3855: commented out) LINK_FILES= $(addprefix ../idl/, $(addsuffix .xml, $(ACSERRDEF))) \
 	$(addsuffix .cpp, $(baci_INCLUDES) $(baci_COMMON)) \
 	$(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES)))
 

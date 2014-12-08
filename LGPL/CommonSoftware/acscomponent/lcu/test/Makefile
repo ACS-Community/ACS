@@ -31,8 +31,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES = 	../test/acscomponentTestServer.cpp \
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES = 	../test/acscomponentTestServer.cpp \
 		../test/acscomponentTestImpl.cpp \
 		../idl/acscomponentTest.idl
 #

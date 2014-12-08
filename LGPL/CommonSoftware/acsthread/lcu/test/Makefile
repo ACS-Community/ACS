@@ -31,8 +31,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES = $(foreach exe, $(EXECUTABLES_L), ../test/$(exe).cpp)
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES = $(foreach exe, $(EXECUTABLES_L), ../test/$(exe).cpp)
 #
 
 #
