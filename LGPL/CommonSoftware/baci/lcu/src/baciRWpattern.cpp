@@ -1,0 +1,1 @@
+../../ws/src/baciRWpattern.cpp

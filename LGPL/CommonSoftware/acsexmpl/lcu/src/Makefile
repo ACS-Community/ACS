@@ -105,7 +105,7 @@ acsexmplHelloWorldImpl_OBJECTS =  $(acsexmplHelloWorldImpl_COMMON) $(acsexmplHel
 #
 # IDL FILES
 #
-IDL_FILES = acsexmplPowerSupply acsexmplMount acsexmplRampedPowerSupply acsexmplLamp acsexmplFridge acsexmplBuilding acsexmplAmsSeq acsexmplHelloWorld
+IDL_FILES = acsexmplPowerSupply acsexmplMount acsexmplRampedPowerSupply acsexmplLamp acsexmplBuilding acsexmplAmsSeq acsexmplHelloWorld
 
 #
 # handle links to common source files (in MODNAME/ws/src)

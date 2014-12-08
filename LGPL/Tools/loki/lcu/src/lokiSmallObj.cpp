@@ -1,0 +1,1 @@
+../../ws/src/lokiSmallObj.cpp
