@@ -194,6 +194,7 @@ public abstract class AcsJException extends Exception
 		
 		m_host = s_thisHost;
 		m_process = s_thisProcess;
+		
 		m_sourceObject = ContextFinder.getSourceObject();
 		m_timeMilli = System.currentTimeMillis();
 		m_threadName = Thread.currentThread().getName();
@@ -563,7 +564,10 @@ public abstract class AcsJException extends Exception
 //        logProperties.put("Context", "???");
         specialLogProperties.put("StackId", stackID);
         specialLogProperties.put("StackLevel", new Long(stackLevel));
-
+        
+        specialLogProperties.put("ProcessName", et.process);
+        specialLogProperties.put("SourceObject", et.sourceObject);
+        
         // non-standard properties from ErrorTrace
         Map etProperties = ErrorTraceManipulator.getProperties(et);
         etProperties.remove(CorbaExceptionConverter.PROPERTY_JAVAEXCEPTION_CLASS);
