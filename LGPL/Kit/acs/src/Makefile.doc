@@ -49,6 +49,7 @@
 # mzampare  07/08/02  added Java documentation
 # psivera   31/10/02  corrected information about debug and optimization
 # eallaert  08/10/2014 removed references to VLT, INS_ROOT, RTAP and CCS
+# eallaert  08/12/2014 removed LINK_FILES documentation (ICT-3855)
 
 #*******************************************************************************
 # ALMA - Atacama Large Millimeter Array
@@ -288,23 +289,6 @@
 #   Makefile (see Makefile_*.template):   
 #   
 #   
-#   - Link Files: this section is present in the Makefile for LCU code 
-#     only. The purpose is to give to the developer the possibility 
-#     to list here all the files in the lcu part of the module that have 
-#     to be a symbolic link to corresponding files in the ws part. 
-#     This is done using the variable 
-#     LINK_FILES. 
-#     For example, keeping in mind that we are referring to a Makefile 
-#     in the lcu/src directory: 
-#
-#     LINK_FILES = aaaa.c bbbb.cpp ../include/gggg.h
-#
-#     After running "make all", in the lcu branch aaaa.c will be a symbolic
-#     link to ../../ws/src/aaaa.c, ../include/gggg.h will be a symbolic 
-#     link to ../../ws/include/gggg.h and so on. 
-#     
-#     make clean will remove those links. 
-#
 #   - Includes (or h-) files: providing the description of the callable
 #     interface.
 #
