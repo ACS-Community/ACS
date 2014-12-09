@@ -213,7 +213,7 @@ public abstract class AcsJException extends Exception
 			StackTraceElement stTrEl = stTrElems[0];
 			m_line = stTrEl.getLineNumber();
 			m_method = stTrEl.getMethodName();
-			m_file = stTrEl.getClassName();
+			m_file = stTrEl.getFileName();
 		}
 		else
 		{
@@ -465,7 +465,7 @@ public abstract class AcsJException extends Exception
         StackTraceElement[] stTrElems = thr.getStackTrace();
         if (stTrElems != null && stTrElems[0] != null) {
                 StackTraceElement stTrEl = stTrElems[0];
-                et.file = stTrEl.getClassName();
+                et.file = stTrEl.getFileName();
                 et.routine = stTrEl.getMethodName();
                 et.lineNum = stTrEl.getLineNumber();
         }

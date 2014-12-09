@@ -413,7 +413,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
                 String cname = frame.getClassName();
                 if (!foundNonLogFrame && !loggerClassNames.contains(cname)) {
                     // We've found the relevant frame.
-                    record.setSourceClassName(cname);
+                    record.setSourceClassName(frame.getFileName());
                     record.setSourceMethodName(frame.getMethodName());
                     int lineNumber = frame.getLineNumber();
                     specialProperties.put(LogParameterUtil.PARAM_LINE, Long.valueOf(lineNumber));
