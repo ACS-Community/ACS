@@ -4,7 +4,7 @@ ARCH=`uname -m`
 GCC_VERSION_MAJOR=`echo __GNUC__ | gcc -E -xc - | tail -n 1`
 GCC_VERSION_MINOR=`echo __GNUC_MINOR__ | gcc -E -xc - | tail -n 1`
 
-DDS_DIR=$PWD/../PROPRIETARY/RTIDDS/
+DDS_DIR=$PWD/../NO-LGPL/RTIDDS/
 
 if [ $ARCH == x86_64 ]
 then
@@ -48,18 +48,18 @@ if [ "$1" == "-c" ]
 then
     echo "Checking out RTIDDS (host tar $HOST_TAR for target $TARGET_TAR)"
     cd ..
-    svn up PROPRIETARY --depth files
+    svn up NO-LGPL --depth files
     if [ $? != 0 ]
     then
-        echo "ERROR: Could not svn co: ACS/ExtProd/PROPRIETARY"
+        echo "ERROR: Could not svn co: ACS/ExtProd/NO-LGPL"
         exit 4
     fi
-    cd PROPRIETARY
+    cd NO-LGPL
     svn up RTIDDS
 
     if [ $? != 0 ]
     then
-        echo "ERROR: Could not svn co: ACS/ExtProd/PROPRIETARY/RTIDDS"
+        echo "ERROR: Could not svn co: ACS/ExtProd/NO-LGPL/RTIDDS"
         exit 4
     fi
     DDS_DIR=$PWD/RTIDDS

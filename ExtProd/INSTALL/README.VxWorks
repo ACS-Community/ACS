@@ -13,16 +13,16 @@ To add this modification to the VxWorks kernel, the buildVxWorks
 procedure
 has to:
  1) "cd $WIND_BASE/target/config/mv2700" where the image will be built.
- 2) Apply the patch in ../PROPRIETARY/vw5.5-target-config-mv2700.patch
+ 2) Apply the patch in ../NO-LGPL/vw5.5-target-config-mv2700.patch
     This patch adds here the patched copy of the file and
     updates also config.h and sysLib.c accoridngly.
  3) "make vxWorks"
 
 During the build of GCC for Linux ignore the following errors:
 
-/diska/alma_tmp/ACS/ExtProd/PROPRIETARY/vw/gnu.ppc/gcc/wrsGenMultilib: Error: can't find /diska/alma_tmp/ACS/ExtProd/PROPRIETARY/vw/gnu.ppc/gcc/target/h
-/diska/alma_tmp/ACS/ExtProd/PROPRIETARY/vw/gnu.ppc/gcc/wrsGenMultilib: Generating multilib.h for ppc
-/diska/alma_tmp/ACS/ExtProd/PROPRIETARY/vw/gnu.ppc/gcc/wrsGenMultilib: line 1: cd: /diska/alma_tmp/ACS/ExtProd/PROPRIETARY/vw/gnu.ppc/gcc/target: No such file or directory
+/diska/alma_tmp/ACS/ExtProd/NO-LGPL/vw/gnu.ppc/gcc/wrsGenMultilib: Error: can't find /diska/alma_tmp/ACS/ExtProd/NO-LGPL/vw/gnu.ppc/gcc/target/h
+/diska/alma_tmp/ACS/ExtProd/NO-LGPL/vw/gnu.ppc/gcc/wrsGenMultilib: Generating multilib.h for ppc
+/diska/alma_tmp/ACS/ExtProd/NO-LGPL/vw/gnu.ppc/gcc/wrsGenMultilib: line 1: cd: /diska/alma_tmp/ACS/ExtProd/NO-LGPL/vw/gnu.ppc/gcc/target: No such file or directory
 
 if [ -d /include ] ; then true ; else mkdir /include ; chmod a+rx /include ; fi
 mkdir: cannot create directory `/include': Permission denied

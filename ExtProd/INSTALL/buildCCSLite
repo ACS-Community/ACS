@@ -40,13 +40,13 @@ exec > $LOG 2>&1
 date
 . ./standardPrologue
 
-if [ ! -e ../PROPRIETARY/CCSLite.tar.gz ]
+if [ ! -e ../NO-LGPL/CCSLite.tar.gz ]
 then
   echo Error: CCSLite tar file is missing
   exit 2
 fi
 
-cd $CWD/../PROPRIETARY
+cd $CWD/../NO-LGPL
 if [ -d CCSLite ]
 then
   echo CCSLite directory exists already. I clean it up.
@@ -54,10 +54,10 @@ then
 fi
 
 echo "Untarring the CCSLite.tar.gz file"
-tar zxf $CWD/../PROPRIETARY/CCSLite.tar.gz
+tar zxf $CWD/../NO-LGPL/CCSLite.tar.gz
 
 echo "Building CCSLite"
-cd $CWD/../PROPRIETARY/CCSLite/INSTALL
+cd $CWD/../NO-LGPL/CCSLite/INSTALL
 make all
 
 # If CCSLite did not exist before,
