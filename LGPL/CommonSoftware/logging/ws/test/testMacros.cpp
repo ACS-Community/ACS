@@ -53,6 +53,7 @@
 
 #include "logging.h"
 #include <acsutilTimeStamp.h>
+#include <sstream>
 
 #include "loggingACSLogger.h"
 #include "loggingHandler.h"
@@ -98,6 +99,23 @@ static void testStaticLoggingWithAudience()
     STATIC_LOG_TO_SCIENCE(LM_INFO, "STATIC_LOG_TO_SCIENCE");
     STATIC_LOG_TO_SCILOG(LM_INFO, "STATIC_LOG_TO_SCILOG");
 }
+
+static void testTooLongMessages()
+{
+	std::string baseStr10 = "X";
+	std::ostringstream myLongString;
+	std::ostringstream oss;
+	oss.clear();
+	oss.str(std::string());
+	for (int i=1;i<=2*ACE_MAXLOGMSGLEN;i++)
+	{
+		myLongString << baseStr10;
+	}
+	myLongString << "|END";
+
+	ACS_DEBUG(__PRETTY_FUNCTION__, myLongString.str());
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -213,6 +231,8 @@ int main(int argc, char *argv[])
     LOG_TO_SCILOG( LM_INFO, "Test of LOG_TO_SCILOG log");
 
     testStaticLoggingWithAudience();
+
+    testTooLongMessages();
 
     return 0;
 }

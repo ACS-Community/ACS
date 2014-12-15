@@ -1,20 +1,58 @@
 1 -  
 1 - ============= Basic tests ============
 1 -  
-1 - ----------T--:--:--.--- None aFunction - Test INFO message from a function
-1 - ----------T--:--:--.--- None Main - Test ALERT message
-1 - ----------T--:--:--.--- None Main - Test CRITICAL message
-1 - ----------T--:--:--.--- None Main - Test DEBUG message
-1 - ----------T--:--:--.--- None Main - Test EMERGENCY message
-1 - ----------T--:--:--.--- None Main - Test ERROR message
-1 - ----------T--:--:--.--- None Main - Test ERROR message
 1 - ----------T--:--:--.--- None Main - Test INFO message
-1 - ----------T--:--:--.--- None Main - Test NOTICE message
+1 - ----------T--:--:--.--- None Main - Test DEBUG message
+1 - ----------T--:--:--.--- None Main - Test ERROR message
 1 - ----------T--:--:--.--- None Main - Test WARNING message
+1 - ----------T--:--:--.--- None Main - Test ALERT message
+1 - ----------T--:--:--.--- None Main - Test ERROR message
+1 - ----------T--:--:--.--- None Main - Test CRITICAL message
+1 - ----------T--:--:--.--- None Main - Test EMERGENCY message
+1 - ----------T--:--:--.--- None aFunction - Test INFO message from a function
+1 - ----------T--:--:--.--- None Main - Test NOTICE message
 1 - ============= End basic tests ============
 1 - == Test logError
 1 -  
 1 - ============= Complex tests ============
 1 - == Logging INFO message in "aFunction"
 1 - ----------T--:--:--.--- None Error Trace
+1 - ----------T--:--:--.--- StatisticsTest Main - Message not included in statistics 1
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. First batch: 1
+1 - ----------T--:--:--.--- StatisticsTest Main - Message not included in statistics 2
+1 - ----------T--:--:--.--- StatisticsTest Main - Message not included in statistics 3
+1 - ============= Statistics tests ============
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. First batch: 2
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. First batch: 3
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 1
+1 - ----------T--:--:--.--- StatisticsTest logNotice - -------- LOGGING STATISTICS FOR: AcspyTestLogging.StatisticsTest
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Total logging messages during last period: 4
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Number of messages per 1 second(s) during last X seconds = X
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Increment of messages from last period: 0%
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Total logging errors during last period: 0
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Number of errors per 1 second(s) during last X seconds = X
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Increment of logging errors from last period: 0%
+1 - ----------T--:--:--.--- StatisticsTest logNotice - ---------------------------------------------------------------------------------
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 2
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 3
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 4
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 5
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Third batch: 1
+1 - ----------T--:--:--.--- StatisticsTest logNotice - -------- LOGGING STATISTICS FOR: AcspyTestLogging.StatisticsTest
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Total logging messages during last period: 13
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Number of messages per 1 second(s) during last X seconds = X
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Increment of messages from last period: 225%
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Total logging errors during last period: 0
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Number of errors per 1 second(s) during last X seconds = X
+1 - ----------T--:--:--.--- StatisticsTest logNotice - Increment of logging errors from last period: 0%
+1 - ----------T--:--:--.--- StatisticsTest logNotice - ---------------------------------------------------------------------------------
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Third batch: 2
+1 - ----------T--:--:--.--- StatisticsTest Main - -------- LOGGING STATISTICS FOR: AcspyTestLogging.StatisticsTest
+1 - ----------T--:--:--.--- StatisticsTest Main - Total logging messages during last period: 9
+1 - ----------T--:--:--.--- StatisticsTest Main - Number of messages per 1 second(s) during last X seconds = X
+1 - ----------T--:--:--.--- StatisticsTest Main - Increment of messages from last period: -28%
+1 - ----------T--:--:--.--- StatisticsTest Main - Total logging errors during last period: 0
+1 - ----------T--:--:--.--- StatisticsTest Main - Number of errors per 1 second(s) during last X seconds = X
+1 - ----------T--:--:--.--- StatisticsTest Main - ---------------------------------------------------------------------------------
+1 - ----------T--:--:--.--- StatisticsTest Main - Increment of logging errors from last period: 0%
 1 - == The end __oOo__

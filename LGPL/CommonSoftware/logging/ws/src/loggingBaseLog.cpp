@@ -24,7 +24,6 @@
 */
 
 #include "loggingBaseLog.h"
-#include "acsutilTimeStamp.h"
 
 static char *rcsId="@(#) $Id: loggingBaseLog.cpp,v 1.6 2006/01/05 18:45:10 dfugate Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
@@ -36,6 +35,14 @@ namespace Logging {
     const std::string BaseLog::ANONYMOUS_LOGGER_NAME = std::string("");
     const std::string BaseLog::STATIC_LOGGER_NAME    = std::string("StaticMethodLogger");
     //-----------------------------------------------------------------------------------
+
+    // Constructor
+    BaseLog::BaseLog()
+	{
+
+	}
+
+    // default implementation of complete log
     void
     BaseLog::log(Priority priority,
 		 const std::string &message,
