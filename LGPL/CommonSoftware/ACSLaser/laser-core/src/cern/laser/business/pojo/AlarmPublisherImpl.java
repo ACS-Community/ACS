@@ -4,12 +4,13 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.TextMessage;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
@@ -18,10 +19,8 @@ import javax.jms.TopicSession;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
-
+import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.alarmmessage.AlarmMessageConversion;
-
 import cern.laser.business.LaserCreateException;
 import cern.laser.business.LaserRuntimeException;
 import cern.laser.business.data.Alarm;
@@ -30,13 +29,9 @@ import cern.laser.business.data.AlarmImpl;
 import cern.laser.business.data.Category;
 import cern.laser.business.data.Status;
 
-import java.io.StringWriter;
-import org.exolab.castor.xml.Marshaller;
-
 public class AlarmPublisherImpl {
   private static final String LASER_INIT_PROPERTY = "LASER_INIT";
   private static final String LASER_SEARCH_PROPERTY = "LASER_SEARCH";
-  private static final Logger LOGGER = Logger.getLogger(AlarmPublisherImpl.class.getName());
 
   private static final String DEFAULT_CATEGORY_ROOT_TOPIC = "CMW.ALARM_SYSTEM.CATEGORIES";
 
@@ -56,18 +51,22 @@ public class AlarmPublisherImpl {
 
   private TopicConnectionFactory topicConnectionFactory;
   private String categoryRootTopic = DEFAULT_CATEGORY_ROOT_TOPIC;
+  
+  /**
+   * The logger
+   */
+  private final Logger logger;
 
-  //
-  // -- CONSTRUCTORS ------------------------------------------------
-  //
-
-  public AlarmPublisherImpl() {
-    try {
-      //      getTopicConnection();
-      //      getTopicSession();
-    } catch (Exception e) {
-      throw new LaserCreateException("unable to instantiate an alarm publisher", e);
-    }
+  /**
+   * Construcotr
+   * 
+   * @param logger The logger
+   */
+  public AlarmPublisherImpl(Logger logger) {
+	  if (logger==null) {
+		  throw new IllegalArgumentException("Invalid NULL logger");
+	  }
+	  this.logger=logger;
   }
 
   //
@@ -84,11 +83,11 @@ public class AlarmPublisherImpl {
 
   public void publish(AlarmChange alarmChange) {
     if (alarmChange == null) {
-      LOGGER.error("alarm change is null");
+    	logger.log(AcsLogLevel.WARNING,"alarm change is null");
       return;
     }
     try {
-      LOGGER.info("publishing alarm change for " + alarmChange.getCurrent().getAlarmId() + ", active= "
+    	logger.log(AcsLogLevel.DEBUG,"publishing alarm change for " + alarmChange.getCurrent().getAlarmId() + ", active= "
           + alarmChange.getCurrent().getStatus().getActive());
       Alarm alarm = alarmChange.getCurrent();
       Alarm previous = alarmChange.getPrevious();
@@ -147,12 +146,10 @@ public class AlarmPublisherImpl {
         message.setText(xml);
         
         getTopicPublisher().publish(topic, message);
-        LOGGER.info("change published on : " + destination);
+        logger.log(AcsLogLevel.DEBUG,"change published on : " + destination);
       }
     } catch (Exception e) {
-      LOGGER.error("unable to publish", e);
-      System.err.println("*** Exception: Unable to publish "+e.getMessage());
-      e.printStackTrace();
+      logger.log(AcsLogLevel.ERROR,"unable to publish", e);
       close();
     }
   }
@@ -173,7 +170,7 @@ public class AlarmPublisherImpl {
 
       getTopicPublisher().publish(topic, message);
     } catch (Exception e) {
-      LOGGER.error("unable to send alarm " + alarm.getAlarmId() + " to destination " + destination, e);
+      logger.log(AcsLogLevel.ERROR,"unable to send alarm " + alarm.getAlarmId() + " to destination " + destination, e);
       close();
       //throw new EJBException("unable to send alarm " + alarm.getAlarmId() + " to destination " + destination, e);
     }
@@ -181,7 +178,7 @@ public class AlarmPublisherImpl {
 
   public void sendInit(Collection alarms, String destination) {
     try {
-      LOGGER.info("sending " + alarms.size() + " initial alarm(s) to " + destination + "...");
+      logger.log(AcsLogLevel.DEBUG,"sending " + alarms.size() + " initial alarm(s) to " + destination + "...");
 
       Topic topic = getTopicSession().createTopic(destination);
       TextMessage message = getTopicSession().createTextMessage();
@@ -200,9 +197,8 @@ public class AlarmPublisherImpl {
         }
         getTopicPublisher().publish(topic, message);
       }
-      LOGGER.info("initial alarm(s) sent to " + destination);
+      logger.log(AcsLogLevel.DEBUG,"initial alarm(s) sent to " + destination);
     } catch (Exception e) {
-      LOGGER.error("unable to send initial alarms to " + destination+" : "+e.getMessage());
       close();
       throw new LaserRuntimeException("unable to send alarms to " + destination+" : "+e.getMessage());
     }
@@ -221,17 +217,14 @@ public class AlarmPublisherImpl {
 
   public void sendInitFinished(String destination) {
     try {
-      LOGGER.info("sending init finished message to " + destination + "...");
+      logger.log(AcsLogLevel.DEBUG,"sending init finished message to " + destination + "...");
       Topic topic = getTopicSession().createTopic(destination);
       Message message = getTopicSession().createMessage();
       message.setObjectProperty(LASER_INIT_PROPERTY, Boolean.TRUE);
       getTopicPublisher().publish(topic, message);
-      LOGGER.info("init finished message sent to " + destination);
+      logger.log(AcsLogLevel.DEBUG,"init finished message sent to " + destination);
     } catch (Exception e) {
-      //      LOGGER.error("unable to send init finished message to "+destination,
-      // e);
       close();
-      //throw new EJBException("unable to send init finished message to " + destination, e);
     }
   }
 
@@ -241,7 +234,7 @@ public class AlarmPublisherImpl {
    */
   public void sendSearch(Collection alarms, String destination) {
     try {
-      LOGGER.info("sending " + alarms.size() + " search alarm(s) to " + destination + "...");
+    	logger.log(AcsLogLevel.DEBUG,"sending " + alarms.size() + " search alarm(s) to " + destination + "...");
 
       Topic topic = getTopicSession().createTopic(destination);
       ObjectMessage message = getTopicSession().createObjectMessage();
@@ -254,9 +247,8 @@ public class AlarmPublisherImpl {
 
         getTopicPublisher().publish(topic, message);
       }
-      LOGGER.info("search alarm(s) sent to " + destination);
+      logger.log(AcsLogLevel.DEBUG,"search alarm(s) sent to " + destination);
     } catch (Exception e) {
-      LOGGER.error("unable to send search alarms to " + destination+" : "+ e.getMessage());
       close();
       throw new LaserRuntimeException("unable to send search alarms to " + destination+" : "+e.getMessage());
     }
@@ -269,14 +261,13 @@ public class AlarmPublisherImpl {
 
   private void sendSearchFinished(String destination) {
     try {
-      LOGGER.info("sending search finished message to " + destination + "...");
+    	logger.log(AcsLogLevel.DEBUG,"sending search finished message to " + destination + "...");
       Topic topic = getTopicSession().createTopic(destination);
       Message message = getTopicSession().createMessage();
       message.setObjectProperty(LASER_SEARCH_PROPERTY, Boolean.TRUE);
       getTopicPublisher().publish(topic, message);
-      LOGGER.info("search finished message sent to " + destination);
+      logger.log(AcsLogLevel.DEBUG,"search finished message sent to " + destination);
     } catch (Exception e) {
-      LOGGER.error("unable to send search finished message to " + destination+" : "+ e.getMessage());
       close();
       throw new LaserRuntimeException("unable to send search finished message to " + destination+" : "+ e.getMessage());
     }
@@ -321,14 +312,14 @@ public class AlarmPublisherImpl {
       try {
         session.close();
       } catch (JMSException je) {
-        LOGGER.error("unable to close JMS session", je);
+    	  logger.log(AcsLogLevel.ERROR,"unable to close JMS session", je);
       }
     }
     if (connection != null) {
       try {
         connection.close();
       } catch (JMSException je) {
-        LOGGER.error("unable to close JMS connection", je);
+    	  logger.log(AcsLogLevel.ERROR,"unable to close JMS connection", je);
       }
     }
     publisher = null;
@@ -395,31 +386,31 @@ public class AlarmPublisherImpl {
           try {
             message.setObjectProperty(key, Integer.valueOf(value));
           } catch (NumberFormatException nfe) {
-            LOGGER.warn("integer property was expected, found : " + value);
+        	  logger.log(AcsLogLevel.WARNING,"integer property was expected, found : " + value);
           }
         } else if (key.toUpperCase().endsWith(DOUBLE_SUFFIX)) {
           try {
             message.setObjectProperty(key, Double.valueOf(value));
           } catch (NumberFormatException nfe) {
-            LOGGER.warn("double property was expected, found : " + value);
+        	  logger.log(AcsLogLevel.WARNING,"double property was expected, found : " + value);
           }
         } else if (key.toUpperCase().endsWith(FLOAT_SUFFIX)) {
           try {
             message.setObjectProperty(key, Float.valueOf(value));
           } catch (NumberFormatException nfe) {
-            LOGGER.warn("float property was expected, found : " + value);
+        	  logger.log(AcsLogLevel.WARNING,"float property was expected, found : " + value);
           }
         } else if (key.toUpperCase().endsWith(SHORT_SUFFIX)) {
           try {
             message.setObjectProperty(key, Short.valueOf(value));
           } catch (NumberFormatException nfe) {
-            LOGGER.warn("short property was expected, found : " + value);
+        	  logger.log(AcsLogLevel.WARNING,"short property was expected, found : " + value);
           }
         } else if (key.toUpperCase().endsWith(BYTE_SUFFIX)) {
           try {
             message.setObjectProperty(key, Byte.valueOf(value));
           } catch (NumberFormatException nfe) {
-            LOGGER.warn("byte property was expected, found : " + value);
+        	  logger.log(AcsLogLevel.WARNING,"byte property was expected, found : " + value);
           }
         } else {
           message.setStringProperty(key, value);

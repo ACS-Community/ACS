@@ -76,6 +76,7 @@ import alma.alarmsystem.core.alarms.LaserCoreFaultState;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import alma.alarmsystem.core.mail.ACSMailAndSmsServer;
 import alma.alarmsystem.source.ACSFaultState;
+import alma.alarmsystem.statistics.StatsCalculator;
 import alma.maci.loggingconfig.UnnamedLogger;
 
 import cern.laser.business.cache.AlarmCacheListener;
@@ -136,6 +137,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 	 */
 	public class LaserComponentTerminator implements Runnable {
 		public void run() {
+			statistcsCalculator.shutdown();
 			sourcesListener.shutdown();
 			alarmCacheListener.close();
 			alarmCacheListener=null;
@@ -219,6 +221,8 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 	 */
 	private volatile boolean closed=false;
 	
+	private StatsCalculator statistcsCalculator; 
+	
 	/**
 	 * Constructor
 	 */
@@ -237,6 +241,9 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 
 	public void initialize() {
 		this.logger=corbaServer.getLogger();
+		
+		statistcsCalculator = new StatsCalculator(this.logger);
+		statistcsCalculator.start();
 		
 		defaultTopicConnectionFactory = new ACSJMSTopicConnectionFactory(alSysContSvcs);
 
@@ -326,7 +333,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 		alarmCacheServer = new AlarmCacheServerImpl();
 		alarmDefinitionService = new AlarmDefinitionServiceImpl();
 		alarmMessageProcessor = new AlarmMessageProcessorImpl(this);
-		alarmPublisher = new AlarmPublisherImpl();
+		alarmPublisher = new AlarmPublisherImpl(logger);
 		alarmSourceMonitor = new AlarmSourceMonitorImpl();
 		categoryDefinitionService = new CategoryDefinitionServiceImpl();
 		coreService = new CoreServiceImpl();
@@ -427,6 +434,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 		}
 		closed=true;
 		logger.log(AcsLogLevel.DEBUG,"Shutting down");
+		
 		Thread t = new Thread(new LaserComponentTerminator(),"LaserComponentTerminator");
 		t.start();
 	}
