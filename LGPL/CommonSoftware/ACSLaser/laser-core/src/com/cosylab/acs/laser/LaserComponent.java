@@ -330,7 +330,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 		sourceDAO.setResponsiblePersonDAO(responsiblePersonDAO);
 		
 		adminUserDefinitionService = new AdminUserDefinitionServiceImpl();
-		alarmCacheServer = new AlarmCacheServerImpl();
+		alarmCacheServer = new AlarmCacheServerImpl(logger);
 		alarmDefinitionService = new AlarmDefinitionServiceImpl();
 		alarmMessageProcessor = new AlarmMessageProcessorImpl(this);
 		alarmPublisher = new AlarmPublisherImpl(logger);
