@@ -218,7 +218,7 @@ public class AlarmMessageProcessorImpl {
    */
   public void process(String xml) throws Exception {
       ASIMessage asi_message = XMLMessageHelper.unmarshal(xml);
-      LOGGER.info("message from " + asi_message.getSourceName() + "@" + asi_message.getSourceHostname());
+      LOGGER.debug("message from " + asi_message.getSourceName() + "@" + asi_message.getSourceHostname());
       if (asi_message.getBackup()) {
         if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("processing backup...");
         processBackup(asi_message);
@@ -245,7 +245,7 @@ public class AlarmMessageProcessorImpl {
       throws Exception {
 	alarmCache.acquire();
 	try {
-	    LOGGER.info("processing fault state: " + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
+	    LOGGER.debug("processing fault state: " + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
 	    Timestamp system_timestamp = new Timestamp(System.currentTimeMillis());
 	    Alarm alarm = alarmCache.getCopy(Triplet.toIdentifier(faultState.getFamily(), faultState.getMember(), new Integer(
 	        faultState.getCode())));

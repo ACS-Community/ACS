@@ -136,7 +136,7 @@ public class ACSMailAndSmsServer extends MailAndSmsServerImpl {
 	 * @see cern.laser.business.pojo.MailAndSmsServerImpl
 	 */
 	public void sendSMS(String number, String text) {
-		logger.log(AcsLogLevel.WARNING, "Sending of SMS disabled: no SMS will be sent to "+number);
+		logger.log(AcsLogLevel.DEBUG, "Sending of SMS disabled: no SMS will be sent to "+number);
 	}
 
 }
