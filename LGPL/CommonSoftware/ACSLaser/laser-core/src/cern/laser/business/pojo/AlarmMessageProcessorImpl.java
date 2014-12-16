@@ -11,11 +11,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 import javax.jms.Message;
 import javax.jms.TextMessage;
-
-import org.apache.log4j.Logger;
 
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import cern.laser.business.cache.AlarmCacheException;
@@ -34,6 +33,7 @@ import cern.laser.util.LogTimeStamp;
 import com.cosylab.acs.laser.LaserComponent;
 import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
 
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.IsoDateFormat;
 
 /**
@@ -54,7 +54,6 @@ import alma.acs.util.IsoDateFormat;
  *
  */
 public class AlarmMessageProcessorImpl {
-  private static final Logger LOGGER = Logger.getLogger(AlarmMessageProcessorImpl.class.getName());
 
   private SourceDAO sourceDAO;
   private ACSAlarmCacheImpl alarmCache;
@@ -132,7 +131,10 @@ public class AlarmMessageProcessorImpl {
    */
   private boolean alarmTooOldActive=false;
   
-  
+  /**
+   * The logger
+   */
+  private final Logger logger; 
   
   /**
    * The number of alarms processed in the past {@link #alarmTimestampsCheckInterval};
@@ -160,11 +162,15 @@ public class AlarmMessageProcessorImpl {
    * 
    * @param component The {@link LaserComponent}
    */
-  public AlarmMessageProcessorImpl(LaserComponent component) {
+  public AlarmMessageProcessorImpl(LaserComponent component,Logger logger) {
 	  if (component==null) {
 		  throw new IllegalArgumentException("The LaserComponent can't be null");
 	  }
+	  if (logger==null) {
+		  throw new IllegalArgumentException("The logger can't be null");
+	  }
 	  laserComponent=component;
+	  this.logger=logger;
   }
   
   //
@@ -181,15 +187,13 @@ public class AlarmMessageProcessorImpl {
 
   public void notifyReductionRelatives(Alarm alarm) {
     try {
-      if (LOGGER.isDebugEnabled()) LOGGER.debug("notifying reduction relatives for " + alarm.getTriplet() + "...");
+      logger.log(AcsLogLevel.DEBUG,"notifying reduction relatives for " + alarm.getTriplet() + "...");
       notifyNodeChildren(alarm);
       notifyMultiplicityChildren(alarm);
       notifyMultiplicityParents(alarm);
-      if (LOGGER.isDebugEnabled()) LOGGER.debug("notified");
+      logger.log(AcsLogLevel.DEBUG,"notified");
     } catch (Exception e) {
-      LOGGER.error("unable to notify reduction relatives for " + alarm.getTriplet(), e);
-      System.out.println("Exception: "+e.getMessage());
-      e.printStackTrace();
+    	logger.log(AcsLogLevel.ERROR,"unable to notify reduction relatives for " + alarm.getTriplet(), e);
     }
   }
 
@@ -198,8 +202,7 @@ public class AlarmMessageProcessorImpl {
 		TextMessage text_message = (TextMessage) alarmMessage;
 	}
 	  
-    LOGGER.info("*** processing message... ***");
-    if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("processing message...", true);
+	logger.log(AcsLogLevel.DEBUG,"processing message...", true);
     if (alarmMessage instanceof TextMessage) {
       TextMessage text_message = (TextMessage) alarmMessage;
       String xml_message = text_message.getText();
@@ -207,8 +210,7 @@ public class AlarmMessageProcessorImpl {
     } else {
       throw new Exception("TextMessage expected");
     }
-    LOGGER.info("*** message processed ***");
-    if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("message processed");
+    logger.log(AcsLogLevel.DEBUG,"message processed");
   }
   
   /**
@@ -218,15 +220,15 @@ public class AlarmMessageProcessorImpl {
    */
   public void process(String xml) throws Exception {
       ASIMessage asi_message = XMLMessageHelper.unmarshal(xml);
-      LOGGER.debug("message from " + asi_message.getSourceName() + "@" + asi_message.getSourceHostname());
+      logger.log(AcsLogLevel.DEBUG,"message from " + asi_message.getSourceName() + "@" + asi_message.getSourceHostname());
       if (asi_message.getBackup()) {
-        if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("processing backup...");
+    	  logger.log(AcsLogLevel.DEBUG,"processing backup...");
         processBackup(asi_message);
-        if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("backup processed");
+        logger.log(AcsLogLevel.DEBUG,"backup processed");
       } else {
-        if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("processing change...");
+    	  logger.log(AcsLogLevel.DEBUG,"processing change...");
         processChanges(asi_message);
-        if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("change processed");
+        logger.log(AcsLogLevel.DEBUG,"change processed");
       }
       // One alarm more has been processed!
       alarmsProcessed.incrementAndGet();
@@ -236,7 +238,7 @@ public class AlarmMessageProcessorImpl {
     	  long timestamp = IsoDateFormat.parseIsoTimestamp(asi_message.getSourceTimestamp()).getTime();
     	  alarmsDelayHelper.updateDelay(timestamp);
       } catch (ParseException pe) {
-    	  LOGGER.error("Error parsing a ISO timestamp: "+asi_message.getSourceTimestamp(), pe);
+    	  logger.log(AcsLogLevel.ERROR,"Error parsing a ISO timestamp: "+asi_message.getSourceTimestamp(), pe);
       }
       
   }
@@ -245,7 +247,7 @@ public class AlarmMessageProcessorImpl {
       throws Exception {
 	alarmCache.acquire();
 	try {
-	    LOGGER.debug("processing fault state: " + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
+		logger.log(AcsLogLevel.DEBUG,"processing fault state: " + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
 	    Timestamp system_timestamp = new Timestamp(System.currentTimeMillis());
 	    Alarm alarm = alarmCache.getCopy(Triplet.toIdentifier(faultState.getFamily(), faultState.getMember(), new Integer(
 	        faultState.getCode())));
@@ -253,7 +255,7 @@ public class AlarmMessageProcessorImpl {
 	    // process the change
 	    String defined_source_name = alarm.getSource().getName();
 	    if (!defined_source_name.equals(sourceName)) {
-	      LOGGER.error("source name mismatch : received " + sourceName + ", should be " + defined_source_name
+	    	logger.log(AcsLogLevel.ERROR,"source name mismatch : received " + sourceName + ", should be " + defined_source_name
 	          + ".\nFault State was discarded :\n" + faultState);
 	    } else {
 	      Status current_status = alarm.getStatus();
@@ -261,18 +263,14 @@ public class AlarmMessageProcessorImpl {
 	      // check if fault state changes were received in the right order
 	      if ((current_status.getUserTimestamp() != null) && (faultState.getUserTimestamp() != null)) {
 	        if (faultState.getUserTimestamp().before(current_status.getUserTimestamp())) {
-	          LOGGER.error("user timestamp not ordered : received " + faultState.getUserTimestamp() + ", was "
-	              + current_status.getUserTimestamp() + ".\nFault State was discarded :\n" + faultState);
-	          System.err.println("user timestamp not ordered : received " + faultState.getUserTimestamp() + ", was "
+	        	logger.log(AcsLogLevel.ERROR,"user timestamp not ordered : received " + faultState.getUserTimestamp() + ", was "
 	              + current_status.getUserTimestamp() + ".\nFault State was discarded :\n" + faultState);
 	          ordered = false;
 	        }
 	      } else {
 	        if (sourceTimestamp.before(current_status.getSourceTimestamp())) {
-	          LOGGER.error("source timestamp not ordered : received " + sourceTimestamp + ", was "
+	        	logger.log(AcsLogLevel.ERROR,"source timestamp not ordered : received " + sourceTimestamp + ", was "
 	              + current_status.getSourceTimestamp() + ".\nFault State was discarded :\n" + faultState);
-	          System.err.println("source timestamp not ordered : received " + sourceTimestamp + ", was "
-	                  + current_status.getSourceTimestamp() + ".\nFault State was discarded :\n" + faultState);
 	          ordered = false;
 	        }
 	      }
@@ -291,7 +289,7 @@ public class AlarmMessageProcessorImpl {
 	            //                faultState.getActivatedByBackup()), new Boolean(faultState.getTerminatedByBackup()), sourceHostname,
 	            //                sourceTimestamp, faultState.getUserTimestamp(), system_timestamp, faultState.getUserProperties());
 	          } else {
-	            LOGGER.error("invalid fault descriptor : received " + faultState.getDescriptor() + "  while expecting "
+	        	  logger.log(AcsLogLevel.ERROR,"invalid fault descriptor : received " + faultState.getDescriptor() + "  while expecting "
 	                + FaultState.INSTANT + ".\nFault State was discarded :\n" + faultState);
 	          }
 	        } else {
@@ -306,8 +304,7 @@ public class AlarmMessageProcessorImpl {
 	              notify_reduction_relatives = true;
 	              alarm_updated = true;
 	            } else {
-	              LOGGER.error("alarm already active.\nFault State was discarded :\n" + faultState);
-	              System.err.println("*** Alarm already active.\nFault State was discarded :\n" + faultState);
+	            	logger.log(AcsLogLevel.WARNING,"Alarm already active: Fault State "+alarm.getAlarmId()+" discarded");
 	            }
 	          } else if (faultState.getDescriptor().equalsIgnoreCase(FaultState.TERMINATE)) {
 	            // process TERMINATE fault state
@@ -320,12 +317,12 @@ public class AlarmMessageProcessorImpl {
 	              notify_reduction_relatives = true;
 	              alarm_updated = true;
 	            } else {
-	              LOGGER.error("alarm already terminated.\nFault State was discarded :\n" + faultState);
+	            	logger.log(AcsLogLevel.WARNING,"Alarm already terminated: Fault State "+alarm.getAlarmId()+" discarded");
 	            }
 	          } else if (faultState.getDescriptor().equalsIgnoreCase(FaultState.CHANGE)) {
 	            // process CHANGE fault state
 	            if (alarm.getStatus().getActive().equals(Boolean.FALSE)) {
-	              LOGGER.error("changed alarm was terminated : " + alarm.getAlarmId());
+	            	logger.log(AcsLogLevel.ERROR,"changed alarm was terminated : " + alarm.getAlarmId());
 	              notify_reduction_relatives = true;
 	            } else {
 	              updateStatus(faultState, current_status, Boolean.TRUE, sourceHostname, sourceTimestamp, system_timestamp);
@@ -336,7 +333,7 @@ public class AlarmMessageProcessorImpl {
 	              alarm_updated = true;
 	            }
 	          } else {
-	            LOGGER.error("invalid fault descriptor : received " + faultState.getDescriptor() + "  while expecting "
+	        	  logger.log(AcsLogLevel.ERROR,"invalid fault descriptor : received " + faultState.getDescriptor() + "  while expecting "
 	                + FaultState.ACTIVE + "|" + FaultState.TERMINATE + "|" + FaultState.CHANGE
 	                + ".\nFault State was discarded :\n" + faultState);
 	          }
@@ -344,7 +341,7 @@ public class AlarmMessageProcessorImpl {
 	        //        if (new_status != null) {
 	        if (alarm_updated) {
 	          //          alarm.setStatus(new_status);
-	          if (LOGGER.isDebugEnabled()) LOGGER.debug("applying change...");
+	        	logger.log(AcsLogLevel.DEBUG,"applying change...");
 	          if (alarm.getSource()!=null && sourceHostname!=null) {
 	        	  alarm.getSource().setHostName(sourceHostname.toLowerCase());
 	          }
@@ -358,7 +355,7 @@ public class AlarmMessageProcessorImpl {
 	    }
 	} finally {
 		alarmCache.release();
-		LOGGER.info("processed fault state:" + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
+		logger.log(AcsLogLevel.DEBUG,"processed fault state:" + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
 	}
   }
 
@@ -383,8 +380,7 @@ public class AlarmMessageProcessorImpl {
       if (hasTooManyActiveMultiplicityChildren(alarm)) {
         if (alarm.getStatus().getActive().equals(Boolean.FALSE)) {
           // activate multiplicity parent
-          if (LOGGER.isDebugEnabled()) LOGGER.debug("activating multiplicity parent " + alarm.getTriplet());
-          System.out.println("*** activating multiplicity parent " + alarm.getTriplet());
+        	logger.log(AcsLogLevel.DEBUG,"Activating multiplicity parent " + alarm.getTriplet());
           alarm.getStatus().setActive(Boolean.TRUE);
           Timestamp current_time = new Timestamp(System.currentTimeMillis());
           alarm.getStatus().setSourceTimestamp(current_time);
@@ -396,8 +392,7 @@ public class AlarmMessageProcessorImpl {
       } else {
         if (alarm.getStatus().getActive().equals(Boolean.TRUE)) {
           // terminate multiplicity parent
-          if (LOGGER.isDebugEnabled()) LOGGER.debug("terminating multiplicity parent " + alarm.getTriplet());
-          System.out.println("*** terminating multiplicity parent " + alarm.getTriplet());
+        	logger.log(AcsLogLevel.DEBUG,"Terminating multiplicity parent " + alarm.getTriplet());
           alarm.getStatus().setActive(Boolean.FALSE);
           Timestamp current_time = new Timestamp(System.currentTimeMillis());
           alarm.getStatus().setSourceTimestamp(current_time);
@@ -408,16 +403,13 @@ public class AlarmMessageProcessorImpl {
         }
       }
     } catch (Exception e) {
-      LOGGER.error("unable to update multiplicity node for " + alarm.getTriplet(), e);
-      System.err.println("unable to update multiplicity node for "+alarm.getTriplet());
-      System.err.println("Exception; "+e.getMessage());
-      e.printStackTrace();
+    	logger.log(AcsLogLevel.ERROR,"Unable to update multiplicity node for " + alarm.getTriplet(), e);
     }
   }
 
   public void updateReductionStatus(Alarm alarm) {
     try {
-      if (LOGGER.isDebugEnabled()) LOGGER.debug("updating reduction status for alarm : " + alarm);
+    	logger.log(AcsLogLevel.DEBUG,"Updating reduction status for alarm : " + alarm);
       if (alarm.getStatus().getReduced().equals(Boolean.TRUE)) {
         if ((!hasActiveNodeParents(alarm)) && (!hasActiveMultiplicityParents(alarm))) {
           alarm.getStatus().setReduced(Boolean.FALSE);
@@ -429,9 +421,9 @@ public class AlarmMessageProcessorImpl {
           alarmCache.put(alarm);
         }
       }
-      if (LOGGER.isDebugEnabled()) LOGGER.debug("updated");
+      logger.log(AcsLogLevel.DEBUG,"updated");
     } catch (Exception e) {
-      LOGGER.error("unable to update reduction status for " + alarm.getTriplet(), e);
+    	logger.log(AcsLogLevel.ERROR,"Unable to update reduction status for " + alarm.getTriplet(), e);
     }
   }
 
@@ -484,10 +476,10 @@ public class AlarmMessageProcessorImpl {
     String source_name = asiMessage.getSourceName();
     String source_hostname = asiMessage.getSourceHostname();
     String source_timestamp = asiMessage.getSourceTimestamp();
-    LOGGER.info("processing backup from " + source_name + "@" + source_hostname + " [" + source_timestamp + "]");
+    logger.log(AcsLogLevel.DEBUG,"processing backup from " + source_name + "@" + source_hostname + " [" + source_timestamp + "]");
     Source source = sourceDAO.findSource(source_name);
   
-    if (LOGGER.isDebugEnabled()) LOGGER.debug("getting active alarms...");
+    logger.log(AcsLogLevel.DEBUG,"getting active alarms...");
     String[] source_alarm_ids = sourceDAO.getAlarms(source.getSourceId());
     Collection active_alarms = new ArrayList(source_alarm_ids.length);
     for (int i = 0; i < source_alarm_ids.length; i++) {
@@ -497,7 +489,7 @@ public class AlarmMessageProcessorImpl {
       }
     }
   
-    if (LOGGER.isDebugEnabled()) LOGGER.debug("checking backup...");
+    logger.log(AcsLogLevel.DEBUG,"checking backup...");
     // check if backup alarms match active alarms for the same source
     Set active_identifiers = new HashSet();
     Iterator active_alarms_iterator = active_alarms.iterator();
@@ -506,7 +498,7 @@ public class AlarmMessageProcessorImpl {
     }
     
     Collection backup_fault_states = ASIMessageHelper.unmarshal(asiMessage);
-    LOGGER.info("processing " + backup_fault_states.size() + " backup alarms");
+    logger.log(AcsLogLevel.DEBUG,"processing " + backup_fault_states.size() + " backup alarms");
     Set backup_identifiers = new HashSet();
     Iterator backup_fault_states_iterator = backup_fault_states.iterator();
     while (backup_fault_states_iterator.hasNext()) {
@@ -514,14 +506,14 @@ public class AlarmMessageProcessorImpl {
       backup_identifiers.add(Triplet.toIdentifier(fault_state.getFamily(), fault_state.getMember(), new Integer(
           fault_state.getCode())));
     }
-    LOGGER.info(asiMessage.getSourceName() + " : " + active_identifiers.size() + " active alarms found, received "
+    logger.log(AcsLogLevel.DEBUG,asiMessage.getSourceName() + " : " + active_identifiers.size() + " active alarms found, received "
         + backup_identifiers.size());
     if ((backup_identifiers.containsAll(active_identifiers)) && (active_identifiers.containsAll(backup_identifiers))) {
-      LOGGER.info("backup matches active alarms");
+    	logger.log(AcsLogLevel.DEBUG,"backup matches active alarms");
     } else {
-      LOGGER.warn("backup mismatch");
-      if (LOGGER.isDebugEnabled()) LOGGER.debug("alarms found :\n" + active_identifiers);
-      if (LOGGER.isDebugEnabled()) LOGGER.debug("alarms received :\n" + backup_identifiers);
+    	logger.log(AcsLogLevel.WARNING,"backup mismatch");
+    	logger.log(AcsLogLevel.DEBUG,"alarms found :\n" + active_identifiers);
+    	logger.log(AcsLogLevel.DEBUG,"alarms received :\n" + backup_identifiers);
   
       Iterator backup_identifiers_iterator = backup_identifiers.iterator();
       while (backup_identifiers_iterator.hasNext()) {
@@ -530,8 +522,8 @@ public class AlarmMessageProcessorImpl {
         }
       }
       if (!backup_identifiers.isEmpty()) {
-        LOGGER.warn(backup_identifiers.size() + " backup alarms are not active");
-        if (LOGGER.isDebugEnabled()) LOGGER.debug("active by backup :\n" + backup_identifiers);
+    	  logger.log(AcsLogLevel.WARNING,backup_identifiers.size() + " backup alarms are not active");
+    	  logger.log(AcsLogLevel.DEBUG,"active by backup :\n" + backup_identifiers);
         backup_fault_states_iterator = backup_fault_states.iterator();
         while (backup_fault_states_iterator.hasNext()) {
           FaultState fault_state = (FaultState) backup_fault_states_iterator.next();
@@ -543,14 +535,14 @@ public class AlarmMessageProcessorImpl {
             	Timestamp timestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(source_timestamp).getTime());
             	processChange(fault_state, source_name, source_hostname, timestamp);
             } catch (Exception e) {
-              LOGGER.error("unable to activate alarm by backup", e);
+            	logger.log(AcsLogLevel.ERROR,"unable to activate alarm by backup", e);
             }
           }
         }
       }
       if (!active_identifiers.isEmpty()) {
-        LOGGER.warn(active_identifiers.size() + " active alarms are not in backup");
-        if (LOGGER.isDebugEnabled()) LOGGER.debug("terminate by backup :\n" + active_identifiers);
+    	  logger.log(AcsLogLevel.WARNING,active_identifiers.size() + " active alarms are not in backup");
+    	  logger.log(AcsLogLevel.DEBUG,"terminate by backup :\n" + active_identifiers);
         active_alarms_iterator = active_alarms.iterator();
         while (active_alarms_iterator.hasNext()) {
           Alarm alarm = (Alarm) active_alarms_iterator.next();
@@ -565,7 +557,7 @@ public class AlarmMessageProcessorImpl {
             	Timestamp timestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(source_timestamp).getTime());
             	processChange(fault_state, source_name, source_hostname, timestamp);
             } catch (Exception e) {
-            	LOGGER.error("unable to terminate alarm by backup", e);
+            	logger.log(AcsLogLevel.ERROR,"unable to terminate alarm by backup", e);
             }
           }
         }
@@ -575,17 +567,17 @@ public class AlarmMessageProcessorImpl {
     source.getStatus().setLastContact(new Timestamp(System.currentTimeMillis()));
     sourceDAO.updateSource(source);
   
-    LOGGER.info("backup processed");
+    logger.log(AcsLogLevel.DEBUG,"backup processed");
   }
 
   private void processChanges(ASIMessage asiMessage) {
     String source_name = asiMessage.getSourceName();
     String source_hostname = asiMessage.getSourceHostname();
     String source_timestamp = asiMessage.getSourceTimestamp();
-    LOGGER.info("processing changes from " + source_name + "@" + source_hostname + " [" + source_timestamp + "]");
+    logger.log(AcsLogLevel.DEBUG,"processing changes from " + source_name + "@" + source_hostname + " [" + source_timestamp + "]");
     Collection change_fault_states = ASIMessageHelper.unmarshal(asiMessage);
 
-    LOGGER.info("processing " + change_fault_states.size() + " changes");
+    logger.log(AcsLogLevel.DEBUG,"processing " + change_fault_states.size() + " changes");
     Iterator iterator = change_fault_states.iterator();
     while (iterator.hasNext()) {
       FaultState fault_state = (FaultState) iterator.next();
@@ -593,26 +585,26 @@ public class AlarmMessageProcessorImpl {
     	  Timestamp timestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(source_timestamp).getTime());
     	  processChange(fault_state, source_name, source_hostname, timestamp);
       } catch (Exception e) {
-        LOGGER.error("exception caught processing fault state : \n" + fault_state, e);
+    	  logger.log(AcsLogLevel.ERROR,"exception caught processing fault state : \n" + fault_state, e);
       }
     }
-    LOGGER.info("changes processed");
+    logger.log(AcsLogLevel.DEBUG,"changes processed");
   }
 
   private void notifyNodeChildren(Alarm alarm) throws Exception {
     String[] children = alarm.getNodeChildren();
     for (int i = 0; i < children.length; i++) {
       Alarm child = alarmCache.getCopy(children[i]);
-      if (LOGGER.isDebugEnabled()) LOGGER.debug("notifying node child " + child.getTriplet());
+      logger.log(AcsLogLevel.DEBUG,"notifying node child " + child.getTriplet());
       if (hasActiveNodeParents(child)) {
         if (child.getStatus().getReduced().equals(Boolean.FALSE)) {
-          LOGGER.info("reducing node child " + child.getTriplet());
+        	logger.log(AcsLogLevel.DEBUG,"reducing node child " + child.getTriplet());
           child.getStatus().setReduced(Boolean.TRUE);
           alarmCache.put(child);
         }
       } else {
         if (child.getStatus().getReduced().equals(Boolean.TRUE)) {
-          LOGGER.info("unreducing node child " + child.getTriplet());
+        	logger.log(AcsLogLevel.DEBUG,"unreducing node child " + child.getTriplet());
           child.getStatus().setReduced(Boolean.FALSE);
           alarmCache.put(child);
         }
@@ -624,16 +616,16 @@ public class AlarmMessageProcessorImpl {
     String[] children = alarm.getMultiplicityChildren();
     for (int i = 0; i < children.length; i++) {
       Alarm child = alarmCache.getCopy(children[i]);
-      if (LOGGER.isDebugEnabled()) LOGGER.debug("notifying multiplicity child " + child.getTriplet());
+      logger.log(AcsLogLevel.DEBUG,"notifying multiplicity child " + child.getTriplet());
       if (hasActiveMultiplicityParents(child)) {
         if (child.getStatus().getReduced().equals(Boolean.FALSE)) {
-          LOGGER.info("reducing multiplicity child " + child.getTriplet());
+        	logger.log(AcsLogLevel.DEBUG,"reducing multiplicity child " + child.getTriplet());
           child.getStatus().setReduced(Boolean.TRUE);
           alarmCache.put(child);
         }
       } else {
         if (child.getStatus().getReduced().equals(Boolean.TRUE)) {
-          LOGGER.info("unreducing multiplicity child " + child.getTriplet());
+        	logger.log(AcsLogLevel.DEBUG,"unreducing multiplicity child " + child.getTriplet());
           child.getStatus().setReduced(Boolean.FALSE);
           alarmCache.put(child);
         }
@@ -645,7 +637,7 @@ public class AlarmMessageProcessorImpl {
     String[] parents = alarm.getMultiplicityParents();
     for (int i = 0; i < parents.length; i++) {
       Alarm parent = alarmCache.getCopy(parents[i]);
-      if (LOGGER.isDebugEnabled()) LOGGER.debug("notifying multiplicity parent " + parent.getTriplet());
+      logger.log(AcsLogLevel.DEBUG,"notifying multiplicity parent " + parent.getTriplet());
       updateMultiplicityNode(parent);
     }
   }
@@ -696,7 +688,7 @@ public class AlarmMessageProcessorImpl {
 		@Override
 		public void run() {
 			// Logs the number of alarms processed in the past interval (and reset the counter)
-			LOGGER.debug(""+alarmsProcessed.getAndSet(0)+" alarms processed in the past 5 mins");
+			logger.log(AcsLogLevel.DEBUG,""+alarmsProcessed.getAndSet(0)+" alarms processed in the past 5 mins");
 			// Check if the delay alarm must be published
 			boolean alarmsAreTooLate=alarmsDelayHelper.chekDelayAndReset();
 			if (alarmsAreTooLate!=alarmTooOldActive) {

@@ -332,7 +332,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 		adminUserDefinitionService = new AdminUserDefinitionServiceImpl();
 		alarmCacheServer = new AlarmCacheServerImpl(logger);
 		alarmDefinitionService = new AlarmDefinitionServiceImpl();
-		alarmMessageProcessor = new AlarmMessageProcessorImpl(this);
+		alarmMessageProcessor = new AlarmMessageProcessorImpl(this,logger);
 		alarmPublisher = new AlarmPublisherImpl(logger);
 		alarmSourceMonitor = new AlarmSourceMonitorImpl();
 		categoryDefinitionService = new CategoryDefinitionServiceImpl();
