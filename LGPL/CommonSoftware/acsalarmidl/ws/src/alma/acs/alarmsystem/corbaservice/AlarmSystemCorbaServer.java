@@ -367,6 +367,14 @@ public class AlarmSystemCorbaServer implements Runnable {
 		// activate POA
 		poaManager = rootPOA.the_POAManager();
 		poaManager.activate();
+		
+		// Initialize remote logging
+		try {
+			ClientLogManager.getAcsLogManager().initRemoteLoggingForService(orb, true);
+			m_logger.log(AcsLogLevel.DEBUG,"Remote logging initialized");
+		} catch (Throwable t) {
+			m_logger.log(AcsLogLevel.ERROR,"Error connecting to the remote log service");
+		} 
 	}
 
 	/**
