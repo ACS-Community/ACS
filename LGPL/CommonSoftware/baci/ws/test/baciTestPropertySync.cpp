@@ -377,10 +377,9 @@ int main (int argc, char **argv)
   catch(CORBA::Exception &ex)
     {
 	ACS_SHORT_LOG((LM_INFO,"Exception: .... The End."));
-        ACE_PRINT_EXCEPTION (ACE_ANY_EXCEPTION,"Error!");
+        ex._tao_print_exception("Error!");
         return -1;
     }
-  ACE_CHECK_RETURN (-1);
 
   return 0;
 
