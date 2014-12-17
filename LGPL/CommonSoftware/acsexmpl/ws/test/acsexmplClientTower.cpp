@@ -69,7 +69,6 @@
 #include <baciS.h>
 
 using namespace maci;
-ACE_RCSID(acsexmplClientTower, acsexmpClientTower, "$Id: acsexmplClientTower.cpp,v 1.8 2005/09/21 13:14:49 vwang Exp $")    
 /*******************************************************************************/
 int main(int argc, char *argv[])
 {
@@ -103,7 +102,7 @@ int main(int argc, char *argv[])
 	}
     catch( CORBA::Exception &ex )
 	{
-	ACE_PRINT_EXCEPTION (ex, "main");
+	ex._tao_print_exception("main");
 	}
     
     try
@@ -114,7 +113,7 @@ int main(int argc, char *argv[])
 	}
     catch( CORBA::Exception &_ex )
 	{
-	ACE_PRINT_EXCEPTION (_ex, "main");
+	_ex._tao_print_exception("main");
 	}
     
     ACE_OS::sleep(3);
