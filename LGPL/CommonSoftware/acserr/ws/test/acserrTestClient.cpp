@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
   }
   catch( CORBA::Exception &ex )
   {    
-    ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");
+    ex._tao_print_exception("EXCEPTION CAUGHT");
     return -1;
   }
   ACS_SHORT_LOG((LM_INFO, "Test1 performed."));
@@ -193,7 +193,7 @@ int main(int argc, char *argv[])
     }
     catch(CORBA::Exception &__ex)
     {    
-      ACE_PRINT_EXCEPTION (__ex, "EXCEPTION CAUGHT");
+      __ex._tao_print_exception("EXCEPTION CAUGHT");
       return -1;
     }
     
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
     }
     catch( CORBA::Exception &ex )
     {    
-      ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");
+      ex._tao_print_exception( "EXCEPTION CAUGHT");
       return -1;
     }
     
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
   }
   catch( CORBA::Exception &ex )
   {    
-    ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");
+      ex._tao_print_exception( "EXCEPTION CAUGHT");
       return -1;
   }
     
@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
   }
   catch( CORBA::Exception &ex )
   {    
-    ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");
+      ex._tao_print_exception( "EXCEPTION CAUGHT");
       return -1;
   }
     
@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
   }
   catch( CORBA::Exception &ex )
   {    
-    ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");
+      ex._tao_print_exception("EXCEPTION CAUGHT");
       return -1;
   }
     
