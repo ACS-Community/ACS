@@ -580,7 +580,7 @@ clean_kernel_modules: clean_kernel_module_final
 
 .PHONY:
 clean_kernel_module_final:
-	$(AT)$(RM) Kbuild ../kernel/$(kernel_install_subfold)
+	$(AT)$(RM) Kbuild Module.symvers Module.markers ../kernel/$(kernel_install_subfold) 
 
 endif
 
