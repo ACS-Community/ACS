@@ -155,10 +155,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	 do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_links clean_all 
+clean :  clean_all 
 	$(RM) *~ ../include/*~ ../dbl/*~ ../idl/*~ ../*~ ../../*~ core
 	@echo " . . . clean done"
 
@@ -206,9 +206,9 @@ COMMON_IDL_ORIG = \
 $(COMMON_IDL) : $(COMMON_IDL_ORIG)
 	- $(AT) if [ ! -h $@ ]; then echo "== Linking source: $@"; ln -s ../../ws/idl/$@ $@; fi
 
-do_links: $(COMMON_SOURCES) $(COMMON_IDL)
+: $(COMMON_SOURCES) $(COMMON_IDL)
 
-clean_links:
+:
 	$(AT) $(RM) $(COMMON_SOURCES) $(COMMON_IDL)
                  
 #___oOo___
