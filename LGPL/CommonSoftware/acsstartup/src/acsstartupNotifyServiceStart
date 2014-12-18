@@ -40,7 +40,7 @@
 # in order to get the correct svc.conf service configuration file.
 STARTUP_DIR=$PWD
 cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-($ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=$ACS_NAME_SERVICE -IORoutput $NOTIFY_IOR $ORBOPTS -Boot 2>&1 & echo $! > $NOTIFY_SERVICE_PIDFILE) | tee $NOTIFY_OUT &
+($ACE_ROOT/TAO/orbsvcs/Notify_Service/tao_cosnotification -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=$ACS_NAME_SERVICE -IORoutput $NOTIFY_IOR $ORBOPTS -Boot 2>&1 & echo $! > $NOTIFY_SERVICE_PIDFILE) | tee $NOTIFY_OUT &
 cd $STARTUP_DIR
 
 # Block until the IOR shows up in the the correct file

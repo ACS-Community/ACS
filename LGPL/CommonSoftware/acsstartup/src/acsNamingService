@@ -254,7 +254,7 @@ then
   # SERVICE STARTUP
   # --------------------------------------------------------------------------
   ACS_LOG_INFO "$COMMAND" "Starting Naming Service${LOGPOSTFIX}"
-  $ACE_ROOT/TAO/orbsvcs/Naming_Service/Naming_Service -ORBEndpoint iiop://$HOST:$NAMING_SERVICE_PORT -o $NAME_IOR $PERSISTENCE_OPTS $ORBOPTS &
+  $ACE_ROOT/TAO/orbsvcs/Naming_Service/tao_cosnaming -ORBEndpoint iiop://$HOST:$NAMING_SERVICE_PORT -o $NAME_IOR $PERSISTENCE_OPTS $ORBOPTS &
 
   NAMING_SERVICE_PID=$!
   echo $NAMING_SERVICE_PID  > $NAMING_SERVICE_PIDFILE
