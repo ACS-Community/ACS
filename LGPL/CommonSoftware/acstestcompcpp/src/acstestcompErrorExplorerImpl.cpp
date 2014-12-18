@@ -27,7 +27,6 @@
 
 #include <acstestcompErrorExplorerImpl.h>
 
-ACE_RCSID(acstestcomp, acstestcompErrorExplorerImpl, "$Id: acstestcompErrorExplorerImpl.cpp,v 1.2 2008/10/01 05:33:43 cparedes Exp $")
 
 using namespace baci;
 
