@@ -60,7 +60,6 @@
 #include <ACSErrTypeCommon.h>
 #include <acsutilTimeStamp.h>
 
-ACE_RCSID(corbaRefPersistenceTest, cppClient, "$Id: cppClient.cpp,v 1.1 2008/06/19 19:15:45 agrimstrup Exp $")
 using namespace maci;
 
 typedef std::map<std::string,CorbaRefTest::HelloWorld_ptr> CompMap;

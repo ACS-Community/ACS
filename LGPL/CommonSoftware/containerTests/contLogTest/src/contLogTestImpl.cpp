@@ -36,7 +36,6 @@
 #include "loggingGetLogger.h"
 #include <iostream>
 
-ACE_RCSID(contLogTest, contLogTestImpl, "$Id: contLogTestImpl.cpp,v 1.15 2008/11/19 15:23:24 eallaert Exp $")
 
 /* ----------------------------------------------------------------*/
 TestLogLevelsComp::TestLogLevelsComp( 
