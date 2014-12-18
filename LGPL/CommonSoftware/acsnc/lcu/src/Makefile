@@ -94,10 +94,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	 do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_links clean_all 
+clean :  clean_all 
 	$(RM) ../idl/acsnc.idl
 	@echo " . . . clean done"
 
