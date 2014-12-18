@@ -25,9 +25,9 @@
 ## DEFINITIONS
 ##################################################################
 ifeq ($(platform),Cygwin)
-IDL_EXTENSIONS+=C.h C.cpp S.cpp C.inl S.h S.inl StubsExport.h
+IDL_EXTENSIONS+=C.h C.cpp S.cpp C.inl S.h StubsExport.h
 else
-IDL_EXTENSIONS+=C.h C.cpp S.cpp C.inl S.h S.inl
+IDL_EXTENSIONS+=C.h C.cpp S.cpp C.inl S.h
 endif
 CASTOR:= alma.tools.entitybuilder.CastorBuilder
 OMNI_IDL=omniidl
