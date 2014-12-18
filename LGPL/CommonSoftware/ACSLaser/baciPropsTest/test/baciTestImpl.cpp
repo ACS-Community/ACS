@@ -32,7 +32,6 @@
 #include <baciTestImpl.h>
 #include <testComponentC.h>
 
-ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.11 2009/10/13 10:27:19 acaproni Exp $")
 
 using namespace baci;
 
