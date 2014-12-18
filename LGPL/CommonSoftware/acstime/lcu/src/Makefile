@@ -106,7 +106,7 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	 do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all
