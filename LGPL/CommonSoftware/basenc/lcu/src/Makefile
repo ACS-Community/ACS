@@ -166,10 +166,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_links clean_all 
+clean : clean_all 
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
