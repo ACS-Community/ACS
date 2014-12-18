@@ -18,12 +18,12 @@ AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::~BulkDataD
     Sender_Map_Entry *entry = 0;
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{	
-	(entry->int_id_).second()->disconnectPeer();
-	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	(entry->int_id_).second/*()*/->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second/*()*/;
 	if (locSender_p != 0)
 	    delete locSender_p;
 
-	CORBA::release((entry->int_id_).first().receiver);
+	CORBA::release((entry->int_id_).first/*()*/.receiver);
 	}
 
     if(distributerNotifCb_p)
@@ -81,8 +81,8 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	rd.receiver = bulkdata::BulkDataReceiver::_duplicate(receiver_p);
 	rd.mutex = new ACE_RW_Thread_Mutex();
 
-	pair.first(rd);
-	pair.second(sender_p);
+	pair.first=rd;
+	pair.second=sender_p;
 
 	senderMap_m.bind(receiverName,pair);	
 
@@ -136,10 +136,10 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	else
 	    {
 	    int r;
-	    ACS_Write_Guard<ACE_RW_Thread_Mutex> g(*(pair.first().mutex), r); // the mutex should be requred with timeout, but it is not supported for RW mutexes
+	    ACS_Write_Guard<ACE_RW_Thread_Mutex> g(*(pair.first/*()*/.mutex), r); // the mutex should be requred with timeout, but it is not supported for RW mutexes
 	    recvStatusMap_m.unbind(receiverName);
 	    senderMap_m.unbind(receiverName);
-	    locSender_p = pair.second();
+	    locSender_p = pair.second/*()*/;
 	    g.release();
 	    g.take_ownership(); //we give mutex dor the guard - not the nicest way, but in this way we delete the mutex
 	    // when the guard is deleted
@@ -212,7 +212,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 		receiver->closeReceiver();
 		delete locSender_p;
 
-		CORBA::release(pair.first().receiver);
+		CORBA::release(pair.first/*()*/.receiver);
 
 		}
 	    catch(ACSErr::ACSbaseExImpl &ex)
@@ -282,7 +282,7 @@ bool AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::isRec
     if (senderMap_m.find(receiverName,pair) == 0)
 	{
 	CORBA::Boolean avail = false;
-	std::vector<std::string> flowNamesVec = pair.second()->getFlowNames();
+	std::vector<std::string> flowNamesVec = pair.second/*()*/->getFlowNames();
 	for(CORBA::ULong i = 0; i < flowNamesVec.size(); i++)
 	    {
 	    avail = getFlowReceiverStatus(receiverName, i+1);
@@ -312,15 +312,15 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 	{
 	for (;iterator.next (entry) !=  0;iterator.advance ())
 	    {
-	    int r;// = (entry->int_id_).first().mutex->tryacquire();
-	    AcsBulkdata::ACS_Read_Guard<ACE_RW_Thread_Mutex> g(*((entry->int_id_).first().mutex), r);
+	    int r;// = (entry->int_id_).first/*()*/.mutex->tryacquire();
+	    AcsBulkdata::ACS_Read_Guard<ACE_RW_Thread_Mutex> g(*((entry->int_id_).first/*()*/.mutex), r);
 	    if (r==-1)
 		{
 		continue;
 		}     
 
             // checks if the handler referenced by handle is registered inside the ACE Reactor
-	    ACE_HANDLE handle = (entry->int_id_).second()->findHandle(flowName);
+	    ACE_HANDLE handle = (entry->int_id_).second/*()*/->findHandle(flowName);
 	    if(handle == -1)
 		{
 		continue;
@@ -328,7 +328,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 
 	    AVStreams::flowSpec locSpec(1);
 	    locSpec.length(1);
-	    locSpec[0] = CORBA::string_dup( (entry->int_id_).second()->getFlowSpec(flowName));
+	    locSpec[0] = CORBA::string_dup( (entry->int_id_).second/*()*/->getFlowSpec(flowName));
 	
 	    recvName = entry->ext_id_;
 
@@ -337,30 +337,30 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 		avail = getFlowReceiverStatus(recvName, flowNumber);
 
 	    if(avail)
-		(entry->int_id_).second()->getStreamCtrl()->start(locSpec);
+		(entry->int_id_).second/*()*/->getStreamCtrl()->start(locSpec);
 	    }
 	}
     catch(CORBA::Exception &ex)
 	{
-	ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendStart");
-	(entry->int_id_).second()->disconnectPeer();
-	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	ex._tao_print_exception("BulkDataDistributer::distSendStart");
+	(entry->int_id_).second/*()*/->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second/*()*/;
 	if (locSender_p != 0)
 	    delete locSender_p;
 
-	CORBA::release((entry->int_id_).first().receiver);
+	CORBA::release((entry->int_id_).first/*()*/.receiver);
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStart - Receiver %s removed from Distributor",recvName.c_str()));
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendStart Unknown exception"));
-	(entry->int_id_).second()->disconnectPeer();
-	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	(entry->int_id_).second/*()*/->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second/*()*/;
 	if (locSender_p != 0)
 	    delete locSender_p;
 
-	CORBA::release((entry->int_id_).first().receiver);
+	CORBA::release((entry->int_id_).first/*()*/.receiver);
 
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStart - Receiver %s removed from Distributor",recvName.c_str()));
@@ -386,7 +386,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	    {
 	    //printf("-> distSendDataHsk w m %s\n", entry->ext_id_.c_str());
 	    int r;
-	    AcsBulkdata::ACS_Read_Guard<ACE_RW_Thread_Mutex> g(*((entry->int_id_).first().mutex), r);
+	    AcsBulkdata::ACS_Read_Guard<ACE_RW_Thread_Mutex> g(*((entry->int_id_).first/*()*/.mutex), r);
 	    //printf("<- distSendDataHsk w m %s %d\n", entry->ext_id_.c_str(), r);
 	    if (r==-1)
 		{
@@ -394,14 +394,14 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 		}
 
             // checks if the handler referenced by handle is registered inside the ACE Reactor
-	    ACE_HANDLE handle = (entry->int_id_).second()->findHandle(flowName);
+	    ACE_HANDLE handle = (entry->int_id_).second/*()*/->findHandle(flowName);
 	    if(handle == -1)
 		{
 		continue;
 		}
 
 	    TAO_AV_Protocol_Object *dp_p = 0;
-	    (entry->int_id_).second()->getFlowProtocol(flowName, dp_p);
+	    (entry->int_id_).second/*()*/->getFlowProtocol(flowName, dp_p);
 
 	    recvName = entry->ext_id_;
 	    CORBA::Boolean avail = isFlowReceiverAvailable(recvName, flowNumber);
@@ -418,25 +418,25 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	}
     catch(CORBA::Exception &ex)
 	{
-	ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendDataHsk");
-	(entry->int_id_).second()->disconnectPeer();
-	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	ex._tao_print_exception("BulkDataDistributer::distSendDataHsk");
+	(entry->int_id_).second/*()*/->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second/*()*/;
 	if (locSender_p != 0)
 	    delete locSender_p;
 
-	CORBA::release((entry->int_id_).first().receiver);
+	CORBA::release((entry->int_id_).first/*()*/.receiver);
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendDataHsk - Receiver %s removed from Distributor",recvName.c_str()));
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendDataHsk Unknown exception"));
-	(entry->int_id_).second()->disconnectPeer();
-	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	(entry->int_id_).second/*()*/->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second/*()*/;
 	if (locSender_p != 0)
 	    delete locSender_p;
 
-	CORBA::release((entry->int_id_).first().receiver);
+	CORBA::release((entry->int_id_).first/*()*/.receiver);
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendDataHsk - Receiver %s removed from Distributor",recvName.c_str()));
 	}	
@@ -467,7 +467,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	    {
 	    //printf("-> distSendData w m %s\n", entry->ext_id_.c_str());
 	    int r;
-	    AcsBulkdata::ACS_Read_Guard<ACE_RW_Thread_Mutex> g(*((entry->int_id_).first().mutex), r);
+	    AcsBulkdata::ACS_Read_Guard<ACE_RW_Thread_Mutex> g(*((entry->int_id_).first/*()*/.mutex), r);
 	    //printf("<- distSendData w m %s %d\n", entry->ext_id_.c_str(), r);
 	    if (r==-1)
 		{
@@ -475,18 +475,18 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 		ACE_Thread::yield();
 		continue;
 		}
-	    //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(*(entry->int_id_).first().mutex);
+	    //ACE_Guard<ACE_Recursive_Thread_Mutex> guard(*(entry->int_id_).first/*()*/.mutex);
 	    //printf("<- w m %s\n", entry->ext_id_.c_str());
 
             // checks if the handler referenced by handle is registered inside the ACE Reactor
-	    ACE_HANDLE handle = (entry->int_id_).second()->findHandle(flowName);
+	    ACE_HANDLE handle = (entry->int_id_).second/*()*/->findHandle(flowName);
 	    if(handle == -1)
 		{
 		continue;
 		}
 
 	    TAO_AV_Protocol_Object *dp_p = 0;
-	    (entry->int_id_).second()->getFlowProtocol(flowName, dp_p);
+	    (entry->int_id_).second/*()*/->getFlowProtocol(flowName, dp_p);
 	
 	    recvName = entry->ext_id_;
 	    CORBA::Boolean avail = isFlowReceiverAvailable(recvName, flowNumber);
@@ -513,7 +513,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 		    flowsStatusMap_m.rebind(currFlowPos,FLOW_NOT_AVAILABLE);
 
 		    /*(entry->int_id_).second()->disconnectPeer();
-		      BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+		      BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second;
 		      if (locSender_p != 0)
 		      delete locSender_p;
 
@@ -529,7 +529,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	}
     catch(CORBA::Exception &ex)
 	{
-	ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendData");
+	ex._tao_print_exception("BulkDataDistributer::distSendData");
 
 	if ( recvStatusMap_m.find(recvName,currRecvNo) != 0 )
 	    {
@@ -542,7 +542,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	flowsStatusMap_m.rebind(currFlowPos,FLOW_NOT_AVAILABLE);
 
 	/*(entry->int_id_).second()->disconnectPeer();
-	  BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
 	  if (locSender_p != 0)
 	  delete locSender_p;
 
@@ -594,14 +594,14 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{    
-	int r;// = (entry->int_id_).first().mutex->tryacquire_read();
-	AcsBulkdata::ACS_Read_Guard<ACE_RW_Thread_Mutex> g(*((entry->int_id_).first().mutex), r);
+	int r;// = (entry->int_id_).first/*()*/.mutex->tryacquire_read();
+	AcsBulkdata::ACS_Read_Guard<ACE_RW_Thread_Mutex> g(*((entry->int_id_).first/*()*/.mutex), r);
 	//printf("<- distSendStopTimeout w m %s %d\n", entry->ext_id_.c_str(), r);
 	if (r==-1)
 	    continue;
 
         // checks if the handler referenced by handle is registered inside the ACE Reactor
-	ACE_HANDLE handle = (entry->int_id_).second()->findHandle(flowName);
+	ACE_HANDLE handle = (entry->int_id_).second/*()*/->findHandle(flowName);
 	if(handle == -1)
 	    {
 	    continue;
@@ -609,7 +609,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 
 	AVStreams::flowSpec locSpec(1);
 	locSpec.length(1);
-	locSpec[0] = CORBA::string_dup( (entry->int_id_).second()->getFlowSpec(flowName));
+	locSpec[0] = CORBA::string_dup( (entry->int_id_).second/*()*/->getFlowSpec(flowName));
     
 	ACE_CString recvName = entry->ext_id_;
 	CORBA::Boolean avail = isFlowReceiverAvailable(recvName, flowNumber);
@@ -617,7 +617,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 	    {	
 	    try 
 		{
-		(entry->int_id_).second()->getStreamCtrl()->stop(locSpec);
+		(entry->int_id_).second/*()*/->getStreamCtrl()->stop(locSpec);
 		}
 	    catch(CORBA::TIMEOUT & ex)
 		{
@@ -658,7 +658,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 		}
 	    catch(CORBA::Exception &ex)
 		{
-		ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendStopTimeout");
+		ex._tao_print_exception("BulkDataDistributer::distSendStopTimeout");
 
 		if ( recvStatusMap_m.find(recvName,currRecvNo) != 0 )
 		    {
@@ -720,9 +720,9 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 	for (;iterator.next (entry) !=  0;iterator.advance ())
 	    {
 	    //printf("-> distSendStop w m %s\n", entry->ext_id_.c_str());
-//		ACE_Guard<ACE_Recursive_Thread_Mutex> guard(*(entry->int_id_).first().mutex);
-	    int r;// = (entry->int_id_).first().mutex->tryacquire_read();
-	    AcsBulkdata::ACS_Read_Guard<ACE_RW_Thread_Mutex> g(*((entry->int_id_).first().mutex), r);
+//		ACE_Guard<ACE_Recursive_Thread_Mutex> guard(*(entry->int_id_).first/*()*/.mutex);
+	    int r;// = (entry->int_id_).first/*()*/.mutex->tryacquire_read();
+	    AcsBulkdata::ACS_Read_Guard<ACE_RW_Thread_Mutex> g(*((entry->int_id_).first/*()*/.mutex), r);
 	    //printf("<- distSendStop w m %s %d\n", entry->ext_id_.c_str(), r);
 	    if (r==-1)
 		{
@@ -730,7 +730,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 		}
 
             // checks if the handler referenced by handle is registered inside the ACE Reactor
-	    ACE_HANDLE handle = (entry->int_id_).second()->findHandle(flowName);
+	    ACE_HANDLE handle = (entry->int_id_).second/*()*/->findHandle(flowName);
 	    if(handle == -1)
 		{
 		continue;
@@ -742,32 +742,32 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 		{
 		AVStreams::flowSpec locSpec(1);
 		locSpec.length(1);
-		locSpec[0] = CORBA::string_dup( (entry->int_id_).second()->getFlowSpec(flowName));
-		(entry->int_id_).second()->getStreamCtrl()->stop(locSpec);
+		locSpec[0] = CORBA::string_dup( (entry->int_id_).second/*()*/->getFlowSpec(flowName));
+		(entry->int_id_).second/*()*/->getStreamCtrl()->stop(locSpec);
 		}
 	    }
 	}
     catch(CORBA::Exception &ex)
 	{
-	ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendStop");
-	(entry->int_id_).second()->disconnectPeer();
-	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	ex._tao_print_exception("BulkDataDistributer::distSendStop");
+	(entry->int_id_).second/*()*/->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second/*()*/;
 	if (locSender_p != 0)
 	    delete locSender_p;
 
-	CORBA::release((entry->int_id_).first().receiver);
+	CORBA::release((entry->int_id_).first/*()*/.receiver);
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStop - Receiver %s removed from Distributor",recvName.c_str()));
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSenStop Unknown exception"));
-	(entry->int_id_).second()->disconnectPeer();
-	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	(entry->int_id_).second/*()*/->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second/*()*/;
 	if (locSender_p != 0)
 	    delete locSender_p;
 
-	CORBA::release((entry->int_id_).first().receiver);
+	CORBA::release((entry->int_id_).first/*()*/.receiver);
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStop - Receiver %s removed from Distributor",recvName.c_str()));
 	}	
@@ -882,7 +882,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::subsc
 	Sender_Map_Entry *entry = 0;
 	for (;iterator.next (entry) !=  0;iterator.advance ())
 	    {
-	    ((entry->int_id_).first().receiver)->subscribeNotification(cb.in());
+	    ((entry->int_id_).first/*()*/.receiver)->subscribeNotification(cb.in());
 	    }
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
