@@ -27,7 +27,6 @@
 
 #include "baciBACIAction.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIAction.cpp,v 1.1 2005/01/18 00:29:45 dfugate Exp $");
 
 
 /*___oOo___*/

@@ -32,7 +32,6 @@
 
 #include "acsutilTempFile.h"
 
-ACE_RCSID(baci, baciRecovery, "$Id: baciRecovery.cpp,v 1.97 2011/09/02 11:38:54 bjeram Exp $")
 
  using namespace recovery;
 namespace baci {

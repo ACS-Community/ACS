@@ -30,7 +30,6 @@
 #include "baciError.h"
 #include "logging.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.24 2011/03/30 17:57:23 tstaig Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
