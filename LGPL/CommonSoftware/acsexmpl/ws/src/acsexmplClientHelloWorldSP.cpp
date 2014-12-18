@@ -102,7 +102,6 @@ This example shows a client that:
 #include <ACSErrTypeCommon.h>
 #include <acsutilTimeStamp.h>
 
-ACE_RCSID(acsexmpl, acsexmplHelloWorldClient, "$Id: acsexmplClientHelloWorldSP.cpp,v 1.1 2007/03/06 08:47:50 agrimstrup Exp $")
 using namespace maci;
 
 /*******************************************************************************/

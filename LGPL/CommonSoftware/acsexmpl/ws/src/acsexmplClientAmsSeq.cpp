@@ -103,7 +103,6 @@ This example shows a client that:
 #include <string>
 
 
-ACE_RCSID(acsexmpl, acsexmplAmsSeqClient, "$Id: acsexmplClientAmsSeq.cpp,v 1.9 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
 
 

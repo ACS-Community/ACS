@@ -30,7 +30,6 @@
 
 #include <acsexmplCalendarImpl.h>
 
-ACE_RCSID(acsxmpl, acsexmplCalendarImpl, "$Id: acsexmplCalendarImpl.cpp,v 1.100 2008/10/01 04:30:47 cparedes Exp $")
 
 using namespace baci;
 
