@@ -158,6 +158,6 @@ public class LogListener implements
 	 *
 	 */
 	public void disconnet() {
-		engine.disconnect();
+		engine.close(true);
 	}
 }
