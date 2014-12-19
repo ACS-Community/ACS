@@ -127,10 +127,12 @@ module jconttest
 			Enum1 myenum1;
 		};
 		
+		typedef sequence < Struct1 > Struct1Seq;
+		
 		struct Struct2
 		{
 			Struct1 mystruct1;
-			sequence < Struct1 > seqOfStruct1;
+			Struct1Seq seqOfStruct1;
 		};
 		
 		Struct1 methodWithReturnData(in string instring, in Struct1 instruct1,
