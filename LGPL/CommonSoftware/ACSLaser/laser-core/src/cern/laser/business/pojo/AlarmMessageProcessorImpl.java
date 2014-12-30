@@ -17,6 +17,7 @@ import javax.jms.Message;
 import javax.jms.TextMessage;
 
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
+import alma.alarmsystem.statistics.StatsCalculator;
 import cern.laser.business.cache.AlarmCacheException;
 import cern.laser.business.dao.SourceDAO;
 import cern.laser.business.data.Alarm;
@@ -158,19 +159,28 @@ public class AlarmMessageProcessorImpl {
   private final Timer timer = new Timer("AlarmMessageProcessorTimer",true);
   
   /**
+   * The engine to calculate statistics
+   */
+  private final StatsCalculator statisticsEngine;
+  
+  /**
    * Constructor
    * 
    * @param component The {@link LaserComponent}
    */
-  public AlarmMessageProcessorImpl(LaserComponent component,Logger logger) {
+  public AlarmMessageProcessorImpl(LaserComponent component,Logger logger, StatsCalculator statsCalculator) {
 	  if (component==null) {
 		  throw new IllegalArgumentException("The LaserComponent can't be null");
 	  }
 	  if (logger==null) {
 		  throw new IllegalArgumentException("The logger can't be null");
 	  }
+	  if (statsCalculator==null) {
+		  throw new IllegalArgumentException("The StatsCalculator can't be null");
+	  }
 	  laserComponent=component;
 	  this.logger=logger;
+	  this.statisticsEngine=statsCalculator;
   }
   
   //
@@ -249,8 +259,8 @@ public class AlarmMessageProcessorImpl {
 	try {
 		logger.log(AcsLogLevel.DEBUG,"processing fault state: " + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
 	    Timestamp system_timestamp = new Timestamp(System.currentTimeMillis());
-	    Alarm alarm = alarmCache.getCopy(Triplet.toIdentifier(faultState.getFamily(), faultState.getMember(), new Integer(
-	        faultState.getCode())));
+	    Alarm alarm = alarmCache.getCopy(
+	    		Triplet.toIdentifier(faultState.getFamily(), faultState.getMember(), Integer.valueOf(faultState.getCode())));
 	    
 	    // process the change
 	    String defined_source_name = alarm.getSource().getName();
@@ -497,14 +507,17 @@ public class AlarmMessageProcessorImpl {
       active_identifiers.add(((Alarm) active_alarms_iterator.next()).getAlarmId());
     }
     
-    Collection backup_fault_states = ASIMessageHelper.unmarshal(asiMessage);
+    Collection<FaultState> backup_fault_states = ASIMessageHelper.unmarshal(asiMessage);
     logger.log(AcsLogLevel.DEBUG,"processing " + backup_fault_states.size() + " backup alarms");
-    Set backup_identifiers = new HashSet();
-    Iterator backup_fault_states_iterator = backup_fault_states.iterator();
-    while (backup_fault_states_iterator.hasNext()) {
-      FaultState fault_state = (FaultState) backup_fault_states_iterator.next();
-      backup_identifiers.add(Triplet.toIdentifier(fault_state.getFamily(), fault_state.getMember(), new Integer(
-          fault_state.getCode())));
+    Set<String> backup_identifiers = new HashSet<String>();
+    for (FaultState fault_state: backup_fault_states) {
+    	// Before notify the statistics that a alarm is going to be processed
+    	String alarmID=Triplet.toIdentifier(
+    			fault_state.getFamily(), 
+        		fault_state.getMember(), 
+        		Integer.valueOf(fault_state.getCode()));
+    	statisticsEngine.processedFS(alarmID, fault_state.getDescriptor().equals(FaultState.ACTIVE));
+    	backup_identifiers.add(alarmID);
     }
     logger.log(AcsLogLevel.DEBUG,asiMessage.getSourceName() + " : " + active_identifiers.size() + " active alarms found, received "
         + backup_identifiers.size());
@@ -524,9 +537,7 @@ public class AlarmMessageProcessorImpl {
       if (!backup_identifiers.isEmpty()) {
     	  logger.log(AcsLogLevel.WARNING,backup_identifiers.size() + " backup alarms are not active");
     	  logger.log(AcsLogLevel.DEBUG,"active by backup :\n" + backup_identifiers);
-        backup_fault_states_iterator = backup_fault_states.iterator();
-        while (backup_fault_states_iterator.hasNext()) {
-          FaultState fault_state = (FaultState) backup_fault_states_iterator.next();
+        for (FaultState fault_state: backup_fault_states) {
           if (backup_identifiers.contains(Triplet.toIdentifier(fault_state.getFamily(), fault_state.getMember(),
               new Integer(fault_state.getCode())))) {
             fault_state.setDescriptor(FaultState.ACTIVE);
@@ -575,17 +586,21 @@ public class AlarmMessageProcessorImpl {
     String source_hostname = asiMessage.getSourceHostname();
     String source_timestamp = asiMessage.getSourceTimestamp();
     logger.log(AcsLogLevel.DEBUG,"processing changes from " + source_name + "@" + source_hostname + " [" + source_timestamp + "]");
-    Collection change_fault_states = ASIMessageHelper.unmarshal(asiMessage);
+    Collection<FaultState> change_fault_states = ASIMessageHelper.unmarshal(asiMessage);
 
     logger.log(AcsLogLevel.DEBUG,"processing " + change_fault_states.size() + " changes");
-    Iterator iterator = change_fault_states.iterator();
-    while (iterator.hasNext()) {
-      FaultState fault_state = (FaultState) iterator.next();
+    for (FaultState fault_state: change_fault_states) {
       try {
-    	  Timestamp timestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(source_timestamp).getTime());
-    	  processChange(fault_state, source_name, source_hostname, timestamp);
-      } catch (Exception e) {
-    	  logger.log(AcsLogLevel.ERROR,"exception caught processing fault state : \n" + fault_state, e);
+    	// Notify the statistics that a alarm is going to be processed
+    	String alarmID=Triplet.toIdentifier(
+    		fault_state.getFamily(), 
+    		fault_state.getMember(), 
+    		Integer.valueOf(fault_state.getCode()));
+    	statisticsEngine.processedFS(alarmID, fault_state.getDescriptor().equals(FaultState.ACTIVE));
+    	Timestamp timestamp = new Timestamp(IsoDateFormat.parseIsoTimestamp(source_timestamp).getTime());
+    	processChange(fault_state, source_name, source_hostname, timestamp);
+      } catch (Throwable t) {
+    	  logger.log(AcsLogLevel.ERROR,"exception caught processing fault state : \n" + fault_state, t);
       }
     }
     logger.log(AcsLogLevel.DEBUG,"changes processed");

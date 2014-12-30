@@ -137,7 +137,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 	 */
 	public class LaserComponentTerminator implements Runnable {
 		public void run() {
-			statistcsCalculator.shutdown();
+			statisticsCalculator.shutdown();
 			sourcesListener.shutdown();
 			alarmCacheListener.close();
 			alarmCacheListener=null;
@@ -221,7 +221,10 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 	 */
 	private volatile boolean closed=false;
 	
-	private StatsCalculator statistcsCalculator; 
+	/**
+	 * The engine to provide statistics
+	 */
+	private StatsCalculator statisticsCalculator; 
 	
 	/**
 	 * Constructor
@@ -241,9 +244,6 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 
 	public void initialize() {
 		this.logger=corbaServer.getLogger();
-		
-		statistcsCalculator = new StatsCalculator(this.logger);
-		statistcsCalculator.start();
 		
 		defaultTopicConnectionFactory = new ACSJMSTopicConnectionFactory(alSysContSvcs);
 
@@ -267,17 +267,16 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 					.setMessageListener(new MessageListener() {
 						public void onMessage(Message message) {
 							if (message instanceof TextMessage) {
-								try {
-									logger.log(AcsLogLevel.DEBUG,"Received a JMS message");
-								} catch(Throwable t) {}
+								logger.log(AcsLogLevel.DEBUG,"Received a JMS message");
 							} else {
-								logger.log(AcsLogLevel.DEBUG,"Received a non text JMS message");
+								logger.log(AcsLogLevel.WARNING,"Received a non text JMS message");
 							}
 							try {
 								alarmMessageProcessor.process(message);
-							} catch (Exception e) {
-								logger.log(AcsLogLevel.WARNING," *** Exception processing a message:"+e.getMessage());
-								// XXX what to do???
+							} catch (Throwable t) {
+								logger.log(AcsLogLevel.ERROR,"Exception processing a message: "+t.getMessage(),t);
+								// There is nothing to do at this level: log the exception
+								// and be ready to process the next message
 							}
 						}
 					});
@@ -332,7 +331,9 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 		adminUserDefinitionService = new AdminUserDefinitionServiceImpl();
 		alarmCacheServer = new AlarmCacheServerImpl(logger);
 		alarmDefinitionService = new AlarmDefinitionServiceImpl();
-		alarmMessageProcessor = new AlarmMessageProcessorImpl(this,logger);
+		sourcesListener = new AlarmSourcesListenerCached(alSysContSvcs,logger,this);
+		statisticsCalculator = new StatsCalculator(this.logger,sourcesListener);
+		alarmMessageProcessor = new AlarmMessageProcessorImpl(this,logger,statisticsCalculator);
 		alarmPublisher = new AlarmPublisherImpl(logger);
 		alarmSourceMonitor = new AlarmSourceMonitorImpl();
 		categoryDefinitionService = new CategoryDefinitionServiceImpl();
@@ -342,6 +343,8 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 		sourceDefinitionService = new SourceDefinitionServiceImpl();
 		alarmCacheListener = new AlarmCacheListenerImpl(alarmCacheServer);
 		alarmCache = new ACSAlarmCacheImpl(alarmDAO, categoryDAO,alarmCacheListener,logger);
+		
+		statisticsCalculator.start();
 		
 		alarmDAO.setSurveillanceAlarmId("SURVEILLANCE:SOURCE:1");
 		alarmDAO.setResponsiblePersonDAO(responsiblePersonDAO);
@@ -411,9 +414,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 
 		alarmDAO.setAlarmProcessor(alarmMessageProcessor);
 		
-		// Subscribe to all the source NCs
-		sourcesListener = new AlarmSourcesListenerCached(alSysContSvcs,logger,this);
-		sourcesListener.start();
+		// Subscribe the source listener to all the source NCs
 		try {
 			sourcesListener.connectSources(sourceDAO.getAllSourceIDs());
 			logger.log(AcsLogLevel.DEBUG,"Successfully connected to sources NCs"); 
@@ -423,6 +424,9 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 			logger.log(AcsLogLevel.WARNING,"Error setting the source listener",t);
 			coreAlarms.add(LaserCoreFaultCodes.SOURCE_LISTENER);
 		}
+		sourcesListener.start();
+		
+		
 	}
 	
 	/**
@@ -518,11 +522,13 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 	@Override
 	public synchronized void onMessage(String message) {
 		try {
+			// Notify the reception to generate statistics
+			statisticsCalculator.msgFromSourceNCReceived();
 			alarmMessageProcessor.process(message);
-		} catch (Exception e) {
-			// XXX what to do???
-			logger.log(AcsLogLevel.ERROR," *** Exception processing a message:"+e.getMessage(),e);
-			e.printStackTrace();
+		} catch (Throwable t) {
+			// There is nothing to do at this level: log the exception
+			// and be ready to process the next message
+			logger.log(AcsLogLevel.ERROR,"Exception processing a message: "+t.getMessage(),t);
 		}
 	}
 
