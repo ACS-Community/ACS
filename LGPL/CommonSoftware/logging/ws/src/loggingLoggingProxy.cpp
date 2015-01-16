@@ -1053,33 +1053,42 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   logThrottle = new ::logging::LogThrottle(maxLogsPerSecond);
   
   if (CORBA::is_nil(m_logger.ptr()))
+  {
 	  m_noLogger = true;
+  }
 
   if (!tss)
+  {
       tss = new ACE_TSS<LoggingTSSStorage>;
+  }
   instances++;
 
   char *acsSTDIO = getenv("ACS_LOG_STDOUT");
   if (acsSTDIO && *acsSTDIO)
-    {
-      m_envStdioPriority = atoi(acsSTDIO);
-    }
+  {
+	  m_envStdioPriority = atoi(acsSTDIO);
+  }
 
   char *acsSyslog = getenv("ACS_LOG_SYSLOG");
   if (acsSyslog && *acsSyslog)
+  {
       m_syslog = acsSyslog;
+  }
 
   m_logBin = false;
   char *acsLogType = getenv("ACS_LOG_BIN");
-  if (acsLogType && *acsLogType){
-    if(strcmp("true", acsLogType) == 0)
-        m_logBin = true;
+  if (acsLogType && *acsLogType)
+  {
+	  if(strcmp("true", acsLogType) == 0)
+	  {
+		  m_logBin = true;
+	  }
   }
   char *acsCentralizeLogger = getenv("ACS_LOG_CENTRAL");
   if (acsCentralizeLogger && *acsCentralizeLogger)
-    {
-      m_envCentralizePriority = atoi(acsCentralizeLogger);
-    }
+  {
+	  m_envCentralizePriority = atoi(acsCentralizeLogger);
+  }
 
   oldLog = ACE_OS::getenv("LOG_SERVICE_USE_EXTENSIONS");
   /*if (oldLog!= NULL){
@@ -1096,16 +1105,18 @@ LoggingProxy::~LoggingProxy()
 
   instances--;
   if (tss && !instances)
-      {
+  {
       delete tss;
       tss = 0;
-      }
+  }
 
   // signal work thread to exit
   m_shutdown = true;
   m_doWorkCond.signal();
   if (m_threadCreated)
+  {
     m_threadShutdown.wait();
+  }
 
   delete logThrottle;
 }
@@ -1177,54 +1188,54 @@ LoggingProxy::reconnectToLogger()
     // reconnect only if m_logger once had reference
     if (!CORBA::is_nil(m_logger.ptr()))
     {
-	ACE_Time_Value dt = ACE_OS::gettimeofday();
-	dt-=m_disconnectionTime;
-	if (dt.sec() >= m_minReconnectionTime)
-	{
-
-	    // update reference
-	    if (m_namingContext.ptr()!=CosNaming::NamingContext::_nil())
-	    {
-
-	    try
+    	ACE_Time_Value dt = ACE_OS::gettimeofday();
+    	dt-=m_disconnectionTime;
+    	if (dt.sec() >= m_minReconnectionTime)
 		{
 
-		    CosNaming::Name name;
-		    name.length(1);
-		    name[0].id = CORBA::string_dup(LOG_NAME);
-		    //name[0].kind = ;
-
-		    CORBA::Object_var obj = m_namingContext->resolve(name);
-
-
-		    if (!CORBA::is_nil(obj.in()))
-		    {
-			Logging::AcsLogService_var logger = Logging::AcsLogService::_narrow(obj.in());
-
-
-			if (!CORBA::is_nil(logger.ptr()))
+			// update reference
+			if (m_namingContext.ptr()!=CosNaming::NamingContext::_nil())
 			{
-			    m_logger = logger;
-			    // retry
-			    m_noLogger = false;
 
+				try
+				{
+
+					CosNaming::Name name;
+					name.length(1);
+					name[0].id = CORBA::string_dup(LOG_NAME);
+					//name[0].kind = ;
+
+					CORBA::Object_var obj = m_namingContext->resolve(name);
+
+
+					if (!CORBA::is_nil(obj.in()))
+					{
+						Logging::AcsLogService_var logger = Logging::AcsLogService::_narrow(obj.in());
+
+
+						if (!CORBA::is_nil(logger.ptr()))
+						{
+							m_logger = logger;
+							// retry
+							m_noLogger = false;
+
+						}
+					}
+
+				}
+				catch(...)
+				{
+					// No-op.
+				}
 			}
-		    }
 
+			// retry anyway
+			//m_noLogger = false;
+
+			m_disconnectionTime = ACE_OS::gettimeofday();
+
+			return !m_noLogger;
 		}
-	    catch(...)
-		{
-		    // No-op.
-		}
-	    }
-
-	    // retry anyway
-	    //m_noLogger = false;
-
-	    m_disconnectionTime = ACE_OS::gettimeofday();
-
-	    return !m_noLogger;
-	}
     }
 
     // failed
@@ -1268,23 +1279,23 @@ LoggingProxy::sendCache()
 {
     if (!m_threadCreated)
 	{
-	  // start one worker thread
-	  // note this method is called when under m_mutex lock, so this is safe
+    	// start one worker thread
+	    // note this method is called when under m_mutex lock, so this is safe
 #ifndef MAKE_VXWORKS
-	  if (ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(LoggingProxy::worker), this) != -1)
+	    if (ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(LoggingProxy::worker), this, THR_NEW_LWP|THR_DETACHED) != -1)
 #else
-	  if (ACE_Thread::spawn((ACE_THR_FUNC)(LoggingProxy::worker), this) != -1)
+	    if (ACE_Thread::spawn((ACE_THR_FUNC)(LoggingProxy::worker), this, THR_NEW_LWP|THR_DETACHED) != -1)
 #endif
-	  {
-	  	m_threadCreated = true;
-  	    //m_threadStart.wait();
-	  }
-	  else
-	  {
-	  	// not thread available, do it in current thread
-	  	sendCacheInternal();
-	    return;
-	  }
+	    {
+	    	m_threadCreated = true;
+	    	//m_threadStart.wait();
+	    }
+	    else
+	    {
+	    	// not thread available, do it in current thread
+	    	sendCacheInternal();
+	    	return;
+	    }
 	}
 
 	// signal work thread to get working...
@@ -1297,171 +1308,208 @@ LoggingProxy::sendCacheInternal()
 {
 	// TBD: I think that we do not need m_sendingPending anymore, because thee is just one thread that sends.
 	if (m_sendingPending)
+	{
 		return;
+	}
 
     ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex);
 
  	// nothing to send check
 	if (instances == 0)
+	{
 		return;
-    if(!m_logBin && m_cache.size() == 0) return;
-    if(m_logBin && m_bin_cache.size() == 0) return;
+	}
+
+    if(!m_logBin && m_cache.size() == 0)
+	{
+    	return;
+	}
+    if(m_logBin && m_bin_cache.size() == 0)
+	{
+    	return;
+	}
 
     // no centralized logger => output to other logging end-point
     if (m_noLogger && (reconnectToLogger()==false))
 	{
-	ACE_TCHAR timestamp[24];
-	formatISO8601inUTC(ACE_OS::gettimeofday(), timestamp);
+		ACE_TCHAR timestamp[24];
+		formatISO8601inUTC(ACE_OS::gettimeofday(), timestamp);
 
-	CacheLogger * logger = 0;
-	ACE_CString key;
+		CacheLogger * logger = 0;
+		ACE_CString key;
 
-	// use syslog
-	if (m_syslog.length()>0)
+		// use syslog
+		if (m_syslog.length()>0)
 	    {
-	    int facility = -1;
-	    ACE_CString host;
+			int facility = -1;
+			ACE_CString host;
 
-	    // parse m_syslog variable
-	    // format: [<facility>@]<host>
+			// parse m_syslog variable
+			// format: [<facility>@]<host>
 
-	    int pos = m_syslog.find("@");
-	    // no facility specified, take default
-	    if (pos==(int)ACE_CString::npos)
-		host = m_syslog;
-	    else
-		{
-		host = m_syslog.substr(pos+1);
-
-		ACE_CString fac = m_syslog.substr(0, pos);
-
-		if (fac.length()>0)
-		    if (isdigit(fac[0]))
+			int pos = m_syslog.find("@");
+			// no facility specified, take default
+			if (pos==(int)ACE_CString::npos)
 			{
-			// extract facility number
-			sscanf(fac.c_str(), "%d", &facility);
+				host = m_syslog;
 			}
-		// parse 'facility string'
-		    else
-			{
-			int n = 1;
-			for (; RemoteSyslogLogger::m_facilityNames[n].value != -1; n++)
-			    if (ACE_OS::strcmp(RemoteSyslogLogger::m_facilityNames[n].name, fac.c_str())==0)
-				{ facility = RemoteSyslogLogger::m_facilityNames[n].value; break; }
-
-			if (facility==-1)
-			    ACE_OS::printf ("%s LoggingProxy: Invalid syslog facility name '%s'. Using defaults.\n",
-					    timestamp, fac.c_str());
-			}
-		}
-
-
-#ifdef ACS_HAS_LOCAL_SYSLOG_CALLS
-	    if (ACE_OS::strcmp(host.c_str(), "localhost")==0)
-		{
-		if (facility!=-1)
-		    logger = new LocalSyslogLogger(facility);  // set facility
-		else
-		    logger = new LocalSyslogLogger();          // default facility
-
-		// add pid to syslog ident (process name)
-		// watch if LoggingProxy::ProcessName() is unitialized and is 0
-		const char * processName = "unknown";
-		if (LoggingProxy::ProcessName())
-		    processName = LoggingProxy::ProcessName();
-
-		ACE_TCHAR buf[200];
-		ACE_OS::sprintf(buf, "%s(%lu)", processName, (unsigned long)ACE_OS::getpid());
-		key = buf;
-		}
-
-#endif
-        if (!logger)
-		{
-		if (facility!=-1)
-		    logger = new RemoteSyslogLogger(facility);  // set facility
-		else
-		    logger = new RemoteSyslogLogger();          // default facility
-		key = host;
-		}
-
-	    }
-	// use local file
-	else
-	{
-		if(m_filename.length() == 0)
-		{
-			// set logger filename and eventually creates missing directories
-			m_filename = getTempFileNameAndCreateMissingDirs(timestamp);
-		}
-		if(m_filename.length() == 0)
-		{
-			ACE_OS::printf ("%s Failed to save logging cache. Cache is lost!\n", timestamp);
-		}
-		if ((ACE_OS::strcmp(m_filename.c_str(), "/dev/null")==0) || (m_filename.length() == 0))
-		{
-			if (!m_logBin)
-				m_cache.clear();
 			else
-				m_bin_cache.clear();
-			return;
-		}
-		logger = new LocalFileLogger();
-		key = m_filename.c_str();
-	}
-
-	//
-	// log cache here
-	//
-
-	if (logger && (CORBA::is_nil(m_logger.ptr())))
-	{
-		if(logNonCentralizedLoggerCache(logger,key, timestamp)!= 0)
-		{
-			if (m_syslog.length()<=0)
 			{
-				// It looks like the directory was removed or the permissions changed
-				// Retry to create the directory and save the logs immediately
-				ACE_OS::printf ("%s %s logger: Failed to save logging cache in %s! (Directory removed or permissions changed?)\n", timestamp, logger->getIdentification(),key.c_str());
-				m_filename = getTempFileNameAndCreateMissingDirs(timestamp);
-				if (m_filename.length() != 0)
+				host = m_syslog.substr(pos+1);
+
+				ACE_CString fac = m_syslog.substr(0, pos);
+
+				if (fac.length()>0)
 				{
-					m_alreadyInformed=false;
-					if(logNonCentralizedLoggerCache(logger,m_filename, timestamp)!= 0)
+					if (isdigit(fac[0]))
 					{
-						ACE_OS::printf ("%s %s logger: Failed to save logging cache. Cache is lost!\n", timestamp, logger->getIdentification());
+						// extract facility number
+						sscanf(fac.c_str(), "%d", &facility);
 					}
+					// parse 'facility string'
 					else
 					{
-						return;
+						int n = 1;
+						for (; RemoteSyslogLogger::m_facilityNames[n].value != -1; n++)
+						{
+							if (ACE_OS::strcmp(RemoteSyslogLogger::m_facilityNames[n].name, fac.c_str())==0)
+							{
+								facility = RemoteSyslogLogger::m_facilityNames[n].value;
+								break;
+							}
+						}
+
+						if (facility==-1)
+						{
+							ACE_OS::printf ("%s LoggingProxy: Invalid syslog facility name '%s'. Using defaults.\n",
+									timestamp, fac.c_str());
+						}
 					}
 				}
 			}
-			else
+
+
+#ifdef ACS_HAS_LOCAL_SYSLOG_CALLS
+			if (ACE_OS::strcmp(host.c_str(), "localhost")==0)
 			{
-				ACE_OS::printf ("%s %s logger: Failed to save logging cache. Cache is lost!\n", timestamp, logger->getIdentification());
+				if (facility!=-1)
+				{
+					logger = new LocalSyslogLogger(facility);  // set facility
+				}
+				else
+				{
+					logger = new LocalSyslogLogger();          // default facility
+				}
+
+				// add pid to syslog ident (process name)
+				// watch if LoggingProxy::ProcessName() is unitialized and is 0
+				const char * processName = "unknown";
+				if (LoggingProxy::ProcessName())
+				{
+					processName = LoggingProxy::ProcessName();
+				}
+
+				ACE_TCHAR buf[200];
+				ACE_OS::sprintf(buf, "%s(%lu)", processName, (unsigned long)ACE_OS::getpid());
+				key = buf;
 			}
-			if (!m_logBin)
-				m_cache.clear();
-			else
-				m_bin_cache.clear();
-			delete logger;
-			return;
-		} // if(logNonCentralizedLoggerCache(logger,key, timestamp)!= 0)
+#endif
+			if (!logger)
+			{
+				if (facility!=-1)
+					logger = new RemoteSyslogLogger(facility);  // set facility
+				else
+					logger = new RemoteSyslogLogger();          // default facility
+				key = host;
+			}
+
+	    }
+		// use local file
 		else
 		{
-			return;
+			if(m_filename.length() == 0)
+			{
+				// set logger filename and eventually creates missing directories
+				m_filename = getTempFileNameAndCreateMissingDirs(timestamp);
+			}
+			if(m_filename.length() == 0)
+			{
+				ACE_OS::printf ("%s Failed to save logging cache. Cache is lost!\n", timestamp);
+			}
+			if ((ACE_OS::strcmp(m_filename.c_str(), "/dev/null")==0) || (m_filename.length() == 0))
+			{
+				if (!m_logBin)
+				{
+					m_cache.clear();
+				}
+				else
+				{
+					m_bin_cache.clear();
+				}
+				return;
+			}
+			logger = new LocalFileLogger();
+			key = m_filename.c_str();
 		}
+
+		//
+		// log cache here
+		//
+
+		if (logger && (CORBA::is_nil(m_logger.ptr())))
+		{
+			if(logNonCentralizedLoggerCache(logger,key, timestamp)!= 0)
+			{
+				if (m_syslog.length()<=0)
+				{
+					// It looks like the directory was removed or the permissions changed
+					// Retry to create the directory and save the logs immediately
+					ACE_OS::printf ("%s %s logger: Failed to save logging cache in %s! (Directory removed or permissions changed?)\n", timestamp, logger->getIdentification(),key.c_str());
+					m_filename = getTempFileNameAndCreateMissingDirs(timestamp);
+					if (m_filename.length() != 0)
+					{
+						m_alreadyInformed=false;
+						if(logNonCentralizedLoggerCache(logger,m_filename, timestamp)!= 0)
+						{
+							ACE_OS::printf ("%s %s logger: Failed to save logging cache. Cache is lost!\n", timestamp, logger->getIdentification());
+						}
+						else
+						{
+							return;
+						}
+					}
+				}
+				else
+				{
+					ACE_OS::printf ("%s %s logger: Failed to save logging cache. Cache is lost!\n", timestamp, logger->getIdentification());
+				}
+
+				if (!m_logBin)
+				{
+					m_cache.clear();
+				}
+				else
+				{
+					m_bin_cache.clear();
+				}
+				delete logger;
+				return;
+			} // if(logNonCentralizedLoggerCache(logger,key, timestamp)!= 0)
+			else
+			{
+				return;
+			}
+		}
+		// should I retain cache or not?!!!
+		ACE_OS::printf ("%s Failed to create cache logger. Logging cache is lost!\n", timestamp);
+		if (!m_logBin) m_cache.clear();
+		else m_bin_cache.clear();
+		return;
 	}
-    // should I retain cache or not?!!!
-    ACE_OS::printf ("%s Failed to create cache logger. Logging cache is lost!\n", timestamp);
-    if (!m_logBin) m_cache.clear();
-    else m_bin_cache.clear();
-    return;
-   }
-    //
-    // centralized logger is present, log cache to CL
-    //
+
+	//
+	// centralized logger is present, log cache to CL
+	//
 
 	// TAO uses leader/follower concurrency pattern that might cause
 	// that this thread will do other things and this can case deadlock
@@ -1471,67 +1519,76 @@ LoggingProxy::sendCacheInternal()
     try
 	{
 
-    if(!m_logBin ){
-		// fill anys
-		DsLogAdmin::Anys anys(m_cache.size());
-		Logging::XmlLogRecordSeq reclist;
-		if (oldLog == NULL)
-			anys.length(m_cache.size());
-		else
-			reclist.length(m_cache.size());
-       
-	  	int i = 0;
-        for (LogDeque::iterator iter = m_cache.begin();
-             iter != m_cache.end();
-             iter++){
-					if(oldLog ==NULL)
-						anys[i++] <<= iter->c_str();
-					else
-						reclist[i++].xml = iter->c_str();
-	}
-        // we have to unlock before we do a remote call to prevent a deadlock
-        // this is just temporary solution. We have to solve the problem in case if we can not send logs to logging system
-        // (to delete cache afterwards or to put the logs back and how to handle    successfullySent/failedToSend
-        // successfully sent, clear cache
-        m_cache.clear();
-        ace_mon.release();
-		  if (oldLog == NULL)
-           m_logger->write_records(anys);
-		  else
-		     m_logger->writeRecords(reclist);
+    	if(!m_logBin )
+    	{
+			// fill anys
+			DsLogAdmin::Anys anys(m_cache.size());
+			Logging::XmlLogRecordSeq reclist;
+			if (oldLog == NULL)
+				anys.length(m_cache.size());
+			else
+				reclist.length(m_cache.size());
 
-        // here we have to acquire the mutex again. Should be done in better way.
-        ace_mon.acquire();
-        // successfully sent
-        successfullySent();
+			int i = 0;
+			for (LogDeque::iterator iter = m_cache.begin(); iter != m_cache.end(); iter++)
+			{
+				if(oldLog ==NULL)
+				{
+					anys[i++] <<= iter->c_str();
+				}
+				else
+				{
+					reclist[i++].xml = iter->c_str();
+				}
+			}
+			// we have to unlock before we do a remote call to prevent a deadlock
+			// this is just temporary solution. We have to solve the problem in case if we can not send logs to logging system
+			// (to delete cache afterwards or to put the logs back and how to handle    successfullySent/failedToSend
+			// successfully sent, clear cache
+			m_cache.clear();
+			ace_mon.release();
+			if (oldLog == NULL)
+			{
+				m_logger->write_records(anys);
+			}
+			else
+			{
+				m_logger->writeRecords(reclist);
+			}
 
-	}else{
-	    // fill anys
-        DsLogAdmin::Anys anys(m_bin_cache.size());
-        anys.length(m_bin_cache.size());
-        int i = 0;
-        for (LogBinDeque::iterator iter = m_bin_cache.begin();
-             iter != m_bin_cache.end();
-             iter++){
-            CORBA::Any record;
-            record <<= *(*iter);
-            anys[i++] = record;
-            delete *iter;
-        }
-        // we have to unlock before we do a remote call to prevent a deadlock
-        // this is just temporary solution. We have to solve in better way the problem in case if we can not send
-        // logs to logging system
-        // (to delete cache afterwards or to put the logs back and how to handle    successfullySent/failedToSend
-        // successfully sent, clear cache
-        m_cache.clear();
-        ace_mon.release();
-        m_logger->write_records(anys);
+			// here we have to acquire the mutex again. Should be done in better way.
+			ace_mon.acquire();
+			// successfully sent
+			successfullySent();
 
-        // here we have to acquire the mutex again to protect successfullySent. Should be done in better way.
-        ace_mon.acquire();
-        // successfully sent
-        successfullySent();
-	}//if-else
+    	}
+    	else
+    	{
+    		// fill anys
+    		DsLogAdmin::Anys anys(m_bin_cache.size());
+    		anys.length(m_bin_cache.size());
+    		int i = 0;
+    		for (LogBinDeque::iterator iter = m_bin_cache.begin(); iter != m_bin_cache.end(); iter++)
+    		{
+				CORBA::Any record;
+				record <<= *(*iter);
+				anys[i++] = record;
+				delete *iter;
+			}
+			// we have to unlock before we do a remote call to prevent a deadlock
+			// this is just temporary solution. We have to solve in better way the problem in case if we can not send
+			// logs to logging system
+			// (to delete cache afterwards or to put the logs back and how to handle    successfullySent/failedToSend
+			// successfully sent, clear cache
+			m_cache.clear();
+			ace_mon.release();
+			m_logger->write_records(anys);
+
+			// here we have to acquire the mutex again to protect successfullySent. Should be done in better way.
+			ace_mon.acquire();
+			// successfully sent
+			successfullySent();
+    	}//if-else
     }
     catch(...)
 	{
@@ -1541,7 +1598,7 @@ LoggingProxy::sendCacheInternal()
 	// this can cause dead-loop (when new log record causes sent action...)
 	//ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "(LoggingProxy::sendCache) Unexpected exception occured while sending to the Centralized Logger");
 	}
-	 m_sendingPending = false;
+	m_sendingPending = false;
 }
 
 void LoggingProxy::setAlarmSender(LogThrottleAlarm* alarmSender) {
