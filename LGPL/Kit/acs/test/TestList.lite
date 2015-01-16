@@ -41,13 +41,17 @@
    EPILOGUE "rm -Rf ../include/subdir1 ../include/subdir2 ../include/duplicateFile"
 
 # Ensure that python compilation errors get properly reported (ICT-1643)
+# To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
+# "make clean" with the MAKE_FROMTAT variable set
 13 SOURCE acsMakeInstall3.tcl \
-   makeInstallTest3 "/usr/bin/make -f MakefileInstallTest clean all install PY_PACKAGES=AcsPyTestPkg1" \
+   makeInstallTest3 "/usr/bin/make -f MakefileInstallTest clean all install MAKE_FROMTAT=1 PY_PACKAGES=AcsPyTestPkg1" \
    EPILOGUE "rm -Rf ../lib/python/site-packages/AcsPyTestPkg1 myIntroot"
 
 # Ensure that python compilaton is not repeated if there is an updated script in the package (ICT-1643)
+# To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
+# "make clean" with the MAKE_FROMTAT variable set
 14 SOURCE acsMakeInstall4.tcl \
-   makeInstallTest4 "/usr/bin/make -f MakefileInstallTest clean all install PY_PACKAGES=AcsPyTestPkg2" \
+   makeInstallTest4 "/usr/bin/make -f MakefileInstallTest clean all install MAKE_FROMTAT=1 PY_PACKAGES=AcsPyTestPkg2" \
    EPILOGUE "rm -Rf ../lib/python/site-packages/AcsPyTestPkg2 myIntroot"
 
 # Check that manpages can be made (see also ICT-3851)

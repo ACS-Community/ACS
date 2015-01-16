@@ -535,24 +535,6 @@ mustBuild = $(if $(MAKE_ONLY),$(if $(findstring $(1),$(MAKE_ONLY)),true,false),t
 #ifeq ($(call mustBuild,Java),true)
 #endif
 
-#!#ifeq ($(os),SunOS)
-#!#    ifeq ($(osrev),5.4)
-#!#        platform = Sun-Solaris2
-#!#    endif  
-#!#    ifeq ($(osrev),5.5)
-#!#        platform = Sun-Solaris2
-#!#    endif  
-#!#    ifeq ($(osrev),5.5.1)
-#!#        platform = Sun-Solaris2
-#!#    endif  
-#!#    ifeq ($(osrev),5.6)
-#!#        platform = Sun-Solaris2
-#!#    endif
-#!#    ifeq ($(osrev),5.8)
-#!#        platform = Sun-Solaris2
-#!#    endif
-#!#endif
-
 # Added by E. Allaert: Linux case; remark Linux uses Gnu-echo
 
 ifeq ($(os),Linux)
@@ -567,9 +549,6 @@ else ifeq ($(os),$(CYGWIN_VER))
 else
    export ECHO = echo 
 endif
-
-# MZA find a better place for this
-#!#CCS_LIBLIST  :=  -lCCS -lm -lc
 
 ifndef platform
     #
@@ -608,15 +587,6 @@ ifndef MAKE_VXWORKS
     AR      = ar
     RANLIB  = ranlib
 
-#!#    # set flags for NOCCS and CCSlite
-#!#    ifdef NOCCS
-#!#        CCS_CFLAGS = -DNOCCS
-#!#    else
-#!#        ifndef RTAPROOT
-#!#            CCS_CFLAGS = -DCCS_LIGHT
-#!#        endif
-#!#    endif
-#!#
     CC         = gcc -ansi
     CXX        = gcc -ansi
     #
@@ -664,33 +634,6 @@ ifdef MAKE_NO_PERMISSIVE
 else
     C_PLUS_PLUS_FLAGS = -fno-operator-names -fpermissive
 endif
-
-#!#    ifeq ($(platform),Sun-Solaris2)
-#!#        CXX        = gcc
-#!#        LD            = gcc
-#!#        NOSHARED_ON   = -Xlinker -Bstatic 
-#!#        NOSHARED_OFF  = -Xlinker -Bdynamic
-#!#        SHLIB_EXT     = so
-#!#        RANLIB        = @/bin/true 
-#!#        INC_DEFAULT   = -I/usr/local/include
-#!#        LIB_DEFAULT   = -L/usr/local/lib
-#!#        XINC_DEFAULT  = -I/opt/SUNWmotif/include -I/usr/openwin/include 
-#!#        XLIB_DEFAULT  = -L/opt/SUNWmotif/lib     -L/usr/openwin/lib     
-#!##!#        # Rtap 06.60
-#!##!#        CCS_LIBLIST   = -lCCS  -lm -lposix4
-#!##!#        CCS_LIBLIST_NOSHARED = $(NOSHARED_ON) -lCCS $(NOSHARED_OFF) -lm -lposix4
-#!#        ifeq ($(osrev),5.4)
-#!#            PURIFY_COLLECTOR=$(GNU_ROOT)/lib/gcc-lib/sparc-sun-solaris2.4/2.7.2.2/ld
-#!#        endif  
-#!#        ifeq ($(osrev),5.5)
-#!#            PURIFY_COLLECTOR=$(GNU_ROOT)/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2.2/ld
-#!#        endif
-#!#        # for the time being, Sun 2.5.1 uses same binaries as 2.5
-#!#        ifeq ($(osrev),5.5.1)
-#!#            PURIFY_COLLECTOR=$(GNU_ROOT)/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2.2/ld
-#!#        endif
-#!#    endif
-
     ifeq ($(platform),Linux)
 
         # WARNING GCH: Commented out -ansi option for c,c++ and dependencies. 
@@ -708,8 +651,6 @@ endif
         LIB_DEFAULT   = -L/usr/local/lib
         XINC_DEFAULT  = -I/usr/X11R6/include/X11 
         XLIB_DEFAULT  = -L/usr/X11R6/lib     
-#!#        CCS_LIBLIST          := -lCCS -lm 
-#!#        CCS_LIBLIST_NOSHARED := $(NOSHARED_ON) -lCCS $(NOSHARED_OFF) -lm 
         CXX_FOR_VERSION_TEST := gcc
 
         ACS_CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion) 
@@ -745,8 +686,6 @@ endif
         LIB_DEFAULT   = -L/usr/local/lib
         XINC_DEFAULT  = -I/usr/X11R6/include/X11
         XLIB_DEFAULT  = -L/usr/X11R6/lib
-#!#        CCS_LIBLIST          :=                -lCCS                 -lm
-#!#        CCS_LIBLIST_NOSHARED := $(NOSHARED_ON) -lCCS $(NOSHARED_OFF) -lm
         CXX_FOR_VERSION_TEST := g++
 
         ACS_CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion)
@@ -773,12 +712,7 @@ else
 ###### VXWORKS DEFINITIONS #############################################################
 ########################################################################################
 
-# assume that if ALMA then 6.7!
-#!#ifdef VLTSW_ROOTDIR
-#!#else
-  VX_VERSION=6.7
-#!#endif
-
+VX_VERSION=6.7
 
 ifneq ($(strip $(ACE_ROOT_VW)),)
   override ACE_ROOT=$(ACE_ROOT_VW)
@@ -797,70 +731,15 @@ endif
 #    endif
 
 #   ifeq ($(CPU),MC68040)
-#!#ifeq ($(strip $(findstring MC68,$(CPU))),MC68)
-#!#       ifneq ($(VX_VERSION), 5.5)
-#!#WIND_BASE_PATTERN := /vlt/$(VLTSW_RELEASE)/vw6.4%
-#!#WIND_HOME_PATTERN := /vlt/$(VLTSW_RELEASE)/WindRiver-3.4%
-#!#
-#!#PATH:=$(subst $(COLON),$(SPACE),$(PATH))
-#!#PATH:=$(filter-out $(WIND_BASE_PATTERN),$(PATH))
-#!#PATH:=$(filter-out $(WIND_HOME_PATTERN),$(PATH))
-#!#PATH:=$(subst $(SPACE),$(COLON),$(PATH))
-#!#
-#!## Same for MANPATH
-#!#MANPATH:=$(subst $(COLON),$(SPACE),$(MANPATH))
-#!#MANPATH:=$(filter-out $(WIND_BASE_PATTERN),$(MANPATH))
-#!#MANPATH:=$(filter-out $(WIND_HOME_PATTERN),$(MANPATH))
-#!#MANPATH:=$(subst $(SPACE),$(COLON),$(MANPATH))
-#!#
-#!## And LD_LIBRARY_PATH
-#!#LD_LIBRARY_PATH:=$(subst $(COLON),$(SPACE),$(LD_LIBRARY_PATH))
-#!#LD_LIBRARY_PATH:=$(filter-out $(WIND_BASE_PATTERN),$(LD_LIBRARY_PATH))
-#!#LD_LIBRARY_PATH:=$(filter-out $(WIND_HOME_PATTERN),$(LD_LIBRARY_PATH))
-#!#LD_LIBRARY_PATH:=$(subst $(SPACE),$(COLON),$(LD_LIBRARY_PATH))
-#!#
-#!#
-#!## Define variables
-#!#WIND_HOME:=
-#!#WIND_BASE:=/vlt/$(VLTSW_RELEASE)/vw5.5
-#!#WIND_HOST_TYPE:=i386
-#!#PATH:=$(PATH):$(WIND_BASE)/host/$(WIND_HOST_TYPE)/bin
-#!#MANPATH:=$(MANPATH):$(WIND_BASE)/man:$(WIND_BASE)/host/$(WIND_HOST_TYPE)/man:$(WIND_BASE)/target/man
-#!#LD_LIBRARY_PATH:=$(LD_LIBRARY_PATH):$(WIND_BASE)/host/$(WIND_HOST_TYPE)/lib
-#!#VX_CPU_FAMILY:=68k
-#!#VX_HOST_TYPE:=i386
-#!#VXROOT:=$(WIND_BASE)/target
-#!#VX_VW_BASE:=$(WIND_BASE)/target
-#!#VX_HSP_BASE:=$(VXROOT)
-#!#VX_BSP_BASE:=$(VXROOT)
-#!#
-#!#VX_VERSION:=5.5
-#!#
-#!#       endif 
-#!#endif
 
     #
     # CPU must be one of the supported types:
-#!#    ifeq ($(CPU),MC68000)
-#!#        VX_CPU_FAMILY = 68k
-#!#        CPU_CFLAGS = -DCPU=$(CPU) -m68000
-#!#    endif
-#!#    ifeq ($(CPU),MC68040)
-#!#        VX_CPU_FAMILY = 68k
-#!#        CPU_CFLAGS = -DCPU=$(CPU)
-#!#    endif
     ifeq ($(CPU),PPC604)
         VX_CPU_FAMILY = ppc
-#!#        ifeq ($(VX_VERSION), 6.4) 
-#!#           CPU_CFLAGS = -DCPU=$(CPU) -fstrength-reduce -mlongcall -mcpu=604 -DTOOL=gnu -D_WRS_KERNEL
-#!#        endif	
         ifeq ($(VX_VERSION), 6.7) 
           # this was taken from ALMA
           CPU_CFLAGS = -DCPU=$(CPU) -mlongcall -mcpu=604 -mcpu=604 -DTOOL=gnu
         endif	
-#!#        ifeq ($(VX_VERSION), 5.5)
-#!#           CPU_CFLAGS = -DCPU=$(CPU) -mlongcall
-#!#	endif
     endif
     ifeq ($(CPU),PPC603)
         VX_CPU_FAMILY = ppc
@@ -877,38 +756,15 @@ endif
         ifeq ($(VX_VERSION), 6.7)
 	   CC       = cc$(VX_CPU_FAMILY) -ansi -fno-builtin -mstrict-align
         endif	
-#!#        ifeq ($(VX_VERSION), 6.4)
-#!#	   CC       = cc$(VX_CPU_FAMILY) -ansi -mstrict-align # -fno-builtin
-#!#        endif	
-#!#        ifeq ($(VX_VERSION), 5.5)
-#!#	   CC       = cc$(VX_CPU_FAMILY) -ansi -fno-builtin
-#!#	endif
 
 	CXX      = cc$(VX_CPU_FAMILY) -ansi -fno-builtin
 	CCDEP    = cc$(VX_CPU_FAMILY) -MM -ansi -fno-builtin
         ifeq ($(VX_VERSION), 6.7)
            CC_FLAGS = $(CPU_CFLAGS) -DTOOL_FAMILY=gnu -DMAKE_VXWORKS -Wall -c 
         endif	
-#!#        ifeq ($(VX_VERSION), 6.4)
-#!#           CC_FLAGS = $(CPU_CFLAGS) -DTOOL_FAMILY=gnu -DMAKE_VXWORKS -Wall
-#!#        endif	
-#!#        ifeq ($(VX_VERSION), 5.5)
-#!#           CC_FLAGS = $(CPU_CFLAGS) -DTOOL_FAMILY=gnu -DTOOL=gnu -DMAKE_VXWORKS -Wall -c
-#!#	endif
 
     # all warnings left out for the default (see above) must be added here
     ifdef MAKE_ALL_WARNINGS
-#!#      ifdef VLTSW_ROOTDIR
-#!#	CC_FLAGS   := $(CC_FLAGS) -Wshadow     \
-#!#                        -Wcast-qual            \
-#!#                        -Wcast-align           \
-#!#                        -W                     \
-#!#                        -Wno-unused            \
-#!#                        -Wpointer-arith        \
-#!#                        -Wwrite-strings        \
-#!#                        -Wmissing-prototypes   \
-#!#                        -Wmissing-declarations 
-#!#      else
 	CC_FLAGS   := $(CC_FLAGS) -Wshadow     \
                         -Wcast-qual            \
                         -Wcast-align           \
@@ -918,7 +774,6 @@ endif
                         -Wwrite-strings        
 #                        -Wmissing-prototypes   \
 #                        -Wmissing-declarations 
-#!#      endif
     endif
 
     LD       = ld$(VX_CPU_FAMILY)
@@ -936,20 +791,6 @@ endif
     endif
 
     C_PLUS_PLUS_FLAGS = -r
-
-#!#    ifdef VLTSW_ROOTDIR
-#!#    # compilation for non 68k (PPC) with vw5.5 not supported
-#!#    ifneq ($(VX_CPU_FAMILY),68k)
-#!#       ifneq ($(VX_VERSION), 6.4)
-#!#          # force a syntax error, so that acsMake stops
-#!#          $(error UNSUPPORTED vxworks version $(VX_VERSION) for CPU type $(VX_CPU_FAMILY))
-#!#       endif
-#!#    endif
-#!#    else
-#!#       # ALMA
-#!#
-#!#    endif
-
 
     CXX_FOR_VERSION_TEST := cc$(VX_CPU_FAMILY)
 
@@ -1105,7 +946,6 @@ ifndef DEBUG
   endif
 endif
 
-#!#CFLAGS := $(CFLAGS) $(CCS_CFLAGS)                               
 CFLAGS := $(CFLAGS)                           
 
 ifdef USER_CFLAGS
@@ -1146,12 +986,8 @@ ifndef TAO_ROOT
 endif
 
 ifndef MAKE_VXWORKS
-#!#ifeq ($(os),SunOS)
-#!#  CFLAGS :=  -pipe -fcheck-new $(CFLAGS)
-#!#else
   CFLAGS :=  -pipe -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DACE_HAS_AIO_CALLS   $(CFLAGS) 
   CPPFLAGS = -fcheck-new
-#!#endif
 else
   CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -DACE_VXWORKS=0x670 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
   LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r -T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT
@@ -1209,8 +1045,6 @@ ifdef ACSROOT
         TOOLS_INC := -I$(ACSROOT)$(VW)/include $(TOOLS_INC)
         TOOLS_LIB := -L$(ACSROOT)$(VW)/lib    $(TOOLS_LIB)
     endif
-#!#    TOOLS_INC := -I$(VLTROOT)/include/rtd $(TOOLS_INC)
-#!#    TOOLS_INC := -I$(VLTROOT)/include/cat $(TOOLS_INC)
 endif
 
 #
@@ -1408,7 +1242,6 @@ endif
 #
 # object dir here added because of ALMASW2002100
 #
-#!#MODINC = -I../include -I../object $(if $(VLTSW_ROOT_DIR),-I../gen,)
 MODINC = -I../include -I../object
 MODLIB = -L../lib 
 MODIDL = -I../idl
@@ -1456,9 +1289,6 @@ ifdef MAKE_VXWORKS
     I_PATH := $(I_PATH) $(VXINC) $(TOOLS_INC)
     L_PATH := $(L_PATH) $(VXLIB) 
 else
-#!#    #                   --RTAP-- --X11-- -GNU&TCLTK-
-#!#    I_PATH := $(I_PATH) $(RTINC) $(XINC) $(TOOLS_INC)
-#!#    L_PATH := $(L_PATH) $(RTLIB) $(XLIB) $(TOOLS_LIB)
     #                   --X11-- -GNU&TCLTK-
     I_PATH := $(I_PATH) $(XINC) $(TOOLS_INC)
     L_PATH := $(L_PATH) $(XLIB) $(TOOLS_LIB)
@@ -1555,37 +1385,13 @@ CLEAN_TARGET=
 CLEAN_DIST_TARGET=
 ALL_TARGET=
 
-#!#ifdef VLTSW_ROOTDIR
-#!#    INSTALL_TARGET := $(INSTALL_TARGET) install_errors install_alarms install_logs
-#!#endif
-
 ifneq ($(strip $(INCLUDES)),)
     INSTALL_TARGET := $(INSTALL_TARGET) install_includes
 endif
 
-#!#ifdef VLTSW_ROOTDIR
-#!#INSTALL_TARGET := $(INSTALL_TARGET) install_standardfiles
-#!#endif
-
-#!#ifneq ($(strip $(DBL_CLASSES)),)
-#!#    INSTALL_TARGET := $(INSTALL_TARGET) install_DB-Classes
-#!#endif
-
 ifneq ($(strip $(CDB_SCHEMAS)),)
     INSTALL_TARGET := $(INSTALL_TARGET) install_CDB-Schemas
 endif
-
-#!#ifneq ($(strip $(DBL_BCF)),)
-#!#    INSTALL_TARGET := $(INSTALL_TARGET) install_DB-BCF
-#!#endif
-
-#!#ifneq ($(strip $(INS_ROOT_DIR)),)
-#!#    INSTALL_TARGET := $(INSTALL_TARGET) install_insrootdir
-#!#endif
-#!#
-#!#ifneq ($(strip $(INS_ROOT_FILES)),)
-#!#    INSTALL_TARGET := $(INSTALL_TARGET) install_insrootfiles
-#!#endif
 
 ifneq ($(strip $(INSTALL_FILES)),)
     INSTALL_TARGET := $(INSTALL_TARGET) install_files
@@ -1614,7 +1420,6 @@ endif
 # features
 # *********************************************
 
-#!#CREATE_DIRS = include object doc $(if $(RTAI_HOME),rtai/$(kernel_install_subfold),) $(if $(RTAI_HOME),,$(if $(LINUX_HOME),kernel/$(kernel_install_subfold),)) bin lib lib/ACScomponents lib/python/site-packages idl config  $(if $(VLTSW_ROOT_DIR),dbl,)
 CREATE_DIRS = include object doc $(if $(RTAI_HOME),rtai/$(kernel_install_subfold),) $(if $(RTAI_HOME),,$(if $(LINUX_HOME),kernel/$(kernel_install_subfold),)) bin lib lib/ACScomponents lib/python/site-packages idl config
 
 ifneq ($(strip $(MAKE_VXWORKS)),)
@@ -1654,11 +1459,6 @@ endif
 
 
 # - for object files 
-#!#ifdef VLTSW_ROOTDIR
-#!#../object/%.o : ../gen/%.C
-#!#	- @echo "== C++ Compiling WSF: $(<F)"
-#!#	$(AT)$(CXX) -c $(CFLAGS) $(CPPFLAGS) $(C_PLUS_PLUS_FLAGS) $(I_PATH) $($*_CFLAGS) -o $@ ../gen/$(@F:.o=.C)
-#!#endif
 
 ../object/%.o : %.c
 	- @echo "== C Compiling: $(<F)"
@@ -1702,15 +1502,6 @@ ifdef MAKE_VXWORKS_NOT_USED
 	  $(AT)mv $(@F:.o=.out) $@
 	  $(AT)rm ../object/__ctordtor.*
 endif
-
-#!#ifdef VLTSW_ROOTDIR
-#!#../object/%.d: ../gen/%.C
-#!#	@echo "== Dependencies: $@"
-#!#	$(AT)$(CCDEP)  $(CFLAGS) $(CPPFLAGS) $(I_PATH) $($*_CFLAGS) $<  |  \
-#!#                      sed -e "s/$*\.o/..\/object\/$*.o ..\/object\/$*.d /" \
-#!#                          -e "s/:/: Makefile /" > $@ ;                     \
-#!#                        if [ ! -s $@ ]; then $(RM) $@ ; fi
-#!#endif
 
 ../object/%.d: %.c
 	@echo "== Dependencies C: $@"
@@ -1792,70 +1583,15 @@ $(if $(wildcard ../ALARMS/HELP/* ),$(eval INSTALL_TARGET += install_alarms),)
 #
 
 
-#!#.PHONY : do_indexfiles
-#!#do_indexfiles :
-#!#	-$(AT) vltMakeIndexFilesDependencies >../object/vltMakeIndexFiles.del
-
-
 #
 # set standard action for 'man'
 # -----------------------------
 #
 #    foreach section in the MANSECTIONS list, extract the man pages
 #    from the appropriate input file list
-#!#.PHONY : do_man
-#!#do_man:  do_pythondoc doxygen do_man_hello $(addprefix man, $(MANSECTIONS)) manl do_A2MIF 
-#!#
 .PHONY : do_man_hello
 do_man_hello:
 	-@$(ECHO) "\nman-pages..."
-
-#!#.PHONY : man1
-#!#man1:
-#!#	-@$(ECHO) "....section 1:"
-#!#	-$(AT) for member in $(MAN1) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 1 $(LASTCHANGE) $(OUTPUT); done
-#!#.PHONY : man2
-#!#man2:
-#!#	-@$(ECHO) "....section 2:"
-#!#	-$(AT) for member in $(MAN2) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 2 $(LASTCHANGE) $(OUTPUT); done
-#!#.PHONY : man3
-#!#man3:
-#!#	-@$(ECHO) "....section 3:"
-#!#	-$(AT) for member in $(MAN3) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 3 $(LASTCHANGE) $(OUTPUT); done
-#!#.PHONY : man4
-#!#man4:
-#!#	-@$(ECHO) "....section 4:"
-#!#	-$(AT) for member in $(MAN4) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 4 $(LASTCHANGE) $(OUTPUT); done
-#!#.PHONY : man5
-#!#man5:
-#!#	-@$(ECHO) "....section 5:"
-#!#	-$(AT) for member in $(MAN5) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 5 $(LASTCHANGE) $(OUTPUT); done
-#!#.PHONY : man6
-#!#man6:
-#!#	-@$(ECHO) "....section 6:"
-#!#	-$(AT) for member in $(MAN6) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 6 $(LASTCHANGE) $(OUTPUT); done
-#!#.PHONY : man7
-#!#man7:
-#!#	-@$(ECHO) "....section 7:"
-#!#	-$(AT) for member in $(MAN7) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 7 $(LASTCHANGE) $(OUTPUT); done
-#!#.PHONY : man8
-#!#man8:
-#!#	-@$(ECHO) "....section 8:"
-#!#	-$(AT) for member in $(MAN8) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 8 $(LASTCHANGE) $(OUTPUT); done
-#!#.PHONY : mann
-#!#mann:
-#!#	-@$(ECHO) "....section n:"
-#!#	-$(AT) for member in $(MANn) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} n $(LASTCHANGE) $(OUTPUT); done
-#!#
-#!##
-#!## generate local manpages (not to be installed)
-#!## 
-#!#.PHONY : manl
-#!#manl:
-#!#	-@$(ECHO) "..local pages:"
-#!#ifneq ($(strip $(MANl)),)
-#!#	-$(AT) for member in $(MANl) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} l $(LASTCHANGE) $(OUTPUT); done
-#!#endif
 
 #
 # generate doxygen documentation
@@ -1906,14 +1642,6 @@ clean_all: $(CLEAN_TARGET)
 	-@$(ECHO) "Cleaning up .\c"
 	-@$(ECHO) " .\c"
 	-$(AT)find .. -name \#\* -o -name core -o -name \*\.gdb_history -print | $(XARGS) -i $(RM) {}
-#!#	-$(AT)vltMakeCleanDB 
-#!#	-@$(ECHO) " .\c"
-
-.PHONY : clean_dependencies
-clean_dependencies:
-	-$(AT) $(RM) $(clean_dependencies_target)
-	-$(AT) $(ECHO) "Dependency files cleaned..."
-
 ifneq ($(strip $(MANSECTIONS)),)
 	-$(AT)  for i in $(MANSECTIONS) ; \
 		do \
@@ -1935,10 +1663,10 @@ ifneq ($(strip $(MANl)),)
 	            find ../man/manl -type f -print | $(XARGS) grep -l -s "This Man Page has been automatically produced. DO NOT EDIT THIS FILE!" | $(XARGS) $(RM) acsMake_clean_manpages  ;\
 		fi
 endif
-	-@$(ECHO) " ."
-	-$(AT)$(RM) acsMake_clean_testReport ./*.rep
+	-@$(ECHO) " .\c"
+	-$(AT) $(RM) acsMake_clean_testReport ./*.rep
 #
-# clean TAT files
+# clean TAT files - if tat has not been executed with the "-nc" flag
 #
 ifndef MAKE_FROMTAT
 	-@$(ECHO) " .\c"
@@ -1953,13 +1681,22 @@ endif
 # clean Doxygen files
 #
 	-@$(ECHO) " ."
-	-$(AT) doxygenize clean
+# "doxygenize clean" just recursvile removes ../doc/idl ../doc/api,
+# in a bit of a contrived way. So better do this here directly.
+#	-$(AT) doxygenize clean
+	-$(AT) $(RM) ../doc/idl ../doc/api
+
+.PHONY : clean_dependencies
+clean_dependencies:
+	-$(AT) $(RM) $(clean_dependencies_target)
+	-$(AT) $(ECHO) "Dependency files cleaned..."
+
 #
 # clean the directory structure if it's empty
 #
 .PHONY:
 clean_tat_session:
-	$(AT)if [ -f .testSessions ]; then echo "=== Cleaning TAT session ===" ; tat -nc cleanEnv;fi
+	$(AT)if [ -f .testSessions ]; then echo "=== Cleaning TAT session ===" ; tat -nc cleanEnv; fi
 
 
 CLEAN_DIST_TARGET += clean_dist_all
@@ -2052,14 +1789,6 @@ install_man:
 	-$(AT) $(foreach i, $(MANSECTIONS_INSTALL), $(ECHO) "\tsection $(i)"; cp ../man/man$(i)/*.$(i) $(MAN)/man$(i) ;)
 endif
 
-#!# This logging and copying of sources dates back from the VLT (with cmm as repository)
-#!# In fact, the output of the next 2 lines was in vltMakefile redirected to a text-file,
-#!# that was used as imput for a sub-make.
-#!#	-@$(ECHO) "\t-@acsMakeLogInstallation $(PRJTOP_LOG)" 
-#!#	-@$(ECHO) "\t-@acsMakeCopySources $(VW)" 
-
-
-
 #
 # set standard action for 'test'
 # A test target is also present in the module Makefile template
@@ -2139,12 +1868,6 @@ LIB_PATH_LIST := $(subst $(space)-L,$(space):,$(LIB_PATH_LIST))
 #  "-L../lib :<dir1> :<dir2> ...."  -->  "../lib :<dir1> :<dir2> ...."
 LIB_PATH_LIST := ../lib $(filter-out -L../lib,$(LIB_PATH_LIST))
 
-#!#ifndef MAKE_VXWORKS
-#!#    ifeq ($(platform),Sun-Solaris2)
-#!#          LIB_PATH_LIST := $(LIB_PATH_LIST) :/usr/ccs/lib
-#!#    endif
-#!#endif
-
 #  "../lib :<dir1> :<dir2> ...."   -->  "../lib:<dir1>:<dir2>...."
 LIB_PATH_LIST := $(subst $(space):,:,$(LIB_PATH_LIST))
 
@@ -2189,8 +1912,6 @@ CSOURCENAMES := $(sort $(CSOURCENAMES))
 # NOTE: the sequence of these prerequisites seem to play a role in parallelization 
 #       in particular that do_exes comes before do_libs
 #
-#!#ALL_TARGET := $(if $(strip $(LINK_FILES)),do_links_internal,) $(ALL_TARGET) 
-# CHECK removed do_ERRORS do_LOGS
 
 .DEFAULT_GOAL := do_all
 .PHONY : do_all_aux
@@ -2198,7 +1919,6 @@ do_all_aux : $(_MKDIR) $(ALL_TARGET)
 
 
 .PHONY : do_all
-#!#do_all : 
 do_all : $(if $(strip $(LINK_FILES)),do_links_internal,)
 	$(AT) $(MAKE) -f $(THIS_MAKEFILE) DEPENDENCIES=on $(MAKE_FLAGS) do_all_aux
 
