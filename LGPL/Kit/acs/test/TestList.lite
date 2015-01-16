@@ -54,7 +54,6 @@
    makeInstallTest4 "/usr/bin/make -f MakefileInstallTest clean all install MAKE_FROMTAT=1 PY_PACKAGES=AcsPyTestPkg2" \
    EPILOGUE "rm -Rf ../lib/python/site-packages/AcsPyTestPkg2 myIntroot"
 
-# Check that manpages can be made (see also ICT-3851)
+# Check that manpages can be made and cleaned (see also ICT-3851 and ICT_3853)
 20 PROLOGUE "rm -Rf ../man/man2 ../man/mann/makeMann.n ../man/manl/makeManl.l" \
-   makeMan "/usr/bin/make -f MakefileMan man" \
-   EPILOGUE "rm -Rf ../man/man2 ../man/mann/makeMann.n ../man/manl/makeManl.l"
+   makeMan "/usr/bin/make -f MakefileMan man clean MAKE_FROMTAT=1"

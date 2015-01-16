@@ -212,12 +212,14 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	@echo `for i in $(MANSECTIONS) l; do ls ../man/man$${i}/; done`
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
 	@echo " . . . clean_dist done"
 
 man   : do_man 
+	@echo `for i in $(MANSECTIONS) l; do ls ../man/man$${i}/; done`
 	@echo " . . . man page(s) done"
 
 install : install_all
