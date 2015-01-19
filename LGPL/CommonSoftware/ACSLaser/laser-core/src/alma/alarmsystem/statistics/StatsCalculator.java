@@ -63,12 +63,12 @@ public class StatsCalculator implements Runnable {
 	 * statistics.
 	 * <BR>Setting the value of this property to <code>0</code> disables the statistics.
 	 */
-	private static final String TIMEINTERVALPROPERTYNAME="alma.acs.alarmsystem.statistics.timeinterval";
+	public static final String TIMEINTERVALPROPERTYNAME="alma.acs.alarmsystem.statistics.timeinterval";
 	
 	/**
 	 * The default time interval is {@value #DEFAULTTIMEINTERVAL} minutes
 	 */
-	private static final int DEFAULTTIMEINTERVAL=10;
+	public static final int DEFAULTTIMEINTERVAL=10;
 	
 	/**
 	 * Statistics are logged every time interval
@@ -158,7 +158,7 @@ public class StatsCalculator implements Runnable {
 	}
 	
 	/**
-	 * Start to gather statistics and spawn the time task to blish them.
+	 * Start to collect statistics and spawn the timer task.
 	 */
 	public void start() {
 		// Start the scheduled task
