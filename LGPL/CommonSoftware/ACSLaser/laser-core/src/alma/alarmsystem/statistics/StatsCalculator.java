@@ -32,6 +32,7 @@ import cern.laser.business.pojo.AlarmMessageProcessorImpl;
 import com.cosylab.acs.laser.AlarmSourcesListenerCached;
 
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 
 /**
  * A class to calculate various statistics 
@@ -46,8 +47,8 @@ import alma.acs.logging.AcsLogLevel;
  * but the full statistics are saved on the file.
  * <P>
  * Statistics are logged every time interval whose default is {@value #DEFAULTTIMEINTERVAL} minutes.
- * The time interval can be customized by setting the {@value #TIMEINTERVALPROPERTYNAME} java property.
- * A time interval of 0 minutes disable the logging of statistics (@see {@value #TIMEINTERVALPROPERTYNAME}).
+ * The time interval can be customized by setting the {@value #TIMEINTERVALPROPNAME} java property.
+ * A time interval of 0 minutes disable the logging of statistics (@see {@value #TIMEINTERVALPROPNAME}).
  * <P>
  * Life cycle: 
  * {@link #start()} must be called to start gathering statistics and {@link #shutdown()} must be
@@ -63,7 +64,7 @@ public class StatsCalculator implements Runnable {
 	 * statistics.
 	 * <BR>Setting the value of this property to <code>0</code> disables the statistics.
 	 */
-	public static final String TIMEINTERVALPROPERTYNAME="alma.acs.alarmsystem.statistics.timeinterval";
+	public static final String TIMEINTERVALPROPNAME="alma.acs.alarmsystem.statistics.timeinterval";
 	
 	/**
 	 * The default time interval is {@value #DEFAULTTIMEINTERVAL} minutes
@@ -73,7 +74,7 @@ public class StatsCalculator implements Runnable {
 	/**
 	 * Statistics are logged every time interval
 	 */
-	public final int timeInterval=Integer.getInteger(TIMEINTERVALPROPERTYNAME, DEFAULTTIMEINTERVAL);
+	public final int timeInterval=Integer.getInteger(TIMEINTERVALPROPNAME, DEFAULTTIMEINTERVAL);
 	
 	/**
 	 * The executor to schedule the writing of statistics at every time interval.
@@ -113,6 +114,25 @@ public class StatsCalculator implements Runnable {
 	private final AlarmSourcesListenerCached sourceNCQueue;
 	
 	/**
+	 * The name of the property to customize the the level of the logs with the
+	 * statistics.
+	 * <P>
+	 * The value of this level can be a string (like Debug) or a integer (like 5 for Notice).
+	 * See {@link AcsLogLevelDefinition} for further details
+	 */
+	public static final String LOGLEVELPROPNAME="alma.acs.alarmsystem.statistics.loglevel";
+	
+	/**
+	 * The default log level
+	 */
+	public static final AcsLogLevel DEFAULTLOGLEVEL = AcsLogLevel.INFO;
+	
+	/**
+	 * Statistics logs have <code>logLevel<code> level.
+	 */
+	private final AcsLogLevel logLevel;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param logger The logger
@@ -126,6 +146,40 @@ public class StatsCalculator implements Runnable {
 			throw new IllegalArgumentException("The AlarmSourcesListenerCached can't be null!");
 		}
 		this.sourceNCQueue=sourceNCQueue;
+		this.logLevel=evalLogLevel();
+	}
+	
+	/**
+	 * Evaluate the log level to use using the one defined by {@link #LOGLEVELPROPNAME} property name
+	 * or using the default.
+	 *  
+	 * @return
+	 */
+	private AcsLogLevel evalLogLevel() {
+		String propValue=System.getProperty(LOGLEVELPROPNAME);
+		if (propValue==null) {
+			// No property defined: use default!
+			return DEFAULTLOGLEVEL;
+		}
+		AcsLogLevelDefinition logLevelDef=null;
+		// The string can be an integer or a the name of the log level
+		try {
+			Integer level=Integer.parseInt(propValue);
+			logLevelDef=AcsLogLevelDefinition.fromInteger(level.intValue());
+		} catch (Throwable t1) {
+			// The string should contain the name of the log level like Info
+			try {
+				logLevelDef=AcsLogLevelDefinition.fromName(propValue);
+			} catch (Throwable t2) {
+				logLevelDef=null;
+			}
+		}
+		if (logLevelDef==null) {
+			// The value of the property was wrong!
+			// Fall back to the default
+			return DEFAULTLOGLEVEL;
+		}
+		return AcsLogLevel.fromAcsCoreLevel(logLevelDef);
 	}
 	
 	/**
@@ -212,7 +266,7 @@ public class StatsCalculator implements Runnable {
 		params.put("Terminations", terminations);
 		params.put("NumOFMsgsFromSources",Long.valueOf(messagesFromSources.get()));
 		params.put("MsgsWaitingToBeProcessed", Long.valueOf(sourceNCQueue.getQueueSize()));
-		logger.log(AcsLogLevel.INFO,"Alarm server statistics",params);
+		logger.log(logLevel,"Alarm server statistics",params);
 	}
 	
 	/**
