@@ -1,7 +1,8 @@
+#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
-# (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
+# (c) European Southern Observatory, 2015
+# Copyright by ESO (in the framework of the ALMA collaboration),
 # and Cosylab 2002, All rights reserved
 #
 # This library is free software; you can redistribute it and/or
@@ -19,23 +20,5 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.10 2011/02/17 14:29:12 acaproni Exp $"
-#
-# TestList
-#
-# who       when      what
-# --------  --------  ----------------------------------------------
-# acaproni 2006-09-06 created
-SOURCE lasercoreTATEnvironment
-PROLOGUE lasercoreTATPrologue
-
-#1 testCategoryDAO "testCategoryDAO"
-#2 testAlarmDAO "testAlarmDAO"
-#3 testAlarmService "testAlarmService"
-#4 testAlarmSender "testAlarmSender"
-#5 testIDLSendAlarm "testIDLSendAlarm"
-#6 testRRWithDefaultFM "testRRWithDefaultFM"
-#7 testRRWithRegExp "testRRWithRegExp"
-8 testStatistics "testStatistics"
-
-EPILOGUE acsutilTATEpilogue
+export ACS_TMP=../test/tmp
+acsutilTATTestRunner acsStartJava -endorsed -Duser.dir=$PWD -Dalma.acs.alarmsystem.statistics.timeinterval="1" -Dalma.acs.alarmsystem.statistics.loglevel="Notice" alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.lasercore.test.StatisticsTest
