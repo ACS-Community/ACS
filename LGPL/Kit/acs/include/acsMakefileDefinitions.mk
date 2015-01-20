@@ -793,29 +793,6 @@ endif
 .PHONY: clean_lib_$2 
 .PHONY: clean_dist_lib_$2
 
-#!#$(if $(or $3,$6), \
-#!#	$(if $(findstring Cygwin, $(platform)), \
-#!#	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o$(eval $(obj)_CFLAGS += $($2_CFLAGS))), \
-#!#	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o) ) \
-#!#	$(foreach lib, $6, \
-#!#	  $(if $(filter CCS,$(lib)), \
-#!#	   $(eval ccs=yes) $(eval rtap=yes), \
-#!#	    $(if $(filter CCS_NOX11,$(lib)), \
-#!#	     $(eval ccs=yes) $(eval rtap=yes), \
-#!#              $(if $(filter stdc++,$(lib)), \
-#!#	       $(eval $2_lList += -l$(lib)  MESSAGE += somemessage ), \
-#!#                $(if $(filter g++,$(lib)), \
-#!#                 $(eval MESSAGE += ecgs does not provide), \
-#!#                  $(if $(filter iostream,$(lib)), \
-#!#                   $(eval MESSAGE += please remove iostream), \
-#!#	                 $(if $(findstring Cygwin, $(platform)), \
-#!#	                  $(eval $2_lList += -l$(lib) $(eval $2_dList += $(call deps,$(lib)))), \
-#!#                     $(eval $2_lList += -l$(lib)) )  ) ) ) ) ) ) \
-#!#	  $(if $(findstring Cygwin, $(platform)), \
-#!#	   $(eval $2_dList = $(strip $(sort $($2_dList)))) \
-#!#	   $(eval $2_lList = $(strip $(sort $($2_lList)))) \
-#!#	  ) \
-#!#	)
 $(if $(or $3,$6), \
 	$(if $(findstring Cygwin, $(platform)), \
 	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o$(eval $(obj)_CFLAGS += $($2_CFLAGS))), \
@@ -839,17 +816,6 @@ $(if $($2_lList), \
 	) \
 )
 
-#!#$(if $(filter yes,$(ccs)), \
-#!#    $(eval $2_libraryList += $(CCS_LIBLIST)) \
-#!#    $(eval $2_libraryListNoshared += $(CCS_LIBLIST_NOSHARED)   ) )
-#!#
-#!#$(if $(filter yes,$(rtap)), \
-#!#  $(if $(filter yes,$(noX11)) \, 
-#!#        $(eval $2_libraryList += $(RTAP_NOX11_FLAGS)) \
-#!#        $(eval $2_libraryListNoshared += $(RTAP_NOX11_FLAGS_NOSHARED) ), \
-#!#	$(eval $2_libraryList +=$(RTAP_FLAGS)) \
-#!#	$(eval $2_libraryListNoshared += $(RTAP_FLAGS_NOSHARED))  ) \
-#!#  )
 
 $(if $(filter /vw,$1),,
 $(if $5, \
@@ -985,29 +951,6 @@ endif
 
 
 $(eval $2_exe_lList = ) 
-#!#$(if $(or $3,$6),
-#!#	$(eval $2_oList = $(foreach obj,$3,../object/$(obj).o)) \
-#!#	$(foreach lib, $6, \
-#!#	  $(if $(filter CCS,$(lib)), \
-#!#	   $(eval ccs=yes) $(eval rtap=yes), 
-#!#	    $(if $(filter CCS_NOX11,$(lib)), \
-#!#	     $(eval ccs=yes) $(eval rtap=yes), 
-#!#              $(if $(filter stdc++,$(lib)), \
-#!#	       $(eval $2_exe_lList += -l$(lib)  MESSAGE += somemessage ), \
-#!#                $(if $(filter g++,$(lib)), \
-#!#                 $(eval MESSAGE += ecgs does not provide), \
-#!#                  $(if $(filter iostream,$(lib)), \
-#!#                   $(eval MESSAGE += please remove iostream),
-#!#                    $(if $(filter C++,$(lib)), \
-#!#                     $(eval $2_exe_lList += -lstdc++), \
-#!#	                   $(if $(findstring Cygwin, $(platform)), \
-#!#	                    $(eval $2_exe_lList += -l$(lib) $(eval $2_exe_dList += $(call deps,$(lib)))), \
-#!#                       $(eval $2_exe_lList += -l$(lib)) )  ) ) ) ) ) ) ) \
-#!#	  $(if $(findstring Cygwin, $(platform)), \
-#!#	   $(eval $2_exe_dList = $(strip $(sort $($2_exe_dList)))) \
-#!#	   $(eval $2_exe_lList = $(strip $(sort $($2_exe_lList)))) \
-#!#	  ) \
-#!#)
 $(if $(or $3,$6),
 	$(eval $2_oList = $(foreach obj,$3,../object/$(obj).o)) \
 	$(if $(findstring Cygwin, $(platform)), \
@@ -1027,18 +970,6 @@ $(if $($2_exe_lList), \
 	  $(eval $2_libraryListNoshared += $(NOSHARED_ON) $($2_exe_lList) $(NOSHARED_OFF) ) ) \
 	) \
 )
-
-#!#$(if $(filter yes,$(ccs)), \
-#!#    $(eval $2_libraryList += $(CCS_LIBLIST)) \
-#!#    $(eval $2_libraryListNoshared += $(CCS_LIBLIST_NOSHARED))   ) 
-#!#
-#!#$(if $(filter yes,$(rtap)), \
-#!#  $(if $(filter yes,$(noX11)), \
-#!#        $(eval $2_libraryList += $(RTAP_NOX11_FLAGS) ) \
-#!#	$(eval $2_libraryListNoshared += $(RTAP_NOX11_FLAGS_NOSHARED)),\
-#!#	$(eval $2_libraryList +=$(RTAP_FLAGS)) \
-#!#	$(eval $2_libraryListNoshared += $(RTAP_FLAGS_NOSHARED) ) ) \
-#!#  )
 
 
 .PHONY: $2 
@@ -1794,27 +1725,27 @@ endef
 ##########################################################################
 ##########################################################################
 
-######################################################
-# LINK_FILES
-######################################################
-define acsMakeLinkFileDependencies
-$(debug-enter)
-
-.PHONY:do_link_$(notdir $1)
-do_link_$(notdir $1): $(abspath .)/$(call cutOffCWD,$1)
-
-$(abspath .)/$(call cutOffCWD,$1): 
-	$(AT)if [ ! -h $1 ]; then \
-         echo "== Linking file: $1"; ln -s ../../ws/src/$1 $1; \
-	else \
-	 echo "Not feeling like doing this link $1 today\n"; \
-        fi 
-
-rm_link_$(notdir $1):
-	$(AT)if [ -h $1 ]; then $(RM) $1; fi
-
-$(debug-leave)
-endef
+#!!#######################################################
+#!!## support for LINK_FILES removed - see ICT-3855
+#!!#######################################################
+#!!#define acsMakeLinkFileDependencies
+#!!#$(debug-enter)
+#!!#
+#!!#.PHONY:do_link_$(notdir $1)
+#!!#do_link_$(notdir $1): $(abspath .)/$(call cutOffCWD,$1)
+#!!#
+#!!#$(abspath .)/$(call cutOffCWD,$1): 
+#!!#	$(AT)if [ ! -h $1 ]; then \
+#!!#         echo "== Linking file: $1"; ln -s ../../ws/src/$1 $1; \
+#!!#	else \
+#!!#	 echo "Not feeling like doing this link $1 today\n"; \
+#!!#        fi 
+#!!#
+#!!#rm_link_$(notdir $1):
+#!!#	$(AT)if [ -h $1 ]; then $(RM) $1; fi
+#!!#
+#!!#$(debug-leave)
+#!!#endef
 
 #(info Leaving definitions.mk)
 

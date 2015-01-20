@@ -213,44 +213,52 @@ $(foreach xml,$(ACSERRDEF),$(eval $(call acsMakeIDLDependencies,$(xml),idl)))
 
 
 #################################################################
-## LINK_FILES 
+#!!# support for LINK_FILES removed - see ICT-3855
 #################################################################
 
-.PHONY: make_links
-make_links: do_links_internal
+#!!#.PHONY: make_links
+#!!#make_links: do_links_internal
 
-.PHONY: do_links
-do_links: do_links_internal
+#!!#.PHONY: do_links
+#!!#do_links: do_links_internal
+#!!# we could leave an empty/dummy "do_links" target around in an
+#!!# attempt to provide backward compatibility (in case in some
+#!!# module's Makefile there would be a "do_links" pre-requisite
+#!!# without defining this target locally, and without defining
+#!!# LINK_FILES); however, by not doing that we'll soon find out if
+#!!# there are such cases, and that'll give us the incentive to
+#!!# correct them...
 
-ifneq ($(strip $(LINK_FILES)),)
-.PHONY : do_links_internal 
-do_links_internal: do_links_begin $(foreach lf,$(LINK_FILES),do_link_$(notdir $(lf))) 
+#!!#ifneq ($(strip $(LINK_FILES)),)
+#!!#.PHONY : do_links_internal 
+#!!#do_links_internal: do_links_begin $(foreach lf,$(LINK_FILES),do_link_$(notdir $(lf))) 
+#!!#
+#!!#.PHONY: do_links_begin
+#!!#do_links_begin:
+#!!#	-@$(ECHO) "....do links:"
+#!!#
+#!!#$(foreach lf, $(LINK_FILES), \
+#!!#	$(foreach wc, $(wildcard ../../ws/src/$(lf)), \
+#!!#		$(eval $(call acsMakeLinkFileDependencies,$(subst ../../ws/src/,,$(wc)))) ) \
+#!!#)
+#!!#
+#!!#
+#!!#.PHONY: clean_links
+#!!#clean_links: rm_links
+#!!#
+#!!#.PHONY : rm_links_begin
+#!!#rm_links_begin:
+#!!#	$(AT) echo "Removing links ...";
+#!!#
+#!!#.PHONY: rm_links
+#!!#rm_links: rm_links_begin $(foreach lf,$(LINK_FILES),rm_link_$(notdir $(lf)))
+#!!#
+#!!#CLEAN_TARGET += rm_links
+#!!#else
+#!!#do_links_internal:
+#!!#	$(AT)$(ECHO) "No links to be done"
+#!!#endif
 
-.PHONY: do_links_begin
-do_links_begin:
-	-@$(ECHO) "....do links:"
-
-$(foreach lf, $(LINK_FILES), \
-	$(foreach wc, $(wildcard ../../ws/src/$(lf)), \
-		$(eval $(call acsMakeLinkFileDependencies,$(subst ../../ws/src/,,$(wc)))) ) \
-)
-
-
-.PHONY: clean_links
-clean_links: rm_links
-
-.PHONY : rm_links_begin
-rm_links_begin:
-	$(AT) echo "Removing links ...";
-
-.PHONY: rm_links
-rm_links: rm_links_begin $(foreach lf,$(LINK_FILES),rm_link_$(notdir $(lf)))
-
-CLEAN_TARGET += rm_links
-else
-do_links_internal:
-	$(AT)$(ECHO) "No links to be done"
-endif
 #################################################################
 ## IDL
 #################################################################
