@@ -78,7 +78,7 @@ acsutil_LIBS    = acscommonStubs TAO_DynamicAny
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = acsutilTATPrologue acsutilTATEpilogue acsutilTATTestRunner acsutilProfiler acsutilDiffTrap acsutilRedo \
-		  acsutilBlock acsutilAwaitContainerStart ipython
+		  acsutilBlock acsutilAwaitContainerStart
 SCRIPTS_L       = 
 
 #

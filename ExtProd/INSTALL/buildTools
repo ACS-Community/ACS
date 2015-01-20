@@ -194,8 +194,8 @@ echo  -n "buildJacORB"
 ./buildJacORB && echo_success || echo_failure
 echo -n "buildPython"
 ./buildPython && echo_success || echo_failure
-echo -n "buildPyModules"
-./buildPyModules && echo_success || echo_failure
+#echo -n "buildPyModules"
+#./buildPyModules && echo_success || echo_failure
 echo -n "buildOmniORB"
 ./buildOmniORB && echo_success || echo_failure
 #TODO remove mico build and also the mico files from cvs,

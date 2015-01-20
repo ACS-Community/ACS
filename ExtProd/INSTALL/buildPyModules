@@ -350,10 +350,10 @@ else
   pushd foolscap-0.5.1
   $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
   popd
-  tar -zxf ipython-0.10.tar.gz
-  pushd ipython-0.10
-  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
-  popd
+#  tar -zxf ipython-0.10.tar.gz
+#  pushd ipython-0.10
+#  $PYTHON_INTR setup.py install  --prefix $PYTHON_ROOT
+#  popd
 fi
 
 if [ ! -e ../PRODUCTS/snakefood-1.4.tar.gz ]
