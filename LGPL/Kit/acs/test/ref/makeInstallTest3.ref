@@ -4,7 +4,7 @@
 1 -  . . . 'all' done
 1 - .....exe:
 1 - .....python_package:
-1 - Compiling python AcsPyTestPkg1
+1 - 	Compiling python AcsPyTestPkg1
 1 - Compiling <installpath>/lib/python/site-packages/AcsPyTestPkg1/A.py ...
 1 - SyntaxError: ('invalid syntax', ('<installpath>/lib/python/site-packages/AcsPyTestPkg1/A.py', 33, 22, '        skdfksdllk = $$$$\n'))
 1 - 
