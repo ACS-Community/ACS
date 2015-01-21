@@ -797,12 +797,26 @@ $(if $(or $3,$6), \
 	$(if $(findstring Cygwin, $(platform)), \
 	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o$(eval $(obj)_CFLAGS += $($2_CFLAGS))), \
 	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o) ) \
-	$(if $(findstring Cygwin, $(platform)), \
-	   $(eval $2_dList = $(strip $(sort $($2_dList)))) \
-	   $(eval $2_lList = $(strip $(sort $($2_lList)))) \
-	  ) \
-	)
-
+	$(foreach lib, $6, \
+            $(if $(filter stdc++,$(lib)), \
+	        $(eval $2_lList += -l$(lib)  MESSAGE += somemessage ), \
+                $(if $(filter g++,$(lib)), \
+                    $(eval MESSAGE += ecgs does not provide), \
+                    $(if $(filter iostream,$(lib)), \
+                        $(eval MESSAGE += please remove iostream), \
+	                $(if $(findstring Cygwin, $(platform)), \
+	                    $(eval $2_lList += -l$(lib) $(eval $2_dList += $(call deps,$(lib)))), \
+                            $(eval $2_lList += -l$(lib)) 
+                         ) \
+                     ) \
+                 ) \
+             ) \
+         ) \
+        $(if $(findstring Cygwin, $(platform)), \
+	    $(eval $2_dList = $(strip $(sort $($2_dList)))) \
+	    $(eval $2_lList = $(strip $(sort $($2_lList)))) \
+	 ) \
+        )
 
 $(eval $2_libraryList=$(GEN_LIBLIST))
 $(eval $2_libraryListNoshared=$(GEN_LIBLIST_NOSHARED))
@@ -815,7 +829,6 @@ $(if $($2_lList), \
 	  $(eval $2_libraryListNoshared += $(NOSHARED_ON) $(NOSHARED_OFF) ) ) \
 	) \
 )
-
 
 $(if $(filter /vw,$1),,
 $(if $5, \
@@ -952,12 +965,30 @@ endif
 
 $(eval $2_exe_lList = ) 
 $(if $(or $3,$6),
-	$(eval $2_oList = $(foreach obj,$3,../object/$(obj).o)) \
-	$(if $(findstring Cygwin, $(platform)), \
+    $(eval $2_oList = $(foreach obj,$3,../object/$(obj).o)) \
+    $(foreach lib, $6, \
+        $(if $(filter stdc++,$(lib)), \
+	    $(eval $2_exe_lList += -l$(lib)  MESSAGE += somemessage ), \
+            $(if $(filter g++,$(lib)), \
+                $(eval MESSAGE += ecgs does not provide), \
+                $(if $(filter iostream,$(lib)), \
+                    $(eval MESSAGE += please remove iostream),
+                    $(if $(filter C++,$(lib)), \
+                        $(eval $2_exe_lList += -lstdc++), \
+	                $(if $(findstring Cygwin, $(platform)), \
+	                    $(eval $2_exe_lList += -l$(lib) $(eval $2_exe_dList += $(call deps,$(lib)))), \
+                            $(eval $2_exe_lList += -l$(lib)) \
+                         ) \
+                     ) \
+                 ) \
+             ) \
+         ) \
+     ) \
+    $(if $(findstring Cygwin, $(platform)), \
 	   $(eval $2_exe_dList = $(strip $(sort $($2_exe_dList)))) \
 	   $(eval $2_exe_lList = $(strip $(sort $($2_exe_lList)))) \
-	  ) \
-)
+     ) \
+ )
 
 $(eval $2_libraryList=$(GEN_LIBLIST))
 $(eval $2_libraryListNoshared=$(GEN_LIBLIST_NOSHARED))
@@ -1267,7 +1298,7 @@ clean_dist_python_package_$1: clean_python_package_$1;
 .PHONY : install_python_package_$1
 install_python_package_$1:
 	$(AT)mkdir -p $(LIB)/python/site-packages/$1  
-	$(AT)echo "Compiling python $1" 
+	$(AT)$(ECHO) "\tCompiling python $1" 
 	$(AT)cp -pr `find ../lib/python/site-packages/$1/* -maxdepth 0 -type d;find ../lib/python/site-packages/$1/* -maxdepth 0 -type f` $(LIB)/python/site-packages/$1/
 	$(AT)cd $(LIB)/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) $(LIB)/python/site-packages/$1
 	$(AT)chmod -R $(P755) $(LIB)/python/site-packages/$1
@@ -1291,12 +1322,12 @@ do_python_module_$1: ../lib/python/site-packages/$1.py;
 install_python_module_$1: $(LIB)/python/site-packages/$1.py;
 
 $(LIB)/python/site-packages/$1.py: ../lib/python/site-packages/$1.py
-	$(AT)echo "\t$1.py";\
-	cp ../lib/python/site-packages/$1.py $(LIB)/python/site-packages
-	chmod $(P644) $(LIB)/python/site-packages/$1.py
-	python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) ../lib/python/site-packages
-	cp ../lib/python/site-packages/$1.pyc $(LIB)/python/site-packages
-	chmod $(P644) $(LIB)/python/site-packages/$1.pyc
+	$(AT)$(ECHO) "\t$1.py"
+	$(AT)cp ../lib/python/site-packages/$1.py $(LIB)/python/site-packages
+	$(AT)chmod $(P644) $(LIB)/python/site-packages/$1.py
+	$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) ../lib/python/site-packages
+	$(AT)cp ../lib/python/site-packages/$1.pyc $(LIB)/python/site-packages
+	$(AT)chmod $(P644) $(LIB)/python/site-packages/$1.pyc
 
 
 .PHONY:clean_python_module_$1
@@ -1725,27 +1756,6 @@ endef
 ##########################################################################
 ##########################################################################
 
-#!!#######################################################
-#!!## support for LINK_FILES removed - see ICT-3855
-#!!#######################################################
-#!!#define acsMakeLinkFileDependencies
-#!!#$(debug-enter)
-#!!#
-#!!#.PHONY:do_link_$(notdir $1)
-#!!#do_link_$(notdir $1): $(abspath .)/$(call cutOffCWD,$1)
-#!!#
-#!!#$(abspath .)/$(call cutOffCWD,$1): 
-#!!#	$(AT)if [ ! -h $1 ]; then \
-#!!#         echo "== Linking file: $1"; ln -s ../../ws/src/$1 $1; \
-#!!#	else \
-#!!#	 echo "Not feeling like doing this link $1 today\n"; \
-#!!#        fi 
-#!!#
-#!!#rm_link_$(notdir $1):
-#!!#	$(AT)if [ -h $1 ]; then $(RM) $1; fi
-#!!#
-#!!#$(debug-leave)
-#!!#endef
 
 #(info Leaving definitions.mk)
 
