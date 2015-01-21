@@ -19,6 +19,7 @@ ALMA - Atacama Large Millimiter Array
 
 package alma.alarmsystem.statistics;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -27,12 +28,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 import cern.laser.business.pojo.AlarmMessageProcessorImpl;
 
 import com.cosylab.acs.laser.AlarmSourcesListenerCached;
-
-import alma.acs.logging.AcsLogLevel;
-import alma.acs.logging.level.AcsLogLevelDefinition;
 
 /**
  * A class to calculate various statistics 
@@ -49,6 +49,12 @@ import alma.acs.logging.level.AcsLogLevelDefinition;
  * Statistics are logged every time interval whose default is {@value #DEFAULTTIMEINTERVAL} minutes.
  * The time interval can be customized by setting the {@value #TIMEINTERVALPROPNAME} java property.
  * A time interval of 0 minutes disable the logging of statistics (@see {@value #TIMEINTERVALPROPNAME}).
+ * The log level is INFO by default but can be customized by setting the {@link #LOGLEVELPROPNAME} 
+ * java property.
+ * <P>
+ * Statistics logged on file are more complete then those logged. 
+ * The number of activations and terminations of each alarm received during the time interval is stored
+ * in the {@link #alarmsMap} map.
  * <P>
  * Life cycle: 
  * {@link #start()} must be called to start gathering statistics and {@link #shutdown()} must be
@@ -72,7 +78,7 @@ public class StatsCalculator implements Runnable {
 	public static final int DEFAULTTIMEINTERVAL=10;
 	
 	/**
-	 * Statistics are logged every time interval
+	 * Statistics are logged every time interval (in minutes)
 	 */
 	public final int timeInterval=Integer.getInteger(TIMEINTERVALPROPNAME, DEFAULTTIMEINTERVAL);
 	
@@ -133,11 +139,24 @@ public class StatsCalculator implements Runnable {
 	private final AcsLogLevel logLevel;
 	
 	/**
+	 * The hashmap to record the activations/terminations of
+	 * each alarm during the time interval.
+	 * 
+	 * <BR>It is used to write stats on file
+	 */
+	private final StatHashMap alarmsMap;
+	
+	/**
+	 * The folder to write the file of statistics into
+	 */
+	private final File folder;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param logger The logger
 	 */
-	public StatsCalculator(Logger logger, AlarmSourcesListenerCached sourceNCQueue) {
+	public StatsCalculator(Logger logger, AlarmSourcesListenerCached sourceNCQueue, File folder) {
 		if (logger==null) {
 			throw new IllegalArgumentException("The logger can't be null!");
 		}
@@ -146,7 +165,18 @@ public class StatsCalculator implements Runnable {
 			throw new IllegalArgumentException("The AlarmSourcesListenerCached can't be null!");
 		}
 		this.sourceNCQueue=sourceNCQueue;
+		if (folder==null) {
+			throw new IllegalArgumentException("The folder can't be null!");
+		}
+		if (!folder.isDirectory()) {
+			throw new IllegalArgumentException(folder.getAbsolutePath()+" is not a folder");
+		}
+		if (!folder.canWrite()) {
+			throw new IllegalArgumentException("Can't write "+folder.getAbsolutePath());
+		}
+		this.folder=folder;
 		this.logLevel=evalLogLevel();
+		alarmsMap = new StatHashMap(logger,timeInterval);
 	}
 	
 	/**
@@ -194,11 +224,15 @@ public class StatsCalculator implements Runnable {
 	 * @param active The status of the alarm (<code>true</code> means active)
 	 */
 	public void processedFS(String alarmID,boolean active) {
+		if (timeInterval==0) {
+			return;
+		}
 		if (active) {
 			alarmsActivationForTimeInterval.incrementAndGet();
 		} else {
 			alarmsTerminationForTimeInterval.incrementAndGet();
 		}
+		alarmsMap.processedFS(alarmID,active);
 	}
 	
 	/**
@@ -219,11 +253,11 @@ public class StatsCalculator implements Runnable {
 		if (timeInterval>0) {
 			executor.scheduleWithFixedDelay(this, timeInterval, timeInterval, TimeUnit.MINUTES);
 			Object[] params={"Time interval",Integer.valueOf(timeInterval)};
+			alarmsMap.start();
 			logger.log(AcsLogLevel.INFO,"Gathering of statistics enabled",params);
 		} else {
 			logger.log(AcsLogLevel.INFO,"Gathering of statistics disabled (time interval<=0)");
 		}
-		
 	}
 	
 	/**
@@ -236,6 +270,7 @@ public class StatsCalculator implements Runnable {
 		if (timeInterval>0) {
 			logger.log(AcsLogLevel.INFO,"Shutting down stats calucaltion");
 			executor.shutdown();
+			alarmsMap.shutdown();
 		}
 	}
 	
@@ -276,7 +311,7 @@ public class StatsCalculator implements Runnable {
 	 * statistics logged by {@link #logStats()} 
 	 */
 	private void logStatsOnFile() {
-		
+		alarmsMap.calcStatistics();
 	}
 	
 	/**
