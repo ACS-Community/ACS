@@ -20,6 +20,7 @@ ALMA - Atacama Large Millimiter Array
 package alma.alarmsystem.statistics;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -147,16 +148,11 @@ public class StatsCalculator implements Runnable {
 	private final StatHashMap alarmsMap;
 	
 	/**
-	 * The folder to write the file of statistics into
-	 */
-	private final File folder;
-	
-	/**
 	 * Constructor
 	 * 
 	 * @param logger The logger
 	 */
-	public StatsCalculator(Logger logger, AlarmSourcesListenerCached sourceNCQueue, File folder) {
+	public StatsCalculator(Logger logger, AlarmSourcesListenerCached sourceNCQueue) {
 		if (logger==null) {
 			throw new IllegalArgumentException("The logger can't be null!");
 		}
@@ -165,18 +161,8 @@ public class StatsCalculator implements Runnable {
 			throw new IllegalArgumentException("The AlarmSourcesListenerCached can't be null!");
 		}
 		this.sourceNCQueue=sourceNCQueue;
-		if (folder==null) {
-			throw new IllegalArgumentException("The folder can't be null!");
-		}
-		if (!folder.isDirectory()) {
-			throw new IllegalArgumentException(folder.getAbsolutePath()+" is not a folder");
-		}
-		if (!folder.canWrite()) {
-			throw new IllegalArgumentException("Can't write "+folder.getAbsolutePath());
-		}
-		this.folder=folder;
 		this.logLevel=evalLogLevel();
-		alarmsMap = new StatHashMap(logger,timeInterval);
+		alarmsMap = new StatHashMap(logger,timeInterval,getStatFolder());
 	}
 	
 	/**
@@ -322,5 +308,20 @@ public class StatsCalculator implements Runnable {
 		alarmsActivationForTimeInterval.set(0);
 		alarmsTerminationForTimeInterval.set(0);
 		messagesFromSources.set(0);
+	}
+	
+	/**
+	 * Get the folder where the files with the statistics will be written
+	 * that normally is <code>ACS_TMP</code> (the fallback is the current folder).
+	 * 
+	 * @return The folder to host file of statistics.
+	 */
+	private File getStatFolder() {
+		// Try to create the file in $ACS_TMP
+		String acstmp = System.getProperty("ACS.tmp",".");
+		if (!acstmp.endsWith(File.separator)) {
+			acstmp=acstmp+File.separator;
+		}
+		return  new File(acstmp);
 	}
 }

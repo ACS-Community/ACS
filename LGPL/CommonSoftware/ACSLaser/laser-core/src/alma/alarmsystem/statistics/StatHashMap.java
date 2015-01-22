@@ -18,6 +18,7 @@ ALMA - Atacama Large Millimiter Array
 */
 package alma.alarmsystem.statistics;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -209,12 +210,18 @@ public class StatHashMap implements Runnable {
 	private volatile boolean closed=false;
 	
 	/**
+	 * The folder to write the files of statistics into
+	 */
+	private final File folder;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param lgger The logger
 	 * @param intervalLength The length of each time interval (in minutes)
+	 * @param folder The folder to write the files of statistics into
 	 */
-	public StatHashMap(Logger logger, int intervalLength) {
+	public StatHashMap(Logger logger, int intervalLength, File folder) {
 		if (logger==null) {
 			throw new IllegalArgumentException("The logger can't be null");
 		}
@@ -223,6 +230,16 @@ public class StatHashMap implements Runnable {
 			throw new IllegalArgumentException("The time interval must be greater or equal to 0");
 		}
 		this.timeInterval=intervalLength;
+		if (folder==null) {
+			throw new IllegalArgumentException("The logger can't be null");
+		}
+		if (!folder.isDirectory()) {
+			throw new IllegalArgumentException(folder.getAbsolutePath()+ " not a directory");
+		}
+		if (!folder.canWrite()) {
+			throw new IllegalArgumentException("Can't create files in "+folder.getAbsolutePath());
+		}
+		this.folder=folder;
 	}
 	
 	/** 
