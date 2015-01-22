@@ -18,7 +18,11 @@ ALMA - Atacama Large Millimiter Array
 */
 package alma.alarmsystem.statistics;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,6 +31,9 @@ import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
+
+import alma.acs.logging.AcsLogLevel;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * <code>StatHashMap</code> encapsulate a HashMap where all the alarms
@@ -61,7 +68,7 @@ public class StatHashMap implements Runnable {
 		/**
 		 * The ID of the alarm whose statistics this object holds
 		 */
-		private final String alarmID;
+		public final String alarmID;
 
 		/**
 		 *  Number of activations in the last time interval
@@ -213,6 +220,23 @@ public class StatHashMap implements Runnable {
 	 * The folder to write the files of statistics into
 	 */
 	private final File folder;
+	
+	/**
+	 * The name of each file is composed of a prefix plus the index
+	 * and the ".xml" extension.
+	 */
+	private static final String fileNamePrefix="AlarmSystemStats-";
+	
+	/**
+	 * The name of each file of statistics is indexed with the following integer
+	 */
+	private int fileNumber=0;
+	
+	/**
+	 * A new file is created when the size of actual one is greater then
+	 * the value of this property 
+	 */
+	private static final long maxFileSize= 2000000000;
 	
 	/**
 	 * Constructor
@@ -369,6 +393,141 @@ public class StatHashMap implements Runnable {
 		// Average number of operations per second
 		double avgOpPerSecond=totOperations/(timeInterval*60);
 		
-		// Write a new record in the file
+		// Get the file to write the statistics
+		BufferedWriter outF;
+		try { 
+			outF=openOutputFile();
+		} catch (Throwable t) {
+			logger.log(AcsLogLevel.ERROR, "Can't write on file: statistics lost", t);
+			return;
+		}
+		
+		// Build the string to write on disk
+		String now = IsoDateFormat.formatCurrentDate();
+		StringBuilder outStr = new StringBuilder("<AlarmSystemStatistics TimeStamp=\""+now+"\">\n");
+		outStr.append("\t<ProcessedAlarmTypes>");
+		outStr.append(totAlarms);
+		outStr.append("</ProcessedAlarmTypes>\n");
+		outStr.append("\t<Activations>");
+		outStr.append(totActivations);
+		outStr.append("</Activations>\n");
+		outStr.append("\t<Terminations>");
+		outStr.append(totTerminations);
+		outStr.append("</Terminations>\n");
+		outStr.append("\t<TotalAlarms>");
+		outStr.append(totOperations);
+		outStr.append("</TotalAlarms>\n");
+		outStr.append("\t<AvgAlarmsPerSecond>");
+		outStr.append(String.format("%.2f", avgOpPerSecond));
+		outStr.append("</AvgAlarmsPerSecond>\n");
+		
+		appendListOfAlarms(alarmsOrderdByActivations,alarmsOrderdByTerminations,alarmsOrderdByOperations,outStr,5);
+		
+		outStr.append("</AlarmSystemStatistics>\n");
+		
+		try {
+			outF.write(outStr.toString());
+		} catch (Throwable t) {
+			logger.log(AcsLogLevel.ERROR, "Failed to write record on file: statistics lost", t);
+		} finally {
+			try {
+				outF.close();	
+			} catch (Throwable t) {
+				logger.log(AcsLogLevel.ERROR, "Failed to close the file", t);
+			}
+		}
+	}
+	
+	/**
+	 * Append lists of the top 5 five alarms of the tree lists
+	 * <P>
+	 * The list reportes the 5 alarms with the highest numbers (alarms
+	 * with the same values are grouped)
+	 * 
+	 * @param mostActivated The list of the most activated alarms
+	 * @param mostTerminated The list of the most terminated alarms
+	 * @param mostOperated The list of the most activated and terminated alarms
+	 * @param strBuilder The builder to append the ID of the alarms
+	 * @param depth The number of items to append
+	 */
+	public void appendListOfAlarms(
+			TreeSet<AlarmInfo> mostActivated,
+			TreeSet<AlarmInfo> mostTerminated,
+			TreeSet<AlarmInfo> mostOperated,
+			StringBuilder strBuilder, int depth) {
+		
+		
+		strBuilder.append("\t<MostActivatedAlarms>\n");
+		int count=0;
+		long oldVal=0;
+		while (count<=5 && !mostActivated.isEmpty()) {
+			AlarmInfo alarm = mostActivated.pollLast();
+			strBuilder.append("\t\t<ID>");
+			strBuilder.append(alarm.alarmID);
+			strBuilder.append("</ID>\n");
+			if (oldVal!=alarm.getActivations()) {
+				count++;
+			}
+			oldVal=alarm.getActivations();
+		}
+		strBuilder.append("</MostActivatedAlarms>\n");
+		
+		
+		strBuilder.append("\t<MostTerminatedAlarms>\n");
+		count=0;
+		oldVal=0;
+		while (count<=5 && !mostTerminated.isEmpty()) {
+			AlarmInfo alarm = mostTerminated.pollLast();
+			strBuilder.append("\t\t<ID>");
+			strBuilder.append(alarm.alarmID);
+			strBuilder.append("</ID>\n");
+			if (oldVal!=alarm.getTerminations()) {
+				count++;
+			}
+			oldVal=alarm.getTerminations();
+		}
+		strBuilder.append("</MostTerminatedAlarms>\n");
+		
+		strBuilder.append("\t<MostActivatedTerminatedAlarms>\n");
+		count=0;
+		oldVal=0;
+		while (count<=5 && !mostOperated.isEmpty()) {
+			AlarmInfo alarm = mostOperated.pollLast();
+			strBuilder.append("\t\t<ID>");
+			strBuilder.append(alarm.alarmID);
+			strBuilder.append("</ID>\n");
+			if (oldVal!=alarm.getTotalOperations()) {
+				count++;
+			}
+			oldVal=alarm.getTotalOperations();
+		}
+		strBuilder.append("</MostActivatedTerminatedAlarms>\n");
+		
+	}
+	
+	/**
+	 * Open and create the output stream for writing statistics on file.
+	 * <P>
+	 * The file is opened for each writing and close immediately after.
+	 * A new file is created, whenever the size of the actual file is
+	 * greater then {@link #maxFileSize}.
+	 * 
+	 * @return The stream for writing into the file
+	 * @throws IOException If can't open/create the file for writing
+	 */
+	private BufferedWriter openOutputFile() throws IOException {
+		System.out.println("Opening file with index "+fileNumber);
+		String actualFileName=fileNamePrefix+fileNumber+".xml";
+		String folderName= folder.getAbsolutePath();
+		if (!folderName.endsWith(""+File.separator)) {
+			folderName=folderName+File.separator;
+		}
+		// Check the size of the file if it exists
+		File f = new File(folderName+actualFileName);
+		if (f.exists() && f.length()>maxFileSize) {
+			fileNumber++;
+			return openOutputFile();
+		}
+		return new BufferedWriter(new FileWriter(f, true));
 	}
 }

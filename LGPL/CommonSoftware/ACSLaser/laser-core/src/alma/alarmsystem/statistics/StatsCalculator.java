@@ -312,16 +312,19 @@ public class StatsCalculator implements Runnable {
 	
 	/**
 	 * Get the folder where the files with the statistics will be written
-	 * that normally is <code>ACS_TMP</code> (the fallback is the current folder).
+	 * that normally is <code>ACS_TMP/ACS_INSTANCE.n</code> (the fallback is the current folder).
 	 * 
 	 * @return The folder to host file of statistics.
 	 */
 	private File getStatFolder() {
 		// Try to create the file in $ACS_TMP
 		String acstmp = System.getProperty("ACS.tmp",".");
-		if (!acstmp.endsWith(File.separator)) {
+		if (!acstmp.endsWith(""+File.separator)) {
 			acstmp=acstmp+File.separator;
 		}
-		return  new File(acstmp);
+		String acsbaseport = System.getProperty("ACS.baseport","0");
+		String folderName=acstmp+File.separator+"ACS_INSTANCE."+acsbaseport;
+		logger.log(AcsLogLevel.DEBUG,"Alarm systems statisticss will be recorded in "+folderName);
+		return  new File(folderName);
 	}
 }
