@@ -29,13 +29,13 @@
 SOURCE lasercoreTATEnvironment
 PROLOGUE lasercoreTATPrologue
 
-#1 testCategoryDAO "testCategoryDAO"
-#2 testAlarmDAO "testAlarmDAO"
-#3 testAlarmService "testAlarmService"
-#4 testAlarmSender "testAlarmSender"
-#5 testIDLSendAlarm "testIDLSendAlarm"
-#6 testRRWithDefaultFM "testRRWithDefaultFM"
-#7 testRRWithRegExp "testRRWithRegExp"
+1 testCategoryDAO "testCategoryDAO"
+2 testAlarmDAO "testAlarmDAO"
+3 testAlarmService "testAlarmService"
+4 testAlarmSender "testAlarmSender"
+5 testIDLSendAlarm "testIDLSendAlarm"
+6 testRRWithDefaultFM "testRRWithDefaultFM"
+7 testRRWithRegExp "testRRWithRegExp"
 8 testStatistics "testStatistics"
 
 EPILOGUE acsutilTATEpilogue
