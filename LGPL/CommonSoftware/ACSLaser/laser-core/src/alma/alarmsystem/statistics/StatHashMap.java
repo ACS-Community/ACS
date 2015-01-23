@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -288,6 +289,8 @@ public class StatHashMap implements Runnable {
 	 */
 	private static final long maxFileSize= 2000000000;
 	
+	private static final String closeXMLTag="</Statistics>\n";
+	
 	/**
 	 * Constructor
 	 * 
@@ -439,41 +442,43 @@ public class StatHashMap implements Runnable {
 		
 		// Build the string to write on disk
 		String now = IsoDateFormat.formatCurrentDate();
-		StringBuilder outStr = new StringBuilder("<AlarmSystemStatistics TimeStamp=\""+now+"\">\n");
-		outStr.append("\t<ProcessedAlarmTypes>");
+		StringBuilder outStr = new StringBuilder("\t<Record TimeStamp=\""+now+"\">\n");
+		outStr.append("\t\t<ProcessedAlarmTypes>");
 		outStr.append(totAlarms);
 		outStr.append("</ProcessedAlarmTypes>\n");
-		outStr.append("\t<Activations>");
+		outStr.append("\t\t<Activations>");
 		outStr.append(statStruct.numActiavations);
 		outStr.append("</Activations>\n");
-		outStr.append("\t<Terminations>");
+		outStr.append("\t\t<Terminations>");
 		outStr.append(statStruct.numTerminations);
 		outStr.append("</Terminations>\n");
-		outStr.append("\t<TotalAlarms>");
+		outStr.append("\t\t<TotalAlarms>");
 		outStr.append(totOperations);
 		outStr.append("</TotalAlarms>\n");
-		outStr.append("\t<AvgAlarmsPerSecond>");
+		outStr.append("\t\t<AvgAlarmsPerSecond>");
 		outStr.append(String.format("%.2f", avgOpPerSecond));
 		outStr.append("</AvgAlarmsPerSecond>\n");
 		
-		outStr.append("\t<MostActivatedAlarms>\n");
+		outStr.append("\t\t<MostActivatedAlarms>\n");
 		Collections.sort(infos, new ComparatorByActivations());
 		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.ACTIVATIONS,outStr,5);
-		outStr.append("\t</MostActivatedAlarms>\n");
+		outStr.append("\t\t</MostActivatedAlarms>\n");
 		
 		
-		outStr.append("\t<MostTerminatedAlarms>\n");
+		outStr.append("\t\t<MostTerminatedAlarms>\n");
 		Collections.sort(infos, new ComparatorByTerminations());
 		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.TERMINATIONS,outStr,5);
-		outStr.append("\t</MostTerminatedAlarms>\n");
+		outStr.append("\t\t</MostTerminatedAlarms>\n");
 		
-		outStr.append("\t<MostActivatedTerminatedAlarms>\n");
+		outStr.append("\t\t<MostActivatedTerminatedAlarms>\n");
 		Collections.sort(infos, new ComparatorByOperations());
 		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.OPERATIONS,outStr,5);
-		outStr.append("\t</MostActivatedTerminatedAlarms>\n");
+		outStr.append("\t\t</MostActivatedTerminatedAlarms>\n");
 
+		outStr.append("\t</Record>\n");
 		
-		outStr.append("</AlarmSystemStatistics>\n");
+		// This string appears at the end of the XML file
+		outStr.append(closeXMLTag);
 		
 		try {
 			outF.write(outStr.toString());
@@ -486,12 +491,15 @@ public class StatHashMap implements Runnable {
 				logger.log(AcsLogLevel.ERROR, "Failed to close the file", t);
 			}
 		}
+		
+		statStruct.alarmsInfo.clear();
+		infos.clear();
 	}
 	
 	/**
 	 * Append lists of the top 5 five alarms of the passed list
 	 * <P>
-	 * The list reportes the 5 alarms with the highest numbers (alarms
+	 * The list reports the number of alarms with the highest numbers (alarms
 	 * with the same values are grouped)
 	 * 
 	 * @param infos The list of alarms received in the time interval
@@ -507,9 +515,9 @@ public class StatHashMap implements Runnable {
 		int count=0;
 		long oldVal=0;
 		int pos=infos.size()-1;
-		while (count<=5 && pos>=0) {
+		while (count<=depth && pos>=0) {
 			AlarmInfo alarm = infos.get(pos--);
-			strBuilder.append("\t\t<ID value=\""+alarm.activations+"\">");
+			strBuilder.append("\t\t\t<ID value=\""+alarm.activations+"\">");
 			strBuilder.append(alarm.alarmID);
 			strBuilder.append("</ID>\n");
 			if (oldVal!=alarm.getActivations()) {
@@ -530,7 +538,6 @@ public class StatHashMap implements Runnable {
 	 * @throws IOException If can't open/create the file for writing
 	 */
 	private BufferedWriter openOutputFile() throws IOException {
-		System.out.println("Opening file with index "+fileNumber);
 		String actualFileName=fileNamePrefix+fileNumber+".xml";
 		String folderName= folder.getAbsolutePath();
 		if (!folderName.endsWith(""+File.separator)) {
@@ -542,6 +549,20 @@ public class StatHashMap implements Runnable {
 			fileNumber++;
 			return openOutputFile();
 		}
-		return new BufferedWriter(new FileWriter(f, true));
+		BufferedWriter  ret;
+		if (f.length()==0) {
+			// New file
+			ret  = new BufferedWriter(new FileWriter(f, true));
+			ret.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
+			ret.write("<Statistics>\n");
+
+		} else {
+			// Remove the closing tag (closeXMLTag) before adding a new record
+			RandomAccessFile temp = new RandomAccessFile(f, "rw");
+			temp.setLength(temp.length()-closeXMLTag.length());
+			temp.close();
+			ret  = new BufferedWriter(new FileWriter(f, true));
+		}
+		return ret;
 	}
 }
