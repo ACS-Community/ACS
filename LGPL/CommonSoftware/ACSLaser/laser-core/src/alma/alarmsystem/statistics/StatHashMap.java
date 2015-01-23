@@ -180,44 +180,35 @@ public class StatHashMap implements Runnable {
 		}
 		
 	}
-
-	/**
-	 * A {@link AlarmInfo} comparator based on the number of activations 
-	 * @author acaproni
-	 *
-	 */
-	private static class ComparatorByActivations implements Comparator<AlarmInfo> {
-		@Override
-		public int compare(AlarmInfo o1, AlarmInfo o2) {
-			return Long.valueOf(o1.getActivations()).compareTo(o2.getActivations());
-		}
-		
-	}
 	
 	/**
-	 * A {@link AlarmInfo} comparator based on the number of operations 
-	 * (activations and terminations)
+	 * A {@link AlarmInfo} comparator based on the passed type
 	 *  
 	 * @author acaproni
-	 *
 	 */
-	private static class ComparatorByOperations implements Comparator<AlarmInfo> {
+	private static class ComparatorByType implements Comparator<AlarmInfo> {
+		/** 
+		 * The type on which the comparison is based
+		 */
+		private final AlarmInfo.VALUE_TYPE type;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param type The type on which the comparison is based
+		 */
+		public ComparatorByType(AlarmInfo.VALUE_TYPE type) {
+			if (type==null) {
+				throw new IllegalArgumentException("The type can't be null");
+			}
+			this.type=type;
+		}
+		
 		@Override
 		public int compare(AlarmInfo o1, AlarmInfo o2) {
-			return Long.valueOf(o1.getTotalOperations()).compareTo(Long.valueOf(o2.getTotalOperations()));
+			return Long.valueOf(o1.getValue(type)).compareTo(o2.getValue(type));
 		}
-	}
-	
-	/**
-	 * A {@link AlarmInfo} comparator based on the number of terminations 
-	 * @author acaproni
-	 *
-	 */
-	private static class ComparatorByTerminations implements Comparator<AlarmInfo> {
-		@Override
-		public int compare(AlarmInfo o1, AlarmInfo o2) {
-			return Long.valueOf(o1.getTerminations()).compareTo(o2.getTerminations());
-		}
+		
 	}
 	
 	/**
@@ -460,19 +451,19 @@ public class StatHashMap implements Runnable {
 		outStr.append("</AvgAlarmsPerSecond>\n");
 		
 		outStr.append("\t\t<MostActivatedAlarms>\n");
-		Collections.sort(infos, new ComparatorByActivations());
-		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.ACTIVATIONS,outStr,5);
+		Collections.sort(infos, new ComparatorByType(AlarmInfo.VALUE_TYPE.ACTIVATIONS));
+		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.ACTIVATIONS,outStr,4);
 		outStr.append("\t\t</MostActivatedAlarms>\n");
 		
 		
 		outStr.append("\t\t<MostTerminatedAlarms>\n");
-		Collections.sort(infos, new ComparatorByTerminations());
-		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.TERMINATIONS,outStr,5);
+		Collections.sort(infos, new ComparatorByType(AlarmInfo.VALUE_TYPE.TERMINATIONS));
+		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.TERMINATIONS,outStr,4);
 		outStr.append("\t\t</MostTerminatedAlarms>\n");
 		
 		outStr.append("\t\t<MostActivatedTerminatedAlarms>\n");
-		Collections.sort(infos, new ComparatorByOperations());
-		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.OPERATIONS,outStr,5);
+		Collections.sort(infos, new ComparatorByType(AlarmInfo.VALUE_TYPE.OPERATIONS));
+		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.OPERATIONS,outStr,4);
 		outStr.append("\t\t</MostActivatedTerminatedAlarms>\n");
 
 		outStr.append("\t</Record>\n");
@@ -517,13 +508,16 @@ public class StatHashMap implements Runnable {
 		int pos=infos.size()-1;
 		while (count<=depth && pos>=0) {
 			AlarmInfo alarm = infos.get(pos--);
-			strBuilder.append("\t\t\t<ID value=\""+alarm.activations+"\">");
+			long actualValue=alarm.getValue(type);
+			strBuilder.append("\t\t\t<ID value=\"");
+			strBuilder.append(actualValue);
+			strBuilder.append("\">");
 			strBuilder.append(alarm.alarmID);
 			strBuilder.append("</ID>\n");
-			if (oldVal!=alarm.getActivations()) {
+			if (oldVal!=actualValue) {
 				count++;
 			}
-			oldVal=alarm.getActivations();
+			oldVal=actualValue;
 		}
 	}
 	
