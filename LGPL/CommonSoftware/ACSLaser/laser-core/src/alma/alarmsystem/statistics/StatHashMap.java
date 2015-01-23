@@ -18,14 +18,17 @@ ALMA - Atacama Large Millimiter Array
 */
 package alma.alarmsystem.statistics;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -55,6 +58,25 @@ import alma.acs.util.IsoDateFormat;
  * @since 2015.2
  */
 public class StatHashMap implements Runnable {
+	
+	/** 
+	 * A struct to hold the statistics at each iterations
+	 * @author almadev
+	 *
+	 */
+	private static class StatStruct {
+		public StatStruct(long maxTotActiavations, long maxTotTerminations,
+				Map<String, AlarmInfo> alarmsInfo) {
+			super();
+			this.numActiavations = maxTotActiavations;
+			this.numTerminations = maxTotTerminations;
+			this.alarmsInfo = alarmsInfo;
+		}
+		
+		public final long numActiavations;
+		public final long numTerminations;
+		public final Map<String,AlarmInfo> alarmsInfo;
+	}
 	/**
 	 * To get more useful statistics, the number of activations
 	 * and terminations of each alarm in the last time interval
@@ -64,6 +86,17 @@ public class StatHashMap implements Runnable {
 	 *
 	 */
 	private static class AlarmInfo {
+		
+		/**
+		 * 
+		 * @author The type of a valu to get
+		 *
+		 */
+		private enum VALUE_TYPE {
+			ACTIVATIONS,
+			TERMINATIONS,
+			OPERATIONS
+		};
 		
 		/**
 		 * The ID of the alarm whose statistics this object holds
@@ -126,6 +159,25 @@ public class StatHashMap implements Runnable {
 		public long getTotalOperations() {
 			return activations+terminations;
 		}
+
+		@Override
+		public String toString() {
+			return alarmID+": activations="+getActivations()+", terminations="+getTerminations();
+		}
+		
+		public long getValue(VALUE_TYPE type) {
+			if (type==null) {
+				throw new IllegalArgumentException("The type can't be null");
+			}
+			if (type==VALUE_TYPE.ACTIVATIONS) {
+				return getActivations();
+			} 
+			if (type==VALUE_TYPE.TERMINATIONS) {
+				return getTerminations();
+			}
+			return getTotalOperations();
+		}
+		
 	}
 
 	/**
@@ -136,9 +188,9 @@ public class StatHashMap implements Runnable {
 	private static class ComparatorByActivations implements Comparator<AlarmInfo> {
 		@Override
 		public int compare(AlarmInfo o1, AlarmInfo o2) {
-			Long.valueOf(o1.getActivations()).compareTo(o2.getActivations());
-			return 0;
+			return Long.valueOf(o1.getActivations()).compareTo(o2.getActivations());
 		}
+		
 	}
 	
 	/**
@@ -151,8 +203,7 @@ public class StatHashMap implements Runnable {
 	private static class ComparatorByOperations implements Comparator<AlarmInfo> {
 		@Override
 		public int compare(AlarmInfo o1, AlarmInfo o2) {
-			Long.valueOf(o1.getTotalOperations()).compareTo(o2.getTotalOperations());
-			return 0;
+			return Long.valueOf(o1.getTotalOperations()).compareTo(Long.valueOf(o2.getTotalOperations()));
 		}
 	}
 	
@@ -164,8 +215,7 @@ public class StatHashMap implements Runnable {
 	private static class ComparatorByTerminations implements Comparator<AlarmInfo> {
 		@Override
 		public int compare(AlarmInfo o1, AlarmInfo o2) {
-			Long.valueOf(o1.getTerminations()).compareTo(o2.getTerminations());
-			return 0;
+			return Long.valueOf(o1.getTerminations()).compareTo(o2.getTerminations());
 		}
 	}
 	
@@ -198,7 +248,7 @@ public class StatHashMap implements Runnable {
 	 * <P>
 	 * The thread gets maps from this queue and generate the statistics.
 	 */
-	private final BlockingQueue<Map<String,AlarmInfo>> mapsQueue = new ArrayBlockingQueue<Map<String,AlarmInfo>>(MAXQUEUECAPACITY);
+	private final BlockingQueue<StatStruct> mapsQueue = new ArrayBlockingQueue<StatStruct>(MAXQUEUECAPACITY);
 	
 	/**
 	 * The thread to calculate statistics
@@ -264,6 +314,7 @@ public class StatHashMap implements Runnable {
 			throw new IllegalArgumentException("Can't create files in "+folder.getAbsolutePath());
 		}
 		this.folder=folder;
+		logger.log(AcsLogLevel.DEBUG,"Files with statistics will be saved in "+this.folder.getAbsolutePath());
 	}
 	
 	/** 
@@ -288,17 +339,19 @@ public class StatHashMap implements Runnable {
 	}
 	
 	/**
-	 * Calculate the statistics.
-	 * <P>
+	 * Create a new structure for the timer task:the eal calculation will be done there
+	 * 
+	 * @param activations Activations in the given interval
+	 * @param terminations Terminations in the given interval
 	 */
-	public void calcStatistics() {
+	public void calcStatistics(long activations, long terminations) {
 		if (closed || timeInterval==0) {
 			return;
 		}
 		// Create new map and release the lock so that processedFS does not block
 		// impacting alarm server performances
 		synchronized (this) {
-			if (!mapsQueue.offer(alarmsMap)) {
+			if (!mapsQueue.offer(new StatStruct(activations, terminations, alarmsMap))) {
 				// Queue full: log a warning
 				logger.warning("Alarm statistics lost for this time interval: the queue is full");
 			}
@@ -313,13 +366,13 @@ public class StatHashMap implements Runnable {
 	public void run() {
 		while (!closed) {
 			// Get one map out of the queue
-			Map<String, AlarmInfo> map;
+			StatStruct struct;
 			try { 
-				map = mapsQueue.take();
+				struct = mapsQueue.take();
 			} catch (InterruptedException ie) {
 				continue;
 			}
-			calculate(map);
+			calculate(struct);
 		}
 	}
 	
@@ -359,36 +412,18 @@ public class StatHashMap implements Runnable {
 	 * 	<LI>The 5 alarms that has been terminated more often
 	 * </UL>
 	 * 
-	 * @param map The map of alarms
+	 * @param statStruct The object with numbers for the statistics
 	 */
-	private void calculate(Map<String, AlarmInfo> map) {
+	private void calculate(StatStruct statStruct) {
 		// A collection to iterate over the values
-		Collection<AlarmInfo> infos = map.values();
+		List<AlarmInfo> infos = new ArrayList<AlarmInfo>(statStruct.alarmsInfo.values());
 		
 		// The number of different alarms published in the interval
 		int totAlarms = infos.size();
 		
-		// Total number of activations
-		long totActivations=0;
-		
-		// Total number of terminations
-		long totTerminations=0;
-		
-		// Define three data structures with the alarms ordered by activations, terminations and number of operations
-		TreeSet<AlarmInfo> alarmsOrderdByActivations = new TreeSet<StatHashMap.AlarmInfo>(new ComparatorByActivations());
-		TreeSet<AlarmInfo> alarmsOrderdByTerminations = new TreeSet<StatHashMap.AlarmInfo>(new ComparatorByTerminations());
-		TreeSet<AlarmInfo> alarmsOrderdByOperations= new TreeSet<StatHashMap.AlarmInfo>(new ComparatorByOperations());
-		for (AlarmInfo info: infos) {
-			totActivations+=info.getActivations();
-			totTerminations+=info.getTerminations();
-			
-			alarmsOrderdByActivations.add(info);
-			alarmsOrderdByTerminations.add(info);
-			alarmsOrderdByOperations.add(info);
-		}
 		
 		// Total number of operations (i.e. activations and terminations)
-		long totOperations=totActivations+totTerminations;
+		long totOperations=statStruct.numActiavations+statStruct.numTerminations;
 		
 		// Average number of operations per second
 		double avgOpPerSecond=totOperations/(timeInterval*60);
@@ -409,10 +444,10 @@ public class StatHashMap implements Runnable {
 		outStr.append(totAlarms);
 		outStr.append("</ProcessedAlarmTypes>\n");
 		outStr.append("\t<Activations>");
-		outStr.append(totActivations);
+		outStr.append(statStruct.numActiavations);
 		outStr.append("</Activations>\n");
 		outStr.append("\t<Terminations>");
-		outStr.append(totTerminations);
+		outStr.append(statStruct.numTerminations);
 		outStr.append("</Terminations>\n");
 		outStr.append("\t<TotalAlarms>");
 		outStr.append(totOperations);
@@ -421,7 +456,22 @@ public class StatHashMap implements Runnable {
 		outStr.append(String.format("%.2f", avgOpPerSecond));
 		outStr.append("</AvgAlarmsPerSecond>\n");
 		
-		appendListOfAlarms(alarmsOrderdByActivations,alarmsOrderdByTerminations,alarmsOrderdByOperations,outStr,5);
+		outStr.append("\t<MostActivatedAlarms>\n");
+		Collections.sort(infos, new ComparatorByActivations());
+		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.ACTIVATIONS,outStr,5);
+		outStr.append("\t</MostActivatedAlarms>\n");
+		
+		
+		outStr.append("\t<MostTerminatedAlarms>\n");
+		Collections.sort(infos, new ComparatorByTerminations());
+		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.TERMINATIONS,outStr,5);
+		outStr.append("\t</MostTerminatedAlarms>\n");
+		
+		outStr.append("\t<MostActivatedTerminatedAlarms>\n");
+		Collections.sort(infos, new ComparatorByOperations());
+		appendListOfAlarms(infos,AlarmInfo.VALUE_TYPE.OPERATIONS,outStr,5);
+		outStr.append("\t</MostActivatedTerminatedAlarms>\n");
+
 		
 		outStr.append("</AlarmSystemStatistics>\n");
 		
@@ -439,30 +489,27 @@ public class StatHashMap implements Runnable {
 	}
 	
 	/**
-	 * Append lists of the top 5 five alarms of the tree lists
+	 * Append lists of the top 5 five alarms of the passed list
 	 * <P>
 	 * The list reportes the 5 alarms with the highest numbers (alarms
 	 * with the same values are grouped)
 	 * 
-	 * @param mostActivated The list of the most activated alarms
-	 * @param mostTerminated The list of the most terminated alarms
-	 * @param mostOperated The list of the most activated and terminated alarms
+	 * @param infos The list of alarms received in the time interval
+	 * @param The type of value shown by the list
 	 * @param strBuilder The builder to append the ID of the alarms
 	 * @param depth The number of items to append
 	 */
-	public void appendListOfAlarms(
-			TreeSet<AlarmInfo> mostActivated,
-			TreeSet<AlarmInfo> mostTerminated,
-			TreeSet<AlarmInfo> mostOperated,
+	private void appendListOfAlarms(
+			List<AlarmInfo> infos,
+			AlarmInfo.VALUE_TYPE type,
 			StringBuilder strBuilder, int depth) {
 		
-		
-		strBuilder.append("\t<MostActivatedAlarms>\n");
 		int count=0;
 		long oldVal=0;
-		while (count<=5 && !mostActivated.isEmpty()) {
-			AlarmInfo alarm = mostActivated.pollLast();
-			strBuilder.append("\t\t<ID>");
+		int pos=infos.size()-1;
+		while (count<=5 && pos>=0) {
+			AlarmInfo alarm = infos.get(pos--);
+			strBuilder.append("\t\t<ID value=\""+alarm.activations+"\">");
 			strBuilder.append(alarm.alarmID);
 			strBuilder.append("</ID>\n");
 			if (oldVal!=alarm.getActivations()) {
@@ -470,39 +517,6 @@ public class StatHashMap implements Runnable {
 			}
 			oldVal=alarm.getActivations();
 		}
-		strBuilder.append("</MostActivatedAlarms>\n");
-		
-		
-		strBuilder.append("\t<MostTerminatedAlarms>\n");
-		count=0;
-		oldVal=0;
-		while (count<=5 && !mostTerminated.isEmpty()) {
-			AlarmInfo alarm = mostTerminated.pollLast();
-			strBuilder.append("\t\t<ID>");
-			strBuilder.append(alarm.alarmID);
-			strBuilder.append("</ID>\n");
-			if (oldVal!=alarm.getTerminations()) {
-				count++;
-			}
-			oldVal=alarm.getTerminations();
-		}
-		strBuilder.append("</MostTerminatedAlarms>\n");
-		
-		strBuilder.append("\t<MostActivatedTerminatedAlarms>\n");
-		count=0;
-		oldVal=0;
-		while (count<=5 && !mostOperated.isEmpty()) {
-			AlarmInfo alarm = mostOperated.pollLast();
-			strBuilder.append("\t\t<ID>");
-			strBuilder.append(alarm.alarmID);
-			strBuilder.append("</ID>\n");
-			if (oldVal!=alarm.getTotalOperations()) {
-				count++;
-			}
-			oldVal=alarm.getTotalOperations();
-		}
-		strBuilder.append("</MostActivatedTerminatedAlarms>\n");
-		
 	}
 	
 	/**

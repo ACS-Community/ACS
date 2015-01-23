@@ -20,7 +20,6 @@ ALMA - Atacama Large Millimiter Array
 package alma.alarmsystem.statistics;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -76,7 +75,7 @@ public class StatsCalculator implements Runnable {
 	/**
 	 * The default time interval is {@value #DEFAULTTIMEINTERVAL} minutes
 	 */
-	public static final int DEFAULTTIMEINTERVAL=10;
+	public static final int DEFAULTTIMEINTERVAL=1;
 	
 	/**
 	 * Statistics are logged every time interval (in minutes)
@@ -119,6 +118,12 @@ public class StatsCalculator implements Runnable {
 	 * The queue of messages received from the sources NC and waiting to be processed
 	 */
 	private final AlarmSourcesListenerCached sourceNCQueue;
+	
+	/**
+	 * The map of parameters for the log
+	 * (these params appear as additional data in the published log)
+	 */
+	private final Map<String, Long> logParams = new HashMap<String, Long>();
 	
 	/**
 	 * The name of the property to customize the the level of the logs with the
@@ -278,16 +283,14 @@ public class StatsCalculator implements Runnable {
 	 * the calculated values i.e. a map of &lt;name,Value&gt; pairs. 
 	 */
 	private void logStats() {
-		//LogRecord log = new LogRecord(AcsLogLevel.INFO, "Alarm server statistics");
-		Map<String, Long> params = new HashMap<String, Long>();
 		long activations=alarmsActivationForTimeInterval.get();
 		long terminations=alarmsTerminationForTimeInterval.get();
-		params.put("FaultStatesProcessed", activations+terminations);
-		params.put("Activations", activations);
-		params.put("Terminations", terminations);
-		params.put("NumOFMsgsFromSources",Long.valueOf(messagesFromSources.get()));
-		params.put("MsgsWaitingToBeProcessed", Long.valueOf(sourceNCQueue.getQueueSize()));
-		logger.log(logLevel,"Alarm server statistics",params);
+		logParams.put("FaultStatesProcessed", activations+terminations);
+		logParams.put("Activations", activations);
+		logParams.put("Terminations", terminations);
+		logParams.put("NumOFMsgsFromSources",Long.valueOf(messagesFromSources.get()));
+		logParams.put("MsgsWaitingToBeProcessed", Long.valueOf(sourceNCQueue.getQueueSize()));
+		logger.log(logLevel,"Alarm server statistics",logParams);
 	}
 	
 	/**
@@ -297,7 +300,7 @@ public class StatsCalculator implements Runnable {
 	 * statistics logged by {@link #logStats()} 
 	 */
 	private void logStatsOnFile() {
-		alarmsMap.calcStatistics();
+		alarmsMap.calcStatistics(alarmsActivationForTimeInterval.get(),alarmsTerminationForTimeInterval.get());
 	}
 	
 	/**
