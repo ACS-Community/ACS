@@ -25,6 +25,7 @@ import java.io.FileReader;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.alarmsystem.statistics.StatHashMap;
+import alma.alarmsystem.statistics.generated.Statistics;
 
 /**
  * A class to test the generation of statistics on file
@@ -107,6 +108,9 @@ public class StatsHashMapTest extends ComponentClientTestCase {
 			System.out.println(line);
 		}
 		reader.close();
+		
+		// Unmarshal the file to check if it is valid
+		Statistics stats = Statistics.unmarshalStatistics(new FileReader(fName));
 	}
 	
 	/**
