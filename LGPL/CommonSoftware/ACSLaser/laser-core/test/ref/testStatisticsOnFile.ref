@@ -1,0 +1,19 @@
+1 - testEmptyStats...
+1 - <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <Statistics>
+1 - <Record Timestamp="----------T--:--:--.---">
+1 -     <ProcessedAlarmTypes>0</ProcessedAlarmTypes>
+1 -     <Activations>0</Activations>
+1 -     <Terminations>0</Terminations>
+1 -     <TotalAlarms>0</TotalAlarms>
+1 -     <AvgAlarmsPerSecond>0.0</AvgAlarmsPerSecond>
+1 -     <MostActivatedAlarms/>
+1 -     <MostTerminatedAlarms/>
+1 -     <MostActivatedTerminatedAlarms/>
+1 - </Record>
+1 - </Statistics>
+1 - testEmptyStats DONE!
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 
