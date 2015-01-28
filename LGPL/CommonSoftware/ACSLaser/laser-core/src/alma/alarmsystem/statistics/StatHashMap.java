@@ -281,7 +281,7 @@ public class StatHashMap implements Runnable {
 	 * The name of each file is composed of a prefix plus the index
 	 * and the ".xml" extension.
 	 */
-	private static final String fileNamePrefix="AlarmSystemStats-";
+	public static final String fileNamePrefix="AlarmSystemStats-";
 	
 	/**
 	 * The name of each file of statistics is indexed with the following integer
