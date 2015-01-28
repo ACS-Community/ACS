@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
@@ -75,7 +76,7 @@ public class StatsCalculator implements Runnable {
 	/**
 	 * The default time interval is {@value #DEFAULTTIMEINTERVAL} minutes
 	 */
-	public static final int DEFAULTTIMEINTERVAL=1;
+	public static final int DEFAULTTIMEINTERVAL=10;
 	
 	/**
 	 * Statistics are logged every time interval (in minutes)
@@ -93,21 +94,21 @@ public class StatsCalculator implements Runnable {
 	 * These are the active alarms received from sources.
 	 * 
 	 */
-	private final AtomicLong alarmsActivationForTimeInterval = new AtomicLong();
+	private final AtomicInteger alarmsActivationForTimeInterval = new AtomicInteger();
 	
 	/**
 	 * The number of terminations received in the last time interval.
 	 * <P>
 	 * These are the terminate alarms received from sources.
 	 */
-	private final AtomicLong alarmsTerminationForTimeInterval = new AtomicLong();
+	private final AtomicInteger alarmsTerminationForTimeInterval = new AtomicInteger();
 	
 	/**
 	 * The number of messages received from the sources NC.
 	 * <BR>
 	 * Note that a message can contain more then one FS to process
 	 */
-	private final AtomicLong messagesFromSources = new AtomicLong();
+	private final AtomicInteger messagesFromSources = new AtomicInteger();
 	
 	/**
 	 * The logger
