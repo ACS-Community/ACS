@@ -92,17 +92,21 @@ public class StatsHashMapTest extends ComponentClientTestCase {
 		return  new File(acstmp);
 	}
 	
-	/**
-	 * Dump the content of the file of statistics on stdout
-	 */
-	private void dump() throws Exception {
+	private String buildFileName() {
 		File folder = getStatFolder();
 		String fName = folder.getAbsolutePath();
 		if (!fName.endsWith(File.separator)) {
 			fName=fName+File.separator;
 		} 
-		fName=fName+StatHashMap.fileNamePrefix+"0.xml";
-		BufferedReader reader = new BufferedReader(new FileReader(fName));
+		return fName+StatHashMap.fileNamePrefix+"0.xml";
+	}
+	
+	/**
+	 * Dump the content of the file of statistics on stdout
+	 */
+	private void dump() throws Exception {
+		
+		BufferedReader reader = new BufferedReader(new FileReader(buildFileName()));
 		String line = null;
 		while ((line = reader.readLine()) != null) {
 			System.out.println(line);
@@ -110,7 +114,7 @@ public class StatsHashMapTest extends ComponentClientTestCase {
 		reader.close();
 		
 		// Unmarshal the file to check if it is valid
-		Statistics stats = Statistics.unmarshalStatistics(new FileReader(fName));
+		Statistics stats = Statistics.unmarshalStatistics(new FileReader(buildFileName()));
 	}
 	
 	/**
