@@ -47,8 +47,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import alma.acs.eventbrowser.handlers.NotifyServiceUpdateJob;
-import alma.acs.eventbrowser.model.EventModel;
-import alma.acs.eventbrowser.model.NotifyServiceData;
+import alma.acs.nsstatistics.EventModel;
+import alma.acs.nsstatistics.NotifyServiceData;
 
 
 
