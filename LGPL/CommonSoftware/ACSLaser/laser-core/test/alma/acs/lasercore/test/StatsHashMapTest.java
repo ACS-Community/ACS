@@ -67,6 +67,8 @@ public class StatsHashMapTest extends ComponentClientTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		// Remove previously generated file of stats.
+		removeOldFile();
 		stats = new StatHashMap(this.m_logger,TIMEINTERVAL,getStatFolder());
 		stats.start();
 	}
@@ -78,6 +80,19 @@ public class StatsHashMapTest extends ComponentClientTestCase {
 	protected void tearDown() throws Exception {
 		stats.shutdown();
 		super.tearDown();
+	}
+	
+	/**
+	 * Remove the file of stats, if exists to ensure that each tests starts
+	 * with no pre-existing file.
+	 * In fact if a file of statistics already exists, new record are appended.
+	 */
+	private void removeOldFile() {
+		String fName= buildFileName();
+		File f= new File(fName);
+		if (f.exists()) {
+			f.delete();
+		}
 	}
 	
 	/**
@@ -128,6 +143,204 @@ public class StatsHashMapTest extends ComponentClientTestCase {
 		Thread.sleep(5000);
 		dump();
 		System.out.println("testEmptyStats DONE!");
+	}
+	
+	/**
+	 * This test issues a certain number of active alarms and checks the number
+	 * appearing in the XML (as usual dump in the output).
+	 * It also trigger the generation of a second record without setting alarms
+	 * to check if all the numbers have been reset to 0.
+	 * <BR>
+	 * Apart of the numbers of activations and activations/terminations, the test 
+	 * checks the list of the IDs of the most activated and operated alarms too.
+	 * 
+	 * @throws Exception
+	 */
+	public void testActiveAlarms() throws Exception {
+		System.out.println("testActiveAlarms...");
+		
+		// 10 different type of alarms
+		stats.processedFS("A:B:1", true);
+		stats.processedFS("A:B:2", true);
+		stats.processedFS("A:B:3", true);
+		stats.processedFS("A:B:4", true);
+		stats.processedFS("A:B:5", true);
+		stats.processedFS("A:B:6", true);
+		stats.processedFS("A:B:7", true);
+		stats.processedFS("A:B:8", true);
+		stats.processedFS("A:B:9", true);
+		stats.processedFS("A:B:10", true);
+		
+		// Now add more of those alarms to fill the
+		// list of terminated and most operated alarms
+		
+		// "A:B:3" will be the most activated with 7 activations
+		stats.processedFS("A:B:3", true);
+		stats.processedFS("A:B:3", true);
+		stats.processedFS("A:B:3", true);
+		stats.processedFS("A:B:3", true);
+		stats.processedFS("A:B:3", true);
+		stats.processedFS("A:B:3", true);
+		
+		// "A:B:5" and "A:B:7" in second position with 5
+		stats.processedFS("A:B:5", true);
+		stats.processedFS("A:B:7", true);
+		stats.processedFS("A:B:5", true);
+		stats.processedFS("A:B:7", true);
+		stats.processedFS("A:B:5", true);
+		stats.processedFS("A:B:7", true);
+		stats.processedFS("A:B:5", true);
+		stats.processedFS("A:B:7", true);
+		
+		// "A:B:2" with 4
+		stats.processedFS("A:B:2", true);
+		stats.processedFS("A:B:2", true);
+		stats.processedFS("A:B:2", true);
+		
+		// "A:B:10" with 3
+		stats.processedFS("A:B:10", true);
+		stats.processedFS("A:B:10", true);
+		
+		// "A:B:6" with 2
+		stats.processedFS("A:B:6", true);
+		
+		stats.calcStatistics(0, 0);
+		
+		
+		// Trigger again the writing of a record
+		// to check if numbers have been reset
+		stats.calcStatistics(0, 0);
+		
+		Thread.sleep(5000);
+		dump();
+		
+		System.out.println("testActiveAlarms DONE!");
+	}
+	
+	/**
+	 * Same of {@link #testActiveAlarms()} for activations
+	 * and terminations
+	 * 
+	 * @throws Exception
+	 */
+	public void testTerminatedAlarms() throws Exception {
+		System.out.println("testTerminatedAlarms...");
+		
+		// 10 different type of alarms
+		stats.processedFS("A:B:1", false);
+		stats.processedFS("A:B:2", false);
+		stats.processedFS("A:B:3", false);
+		
+		// Now add more of those alarms to fill the
+		// list of activated and most operated alarms
+		
+		
+		// "A:B:2" with 5
+		stats.processedFS("A:B:2", false);
+		stats.processedFS("A:B:2", false);
+		stats.processedFS("A:B:2", false);
+		stats.processedFS("A:B:2", false);
+		
+		
+		// "A:B:1" and "A:B:3" with 3
+		stats.processedFS("A:B:1", false);
+		stats.processedFS("A:B:3", false);
+		stats.processedFS("A:B:1", false);
+		stats.processedFS("A:B:3", false);
+
+		stats.calcStatistics(0, 0);
+		
+		// Trigger again the writing of a record
+		// to check if numbers have been reset
+		stats.calcStatistics(0, 0);
+		
+		Thread.sleep(5000);
+		dump();
+		
+		System.out.println("testTerminatedAlarms DONE!");
+	}
+	
+	/**
+	 * Same of {@link #testActiveAlarms()} for activation and termination.
+	 * 
+	 * @throws Exception
+	 */
+	public void testActivatedTerminatedAlarms() throws Exception {
+		System.out.println("testActivatedTerminatedAlarms...");
+		
+		// 10 different type of alarms
+		stats.processedFS("A:B:1", true);
+		stats.processedFS("A:B:2", true);
+		stats.processedFS("A:B:3", true);
+		stats.processedFS("A:B:4", true);
+		stats.processedFS("A:B:5", true);
+		stats.processedFS("A:B:6", true);
+		stats.processedFS("A:B:7", true);
+		stats.processedFS("A:B:8", true);
+		stats.processedFS("A:B:9", true);
+		stats.processedFS("A:B:10", true);
+		
+		// Now add more of those alarms to fill the
+		// list of activated and most operated alarms
+		
+		
+		// "A:B:2" with 5 is the most activated
+		stats.processedFS("A:B:2", true);
+		stats.processedFS("A:B:2", true);
+		stats.processedFS("A:B:2", true);
+		stats.processedFS("A:B:2", true);
+		
+		// "A:B:1" and "A:B:3" with 3 activation follow
+		stats.processedFS("A:B:1", true);
+		stats.processedFS("A:B:3", true);
+		stats.processedFS("A:B:1", true);
+		stats.processedFS("A:B:3", true);
+		
+		// "A:B:5" with 4 is the most terminated
+		stats.processedFS("A:B:5", false);
+		stats.processedFS("A:B:5", false);
+		stats.processedFS("A:B:5", false);
+		stats.processedFS("A:B:5", false);
+		
+		// "A:B:7" and "A:B:2" with 2 activation follow
+		stats.processedFS("A:B:7", false);
+		stats.processedFS("A:B:2", false);
+		stats.processedFS("A:B:7", false);
+		stats.processedFS("A:B:2", false);
+		
+
+		stats.calcStatistics(0, 0);
+		
+		// Trigger again the writing of a record
+		// to check if numbers have been reset
+		stats.calcStatistics(0, 0);
+		
+		Thread.sleep(5000);
+		dump();
+		
+		System.out.println("testActivatedTerminatedAlarms DONE!");
+	}
+	
+	/**
+	 * Test the number of Avg alarms per minute and the
+	 * number of activated and terminated alarms
+	 * that are provided calling {@link StatHashMap#calcStatistics(int, int)}.
+	 * <BR>
+	 * The purpose of this test is to check that the fields are
+	 * properly filled in the XML.
+	 * 
+	 * @throws Exception
+	 */
+	public void testAvgAlarms() throws Exception {
+		System.out.println("testAvgAlarms...");
+		stats.calcStatistics(100245, 8911);
+		// Trigger again the writing of a record
+		// to check if numbers have been reset
+		stats.calcStatistics(0, 0);
+		
+		Thread.sleep(5000);
+		dump();
+		System.out.println("testAvgAlarms DONE!");
 	}
 	
 }

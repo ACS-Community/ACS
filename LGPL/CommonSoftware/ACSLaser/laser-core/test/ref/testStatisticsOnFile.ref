@@ -13,7 +13,155 @@
 1 - </Record>
 1 - </Statistics>
 1 - testEmptyStats DONE!
+1 - testActiveAlarms...
+1 - <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <Statistics>
+1 - <Record Timestamp="----------T--:--:--.---">
+1 -     <ProcessedAlarmTypes>10</ProcessedAlarmTypes>
+1 -     <Activations>0</Activations>
+1 -     <Terminations>0</Terminations>
+1 -     <TotalAlarms>0</TotalAlarms>
+1 -     <AvgAlarmsPerSecond>0.0</AvgAlarmsPerSecond>
+1 -     <MostActivatedAlarms>
+1 -         <ID value="7">A:B:3</ID>
+1 -         <ID value="5">A:B:5</ID>
+1 -         <ID value="5">A:B:7</ID>
+1 -         <ID value="4">A:B:2</ID>
+1 -         <ID value="3">A:B:10</ID>
+1 -         <ID value="2">A:B:6</ID>
+1 -     </MostActivatedAlarms>
+1 -     <MostTerminatedAlarms/>
+1 -     <MostActivatedTerminatedAlarms>
+1 -         <ID value="7">A:B:3</ID>
+1 -         <ID value="5">A:B:5</ID>
+1 -         <ID value="5">A:B:7</ID>
+1 -         <ID value="4">A:B:2</ID>
+1 -         <ID value="3">A:B:10</ID>
+1 -         <ID value="2">A:B:6</ID>
+1 -     </MostActivatedTerminatedAlarms>
+1 - </Record>
+1 - <Record Timestamp="----------T--:--:--.---">
+1 -     <ProcessedAlarmTypes>0</ProcessedAlarmTypes>
+1 -     <Activations>0</Activations>
+1 -     <Terminations>0</Terminations>
+1 -     <TotalAlarms>0</TotalAlarms>
+1 -     <AvgAlarmsPerSecond>0.0</AvgAlarmsPerSecond>
+1 -     <MostActivatedAlarms/>
+1 -     <MostTerminatedAlarms/>
+1 -     <MostActivatedTerminatedAlarms/>
+1 - </Record>
+1 - </Statistics>
+1 - testActiveAlarms DONE!
+1 - testTerminatedAlarms...
+1 - <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <Statistics>
+1 - <Record Timestamp="----------T--:--:--.---">
+1 -     <ProcessedAlarmTypes>3</ProcessedAlarmTypes>
+1 -     <Activations>0</Activations>
+1 -     <Terminations>0</Terminations>
+1 -     <TotalAlarms>0</TotalAlarms>
+1 -     <AvgAlarmsPerSecond>0.0</AvgAlarmsPerSecond>
+1 -     <MostActivatedAlarms/>
+1 -     <MostTerminatedAlarms>
+1 -         <ID value="5">A:B:2</ID>
+1 -         <ID value="3">A:B:1</ID>
+1 -         <ID value="3">A:B:3</ID>
+1 -     </MostTerminatedAlarms>
+1 -     <MostActivatedTerminatedAlarms>
+1 -         <ID value="5">A:B:2</ID>
+1 -         <ID value="3">A:B:1</ID>
+1 -         <ID value="3">A:B:3</ID>
+1 -     </MostActivatedTerminatedAlarms>
+1 - </Record>
+1 - <Record Timestamp="----------T--:--:--.---">
+1 -     <ProcessedAlarmTypes>0</ProcessedAlarmTypes>
+1 -     <Activations>0</Activations>
+1 -     <Terminations>0</Terminations>
+1 -     <TotalAlarms>0</TotalAlarms>
+1 -     <AvgAlarmsPerSecond>0.0</AvgAlarmsPerSecond>
+1 -     <MostActivatedAlarms/>
+1 -     <MostTerminatedAlarms/>
+1 -     <MostActivatedTerminatedAlarms/>
+1 - </Record>
+1 - </Statistics>
+1 - testTerminatedAlarms DONE!
+1 - testActivatedTerminatedAlarms...
+1 - <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <Statistics>
+1 - <Record Timestamp="----------T--:--:--.---">
+1 -     <ProcessedAlarmTypes>10</ProcessedAlarmTypes>
+1 -     <Activations>0</Activations>
+1 -     <Terminations>0</Terminations>
+1 -     <TotalAlarms>0</TotalAlarms>
+1 -     <AvgAlarmsPerSecond>0.0</AvgAlarmsPerSecond>
+1 -     <MostActivatedAlarms>
+1 -         <ID value="5">A:B:2</ID>
+1 -         <ID value="3">A:B:1</ID>
+1 -         <ID value="3">A:B:3</ID>
+1 -         <ID value="1">A:B:6</ID>
+1 -         <ID value="1">A:B:5</ID>
+1 -         <ID value="1">A:B:8</ID>
+1 -         <ID value="1">A:B:7</ID>
+1 -         <ID value="1">A:B:4</ID>
+1 -         <ID value="1">A:B:10</ID>
+1 -         <ID value="1">A:B:9</ID>
+1 -     </MostActivatedAlarms>
+1 -     <MostTerminatedAlarms>
+1 -         <ID value="4">A:B:5</ID>
+1 -         <ID value="2">A:B:2</ID>
+1 -         <ID value="2">A:B:7</ID>
+1 -     </MostTerminatedAlarms>
+1 -     <MostActivatedTerminatedAlarms>
+1 -         <ID value="7">A:B:2</ID>
+1 -         <ID value="5">A:B:5</ID>
+1 -         <ID value="3">A:B:7</ID>
+1 -         <ID value="3">A:B:1</ID>
+1 -         <ID value="3">A:B:3</ID>
+1 -         <ID value="1">A:B:6</ID>
+1 -         <ID value="1">A:B:8</ID>
+1 -         <ID value="1">A:B:4</ID>
+1 -         <ID value="1">A:B:10</ID>
+1 -         <ID value="1">A:B:9</ID>
+1 -     </MostActivatedTerminatedAlarms>
+1 - </Record>
+1 - <Record Timestamp="----------T--:--:--.---">
+1 -     <ProcessedAlarmTypes>0</ProcessedAlarmTypes>
+1 -     <Activations>0</Activations>
+1 -     <Terminations>0</Terminations>
+1 -     <TotalAlarms>0</TotalAlarms>
+1 -     <AvgAlarmsPerSecond>0.0</AvgAlarmsPerSecond>
+1 -     <MostActivatedAlarms/>
+1 -     <MostTerminatedAlarms/>
+1 -     <MostActivatedTerminatedAlarms/>
+1 - </Record>
+1 - </Statistics>
+1 - testActivatedTerminatedAlarms DONE!
+1 - testAvgAlarms...
+1 - <?xml version="1.0" encoding="ISO-8859-1"?>
+1 - <Statistics>
+1 - <Record Timestamp="----------T--:--:--.---">
+1 -     <ProcessedAlarmTypes>0</ProcessedAlarmTypes>
+1 -     <Activations>100245</Activations>
+1 -     <Terminations>8911</Terminations>
+1 -     <TotalAlarms>109156</TotalAlarms>
+1 -     <AvgAlarmsPerSecond>181.93</AvgAlarmsPerSecond>
+1 -     <MostActivatedAlarms/>
+1 -     <MostTerminatedAlarms/>
+1 -     <MostActivatedTerminatedAlarms/>
+1 - </Record>
+1 - <Record Timestamp="----------T--:--:--.---">
+1 -     <ProcessedAlarmTypes>0</ProcessedAlarmTypes>
+1 -     <Activations>0</Activations>
+1 -     <Terminations>0</Terminations>
+1 -     <TotalAlarms>0</TotalAlarms>
+1 -     <AvgAlarmsPerSecond>0.0</AvgAlarmsPerSecond>
+1 -     <MostActivatedAlarms/>
+1 -     <MostTerminatedAlarms/>
+1 -     <MostActivatedTerminatedAlarms/>
+1 - </Record>
+1 - </Statistics>
+1 - testAvgAlarms DONE!
 1 - 
 1 - 
-1 - OK (1 test)
+1 - OK (5 tests)
 1 - 
