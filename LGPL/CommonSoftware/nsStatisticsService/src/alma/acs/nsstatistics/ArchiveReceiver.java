@@ -18,28 +18,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-package alma.acs.ncstatistics;
+package alma.acs.nsstatistics;
 
+import java.util.concurrent.BlockingQueue;
+import alma.acs.nc.ArchiveConsumer;
 
-/** This class encapsulates the list of all suppliers of events to a particular channel returned
- * by the TAO M&C Extensions to the Notify Service.
- * @author jschwarz
- *
- */
-public class ChannelSuppliers extends MCStatistics {
+public class ArchiveReceiver implements ArchiveConsumer.ArchiveReceiver {
+	
+	private final BlockingQueue<ArchiveEventData> archQueue;
 
-	public ChannelSuppliers(ChannelData parent) {
-		super(parent, "SupplierNames");
+	ArchiveReceiver(BlockingQueue<ArchiveEventData> archQueue) {
+		this.archQueue = archQueue;
 	}
 	
 	@Override
-	public String getStatistics() {
-		children.clear();
-		String sc[] = getMcData().list();
-		for (int i = 0; i < sc.length; i++) {
-			String supplierNameSimple = toSimpleName(sc[i], i);
-			children.add(new ChannelParticipantName(supplierNameSimple, this));
-		}
-		return "Suppliers: " + getParent().getNumSuppliersAndDelta();
+	public void receive(long timeStamp, String device, String property, Object value) {
+		ArchiveEventData adata = new ArchiveEventData(timeStamp, device, property, value);
+		archQueue.add(adata);
+//		System.out.println(adata.toString()); // For diagnostic purposes
 	}
 }

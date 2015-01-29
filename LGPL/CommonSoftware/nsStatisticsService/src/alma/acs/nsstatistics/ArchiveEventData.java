@@ -18,37 +18,29 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-package alma.acs.ncstatistics;
+package alma.acs.nsstatistics;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.omg.CORBA.Any;
 
+/**
+ * TODO: Expand to get the parameter type as well, so that value can be interpreted
+ */
 
-public class EventData extends AbstractEventData {
-
+public class ArchiveEventData extends AbstractEventData {
 	protected static AtomicLong totalEventsProcessed = new AtomicLong();
 	protected static AtomicLong timeFirstEventProcessed = new AtomicLong();
-	/*
-	 * "Time "+timeStamp+" "+m_channelName+" "+component+" "+count+" "+channelEventCount+" "
-			+" "+evtTypeName+" "+evtCounter.get(evtTypeName)
-	 */
-	private final String sourceObject;
-	private final long channelEventCount;
-	private final String eventTypeName;
-	private final long eventTypeCount;
-	private final String channelName;
-	private final Any eventAny;
-
 	
-	public EventData(long time, String srcObj, long count, String type, Long typeCount, String chanName, Any any) {
+	private final String device;
+	private final String parameter;
+	private final Object value;
+	
+	public ArchiveEventData(Long time, String device, String parameter, Object value) {
+		super();
 		timestamp = time;
-		sourceObject = srcObj;
-		channelEventCount = count;
-		eventTypeName = type;
-		eventTypeCount = typeCount;
-		channelName = chanName;
-		eventAny = any;
+		this.device = device;
+		this.parameter = parameter;
+		this.value = value;
 		totalEventsProcessed.getAndIncrement();
 		timeFirstEventProcessed.compareAndSet(0L, System.currentTimeMillis());
 	}
@@ -71,28 +63,21 @@ public class EventData extends AbstractEventData {
 		return (getTotalEventsProcessed()*1000.f)/(System.currentTimeMillis()-getTimeFirstEventProcessed());
 	}
 
-	public String getSourceObject() {
-		return sourceObject;
+	public String getDevice() {
+		return device;
 	}
 
-	public long getChannelEventCount() {
-		return channelEventCount;
+
+	public String getParameter() {
+		return parameter;
 	}
 
-	public String getEventTypeName() {
-		return eventTypeName;
+	public Object getValue() {
+		return value;
+	}
+	
+	public String toString() {
+		return "Timestamp "+getTimestamp()+" Device "+getDevice()+" Property/parameter "+getParameter()+" Value "+getValue().toString();
 	}
 
-	public long getEventTypeCount() {
-		return eventTypeCount;
-	}
-	
-	public String getChannelName() {
-		return channelName;
-	}
-	
-	public Any getEventAny() {
-		return eventAny;
-	}
-	
 }

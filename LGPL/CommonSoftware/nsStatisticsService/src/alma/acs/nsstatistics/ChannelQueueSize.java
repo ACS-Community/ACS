@@ -18,23 +18,24 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-package alma.acs.ncstatistics;
+package alma.acs.nsstatistics;
 
-import java.util.concurrent.BlockingQueue;
-import alma.acs.nc.ArchiveConsumer;
 
-public class ArchiveReceiver implements ArchiveConsumer.ArchiveReceiver {
-	
-	private final BlockingQueue<ArchiveEventData> archQueue;
+public class ChannelQueueSize extends MCStatistics {
 
-	ArchiveReceiver(BlockingQueue<ArchiveEventData> archQueue) {
-		this.archQueue = archQueue;
+	public ChannelQueueSize(ChannelData parent) {
+		super(parent, "QueueSize");
 	}
 	
 	@Override
-	public void receive(long timeStamp, String device, String property, Object value) {
-		ArchiveEventData adata = new ArchiveEventData(timeStamp, device, property, value);
-		archQueue.add(adata);
-//		System.out.println(adata.toString()); // For diagnostic purposes
+	public String getStatistics() {
+		long sc = getQueueSize();
+		return mcStatName + ": " + String.valueOf(sc);
 	}
+
+	public long getQueueSize() {
+		long sc = (long) getMcData().num().last;
+		return sc;
+	}
+	
 }

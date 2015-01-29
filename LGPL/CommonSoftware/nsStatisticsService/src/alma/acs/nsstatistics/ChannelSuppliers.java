@@ -18,24 +18,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *******************************************************************************/
-package alma.acs.ncstatistics;
+package alma.acs.nsstatistics;
 
 
-public class ChannelQueueSize extends MCStatistics {
+/** This class encapsulates the list of all suppliers of events to a particular channel returned
+ * by the TAO M&C Extensions to the Notify Service.
+ * @author jschwarz
+ *
+ */
+public class ChannelSuppliers extends MCStatistics {
 
-	public ChannelQueueSize(ChannelData parent) {
-		super(parent, "QueueSize");
+	public ChannelSuppliers(ChannelData parent) {
+		super(parent, "SupplierNames");
 	}
 	
 	@Override
 	public String getStatistics() {
-		long sc = getQueueSize();
-		return mcStatName + ": " + String.valueOf(sc);
+		children.clear();
+		String sc[] = getMcData().list();
+		for (int i = 0; i < sc.length; i++) {
+			String supplierNameSimple = toSimpleName(sc[i], i);
+			children.add(new ChannelParticipantName(supplierNameSimple, this));
+		}
+		return "Suppliers: " + getParent().getNumSuppliersAndDelta();
 	}
-
-	public long getQueueSize() {
-		long sc = (long) getMcData().num().last;
-		return sc;
-	}
-	
 }

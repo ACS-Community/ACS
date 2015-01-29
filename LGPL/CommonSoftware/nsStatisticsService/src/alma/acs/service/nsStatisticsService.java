@@ -32,12 +32,12 @@ import java.util.logging.Logger;
 
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
-import alma.acs.ncstatistics.ChannelData;
-import alma.acs.ncstatistics.EventData;
-import alma.acs.ncstatistics.EventModel;
-import alma.acs.ncstatistics.MCStatistics;
-import alma.acs.ncstatistics.NotifyServiceData;
-import alma.acs.ncstatistics.NotifyServices;
+import alma.acs.nsstatistics.ChannelData;
+import alma.acs.nsstatistics.EventData;
+import alma.acs.nsstatistics.EventModel;
+import alma.acs.nsstatistics.MCStatistics;
+import alma.acs.nsstatistics.NotifyServiceData;
+import alma.acs.nsstatistics.NotifyServices;
 
 
 
