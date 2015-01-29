@@ -116,7 +116,7 @@ class CDBhandler(ContentHandler):
             print "EE", name, self.tempName, self.tempName.replace(name.encode('ascii') + "/", "", 1)
         self.tempName = self.tempName.replace(name.encode('ascii') + "/", "", 1)
 #------------------------------------------------------------------------------
-class CDBaccess:
+class CDBaccess(object):
     '''
     CDBaccess provides a readonly interface into the ACS configuration database.
     It does NOT use DAOs, but instead uses the XML strings returned by the DAL.

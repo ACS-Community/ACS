@@ -51,7 +51,7 @@ import sys, string, traceback, types, __builtin__
 REVISION = "$Revision: 1.1.1.1 $"
 VERSION = REVISION.split()[1]
 # ------------------------------------------------------------------------------
-class OutputPipe:
+class OutputPipe(object):
     '''
     A substitute file object for redirecting output to a function.
     '''

@@ -60,7 +60,7 @@ def getTimeStamp():
     helper = TimeUtil()
     return helper.py2epoch(time.time())
 #------------------------------------------------------------------------------
-class TimeUtil:
+class TimeUtil(object):
     '''
     TimeUtil is a utility class providing static methods to convert
     between Python and ACS time systems. It is very similar to the C++ class

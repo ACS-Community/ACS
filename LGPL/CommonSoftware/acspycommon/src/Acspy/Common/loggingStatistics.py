@@ -38,7 +38,7 @@ is to be noted
 
 import time
 
-class LoggingStatistics:
+class LoggingStatistics(object):
     '''
     Logging statistics is used to keep track of the statistics of a logger class.
     By default a the statistics calculation is disabled, so there is no impact over

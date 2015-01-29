@@ -39,7 +39,7 @@ __version__ = "$Id: Subscription.py,v 1.1.1.1 2012/03/07 17:40:45 acaproni Exp $
 #--ACS Imports-----------------------------------------------------------------
 #--GLOBALS---------------------------------------------------------------------
 #------------------------------------------------------------------------------
-class Subscription:
+class Subscription(object):
     '''
     Properties can be derived from Subscription only if their IDL derives from
     ACS::Subscription.
