@@ -441,7 +441,7 @@ public class StatHashMap implements Runnable {
 		int totOperations=statStruct.numActiavations+statStruct.numTerminations;
 		
 		// Average number of operations per second
-		float avgOpPerSecond=totOperations/(timeInterval*60);
+		float avgOpPerSecond=(float)totOperations/(float)(timeInterval*60);
 		
 		// Get the file to write the statistics
 		BufferedWriter outF;
@@ -513,6 +513,8 @@ public class StatHashMap implements Runnable {
 	 * The list reports the number of alarms with the highest numbers (alarms
 	 * with the same values are grouped) so the returned
 	 * list can actually be longer of <code>depth</code>.
+	 * <P>
+	 * Alarms with a number of 0 are discarded.
 	 * 
 	 * @param infos The list of alarms received in the time interval
 	 * @param The type of value shown by the list
@@ -530,6 +532,10 @@ public class StatHashMap implements Runnable {
 		while (count<=depth && pos>=0) {
 			AlarmInfo alarm = infos.get(pos--);
 			int actualValue=alarm.getValue(type);
+			if (actualValue==0) {
+				// We do not want to report alarms with a value of 0
+				break;
+			}
 			IDType idt = new IDType();
 			idt.setValue(alarm.getValue(type));
 			idt.setContent(alarm.alarmID);
