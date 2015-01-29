@@ -43,7 +43,7 @@ import ACS
 #--ACS Imports-----------------------------------------------------------------
 #--GLOBALS---------------------------------------------------------------------
 #------------------------------------------------------------------------------
-class ACSComponent:
+class ACSComponent(object):
     '''
     Components can be derived from ACSComponent only if their IDL derives from
     ACS::ACSComponent. Almost always the case.

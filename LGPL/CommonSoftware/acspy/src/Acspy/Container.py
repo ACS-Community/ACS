@@ -462,10 +462,12 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             try:
                 temp[PYCLASS] = temp[EXE].split('.').pop() #get class name
                 temp[PYCLASS] = temp[COMPMODULE].__dict__.get(temp[PYCLASS]) #get class
-                temp[PYREF] = instance(temp[PYCLASS]) #create Python object
+                temp[PYREF] = temp[PYCLASS].__new__(temp[PYCLASS])
+                #temp[PYREF] = instance(temp[PYCLASS]) #create Python object
             except Exception, e:
                 temp[PYCLASS] = temp[COMPMODULE].__dict__.get(temp[PYCLASS]) #get class
-                temp[PYREF] = instance(temp[PYCLASS]) #create Python object
+                #temp[PYREF] = instance(temp[PYCLASS]) #create Python object
+                temp[PYREF] = temp[PYCLASS].__new__(temp[PYCLASS])
 
         except (TypeError, ImportError), e:
             e2 = CannotActivateComponentExImpl(exception=e)
