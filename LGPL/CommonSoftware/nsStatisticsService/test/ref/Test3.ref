@@ -1,0 +1,23 @@
+5 - Test3 OK - Number of instances of pattern 'Getting Notify Services Statistics after 500ms' is between the required range
+5 - Test3 OK - Pattern 'STATISTICS OF NOTIFICATION FACTORY Alarm' not found
+5 - Test3 OK - Pattern 'STATISTICS OF NOTIFICATION FACTORY Archive' not found
+5 - Test3 OK - Pattern 'STATISTICS OF NOTIFICATION FACTORY Logging' not found
+5 - Test3 OK - Number of instances of pattern 'INFO\ \[eventGUI\]\s+STATISTICS OF NOTIFICATION FACTORY DefaultNotifyService
+5 - (\s+Active event channels \[\d+\])
+5 - ((\s+.+)
+5 - )*' is between the required range
+5 - Test3 OK - Pattern '	STATISTICS OF NOTIFICATION CHANNEL LoggingChannel' not found
+5 - Test3 OK - Pattern 'DEBUG STATISTICS OF NOTIFICATION CHANNEL LoggingChannel' not found
+5 - Test3 OK - Pattern '	STATISTICS OF NOTIFICATION CHANNEL ArchivingChannel' not found
+5 - Test3 OK - Pattern 'DEBUG STATISTICS OF NOTIFICATION CHANNEL ArchivingChannel' not found
+5 - Test3 OK - Pattern '	STATISTICS OF NOTIFICATION CHANNEL testNsStatsChannel1' not found
+5 - Test3 OK - Pattern 'DEBUG STATISTICS OF NOTIFICATION CHANNEL testNsStatsChannel1' not found
+5 - Test3 OK - Number of instances of pattern 'INFO\ \[eventGUI\]\s+STATISTICS OF NOTIFICATION CHANNEL testNsStatsChannel2
+5 - (\s+There are \d+ suppliers\, \d+ consumers)
+5 - (\s+Number of events in queues\:(\s\d+\,?)*)' is equal or greater than the minimum required
+5 - Test3 OK - Number of instances of pattern 'DEBUG\ \[eventGUI\]\s+DEBUG STATISTICS OF NOTIFICATION CHANNEL testNsStatsChannel2
+5 - (\s+Supplier names.+)
+5 - (\s+Consumer names.+)
+5 - (\s+Supplier admin names.+)
+5 - (\s+Consumer admin names.+)' is equal or greater than the minimum required
+5 - Test3 OK - Pattern 'STATISTICS OF NOTIFICATION CHANNEL Alarm' not found

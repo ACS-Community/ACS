@@ -1,0 +1,83 @@
+#ifndef _TEST_NS_STATISTICS_SERVICE_IDL_
+#define _TEST_NS_STATISTICS_SERVICE_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: testNsStatisticsService.idl,v 1.8 2015/01/23 23:08:06 pcolomer Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+*/
+
+#include <baci.idl>
+#include <ACSErrTypeCommon.idl>
+
+#pragma prefix "alma"
+
+/** @file testNsStatisticsService.idl
+ *  IDL specification for testing nsStatisticsService
+ */
+
+module TEST_NS_STATISTICS_SERVICE 
+{
+    /**
+     * The names of the event channels our interface implementation will 
+     * send events to.
+     */
+    const string CHANNEL_1 = "testNsStatsChannel1";
+    const string CHANNEL_2 = "testNsStatsChannel2";
+    const string CHANNEL_3 = "testNsStatsChannel3";
+    const string CHANNEL_4 = "testNsStatsChannel4";
+
+    /**
+     * This IDL structure defines an "event" type that will sent across the 
+     * network to any consumers subscribed to it.
+     */
+    struct Test1EventData
+    {
+		long intVal;
+		double doubleVal;
+		string strVal;
+    };
+    struct Test2EventData
+    {
+		long intVal;
+		double doubleVal;
+		string strVal;
+    };
+    struct Test3EventData
+    {
+		long intVal;
+		double doubleVal;
+		string strVal;
+    };
+    struct Test4EventData
+    {
+		long intVal;
+		double doubleVal;
+		string strVal;
+    };
+};
+
+#endif
+
