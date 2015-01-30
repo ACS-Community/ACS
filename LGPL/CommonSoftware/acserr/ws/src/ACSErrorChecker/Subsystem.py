@@ -29,7 +29,7 @@
 import glob, os, string, re, xml.parsers.expat, sys, time, fpformat
 from ErrorDefinition import *
 
-class Subsystem:
+class Subsystem(object):
 	"""The object to scan a subsystem.
 	   It assumes that the base directory contains 
 	   all the sources of the subsystem
