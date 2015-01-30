@@ -27,7 +27,7 @@ import getpass
 import re
 import sys
 
-class AcsTestLogChecker:
+class AcsTestLogChecker(object):
 
 	REL_PATH_FILE_PID="./tmp/pid_test"
 
