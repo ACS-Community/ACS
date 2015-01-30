@@ -57,7 +57,7 @@ from Acspy.Common.Err import ACSError
 import acstime
 
 #-----------------------------------------------------------------------------
-class ClientErrorComponent:
+class ClientErrorComponent(object):
     '''
     This class demonstrates error handling when accessing a (remote)
     component.
