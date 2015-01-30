@@ -75,7 +75,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         = TSupplier.py TConsumer.py NsStatisticsTest.py
+PY_SCRIPTS         = NsStatisticsTest.py TSupplier.py TConsumer.py
 PY_SCRIPTS_L       =
 
 PY_MODULES         =

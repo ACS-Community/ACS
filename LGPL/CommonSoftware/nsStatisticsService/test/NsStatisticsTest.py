@@ -110,7 +110,7 @@ class AcsTestLogChecker:
 		return len(m)
 	
 def get_pattern_debug_stats_channel(channel_name):
-	str =  "DEBUG\ \[eventGUI\]\s+DEBUG STATISTICS OF NOTIFICATION CHANNEL " + channel_name + "\n"
+	str =  "DEBUG\ \[nsStatistics\]\s+DEBUG STATISTICS OF NOTIFICATION CHANNEL " + channel_name + "\n"
 	str += "(\s+Supplier names.+)\n"
 	str += "(\s+Consumer names.+)\n"
 	str += "(\s+Supplier admin names.+)\n"
@@ -118,7 +118,7 @@ def get_pattern_debug_stats_channel(channel_name):
 	return str	
 	
 def get_pattern_stats_channel(channel_name):
-	str =  "INFO\ \[eventGUI\]\s+STATISTICS OF NOTIFICATION CHANNEL " + channel_name + "\n"
+	str =  "INFO\ \[nsStatistics\]\s+STATISTICS OF NOTIFICATION CHANNEL " + channel_name + "\n"
 	str += "(\s+There are \d+ suppliers\, \d+ consumers)\n"
 	str += "(\s+Number of events in queues\:(\s\d+\,?)*)"
 	return str
@@ -134,16 +134,23 @@ def get_pattern_stats_channel_with_toe(channel_name):
 	return str	
 
 def get_pattern_stats_factory(factory_name):
-	str =  "INFO\ \[eventGUI\]\s+STATISTICS OF NOTIFICATION FACTORY " + factory_name + "\n"
+	str =  "INFO\ \[nsStatistics\]\s+STATISTICS OF NOTIFICATION FACTORY " + factory_name + "\n"
 	str += "(\s+Active event channels \[\d+\])\n"
 	str += "((\s+.+)\n)*"
 	return str
+
+def get_pattern_warn_freq():
+	str = "WARNING \[nsStatistics\] Statistics of Notification Services will"
+	str += " be obtained with a very high frequency \(less than 1 minute time interval\)"
+	return str
 	
 def test_case1():
-	min_stats = 10
-	max_stats = 25
+	min_stats = 1
+	max_stats = 2
 	test = AcsTestLogChecker(0,"Test1")
-	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 500ms", min_stats, max_stats)
+	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 1min", min_stats, max_stats)
+			
+	test.check_pattern_not_exists(get_pattern_warn_freq())
 			
 	# Check factories
 	test.check_pattern_n_times_in_range(get_pattern_stats_factory("Alarm"), n - 1, n)
@@ -165,7 +172,9 @@ def test_case2():
 	min_stats = 5
 	max_stats = 15
 	test = AcsTestLogChecker(0,"Test2")
-	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 1000ms", min_stats, max_stats)
+	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 1s", min_stats, max_stats)
+
+	test.check_pattern_exists(get_pattern_warn_freq())	
 	
 	# Check factories
 	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION FACTORY Alarm")
@@ -190,6 +199,8 @@ def test_case3():
 	test = AcsTestLogChecker(0,"Test3")
 	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 500ms", min_stats, max_stats)
 	
+	test.check_pattern_exists(get_pattern_warn_freq())
+	
 	# Check factories
 	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION FACTORY Alarm")
 	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION FACTORY Archive")
@@ -213,6 +224,8 @@ def test_case4():
 	test = AcsTestLogChecker(0,"Test4")
 	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 500ms", min_stats, max_stats)
 	
+	test.check_pattern_exists(get_pattern_warn_freq())
+	
 	# Check factories
 	test.check_pattern_n_times_in_range(get_pattern_stats_factory("Alarm"), n - 1, n)
 	test.check_pattern_n_times_in_range(get_pattern_stats_factory("Archive"), n - 1, n)
@@ -234,6 +247,8 @@ def test_case5():
 	max_stats = 25
 	test = AcsTestLogChecker(0,"Test5")
 	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 500ms", min_stats, max_stats)
+	
+	test.check_pattern_exists(get_pattern_warn_freq())
 	
 	# Check factories
 	test.check_pattern_n_times_in_range(get_pattern_stats_factory("Alarm"), n - 1, n)

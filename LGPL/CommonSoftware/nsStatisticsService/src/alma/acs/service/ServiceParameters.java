@@ -29,15 +29,18 @@ import java.util.logging.Logger;
 
 public class ServiceParameters {
 
-	public static final int DEFAULT_FREQUENCY = 60000;
+	public static final int DEFAULT_FREQUENCY = 600000;
 	public static final int DEFAULT_TH_OLDEST_EVENT = 1000;
 	public static final int DEFAULT_TH_QUEUE_SIZE = 1000;
 	
 	public static final int MIN_ALLOWED_FREQUENCY = 50; // Minimum allowed frequency in ms
 	
+	public static final int MIN_2_MS = 60000; 
+	
 	public static final String ARG_FREQUENCY = "-f";
 	public static final String ARG_TH_OLDEST_EVENT = "-toe";
 	public static final String ARG_TH_QUEUE_SIZE = "-tqs";
+	public static final String ARG_MS = "-ms";
 	public static final String ARG_ADD = "-add";
 	public static final String ARG_HELP = "--help";
 	public static final String ARG_HELP2 = "-help";
@@ -63,7 +66,8 @@ public class ServiceParameters {
 				+ String.valueOf(ServiceParameters.DEFAULT_FREQUENCY) + "\n";
 		str += "\t\t" + ServiceParameters.ARG_TH_OLDEST_EVENT + "\tThershold used to log the oldest event timestamp. When QueueElementCount is greater than this threshold the oldest event timestamp will be logged. Default value is " 
 				+ String.valueOf(ServiceParameters.DEFAULT_TH_OLDEST_EVENT) + "\n";
-		str += "\t\t" + ServiceParameters.ARG_TH_QUEUE_SIZE + "\tThreshold used to log the queue size. Default value is " + ServiceParameters.DEFAULT_TH_QUEUE_SIZE + "\n\n";
+		str += "\t\t" + ServiceParameters.ARG_TH_QUEUE_SIZE + "\tThreshold used to log the queue size. Default value is " + ServiceParameters.DEFAULT_TH_QUEUE_SIZE + "\n";
+		str += "\t\t" + ServiceParameters.ARG_MS + "\tWhen this parameter is set, frequency value is considered as milliseconds\n\n";
 		str += "\tWhen there are no services defined, all services will be logged.\n";
 		str += "\tWhen there are no channels defined in a service, all channels will be logged.\n";
 		return str;
@@ -72,15 +76,12 @@ public class ServiceParameters {
 	
 	boolean read(String toolName,String[] args,List<String> errors) {
 		boolean ret = true;
+		boolean inMillis = false;
 		for(int i = 0;i < args.length;++i) {
 			if(args[i].equals(ARG_FREQUENCY)) {
 				if(i + 1 < args.length) {
 					try {
 						this.frequency = Integer.parseInt(args[++i]);
-						if(frequency < MIN_ALLOWED_FREQUENCY)
-						{
-							errors.add("Frequency must be greater or equal than " + String.valueOf(MIN_ALLOWED_FREQUENCY));
-						}
 					} catch(NumberFormatException ex) {
 						errors.add("Frequency must be an integer (milliseconds)");
 					}
@@ -133,11 +134,24 @@ public class ServiceParameters {
 			} else if(args[i].equals(ARG_HELP) || args[i].equals(ARG_HELP2) || args[i].equals(ARG_HELP3)) {
 				System.out.println(help(toolName));
 				ret = false;
-				
+			} else if(args[i].equals(ARG_MS)) {
+				inMillis = true;
 			} else {
 				errors.add("Unknown option: " + args[i]);
 			}
 		}
+		
+		if(this.frequency > 0) {
+			if(!inMillis) {
+				this.frequency = this.frequency * MIN_2_MS;
+			}
+		}
+		
+		if(frequency < MIN_ALLOWED_FREQUENCY)
+		{
+			errors.add("Frequency must be greater or equal than " + String.valueOf(MIN_ALLOWED_FREQUENCY));
+		}
+		
 		return errors.isEmpty() && ret;
 	}
 	

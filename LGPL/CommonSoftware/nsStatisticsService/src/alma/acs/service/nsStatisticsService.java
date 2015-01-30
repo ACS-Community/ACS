@@ -89,9 +89,20 @@ public class nsStatisticsService extends Thread {
 	 */
 	public void run() {
 		
+		if(params.getFrequency() < ServiceParameters.MIN_2_MS) {
+			logger.log(AcsLogLevel.WARNING, 
+				"Statistics of Notification Services will be obtained with a very high frequency (less than 1 minute time interval)");
+		}
+		
 		while(stop == false) {
-			logger.info("Getting Notify Services Statistics after " 
-					+ String.valueOf(params.getFrequency()) + "ms");
+			String msgPrefix = "Getting Notify Services Statistics after "; 
+			if(params.getFrequency() < 1000) {
+				logger.info(msgPrefix + String.valueOf(params.getFrequency()) + "ms");
+			} else if(params.getFrequency() < 60000) {
+				logger.info(msgPrefix + String.valueOf(params.getFrequency()/1000) + "s");
+			} else {
+				logger.info(msgPrefix + String.valueOf(params.getFrequency()/60000) + "min");
+			}
 			eventModel.getChannelStatistics();
 			
 			NotifyServices ns = eventModel.getNotifyServicesRoot();

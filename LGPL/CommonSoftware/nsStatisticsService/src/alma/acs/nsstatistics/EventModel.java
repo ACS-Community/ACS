@@ -84,7 +84,7 @@ import alma.acscommon.NOTIFICATION_FACTORY_NAME;
  */
 public class EventModel {
 	
-	private final static String eventGuiId = "eventGUI";
+	private final static String nsStatsId = "nsStatistics";
 
 	/**
 	 * Singleton instance, used by GUI layer classes to access the model.
@@ -157,12 +157,12 @@ public class EventModel {
 			lastConsumerAndSupplierCount = new HashMap<String, int[]>();
 			consumerMap = new HashMap<String, AdminConsumer>();
 	
-			m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
+			m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(nsStatsId, false);
 			ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 
 			String managerLoc = AcsLocations.figureOutManagerLocation();
 
-			acc = new AdvancedComponentClient(m_logger, managerLoc, eventGuiId) {
+			acc = new AdvancedComponentClient(m_logger, managerLoc, nsStatsId) {
 				@Override
 				protected void initAlarmSystem() {
 					m_logger.fine("The eventGUI suppresses initialization of the alarm system libraries, to cut the unnecessary dependency on CERN AS jar files.");
