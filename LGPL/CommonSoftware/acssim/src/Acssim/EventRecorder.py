@@ -138,7 +138,7 @@ class EventRecorder(Consumer):
         return r
        
 
-class Event:
+class Event(object):
 
     def __init__(self, publisher, name, evst):
         self.publisher = publisher
@@ -155,7 +155,7 @@ class Event:
     def publish(self):
         self.publisher.publishEvent(self.evStruct)
 
-class Player:
+class Player(object):
 
     def __init__(self, file_name):
         '''

@@ -5,7 +5,7 @@
 1 - Done.
 1 - 
 1 - --Testing----------------------------------------------------------
-1 - getSimProxy('TEST_PS_1'): <Acssim.Servants.Representations.BehaviorProxy.BehaviorProxy instance at 0xXXXX>
+1 - getSimProxy('TEST_PS_1'): <Acssim.Servants.Representations.BehaviorProxy.BehaviorProxy object at 0xXXXX>
 1 - 
 1 - getComponentXMLObj('TEST_PS_1'): None
 1 - getComponentXMLObj('HELLOWORLD1'): <Acspy.Util.XmlObjectifier.XmlObject instance at 0xXXXX>

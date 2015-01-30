@@ -41,7 +41,7 @@ from Acssim.Goodies import getComponent
 #--GLOBALS---------------------------------------------------------------------
 __revision__ = "@(#) $Id$"
 #------------------------------------------------------------------------------
-class BaseRepresentation:
+class BaseRepresentation(object):
     '''
     Class BaseRepresentation is a baseclass which describes simulated components.
     '''
