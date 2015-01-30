@@ -16,7 +16,7 @@
 1 - removeGlobalData('stuff'): None
 1 - getGlobalData(): None
 1 - 
-1 - getCompLocalNS('TEST_PS_1'): {'ReadbackDevIO': <class interfaceInheritance.ReadbackDevIO at 0xXXXX>}
+1 - getCompLocalNS('TEST_PS_1'): {'ReadbackDevIO': <class 'interfaceInheritance.ReadbackDevIO'>}
 1 - getCompLocalNS('HELLOWORLD1'): {'ACSErrTypeCommonImpl': <module 'ACSErrTypeCommonImpl' from 'xxx'>}
 1 - getCompLocalNS(''): {}
 1 - 
