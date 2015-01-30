@@ -1,3 +1,28 @@
+#!/usr/bin/env python
+# @(#) $Id: NsStatisticsTest.py,v 1.4 2015/01/23 16:51:58 pcolomer Exp $
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) Associated Universities Inc., 2002
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307  USA
+#
+#------------------------------------------------------------------------------
 import getpass
 import re
 import sys
@@ -116,7 +141,7 @@ def get_pattern_stats_factory(factory_name):
 	
 def test_case1():
 	min_stats = 10
-	max_stats = 20
+	max_stats = 25
 	test = AcsTestLogChecker(0,"Test1")
 	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 500ms", min_stats, max_stats)
 			
@@ -138,7 +163,7 @@ def test_case1():
 	
 def test_case2():
 	min_stats = 5
-	max_stats = 10
+	max_stats = 15
 	test = AcsTestLogChecker(0,"Test2")
 	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 1000ms", min_stats, max_stats)
 	
@@ -161,7 +186,7 @@ def test_case2():
 
 def test_case3():	
 	min_stats = 10
-	max_stats = 20
+	max_stats = 25
 	test = AcsTestLogChecker(0,"Test3")
 	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 500ms", min_stats, max_stats)
 	
@@ -184,7 +209,7 @@ def test_case3():
 	
 def test_case4():
 	min_stats = 10
-	max_stats = 20
+	max_stats = 25
 	test = AcsTestLogChecker(0,"Test4")
 	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 500ms", min_stats, max_stats)
 	
@@ -206,7 +231,7 @@ def test_case4():
 
 def test_case5():	
 	min_stats = 10
-	max_stats = 20
+	max_stats = 25
 	test = AcsTestLogChecker(0,"Test5")
 	n = test.check_pattern_n_times_in_range("Getting Notify Services Statistics after 500ms", min_stats, max_stats)
 	

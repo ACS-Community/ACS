@@ -63,7 +63,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = stopNsStatisticsService.sh
+SCRIPTS         = stopNsStats
 SCRIPTS_L       =
 
 #
@@ -75,7 +75,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         = testSupplier.py testConsumer.py NsStatisticsServiceTest.py
+PY_SCRIPTS         = TSupplier.py TConsumer.py NsStatisticsTest.py
 PY_SCRIPTS_L       =
 
 PY_MODULES         =

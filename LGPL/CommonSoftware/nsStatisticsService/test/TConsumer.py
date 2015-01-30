@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# @(#) $Id: testConsumer.py,v 1.4 2015/01/23 16:51:58 pcolomer Exp $
+# @(#) $Id: TConsumer.py,v 1.4 2015/01/23 16:51:58 pcolomer Exp $
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002
@@ -90,6 +90,6 @@ def main(argv):
 
 
 if __name__ == "__main__":
-	# > testConsumer.py wait_sec ch_id_1 ch_id_2 ... ch_id_N
+	# > TConsumer.py wait_sec ch_id_1 ch_id_2 ... ch_id_N
 	# Where ch_id can be 1, 2, 3, 4
 	main(sys.argv[1:])    
