@@ -157,8 +157,9 @@ public class EventModel {
 			lastConsumerAndSupplierCount = new HashMap<String, int[]>();
 			consumerMap = new HashMap<String, AdminConsumer>();
 	
-			m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(nsStatsId, false);
-			ClientLogManager.getAcsLogManager().suppressRemoteLogging();
+			m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(nsStatsId, true);
+
+			//ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 
 			String managerLoc = AcsLocations.figureOutManagerLocation();
 
@@ -244,24 +245,33 @@ public class EventModel {
 	 * Discovers services and bindings, retrieving only once the list of all
 	 * bindings from the naming service.
 	 */
-	private synchronized void discoverNotifyServicesAndChannels() {
+	private synchronized boolean discoverNotifyServicesAndChannels() {
+		
+		boolean ret = true;
+		
 		BindingListHolder bl = new BindingListHolder();
 		BindingIteratorHolder bi = new BindingIteratorHolder();
 		
-		// Get names of all objects bound in the naming service
-		nctx.list(-1, bl, bi);
-		
-		// Extract the useful binding information Id and Kind
-		Map<String, String> bindingMap = new HashMap<String, String>();
-		for (Binding binding : bl.value) {
-			bindingMap.put(binding.binding_name[0].id, binding.binding_name[0].kind);
+		try {
+			// Get names of all objects bound in the naming service
+			nctx.list(-1, bl, bi);
+			
+			// Extract the useful binding information Id and Kind
+			Map<String, String> bindingMap = new HashMap<String, String>();
+			for (Binding binding : bl.value) {
+				bindingMap.put(binding.binding_name[0].id, binding.binding_name[0].kind);
+			}
+			
+			// notify services
+			discoverNotifyServices(bindingMap);
+			
+			// channels (NCs)
+			discoverChannels(bindingMap);
+		} catch(Exception e) {
+			ret = false;
 		}
 		
-		// notify services
-		discoverNotifyServices(bindingMap);
-		
-		// channels (NCs)
-		discoverChannels(bindingMap);
+		return ret;
 	}
 
 	/**
@@ -676,9 +686,12 @@ public class EventModel {
 	/**
 	 * Called by NotifyServiceUpdateJob (single/periodic refresh of service summary / channel tree).
 	 */
-	public synchronized void getChannelStatistics() {
+	public synchronized boolean getChannelStatistics() {
 		
-		discoverNotifyServicesAndChannels();
+		if(false == discoverNotifyServicesAndChannels())
+		{
+			return false;
+		}
 		
 		for (NotifyServiceData nsData : notifyServices.values()) {
 			
@@ -754,6 +767,8 @@ public class EventModel {
 				channelData.setDeltaSuppliers(proxyDeltas[1]);
 			}
 		}
+		
+		return true;
 	}
 	
 	
