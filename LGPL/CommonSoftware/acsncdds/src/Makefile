@@ -52,7 +52,7 @@ LIBRARIES_L     =
 #
 # Library that provides all the core functionality of DDS Notification Channel in ACS
 acsddsnc_OBJECTS  = DDSHelperImpl DDSPublisherImpl DDSSubscriberImpl DataReaderListenerImpl acsddsncCDBPropertiesImpl
-acsddsnc_LIBS	  = OpenDDS_Dcps SimpleTcp maci
+acsddsnc_LIBS	  = OpenDDS_Dcps maci
 
 #
 # Scripts (public and local)
