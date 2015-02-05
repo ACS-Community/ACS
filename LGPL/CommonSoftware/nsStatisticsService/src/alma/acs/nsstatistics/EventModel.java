@@ -104,7 +104,7 @@ public class EventModel {
 	private final Logger m_logger;
 	private final ContainerServices cs;
 	private final DynAnyFactory dynAnyFactory;
-	private final NamingContext nctx;
+	private NamingContext nctx;
 	
 	private final ArrayBlockingQueue<EventData> equeue = new ArrayBlockingQueue<EventData>(50000);
 	private final ArrayBlockingQueue<ArchiveEventData> archQueue = new ArrayBlockingQueue<ArchiveEventData>(100000);
@@ -238,6 +238,20 @@ public class EventModel {
 	
 	public BlockingQueue<ArchiveEventData> getArchQueue() {
 		return archQueue;
+	}
+	
+	public boolean reconnectNamingService() {
+		boolean ret = true;
+		try {
+			nctx = NamingContextHelper.narrow(
+				acc.getAcsManagerProxy().get_service("NameService", false)
+			);
+			m_logger.warning("Naming service has been recovered therefore all registered Notify Services will be removed to be loaded again");
+			notifyServices.clear();
+		} catch(Throwable thr) {
+			ret = false;
+		}
+		return ret;
 	}
 	
 

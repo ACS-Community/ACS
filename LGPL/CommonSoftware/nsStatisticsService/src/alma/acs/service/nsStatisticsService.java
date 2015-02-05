@@ -312,21 +312,19 @@ public class nsStatisticsService extends Thread {
 				"Statistics of Notification Services will be obtained with a very high frequency (less than 1 minute time interval)");
 		}
 		
-		while(stop == false) {
-			String msgPrefix = "Getting Notify Services Statistics after "; 
-			if(params.getFrequency() < 1000) {
-				logger.info(msgPrefix + String.valueOf(params.getFrequency()) + "ms");
-			} else if(params.getFrequency() < 60000) {
-				logger.info(msgPrefix + String.valueOf(params.getFrequency()/1000) + "s");
-			} else {
-				logger.info(msgPrefix + String.valueOf(params.getFrequency()/60000) + "min");
-			}
-			
+		while(stop == false) {			
 			try {
-				if(false == eventModel.getChannelStatistics()) {
-					logger.warning("Naming Service is unreachable");
+				boolean nsExists = eventModel.getChannelStatistics();
+				if(false == nsExists) {
 					setServicesStatus(Status.UNKNOWN);
-				} else {
+					if(eventModel.reconnectNamingService() == false) {
+						logger.log(AcsLogLevel.ERROR,"Naming Service is unreachable");
+					} else {
+						nsExists = true;
+					}
+				} 
+				
+				if(true == nsExists) {
 					NotifyServices ns = eventModel.getNotifyServicesRoot();
 					
 					// Get services to be treated
