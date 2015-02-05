@@ -29,6 +29,8 @@ set env(ACS_LOG_STDOUT) 2
 set env(MACI_RECOVERY_FILE_NAME) $ACS_TMP/maciRecovery
 set env(ACS_BACI_RECOVERY_FILE) $ACS_TMP/baciRecovery
 set env(ACS_LOG_FILE) $ACS_TMP/log_cache.dat
+set ACS_CDB $env(PWD)
+set env(ACS_CDB) $ACS_CDB
 
 #
 # ___oOo___
