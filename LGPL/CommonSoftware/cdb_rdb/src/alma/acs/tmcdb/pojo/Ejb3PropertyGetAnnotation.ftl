@@ -16,12 +16,12 @@ ${pojo.generateOneToOneAnnotation(property, cfg)}
 <#elseif c2h.isManyToOne(property)>
 ${pojo.generateManyToOneAnnotation(property)}
 <#--TODO support optional and targetEntity-->    
-${pojo.generateJoinColumnsAnnotation(property, cfg)}
+${pojo.generateJoinColumnsAnnotation(property, cfg).replaceFirst("=\"", "=\"`").replaceAll("\",", "`\",").replaceAll("\"\\)","`\")")}
 <#elseif c2h.isCollection(property)>
 ${pojo.generateCollectionAnnotation(property, cfg)}
 <#else>
 ${pojo.generateBasicAnnotation(property)}
-${pojo.generateAnnColumnAnnotation(property)}
+${pojo.generateAnnColumnAnnotation(property).replaceFirst("=\"", "=\"`").replaceAll("\",", "`\",").replaceAll("\"\\)","`\")")}
 <#-- Added by ACS to support the @Type annotation -->
 <#if pojo.getMetaAttribAsBool(property, "isXmlClobType", false) >
     @${pojo.importType("org.hibernate.annotations.Type")}(type="xmltype")
