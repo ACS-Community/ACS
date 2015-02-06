@@ -78,7 +78,8 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/tablelayout.jar \
 	../lib/xalan.jar \
 	../lib/xalan_serializer.jar \
-	../lib/xmlunit-1.3.jar
+	../lib/xmlunit-1.3.jar \
+	../lib/mysql-connector-java-5.1.20-bin.jar
 
 #
 #>>>>> END OF standard rules
