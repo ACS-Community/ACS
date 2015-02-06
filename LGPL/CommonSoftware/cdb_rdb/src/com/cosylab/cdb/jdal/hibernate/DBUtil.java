@@ -45,10 +45,10 @@ import com.cosylab.cdb.jdal.hibernate.plugin.PluginFactory;
  */
 public class DBUtil {
 	
-	public static final String HSQLDB_BACKEND_NAME = "hsqldb";
-	public static final String ORACLE_BACKEND_NAME = "oracle";
-
-	public static class ConnectionData {
+        public static final String HSQLDB_BACKEND_NAME = "hsqldb";
+        public static final String ORACLE_BACKEND_NAME = "oracle";
+        public static final String MYSQL_BACKEND_NAME = "mysql";
+        public static class ConnectionData {
 		public String backend;
 		public String url;
 		public String username;
@@ -68,12 +68,18 @@ public class DBUtil {
 	{
 		HibernateWDALConfigurationPlugin config = PluginFactory.getConfigurationPlugin(logger);
 		
-		// read config info
-		String backend = config.getBackend();
-		String user = config.getUserName();
+		//read config info
+                String backend ; 
+                //connection URL from archiveConfig.properties
+                String url = config.getURL();
+                if (url.startsWith("jdbc:mysql")) {
+		    backend = "mysql";
+                 } else 
+		    backend = config.getBackend();
+ 
+                String user = config.getUserName();
 		String pwd = config.getPassword();
 		if (pwd == null) pwd = "";
-		String url = config.getURL();
 	
 		if (backend==null) {
 			throw new IllegalArgumentException("No backend specified for TMCDB, check configuration!");
@@ -84,6 +90,8 @@ public class DBUtil {
 			connection = connectOracle(user, pwd, url, logger);
 		} else if (backend.equalsIgnoreCase(HSQLDB_BACKEND_NAME)) {
 			connection = connectHsqldb(user, pwd, url, logger);
+		} else if (backend.equalsIgnoreCase(MYSQL_BACKEND_NAME)) {
+		    connection = connectMysql(user, pwd, url, logger);
 		} else {
 			final String CLAZZ_PROPERTY_NAME = "hibernate.connection.driver_class";
 			String clazz = config.get(CLAZZ_PROPERTY_NAME, null);
@@ -128,6 +136,16 @@ public class DBUtil {
 	    Connection conn = hds.getConnection(dbUser, dbPassword);
         // Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 		conn.setAutoCommit(false); 
+		return conn;
+	} 
+
+	public static Connection connectMysql(String dbUser, String dbPassword, String dbUrl, Logger logger) throws SQLException, ClassNotFoundException {
+		//Load mysql jdbc driver
+                //mysql-connector-java-5.1.20-bin.jar should be in class path
+		if (logger != null) logger.info("Connecting to TMCDB in Mysql as " + dbUser + " with: " + dbUrl);
+		Class.forName("com.mysql.jdbc.Driver");
+                Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+		conn.setAutoCommit(false);
 		return conn;
 	}
 

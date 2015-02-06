@@ -110,6 +110,11 @@ public class HibernateDBUtil {
 				if (url.indexOf(":mem:") != -1)
 					inMemory = true;
 			}
+            else if (backend.equals(DBUtil.MYSQL_BACKEND_NAME))
+			{
+			    connectionProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");                             
+			    connectionProperties.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");                 
+			}
 			else
 			{
 				// for all other backends, configuration needs to be provided manually via configuration
