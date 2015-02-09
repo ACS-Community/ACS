@@ -252,7 +252,7 @@ public class AlarmSystemCorbaServer implements Runnable {
         java.lang.Object contSvcs = constructor.newInstance(AlarmSystemCorbaServer.this,m_logger);
         m_logger.log(AcsLogLevel.DEBUG,"Built the alarm system implementation of ContainerServices");
 		
-		m_logger.log(AcsLogLevel.INFO,"Starting the CERN implementation of the alarm service");
+		m_logger.log(AcsLogLevel.INFO,"Activating the CERN alarm service");
 		Class laserCL = loader.loadClass("com.cosylab.acs.laser.LaserComponent");
 		Class[] laserClasses = { AlarmSystemCorbaServer.class, contSvcs.getClass()};
 		Constructor ctor = laserCL.getConstructor(laserClasses);
@@ -367,6 +367,14 @@ public class AlarmSystemCorbaServer implements Runnable {
 		// activate POA
 		poaManager = rootPOA.the_POAManager();
 		poaManager.activate();
+		
+		// Initialize remote logging
+		try {
+			ClientLogManager.getAcsLogManager().initRemoteLoggingForService(orb, true);
+			m_logger.log(AcsLogLevel.DEBUG,"Remote logging initialized");
+		} catch (Throwable t) {
+			m_logger.log(AcsLogLevel.ERROR,"Error connecting to the remote log service");
+		} 
 	}
 
 	/**

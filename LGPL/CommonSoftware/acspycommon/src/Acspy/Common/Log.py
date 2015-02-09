@@ -64,6 +64,7 @@ from Acspy.Common.ACSHandler import ACSFormatter
 from Acspy.Common.ACSHandler import ACSLogRecord
 from Acspy.Common.ACSHandler import makeACSLogRecord
 from Acspy.Common.TimeHelper import TimeUtil
+from Acspy.Common.loggingStatistics import LoggingStatistics
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
 #--GLOBALS---------------------------------------------------------------------
@@ -396,7 +397,7 @@ def isFlushRunning():
     except:
         return False
 #------------------------------------------------------------------------------
-class LogThrottleAlarmerBase:
+class LogThrottleAlarmerBase(object):
     '''
     Abstract base class for the LogThrottle to raise/clear alarms
     '''
@@ -432,6 +433,10 @@ class Logger(logging.Logger):
         
         #pass it on to baseclass. by default all logs are sent to the handlers
         logging.Logger.__init__(self, name, logging.NOTSET)
+        self.loggerName = name
+
+        # statistics module
+        self.stats = LoggingStatistics()
 
         # The ACS logger uses two handlers one for local messages and one for
         # central messages.  There should be only one pair of handlers per
@@ -526,7 +531,7 @@ class Logger(logging.Logger):
         msg = self.__formatMessage(msg)
         if lvl == 0 or lvl == 99:
             raise ValueError("Cannot log messages at level %d" % lvl)
-        self.log(LEVELS[lvl], msg)
+        self.acsLog(LEVELS[lvl], msg)
     #------------------------------------------------------------------------
     def logAlert(self, msg):
         '''
@@ -540,7 +545,7 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_ALERT], msg)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_ALERT], msg)
         
     #------------------------------------------------------------------------
     def logCritical(self, msg):
@@ -556,7 +561,7 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_CRITICAL], msg)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_CRITICAL], msg)
         
     #------------------------------------------------------------------------
     def logDebug(self, msg):
@@ -572,7 +577,7 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_DEBUG], msg)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_DEBUG], msg)
         
     #------------------------------------------------------------------------
     def logDelouse(self, msg):
@@ -588,7 +593,7 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_DELOUSE], msg)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_DELOUSE], msg)
         
     #------------------------------------------------------------------------
     def logEmergency(self, msg):
@@ -604,7 +609,7 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_EMERGENCY], msg)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_EMERGENCY], msg)
         
     #------------------------------------------------------------------------
     def logError(self, msg):
@@ -620,7 +625,7 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_ERROR], msg)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_ERROR], msg)
         
     #------------------------------------------------------------------------
     def logInfo(self, msg):
@@ -636,7 +641,7 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_INFO], msg)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_INFO], msg)
         
     #------------------------------------------------------------------------
     def logNotice(self, msg):
@@ -652,7 +657,7 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_NOTICE], msg)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_NOTICE], msg)
         
     #------------------------------------------------------------------------
     def logTrace(self, msg):
@@ -668,7 +673,7 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_TRACE], msg)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_TRACE], msg)
         
     #------------------------------------------------------------------------
     def logWarning(self, msg):
@@ -683,7 +688,7 @@ class Logger(logging.Logger):
         Raises: Nothing
         '''
         msg = self.__formatMessage(msg)
-        self.log(LEVELS[ACSLog.ACS_LOG_WARNING], msg)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_WARNING], msg)
         
     #------------------------------------------------------------------------
     def logXML(self, xml):
@@ -699,7 +704,8 @@ class Logger(logging.Logger):
 
         Raises: Nothing
         '''
-        self.log(LEVELS[ACSLog.ACS_LOG_DEBUG], xml)
+        self.acsLog(LEVELS[ACSLog.ACS_LOG_DEBUG], xml)
+        
     #------------------------------------------------------------------------
     def logErrorTrace(self, errortrace, priority = ACSLog.ACS_LOG_ERROR):
         '''
@@ -716,7 +722,7 @@ class Logger(logging.Logger):
         #ok to send it directly
         if not priority in ACSLog.Priorities._items:
             raise KeyError("Invalid Log Level")
-        self.log(LEVELS[priority], 'Error Trace', extra={ 'errortrace' : errortrace, 'priority' : priority})
+        self.acsLog(LEVELS[priority], 'Error Trace', extra={ 'errortrace' : errortrace, 'priority' : priority})
     #------------------------------------------------------------------------
     def logTypeSafe(self, priority, timestamp, msg, rtCont, srcInfo, data, audience=None, array=None, antenna=None):
         '''
@@ -742,7 +748,7 @@ class Logger(logging.Logger):
                 array = ""
         if antenna is None:
                 antenna = ""
-        self.log(LEVELS[priority], msg, extra={ 'priority' : priority, 'rtCont' : rtCont, 'srcInfo' : srcInfo,
+        self.acsLog(LEVELS[priority], msg, extra={ 'priority' : priority, 'rtCont' : rtCont, 'srcInfo' : srcInfo,
                                                 'data' : data, 'audience' : audience, 'array' : array,
                                                 'antenna' : antenna})
     #------------------------------------------------------------------------
@@ -769,7 +775,7 @@ class Logger(logging.Logger):
                 array = ""
         if antenna is None:
                 antenna = ""
-        self.log(LEVELS[priority], msg, extra={ 'priority' : priority, 'audience' : audience,
+        self.acsLog(LEVELS[priority], msg, extra={ 'priority' : priority, 'audience' : audience,
                                                 'array' : array, 'antenna' : antenna})
     #------------------------------------------------------------------------
     def setLevels(self, loglevel):
@@ -845,6 +851,93 @@ class Logger(logging.Logger):
         See also ACSHandler.configureLogging
         '''
         CENTRALHANDLER.configureLogging(maxLogsPerSec,alarmSender)
+        
+    #----------------------------------------------------------------------------
+    # --INTERNAL LOGGER----------------------------------------------------------
+    def acsLog(self, level, msg, *args, **kwargs):
+        '''
+        This method defines the ACS log method, used to include extra functionality
+        like the statistics module
+    
+        Parameters:  level of the message and message itself
+    
+        Returns:  Nothing
+    
+        Raises:  Nothing
+        '''
+        try:
+            self.log(level, msg, *args, **kwargs)
+            if self.stats.getDisableStatistics() == False:
+                # Increment number of messages logged (only if log has succeded)
+                self.stats.incrementNumberOfMessages()
+                # Calculate time since last calculation of the logging statistics
+                timeElapsedSinceLastStatistics = time.time() - self.stats.getLastStatisticsRepportTime()
+                # Determine if statistics are to be generated
+                if timeElapsedSinceLastStatistics >= self.stats.getStatisticsCalculationPeriod():
+                    # Calculate statistics
+                    self.stats.calculateLoggingStatistics()
+                    
+                    # Reset statistics
+                    self.stats.resetStatistics()
+    
+                    # Retrieve statistics logs
+                    retrievedStatisticsLogs = self.stats.retrieveStatisticsLogs(self.loggerName)
+
+                    # Print statistics logs
+                    for statsMsg in retrievedStatisticsLogs:
+                        statsMsg = self.__formatMessage(statsMsg)
+                        self.acsLog(LEVELS[ACSLog.ACS_LOG_INFO], statsMsg)
+           
+        except:
+            if self.stats.getDisableStatistics() == False:
+                # Increment number of messages logged (only if log has succeded)
+                self.stats.incrementNumberOfLogErrors()
+                # Calculate time since last calculation of the logging statistics
+                timeElapsedSinceLastStatistics = time.time() - self.stats.getLastStatisticsRepportTime()
+                # Determine if statistics are to be generated
+                if timeElapsedSinceLastStatistics >= self.stats.getStatisticsCalculationPeriod():
+                    # Calculate statistics
+                    self.stats.calculateLoggingStatistics()
+                    
+                    # Reset statistics
+                    self.stats.resetStatistics()
+    
+                    # Retrieve statistics logs
+                    retrievedStatisticsLogs = self.stats.retrieveStatisticsLogs(self.loggerName)
+
+                    # Print statistics logs
+                    for statsMsg in retrievedStatisticsLogs:
+                        statsMsg = self.__formatMessage(statsMsg)
+                        self.acsLog(LEVELS[ACSLog.ACS_LOG_INFO], statsMsg)
+            
+    #----------------------------------------------------------------------------
+    def closeLogger(self):
+        '''
+        This method is called when the logger is to be closed and will activate any final action
+        the logger need to perform before liberating resources.
+        The only task currently to be performed is to print out final statistics of the logger
+    
+        Parameters:  Nothing
+    
+        Returns:  Nothing
+    
+        Raises:  Nothing
+        '''
+        if self.stats.getDisableStatistics() == False:
+            # Calculate statistics
+            self.stats.calculateLoggingStatistics()
+            
+            # Reset statistics
+            self.stats.resetStatistics()
+    
+            # Retrieve statistics logs
+            retrievedStatisticsLogs = self.stats.retrieveStatisticsLogs(self.loggerName)
+    
+            # Print statistics logs
+            for statsMsg in retrievedStatisticsLogs:
+                statsMsg = self.__formatMessage(statsMsg)
+                self.acsLog(LEVELS[ACSLog.ACS_LOG_INFO], statsMsg)
+#----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 # The Python logging module contains code to manage a hierarchy of loggers.
 # The root logger has a default level setting of WARNING and would return
@@ -902,4 +995,3 @@ def doesLoggerExist(key_name):
     Raises:  Nothing
     '''
     return key_name in logging.Logger.manager.loggerDict
-#----------------------------------------------------------------------------

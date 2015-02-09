@@ -49,16 +49,21 @@ namespace acsalarm
 			int operator==(const Timestamp &rhs) const;
 
 			// accessor for the seconds
-			long getSeconds() { return seconds; }
+			long getSeconds() const { return seconds; }
 
 			// mutator for the seconds
 			void setSeconds(long newSecs) { seconds = newSecs; }
 
 			// accessor for the microseconds
-			long getMicroSeconds() { return microSeconds; }
+			long getMicroSeconds() const { return microSeconds; }
 
 			// mutator for the microseconds
 			void setMicroSeconds(long newMicroSecs) { microSeconds = newMicroSecs; }
+
+			/**
+			 * Return the timestamp in ISO 8601 format like 2014-10-07T13:39:34.638
+			 */
+			std::string toISOFormat() const;
 
 		private:
 			long seconds;

@@ -35,8 +35,6 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES =
 #
 
 #
@@ -188,10 +186,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	 do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_links clean_all 
+clean :  clean_all 
 	$(RM) *~ ../include/*~ ../dbl/*~ ../idl/*~ ../*~ ../../*~ core
 	@echo " . . . clean done"
 
@@ -230,8 +228,8 @@ COMMON_SOURCES_ORIG = \
 $(COMMON_SOURCES) : $(COMMON_SOURCES_ORIG)
 	- $(AT) if [ ! -h $@ ]; then echo "== Linking source: $@"; ln -s ../../ws/test/$@ $@; fi
 
-do_links: $(COMMON_SOURCES)
+: $(COMMON_SOURCES)
 
-clean_links:
+:
 	$(AT) $(RM) $(COMMON_SOURCES)
 #___oOo___

@@ -28,7 +28,6 @@
 #include "baciBACICallback.h"
 #include "baci.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACICallback.cpp,v 1.3 2006/09/01 02:20:54 cparedes Exp $");
 
 namespace baci {
 

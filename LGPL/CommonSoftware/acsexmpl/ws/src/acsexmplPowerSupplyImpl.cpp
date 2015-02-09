@@ -41,7 +41,6 @@
 
 #include <acsexmplPowerSupplyImpl.h>
 
-ACE_RCSID(acsexmpl, acsexmplPowerSupplyImpl, "$Id: acsexmplPowerSupplyImpl.cpp,v 1.115 2008/10/09 08:41:11 cparedes Exp $")
 
 using namespace baci;
 

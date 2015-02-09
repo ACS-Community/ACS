@@ -29,7 +29,7 @@ import os
 import sys
 import time
 
-class bulkDataNTtestSuite:
+class bulkDataNTtestSuite(object):
     
     
     def startSenders(self):

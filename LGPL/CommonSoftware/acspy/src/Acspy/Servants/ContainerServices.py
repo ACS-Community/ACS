@@ -60,7 +60,7 @@ from Acspy.Common.CDBAccess   import CDBaccess
 from ACS__POA                 import CBlong
 from ACS                      import CBDescIn 
 #------------------------------------------------------------------------------
-class ContainerServices:
+class ContainerServices(object):
     '''
     Class ContainerServices provides components and PySimpleClients
     with ACS and CORBA services. Developers should never instantiate this class
@@ -770,7 +770,7 @@ class ContainerServices:
         return
     #--------------------------------------------------------------------------
 
-class ComponentReleaseCallback:
+class ComponentReleaseCallback(object):
     def __init__(self):
         self.__condition = threading.Condition()
         self.__condition.acquire()

@@ -1,0 +1,52 @@
+diff -Naur TAO.orig/ACE_wrappers/ace/Hash_Map_Manager_T.cpp TAO/ACE_wrappers/ace/Hash_Map_Manager_T.cpp
+--- TAO.orig/ACE_wrappers/ace/Hash_Map_Manager_T.cpp	2009-02-16 13:30:38.000000000 +0000
++++ TAO/ACE_wrappers/ace/Hash_Map_Manager_T.cpp	2014-08-27 07:06:31.000000000 +0000
+@@ -463,6 +463,24 @@
+   return this->index_ >= 0;
+ }
+ 
++template <class EXT_ID, class INT_ID, class HASH_KEY, class COMPARE_KEYS, class ACE_LOCK> int
++ACE_Hash_Map_Iterator_Base_Ex<EXT_ID, INT_ID, HASH_KEY, COMPARE_KEYS, ACE_LOCK>::check_valid_next_pointer(void)
++{
++  ACE_TRACE ("ACE_Hash_Map_Iterator_Base_Ex<EXT_ID, INT_ID, HASH_KEY, COMPARE_KEYS, ACE_LOCK>::check_valid_next_pointer");
++  ACE_Hash_Map_Entry<EXT_ID, INT_ID> *p = this->map_man_->table_[this->index_].next_;
++  while(p != &this->map_man_->table_[this->index_])
++  {
++    if(p == this->next_)
++      return 1;
++    p = p->next_;
++  }
++
++  ACE_DEBUG((LM_DEBUG,"Resetting next_ pointer because it doesn't point to a valid entry\n"));
++  this->next_ = &this->map_man_->table_[this->index_];
++  return this->forward_i ();
++}
++
++
+ // ------------------------------------------------------------
+ 
+ ACE_ALLOC_HOOK_DEFINE(ACE_Hash_Map_Const_Iterator_Base_Ex)
+diff -Naur TAO.orig/ACE_wrappers/ace/Hash_Map_Manager_T.h TAO/ACE_wrappers/ace/Hash_Map_Manager_T.h
+--- TAO.orig/ACE_wrappers/ace/Hash_Map_Manager_T.h	2009-02-16 13:30:38.000000000 +0000
++++ TAO/ACE_wrappers/ace/Hash_Map_Manager_T.h	2014-08-27 07:03:40.000000000 +0000
+@@ -653,6 +653,9 @@
+   bool operator== (const ACE_Hash_Map_Iterator_Base_Ex<EXT_ID, INT_ID, HASH_KEY, COMPARE_KEYS, ACE_LOCK> &) const;
+   bool operator!= (const ACE_Hash_Map_Iterator_Base_Ex<EXT_ID, INT_ID, HASH_KEY, COMPARE_KEYS, ACE_LOCK> &) const;
+ 
++  /// Check valid next pointer
++  int check_valid_next_pointer(void);
++
+   /// Declare the dynamic allocation hooks.
+   ACE_ALLOC_HOOK_DECLARE;
+ 
+--- TAO.orig/ACE_wrappers/TAO/orbsvcs/orbsvcs/Naming/Bindings_Iterator_T.cpp	2014-08-27 15:21:15.000000000 -0400
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/Naming/Bindings_Iterator_T.cpp	2014-08-27 15:21:05.000000000 -0400
+@@ -132,6 +132,8 @@
+   // If there are no more bindings...
+   if (hash_iter_->done ())
+       return 0;
++  else if (hash_iter_->check_valid_next_pointer() == 0)
++      return 0;
+   else
+     {
+       // Initially assume that the iterator has the requested number of

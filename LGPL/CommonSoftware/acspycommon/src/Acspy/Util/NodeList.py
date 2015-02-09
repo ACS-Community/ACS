@@ -12,7 +12,7 @@ TODO:
 #
 import CosNaming
 
-class nodeList:
+class nodeList(object):
   def __init__ (self, context): # pragma: NO COVER
     (self.list, self.it) = context.list(1024) #DWF-changed from 80
 

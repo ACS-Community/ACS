@@ -1,0 +1,13 @@
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner alma.acs.util.stringqueue.test.DefaultFileHandlerTest
+1 - DefaultQueueFileHandlerImpl.getNewFile() invoked StringsQueueXXXX.tmp
+1 - DefaultQueueFileHandlerImpl.getNewFile() invoked StringsQueueXXXX.tmp
+1 - DefaultQueueFileHandlerImpl.fileProcessed(File , String , String ) invoked
+1 - DefaultQueueFileHandlerImpl.fileProcessed(File , String , String ) invoked
+1 - DefaultXmlQueueFileHandlerImpl.getNewFile() invoked
+1 - DefaultXmlQueueFileHandlerImpl.getNewFile() invoked
+1 - DefaultQueueFileHandlerImpl.fileProcessed(File , String , String ) invoked
+1 - DefaultQueueFileHandlerImpl.fileProcessed(File , String , String ) invoked
+1 - 
+1 - 
+1 - OK (2 tests)
+1 - 

@@ -37,8 +37,8 @@
 
 MAKE_NOIFR_CHECK = on # todo check this
 
-# List of files to be linked
-LINK_FILES = ../idl/acserr.idl
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES = ../idl/acserr.idl
 #
 
 #

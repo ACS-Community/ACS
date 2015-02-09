@@ -79,6 +79,7 @@ $(PROG)_LIBS               = $(TESTLIBS) C++ CCS
 
 INCLUDES      = baciCharacteristicModelImpl.h baciCharacteristicComponentImpl.h \
 		baciAlarm_T.h baciAlarm_T.i \
+		baciAlarmBoolean.h baciAlarmBooleanSeq.h \
 		baciPcommonImpl_T.h baciPcommonImpl_T.i baciPcontImpl_T.h baciPcontImpl_T.i \
 		baciROcommonImpl_T.h baciROcommonImpl_T.i baciROcontImpl_T.h \
                 baciROcontImpl_T.i \
@@ -115,6 +116,7 @@ INCLUDES      = baciCharacteristicModelImpl.h baciCharacteristicComponentImpl.h 
 		baciSmartPropertyPointer.h baciSmartPropertyPointer.i \
 		baciSmartServantPointer.h baciSmartServantPointer.i \
 		baciBACIAction.h baciBACICallback.h baciBACIMonitor.h baciUtil.h baciBACIProperty.h baciBACIComponent.h \
+		baciAlarmSystemMonitorBoolean.h baciAlarmSystemMonitorBooleanSeq.h \
 		baciAlarmSystemMonitorCont_T.h baciAlarmSystemMonitorCont_T.i \
 		baciAlarmSystemMonitorDisc_T.h baciAlarmSystemMonitorDisc_T.i \
 		baciAlarmSystemMonitorSeqCont_T.h  baciAlarmSystemMonitorSeqCont_T.i \
@@ -137,17 +139,18 @@ baci_OBJECTS =  baciValue baciBACIAction baciBACICallback baciBACIMonitor baciUt
 		baci baciTime baciDB \
 		baciRecovery baciCORBA baciDLL \
 		baciEvent baciCDBPropertySet \
-		baciROdouble baciRWdouble \
+		baciROdouble baciRWdouble baciCheckDevIOValue \
 		baciROfloat baciRWfloat \
 		baciROlongLong baciRWlongLong \
 		baciROuLongLong baciRWuLongLong \
 		baciROlong baciRWlong \
 		baciROuLong baciRWuLong \
-		baciROboolean baciRWboolean \
+		baciROboolean baciRWboolean baciAlarmBoolean baciAlarmSystemMonitorBoolean \
 		baciAlarmSystemMonitorBase \
 		baciPpatternImpl baciROpattern baciRWpattern baciAlarmPattern baciAlarmSystemMonitorPattern\
 	        baciROstring baciRWstring \
-		baciROdoubleSeq baciROfloatSeq baciROlongSeq baciROuLongSeq baciRObooleanSeq \
+	    baciRObooleanSeq baciAlarmBooleanSeq baciAlarmSystemMonitorBooleanSeq \
+		baciROdoubleSeq baciROfloatSeq baciROlongSeq baciROuLongSeq \
 		baciRWdoubleSeq baciRWfloatSeq baciRWlongSeq baciRWuLongSeq baciRWbooleanSeq
 baci_LIBS = baciErrTypeProperty baciErrTypeDevIO acsThread acsErrTypeLifeCycle alSysSource acsAlSysSource \
 			acsErrTypeAlarmSourceFactory ACSErrTypeMonitor PatternAlarmCleared PatternAlarmTriggered \

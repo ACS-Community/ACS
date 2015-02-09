@@ -21,8 +21,8 @@
 #*******************************************************************************
 # REMARKS
 #    None
-#------------------------------------------------------------------------
-LINK_FILES = $(addsuffix .cpp, $(ManagerShutdown_OBJECTS) $(Container_OBJECTS) $(SimpleClient_OBJECTS))
+#------------------------------------------------------------------------ 
+#!# (ICT-3855: commented out) LINK_FILES = $(addsuffix .cpp, $(ManagerShutdown_OBJECTS) $(Container_OBJECTS) $(SimpleClient_OBJECTS))
 
 OPTIMIZE=0
 
@@ -167,10 +167,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	 do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_links clean_all 
+clean :  clean_all 
 	$(RM) *~ ../include/*~ ../dbl/*~ ../idl/*~ ../*~ ../../*~ core
 	@echo " . . . clean done"
 

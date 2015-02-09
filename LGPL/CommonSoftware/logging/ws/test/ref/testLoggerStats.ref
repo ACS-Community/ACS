@@ -1,0 +1,227 @@
+1 - Statistics for logger [FirstLogger] are by default disabled
+1 - Log batch for logger [FirstLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Statistics for logger [SecondLogger] are by default disabled
+1 - Log batch for logger [SecondLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Statistics for logger [ThirdLogger] are by default disabled
+1 - Log batch for logger [ThirdLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Log batch for logger [GeneralLogger]. USING ACS MACROS.
+1 - Entering...
+1 - LM_RUNTIME_CONTEXT inside TEST_MACROS
+1 - LM_SOURCE_INFO inside TEST_MACROS
+1 - Exiting...
+1 - LM_RUNTIME_CONTEXT outside TEST_MACROS
+1 - LM_SOURCE_INFO outside TEST_MACROS
+1 - 
+1 - Test ACS_SHORT_LOG with LM_INFO
+1 - Test of LM_TRACE log
+1 - Test of LM_DEBUG log
+1 - Test of LM_INFO log
+1 - Test of LM_NOTICE log
+1 - Test of LM_WARNING log
+1 - Test of LM_ERROR log
+1 - Test of LM_CRITICAL log
+1 - Test of LM_ALERT log
+1 - Test of LM_EMERGENCY log
+1 - Test of ACS_DEBUG macro
+1 - Test of ACS_DEBUG_PARAM macro with param: param1
+1 - Activate statistics for first logger -----------
+1 - Log batch for logger [FirstLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Log batch for logger [SecondLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Log batch for logger [ThirdLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Log batch for logger [GeneralLogger]. USING ACS MACROS.
+1 - Entering...
+1 - LM_RUNTIME_CONTEXT inside TEST_MACROS
+1 - LM_SOURCE_INFO inside TEST_MACROS
+1 - Exiting...
+1 - LM_RUNTIME_CONTEXT outside TEST_MACROS
+1 - LM_SOURCE_INFO outside TEST_MACROS
+1 - 
+1 - Test ACS_SHORT_LOG with LM_INFO
+1 - Test of LM_TRACE log
+1 - Test of LM_DEBUG log
+1 - Test of LM_INFO log
+1 - Test of LM_NOTICE log
+1 - Test of LM_WARNING log
+1 - Test of LM_ERROR log
+1 - Test of LM_CRITICAL log
+1 - Test of LM_ALERT log
+1 - Test of LM_EMERGENCY log
+1 - Test of ACS_DEBUG macro
+1 - Test of ACS_DEBUG_PARAM macro with param: param1
+1 - Log batch for logger [StaticLogger]. USING ACS MACROS.
+1 - STATIC_LOG_TO_DEVELOPER
+1 - STATIC_LOG_TO_OPERATOR
+1 - STATIC_LOG_TO_SCIENCE
+1 - STATIC_LOG_TO_SCILOG
+1 - 
+1 - Test ACS_STATIC_SHORT_LOG with LM_INFO
+1 - Test of ACS_STATIC_DEBUG macro
+1 - Test of ACS_STATIC_DEBUG_PARAM macro with param: param2
+1 - Activate statistics for second logger -----------
+1 - FIRST LOGGER STATS ACTIVE
+1 - -------- LOGGING STATISTICS FOR: testLoggerStats.FirstLogger
+1 - Total logging messages during last period: 30
+1 - Number of messages per 1 second(s) during last X seconds = X
+1 - Increment of messages from last period: inf%
+1 - Total logging errors during last period: 0
+1 - Number of errors per 1 second(s) during last X seconds = X
+1 - Increment of logging errors from last period: nan%
+1 - ---------------------------------------------------------------------------------
+1 - SECOND LOGGER STATS ACTIVE
+1 - -------- LOGGING STATISTICS FOR: testLoggerStats.SecondLogger
+1 - Total logging messages during last period: 1
+1 - Number of messages per 1 second(s) during last X seconds = X
+1 - Increment of messages from last period: inf%
+1 - Total logging errors during last period: 0
+1 - Number of errors per 1 second(s) during last X seconds = X
+1 - Increment of logging errors from last period: nan%
+1 - ---------------------------------------------------------------------------------
+1 - THIRD LOGGER STATS INACTIVE
+1 - Log batch for logger [FirstLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Log batch for logger [SecondLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Log batch for logger [ThirdLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Log batch for logger [FirstLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Log batch for logger [SecondLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Log batch for logger [ThirdLogger]. USING log() functions.
+1 - Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
+1 - Testing LM_INFO message: Informational messages
+1 - Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
+1 - Testing LM_WARNING message: Warning messages
+1 - Testing LM_ERROR message: Error messages
+1 - Testing LM_CRITICAL message: Critical conditions, such as hard device errors
+1 - Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
+1 - Activate statistics for static logger -----------
+1 - Log batch for logger [StaticLogger]. USING ACS MACROS.
+1 - STATIC_LOG_TO_DEVELOPER
+1 - STATIC_LOG_TO_OPERATOR
+1 - STATIC_LOG_TO_SCIENCE
+1 - STATIC_LOG_TO_SCILOG
+1 - 
+1 - Test ACS_STATIC_SHORT_LOG with LM_INFO
+1 - Test of ACS_STATIC_DEBUG macro
+1 - Test of ACS_STATIC_DEBUG_PARAM macro with param: param2
+1 - -------- LOGGING STATISTICS FOR: testLoggerStats.SecondLogger
+1 - Total logging messages during last period: 28
+1 - Number of messages per 1 second(s) during last X seconds = X
+1 - Increment of messages from last period: 2700%
+1 - Total logging errors during last period: 0
+1 - Number of errors per 1 second(s) during last X seconds = X
+1 - Increment of logging errors from last period: nan%
+1 - ---------------------------------------------------------------------------------
+1 - -------- LOGGING STATISTICS FOR: testLoggerStats.FirstLogger
+1 - Total logging messages during last period: 29
+1 - Number of messages per 1 second(s) during last X seconds = X
+1 - Increment of messages from last period: -3.33333%
+1 - Total logging errors during last period: 0
+1 - Number of errors per 1 second(s) during last X seconds = X
+1 - Increment of logging errors from last period: nan%
+1 - ---------------------------------------------------------------------------------
+1 - -------- LOGGING STATISTICS FOR: testLoggerStats.StaticMethodLogger
+1 - Total logging messages during last period: 8
+1 - Number of messages per 1 second(s) during last X seconds = X
+1 - Increment of messages from last period: inf%
+1 - Total logging errors during last period: 0
+1 - Number of errors per 1 second(s) during last X seconds = X
+1 - Increment of logging errors from last period: nan%
+1 - ---------------------------------------------------------------------------------

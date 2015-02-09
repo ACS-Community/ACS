@@ -83,6 +83,24 @@
 
 namespace baci {
 
+
+/**
+ * Template function to check the values read out of DevIO for non-physical see: ICT-3207
+ * @param value read from DevIO
+ * We need this function just for double, for the rest could be jsut empty
+ */
+
+class CheckDevIOValue
+{
+public:
+	CheckDevIOValue(const ACE_CString& n){ propName_m = n;}
+
+	template <class T>
+	void checkValue(T value);
+private:
+	ACE_CString propName_m;
+};
+
 /**
 It helps converting value read from CDB to the right type. It was introduced due the problem with std library under VxWorks
  */
@@ -305,6 +323,10 @@ public:
     
     void addValueToHistory(ACS::Time time, TM &value);
     
+
+    /// object for checking values from DevIO
+    CheckDevIOValue checkDevIOValue_m;
+
     /// BACI property
     BACIProperty* property_mp;
     

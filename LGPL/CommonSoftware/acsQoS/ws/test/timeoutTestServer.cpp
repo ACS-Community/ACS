@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 	}
 	catch (CORBA::Exception &ex)
 	{
-		ACE_PRINT_EXCEPTION (ex, "Caught CORBA exception:");
+	        ex._tao_print_exception("Caught CORBA exception:");
 		if(NULL != orb) 
 		{
 			orb->shutdown(0);

@@ -30,7 +30,6 @@
 #include <logging.h>
 #include <acsexmplPowerSupplyCurrentImpl.h>
 
-ACE_RCSID(acsexmpl, acsexmplPowerSupplyCurrentImpl, "$Id: acsexmplPowerSupplyCurrentImpl.cpp,v 1.88 2006/10/19 09:47:40 bjeram Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////

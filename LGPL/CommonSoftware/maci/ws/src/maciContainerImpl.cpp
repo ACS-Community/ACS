@@ -83,7 +83,6 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.150 2012/10/15 13:50:00 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;

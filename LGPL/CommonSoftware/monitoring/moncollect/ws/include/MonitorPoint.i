@@ -288,10 +288,14 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::working(T value, const ACSEr
 	// Protection
 	ACE_GUARD(ACE_Thread_Mutex, mut, switchMutex_m);
 
+	// we check value (double) if are non-physical see: ICT-3207
+	checkMonitorValue<T>(value);
+
     // Still place in current available buffer segments
     if ( curSeqPos_m < seqLen_m )
     {
-        ACS_SHORT_LOG((LM_DEBUG, "Adding data to buffer"));
+        // This log is commented because of operational constraints that are currently using 'debug' as operation log setting
+        //ACS_SHORT_LOG((LM_DEBUG, "Adding data to buffer"));
         // Add data to current position
         blobDataSeq_m[curSeqPos_m].value = value;
 	    blobDataSeq_m[curSeqPos_m].time = comp.timeStamp;
@@ -326,16 +330,13 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::working(T value, const ACSEr
             bufferFull = true;
             // Increment buffer initial position
             curSeqInit_m++;
-            std::cout  << "1.- blobData position is " << curSeqPos_m << std::endl;
             // Reset buffer current position
             curSeqPos_m = 0;
             // Add data to current position
             blobDataSeq_m[curSeqPos_m].value = value;
 	        blobDataSeq_m[curSeqPos_m].time = comp.timeStamp;
-	        std::cout  << "2.- blobData position is " << curSeqPos_m << std::endl;
 	        // Increment current position pointer
             curSeqPos_m++;
-            std::cout  << "3.- blobData position is " << curSeqPos_m << std::endl;
         }
     }
    

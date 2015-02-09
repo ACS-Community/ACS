@@ -1386,7 +1386,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::mergeFlowSpecs()
 	    carrierProtocol = CORBA::string_dup(senderEntry.carrier_protocol_str());
 	    localAddress = CORBA::string_dup(senderEntry.address_str());
       
-	    peerAddr_p = ACE_dynamic_cast(ACE_INET_Addr *, recvEntry.get_peer_addr());
+	    peerAddr_p = dynamic_cast<ACE_INET_Addr *>(recvEntry.get_peer_addr());
 	    peerAddr_p->addr_to_string(buf, BUFSIZ);
 	    remoteAddress = buf;
 

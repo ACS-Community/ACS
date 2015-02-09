@@ -158,7 +158,7 @@ using namespace maci;
 	}
     catch( CORBA::Exception &ex )
 	{
-	ACE_PRINT_EXCEPTION (ex,"Error!");
+	ex._tao_print_exception("Error!");
 	return -1;
 	}
     

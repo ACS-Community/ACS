@@ -3,7 +3,7 @@
 1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
 1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
 1 -    <source-hostname></source-hostname>
-1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <source-timestamp>----------T--:--:--.---</source-timestamp>
 1 -    <fault-states>
 1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
 1 -          <descriptor>ACTIVE</descriptor>
@@ -12,7 +12,7 @@
 1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
 1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
 1 -          </user-properties>
-1 -          <user-timestamp seconds="" seconds=""/>
+1 -          <user-timestamp>----------T--:--:--.---</user-timestamp>
 1 -       </fault-state>
 1 -    </fault-states>
 1 - </ASI-message>
@@ -22,7 +22,7 @@
 1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
 1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
 1 -    <source-hostname></source-hostname>
-1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <source-timestamp>----------T--:--:--.---</source-timestamp>
 1 -    <fault-states>
 1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
 1 -          <descriptor>ACTIVE</descriptor>
@@ -31,7 +31,7 @@
 1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
 1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
 1 -          </user-properties>
-1 -          <user-timestamp seconds="" seconds=""/>
+1 -          <user-timestamp>----------T--:--:--.---</user-timestamp>
 1 -       </fault-state>
 1 -    </fault-states>
 1 - </ASI-message>
@@ -41,7 +41,7 @@
 1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
 1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
 1 -    <source-hostname></source-hostname>
-1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <source-timestamp>----------T--:--:--.---</source-timestamp>
 1 -    <fault-states>
 1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
 1 -          <descriptor>ACTIVE</descriptor>
@@ -50,7 +50,7 @@
 1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
 1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
 1 -          </user-properties>
-1 -          <user-timestamp seconds="" seconds=""/>
+1 -          <user-timestamp>----------T--:--:--.---</user-timestamp>
 1 -       </fault-state>
 1 -    </fault-states>
 1 - </ASI-message>
@@ -60,7 +60,7 @@
 1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
 1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
 1 -    <source-hostname></source-hostname>
-1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <source-timestamp>----------T--:--:--.---</source-timestamp>
 1 -    <fault-states>
 1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
 1 -          <descriptor>ACTIVE</descriptor>
@@ -69,7 +69,7 @@
 1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
 1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
 1 -          </user-properties>
-1 -          <user-timestamp seconds="" seconds=""/>
+1 -          <user-timestamp>----------T--:--:--.---</user-timestamp>
 1 -       </fault-state>
 1 -    </fault-states>
 1 - </ASI-message>
@@ -79,7 +79,7 @@
 1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
 1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
 1 -    <source-hostname></source-hostname>
-1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <source-timestamp>----------T--:--:--.---</source-timestamp>
 1 -    <fault-states>
 1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
 1 -          <descriptor>ACTIVE</descriptor>
@@ -88,7 +88,7 @@
 1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
 1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
 1 -          </user-properties>
-1 -          <user-timestamp seconds="" seconds=""/>
+1 -          <user-timestamp>----------T--:--:--.---</user-timestamp>
 1 -       </fault-state>
 1 -    </fault-states>
 1 - </ASI-message>
@@ -98,7 +98,7 @@
 1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
 1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
 1 -    <source-hostname></source-hostname>
-1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <source-timestamp>----------T--:--:--.---</source-timestamp>
 1 -    <fault-states>
 1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
 1 -          <descriptor>ACTIVE</descriptor>
@@ -107,7 +107,7 @@
 1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
 1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
 1 -          </user-properties>
-1 -          <user-timestamp seconds="" seconds=""/>
+1 -          <user-timestamp>----------T--:--:--.---</user-timestamp>
 1 -       </fault-state>
 1 -    </fault-states>
 1 - </ASI-message>
@@ -117,7 +117,7 @@
 1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
 1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
 1 -    <source-hostname></source-hostname>
-1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <source-timestamp>----------T--:--:--.---</source-timestamp>
 1 -    <fault-states>
 1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
 1 -          <descriptor>ACTIVE</descriptor>
@@ -126,7 +126,7 @@
 1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
 1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
 1 -          </user-properties>
-1 -          <user-timestamp seconds="" seconds=""/>
+1 -          <user-timestamp>----------T--:--:--.---</user-timestamp>
 1 -       </fault-state>
 1 -    </fault-states>
 1 - </ASI-message>
@@ -136,7 +136,7 @@
 1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
 1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
 1 -    <source-hostname></source-hostname>
-1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <source-timestamp>----------T--:--:--.---</source-timestamp>
 1 -    <fault-states>
 1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
 1 -          <descriptor>ACTIVE</descriptor>
@@ -145,7 +145,7 @@
 1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
 1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
 1 -          </user-properties>
-1 -          <user-timestamp seconds="" seconds=""/>
+1 -          <user-timestamp>----------T--:--:--.---</user-timestamp>
 1 -       </fault-state>
 1 -    </fault-states>
 1 - </ASI-message>
@@ -155,7 +155,7 @@
 1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
 1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
 1 -    <source-hostname></source-hostname>
-1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <source-timestamp>----------T--:--:--.---</source-timestamp>
 1 -    <fault-states>
 1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
 1 -          <descriptor>ACTIVE</descriptor>
@@ -164,7 +164,7 @@
 1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
 1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
 1 -          </user-properties>
-1 -          <user-timestamp seconds="" seconds=""/>
+1 -          <user-timestamp>----------T--:--:--.---</user-timestamp>
 1 -       </fault-state>
 1 -    </fault-states>
 1 - </ASI-message>
@@ -174,7 +174,7 @@
 1 - <ASI-message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backup="false" version="0.9" xsi:type="ASI-message">
 1 -    <source-name>ALARM_SYSTEM_SOURCES</source-name>
 1 -    <source-hostname></source-hostname>
-1 -    <source-timestamp seconds="" seconds=""/>
+1 -    <source-timestamp>----------T--:--:--.---</source-timestamp>
 1 -    <fault-states>
 1 -       <fault-state family="Mount" member="ALARM_SOURCE_MOUNT" code="1">
 1 -          <descriptor>ACTIVE</descriptor>
@@ -183,7 +183,7 @@
 1 -             <property name="ASI_SUFFIX_PROPERTY" value="suffix"/>
 1 -             <property name="TEST_PROPERTY" value="TEST_VALUE"/>
 1 -          </user-properties>
-1 -          <user-timestamp seconds="" seconds=""/>
+1 -          <user-timestamp>----------T--:--:--.---</user-timestamp>
 1 -       </fault-state>
 1 -    </fault-states>
 1 - </ASI-message>

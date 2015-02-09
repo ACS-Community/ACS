@@ -250,14 +250,14 @@ install : install_all
 	- $(AT) if [ ! -d $(LIB)/emacs/Info ]; then mkdir $(LIB)/emacs/Info; fi
 	- $(AT) cp ../bin/*.elc ../bin/*.el $(LIB)/emacs/lisp; chmod u+w $(LIB)/emacs/lisp/*
 	- $(AT) cp ../info/[a-z]* $(LIB)/emacs/Info; chmod u+w $(LIB)/emacs/Info/*
-	- $(AT) if [ ! -d $(VLTTOP)/System ]; then mkdir $(VLTTOP)/System; fi
+	- $(AT) if [ ! -d $(PRJTOP)/System ]; then mkdir $(PRJTOP)/System; fi
 	- $(AT) echo "\n\n"
 	- $(AT) echo "Delete $(LIB)/emacs/Info if you do not need it!"
-	- $(AT) echo "Delete $(VLTTOP)/src/emacs if you do not need it!"
+	- $(AT) echo "Delete $(PRJTOP)/src/emacs if you do not need it!"
 	- $(AT) echo "\nTODO:"
 	- $(AT) echo "Add two links in order to use the new emacs setup:"
-	- $(AT) echo "ln -s $(VLTTOP)/System/Emacs ~/.emacs"
-	- $(AT) echo "ln -s $(VLTTOP)/System/Emacs.local ~/.emacs.local"
+	- $(AT) echo "ln -s $(PRJTOP)/System/Emacs ~/.emacs"
+	- $(AT) echo "ln -s $(PRJTOP)/System/Emacs.local ~/.emacs.local"
 	@echo " . . . installation done"
 
 COMMON_SOURCES = \

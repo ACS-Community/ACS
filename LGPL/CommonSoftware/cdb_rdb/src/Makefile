@@ -118,6 +118,8 @@ install : install_all
 	@mkdir -p $(DDLDATA)/oracle/TMCDB_swconfigext
 	@mkdir -p $(DDLDATA)/hsqldb/TMCDB_swconfigcore
 	@mkdir -p $(DDLDATA)/hsqldb/TMCDB_swconfigext
+	@mkdir -p $(DDLDATA)/mysql/TMCDB_swconfigcore
+	@mkdir -p $(DDLDATA)/mysql/TMCDB_swconfigext
 	@echo "== Copying generic .ddl files to $(DDLDATA)/generic"
 	@cp generic/TMCDB_swconfigcore.ddl $(DDLDATA)/generic
 	@cp generic/TMCDB_swconfigext.ddl $(DDLDATA)/generic
@@ -127,6 +129,9 @@ install : install_all
 	@echo "== Copying generated HSQLDB .sql files to $(DDLDATA)/hsqldb"
 	@cp ../config/TMCDB_swconfigcore/hsqldb/* $(DDLDATA)/hsqldb/TMCDB_swconfigcore
 	@cp ../config/TMCDB_swconfigext/hsqldb/* $(DDLDATA)/hsqldb/TMCDB_swconfigext
+	@echo "== Copying generated MySQL .sql files to $(DDLDATA)/mysql"
+	@cp ../config/TMCDB_swconfigcore/mysql/* $(DDLDATA)/mysql/TMCDB_swconfigcore
+	@cp ../config/TMCDB_swconfigext/mysql/* $(DDLDATA)/mysql/TMCDB_swconfigext
 	@echo " . . . installation done"
 
 .done_generating_sql : generic/TMCDB_swconfigcore.ddl generic/TMCDB_swconfigext.ddl
@@ -151,14 +156,14 @@ install : install_all
 	@rm -f CreateHsqldbTables.sql
 	@cat ../config/TMCDB_swconfigcore/hsqldb/CreateHsqldbTables.sql ../config/TMCDB_swconfigext/hsqldb/CreateHsqldbTables.sql > CreateHsqldbTables.sql
 	@acsStartJava org.hsqldb.cmdline.SqlTool --rcFile sqltool.rc tmcdb CreateHsqldbTables.sql
-	@CLASSPATH="$(shell vltMakeJavaClasspath)" ant generate
+	@CLASSPATH="$(shell acsMakeJavaClasspath)" ant generate
 	@touch .done_generating_classes
 
 ../lib/$(POJOS_JAR): .done_generating_classes
 	@echo "=="
 	@echo "== Compiling generated domain classes"
 	@cd gen;\
-	    CLASSPATH="$(shell vltMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; \
+	    CLASSPATH="$(shell acsMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; \
 	    jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; \
 	    mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/; \
 	    jar uf ../lib/$(POJOS_JAR) -C ../config/TMCDB_swconfigcore/ SwCore-orm.xml; \
@@ -166,7 +171,7 @@ install : install_all
 
 ../lib/TMCDBswconfigStrategy.jar :.done_generating_sql 
 	@echo "== Compiling TMCDBswconfigStrategy.jar "
-	@CLASSPATH="$(shell vltMakeJavaClasspath)" javac alma/acs/tmcdb/translator/*.java; jar cf ../lib/TMCDBswconfigStrategy.jar alma/acs/tmcdb/translator/*.class; cd ..; jar uf lib/TMCDBswconfigStrategy.jar src/alma/acs/tmcdb/translator/*.java;
+	@CLASSPATH="$(shell acsMakeJavaClasspath)" javac alma/acs/tmcdb/translator/*.java; jar cf ../lib/TMCDBswconfigStrategy.jar alma/acs/tmcdb/translator/*.class; cd ..; jar uf lib/TMCDBswconfigStrategy.jar src/alma/acs/tmcdb/translator/*.java;
 	@rm -f alma/acs/tmcdb/translator/*.class
 
 

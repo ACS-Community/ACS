@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.Vector;
 
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.util.IsoDateFormat;
 import cern.laser.business.data.AlarmImpl;
 import cern.laser.business.data.Category;
 import cern.laser.business.data.Location;
@@ -287,9 +288,7 @@ public class LaserCoreFaultState {
 		states.add(fs);
 		ASIMessage asiMessage = ASIMessageHelper.marshal(states);
 		// Set the timestamp
-		cern.laser.source.alarmsysteminterface.impl.message.Timestamp sourceTimestamp=new cern.laser.source.alarmsysteminterface.impl.message.Timestamp();
-		sourceTimestamp.setSeconds(System.currentTimeMillis()/1000);
-		sourceTimestamp.setMicroseconds((System.currentTimeMillis()%1000)*1000);
+		String sourceTimestamp = IsoDateFormat.formatCurrentDate();
 		asiMessage.setSourceTimestamp(sourceTimestamp);
 		// Set the hostname
 		if (hostName==null) {

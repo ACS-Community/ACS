@@ -22,6 +22,7 @@
 #include <sys/time.h>
 #include <sstream>
 #include <iostream>
+#include <stdio.h>
 
 using std::stringstream;
 using std::string;
@@ -87,3 +88,20 @@ int Timestamp::operator==(const Timestamp &rhs) const
 	}
 	return retVal;
 }
+
+std::string Timestamp::toISOFormat() const {
+	struct timeval tval;
+	tval.tv_sec=getSeconds();
+	tval.tv_usec=getMicroSeconds();
+
+	struct tm temptm = {0};
+	gmtime_r(&tval.tv_sec,&temptm);
+
+	char tmbuf[64], buf[64];
+	strftime(tmbuf, sizeof tmbuf, "%FT%H:%M:%S", &temptm);
+	snprintf(buf, sizeof buf, "%s.%03ld", tmbuf, tval.tv_usec/1000);
+
+	std::string ret=buf;
+	return ret;
+}
+

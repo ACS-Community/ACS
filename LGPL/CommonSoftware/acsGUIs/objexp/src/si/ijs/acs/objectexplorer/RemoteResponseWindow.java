@@ -402,6 +402,28 @@ void fillTrendList(RemoteResponse rr) {
 				}
 				numberIndexes.add(numberSubIndexes);
 			}
+		} else if(values[i] != null && 
+				(values[i].getClass() == Boolean.class
+				|| (values[i].getClass().isArray() && Boolean.class == values[i].getClass().getComponentType()))) {
+			String name = names[i];
+			if(values[i].getClass().isArray()) {
+				name += "[]";
+			}
+			((DefaultListModel) getJList1().getModel()).addElement(name);
+			((DefaultListModel) getJList2().getModel()).addElement(name);
+			numberIndexes.add(new Integer(i));	
+			if(values[i].getClass().isArray()) {
+				java.util.ArrayList numberSubIndexes = new java.util.ArrayList();
+				for(int j = 0; j < ((Object [])values[i]).length; j++) {
+ 					if(((Object [])values[i])[j] != null && (Boolean.class ==((Object [])values[i])[j].getClass())) {
+ 						name=names[i]+"["+j+"]";
+						((DefaultListModel) getJList1().getModel()).addElement(name);
+						((DefaultListModel) getJList2().getModel()).addElement(name);
+						numberSubIndexes.add(new Integer[]{i,j});
+					}
+				}
+				numberIndexes.add(numberSubIndexes);
+			}
 		}
 	}
 }
@@ -1515,6 +1537,13 @@ private void processChartValues(RemoteResponse response) {
 				if (((Object [])data[numIndex])[numSubIndex] instanceof Long) {
 					val=((Long)((Object [])data[numIndex])[numSubIndex]).longValue()/1000;
 				}
+				else if(((Object [])data[numIndex])[numSubIndex] instanceof Boolean) {
+					if(((Boolean)((Object [])data[numIndex])[numSubIndex]).booleanValue() == true) {
+						val = 1;
+					} else {
+						val = 0;
+					}
+				}
 				else val=((Number)((Object [])data[numIndex])[numSubIndex]).doubleValue();
 		
 				newNumbers[k]= val;
@@ -1530,6 +1559,13 @@ private void processChartValues(RemoteResponse response) {
 			}
 			else if (data[numIndex] instanceof Long) {
 				val=((Long)data[numIndex]).longValue()/1000;
+			}
+			else if (data[numIndex] instanceof Boolean) {
+				if(((Boolean)data[numIndex]).booleanValue() == true) {
+					val = 1;
+				} else {
+					val = 0;
+				}
 			}
 			else val=((Number)data[numIndex]).doubleValue();
 		

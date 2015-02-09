@@ -868,12 +868,16 @@ public class Helper {
 	}
 	
 	/**
-	 * Appends a random number to the given client name.
+	 * Appends a random number to the given client name
+	 * and replaces '/' in the name with '_'.
 	 * <p>
 	 * This is used when setting names on NC proxy objects via the TAO extension API.
 	 * It reduces the risk of creating a new object with an existing name,
-	 * because TAO has memory bug and will not delete the badly named object
+	 * because TAO has a memory bug and will not delete the badly named object
 	 * even if it throws the correct NameAlreadyUsed exception.
+	 * Replacing of slashes is done so that clients of the TAO MC extension API
+	 * can suppress uninteresting parts of the pathname without mutilating the client name itself, 
+	 * see http://ictjira.alma.cl/browse/ICT-3551.
 	 * <p>
 	 * This method is synchronized just to overcome residual doubts about the thread safety
 	 * of random#nextInt.
@@ -883,7 +887,8 @@ public class Helper {
 	 * @see #random
 	 */
 	public static synchronized String createRandomizedClientName(String clientName) {
-		StringBuffer clientNameSB = new StringBuffer(clientName);
+		StringBuffer clientNameSB = new StringBuffer();
+		clientNameSB.append(clientName.replace("/", "_"));
 		clientNameSB.append('-');
 		clientNameSB.append(String.format("%05d", random.nextInt(Integer.MAX_VALUE)));
 		return clientNameSB.toString();

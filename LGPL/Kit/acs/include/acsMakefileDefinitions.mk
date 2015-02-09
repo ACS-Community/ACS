@@ -1,6 +1,27 @@
 #
 # $Id: acsMakefileDefinitions.mk,v 1.30 2012/03/06 19:16:56 tstaig Exp $
 #
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2014
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
+
 #(info Entering definitions.mk)
 
 #
@@ -31,6 +52,8 @@ $(eval toFile_$1 = $(if $(wildcard $(PRJTOP)/$(dir_$1)), \
                $(INSTALL_ROOT)/$(dir_$1)/$(name_$1), \
                $(error $(dir_$1) is not a standard directory) ) ))
 
+isNotCurrentDir = \
+$(if $(subst $(abspath $(dir $1)),,$(abspath .)),T,)
 
 cutOffCWD = \
 $(if $(call isNotCurrentDir,$1),$1,$(notdir $1))
@@ -227,7 +250,9 @@ endif
 
 endif
 
-$(if $(wildcard ../idl/$1.midl), 
+# Note: this assumes file already available early on, and not generated
+# by a make target (like do_links)
+$(if $(wildcard ../idl/$1.midl),
 $(CURDIR)/../idl/$1.idl: ../idl/$1.midl $($1_MIDLprereq)
 	-@echo "== (preprocessing MIDL => IDL) $1"
 	$(AT) JacPrep $$< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) $(MIDL_FLAGS)" >  ../idl/$1.idl
@@ -692,7 +717,7 @@ $(CURDIR)/../$$(tgtDir$1)/$1.jar: $$($1_source_file_list) $(foreach jar,$9,$(CUR
              fi; \
         fi
 	$(AT) CLASSPATH="`$$(classMaker)`$(PATH_SEP)."; export CLASSPATH ; $(JAVAC) $$(CompilerFlags) $$(J_END_DIRS) -d $$(TMPSRC) @$$($1_FILELISTFILE)
-	$(AT) (cd $$(TMPSRC); if [ -f ../../../$$(tgtDir$1)/$1.jar ]; then JAR="jar uf"; else JAR="jar cf"; fi; $$$${JAR} ../../../$$(tgtDir$1)/$1.jar $(foreach dir,$2,$(if $(filter .,$(dir)),*.class,$(dir))) ; jar ufm ../../../$$(tgtDir$1)/$1.jar ../$(strip $1).manifest 2> /dev/null && $(RM) ../$(strip $1).manifest )
+	$(AT) (cd $$(TMPSRC); if [ -f ../../../$$(tgtDir$1)/$1.jar ]; then JAR="jar uf"; else JAR="jar cf"; fi; $$$${JAR} ../../../$$(tgtDir$1)/$1.jar $(foreach dir,$2,$(if $(filter .,$(dir)),*.class,$(dir))) && jar ufm ../../../$$(tgtDir$1)/$1.jar ../$(strip $1).manifest 2> /dev/null && $(RM) ../$(strip $1).manifest )
 	$(AT) $(RM) -fr $$(TMPSRC)
 	$(AT) $(RM) $$($1_FILELISTFILE)
 ifeq ($(strip $(DEBUG)),on)
@@ -773,25 +798,25 @@ $(if $(or $3,$6), \
 	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o$(eval $(obj)_CFLAGS += $($2_CFLAGS))), \
 	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o) ) \
 	$(foreach lib, $6, \
-	  $(if $(filter CCS,$(lib)), \
-	   $(eval ccs=yes) $(eval rtap=yes), \
-	    $(if $(filter CCS_NOX11,$(lib)), \
-	     $(eval ccs=yes) $(eval rtap=yes), \
-              $(if $(filter stdc++,$(lib)), \
-	       $(eval $2_lList += -l$(lib)  MESSAGE += somemessage ), \
+            $(if $(filter stdc++,$(lib)), \
+	        $(eval $2_lList += -l$(lib)  MESSAGE += somemessage ), \
                 $(if $(filter g++,$(lib)), \
-                 $(eval MESSAGE += ecgs does not provide), \
-                  $(if $(filter iostream,$(lib)), \
-                   $(eval MESSAGE += please remove iostream), \
-	                 $(if $(findstring Cygwin, $(platform)), \
-	                  $(eval $2_lList += -l$(lib) $(eval $2_dList += $(call deps,$(lib)))), \
-                     $(eval $2_lList += -l$(lib)) )  ) ) ) ) ) ) \
-	  $(if $(findstring Cygwin, $(platform)), \
-	   $(eval $2_dList = $(strip $(sort $($2_dList)))) \
-	   $(eval $2_lList = $(strip $(sort $($2_lList)))) \
-	  ) \
-	)
-
+                    $(eval MESSAGE += ecgs does not provide), \
+                    $(if $(filter iostream,$(lib)), \
+                        $(eval MESSAGE += please remove iostream), \
+	                $(if $(findstring Cygwin, $(platform)), \
+	                    $(eval $2_lList += -l$(lib) $(eval $2_dList += $(call deps,$(lib)))), \
+                            $(eval $2_lList += -l$(lib)) 
+                         ) \
+                     ) \
+                 ) \
+             ) \
+         ) \
+        $(if $(findstring Cygwin, $(platform)), \
+	    $(eval $2_dList = $(strip $(sort $($2_dList)))) \
+	    $(eval $2_lList = $(strip $(sort $($2_lList)))) \
+	 ) \
+        )
 
 $(eval $2_libraryList=$(GEN_LIBLIST))
 $(eval $2_libraryListNoshared=$(GEN_LIBLIST_NOSHARED))
@@ -804,18 +829,6 @@ $(if $($2_lList), \
 	  $(eval $2_libraryListNoshared += $(NOSHARED_ON) $(NOSHARED_OFF) ) ) \
 	) \
 )
-
-$(if $(filter yes,$(ccs)), \
-    $(eval $2_libraryList += $(CCS_LIBLIST)) \
-    $(eval $2_libraryListNoshared += $(CCS_LIBLIST_NOSHARED)   ) )
-
-$(if $(filter yes,$(rtap)), \
-  $(if $(filter yes,$(noX11)) \, 
-        $(eval $2_libraryList += $(RTAP_NOX11_FLAGS)) \
-        $(eval $2_libraryListNoshared += $(RTAP_NOX11_FLAGS_NOSHARED) ), \
-	$(eval $2_libraryList +=$(RTAP_FLAGS)) \
-	$(eval $2_libraryListNoshared += $(RTAP_FLAGS_NOSHARED))  ) \
-  )
 
 $(if $(filter /vw,$1),,
 $(if $5, \
@@ -952,28 +965,30 @@ endif
 
 $(eval $2_exe_lList = ) 
 $(if $(or $3,$6),
-	$(eval $2_oList = $(foreach obj,$3,../object/$(obj).o)) \
-	$(foreach lib, $6, \
-	  $(if $(filter CCS,$(lib)), \
-	   $(eval ccs=yes) $(eval rtap=yes), 
-	    $(if $(filter CCS_NOX11,$(lib)), \
-	     $(eval ccs=yes) $(eval rtap=yes), 
-              $(if $(filter stdc++,$(lib)), \
-	       $(eval $2_exe_lList += -l$(lib)  MESSAGE += somemessage ), \
-                $(if $(filter g++,$(lib)), \
-                 $(eval MESSAGE += ecgs does not provide), \
-                  $(if $(filter iostream,$(lib)), \
-                   $(eval MESSAGE += please remove iostream),
+    $(eval $2_oList = $(foreach obj,$3,../object/$(obj).o)) \
+    $(foreach lib, $6, \
+        $(if $(filter stdc++,$(lib)), \
+	    $(eval $2_exe_lList += -l$(lib)  MESSAGE += somemessage ), \
+            $(if $(filter g++,$(lib)), \
+                $(eval MESSAGE += ecgs does not provide), \
+                $(if $(filter iostream,$(lib)), \
+                    $(eval MESSAGE += please remove iostream),
                     $(if $(filter C++,$(lib)), \
-                     $(eval $2_exe_lList += -lstdc++), \
-	                   $(if $(findstring Cygwin, $(platform)), \
+                        $(eval $2_exe_lList += -lstdc++), \
+	                $(if $(findstring Cygwin, $(platform)), \
 	                    $(eval $2_exe_lList += -l$(lib) $(eval $2_exe_dList += $(call deps,$(lib)))), \
-                       $(eval $2_exe_lList += -l$(lib)) )  ) ) ) ) ) ) ) \
-	  $(if $(findstring Cygwin, $(platform)), \
+                            $(eval $2_exe_lList += -l$(lib)) \
+                         ) \
+                     ) \
+                 ) \
+             ) \
+         ) \
+     ) \
+    $(if $(findstring Cygwin, $(platform)), \
 	   $(eval $2_exe_dList = $(strip $(sort $($2_exe_dList)))) \
 	   $(eval $2_exe_lList = $(strip $(sort $($2_exe_lList)))) \
-	  ) \
-)
+     ) \
+ )
 
 $(eval $2_libraryList=$(GEN_LIBLIST))
 $(eval $2_libraryListNoshared=$(GEN_LIBLIST_NOSHARED))
@@ -986,18 +1001,6 @@ $(if $($2_exe_lList), \
 	  $(eval $2_libraryListNoshared += $(NOSHARED_ON) $($2_exe_lList) $(NOSHARED_OFF) ) ) \
 	) \
 )
-
-$(if $(filter yes,$(ccs)), \
-    $(eval $2_libraryList += $(CCS_LIBLIST)) \
-    $(eval $2_libraryListNoshared += $(CCS_LIBLIST_NOSHARED))   ) 
-
-$(if $(filter yes,$(rtap)), \
-  $(if $(filter yes,$(noX11)), \
-        $(eval $2_libraryList += $(RTAP_NOX11_FLAGS) ) \
-	$(eval $2_libraryListNoshared += $(RTAP_NOX11_FLAGS_NOSHARED)),\
-	$(eval $2_libraryList +=$(RTAP_FLAGS)) \
-	$(eval $2_libraryListNoshared += $(RTAP_FLAGS_NOSHARED) ) ) \
-  )
 
 
 .PHONY: $2 
@@ -1280,7 +1283,7 @@ $1_python_install_files_path_req := $(if $1,$(shell find  $1 ! -path '*/.svn/*' 
 	@echo "== Making python package: $$(OUTPUT)" 
 	$(AT)mkdir -p $$(OUTPUT)
 	$(AT)chmod 755 $$(OUTPUT)
-	$(AT)tar cf -  $(filter-out Makefile,$$? ) | (cd  $$(OUTPUT)/..; tar xf - )
+	$(AT)tar cf -  $$(filter-out Makefile, $$? ) | (cd  $$(OUTPUT)/..; tar xf - )
 	$(AT)touch ../lib/python/site-packages/$1
 
 
@@ -1295,7 +1298,7 @@ clean_dist_python_package_$1: clean_python_package_$1;
 .PHONY : install_python_package_$1
 install_python_package_$1:
 	$(AT)mkdir -p $(LIB)/python/site-packages/$1  
-	$(AT)echo "Compiling python $1" 
+	$(AT)$(ECHO) "\tCompiling python $1" 
 	$(AT)cp -pr `find ../lib/python/site-packages/$1/* -maxdepth 0 -type d;find ../lib/python/site-packages/$1/* -maxdepth 0 -type f` $(LIB)/python/site-packages/$1/
 	$(AT)cd $(LIB)/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) $(LIB)/python/site-packages/$1
 	$(AT)chmod -R $(P755) $(LIB)/python/site-packages/$1
@@ -1319,12 +1322,12 @@ do_python_module_$1: ../lib/python/site-packages/$1.py;
 install_python_module_$1: $(LIB)/python/site-packages/$1.py;
 
 $(LIB)/python/site-packages/$1.py: ../lib/python/site-packages/$1.py
-	$(AT)echo "\t$1.py";\
-	cp ../lib/python/site-packages/$1.py $(LIB)/python/site-packages
-	chmod $(P644) $(LIB)/python/site-packages/$1.py
-	python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) ../lib/python/site-packages
-	cp ../lib/python/site-packages/$1.pyc $(LIB)/python/site-packages
-	chmod $(P644) $(LIB)/python/site-packages/$1.pyc
+	$(AT)$(ECHO) "\t$1.py"
+	$(AT)cp ../lib/python/site-packages/$1.py $(LIB)/python/site-packages
+	$(AT)chmod $(P644) $(LIB)/python/site-packages/$1.py
+	$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(PYTHON_OUTPUT) ../lib/python/site-packages
+	$(AT)cp ../lib/python/site-packages/$1.pyc $(LIB)/python/site-packages
+	$(AT)chmod $(P644) $(LIB)/python/site-packages/$1.pyc
 
 
 .PHONY:clean_python_module_$1
@@ -1529,7 +1532,9 @@ clean_panel_$1:
 	$(AT)$(RM) ../bin/$1
 
 ../bin/$1: $1.pan Makefile
-	$(AT)echo "== Making panel: ../bin/$1"; vltMakeSetPanelShell $1
+	$(AT)echo "== Making panel: ../bin/$1"
+	$(AT)cp $1.pan ../bin/$1;
+	$(AT)chmod $(P755) ../bin/$1
 
 install_panel_$1: $(BIN)/$1
 
@@ -1549,15 +1554,15 @@ define acsMakeRTAIDependencies
 rtai_$1_auxprogs = $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),1,)
 
 .PHONY:
-do_rtai_$1: ../rtai/$(rtai_install_subfold)/$1.ko $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),do_exe_load$1 do_exe_unload$1,);
+do_rtai_$1: ../rtai/$(kernel_install_subfold)/$1.ko $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),do_exe_load$1 do_exe_unload$1,);
 
 
 xyz_$1_SRC = $(addsuffix .c,$2)
 
 rtai_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2))),,$1-objs := $(addsuffix .o,$2))
 
-#.NOTPARALLEL:../rtai/$(rtai_install_subfold)/$1.ko
-../rtai/$(rtai_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1
+#.NOTPARALLEL:../rtai/$(kernel_install_subfold)/$1.ko
+../rtai/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1
 	@$(ECHO) "== Making RTAI Module: $1" 
 # here we have to generate the hineous Kbuild file
 	$(AT)lockfile -s 2 -r 10 Kbuild.lock || echo "WARNING, ignoring lock Kbuild.lock"
@@ -1573,19 +1578,19 @@ else
 	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=0 modules
 endif
 	$(AT)$(RM) Kbuild.lock
-	$(AT)mv $1.ko ../rtai/$(rtai_install_subfold)
+	$(AT)mv $1.ko ../rtai/$(kernel_install_subfold)
 
 # LKM Support binaries
 .PHONY: clean_rtai_$1
 clean_rtai_$1:
 	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
-	$(AT)$(RM) ../rtai/$(rtai_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
+	$(AT)$(RM) ../rtai/$(kernel_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
 
 #../bin/installLKM-$1: 
 #	@$(ECHO) "echo 'installing $1 into $(PRJTOP)/rtai/$(osrev)..'" > ../bin/installLKM-$1
 #	@$(ECHO) "if [ ! -d $(PRJTOP)/rtai/$(osrev) ]; then mkdir $(PRJTOP)/rtai/$(osrev); fi" >> $$@
 #	@$(ECHO) "install -d $(PRJTOP)/rtai/$(osrev)" >> $$@
-#	@$(ECHO) "install -m 664 -c $(PWD)/../rtai/$(rtai_install_subfold)/$1.ko $(PRJTOP)/rtai/$(osrev)" >> $$@
+#	@$(ECHO) "install -m 664 -c $(PWD)/../rtai/$(kernel_install_subfold)/$1.ko $(PRJTOP)/rtai/$(osrev)" >> $$@
 #ifeq ($$(rtai_$1_auxprogs),1)
 #	@$(ECHO) "echo 'setting uid permissions and ownership..'" >> $$@
 #	@$(ECHO) "chown root:root $(BIN)/load$1" >> $$@
@@ -1595,10 +1600,10 @@ clean_rtai_$1:
 #endif
 #The following works on an STE
 ../bin/installLKM-$1:
-	@$(ECHO) "echo 'installing $1 into ${PRJTOP}/rtai/${rtai_install_subfold}..'" > ../bin/installLKM-$1
-	@$(ECHO) "if [ ! -d $(PRJTOP)/rtai/${rtai_install_subfold} ]; then mkdir $(PRJTOP)/rtai/${rtai_install_subfold}; fi" >> $$@
-	@$(ECHO) "install -d $(PRJTOP)/rtai/${rtai_install_subfold}" >> $$@
-	@$(ECHO) "install -m 664 -c $(PWD)/../rtai/$(rtai_install_subfold)/$1.ko $(PRJTOP)/rtai/${rtai_install_subfold}" >> $$@
+	@$(ECHO) "echo 'installing $1 into ${PRJTOP}/rtai/${kernel_install_subfold}..'" > ../bin/installLKM-$1
+	@$(ECHO) "if [ ! -d $(PRJTOP)/rtai/${kernel_install_subfold} ]; then mkdir $(PRJTOP)/rtai/${kernel_install_subfold}; fi" >> $$@
+	@$(ECHO) "install -d $(PRJTOP)/rtai/${kernel_install_subfold}" >> $$@
+	@$(ECHO) "install -m 664 -c $(PWD)/../rtai/$(kernel_install_subfold)/$1.ko $(PRJTOP)/rtai/${kernel_install_subfold}" >> $$@
 ifeq ($$(rtai_$1_auxprogs),1)
 	@$(ECHO) "echo 'setting uid permissions and ownership..'" >> $$@
 	@$(ECHO) "chown root:root $(BIN)/load$1" >> $$@
@@ -1609,11 +1614,11 @@ endif
 	@chmod a+x $$@
 
 .PHONY: install_rtai_$1
-install_rtai_$1: $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),install_exe_load$1 install_exe_unload$1,) $(PRJTOP)/rtai/$(rtai_install_subfold)/$1.ko 
+install_rtai_$1: $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),install_exe_load$1 install_exe_unload$1,) $(PRJTOP)/rtai/$(kernel_install_subfold)/$1.ko 
 
-$(PRJTOP)/rtai/$(rtai_install_subfold)/$1.ko: ../rtai/$(rtai_install_subfold)/$1.ko
+$(PRJTOP)/rtai/$(kernel_install_subfold)/$1.ko: ../rtai/$(kernel_install_subfold)/$1.ko
 	-$(AT)$(ECHO) "\t$1.ko"
-	-$(AT)if [ ! -d \$(PRJTOP)/rtai/\$(rtai_install_subfold) ]; then mkdir \$(PRJTOP)/rtai/\$(rtai_install_subfold) ; fi
+	-$(AT)if [ ! -d \$(PRJTOP)/rtai/\$(kernel_install_subfold) ]; then mkdir \$(PRJTOP)/rtai/\$(kernel_install_subfold) ; fi
 	$(AT)if [ -f load$1.cpp ]; then \
 	    if [ "$(MAKE_RTAI_IGNORE_INSTALL_FAILURE)" != "" ]; then  \
 	      if ssh -q -oPasswordAuthentication=no  root@$(HOST) $(PWD)/../bin/installLKM-$1; then \
@@ -1640,6 +1645,92 @@ endef
 
 ##########################################################################
 ##########################################################################
+# acsMakeKernelDependencies
+
+define acsMakeKernelDependencies
+
+kernel_module_$1_auxprogs = $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),1,)
+
+.PHONY:
+do_kernel_module_$1: ../kernel/$(kernel_install_subfold)/$1.ko $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),do_exe_load$1 do_exe_unload$1,);
+
+
+xyz_$1_SRC = $(addsuffix .c,$2)
+
+kernel_module_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2))),,$1-objs := $(addsuffix .o,$2))
+
+#.NOTPARALLEL:../kernel/$(kernel_install_subfold)/$1.ko
+../kernel/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1
+	@$(ECHO) "== Making KERNEL Module: $1" 
+# here we have to generate the hineous Kbuild file
+	$(AT)lockfile -s 2 -r 10 Kbuild.lock || echo "WARNING, ignoring lock Kbuild.lock"
+	$(AT)$(ECHO) "obj-m += $1.o" > Kbuild
+	$(AT)$(ECHO) "$$(kernel_module_$1_components)" >> Kbuild
+	$(AT)$(ECHO) "" >> Kbuild
+	$(AT)$(ECHO) "USR_INC := $(USR_INC)"   >> Kbuild
+	$(AT)$(ECHO) "EXTRA_CFLAGS := $(EXTRA_CFLAGS)" >> Kbuild
+	$(AT)$(ECHO) "KBUILD_EXTRA_SYMBOLS=\"$(LINUX_HOME)/modules/Module.symvers\"" >> Kbuild
+ifdef MAKE_VERBOSE
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) V=2 modules
+else
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) V=0 modules
+endif
+	$(AT)$(RM) Kbuild.lock
+	$(AT)mv $1.ko ../kernel/$(kernel_install_subfold)
+
+# LKM Support binaries
+.PHONY: clean_kernel_module_$1
+clean_kernel_module_$1:
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) clean ; fi
+	$(AT)$(RM) ../kernel/$(kernel_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
+
+#The following works on an STE
+../bin/installLKM-$1:
+	@$(ECHO) "echo 'installing $1 into ${PRJTOP}/kernel/${kernel_install_subfold}..'" > ../bin/installLKM-$1
+	@$(ECHO) "if [ ! -d $(PRJTOP)/kernel/${kernel_install_subfold} ]; then mkdir $(PRJTOP)/kernel/${kernel_install_subfold}; fi" >> $$@
+	@$(ECHO) "install -d $(PRJTOP)/kernel/${kernel_install_subfold}" >> $$@
+	@$(ECHO) "install -m 664 -c $(PWD)/../kernel/$(kernel_install_subfold)/$1.ko $(PRJTOP)/kernel/${kernel_install_subfold}" >> $$@
+ifeq ($$(kernel_module_$1_auxprogs),1)
+	@$(ECHO) "echo 'setting uid permissions and ownership..'" >> $$@
+	@$(ECHO) "chown root:root $(BIN)/load$1" >> $$@
+	@$(ECHO) "chmod u+s $(BIN)/load$1" >> $$@
+	@$(ECHO) "chown root:root $(BIN)/unload$1" >> $$@
+	@$(ECHO) "chmod u+s $(BIN)/unload$1" >> $$@
+endif
+	@chmod a+x $$@
+
+.PHONY: install_kernel_module_$1
+install_kernel_module_$1: $(if $(and $(wildcard load$1.cpp),$(wildcard unload$1.cpp)),install_exe_load$1 install_exe_unload$1,) $(PRJTOP)/kernel/$(kernel_install_subfold)/$1.ko 
+
+$(PRJTOP)/kernel/$(kernel_install_subfold)/$1.ko: ../kernel/$(kernel_install_subfold)/$1.ko
+	-$(AT)$(ECHO) "\t$1.ko"
+	-$(AT)if [ ! -d \$(PRJTOP)/kernel/\$(kernel_install_subfold) ]; then mkdir \$(PRJTOP)/kernel/\$(kernel_install_subfold) ; fi
+	$(AT)if [ -f load$1.cpp ]; then \
+	    if [ "$(MAKE_KERNEL_IGNORE_INSTALL_FAILURE)" != "" ]; then  \
+	      if ssh -q -oPasswordAuthentication=no  root@$(HOST) $(PWD)/../bin/installLKM-$1; then \
+                echo "Kernel module $1 installed.";  \
+              else \
+                echo "WARNING: Kernel module $1 not installed"; \
+              fi; \
+            else  \
+             if ssh -q -oPasswordAuthentication=no  root@$(HOST) $(PWD)/../bin/installLKM-$1; then \
+                echo "Kernel module $1 installed."; \
+             else \
+                echo "FAILURE: Kernel module $1 not installed. Check your SSH configuration"; \
+                /bin/false;  \
+             fi; \
+            fi; \
+        else \
+	$(PWD)/../bin/installLKM-$1; \
+        fi 
+
+.PHONY: clean_dist_kernel_module_$1
+clean_dist_kernel_module_$1:
+
+endef
+
+##########################################################################
+##########################################################################
 
 define acsMakeInstallFileDependencies
 $(toFile_$1): $1
@@ -1652,7 +1743,7 @@ $(toFile_$1): $1
 install_file_$1: $(toFile_$1)
 	$(AT)if [ ! -f $1 ];  then \
 	    echo "" >&2 ;\
-	    echo " ERROR: vltMakeInstallFiles: " >&2 ;\
+	    echo " ERROR: acsMakeInstallFiles: " >&2 ;\
 	    echo "  >>$1<< file not found " >&2 ;\
 	    echo "" >&2 ;\
 	    exit 1 ;\
@@ -1665,27 +1756,6 @@ endef
 ##########################################################################
 ##########################################################################
 
-######################################################
-# LINK_FILES
-######################################################
-define acsMakeLinkFileDependencies
-$(debug-enter)
-
-.PHONY:do_link_$(notdir $1)
-do_link_$(notdir $1): $(call cutOffCWD,$1)
-
-$(call cutOffCWD,$1): 
-	$(AT)if [ ! -h $1 ]; then \
-         echo "== Linking file: $1"; ln -s ../../ws/src/$1 $1; \
-	else \
-	 echo "Not feeling like doing this link $1 today\n"; \
-        fi 
-
-rm_link_$(notdir $1):
-	$(AT)if [ -h $1 ]; then $(RM) $1; fi
-
-$(debug-leave)
-endef
 
 #(info Leaving definitions.mk)
 

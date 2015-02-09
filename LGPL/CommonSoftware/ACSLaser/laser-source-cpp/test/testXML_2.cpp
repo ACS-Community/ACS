@@ -429,36 +429,8 @@ void AcsAlarmTestCase::verifyASIMessageSourceTimestampElement(DOMDocument * doc)
 
 	// verify that there are 2 attributes in total
 	DOMNamedNodeMap * attributesMap = sourceTimestampItem->getAttributes();
-	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain expected number (2) of attributes",
-		(NULL!= attributesMap && attributesMap->getLength() == 2));
-
-	// check that the element has a "seconds" attribute
-	DOMNode * secondsNode = attributesMap->getNamedItem(SECONDS_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain 'seconds' attribute",
-		(NULL!= secondsNode));
-
-	// check for seconds attribute
-	DOMNode * secondsValueNode = attributesMap->getNamedItem(MICROSECONDS_TAG_NAME);
-	const XMLCh * secondsValue = secondsValueNode->getNodeValue();
-	char *secondsCharValue = XMLString::transcode(secondsValue);
-	int secondsIntValue = atoi(secondsCharValue);
-	XMLString::release(&secondsCharValue);
-	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; user-timestamp element, 'seconds' attribute value is not correct",
-		(NULL!= secondsValue && secondsIntValue == MICROSECONDS_VALUE));
-
-	// check that the element has a "microseconds" attribute
-	DOMNode * microsecondsNode = attributesMap->getNamedItem(MICROSECONDS_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain 'microseconds' attribute",
-		(NULL!= microsecondsNode));
-
-	// check for microseconds attribute
-	DOMNode * microsecondsValueNode = attributesMap->getNamedItem(MICROSECONDS_TAG_NAME);
-	const XMLCh * microsecondsValue = microsecondsValueNode->getNodeValue();
-	char *microsecondsCharValue = XMLString::transcode(microsecondsValue);
-	int microsecondsIntValue = atoi(microsecondsCharValue);
-	XMLString::release(&microsecondsCharValue);
-	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; user-timestamp element, 'microseconds' attribute value is not correct",
-		(NULL!= microsecondsValue && microsecondsIntValue == MICROSECONDS_VALUE));
+	CPPUNIT_ASSERT_MESSAGE("ASIMessage::toXML appears to be broken; does not contain expected number (0) of attributes",
+		(NULL!= attributesMap && attributesMap->getLength() == 0));
 }
 
 /*
@@ -817,27 +789,8 @@ void AcsAlarmTestCase::verifyFaultStateUserTimestampElement(DOMDocument * doc)
 
 	// verify that there are 2 attributes
 	DOMNamedNodeMap * attributesMap = userTimestampNodes->item(0)->getAttributes();
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp element does not contain 2 attributes",
-		(NULL!= attributesMap && attributesMap->getLength() == 2));
-
-	// check for seconds attribute
-	DOMNode * secondsValueNode = attributesMap->getNamedItem(SECONDS_TAG_NAME);
-	const XMLCh * secondsValue = secondsValueNode->getNodeValue();
-	char *secondsCharValue = XMLString::transcode(secondsValue);
-	int secondsIntValue = atoi(secondsCharValue);
-	XMLString::release(&secondsCharValue);
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp element, 'seconds' attribute value is not correct",
-		(NULL!= secondsValue && secondsIntValue == SECONDS_VALUE));
-
-	// check for microseconds attribute
-	DOMNode * microsecondsValueNode = attributesMap->getNamedItem(MICROSECONDS_TAG_NAME);
-	const XMLCh * microsecondsValue = microsecondsValueNode->getNodeValue();
-	char *microsecondsCharValue = XMLString::transcode(microsecondsValue);
-	int microsecondsIntValue = atoi(microsecondsCharValue);
-	XMLString::release(&microsecondsCharValue);
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp element, 'microseconds' attribute value is not correct",
-		(NULL!= microsecondsValue && microsecondsIntValue == MICROSECONDS_VALUE));
-
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; user-timestamp element does not contain 0 attributes",
+		(NULL!= attributesMap && attributesMap->getLength() == 0));
 }
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AcsAlarmTestCase);

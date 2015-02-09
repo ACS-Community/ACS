@@ -71,7 +71,7 @@ public class SourceStressTest extends ComponentClientTestCase implements AcsEven
 		public final int FC;
 		public final long msec;
 		public final String description; // ACTIVE/Terminate
-		public final Timestamp timestamp;
+		public Timestamp timestamp;
 		
 		public MiniFaultState() {
 			FF=SourceStressTest.FF+(countFF++);
@@ -119,7 +119,8 @@ public class SourceStressTest extends ComponentClientTestCase implements AcsEven
 		
 		@Override
 		public int compareTo(Object o) {
-			if (! (o instanceof FaultState)) {
+			if (! (o instanceof FaultStateReceived)) {
+				System.err.println("Unexpected type "+o.getClass().getName());
 			}
 			return faultState.getMember().compareTo(((FaultStateReceived)o).faultState.getMember());
 		}
@@ -262,7 +263,8 @@ public class SourceStressTest extends ComponentClientTestCase implements AcsEven
 		assertEquals(sent.FM, recv.getMember());
 		assertEquals(sent.FC, recv.getCode());
 		assertEquals(sent.description, recv.getDescriptor());
-		assertEquals(sent.timestamp, recv.getUserTimestamp());
+		System.out.println("Sent "+sent.timestamp.getClass().getName()+", Recv "+recv.getUserTimestamp().getClass().getName());
+		assertEquals("Timestamp differ",sent.timestamp, recv.getUserTimestamp());
 	}
 	
 	/**

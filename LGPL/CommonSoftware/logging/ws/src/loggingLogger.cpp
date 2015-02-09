@@ -26,6 +26,7 @@
 #include "loggingLogger.h"
 #include <functional>
 #include <iostream>
+#include <sstream>
 #include <ace/Recursive_Thread_Mutex.h>
 
 static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.22 2012/01/20 22:07:44 tstaig Exp $"; 
@@ -126,26 +127,54 @@ namespace Logging {
     // -------------------------------------------------------
     Logger::~Logger()
     {
-    // remove from loggers list
-    if (loggerName_m != BaseLog::GLOBAL_LOGGER_NAME &&
-    	this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->globalLogger_m && 
-    	this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m && 
-    	this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->staticLogger_m
-    	)
-	{
-        //printf("Deleting Logger: \"%s\"\n",loggerName_m.c_str());
-        loggersMutex_m.acquire();
-        ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.remove(this);
-        loggersMutex_m.release();
-	}//if
+    	// Print latest statistics
+	    if (stats.getDisableStatistics() == false)
+	    {
+			// Calculate statistics
+			stats.calculateLoggingStatistics();
+
+			// Reset statistics
+			stats.resetStatistics();
+
+			// Retrive statistics logs
+			std::list<std::string> retrievedStatisticsLogs;
+			retrievedStatisticsLogs.clear();
+			stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
+
+			// Print statistics logs
+			LogRecord logItem;
+			for (std::list<std::string>::iterator it = retrievedStatisticsLogs.begin(); it != retrievedStatisticsLogs.end(); it++)
+			{
+				logItem.priority = LM_INFO;
+				logItem.file = __FILE__;
+				logItem.line = __LINE__;
+				logItem.method = __PRETTY_FUNCTION__;
+				logItem.timeStamp = getTimeStamp();
+				logItem.message = *it;
+				log(logItem);
+			}
+
+	    }
+		// remove from loggers list
+		if (loggerName_m != BaseLog::GLOBAL_LOGGER_NAME &&
+			this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->globalLogger_m &&
+			this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->anonymousLogger_m &&
+			this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->staticLogger_m
+			)
+		{
+			//printf("Deleting Logger: \"%s\"\n",loggerName_m.c_str());
+			loggersMutex_m.acquire();
+			ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.remove(this);
+			loggersMutex_m.release();
+		}//if
 	
-	//to be thread safe
-	acquireHandlerMutex();
-	//simply clear the list of handlers
-	handlers_m.clear();
-	//make sure it's released
-	releaseHandlerMutex();
-    }//Logger::~Logger
+		//to be thread safe
+		acquireHandlerMutex();
+		//simply clear the list of handlers
+		handlers_m.clear();
+		//make sure it's released
+		releaseHandlerMutex();
+	}//Logger::~Logger
     // -------------------------------------------------------
     void
     Logger::addHandler(Handler::HandlerSmartPtr newHandler_p)
@@ -356,6 +385,29 @@ namespace Logging {
     void
     Logger::log(const LogRecord &lr)
     {
+    	// Message sizes greater than ACE_MAXLOGMSGLEN cause memory errors
+    	// So they are trunkated and a warning is sent
+    	if (lr.message.size() > ACE_MAXLOGMSGLEN)
+    	{
+    		// Send the information via stdout
+    		std::cout << "The following log message exceeds ACE_MAXLOGMSGLEN and will be truncated: " << lr.message << std::endl;
+    		// Message is trunkated
+    		lr.message.resize(ACE_MAXLOGMSGLEN);
+    		// Add specific log message
+			LogRecord logItem;
+			logItem.priority = lr.priority;
+			logItem.file = __FILE__;
+			logItem.line = __LINE__;
+			logItem.method = __PRETTY_FUNCTION__;
+			logItem.timeStamp = getTimeStamp();
+			std::ostringstream oss;
+			oss.clear();
+			oss.str(std::string());
+			oss << "A log message has been truncated to the value of ACE_MAXLOGMSGLEN = " << ACE_MAXLOGMSGLEN;
+			logItem.message = oss.str();
+			log(logItem);
+    	}
+
 // remove copy this std::list, because the core file shows something wrong here
 // according to trace, handlers_m never changed after initialized, so, it seems OK to use handlers_m directly
 //	//to be thread safe
@@ -379,31 +431,107 @@ namespace Logging {
 	for (pos = handlers_m.begin();
 	     pos != handlers_m.end();
 	     pos++)
-	    {
+	{
 	    //if the priority of this log is greater than or equal
 	    //to the minimum logging level the handler is interested
 	    //in...(we cannot suppose this, because of the env variables
 	    
 	    if(lr.priority >= (*pos)->getLevel())
 	   	{
-		//...go ahead and pass the log message to the handler
-		try
-		    {
-		    (*pos)->log(lr);
-		    }
-		//in the event the handler throws any type of exception
-		//send the failure to stdout (relogging it at LM_CRITICAL
-		//priority could lead to infinite recursion)
-		catch(...)
-		    {
-		    std::cerr << "CRITICAL LOGGER FAILURE: the '";
-		    std::cerr << (*pos)->getName() << "' Handler registered to process logs for the '";
-		    std::cerr << this->getName()   << "' Logger failed to log the '";
-		    std::cerr << lr.message           << "' message originating from the '";
-		    std::cerr << lr.file              << "' file!" << std::endl;
-		    }
+			//...go ahead and pass the log message to the handler
+			try
+			{
+				(*pos)->log(lr);
+
+				if (stats.getDisableStatistics() == false)
+				{
+					// Increment number of messages logged (only if log has succeded)
+					stats.incrementNumberOfMessages();
+
+					// Calculate time since last calculation of the logging statistics
+					float timeElapsedSinceLastStatistics = (float(getTimeStamp() - stats.getLastStatisticsRepportTime()) / float (10000000));
+					// Determine if statistics are to be generated
+					if ( timeElapsedSinceLastStatistics  >= float(stats.getStatisticsCalculationPeriod()))
+					{
+						// Calculate statistics
+						stats.calculateLoggingStatistics();
+
+						// Reset statistics
+						stats.resetStatistics();
+
+						// Retrieve statistics logs
+						std::list<std::string> retrievedStatisticsLogs;
+						retrievedStatisticsLogs.clear();
+						stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
+
+						// Print statistics logs
+						LogRecord logItem;
+						for (std::list<std::string>::iterator it = retrievedStatisticsLogs.begin(); it != retrievedStatisticsLogs.end(); it++)
+						{
+							logItem.priority = LM_INFO;
+							logItem.file = __FILE__;
+							logItem.line = __LINE__;
+							logItem.method = __PRETTY_FUNCTION__;
+							logItem.timeStamp = getTimeStamp();
+							logItem.message = *it;
+							log(logItem);
+						}
+
+					}
+				}
+
+			}
+			//in the event the handler throws any type of exception
+			//send the failure to stdout (relogging it at LM_CRITICAL
+			//priority could lead to infinite recursion)
+			catch(...)
+			{
+
+				if (stats.getDisableStatistics() == false)
+				{
+					// Increment number of logging errors (only if log has not succeded)
+					stats.incrementNumberOfLogErrors();
+
+					// Calculate time since last calculation of the logging statistics
+					float timeElapsedSinceLastStatistics = (float(getTimeStamp() - stats.getLastStatisticsRepportTime()) / float (10000000));
+					// Determine if statistics are to be generated
+					if ( timeElapsedSinceLastStatistics  >= float(stats.getStatisticsCalculationPeriod())) // TODO: Configuration (0 not allowed!!!)
+					{
+						// Calculate statistics
+						stats.calculateLoggingStatistics();
+
+						// Reset statistics
+						stats.resetStatistics();
+
+						// Retrive statistics logs
+						std::list<std::string> retrievedStatisticsLogs;
+						retrievedStatisticsLogs.clear();
+						stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
+
+						// Print statistics logs
+						LogRecord logItem;
+						for (std::list<std::string>::iterator it = retrievedStatisticsLogs.begin(); it != retrievedStatisticsLogs.end(); it++)
+						{
+							logItem.priority = LM_INFO;
+							logItem.file = __FILE__;
+							logItem.line = __LINE__;
+							logItem.method = __PRETTY_FUNCTION__;
+							logItem.timeStamp = getTimeStamp();
+							logItem.message = *it;
+							log(logItem);
+						}
+
+					}
+				}
+
+				std::cerr << "CRITICAL LOGGER FAILURE: the '";
+				std::cerr << (*pos)->getName() << "' Handler registered to process logs for the '";
+				std::cerr << this->getName()   << "' Logger failed to log the '";
+				std::cerr << lr.message           << "' message originating from the '";
+				std::cerr << lr.file              << "' file!" << std::endl;
+			}
 		}
-	    }
+	}
 
 	//make sure it's released
 	// releaseHandlerMutex();

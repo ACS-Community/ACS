@@ -5,5 +5,7 @@
 «EXPAND CreateOracleSQL::Root»
 «EXPAND DropOracleSequencesSQL::Root»
 «EXPAND CreateHsqldbSQL::Root»
+«EXPAND CreateMysqlSQL::Root»
+«EXPAND DropTablesMysqlSQL::Root»
 «EXPAND HibernateMappingList::Root»
 «ENDDEFINE»

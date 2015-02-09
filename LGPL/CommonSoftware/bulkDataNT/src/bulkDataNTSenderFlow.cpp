@@ -23,9 +23,6 @@
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.57 2013/03/05 15:19:33 gchiozzi Exp $";
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
-
 #include "bulkDataNTSenderFlow.h"
 #include <iostream>
 #include "ACS_BD_Errors.h"
@@ -379,7 +376,11 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 
 	if( ret != DDS::RETCODE_OK)
 	{
-		dumpStatistics();
+		dumpStatistics(LM_ERROR);
+		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+		ACS_SHORT_LOG((LM_ERROR, "unacknowledged_sample_count (%s) %d for flow: %s",
+			dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
+			// RTI	cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
 		if (ret==DDS::RETCODE_TIMEOUT)
 		{
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -399,27 +400,6 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			sfEx.setRetCode(ret);
 			throw sfEx;
 		}//if-else
-
-		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
-		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) %d for flow: %s", 
-			       dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
-		// RTI	cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-		
-		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);		
-		if( ret != DDS::RETCODE_OK)
-		{
-			dumpStatistics();
-			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
-			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
-			throw ackToEx; //	ackToEx.log(LM_WARNING);
-		}//if
-
-		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
-		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%s) after waiting: %d", 
-			       dataType2String[dataType], status.unacknowledged_sample_count)); //RTI
-		//cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-
 	}//if (ret != DDS::RETCODE_OK)
 
 
@@ -436,7 +416,11 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 
 		if( ret != DDS::RETCODE_OK)
 		{
-			dumpStatistics();
+			dumpStatistics(LM_ERROR);
+			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+			ACS_SHORT_LOG((LM_ERROR, "unacknowledged_sample_count (%s) %d for flow: %s",
+					dataType2String[dataType], status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
+					// RTI	cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
@@ -450,14 +434,14 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	}//if (waitForACKs || restFrameCount==0)
 }//writeFrame
 
-void BulkDataNTSenderFlow::dumpStatistics()
+void BulkDataNTSenderFlow::dumpStatistics(ACE_Log_Priority level)
 {
 	DDS::DataWriterProtocolStatus dwps;
 	DDS::DataWriterCacheStatus dwcs;
 
 	ddsDataWriter_m->get_datawriter_protocol_status(dwps);
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-			(LM_DEBUG, "DataWriter protocol status for flow: %s [sample pushed: %lld (%lld) HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld) Rejected: %lld]",
+			(level, "DataWriter protocol status for flow: %s [sample pushed: %lld (%lld) HB: %lld (%lld) ACKs: %lld (%lld) NACKs: %lld (%lld) Rejected: %lld]",
 					flowName_m.c_str(),
 					dwps.pushed_sample_count_change, dwps.pushed_sample_bytes_change,
 					dwps.sent_heartbeat_count_change, dwps.sent_heartbeat_bytes_change,
@@ -467,8 +451,7 @@ void BulkDataNTSenderFlow::dumpStatistics()
 
 	ddsDataWriter_m->get_datawriter_cache_status(dwcs);
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-			(LM_DEBUG, "DataWriter cache Status: sample count (peak): %lld (%lld)", dwcs.sample_count, dwcs.sample_count_peak));
-
+			(level, "DataWriter cache Status: sample count (peak): %lld (%lld)", dwcs.sample_count, dwcs.sample_count_peak));
 }//void dumpStatistics()
 
 /*___oOo___*/

@@ -42,6 +42,9 @@ import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.StopWatch;
 import alma.maci.loggingconfig.UnnamedLogger;
+import alma.acs.logging.statistics.AcsLoggerStatistics;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 /**
  * A <code>Logger</code> that attaches additional information to the produced <code>LogRecord</code>s.
@@ -61,6 +64,9 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 
 	// private in base class, need to redeclare here
 	protected static final int offValue = Level.OFF.intValue();
+
+	// ACS logging statistics module
+	public AcsLoggerStatistics stats;
 
 	/**
 	 * Usually this is null, but factory method {@link #wrapJdkLogger(Logger)} could supply this delegate.
@@ -127,8 +133,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
      * then this field holds the WatchDog from the slowest call.
      */
     private StopWatch profileSlowestCallStopWatch;
-    
-    
+     
 	/**
 	 * Standard constructor that configures this logger from <code>logConfig</code> and also registers for log config
 	 * changes.
@@ -170,6 +175,8 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 		} else if (!allowNullLogConfig) {
 			throw new NullPointerException("LogConfig must not be null");
 		}
+		// Instance ACS logging statistics module
+		stats = new AcsLoggerStatistics();
 	}
 
     /**
@@ -413,7 +420,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
                 String cname = frame.getClassName();
                 if (!foundNonLogFrame && !loggerClassNames.contains(cname)) {
                     // We've found the relevant frame.
-                    record.setSourceClassName(cname);
+                    record.setSourceClassName(frame.getFileName());
                     record.setSourceMethodName(frame.getMethodName());
                     int lineNumber = frame.getLineNumber();
                     specialProperties.put(LogParameterUtil.PARAM_LINE, Long.valueOf(lineNumber));
@@ -441,13 +448,81 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
             logParamUtil.setStopWatch(sw_afterAcsLogger);
         }
 
-        // Let the delegate or Logger base class handle the rest.
-        if (delegate != null) {
-        	delegate.log(record);
+        try {
+        	// Let the delegate or Logger base class handle the rest.
+            if (delegate != null) {
+            	delegate.log(record);
+            }
+            else {
+            	super.log(record);
+            }
+        	
+        	// Calculate statistics
+            if (stats.getDisableStatistics() == false) {
+    			// Increment number of messages logged (only if log has succeded)
+    			stats.incrementNumberOfMessages();
+
+    			// Calculate time since last calculation of the logging statistics
+    			float timeElapsedSinceLastStatistics = (float)(System.currentTimeMillis() - stats.getLastStatisticsRepportTime()) / (float)(1000);
+    			
+    			// Determine if statistics are to be generated
+    			if ( timeElapsedSinceLastStatistics  >= (float)(stats.getStatisticsCalculationPeriod())) {
+    				// Calculate statistics
+    				stats.calculateLoggingStatistics();
+
+    				// Reset statistics
+    				stats.resetStatistics();
+
+    				// Retrive statistics logs
+    				List<String> retrievedStatisticsLogs = new ArrayList<String>();
+    				retrievedStatisticsLogs.clear();
+    				stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
+    				
+    				// Print statistics logs
+    				AcsLogRecord logItem;
+    				Iterator<String> it = retrievedStatisticsLogs.iterator();
+    				
+    				while (it.hasNext()) {
+    					logItem = createAcsLogRecord(Level.INFO, it.next().toString());
+    					log(logItem);
+    				}
+    			}
+    		}
+        } catch (Exception e) {
+        	// Calculate statistics
+            if (stats.getDisableStatistics() == false) {
+    			// Increment number of log errors (only if log has not succeded)
+    			stats.incrementNumberOfLogErrors();
+
+    			// Calculate time since last calculation of the logging statistics
+    			float timeElapsedSinceLastStatistics = (float)(System.currentTimeMillis() - stats.getLastStatisticsRepportTime()) / (float)(1000);
+    			
+    			// Determine if statistics are to be generated
+    			if ( timeElapsedSinceLastStatistics  >= (float)(stats.getStatisticsCalculationPeriod())) {
+    				// Calculate statistics
+    				stats.calculateLoggingStatistics();
+
+    				// Reset statistics
+    				stats.resetStatistics();
+
+    				// Retrive statistics logs
+    				List<String> retrievedStatisticsLogs = new ArrayList<String>();
+    				retrievedStatisticsLogs.clear();
+    				stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
+    				
+    				// Print statistics logs
+    				AcsLogRecord logItem;
+    				Iterator<String> it = retrievedStatisticsLogs.iterator();
+    				
+    				while (it.hasNext()) {
+    					logItem = createAcsLogRecord(Level.INFO, it.next().toString());
+    					log(logItem);
+    				}
+    			}
+    		}
+            System.out.println("CRITICAL LOGGER FAILURE in " + getLoggerName());
         }
-        else {
-        	super.log(record);
-        }
+        
         
         if (PROFILE) {
         	sw_afterAcsLogger.stop();
@@ -563,4 +638,36 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 	private final String concatenateIgnoreLogData(String className, String methodName) {
 		return className + '#' + methodName;
 	}
+	
+    /**
+     * This method is called when the logger is to be closed and will activate any final action
+     * the logger need to perform before liberating resources. That method is created because the
+     * finalize() method is not reliable for this task.
+     * The only task currently to be performed is to print out final statistics of the logger 
+     */
+    public void closeLogger() {
+    	
+    	// Calculate statistics
+        if (stats.getDisableStatistics() == false) {
+        	// Calculate statistics
+			stats.calculateLoggingStatistics();
+
+			// Reset statistics
+			stats.resetStatistics();
+
+			// Retrieve statistics logs
+			List<String> retrievedStatisticsLogs = new ArrayList<String>();
+			retrievedStatisticsLogs.clear();
+			stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
+				
+			// Print statistics logs
+			AcsLogRecord logItem;
+			Iterator<String> it = retrievedStatisticsLogs.iterator();
+				
+			while (it.hasNext()) {
+				logItem = createAcsLogRecord(Level.INFO, it.next().toString());
+				log(logItem);
+			}
+		}
+    }
 }

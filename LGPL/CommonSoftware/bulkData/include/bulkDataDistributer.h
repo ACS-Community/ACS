@@ -161,7 +161,7 @@ typedef struct RecvDataStruct
 	    FLOW_NOT_AVAILABLE
 	};
 
-    typedef ACE_Pair< RecvData /*bulkdata::BulkDataReceiver_ptr*/, AcsBulkdata::BulkDataSender<TSenderCallback> *> Sender_Map_Pair;
+	typedef /*ACE_Reference_Pair*/std::pair< RecvData /*bulkdata::BulkDataReceiver_ptr*/, AcsBulkdata::BulkDataSender<TSenderCallback> *> Sender_Map_Pair;
 
 //	typedef ACE_Pair< bulkdata::BulkDataReceiver_ptr, BulkDataSender<TSenderCallback> *> Sender_Map_Pair;
 

@@ -179,10 +179,10 @@ public class ACSAlarmCacheImpl implements AlarmCache
 		Alarm retAl;
 		try {
 			retAl = getReference(identifier);
+			return (Alarm)(((AlarmImpl)retAl).clone());
 		} finally {
 			lock.unlock();
 		}
-		return (Alarm)(((AlarmImpl)retAl).clone());
 	}
 
 	/**
@@ -238,10 +238,10 @@ public class ACSAlarmCacheImpl implements AlarmCache
 				System.err.println("*** Invalid Alarm");
 				throw new AlarmCacheException("Invalid Alarm");
 			}
+			return retAl;
 		} finally {
 			lock.unlock();
 		}
-		return retAl;
 	}
 	
 	/**

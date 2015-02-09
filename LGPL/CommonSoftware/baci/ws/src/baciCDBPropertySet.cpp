@@ -39,7 +39,6 @@
  using namespace cdb;
  using namespace cdbErrType;
 
-ACE_RCSID(baci, baciCDBPropertySet, "$Id: baciCDBPropertySet.cpp,v 1.100 2008/10/01 02:26:45 cparedes Exp $");
 
 CDBPropertySet * CDBPropertySet::instance_mp = 0;
 

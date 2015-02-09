@@ -51,7 +51,7 @@ from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-class CommonNC:
+class CommonNC(object):
     '''
     Serves as a baseclass for notification channel objects.
     

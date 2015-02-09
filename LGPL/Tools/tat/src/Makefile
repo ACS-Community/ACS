@@ -7,6 +7,7 @@
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
+# eallaert 2014-10-22 Set NOCCS if ACSROOT is defined;
 # sfeyrin  2010-09-16 Removed eccsTestDriver, eccsTestSpawner;
 #                     Added include acsMakefile when ACS_ROOT define
 # sfeyrin  2008-12-19 Removed "-f" from expect in *_TCLSH
@@ -25,6 +26,13 @@
 #
 # WARNING: On a standard ACS installation without CCS, ALWAYS SET NOCCS=1
 # 
+
+# ICT-3707: use of NOCCS has been removed from Kit/acs and build-files.
+# If we're running on an ACS-system, set it here locally.
+ifdef ACSROOT
+    NOCCS=1
+endif
+
 ifndef NOCCS
     VCC_LIB = vcc
 endif

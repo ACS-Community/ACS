@@ -3,6 +3,27 @@
 #
 # "@(#) $Id: acsMakefile,v 1.206 2013/02/04 09:33:24 eallaert Exp $" 
 #
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2014
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
+
 #******************************************************************************
 #   NAME
 #   acsMakefile - system wide make definitions for ALMA SW
@@ -57,6 +78,7 @@
 #     TCL_SCRIPTS 	tcl_script
 #     TCL_LIBRARIES 	tcl_lib
 #     RTAI_MODULES 	rtai
+#     KERNEL_MODULES 	kernel_module
 #
 #   If the building of one specific part of the module is desired, 
 #   the above targets may be used in conjunction with overriding the 
@@ -129,12 +151,10 @@
 #             have "/vw" appended to them if MAKE_VXWORKS is set. MODROOT will
 #             be set to ".." if the environment variable MODPATH is set to 1;
 #             otherwise it will not be part of SEARCHPATH.
-#   VLTINC    VLT includes  (integration area, if defined, and then root)
-#   VLTLIB    VLT libraries (integration area, if defined, and then root)
-#   RTINC     rtap includes
-#   RTLIB     rtap libraries
-#   XINC      X11  includes  (defined as required by RTAP) 
-#   XLIB      X11  libraries (defined as required by RTAP)
+#   ACSINC    ACS includes  (integration area, if defined, and then root)
+#   ACSLIB    ACS libraries (integration area, if defined, and then root)
+#   XINC      X11  includes
+#   XLIB      X11  libraries
 #   VXINC     VxWorks includes
 #   VXLIB     VxWorks libraries
 #             RULE: use os/version/machine depending values, or
@@ -165,10 +185,6 @@
 #                (*) includes are searched in both the "vw/include/" 
 #                    and "include/" directories
 #
-#   RTAP_FLAGS platform dependend library list to link RTAP
-#
-#   CCS_LIBLIST ordered list of CCS libraries
-#
 #   AR        archive maintaining program
 #
 #   SHLIB_EXT extention for shared libraries: "sl" on HP, "so" for Sun
@@ -186,9 +202,9 @@
 #                   "development d/m/y-H:M" otherwise
 #
 #   PRJTOP    prefix directory for "install" operations
-#             RULE: set to either INTROOT(/vw) or VLTROOT(/vw), if defined,
+#             RULE: set to either INTROOT(/vw) or ACSROOT(/vw), if defined,
 #                   left undefined otherwise.
-#   INSTALL_ROOT  set to either INTROOT or VLTROOTif
+#   INSTALL_ROOT  set to either INTROOT or ACSROOTif
 #   INCLUDE   target directory for installing .h files    $(PRJTOP)/include
 #   BINDIR    binary directory: bin for WSs, bin/$CPU for LCUs
 #   BIN       target directory for installing bin files   $(PRJTOP)/$(BINDIR)
@@ -259,7 +275,7 @@
 #
 #   RTAI
 #
-#   The rtaiMakefile handles the targets to make, install and clean 
+#   The acsMakefile handles the targets to make, install and clean 
 #   RTAI kernel modules code.
 #   
 #   The main variable to be defined in the Makefile is RTAI_MODULES.
@@ -278,6 +294,37 @@
 #   Support for modules load/unload:
 #
 #   for each module listed in RTAI_MODULES or RTAI_MODULES_L, 
+#   the makefile assumes
+#   the existence of two corresponding C++ files called 
+#   load<LKM>.cpp and unload<LKM>.cpp
+#
+#   These files are built into two binaries.
+#   Also, an additional script called "installLKM" is built, which contains 
+#   instructions on how to copy the LKM into the suitable system directories 
+#   and makes the load/unload binaries setuid root.
+#   This script must be executed as root.
+#
+#   KERNEL MODULES
+#
+#   The acsMakefile handles the targets to make, install and clean 
+#   standard Linux kernel modules code.
+#   
+#   The main variable to be defined in the Makefile is KERNEL_MODULES.
+#   It behaves similarly to the EXECUTABLES or LIBRARIES variables,
+#   and allows the customary specification of object files, compiler and
+#   linking options.
+#
+#   For kernel modules to be build, installed or cleaned, the environment 
+#   variable LINUX_HOME must be defined.
+#
+#   To customize compiling options USER_KERNEL_MODULE_CFLAGS can be used.
+#   Also available is the tag KERNEL_MODULES_L which keeps the modules local
+#   without installing them.
+#   The clean target deletes all files from the kernel subdirectory.
+#
+#   Support for modules load/unload:
+#
+#   for each module listed in KERNEL_MODULES or KERNEL_MODULES_L, 
 #   the makefile assumes
 #   the existence of two corresponding C++ files called 
 #   load<LKM>.cpp and unload<LKM>.cpp
@@ -395,7 +442,6 @@
 #
 #     GNU_ROOT     where to look for GNU stuff. NO DEFAULT!
 #     TCLTK_ROOT   where to look for TCL/TK stuff. NO DEFAULT!
-#     DFLOW_ROOT   where to look for Data Flow stuff. NO DEFAULT!
 #     MAKEDIR      where to look for the acsMakefile.all
 #                  default: $(ACSROOT)/include/acsMakefile.all
 #     MAKE_VERBOSE if defined all commands are printed, by default only the
@@ -408,7 +454,7 @@
 #     MAKE_PURE    if defined it triggers the acsStartJava to create mempro.jtp
 #     MAKE_PURECOV if defined executable are instrumented for test coverage
 #     MAKE_ALL_WARNINGS if defined all compiler warnings are activated
-#     VLTROOT      VLT Software root directory
+#     ACSROOT      ACS Software root directory
 #     INTROOT      Current Integration area. If defined, it becomes the target 
 #                  directory for "install" operation
 #     INTLIST      ":"-separated list of Auxiliary Integration areas. If defined, 
@@ -419,7 +465,6 @@
 #     USER_LIB     list of additional libraries      (formated as  -L<dir> ...)
 #     XINC         X11 includes  
 #     XLIB         X11 libraries
-#     RTAPROOT     root directory for HP-RTAP product
 #     WIND_BASE    root directory for WINDRIVER VxWorks TORNADO product 
 #     MODVERSION   version identification
 #
@@ -481,7 +526,7 @@ PWD = $(shell pwd)
 os     = $(shell uname)
 osrev  = $(shell uname -r)
 ifdef LINUX_HOME
-rtai_install_subfold := $(shell egrep --regexp="define[[:space:]]+UTS_RELEASE" $(LINUX_HOME)/include/linux/* | cut --delimiter="\"" --fields=2)
+kernel_install_subfold := $(shell egrep --regexp="define[[:space:]]+UTS_RELEASE" $(LINUX_HOME)/include/linux/* | cut --delimiter="\"" --fields=2)
 endif
 
 mustBuild = $(if $(MAKE_ONLY),$(if $(findstring $(1),$(MAKE_ONLY)),true,false),true)
@@ -489,24 +534,6 @@ mustBuild = $(if $(MAKE_ONLY),$(if $(findstring $(1),$(MAKE_ONLY)),true,false),t
 #
 #ifeq ($(call mustBuild,Java),true)
 #endif
-
-ifeq ($(os),SunOS)
-    ifeq ($(osrev),5.4)
-        platform = Sun-Solaris2
-    endif  
-    ifeq ($(osrev),5.5)
-        platform = Sun-Solaris2
-    endif  
-    ifeq ($(osrev),5.5.1)
-        platform = Sun-Solaris2
-    endif  
-    ifeq ($(osrev),5.6)
-        platform = Sun-Solaris2
-    endif
-    ifeq ($(osrev),5.8)
-        platform = Sun-Solaris2
-    endif
-endif
 
 # Added by E. Allaert: Linux case; remark Linux uses Gnu-echo
 
@@ -523,24 +550,21 @@ else
    export ECHO = echo 
 endif
 
-# MZA find a better place for this
-CCS_LIBLIST  :=  -lCCS -lm -lc
-
 ifndef platform
     #
-    # force a syntax error, so that vltMake stops on a
+    # force a syntax error, so that acsMake stops
 $(error  UNSUPPORTED platform)
 endif
 
 ifndef GNU_ROOT
     #
-    # force a syntax error, so that vltMake stops 
+    # force a syntax error, so that acsMake stops 
 $(error GNU_ROOT must be defined)
 endif
 
 ifndef TCLTK_ROOT
     #
-    # force a syntax error, so that vltMake stops 
+    # force a syntax error, so that acsMake stops 
     TCLTK_ROOT must be defined
 endif
 
@@ -563,21 +587,12 @@ ifndef MAKE_VXWORKS
     AR      = ar
     RANLIB  = ranlib
 
-    # set flags for NOCCS and CCSlite
-    ifdef NOCCS
-        CCS_CFLAGS = -DNOCCS
-    else
-        ifndef RTAPROOT
-            CCS_CFLAGS = -DCCS_LIGHT
-        endif
-    endif
-    
     CC         = gcc -ansi
     CXX        = gcc -ansi
     #
     # default flags are all warning enabled and Position Independent Code
     # for shared libraries
-    
+
     #
     # for the time being, NO WARNINGS!!!!
     #CC_FLAGS   = -w
@@ -619,33 +634,6 @@ ifdef MAKE_NO_PERMISSIVE
 else
     C_PLUS_PLUS_FLAGS = -fno-operator-names -fpermissive
 endif
-
-    ifeq ($(platform),Sun-Solaris2)
-        CXX        = gcc
-        LD            = gcc
-        NOSHARED_ON   = -Xlinker -Bstatic 
-        NOSHARED_OFF  = -Xlinker -Bdynamic
-        SHLIB_EXT     = so
-        RANLIB        = @/bin/true 
-        INC_DEFAULT   = -I/usr/local/include
-        LIB_DEFAULT   = -L/usr/local/lib
-        XINC_DEFAULT  = -I/opt/SUNWmotif/include -I/usr/openwin/include 
-        XLIB_DEFAULT  = -L/opt/SUNWmotif/lib     -L/usr/openwin/lib     
-        # Rtap 06.60
-        CCS_LIBLIST   = -lCCS  -lm -lposix4
-        CCS_LIBLIST_NOSHARED = $(NOSHARED_ON) -lCCS $(NOSHARED_OFF) -lm -lposix4
-        ifeq ($(osrev),5.4)
-            PURIFY_COLLECTOR=$(GNU_ROOT)/lib/gcc-lib/sparc-sun-solaris2.4/2.7.2.2/ld
-        endif  
-        ifeq ($(osrev),5.5)
-            PURIFY_COLLECTOR=$(GNU_ROOT)/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2.2/ld
-        endif
-        # for the time being, Sun 2.5.1 uses same binaries as 2.5
-        ifeq ($(osrev),5.5.1)
-            PURIFY_COLLECTOR=$(GNU_ROOT)/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2.2/ld
-        endif
-    endif
-
     ifeq ($(platform),Linux)
 
         # WARNING GCH: Commented out -ansi option for c,c++ and dependencies. 
@@ -663,8 +651,6 @@ endif
         LIB_DEFAULT   = -L/usr/local/lib
         XINC_DEFAULT  = -I/usr/X11R6/include/X11 
         XLIB_DEFAULT  = -L/usr/X11R6/lib     
-        CCS_LIBLIST          := -lCCS -lm 
-        CCS_LIBLIST_NOSHARED := $(NOSHARED_ON) -lCCS $(NOSHARED_OFF) -lm 
         CXX_FOR_VERSION_TEST := gcc
 
         ACS_CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion) 
@@ -700,8 +686,6 @@ endif
         LIB_DEFAULT   = -L/usr/local/lib
         XINC_DEFAULT  = -I/usr/X11R6/include/X11
         XLIB_DEFAULT  = -L/usr/X11R6/lib
-        CCS_LIBLIST          :=                -lCCS                 -lm
-        CCS_LIBLIST_NOSHARED := $(NOSHARED_ON) -lCCS $(NOSHARED_OFF) -lm
         CXX_FOR_VERSION_TEST := g++
 
         ACS_CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion)
@@ -723,16 +707,12 @@ endif
     LIBDIR   = lib
 
 else
+# MAKE_VXWORKS is defined
 ########################################################################################
 ###### VXWORKS DEFINITIONS #############################################################
 ########################################################################################
 
-# assume that if ALMA then 6.7!
-ifdef VLTSW_ROOTDIR
-else
-  VX_VERSION=6.7
-endif
-
+VX_VERSION=6.7
 
 ifneq ($(strip $(ACE_ROOT_VW)),)
   override ACE_ROOT=$(ACE_ROOT_VW)
@@ -751,70 +731,15 @@ endif
 #    endif
 
 #   ifeq ($(CPU),MC68040)
-ifeq ($(strip $(findstring MC68,$(CPU))),MC68)
-       ifneq ($(VX_VERSION), 5.5)
-WIND_BASE_PATTERN := /vlt/$(VLTSW_RELEASE)/vw6.4%
-WIND_HOME_PATTERN := /vlt/$(VLTSW_RELEASE)/WindRiver-3.4%
-
-PATH:=$(subst $(COLON),$(SPACE),$(PATH))
-PATH:=$(filter-out $(WIND_BASE_PATTERN),$(PATH))
-PATH:=$(filter-out $(WIND_HOME_PATTERN),$(PATH))
-PATH:=$(subst $(SPACE),$(COLON),$(PATH))
-
-# Same for MANPATH
-MANPATH:=$(subst $(COLON),$(SPACE),$(MANPATH))
-MANPATH:=$(filter-out $(WIND_BASE_PATTERN),$(MANPATH))
-MANPATH:=$(filter-out $(WIND_HOME_PATTERN),$(MANPATH))
-MANPATH:=$(subst $(SPACE),$(COLON),$(MANPATH))
-
-# And LD_LIBRARY_PATH
-LD_LIBRARY_PATH:=$(subst $(COLON),$(SPACE),$(LD_LIBRARY_PATH))
-LD_LIBRARY_PATH:=$(filter-out $(WIND_BASE_PATTERN),$(LD_LIBRARY_PATH))
-LD_LIBRARY_PATH:=$(filter-out $(WIND_HOME_PATTERN),$(LD_LIBRARY_PATH))
-LD_LIBRARY_PATH:=$(subst $(SPACE),$(COLON),$(LD_LIBRARY_PATH))
-
-
-# Define variables
-WIND_HOME:=
-WIND_BASE:=/vlt/$(VLTSW_RELEASE)/vw5.5
-WIND_HOST_TYPE:=i386
-PATH:=$(PATH):$(WIND_BASE)/host/$(WIND_HOST_TYPE)/bin
-MANPATH:=$(MANPATH):$(WIND_BASE)/man:$(WIND_BASE)/host/$(WIND_HOST_TYPE)/man:$(WIND_BASE)/target/man
-LD_LIBRARY_PATH:=$(LD_LIBRARY_PATH):$(WIND_BASE)/host/$(WIND_HOST_TYPE)/lib
-VX_CPU_FAMILY:=68k
-VX_HOST_TYPE:=i386
-VXROOT:=$(WIND_BASE)/target
-VX_VW_BASE:=$(WIND_BASE)/target
-VX_HSP_BASE:=$(VXROOT)
-VX_BSP_BASE:=$(VXROOT)
-
-VX_VERSION:=5.5
-
-       endif 
-endif
 
     #
     # CPU must be one of the supported types:
-    ifeq ($(CPU),MC68000)
-        VX_CPU_FAMILY = 68k
-        CPU_CFLAGS = -DCPU=$(CPU) -m68000
-    endif
-    ifeq ($(CPU),MC68040)
-        VX_CPU_FAMILY = 68k
-        CPU_CFLAGS = -DCPU=$(CPU)
-    endif
     ifeq ($(CPU),PPC604)
         VX_CPU_FAMILY = ppc
-        ifeq ($(VX_VERSION), 6.4) 
-           CPU_CFLAGS = -DCPU=$(CPU) -fstrength-reduce -mlongcall -mcpu=604 -DTOOL=gnu -D_WRS_KERNEL
-        endif	
         ifeq ($(VX_VERSION), 6.7) 
           # this was taken from ALMA
           CPU_CFLAGS = -DCPU=$(CPU) -mlongcall -mcpu=604 -mcpu=604 -DTOOL=gnu
         endif	
-        ifeq ($(VX_VERSION), 5.5)
-           CPU_CFLAGS = -DCPU=$(CPU) -mlongcall
-	endif
     endif
     ifeq ($(CPU),PPC603)
         VX_CPU_FAMILY = ppc
@@ -831,38 +756,15 @@ endif
         ifeq ($(VX_VERSION), 6.7)
 	   CC       = cc$(VX_CPU_FAMILY) -ansi -fno-builtin -mstrict-align
         endif	
-        ifeq ($(VX_VERSION), 6.4)
-	   CC       = cc$(VX_CPU_FAMILY) -ansi -mstrict-align # -fno-builtin
-        endif	
-        ifeq ($(VX_VERSION), 5.5)
-	   CC       = cc$(VX_CPU_FAMILY) -ansi -fno-builtin
-	endif
 
 	CXX      = cc$(VX_CPU_FAMILY) -ansi -fno-builtin
 	CCDEP    = cc$(VX_CPU_FAMILY) -MM -ansi -fno-builtin
         ifeq ($(VX_VERSION), 6.7)
            CC_FLAGS = $(CPU_CFLAGS) -DTOOL_FAMILY=gnu -DMAKE_VXWORKS -Wall -c 
         endif	
-        ifeq ($(VX_VERSION), 6.4)
-           CC_FLAGS = $(CPU_CFLAGS) -DTOOL_FAMILY=gnu -DMAKE_VXWORKS -Wall
-        endif	
-        ifeq ($(VX_VERSION), 5.5)
-           CC_FLAGS = $(CPU_CFLAGS) -DTOOL_FAMILY=gnu -DTOOL=gnu -DMAKE_VXWORKS -Wall -c
-	endif
 
     # all warnings left out for the default (see above) must be added here
     ifdef MAKE_ALL_WARNINGS
-      ifdef VLTSW_ROOTDIR
-	CC_FLAGS   := $(CC_FLAGS) -Wshadow     \
-                        -Wcast-qual            \
-                        -Wcast-align           \
-                        -W                     \
-                        -Wno-unused            \
-                        -Wpointer-arith        \
-                        -Wwrite-strings        \
-                        -Wmissing-prototypes   \
-                        -Wmissing-declarations 
-      else
 	CC_FLAGS   := $(CC_FLAGS) -Wshadow     \
                         -Wcast-qual            \
                         -Wcast-align           \
@@ -872,7 +774,6 @@ endif
                         -Wwrite-strings        
 #                        -Wmissing-prototypes   \
 #                        -Wmissing-declarations 
-      endif
     endif
 
     LD       = ld$(VX_CPU_FAMILY)
@@ -890,20 +791,6 @@ endif
     endif
 
     C_PLUS_PLUS_FLAGS = -r
-
-    ifdef VLTSW_ROOTDIR
-    # compilation for non 68k (PPC) with vw5.5 not supported
-    ifneq ($(VX_CPU_FAMILY),68k)
-       ifneq ($(VX_VERSION), 6.4)
-          # force a syntax error, so that vltMake stops on a
-          $(error UNSUPPORTED vxworks version $(VX_VERSION) for CPU type $(VX_CPU_FAMILY))
-       endif
-    endif
-    else
-       # ALMA
-
-    endif
-
 
     CXX_FOR_VERSION_TEST := cc$(VX_CPU_FAMILY)
 
@@ -931,7 +818,7 @@ ifndef MAKE_VXWORKS
 # I want MAKE_PURE to cause both Purify and Purecoverage 
 # and MAKE_PURIFY and MAKE_PURECOV to be used to activate them
 # selectively.
-# Notice that on Linux, PurifPlus does both coverage and memory
+# Notice that on Linux, PurifyPlus does both coverage and memory
 # analysis with the same tool.
 # Mzampare August '03
 #
@@ -1059,7 +946,7 @@ ifndef DEBUG
   endif
 endif
 
-CFLAGS := $(CFLAGS) $(CCS_CFLAGS)                               
+CFLAGS := $(CFLAGS)                           
 
 ifdef USER_CFLAGS
     CFLAGS := $(CFLAGS) $(USER_CFLAGS)                               
@@ -1099,12 +986,8 @@ ifndef TAO_ROOT
 endif
 
 ifndef MAKE_VXWORKS
-#ifeq ($(os),SunOS)
-#  CFLAGS :=  -pipe -fcheck-new $(CFLAGS)
-#else
   CFLAGS :=  -pipe -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DACE_HAS_AIO_CALLS   $(CFLAGS) 
   CPPFLAGS = -fcheck-new
-#endif
 else
   CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -DACE_VXWORKS=0x670 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
   LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r -T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT
@@ -1156,14 +1039,12 @@ ifdef PYTHON_ROOT
     endif
 endif
 
-ifdef VLTROOT
-    TOOLS_INC := -I$(VLTROOT)/include    $(TOOLS_INC)
+ifdef ACSROOT
+    TOOLS_INC := -I$(ACSROOT)/include    $(TOOLS_INC)
     ifdef MAKE_VXWORKS
-        TOOLS_INC := -I$(VLTROOT)$(VW)/include $(TOOLS_INC)
+        TOOLS_INC := -I$(ACSROOT)$(VW)/include $(TOOLS_INC)
+        TOOLS_LIB := -L$(ACSROOT)$(VW)/lib    $(TOOLS_LIB)
     endif
-    TOOLS_INC := -I$(VLTROOT)/include/rtd $(TOOLS_INC)
-    TOOLS_INC := -I$(VLTROOT)/include/cat $(TOOLS_INC)
-    TOOLS_LIB := -L$(VLTROOT)$(VW)/lib    $(TOOLS_LIB)
 endif
 
 #
@@ -1177,7 +1058,7 @@ ifdef MAKE_VXWORKS
 else
     #
     # if GUI libraries are not already defined, 
-    # take the platform-dependent default(as required by RTAP 6.31)
+    # take the platform-dependent default
     ifndef XINC
         XINC = $(XINC_DEFAULT)
     endif
@@ -1210,12 +1091,12 @@ endif
 #
 # define basic paths to ACSROOT:
 ifdef ACSROOT
-    VLTINC := -I$(ACSROOT)/include -I$(ALMASW_INSTDIR)/boost/include
+    ACSINC := -I$(ACSROOT)/include -I$(ALMASW_INSTDIR)/boost/include
     ifdef MAKE_VXWORKS
-        VLTINC := -I$(ACSROOT)$(VW)/include $(VLTINC)
+        ACSINC := -I$(ACSROOT)$(VW)/include $(ACSINC)
     endif
     SEARCHPATH = $(ACSROOT)$(VW)
-    VLTLIB  = -L$(ACSROOT)$(VW)/$(LIBDIR) -L$(ALMASW_INSTDIR)/boost/lib
+    ACSLIB  = -L$(ACSROOT)$(VW)/$(LIBDIR) -L$(ALMASW_INSTDIR)/boost/lib
     PRJTOP  = $(ACSROOT)$(VW)
     INSTALL_ROOT = $(ACSROOT)
     ALARMS  = $(ACSROOT)/ALARMS
@@ -1226,9 +1107,9 @@ ifdef ACSROOT
     DBL     = $(ACSROOT)/dbl
     CDBS     = $(ACSROOT)/config/CDB/schemas
     PRJTOP_LOG = $(ACSROOT)
-    VLTIDL := -I$(ACSROOT)/idl
+    ACSIDL := -I$(ACSROOT)/idl
     ifdef MAKE_VXWORKS
-        VLTIDL := -I$(ACSROOT)$(VW)/idl $(VLTIDL)
+        ACSIDL := -I$(ACSROOT)$(VW)/idl $(ACSIDL)
     endif
 endif
 
@@ -1241,15 +1122,15 @@ DIRLIST = $(subst :, , $(INTLIST))
 #
 
 ifdef INTLIST    
-    VLTINC := $(foreach dir, $(DIRLIST), -I$(dir)/include) $(VLTINC)
+    ACSINC := $(foreach dir, $(DIRLIST), -I$(dir)/include) $(ACSINC)
     ifdef MAKE_VXWORKS
-        VLTINC := $(foreach dir, $(DIRLIST), -I$(dir)$(VW)/include) $(VLTINC)
+        ACSINC := $(foreach dir, $(DIRLIST), -I$(dir)$(VW)/include) $(ACSINC)
     endif
     #SEARCHPATH := $(strip $(INTLIST)):$(SEARCHPATH)
     empty:=
     space:= $(empty) $(empty)
     SEARCHPATH := $(subst $(space),:,$(foreach dir, $(DIRLIST),$(dir)$(VW))):$(SEARCHPATH)
-    VLTLIB  := $(foreach dir, $(DIRLIST), -L$(dir)$(VW)/$(LIBDIR)) $(VLTLIB)
+    ACSLIB  := $(foreach dir, $(DIRLIST), -L$(dir)$(VW)/$(LIBDIR)) $(ACSLIB)
     PRJTOP  = $(word 1, $(DIRLIST))$(VW)
     INSTALL_ROOT = $(word 1, $(DIRLIST))
     ALARMS  = $(word 1, $(DIRLIST))/ALARMS
@@ -1261,9 +1142,9 @@ ifdef INTLIST
 
     CDBS     = $(word 1, $(DIRLIST))/config/CDB/schemas
     PRJTOP_LOG = $(word 1, $(DIRLIST))
-    VLTIDL := $(foreach dir, $(DIRLIST), -I$(dir)/idl) $(VLTIDL)
+    ACSIDL := $(foreach dir, $(DIRLIST), -I$(dir)/idl) $(ACSIDL)
     ifdef MAKE_VXWORKS
-        VLTIDL := $(foreach dir, $(DIRLIST), -I$(dir)$(VW)/idl) $(VLTIDL)
+        ACSIDL := $(foreach dir, $(DIRLIST), -I$(dir)$(VW)/idl) $(ACSIDL)
     endif
 endif
 
@@ -1271,12 +1152,12 @@ endif
 #
 # if INTROOT is defined, override or complete the search paths:
 ifdef INTROOT
-    VLTINC := -I$(INTROOT)/include $(VLTINC)
+    ACSINC := -I$(INTROOT)/include $(ACSINC)
     ifdef MAKE_VXWORKS
-        VLTINC := -I$(INTROOT)$(VW)/include $(VLTINC)
+        ACSINC := -I$(INTROOT)$(VW)/include $(ACSINC)
     endif
     SEARCHPATH := $(INTROOT)$(VW):$(SEARCHPATH)
-    VLTLIB := -L$(INTROOT)$(VW)/$(LIBDIR) $(VLTLIB)
+    ACSLIB := -L$(INTROOT)$(VW)/$(LIBDIR) $(ACSLIB)
     PRJTOP  = $(INTROOT)$(VW)
     INSTALL_ROOT = $(INTROOT)
     ALARMS  = $(INTROOT)/ALARMS
@@ -1288,9 +1169,9 @@ ifdef INTROOT
 
     CDBS     = $(INTROOT)/config/CDB/schemas
     PRJTOP_LOG = $(INTROOT)
-    VLTIDL := -I$(INTROOT)/idl $(VLTIDL)
+    ACSIDL := -I$(INTROOT)/idl $(ACSIDL)
     ifdef MAKE_VXWORKS
-        VLTIDL := -I$(INTROOT)$(VW)/idl $(VLTIDL)
+        ACSIDL := -I$(INTROOT)$(VW)/idl $(ACSIDL)
     endif
 endif
 
@@ -1300,7 +1181,7 @@ endif
 ifdef ACE_ROOT
 
 ifeq ($(platform),Cygwin)
-    VLTINC := -I$(ACE_ROOT)/TAO -I$(ACE_ROOT)/TAO/tao \
+    ACSINC := -I$(ACE_ROOT)/TAO -I$(ACE_ROOT)/TAO/tao \
               -I$(ACE_ROOT)/TAO/tao/IORTable \
               -I$(ACE_ROOT)/TAO/tao/IFR_Client \
               -I$(ACE_ROOT)/TAO/tao/PortableServer \
@@ -1311,9 +1192,9 @@ ifeq ($(platform),Cygwin)
 	      -I$(ACE_ROOT)/TAO/tao/Valuetype \
               -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs -I$(ACE_ROOT)/TAO/orbsvcs \
               -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Log  \
-              -I$(ACE_ROOT) $(VLTINC)
+              -I$(ACE_ROOT) $(ACSINC)
 else
-    VLTINC := -I$(ACE_ROOT)/TAO -I$(ACE_ROOT)/TAO/tao \
+    ACSINC := -I$(ACE_ROOT)/TAO -I$(ACE_ROOT)/TAO/tao \
               -I$(ACE_ROOT)/ace -I$(ACE_ROOT)/TAO/tao/IORTable \
               -I$(ACE_ROOT)/TAO/tao/IFR_Client \
               -I$(ACE_ROOT)/TAO/tao/PortableServer \
@@ -1324,9 +1205,9 @@ else
 	      -I$(ACE_ROOT)/TAO/tao/Valuetype \
               -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs -I$(ACE_ROOT)/TAO/orbsvcs \
               -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Log  \
-              -I$(ACE_ROOT) $(VLTINC)
+              -I$(ACE_ROOT) $(ACSINC)
 endif
-    VLTLIB := -L$(ACE_ROOT)/lib $(VLTLIB)
+    ACSLIB := -L$(ACE_ROOT)/lib $(ACSLIB)
     TAO_MK_IDL_PATH := -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs -I$(ACE_ROOT)/TAO/tao -I$(ACE_ROOT)/TAO -I$(ACE_ROOT)/TAO/orbsvcs
     ifeq ($(platform),Cygwin)
     USER_LIB += -lACE -lACEXML -lACEXML_Parser -lACEXML_XML_Svc_Conf_Parser -lACE_ETCL -lACE_ETCL_Parser -lACE_Monitor_Control -lACE_gperf_lib
@@ -1361,7 +1242,7 @@ endif
 #
 # object dir here added because of ALMASW2002100
 #
-MODINC = -I../include -I../object $(if $(VLTSW_ROOT_DIR),-I../gen,)
+MODINC = -I../include -I../object
 MODLIB = -L../lib 
 MODIDL = -I../idl
 
@@ -1374,7 +1255,7 @@ endif
 #### GCH, 2004-05-28
 #### Temporary patch: 
 #### I extend here PATH, LD_LIBRARY_PATH and PYTHON_PATH
-#### to be sure everything works also is not set
+#### to be sure everything works also if not set
 #### in the user profile (MODPATH=0)
 ####
 PATH := ../bin:$(PATH)
@@ -1399,18 +1280,18 @@ endif
 #
 # Merge all of them:
 #
-#         -local-   --user--    --VLT-- 
-I_PATH   = $(MODINC) $(USER_INC) $(VLTINC)
-L_PATH   = $(MODLIB) $(USER_LIB) $(VLTLIB)
-MK_IDL_PATH = $(MODIDL) $(USER_IDL) $(VLTIDL) 
+#         -local-   --user--    --ACS-- 
+I_PATH   = $(MODINC) $(USER_INC) $(ACSINC)
+L_PATH   = $(MODLIB) $(USER_LIB) $(ACSLIB)
+MK_IDL_PATH = $(MODIDL) $(USER_IDL) $(ACSIDL) 
 ifdef MAKE_VXWORKS
     #                   -VxWorks-
     I_PATH := $(I_PATH) $(VXINC) $(TOOLS_INC)
     L_PATH := $(L_PATH) $(VXLIB) 
 else
-    #                   --RTAP-- --X11-- -GNU&TCLTK-
-    I_PATH := $(I_PATH) $(RTINC) $(XINC) $(TOOLS_INC)
-    L_PATH := $(L_PATH) $(RTLIB) $(XLIB) $(TOOLS_LIB)
+    #                   --X11-- -GNU&TCLTK-
+    I_PATH := $(I_PATH) $(XINC) $(TOOLS_INC)
+    L_PATH := $(L_PATH) $(XLIB) $(TOOLS_LIB)
 endif
 
 #
@@ -1495,7 +1376,7 @@ MANSECTIONS_INSTALL = $(filter-out l, $(MANSECTIONS))
 UNIQUE_NUMBER := $(shell echo $$$$)
 USER_NAME     := $(shell whoami)
 tDir          := tmp$(UNIQUE_NUMBER)
-# following for backward compatibility
+#!## following for backward compatibility - VLTTOP should be removed in 2nd phase (ICT-3707)
 VLTTOP = $(PRJTOP)
 FILE=/tmp/acsMake_$(UNIQUE_NUMBER)_$(USER_NAME)
 
@@ -1504,36 +1385,12 @@ CLEAN_TARGET=
 CLEAN_DIST_TARGET=
 ALL_TARGET=
 
-ifdef VLTSW_ROOTDIR
-    INSTALL_TARGET := $(INSTALL_TARGET) install_errors install_alarms install_logs
-endif
-
 ifneq ($(strip $(INCLUDES)),)
     INSTALL_TARGET := $(INSTALL_TARGET) install_includes
 endif
 
-ifdef VLTSW_ROOTDIR
-INSTALL_TARGET := $(INSTALL_TARGET) install_standardfiles
-endif
-
-ifneq ($(strip $(DBL_CLASSES)),)
-    INSTALL_TARGET := $(INSTALL_TARGET) install_DB-Classes
-endif
-
 ifneq ($(strip $(CDB_SCHEMAS)),)
     INSTALL_TARGET := $(INSTALL_TARGET) install_CDB-Schemas
-endif
-
-ifneq ($(strip $(DBL_BCF)),)
-    INSTALL_TARGET := $(INSTALL_TARGET) install_DB-BCF
-endif
-
-ifneq ($(strip $(INS_ROOT_DIR)),)
-    INSTALL_TARGET := $(INSTALL_TARGET) install_insrootdir
-endif
-
-ifneq ($(strip $(INS_ROOT_FILES)),)
-    INSTALL_TARGET := $(INSTALL_TARGET) install_insrootfiles
 endif
 
 ifneq ($(strip $(INSTALL_FILES)),)
@@ -1563,7 +1420,7 @@ endif
 # features
 # *********************************************
 
-CREATE_DIRS = include object doc rtai/$(rtai_install_subfold) bin lib lib/ACScomponents lib/python/site-packages idl config  $(if $(VLTSW_ROOT_DIR),dbl,)
+CREATE_DIRS = include object doc $(if $(RTAI_HOME),rtai/$(kernel_install_subfold),) $(if $(RTAI_HOME),,$(if $(LINUX_HOME),kernel/$(kernel_install_subfold),)) bin lib lib/ACScomponents lib/python/site-packages idl config
 
 ifneq ($(strip $(MAKE_VXWORKS)),)
 CREATE_DIRS += src/.obj
@@ -1580,7 +1437,6 @@ _MKDIRS:= $(shell for dir in $(CREATE_DIRS); \
 	do \
 	  [[ -d ../$$dir ]] || mkdir -p ../$$dir; \
 	done)
-
 
 CHECKS1 := $(foreach idl, $(IDL_FILES), $(foreach jar, $(JARFILES), $(if $(filter $(idl),$(jar)),$(error "$(idl) is duplicated in JARFILES and IDL_FILES",)) ) )
 CHECKS2 := $(foreach cjar, $(COMPONENT_JARFILES), $(foreach jar, $(JARFILES), $(if $(filter $(cjar),$(jar)),$(error "$(cjar) is duplicated in JARFILES and COMPONENT_JARFILES",)) ) )
@@ -1603,11 +1459,6 @@ endif
 
 
 # - for object files 
-ifdef VLTSW_ROOTDIR
-../object/%.o : ../gen/%.C
-	- @echo "== C++ Compiling WSF: $(<F)"
-	$(AT)$(CXX) -c $(CFLAGS) $(CPPFLAGS) $(C_PLUS_PLUS_FLAGS) $(I_PATH) $($*_CFLAGS) -o $@ ../gen/$(@F:.o=.C)
-endif
 
 ../object/%.o : %.c
 	- @echo "== C Compiling: $(<F)"
@@ -1652,18 +1503,9 @@ ifdef MAKE_VXWORKS_NOT_USED
 	  $(AT)rm ../object/__ctordtor.*
 endif
 
-ifdef VLTSW_ROOTDIR
-../object/%.d: ../gen/%.C
-	@echo "== Dependencies: $@"
-	$(AT)$(CCDEP)  $(CFLAGS) $(CPPFLAGS) $(I_PATH) $($*_CFLAGS) $<  |  \
-                      sed -e "s/$*\.o/..\/object\/$*.o ..\/object\/$*.d /" \
-                          -e "s/:/: Makefile /" > $@ ;                     \
-                        if [ ! -s $@ ]; then $(RM) $@ ; fi
-endif
-
 ../object/%.d: %.c
 	@echo "== Dependencies C: $@"
-	$(AT)$(CCDEP)  $(CFLAGS) $(I_PATH) $(RTAI_CFLAGS) $($*_CFLAGS) $<   |  \
+	$(AT)$(CCDEP)  $(CFLAGS) $(I_PATH) $(RTAI_CFLAGS) $(KERNEL_MODULE_CFLAGS) $($*_CFLAGS) $<   |  \
 	               sed -e "s/$*\.o/..\/object\/$*.o ..\/object\/$*.d /" \
 	                   -e "s/:/: Makefile /" > $@ ;                     \
                        if [ ! -s $@ ]; then $(RM) $@ ; fi
@@ -1741,70 +1583,15 @@ $(if $(wildcard ../ALARMS/HELP/* ),$(eval INSTALL_TARGET += install_alarms),)
 #
 
 
-.PHONY : do_indexfiles
-do_indexfiles :
-	-$(AT) vltMakeIndexFilesDependencies >../object/vltMakeIndexFiles.del
-
-
 #
 # set standard action for 'man'
 # -----------------------------
 #
 #    foreach section in the MANSECTIONS list, extract the man pages
 #    from the appropriate input file list
-.PHONY : do_man
-do_man:  do_pythondoc doxygen do_man_hello $(addprefix man, $(MANSECTIONS)) manl do_A2MIF 
-
 .PHONY : do_man_hello
 do_man_hello:
 	-@$(ECHO) "\nman-pages..."
-
-.PHONY : man1
-man1:
-	-@$(ECHO) "....section 1:"
-	-$(AT) for member in $(MAN1) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 1 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man2
-man2:
-	-@$(ECHO) "....section 2:"
-	-$(AT) for member in $(MAN2) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 2 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man3
-man3:
-	-@$(ECHO) "....section 3:"
-	-$(AT) for member in $(MAN3) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 3 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man4
-man4:
-	-@$(ECHO) "....section 4:"
-	-$(AT) for member in $(MAN4) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 4 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man5
-man5:
-	-@$(ECHO) "....section 5:"
-	-$(AT) for member in $(MAN5) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 5 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man6
-man6:
-	-@$(ECHO) "....section 6:"
-	-$(AT) for member in $(MAN6) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 6 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man7
-man7:
-	-@$(ECHO) "....section 7:"
-	-$(AT) for member in $(MAN7) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 7 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : man8
-man8:
-	-@$(ECHO) "....section 8:"
-	-$(AT) for member in $(MAN8) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} 8 $(LASTCHANGE) $(OUTPUT); done
-.PHONY : mann
-mann:
-	-@$(ECHO) "....section n:"
-	-$(AT) for member in $(MANn) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} n $(LASTCHANGE) $(OUTPUT); done
-
-#
-# generate local manpages (not to be installed)
-# 
-.PHONY : manl
-manl:
-	-@$(ECHO) "..local pages:"
-ifneq ($(strip $(MANl)),)
-	-$(AT) for member in $(MANl) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} l $(LASTCHANGE) $(OUTPUT); done
-endif
 
 #
 # generate doxygen documentation
@@ -1825,6 +1612,27 @@ ifneq ($(strip $(ASCII_TO_MIF)),)
 	-@$(ECHO) ""
 endif
 
+.PHONY : do_man
+do_man:  do_pythondoc doxygen do_man_hello $(addprefix man, $(MANSECTIONS)) manl do_A2MIF
+
+
+.PHONY : man%
+man%:
+	-@$(ECHO) "....section $*:"
+	-$(AT) mkdir -p ../doc ../man/man$*
+	-$(AT) for member in $(MAN$*) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} $* $(LASTCHANGE) $(OUTPUT); done
+
+#
+# generate local manpages (not to be installed)
+#
+.PHONY : manl
+manl:
+	-@$(ECHO) "..local pages:"
+ifneq ($(strip $(MANl)),)
+	-$(AT) mkdir -p ../man/manl
+	-$(AT) for member in $(MANl) ; do $(ECHO) "\t$${member}"; docDoManPages $${member} l $(LASTCHANGE) $(OUTPUT); done
+endif
+
 .PHONY : clean_dist
 clean_dist: clean  $(CLEAN_DIST_TARGET) clean_tat_session
 
@@ -1834,39 +1642,31 @@ clean_all: $(CLEAN_TARGET)
 	-@$(ECHO) "Cleaning up .\c"
 	-@$(ECHO) " .\c"
 	-$(AT)find .. -name \#\* -o -name core -o -name \*\.gdb_history -print | $(XARGS) -i $(RM) {}
-#	-$(AT)vltMakeCleanDB 
-#	-@$(ECHO) " .\c"
-
-.PHONY : clean_dependencies
-clean_dependencies:
-	-$(AT) $(RM) $(clean_dependencies_target)
-	-$(AT) $(ECHO) "Dependency files cleaned..."
-
 ifneq ($(strip $(MANSECTIONS)),)
 	-$(AT)  for i in $(MANSECTIONS) ; \
 		do \
 		    if [ -d ../man/man$${i} ];\
 		    then \
-		        find ../man/man$${i} -type f -print | $(XARGS) grep -l -s "This Man Page has been automatically produced. DO NOT EDIT THIS FILE!" | $(XARGS) $(RM) vltMake_clean_manpages  ;\
+		        find ../man/man$${i} -type f -print | $(XARGS) grep -l -s "This Man Page has been automatically produced. DO NOT EDIT THIS FILE!" | $(XARGS) $(RM) acsMake_clean_manpages  ;\
 		    else \
-			$(ECHO) "\n\n\tERROR: ''$${i}'' is in MANSECTIONS but ../man/man$${i} does not exists." ;\
+			$(ECHO) "\n\tWARNING: '$${i}' is in MANSECTIONS but ../man/man$${i} does not exists." $(OUTPUT);\
 		    fi ; \
 		done
 endif
 	-$(AT)  if [ -d ../doc ];\
 		then \
-		    find ../doc -type f -print | $(XARGS) grep -l -s "This file has been automatically produced. DO NOT EDIT THIS FILE!" | $(XARGS) rm -rf vltMake_clean_manpages ;\
+		    find ../doc -type f -print | $(XARGS) grep -l -s "This file has been automatically produced. DO NOT EDIT THIS FILE!" | $(XARGS) $(RM) acsMake_clean_manpages ;\
 		fi
 ifneq ($(strip $(MANl)),)
 	-$(AT)  if [ -d ../man/manl ];\
 		then \
-	            find ../man/manl -type f -print | $(XARGS) grep -l -s "This Man Page has been automatically produced. DO NOT EDIT THIS FILE!" | $(XARGS) $(RM) vltMake_clean_manpages  ;\
+	            find ../man/manl -type f -print | $(XARGS) grep -l -s "This Man Page has been automatically produced. DO NOT EDIT THIS FILE!" | $(XARGS) $(RM) acsMake_clean_manpages  ;\
 		fi
 endif
-	-@$(ECHO) " ."
-	-$(AT)$(RM) vltMake_clean_testReport ./*.rep
+	-@$(ECHO) " .\c"
+	-$(AT) $(RM) acsMake_clean_testReport ./*.rep
 #
-# clean TAT files
+# clean TAT files - if tat has not been executed with the "-nc" flag
 #
 ifndef MAKE_FROMTAT
 	-@$(ECHO) " .\c"
@@ -1881,13 +1681,22 @@ endif
 # clean Doxygen files
 #
 	-@$(ECHO) " ."
-	-$(AT) doxygenize clean
+# "doxygenize clean" just recursvile removes ../doc/idl ../doc/api,
+# in a bit of a contrived way. So better do this here directly.
+#	-$(AT) doxygenize clean
+	-$(AT) $(RM) ../doc/idl ../doc/api
+
+.PHONY : clean_dependencies
+clean_dependencies:
+	-$(AT) $(RM) $(clean_dependencies_target)
+	-$(AT) $(ECHO) "Dependency files cleaned..."
+
 #
 # clean the directory structure if it's empty
 #
 .PHONY:
 clean_tat_session:
-	$(AT)if [ -f .testSessions ]; then echo "=== Cleaning TAT session ===" ; tat -nc cleanEnv;fi
+	$(AT)if [ -f .testSessions ]; then echo "=== Cleaning TAT session ===" ; tat -nc cleanEnv; fi
 
 
 CLEAN_DIST_TARGET += clean_dist_all
@@ -1974,71 +1783,11 @@ $(CDBS)/%.xsd: ../config/CDB/schemas/%.xsd
 ###############################
 
 
-#ifneq ($(strip $(INS_ROOT_DIR)),)
-#       vltMakeInstallInsRootDir takes care to properly build the target "install_insrootdir"
-#	$(AT)vltMakeInstallInsRootDir "$(INS_ROOT_DIR)" $(INSTALL_ROOT) $(P644) 
-#endif
-
-#ifneq ($(strip $(INS_ROOT_FILES)),)
-#       vltMakeInstallInsRootFiles takes care to properly build the target "install_insrootfiles"
-#	$(AT)vltMakeInstallInsRootFiles "$(INS_ROOT_FILES)" $(INSTALL_ROOT) $(P644) 
-#endif
-
-
 ifneq ($(strip $(MANSECTIONS_INSTALL)),)
 install_man: 
 	-@$(ECHO) ""; $(ECHO)  "....man-pages:"
 	-$(AT) $(foreach i, $(MANSECTIONS_INSTALL), $(ECHO) "\tsection $(i)"; cp ../man/man$(i)/*.$(i) $(MAN)/man$(i) ;)
 endif
-
-	-@$(ECHO) "\t-@vltMakeLogInstallation $(PRJTOP_LOG)" 
-	-@$(ECHO) "\t-@vltMakeCopySources $(VW)" 
-
-
-#
-# set standard action for 'db'
-# ---------------------------------
-#    "db" is a special target that has different behaviour depending
-#    whether is a module or an environment
-#    
-
-#
-# define the search path for include files. To allow commom definition 
-# between code and dbl files, the h-file path is added to the pure
-# dbl files (SPR950228)
-
-# Removal of next 9 lines due to spr ALMASW2004040
-#DBL_INC = $(subst include,dbl,$(MODINC) $(VLTINC)) -I$(VLTROOT)/dbl $(I_PATH)
-#
-#ifdef MAKE_VXWORKS
-#    DBL_FLAGS_LCU = -DMAKE_VXWORKS
-#endif
-#
-#ifndef RTAPROOT
-#    DBL_FLAGS_CCS = -DCCS_LIGHT
-#endif
-
-# Removal of next 20 lines due to spr ALMASW2004040
-#.PHONY : db_all
-#db_all:
-#	-$(AT)if [ -f DATABASE.db ];\
-#	      then \
-#	          $(ECHO) "\n== remove current ../DB";     \
-#	          vltMakeCleanDB $(OUTPUT);             \
-#	          $(ECHO) "\n== db-loading of: DATABASE.db";     \
-#		  dbl $(DBL_INC) $(DBL_FLAGS_LCU) $(DBL_FLAGS_CCS) $(DBL_FLAGS) DATABASE.db ../DB;\
-#	      else \
-#		  if [ "$(DBL_LOAD)" = "" ];\
-#		  then \
-#		      $(ECHO) "DBL_LOAD is empty. Nothing to be done for 'make db'.";\
-#		  else \
-#		      /bin/true;\
-#		      $(foreach member, $(DBL_LOAD), \
-#			      $(ECHO) "\n== db-loading of: ../dbl/$(member).db";     \
-#			      dbl $(DBL_INC) $(DBL_FLAGS_LCU) $(DBL_FLAGS_CCS) $(DBL_FLAGS) $($(member)_DBL_FLAGS) ../dbl/$(member).db ../DB;\
-#	           ) \
-#		  fi;\
-#	      fi;
 
 #
 # set standard action for 'test'
@@ -2119,12 +1868,6 @@ LIB_PATH_LIST := $(subst $(space)-L,$(space):,$(LIB_PATH_LIST))
 #  "-L../lib :<dir1> :<dir2> ...."  -->  "../lib :<dir1> :<dir2> ...."
 LIB_PATH_LIST := ../lib $(filter-out -L../lib,$(LIB_PATH_LIST))
 
-ifndef MAKE_VXWORKS
-    ifeq ($(platform),Sun-Solaris2)
-          LIB_PATH_LIST := $(LIB_PATH_LIST) :/usr/ccs/lib
-    endif
-endif
-
 #  "../lib :<dir1> :<dir2> ...."   -->  "../lib:<dir1>:<dir2>...."
 LIB_PATH_LIST := $(subst $(space):,:,$(LIB_PATH_LIST))
 
@@ -2161,12 +1904,6 @@ vpath  %.jar  $(LIB_PATH_LIST)
 CSOURCENAMES := $(sort $(CSOURCENAMES))
 
 
-#
-# include error&log index dependency files (the file should have been created by vltMakefile) 
-# CHECK
-#include ../object/vltMakeIndexFiles.del
-
-
 
 #################################################
 # set standard targets.                         #
@@ -2175,8 +1912,6 @@ CSOURCENAMES := $(sort $(CSOURCENAMES))
 # NOTE: the sequence of these prerequisites seem to play a role in parallelization 
 #       in particular that do_exes comes before do_libs
 #
-ALL_TARGET := $(if $(strip $(LINK_FILES)),do_links_internal,) $(ALL_TARGET) 
-# CHECK removed do_ERRORS do_LOGS
 
 .DEFAULT_GOAL := do_all
 .PHONY : do_all_aux
@@ -2184,7 +1919,8 @@ do_all_aux : $(_MKDIR) $(ALL_TARGET)
 
 
 .PHONY : do_all
-do_all : 
+#!!#do_all : $(if $(strip $(LINK_FILES)),do_links_internal,)
+do_all :
 	$(AT) $(MAKE) -f $(THIS_MAKEFILE) DEPENDENCIES=on $(MAKE_FLAGS) do_all_aux
 
 .PHONY : CppFiles

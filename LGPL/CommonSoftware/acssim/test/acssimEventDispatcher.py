@@ -31,7 +31,7 @@ from Acssim.Corba.EventDispatcher import EventDispatcher
 from Acspy.Nc.Consumer import Consumer
 from time import sleep
 
-class MockComponent:
+class MockComponent(object):
     def __init__(self, name): self.name = name
     def _get_name(self): return self.name
     def activateOffShoot(self, os): return os

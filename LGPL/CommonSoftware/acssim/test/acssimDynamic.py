@@ -31,7 +31,7 @@ import CORBA
 from Acssim.Servants.Representations.Dynamic import Dynamic
 from Acssim.Goodies import addComponent
 
-class MockComponent:
+class MockComponent(object):
     def __init__(self, name): self.name = name
     def _get_name(self): return self.name
     def activateOffShoot(self, os): return os

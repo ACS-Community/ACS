@@ -73,7 +73,7 @@ loggingService_OBJECTS   = logging loggingXMLElement loggingXMLParser loggingLoc
 			   loggingACSLogger  loggingLogSvcHandler \
                            loggingLoggable \
 			   loggingBaseLog loggingHandler loggingLogger loggingLogTrace loggingGetLogger loggingGenericLogger loggingStdoutHandler \
-			   loggingLogThrottle
+			   loggingLogThrottle loggingStopWatch
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -168,10 +168,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	 do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_links clean_all 
+clean :  clean_all 
 	$(RM) *~ ../include/*~ ../dbl/*~ ../idl/*~ ../*~ core
 	@echo " . . . clean done"
 
@@ -192,9 +192,9 @@ COMMON_SOURCES_ORIG = \
 $(COMMON_SOURCES) : $(COMMON_SOURCES_ORIG)
 	- $(AT) if [ ! -h $@ ]; then echo "== Linking source: $@"; ln -s ../../ws/src/$@ $@; fi
 
-do_links: $(COMMON_SOURCES)
+: $(COMMON_SOURCES)
 
-clean_links:
+:
 	$(AT) $(RM) $(COMMON_SOURCES)
 
 #___oOo___

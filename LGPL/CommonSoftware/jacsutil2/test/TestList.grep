@@ -1,0 +1,16 @@
+java -classpath
+Time:
+export
+Starting Java application
+-D user.dir=
+Jlog will use cache for
+INFO
+FINE
+FINER
+\[EngineFilteringTest.*\]
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+object is activated
+Local file logger: Cache saved to
+ACS.log.minlevel.namedloggers not defined
+suppressRemoteLogging called
+Using endorsed jar files in: -Djava.endorsed.dirs=/alma/ACS-[0-9.]*/JacORB/lib/endorsed:$

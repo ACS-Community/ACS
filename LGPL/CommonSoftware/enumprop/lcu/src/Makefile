@@ -89,8 +89,8 @@ IDL_FILES = enumpropMACRO enumpropStd
 
 #
 # handle links to common source files (in MODNAME/ws/src)
-#
-LINK_FILES= ../idl/enumpropMACRO.idl ../idl/enumpropMACRO_included.idl \
+# 
+#!# (ICT-3855: commented out) LINK_FILES= ../idl/enumpropMACRO.idl ../idl/enumpropMACRO_included.idl \
             ../idl/enumpropStd.midl
 
 #

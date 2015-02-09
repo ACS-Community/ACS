@@ -34,6 +34,9 @@
 #include <baciCharacteristicComponentImpl.h>
 #include <baciROdoubleSeq.h>
 #include <baciROdouble.h>
+#include <baciRWlongSeq.h>
+#include <baciRWlong.h>
+#include <baciROpattern.h>
 
 namespace TMCDB
 {
@@ -59,8 +62,12 @@ public:
 
 	// implementations of IDL's methods
 	 ACS::ROdoubleSeq_ptr doubleSeqProp ();
-
 	 ACS::ROdouble_ptr doubleProp ();
+
+	 ACS::RWlongSeq_ptr longSeqProp ();
+	 ACS::RWlong_ptr longProp ();
+
+	 ACS::ROpattern_ptr patternProp ();
 
 	 void reset();
 
@@ -76,6 +83,22 @@ private:
 	    double m_doubleVal;
 	    ACS::Time m_time2;
 	    MCtestDevIO<double> *m_doubleDevIO;
+
+
+	    baci::RWlongSeq *m_longSeqProp_p;
+	    ACS::longSeq m_longSeqVal;
+	    ACS::Time m_time3;
+	    MCtestDevIOSeq<ACS::longSeq> *m_longSeqDevIO;
+
+	    baci::RWlong *m_longProp_p;
+	    int m_longVal;
+	    ACS::Time m_time4;
+	    MCtestDevIO<int> *m_longDevIO;
+
+	    baci::ROpattern *m_patternProp_p;
+	    ACS::pattern m_patternVal;
+	    ACS::Time m_time5;
+	    MCtestDevIO<ACS::pattern> *m_patternDevIO;
 
 
 	    /**

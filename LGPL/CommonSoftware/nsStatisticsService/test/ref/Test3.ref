@@ -1,0 +1,14 @@
+5 - Test3 OK - Pattern 'WARNING \[nsStatistics\] Statistics of Notification Services will be obtained with a very high frequency \(less than 1 minute time interval\)' found
+5 - Test3 OK - Pattern 'STATISTICS OF NOTIFICATION FACTORY Alarm' not found
+5 - Test3 OK - Pattern 'STATISTICS OF NOTIFICATION FACTORY Archive' not found
+5 - Test3 OK - Pattern 'STATISTICS OF NOTIFICATION FACTORY Logging' not found
+5 - Test3 OK - Number of instances of pattern 'INFO\ \[nsStatistics\]\s+STATISTICS OF NOTIFICATION FACTORY DefaultNotifyService\s+\[\s+Active event channels\='.*'\s+Num active event channels\='\d+'\s+\]' is between the required range
+5 - Test3 OK - Pattern '	STATISTICS OF NOTIFICATION CHANNEL LoggingChannel' not found
+5 - Test3 OK - Pattern 'DEBUG STATISTICS OF NOTIFICATION CHANNEL LoggingChannel' not found
+5 - Test3 OK - Pattern '	STATISTICS OF NOTIFICATION CHANNEL ArchivingChannel' not found
+5 - Test3 OK - Pattern 'DEBUG STATISTICS OF NOTIFICATION CHANNEL ArchivingChannel' not found
+5 - Test3 OK - Pattern '	STATISTICS OF NOTIFICATION CHANNEL testNsStatsChannel1' not found
+5 - Test3 OK - Pattern 'DEBUG STATISTICS OF NOTIFICATION CHANNEL testNsStatsChannel1' not found
+5 - Test3 OK - Number of instances of pattern 'INFO\ \[nsStatistics\]\s+STATISTICS OF NOTIFICATION CHANNEL testNsStatsChannel2\s+\[\s+(Num suppliers\='\d+'\s+|Num consumers\='\d+'\s+|Num events in queues='(\d+(\,\s)?)*'\s+|Slowest consumers='.*'\s+){3,6}' is equal or greater than the minimum required
+5 - Test3 OK - Number of instances of pattern 'DEBUG\ \[nsStatistics\]\s+DEBUG STATISTICS OF NOTIFICATION CHANNEL testNsStatsChannel2\s+\[\s+(Num suppliers\='\d+'\s+|Num consumers\='\d+'\s+|Num admin suppliers\='\d+'\s+|Num admin consumers\='\d+'\s+|Supplier names\='[^']*'\s+|Consumer names\='[^']*'\s+|Supplier admin names\='[^']*'\s+|Consumer admin names\='[^']*'\s+){8}\]' is equal or greater than the minimum required
+5 - Test3 OK - Pattern 'STATISTICS OF NOTIFICATION CHANNEL Alarm' not found

@@ -297,6 +297,12 @@ public class PluginFactory {
 					ddlDir + "/hsqldb/TMCDB_swconfigext/CreateHsqldbTables.sql"
 				};
 			}
+            else if (backend.equals(DBUtil.MYSQL_BACKEND_NAME)) {
+				return new String[] {
+					ddlDir + "/mysql/TMCDB_swconfigcore/CreateMysqlTables.sql",
+					ddlDir + "/mysql/TMCDB_swconfigext/CreateMysqlTables.sql"
+				};
+			}
 			else
 				return null;
 		}

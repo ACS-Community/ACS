@@ -30,7 +30,6 @@
 #include "baci.h"
 #include "baciUtil.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.9 2011/03/30 17:57:23 tstaig Exp $");
 
 
 namespace baci {

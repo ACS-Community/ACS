@@ -103,7 +103,6 @@ This example shows a client that:
 #include <acsexmplFridgeC.h>
 #include "acsexmplCallbacks.h"
 
-ACE_RCSID(acsexmpl, acsexmplFridgeClient, "$Id: acsexmplClientFridge.cpp,v 1.9 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
     
 /*******************************************************************************/

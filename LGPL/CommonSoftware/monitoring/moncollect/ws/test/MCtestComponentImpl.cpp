@@ -40,7 +40,9 @@ MCtestComponentImpl::MCtestComponentImpl(const ACE_CString& name,
 			     maci::ContainerServices * containerServices)
     : baci::CharacteristicComponentImpl(name, containerServices),
     m_doubleProp_p(0),
-    m_doubleSeqProp_p(0)
+    m_doubleSeqProp_p(0),
+    m_longSeqProp_p(0),
+    m_longProp_p(0)
 {
     AUTO_TRACE("MCtestComponentImpl::MCtestComponentImpl");
 
@@ -62,6 +64,25 @@ MCtestComponentImpl::MCtestComponentImpl(const ACE_CString& name,
     m_doubleProp_p  = new ROdouble(name+":doubleProp", getComponent(), m_doubleDevIO);
     CHARACTERISTIC_COMPONENT_PROPERTY(doubleProp, m_doubleProp_p);
 
+    m_longVal = 15;
+    m_time3 = 134608945243381570;
+    m_longDevIO = new MCtestDevIO<int>(m_longVal, m_time3);
+    m_longProp_p  = new RWlong(name+":longProp", getComponent(), m_longDevIO);
+    CHARACTERISTIC_COMPONENT_PROPERTY(longProp, m_longProp_p);
+
+    m_longSeqVal.length(25);
+    for(unsigned int i=0;i<m_longSeqVal.length();i++)
+    	m_longSeqVal[i]=-2;
+    m_time4 = 134608945243381570;
+    m_longSeqDevIO = new MCtestDevIOSeq<ACS::longSeq>(m_longSeqVal, m_time4);
+    m_longSeqProp_p  = new RWlongSeq(name+":longSeqProp", getComponent(), m_longSeqDevIO);
+    CHARACTERISTIC_COMPONENT_PROPERTY(longSeqProp, m_longSeqProp_p);
+
+    m_patternVal = 0x23; //00100011
+    m_time5 = 134608945243381570;
+    m_patternDevIO = new MCtestDevIO<ACS::pattern>(m_patternVal, m_time5);
+    m_patternProp_p  = new ROpattern(name+":patternProp", getComponent(), m_patternDevIO);
+    CHARACTERISTIC_COMPONENT_PROPERTY(patternProp, m_patternProp_p);
 }//MCtestComponentImpl
 
 MCtestComponentImpl::~MCtestComponentImpl()
@@ -78,6 +99,25 @@ MCtestComponentImpl::~MCtestComponentImpl()
     	m_doubleProp_p=0;
     }
     delete m_doubleDevIO;
+
+
+    if (m_longSeqProp_p != 0)
+    {
+    	m_longSeqProp_p->destroy();
+    	m_longSeqProp_p=0;
+    }
+    if (m_longProp_p != 0)
+    {
+    	m_longProp_p->destroy();
+    	m_longProp_p=0;
+    }
+    delete m_longDevIO;
+    if (m_patternProp_p != 0)
+    {
+    	m_patternProp_p->destroy();
+    	m_patternProp_p=0;
+    }
+    delete m_patternDevIO;
 
 }//~MCtestComponentImpl
 
@@ -112,6 +152,39 @@ ACS::ROdouble_ptr MCtestComponentImpl::doubleProp ()
 	}
 
 	ACS::ROdouble_var prop = ACS::ROdouble::_narrow(m_doubleProp_p ->getCORBAReference());
+	return prop._retn();
+}
+
+ACS::RWlongSeq_ptr MCtestComponentImpl::longSeqProp ()
+{
+	if (m_longSeqProp_p == 0)
+	{
+		return ACS::RWlongSeq::_nil();
+	}
+
+	ACS::RWlongSeq_var prop = ACS::RWlongSeq::_narrow(m_longSeqProp_p ->getCORBAReference());
+	return prop._retn();
+}
+
+ACS::RWlong_ptr MCtestComponentImpl::longProp ()
+{
+	if (m_longProp_p == 0)
+	{
+		return ACS::RWlong::_nil();
+	}
+
+	ACS::RWlong_var prop = ACS::RWlong::_narrow(m_longProp_p ->getCORBAReference());
+	return prop._retn();
+}
+
+ACS::ROpattern_ptr MCtestComponentImpl::patternProp ()
+{
+	if (m_patternProp_p == 0)
+	{
+		return ACS::ROpattern::_nil();
+	}
+
+	ACS::ROpattern_var prop = ACS::ROpattern::_narrow(m_patternProp_p ->getCORBAReference());
 	return prop._retn();
 }
 

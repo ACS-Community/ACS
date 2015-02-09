@@ -41,7 +41,7 @@ from copy import deepcopy
 #--ACS Imports-----------------------------------------------------------------
 #--GLOBALS---------------------------------------------------------------------
 #------------------------------------------------------------------------------
-class DevIO:
+class DevIO(object):
     '''
     Device I/O implementation class.
     This class is a base class for providing input/output implementations to 

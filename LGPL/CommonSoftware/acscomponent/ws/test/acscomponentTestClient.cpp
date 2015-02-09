@@ -41,7 +41,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
     } \
   catch( CORBA::Exception &ex) \
     { \
-      ACE_PRINT_EXCEPTION (ex, "Failed to initalise ORB"); \
+      ex._tao_print_exception("Failed to initalise ORB");	\
       return -1; \
     } \
 }
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 
   catch ( CORBA::Exception &_ex )
     {    
-      ACE_PRINT_EXCEPTION (_ex, "EXCEPTION CAUGHT");
+      _ex._tao_print_exception("EXCEPTION CAUGHT");
       return -1;
     }
   ACS_SHORT_LOG((LM_INFO, "Test performed."));

@@ -100,10 +100,81 @@ This example shows a client that:
 #include <maciSimpleClient.h>
 #include <ACSErrTypeOK.h>
 #include <acsexmplAmsSeqC.h>
+#include <string>
 
 
-ACE_RCSID(acsexmpl, acsexmplAmsSeqClient, "$Id: acsexmplClientAmsSeq.cpp,v 1.9 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
+
+
+class TestCBdoubleSeq: public virtual POA_ACS::CBdoubleSeq
+{
+
+  public:
+    TestCBdoubleSeq(std::string _prop, int c=5, int dc=1) : prop(_prop), count(c), done_c(dc) {}
+
+    virtual void working (
+	const ACS::doubleSeq& value,
+	const ACSErr::Completion & c,
+	const ACS::CBDescOut & desc
+	)
+	{
+
+	    if (count>0)
+		{
+		CompletionImpl completion(c);
+		if (completion.isErrorFree())
+		    {
+			printf("CBdouble::working desc.id_tag: %u\n", (unsigned)desc.id_tag);
+			for(unsigned i=0;i<value.length();i++)
+			{
+				printf("W[%d] = %f\n", i, value[i]);
+			}
+			/*ACS_SHORT_LOG((LM_INFO, "(%s::CBdouble::working) desc.id_tag: %u Value: %f TimeStamp: %s",
+				   prop.c_str(), (unsigned)desc.id_tag, value, getStringifiedUTC(c.timeStamp).c_str()));
+				   */
+		    }
+		else
+		    {
+		    ACS_SHORT_LOG((LM_INFO, "(%s::CBdouble::working) desc.id_tag: %u  containes an error", prop.c_str(), (unsigned)desc.id_tag));
+		    completion.log();
+		    }//if-else
+		}
+
+	    count--;
+	}
+
+    virtual void done (
+	const ACS::doubleSeq& value,
+	const ACSErr::Completion & c,
+	const ACS::CBDescOut & desc
+	)
+	{
+	    if (done_c > 0 )
+		{
+	    	/*
+	    ACS_SHORT_LOG((LM_INFO, "(%s::CBdouble::done) desc.id_tag: %u Value: %f TimeStamp: ",
+			   prop.c_str(), (unsigned)desc.id_tag, value));
+			   */
+		}//if
+	    done_c--;
+	}
+
+
+    virtual CORBA::Boolean negotiate (
+	ACS::TimeInterval time_to_transmit,
+	const ACS::CBDescOut & desc
+	)
+	{
+	    return 1;
+	}
+
+    int getCount(){ return count+done_c;}
+  protected:
+    std::string prop;
+    int count, done_c;
+
+}; /* end TestCBdouble */
+
 
 /*******************************************************************************/
 /** @cond
@@ -161,11 +232,23 @@ int main(int argc, char *argv[])
 		    }
 		}
 	    }
-   
+	 ACS::CBDescIn desc = {0,0,0};
+
 	//get the read-write sequence property from the component reference
 	ACS::RWdoubleSeq_var m_RWdoubleSeqPM_p = amsseq->RWdoubleSeqPM();
 	if (m_RWdoubleSeqPM_p.ptr() != ACS::RWdoubleSeq::_nil())
 	    {
+		/* here we want to check on change only for double Seq
+		TestCBdoubleSeq* mcb1 = new TestCBdoubleSeq("ROdoubleSeqProp1s", 60);
+		ACS::CBdoubleSeq_var cb1 = mcb1->_this();
+
+		desc.id_tag = 1;
+		ACS::Monitordouble_var md = m_RWdoubleSeqPM_p->create_monitor(cb1.in(), desc);
+
+		md->set_timer_trigger(0);//10000000
+		md->set_value_trigger(5.0, true);
+*/
+
 	    ACS::doubleSeq_var val_value = new ACS::doubleSeq;
 	    ACSErr::Completion_var completion;
 	    
@@ -228,6 +311,7 @@ int main(int argc, char *argv[])
     
     try
 	{
+    //client.run();
 	//must cleanly release the component and log out from manager	
 	ACS_SHORT_LOG((LM_INFO,"Releasing..."));
 	client.releaseComponent(argv[1]);

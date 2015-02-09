@@ -1,5 +1,5 @@
 /*******************************************************************************
-* E.S.O. - VLT project
+* E.S.O. - ALMA project
 *
 * "$Id: docA2MIF.c,v 1.32 2008/06/09 06:52:09 bjeram Exp $" 
 *
@@ -8,6 +8,29 @@
 * G.Filippi  28/02/94  First release
 * G.Filippi  01/02/95  corrected compilation warnings
 * F.Carbogn  24/07/97  Modified for Framemaker 4 to 5 update
+*/
+
+/*
+#******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2014
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
 */
 
 /************************************************************************
@@ -63,7 +86,7 @@
 
 #define _POSIX_SOURCE 1
 
-#include <vltPort.h>
+/* #!# #include <vltPort.h> */
 static char *rcsId="@(#) $Id: docA2MIF.c,v 1.32 2008/06/09 06:52:09 bjeram Exp $";
 /*static void *use_rcsId = ((void)&use_rcsId, (void *) &rcsId);*/
 

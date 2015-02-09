@@ -2,7 +2,7 @@ SOURCE loggingTATEnvironment
 1 testNoLogging         "testNoLogging"
 2 testLogger            "testLogger"
 3 loggingXMLParserTest	"loggingXMLParserTest"
-4 testMacros		"testMacros"
+4 testMacros            "testMacros"
 5 testGenericLogger     "testGenericLogger"
 6 testLoggable          "testLoggable"
 7 testACS_LOG_STDOUT    "testACS_LOG_STDOUT"
@@ -11,3 +11,4 @@ SOURCE loggingTATEnvironment
 10 testLocalCache	    "testLocalCache"
 11 testIsInitThread     "testIsInitThread"
 12 testMultiThreads     "testMultiThreads \"| grep -v `date +%Y`\""
+13 testLoggerStats      "testLoggerStats"

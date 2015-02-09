@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="ACS/AlarmSystemStatistics" xmlns:asistat="ACS/AlarmSystemStatistics">
+
+    <xsd:annotation>
+        <xsd:documentation>
+            XML schema definition for LASER alarm statistics 
+        </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:element name="Statistics">
+        <xsd:complexType>
+        	<xsd:sequence>
+        		<xsd:element name="Record" type="asistat:Record" maxOccurs="unbounded" minOccurs="0"/>
+        	</xsd:sequence>
+   	</xsd:complexType>
+    </xsd:element>
+    
+    <xsd:attributeGroup name="timestamp-attribute">
+		<xsd:attribute name="Timestamp" type="xsd:string"/>
+    </xsd:attributeGroup>
+    
+    <xsd:complexType name="IDType">
+    	<xsd:simpleContent>
+      		<xsd:extension base="xsd:string">
+        		<xsd:attribute name="value" type="xsd:int"/>
+      		</xsd:extension>
+    	</xsd:simpleContent>
+	</xsd:complexType>
+	
+	<xsd:element name="MostActivatedAlarms">
+    	<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="ID" type="asistat:IDType" maxOccurs="unbounded" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="MostTerminatedAlarms">
+    	<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="ID" type="asistat:IDType" maxOccurs="unbounded" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="MostActivatedTerminatedAlarms">
+    	<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="ID" type="asistat:IDType" maxOccurs="unbounded" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+    </xsd:element>
+    
+     <xsd:complexType name="Record">
+            <xsd:sequence>
+                <xsd:element name="ProcessedAlarmTypes" type="xsd:int" maxOccurs="1" minOccurs="1"/>
+                <xsd:element name="Activations" type="xsd:int" maxOccurs="1" minOccurs="1"/>
+                <xsd:element name="Terminations" type="xsd:int" maxOccurs="1" minOccurs="1"/>
+                <xsd:element name="TotalAlarms" type="xsd:int" maxOccurs="1" minOccurs="1"/>
+                <xsd:element name="AvgAlarmsPerSecond" type="xsd:float" maxOccurs="1" minOccurs="1"/>
+                <xsd:element ref="asistat:MostActivatedAlarms" maxOccurs="1" minOccurs="1"/>
+                <xsd:element ref="asistat:MostTerminatedAlarms" maxOccurs="1" minOccurs="1"/>
+                <xsd:element ref="asistat:MostActivatedTerminatedAlarms" maxOccurs="1" minOccurs="1"/>
+            </xsd:sequence>
+            <xsd:attributeGroup ref="asistat:timestamp-attribute"/>
+    </xsd:complexType>
+    
+    
+</xsd:schema>

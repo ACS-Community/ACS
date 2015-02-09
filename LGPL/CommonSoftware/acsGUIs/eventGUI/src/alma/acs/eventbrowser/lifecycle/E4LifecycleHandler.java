@@ -25,7 +25,7 @@ import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 
-import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.nsstatistics.EventModel;
 
 
 /**

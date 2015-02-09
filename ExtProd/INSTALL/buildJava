@@ -38,9 +38,9 @@ fi
 
 case "${DISTRO}-${REL}" 
 in
-	"RHLX-9") 	ARCHIVE=`pwd`/../PROPRIETARY/java.tar.gz ;;
-	"RHLX-7.2") 	ARCHIVE=`pwd`/../PROPRIETARY/java.tar.gz ;;
-	"RHLX-7.3") 	ARCHIVE=`pwd`/../PROPRIETARY/java.tar.gz ;;
+	"RHLX-9") 	ARCHIVE=`pwd`/../NO-LGPL/java.tar.gz ;;
+	"RHLX-7.2") 	ARCHIVE=`pwd`/../NO-LGPL/java.tar.gz ;;
+	"RHLX-7.3") 	ARCHIVE=`pwd`/../NO-LGPL/java.tar.gz ;;
 	*) 
         echo "On all operating systems, but RH 7 and 9 we assume that JDK is already natively installed"
         exit 1
@@ -49,7 +49,7 @@ esac
 
 TITLE="      Installation of JAVA products"
 . ./standardPrologue
-cd ${INSTALL_ROOT}/PROPRIETARY/
+cd ${INSTALL_ROOT}/NO-LGPL/
 if ! [ -f java.tar.gz ]
 then
     echo "java tar file missing "

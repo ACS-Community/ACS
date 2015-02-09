@@ -17,6 +17,11 @@ module TMCDB
 	readonly attribute ACS::ROdoubleSeq doubleSeqProp;
 	readonly attribute ACS::ROdouble doubleProp;
 	
+	readonly attribute ACS::RWlongSeq longSeqProp;
+	readonly attribute ACS::RWlong longProp;
+	
+	readonly attribute ACS::ROpattern patternProp;
+	
 	/// resets devio values and time
 	void reset();
     };//interface MCTestComponent

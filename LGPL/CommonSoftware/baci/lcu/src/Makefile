@@ -41,8 +41,8 @@
 #*******************************************************************************
 # REMARKS
 #    None
-#------------------------------------------------------------------------
-LINK_FILES= $(addprefix ../idl/, $(addsuffix .xml, $(ACSERRDEF))) \
+#------------------------------------------------------------------------ 
+#!# (ICT-3855: commented out) LINK_FILES= $(addprefix ../idl/, $(addsuffix .xml, $(ACSERRDEF))) \
 	$(addsuffix .cpp, $(baci_INCLUDES) $(baci_COMMON)) \
 	$(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES)))
 
@@ -204,10 +204,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_links clean_all 
+clean : clean_all 
 	$(RM) *~ ../include/*~ ../dbl/*~ ../idl/*~ ../*~ ../../*~ core
 	@echo " . . . clean done"
 

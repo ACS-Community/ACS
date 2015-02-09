@@ -153,7 +153,7 @@ int acserrTestServer (char *szCmdLn){
   }
   catch( CORBA::Exception &ex )
   {
-    ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");
+  ex._tao_print_exception("EXCEPTION CAUGHT");
     return -1;
   }
 

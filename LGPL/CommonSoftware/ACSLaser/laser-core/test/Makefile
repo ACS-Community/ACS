@@ -95,7 +95,9 @@ SCRIPTS     = lasercoreTATPrologue \
             testCDBCoreAlarm \
             testIDLSendAlarm \
 			testRRWithDefaultFM \
-			testRRWithRegExp
+			testRRWithRegExp \
+			testStatistics \
+			testStatisticsOnFile
 
 SCRIPTS_L       =
 

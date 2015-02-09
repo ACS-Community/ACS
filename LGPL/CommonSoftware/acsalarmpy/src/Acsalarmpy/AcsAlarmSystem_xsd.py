@@ -86,7 +86,7 @@ def quote_python(inStr):
             return '"""%s"""' % s1
 
 
-class MixedContainer:
+class MixedContainer(object):
     # Constants for category:
     CategoryNone = 0
     CategoryText = 1
@@ -3629,7 +3629,7 @@ class alarm_definition(alarm_definitionType):
 
 from xml.sax import handler, make_parser
 
-class SaxStackElement:
+class SaxStackElement(object):
     def __init__(self, name='', obj=None):
         self.name = name
         self.obj = obj

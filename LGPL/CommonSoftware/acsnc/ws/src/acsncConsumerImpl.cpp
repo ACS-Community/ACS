@@ -524,10 +524,8 @@ Consumer::createConsumer()
 	CosNotifyChannelAdmin::ProxySupplier_var proxySupplier = 0;
 	if( isAdminExt && (callback_m->services_ != 0) ) {
 
-		ACE_OS::srand((unsigned int)ACE_OS::gettimeofday().msec());
-		std::stringstream ss;
-		ss << callback_m->services_->getName() << "-" << ACE_OS::rand();
-		ACE_CString proxyName = ss.str().c_str();
+		std::string name(callback_m->services_->getName().c_str());
+		std::string proxyName(createRandomizedClientName(name));
 		NotifyMonitoringExt::ConsumerAdmin_var consumerAdminExt = NotifyMonitoringExt::ConsumerAdmin::_narrow(consumerAdmin_m);
 
 		while( proxySupplier == 0 ) {
@@ -537,9 +535,7 @@ Consumer::createConsumer()
 			} catch (NotifyMonitoringExt::NameAlreadyUsed &ex) {
 				// If the original name is already in use, append "-<tries>" and try again
 				// until we find a free name
-				std::stringstream ss;
-				ss << callback_m->services_->getName() << "-" << ACE_OS::rand();
-				proxyName = ss.str().c_str();
+				proxyName = createRandomizedClientName(name);
 			} catch (...) {
 				// If any unexpected problem appears, try the unnamed version
 				proxySupplier = consumerAdmin_m->obtain_notification_push_supplier(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxySupplierID);

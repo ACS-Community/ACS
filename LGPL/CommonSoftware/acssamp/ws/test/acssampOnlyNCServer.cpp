@@ -48,7 +48,6 @@
 #include <iostream>
 
 
-ACE_RCSID(acssampOnlyNCServer, onlyNCServer, "$Id: acssampOnlyNCServer.cpp,v 1.9 2006/10/19 15:20:40 rcirami Exp $")
 
 using namespace std;
  using namespace maci; 

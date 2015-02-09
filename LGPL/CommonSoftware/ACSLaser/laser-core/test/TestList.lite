@@ -36,5 +36,7 @@ PROLOGUE lasercoreTATPrologue
 5 testIDLSendAlarm "testIDLSendAlarm"
 6 testRRWithDefaultFM "testRRWithDefaultFM"
 7 testRRWithRegExp "testRRWithRegExp"
+8 testStatistics "testStatistics"
+9 testStatisticsOnFile "testStatisticsOnFile"
 
 EPILOGUE acsutilTATEpilogue

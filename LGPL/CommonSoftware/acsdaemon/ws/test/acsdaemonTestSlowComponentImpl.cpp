@@ -31,7 +31,6 @@
 #include <acsdaemonTestSlowComponentImpl.h>
 #include <iostream>
 
-//ACE_RCSID(acsexmpl, acsexmplHelloWorldImpl, "$Id: acsexmplHelloWorldImpl.cpp,v 1.95 2008/10/01 04:30:47 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 SlowDestructionComponent::SlowDestructionComponent( 

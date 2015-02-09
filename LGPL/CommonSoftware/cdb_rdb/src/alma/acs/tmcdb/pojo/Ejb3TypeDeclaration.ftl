@@ -4,7 +4,7 @@
 @${pojo.importType("javax.persistence.Embeddable")}
 <#else>
 @${pojo.importType("javax.persistence.Entity")}
-@${pojo.importType("javax.persistence.Table")}(name="${clazz.table.name}"
+@${pojo.importType("javax.persistence.Table")}(name="`${clazz.table.name}`"
 <#-- We are commenting these two attributes since we need them to NOT be present in our generated pojos,
      mainly because of the Oracle DB not being complaint with the PUBLIC schema
      that is auto-generated when importing the SQL code from HSQLDB
@@ -16,7 +16,7 @@
 -->
 <#assign uniqueConstraint=pojo.generateAnnTableUniqueConstraint()>
 <#if uniqueConstraint?has_content>
-    , uniqueConstraints = ${uniqueConstraint}
+    , uniqueConstraints =  ${uniqueConstraint.replaceAll("\",", "`\",").replaceAll("\"}", "`\"}").replaceAll(", \"", ", \"`").replaceFirst("\"", "\"`").replaceAll("\"\\)","`\")")}
 </#if>)
 <#if pojo.getMetaAttribAsBool(pojo.getDecoratedObject(), "isSuperClass", false)>
 @${pojo.importType("javax.persistence.Inheritance")}(strategy=${pojo.importType("javax.persistence.InheritanceType")}.JOINED)

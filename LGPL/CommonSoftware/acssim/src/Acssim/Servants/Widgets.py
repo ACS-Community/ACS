@@ -48,7 +48,7 @@ from Acssim.Widgets.GlobalOptions       import GlobalOptions
 from Acssim.Widgets.AvailableComponents import AvailableComponents
 
 #------------------------------------------------------------------------------
-class MainWindow:
+class MainWindow(object):
     '''
     Primary GUI panel for the ACS Simulator GUI. Allows end-user to set global
     options as well as configure specific code to be executed on method 

@@ -36,7 +36,6 @@
 
 #include "logging.h"
 
-ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.113 2012/10/09 14:22:54 bjeram Exp $")
 
  using namespace baci;
 
