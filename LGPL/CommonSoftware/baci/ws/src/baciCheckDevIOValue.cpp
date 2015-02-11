@@ -38,7 +38,7 @@ template<>
 void CheckDevIOValue::checkValue<double>(double value)
 {
 	double absValue = fabs(value);
-	if (absValue > 1.0e14 || (absValue > 0.0 && absValue < 1.0e-9))
+	if (absValue > 2.0e17 || (absValue > 0.0 && absValue < 1.0e-9))
 	{
 		ACS_LOG(LM_FULL_INFO ,"CheckDevIOValue::checkValue<double>", (LM_WARNING, "Value of property: %s (%f) read from DevIO has non meaningful physical value. Probably problem in DevIO impl!",
 				propName_m.c_str(),
