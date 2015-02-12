@@ -32,20 +32,6 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace TMCDB;
 
-namespace TMCDB {
-//specialization for double
-template<>
-void checkMonitorValue<double>(double value)
-{
-	double absValue = fabs(value);
-	if (absValue > 1.0e14 || (absValue > 0.0 && absValue < 1.0e-9))
-	{
-		ACS_LOG(LM_FULL_INFO ,"checkMonitorValue", (LM_WARNING, "Value (%f) got from monitor (working) has non meaningful physical value. Probably problem in DevIO impl!", value));
-	}
-}//checkMonitorValue<double>
-
-}//namespace TMCDB
-
 MonitorPointBase::MonitorPointBase(const char *propertyName, const ACS::TimeInterval &archivingInterval, TMCDB::DataValueType typeOfData, MonitorBlob& mb) :
 	propertyName_m(propertyName),
 	archivingInterval_m(archivingInterval),
