@@ -35,7 +35,7 @@ Install_Maven()
         fi
     fi
     
-    M2_VERSION=3.2.3
+    M2_VERSION=3.2.5
     echo "Now installing Maven $M2_VERSION in $M2_HOME ... \c"
     cd ../PRODUCTS
     tar xzf apache-maven-$M2_VERSION-bin.tar.gz 
