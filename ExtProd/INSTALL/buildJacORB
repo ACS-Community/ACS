@@ -280,19 +280,6 @@ rm -f $JACORB_HOME/lib/idl.jar
 #rm -f $JACORB_HOME/lib/jacorb-sources.jar #This jar is not present anymore
 rm -f $JACORB_HOME/lib/jacorb-services-3.6.jar
 
-# JacORB 3.4 uses slf4j for logging and ships with version 1.6.4 of both
-# the API and the JDK1.4 implementation, located under $JACORB_HOME.
-# ACS also uses slf4j, installed under $ACSROOT etc, and would normally supply it from ACS/LGPL/Tools/.
-# To avoid keeping two copies of the slf4j API jar file, ACS keeps its own copy
-# here under ExtProd and uses it both for building JacORB and for other purposes
-# (c.f. copying of that file in Tools/extjars/src/Makefile.
-# Note that JacORB compiles with just the slf4j API on the classpath;
-# later in the build, ACS module acsjlog will provide the slf4j implemenation jar.
-rm -f $JACORB_HOME/lib/slf4j-api-1.7.6.jar
-rm -f $JACORB_HOME/lib/slf4j-jdk14-1.7.6.jar
-cp $JACORB_SOURCES/jacorb-jars/slf4j-api-1.7.5.jar $JACORB_HOME/lib/ || exit 1
-
-
 ###cd $JACORB_SOURCES
 
 echo "==== Build Notification service IDL"
