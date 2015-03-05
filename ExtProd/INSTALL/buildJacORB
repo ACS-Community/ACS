@@ -332,7 +332,7 @@ fi
 # To include debug information, exchange the following two lines:
 #ant -DJVERSION=$JACORB_VERSION -Ddebug=true -Ddebuglevel=lines,vars,source all 
 
-mvn install -DskipTests=true
+mvn -DskipTests=true -DskipJavadoc=true -DskipPDFGeneration  clean install
 ###CLASSPATH="" ant -DJVERSION=$JACORB_VERSION
 ###if [ $? -ne 0 ]
 ###then
