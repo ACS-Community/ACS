@@ -355,8 +355,8 @@ echo "==== JacORB fully built   =========="
 echo "Make sure that the following environment variables"
 echo "are set before using JacORB:"
 echo " - JACORB_HOME=$JACORB_HOME"
-echo " - CLASSPATH contains: $JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/jacorb-services.jar:$JACORB_HOME/lib/idl.jar"
-echo $ - jacorb-omgapi.jar is in $JACORB_HOME/lib/endorsed which is defined in java.endorsed.dirs
+echo " - CLASSPATH contains: $JACORB_HOME/lib/jacorb-3.6.jar:$JACORB_HOME/lib/jacorb-services-3.6.jar:$JACORB_HOME/lib/idl.jar"
+echo $ - jacorb-omgapii-3.6.jar is in $JACORB_HOME/lib/endorsed which is defined in java.endorsed.dirs
 echo " - PATH      contains: $JACORB_HOME/bin"
 echo "========= DONE   =========="
 
