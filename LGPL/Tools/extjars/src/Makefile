@@ -73,7 +73,7 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/prevayler-1.02.001.jar \
 	../lib/saxpath.jar \
 	../lib/servlet-api-3.0.jar \
-	../lib/slf4j-api-1.7.5.jar \
+	../lib/slf4j-api-1.7.6.jar \
 	../lib/sqltool.jar \
 	../lib/tablelayout.jar \
 	../lib/xalan.jar \
@@ -100,8 +100,8 @@ all:	copy_slf4japi_from_jacorb do_all
 	@echo " . . . 'all' done"
 
 copy_slf4japi_from_jacorb :
-	@echo "== Copying slf4j-api-1.7.5.jar used for building jacorb to this module."
-	cp -a $(JACORB_HOME)/lib/slf4j-api-1.7.5.jar ../lib/slf4j-api-1.7.5.jar
+	@echo "== Copying slf4j-api-1.7.6.jar used for building jacorb to this module."
+	cp -a $(JACORB_HOME)/lib/slf4j-api-1.7.6.jar ../lib/slf4j-api-1.7.6.jar
 
 clean : clean_all
 	@rm -f ../lib/slf4j-api-1.7.5.jar
