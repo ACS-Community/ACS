@@ -17,7 +17,6 @@ import alma.acs.commandcenter.AccTests;
  */
 public class _Tests {
 
-	/* $Id: _Tests.java,v 1.1 2005/10/27 13:14:05 mschilli Exp $ */
 
 	public static Test suite() {
 		TestSuite ret = new TestSuite("Test for " + _Tests.class.getPackage().getName());
