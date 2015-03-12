@@ -142,12 +142,11 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 		// Check all CHECK constraints for this table
 		for (int i = 0; i < inheritanceTranslators.length; i++) {
 			String tableName = tableIdentifier.getName().toLowerCase();
-			if( inheritanceTranslators[i].getEnumTypesForTable(tableName) != null ) {
 
-				Map<String, String> typesForTable = inheritanceTranslators[i].getEnumTypesForTable(tableName);
-				if( typesForTable == null )
-					continue;
-
+			Map<String, String> typesForTable = inheritanceTranslators[i].getEnumTypesForTable(tableName);
+			if( typesForTable == null || typesForTable.size() == 0) {
+				continue;
+			} else {
 				MetaAttribute mattr2 = new MetaAttribute(HAS_ENUM_TYPES);
 				mattr2.addValue("true");
 				map.put(HAS_ENUM_TYPES, mattr2);

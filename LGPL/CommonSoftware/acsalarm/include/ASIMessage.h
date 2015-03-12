@@ -55,7 +55,7 @@ namespace acsalarm
 			std::string getSourceHostname() { return sourceHostname; }
 			void setSourceHostname(std::string name) { sourceHostname = name; }
 
-			acsalarm::Timestamp & getSourceTimestamp() { return *sourceTimestamp; }
+			const acsalarm::Timestamp & getSourceTimestamp() { return *sourceTimestamp; }
 			void setSourceTimestamp(std::auto_ptr<acsalarm::Timestamp> ts) { sourceTimestamp = ts; }
 
 		private:

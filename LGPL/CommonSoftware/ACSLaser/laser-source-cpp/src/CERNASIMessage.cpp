@@ -72,8 +72,7 @@ std::string CERNASIMessage::toXML()
 	// create the source timestamp element
 	// e.g. <source-timestamp seconds="1130356783" microseconds="610000"/>
 	ret << timestampToXML(
-			m_message.getSourceTimestamp().getSeconds(),
-			m_message.getSourceTimestamp().getMicroSeconds(),
+			&m_message.getSourceTimestamp(),
 			SOURCE_TIMESTAMP_ELEMENT_NAME,
 			3);
 
@@ -112,7 +111,7 @@ std::string CERNASIMessage::toXML()
 	return ret.str();
 }
 
-std::string CERNASIMessage::timestampToXML(long secs, long usecs, std::string elementName, int amountToIndent)
+std::string CERNASIMessage::timestampToXML(const acsalarm::Timestamp* timestamp, std::string elementName, int amountToIndent) const
 {
 	std::stringstream ret;
 
@@ -120,11 +119,10 @@ std::string CERNASIMessage::timestampToXML(long secs, long usecs, std::string el
 	{
 		ret<<SPACE;
 	}
-	ret<<LESS_THAN_SIGN<<elementName<<SPACE<<USER_TIMESTAMP_SECONDS_ATTRIBUTE_NAME<<EQUALS_SIGN<<DOUBLE_QUOTE;
-	ret <<secs;
-	ret << DOUBLE_QUOTE<<SPACE<<USER_TIMESTAMP_MICROSECONDS_ATTRIBUTE_NAME<<EQUALS_SIGN<<DOUBLE_QUOTE;
-	ret<<usecs;
-	ret<<DOUBLE_QUOTE<<FORWARD_SLASH<<GREATER_THAN_SIGN<<std::endl;
+
+	ret<<LESS_THAN_SIGN<<elementName<<GREATER_THAN_SIGN;
+	ret<<timestamp->toISOFormat();
+	ret<<LESS_THAN_SIGN<<FORWARD_SLASH<<elementName<<GREATER_THAN_SIGN<<std::endl;
 
 	return ret.str();
 }
@@ -180,8 +178,7 @@ std::string CERNASIMessage::faultStateToXML(acsalarm::FaultState* state, int amo
 	// generate the user timestamp element
 	// e.g. <user-timestamp seconds="1129902763" microseconds="105000"/>
 	ret<<timestampToXML(
-			state->getUserTimestamp().getSeconds(),
-			state->getUserTimestamp().getMicroSeconds(),
+			&state->getUserTimestamp(),
 			std::string(USER_TIMESTAMP_ELEMENT_NAME),
 			amountToIndent+3);
 

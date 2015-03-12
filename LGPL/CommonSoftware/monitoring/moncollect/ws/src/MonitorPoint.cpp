@@ -32,7 +32,6 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace TMCDB;
 
-
 MonitorPointBase::MonitorPointBase(const char *propertyName, const ACS::TimeInterval &archivingInterval, TMCDB::DataValueType typeOfData, MonitorBlob& mb) :
 	propertyName_m(propertyName),
 	archivingInterval_m(archivingInterval),
@@ -50,6 +49,8 @@ MonitorPointBase::MonitorPointBase(const char *propertyName, const ACS::TimeInte
 	alarmSuppressed_m = false;
 	valuePercentTrigger_m = 0;
 	backLogSize_m = 32;
+	curSeqInit_m = 0;
+	bufferFull = false;
 }
 
 void MonitorPointBase::setPropertySerialNumber(serialNumberTypeSeq& sn)
@@ -269,22 +270,30 @@ void EnumMonitorPoint::stopMonitoring()
 
 void EnumMonitorPoint::fillSeq()
 {
+    // Protection
 	ACE_GUARD(ACE_Thread_Mutex, mut, switchMutex_m);
 
-	// we adjust the length
-	blobDataSeq_m.length(curSeqPos_m);
+    // Put to any cyclic buffer data in order
+    if (curSeqInit_m == 0)
+    {
+        blobDataSeq_m.length(curSeqPos_m);
+        monitorBlob_m.blobDataSeq <<= this->blobDataSeq_m;
+        blobDataSeq_m.length(seqLen_m);
+    }
+    else
+    {
+        blobDataSeqTemp_m.length(seqLen_m);
+	    for (unsigned int i=0; i<seqLen_m; i++)
+		{
+			blobDataSeqTemp_m[i]=blobDataSeq_m[(i+curSeqInit_m)%seqLen_m];
+			monitorBlob_m.blobDataSeq <<= this->blobDataSeqTemp_m;
+		}
+    }
 
-	// put to the any
-	monitorBlob_m.blobDataSeq <<= this->blobDataSeq_m;
-
-	//set a length of a sequence back
-	blobDataSeq_m.length(seqLen_m);
-
-/* or we do like that
-	seqLen_m = curSeqPos_m;
-*/
-	// start for the beginning
-	curSeqPos_m = 0;
+    // Reset buffer
+    curSeqPos_m = 0;
+    curSeqInit_m = 0;
+    bufferFull = false;
 }//fillSeq
 
 void EnumMonitorPoint::set_archiving_interval(ACS::TimeInterval time)
@@ -316,18 +325,56 @@ void EnumMonitorPoint::enable_archiving()
 //
 void EnumMonitorPoint::working(CORBA::ULong value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout)
 {
+	// Protection
 	ACE_GUARD(ACE_Thread_Mutex, mut, switchMutex_m);
 
-	if ( curSeqPos_m>=seqLen_m )
-	{
-		seqLen_m = curSeqPos_m+prealocSeqLen_m;
-		blobDataSeq_m.length(seqLen_m);
-	}//if
-
-	blobDataSeq_m[curSeqPos_m].value = value;
-	blobDataSeq_m[curSeqPos_m].time = comp.timeStamp;
-
-	curSeqPos_m++;
+    // Still place in current available buffer segments
+    if ( curSeqPos_m < seqLen_m )
+    {
+        ACS_SHORT_LOG((LM_DEBUG, "Adding data to buffer"));
+        // Add data to current position
+        blobDataSeq_m[curSeqPos_m].value = value;
+	    blobDataSeq_m[curSeqPos_m].time = comp.timeStamp;
+        // Increment current position pointer
+        curSeqPos_m++;
+        // Increment initial position pointer if buffer is full
+        if (bufferFull)
+        {
+        	ACS_SHORT_LOG((LM_WARNING, "Data lost from buffer"));
+            curSeqInit_m++;
+        }
+    }
+    else // Current available buffer segments are full
+    {
+        // Another segment can be created
+        if ( seqLen_m < prealocSeqLen_m * maxSeqSegments_m )
+        {
+            ACS_SHORT_LOG((LM_DEBUG, "Creating new buffer segment and adding data to it"));
+            // Create new segment
+            seqLen_m = seqLen_m + prealocSeqLen_m;
+            blobDataSeq_m.length(seqLen_m);
+            // Add data to current position
+            blobDataSeq_m[curSeqPos_m].value = value;
+	        blobDataSeq_m[curSeqPos_m].time = comp.timeStamp;
+            // Increment current position pointer
+            curSeqPos_m++;
+        }
+        else // No more segments allowed
+        {
+            ACS_SHORT_LOG((LM_WARNING, "No more data segments are allowed. Buffer is full"));
+            // Define buffer as full
+            bufferFull = true;
+            // Increment buffer initial position
+            curSeqInit_m++;
+            // Reset buffer current position
+            curSeqPos_m = 0;
+            // Add data to current position
+            blobDataSeq_m[curSeqPos_m].value = value;
+	        blobDataSeq_m[curSeqPos_m].time = comp.timeStamp;
+	        // Increment current position pointer
+            curSeqPos_m++;
+        }
+    }
 }
 
 void EnumMonitorPoint::done(CORBA::ULong value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout)

@@ -38,6 +38,7 @@
 #include <list>
 #include "loggingBaseLog.h"
 #include "loggingHandler.h"
+#include "acsutilTimeStamp.h"
 #include <ace/Thread_Mutex.h>
 #include <ace/Singleton.h>
 #include <ace/Thread_Manager.h>   // it is here just that we can print ID of the thread !!!

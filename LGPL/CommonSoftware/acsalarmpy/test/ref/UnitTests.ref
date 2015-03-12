@@ -14,7 +14,7 @@
 1 - ACSAlarmSystemInterfaceProxy push a single fault ... ok
 1 - ASIConfiguration default initializer ... ok
 1 - test_object_initialization (test_Acsalarmpy_ASI.TestASIMessage) ... ok
-1 - test_toXML (test_Acsalarmpy_ASI.TestASIMessage) ... ok
+1 - ASIMessage XML output for defaults ... ok
 1 - AlarmSystemInterface close interface ... ok
 1 - AlarmSystemInterface default initializer ... ok
 1 - AlarmSystemInterface publish message to alarm system ... ok

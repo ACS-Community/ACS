@@ -24,7 +24,7 @@
 # agrimstrup  2008-10-01  created
 #
 
-import time
+import time, datetime
 
 class Timestamp(object):
     """
@@ -54,9 +54,13 @@ class Timestamp(object):
 
         Returns:  an indented XML string
         """
+        tempTime=time.gmtime(self.seconds)
+        dt=datetime.date(tempTime.tm_year,tempTime.tm_mon,tempTime.tm_mday)
+        tt=datetime.time(tempTime.tm_hour, tempTime.tm_min, tempTime.tm_sec)
+        
         pad = '\t'.expandtabs(amountToIndent)
-        ln = '<%s seconds="%d" microseconds="%d"/>\n' % (elementName, self.seconds, self.microseconds)
-        return pad + ln
+        return "%s<%s>%sT%s.%03d</%s>\n"%(pad,elementName,dt.isoformat(),tt.isoformat(),self.microseconds/1000,elementName)
+        
     
 #
 # ___oOo___

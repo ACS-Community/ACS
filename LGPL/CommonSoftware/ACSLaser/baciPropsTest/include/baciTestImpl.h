@@ -40,6 +40,7 @@
 
 ///Includes for each BACI property used in this example
 #include <baciROdouble.h>
+#include <baciROboolean.h>
 #include <baciROpattern.h>
 #include <enumpropROImpl.h>
 
@@ -81,8 +82,10 @@ class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard com
      */
     virtual void setDoubleVar(CORBA::Float);
     virtual void setPatternVar(CORBA::Long);
+    virtual void setBooleanVar(CORBA::Boolean);
     virtual void setEnumVar(alarmsystemPropTest::AlarmEnum);
     virtual void setDoubleVarComplete(CORBA::Float val, const char* faultFamily, const char* faultMember);
+
     /**
      * Returns a reference to the double property
      */
@@ -98,12 +101,19 @@ class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard com
      */
     virtual ::alarmsystemPropTest::ROAlarmEnum_ptr testEnumVar();
 
+    /**
+	 * Returns a reference to the boolean property
+	 */
+	virtual ACS::ROboolean_ptr testBooleanVar();
+
   private:
 
     /**
      *  The test properties
      */
     baci::SmartPropertyPointer<baci::ROdouble>  m_testDoubleVar_sp;
+
+    baci::SmartPropertyPointer<baci::ROboolean>m_testBooleanVar_sp;
 
     baci::SmartPropertyPointer<baci::ROpattern>  m_testPatternVar_sp;
 

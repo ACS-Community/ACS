@@ -8,6 +8,8 @@
   <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
   <xs:complexType name="PrimTestingType">
+  <xs:complexContent>
+   <xs:extension base="baci:CharacteristicComponent">
     <xs:sequence>
       <xs:element name="longRW" type="baci:RWlong"/>
       <xs:element name="longRO" type="baci:ROlong"/>
@@ -15,6 +17,8 @@
       <xs:element name="doubleRO" type="baci:ROdouble"/>
       <xs:element name="floatRW" type="baci:RWfloat"/>
       <xs:element name="floatRO" type="baci:ROfloat"/>
+      <xs:element name="booleanRO" type="baci:ROboolean"/>
+      <xs:element name="booleanRW" type="baci:RWboolean"/>
 	  <xs:element name="status" >
         <xs:complexType>
           <xs:complexContent>
@@ -31,6 +35,8 @@
         </xs:complexType>
       </xs:element>
     </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
   </xs:complexType>
   <xs:element name="PrimTesting" type="PrimTestingType"/>
 </xs:schema>

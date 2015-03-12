@@ -68,7 +68,7 @@
 *----------------------------------------------------------------------
 */
 #define POSIX_SOURCE 1
-#include <vltPort.h>
+/* #!# #include <vltPort.h> */
 static char *rcsId="@(#) $Id: docSplitIntoSingleComments.c,v 1.32 2008/06/09 06:52:09 bjeram Exp $";
 /* static void *use_rcsId = ((void)&use_rcsId, (void *) &rcsId); */
 

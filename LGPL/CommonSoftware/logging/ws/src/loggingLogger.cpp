@@ -26,6 +26,7 @@
 #include "loggingLogger.h"
 #include <functional>
 #include <iostream>
+#include <sstream>
 #include <ace/Recursive_Thread_Mutex.h>
 
 static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.22 2012/01/20 22:07:44 tstaig Exp $"; 
@@ -356,6 +357,29 @@ namespace Logging {
     void
     Logger::log(const LogRecord &lr)
     {
+    	// Message sizes greater than ACE_MAXLOGMSGLEN cause memory errors
+    	// So they are trunkated and a warning is sent
+    	if (lr.message.size() > ACE_MAXLOGMSGLEN)
+    	{
+    		// Send the information via stdout
+    		std::cout << "The following log message exceeds ACE_MAXLOGMSGLEN and will be truncated: " << lr.message << std::endl;
+    		// Message is trunkated
+    		lr.message.resize(ACE_MAXLOGMSGLEN);
+    		// Add specific log message
+			LogRecord logItem;
+			logItem.priority = lr.priority;
+			logItem.file = __FILE__;
+			logItem.line = __LINE__;
+			logItem.method = __PRETTY_FUNCTION__;
+			logItem.timeStamp = getTimeStamp();
+			std::ostringstream oss;
+			oss.clear();
+			oss.str(std::string());
+			oss << "A log message has been truncated to the value of ACE_MAXLOGMSGLEN = " << ACE_MAXLOGMSGLEN;
+			logItem.message = oss.str();
+			log(logItem);
+    	}
+
 // remove copy this std::list, because the core file shows something wrong here
 // according to trace, handlers_m never changed after initialized, so, it seems OK to use handlers_m directly
 //	//to be thread safe

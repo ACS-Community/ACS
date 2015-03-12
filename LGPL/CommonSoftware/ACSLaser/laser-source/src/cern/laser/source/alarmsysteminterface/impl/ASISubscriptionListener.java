@@ -55,7 +55,7 @@ public class ASISubscriptionListener implements SubscriptionListener {
         String source_name = asi_message.getSourceName();
         String source_hostname = asi_message.getSourceHostname();
         boolean backup = asi_message.getBackup();
-        Timestamp source_timestamp = TimestampHelper.unmarshalSourceTimestamp(asi_message.getSourceTimestamp());
+        String source_timestamp = asi_message.getSourceTimestamp(); // ISO format
         Collection states = ASIMessageHelper.unmarshal(asi_message);
         listener.onMessage(source_name, source_hostname, source_timestamp, backup, states);
       } catch (Exception e) {

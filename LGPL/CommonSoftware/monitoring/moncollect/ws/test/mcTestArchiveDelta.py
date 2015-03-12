@@ -41,7 +41,11 @@ mc = simpleClient.getComponent(argv[1])
 
 try:
     tc =   simpleClient.getComponent(cname)
-    psns =[propertySerailNumber('doubleSeqProp', ['12124']),propertySerailNumber('doubleProp', ['3432535'])]    
+    psns =[propertySerailNumber('doubleSeqProp', ['12124']),
+           propertySerailNumber('doubleProp', ['3432535']),
+           propertySerailNumber('longProp', ['1232535']),
+           propertySerailNumber('longSeqProp', ['34535'])
+           ]    
     mc.registerMonitoredDeviceWithMultipleSerial(cname, psns)
     tc.reset();
     mc.startMonitoring(cname)    

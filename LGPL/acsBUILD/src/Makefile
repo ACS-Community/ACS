@@ -1,5 +1,5 @@
 #*******************************************************************************
-# E.S.O. - VLT project
+# E.S.O. - ALMA project
 #
 # "@(#) $Id: Makefile,v 1.160 2010/07/07 10:25:21 alopatin Exp $"
 #
@@ -239,21 +239,21 @@ man_java:
 	@cp ../../man/java/annotated.html ../../man/java/index.html
 man_schema:
 	@echo "Generating schema documentation "
-	@mkdir -p $(VLTTOP)/man/schemas/src
-	@cp -f $(VLTTOP)/config/CDB/schemas/*.xsd $(VLTTOP)/idl/*.xsd $(VLTTOP)/config/CDB/schemas/*.dtd $(VLTTOP)/man/schemas/src
-	@cp ../config/xsddocSchemaAntBuild.xml $(VLTTOP)/man/schemas/src/build.xml
-	@cd $(VLTTOP)/man/schemas/src; \
+	@mkdir -p $(PRJTOP)/man/schemas/src
+	@cp -f $(PRJTOP)/config/CDB/schemas/*.xsd $(PRJTOP)/idl/*.xsd $(PRJTOP)/config/CDB/schemas/*.dtd $(PRJTOP)/man/schemas/src
+	@cp ../config/xsddocSchemaAntBuild.xml $(PRJTOP)/man/schemas/src/build.xml
+	@cd $(PRJTOP)/man/schemas/src; \
          export CLASSPATH=$(shell searchFile lib/xsddoc.jar)/lib/xsddoc.jar:$(ACSROOT)/lib/xalan.jar:$(ACSROOT)/lib/xalan_serializer.jar:$(CLASSPATH) ;\
          ant
 man_python:
 	@echo "Generating global Python API documentation index file"
-	@mkdir -p $(VLTTOP)/man/py
-	@acsGenGlobalPythonIndex $(VLTTOP)/man/py > $(VLTTOP)/man/py/index.html
+	@mkdir -p $(PRJTOP)/man/py
+	@acsGenGlobalPythonIndex $(PRJTOP)/man/py > $(PRJTOP)/man/py/index.html
 
 man_errors:
 	@echo "Generating errors documentation"
-	@mkdir -p $(VLTTOP)/man/errors
-	@python acsGenErrorsDocumentation.py $(VLTTOP) $(VLTTOP)/man/errors
+	@mkdir -p $(PRJTOP)/man/errors
+	@python acsGenErrorsDocumentation.py $(PRJTOP) $(PRJTOP)/man/errors
 
 
 install : install_doc install_config install_cdb install_svc_conf install_all
@@ -261,16 +261,16 @@ install : install_doc install_config install_cdb install_svc_conf install_all
 
 install_doc:
 	@echo " . . . installing ACS documentation from ../.."
-	-@cp -r ../../man $(VLTTOP);\
-	         chmod -R ug+rw $(VLTTOP)/man;
+	-@cp -r ../../man $(PRJTOP);\
+	         chmod -R ug+rw $(PRJTOP)/man;
 
 install_config:
-	@echo " . . . installing user account configuration files $(VLTTOP)/config"
-	-@gtar -cf - --exclude=".svn" -C ../config .acs  | gtar -xf - -C $(VLTTOP)/config; \
-	         chmod -R ug+rw $(VLTTOP)/config/.acs;
-	@echo " . . . copying rc.d configuration files for DHCP in $(VLTTOP)/config"
-	-@gtar -cf - --exclude=".svn" -C ../config rc.d  | gtar -xf - -C $(VLTTOP)/config; \
-	         chmod -R ug+rw $(VLTTOP)/config/rc.d;
+	@echo " . . . installing user account configuration files $(PRJTOP)/config"
+	-@gtar -cf - --exclude=".svn" -C ../config .acs  | gtar -xf - -C $(PRJTOP)/config; \
+	         chmod -R ug+rw $(PRJTOP)/config/.acs;
+	@echo " . . . copying rc.d configuration files for DHCP in $(PRJTOP)/config"
+	-@gtar -cf - --exclude=".svn" -C ../config rc.d  | gtar -xf - -C $(PRJTOP)/config; \
+	         chmod -R ug+rw $(PRJTOP)/config/rc.d;
 
 install_cdb:
 	@echo " . . . copying default CDB in $(ACSDATA)/config"
