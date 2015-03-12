@@ -28,18 +28,17 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
-import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
-import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
-import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogEntryXML;
-import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
-import com.cosylab.logging.engine.log.LogField;
-
 import junit.framework.TestCase;
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
 import alma.acs.logging.engine.parser.ACSLogParser;
 import alma.acs.logging.engine.parser.ACSLogParserFactory;
+
+import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
+import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
+import com.cosylab.logging.engine.log.LogField;
 
 /**
  * A class testing the load and save facilities

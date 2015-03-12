@@ -20,3 +20,6 @@
 1 - 		{'value': 6.0, 'time': ------------------L}
 1 - 		{'value': 7.0, 'time': ------------------L}
 1 - 		{'value': 8.0, 'time': ------------------L}
+1 - 	MC_TEST_COMPONENT2:longProp []
+1 - 	MC_TEST_COMPONENT2:longSeqProp []
+1 - 	MC_TEST_COMPONENT2:patternProp []

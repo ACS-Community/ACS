@@ -35,7 +35,9 @@ public class XMLMessageHelper {
    */
   public static String marshal(ASIMessage asiMessage) throws Exception {
     StringWriter writer = new StringWriter();
-    Marshaller.marshal(asiMessage, writer);
+    Marshaller marshaller = new Marshaller(writer);
+    marshaller.setSuppressNamespaces(true);
+    marshaller.marshal(asiMessage);
 
     return writer.toString();
   }

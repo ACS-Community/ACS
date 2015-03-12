@@ -30,6 +30,7 @@ from subprocess import call
 # The package of ExtProd to include in the tar
 acsExtProdPackages = (
                       "ant",
+                      "maven",
                       "DDS",
                       "Eclipse",
                       "Eclipse4",

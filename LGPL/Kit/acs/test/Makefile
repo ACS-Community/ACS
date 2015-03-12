@@ -176,7 +176,8 @@ CSOURCENAMES = \
 # INCLUDE STANDARDS
 # -----------------
 
-MAKEDIRTMP := $(shell searchFile include/acsMakefile)
+#!#MAKEDIRTMP := $(shell searchFile include/acsMakefile)
+MAKEDIRTMP := ..
 ifneq ($(MAKEDIRTMP),\#error\#)
    MAKEDIR := $(MAKEDIRTMP)/include
    include $(MAKEDIR)/acsMakefile

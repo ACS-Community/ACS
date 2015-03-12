@@ -143,6 +143,16 @@ class Helper
     static char *
     extractStructName(const char* idlStruct);
 
+    /**
+     * Create the name of the client by appending a random number to the given client name
+	 * and replacing '/' in the name with '_'
+	 * This is used when setting names on NC proxy objects via the TAO extension API.
+	 *
+	 * @param clientName The name of the client
+	 * @return the name to register in the NC proxy
+     */
+    virtual std::string createRandomizedClientName(const std::string& clientName);
+
     /** 
       * This method allow to the Helper reconnect to the Notification Channel
       * in case of Notify Service crashes. It is used by the the Persistance 

@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -54,6 +55,7 @@ import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.util.AcsLocations;
+import alma.acs.util.IsoDateFormat;
 import alma.acscommon.ACS_NC_DOMAIN_ALARMSYSTEM;
 import alma.alarmsystem.clients.CategoryClient;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState;
@@ -62,11 +64,11 @@ import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
- * Test if the alarm server send/clear an alarm when the difference between the actual
- * time and the timestamp of the alarms received by the sources differs more then a threashold.
- * <BR>
- * The alarm this test want to check is {@link LaserCoreFaultCodes#ALARMS_TOO_OLD}.
+ * Test if the alarm server sends/clears an alarm when the difference between the actual
+ * time and the timestamp of the alarms received by the sources differs of more then a threshold.
  * <P>
+ * The alarm that this test want to check is {@link LaserCoreFaultCodes#ALARMS_TOO_OLD}.
+ * <BR>
  * All other alarms received by {@link #onAlarm(Alarm)} that do not match with {@link LaserCoreFaultCodes#ALARMS_TOO_OLD}
  * are discarded. 
  * <P>
@@ -160,6 +162,7 @@ public class AlarmsDelayCoreAlarmTest  extends ComponentClient implements AlarmS
 	
 	@After
 	public void tearDown() throws Exception {
+		sourceNC.disconnect();
 		categoryClient.close();
 		super.tearDown();
 	}
@@ -177,11 +180,11 @@ public class AlarmsDelayCoreAlarmTest  extends ComponentClient implements AlarmS
 		categoryClient.connect(this);
 		
 		alarmSource = ACSAlarmSystemInterfaceFactory.createSource();
-		assertThat("THE source NC is  null!",alarmSource,notNullValue());
+		assertThat("The source is  null!",alarmSource,notNullValue());
 		
 		// Connect to the source NC
 		sourceNC=contSvcs.createNotificationChannelPublisher(sourceChannelName, ACS_NC_DOMAIN_ALARMSYSTEM.value, ACSJMSMessageEntity.class);
-		assertThat("THE source NC is  null!",sourceNC,notNullValue());
+		assertThat("The source NC is  null!",sourceNC,notNullValue());
 		
 	}
 	
@@ -195,7 +198,7 @@ public class AlarmsDelayCoreAlarmTest  extends ComponentClient implements AlarmS
 	@Test
 	public void testAlarmsTooOld() throws Exception {
 		// Set a alarm with a old time stamp
-		long timestamp = System.currentTimeMillis()-AlarmMessageProcessorImpl.delayThreashold-5000;
+		long timestamp = System.currentTimeMillis()-AlarmMessageProcessorImpl.delayThreashold-10;
 		sendAlarm("TheFamily", "TheMember", 1, true, timestamp);
 		// Leave the alarm server enough time to detect the problem and send the alarm
 		logger.log(AcsLogLevel.DEBUG,"Waiting for the alarm server to set the core alarm");
@@ -233,11 +236,9 @@ public class AlarmsDelayCoreAlarmTest  extends ComponentClient implements AlarmS
 		Vector<FaultState> states = new Vector<FaultState>();
 		states.add(fs);
 		ASIMessage asiMessage = ASIMessageHelper.marshal(states);
-		// Set the timestamp
-		cern.laser.source.alarmsysteminterface.impl.message.Timestamp sourceTimestamp=new cern.laser.source.alarmsysteminterface.impl.message.Timestamp();
-		sourceTimestamp.setSeconds(timeStamp/1000);
-		sourceTimestamp.setMicroseconds(0);
-		asiMessage.setSourceTimestamp(sourceTimestamp);
+		// Set the timestamp by adding a dealy greater then AlarmMessageProcessorImpl.delayThreashold
+		String nowStr = IsoDateFormat.formatDate(new Date(timeStamp));
+		asiMessage.setSourceTimestamp(nowStr);
 		// Set a fake hostname
 		asiMessage.setSourceHostname("alma");
 		asiMessage.setSourceName("ALARM_SYSTEM_SOURCES");

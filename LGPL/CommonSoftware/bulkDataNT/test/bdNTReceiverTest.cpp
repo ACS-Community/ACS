@@ -25,6 +25,7 @@
 #include "bulkDataNTReceiverStream.h"
 #include "bulkDataNTCallback.h"
 #include <iostream>
+#include <string>
 #include <ace/Get_Opt.h>
 #include <ace/Tokenizer_T.h>
 
@@ -32,10 +33,13 @@ using namespace std;
 
 class  TestCB:  public BulkDataNTCallback
 {
+	long totBytesReceived_m;
 public:
 	int cbStart(unsigned char* userParam_p, unsigned  int size)
 	{
-		std::cout << "cbStart: got " << size << " :";
+		totBytesReceived_m=0;
+		std::cout << "cbStart " << getFlowName()<<"@" << getStreamName();
+		std::cout << ": got " << size << " :";
 		for(unsigned int i=0; i<size; i++)
 		{
 			std::cout <<  *(char*)(userParam_p+i);
@@ -46,21 +50,18 @@ public:
 
 	int cbReceive(unsigned char* data, unsigned  int size)
 	{
-		// std::cout << "cbReceive: got " << size << " :";
-/*		for(unsigned int i=0; i<frame_p->length(); i++)
-		{
-			std::cout <<  *(char*)(frame_p->base()+i);
-		}
-	*/
-		//std::cout << std::endl;
 
+		//std::cout << "cbReceive " << getFlowName()<<"@" << getStreamName();
+		//std::cout << ": received " << size << " bytes "<< std::endl;
+		totBytesReceived_m+=size;
 		if (cbDealy>0) usleep(cbDealy);
 		return 0;
 	}
 
 	int cbStop()
 	{
-		std::cout << "cbStop" << std::endl;
+		std::cout << "cbStop " << getFlowName()<<"@" << getStreamName();
+		std::cout << ": received data size =" << totBytesReceived_m << std::endl;
 		return 0;
 	}
 
@@ -105,10 +106,10 @@ int main(int argc, char *argv[])
 			case 'f':
 			{
 				ACE_Tokenizer tok(get_opts.opt_arg());
-				tok.delimiter(',');
-				for(char *p = tok.next(); p; p = tok.next())
+				tok.delimiter_replace(',',0);
+				for(char *p = tok.next(); p; p = tok.next()) {
 					flows.push_back(p);
-
+				}
 				break;
 			}
 			case 'd':

@@ -137,7 +137,7 @@ baci_OBJECTS =  baciValue baciBACIAction baciBACICallback baciBACIMonitor baciUt
 		baci baciTime baciDB \
 		baciRecovery baciCORBA baciDLL \
 		baciEvent baciCDBPropertySet \
-		baciROdouble baciRWdouble \
+		baciROdouble baciRWdouble baciCheckDevIOValue \
 		baciROfloat baciRWfloat \
 		baciROlongLong baciRWlongLong \
 		baciROuLongLong baciRWuLongLong \

@@ -201,9 +201,6 @@ then
       exit $EC_CANNOTUSE
     fi
 
-    ACS_NAME_SERVICE=`acsstartupNSRef`
-    $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name Manager -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
-
     # MANAGER SHUTDOWN
     # --------------------------------------------------------------------------
     # Everything checked out so manager can really be shutdown

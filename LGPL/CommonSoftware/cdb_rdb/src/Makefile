@@ -151,14 +151,14 @@ install : install_all
 	@rm -f CreateHsqldbTables.sql
 	@cat ../config/TMCDB_swconfigcore/hsqldb/CreateHsqldbTables.sql ../config/TMCDB_swconfigext/hsqldb/CreateHsqldbTables.sql > CreateHsqldbTables.sql
 	@acsStartJava org.hsqldb.cmdline.SqlTool --rcFile sqltool.rc tmcdb CreateHsqldbTables.sql
-	@CLASSPATH="$(shell vltMakeJavaClasspath)" ant generate
+	@CLASSPATH="$(shell acsMakeJavaClasspath)" ant generate
 	@touch .done_generating_classes
 
 ../lib/$(POJOS_JAR): .done_generating_classes
 	@echo "=="
 	@echo "== Compiling generated domain classes"
 	@cd gen;\
-	    CLASSPATH="$(shell vltMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; \
+	    CLASSPATH="$(shell acsMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; \
 	    jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; \
 	    mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/; \
 	    jar uf ../lib/$(POJOS_JAR) -C ../config/TMCDB_swconfigcore/ SwCore-orm.xml; \
@@ -166,7 +166,7 @@ install : install_all
 
 ../lib/TMCDBswconfigStrategy.jar :.done_generating_sql 
 	@echo "== Compiling TMCDBswconfigStrategy.jar "
-	@CLASSPATH="$(shell vltMakeJavaClasspath)" javac alma/acs/tmcdb/translator/*.java; jar cf ../lib/TMCDBswconfigStrategy.jar alma/acs/tmcdb/translator/*.class; cd ..; jar uf lib/TMCDBswconfigStrategy.jar src/alma/acs/tmcdb/translator/*.java;
+	@CLASSPATH="$(shell acsMakeJavaClasspath)" javac alma/acs/tmcdb/translator/*.java; jar cf ../lib/TMCDBswconfigStrategy.jar alma/acs/tmcdb/translator/*.class; cd ..; jar uf lib/TMCDBswconfigStrategy.jar src/alma/acs/tmcdb/translator/*.java;
 	@rm -f alma/acs/tmcdb/translator/*.class
 
 
