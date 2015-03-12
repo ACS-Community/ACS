@@ -1,0 +1,84 @@
+#!/bin/bash 
+#
+# Script to automatically install Maven
+#
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+# Some default values
+#
+
+Install_Maven()
+{
+    if [ -z "$M2_HOME" ]
+    then
+        echo "M2_HOME is not set, cannot continue.\n"
+        exit 1
+    else
+	echo "Maven will be installed in $M2_HOME\n"
+    fi
+
+    if [ -d $M2_HOME ]
+    then
+	echo "$M2_HOME already exists: removing..."
+        rm -rf $M2_HOME
+        RET=$?
+        if [ $RET -ne 0 ]
+        then
+            echo "Failed to remove existing $M2_HOME, cannot continue..."
+            exit 1
+        fi
+    fi
+    
+    M2_VERSION=3.2.3
+    echo "Now installing Maven $M2_VERSION in $M2_HOME ... \c"
+    cd ../PRODUCTS
+    tar xzf apache-maven-$M2_VERSION-bin.tar.gz 
+    RET=$?
+    if [ $RET -ne 0 ]
+    then
+	echo "Failed to unpack apache-maven-$M2_VERSION-bin.tar.gz, cannot continue..."
+	exit 1
+    fi
+    mv apache-maven-$M2_VERSION $M2_HOME
+    RET=$?
+    if [ $RET -ne 0 ]
+    then
+        echo "Failed to move apache-maven-$M2_VERSION in $M2_HOME, cannot continue..."
+        exit 1
+    fi
+    echo "done.\n"
+
+}
+
+
+
+######################################################################
+#                                                                    #
+# Execution starts here!                                             #
+#                                                                    #
+######################################################################
+
+LOG=buildMaven.log
+#
+exec > $LOG 2>&1
+
+date
+
+CURR_DIR=`pwd`
+
+#
+# It build and install the archive
+#
+Install_Maven
+
+#
+cd $CURR_DIR
+
+echo Maven installation done!
+date

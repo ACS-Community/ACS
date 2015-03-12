@@ -35,14 +35,20 @@
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     =
+EXECUTABLES     = pDataConsumer pDataSupplier
 EXECUTABLES_L   = 
 
 #
 # <brief description of xxxxx program>
-xxxxx_OBJECTS   =	
+pDataConsumer_OBJECTS   =	pDataConsumer TimevalUtils ConsumerTimer ORBTask CorbaNotifyUtils
+xxxxx_LDFLAGS   = 
+pDataConsumer_LIBS      = corbaNotifyTest_ifStubs TAO_CosNotification_Serv TAO_CosNotification_MC_Ext
+
+pDataSupplier_OBJECTS   = 	pDataSupplier TimevalUtils SupplierTimer ORBTask CorbaNotifyUtils
 xxxxx_LDFLAGS   =
-xxxxx_LIBS      =
+pDataSupplier_LIBS      = corbaNotifyTest_ifStubs TAO_CosNotification_Serv TAO_CosNotification_MC_Ext
+
+corbaNotifyTest_ifStubs_LIBS = baciStubs maciStubs
 
 #
 # special compilation flags for single c sources

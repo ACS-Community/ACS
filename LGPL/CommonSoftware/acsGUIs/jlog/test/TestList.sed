@@ -30,4 +30,4 @@ s/Time: .*/Time: xxx/g
 s/LoggingChannelBin/LogChannel_Name/g
 s/LoggingChannel/LogChannel_Name/g
 s/Manager login done.*/Manager login donee, handle 'xxxxxxxxxx' obtained./g
-s/.XML log record import finished with [0-9]* records in [0-9]* seconds/.XML log record import finished with nnnn records in xxx seconds/g
+s/\.*XML log record import finished with [0-9]* records in [0-9]* seconds/.XML log record import finished with nnnn records in xxx seconds/g

@@ -1,11 +1,11 @@
 #*******************************************************************************
-# E.S.O. - VLT project
+# E.S.O. - ALMA project
 #
 # "@(#) $Id: Makefile.doc,v 1.63 2005/01/31 19:46:16 dfugate Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# gfilippi  29/06/93  craeted
+# gfilippi  29/06/93  created
 # gfilippi  25/08/93  changed *PATH into *_PATH (see vltMakefile)
 # gfilippi  26/11/93  modified documentation to include VxWork
 # gfilippi  27/04/94  new definition for make clean, lib-dependency, RTAP.
@@ -44,29 +44,51 @@
 # gfilippi  14/07/99  ALARMS/HELP added (SPR 990257)
 # rschmutz  30/09/99  INS_ROOT_FILES, INS_ROOT_DIR added (SPR 90346).
 # psivera   17/03/00  Changed comments regarding INS_ROOT_FILES (SPR 20000085).
-# psivera   01/06/16  added clean_dist documentation
-# psivera   01/06/27  added LINK_FILES documentation
-# mzampare  02/08/07  added Java documentation
-# psivera   02/10/31  corrected information about debug and optimization
+# psivera   16/06/01  added clean_dist documentation
+# psivera   27/06/01  added LINK_FILES documentation
+# mzampare  07/08/02  added Java documentation
+# psivera   31/10/02  corrected information about debug and optimization
+# eallaert  08/10/2014 removed references to VLT, INS_ROOT, RTAP and CCS
+
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2014
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
+
 #************************************************************************
 #   NAME
 #   Makefile - tells (GNU-)make what to do to build or to install a module.
 #
 #   DESCRIPTION
 #
-#   This man-page is the USER MANUAL for the "vltMake" software and it is
-#   part of the VLT Programming Standard and supersedes section 6.2,
-#   pag 47 of [2].
+#   This man-page is the USER MANUAL for the "acsMake" software.
 #
-#   The "vltMake" software is a wrapper around the GNU make to support
-#   the standards defined for VLT software. 
+#   The "acsMake" software is a wrapper around the GNU make to support
+#   the standards defined for ALMA software. 
 # 
 #   Hereafter it is  assumes that you are familiar with "GNU-make" [1] basic 
-#   concepts and the VLT Standard[2].
+#   concepts and the ALMA SW development environment Tools and Integration Guidelines.
 #
-#     [1] GNU make - Edition 0.41, for make Version 3.64 Beta, April 93.
+#     [1] GNU make - for make Version 3.81.
 #
-#     [2] VLT Programming Standard (VLT-PRO-ESO-10000-0228 - 1.0 10/03/93)
+#     [2] ALMA SW Development Tools and Integration Guidelines
+#         (COMP-70.80.00.00-002-P-GEN, 2009-05-26)
 #
 #   and the term MODULE shall always be read as SOFTWARE MODULE.
 #
@@ -78,10 +100,9 @@
 #          SEARCH PATHS  . . . . . .
 #          MODULE DESCRIPTION. . . .
 #          UNIX OR VXWORKS . . . . .
-#          SELECTING VLTMAKEFILE . .
+#          SELECTING ACSMAKEFILE . .
 #          TARGETS . . . . . . . . .
 #          CUSTOMIZATION . . . . . .
-#          DATABASE MAKEFILE . . . .
 #          EXECUTING MAKE  . . . . .
 #
 #          APPENDIX: Guideline to port existing Makefile-s
@@ -90,23 +111,23 @@
 #   OVERVIEW
 #   Considering that the majority of the actions done in building software
 #   are common to all modules and to have an higher degree of maintainability,
-#   the use of make in the VLT Software Project has been organizes as follows:
+#   the use of make in the ALMA Software Project has been organizes as follows:
 #
-#     - a centralized file, "vltMakefile", containing all definitions 
-#         valid through the whole VLT Software, like standard rules and 
+#     - a centralized file, "acsMakefile", containing all definitions 
+#         valid through the whole ALMA Software, like standard rules and 
 #         operating system specificities, and covering both UNIX and VXWORKS
 #         applications.
 #
 #     - a file for each software module, "<module>/src/Makefile", providing
 #         module specific information, like which file have to be handled
-#         or any additional information not covered by the standard vltMakefile,
+#         or any additional information not covered by the standard acsMakefile,
 #         like module-specific compilation flags or installation instruction.
 #
-#   The module-Makefile executes the standard vltMakefile. The standard 
-#   definitions and macros provided by vltMakefile are driven by variables, 
+#   The module-Makefile executes the standard acsMakefile. The standard 
+#   definitions and macros provided by acsMakefile are driven by variables, 
 #   set either by the calling Makefile or in the external environment.
 #
-#   The standard defined in vltMakefile can be integrated or overwritten 
+#   The standard defined in acsMakefile can be integrated or overwritten 
 #   inside the Makefile, using normal (GNU)make commands.
 #
 #   MAKEFILE
@@ -125,8 +146,8 @@
 #
 #     2) selecting UNIX or VXWORKS rules (MAKE_VXWORKS flag)
 #
-#     3) executing vltMakefile (redefining the variable MAKEDIR allows the 
-#        user to select the vltMakefile)
+#     3) executing acsMakefile (redefining the variable MAKEDIR allows the 
+#        user to select the acsMakefile)
 #
 #     4) defining the standard target: all, man, clean, clean_dist, 
 #				       test, install.
@@ -149,10 +170,10 @@
 #          do things
 #
 #     variables defined by Makefile
-#          used to tell vltMakefile-rules which files and how to use 
+#          used to tell acsMakefile-rules which files and how to use 
 #          standard rules
 #
-#     variables defined by vltMakefile
+#     variables defined by acsMakefile
 #          used internally to build real make commands.
 #
 #   According to make rules, external variables are overwritten by internal
@@ -160,12 +181,12 @@
 #   command argument (example: make XYZ='abcd')
 #
 #   In the following sections only the variables defined by Makefile are
-#   described. See vltMakefile(5) for the complete list of environmental
-#   and vltMakefile variables.
+#   described. See acsMakefile(5) for the complete list of environmental
+#   and acsMakefile variables.
 # 
 # 
 #   SEARCH PATHS
-#   One of the most important feature of vltMakefile is the handling of 
+#   One of the most important feature of acsMakefile is the handling of 
 #   the include and library search path lists.
 #
 #   The system will look in the following location in the listed order:
@@ -174,7 +195,7 @@
 #        - a user specified list (USER_INC or USER_LIB)
 #        - the current integartion area (INTROOT)
 #        - one or more auxiliary integration areas (INTLIST)
-#        - the VLT root area (VLTROOT)
+#        - the ACS root area (ACSROOT)
 #
 #   CAUTIONS: 
 #
@@ -218,7 +239,7 @@
 #                     |--include/
 #                     :.....
 #
-#   vltMakefile supports both of the above structures, but does not allow
+#   acsMakefile supports both of the above structures, but does not allow
 #   to have mixed code, i.e., having under one src/ directory code that 
 #   must be generated as UNIX and other as VxWorks.
 #
@@ -236,28 +257,24 @@
 #       - the releation of dependancy among files.
 #       - what to do to regenerate a dependant file.
 #
-#   The latest is given as standard rules for all known cases by vltMakefile.
+#   The latest is given as standard rules for all known cases by acsMakefile.
 #   The first is the main task of the module-Makefile and it is done by mean 
 #   of a set of fixed-name variables.
 #
 #   The standard cases are: 
 #            - include files  
-#            - CCS files: ALARM files, ERROR files, CDT, CIT    
 #            - executable
 #            - library   
 #            - script       
 #            - Tcl/tk script  
 #            - Tcl/tk library
 #            - panels
-#            - (On-Line Database) Class Description Files (CDF)
-#            - (On-Line Database) Branch Config Files (BCF)
 #            - Java files 
 #            - manpage       
-#            - mif-file     
+#            - mif-file (Framemaker)   
 #            - other file (for installation purposes only)
 #
-#   With the exception of: CCS files, data base files (CDF and BCF) and  
-#   mif-files, all the above may be:
+#   With the exception mif-files, all the above may be:
 #     - public: those that need to be exported by the 'make install' command
 #     - local:  used only locally during the development and test.
 #
@@ -301,19 +318,6 @@
 #           INCLUDES = mod.h
 #
 #   
-#   - CCS files: 
-#
-#       - ALARM files: file in the ../ALARMS/HELP directory
-#       - ERROR files: file produced by errEditor in the ../ERRORS directory
-#                      and the ../include/xxxErrors.h
-#                      and ../ERRORS/HELP/* 
-#       - Command Definition Table (../CDT/*.cdt)
-#       - Command Interpreter Table (../CIT/*.cit)
-#
-#     vltMake looks for such files. If existing they are installed in the
-#     proper target directory.
-#
-#
 #   - executable: obtained linking one or more C or C++ files and/or 
 #     library files. An executable is characterized by:
 #           - one or more C-source files in the src/ directory. One file is 
@@ -346,19 +350,8 @@
 #       <exe-n>_LIBS    = the list of the NAME of the libraries (optional)
 #                         ONLY THE NAME MUST BE SPECIFIED (no "-l", no ".a"!) 
 #                         In this list, special names may appear, to tell 
-#                         vltMakefile to execute some specific actions. The 
+#                         acsMakefile to execute some specific actions. The 
 #                         names are:
-#                            CCS:  the executable is linked to VLT/CCS libraries
-#                                  In a full CCS installation (i.e., RTAPROOT
-#                                  is defined) RTAP includes path and libraries
-#                                  are added and the rtapUnlockExe executed.
-#                                  In a CCS-lite installation, the qsemu library
-#                                  is used instead.
-#                            CCS_NOX11: same as CCS, but graphic libraries 
-#                                  are not used.
-#                            RTAP: the executable is linked to RTAP libraries
-#                                  and the rtapUnlockExe is executed on it.
-#                                  (if CCS is defined, RTAP flag is ignored)
 #                            C++:  the executable is linked to C++ libraries:
 #                                       g++ iostream iberty
 #
@@ -373,7 +366,6 @@
 #                                     as shared)
 #                                       abcd_OBJECTS   = abcd 
 #                                       abcd_LDFLAGS   = -ltcl
-#                                       abcd_LIBS      = CCS
 #
 #     (REMARK: the following rules apply to C-Libraries too, see below)
 #     
@@ -384,7 +376,7 @@
 #        - define <obj-n>_CFLAGS  = flag ...         (optional)
 #          for every file <obj-n>.c that requires additional flags 
 #
-#     See vltMakefile(5) for the default applying for Unix and VxWorks code.
+#     See acsMakefile(5) for the default applying for Unix and VxWorks code.
 #
 #     Optimization and debug
 #     By default the code is compiled with -g DEBUG and optimization (level 1)
@@ -399,7 +391,7 @@
 #     Example:
 #        The executable is named modExe and is made of three files: modExe.c,
 #        modRoutine1.c, modRoutine2.c (needing -DXYZ to be compiled).
-#        The CCS and the xyz (=libxyz.a) libraries are needed.
+#        The xyz (=libxyz.a) library is needed.
 #
 #           EXECUTABLES   = .... modExe ..... .....
 #           EXECUTABLES_L = 
@@ -407,7 +399,7 @@
 #           #
 #           modExe_OBJECTS = modExe modRoutine1 modRoutine2
 #           modExe_LDFLAGS = 
-#           modExe_LIBS    = xyz CCS
+#           modExe_LIBS    = xyz
 #           modRoutine2_CFLAGS =  -DXYZ
 #
 #
@@ -656,50 +648,6 @@
 #     FILENAME: same rules as for MAN<i>
 #
 #
-#   - INS_ROOT files: files that need to be installed in the INS_ROOT can
-#     be installed in two ways:
-#     1. list dictionaries, alias files, BOB templates files, setup files
-#        and configuration files (relative to the module directory),
-#	 wildcards are allowed in
-#
-#	    INS_ROOT_FILES = ..... ..... ..... .....
-#
-#	 Example:
-#	    INS_ROOT_FILES = ../config/ESO-VLT-DIC.XXXX_ICS \
-#			     ../config/XXXX_ICS.alias
-#
-#	 The files are copied to the following target directories:
-#	 - $INS_ROOT
-#	 - $INTROOT/config/INS_ROOT or $VLTROOT/config/INS_ROOT.
-#	 According to the name of the files, they are copied to the
-#	 following subdirectories (target $INS_ROOT shown):
-#
-#        ESO-VLT-*:      $INS_ROOT/SYSTEM/Dictionary
-#        *.alias:        $INS_ROOT/SYSTEM/Alias
-#        *.obd:          $INS_ROOT/SYSTEM/COMMON/TEMPLATES/OBD
-#        *.seq:          $INS_ROOT/SYSTEM/COMMON/TEMPLATES/SEQ
-#        *.tsf:          $INS_ROOT/SYSTEM/COMMON/TEMPLATES/TSF
-#        *.det:          $INS_ROOT/SYSTEM/COMMON/SETUPFILES/DET
-#        *.ins:          $INS_ROOT/SYSTEM/COMMON/SETUPFILES/INS
-#        *.ref:          $INS_ROOT/SYSTEM/COMMON/SETUPFILES/REF
-#        *.targ:         $INS_ROOT/SYSTEM/COMMON/SETUPFILES/TARG
-#        *.fits:         $INS_ROOT/SYSTEM/COMMON/MIDAS/REF
-#        *.prg:          $INS_ROOT/SYSTEM/COMMON/MIDAS/PROCS
-#        <other files>:  $INS_ROOT/SYSTEM/COMMON/CONFIGFILES
-#
-#     2. create a copy of the INS_ROOT inside your module (usually under
-#	 <mod>/config/INS_ROOT) and place all files there.  Register the
-#        directory
-#
-#	    INS_ROOT_DIR = ../config/INS_ROOT
-#
-#	 All files inside the directory are copied to the corresponding
-#	 location in the INS_ROOT and either $INTROOT/config/INS_ROOT
-#	 or $VLTROOT/config/INS_ROOT.  This rule can be used to install
-#	 files not supported by INS_ROOT_FILES (or files that need to
-#	 be placed in a different location within INS_ROOT).
-#
-#
 #   - other files that need to be installed. They may be configuration files,
 #     templates, bitmaps, etc.
 #     Using "src" as current directory, list the complete (relative) filename,
@@ -715,7 +663,7 @@
 #                           ../app-defaults/X*
 #
 #
-#   The last information vltMakefile needs is the list of the NAME of all 
+#   The last information acsMakefile needs is the list of the NAME of all 
 #   possible C-sources (used to create automatic dependencies);
 #
 #        CSOURCENAMES = .....
@@ -755,7 +703,7 @@
 #
 #   To handle UNIX applications, MAKE_VXWORKS shall not be defined.
 #
-#   CAUTION: vltMakefile but does not allow to mix UNIX and VxWorks code
+#   CAUTION: acsMakefile but does not allow to mix UNIX and VxWorks code
 #            in the same directory (src/).
 #
 #   The flags MAKE_VXWORKS is passed to the compiler and can be used
@@ -770,24 +718,24 @@
 #          of the local module
 #        - INTROOT/vw/include and INTROOT/include
 #        - for every <dir> in INTLIST: <dir>/vw/include and <dir>/include
-#        - VLTROOT/vw/include and VLTROOT/include.
+#        - ACSROOT/vw/include and ACSROOT/include.
 #
 #
-#   SELECTING VLTMAKEFILE
-#   Redefining the variable MAKEDIR allows the user to select the vltMakefile
+#   SELECTING ACSMAKEFILE
+#   Redefining the variable MAKEDIR allows the user to select the acsMakefile
 #   The default values is:
 #
 #        #
 #        # INCLUDE STANDARDS
 #        # -----------------
-#        MAKEDIR = $(VLTROOT)/include
-#        include $(MAKEDIR)/vltMakefile
+#        MAKEDIR = $(ACSROOT)/include
+#        include $(MAKEDIR)/acsMakefile
 #
 #   Redefining the variable MAKEDIR allows the user to select a different 
-#   vltMakefile
+#   acsMakefile
 #
-#   CAUTION: this is allowed only for developing of vltMakefile or for 
-#            temporary fixes. 
+#   CAUTION: this redefinition is allowed only for developing of acsMakefile 
+#            or for temporary fixes. 
 #
 #
 #   TARGETS
@@ -835,13 +783,13 @@
 #        	@echo " . . . test done"
 #
 #
-#   In addition, vltMake provides some standard targets:
+#   In addition, acsMake provides some standard targets:
 #
-#     version    Print the version number of the current vltMake software
+#     version    Print the version number of the current acsMake software
 #
-#   The vltMakefile targets do_all, clean_all, clean_dist_all, etc are called 
+#   The acsMakefile targets do_all, clean_all, clean_dist_all, etc are called 
 #   from the Makefile. They are the ones providing standard rules. Internally, 
-#   vltMakefile defines other targets. For instance, there is a target 
+#   acsMakefile defines other targets. For instance, there is a target 
 #   for each executable or library, therefore so you can type:
 #
 #                        make name
@@ -849,11 +797,11 @@
 #   to rebuild the executable or the Tcl/Tk script ../bin/name or the 
 #   C-library ../lib/libname.a or the Tcl/Tk-library ../lib/libname.tcl.
 #
-#   NOTE: vltMakefile defines all targets as "phony" targets, i.e.,
+#   NOTE: acsMakefile defines all targets as "phony" targets, i.e.,
 #         their execution is not affected by the presence of a file with the 
 #         same name.
 #
-#   Such structure (Makefile-vltMakefile) allows you to customize the way you
+#   Such structure (Makefile-acsMakefile) allows you to customize the way you
 #   want: 
 #
 #       Example 1:
@@ -880,8 +828,8 @@
 #
 #
 #
-#   The rules offered by vltMakefile are based on the standard directory 
-#   structure defined by the VLT Programming Standards. 
+#   The rules offered by acsMakefile are based on the standard directory 
+#   structure defined by the ALMA Programming Standards. 
 #   The directories involved by the standard rules are:
 #            .  (src/ or test/)  where Makefile and sources are
 #            include/  contains .h files
@@ -890,13 +838,9 @@
 #            lib/      where to create lib<name>.*
 #            bin/      where to generate executable and scripts
 #            man/man-i where to create the roff file for manpage section-i 
-#            ALARMS/   where to look for ALARMS files
-#            ERRORS/   where to look for ERROR files
 #            CDT/      where to look for Command Definition Table files
 #            CIT/      where to look for Command Interpreter Table files
 #            CIT/      where to look for Command Interpreter Table files
-#            dbl/      where to look for Point Class and Branch Config Files
-#            DB/       where to build up the Point Config File structure
 #
 #   By default, the output of each rule is filtered, so only a minimum trace 
 #   of the make activity is printed. To have executed statements printed set
@@ -990,7 +934,7 @@
 #         - install
 #             - if <name> is in the public list: cp ../bin/<name> $(BIN)
 #             - if ../app-defaults/X<name> exists: 
-#                      cp ../app-defaults/X<name> $(VLTTOP)/app-defaults
+#                      cp ../app-defaults/X<name> $(PRJTOP)/app-defaults
 #
 #     - Tcl/tk library :  
 #         - all (<name>):
@@ -1030,29 +974,6 @@
 #               copy ALL THE FILES from all the sections mentioned (man<i>)
 #               to the correspondent $(MAN)/man<i>   
 #
-#     - CCS files:
-#         - man    : 
-#             - nothing
-#         - clean  : 
-#             - nothing
-#         - install: 
-#             - copy ../ALARMS/HELP/* into $(ALARMS)/HELP. i.e., the ALARMS
-#               directory of the installation target (INTROOT or 
-#               VLTROOT). Such directory exists only at workstation level.
-#             - if there is any xxxErrrors.h:
-#                 - copy xxxErrrors.h in the include/ directory at 
-#                   workstation level (so that the include file is available
-#                   for both.
-#                 - copy all files under ../ERRORS into $(ERRORS). i.e., the
-#                   ERRORS directory of the installation target (INTROOT or 
-#                   VLTROOT). Such directory exists only at workstation level.
-#             - copy ../CDT/*.cdt into $(CDT_DIR). i.e., the CDT
-#               directory of the installation target (INTROOT or 
-#               VLTROOT). Such directory exists only at workstation level.
-#             - copy ../CIT/*.cit into $(CIT_DIR). i.e., the vw/CIT
-#               directory of the installation target (INTROOT or 
-#               VLTROOT). Such directory exists only at lcu level.
-#
 #     - mif-file:
 #         - man (do_A2MIF): 
 #             - invoke the docA2MIF utility on each file in the list 
@@ -1071,12 +992,12 @@
 #                 - get "name" and "dir", i.e.: the filename and the parent 
 #                   directory
 #                 - depending on where "dir" exists, copy the file into 
-#                   VLTTOP/<dir> or in INSTALL_ROOT/<dir> accordingly
+#                   PRJTOP/<dir> or in INSTALL_ROOT/<dir> accordingly
 #                 - apply the protection mask to leave the file 
 #                   overwritable by the next installation
 #     
 #     
-#    (*) NOTE: the dependency files are produced and read  by vltMakefile. 
+#    (*) NOTE: the dependency files are produced and read  by acsMakefile. 
 #              Their automatic generation, provided by the C compiler and by 
 #              ad hoc utilities, is a powerful tool to keep makefiles simple 
 #              but complete.
@@ -1091,10 +1012,10 @@
 #
 #      - log the installation
 #              For any "make install" operation: 
-#                - a new record is added in is added in vltMakeInstall.log
-#                - the module version is updated in vltMakeInstall.config
+#                - a new record is added in is added in acsMakeInstall.log
+#                - the module version is updated in acsMakeInstall.config
 #              Both files are placed either in the current $INTROOT or  
-#              in $VLTROOT.
+#              in $ACSROOT.
 #
 #      - if INTROOT is defined, copy also source files.
 #              When the installation has an integration area as target, 
@@ -1128,47 +1049,18 @@
 #
 #   Anyhow, if you still want to add something, here some typical cases: 
 #         - not defining the variables or leaving them empty forces 
-#           vltMakefile not to use standard rules
+#           acsMakefile not to use standard rules
 #         - add targets (see previous example 1)
 #         - add additional action(s) to 'clean' or 'install' 
 #           (see previous example 2)
 #
 #   CAUTION: Please notice that the standard definition of "clean" deletes the 
-#            only files produced by the standard rules (vltMakefile). If you 
+#            only files produced by the standard rules (acsMakefile). If you 
 #            create other files, remember to add their deletion to the 
 #            "clean" target.
 #
 #
 #
-#
-#   DATABASE MAKEFILE
-#   A special usage of the standard makefile is to build a CCS Database.
-#   of an environment.
-#
-#   There are two cases of environments:
-#            - workstation environments: $VLTROOT/ENVIRONMENTS/<env>
-#            - lcu vwenvironments:       $VLTROOT/vw/BOOT/<env>
-#
-#   The Makefile is located in an environment: <env>/dbl/Makefile. 
-#  
-#   As part of the environment the following files/directories must exist:
-#  
-#   In such a case, only the "db" and "clean" targets are meaningful.
-#
-#         <env>
-#           |--/dbl/
-#           |    |--Makefile         flags and special rules to build ../DB
-#           |    |                    
-#           |    |--DATABASE.db      the definition of the database structure
-#           |    |                    
-#           |    |--.....db          other files used by DATABASE.db
-#           |    |--.....db          or by special rules in Makefile
-#           |                       
-#           |--/DB                   where to build the Point Config Files
-#
-#
-#   See "CCS OnLine DataBase Loader User Manual" VLT-MAN-ESO-17210-0707,
-#   1.1 or higher, for more.
 #
 #   REMARK: for the time being not all modules have been converted into
 #           "dbl"-readable format. Some are still providing db branches as
@@ -1189,7 +1081,7 @@
 #
 #   EXECUTING MAKE
 #   
-#   Every file handled by vltMake is relative to the directory where "Makefile"
+#   Every file handled by acsMake is relative to the directory where "Makefile"
 #   resides. Before launching "make", remember to set your current working 
 #   directory where your "Makefile" is (either src/ or test/)!
 #
@@ -1202,13 +1094,13 @@
 #     be sure that make version is the standard one (at present 3.70).
 #
 #
-#   - to check which vltMake you are using:
+#   - to check which acsMake you are using:
 #     
 #          example% make version
-#          vltMakefile - version 1.3 - OCT '94
+#          acsMakefile - version 1.3 - OCT '94
 #
 #
-#   - vltMakes by defaults provides a limited output. To get all executed 
+#   - acsMakes by defaults provides a limited output. To get all executed 
 #     statements printed define MAKE_VERBOSE environment variable: 
 #     
 #          example% setenv MAKE_VERBOSE=on
@@ -1236,7 +1128,7 @@
 #          example% make clean all man install
 #
 #
-#   - to select optimization options (see also vltMakefile)
+#   - to select optimization options (see also acsMakefile)
 #     
 #          example% make all OPTIMIZE='on' 
 #     
@@ -1246,7 +1138,7 @@
 #          example% make all CC='cc' CFLAGS='-g'  
 #
 #
-#   - to use the vltMakefile currently in the integration area:
+#   - to use the acsMakefile currently in the integration area:
 #     
 #          example% make MAKEDIR=$INTROOT/include
 #
@@ -1261,12 +1153,12 @@
 #          example% make                                      \
 #                     MAKEDIR=$INTROOT/include                \ (1)
 #                     MAKE_VERBOSE=on                         \ (2)
-#                     INTLIST='../../mod1:/somewhere/CCS/1.2' \ (3)
+#                     INTLIST='../../mod1:/somewhere/1.2'     \ (3)
 #                     TCL_CHECKER=true                        \ (4)
 #                     abc_NOSHARED=on                         \ (5)
 #                        all                                    (6)
 #
-#         (1) take MY "vltMake"
+#         (1) take MY "acsMake"
 #         (2) show all command lines
 #         (3) use also files currently in other areas
 #         (4) turn off syntax check on tcl files (use "true" 
@@ -1277,21 +1169,21 @@
 #     
 #   CAUTIONS
 #     - "string too long"
-#   In several places vltMakefile builds UNIX commands from list of files
+#   In several places acsMakefile builds UNIX commands from list of files
 #   or other names. If such string is longer than the kenrnel limit, the
 #   "string too long" message appears. 
 #   Unfortunately, it is impossible to prevent this. It depends to the number
-#   of files, the lenght of the INTROOT and VLTROOT directory paths, etc.
+#   of files, the lenght of the INTROOT and ACSROOT directory paths, etc.
 #   As a work around, try to break the module in smaller modules or
 #   to restructure the target so that shorter commands are created.
-#   For help you can contact "vltsccm" at ESO. (See Installation manual).
+#   For help you can contact "almasccm" at ESO. (See Installation manual).
 #
 #
 #   APPENDIX
 #
 #   Guidelines To Update Makefile from olded versions.
 # 
-#   $VLTROOT/include/Makefile_*.template shows the up-to-date format 
+#   $ACSROOT/include/Makefile_*.template shows the up-to-date format 
 #   of a Makefile.
 # 
 #   Change your Makefile to make it compliant with the current version.

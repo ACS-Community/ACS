@@ -1,0 +1,11 @@
+1 - ..doxygen 
+1 - 
+1 - man-pages...
+1 - ....section 2:
+1 - 	acsMakeMan2.tcl
+1 - ....section n:
+1 - 	acsMakeMann.tcl
+1 - ..local pages:
+1 - 	acsMakeManl.tcl
+1 -  ASCII to MIF:
+1 -  . . . man page(s) done

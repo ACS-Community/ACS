@@ -188,6 +188,8 @@ if [ "$OS" = "$CYGWIN_VER" ]; then
 else
   bash --login ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
 fi
+echo -n "buildMaven"
+./buildMaven && echo_success || echo_failure
 echo -n "buildAnt"
 ./buildAnt && echo_success || echo_failure
 echo  -n "buildJacORB" 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry excluding="CDB/|ref/" kind="src" path="test"/>
 	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.15.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/mail.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jcont.jar"/>
@@ -14,7 +14,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acslog.jar"/>
@@ -48,5 +47,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
-	<classpathentry kind="output" path="src"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jacsutil2.jar"/>
+	<classpathentry kind="output" path="lib"/>
 </classpath>

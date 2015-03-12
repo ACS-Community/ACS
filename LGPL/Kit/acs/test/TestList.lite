@@ -49,3 +49,8 @@
 14 SOURCE acsMakeInstall4.tcl \
    makeInstallTest4 "/usr/bin/make -f MakefileInstallTest clean all install PY_PACKAGES=AcsPyTestPkg2" \
    EPILOGUE "rm -Rf ../lib/python/site-packages/AcsPyTestPkg2 myIntroot"
+
+# Check that manpages can be made (see also ICT-3851)
+20 PROLOGUE "rm -Rf ../man/man2 ../man/mann/makeMann.n ../man/manl/makeManl.l" \
+   makeMan "/usr/bin/make -f MakefileMan man" \
+   EPILOGUE "rm -Rf ../man/man2 ../man/mann/makeMann.n ../man/manl/makeManl.l"

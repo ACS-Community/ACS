@@ -11,6 +11,26 @@
 # gchiozzi 2003-01-09 Removed some echo messages
 # gchiozzi 2002-12-11 created from VLT buildKit
 
+#*******************************************************************************
+# ALMA - Atacama Large Millimeter Array
+# Copyright (c) ESO - European Southern Observatory, 2014
+# (in the framework of the ALMA collaboration).
+# All rights reserved.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#*******************************************************************************
 
 #************************************************************************
 #   NAME
@@ -42,22 +62,23 @@ ERROR=true
 #*****************************************************
 
 #
-#   To do "vlt" I need "doc", to do "doc" I need "vlt"!
+#   To do "acs" I need "doc", to do "doc" I need "acs"!
 #     Firts the egg or first the hen?
 #
-#   To make it simple, I do vlt first, ignoring the errors produced by the
+#   To make it simple, I do acs first, ignoring the errors produced by the
 #   man pages that cannot yet been generated (doDocManPages), and then 
 #   doc is done. When both are ready, I'll start the real installation
-#   from vlt, then doc, then all the others.
+#   from acs, then doc, then all the others.
 #
 echo "$SEPARATOR"
 echo "preparing installation . . ."
 
 #
-# use the vltMakefile in the tape
+# use the acsMakefile in the distribution
 #MAKE="make -k MAKEDIR=$INSTALL_ROOT/vlt/include INTLIST=$INSTALL_ROOT/vlt MAKE_VERBOSE=on"
-# Please note that LOCALDIR is used by vltMakefile
-MAKE="make -k MAKEDIR=$INSTALL_ROOT/Kit/vlt/include LOCALDIR=$INSTALL_ROOT/Kit/vlt"
+#!## Please note that LOCALDIR is used by vltMakefile
+#!#MAKE="make -k MAKEDIR=$INSTALL_ROOT/Kit/vlt/include LOCALDIR=$INSTALL_ROOT/Kit/vlt"
+MAKE="make -k MAKEDIR=$INSTALL_ROOT/Kit/acs/include INTLIST=$INSTALL_ROOT/Kit/acs"
 
 #
 # give a warning to error file readers!
@@ -72,29 +93,29 @@ echo " .\c"
 
 CURR_DIR=`pwd`
 echo now in `pwd`
-cd $INSTALL_ROOT/Kit/vlt/src
+cd $INSTALL_ROOT/Kit/acs/src
 echo now in `pwd`
 
-# I need some vltMakeXxxxx utilities executable and in the path
-chmod +x vltMakeCleanDB
-chmod +x vltMakeCopySources
-chmod +x vltMakeExecutableDependencies
-chmod +x vltMakeIndexFilesDependencies
-chmod +x vltMakeInstallErrorFiles
-chmod +x vltMakeInstallAlarmFiles
-chmod +x vltMakeInstallFiles
-chmod +x vltMakeInstallLogFiles
-chmod +x vltMakeInstallTableFiles
-chmod +x vltMakeLibraryDependencies
-chmod +x vltMakeLogInstallation
-chmod +x vltMakePanelDependencies
-chmod +x vltMakeScriptDependencies
-chmod +x vltMakeTclLib
-chmod +x vltMakeTclLibDependencies
-chmod +x vltMakeTclScript
-chmod +x vltMakeTclScriptDependencies
+# I need some acsMakeXxxxx utilities executable and in the path
+#!#chmod +x vltMakeCleanDB
+chmod +x acsMakeCopySources
+#!#chmod +x vltMakeExecutableDependencies
+#!#chmod +x vltMakeIndexFilesDependencies
+#!#chmod +x vltMakeInstallErrorFiles
+#!#chmod +x vltMakeInstallAlarmFiles
+chmod +x acsMakeInstallFiles
+#!#chmod +x vltMakeInstallLogFiles
+#!#chmod +x vltMakeInstallTableFiles
+#!#chmod +x vltMakeLibraryDependencies
+chmod +x acsMakeLogInstallation
+#!#chmod +x vltMakePanelDependencies
+#!#chmod +x vltMakeScriptDependencies
+chmod +x acsMakeTclLib
+#!#chmod +x vltMakeTclLibDependencies
+chmod +x acsMakeTclScript
+#!#chmod +x vltMakeTclScriptDependencies
 
-PATH=$INSTALL_ROOT/Kit/vlt/src:${PATH}
+PATH=$INSTALL_ROOT/Kit/acs/src:${PATH}
 export PATH
 hash -r
 

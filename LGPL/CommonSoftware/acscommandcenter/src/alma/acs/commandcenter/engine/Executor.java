@@ -13,6 +13,7 @@ import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.ACSErr.Completion;
@@ -596,8 +597,7 @@ public class Executor {
 	/* msc 2009-12: this method has never thrown exceptions, instead they can be detected through
 	 * Flow listening, and as of today also by looking at the return value. Starting to throw exceptions
 	 * would be too big a change that I don't want to risk. I have no time to verify it doesn't harm. */
-	static public Exception remoteDaemonForServices(String host, int instance, boolean startStop, String cmdFlags,
-			NativeCommand.Listener listener) {
+	static public Exception remoteDaemonForServices(String host, int instance, boolean startStop, String cmdFlags, NativeCommand.Listener listener) {
 		if (listener != null) {
 			listener.stdoutWritten(null, "\nIn daemon mode, output cannot be displayed.\n"
 					+ "See logs in <daemon-owner>/.acs/commandcenter on host " + host + "\n");
@@ -606,46 +606,50 @@ public class Executor {
 		String info = ((startStop) ? "Starting" : "Stopping") + " Acs Suite on host '" + host + "' (instance "+ instance + ")";
 		remoteServicesDaemonFlow.reset(info);
 
-		String daemonLoc = AcsLocations.convertToServicesDaemonLocation(host);
 
-		org.omg.CORBA.ORB orb;
-		AcsCorba acsCorba = null;
-		remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.INIT_CORBA);
+		ServicesDaemon daemon = null;
+
+		String step = ""; // msc 2014-11 ICT-3753: finer-grained logging
 		try {
-			acsCorba = firestarter.giveAcsCorba();			
+			org.omg.CORBA.ORB orb;
+			AcsCorba acsCorba = null;
+			
+			remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.INIT_CORBA);
+			step = "access acs-corba object";
+			acsCorba = firestarter.giveAcsCorba();	// throws OrbInitException
+			step = "access orb";
 			orb = acsCorba.getORB();
-		} catch (OrbInitException exc) {
-			remoteServicesDaemonFlow.failure(exc);
-			return new Exception(RemoteServicesDaemonFlow.INIT_CORBA+": "+exc.getMessage(), exc);
-		}
-		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.INIT_CORBA);
+			remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.INIT_CORBA);
 
 
-		ServicesDaemon daemon;
-		remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.CONNECT_DAEMON);
-		try {
+			
+			remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.CONNECT_DAEMON);
+			step = "convert host name to daemon address";
+			String daemonLoc = AcsLocations.convertToServicesDaemonLocation(host);
+			step = "convert daemon address to corba reference";
 			org.omg.CORBA.Object object = orb.string_to_object(daemonLoc);
+			step = "narrow corba reference to daemon object";
 			daemon = ServicesDaemonHelper.narrow(object);
+			step = "sanity check daemon object";
 			if (daemon == null)
-				throw new NullPointerException("received null trying to retrieve acsdaemon on "+host);
-			if (daemon._non_existent()) // this may be superfluous with daemons but shouldn't hurt either
-				throw new RuntimeException("acsdaemon not existing on "+host);
-		} catch (RuntimeException exc) {
-			remoteServicesDaemonFlow.failure(exc);
-			return new Exception(RemoteServicesDaemonFlow.CONNECT_DAEMON+": "+exc.getMessage(), exc);
-		}
-		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.CONNECT_DAEMON);
+				throw new NullPointerException("received null trying to retrieve acsdaemon "+daemonLoc);
+			try {
+				if (daemon._non_existent()) // this may be superfluous with daemons but shouldn't hurt either
+					log.log (Level.INFO, "acsdaemon '"+daemonLoc+"' reported as non_existent, trying to use it nonetheless.");
+			} catch (Exception exc) {log.log (Level.INFO, "problem verifying acsdaemon "+daemonLoc+" exists, trying to use it anyhow.", exc);}
+			remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.CONNECT_DAEMON);
 
-		try {
 
+			
 			remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.SEND_COMMAND);
 			final BlockingQueue<Completion> sync = new ArrayBlockingQueue<Completion>(1);
 			DaemonSequenceCallbackPOA daemonCallbackImpl = new DaemonSequenceCallbackPOA() {
 				public void done(Completion comp) {sync.add(comp);}
 				public void working(String service, String host, short instance_number, Completion comp) {}
 			};
+			step = "create daemon callback";
 			DaemonSequenceCallback daemonCallback = DaemonSequenceCallbackHelper.narrow(acsCorba.activateOffShoot(daemonCallbackImpl, acsCorba.getRootPOA()) );
-
+			step = "send request to daemon";
 			if (startStop == true)
 				daemon.start_acs(daemonCallback, (short)instance, cmdFlags);
 			else
@@ -653,34 +657,42 @@ public class Executor {
 			remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.SEND_COMMAND);
 
 
+
+			remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
 			// The services daemon's start/stop methods are implemented asynchronously,
 			// which means we need to wait for the callback notification.
 			// @TODO: Perhaps a 10 minute timeout is too much though?
-			remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
+			step = "poll on reply queue";
 			long timeout = 10; TimeUnit timeoutUnit = TimeUnit.MINUTES;
 			Completion daemonReplyRaw = sync.poll(timeout, timeoutUnit);
-			if (daemonReplyRaw != null) {
-				AcsJCompletion daemonReply = AcsJCompletion.fromCorbaCompletion(daemonReplyRaw);
-				if (daemonReply.isError()) {
-					AcsJException exc = daemonReply.getAcsJException();
-					remoteServicesDaemonFlow.failure(exc);
-					return new Exception(RemoteServicesDaemonFlow.AWAIT_RESPONSE+": "+exc.getMessage(), exc);
-				}
-			}
-			else {
-				// Timeout while waiting for callback from the daemon
-				RuntimeException exc = new RuntimeException("Timeout: Acs daemon did not "+(startStop?"start":"stop")+" Acs within "+timeout+" "+timeoutUnit.toString());
-				remoteServicesDaemonFlow.failure(exc);
-				return new Exception(RemoteServicesDaemonFlow.AWAIT_RESPONSE+": "+exc.getMessage(), exc);
-			}
+			if (daemonReplyRaw == null)
+				throw new RuntimeException("Timeout: Acs daemon did not "+(startStop?"start":"stop")+" Acs within "+timeout+" "+timeoutUnit);
 
+			step = "deserialize daemon response";
+			AcsJCompletion daemonReply = AcsJCompletion.fromCorbaCompletion(daemonReplyRaw);
+			if (daemonReply.isError()) {
+				AcsJException exc = daemonReply.getAcsJException();
+				throw new Exception("daemon responded with error "+exc.getMessage(), exc);
+			}
 			remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
-			return null;
 
+
+			return null;
 
 		} catch (Exception exc) {
 			remoteServicesDaemonFlow.failure(exc);
-			return new Exception(remoteServicesDaemonFlow.current()+": "+exc.getMessage(), exc);
+			return new Exception(remoteServicesDaemonFlow.current()+":"+step+": "+exc.getMessage(), exc);
+
+
+		} finally {
+			// msc 2014-11 ICT-3753: omc-to-daemon connection can get stale. this apparently helps.
+			if (daemon != null) {
+				try {
+					daemon._release();
+				} catch (Exception exc) {
+					log.log (Level.INFO, "failure releasing internal resources for daemon, ignoring: "+exc.getMessage(), exc);
+				}
+			}
 		}
 	}
 
@@ -712,56 +724,71 @@ public class Executor {
    	String info = ((startStop)? "Starting" : "Stopping") + " container "+contName+" on host '"+host+"' (instance "+instance+")";
    	remoteContainerDaemonFlow.reset(info);
 
-		String daemonLoc = AcsLocations.convertToContainerDaemonLocation(host);
+   	
+   	ContainerDaemon daemon = null;
 
-		org.omg.CORBA.ORB orb = null;
-		remoteContainerDaemonFlow.trying(RemoteContainerDaemonFlow.INIT_CORBA);
+		String step = ""; // msc 2014-11 ICT-3753: finer-grained logging
 		try {
+			org.omg.CORBA.ORB orb = null;
+
+			remoteContainerDaemonFlow.trying(RemoteContainerDaemonFlow.INIT_CORBA);
+			step = "access orb";
 			orb = firestarter.giveOrb();
-		} catch (OrbInitException exc) {
-			remoteContainerDaemonFlow.failure(exc);
-			return new Exception(RemoteContainerDaemonFlow.INIT_CORBA+": "+exc.getMessage());
-		}
-		remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.INIT_CORBA);
-		
-		
-		ContainerDaemon daemon;
-		remoteContainerDaemonFlow.trying(RemoteContainerDaemonFlow.CONNECT_DAEMON);
-		try {
+			if (orb == null)
+				throw new NullPointerException("received null when trying to access local orb");
+			remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.INIT_CORBA);
+			
+	
+			
+			remoteContainerDaemonFlow.trying(RemoteContainerDaemonFlow.CONNECT_DAEMON);
+			step = "convert host name to daemon address";
+			String daemonLoc = AcsLocations.convertToContainerDaemonLocation(host);
+			step = "convert daemon address to corba reference";
 			org.omg.CORBA.Object object = orb.string_to_object(daemonLoc);
+			step = "narrow corba reference to daemon object";
 			daemon = ContainerDaemonHelper.narrow(object);
+			step = "sanity check daemon object";
 			if (daemon == null)
-				throw new NullPointerException("received null trying to retrieve acsdaemon on "+host);
-			if (daemon._non_existent()) // this may be superfluous with daemons but shouldn't hurt either
-				throw new RuntimeException("acsdaemon not existing on "+host);
-		} catch (RuntimeException exc) {
-			remoteContainerDaemonFlow.failure(exc);
-			return new Exception(RemoteContainerDaemonFlow.CONNECT_DAEMON+": "+exc.getMessage());
-		}
-		remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.CONNECT_DAEMON);
+				throw new NullPointerException("received null trying to retrieve acsdaemon "+daemonLoc);
+			try {
+				if (daemon._non_existent()) // this may be superfluous with daemons but shouldn't hurt either
+					log.log (Level.INFO, "acsdaemon '"+daemonLoc+"' reported as non_existent, trying to use it nonetheless.");
+			} catch (Exception exc) {log.log (Level.INFO, "problem verifying acsdaemon "+daemonLoc+" exists, trying to use it anyhow.", exc);}
+			remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.CONNECT_DAEMON);
 
-		
-		remoteContainerDaemonFlow.trying(RemoteContainerDaemonFlow.SEND_COMMAND);
-		try {
+
+
+			remoteContainerDaemonFlow.trying(RemoteContainerDaemonFlow.SEND_COMMAND);
+			step = "send request to daemon";
 			if (startStop == true) {
 				daemon.start_container(contType, contName, (short)instance, contTypeMods, cmdFlags);
 			} else {
 				daemon.stop_container(contName, (short)instance, cmdFlags);
 			}
+			step = "wait for completion";
+			// i'm adding this option of sleeping a little, simply because it gives the user a feeling of  
+			// "something is happening". this can be reconfigured, however, if desired (omc will do so).
+			try {Thread.sleep(remoteDaemonForContainersCompletionDelay);} catch (InterruptedException exc) {}
+			remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.SEND_COMMAND);
+
+
+			return null;
+
 		} catch (Exception exc) {
 			remoteContainerDaemonFlow.failure(exc);
-			return new Exception(RemoteContainerDaemonFlow.SEND_COMMAND+": "+exc.getMessage());
+			return new Exception(remoteContainerDaemonFlow.current()+":"+step+": "+exc.getMessage(), exc);
+		
+		} finally {
+			// msc 2014-11 ICT-3753: omc-to-daemon connection can get stale. this apparently helps.
+			if (daemon != null) {
+				try {
+					daemon._release();
+				} catch (Exception exc) {
+					log.log (Level.INFO, "failure releasing internal resources for daemon, ignoring: "+exc.getMessage(), exc);
+				}
+			}
 		}
 
-		// i'm adding this possibility to sleep a little simply because 
-		// it gives the user a feeling of "something is happening".
-		// this can be reconfigured, however, if desired (omc will do so).
-		try {
-			Thread.sleep(remoteDaemonForContainersCompletionDelay);
-		} catch (InterruptedException exc) {}
-		
-		remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.SEND_COMMAND);
-		return null;
    }
 
    static public int remoteDaemonForContainersCompletionDelay = 2500;

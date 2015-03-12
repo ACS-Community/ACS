@@ -61,8 +61,8 @@ man   : do_man
 install : install_all
 	# line below is superfluous with new acsMakefile
 	# but will be needed as long as the old one is in use
-	@cp $(foreach idl,$(IDL_TO_INSTALL),../idl/$(idl).idl) $(VLTTOP)/idl
-	@cp $(foreach jar,$(IDL_FILES_L),../lib/$(jar).jar) $(VLTTOP)/lib
+	@cp $(foreach idl,$(IDL_TO_INSTALL),../idl/$(idl).idl) $(PRJTOP)/idl
+	@cp $(foreach jar,$(IDL_FILES_L),../lib/$(jar).jar) $(PRJTOP)/lib
 
 	@echo " . . . installation done"
 

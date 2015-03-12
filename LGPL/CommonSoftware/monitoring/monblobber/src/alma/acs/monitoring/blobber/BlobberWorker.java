@@ -484,10 +484,8 @@ public class BlobberWorker extends CancelableRunnable {
 			// close the transaction
 			for (MonitorDAO monitorDAO : myMonitorDAOList) {
 				try {
-					if (myLogger.isLoggable(Level.FINE)) {
-						myLogger.fine("myMonitorDAO.closeTransactionStore() for: " + dataBlocks.length
-								+ " MonitorDataBlocks from collector " + collector.name());
-					}
+					myLogger.fine("myMonitorDAO.closeTransactionStore() for: " + dataBlocks.length
+							+ " MonitorDataBlocks from collector " + collector.name());
 					monitorDAO.closeTransactionStore();
 				} catch (Exception ex) {
 					myLogger.log(Level.WARNING, "Exception caught. Some monitoring data couldn't be archived", ex);

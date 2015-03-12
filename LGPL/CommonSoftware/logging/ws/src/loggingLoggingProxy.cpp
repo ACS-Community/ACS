@@ -1272,9 +1272,9 @@ LoggingProxy::sendCache()
 	  // start one worker thread
 	  // note this method is called when under m_mutex lock, so this is safe
 #ifndef MAKE_VXWORKS
-	  if (ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(LoggingProxy::worker), this) != -1)
+	    if (ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(LoggingProxy::worker), this, THR_NEW_LWP|THR_DETACHED) != -1)
 #else
-	  if (ACE_Thread::spawn((ACE_THR_FUNC)(LoggingProxy::worker), this) != -1)
+	  if (ACE_Thread::spawn((ACE_THR_FUNC)(LoggingProxy::worker), this, THR_NEW_LWP|THR_DETACHED) != -1)
 #endif
 	  {
 	  	m_threadCreated = true;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry excluding="CDB/|ref/" kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jms.jar"/>
@@ -39,5 +39,5 @@
 	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/AlarmSourceSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeLifeCycle.jar"/>
-	<classpathentry kind="output" path="src"/>
+	<classpathentry kind="output" path="lib"/>
 </classpath>

@@ -21,9 +21,9 @@
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=N' on all terminals running ACS clients.
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] The acsStartORBSRVC script has now completed!
 1 - Manager Application initialized
+1 - ----------T--:--:--.--- INFO [acsManager] Manager is up and running
 1 - ----------T--:--:--.--- INFO [acsStart] For this ACS session, please do an 'export ACS_INSTANCE=N' on all terminals running ACS clients.
 1 - ----------T--:--:--.--- INFO [acsStart] ACS is up and running
-1 - ----------T--:--:--.--- INFO [acsManager] Manager is up and running
 2 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'something'
 2 - Mock Java container
 3 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'something'

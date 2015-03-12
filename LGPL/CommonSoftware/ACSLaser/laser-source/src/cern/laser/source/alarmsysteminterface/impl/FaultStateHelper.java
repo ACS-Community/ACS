@@ -5,6 +5,9 @@
  */
 package cern.laser.source.alarmsysteminterface.impl;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -12,6 +15,7 @@ import org.apache.log4j.Category;
 
 import cern.laser.source.alarmsysteminterface.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.message.Property;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * Helper class for marshaling/unmarshaling to/from FaultState instances and generated FaultState instances for XML
@@ -43,7 +47,7 @@ public class FaultStateHelper {
     generated.setMember(state.getMember());
     generated.setCode(state.getCode());
     generated.setDescriptor(state.getDescriptor());
-    generated.setUserTimestamp(TimestampHelper.marshalUserTimestamp(state.getUserTimestamp()));
+    generated.setUserTimestamp(IsoDateFormat.formatDate(new Date(state.getUserTimestamp().getTime())));
 
     cern.laser.source.alarmsysteminterface.impl.message.Properties properties = new cern.laser.source.alarmsysteminterface.impl.message.Properties();
     Enumeration names = state.getUserProperties().propertyNames();
@@ -73,7 +77,17 @@ public class FaultStateHelper {
     state.setMember(generated.getMember());
     state.setCode(generated.getCode());
     state.setDescriptor(generated.getDescriptor());
-    state.setUserTimestamp(TimestampHelper.unmarshalUserTimestamp(generated.getUserTimestamp()));
+    
+    Date timestamp;
+    try {
+    	timestamp=IsoDateFormat.parseIsoTimestamp(generated.getUserTimestamp());
+    	state.setUserTimestamp(new Timestamp(timestamp.getTime()));
+    } catch (ParseException pe) {
+    	System.err.println("Error paring ISO timestamp from "+generated.getUserTimestamp());
+    	System.err.println("Setting to surrent time! "+generated.getUserTimestamp());
+    	pe.printStackTrace(System.err);
+    	state.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
+    }
 
     Properties properties = new Properties();
 

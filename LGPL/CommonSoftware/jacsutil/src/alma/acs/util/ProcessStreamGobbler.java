@@ -107,7 +107,7 @@ public class ProcessStreamGobbler
 	 * @throws InterruptedException 
 	 */
 	public boolean gobble(long timeout, TimeUnit unit) throws InterruptedException {
-		ExecutorService exsrv = new ThreadPoolExecutor(0, 2, 0L, TimeUnit.MILLISECONDS,
+		ExecutorService exsrv = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS,
 				new LinkedBlockingQueue<Runnable>(), tf);
 
 		runOut = new GobblerRunnable(proc.getInputStream(), stdout, "stdout", DEBUG);
