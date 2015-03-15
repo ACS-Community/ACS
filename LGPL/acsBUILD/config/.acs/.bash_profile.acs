@@ -728,7 +728,12 @@ fi
 # Maven stuff
 if [ X"$M2_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   M2_HOME=$ALMASW_INSTDIR/maven
+   if [ "$DISTRO" = DEBIAN ]
+   then
+      unset M2_HOME
+   else
+      M2_HOME=$ALMASW_INSTDIR/maven
+   fi
 fi
 
 # RTOS
