@@ -16,8 +16,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES = ../idl/acsErrTypeContainerServices.xml acsContainerServices.cpp ../idl/acsErrTypeLifeCycle.xml
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES = ../idl/acsErrTypeContainerServices.xml acsContainerServices.cpp ../idl/acsErrTypeLifeCycle.xml
 #
 
 #

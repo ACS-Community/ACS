@@ -50,7 +50,6 @@
 using namespace std;
 using namespace maci;
 
-ACE_RCSID(acssampPerfClient, PerfClient, "$Id: acssampPerfClient.cpp,v 1.10 2008/10/07 06:41:54 cparedes Exp $")
     
 
 static int endme = 1;

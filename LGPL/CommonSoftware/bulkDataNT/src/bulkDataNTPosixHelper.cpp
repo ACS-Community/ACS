@@ -61,7 +61,7 @@ bool AcsBulkdata::Pthread::CondVar::wait(pthread_cond_t &cond, pthread_mutex_t &
     //
     // convert timeout parameter to an absolute time
     //
-    timespec abstime = UTCtoACE_Time_Value(getTimeStamp() + to - UTCtoUNIXTimeBaseOffset * ACE_static_cast(ACE_UINT32, 10000000));
+    timespec abstime = UTCtoACE_Time_Value(getTimeStamp() + to - UTCtoUNIXTimeBaseOffset * static_cast<ACE_UINT32>( 10000000));
 
     rc = pthread_cond_timedwait(&cond, &mux, &abstime);
 
@@ -126,7 +126,7 @@ bool AcsBulkdata::Pthread::Mutex::lock(const char *desc, pthread_mutex_t &m, con
     //
     // timeout as an absolute timestamp
     //
-    timespec ts = UTCtoACE_Time_Value(getTimeStamp() + to - UTCtoUNIXTimeBaseOffset * ACE_static_cast(ACE_UINT32, 10000000));
+    timespec ts = UTCtoACE_Time_Value(getTimeStamp() + to - UTCtoUNIXTimeBaseOffset * static_cast<ACE_UINT32>( 10000000));
 
 
     //
@@ -192,7 +192,7 @@ bool AcsBulkdata::Pthread::Semaphore::lock(const char *desc, sem_t &s, const ACS
     //
     // timeout as an absolute timestamp
     //
-    timespec ts = UTCtoACE_Time_Value(getTimeStamp() + to - UTCtoUNIXTimeBaseOffset * ACE_static_cast(ACE_UINT32, 10000000));
+    timespec ts = UTCtoACE_Time_Value(getTimeStamp() + to - UTCtoUNIXTimeBaseOffset * static_cast<ACE_UINT32>( 10000000));
 
     //
     // take the semaphore

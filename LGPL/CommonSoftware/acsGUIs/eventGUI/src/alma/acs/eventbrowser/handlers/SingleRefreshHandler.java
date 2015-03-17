@@ -31,7 +31,7 @@ import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.core.services.statusreporter.StatusReporter;
 import org.eclipse.e4.ui.di.UISynchronize;
 
-import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.nsstatistics.EventModel;
 import alma.acs.eventbrowser.status.StatusLineWriter;
 
 /**

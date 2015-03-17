@@ -12,7 +12,6 @@
 #include <recoveryStore.h>
 #include <logging.h>
 
-ACE_RCSID(recovery, recoveryStore_test, "$Id: recoveryStore_Test.cpp,v 1.9 2006/09/01 02:20:54 cparedes Exp $")
 
  using namespace recovery;
 

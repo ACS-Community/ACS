@@ -26,8 +26,6 @@ namespace ddsnc{
 //		DWVAR dataWriter;	
 		DDS::InstanceHandle_t handler;
 
-		int attachToTransport();
-
 		/**
 		 * Create the participant, initialize the publisher with the partition
 		 * provided in the channelName constructor parameter, if there is not

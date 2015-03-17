@@ -22,7 +22,7 @@ package alma.acs.eventbrowser.parts;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 
-import alma.acs.eventbrowser.model.AbstractEventData;
+import alma.acs.nsstatistics.AbstractEventData;
 import alma.acs.util.UTCUtility;
 
 public class TimeStampLabelProvider extends ColumnLabelProvider {

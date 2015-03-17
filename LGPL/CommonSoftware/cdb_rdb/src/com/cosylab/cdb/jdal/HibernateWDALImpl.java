@@ -1528,16 +1528,24 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		return xml;
 	}
 
+	/**
+	 * TODO: Double are limited to Float. This should be fixed!
+	 * Note that storing The highest (lowest) possible value (@BINARY_DOUBLE oracle datatype) 
+	 * in oracle returns an error (even if oracle accepts these values if set with SQL update)
+	 */
 	private final static Double limitDouble(final Double value)
-	{
+	{	
 		if (value == null)
 			return null;
-		// TODO @todo Oracle throws overflow exception - reaseon for this method
-		/*if (value.doubleValue() == Double.MAX_VALUE)
-			return new Double(1.7976931348623155E308);
-		else if (value.doubleValue() == Double.MIN_VALUE)
-			return new Double(-1.7976931348623155E308);
-		*/return new Double(value.floatValue());
+		
+		//To handle the case for Round to the nearest rule that make double to go overflow/+infinity and 
+		//underflow/-infinity which in turn cause MySQL exception
+		if (value.doubleValue() >= Float.MAX_VALUE)
+            return new Double(Float.MAX_VALUE);
+        else if (value.doubleValue() <= -Float.MAX_VALUE)
+            return new Double(-Float.MAX_VALUE);
+		
+		return new Double(value.floatValue());
 	}
 
 	private final static String nonEmptyString(final String value, final String defaultValue)

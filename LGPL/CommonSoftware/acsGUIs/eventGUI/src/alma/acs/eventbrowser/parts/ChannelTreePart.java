@@ -45,7 +45,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import alma.acs.eventbrowser.handlers.NotifyServiceUpdateJob;
-import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.nsstatistics.EventModel;
 import alma.acs.eventbrowser.parts.ChannelTreeProviders.ChannelTreeContentProvider;
 import alma.acs.eventbrowser.parts.ChannelTreeProviders.ChannelTreeLabelProvider;
 import alma.acs.eventbrowser.status.StatusLineWriter;

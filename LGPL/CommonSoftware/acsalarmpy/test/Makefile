@@ -42,7 +42,7 @@ PY_SCRIPTS_L       = test_Acsalarmpy \
                      test_Acsalarmpy_AlarmSystemInterface.py \
                      test_Acsalarmpy_ACSAlarmSystemInterfaceProxy.py
 
-PY_PACKAGES_L      = UnitTests
+PY_PACKAGES_L      = 
 
 
 #

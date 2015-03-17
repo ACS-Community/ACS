@@ -47,7 +47,6 @@
 const static int ON_ACTION  = 0;
 const static int OFF_ACTION = 1;
 
-ACE_RCSID(acsexmpl, acsexmplLampImpl, "$Id: acsexmplLampImpl.cpp,v 1.101 2008/10/01 04:30:47 cparedes Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////

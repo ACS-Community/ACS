@@ -6,9 +6,6 @@
 #include <loggingACEMACROS.h>
 #include <dds/DCPS/Service_Participant.h>
 #include <dds/DCPS/Marked_Default_Qos.h>
-#include <dds/DCPS/transport/framework/TheTransportFactory.h>
-#include <dds/DCPS/transport/framework/TransportImpl.h>
-#include <dds/DCPS/transport/simpleTCP/SimpleTcpConfiguration.h>
 
 const unsigned int DOMAIN_ID=411;
 
@@ -33,9 +30,7 @@ namespace ddsnc{
 
 		protected:
 		DDS::DomainParticipantFactory_ptr dpf;
-		OpenDDS::DCPS::TransportIdType transport_impl_id;
 		DDS::DomainParticipant_var participant;
-		OpenDDS::DCPS::TransportImpl_rch transport_impl;
 		DDS::Topic_var topic;
 		char* partitionName;
 		char* topicName;
@@ -72,16 +67,6 @@ namespace ddsnc{
 		 */
 		virtual ~DDSHelper();
 		int createParticipant();
-
-		/**
-		 *	Locates a Transport id not in use and assign it to transport_impl_id.
-		 *	The transport configuration is automatically configured by TAO
-		 *	pluggable framework.
-		 *	
-		 */
-		//Maybe this method could generate a race condition. It's neccessary to
-		//test more.
-		void initializeTransport();
 
 		/**
 		 * Initialize the topic and register the type supported by the topic, 

@@ -23,10 +23,10 @@ package alma.acs.eventbrowser.parts;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import alma.acs.eventbrowser.model.AbstractEventData;
-import alma.acs.eventbrowser.model.ArchiveEventData;
-import alma.acs.eventbrowser.model.EventData;
-import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.nsstatistics.AbstractEventData;
+import alma.acs.nsstatistics.ArchiveEventData;
+import alma.acs.nsstatistics.EventData;
+import alma.acs.nsstatistics.EventModel;
 
 public class ArchivingListContentProvider implements IStructuredContentProvider {
 

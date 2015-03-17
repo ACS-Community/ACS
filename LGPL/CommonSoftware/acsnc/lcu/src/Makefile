@@ -24,8 +24,8 @@
 #
 # Makefile for base class push structured event supplier & consumer
 #    None
-#------------------------------------------------------------------------
-LINK_FILES = acsncCDBProperties.cpp acsncArchiveConsumer.cpp acsncConsumerImpl.cpp acsncSupplierImpl.cpp acsncHelperImpl.cpp acsncORBHelperImpl.cpp acsncSimpleSupplierImpl.cpp acsncRTSupplierImpl.cpp acsncSimpleConsumerImpl.cpp acsncCircularQueue.cpp acsncReconnectionCallback.cpp
+#------------------------------------------------------------------------ 
+#!# (ICT-3855: commented out) LINK_FILES = acsncCDBProperties.cpp acsncArchiveConsumer.cpp acsncConsumerImpl.cpp acsncSupplierImpl.cpp acsncHelperImpl.cpp acsncORBHelperImpl.cpp acsncSimpleSupplierImpl.cpp acsncRTSupplierImpl.cpp acsncSimpleConsumerImpl.cpp acsncCircularQueue.cpp acsncReconnectionCallback.cpp
 
 
 #
@@ -94,10 +94,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	 do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_links clean_all 
+clean :  clean_all 
 	$(RM) ../idl/acsnc.idl
 	@echo " . . . clean done"
 

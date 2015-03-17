@@ -45,6 +45,15 @@ interface BaciPropTest :  ACS::CharacteristicComponent
 		// Set the value of the boolean property
 		void setBooleanVar(in boolean val);
 		
+		// Set the value of another boolean property
+		void setAnotherBooleanVar(in boolean val);
+		
+		// Set the value of the boolean property without alarms
+		void setBooleanNoAlarmsVar(in boolean val);
+		
+		// Set the value of the booleanSeq property
+		void setBooleanSeqVar(in ACS::booleanSeq val);
+		
 		// Set the value of the enum property
 		void setEnumVar(in AlarmEnum val);
 		
@@ -66,8 +75,17 @@ interface BaciPropTest :  ACS::CharacteristicComponent
 		// An enum property
 		readonly attribute ROAlarmEnum testEnumVar;
 		
-		// An boolean property
+		// A boolean property
 		readonly attribute ACS::ROboolean testBooleanVar;
+		
+		// Another boolean property
+		readonly attribute ACS::ROboolean testAnotherBooleanVar;
+		
+		// Boolean property without alarms
+		readonly attribute ACS::ROboolean testBooleanNoAlarmsVar;
+		
+		// A booleanSeq property
+		readonly attribute ACS::RObooleanSeq testBooleanSeqVar;
         };
 };
 

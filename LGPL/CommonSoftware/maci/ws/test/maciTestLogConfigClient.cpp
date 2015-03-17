@@ -25,7 +25,6 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
  using namespace maci;
 
-ACE_RCSID(maciLogConfigTestClient, maciLogConfigTestClient, "$Id: maciTestLogConfigClient.cpp,v 1.1 2007/10/03 20:08:20 cparedes Exp $")
 
 int main (int argc, char **argv)
 {
@@ -54,7 +53,7 @@ int main (int argc, char **argv)
     }
   catch ( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "main");
+    ex._tao_print_exception("main");
     }
 
   ACS_SHORT_LOG ((LM_INFO, "Exiting maciLogConfigTestClient..."));

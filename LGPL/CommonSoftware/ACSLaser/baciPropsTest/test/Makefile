@@ -94,7 +94,9 @@ SCRIPTS_L       = \
                                         baciDoublePropTest \
                                         baciEnumPropTest \
                                         baciPatternPropTest \
-                                        baciDoublePropCompleteTest
+                                        baciDoublePropCompleteTest \
+					baciBooleanPropTest \
+					baciBooleanSeqPropTest
 
 
 #

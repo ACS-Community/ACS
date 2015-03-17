@@ -100,7 +100,6 @@ Each method in the class shows an example.
 #include <acsutilTimeStamp.h>
 #include <string.h>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentClient, "$Id: acsexmplClientErrorComponent.cpp,v 1.13 2008/10/09 08:41:11 cparedes Exp $")
 using namespace maci;
 
 /*******************************************************************************/

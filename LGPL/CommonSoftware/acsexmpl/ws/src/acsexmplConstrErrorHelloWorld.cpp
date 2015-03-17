@@ -33,7 +33,6 @@
 #include <acsexmplErrTest.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplConstrErrorCompImpl, "$Id: acsexmplConstrErrorHelloWorld.cpp,v 1.2 2011/04/06 17:26:51 msekoran Exp $")
 
 /* ----------------------------------------------------------------*/
 ConstrErrorHelloWorld::ConstrErrorHelloWorld( 

@@ -38,7 +38,6 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
  using namespace maci;
  using namespace MACI_TEST;
 
-ACE_RCSID(maciTestClient, maciTestClient, "$Id: maciTestClient.cpp,v 1.96 2008/03/25 12:53:08 bjeram Exp $")
 
 typedef
   ACE_Hash_Map_Manager <ACE_CString, MaciTestClass_ptr, ACE_Null_Mutex>
@@ -198,7 +197,6 @@ int ProcessClient(int argc, const ACE_TCHAR *argv[]
   MaciTestClientImpl *mtci = new MaciTestClientImpl (
     clientName, g_Client->manager (), atoi(onPing));
   ClientInfo* ci = g_Client->manager ()->login (mtci->_this());
-  ACE_CHECK_RETURN(ERROR);
 
   mtci->setHandle (ci->h);
 
@@ -233,7 +231,6 @@ int ProcessAdministrator(int argc, const ACE_TCHAR *argv[]
     atoi(onPing));
 
   ClientInfo* ci = g_Client->manager ()->login (mtai->_this());
-  ACE_CHECK_RETURN(ERROR);
 
   mtai->setHandle (ci->h);
 
@@ -358,7 +355,6 @@ int ProcessGetComponent(int argc, const ACE_TCHAR *argv[])
     }
 
   MaciTestClass_ptr componentMTC = MaciTestClass::_narrow (component);
-  ACE_CHECK_RETURN (ERROR);
 
   if ((componentMTC != NULL) && (g_TestClasses.bind (curl, componentMTC) != 0))
     {
@@ -481,7 +477,6 @@ int ProcessGet_Object(int argc, const ACE_TCHAR *argv[])
     }
 
   MaciTestClass_ptr componentMTC = MaciTestClass::_narrow (component);
-  ACE_CHECK_RETURN (ERROR);
 
   if ((componentMTC != NULL) && (g_TestClasses.bind (curl, componentMTC) != 0))
     {
@@ -524,7 +519,6 @@ int ProcessGetComponentInfo(int argc, const ACE_TCHAR *argv[]
   HandleSeq_var seq = new HandleSeq(0);
   seq->length (0);
   cis = g_Client->manager ()->get_component_info (h, seq.in(), name_wc.c_str(), type_wc.c_str(), active_only);
-  ACE_CHECK_RETURN (ERROR);
 
   ACS_SHORT_LOG((LM_INFO,
 		 "%d components returned:",
@@ -568,7 +562,6 @@ int ProcessGetClientInfo(int argc, const ACE_TCHAR *argv[]
   HandleSeq_var seq = new HandleSeq(0);
   seq->length (0);
   cis = g_Client->manager ()->get_client_info (h, seq.in(), name_wc.c_str());
-  ACE_CHECK_RETURN (ERROR);
 
   ACS_SHORT_LOG((LM_INFO,
 		 "%d clients returned:",
@@ -612,7 +605,6 @@ int ProcessGetContainerInfo(int argc, const ACE_TCHAR *argv[]
   HandleSeq_var seq = new HandleSeq(0);
   seq->length (0);
   ais = g_Client->manager ()->get_container_info (h, seq.in(), name_wc.c_str());
-  ACE_CHECK_RETURN (ERROR);
 
   ACS_SHORT_LOG((LM_INFO,
 		 "%d containers returned:",
@@ -698,7 +690,6 @@ int ProcessReleaseComponent(int argc, const ACE_TCHAR *argv[]
 // 
 //
 //  g_Client->manager ()->release_components (h, curls.in ());
-//  ACE_CHECK_RETURN (ERROR);
 //
 //  for (int i = 0; i < argc-2; ++i)
 //    {
@@ -731,7 +722,6 @@ int ProcessInit(int argc, const ACE_TCHAR *argv[]
   g_Client->init (argc, (ACE_TCHAR**)argv);
 
   CORBA::String_var domain = g_Client->manager()->domain_name();
-  ACE_CHECK_RETURN(FATAL);
 
   if (domain.in())
       ACS_SHORT_LOG((LM_INFO, "Domain: '%s'.", domain.in()));
@@ -899,7 +889,6 @@ int ProcessTestServer(int argc, const ACE_TCHAR *argv[]
     }
 
   CORBA::Boolean rv = mtc->test ();
-  ACE_CHECK_RETURN (ERROR);
 
   if (rv == FALSE)
     return ERROR;
@@ -933,7 +922,6 @@ int ProcessShutdown(int argc, const ACE_TCHAR *argv[]
       HandleSeq_var seq = new HandleSeq(0);
       seq->length (0);
       ais = g_Client->manager ()->get_container_info (ci.h, seq.in(), container);
-      ACE_CHECK_RETURN (ERROR);
 
       for (CORBA::ULong i = 0; i < ais->length (); ++i)
         ais[i].reference->shutdown (action);
@@ -942,7 +930,6 @@ int ProcessShutdown(int argc, const ACE_TCHAR *argv[]
     {
       ACS_SHORT_LOG((LM_INFO, "Shutting down the Manager..."));
       g_Client->manager ()->shutdown (ci.h, action);
-      ACE_CHECK_RETURN (ERROR);
     }
   return SUCCESS;
 }
@@ -980,7 +967,6 @@ int ProcessReset(int argc, const ACE_TCHAR *argv[]
       argc2 = 1;
 
       ProcessLogout (argc2, argv2);
-      ACE_CHECK_RETURN (ERROR);
 
       iClient = g_Clients.begin ();
     }
@@ -994,7 +980,6 @@ int ProcessReset(int argc, const ACE_TCHAR *argv[]
 /*      sleep(2);
       ACS_SHORT_LOG((LM_INFO,"Calling Manager::shutdown()"));
       g_Client->manager()->shutdown(0x05000000, 2 << 8);
-      ACE_CHECK_RETURN(ERROR);
 */    ACS_SHORT_LOG((LM_INFO,"Done."));
       sleep(10);
 
@@ -1194,7 +1179,7 @@ int ProcessCommand(const ACE_TCHAR *cmd)
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION (ex, "ProcessCommand");
+    ex._tao_print_exception("ProcessCommand");
     }
 
   return FATAL;
@@ -1304,7 +1289,7 @@ int main (int argc, char **argv)
     }
   catch ( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "main");
+    ex._tao_print_exception("main");
     }
 
   ACS_SHORT_LOG ((LM_INFO, "Exiting maciTestClient..."));

@@ -25,7 +25,7 @@
 
 import xml.parsers.expat
 
-class ErrorDefinition:
+class ErrorDefinition(object):
     """The errors definitions read by the xml file
     If the xml file is not a file of errors it contains a null list of errors
     

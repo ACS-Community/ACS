@@ -51,7 +51,6 @@
 using namespace std;
 using namespace maci;
 using namespace acssamp;
-ACE_RCSID(acssampFullNCTest, fullNCTest, "$Id: acssampFullNCTest.cpp,v 1.18 2008/10/07 06:41:54 cparedes Exp $")
 
     struct ThreadParam
     {

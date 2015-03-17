@@ -1,0 +1,1 @@
+../../ws/src/acsexmplFridgeImpl.cpp

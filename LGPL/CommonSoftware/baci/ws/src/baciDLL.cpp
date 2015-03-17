@@ -35,7 +35,6 @@
 #include "baciThread.h"
 #include "baciCDBPropertySet.h"
 
-ACE_RCSID(baci, baciDLL, "$Id: baciDLL.cpp,v 1.95 2006/09/01 02:20:54 cparedes Exp $");
  
  using namespace baci;
 

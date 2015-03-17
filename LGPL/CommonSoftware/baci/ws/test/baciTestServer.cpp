@@ -141,7 +141,7 @@ void finalize()
 	}
     catch(CORBA::Exception &ex)
 	{
-	ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "finalize");
+	ex._tao_print_exception("finalize");
 	}
 
     if (CDBPropertySet::getInstance() != 0)

@@ -255,6 +255,13 @@ public class Server {
 					preloadCache(servantDelegate.getDALImplDelegate(), sharedLogger);
 				}
 			}, "preload-cache").start();
+			
+			// Init remote Logging
+			try {
+				ClientLogManager.getAcsLogManager().initRemoteLoggingForService(orb, true);
+			} catch (Throwable t) {
+				sharedLogger.log(AcsLogLevel.ERROR, "Error initializing the remote logging");
+			}
 
 			// wait for invocations from clients
 			orb.run();

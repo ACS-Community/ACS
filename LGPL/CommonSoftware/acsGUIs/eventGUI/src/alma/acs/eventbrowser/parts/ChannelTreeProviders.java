@@ -40,13 +40,13 @@ import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
-import alma.acs.eventbrowser.model.ChannelConsumers;
-import alma.acs.eventbrowser.model.ChannelData;
-import alma.acs.eventbrowser.model.ChannelParticipantName;
-import alma.acs.eventbrowser.model.ChannelSuppliers;
-import alma.acs.eventbrowser.model.MCStatistics;
-import alma.acs.eventbrowser.model.NotifyServiceData;
-import alma.acs.eventbrowser.model.NotifyServices;
+import alma.acs.nsstatistics.ChannelConsumers;
+import alma.acs.nsstatistics.ChannelData;
+import alma.acs.nsstatistics.ChannelParticipantName;
+import alma.acs.nsstatistics.ChannelSuppliers;
+import alma.acs.nsstatistics.MCStatistics;
+import alma.acs.nsstatistics.NotifyServiceData;
+import alma.acs.nsstatistics.NotifyServices;
 
 
 /**

@@ -95,7 +95,6 @@ class ActivationBlockTester(Thread):
         # Ensure that the map already contains the component
         # so that the thread will be blocked
         self.logger.logInfo(self.name+" started")
-        assert(self.map.isProcessing(self.compName))
         if self.activate:
             self.map.aboutToActivate(self.compName)
         else:

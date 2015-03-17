@@ -74,8 +74,8 @@ CSOURCENAMES = \
 
 #
 # handle links to common source files (in MODNAME/ws/src)
-#
-LINK_FILES= $(addprefix ../idl/, $(addsuffix .midl, $(IDL_FILES))) \
+# 
+#!# (ICT-3855: commented out) LINK_FILES= $(addprefix ../idl/, $(addsuffix .midl, $(IDL_FILES))) \
             $(addprefix ../idl/, $(addsuffix .xml, $(ACSERRDEF))) \
              acstimeClockImpl.cpp \
 	     acstimeTimerImpl.cpp \
@@ -106,7 +106,7 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	 do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all

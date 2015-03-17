@@ -56,7 +56,7 @@
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = 	
-EXECUTABLES_L   = 	testLogger testNoLogging testMacros \
+EXECUTABLES_L   = 	testLogger testLoggerStats testNoLogging testMacros \
 			loggingXMLParserTest testGenericLogger testLoggable testLoggingProxy \
             testAnyLog testAUD_ARR testLog4cpp testIsInitThread testMultiThreads
 
@@ -65,6 +65,9 @@ loggingXMLParserTest_LIBS = logging
 
 testLogger_OBJECTS = testLogger
 testLogger_LIBS    = logging
+
+testLoggerStats_OBJECTS = testLoggerStats
+testLoggerStats_LIBS    = logging
 
 testLoggable_OBJECTS = testLoggable
 testLoggable_LIBS    = logging

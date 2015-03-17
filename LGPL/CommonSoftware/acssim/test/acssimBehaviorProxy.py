@@ -31,7 +31,7 @@ from Acssim.Servants.Representations.BehaviorProxy import BehaviorProxy
 from Acssim.Goodies import addComponent
 import CORBA
 
-class MockComponent:
+class MockComponent(object):
     def __init__(self, name): self.name = name
     def _get_name(self): return self.name
     def activateOffShoot(self, os): return os

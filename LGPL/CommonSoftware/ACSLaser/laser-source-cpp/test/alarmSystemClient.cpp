@@ -31,7 +31,6 @@
 #include "FaultState.h"
 #include "faultStateConstants.h"
 
-ACE_RCSID(acsexmpl, alarmSystemClient, "$Id: alarmSystemClient.cpp,v 1.1 2009/10/11 08:16:37 acaproni Exp $")
 using namespace maci;
 
 /**

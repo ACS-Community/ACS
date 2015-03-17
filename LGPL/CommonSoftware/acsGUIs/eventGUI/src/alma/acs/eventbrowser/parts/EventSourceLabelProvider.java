@@ -22,8 +22,8 @@ package alma.acs.eventbrowser.parts;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 
-import alma.acs.eventbrowser.model.ArchiveEventData;
-import alma.acs.eventbrowser.model.EventData;
+import alma.acs.nsstatistics.ArchiveEventData;
+import alma.acs.nsstatistics.EventData;
 
 
 public class EventSourceLabelProvider extends ColumnLabelProvider {

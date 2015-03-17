@@ -30,7 +30,7 @@ import getopt, sys
 import time
 import re
 
-class RemoteProcData:
+class RemoteProcData(object):
     def __init__(self, host, cmd, proc, outFile):
         self.host    = host
         self.command = cmd
@@ -56,7 +56,7 @@ class RemoteProcData:
 #   Must be configured not to require a password.
 ###########################################################################
 
-class bulkDataNTtestSuite:
+class bulkDataNTtestSuite(object):
     
     def __init__(self, startTime, receivers, senders, size=640000, loops=10, sourceFile='.bash_profile', acsdataEnv=None,
                  throttle=0, qos_lib="BulkDataQoSLibrary", filePrefix='', filePath=None, multicast=False):

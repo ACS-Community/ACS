@@ -45,8 +45,8 @@ import org.eclipse.e4.ui.di.UISynchronize;
 import org.eclipse.e4.ui.model.application.ui.menu.MHandledItem;
 import org.eclipse.e4.ui.services.IServiceConstants;
 
-import alma.acs.eventbrowser.model.ChannelData;
-import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.nsstatistics.ChannelData;
+import alma.acs.nsstatistics.EventModel;
 import alma.acs.exceptions.AcsJException;
 
 /**

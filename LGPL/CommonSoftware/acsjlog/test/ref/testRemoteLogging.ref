@@ -6,8 +6,8 @@
 1 - --iso_time-- INFO [alma.acs.logging] Logger jacorb created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - --iso_time-- INFO [testNormalRemoteLogging] A healthy info log
 1 - --iso_time-- SEVERE [testNormalRemoteLogging] And a severe log that actually is not severe
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testSimpleRemoteLogging" Host="xxx" Process="testNormalRemoteLogging" SourceObject="testNormalRemoteLogging" Thread="main" LogId="xxx"><![CDATA[A healthy info log]]></Info>
-1 - Remote log: <Emergency TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testSimpleRemoteLogging" Host="xxx" Process="testNormalRemoteLogging" SourceObject="testNormalRemoteLogging" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[And a severe log that actually is not severe]]></Emergency>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testSimpleRemoteLogging" Host="xxx" Process="testNormalRemoteLogging" SourceObject="testNormalRemoteLogging" Thread="main" LogId="xxx"><![CDATA[A healthy info log]]></Info>
+1 - Remote log: <Emergency TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testSimpleRemoteLogging" Host="xxx" Process="testNormalRemoteLogging" SourceObject="testNormalRemoteLogging" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[And a severe log that actually is not severe]]></Emergency>
 1 - 
 1 - ------------ testConcurrentRemoteInitAndStop --------------
 1 - 
@@ -16,27 +16,27 @@
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (0/1)
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (0/1)
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (0/1)
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (0/1)]]></Info>
-1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (0/1)]]></Debug>
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (0/1)]]></Info>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (0/1)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (0/1)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (0/1)]]></Info>
 1 - 
 1 - *** Network delay = 0 and shutdown delay = 20 ***
 1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (0/20)
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (0/20)
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (0/20)
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (0/20)]]></Info>
-1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (0/20)]]></Debug>
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (0/20)]]></Info>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (0/20)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (0/20)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (0/20)]]></Info>
 1 - 
 1 - *** Network delay = 0 and shutdown delay = 106 ***
 1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (0/106)
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (0/106)
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (0/106)
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (0/106)]]></Info>
-1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (0/106)]]></Debug>
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (0/106)]]></Info>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (0/106)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (0/106)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (0/106)]]></Info>
 1 - 
 1 - *** Network delay = 2 and shutdown delay = 1 ***
 1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
@@ -49,18 +49,18 @@
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (2/20)
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (2/20)
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (2/20)
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (2/20)]]></Info>
-1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (2/20)]]></Debug>
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (2/20)]]></Info>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (2/20)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (2/20)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (2/20)]]></Info>
 1 - 
 1 - *** Network delay = 2 and shutdown delay = 106 ***
 1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (2/106)
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (2/106)
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (2/106)
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (2/106)]]></Info>
-1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (2/106)]]></Debug>
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (2/106)]]></Info>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (2/106)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (2/106)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (2/106)]]></Info>
 1 - 
 1 - *** Network delay = 16 and shutdown delay = 1 ***
 1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
@@ -73,18 +73,18 @@
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (16/20)
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (16/20)
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (16/20)
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (16/20)]]></Info>
-1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (16/20)]]></Debug>
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (16/20)]]></Info>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (16/20)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (16/20)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (16/20)]]></Info>
 1 - 
 1 - *** Network delay = 16 and shutdown delay = 106 ***
 1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (16/106)
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (16/106)
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (16/106)
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (16/106)]]></Info>
-1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (16/106)]]></Debug>
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (16/106)]]></Info>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (16/106)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (16/106)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (16/106)]]></Info>
 1 - 
 1 - *** Network delay = 21 and shutdown delay = 1 ***
 1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
@@ -103,9 +103,9 @@
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (21/106)
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (21/106)
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (21/106)
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (21/106)]]></Info>
-1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (21/106)]]></Debug>
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (21/106)]]></Info>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (21/106)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (21/106)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (21/106)]]></Info>
 1 - 
 1 - *** Network delay = 100 and shutdown delay = 1 ***
 1 - --iso_time-- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
@@ -124,9 +124,9 @@
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] A healthy info log before initRemoteLogging (100/106)
 1 - --iso_time-- FINE [testConcurrentRemoteInitAndStop] now that was a fine log before initRemoteLogging (100/106)
 1 - --iso_time-- INFO [testConcurrentRemoteInitAndStop] Another info log after initRemoteLogging (100/106)
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (100/106)]]></Info>
-1 - Remote log: <Debug TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (100/106)]]></Debug>
-1 - Remote log: <Info TimeStamp="xxx" File="alma.acs.logging.RemoteLoggingTest"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (100/106)]]></Info>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[A healthy info log before initRemoteLogging (100/106)]]></Info>
+1 - Remote log: <Debug TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[now that was a fine log before initRemoteLogging (100/106)]]></Debug>
+1 - Remote log: <Info TimeStamp="xxx" File="RemoteLoggingTest.java"  Line="xxx" Routine="testConcurrentRemoteInitAndStop" Host="xxx" Process="testConcurrentRemoteInitAndStop" SourceObject="testConcurrentRemoteInitAndStop" Thread="main" LogId="xxx"><![CDATA[Another info log after initRemoteLogging (100/106)]]></Info>
 1 - 
 1 - 
 1 - OK (2 tests)

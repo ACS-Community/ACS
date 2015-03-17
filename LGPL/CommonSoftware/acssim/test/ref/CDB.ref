@@ -7,6 +7,6 @@
 1 - cdb.getMethod('nonexistentMethod'): None
 1 - 
 1 - --BADCOMPONENT--
-1 - ----------T--:--:--.--- Servants.Representations.CDB.CDB(BADCOMPONENT) handleInterfaces - Cannot parse 'crap' to a CDB location!
-1 - ----------T--:--:--.--- Servants.Representations.CDB.CDB(BADCOMPONENT) handleInterfaces - Cannot parse 'morecrap' to a CDB location!
-1 - ['_BaseRepresentation__checkCompRef', '_CDB__logger', '__doc__', '__init__', '__module__', 'comp_ref', 'compname', 'exists', 'getCorbaAttributes', 'getCorbaMethods', 'getMethod', 'handleCDB', 'handleInterfaces', 'logger', 'methods', 'setMethod', 'setupLifecyleMethods']
+1 - ----------T--:--:--.--- Servants.Representations.CDB.CDB'>(BADCOMPONENT) handleInterfaces - Cannot parse 'crap' to a CDB location!
+1 - ----------T--:--:--.--- Servants.Representations.CDB.CDB'>(BADCOMPONENT) handleInterfaces - Cannot parse 'morecrap' to a CDB location!
+1 - ['_BaseRepresentation__checkCompRef', '_CDB__logger', '__class__', '__delattr__', '__dict__', '__doc__', '__format__', '__getattribute__', '__hash__', '__init__', '__module__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', 'comp_ref', 'compname', 'exists', 'getCorbaAttributes', 'getCorbaMethods', 'getMethod', 'handleCDB', 'handleInterfaces', 'logger', 'methods', 'setMethod', 'setupLifecyleMethods']
