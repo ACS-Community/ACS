@@ -42,3 +42,4 @@ snakefood-1.4.tar.gz https://pypi.python.org/packages/source/s/snakefood/snakefo
 Sphinx-0.6.5.tar.gz https://pypi.python.org/packages/source/S/Sphinx/Sphinx-0.6.5.tar.gz#md5=86dd5dbd55cb44d1f8091a4a1c3743b2
 Twisted-10.1.0.tar.bz2 https://pypi.python.org/packages/source/T/Twisted/Twisted-10.1.0.tar.bz2#md5=04cca97506e830074cffc1965297da3f
 zope.interface-3.6.1.tar.gz https://pypi.python.org/packages/source/z/zope.interface/zope.interface-3.6.1.tar.gz#md5=7a895181b8d10be4a7e9a3afa13cd3be
+apache-maven-3.2.5-bin.tar.gz http://mirrors.advancedhosters.com/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
