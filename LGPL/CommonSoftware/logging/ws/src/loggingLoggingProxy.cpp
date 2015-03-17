@@ -1057,11 +1057,14 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
 	  m_noLogger = true;
   }
 
+  // Thread protection for instances and tss
+  ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, printf("problem acquring mutex in loggingProxy::LoggingProxy () errno: %d\n", errno);return);
+
+  instances++;
   if (!tss)
   {
       tss = new ACE_TSS<LoggingTSSStorage>;
   }
-  instances++;
 
   char *acsSTDIO = getenv("ACS_LOG_STDOUT");
   if (acsSTDIO && *acsSTDIO)
@@ -1102,6 +1105,9 @@ LoggingProxy::~LoggingProxy()
 
   // unregister ACE callback
   done();
+
+  // Thread protection for instances and tss
+  ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, printf("problem acquring mutex in loggingProxy::~LoggingProxy () errno: %d\n", errno);return);
 
   instances--;
   if (tss && !instances)
