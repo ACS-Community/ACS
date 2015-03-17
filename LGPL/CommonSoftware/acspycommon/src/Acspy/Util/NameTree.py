@@ -46,7 +46,7 @@ def getnode (node, wd):
 #
 # keep a directory tree without any cycles
 #
-class nameTree:
+class nameTree(object):
   def __init__(self, corba_object, nameServerName=''):
     # get reference to name service
     ns_obj = nameService()

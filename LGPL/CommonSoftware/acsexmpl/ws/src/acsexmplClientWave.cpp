@@ -106,7 +106,6 @@ This example shows a client that:
 #include <acsThread.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmpClientWave, "$Id: acsexmplClientWave.cpp,v 1.102 2007/02/01 05:14:26 cparedes Exp $")
 using namespace ACS;
 using namespace maci;
 

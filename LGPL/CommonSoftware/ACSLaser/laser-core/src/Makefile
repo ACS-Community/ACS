@@ -166,7 +166,7 @@ COMPONENT_HELPERS=
 #
 # Java Entity Classes generation on/off
 #
-XSDBIND=
+XSDBIND=AlarmSysStatsSchemaBindings
 #
 # Schema Config files for the above
 #

@@ -40,7 +40,6 @@
 #include <acsexmplFridgeImpl.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.134 2009/09/24 23:08:03 javarias Exp $")
 using namespace baci;
 
 /**

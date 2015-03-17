@@ -99,7 +99,7 @@ $(PROG)_LIBS               = $(TESTLIBS) C++ CCS
 INCLUDES        = 	logging.h loggingExport.h loggingBaseExport.h loggingXMLElement.h loggingXMLParser.h \
 		  	loggingClient.h loggingLocalSyslog.h loggingRemoteSyslog.h loggingLocalFile.h \
 			loggingCacheLogger.h \
-			loggingBaseLog.h loggingHandler.h loggingLogger.h loggingLoggable.h \
+			loggingBaseLog.h loggingStatistics.h loggingHandler.h loggingLogger.h loggingLoggable.h \
                         loggingLogTrace.h loggingACSLogger.h \
 			loggingLogSvcHandler.h  loggingLogLevelDefinition.h \
 			loggingLoggingTSSStorage.h loggingLoggingProxy.h loggingMACROS.h \
@@ -122,7 +122,7 @@ INCLUDES_L      = loggingService.h \
 LIBRARIES       = baselogging logging 
 LIBRARIES_L     =
 
-baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger \
+baselogging_OBJECTS =	loggingBaseLog loggingStatistics loggingHandler loggingLogger \
                         loggingLogTrace loggingGetLogger loggingGenericLogger \
                         loggingStdoutHandler
 ##

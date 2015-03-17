@@ -185,17 +185,17 @@ acsNamingService -s -w $PARAMS
 if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 1; fi
 acsInterfaceRepository -s $PARAMS
 if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 2; fi
-acsConfigurationDatabase -s $PARAMS
-if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 3; fi
 acsNotifyService -s -w $PARAMS
 if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 4; fi
 acsNotifyService -s -w -n Logging $PARAMS
 if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 5; fi
+acsLoggingService -s -w $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 7; fi
+acsConfigurationDatabase -s $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 3; fi
 acsNotifyService -s -w -n Archive $PARAMS
 if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 6; fi
 acsNotifyService -s -w -n Alarm $PARAMS
-if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 7; fi
-acsLoggingService -s -w $PARAMS
 if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 8; fi
 acsACSLogService -s $PARAMS
 if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 9; fi

@@ -71,7 +71,7 @@ def resetORBTimeout():
     return
 
 #------------------------------------------------------------------------------
-class Timeout:
+class Timeout(object):
     '''
     Timeout is nearly identical to the C++ Timeout class (acsQoS module). 
     However, it does not work properly at the present time, because there is 

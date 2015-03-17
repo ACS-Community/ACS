@@ -96,7 +96,8 @@ mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 # Unpack the tar file
 # put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 #
-FILE=ACE+TAO-5.8.1
+FILE=ACE+TAO-6.3.0
+#5.8.1
 ARCHIVE=`pwd`/../PRODUCTS/$FILE.tar.gz
 cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 echo "unpacking the archive"
@@ -108,18 +109,22 @@ echo ""
 # Apply patches
 #
 echo "patching the code"
-echo "- TAO_IDLsuppress_unique_guards_opt.patch"
-patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IDLsuppress_unique_guards_opt.patch
+#echo "- TAO_IDLsuppress_unique_guards_opt.patch"
+#patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IDLsuppress_unique_guards_opt.patch
 echo "- TAOLog.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOLog.patch
 echo "- AVtimeout.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/AVtimeout.patch
-patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IFR_Service_preloaded_CORBA_module.patch
+#patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IFR_Service_preloaded_CORBA_module.patch
+echo "- TAO_IFR_Inheritance_problems_workaround.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IFR_Inheritance_problems_workaround.patch
 echo "- Notify_Service stack size"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/Notify_Service_stacksize.patch
 echo "- ICT-94"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ict94.patch
+echo "- DLSYM_VX.patch - patching dlsym for VxWorks version lower than 6.9. It should be removed when move to 6.9"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/DLSYM_VX.patch
+
 if [ "$OS" = "$CYGWIN_VER" ]
 then
   echo "- Cygwin specific patches"
@@ -160,19 +165,39 @@ echo ""
 
 echo "building ace"
 cd $ACE_ROOT/ace ; make -j $NUM_CPU
-echo "done"
+if [ ! "$?" = 0 ]
+then
+    echo "FAILED: building ace"
+    exit 1
+fi
+echo "done building ace"
 echo ""
 echo "building gperf"
 cd $ACE_ROOT/apps/gperf ; make -j $NUM_CPU
-echo "done"
+if [ ! "$?" = 0 ]
+then
+    echo "FAILED: building gperf"
+    exit 2
+fi
+echo "done building gperf"
 echo ""
 echo "building ACEXML"
 cd $ACE_ROOT/ACEXML ; make -j $NUM_CPU
-echo "done"
+if [ ! "$?" = 0 ]
+then
+    echo "FAILED: building ACEXM"
+    exit 3
+fi
+echo "done building ACEXM"
 echo ""
 echo "building Kokyu"
 cd $ACE_ROOT/Kokyu ; make -j $NUM_CPU
-echo "done"
+if [ ! "$?" = 0 ]
+then
+    echo "FAILED: building Kokyu"
+    exit 4
+fi
+echo "done building Kokyu"
 echo ""
 
 # check that LD_LIBRARY_PATH contains $ACE_ROOT/ace
@@ -182,24 +207,45 @@ echo ""
 #cd $ACE_ROOT/TAO/TAO_IDL ; make INSLIB=../../ace
 #cd $ACE_ROOT/TAO/orbsvcs/orbsvcs ; make INSLIB=../../ace
 # ... or not
-echo "building tao"
+
 echo "building TAO_IDL"
 cd $ACE_ROOT/TAO/TAO_IDL ; make -j $NUM_CPU
-echo "done"
+if [ ! "$?" = 0 ]
+then
+    echo "FAILED: building TAO_IDL"
+    exit 5
+fi
+echo "done building TAO_IDL"
 echo ""
 
+echo "building tao"
 cd $ACE_ROOT/TAO/tao ; make -j $NUM_CPU
-echo "done"
+if [ ! "$?" = 0 ]
+then
+    echo "FAILED: building tao"
+    exit 6
+fi
+echo "done building tao"
 echo ""
 
 echo "building orbsvcs"
 cd $ACE_ROOT/TAO/orbsvcs; make -j $NUM_CPU
-echo "done"
+if [ ! "$?" = 0 ]
+then
+    echo "FAILED: building orbsvcs"
+    exit 7
+fi
+echo "done building orbsvcs"
 echo ""
 
 echo "building utilities"
 cd $ACE_ROOT/TAO/utils; make -j $NUM_CPU
-echo "done"
+if [ ! "$?" = 0 ]
+then
+    echo "FAILED: building utilities"
+    exit 8
+fi
+echo "done building utilities"
 echo ""
 
 
@@ -273,18 +319,33 @@ then
     echo ""
 
     echo "building ace"
-    cd $ACE_ROOT_VW/ace ; make
-    echo "done"
+    cd $ACE_ROOT_VW/ace ; make -j $NUM_CPU
+    if [ ! "$?" = 0 ]
+	then
+	echo "FAILED: building ace (VX)"
+	exit 8
+    fi
+    echo "done building ace (VX)"
     echo ""
     echo "building tao"
-    cd $ACE_ROOT_VW/TAO/tao ; make
-    echo "done"
+    cd $ACE_ROOT_VW/TAO/tao ; make -j $NUM_CPU
+    if [ ! "$?" = 0 ]
+	then
+	echo "FAILED: building tao (VX)"
+	exit 8
+    fi
+    echo "done building tao (VX)"
     echo ""
 
 
     echo "building orbsvcs"
-    cd $ACE_ROOT_VW/TAO/orbsvcs/orbsvcs ; make
-    echo "done"
+    cd $ACE_ROOT_VW/TAO/orbsvcs/orbsvcs ; make # for some reasons option "-j $NUM_CPU" does not work
+    if [ ! "$?" = 0 ]
+	then
+	echo "FAILED: building orbsvcs (VX)"
+	exit 8
+    fi
+    echo "done building orbsvcs (VX)"
     echo ""
 
     echo "Installation of ACE/TAO for $OSTAG finished"

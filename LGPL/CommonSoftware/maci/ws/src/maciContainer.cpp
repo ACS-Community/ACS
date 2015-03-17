@@ -73,7 +73,6 @@ int g_containerShutdownAction = 0;
 
  using namespace maci;
 
-ACE_RCSID(maci, maciContainer, "$Id: maciContainer.cpp,v 1.19 2011/03/18 17:02:40 rtobar Exp $")
 
 volatile bool shutting_down = false;
 

@@ -51,8 +51,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import alma.acs.eventbrowser.model.EventData;
-import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.nsstatistics.EventData;
+import alma.acs.nsstatistics.EventModel;
 import alma.acs.eventbrowser.status.StatusLineWriter;
 
 

@@ -51,8 +51,8 @@ clean :
 	rm -rf ../PRODUCTS/java
 	rm -rf ../PRODUCTS/tcltk
 	rm -rf ../PRODUCTS/mico
-	rm -rf ../PROPRIETARY/CCSLite
-	rm -rf ../PROPRIETARY/vw
+	rm -rf ../NO-LGPL/CCSLite
+	rm -rf ../NO-LGPL/vw
 	rm -rf ../PRODUCTS/snakefood-1.4
 	rm -rf *.log *~
 	@echo " . . . clean done"

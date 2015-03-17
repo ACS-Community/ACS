@@ -105,7 +105,6 @@ necessary for this alarm to "go off" are set using an ACS thread.
 
 #include <acsexmplPowerSupplyC.h>
 
-ACE_RCSID(acsexmpl, acsexmplClientAlarmThread, "$Id: acsexmplClientAlarmThread.cpp,v 1.110 2009/05/20 17:19:48 javarias Exp $")
 
 using namespace ACS;
 using namespace maci;

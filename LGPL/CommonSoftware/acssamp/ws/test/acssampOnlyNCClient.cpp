@@ -47,7 +47,6 @@
 
 using namespace std;
  using namespace maci;
-ACE_RCSID(acssampOnlyNCClient, OnlyNCClient, "$Id: acssampOnlyNCClient.cpp,v 1.17 2008/10/07 06:41:54 cparedes Exp $")
     
   
   

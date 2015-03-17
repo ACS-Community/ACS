@@ -89,7 +89,6 @@ from the channel.
 #include <acsncSimpleConsumer.h>
 #include "acsexmplFridgeC.h"
 /////////////////////////////////////////////////////////////////////////  
-ACE_RCSID(acsexmpl, acsexmplFridgeNCClient, "$Id: acsexmplClientFridgeNC.cpp,v 1.12 2008/07/27 15:10:49 cparedes Exp $")
 //-----------------------------------------------------------------------------
 
 /** Function designed to do something useful with temperatureDataBlockEvents

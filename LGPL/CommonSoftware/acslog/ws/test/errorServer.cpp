@@ -65,7 +65,7 @@ int acslogErrorServer (char *szCmdLn){
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION (ex, "Failed to initalise ORB");
+      ex._tao_print_exception("Failed to initalise ORB");
       return -1;
     }
 
@@ -120,7 +120,7 @@ int acslogErrorServer (char *szCmdLn){
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION(ex, "Failed to get and set the centralized logger");
+    ex._tao_print_exception("Failed to get and set the centralized logger");
     }
 
   try
@@ -213,7 +213,7 @@ int acslogErrorServer (char *szCmdLn){
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");
+      ex._tao_print_exception("EXCEPTION CAUGHT");
       return -1;
     }
   

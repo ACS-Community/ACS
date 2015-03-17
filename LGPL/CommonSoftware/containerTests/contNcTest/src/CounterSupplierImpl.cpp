@@ -32,7 +32,6 @@
 #include "CounterSupplierImpl.h"
 #include <ACSErrTypeCommon.h>
 
-ACE_RCSID(contNcTest, CounterSupplierImpl, "$Id: CounterSupplierImpl.cpp,v 1.2 2008/10/07 09:41:42 cparedes Exp $")
 
 ACE_Log_Priority LOCAL_LOGGING_LEVEL = LM_TRACE;
 

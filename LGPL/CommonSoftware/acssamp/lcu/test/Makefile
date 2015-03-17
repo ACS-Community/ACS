@@ -16,8 +16,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES = ../test/acssampFullNCTest.cpp
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES = ../test/acssampFullNCTest.cpp
 #		../test/acssampOnlyNCServer.cpp \
 #		../test/acssampOnlyNCClient.cpp
 

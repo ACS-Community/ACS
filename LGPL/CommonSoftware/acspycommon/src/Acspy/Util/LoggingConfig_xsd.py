@@ -55,7 +55,7 @@ def quote_python(inStr):
             return '"""%s"""' % s1
 
 
-class MixedContainer:
+class MixedContainer(object):
     # Constants for category:
     CategoryNone = 0
     CategoryText = 1
@@ -136,7 +136,7 @@ class _MemberSpec(object):
 # Data representation classes.
 #
 
-class UnnamedLogger:
+class UnnamedLogger(object):
     subclass = None
     def __init__(self, minLogLevelLocal=2, minLogLevel=2, valueOf_=''):
         self.minLogLevelLocal = minLogLevelLocal
@@ -392,7 +392,7 @@ class LoggingConfig(UnnamedLogger):
 
 from xml.sax import handler, make_parser
 
-class SaxStackElement:
+class SaxStackElement(object):
     def __init__(self, name='', obj=None):
         self.name = name
         self.obj = obj

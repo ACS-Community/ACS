@@ -23,8 +23,8 @@ package alma.acs.eventbrowser.parts;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import alma.acs.eventbrowser.model.EventData;
-import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.nsstatistics.EventData;
+import alma.acs.nsstatistics.EventModel;
 
 
 public class EventListViewContentProvider implements IStructuredContentProvider {

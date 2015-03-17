@@ -257,10 +257,9 @@ int main(int argc, char* argv[])
 	}
     catch( CORBA::Exception &ex )
 	{
-	ACE_PRINT_EXCEPTION (ex,"Error!");
+	ex._tao_print_exception("Error!");
 	return -1;
 	}
-    ACE_CHECK_RETURN (-1);
 
 
     return 0;

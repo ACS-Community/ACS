@@ -38,7 +38,6 @@
 #include <time.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmplSlowMountImpl, "$Id: acsexmplSlowMountImpl.cpp,v 1.13 2008/10/01 04:30:47 cparedes Exp $")
 using namespace baci;
 
 /**

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Channels xmlns="urn:schemas-cosylab-com:Channels:1.0"
+       xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <NotificationServiceMapping DefaultNotificationService="NotifyEventChannelFactory">
+          <Domains>
+              <_ Name="ALARMSYSTEM" NotificationService="AlarmNotifyEventChannelFactory"/>
+          </Domains>
+          <Channels_>
+              <_ Name="MyExample_*" NotificationService="MyExampleNotifyService"/>
+          </Channels_>
+      </NotificationServiceMapping>
+</Channels>

@@ -27,3 +27,4 @@ processing /tmp/acsIrfeedDyn.[0-9]*\.idl
 XML_TopologyFactory
  TAO ([0-9]*|[0-9]*)
 ^1 - 1[0-9][0-9][0-9]$
+Will retrieve the log service reference from the naming service...

@@ -27,10 +27,18 @@
 	alarm_off="0, 2"
 	alarm_timer_trig="1.0" />
 <testBooleanVar
-	alarm_timer_trig="1"
-    alarm_high_on="1"
-    alarm_high_off="0"
-    alarm_low_on="0"
-    alarm_low_off="0"
+	alarm_timer_trig="0.5"
+    alarm_on="true"
 	description="testBooleanVar" />
+<testAnotherBooleanVar
+	alarm_timer_trig="0.5"
+    alarm_on="false"
+	description="testAnotherBooleanVar" />
+<testBooleanNoAlarmsVar
+    alarm_timer_trig="0.5"
+    description="testBooleanNoAlarmsVar" />
+<testBooleanSeqVar
+	alarm_timer_trig="0.5"
+	alarm_on="true"
+	description="testBooleanSeqVar" />
 </TEST_COMPONENT>

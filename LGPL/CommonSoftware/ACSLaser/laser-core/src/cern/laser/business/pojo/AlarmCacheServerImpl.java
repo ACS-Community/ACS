@@ -2,9 +2,9 @@ package cern.laser.business.pojo;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
-
+import alma.acs.logging.AcsLogLevel;
 import cern.laser.business.LaserRuntimeException;
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.data.Alarm;
@@ -13,15 +13,22 @@ import cern.laser.business.data.Status;
 import cern.laser.util.LogTimeStamp;
 
 public class AlarmCacheServerImpl {
-  private static final Logger LOGGER = Logger.getLogger(AlarmCacheServerImpl.class.getName());
 
   private AlarmDAO alarmDAO;
   private AlarmPublisherImpl alarmPublisher;
   private MailAndSmsServerImpl mailAndSmsServer;
+  
+  /**
+   * ACS logger
+   */
+  private final Logger logger;
 
-  //
-  // -- CONSTRUCTORS ------------------------------------------------
-  //
+  public AlarmCacheServerImpl(Logger logger) {
+	  if (logger==null) {
+			throw new IllegalArgumentException("The logger can't be null");
+		}
+		this.logger=logger;
+  }
 
   //
   // -- PUBLIC METHODS ----------------------------------------------
@@ -45,8 +52,7 @@ public class AlarmCacheServerImpl {
 
   public void store(Collection updated) {
     try {
-      LOGGER.info("storing " + updated.size() + " alarm(s)...");
-      if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("storing " + updated.size() + " alarm(s)...", true);
+      logger.log(AcsLogLevel.DELOUSE, "storing " + updated.size() + " alarm(s)...");
       Iterator iterator = updated.iterator();
       while (iterator.hasNext()) {
         Alarm alarm = (Alarm) iterator.next();
@@ -60,24 +66,18 @@ public class AlarmCacheServerImpl {
           alarmDAO.updateStatus(status);
 //        }
       }
-      LOGGER.info("stored");
-      if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("stored");
+      logger.log(AcsLogLevel.DELOUSE, "stored");
     } catch (Exception e) {
-      LOGGER.error("unable to store alarm(s)", e);
       throw new LaserRuntimeException("unable to store alarm(s)", e);
     }
   }
 
   public void publish(Collection alarmChanges) {
-	  System.out.println("*** AlarmCacheServerImpl.Publishing "+alarmChanges.size()+" alarms");
     try {
-      LOGGER.info("publishing " + alarmChanges.size() + " alarm(s)...");
-      if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("publishing " + alarmChanges.size() + " alarm(s)...", true);
+    	logger.log(AcsLogLevel.DEBUG,"publishing " + alarmChanges.size() + " alarm(s)...");
       alarmPublisher.publish(alarmChanges);
-      LOGGER.info("published");
-      if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("published");
+      logger.log(AcsLogLevel.DEBUG,"published");
     } catch (Exception e) {
-      LOGGER.error("unable to publish alarm(s)", e);
       throw new LaserRuntimeException("unable to publish alarm(s)", e);
     }
   }
@@ -98,7 +98,6 @@ public class AlarmCacheServerImpl {
         }
       }
     } catch (Exception e) {
-      LOGGER.error("unable to notify alarm(s)", e);
       throw new LaserRuntimeException("unable to notify alarm(s)", e);
     }
   }
@@ -113,9 +112,11 @@ public class AlarmCacheServerImpl {
 
   private void sendEmail(Alarm currentAlarm) {
     try {
-      LOGGER.info("notifying piquet email : " + currentAlarm.getPiquetEmail());
-      if (LOGGER.isDebugEnabled())
-          LogTimeStamp.logMsg("notifying piquet email : " + currentAlarm.getPiquetEmail(), true);
+    	if (currentAlarm.getPiquetEmail()==null  || currentAlarm.getPiquetEmail().isEmpty()) {
+    		logger.log(AcsLogLevel.DELOUSE,"No email address in "+currentAlarm.getAlarmId());
+    		return;
+    	}
+    	logger.log(AcsLogLevel.DEBUG,"notifying piquet email : " + currentAlarm.getPiquetEmail());
       String subject="Alarm server notification: "+currentAlarm.getAlarmId();
       if (currentAlarm.getStatus().getActive()) {
     	  subject=subject+" ACTIVE";
@@ -123,33 +124,32 @@ public class AlarmCacheServerImpl {
     	  subject=subject+" TERMINATE";
       }
       mailAndSmsServer.sendEmail(currentAlarm.getPiquetEmail(), subject, currentAlarm.toString());
-      LOGGER.info("notified");
-      if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("notified piquet email");
-    } catch (Exception e) {
-      LOGGER.error("unable to notify " + currentAlarm.getPiquetEmail() + " : " + currentAlarm.toString(), e);
+      logger.log(AcsLogLevel.DELOUSE,"notified");
+    } catch (Throwable t) {
+    	logger.log(AcsLogLevel.ERROR,"unable to notify email to " + currentAlarm.getPiquetEmail() + " : " + currentAlarm.toString(), t);
     }
   }
 
   private void sendSMS(Alarm currentAlarm) {
-    StringBuffer gsm_message = new StringBuffer();
-    gsm_message.append(currentAlarm.getStatus().getSourceTimestamp());
-    gsm_message.append(" => (");
-    gsm_message.append(currentAlarm.getSystemName());
-    gsm_message.append(")(");
-    gsm_message.append(currentAlarm.getIdentifier());
-    gsm_message.append(")(");
-    gsm_message.append(currentAlarm.getProblemDescription());
-    gsm_message.append(") IS ");
-    gsm_message.append(currentAlarm.getStatus().getActive().booleanValue() ? "ACTIVE" : "TERMINATE");
-    String number = "16" + currentAlarm.getPiquetGSM();
-    try {
-      LOGGER.info("notifying piquet GSM : " + number);
-      if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("notifying piquet GSM : " + number, true);
-      mailAndSmsServer.sendSMS(number, gsm_message.toString());
-      LOGGER.info("notified");
-      if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("notified piquet GSM");
-    } catch (Exception e) {
-      LOGGER.error("unable to notify " + number + " : " + gsm_message.toString(), e);
-    }
+	  // At the present, sending of SMS is not used in ALMA
+	  return;
+//    StringBuffer gsm_message = new StringBuffer();
+//    gsm_message.append(currentAlarm.getStatus().getSourceTimestamp());
+//    gsm_message.append(" => (");
+//    gsm_message.append(currentAlarm.getSystemName());
+//    gsm_message.append(")(");
+//    gsm_message.append(currentAlarm.getIdentifier());
+//    gsm_message.append(")(");
+//    gsm_message.append(currentAlarm.getProblemDescription());
+//    gsm_message.append(") IS ");
+//    gsm_message.append(currentAlarm.getStatus().getActive().booleanValue() ? "ACTIVE" : "TERMINATE");
+//    String number = "16" + currentAlarm.getPiquetGSM();
+//    try {
+//    	logger.log(AcsLogLevel.DELOUSE,"notifying piquet GSM : " + number);
+//      mailAndSmsServer.sendSMS(number, gsm_message.toString());
+//      logger.log(AcsLogLevel.DELOUSE,"notified");
+//    } catch (Exception e) {
+//    	logger.log(AcsLogLevel.DELOUSE,"unable to notify " + number + " : " + gsm_message.toString(), e);
+//    }
   }
 }

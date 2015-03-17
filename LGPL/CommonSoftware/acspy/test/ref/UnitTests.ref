@@ -26,10 +26,7 @@
 1 -     temp[PYCLASS] = temp[TYPE].split(':')[1].split('/').pop() #get class name
 1 - IndexError: list index out of range
 1 - ok
-1 -   File "Container.py", line xxx, in activate_component
-1 -     temp[PYREF].__init__()
-1 - AttributeError: MockClass instance has no attribute '__init__'
-1 - ok
+1 - test_constructor_fault (test_Acspy_Container.TestActivateComponent) ... ok
 1 -   File "Container.py", line xxx, in activate_component
 1 -     temp[POA].activate_object_with_id(temp[NAME], temp[PYREF])
 1 -   File "mock.py", line xxx, in __call__

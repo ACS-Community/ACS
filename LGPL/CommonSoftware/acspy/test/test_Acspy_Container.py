@@ -309,8 +309,7 @@ class TestActivateComponent(unittest.TestCase):
             
         mockmodule = new.module('MockClass')
         sys.modules['MockClass'] = mockmodule
-        mockmodule.__dict__['MockClass'] = new.classobj('MockClass',
-                                                        (object,), {})
+        mockmodule.__dict__['MockClass'] = new.classobj('MockClass', (), {})
         instancemock.side_effect = raiser
         offshootpoamock = mock.Mock(spec=omniORB.PortableServer.POA)
         offshootpoamock.create_POA.return_value = \
@@ -324,7 +323,7 @@ class TestActivateComponent(unittest.TestCase):
 
     def test_constructor_fault(self):
         mockmodule = new.module('MockClass')
-        mockmodule.__dict__['MockClass'] = new.classobj('MockClass', (), {})
+        mockmodule.__dict__['MockClass'] = type('MockClass', (object,), {'a':1})
         sys.modules['MockClass'] = mockmodule
         offshootpoamock = mock.Mock(spec=omniORB.PortableServer.POA)
         offshootpoamock.create_POA.return_value = \

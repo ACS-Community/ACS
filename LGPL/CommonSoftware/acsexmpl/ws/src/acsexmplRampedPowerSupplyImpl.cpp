@@ -34,7 +34,6 @@
 
 #include "acsexmplRampedPowerSupplyImpl.h"
 
-ACE_RCSID(acsexmpl, acsexmplRampedPowerSupplyImpl, "$Id: acsexmplRampedPowerSupplyImpl.cpp,v 1.109 2008/10/01 04:30:47 cparedes Exp $")
 using namespace baci;
 
 /////////////////////////////////////////////////

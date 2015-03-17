@@ -31,7 +31,7 @@ import inspect
 
 from xml.dom.minidom import parseString
 
-class Recorder:
+class Recorder(object):
     '''
     This class is used by the ACS IDL Simulator to record a simulation session
     into a file. This file can be used afterwards by the Player class to run
@@ -109,7 +109,7 @@ class Recorder:
         if self.rec_file:
             self.rec_file.write(s)
 
-class Call:
+class Call(object):
     '''
     Represents an operation call over a given component.
     Used by the Player class.
@@ -174,7 +174,7 @@ class Call:
         '''
         self.args = args
 
-class Player:
+class Player(object):
     '''
     Plays a record file generated with the IDL Simulator.
     '''

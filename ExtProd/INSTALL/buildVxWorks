@@ -44,7 +44,7 @@ TITLE="     ALMA Common Software buildVxWorks build  "
 BUILD_NAME="VxWorks"
 . ./standardPrologue
 
-if [ ! -e ../PROPRIETARY/vw5.5.tar.gz ]
+if [ ! -e ../NO-LGPL/vw5.5.tar.gz ]
 then
   echo Error: vw5.5 tar file is missing
   exit 2
@@ -59,13 +59,13 @@ then
 fi
 
 echo "Untarring the vw5.5.tar.gz file"
-BASE=$CWD/../PROPRIETARY
+BASE=$CWD/../NO-LGPL
 tar zxf $BASE/vw5.5.tar.gz
 
 if [ ${build_OS} = "Linux" ]
 then
    echo $SEPARATOR
-   SRC="${INSTALL_ROOT}/PROPRIETARY/vw"
+   SRC="${INSTALL_ROOT}/NO-LGPL/vw"
    VX_BUILD_DIR=${SRC}
    echo "set temporary build directory: $SRC . . ."
    if [ -d $SRC ]

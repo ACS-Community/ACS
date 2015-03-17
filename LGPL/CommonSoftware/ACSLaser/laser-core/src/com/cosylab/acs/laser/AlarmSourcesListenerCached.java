@@ -87,8 +87,6 @@ public class AlarmSourcesListenerCached extends AlarmSourcesListener implements 
 		thread= new Thread(this, this.getClass().getName());
 	}
 	
-	
-	
 	public void start() {
 		queue.start();
 		thread.setDaemon(true);
@@ -107,7 +105,6 @@ public class AlarmSourcesListenerCached extends AlarmSourcesListener implements 
 
 	@Override
 	public void run() {
-		long lastTimeUpdate=System.currentTimeMillis();
 		while (!terminateThread.get()) {
 			String xml=null;
 			try {
@@ -119,12 +116,15 @@ public class AlarmSourcesListenerCached extends AlarmSourcesListener implements 
 			if (xml != null && !xml.isEmpty()) {
 				notifyListeners(xml);
 			}
-			if (System.currentTimeMillis()-lastTimeUpdate>60000) {
-				logger.log(AcsLogLevel.DEBUG,"Queued source alarm messages waiting to be processed "+queue.size());
-				lastTimeUpdate=System.currentTimeMillis();
-			}
 		}
 		logger.log(AcsLogLevel.DEBUG,"AlarmSourceListenerCached thread terminated");
+	}
+	
+	/**
+	 * @return The number of messages in the queue, waiting to be processed
+	 */
+	public int getQueueSize() {
+		return queue.size();
 	}
 
 	/**

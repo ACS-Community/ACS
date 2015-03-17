@@ -310,7 +310,7 @@ then
           rm -f $PERSISTENCE_FILE
       fi
   fi
-  $ACE_ROOT/TAO/orbsvcs/IFR_Service/IFR_Service -ORBEndpoint iiop://$HOST:$IR_PORT -p -b $PERSISTENCE_FILE -o $IR_IOR $ORBOPTS &
+  $ACE_ROOT/TAO/orbsvcs/IFR_Service/tao_ifr_service -ORBEndpoint iiop://$HOST:$IR_PORT -p -b $PERSISTENCE_FILE -o $IR_IOR $ORBOPTS &
 
   #This is MICO Interface Repository
   LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH

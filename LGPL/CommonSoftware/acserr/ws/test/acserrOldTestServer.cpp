@@ -152,8 +152,8 @@ int acserrOldTestServer (char *szCmdLn){
     }
   catch( CORBA::Exception &ex )
     {
-      ACE_PRINT_EXCEPTION (ex, "EXCEPTION CAUGHT");
-      return -1;
+     ex._tao_print_exception("EXCEPTION CAUGHT");
+     return -1;
     }
 
 //  orb->shutdown(true); //wait until all requests have completed

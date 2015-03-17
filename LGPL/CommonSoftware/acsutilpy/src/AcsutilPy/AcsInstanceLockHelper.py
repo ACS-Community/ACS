@@ -27,7 +27,7 @@ from os.path import exists
 import stat
 from subprocess import call
 
-class AcsInstanceLockHelper:
+class AcsInstanceLockHelper(object):
     '''
     This class is in charge of creating/deleting the lock file for a running ACS instance
     in ACSDATA/tmp (@see ICT-734 for further details).

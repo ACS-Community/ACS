@@ -199,7 +199,7 @@ try{
     }
 catch(CORBA::Exception &ex)
     {
-    ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "main");
+    ex._tao_print_exception("main");
     }
   
   

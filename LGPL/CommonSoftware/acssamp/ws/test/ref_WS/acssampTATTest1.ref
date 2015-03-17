@@ -11,8 +11,8 @@
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Container 'Container' activated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Container 'Container' initialized successfuly
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Manager...
 1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Archiving Channel.
@@ -42,25 +42,23 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libacsexmplLampImpl.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplLampImpl'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libacsexmplLampImpl.so'.
+1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'LAMP1' activated.
 1 - ----------T--:--:--.--- [Container-Static - ] CDBProperties::getCDBAdminProps
 1 - ----------T--:--:--.--- [Container-GL - ] CORBA object  LAMP1_brightness_1000000_10000000 activated
 1 - ----------T--:--:--.--- [SAMP1 - ]  ... SampObj correctly created!
-2 - ----------T--:--:--.--- [GlobalLogger - ] Not Channel: NC_LAMP1_brightness_1000000_10000000
 2 - ----------T--:--:--.--- [GlobalLogger - ] *** Start to sample ***
+2 - ----------T--:--:--.--- [GlobalLogger - ] Not Channel: NC_LAMP1_brightness_1000000_10000000
 2 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::initThread] Thread name: 'NCThread'
 2 - ----------T--:--:--.--- [GlobalLogger - ] ::SamplerConsumer::SamplerConsumer(names, orb)
-2 - ----------T--:--:--.--- multicast_query: unable to accept: Connection timed out
-2 - 
 2 - ----------T--:--:--.--- 
 2 - ----------T--:--:--.--- Specify -m 1 when starting Naming_Service,
 2 - multicast discovery of NameService failed.
-2 - or see http://www.theaceorb.com/faq/#115
 2 - 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] NameService reference generated using localhost address: 'corbaloc::---:----/NameService'
+2 - or see http://www.theaceorb.com/faq/#115
 2 - for using NameService without multicast.
 2 - 
 2 - 
@@ -68,8 +66,8 @@
 1 - ----------T--:--:--.--- [Container-GL - ] ACSSamp deleting object LAMP1_brightness_1000000_10000000
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component SAMP1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component SAMP1: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'SAMP1' deactivated.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'SAMP1' etherealized.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'SAMP1' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacssamp.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] SAMP1 released
 2 - Shutting down Container
@@ -84,7 +82,7 @@
 1 - ----------T--:--:--.--- [Container - ContainerImpl::run] Container stopping...
 1 - ----------T--:--:--.--- [Container-GL - ] Stopping container... 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
+1 - ----------T--:--:--.--- [Container-GL - ] Container stopped.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbaci.so'.
 1 - /----/libbaci.so
-1 - ----------T--:--:--.--- [Container-GL - ] Container stopped.
 1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'Container' exited with code: 0.

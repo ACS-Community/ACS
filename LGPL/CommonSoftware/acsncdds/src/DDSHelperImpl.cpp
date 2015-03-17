@@ -2,7 +2,6 @@
 #include <ace/Service_Config.h>
 #include <string.h>
 #include <stdlib.h>
-#include <dds/DCPS/transport/simpleTCP/SimpleTcpGenerator.h>
 #include <maciHelper.h>
 #include <loggingACEMACROS.h>
 
@@ -68,23 +67,7 @@ void DDSHelper::init(const char* channelName, const char* DCPSInfoRepoLoc)
 //	ACE_Service_Config::process_directive(
 //			"static DCPS_SimpleTcpLoader \"-type SimpleTcp\"");
 
-	transport_impl_id=1;
 	factories_init = true;
-
-	try{
-		OpenDDS::DCPS::SimpleTcpGenerator* generator;
-		generator = new OpenDDS::DCPS::SimpleTcpGenerator ();
-	
-		TheTransportFactory->register_generator ("SimpleTcp",
-				generator);
-	}
-	/*
-	 * if the transport generator is already registered we do nothing
-	 */
-	catch(...){
-	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::init", (LM_INFO,
-							 "ERROR: BAD ERROR HANDLING. FIX ME"));
-	}
 	
 	dpf=TheParticipantFactoryWithArgs(argc, (ACE_TCHAR**)argv);
 	
@@ -122,52 +105,6 @@ int DDSHelper::createParticipant(){
 			 "Created the participant."));
 	
 	return 0;
-}
-
-
-void DDSHelper::initializeTransport(){
-	try{
-		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
-				 ""));
-
-		transport_impl=
-			TheTransportFactory->create_transport_impl(transport_impl_id,
-					"SimpleTcp", ::OpenDDS::DCPS::AUTO_CONFIG);
-		
-		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
-				 "Transport ID: %d",transport_impl_id));
-
-		OpenDDS::DCPS::TransportConfiguration_rch config =
-			TheTransportFactory->get_configuration(transport_impl_id);
-		OpenDDS::DCPS::SimpleTcpConfiguration * tcp_config = 
-			dynamic_cast<OpenDDS::DCPS::SimpleTcpConfiguration *>(config.in());
-		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
-				 "TCP Address: '%s'",tcp_config->local_address_str_.c_str()));
-
-
-		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
-				 "Finishing configuration"));
-	}
-	catch(OpenDDS::DCPS::Transport::Duplicate &ex){
-		transport_impl_id++;
-		initializeTransport();	
-//		transport_impl=TheTransportFactory->obtain(transport_impl_id);
-// TODO
-		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
-				"ERROR: Something bad happened. FIX me"));
-	}
-
-	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
-			 "Transport ID: %d",transport_impl_id));
-	OpenDDS::DCPS::TransportConfiguration_rch config =
-		TheTransportFactory->get_configuration(transport_impl_id);
-	OpenDDS::DCPS::SimpleTcpConfiguration * tcp_config = 
-		dynamic_cast<OpenDDS::DCPS::SimpleTcpConfiguration *>(config.in());
-
-	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
-			 "TCP Address: '%s'",tcp_config->local_address_str_.c_str()));
-	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
-			 "Finishing configuration"));
 }
 
 void DDSHelper::setTopicName(const char* topicName)
@@ -212,8 +149,6 @@ void DDSHelper::disconnect()
 	if(initialized==true){
 		participant->delete_contained_entities();
 		dpf->delete_participant(participant.in());
-		TheTransportFactory->release(transport_impl_id);
-		//TheServiceParticipant->shutdown();
 		initialized=false;
 	}
 }
@@ -232,7 +167,6 @@ void DDSHelper::cleanUp()
 	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::cleanUp", (LM_INFO,
 			 ""));
 	if (factories_init){
-		TheTransportFactory->release();
 		TheServiceParticipant->shutdown();
 	}
 }

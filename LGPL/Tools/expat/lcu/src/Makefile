@@ -17,8 +17,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES =
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES =
 #
 
 #

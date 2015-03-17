@@ -48,7 +48,8 @@ public class JdbcNativeExtractor {
 	public Connection getNativeConnection(Connection con) throws SQLException {
 
 		if ( con.getClass().getName().startsWith("oracle.jdbc") ||
-			 con.getClass().getName().startsWith("org.hsqldb") ) {
+			 con.getClass().getName().startsWith("org.hsqldb") ||
+			 con.getClass().getName().startsWith("com.mysql") ) { 
 			return con;
 		}
 		else if ( con.getClass().getName().startsWith("com.mchange.v2.c3p0") ) {

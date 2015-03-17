@@ -28,8 +28,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
-import alma.acs.eventbrowser.model.ArchiveEventData;
-import alma.acs.eventbrowser.model.EventData;
+import alma.acs.nsstatistics.ArchiveEventData;
+import alma.acs.nsstatistics.EventData;
 import alma.acs.eventbrowser.status.StatusLineWriter;
 import alma.acs.util.StopWatch;
 

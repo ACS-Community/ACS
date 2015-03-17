@@ -41,6 +41,7 @@
 ///Includes for each BACI property used in this example
 #include <baciROdouble.h>
 #include <baciROboolean.h>
+#include <baciRObooleanSeq.h>
 #include <baciROpattern.h>
 #include <enumpropROImpl.h>
 
@@ -83,6 +84,9 @@ class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard com
     virtual void setDoubleVar(CORBA::Float);
     virtual void setPatternVar(CORBA::Long);
     virtual void setBooleanVar(CORBA::Boolean);
+    virtual void setAnotherBooleanVar(CORBA::Boolean);
+    virtual void setBooleanNoAlarmsVar(CORBA::Boolean);
+    virtual void setBooleanSeqVar(const ACS::booleanSeq&);
     virtual void setEnumVar(alarmsystemPropTest::AlarmEnum);
     virtual void setDoubleVarComplete(CORBA::Float val, const char* faultFamily, const char* faultMember);
 
@@ -106,6 +110,21 @@ class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard com
 	 */
 	virtual ACS::ROboolean_ptr testBooleanVar();
 
+	/**
+	 * Returns a reference to another boolean property
+	 */
+	virtual ACS::ROboolean_ptr testAnotherBooleanVar();
+
+	/**
+	 * Returns a reference to a boolean property without alarms
+	 */
+	virtual ACS::ROboolean_ptr testBooleanNoAlarmsVar();
+
+	/**
+	 * Returns a reference to a booleanSeq property
+	 */
+	virtual ACS::RObooleanSeq_ptr testBooleanSeqVar();
+
   private:
 
     /**
@@ -119,6 +138,12 @@ class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard com
 
     baci::SmartPropertyPointer<ROEnumImpl<ACS_ENUM_T(alarmsystemPropTest::AlarmEnum),  POA_alarmsystemPropTest::ROAlarmEnum>
         > m_testEnumVar_sp;
+
+    baci::SmartPropertyPointer<baci::ROboolean> m_testAnotherBooleanVar_sp;
+
+    baci::SmartPropertyPointer<baci::ROboolean> m_testBooleanNoAlarmsVar_sp;
+
+    baci::SmartPropertyPointer<baci::RObooleanSeq> m_testBooleanSeqVar_sp;
 };
 /*\@}*/
 /*\@}*/

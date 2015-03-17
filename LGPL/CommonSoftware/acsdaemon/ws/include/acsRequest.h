@@ -64,7 +64,12 @@
 // can't run requested servant: launch attempt timed out
 #define EC_TIMEOUT 45
 
-// start-up (dependency) order
+// Definition to build start-up (dependency) order later
+//
+// Each service can depend on another service to start
+// so it is possible to build chain of dependencies
+// (it is not possible to define a service to depend on more then one other
+// service)
 enum ACSServiceType {
     NAMING_SERVICE = 0,
     INTERFACE_REPOSITORY,
@@ -75,7 +80,7 @@ enum ACSServiceType {
     ACS_LOG_SERVICE,
     ALARM_SERVICE,
     MANAGER,
-    UNKNOWN
+    UNKNOWN // It is the terminator flag of the array of dependency in ACSService.depententService
 };
 
 struct ACSService {
@@ -96,11 +101,23 @@ struct ACSService {
 #define ACS_SERVICE_TYPES UNKNOWN
 #define ACS_SERVICE_INSTANCES 11
 
+// No dependency
 const ACSServiceType noDependency[] = { UNKNOWN };
+
+// The service needs the naming service running
 const ACSServiceType namingServiceDependency[] = { NAMING_SERVICE, UNKNOWN };
+
+// The service needs the logging service running
+const ACSServiceType loggingServiceServiceDependency[] = { LOGGING_SERVICE, UNKNOWN };
+
+// The service needs the CDB/RDB_CDB service running
+//
+// Note there is only one service between CDB and CDB_RDB
 const ACSServiceType cdbDependency[] = { CDB, RDB_CDB, UNKNOWN };
 
-
+/**
+ * Actual ACS services definition with their dependency
+ */
 const ACSService acsServices[] = {
 		{
 				"naming_service",
@@ -140,7 +157,7 @@ const ACSService acsServices[] = {
 				NULL,
 				false,
 				true,
-				namingServiceDependency
+				loggingServiceServiceDependency
 		}, {
 				"rdb_cdb",
 				"acsRDBConfigurationDatabase",
@@ -153,7 +170,7 @@ const ACSService acsServices[] = {
 				NULL,
 				false,
 				true,
-				namingServiceDependency
+				loggingServiceServiceDependency
 		}, {
 				"notification_service",
 				"acsNotifyService",
