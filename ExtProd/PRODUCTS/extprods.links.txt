@@ -1,4 +1,4 @@
-ACE+TAO-6.3.0.tar.gz http://download.dre.vanderbilt.edu/previous_versions/ACE+TAO-5.8.1.tar.gz
+ACE+TAO-6.3.0.tar.gz http://download.dre.vanderbilt.edu/previous_versions/ACE+TAO-6.3.0.tar.gz
 apache-ant-1.9.3-src.tar.gz http://archive.apache.org/dist/ant/source/apache-ant-1.9.3-src.tar.gz
 boost_1_41_0.tar.bz2 http://downloads.sourceforge.net/project/boost/boost/1.41.0/boost_1_41_0.tar.bz2?r=http%3A%2F%2Fwww.boost.org%2Fusers%2Fhistory%2Fversion_1_41_0.html&ts=1405539262&use_mirror=ufpr
 coverage-3.3.1.tar.gz https://pypi.python.org/packages/source/c/coverage/coverage-3.3.1.tar.gz#md5=6f5a25ce06baad03ab293990f3a98bb7
@@ -24,7 +24,7 @@ Numeric-23.8.2.tar.gz https://sourcesup.renater.fr/frs/download.php/1833/Numeric
 numpy-1.7.0.tar.gz https://pypi.python.org/packages/source/n/numpy/numpy-1.7.0.tar.gz#md5=4fa54e40b6a243416f0248123b6ec332
 omniORB-4.1.4.tar.gz http://downloads.sourceforge.net/project/omniorb/omniORB/omniORB-4.1.4/omniORB-4.1.4.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fomniorb%2Ffiles%2FomniORB%2FomniORB-4.1.4%2F&ts=1405542245&use_mirror=ufpr
 omniORBpy-3.4.tar.gz http://downloads.sourceforge.net/project/omniorb/omniORBpy/omniORBpy-3.4/omniORBpy-3.4.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fomniorb%2Ffiles%2FomniORBpy%2FomniORBpy-3.4%2F&ts=1405542362&use_mirror=ufpr
-OpenDDS-2.2.tar.gz http://download.ociweb.com/OpenDDS/previous-releases/OpenDDS-2.2.tar.gz
+OpenDDS-3.5.1.tar.gz http://download.ociweb.com/OpenDDS/previous-releases/OpenDDS-3.5.1.tar.gz
 pexpect-2.3.tar.gz https://enterprise-storage-os.googlecode.com/files/pexpect-2.3.tar.gz
 pychecker-0.8.17.tar.gz http://downloads.sourceforge.net/project/pychecker/pychecker/0.8.17/pychecker-0.8.17.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fpychecker%2Ffiles%2Fpychecker%2F0.8.17%2F&ts=1405542648&use_mirror=ufpr
 pyephem-3.7.5.1.tar.gz https://pypi.python.org/packages/source/p/pyephem/pyephem-3.7.5.1.tar.gz#md5=4b08475dee615e5dfdc6fa7f66086944
