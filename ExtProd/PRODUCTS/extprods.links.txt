@@ -18,7 +18,7 @@ logilab-astng-0.24.3.tar.gz http://download.logilab.org/pub/astng/logilab-astng-
 logilab-common-0.59.1.tar.gz https://pypi.python.org/packages/source/l/logilab-common/logilab-common-0.59.1.tar.gz
 matplotlib-1.2.0.tar.gz http://downloads.sourceforge.net/project/matplotlib/matplotlib/matplotlib-1.2.0/matplotlib-1.2.0.tar.gz?r=&ts=1405541768&use_mirror=ufpr
 mico-2.3.13.tar.gz http://downloads.sourceforge.net/project/mico/mico%202.3.13/mico-2.3.13.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmico%2F&ts=1405541822&use_mirror=ufpr
-mock-0.6.0.zip https://pypi.python.org/packages/source/m/mock/mock-0.6.0.tar.gz#md5=a52c791ebd454a196e1e57b43b493191
+mock-0.6.0.tar.gz https://pypi.python.org/packages/source/m/mock/mock-0.6.0.tar.gz#md5=a52c791ebd454a196e1e57b43b493191
 nose-0.11.3.tar.gz https://python-nose.googlecode.com/files/nose-0.11.3.tar.gz
 Numeric-23.8.2.tar.gz https://sourcesup.renater.fr/frs/download.php/1833/Numeric-23.8.2.tar.gz
 numpy-1.7.0.tar.gz https://pypi.python.org/packages/source/n/numpy/numpy-1.7.0.tar.gz#md5=4fa54e40b6a243416f0248123b6ec332
