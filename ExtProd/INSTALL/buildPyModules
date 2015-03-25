@@ -257,7 +257,7 @@ then
   echo Error: Python Mock sources are missing
 else
   echo "== Installing Python Mock Objects"
-  tar-zxf mock-0.6.0.tar.gz mock-0.6.0/mock.py mock-0.6.0/testcase.py mock-0.6.0/testutils.py -d $PYTHON_ROOT/lib/python2.6/site-packages/
+  tar -zxf mock-0.6.0.tar.gz mock-0.6.0/mock.py mock-0.6.0/testcase.py mock-0.6.0/testutils.py -d $PYTHON_ROOT/lib/python2.6/site-packages/
 fi
 
 if [ ! -e ../PRODUCTS/pythoscope-0.4.3.tar.gz ]
