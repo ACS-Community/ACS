@@ -156,11 +156,11 @@ class DynamicImplementation:
         except:
             #should really never be the case...
             temp_list.insert(0, self.__real_class)
-        self.__class__.__bases__ = tuple(temp_list)
+        self.__class__.__bases__ = tuple(list(set(temp_list)))
         
         #now that all the underlying infrastructure is in place, we can finally use
         #CORBA introspection to start adding methods!
-        #get the interface repository.       
+        #get the interface repository.
         ifr = interfaceRepository()
                                    
         #assume this can be found in a subclass as well.
