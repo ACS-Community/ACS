@@ -21,17 +21,15 @@
  */
 package alma.acs.logging.table.reduction;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 
 /**
  * The reduction rule for the antenna.
@@ -73,7 +71,7 @@ public class AntennaRule extends ReductionRule {
 	/**
 	 * The names of the antennae reduced by this rule
 	 */
-	private final Set<String> antennaNames=new HashSet<String>();
+	private final Set<String> antennaNames=new TreeSet<String>();
 	
 	/**
 	 * The message of the log used as a base for reducing
@@ -134,7 +132,7 @@ public class AntennaRule extends ReductionRule {
 	}
 	
 	/**
-	 * Format and return the names of all the antenna names matched
+	 * Format and return the sorted names of all the antenna names matched
 	 * by this reduction rule
 	 * 
 	 * @return A string with all the antenna names
