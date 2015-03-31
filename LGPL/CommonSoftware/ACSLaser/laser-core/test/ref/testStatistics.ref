@@ -1,6 +1,6 @@
 1 - testStatistics started
-1 - ----------T--:--:--.--- NOTICE [alma.acs.lasercore.test.StatisticsTest#testStatistics] Alarm server statistics [ Terminations='2' FaultStatesProcessed='5' Activations='3' MsgsWaitingToBeProcessed='0' NumOFMsgsFromSources='3' ]
-1 - ----------T--:--:--.--- NOTICE [alma.acs.lasercore.test.StatisticsTest#testStatistics] Alarm server statistics [ Terminations='0' FaultStatesProcessed='0' Activations='0' MsgsWaitingToBeProcessed='0' NumOFMsgsFromSources='0' ]
+1 - ----------T--:--:--.--- NOTICE [alma.acs.lasercore.test.StatisticsTest#testStatistics] Alarm server statistics [ Terminations='2' Activations='3' NumOFMsgsFromSources='3' FaultStatesProcessed='5' MsgsWaitingToBeProcessed='0' ]
+1 - ----------T--:--:--.--- NOTICE [alma.acs.lasercore.test.StatisticsTest#testStatistics] Alarm server statistics [ Terminations='0' Activations='0' NumOFMsgsFromSources='0' FaultStatesProcessed='0' MsgsWaitingToBeProcessed='0' ]
 1 - testStatistics done
 1 - 
 1 - 
