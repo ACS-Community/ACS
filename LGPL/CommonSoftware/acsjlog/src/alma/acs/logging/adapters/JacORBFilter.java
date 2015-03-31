@@ -120,6 +120,7 @@ public class JacORBFilter implements Filter {
                        ) 
                      ) ||
 					message.startsWith("Retrying to connect to") ||
+					message.startsWith("Negotiated char codeset of") ||
 					message.startsWith("ClientConnectionManager: created new ClientGIOPConnection") ||
 					message.startsWith("ClientConnectionManager: found ClientGIOPConnection") ||
 					message.startsWith("Initialising ORB with ID") ||
