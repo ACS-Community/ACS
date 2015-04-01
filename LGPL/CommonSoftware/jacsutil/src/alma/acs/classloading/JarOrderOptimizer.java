@@ -68,7 +68,7 @@ public class JarOrderOptimizer implements Comparator<File>
 		// "jacorb-omgapi.jar" separate under $JACORB_HOME/endorsed/
 		"jacorb.jar",
 		"jacorb-services.jar",
-		"slf4j-api-1.7.5.jar",
+		"slf4j-api-1.7.6.jar",
 		"slf4j-acs.jar",
 		"acscomponent.jar",
 		"acsCallbacksSupport.jar",
