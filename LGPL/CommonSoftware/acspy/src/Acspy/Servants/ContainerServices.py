@@ -60,7 +60,7 @@ from Acspy.Common.CDBAccess   import CDBaccess
 from ACS__POA                 import CBlong
 from ACS                      import CBDescIn 
 #------------------------------------------------------------------------------
-class ContainerServices(object):
+class ContainerServices:
     '''
     Class ContainerServices provides components and PySimpleClients
     with ACS and CORBA services. Developers should never instantiate this class

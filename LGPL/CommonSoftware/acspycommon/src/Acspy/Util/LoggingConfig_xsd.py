@@ -119,7 +119,7 @@ class MixedContainer:
             outfile.write(')\n')
 
 
-class _MemberSpec:
+class _MemberSpec(object):
     def __init__(self, name='', data_type='', container=0):
         self.name = name
         self.data_type = data_type
