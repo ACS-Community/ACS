@@ -131,7 +131,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = 
+CDB_SCHEMAS = MCtestAlarmsComponent
 
 # 
 # IDL Files and flags
