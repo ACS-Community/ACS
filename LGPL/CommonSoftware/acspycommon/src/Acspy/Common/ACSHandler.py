@@ -491,7 +491,7 @@ class ACSHandler(logging.handlers.BufferingHandler):
 #------------------------------------------------------------------------------
 
     
-class LogThrottle(object):
+class LogThrottle:
     '''
     Process level throttle for logs.
     '''

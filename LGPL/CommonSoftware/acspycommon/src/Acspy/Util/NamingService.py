@@ -34,7 +34,7 @@ import CosNaming
 
 from traceback import print_exc
 #--------------------------------------------------------------------------
-class NamingServiceUtil(object):
+class NamingServiceUtil:
     """
     This class merely provides simplified access to the Naming Service. It
     provides the following functions:
