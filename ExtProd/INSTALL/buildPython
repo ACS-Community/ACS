@@ -62,6 +62,23 @@ exec > $LOG 2>&1
 
 date
 
+echo "Installing for $DISTRO $REL"
+
+if [ "$DISTRO" = "DEBIAN" ]; then
+    mkdir -p $PYTHON_ROOT/lib/python/site-packages
+    mkdir -p $PYTHON_ROOT/bin
+    ln -s $PYTHON_ROOT/lib/python $PYTHON_ROOT/lib/python2.7
+    ln -s `which python` $PYTHON_ROOT/bin/python
+    exit 0
+elif [ "$DISTRO" = "CENTOS" -o "$DISTRO" = "SL" -o "$DISTRO" = "RHEL" -a "$REL" = "6" ]; then
+    mkdir -p $PYTHON_ROOT/lib/python/site-packages
+    mkdir -p $PYTHON_ROOT/bin
+    ln -s $PYTHON_ROOT/lib/python $PYTHON_ROOT/lib/python2.6
+    ln -s `which python` $PYTHON_ROOT/bin/python
+    cp /usr/lib64/python2.6/compileall.py $PYTHON_ROOT/lib/python
+    exit 0
+fi
+
 if [ ! -d $PYTHON_ROOT ]
 then
     mkdir -p $PYTHON_ROOT
@@ -213,23 +230,10 @@ then
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 fi
 
-if [ "$DISTRO" = "DEBIAN" ]; then
-    mkdir -p $PYTHON_ROOT/lib/python/site-packages
-    mkdir -p $PYTHON_ROOT/bin
-    ln -s $PYTHON_ROOT/lib/python $PYTHON_ROOT/lib/python2.7
-    ln -s `which python` $PYTHON_ROOT/bin/python
-elif [ "$DISTRO" = "CENTOS" -o "$DISTRO" = "SL" -o "$DISTRO" = "RHEL" -a "$REL" = "6" ]; then
-    mkdir -p $PYTHON_ROOT/lib/python/site-packages
-    mkdir -p $PYTHON_ROOT/bin
-    ln -s $PYTHON_ROOT/lib/python $PYTHON_ROOT/lib/python2.6
-    ln -s `which python` $PYTHON_ROOT/bin/python
-    cp /usr/lib64/python2.6/compileall.py $PYTHON_ROOT/lib/python
-else 
-    ./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared --enable-unicode=ucs4
-    #./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared 
-    make
-    make install
-fi
+./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared --enable-unicode=ucs4
+#./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared 
+make
+make install
 
 cd $CWD
 echo Python installation done!
