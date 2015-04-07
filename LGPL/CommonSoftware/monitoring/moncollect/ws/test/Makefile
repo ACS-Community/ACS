@@ -71,13 +71,13 @@ LIBRARIES_L     = MCtestComponent MCtestPropertiesComponent MCtestAlarmsComponen
 #
 # <brief description of lllll library>
 MCtestComponent_OBJECTS = MCtestComponentImpl
-MCtestComponent_LIBS= MCtestComponentStubs baci
+MCtestComponent_LIBS= MCtestComponentStubs baci acscomponent
 
 MCtestPropertiesComponent_OBJECTS = MCtestPropertiesComponentImpl
 MCtestPropertiesComponent_LIBS= MCtestComponentStubs baci
 
 MCtestAlarmsComponent_OBJECTS = MCtestAlarmsComponentImpl
-MCtestAlarmsComponent_LIBS= MCtestComponentStubs baci ACSErrTypeDevIO
+MCtestAlarmsComponent_LIBS= MCtestComponentStubs baci ACSErrTypeDevIO ACSErrTypeCommon acscomponent
 
 MCmockBlobber_OBJECTS = MCmockBlobberImpl
 MCmockBlobber_LIBS = baci MonitorArchiverIFStubs CollectorListStatusStubs acscomponent MonitorErr 
@@ -136,7 +136,7 @@ CDB_SCHEMAS = MCtestAlarmsComponent
 # 
 # IDL Files and flags
 # 
-IDL_FILES = 
+IDL_FILES = MCtestComponent
 IDL_TAO_FLAGS =
 USER_IDL =
 #
