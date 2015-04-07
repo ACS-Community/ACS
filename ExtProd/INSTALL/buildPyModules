@@ -53,6 +53,17 @@ exec > $LOG 2>&1
 
 date
 
+echo "Installing for $DISTRO $REL"
+
+if [ "$DISTRO" = "DEBIAN" ]; then
+    echo "Using PyModules from the system... Nothing to install"
+    exit 0
+elif [ "$DISTRO" = "CENTOS" -o "$DISTRO" = "SL" -o "$DISTRO" = "RHEL" -a "$REL" = "6" ]; then
+    echo "Using PyModules from the system... Nothing to install"
+    exit 0
+fi
+
+
 if [ ! -d $PYTHON_ROOT ]
 then
   echo "$PYTHON_ROOT not found, cannot continue..."
