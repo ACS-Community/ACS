@@ -770,7 +770,7 @@ class ContainerServices:
         return
     #--------------------------------------------------------------------------
 
-class ComponentReleaseCallback(object):
+class ComponentReleaseCallback:
     def __init__(self):
         self.__condition = threading.Condition()
         self.__condition.acquire()
