@@ -126,12 +126,10 @@
 1 - ----------T--:--:--.--- [ThrMgrLogger - ThreadBase::stop] Thread TestThreadC
 1 - ----------T--:--:--.--- [ThrMgrLogger - ThreadBase::stop] Thread TestThreadC did not stop within 20000000 100ns
 1 - ----------T--:--:--.--- [GlobalLogger - main] Stop failed, as expected
+1 - ----------T--:--:--.--- [ThrMgrLogger - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [GlobalLogger - main] Deleting thread
 1 - ----------T--:--:--.--- [ThrMgrLogger - TestACSThread::~TestACSThread] 
 1 - ----------T--:--:--.--- [ThrMgrLogger - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [ThrMgrLogger - ThreadBase::stop] Thread TestThreadC
-1 - ----------T--:--:--.--- [ThrMgrLogger - ACS::Thread::commonStop] 
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:TestThreadC
 1 - ----------T--:--:--.--- [ThrMgrLogger - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [ThrMgrLogger - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [ThrMgrLogger - ACS::ThreadBase::~ThreadBase] 

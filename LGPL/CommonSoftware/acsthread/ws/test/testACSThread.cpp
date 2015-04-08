@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
 	ACS_LOG(LM_SOURCE_INFO,"main", 
 		(LM_INFO, "Stop succeded but should have failed"));
 	}
+    sleep(15);
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Deleting thread"));
     delete b;
