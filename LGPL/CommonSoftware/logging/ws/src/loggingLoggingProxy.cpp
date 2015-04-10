@@ -1751,7 +1751,10 @@ LoggingProxy::getPriority(ACE_Log_Record &log_record)
     // ACE default
 // here we have to add 1 to align ACE and ACS priorities. In past it was OK due to a bug in ACE
     unsigned long priority = log_record.priority()+1;
-    unsigned long flag_prio = (*tss)->flags() & 0x0F;
+    unsigned long flag_prio = 0;
+    if (tss != NULL)
+        flag_prio = (*tss)->flags() & 0x0F;
+
     //DELOUSE case
     if(priority == 13)
         priority = 2;
