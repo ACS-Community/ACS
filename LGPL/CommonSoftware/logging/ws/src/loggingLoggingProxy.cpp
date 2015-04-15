@@ -1754,6 +1754,8 @@ LoggingProxy::getPriority(ACE_Log_Record &log_record)
     unsigned long flag_prio = 0;
     if (tss != NULL)
         flag_prio = (*tss)->flags() & 0x0F;
+    else
+	std::cerr << "SEVERE ERROR in loggingProxy::getPriority(). TSS is NULL";
 
     //DELOUSE case
     if(priority == 13)
