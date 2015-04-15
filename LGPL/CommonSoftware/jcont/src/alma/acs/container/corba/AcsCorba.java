@@ -218,9 +218,17 @@ public class AcsCorba
 			throw ex;
 		}
 
-		// ORB profiling setup
+		// Our start script 'acsStartJavaContainer' sets the property alma.acs.orb.profiler.class,
+		// either using optional env var "JAVA_OPTIONS_ORB_PROFILER" or otherwise 'ContainerOrbProfiler' as default profiler. 
+		initOrbProfiling();
+	}
+
+	
+	/**
+	 * Installs the ORB profiler if the profiler impl class is given in property {@value #ORB_PROFILER_CLASS_PROPERTYNAME}.
+	 */
+	private void initOrbProfiling() {
 		try {
-			// orbProfilerClassname can be set in env var "JAVA_OPTIONS_ORB_PROFILER", or acsStartJavaContainer script will use the default.
 			String orbProfilerClassname = System.getProperty(ORB_PROFILER_CLASS_PROPERTYNAME); 
 			if (orbProfilerClassname != null) {
 				if (m_orb instanceof AcsProfilingORB) {
@@ -246,7 +254,7 @@ public class AcsCorba
 			m_logger.log(Level.WARNING, "Failed to set up ORB profiling, will run without it.", th);
 		}
 	}
-
+	
 	
 	public synchronized boolean isInitialized() {
 		return m_isInitialized;
@@ -300,6 +308,10 @@ public class AcsCorba
 			}
 			throw ex;
 		}
+		
+		// Normally client apps do not use Corba profiling, but if they set property "alma.acs.orb.profiler.class"
+		// then we install the profiler (see http://ictjira.alma.cl/browse/ICT-4928).
+		initOrbProfiling();
 		
 		setInitialized(true);
 		
