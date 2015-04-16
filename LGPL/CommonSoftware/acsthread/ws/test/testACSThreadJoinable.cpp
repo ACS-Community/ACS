@@ -70,7 +70,7 @@ class FastACSThread :public ACS::Thread
 		  bool del,
 		  const long _thrFlags
 	) :
-	ACS::Thread(name, responseTime, sleepTime, del, _thrFlags,0/* 25000*/)
+	ACS::Thread(name, responseTime, sleepTime, del, _thrFlags,1048576/*1Mb*/)
 	{
 	    ACS_TRACE("FastACSThread::FastACSThread");
 	    num = i;

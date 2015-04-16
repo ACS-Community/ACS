@@ -58,6 +58,8 @@ int main(int argc, char *argv[])
 	    (LM_INFO, "Stopping thread"));
     a->stop();
 
+    sleep(5);
+
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Done"));
     return 0;
