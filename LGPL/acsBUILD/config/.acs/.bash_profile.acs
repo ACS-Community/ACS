@@ -1422,6 +1422,9 @@ export OSYSTEM
 export PATH_SEP
 export ACS_TMP
 export CYGWIN_VER
+if [ -f $PYTHON_ROOT/bin/activate ]; then
+     source $PYTHON_ROOT/bin/activate
+fi
 
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then

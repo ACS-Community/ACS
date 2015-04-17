@@ -87,6 +87,8 @@ cd ../PRODUCTS
 tar -zxf omniORB-4.1.4.tar.gz
 mv  omniORB-4.1.4 $OMNI_ROOT
 
+source $PYTHON_ROOT/bin/activate
+
 cd $OMNI_ROOT
 NUM_CPU=`grep -c processor  /proc/cpuinfo`
 
