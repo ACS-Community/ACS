@@ -2,8 +2,6 @@
 #include <string.h>
 #include <iomanip>
 
-ACE_RCSID(acstests, LogTestComponentImpl, "$Id: LogTestComponentImpl.cpp,v 1.7 2008/10/08 01:57:23 cparedes Exp $")
-
 LogTestComponentImpl::LogTestComponentImpl(const ACE_CString& name,
 					   maci::ContainerServices *containerServices) :
     BasePerfCompImpl(name, containerServices)
