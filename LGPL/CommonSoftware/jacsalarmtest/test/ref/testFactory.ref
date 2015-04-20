@@ -2,6 +2,19 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemsourcetestFactoryTest' and updated logger names
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] POA activated
+1 - ----------T--:--:----- FINER [almaalarmsystemsourcetestFactoryTest] Orb profiling was not selected (see property 'almaacsorbprofilerclass')
+1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] manager reference not yet available in method loginToManager; will try to find the manager first
+1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] Manager login done ...
+1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] Alarm system type: ACS
+1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] ready to talk with components!
+1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] AlarmSourceFactory closed
+1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] about to log out from manager
+1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] will disconnect ACS stuff
+1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] logged out from manager
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemsourcetestFactoryTest' and updated logger names
+1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] calling orbresolve_initial_references
+1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] POA activated
+1 - ----------T--:--:----- FINER [almaalarmsystemsourcetestFactoryTest] Orb profiling was not selected (see property 'almaacsorbprofilerclass')
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] Alarm system type: ACS
@@ -13,29 +26,20 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemsourcetestFactoryTest' and updated logger names
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] POA activated
-1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] manager reference not yet available in method loginToManager; will try to find the manager first
-1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] Manager login done ...
-1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] Alarm system type: ACS
-1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] ready to talk with components!
-1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] will disconnect ACS stuff
-1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] AlarmSourceFactory closed
-1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] about to log out from manager
-1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] logged out from manager
-1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemsourcetestFactoryTest' and updated logger names
-1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] calling orbresolve_initial_references
-1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] POA activated
+1 - ----------T--:--:----- FINER [almaalarmsystemsourcetestFactoryTest] Orb profiling was not selected (see property 'almaacsorbprofilerclass')
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] Alarm system type: CERN
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] cmw-mom/acs-jms initialized
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] ready to talk with components!
-1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] AlarmSourceFactory closed
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] will disconnect ACS stuff
+1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] AlarmSourceFactory closed
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] about to log out from manager
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] logged out from manager
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemsourcetestFactoryTest' and updated logger names
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] POA activated
+1 - ----------T--:--:----- FINER [almaalarmsystemsourcetestFactoryTest] Orb profiling was not selected (see property 'almaacsorbprofilerclass')
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] Alarm system type: ACS
@@ -47,6 +51,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemsourcetestFactoryTest' and updated logger names
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] POA activated
+1 - ----------T--:--:----- FINER [almaalarmsystemsourcetestFactoryTest] Orb profiling was not selected (see property 'almaacsorbprofilerclass')
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] Alarm system type: ACS
@@ -58,6 +63,7 @@
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'almaalarmsystemsourcetestFactoryTest' and updated logger names
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] POA activated
+1 - ----------T--:--:----- FINER [almaalarmsystemsourcetestFactoryTest] Orb profiling was not selected (see property 'almaacsorbprofilerclass')
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINE [almaalarmsystemsourcetestFactoryTest] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemsourcetestFactoryTest_2] Alarm system type: ACS
