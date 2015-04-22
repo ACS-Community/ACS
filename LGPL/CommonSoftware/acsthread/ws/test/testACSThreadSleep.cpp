@@ -48,6 +48,7 @@ public:
 		    del)
     {
 	ACS_TRACE("SleepThreadLoop::SleepThreadLoop");
+    m_doLoop = true;
     }
 
     ~SleepThreadLoop()
@@ -56,9 +57,13 @@ public:
     }
     
     void runLoop();
+    void setDoLoop(bool value)
+    {
+        m_doLoop = value;
+    }
     
 private:
-
+    bool m_doLoop;
 };  
 
 /*
@@ -81,6 +86,10 @@ void SleepThreadLoop::runLoop()
     if(!check()) return;
     ACS_LOG(LM_SOURCE_INFO,"SleepThreadLoop::runLoop", 
 	    (LM_INFO, "Done iteration."));
+    if(m_doLoop == false)
+    {
+        sleep(10000000); // 1 s
+    }
 }
 
 
@@ -115,7 +124,7 @@ int main(int argc, char *argv[])
 
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== Creating thread"));
-    tm.create<SleepThreadLoop>("SleepThread",
+    SleepThreadLoop * th = tm.create<SleepThreadLoop>("SleepThread",
 			       ACS::ThreadBase::defaultResponseTime,
 			       10000000, // 1 sec
 			       true);   
@@ -123,6 +132,7 @@ int main(int argc, char *argv[])
      * GCH
      * Wait a while to simulate components lifetime
      */
+    th->setDoLoop(true);
     tm.resume("SleepThread");
     ACS_SHORT_LOG((LM_INFO,"Waiting"));
     ACE_OS::sleep(20);
@@ -142,6 +152,7 @@ int main(int argc, char *argv[])
      * Resume and wait a while to simulate components lifetime
      */
     ACS_SHORT_LOG((LM_INFO,"Resume"));
+    th->setDoLoop(false);
     tm.resume("SleepThread");
     ACS_SHORT_LOG((LM_INFO,"Waiting"));
     ACE_OS::sleep(5);
@@ -160,6 +171,7 @@ int main(int argc, char *argv[])
      * Resume and wait a while to simulate components lifetime
      */
     ACS_SHORT_LOG((LM_INFO,"Resume"));
+    th->setDoLoop(true);
     tm.resume("SleepThread");
     ACS_SHORT_LOG((LM_INFO,"Waiting"));
     ACE_OS::sleep(20);
