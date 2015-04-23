@@ -1,4 +1,2 @@
 1 - Checking all xml and xsd files with encode different from ISO-8859-1
-...ASIConfiguration.xsd:<?xml version="1.0" encoding="UTF-8"?>
-...ASIMessage.xsd:<?xml version="1.0" encoding="UTF-8"?>
 1 - ---------o0o-----------
