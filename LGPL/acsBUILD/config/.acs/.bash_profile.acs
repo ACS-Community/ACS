@@ -249,14 +249,18 @@ check_linux ()
 					 		REL=`cat $RH | cut -d' ' -f5` ;;
 						'Enterprise') # RedHat Enterprise
 					 		DISTRO='RHEL'
-					 		REL=`cat $RH | cut -d' ' -f7` ;;
+					 		REL=`cat $RH | cut -d' ' -f7 | cut -d'.' -f1` ;;
 					esac;;
 			'Scientific') 	# Scientific Linux
 					DISTRO='SL'
-					REL=`cat $RH | cut -d' ' -f5` ;;
-			'Fedora') 	# Fedora Core 
+					REL=`cat $RH | cut -d' ' -f5 | cut -d'.' -f1` ;;
+			'Fedora') 	# Fedora 
 					DISTRO='FEDORA'
 					REL=`cat $RH | cut -d' ' -f4` ;;
+			'CentOS')       #CentOS
+					DISTRO='CENTOS'
+					REL=`cat $RH | cut -d' ' -f3 | cut -d'.' -f1` ;;
+			
 		esac
 	fi
 
@@ -1418,6 +1422,9 @@ export OSYSTEM
 export PATH_SEP
 export ACS_TMP
 export CYGWIN_VER
+if [ -f $PYTHON_ROOT/bin/activate ]; then
+     source $PYTHON_ROOT/bin/activate
+fi
 
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
