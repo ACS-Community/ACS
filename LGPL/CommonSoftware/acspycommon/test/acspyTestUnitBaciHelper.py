@@ -70,15 +70,18 @@ class AddPropertyCheck(unittest.TestCase):
         """Ensure it adds a defined enum property"""
         BaciHelper.addProperty(self.victim, 'blarROProp')
 
+    def testInheritedProperty(self):
+        """Ensure it can look-up a property inherited from a base class"""
+        # The property commonProp is defined in the PyCommonBaciTest IDL 
+        # interface, and PyBaciTest interface inherits from PyCommonBaciTest
+        BaciHelper.addProperty(self.victim, 'commonProp')
+
 
 class PyBaciTestImpl(PyBaciTest, cc, services, lcycle):
 
     def __init__(self):
         cc.__init__(self)
         services.__init__(self)
-
-    def initialize(self):
-        addProperty(self, 'foo', devio_ref=DummyDevIO())
 
 
 class DummyDevIO(DevIO):
