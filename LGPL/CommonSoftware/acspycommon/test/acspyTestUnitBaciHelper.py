@@ -66,8 +66,8 @@ class AddPropertyCheck(unittest.TestCase):
         """Ensure it adds a property defined in the IDL interface"""
         BaciHelper.addProperty(self.victim, 'doubleROProp')
 
-    def testUserDefinedEnum(self):
-        """Fooo"""
+    def testAddUserDefinedEnumProperty(self):
+        """Ensure it adds a defined enum property"""
         BaciHelper.addProperty(self.victim, 'blarROProp')
 
 
