@@ -148,7 +148,7 @@ check_linux ()
 	OS='LINUX'
 	# Standard release files for different distributions
 	RH=/etc/redhat-release
-	DB=/etc/debian-version
+	DB=/etc/debian_version
 	SL=/etc/slackware-version
 	SU=/etc/SuSE-release
 	GT=/etc/gentoo-release
@@ -176,9 +176,12 @@ check_linux ()
 			'Scientific') 	# Scientific Linux
 					DISTRO='SL'
 					REL=`cat $RH | cut -d' ' -f5` ;;
-			'Fedora') 	# Fedora Core 
+			'Fedora') 	# Fedora 
 					DISTRO='FEDORA'
 					REL=`cat $RH | cut -d' ' -f4` ;;
+			'CentOS')	#CentOS
+					DISTRO='CENTOS'
+					REL=`cat $RH | cut -d' ' -f3| cut -d'.' -f1` ;;
 		esac
 	fi
 
