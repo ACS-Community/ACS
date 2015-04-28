@@ -30,20 +30,25 @@ __revision__ = "$Id: acspyTestUnitBaciHelper.py,v 1.1.1.1 2012/03/07 17:40:45 ac
 import unittest
 import mock
 #--ACS IMPORTS____-------------------------------------------------------------
-import acspytest__POA
 import Acspy.Util.BaciHelper as BaciHelper
-from maciErrTypeImpl      import CannotGetComponentExImpl
+from acspytest__POA import PyBaciTest
+from maciErrTypeImpl import CannotGetComponentExImpl
+from Acspy.Servants.CharacteristicComponent import CharacteristicComponent as cc
+from Acspy.Servants.ContainerServices import ContainerServices as services
+from Acspy.Servants.ComponentLifecycle import ComponentLifecycle as lcycle
+from ACSImpl.DevIO import DevIO
+
+
 #------------------------------------------------------------------------------
 
 class AddPropertyCheck(unittest.TestCase):
     """Tests of the addProperty() method."""
 
     def setUp(self):
-        mockIFR = mock.Mock( {"lookup_id" : None } )
+        mockIFR = mock.Mock({"lookup_id" : None })
         self.IFR = BaciHelper.IFR
         BaciHelper.IFR = mockIFR
-        self.victim = acspytest__POA.PyBaciTest()
-
+        self.victim = PyBaciTestImpl()
 
     def tearDown(self):
         BaciHelper.IFR = self.IFR
@@ -57,9 +62,39 @@ class AddPropertyCheck(unittest.TestCase):
         self.assertRaises(CannotGetComponentExImpl, BaciHelper.addProperty, 
                           self.victim, "Foo")
 
+    def testAddIDLDefinedProperty(self):
+        """Ensure it adds a property defined in the IDL interface"""
+        BaciHelper.addProperty(self.victim, 'doubleROProp')
+
+    def testUserDefinedEnum(self):
+        """Fooo"""
+        BaciHelper.addProperty(self.victim, 'blarROProp')
+
+
+class PyBaciTestImpl(PyBaciTest, cc, services, lcycle):
+
+    def __init__(self):
+        cc.__init__(self)
+        services.__init__(self)
+
+    def initialize(self):
+        addProperty(self, 'foo', devio_ref=DummyDevIO())
+
+
+class DummyDevIO(DevIO):
+
+    def __init__(self, device, value=0):
+        DevIO.__init__(self, value)
+
+    def read(self):
+        return self.value
+
+    def write(self, value):
+        self.value = value 
+
+
 if __name__ == "__main__":
     unittest.main()
-
 
 
 #
