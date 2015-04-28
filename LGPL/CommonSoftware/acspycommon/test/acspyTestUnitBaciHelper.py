@@ -53,8 +53,9 @@ class AddPropertyCheck(unittest.TestCase):
         self.assertEqual(None, BaciHelper.IFR.lookup_id("Foo"))
 
     def testFailedIFRLookup(self):
-        """Correct exception thrown when Component not found."""
-        self.assertRaises(CannotGetComponentExImpl, BaciHelper.addProperty, self.victim, "Foo")
+        """Raise CannotGetComponentExImpl if it cannot get the property type"""
+        self.assertRaises(CannotGetComponentExImpl, BaciHelper.addProperty, 
+                          self.victim, "Foo")
 
 if __name__ == "__main__":
     unittest.main()

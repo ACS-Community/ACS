@@ -134,11 +134,15 @@ def addProperty(comp_ref,
     #------------------------------------------------------------------------------
     #if developer has not specified the property's type
     if prop_type == "":
-        # Retrieve the property type from the module information
-        newmod = __import__(modarray[1], globals(), locals(), modarray[2])
-        prop_ifr_name = newmod.__dict__[modarray[2]].__dict__['_d__get_'+prop_name][1][0][1]
-        prop_type = newmod.__dict__[modarray[2]].__dict__['_d__get_'+prop_name][1][0][2]
-
+        try:
+            # Retrieve the property type from the module information
+            newmod = __import__(modarray[1], globals(), locals(), modarray[2])
+            prop_ifr_name = newmod.__dict__[modarray[2]].__dict__['_d__get_'+prop_name][1][0][1]
+            prop_type = nemod.__dict__[modarray[2]].__dict__['_d__get_'+prop_name][1][0][2]
+        except KeyError, ex:
+            raise CannotGetComponentExImpl(
+                    'The type of the property `%s` cannot be determined' 
+                    %prop_name )
     #------------------------------------------------------------------------------
     #create the BACI property object and set it as a member of the component
     prop_py_name = "__" + prop_name + "Object"
