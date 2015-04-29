@@ -134,16 +134,22 @@ def addProperty(comp_ref,
     #------------------------------------------------------------------------------
     #if developer has not specified the property's type
     if prop_type == "":
-        # Retrieve the property type from the module information
-        newmod = __import__(modarray[1], globals(), locals(), modarray[2])
-        prop_ifr_name = newmod.__dict__[modarray[2]].__dict__['_d__get_'+prop_name][1][0][1]
-        prop_type = newmod.__dict__[modarray[2]].__dict__['_d__get_'+prop_name][1][0][2]
-
+        try:
+            # Retrieve the property type from the module information
+            newmod = __import__(modarray[1], globals(), locals(), modarray[2])
+            component = getattr(newmod, modarray[2])
+            attribute = getattr(component, '_d__get_%s' %prop_name)
+            prop_ifr_name = attribute[1][0][1]
+            prop_type = attribute[1][0][2]
+        except AttributeError, ex:
+            raise CannotGetComponentExImpl(
+                    'The type of the property `%s` cannot be determined' 
+                    %prop_name )
     #------------------------------------------------------------------------------
     #create the BACI property object and set it as a member of the component
     prop_py_name = "__" + prop_name + "Object"
     prop_corba_name = "__" + prop_name + "CORBAObject"
-    
+
     #get the class implementation for the BACI property
     if prop_type == "ROstringSeq":
         prop_class = ROstringSeq
