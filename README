@@ -52,6 +52,4 @@ VmwareFactory
 
 Web   
    ACS Web pages and web-start applications
-
-[![Build Status](http://lc-ip92.inf.utfsm.cl/buildStatus/icon?job=ACS)](http://lc-ip92.inf.utfsm.cl/job/ACS/)
-[![Build Status](http://lc-ip92.inf.utfsm.cl/buildStatus/icon?job=ACS-tests)](http://lc-ip92.inf.utfsm.cl/job/ACS-tests/)
+   
