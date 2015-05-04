@@ -76,7 +76,14 @@ module acspytest
 	void testAnything(in string compName, in string methodName, in string params);
 	};    
 
-    interface PyBaciTest : ACS::CharacteristicComponent
+
+    interface PyCommonBaciTest : ACS::CharacteristicComponent 
+    {
+	    readonly attribute ACS::ROdouble commonProp;
+    };
+
+
+    interface PyBaciTest : PyCommonBaciTest
 	{
 	MAKE_PROP(string);
 	MAKE_PROP(double);
