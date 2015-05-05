@@ -38,7 +38,7 @@
 template<class T>
 T* maci::ContainerServices::getComponent(const char *name)
 { 
-    CORBA::Object* obj =T::_nil();
+    CORBA::Object_var obj =T::_nil();
     
     ACS_SHORT_LOG((LM_INFO,"ContainerServices::getComponent(%s)",name));
   
@@ -79,7 +79,7 @@ T* maci::ContainerServices::getComponent(const char *name)
 template<class T>
 T* maci::ContainerServices::getComponentNonSticky(const char *name)
 { 
-    CORBA::Object* obj =T::_nil();
+    CORBA::Object_var obj =T::_nil();
     
     ACS_SHORT_LOG((LM_INFO,"ContainerServices::getComponentNonSticky(%s)",name));
   
@@ -125,7 +125,7 @@ T* maci::ContainerServices::getComponentNonSticky(const char *name)
 template<class T> T* 
 maci::ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool markAsDefault)
 {
-    CORBA::Object* obj =T::_nil();
+    CORBA::Object_var obj =T::_nil();
 
     ACS_TRACE("maci::ContainerServices::getDynamicComponent");
 
@@ -208,7 +208,7 @@ maci::ContainerServices::getDynamicComponent(maci::ComponentSpec compSpec, bool 
 template<class T> T* 
 maci::ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent)
 {
-    CORBA::Object* obj =T::_nil();
+    CORBA::Object_var obj =T::_nil();
 
     ACS_TRACE("maci::ContainerServices::getCollocatedComponent");  
 
@@ -291,7 +291,7 @@ maci::ContainerServices::getCollocatedComponent(maci::ComponentSpec compSpec, bo
 template<class T> T* 
 maci::ContainerServices::getDefaultComponent(const char* idlType)
 {
-    CORBA::Object* obj =T::_nil();
+    CORBA::Object_var obj =T::_nil();
 
     ACS_TRACE("maci::ContainerServices::getDefaultComponent"); 
 
