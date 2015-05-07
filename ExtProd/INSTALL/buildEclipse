@@ -64,9 +64,11 @@ echo "unpacking the archives for Eclipse "$VERSION
 SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-$ARCH_VERSION.tar.gz
 cd $SDKDIR
 tar zxf $SDKFILE
+echo "$SDKFILE installed."
 DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip
 unzip -o $DELTAPACKFILE
-echo "done"
+echo "$DELTAPACKFILE installed."
+echo "done with v.$VERSION"
 echo ""
 
 
@@ -84,14 +86,17 @@ fi
 SDKDIR=$TOPDIR/SDKandDeltaPack
 mkdir $TOPDIR
 mkdir $SDKDIR
+
 VERSION=4.2.2
 echo "unpacking the archives for Eclipse "$VERSION
 SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-$ARCH_VERSION.tar.gz
 cd $SDKDIR
 tar zxf $SDKFILE
+echo "$SDKFILE installed."
 DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip
 unzip -oq $DELTAPACKFILE
-echo "done"
+echo "$DELTAPACKFILE installed."
+echo "done with v.$VERSION"
 echo ""
 
 
