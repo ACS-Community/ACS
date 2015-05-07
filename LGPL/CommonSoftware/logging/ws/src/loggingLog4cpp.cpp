@@ -127,6 +127,9 @@ void Logger::enableSyslogAppender() {
 			syslogAppender->setThreshold(convertPriority(syslogLogLevel));
 			(*it)->addAppender(syslogAppender);
 		}
+
+                delete loggers;
+		loggers = NULL;
 	}
 	initMutex.release();
 }
