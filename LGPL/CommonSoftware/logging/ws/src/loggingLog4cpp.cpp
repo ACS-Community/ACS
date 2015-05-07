@@ -104,6 +104,9 @@ void Logger::enableRemoteAppender(unsigned long cacheSize,
 			remoteAppender->setThreshold(convertPriority(remoteLogLevel));
 			(*it)->addAppender(remoteAppender);
 		}
+
+                delete loggers;
+		loggers = NULL;
 	}
 	initMutex.release();
 }
