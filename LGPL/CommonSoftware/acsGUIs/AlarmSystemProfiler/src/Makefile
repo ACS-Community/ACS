@@ -200,6 +200,24 @@ ifneq ($(MAKEDIRTMP),\#error\#)
    include $(MAKEDIR)/acsMakefile
 endif
 
+# Determine the host architecture and use it to decide which version of the
+# product should we install
+ARCH=$(shell getconf LONG_BIT)
+
+# We only support 32 and 64 bits builds
+ifneq ($(ARCH),32)
+ifneq ($(ARCH),64)
+	$(error Unsupported architecture: "$(ARCH)")
+endif
+endif
+
+# Deduce the zipfile suffix
+ifeq ($(ARCH), 32)
+   ZIP_SUFFIX=x86
+else
+   ZIP_SUFFIX=x86_64
+endif
+
 #
 # TARGETS
 # -------
@@ -221,7 +239,7 @@ install : install_all
 	@INSTALL_DIR=$$(searchFile bin/alarmSystemProfiler); \
 	 cd $$INSTALL_DIR/lib; \
 	 rm -rf AlarmsProfiler; \
-	 unzip -o $(PWD)/../object/headlessTemp/I.AlarmSystemProfiler/AlarmSystemProfiler-linux.gtk.x86.zip;
+	 unzip -o $(PWD)/../object/headlessTemp/I.AlarmSystemProfiler/AlarmSystemProfiler-linux.gtk.$(ZIP_SUFFIX).zip;
 	@echo " . . . installation done"
 
 
