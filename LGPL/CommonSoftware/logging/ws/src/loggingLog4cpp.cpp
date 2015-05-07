@@ -104,6 +104,9 @@ void Logger::enableRemoteAppender(unsigned long cacheSize,
 			remoteAppender->setThreshold(convertPriority(remoteLogLevel));
 			(*it)->addAppender(remoteAppender);
 		}
+
+                delete loggers;
+                loggers = NULL;
 	}
 	initMutex.release();
 }
@@ -124,6 +127,9 @@ void Logger::enableSyslogAppender() {
 			syslogAppender->setThreshold(convertPriority(syslogLogLevel));
 			(*it)->addAppender(syslogAppender);
 		}
+
+                delete loggers;
+                loggers = NULL;
 	}
 	initMutex.release();
 }
