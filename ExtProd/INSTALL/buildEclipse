@@ -66,7 +66,7 @@ cd $SDKDIR
 tar zxf $SDKFILE
 echo "$SDKFILE installed."
 DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip
-unzip -o $DELTAPACKFILE
+unzip -oq $DELTAPACKFILE
 echo "$DELTAPACKFILE installed."
 echo "done with v.$VERSION"
 echo ""
