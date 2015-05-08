@@ -9,16 +9,20 @@
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
 
   <xs:complexType name="MCtestComponent">
-    <xs:sequence>
-
-      <xs:element name="doubleProp" type="baci:ROdouble" />
-      <xs:element name="doubleSeqProp" type="baci:ROdoubleSeq" />
-      
-      <xs:element name="longProp" type="baci:RWlong" />
-      <xs:element name="longSeqProp" type="baci:RWlongSeq" />
-      
-      <xs:element name="patternProp" type="baci:ROpattern"/>
-    </xs:sequence>
+	  <xs:complexContent>
+      <xs:extension base="baci:CharacteristicComponent">
+	  <xs:sequence>
+	
+	      <xs:element name="doubleProp" type="baci:ROdouble" />
+	      <xs:element name="doubleSeqProp" type="baci:ROdoubleSeq" />
+	      
+	      <xs:element name="longProp" type="baci:RWlong" />
+	      <xs:element name="longSeqProp" type="baci:RWlongSeq" />
+	      
+	      <xs:element name="patternProp" type="baci:ROpattern"/>
+	  </xs:sequence>
+	  </xs:extension>
+      </xs:complexContent>
   </xs:complexType>
 
   <xs:element name="MCtestComponent" type="MCtestComponent"/>
