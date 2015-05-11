@@ -95,7 +95,7 @@ MCtestAlarmsComponentImpl::MCtestAlarmsComponentImpl(const ACE_CString& name, ma
 	m_time8 = 134608945243381570;
 	m_doubleSeqRODevIO = new MCtestDevIOSeqNoIncremental<ACS::doubleSeq>(m_doubleSeqROVal, m_time8);
 	m_doubleSeqROProp_p = new ROdoubleSeq(name+":doubleSeqROProp", getComponent(), m_doubleSeqRODevIO);
-	/*CHARACTERISTIC_COMPONENT_PROPERTY(doubleSeqROProp, m_doubleSeqROProp_p);*/
+	CHARACTERISTIC_COMPONENT_PROPERTY(doubleSeqROProp, m_doubleSeqROProp_p);
 	m_floatSeqROVal.length(2);
 	for(unsigned int i=0;i<m_floatSeqROVal.length();i++)
 		m_floatSeqROVal[i]=1.0;
@@ -385,9 +385,9 @@ void MCtestAlarmsComponentImpl::reset()
 	m_uLongLongROProp_p->getDevIO()->write(m_uLongLongROVal, m_time6);
 	m_booleanROVal = true;
 	m_booleanROProp_p->getDevIO()->write(m_booleanROVal, m_time7);
-	//for(unsigned int i=0;i<m_doubleSeqROVal.length();i++)
-		//	m_doubleSeqROVal[i]=1.0;
-	//m_doubleSeqROProp_p->getDevIO()->write(m_doubleSeqROVal, m_time8);
+	for(unsigned int i=0;i<m_doubleSeqROVal.length();i++)
+			m_doubleSeqROVal[i]=1.0;
+	m_doubleSeqROProp_p->getDevIO()->write(m_doubleSeqROVal, m_time8);
 	for(unsigned int i=0;i<m_floatSeqROVal.length();i++)
 			m_floatSeqROVal[i]=1.0;
 	m_floatSeqROProp_p->getDevIO()->write(m_floatSeqROVal, m_time9);
@@ -414,9 +414,9 @@ void MCtestAlarmsComponentImpl::increase()
 	m_uLongLongROProp_p->getDevIO()->write(++m_uLongLongROVal, m_time6);
 	m_booleanROVal = true;
 	m_booleanROProp_p->getDevIO()->write(m_booleanROVal, m_time7);
-	/*for(unsigned int i=0;i<m_doubleSeqROVal.length();i++)
+	for(unsigned int i=0;i<m_doubleSeqROVal.length();i++)
 		m_doubleSeqROVal[i]++;
-	m_doubleSeqROProp_p->getDevIO()->write(m_doubleSeqROVal, m_time8);*/
+	m_doubleSeqROProp_p->getDevIO()->write(m_doubleSeqROVal, m_time8);
 	for(unsigned int i=0;i<m_floatSeqROVal.length();i++)
 		m_floatSeqROVal[i]++;
 	m_floatSeqROProp_p->getDevIO()->write(m_floatSeqROVal, m_time9);
@@ -443,9 +443,9 @@ void MCtestAlarmsComponentImpl::decrease()
 	m_uLongLongROProp_p->getDevIO()->write(--m_uLongLongROVal, m_time6);
 	m_booleanROVal = false;
 	m_booleanROProp_p->getDevIO()->write(m_booleanROVal, m_time7);
-	/*for(unsigned int i=0;i<m_doubleSeqROVal.length();i++)
+	for(unsigned int i=0;i<m_doubleSeqROVal.length();i++)
 		m_doubleSeqROVal[i]--;
-	m_doubleSeqROProp_p->getDevIO()->write(m_doubleSeqROVal, m_time8);*/
+	m_doubleSeqROProp_p->getDevIO()->write(m_doubleSeqROVal, m_time8);
 	for(unsigned int i=0;i<m_floatSeqROVal.length();i++)
 		m_floatSeqROVal[i]--;
 	m_floatSeqROProp_p->getDevIO()->write(m_floatSeqROVal, m_time9);
