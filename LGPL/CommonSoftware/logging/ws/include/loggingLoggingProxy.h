@@ -489,6 +489,7 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     ///
     static ACE_TSS<LoggingTSSStorage> * tss;
     static int instances;
+    static ACE_Recursive_Thread_Mutex classMutex;
 
     /// Local output file, if Centralized Logger is unavailable (set by ACE_LOG_FILE env. var)
     ACE_CString m_filename;

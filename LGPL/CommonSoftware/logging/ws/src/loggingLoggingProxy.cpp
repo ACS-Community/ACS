@@ -68,11 +68,17 @@ int LoggingProxy::m_minReconnectionTime = 15;      // sec
 ACE_TSS<LoggingTSSStorage> * LoggingProxy::tss = 0;
 //ACE_CString LoggingProxy::m_process=""; // for some reason does not work in cases wherr logs come from ditructor of objects.
 char LoggingProxy::m_process[256];
+ACE_Recursive_Thread_Mutex LoggingProxy::classMutex;
 
 
 void
 LoggingProxy::log(ACE_Log_Record &log_record)
 {
+    if (!tss)
+    {
+        std::cout << "SEVERE ERROR in loggingProxy::log(). TSS is NULL" << std::endl;
+        return;
+    }
     unsigned long priority = getPriority(log_record);
     int privateFlags = (*tss)->privateFlags();
     // 1 - default/priority local prohibit
@@ -1058,7 +1064,7 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   }
 
   // Thread protection for instances and tss
-  ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, printf("problem acquring mutex in loggingProxy::LoggingProxy () errno: %d\n", errno);return);
+  ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, classMutex, printf("problem acquring mutex in loggingProxy::LoggingProxy () errno: %d\n", errno);return);
 
   instances++;
   if (!tss)
@@ -1107,7 +1113,7 @@ LoggingProxy::~LoggingProxy()
   done();
 
   // Thread protection for instances and tss
-  ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, printf("problem acquring mutex in loggingProxy::~LoggingProxy () errno: %d\n", errno);return);
+  ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, classMutex, printf("problem acquring mutex in loggingProxy::~LoggingProxy () errno: %d\n", errno);return);
 
   instances--;
   if (tss && !instances)
