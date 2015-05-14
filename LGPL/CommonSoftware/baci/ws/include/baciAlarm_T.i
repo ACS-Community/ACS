@@ -78,6 +78,7 @@ baci::MonitorEventDispatcher<T, TCB, POA_CB>::~MonitorEventDispatcher()
     if (monitorCallback_mp!=0) 
 	{ 
 	BACI_CORBA::DestroyCORBAObject(monitorCallback_mp/*.in()*/); 
+        CORBA::release(monitorCallback_mp);
 	}
 }
 
@@ -446,7 +447,9 @@ void baci::AlarmEventStrategy<T, TPROP, TALARM>::destroy ()
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "AlarmEventStrategy&lt;&gt;::destroy",
 		  (LM_ERROR, "Failed to destroy CORBA object"));
-	}
+	} else {
+          CORBA::release(reference_mp);
+        }
     }
 }
 
