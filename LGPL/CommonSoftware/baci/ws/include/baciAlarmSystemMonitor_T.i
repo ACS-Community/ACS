@@ -32,8 +32,10 @@ baci::AlarmSystemMonitor<TPROP>::AlarmSystemMonitor(TPROP * property, EventDispa
     	std::string tstr = ostr.str();
     	this->setProperty("BACI_Level", tstr.c_str());
 
-    	this->setProperty("BACI_Property", property->name());
-    	this->setProperty("BACI_Description", property->description());
+        CORBA::String_var propName = property->name();
+        CORBA::String_var propDesc = property->description();
+    	this->setProperty("BACI_Property", propName.in());
+    	this->setProperty("BACI_Description", propDesc.in());
 
     } catch (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl &ex) {
     	/* %todo: throw new exception
