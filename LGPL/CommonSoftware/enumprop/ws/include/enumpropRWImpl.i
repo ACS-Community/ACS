@@ -166,8 +166,10 @@ void RWEnumImpl<ACS_ENUM_T(T), SK>::destroy()
 		ACS_LOG(LM_RUNTIME_CONTEXT, "RWEnumImpl::~RWEnumImpl",
 			(LM_ERROR, "Failed to destroy CORBA object '%s'", property_mp->getName()));
 	  }
-	 else
+	 else {
+                CORBA::release(reference_mp);
 		this->_remove_ref();
+         }
 
     }
   
