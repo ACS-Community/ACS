@@ -282,7 +282,9 @@ void baci::Monitor<ACS_MONITOR_T>::destroy ()
     {
 	if (BACI_CORBA::DestroyCORBAObject(reference_mp)==false) {
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "baci::Monitor&lt;&gt;::destroy", (LM_ERROR, "Failed to destroy CORBA object"));	
-	}
+	} else {
+          CORBA::release(reference_mp);
+        }
     }
 
 }
@@ -600,7 +602,9 @@ void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::destroy ()
       if (BACI_CORBA::DestroyCORBAObject(reference_mp)==false) {
 	ACS_LOG(LM_RUNTIME_CONTEXT, "baci::MonitorBasic&lt;&gt;::destroy",
 		(LM_ERROR, "Failed to destroy CORBA object"));
-	  }
+      } else {
+        CORBA::release(reference_mp);
+      }
     }
 
 }
