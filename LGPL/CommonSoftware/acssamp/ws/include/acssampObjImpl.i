@@ -375,6 +375,7 @@ void ACSSampObjImpl<ACS_SAMP_TL>::destroy()
 	    }
 	else
 	    {
+            CORBA::release(reference_p);
 	    _remove_ref();
 	    //delete this;
 	    }
