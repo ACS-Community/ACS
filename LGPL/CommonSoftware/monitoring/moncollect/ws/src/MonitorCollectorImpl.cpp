@@ -61,7 +61,8 @@ void MonitorCollectorImpl::initialize()
 		// @TODO (HSO): Isn't the controller supposed to be a singleton component,
 		//       so that we could obtain it by type ("IDL:alma/MonitorArchiver/Controller:1.0") rather than by configured instance name?
 		archiveMonitorController_m = contServ_m->getComponentNonSticky<MonitorArchiver::Controller>("ARCHIVE/TMCDB/MONITOR_CONTROL");
-		archiveMonitorController_m->registerCollector(name());
+		CORBA::String_var tmpName = name();
+		archiveMonitorController_m->registerCollector(tmpName.in());
 	}
 	catch(MonitorErr::CollectorRegistrationFailedEx &ex)
 	{
