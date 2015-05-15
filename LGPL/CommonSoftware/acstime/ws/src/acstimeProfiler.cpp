@@ -23,14 +23,8 @@
 #include <acsutilPorts.h>
 #include "acsutilTimeStamp.h"
 //------------------------------------------------------------------------------
-Profiler::Profiler() :
-    epochHelper_mp(0)
+Profiler::Profiler() 
 {
-    if(epochHelper_mp == 0)
-	{
-	epochHelper_mp = new EpochHelper();
-	}
-
     reset();
 }
 //------------------------------------------------------------------------------
@@ -121,9 +115,9 @@ Profiler::fullDescription(const char* msg)
 
     acstime::Epoch currEpoch;
     currEpoch.value = getTimeStamp();
-    epochHelper_mp->value(currEpoch);
+    epochHelper_m.value(currEpoch);
 
-    std::cout << ", date=" << (epochHelper_mp->toString(acstime::TSArray, "", 0, 0)).c_str();
+    std::cout << ", date=" << (epochHelper_m.toString(acstime::TSArray, "", 0, 0)).c_str();
     std::cout << ", ip=" << ACSPorts::getIP();
     std::cout << ", lang=cpp";
     std::cout << ", units=ms";

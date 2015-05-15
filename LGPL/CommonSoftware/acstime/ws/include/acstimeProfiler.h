@@ -119,7 +119,7 @@ class Profiler
     std::string extraDescrip_m;
 
     ///Helper object
-    EpochHelper *epochHelper_mp;
+    EpochHelper epochHelper_m;
 
     ////////////////////////////////////////////////////////////////////////
     /** Copy not allowed.
