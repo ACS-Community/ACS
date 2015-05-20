@@ -95,7 +95,8 @@ void MonitorCollectorImpl::cleanUp()
 	ACE_Hash_Map_Entry <ACE_CString, MonitorComponent*> *entry;
 	ACE_Hash_Map_Iterator <ACE_CString, MonitorComponent*, ACE_Recursive_Thread_Mutex> iter(monitorComponents_m);
 
-	archiveMonitorController_m->deregisterCollector(name());
+	CORBA::String_var compName = name();
+	archiveMonitorController_m->deregisterCollector(compName.in());
 
 	for( ;iter.next(entry)!=0; iter.advance() )
 		delete entry->int_id_;
