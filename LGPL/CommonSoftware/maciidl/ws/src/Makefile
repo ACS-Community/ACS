@@ -122,7 +122,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = Container Components Component HierarchicalComponent Manager LoggingConfig
+CDB_SCHEMAS = Container Component HierarchicalComponent Manager LoggingConfig #Components
 
 # 
 # IDL Files and flags
