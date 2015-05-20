@@ -109,9 +109,11 @@ EnumMonitorPoint::EnumMonitorPoint(const char *propertyName, const ACS::TimeInte
 		anyCharacteristic = property_m->get_characteristic_by_name("archive_suppress");
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
 		if ( strcmp(strCharacteristic, "false")!=0 ) {
+			CORBA::String_var propName = property_m->name();
+			CORBA::String_var repId = property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"EnumMonitorPoint::EnumMonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected, because archive_suppress is set to 'false', but to: %s.",
-					property_m->name(),
-					property_m->_repository_id(),
+					propName.in(),
+					repId.in(),
 					strCharacteristic
 			));
 			monitorSuppressed_m = true;
@@ -124,9 +126,11 @@ EnumMonitorPoint::EnumMonitorPoint(const char *propertyName, const ACS::TimeInte
 		archiveMaxInt *= static_cast<double>(10000000.0); //we have to convert to 100s nsec.
 		if ( archiveMaxInt==0.0 )
 		{
+			CORBA::String_var propName = property_m->name();
+			CORBA::String_var repId = property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"EnumMonitorPoint::EnumMonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected by time interval, because archive_max_int is 0 (%f).",
-					property_m->name(),
-					property_m->_repository_id(),
+					propName.in(),
+					repId.in(),
 					archiveMaxInt
 			));
 			archivingInterval_m = 0;
@@ -137,9 +141,11 @@ EnumMonitorPoint::EnumMonitorPoint(const char *propertyName, const ACS::TimeInte
 		std::istringstream i1(strCharacteristic);
 		i1 >> val;
 		if ( val == 0 ) {
+			CORBA::String_var propName = property_m->name();
+			CORBA::String_var repId = property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"EnumMonitorPoint::EnumMonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected on value change, because archive_delta is set to '%s'.",
-					property_m->name(),
-					property_m->_repository_id(),
+					propName.in(),
+					repId.in(),
 					strCharacteristic
 			));
 		} else {
@@ -151,9 +157,11 @@ EnumMonitorPoint::EnumMonitorPoint(const char *propertyName, const ACS::TimeInte
 		std::istringstream i2(strCharacteristic);
 		i2 >> valPer;
 		if ( valPer == 0 ) {
+			CORBA::String_var propName = property_m->name();
+			CORBA::String_var repId = property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"EnumMonitorPoint::EnumMonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected on value percentage change, because archive_delta_percent is set to '%s'.",
-					property_m->name(),
-					property_m->_repository_id(),
+					propName.in(),
+					repId.in(),
 					strCharacteristic
 			));
 		} else {
@@ -397,9 +405,11 @@ ROEnumMonitorPoint::ROEnumMonitorPoint(const char *propertyName, const ACS::Time
 		std::istringstream i2(strCharacteristic);
 		i2 >> valPer;
 		if ( valPer == 0 ) {
+			CORBA::String_var propName = this->property_m->name();
+			CORBA::String_var repId = this->property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"ROEnumMonitorPoint::ROEnumMonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected when alarms are raised, because alarm_timer_trig is set to '%s'.",
-					this->property_m->name(),
-					this->property_m->_repository_id(),
+					propName.in(),
+					repId.in(),
 					strCharacteristic
 			));
 		} else {
