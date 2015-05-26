@@ -5,46 +5,46 @@
       <children xsi:type="advanced:Perspective" xmi:id="_YlssceqQEeScipsxh2co2g">
         <children xsi:type="basic:PartSashContainer" xmi:id="_YlsscuqQEeScipsxh2co2g">
           <children xsi:type="basic:PartStack" xmi:id="_Ylssc-qQEeScipsxh2co2g">
-            <children xsi:type="basic:Part" xmi:id="_YlssdOqQEeScipsxh2co2g" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.parts.SamplePart" label="Sample Part"/>
+            <children xsi:type="basic:Part" xmi:id="_YlssdOqQEeScipsxh2co2g" elementId="alarmsystemprofiler.part.mostfrequent" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.parts.MostFrequentAlarmPart" label="Most frequent"/>
+            <children xsi:type="basic:Part" xmi:id="__P2NYAO0EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.stale" label="Stale"/>
+            <children xsi:type="basic:Part" xmi:id="_HOL88AO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.chattering" label="Chattering"/>
+            <children xsi:type="basic:Part" xmi:id="_JYM9cAO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.statistics" label="Statistics"/>
+            <children xsi:type="basic:Part" xmi:id="_L01_AAO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.annunciated" label="Annunciated"/>
+            <children xsi:type="basic:Part" xmi:id="_OhB4cAO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.suppressed" label="Suppressed"/>
+            <children xsi:type="basic:Part" xmi:id="_Rzhj8AO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.lostsources" label="Lost sources"/>
           </children>
         </children>
       </children>
     </children>
     <mainMenu xmi:id="_YlssaeqQEeScipsxh2co2g" elementId="menu:org.eclipse.ui.main.menu">
       <children xsi:type="menu:Menu" xmi:id="_YlssauqQEeScipsxh2co2g" label="File">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_Ylssa-qQEeScipsxh2co2g" label="Open" iconURI="platform:/plugin/alma.acs.alarmsystemprofiler/icons/sample.png" command="_YlssYOqQEeScipsxh2co2g"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_YlssbOqQEeScipsxh2co2g" label="Save" iconURI="platform:/plugin/alma.acs.alarmsystemprofiler/icons/save_edit.png" command="_YlssY-qQEeScipsxh2co2g"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_Ylssa-qQEeScipsxh2co2g" label="Connect to ACS" iconURI="platform:/plugin/alma.acs.alarmsystemprofiler/icons/alma.png" command="_YlssYOqQEeScipsxh2co2g"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_YlssbeqQEeScipsxh2co2g" label="Quit" command="_YlssXOqQEeScipsxh2co2g"/>
-      </children>
-      <children xsi:type="menu:Menu" xmi:id="_YlssbuqQEeScipsxh2co2g" label="Help">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_Ylssb-qQEeScipsxh2co2g" label="About" command="_YlssZuqQEeScipsxh2co2g"/>
       </children>
     </mainMenu>
     <trimBars xmi:id="_YlssdeqQEeScipsxh2co2g">
       <children xsi:type="menu:ToolBar" xmi:id="_YlssduqQEeScipsxh2co2g" elementId="toolbar:org.eclipse.ui.main.toolbar">
-        <children xsi:type="menu:HandledToolItem" xmi:id="_Ylssd-qQEeScipsxh2co2g" iconURI="platform:/plugin/alma.acs.alarmsystemprofiler/icons/sample.png" command="_YlssYOqQEeScipsxh2co2g"/>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_YlsseOqQEeScipsxh2co2g" iconURI="platform:/plugin/alma.acs.alarmsystemprofiler/icons/save_edit.png" command="_YlssY-qQEeScipsxh2co2g"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_YlsseOqQEeScipsxh2co2g" elementId="id.saveStats" label="Save stats" iconURI="platform:/plugin/alma.acs.alarmsystemprofiler/icons/save_edit.png" tooltip="Save statistics on file" command="_n3yXQAOzEeWHfP404FVOUQ"/>
       </children>
     </trimBars>
   </children>
   <handlers xmi:id="_YlssXeqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.quitCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.QuitHandler" command="_YlssXOqQEeScipsxh2co2g"/>
   <handlers xmi:id="_YlssYeqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.openCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.OpenHandler" command="_YlssYOqQEeScipsxh2co2g"/>
-  <handlers xmi:id="_YlssZOqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.saveCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.SaveHandler" command="_YlssY-qQEeScipsxh2co2g"/>
-  <handlers xmi:id="_YlssZ-qQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.aboutCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.AboutHandler" command="_YlssZuqQEeScipsxh2co2g"/>
+  <handlers xmi:id="_YlssZOqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.saveCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.SaveHandler"/>
+  <handlers xmi:id="_YlssZ-qQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.aboutCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.AboutHandler"/>
   <bindingTables xmi:id="_YlssXuqQEeScipsxh2co2g" bindingContext="_YlssWeqQEeScipsxh2co2g">
     <bindings xmi:id="_YlssX-qQEeScipsxh2co2g" keySequence="M1+Q" command="_YlssXOqQEeScipsxh2co2g"/>
     <bindings xmi:id="_YlssYuqQEeScipsxh2co2g" keySequence="M1+O" command="_YlssYOqQEeScipsxh2co2g"/>
-    <bindings xmi:id="_YlssZeqQEeScipsxh2co2g" keySequence="M1+S" command="_YlssY-qQEeScipsxh2co2g"/>
-    <bindings xmi:id="_YlssaOqQEeScipsxh2co2g" keySequence="M1+A" command="_YlssZuqQEeScipsxh2co2g"/>
+    <bindings xmi:id="_YlssZeqQEeScipsxh2co2g" keySequence="M1+S"/>
+    <bindings xmi:id="_YlssaOqQEeScipsxh2co2g" keySequence="M1+A"/>
   </bindingTables>
   <rootContext xmi:id="_YlssWeqQEeScipsxh2co2g" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_YlssWuqQEeScipsxh2co2g" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
     <children xmi:id="_YlssW-qQEeScipsxh2co2g" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
   </rootContext>
   <commands xmi:id="_YlssXOqQEeScipsxh2co2g" elementId="org.eclipse.ui.file.exit" commandName="quitCommand"/>
-  <commands xmi:id="_YlssYOqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.open" commandName="openCommand"/>
-  <commands xmi:id="_YlssY-qQEeScipsxh2co2g" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>
-  <commands xmi:id="_YlssZuqQEeScipsxh2co2g" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
+  <commands xmi:id="_YlssYOqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.connectACS" commandName="connectACS"/>
+  <commands xmi:id="_n3yXQAOzEeWHfP404FVOUQ" elementId="alma.acs.alarmsystemprofiler.save" commandName="saveStats" description="Save statistics on file"/>
   <addons xmi:id="_YlssUuqQEeScipsxh2co2g" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_YlssU-qQEeScipsxh2co2g" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_YlssVOqQEeScipsxh2co2g" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
