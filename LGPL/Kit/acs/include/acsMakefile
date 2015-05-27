@@ -74,7 +74,6 @@
 #     PY_PACKAGES 	python_package
 #     PY_MODULES 	python_module
 #     PY_SCRIPTS 	python_script
-#     PANELS 		panel
 #     TCL_SCRIPTS 	tcl_script
 #     TCL_LIBRARIES 	tcl_lib
 #     RTAI_MODULES 	rtai
@@ -211,12 +210,6 @@
 #   LIBDIR    library directory: lib for WSs, lib/$CPU for LCUs
 #   LIB       target directory for installing bin files   $(PRJTOP)/$(LIBDIR)
 #   MAN       target directory for installing man files   $(PRJTOP)/man
-#   ALARMS    target directory for installing ALARM files $(*)/ALARMS
-#   ERRORS    target directory for installing ERROR files $(*)/ERRORS
-#   LOGS      target directory for installing LOG   files $(*)/LOGS
-#   DBL       target directory for installing dbl   files $(*)/dbl
-#              (*) is PRJTOP without /vw because these files are 
-#                  valid only at workstation level
 #
 # 
 #     REMARK: if you do not like the value provided either by acsMakefile
@@ -1099,12 +1092,6 @@ ifdef ACSROOT
     ACSLIB  = -L$(ACSROOT)$(VW)/$(LIBDIR) -L$(ALMASW_INSTDIR)/boost/lib
     PRJTOP  = $(ACSROOT)$(VW)
     INSTALL_ROOT = $(ACSROOT)
-    ALARMS  = $(ACSROOT)/ALARMS
-    ERRORS  = $(ACSROOT)/ERRORS
-    LOGS    = $(ACSROOT)/LOGS
-    CIT_DIR = $(ACSROOT)/vw/CIT
-    CDT_DIR = $(ACSROOT)/CDT
-    DBL     = $(ACSROOT)/dbl
     CDBS     = $(ACSROOT)/config/CDB/schemas
     PRJTOP_LOG = $(ACSROOT)
     ACSIDL := -I$(ACSROOT)/idl
@@ -1133,12 +1120,6 @@ ifdef INTLIST
     ACSLIB  := $(foreach dir, $(DIRLIST), -L$(dir)$(VW)/$(LIBDIR)) $(ACSLIB)
     PRJTOP  = $(word 1, $(DIRLIST))$(VW)
     INSTALL_ROOT = $(word 1, $(DIRLIST))
-    ALARMS  = $(word 1, $(DIRLIST))/ALARMS
-    ERRORS  = $(word 1, $(DIRLIST))/ERRORS
-    LOGS    = $(word 1, $(DIRLIST))/LOGS
-    CIT_DIR = $(word 1, $(DIRLIST))/vw/CIT
-    CDT_DIR = $(word 1, $(DIRLIST))/CDT
-    DBL     = $(word 1, $(DIRLIST))/dbl
 
     CDBS     = $(word 1, $(DIRLIST))/config/CDB/schemas
     PRJTOP_LOG = $(word 1, $(DIRLIST))
@@ -1160,12 +1141,6 @@ ifdef INTROOT
     ACSLIB := -L$(INTROOT)$(VW)/$(LIBDIR) $(ACSLIB)
     PRJTOP  = $(INTROOT)$(VW)
     INSTALL_ROOT = $(INTROOT)
-    ALARMS  = $(INTROOT)/ALARMS
-    ERRORS  = $(INTROOT)/ERRORS
-    LOGS    = $(INTROOT)/LOGS
-    CIT_DIR = $(INTROOT)/vw/CIT
-    CDT_DIR = $(INTROOT)/CDT
-    DBL     = $(INTROOT)/dbl
 
     CDBS     = $(INTROOT)/config/CDB/schemas
     PRJTOP_LOG = $(INTROOT)
@@ -1295,24 +1270,14 @@ else
 endif
 
 #
-# force to use always the search path. 
-# By default, cpp gets an include from the current directory. So if an 
-# include file includes another one, the second is taken from where 
-# the first is found. To ihnibit such a behaviour and to force the 
-# compiler always to restart the search from the beginning of the 
-# search path, the -I- option is added (see Using and Porting GNU CC
-# for version 2.5, Oct 93, p.48, 3.12 Options for directory searching)
+# In the past, there was a way to force the use of the search path in all cases,
+# using the -I- option which has been deprecated since gcc 4. The new -iquote
+# option is not quite the same ... 
 #
 # -I. is added to allow includes from current directory (this is the case of
 #                lcc software)
-# With gcc 4 -I- is depricated
 
-ifeq ($(ACS_GXX_4_OR_BETTER), 1)
-   I_PATH := -I. $(I_PATH)
-else
-   I_PATH := -I- -I. $(I_PATH)
-endif # GXX_4_OR_BETTER == 1
-
+I_PATH := -I. $(I_PATH)
 
 
 #
@@ -1553,9 +1518,6 @@ endif
 -include $(MAKEDIR)/acsMakefileDefinitions.mk
 -include $(MAKEDIR)/acsMakefileCore.mk
 
-$(if $(wildcard ../ERRORS/HELP/* ),$(eval INSTALL_TARGET += install_errors),)
-$(if $(wildcard ../LOGS/*_LOGS )  ,$(eval INSTALL_TARGET += install_logs),)
-$(if $(wildcard ../ALARMS/HELP/* ),$(eval INSTALL_TARGET += install_alarms),)
 # 
 #
 #################################################
@@ -1574,10 +1536,6 @@ $(if $(wildcard ../ALARMS/HELP/* ),$(eval INSTALL_TARGET += install_alarms),)
 .PHONY : clean_dist
 .PHONY : man
 .PHONY : install
-
-# Removal of next line due to spr ALMASW2004040
-#.PHONY : db
-
 .PHONY : test
 
 #
@@ -1720,12 +1678,7 @@ clean_dist_all:
 # define PHONY all names used as targets
 .PHONY : install_all
 .PHONY : install_includes
-.PHONY : install_standardfiles
-.PHONY : install_DB-Classes
 .PHONY : install_CDB-Schemas
-.PHONY : install_DB-BCF
-.PHONY : install_insrootdir
-.PHONY : install_insrootfiles
 .PHONY : install_files
 .PHONY : install_man
 .PHONY : install_rtai

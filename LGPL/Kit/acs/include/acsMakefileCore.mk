@@ -473,47 +473,6 @@ ifneq ($(strip $(PY_ALL_LIST)),)
 endif	
 
 #################################################################
-## PANELS
-#################################################################
-PANEL_LIST = $(PANELS) $(PANELS_L)
-#
-# if the list of panels is not empty, include panel-dependencies files. 
-ifneq ($(strip $(PANEL_LIST)),)
-$(eval $(call top-level,panel,$(PANEL_LIST),$(PANELS)))
-$(foreach panel,$(PANEL_LIST), $(eval $(call acsMakePanelDependencies,$(panel)) ) )
-endif
-
-#################################################################
-## DBL_CLASSES DBL_BCF
-#################################################################
-
-ifneq ($(strip $(DBL_CLASSES)),)
-install_DB-Classes: DB-Classes_begin $(foreach dblc, $(DBL_CLASSES), $(DBL)/$(dblc).class )
-
-DB-Classes_begin:
-	@$(ECHO) "...DB-Classes:"
-
-$(DBL)/%.class: ../dbl/%.class
-	-$(AT)echo "\t$*" 
-	$(AT)cp ../dbl/$*.class $(DBL)/$*.class
-	$(AT)chmod $(P644) $(DBL)/$*.class
-
-endif
-
-ifneq ($(strip $(DBL_BCF)),)
-install_DB-BCF: DB-BCF_begin $(foreach dblb, $(DBL_BCF), $(DBL)/$(dblb).db )
-
-DB-BCF_begin:
-	@echo "...DB-Classes:"
-
-$(DBL)/%.db: ../dbl/%.db
-	-$(AT)echo "\t$*"
-	$(AT)cp ../dbl/$*.db $(DBL)/$*.db
-	$(AT)chmod $(P644) $(DBL)/$*.db
-endif
-
-
-#################################################################
 ## TCL/SCRIPTS  TCL/LIBRARIES
 #################################################################
 
