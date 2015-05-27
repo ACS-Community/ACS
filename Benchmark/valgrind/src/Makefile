@@ -17,7 +17,7 @@
 #    None
 #------------------------------------------------------------------------
 
-VALGRIND_VERSION:=3.6.1
+VALGRIND_VERSION:=3.10.1
 #
 # user definable C-compilation flags
 #USER_CFLAGS = 
