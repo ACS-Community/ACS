@@ -18,7 +18,6 @@
  */
 package alma.acs.alarmsystemprofiler.engine;
 
-import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.data.Alarm;
 
 /**
