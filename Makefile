@@ -51,9 +51,6 @@ endef
 HAS_BENCHMARK = $(shell if [ -d Benchmark ]; then echo "TRUE"; else echo "FALSE"; fi)
 ifeq ($(HAS_BENCHMARK),TRUE)
    MODULES_BENCHMARK = util analyzer
-   ifeq ($(os),Linux)
-	MODULES_BENCHMARK += valgrind
-   endif
 endif
 
 #
