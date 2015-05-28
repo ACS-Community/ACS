@@ -43,7 +43,8 @@ namespace Logging {
     		lastPeriodNumberOfMessages(INITIAL_NUMBER_MESSAGES),
     		lastPeriodNumberOfLogErrors(INITIAL_NUMBER_ERRORS)
 	{
-
+		// Construct the identification string of the statistics
+		statisticsIdentification = "Undefined";
 	}
 
     // Statistics module methods

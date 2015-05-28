@@ -73,7 +73,7 @@ class LoggingStatistics(object):
         self._lastPeriodNumberOfLogErrors = self.CONST_INITIAL_NUMBER_ERRORS
         
         # Identification string of the statistics. Composed by component name + logger name
-        self._statisticsIdentification = ''
+        self._statisticsIdentification = 'Undefined'
         
         # Statistics calculation initialisations
         self.messageStatistics = 0.0

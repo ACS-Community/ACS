@@ -3114,14 +3114,18 @@ Logging::stringSeq* ContainerImpl::get_logger_names()
 	// add live logs
 	std::list<std::string>::iterator pos;
 	for (pos = names.begin(); pos != names.end(); pos++)
+	{
 		namesSeq[i++] = CORBA::string_dup(pos->c_str());
+	}
 
 	// add logs from configuration, but hide non-existant
 	std::map<std::string, Logging::LoggingConfigurable::LogLevels>::iterator iter;
 	for (iter = m_logLevels.begin(); iter != m_logLevels.end(); iter++)
 		if (find(names.begin(), names.end(), iter->first) == names.end())
 			if (Logging::Logger::getGlobalLogger()->exists(iter->first))
+			{
 				namesSeq[i++] = CORBA::string_dup(iter->first.c_str());
+			}
 
 	namesSeq->length(i);
 	return namesSeq._retn();
@@ -3332,4 +3336,92 @@ void ContainerImpl::loadLoggerConfiguration(const std::string& loggerName)
 		m_logLevels.erase(loggerName);
 	else
 		m_logLevels[loggerName] = logLevels;
+}
+
+Logging::ACSLogStatistics::logStatsInformationSeq* ContainerImpl::get_statistics_logger_configuration()
+{
+	ACS_TRACE("maci::ContainerImpl::get_statistics_logger_configuration");
+
+	Logging::ACSLogStatistics::logStatsInformationSeq_var statsInfoSeq = new Logging::ACSLogStatistics::logStatsInformationSeq();
+
+	statsInfoSeq->length(ACE_Singleton<Logging::Logger::Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.size() );
+	CORBA::ULong i = 0;
+
+	Logging::Logger::LoggerList::iterator pos;
+
+	for (pos = ACE_Singleton<Logging::Logger::Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
+	     pos != ACE_Singleton<Logging::Logger::Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
+	     pos++)
+	{
+		statsInfoSeq[i].statsId = CORBA::string_dup((*pos)->stats.getStatisticsIdentification().c_str());
+		statsInfoSeq[i].loggerName = CORBA::string_dup((*pos)->getName().c_str());
+		statsInfoSeq[i].statsStatus = (*pos)->stats.getDisableStatistics();
+		statsInfoSeq[i].statsPeriodConfiguration = (*pos)->stats.getStatisticsCalculationPeriod();
+		statsInfoSeq[i].statsGranularityConfiguration = (*pos)->stats.getStatisticsGranularity();
+
+		i++;
+	}
+
+	statsInfoSeq->length(i);
+	return statsInfoSeq._retn();
+}
+
+/*
+* @throw maciErrType::LoggerDoesNotExistEx
+*/
+Logging::ACSLogStatistics::LogStatsInformation* ContainerImpl::get_statistics_logger_configuration_byname(const char* logger_name)
+{
+	ACS_TRACE("maci::ContainerImpl::get_statistics_logger_configuration_byname");
+
+    if(! Logging::Logger::getGlobalLogger()->exists(logger_name))
+    {
+		Logging::LoggerDoesNotExistEx ex(logger_name);
+		throw ex;
+    }
+
+    Logging::ACSLogStatistics::LogStatsInformation_var statsInfo = new Logging::ACSLogStatistics::LogStatsInformation();
+
+	Logging::Logger::LoggerList::iterator pos;
+
+	for (pos = ACE_Singleton<Logging::Logger::Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
+	     pos != ACE_Singleton<Logging::Logger::Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
+	     pos++)
+	if ((*pos)->getName() == logger_name)
+	{
+		statsInfo->statsId = CORBA::string_dup((*pos)->stats.getStatisticsIdentification().c_str());
+		statsInfo->loggerName = CORBA::string_dup(logger_name);
+		statsInfo->statsStatus = (*pos)->stats.getDisableStatistics();
+		statsInfo->statsPeriodConfiguration = (*pos)->stats.getStatisticsCalculationPeriod();
+		statsInfo->statsGranularityConfiguration = (*pos)->stats.getStatisticsGranularity();
+	}
+
+	return statsInfo._retn();
+}
+
+/*
+* @throw maciErrType::LoggerDoesNotExistEx
+*/
+void ContainerImpl::set_statistics_logger_configuration_byname(const char* logger_name, const Logging::ACSLogStatistics::LogStatsInformation& statsInformation)
+{
+	ACS_TRACE("maci::ContainerImpl::set_statistics_logger_configuration_byname");
+
+	if(! Logging::Logger::getGlobalLogger()->exists(logger_name))
+	{
+		Logging::LoggerDoesNotExistEx ex(logger_name);
+		throw ex;
+	}
+
+	Logging::Logger::LoggerList::iterator pos;
+
+	for (pos = ACE_Singleton<Logging::Logger::Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.begin();
+	     pos != ACE_Singleton<Logging::Logger::Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->loggers_m.end();
+	     pos++)
+		if ((*pos)->getName() == logger_name)
+		{
+			(*pos)->stats.configureStatistics(std::string(statsInformation.statsId), statsInformation.statsStatus,
+					statsInformation.statsPeriodConfiguration, statsInformation.statsGranularityConfiguration);
+		}
+
+	return;
+
 }

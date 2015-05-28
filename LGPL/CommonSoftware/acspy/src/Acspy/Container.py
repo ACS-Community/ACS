@@ -1412,3 +1412,79 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             # Terminate the container
             self.logger.logError("Manager not available: bailing out!")
             self.shutdown(ACTIVATOR_EXIT<<8)
+            
+    #-- ACSLoggingStatistics Interface ------------------------------------------------------
+    def get_statistics_logger_configuration(self):
+        '''
+        Gets the names and status of all statistics modules of all loggers, to allow configuring them individually.
+        If the logger statistics module has never been configured yet, then it will provide "Undefined"
+        as elementName 
+        '''
+        # exit structure
+        statsInfoList = []
+        
+        # Retrieve logger names
+        for loggerName in self.get_logger_names():            
+            # Retrieve logger
+            retrievedLogger = Log.getLogger(loggerName)
+            
+            # Store relevant information
+            statsInfoList.append ( Logging.ACSLogStatistics.LogStatsInformation(
+                                                            retrievedLogger.stats.getStatisticsIdentification(),
+                                                            loggerName,
+                                                            retrievedLogger.stats.getDisableStatistics(),
+                                                            retrievedLogger.stats.getStatisticsCalculationPeriod(),
+                                                            retrievedLogger.stats.getStatisticsGranularity() ) )
+        # Return info
+        return statsInfoList
+        
+    
+    def get_statistics_logger_configuration_byname(self, logger_name):
+        '''
+        Gets the names and status of statistics module of requested logger.
+        If the logger statistics module has never been configured yet, then it will provide "Undefined"
+        as elementName 
+        Throws LoggerDoesNotExistEx if a the logger is not found
+        '''
+        
+        # Verification if logger does exist
+        if Log.doesLoggerExist(logger_name) is False:
+            # Raise exception
+            inexistantLoggerEx = Logging.LoggerDoesNotExistEx(logger_name)
+            raise inexistantLoggerEx
+        
+        # Retrieve logger
+        retrievedLogger = Log.getLogger(logger_name)
+        
+        # Store relevant information
+        statsInfo = Logging.ACSLogStatistics.LogStatsInformation(
+                                            retrievedLogger.stats.getStatisticsIdentification(),
+                                            logger_name,
+                                            retrievedLogger.stats.getDisableStatistics(),
+                                            retrievedLogger.stats.getStatisticsCalculationPeriod(),
+                                            retrievedLogger.stats.getStatisticsGranularity() )
+        # Return info
+        return statsInfo
+    
+    def set_statistics_logger_configuration_byname(self, logger_name, statsInformation):
+        '''
+        Sets logger statistics configuration for a particular named logger.
+        Throws LoggerDoesNotExistEx if a the logger is not found 
+        '''
+        
+        # Verification if logger does exist
+        if Log.doesLoggerExist(logger_name) is False:
+            # Raise exception
+            inexistantLoggerEx = Logging.LoggerDoesNotExistEx(logger_name)
+            raise inexistantLoggerEx
+        
+        # Retrieve logger
+        retrievedLogger = Log.getLogger(logger_name)
+                  
+        # Configure the logger
+        retrievedLogger.stats.configureStatistics(statsInformation.statsId,
+                statsInformation.statsStatus,
+                statsInformation.statsPeriodConfiguration,
+                statsInformation.statsGranularityConfiguration)
+            
+        return

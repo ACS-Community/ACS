@@ -26,6 +26,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -39,7 +40,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.Iterator;
 
 import org.omg.PortableServer.Servant;
 
@@ -57,7 +60,7 @@ import si.ijs.maci.ContainerOperations;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ImplLangType;
 import alma.Logging.LoggingConfigurablePackage.LogLevels;
-
+import alma.Logging.ACSLogStatisticsPackage.LogStatsInformation;
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
@@ -80,7 +83,9 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
+import alma.acs.logging.config.LogConfig.LockableUnnamedLogger;
 import alma.acs.logging.config.LogConfigException;
+import alma.maci.loggingconfig.NamedLogger;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.StopWatch;
@@ -1771,7 +1776,100 @@ public class AcsContainer extends ContainerPOA
 		}
 	}
 
+    // ///////////////////////////////////////////////////////////
+	// ACSLogStatistics interface
+	// ///////////////////////////////////////////////////////////
 
+	/** 
+     * Gets the names and status of all statistics modules of all loggers, to allow configuring them individually.
+     * If the logger statistics module has never been configured yet, then it will provide "Undefined"
+     * as elementName 
+     */
+	public LogStatsInformation[] get_statistics_logger_configuration() {
+		
+		tryToWaitForContainerStart();
+
+		// Temporal list to store logger information
+		ArrayList<LogStatsInformation> statsInfoList = new ArrayList<LogStatsInformation>();
+		// Retrieve logger names 
+		Set<String> loggerNames = logConfig.getLoggerNames();
+		// Retrieve actual loggers information
+		Iterator iterator = loggerNames.iterator();
+		while(iterator.hasNext())
+		{
+			// Get logger item
+			String name = (String) iterator.next();
+			AcsLogger retrievedLogger = ClientLogManager.getAcsLogManager().getLoggerByName(name);
+			// Store relevant logger information
+			statsInfoList.add(new LogStatsInformation(retrievedLogger.stats.getStatisticsIdentification(),
+													  retrievedLogger.getName(),
+					                                  retrievedLogger.stats.getDisableStatistics(),
+					                                  retrievedLogger.stats.getStatisticsCalculationPeriod(),
+					                                  retrievedLogger.stats.getStatisticsGranularity() ));
+		}
+		
+		// Structure from IDL to store retrieved logger statistics module relevant information
+		LogStatsInformation[] statsInfoSeq = new LogStatsInformation [statsInfoList.size()];
+		// Conversion from temp list to array
+		statsInfoSeq = statsInfoList.toArray(statsInfoSeq);
+		
+		return statsInfoSeq;
+	
+	}
+
+	/** 
+     * Gets the names and status of statistics module of requested logger.
+     * If the logger statistics module has never been configured yet, then it will provide "Undefined"
+     * as elementName 
+     * Throws LoggerDoesNotExistEx if a the logger is not found
+     */
+	public LogStatsInformation get_statistics_logger_configuration_byname(String logger_name) throws alma.Logging.LoggerDoesNotExistEx
+	{
+		// Retrieve logger by logger name
+		AcsLogger retrievedLogger = ClientLogManager.getAcsLogManager().getLoggerByName(logger_name);
+		
+		// Verification if logger does exist (!= null)
+		if (retrievedLogger == null)
+		{
+			LoggerDoesNotExistEx inexistantLoggerEx = new LoggerDoesNotExistEx(logger_name);
+	    	throw inexistantLoggerEx;
+		}
+		
+		// Store logger statistics configuration
+		LogStatsInformation statsInfo = new LogStatsInformation(retrievedLogger.stats.getStatisticsIdentification(),
+						                    retrievedLogger.getName(),
+						                    retrievedLogger.stats.getDisableStatistics(),
+						                    retrievedLogger.stats.getStatisticsCalculationPeriod(),
+						                    retrievedLogger.stats.getStatisticsGranularity() );
+		
+		return statsInfo;
+		
+	}
+	
+    /**
+     * Sets logger statistics configuration for a particular named logger.
+     * Throws LoggerDoesNotExistEx if a the logger is not found 
+     */
+	public void set_statistics_logger_configuration_byname(String logger_name, LogStatsInformation statsInformation) throws alma.Logging.LoggerDoesNotExistEx
+	{
+		// Retrieve logger by logger name
+		AcsLogger retrievedLogger = ClientLogManager.getAcsLogManager().getLoggerByName(logger_name);
+		
+		// Verification if logger does exist (!= null)
+		if (retrievedLogger == null)
+		{
+			LoggerDoesNotExistEx inexistantLoggerEx = new LoggerDoesNotExistEx(logger_name);
+	    	throw inexistantLoggerEx;
+		}
+		
+		// Configure logger
+		retrievedLogger.stats.configureStatistics(statsInformation.statsId,
+				statsInformation.statsStatus,
+				statsInformation.statsPeriodConfiguration,
+				statsInformation.statsGranularityConfiguration);
+		
+		return;
+	}
 		
 	/** ************************ END LoggingConfigurable ************************ */
 

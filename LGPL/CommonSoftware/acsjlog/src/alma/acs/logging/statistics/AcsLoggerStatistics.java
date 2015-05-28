@@ -82,6 +82,7 @@ public class AcsLoggerStatistics {
 		statisticsGranularity = DEFAULT_STATISTICS_GRANULARITY;
 		lastPeriodNumberOfMessages = INITIAL_NUMBER_MESSAGES;
 		lastPeriodNumberOfLogErrors = INITIAL_NUMBER_ERRORS;
+		statisticsIdentification = "Undefined";
 	}
 
 	/**

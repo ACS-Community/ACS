@@ -43,7 +43,7 @@ PROG =
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = $(PROG) maciContainer maciManagerShutdown maciContainerShutdown maciReleaseComponent maciContainerLogLevel maciComponentRefDump
+EXECUTABLES     = $(PROG) maciContainer maciManagerShutdown maciContainerShutdown maciReleaseComponent maciContainerLogLevel maciContainerLogStatsConfiguration maciComponentRefDump
 EXECUTABLES_L   = 
 
 maciContainer_OBJECTS   = maciContainer 
@@ -60,6 +60,9 @@ maciReleaseComponent_LIBS = maci
 
 maciContainerLogLevel_OBJECTS = maciContainerLogLevel
 maciContainerLogLevel_LIBS = maci
+
+maciContainerLogStatsConfiguration_OBJECTS = maciContainerLogStatsConfiguration
+maciContainerLogStatsConfiguration_LIBS = maci
 
 maciComponentRefDump_OBJECTS = maciComponentRefDump
 maciComponentRefDump_LIBS= maciClient
