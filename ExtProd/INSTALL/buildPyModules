@@ -98,8 +98,8 @@ then
   echo Error: distribute sources are missing
 else
   echo "== Building distribute"
-  tar -zxf distribute-0.6.10.tar.gz
-  pushd distribute-0.6.10
+  tar -zxf distribute-0.6.49.tar.gz
+  pushd distribute-0.6.49
   $PYTHON_INTR setup.py install
   popd
 fi
