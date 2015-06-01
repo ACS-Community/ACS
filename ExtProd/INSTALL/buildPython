@@ -75,7 +75,7 @@ fi
 
 echo installing the Python distribution
 
-if [ ! -e ../PRODUCTS/Python-2.6.5.tar.bz2 ]
+if [ ! -e ../PRODUCTS/Python-2.7.9.tar.gz ]
 then
   echo Error: Python sources are missing
   exit 2
@@ -88,10 +88,10 @@ fi
 #
 cd ../PRODUCTS
 
-rm -rf Python-2.6.5
-tar jxf Python-2.6.5.tar.bz2
+rm -rf Python-2.7.9
+tar zxf Python-2.7.9.tar.gz
 
-cd Python-2.6.5
+cd Python-2.7.9
 
 
 echo $SEPARATOR
