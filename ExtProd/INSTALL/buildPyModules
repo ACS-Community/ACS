@@ -104,6 +104,18 @@ else
   popd
 fi
 
+if [ ! -e ../PRODUCTS/setuptools-17.0.tar.gz ]
+then
+  echo Error: setuptools sources are missing
+else
+  echo "== Building setuptools"
+  tar -zxf setuptools-17.0.tar.gz
+  pushd setuptools-17.0
+  $PYTHON_INTR setup.py install
+  popd
+fi
+
+
 
 if [ ! -e ../PRODUCTS/pysnmp-4.1.13a.tar.gz ]
 then
