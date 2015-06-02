@@ -289,8 +289,8 @@ endif #end $(strip $(XML_IDL))
         tmpFile=/tmp/acsMakeJavaStubs$(strip $1)_$(UNIQUE_NUMBER)_$(USER_NAME); \
         if [ "$$$${FILES}" != "" ] ; then \
           echo $$$${FILES} > $$$${tmpFile}; \
-          $(JAVAC) $(javaCompilerOptions) $(JAVA_EDIRS) -d $$(TMPSRC) @$$$${tmpFile} ; \
-          $(RM) $$$${tmpFile}; \
+          $(JAVAC) $(javaCompilerOptions) $(JAVA_EDIRS) -d $$(TMPSRC) @$$$${tmpFile} || { $(RM) $$$${tmpFile} && exit 3 ; } ; \
+          $(RM) $$$${tmpFile} ; \
         else \
           echo "== WARNING, no Java source files generated for $1"; \
         fi
@@ -612,7 +612,7 @@ ifdef ACSROOT
 else
 	$(AT) CLASSPATH=`acsMakeJavaClasspath`:$(INSTALL_ROOT_LAST)/lib/endorsed/xercesImpl.jar;  export CLASSPATH; java -DACS.schemaconfigfiles="" $(CASTOR)  ../idl/$1.xml $$(TMPSRC) $(MK_IDL_PATH)	
 endif #ACSROOT
-	$(AT) CLASSPATH=`acsMakeJavaClasspath`; export CLASSPATH; FILES=`find $$(TMPSRC) -name \*.java`; export FILES;  if [ "$$$${FILES}" != "" ] ; then $(JAVAC) $(javaCompilerOptions) $(JAVA_EDIRS) -d $$(TMPSRC) $$$${FILES}; fi;
+	$(AT) CLASSPATH=`acsMakeJavaClasspath`; export CLASSPATH; FILES=`find $$(TMPSRC) -name \*.java`; export FILES;  if [ "$$$${FILES}" != "" ] ; then $(JAVAC) $(javaCompilerOptions) $(JAVA_EDIRS) -d $$(TMPSRC) $$$${FILES} || exit -13 ; fi;
 ifeq ($(strip $(DEBUG)),on)
 	$(call createJar,$1, $1, $$(TMPSRC),on)
 else
