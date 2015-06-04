@@ -61,6 +61,8 @@ MonitorComponent::~MonitorComponent()
 	{
 			monitorPoints_m[i]->stopMonitoring();
 			monitorPoints_m[i]->deactivate(containerServices_m);
+			delete monitorPoints_m[i];
+			monitorPoints_m[i] = NULL;
 	}
 }//~MonitorComponent
 
