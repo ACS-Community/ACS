@@ -126,7 +126,7 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::activate(maci::ContainerServ
 	try
 	{
 		this->monitorCallback_m = cs->activateOffShoot(monitorServant_m);
-		monitorServant_m->_remove_ref(); //Decrease ref count to 1
+                // At this point ref count of monitorServant_m will be 2
 	}
 	catch(CORBA::Exception &ex)
 	{
@@ -410,7 +410,7 @@ void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::activ
 	try
 	{
 		this->alarmCallback_m = cs->activateOffShoot(alarmServant_m);
-		alarmServant_m->_remove_ref(); //Decrease ref count to 1
+                // At this point ref count of alarmServant_m will be 2
 	}
 	catch(CORBA::Exception &ex)
 	{
