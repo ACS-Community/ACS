@@ -9,6 +9,8 @@
 
 set ACS_TMP $env(PWD)/tmp
 set env(ACS_TMP) $ACS_TMP
+set ACS_CDB $env(PWD)
+set env(ACS_CDB) $ACS_CDB
 set env(ACS_LOG_STDOUT) 1
 set env(MACI_RECOVERY_FILE_NAME) $ACS_TMP/maciRecovery
 set env(ACS_BACI_RECOVERY_FILE) $ACS_TMP/baciRecovery
