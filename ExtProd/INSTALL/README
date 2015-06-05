@@ -10,14 +10,14 @@
 # WARNING:
 #
 # The build scripts rely on the assumption that 
-# the environment is aready configured according
+# the environment is already configured according
 # to the release being built.
 # In particular ALMASW_RELEASE must be properly set.
 #
 # Some files need to be updated when a new release 
 # is prepared:
 #
-# - buildRTOS currently exports from CVS the Kernel sources
+# - buildRTOS currently exports from SVN the Kernel sources
 #             using an hard coded tag.
 #             Always verify if there are updates.
 #
@@ -31,7 +31,7 @@
 # environemnt configuration scripts (see forward) are normally :
 
 ALMASW_ROOTDIR=/alma
-ALMASW_RELEASE=ACS-8.0
+ALMASW_RELEASE=ACS-YYYY.n
 
 # If the directory already exist, the installation will continue
 # there.
@@ -61,7 +61,7 @@ mkdir /alma/$ALMASW_RELEASE
 # The same changes should be archived in pecsrd and pecsalmasw modules in cmm
 
 # For .bash_profile.acs:
-# copy it from CVS or from another machine.
+# copy it from SVN or from another machine.
 
 #
 # A number of environment variables in .bash_profile.acs 
@@ -88,13 +88,13 @@ mkdir /alma/$ALMASW_RELEASE
 
 export GCC_PATH=<absolute path where your gcc binaries are>
 
-# retrieve ACS/ExtProd from cvs:
+# retrieve ACS/ExtProd from SVN:
 
-cvs export -r<your_tag> ACS/ExtProd
+svn co <SVN_URL>/ACS/ExtProd
 
-# where <your_tag> is the tag you want to use to retrieve the builds. 
-# Typically, for ACS 4.0 release will be something like: ACS-4_0
-# go under ACS/ExtProd/INSTALL 
+# where <SVN_URL> is the url you want to use to retrieve the builds. 
+# Typically, for ACS YYYY.N release will be something like: <svn_repo>/branches/YYY-0N-ACS-B
+
 
 cd ACS/ExtProd/INSTALL
 
