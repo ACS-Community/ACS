@@ -253,13 +253,13 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/coverage-3.3.1.tar.gz ]
+if [ ! -e ../PRODUCTS/coverage-3.7.1.tar.gz ]
 then
   echo Error: coverage sources are missing
 else
   echo "== Building coverage"
-  tar -zxf coverage-3.3.1.tar.gz
-  pushd coverage-3.3.1
+  tar -zxf coverage-3.7.1.tar.gz
+  pushd coverage-3.7.1
   $PYTHON_INTR setup.py install 
   popd
 fi
