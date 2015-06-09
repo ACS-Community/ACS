@@ -40,4 +40,12 @@ PROLOGUE jcontTATPrologue
 
 6 containerJmxMonitorTest "acsutilTATTestRunner containerJmxMonitorTest"
 
+7 jcontContainerLogStatsConfigurationTest "acsutilTATTestRunner acsutilAwaitContainerStart -java testContainer" \
+   "@SLEEP 20" "acsutilTATTestRunner maciContainerLogStatsConfiguration testContainer list" \
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration testContainer get testContainer"  \
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration testContainer set testContainer -c Enable -n testName -p 700 -g 2" \
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration testContainer get testContainer" \
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration testContainer set testContainer -c Default"\
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration testContainer get testContainer"
+
 EPILOGUE acsutilTATEpilogue
