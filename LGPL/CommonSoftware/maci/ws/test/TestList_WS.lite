@@ -22,9 +22,9 @@ PROLOGUE acsutilTATPrologue -l
 8 maciTestSimpleClientContainerServices "startContainerWS.sh Container01 3066" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient" "@SLEEP 20" 
 8 maciTestComponentSmartPtr "@SLEEP 10" "startContainerWS.sh Container01 3067" "@SLEEP 20" "acsutilTATTestRunner maciTestComponentSmartPtr"
 9 maciTestSimpleClientMulti "acsutilTATTestRunner maciTestSimpleClientMulti"
-10 maciTestAsyncCallback "@SLEEP 10" "startContainerWS.sh Container01 3068" "@SLEEP 20" "startMaciTestClient.sh @maciTestAsyncCallback.mts" "@SLEEP 10" "stopManagerWS.sh" "@SLEEP 20"
-11 maciContainerLogStatsConfigurationTest "startContainerWS.sh Container01 3069" "@SLEEP 20" "maciContainerLogStatsConfiguration" "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 list" \
+10 maciContainerLogStatsConfigurationTest "startContainerWS.sh Container01 3069" "@SLEEP 20" "maciContainerLogStatsConfiguration" "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 list" \
    "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 get Container01" "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 set Container01 -c Enable -n testName -p 700 -g 2" \
    "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 get Container01" "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 set Container01 -c Default"\
    "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 get Container01"
+11 maciTestAsyncCallback "@SLEEP 10" "startContainerWS.sh Container01 3068" "@SLEEP 20" "startMaciTestClient.sh @maciTestAsyncCallback.mts" "@SLEEP 10" "stopManagerWS.sh" "@SLEEP 20"
 EPILOGUE acsutilTATEpilogue
