@@ -93,7 +93,9 @@ fi
 #
 cd ../PRODUCTS
 
-if [ ! -e ../PRODUCTS/distribute-0.6.10.tar.gz ]
+PY_VERSION=2.7
+
+if [ ! -e ../PRODUCTS/distribute-0.6.49.tar.gz ]
 then
   echo Error: distribute sources are missing
 else
@@ -198,7 +200,7 @@ else
 
 
   echo "== Configuring matplotlib"
-  pushd ${PYTHON_ROOT}/lib/python2.6/site-packages/matplotlib/mpl-data
+  pushd ${PYTHON_ROOT}/lib/python$PY_VERSION/site-packages/matplotlib/mpl-data
   cp matplotlibrc matplotlibrc.dist
   cat matplotlibrc | sed s/backend\ \ \ \ \ \ :\ GTKAgg/backend\ \ \ \ \ \ :\ TkAgg/g >> matplotlibrc.tmp
   mv matplotlibrc.tmp matplotlibrc
@@ -269,7 +271,7 @@ then
   echo Error: Python Mock sources are missing
 else
   echo "== Installing Python Mock Objects"
-  unzip -oj mock-0.6.0.zip mock-0.6.0/mock.py mock-0.6.0/testcase.py mock-0.6.0/testutils.py -d $PYTHON_ROOT/lib/python2.6/site-packages/
+  unzip -oj mock-0.6.0.zip mock-0.6.0/mock.py mock-0.6.0/testcase.py mock-0.6.0/testutils.py -d $PYTHON_ROOT/lib/python$PY_VERSION/site-packages/
 fi
 
 if [ ! -e ../PRODUCTS/pythoscope-0.4.3.tar.gz ]
