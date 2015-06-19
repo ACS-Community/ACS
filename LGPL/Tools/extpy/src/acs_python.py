@@ -3,6 +3,7 @@
 # python.py                 Created on: 1999/10/29
 #			    Author    : Duncan Grisby (dpg1)
 #
+#    Copyright (C) 2002-2013 Apasphere Ltd
 #    Copyright (C) 1999 AT&T Laboratories Cambridge
 #
 #  This file is part of omniidl.
@@ -26,189 +27,11 @@
 #   
 #   Back-end for Python
 
-# $Id: acs_python.py,v 1.5 2007/09/21 19:27:28 agrimstrup Exp $
-# $Log: acs_python.py,v $
-# Revision 1.5  2007/09/21 19:27:28  agrimstrup
-# Modules pexpect and pychecker have been moved into the general Python
-# toolkit so they will be available to everyone.
-#
-# The new version of omniORBpy had many updates to the Python backend
-# generator.  These changes were merged into the acs_python backend.
-#
-# Revision 1.4  2006/01/04 17:04:37  dfugate
-# Should work under Windows now. Suggested by omniORB team.
-#
-# Revision 1.3  2005/10/21 09:03:57  dfugate
-# Do not include imports from modules found earlier in the $PYTHONPATH than the
-# $PWD.
-#
-# Revision 1.2  2005/10/20 16:50:40  dfugate
-# Looks for all packages in PYTHONPATH now (instead of just $PWD).
-#
-# Revision 1.1  2005/10/20 15:10:44  dfugate
-# Problems with omniORB's default Python IDL compiler are requiring us to
-# create our own.
-#
-# Revision 1.29.2.18  2004/02/16 13:56:06  dgrisby
-# Operation names clashing with keywords were broken.
-#
-# Revision 1.29.2.17  2003/11/19 16:56:36  dgrisby
-# Extern package option to omniidl backend. Thanks Rene Jager.
-#
-# Revision 1.29.2.16  2003/04/25 15:45:16  dgrisby
-# Fix bug with enum members that clash with keywords.
-#
-# Revision 1.29.2.15  2003/04/16 13:07:59  dgrisby
-# Option to generate example implementations.
-#
-# Revision 1.29.2.14  2002/11/25 21:31:09  dgrisby
-# Friendly error messages with file errors, remove code to kill POA
-# modules from pre-1.0.
-#
-# Revision 1.29.2.13  2002/07/04 13:14:52  dgrisby
-# Bug with string escapes in Windows filenames.
-#
-# Revision 1.29.2.12  2002/05/27 01:02:37  dgrisby
-# Fix bug with scope lookup in generated code. Fix TypeCode clean-up bug.
-#
-# Revision 1.29.2.11  2002/01/18 17:41:17  dpg1
-# Support for "docstrings" in IDL.
-#
-# Revision 1.29.2.10  2002/01/18 15:49:45  dpg1
-# Context support. New system exception construction. Fix None call problem.
-#
-# Revision 1.29.2.9  2001/12/04 12:17:08  dpg1
-# Incorrect generated code for fixed constants.
-#
-# Revision 1.29.2.8  2001/08/29 11:57:16  dpg1
-# Const fixes.
-#
-# Revision 1.29.2.7  2001/06/15 10:59:26  dpg1
-# Apply fixes from omnipy1_develop.
-#
-# Revision 1.29.2.6  2001/06/13 11:29:04  dpg1
-# Proper omniidl support for wchar/wstring constants.
-#
-# Revision 1.29.2.5  2001/05/10 15:16:03  dpg1
-# Big update to support new omniORB 4 internals.
-#
-# Revision 1.29.2.4  2001/04/09 15:22:16  dpg1
-# Fixed point support.
-#
-# Revision 1.29.2.3  2000/11/22 14:43:58  dpg1
-# Support code set conversion and wchar/wstring.
-#
-# Revision 1.29.2.2  2000/11/01 15:29:01  dpg1
-# Support for forward-declared structs and unions
-# RepoIds in indirections are now resolved at the time of use
-#
-# Revision 1.29.2.1  2000/10/13 13:55:30  dpg1
-# Initial support for omniORB 4.
-#
-# Revision 1.29  2000/10/02 17:34:58  dpg1
-# Merge for 1.2 release
-#
-# Revision 1.27.2.3  2000/08/22 11:52:28  dpg1
-# Generate inherited classes for typedef to struct/union.
-#
-# Revision 1.27.2.2  2000/08/07 09:19:24  dpg1
-# Long long support
-#
-# Revision 1.27.2.1  2000/07/18 15:31:29  dpg1
-# Bug with inheritance from typedef
-#
-# Revision 1.27  2000/07/12 14:32:13  dpg1
-# New no_package option to omniidl backend
-#
-# Revision 1.26  2000/06/28 12:47:48  dpg1
-# Proper error messages for unsupported IDL constructs.
-#
-# Revision 1.25  2000/06/27 15:01:48  dpg1
-# Change from POA_M to M__POA mapping.
-# Global module only built if necessary.
-#
-# Revision 1.24  2000/03/29 10:15:47  dpg1
-# Exceptions now more closely follow the interface of
-# exceptions.Exception.
-#
-# Revision 1.23  2000/03/17 12:28:09  dpg1
-# Comma missing in nested union descriptor.
-#
-# Revision 1.22  2000/03/03 17:41:28  dpg1
-# Major reorganisation to support omniORB 3.0 as well as 2.8.
-#
-# Revision 1.21  2000/02/23 10:20:52  dpg1
-# Bug in descriptors for single-item enums.
-#
-# Revision 1.20  2000/01/04 15:29:41  dpg1
-# Fixes to modules generated within a package.
-#
-# Revision 1.19  1999/12/21 16:06:15  dpg1
-# DOH!  global= not module= !
-#
-# Revision 1.18  1999/12/21 16:05:11  dpg1
-# New module= option.
-#
-# Revision 1.17  1999/12/17 11:39:52  dpg1
-# New arguments to put modules and stubs in a specified package.
-#
-# Revision 1.16  1999/12/15 11:32:42  dpg1
-# -Wbinline option added.
-#
-# Revision 1.15  1999/12/09 14:12:55  dpg1
-# invokeOp() calls now on a single line. typedef now generates a class
-# to be passed to CORBA.id().
-#
-# Revision 1.14  1999/12/07 15:35:14  dpg1
-# Bug in currentScope handling.
-#
-# Revision 1.13  1999/11/30 10:41:20  dpg1
-# Back-ends can now have their own usage string.
-#
-# Revision 1.12  1999/11/25 11:49:31  dpg1
-# Minor version number bumped since server-side _is_a() required an
-# incompatible change.
-#
-# Revision 1.11  1999/11/25 11:21:36  dpg1
-# Proper support for server-side _is_a().
-#
-# Revision 1.10  1999/11/19 11:03:49  dpg1
-# Extremely important spelling correction in a comment. :-)
-#
-# Revision 1.9  1999/11/12 15:53:48  dpg1
-# New functions omniORB.importIDL() and omniORB.importIDLString().
-#
-# Revision 1.8  1999/11/11 15:55:29  dpg1
-# Python back-end interface now supports valuetype declarations.
-# Back-ends still don't support them, though.
-#
-# Revision 1.7  1999/11/10 16:08:22  dpg1
-# Some types weren't registered properly.
-#
-# Revision 1.6  1999/11/04 11:46:12  dpg1
-# Now uses our own version of the GNU C preprocessor.
-#
-# Revision 1.5  1999/11/02 12:17:26  dpg1
-# Top-level module name now has a prefix of _0_ to avoid clashes with
-# names of nested declarations.
-#
-# Revision 1.4  1999/11/02 10:54:01  dpg1
-# Two small bugs in union generation.
-#
-# Revision 1.3  1999/11/02 10:01:46  dpg1
-# Minor fixes.
-#
-# Revision 1.2  1999/11/01 20:19:55  dpg1
-# Support for union switch types declared inside the switch statement.
-#
-# Revision 1.1  1999/11/01 16:40:11  dpg1
-# First revision with new front-end.
-#
-
 """omniORB Python bindings"""
 
 from omniidl import idlast, idltype, idlutil, idlvisitor, output, main
-import sys, string, types, os.path, keyword
+import sys, os.path, keyword
+import string  # for maketrans
 from os import environ
 
 cpp_args = ["-D__OMNIIDL_PYTHON__"]
@@ -220,7 +43,8 @@ usage_string = """\
   -Wbmodules=p    Put Python modules in package p
   -Wbstubs=p      Put stub files in package p
   -Wbextern=f:p   Assume Python stub file for file f is in package p.
-  -Wbglobal=g     Module to use for global IDL scope (default _GlobalIDL)"""
+  -Wbglobal=g     Module to use for global IDL scope (default _GlobalIDL)
+  -Wbami          Generate code for AMI"""
 
 #""" Uncomment this line to get syntax highlighting on the output strings
 
@@ -242,12 +66,20 @@ omniORB.updateModule("@package@@module@")
 
 file_start = """\
 # Python stubs generated by omniidl from @filename@
+# DO NOT EDIT THIS FILE!
 
 import omniORB, _omnipy
 from omniORB import CORBA, PortableServer
 _0_CORBA = CORBA
+@ami_import@
 
-_omnipy.checkVersion(3,0, __file__)
+_omnipy.checkVersion(4,2, __file__, 1)
+
+try:
+    property
+except NameError:
+    def property(*args):
+        return None
 """
 
 file_end = """\
@@ -271,7 +103,7 @@ module_end = """
 __name__ = "@package@@modname@"
 """
 
-import_idl_file = """\
+import_idl_file = """
 # #include "@idlfile@"
 import @ifilename@"""
 
@@ -281,15 +113,15 @@ _0_@s_imodname@ = omniORB.openModule("@package@@s_imodname@")"""
 
 forward_interface = """\
 
-# @abstract@interface @ifid@;
-_0_@modname@._d_@ifid@ = (omniORB.tcInternal.tv_objref, "@repoId@", "@ifid@")
+# forward @abstract@interface @ifid@;
+_0_@modname@._d_@ifid@ = (omniORB.tcInternal.@tvkind@, "@repoId@", "@ifid@")
 omniORB.typeMapping["@repoId@"] = _0_@modname@._d_@ifid@"""
 
 
 interface_class = """\
 
 # @abstract@interface @ifid@
-_0_@modname@._d_@ifid@ = (omniORB.tcInternal.tv_objref, "@repoId@", "@ifid@")
+_0_@modname@._d_@ifid@ = (omniORB.tcInternal.@tvkind@, "@repoId@", "@ifid@")
 omniORB.typeMapping["@repoId@"] = _0_@modname@._d_@ifid@
 _0_@modname@.@ifid@ = omniORB.newEmptyClass()
 class @ifid@ @inherits@:
@@ -324,25 +156,41 @@ objref_class = """\
 class _objref_@ifid@ (@inherits@):
     _NP_RepositoryId = @ifid@._NP_RepositoryId
 
-    def __init__(self):"""
+    def __init__(self, obj):"""
 
 objref_inherit_init = """\
-        @inclass@.__init__(self)"""
+        @inclass@.__init__(self, obj)"""
 
 objref_object_init = """\
-        CORBA.Object.__init__(self)"""
+        CORBA.Object.__init__(self, obj)"""
 
 objref_attribute_get = """
     def _get_@attr@(self, *args):
-        return _omnipy.invoke(self, "_get_@attr@", _0_@modname@.@ifid@._d__get_@attr@, args)"""
+        return self._obj.invoke("_get_@attr@", _0_@modname@.@ifid@._d__get_@attr@, args)"""
+
 objref_attribute_set = """
     def _set_@attr@(self, *args):
-        return _omnipy.invoke(self, "_set_@attr@", _0_@modname@.@ifid@._d__set_@attr@, args)"""
+        return self._obj.invoke("_set_@attr@", _0_@modname@.@ifid@._d__set_@attr@, args)"""
+
+objref_attribute_property = """
+    @attr@ = property(_get_@attr@, _set_@attr@)
+"""
+
+objref_readonly_attribute_property = """
+    @attr@ = property(_get_@attr@)
+"""
+
 objref_operation = """
     def @opname@(self, *args):
-        return _omnipy.invoke(self, "@r_opname@", _0_@modname@.@ifid@._d_@opname@, args)"""
-objref_methods = """
-    __methods__ = @methods@"""
+        return self._obj.invoke("@r_opname@", _0_@modname@.@ifid@._d_@opname@, args)"""
+
+objref_ami_sendc = """
+    def @ami_opname@(self, ami_handler, *args):
+        return self._obj.invoke_sendc("@r_opname@", _0_@modname@.@ifid@._d_@opname@, args, "@excep_name@", ami_handler)"""
+
+objref_ami_sendp = """
+    def @ami_opname@(self, *args):
+        return _0_@modname@._impl_@poller_class@(self._obj.invoke_sendp("@r_opname@", _0_@modname@.@ifid@._d_@opname@, args, "@excep_name@"))"""
 
 objref_register = """
 omniORB.registerObjref(@ifid@._NP_RepositoryId, _objref_@ifid@)
@@ -441,6 +289,10 @@ class @sname@ (omniORB.StructBase):
     _NP_RepositoryId = "@repoId@"
 """
 
+struct_class_name = """\
+    _NP_ClassName = "@cname@"
+"""
+
 struct_class_init = """\
     def __init__(self@mnames@):"""
 
@@ -527,6 +379,10 @@ class @uname@ (omniORB.Union):
     _NP_RepositoryId = "@repoId@"\
 """
 
+union_class_name = """\
+    _NP_ClassName = "@cname@"
+"""
+
 union_descriptor_at_module_scope = """
 _0_@modname@.@uname@ = @uname@
 
@@ -581,7 +437,8 @@ _d_@ename@  = (omniORB.tcInternal.tv_enum, @ename@._NP_RepositoryId, "@ename@", 
 _tc_@ename@ = omniORB.tcInternal.createTypeCode(_d_@ename@)
 omniORB.registerType(@ename@._NP_RepositoryId, _d_@ename@, _tc_@ename@)"""
 
-value_forward_at_module_scope = """\
+
+value_forward_at_module_scope = """
 # forward valuetype @vname@
 _0_@modname@._d_@vname@ = (omniORB.tcInternal.tv__indirect, ["@repoId@"])
 omniORB.typeMapping["@repoId@"] = _0_@modname@._d_@vname@
@@ -606,7 +463,8 @@ class @vname@ (@inherits@):
             self.__dict__.update(kwargs)
 """
 
-valueabs_class = """\
+valueabs_class = """
+# abstract valuetype @vname@
 class @vname@ (@inherits@):
     _NP_RepositoryId = "@repoId@"
 
@@ -648,6 +506,25 @@ omniORB.registerValueFactory(@boxname@._NP_RepositoryId, @boxname@)
 del @boxname@
 """
 
+ami_poller_impl = """
+# Implementation of @vname@
+class _impl_@vname@ (@vname@, omniORB.ami.PollerImpl):
+    def __init__(self, poller):
+        omniORB.ami.PollerImpl.__init__(self, poller)
+"""
+
+ami_poller_op = """\
+    def @poller_opname@(self, ami_timeout):
+        return self._poller.poll("@opname@", ami_timeout)
+"""
+
+ami_poller_register = """
+_0_@modname@._impl_@vname@ = _impl_@vname@
+omniORB.registerValueFactory(@vname@._NP_RepositoryId, _impl_@vname@)
+del _impl_@vname@
+"""
+
+
 example_start = """\
 #!/usr/bin/env python
 
@@ -685,7 +562,7 @@ example_opdef = """\
 """
 
 example_end = """
-if __name__ == "__main__":
+def main():
     import sys
     
     # Initialise the ORB
@@ -711,6 +588,10 @@ if __name__ == "__main__":
 
     # Run the ORB, blocking this thread
     orb.run()
+
+
+if __name__ == "__main__":
+    main()
 """
 
 
@@ -727,6 +608,7 @@ stub_directory   = ""
 all_factories    = 0
 example_impl     = 0
 extern_stub_pkgs = {}
+generate_ami     = 0
 
 
 def error_exit(message):
@@ -736,7 +618,7 @@ def error_exit(message):
 def run(tree, args):
     global main_idl_file, imported_files, exported_modules, output_inline
     global global_module, module_package, stub_package, stub_directory
-    global all_factories, example_impl, extern_stub_pkgs
+    global all_factories, example_impl, extern_stub_pkgs, generate_ami
 
     imported_files.clear()
     exported_modules.clear()
@@ -766,15 +648,13 @@ def run(tree, args):
 
         elif arg[:6] == "stubs=":
             stub_package   = arg[6:]
-            stub_directory = apply(os.path.join,
-                                   string.split(stub_package, "."))
+            stub_directory = os.path.join(*(stub_package.split(".")))
             if stub_package != "":
                 stub_package = stub_package + "."
 
         elif arg[:8] == "package=":
             module_package = stub_package = arg[8:]
-            stub_directory = apply(os.path.join,
-                                   string.split(stub_package, "."))
+            stub_directory = os.path.join(*(stub_package.split(".")))
             if module_package != "":
                 module_package = stub_package = module_package + "."
 
@@ -787,11 +667,14 @@ def run(tree, args):
             example_impl = 1
 
         elif arg[:7] == "extern=":
-            f_p = string.split(arg[7:], ":", 1)
+            f_p = arg[7:].split(":", 1)
             if len(f_p) == 1:
                 extern_stub_pkgs[f_p[0]] = None
             else:
                 extern_stub_pkgs[f_p[0]] = f_p[1]
+
+        elif arg == "ami":
+            generate_ami = 1
 
         else:
             sys.stderr.write(main.cmdname + ": Warning: Python " \
@@ -817,7 +700,15 @@ def run(tree, args):
         except IOError:
             error_exit('Cannot open "%s" for writing.' % outpyname)
 
-    st.out(file_start, filename=main_idl_file)
+    if generate_ami:
+        ami_import = "import omniORB.ami"
+        imported_files["messaging_idl"] = 1
+        from omniidl_be import ami
+        tree.accept(ami.AMIVisitor())
+    else:
+        ami_import = ""
+        
+    st.out(file_start, filename=main_idl_file, ami_import=ami_import)
 
     pv = PythonVisitor(st, outpymodule)
     tree.accept(pv)
@@ -828,9 +719,11 @@ def run(tree, args):
 
     exports = exported_modules.keys()
     exports.sort()
-    export_list = map(lambda s: '"' + module_package + s + '"', exports)
-    if len(export_list) == 1: export_list.append("")
-    export_string = string.join(export_list, ", ")
+    export_list = [ '"%s%s"' % (module_package, s) for s in exports ]
+    if len(export_list) == 1:
+        export_list.append("")
+
+    export_string = ", ".join(export_list)
 
     st.out(file_end, export_string=export_string)
 
@@ -851,6 +744,7 @@ def run(tree, args):
         tree.accept(ev)
 
         exst.out(example_end, ifname=ev.first)
+
 
 def getMissingImports(packInitName, importList):
     '''
@@ -910,7 +804,8 @@ def getMissingImports(packInitName, importList):
             continue
 
     return retVal
-    
+
+
 class PythonVisitor:
     def __init__(self, st, outpymodule):
         self.st          = st
@@ -1028,8 +923,13 @@ class PythonVisitor:
 
         if node.mainFile() or output_inline:
             exported_modules[sname] = 1
+            if parentmodname == self.outpymodule:
+                end_package = ""
+            else:
+                end_package = module_package
+
             self.st.out(module_end, modname=parentmodname, sname=sname,
-                        package=module_package)
+                        package=end_package)
 
     #
     # Forward interface
@@ -1065,7 +965,7 @@ class PythonVisitor:
                 i = i.fullDecl()
                 inheritl.append(dotName(fixupScopedName(i.scopedName())))
             
-            inherits = "(" + string.join(inheritl, ", ") + ")"
+            inherits = "(" + ", ".join(inheritl) + ")"
         else:
             inherits = ""
 
@@ -1150,7 +1050,7 @@ class PythonVisitor:
                 sn = fixupScopedName(i.scopedName())
                 inheritl.append(dotName(sn[:-1] + ["_objref_" + sn[-1]]))
                 
-            inherits = string.join(inheritl, ", ")
+            inherits = ", ".join(inheritl)
         else:
             inherits = "CORBA.Object"
 
@@ -1163,8 +1063,6 @@ class PythonVisitor:
             self.st.out(objref_object_init)
 
         # Operations and attributes
-        methodl = []
-
         for c in node.callables():
             if isinstance(c, idlast.Attribute):
 
@@ -1175,16 +1073,18 @@ class PythonVisitor:
                                 ifid    = ifid,
                                 modname = self.modname)
                     
-                    methodl.append('"_get_' + attr + '"')
+                    if c.readonly():
+                        self.st.out(objref_readonly_attribute_property,
+                                    attr = attr)
 
-                    if not c.readonly():
-
+                    else:
                         self.st.out(objref_attribute_set,
                                     attr    = attr,
                                     ifid    = ifid,
                                     modname = self.modname)
                         
-                        methodl.append('"_set_' + attr + '"')
+                        self.st.out(objref_attribute_property,
+                                    attr = attr)
 
             else: # Operation
                 opname = mangle(c.identifier())
@@ -1195,23 +1095,45 @@ class PythonVisitor:
                             ifid     = ifid,
                             modname  = self.modname)
                 
-                methodl.append('"' + opname + '"')
+        for c in getattr(node, "_ami_ops", []):
+            ami_opname = mangle(c.identifier())
 
-        # __methods__ assignment
-        methods = "[" + string.join(methodl, ", ") + "]"
+            ami_from   = c._ami_from
+            from_ident = ami_from.identifier()
 
-        if node.inherits():
-            inheritl = []
-            for i in node.inherits():
-                i = i.fullDecl()
-                sn = fixupScopedName(i.scopedName())
-                methods = methods + " + " + \
-                          dotName(sn[:-1] + ["_objref_" + sn[-1]]) + \
-                          ".__methods__"
-        else:
-            methods = methods + " + CORBA.Object.__methods__"
+            if isinstance(ami_from, idlast.Declarator):
+                # Attribute
+                if c._ami_setter:
+                    from_op  = "_set_" + from_ident
+                    excep_op = ami_from._ami_set_handler_excep.identifier()
+                else:
+                    from_op  = "_get_" + from_ident
+                    excep_op = ami_from._ami_get_handler_excep.identifier()
+            else:
+                from_op  = from_ident
+                excep_op = ami_from._ami_handler_excep.identifier()
 
-        self.st.out(objref_methods, methods = methods)
+
+            send = c.identifier().split("_")[0]
+            if send == "sendc":
+                self.st.out(objref_ami_sendc,
+                            ami_opname = ami_opname,
+                            opname     = mangle(from_op),
+                            r_opname   = from_op,
+                            excep_name = excep_op,
+                            ifid       = ifid,
+                            modname    = self.modname)
+            else:
+                poller_class = node._ami_poller.identifier()
+
+                self.st.out(objref_ami_sendp,
+                            ami_opname   = ami_opname,
+                            opname       = mangle(from_op),
+                            r_opname     = from_op,
+                            excep_name   = excep_op,
+                            ifid         = ifid,
+                            modname      = self.modname,
+                            poller_class = poller_class)
 
         # registerObjRef()
         self.st.out(objref_register, ifid = ifid, modname = self.modname)
@@ -1226,7 +1148,7 @@ class PythonVisitor:
                 ssn = skeletonModuleName(dsn)
                 inheritl.append(ssn)
                 
-            inherits = string.join(inheritl, ", ")
+            inherits = ", ".join(inheritl)
         else:
             inherits = "PortableServer.Servant"
 
@@ -1256,12 +1178,13 @@ class PythonVisitor:
                                        ifid + '.' + '_d__set_' + attr)
 
             else: # Operation
-                opname = mangle(c.identifier())
+                opname   = c.identifier()
+                m_opname = mangle(opname)
                 
-                methodl.append('"' + opname + '": ' + '_0_' + self.modname + \
-                               '.' + ifid + '.' + '_d_' + opname)
+                methodl.append('"' + opname + '": ' + '_0_' + self.modname +
+                               '.' + ifid + '.' + '_d_' + m_opname)
 
-        methodmap = "{" + string.join(methodl, ", ") + "}"
+        methodmap = "{" + ", ".join(methodl) + "}"
 
         self.st.out(skeleton_methodmap, methodmap = methodmap)
 
@@ -1416,6 +1339,9 @@ class PythonVisitor:
                     repoId     = node.repoId(),
                     scopedname = dotName(fscopedName))
 
+        if not self.at_module_scope:
+            self.st.out(struct_class_name, cname = dotName(fscopedName))
+
         mnamel = []
         mdescl = []
         for mem in node.members():
@@ -1449,7 +1375,7 @@ class PythonVisitor:
                                                       decl,
                                                       self.currentScope))
         if len(mnamel) > 0:
-            mnames = ", " + string.join(mnamel, ", ")
+            mnames = ", " + ", ".join(mnamel)
 
             self.st.out(struct_class_init, mnames = mnames)
 
@@ -1457,7 +1383,7 @@ class PythonVisitor:
                 self.st.out(struct_init_member, mname = mname)
 
         if len(mdescl) > 0:
-            mdescs = ", " + string.join(mdescl, ", ")
+            mdescs = ", " + ", ".join(mdescl)
         else:
             mdescs = ""
 
@@ -1510,6 +1436,9 @@ class PythonVisitor:
                     repoId = node.repoId(),
                     scopedname = dotName(fscopedName))
 
+        if not self.at_module_scope:
+            self.st.out(struct_class_name, cname = dotName(fscopedName))
+
         mnamel = []
         mdescl = []
         for mem in node.members():
@@ -1544,14 +1473,17 @@ class PythonVisitor:
                                                       self.currentScope))
 
         if len(mnamel) > 0:
-            mnames = ", " + string.join(mnamel, ", ")
-            self.st.out(exception_class_init, mnames = mnames)
+            mnames = ", " + ", ".join(mnamel)
+        else:
+            mnames = ""
 
-            for mname in mnamel:
-                self.st.out(exception_init_member, mname = mname)
+        self.st.out(exception_class_init, mnames = mnames)
+
+        for mname in mnamel:
+            self.st.out(exception_init_member, mname = mname)
 
         if len(mdescl) > 0:
-            mdescs = ", " + string.join(mdescl, ", ")
+            mdescs = ", " + ", ".join(mdescl)
         else:
             mdescs = ""
 
@@ -1591,6 +1523,9 @@ class PythonVisitor:
                     uname      = uname,
                     repoId     = node.repoId(),
                     scopedname = dotName(fscopedName))
+
+        if not self.at_module_scope:
+            self.st.out(union_class_name, cname = dotName(fscopedName))
 
         if node.constrType():
             self.st.inc_indent()
@@ -1681,10 +1616,10 @@ class PythonVisitor:
                                        uname + "[" + str(i) + "]")
                 i = i + 1
 
-        m_to_d = string.join(m_to_d_l, ", ")
-        d_to_m = string.join(d_to_m_l, ", ")
-        m_un   = string.join(m_un_l,   ", ")
-        d_map  = string.join(d_map_l,  ", ")
+        m_to_d = ", ".join(m_to_d_l)
+        d_to_m = ", ".join(d_to_m_l)
+        m_un   = ", ".join(m_un_l)
+        d_map  = ", ".join(d_map_l)
 
         if self.at_module_scope:
             self.st.out(union_descriptor_at_module_scope,
@@ -1771,7 +1706,7 @@ class PythonVisitor:
 
             i = i + 1
 
-        eitems = string.join(elist, ", ")
+        eitems = ", ".join(elist)
 
         if self.at_module_scope:
             self.st.out(enum_object_and_descriptor_at_module_scope,
@@ -1825,7 +1760,7 @@ class PythonVisitor:
                 i = i.fullDecl()
                 inheritl.append(dotName(fixupScopedName(i.scopedName())))
             
-            inherits = string.join(inheritl, ", ")
+            inherits = ", ".join(inheritl)
         else:
             inherits = "_0_CORBA.ValueBase"
 
@@ -1846,6 +1781,29 @@ class PythonVisitor:
             self.at_module_scope = 1
             self.st.dec_indent()
             self.st.out("")
+
+        if hasattr(node, "_ami_gen"):
+            # This is a poller valuetype generated for AMI, so
+            # generate the implementation class
+
+            self.st.out(ami_poller_impl,
+                        vname = vname)
+
+            for c in node.callables():
+                if isinstance(c._ami_from, idlast.Declarator):
+                    opname = "_" + c.identifier()
+                else:
+                    opname = c.identifier()
+
+                self.st.out(ami_poller_op,
+                            poller_opname = c.identifier(),
+                            opname        = opname)
+
+            self.st.out(ami_poller_register,
+                        vname   = vname,
+                        modname = self.modname,
+                        ifname  = node._ami_from.identifier())
+
 
         basedesc = "_0_CORBA.tcInternal.tv_null"
 
@@ -1881,7 +1839,7 @@ class PythonVisitor:
             inheritl.append(dn)
             skeleton_opl.append(dn)
 
-        inherits = string.join(inheritl, ", ")
+        inherits = ", ".join(inheritl)
 
         # Go up the chain of inherited interfaces, picking out the
         # state members
@@ -1914,7 +1872,7 @@ class PythonVisitor:
                                 (mangle(d.identifier()),i))
 
         if set_argl:
-            set_args = string.join(set_argl, "\n")
+            set_args = "\n".join(set_argl)
         else:
             set_args = "pass"
 
@@ -1975,23 +1933,17 @@ class PythonVisitor:
         # If value supports some interfaces, output an objref class for it
         if node.supports():
             inheritl = []
-            methodl  = []
             for i in node.supports():
                 i = i.fullDecl()
                 sn = fixupScopedName(i.scopedName())
                 inheritl.append(dotName(sn[:-1] + ["_objref_" + sn[-1]]))
-                methodl.append(dotName(sn[:-1] + ["_objref_" + sn[-1]]) +
-                               ".__methods__")
-                
-            inherits = string.join(inheritl, ", ")
+            
+            inherits = ", ".join(inheritl)
 
             self.st.out(objref_class, ifid=vname, inherits=inherits)
 
             for inclass in inheritl:
                 self.st.out(objref_inherit_init, inclass=inclass)
-
-            methods = string.join(methodl, " + ")
-            self.st.out(objref_methods, methods = methods)
 
             # registerObjRef()
             self.st.out(value_objref_register,
@@ -2024,8 +1976,7 @@ class PythonVisitor:
             cnode = i
 
         if tbasel:
-            tbaseids = "(%s._NP_RepositoryId, %s)" % (vname,
-                                                     string.join(tbasel, ", "))
+            tbaseids = "(%s._NP_RepositoryId, %s)" % (vname, ", ".join(tbasel))
         else:
             tbaseids = "None"
 
@@ -2051,7 +2002,7 @@ class PythonVisitor:
                 else:
                     mlist.append("_0_CORBA.PUBLIC_MEMBER")
                     
-        mdescs = string.join(mlist, ", ")
+        mdescs = ", ".join(mlist)
         self.st.out(value_descriptor_at_module_scope,
                     vname=vname, modifier=modifier, tbaseids=tbaseids,
                     basedesc=basedesc, mdescs=mdescs, modname=self.modname)
@@ -2305,15 +2256,15 @@ class ExampleVisitor (idlvisitor.AstVisitor, idlvisitor.TypeVisitor):
                                                  p.identifier()))
 
                 signature = "%s %s(%s)" % (rettype, c.identifier(),
-                                           string.join(siglist, ", "))
+                                           ", ".join(siglist))
 
                 if innames:
-                    args = ", " + string.join(innames, ", ")
+                    args = ", " + ", ".join(innames)
                 else:
                     args = ""
 
                 if outnames:
-                    returnspec = string.join(outnames, ", ")
+                    returnspec = ", ".join(outnames)
                 else:
                     returnspec = "None"
 
@@ -2322,7 +2273,6 @@ class ExampleVisitor (idlvisitor.AstVisitor, idlvisitor.TypeVisitor):
                             opname = c.identifier(),
                             args = args,
                             returnspec = returnspec)
-
 
 
     ttsMap = {
@@ -2360,19 +2310,16 @@ class ExampleVisitor (idlvisitor.AstVisitor, idlvisitor.TypeVisitor):
         else:
             self.__result_type = "wstring<" + str(type.bound()) + ">"
 
-
     def visitDeclaredType(self, type):
         self.__result_type = idlutil.ccolonName(type.decl().scopedName())
-
-
 
 
 
 def operationToDescriptors(op):
     """Return the descriptors for an operation.
 
-!     Returns a tuple containing strings of (in descriptor, out
-!     descriptor, exception map, context list, contains values)
+    Returns a tuple containing strings of (in descriptor, out
+    descriptor, exception map, context list, contains values)
     """
 
     indl  = []
@@ -2399,11 +2346,11 @@ def operationToDescriptors(op):
     if len(indl)  == 1: indl.append("")
     if len(outdl) == 1: outdl.append("")
 
-    inds = "(" + string.join(indl, ", ") + ")"
+    inds = "(" + ", ".join(indl) + ")"
     if op.oneway():
         outds = "None"
     else:
-        outds = "(" + string.join(outdl, ", ") + ")"
+        outds = "(" + ", ".join(outdl) + ")"
 
     # Exceptions
     excl = []
@@ -2415,12 +2362,12 @@ def operationToDescriptors(op):
         excl.append(ename + "._NP_RepositoryId: " + edesc)
 
     if len(excl) > 0:
-        excs = "{" + string.join(excl, ", ") + "}"
+        excs = "{" + ", ".join(excl) + "}"
     else:
         excs = "None"
 
     if op.contexts():
-        ctxts = "[" + string.join(map(repr, op.contexts()), ", ") + "]"
+        ctxts = "[" + ", ".join(map(repr, op.contexts())) + "]"
     else:
         ctxts = None
 
@@ -2478,7 +2425,6 @@ def typeToDescriptor(tspec, from_scope=[], is_typedef=0):
               str(tspec.digits()) + ", " + str(tspec.scale()) + ")"
 
     elif tspec.kind() == idltype.tk_alias:
-        sn = fixupScopedName(tspec.scopedName())
         if is_typedef:
             return 'omniORB.typeCodeMapping["%s"]._d' % tspec.decl().repoId()
         else:
@@ -2505,16 +2451,16 @@ def typeAndDeclaratorToDescriptor(tspec, decl, from_scope, is_typedef=0):
 def skeletonModuleName(mname):
     """Convert a scoped name string into the corresponding skeleton
 module name. e.g. M1.M2.I -> M1__POA.M2.I"""
-    l = string.split(mname, ".")
+    l = mname.split(".")
     l[0] = l[0] + "__POA"
-    return string.join(l, ".")
+    return ".".join(l)
 
 def dotName(scopedName, our_scope=[]):
     if scopedName[:len(our_scope)] == our_scope:
         l = map(mangle, scopedName[len(our_scope):])
     else:
         l = map(mangle, scopedName)
-    return string.join(l, ".")
+    return ".".join(l)
 
 def mangle(name):
     if keyword.iskeyword(name): return "_" + name
@@ -2533,9 +2479,10 @@ def fixupScopedName(scopedName, prefix="_0_"):
         decl = None
 
     if isinstance(decl, idlast.Module):
-        scopedName = [prefix + scopedName[0]] + scopedName[1:]
+        scopedName = [prefix + mangle(scopedName[0])] + scopedName[1:]
     else:
         scopedName = [prefix + global_module] + scopedName
+
     return scopedName
 
 def valueToString(val, kind, scope=[]):
@@ -2567,7 +2514,7 @@ __translate_table = string.maketrans(" -.,", "____")
 
 def outputFileName(idlname):
     global __translate_table
-    return string.translate(os.path.basename(idlname), __translate_table)
+    return os.path.basename(idlname).translate(__translate_table)
 
 def checkStubPackage(package):
     """Check the given package name for use as a stub directory
@@ -2582,7 +2529,7 @@ def checkStubPackage(package):
         package = package[:-1]
 
     path = ""
-    for name in string.split(package, "."):
+    for name in package.split("."):
         path = os.path.join(path, name)
         
         if os.path.exists(path):
@@ -2623,8 +2570,8 @@ def updateModules(modules, pymodule):
 def real_updateModules(modules, pymodule):
 
     for module in modules:
-        modlist = string.split(module_package, ".") + string.split(module, ".")
-        modpath = apply(os.path.join, modlist)
+        modlist = module_package.split(".") + module.split(".")
+        modpath = os.path.join(*modlist)
         modfile = os.path.join(modpath, "__init__.py")
         tmpfile = os.path.join(modpath, "new__init__.py")
 
@@ -2664,10 +2611,8 @@ def real_updateModules(modules, pymodule):
             error_exit('Cannot open "%s" for writing.' % tmpfile)
 
         line = ""
-              
         while line[:7] != "# ** 1.":
             line = inf.readline()
-            
             if line == "":
                 error_exit('Output error: "%s" ended before I found a '
                            '"# ** 1." tag.\n'
@@ -2684,7 +2629,6 @@ def real_updateModules(modules, pymodule):
 
         while line != "\n":
             line = inf.readline()
-            
             if line == "":
                 error_exit('Output error: "%s" ended while I was '
                            'looking at imports.' % modfile)
@@ -2692,7 +2636,7 @@ def real_updateModules(modules, pymodule):
             if line != "\n":
                 #save a copy of the import
                 oldImportLines.append(line)
-                
+
                 outf.write(line)
                 if line == outputline:
                     already = 1
@@ -2710,8 +2654,6 @@ def real_updateModules(modules, pymodule):
             outf.write(iLine)
 
         outf.write("\n")
-
-        #modfile
 
         # Output the rest of the file
         while line != "":
@@ -2732,14 +2674,14 @@ def real_updateModules(modules, pymodule):
 
     # Go round again, importing sub-modules from their parent modules
     for module in modules:
-        modlist = string.split(module, ".")
+        modlist = module.split(".")
 
         if len(modlist) == 1:
             continue
 
-        modlist = string.split(module_package, ".") + modlist
+        modlist = module_package.split(".") + modlist
         submod  = modlist[-1]
-        modpath = apply(os.path.join, modlist[:-1])
+        modpath = os.path.join(*modlist[:-1])
         modfile = os.path.join(modpath, "__init__.py")
         tmpfile = os.path.join(modpath, "new__init__.py")
 
