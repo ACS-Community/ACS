@@ -15,7 +15,7 @@
           </children>
           <children xsi:type="basic:PartStack" xmi:id="_UPSAUBtREeW7oNs1XKsitQ" elementId="alarmsystemprofiler.partstack.1">
             <children xsi:type="basic:Part" xmi:id="_U_ul0BtREeW7oNs1XKsitQ" elementId="alarmsystemprofiler.part.test" label="Alarms per 10 mins"/>
-            <children xsi:type="basic:Part" xmi:id="_c2My0BtREeW7oNs1XKsitQ" elementId="alarmsystemprofiler.part.alarmFlood" label="Alarm flood"/>
+            <children xsi:type="basic:Part" xmi:id="_c2My0BtREeW7oNs1XKsitQ" elementId="alarmsystemprofiler.part.alarmFlood" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.parts.AlarmFloodPart" label="Alarm flood"/>
           </children>
         </children>
       </children>
