@@ -81,7 +81,7 @@ public class AcsSourceClient {
 		String managerLoc=System.getProperty("ACS.manager");
 		System.out.println("Connecting to ACS: "+managerLoc);
 		try {
-			client = new ComponentClient(null, managerLoc, "AcsAlarmsAnalyzer");
+			client = new ComponentClient(null, managerLoc, "AlarmSystemAnalyzer");
 			System.out.println("ACS SimpleClient connected");
 		} catch (Throwable t) {
 			t.printStackTrace();
