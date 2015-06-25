@@ -16,12 +16,15 @@ import org.eclipse.e4.ui.workbench.IWorkbench;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import alma.acs.alarmsystemprofiler.engine.AcsSourceClient;
+
 
 public class QuitHandler {
 	@Execute
 	public void execute(IWorkbench workbench, Shell shell){
 		if (MessageDialog.openConfirm(shell, "Confirmation",
 				"Do you want to exit?")) {
+			AcsSourceClient.shutdown();
 			workbench.close();
 		}
 	}

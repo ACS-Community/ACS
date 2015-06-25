@@ -29,7 +29,7 @@
     </trimBars>
   </children>
   <handlers xmi:id="_YlssXeqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.quitCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.QuitHandler" command="_YlssXOqQEeScipsxh2co2g"/>
-  <handlers xmi:id="_YlssYeqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.openCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.OpenHandler" command="_YlssYOqQEeScipsxh2co2g"/>
+  <handlers xmi:id="_YlssYeqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.connectAcsCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.ConnectAcsHandler" command="_YlssYOqQEeScipsxh2co2g"/>
   <handlers xmi:id="_YlssZOqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.saveCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.SaveHandler"/>
   <handlers xmi:id="_YlssZ-qQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.aboutCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.AboutHandler"/>
   <bindingTables xmi:id="_YlssXuqQEeScipsxh2co2g" bindingContext="_YlssWeqQEeScipsxh2co2g">
