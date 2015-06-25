@@ -41,7 +41,7 @@ from time      import gmtime, asctime
 from socket    import gethostname
 import logging
 #--------------------------------------------------------------------------
-class ErrorTraceHelper:
+class ErrorTraceHelper(object):
     '''
     Helper class for objects containing an instance of an ACSErr.ErrorTrace
     To be useful, the abstract getErrorTrace method must be implemented or 

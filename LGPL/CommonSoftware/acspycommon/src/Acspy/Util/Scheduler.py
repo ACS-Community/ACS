@@ -60,7 +60,7 @@ def ACSSleep(hundredNanoUnits):
     '''
     time.sleep(hundredNanoUnits/10000000.0)
 #------------------------------------------------------------------------------
-class Scheduler:
+class Scheduler(object):
     '''
     A class designed to schedule/cancel "one shot" and continuous timeouts.
     It was created because the native Python scheduler class (found in the 

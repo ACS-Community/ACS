@@ -397,7 +397,7 @@ def isFlushRunning():
     except:
         return False
 #------------------------------------------------------------------------------
-class LogThrottleAlarmerBase:
+class LogThrottleAlarmerBase(object):
     '''
     Abstract base class for the LogThrottle to raise/clear alarms
     '''
