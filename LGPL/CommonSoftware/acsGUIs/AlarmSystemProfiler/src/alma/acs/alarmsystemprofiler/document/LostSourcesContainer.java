@@ -93,7 +93,6 @@ public class LostSourcesContainer implements AlarmCategoryListener, SourceListen
 			return;
 		}
 		String ID=AlarmUtils.getID(faultState);
-		System.out.print("Received "+ID);
 		if (!sourceIDs.contains(ID)) {
 			sourceIDs.add(ID);
 		}
