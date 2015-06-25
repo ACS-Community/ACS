@@ -193,7 +193,6 @@ void EnumMonitorPoint::activate(maci::ContainerServices *cs)
 	try
 	{
 		this->monitorCallback_m = cs->activateOffShoot(monitorServant_m);
-		monitorServant_m->_remove_ref(); //Decrease ref count to 1
 	}
 	catch(CORBA::Exception &ex)
 	{
@@ -440,7 +439,6 @@ void ROEnumMonitorPoint::activate(maci::ContainerServices *cs)
 	try
 	{
 		this->alarmCallback_m = cs->activateOffShoot(alarmServant_m);
-		alarmServant_m->_remove_ref(); //Decrease ref count to 1
 	}
 	catch(CORBA::Exception &ex)
 	{
