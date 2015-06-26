@@ -332,7 +332,7 @@ class Console(Frame):
                 obj = None
                 keys = []
         else:
-            class Lookup:
+            class Lookup(object):
                 def __init__(self, dicts):
                     self.dicts = dicts
 
