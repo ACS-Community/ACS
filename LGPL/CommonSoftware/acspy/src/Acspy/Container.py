@@ -219,7 +219,7 @@ class AsyncComponentActivator(Thread):
         except:
             self.logger.logError("Deactivation of component failed descOut.id_tag = "+str(descOut.id_tag)+" for '"+self.componentName+"'");
 #------------------------------------------------------------------------------
-class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClient):
+class Container(BaseClient, maci__POA.Container, Logging__POA.LoggingConfigurable):
     '''
     The Python implementation of a MACI Container.
 
