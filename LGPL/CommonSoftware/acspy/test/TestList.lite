@@ -57,9 +57,7 @@ PROLOGUE acspyTATPrologue
                         "acsutilTATTestRunner acsStopContainer PyTestCDBContainer" "@SLEEP 10"
 
 09  reloadComponent     "acsutilTATTestRunner acsStartContainer -py pyContainer2" "@SLEEP 10" \
-
                         "acsutilTATTestRunner acspyTestCompReload" "@SLEEP 20" \
-
                         "acsutilTATTestRunner acsStopContainer pyContainer2" "@SLEEP 10"
 
 10 testConsumerNoChannel  "acsutilTATTestRunner acspyTestConsumer no_name 5 0"
@@ -78,5 +76,13 @@ PROLOGUE acspyTATPrologue
 16 testArchiveSupplier    "acsutilTATTestRunner acspyTestArchiveConsumer 15 11" "@SLEEP 3" "acsutilTATTestRunner acspyTestArchiveSupplier"  "@SLEEP 60"
 17 testLoggingConsumer    "acsutilTATTestRunner acspyTestLoggingConsumer 15"
 18 acspyTestContainerActivationMap "acsutilTATTestRunner acspyTestContainerActivationMap.py"
+
+19   PyContainerLogStatsConfigurationTest "acsutilTATTestRunner acsutilAwaitContainerStart -py PyTestContainer" \
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration PyTestContainer list" \
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration PyTestContainer get PyTestContainer"  \
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration PyTestContainer set PyTestContainer -c Enable -n testName -p 700 -g 2" \
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration PyTestContainer get PyTestContainer" \
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration PyTestContainer set PyTestContainer -c Default"\
+   "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration PyTestContainer get PyTestContainer"
 #-------------------------------------------------------------------
 EPILOGUE acsutilTATEpilogue
