@@ -218,7 +218,7 @@ class TestCommonNC(unittest.TestCase):
         """CommonNC createNotificationChannel throws correct exception when wrong type returned for EventChannelFactory"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
         def side_effect(*args):
-            raise NotifyMonitoringExt.NameAlreadyUsed(None)
+            raise NotifyMonitoringExt.NameAlreadyUsed()
         mfact = mock.Mock(spec=CORBA.Object)
         mfact._narrow.return_value = None
         self.nc.nt.getObject.return_value = mfact
@@ -277,7 +277,7 @@ class TestCommonNC(unittest.TestCase):
         """CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create duplicate channel"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
         def side_effect(*args):
-            raise NotifyMonitoringExt.NameAlreadyUsed(None)
+            raise NotifyMonitoringExt.NameAlreadyUsed()
         mchanfac = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannelFactory)
         mchanfac.create_named_channel.side_effect = side_effect
         mfact = mock.Mock(spec=CORBA.Object)
@@ -298,7 +298,7 @@ class TestCommonNC(unittest.TestCase):
         """CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create mapping for channel"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
         def side_effect(*args):
-            raise NotifyMonitoringExt.NameMapError(None)
+            raise NotifyMonitoringExt.NameMapError()
         mchanfac = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannelFactory)
         mchanfac.create_named_channel.side_effect = side_effect
         mfact = mock.Mock(spec=CORBA.Object)
@@ -483,7 +483,7 @@ class TestCommonNC(unittest.TestCase):
     def test_initCORBA_noChannelDuplicate(self):
         """CommonNc initCORBA retries Naming Service lookup if EventChannel create fails with duplicate name exception"""
         def mockCreate():
-            e = NotifyMonitoringExt.NameAlreadyUsed(None)
+            e = NotifyMonitoringExt.NameAlreadyUsed()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.nc.channelName),
                                             NameValue("reason",
