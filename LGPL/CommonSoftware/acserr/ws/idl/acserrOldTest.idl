@@ -29,7 +29,7 @@
 interface acserrOldTest 
 {
     ACSErr::ErrorTrace testNoError ();
-    ACSErr::ErrorTrace test (in long depth, in boolean err);
+    ACSErr::ErrorTrace test (in long depth, in boolean error);
     void testExceptions (in long depth, in boolean er) raises (ACSErr::ACSException);
 
     oneway void shutdown();

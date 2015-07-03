@@ -35,11 +35,11 @@ interface acserrTest
 
     ACSErr::Completion testDefaultError ();
 
-    ACSErr::Completion test (in long depth, in boolean err);
+    ACSErr::Completion test (in long depth, in boolean error);
 
     void testExceptions (in long depth, in boolean er) raises (ACSErr::ACSException, ACSErrTypeTest::ACSErrTest0Ex);
 
-    void testCompletionOut(in long depth, in boolean err, out ACSErr::Completion c );
+    void testCompletionOut(in long depth, in boolean error, out ACSErr::Completion c );
 
     oneway void shutdown();
 };
