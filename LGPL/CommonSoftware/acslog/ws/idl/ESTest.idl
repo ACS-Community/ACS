@@ -26,7 +26,7 @@
 #include "ACSErrTypeTest.idl"
 
 interface ESTest {
-  ACSErr::Completion test (in long depth, in boolean err);
+  ACSErr::Completion test (in long depth, in boolean error);
   void testExceptions (in long depth, in boolean er) raises (ACSErr::ACSException, ACSErrTypeTest::ACSErrTest0Ex);
 };
 
