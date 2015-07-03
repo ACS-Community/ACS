@@ -6,12 +6,12 @@
         <children xsi:type="basic:PartSashContainer" xmi:id="_YlsscuqQEeScipsxh2co2g">
           <children xsi:type="basic:PartStack" xmi:id="_Ylssc-qQEeScipsxh2co2g">
             <children xsi:type="basic:Part" xmi:id="_YlssdOqQEeScipsxh2co2g" elementId="alarmsystemprofiler.part.mostfrequent" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.parts.MostFrequentAlarmPart" label="Most frequent"/>
-            <children xsi:type="basic:Part" xmi:id="__P2NYAO0EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.stale" label="Stale"/>
-            <children xsi:type="basic:Part" xmi:id="_HOL88AO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.chattering" label="Chattering"/>
-            <children xsi:type="basic:Part" xmi:id="_JYM9cAO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.statistics" label="Statistics"/>
-            <children xsi:type="basic:Part" xmi:id="_L01_AAO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.annunciated" label="Annunciated"/>
-            <children xsi:type="basic:Part" xmi:id="_OhB4cAO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.suppressed" label="Suppressed"/>
-            <children xsi:type="basic:Part" xmi:id="_Rzhj8AO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.lostsources" label="Lost sources"/>
+            <children xsi:type="basic:Part" xmi:id="__P2NYAO0EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.stale" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.parts.StalePart" label="Stale"/>
+            <children xsi:type="basic:Part" xmi:id="_HOL88AO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.chattering" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.parts.ChatteringPart" label="Chattering"/>
+            <children xsi:type="basic:Part" xmi:id="_JYM9cAO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.statistics" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.parts.StatisticPart" label="Statistics"/>
+            <children xsi:type="basic:Part" xmi:id="_L01_AAO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.annunciated" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.parts.AnnunciatedPart" label="Annunciated"/>
+            <children xsi:type="basic:Part" xmi:id="_OhB4cAO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.suppressed" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.parts.SuppressedPart" label="Suppressed"/>
+            <children xsi:type="basic:Part" xmi:id="_Rzhj8AO1EeWHfP404FVOUQ" elementId="alarmsystemprofiler.part.lostsources" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.parts.LostSourcesPart" label="Lost sources"/>
           </children>
           <children xsi:type="basic:PartStack" xmi:id="_UPSAUBtREeW7oNs1XKsitQ" elementId="alarmsystemprofiler.partstack.1">
             <children xsi:type="basic:Part" xmi:id="_U_ul0BtREeW7oNs1XKsitQ" elementId="alarmsystemprofiler.part.test" label="Alarms per 10 mins"/>

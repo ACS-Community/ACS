@@ -12,6 +12,7 @@
 package alma.acs.alarmsystemprofiler.parts;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -136,8 +137,7 @@ public class MostFrequentAlarmPart extends TableViewBase {
 		}
 
 	}
-
-
+	
 	
 	public MostFrequentAlarmPart() {
 		super(MostFrequantAlarmsContainer.getInstance().colNames,new int[] {
@@ -151,22 +151,30 @@ public class MostFrequentAlarmPart extends TableViewBase {
 	}
 
 	@PostConstruct
-	public void createComposite(Composite parent) {
-		parent.setLayout(new GridLayout(1, false));
-
+	public void postConstruct(Composite parent) {
+		super.createPartControl(parent);
+		
 		tableViewer.setLabelProvider(new AlarmLabelProvider());
-		sorter=new TableSorter(0, TableSorter.DESCENDING);
 		tableViewer.setSorter(sorter);
 		MostFrequantAlarmsContainer.getInstance().setTableViewer(tableViewer);
 		tableViewer.setInput(MostFrequantAlarmsContainer.getInstance());
 		
-		tableViewer = new TableViewer(parent);
-
-		tableViewer.add("Sample item 1");
-		tableViewer.add("Sample item 2");
-		tableViewer.add("Sample item 3");
-		tableViewer.add("Sample item 4");
-		tableViewer.add("Sample item 5");
-		tableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+//		/*parent.setLayout(new GridLayout(1, false));
+//
+//		tableViewer.setLabelProvider(new AlarmLabelProvider());
+//		sorter=new TableSorter(0, TableSorter.DESCENDING);
+//		tableViewer.setSorter(sorter);
+//		MostFrequantAlarmsContainer.getInstance().setTableViewer(tableViewer);
+//		tableViewer.setInput(MostFrequantAlarmsContainer.getInstance());
+//		
+//		tableViewer = new TableViewer(parent);
+//
+//		tableViewer.add("Sample item 1");
+//		tableViewer.add("Sample item 2");
+//		tableViewer.add("Sample item 3");
+//		tableViewer.add("Sample item 4");
+//		tableViewer.add("Sample item 5");
+//		tableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));*/
 	}
 }
