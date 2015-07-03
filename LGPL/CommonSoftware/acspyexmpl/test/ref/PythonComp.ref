@@ -1,14 +1,14 @@
 2 - Testing HELLODEMO1 (i.e., immortal components)
 2 - hello
-2 - ('hello', 3.1400000000000001, 23)
+2 - ('hello', 3.14, 23)
 2 - 
 2 - Now test HELLODEMO2 (i.e., non-immortal components)
 2 - hello
-2 - ('hello', 3.1400000000000001, 23)
+2 - ('hello', 3.14, 23)
 2 - 
 2 - Now test getting HELLODEMO2 non sticky
 2 - hello
-2 - ('hello', 3.1400000000000001, 23)
+2 - ('hello', 3.14, 23)
 2 - The end __oOo__
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
