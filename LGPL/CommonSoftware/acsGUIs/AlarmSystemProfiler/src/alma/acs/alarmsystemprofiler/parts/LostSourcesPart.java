@@ -53,7 +53,6 @@ public class LostSourcesPart extends ViewPart {
 		listViewer.setContentProvider(LostSourcesContainer.getInstance());
 		listViewer.setSorter(new ViewerSorter());
 		listViewer.setInput(null);
-		System.out.println("Done");
 	}
 
 	@Override
@@ -66,7 +65,6 @@ public class LostSourcesPart extends ViewPart {
 		createPartControl(parent);
 		LostSourcesContainer.getInstance().setViewer(listViewer);
 		listViewer.setInput(LostSourcesContainer.getInstance());
-		System.out.println("Done2");
 	}
 	
 }
