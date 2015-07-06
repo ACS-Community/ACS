@@ -18,6 +18,7 @@ import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ImplLangType;
 
 import alma.Logging.LoggingConfigurablePackage.LogLevels;
+import alma.Logging.ACSLogStatisticsPackage.LogStatsInformation;
 
 /**
  * @author almamgr
@@ -204,6 +205,37 @@ public class ContainerProxyImpl extends ContainerPOA {
 	{
 	    throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
 	}
+        
+	/** 
+	 * Gets the names and status of all statistics modules of all loggers, to allow configuring them individually.
+	 * If the logger statistics module has never been configured yet, then it will provide "Undefined"
+	 * as elementName 
+	 */
+    public LogStatsInformation[] get_statistics_logger_configuration()
+    {
+    	throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+    }
+    
+	/** 
+     * Gets the names and status of statistics module of requested logger.
+     * If the logger statistics module has never been configured yet, then it will provide "Undefined"
+     * as elementName 
+     * Throws LoggerDoesNotExistEx if a the logger is not found
+     */
+	public LogStatsInformation get_statistics_logger_configuration_byname(String logger_name) throws alma.Logging.LoggerDoesNotExistEx
+	{
+    	throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+    }
+	
+    /**
+     * Sets logger statistics configuration for a particular named logger.
+     * Throws LoggerDoesNotExistEx if a the logger is not found 
+     */
+	public void set_statistics_logger_configuration_byname(String logger_name, LogStatsInformation statsInformation) throws alma.Logging.LoggerDoesNotExistEx
+	{
+    	throw new org.omg.CORBA.NO_IMPLEMENT("Method not implemented yet");
+	}
+        
         /************************** END LoggingConfigurable *************************/
 
 }
