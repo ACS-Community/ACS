@@ -392,7 +392,7 @@ namespace Logging {
     		// Send the information via stdout
     		std::cout << "The following log message exceeds ACE_MAXLOGMSGLEN and will be truncated: " << lr.message << std::endl;
     		// Message is trunkated
-    		lr.message.resize(ACE_MAXLOGMSGLEN);
+    		const_cast<LogRecord&>(lr).message.resize(ACE_MAXLOGMSGLEN);
     		// Add specific log message
 			LogRecord logItem;
 			logItem.priority = lr.priority;
