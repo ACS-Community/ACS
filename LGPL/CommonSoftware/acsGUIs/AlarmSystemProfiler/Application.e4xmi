@@ -34,8 +34,7 @@
   </children>
   <handlers xmi:id="_YlssXeqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.quitCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.QuitHandler" command="_YlssXOqQEeScipsxh2co2g"/>
   <handlers xmi:id="_YlssYeqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.connectAcsCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.ConnectAcsHandler" command="_YlssYOqQEeScipsxh2co2g"/>
-  <handlers xmi:id="_YlssZOqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.saveCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.SaveHandler"/>
-  <handlers xmi:id="_YlssZ-qQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.aboutCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.AboutHandler"/>
+  <handlers xmi:id="_YlssZOqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.handler.saveCommand" contributionURI="bundleclass://alma.acs.alarmsystemprofiler/alma.acs.alarmsystemprofiler.handlers.SaveHandler" command="_n3yXQAOzEeWHfP404FVOUQ"/>
   <bindingTables xmi:id="_YlssXuqQEeScipsxh2co2g" bindingContext="_YlssWeqQEeScipsxh2co2g">
     <bindings xmi:id="_YlssX-qQEeScipsxh2co2g" keySequence="M1+Q" command="_YlssXOqQEeScipsxh2co2g"/>
     <bindings xmi:id="_YlssYuqQEeScipsxh2co2g" keySequence="M1+O" command="_YlssYOqQEeScipsxh2co2g"/>
@@ -47,7 +46,7 @@
     <children xmi:id="_YlssW-qQEeScipsxh2co2g" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
   </rootContext>
   <commands xmi:id="_YlssXOqQEeScipsxh2co2g" elementId="org.eclipse.ui.file.exit" commandName="quitCommand"/>
-  <commands xmi:id="_YlssYOqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.connectACS" commandName="connectACS"/>
+  <commands xmi:id="_YlssYOqQEeScipsxh2co2g" elementId="alma.acs.alarmsystemprofiler.connectACS" commandName="connectACS" description="Connect to ACS"/>
   <commands xmi:id="_n3yXQAOzEeWHfP404FVOUQ" elementId="alma.acs.alarmsystemprofiler.save" commandName="saveStats" description="Save statistics on file"/>
   <addons xmi:id="_YlssUuqQEeScipsxh2co2g" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_YlssU-qQEeScipsxh2co2g" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
