@@ -1,0 +1,37 @@
+--- TAO.org/ACE_wrappers/ace/OS_NS_dlfcn.inl	2015-07-07 10:36:39.000000000 +0000
++++ TAO/ACE_wrappers/ace/OS_NS_dlfcn.inl	2015-07-07 10:38:38.000000000 +0000
+@@ -256,17 +256,25 @@
+   // which resolves the most recently loaded symbols, which resolve
+   // mostly what we want..
+   ACE_UNUSED_ARG (handle);
+-  STATUS status;
++  #if _WRS_VXWORKS_MAJOR < 6 || (_WRS_VXWORKS_MAJOR == 6 && _WRS_VXWORKS_MINOR < 9)
++   SYM_TYPE symtype;
++   char *value = 0;
++   STATUS status;
++   ACE_OSCALL (::symFindByName(sysSymTbl, symbolname, &value, &symtype), int, -1, status);
++
++   return status == OK ? reinterpret_cast <void*>(value) : 0;
++  #else
++   STATUS status;
++
++   SYMBOL_DESC symbolDesc;     /* symFind() descriptor */
++   ACE_OS::memset (&symbolDesc, 0, sizeof (SYMBOL_DESC));
++   symbolDesc.mask = SYM_FIND_BY_NAME;
++   symbolDesc.name = symbolname;
+ 
+-  SYMBOL_DESC symbolDesc;     /* symFind() descriptor */
+-  ACE_OS::memset (&symbolDesc, 0, sizeof (SYMBOL_DESC));
+-  symbolDesc.mask = SYM_FIND_BY_NAME;
+-  symbolDesc.name = symbolname;
+-
+-  ACE_OSCALL (::symFind(sysSymTbl, &symbolDesc), int, -1, status);
+-
+-  return status == OK ? reinterpret_cast <void*>(symbolDesc.value) : 0;
++   ACE_OSCALL (::symFind(sysSymTbl, &symbolDesc), int, -1, status);
+ 
++   return status == OK ? reinterpret_cast <void*>(symbolDesc.value) : 0;
++  #endif
+ # else
+ 
+   ACE_UNUSED_ARG (handle);
