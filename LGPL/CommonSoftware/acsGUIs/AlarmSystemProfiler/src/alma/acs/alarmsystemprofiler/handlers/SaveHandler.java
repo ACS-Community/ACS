@@ -11,22 +11,34 @@
  *******************************************************************************/
 package alma.acs.alarmsystemprofiler.handlers;
 
-import org.eclipse.e4.core.di.annotations.CanExecute;
+import java.io.File;
+
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.swt.widgets.Shell;
 
-public class SaveHandler {
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.SWT;
+import alma.acs.alarmsystemprofiler.save.SaveData;
 
-//	@CanExecute
-//	public boolean canExecute(EPartService partService) {
-//		if (partService != null) {
-//			return !partService.getDirtyParts().isEmpty();
-//		}
-//		return false;
-//	}
+public class SaveHandler {
 
 	@Execute
 	public void execute(Shell shell) {
 		System.out.println("Saving...");
+		FileDialog fileChooser = new FileDialog(shell, SWT.SAVE);
+		String fileName= fileChooser.open();
+		if (fileName==null) {
+			System.out.println("No file to save");
+		} else {
+			System.out.println("File to save: "+fileName);
+			File fileToSave = new File(fileName);
+			try {
+				SaveData saveHelper = new SaveData(SaveData.FileContentType.WIKI, fileToSave);
+			} catch (Throwable t) {
+				System.err. println(t.getMessage());
+				t.printStackTrace(System.err);
+			}
+		}
 	}
 }
