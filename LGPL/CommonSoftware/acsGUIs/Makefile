@@ -34,6 +34,7 @@ MODULES_ACSGUIS  = 	acsGUIutil \
                     logTools \
                     objexp \
 					alarmSourcePanel \
+			AlarmSystemProfiler \
                     alarmPanel
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
