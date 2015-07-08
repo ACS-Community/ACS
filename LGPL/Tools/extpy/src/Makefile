@@ -28,13 +28,7 @@ PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
 PY_EXT_DOC_L	   = pexpect-doc
-PY_DISUTIL	   = pexpect-0.999 PyXML-0.8.4 pychecker-0.8.14 Pmw Numeric-24.2 numarray-1.3.3 python-ldap-2.0.1 gnuplot-py-1.7 pysnmp-2.0.9
-
-
-PEXPECT: pexpect-0.999.tgz
-	@echo "== Building PEXPECT"
-	@gtar -zxvf pexpect-0.999.tgz;
-	@cd pexpect-0.999; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages --install-data=$(INSTALL_ROOT)/lib/python/site-packages ;
+PY_DISUTIL	   = PyXML-0.8.4 Pmw Numeric-24.2 numarray-1.3.3 python-ldap-2.0.1
 
 PYXML: PyXML-0.8.4.tar.gz
 	@echo "== Building PYXML"
@@ -55,17 +49,6 @@ PMW: Pmw.1.2.tar.gz
 	@echo "== Building Python Mega Widgets"
 	@gtar -zxvf Pmw.1.2.tar.gz;
 
-#
-# We need a patch for pychecker since the setup.py script
-# is script in such a way that it does not allow to properly install the
-# package anywhere else than in the Python standard installation tree.
-#
-PYCHECKER: pychecker-0.8.14.tar.gz
-	@echo "== Patching and building PyChecker"
-	@gtar -zxvf pychecker-0.8.14.tar.gz;
-	@patch pychecker-0.8.14/setup.py pychecker-0.8.14.setup.py.patch
-	@cd pychecker-0.8.14; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
-
 NUMERIC: Numeric-24.2.tar.gz
 	@echo "== Building Numeric"
 	@gtar -zxvf Numeric-24.2.tar.gz;
@@ -83,16 +66,6 @@ LDAP: python-ldap-2.0.1.tar.gz
 	@mv python-ldap-2.0.1/setup.cfg.tmp python-ldap-2.0.1/setup.cfg 
 	@cd python-ldap-2.0.1; python setup.py install;
 
-GNUPLOT: gnuplot-py-1.7.tar.gz
-	@echo "== Building GnuPlot Py"
-	@gtar -zxvf gnuplot-py-1.7.tar.gz;
-	@cd gnuplot-py-1.7; python setup.py install;
-
-SNMP: pysnmp-2.0.9.tar.gz
-	@echo "== Building PySNMP"
-	@gtar -zxvf pysnmp-2.0.9.tar.gz;
-	@cd pysnmp-2.0.9; python setup.py install;
-
 SUDS: suds-0.4.tar.gz
 	@echo "== Building suds"
 	@gtar -zxvf suds-0.4.tar.gz;
@@ -105,7 +78,7 @@ PY_DOC :
 	$(foreach file, $(PY_EXT_DOC_L), - $(AT) cd ../doc; if [ -e $(file).tgz ]; then echo "== Extracting external documentation: $(file).tgz"; gtar -zxvf $(file).tgz; fi )
 
 
-#PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY LDAP GNUPLOT SNMP PYXML
+#PY_DISUTIL_BUILD : PYXML NUMERIC NUMARRAY LDAP PYXML
 PY_DISUTIL_BUILD : PYXB PYXML LXML NUMERIC SUDS
 	echo "== Building/Installing external Python modules now..."
 
@@ -139,7 +112,7 @@ clean : clean_all
 	$(RM) *~ ../*~
 	$(RM) ../doc/doc ../doc/api ../doc/idl
 	$(foreach file, $(PY_DISUTIL), $(RM) $(file))
-	@rm -rf numarray-1.3.3 pexpect-0.999 Pmw pychecker-0.8.14 PyXML-0.8.4 PyXB-1.1.2 lxml-2.2.6 suds-0.4
+	@rm -rf numarray-1.3.3  Pmw PyXML-0.8.4 PyXB-1.1.2 lxml-2.2.6 suds-0.4
 	@echo " . . . clean done"
 
 clean_dist : clean clean_dist_all 
