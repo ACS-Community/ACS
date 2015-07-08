@@ -44,7 +44,7 @@ SCRIPTS   = acspyInteractiveContainer acsLoggingMonitor
 # 
 # IDL Files and flags
 # 
-IDL_FILES = 
+IDL_FILES = acspytest
 IDL_TAO_FLAGS =
 USER_IDL =
 
