@@ -34,7 +34,8 @@
 #include "acsutilTimeStamp.h"
 #include <list>
 #include <string>
-#include <stdint.h>
+#include <Basic_Types.h>  // instead #include <stdint.h>
+
 
 namespace Logging 
 {
