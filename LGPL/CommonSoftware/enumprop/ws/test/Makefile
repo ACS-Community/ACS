@@ -65,31 +65,31 @@ common_GENERATED = enumpropTestDeviceS enumpropTestDeviceC
 
 
 enumpropTestServer_OBJECTS =  enumpropTestServer
-enumpropTestServer_LIBS = acsContainerServices maci enumpropTestDevice  
+enumpropTestServer_LIBS = acsContainerServices maci enumpropTestDevice ACE TAO TAO_PortableServer loki logging baselogging baci baciStubs enumpropStdStubs 
 
 testClient_COMMON = testClient
 testClient_OBJECTS   = $(testClient_COMMON) $(common_GENERATED)
-testClient_LIBS = enumpropTestDevice
+testClient_LIBS = enumpropTestDevice ACE TAO TAO_PortableServer loki logging baselogging baci baciStubs enumpropStdStubs
 
 testRWClient_COMMON = testRWClient
 testRWClient_OBJECTS = $(testRWClient_COMMON) $(common_GENERATED)
-testRWClient_LIBS = enumpropTestDevice
+testRWClient_LIBS = enumpropTestDevice ACE TAO TAO_PortableServer loki logging baselogging baci baciStubs enumpropStdStubs
 
 monitorTest_COMMON = monitorTest
 monitorTest_OBJECTS =  $(monitorTest_COMMON) $(common_GENERATED)
-monitorTest_LIBS = enumpropTestDevice
+monitorTest_LIBS = enumpropTestDevice ACE TAO TAO_PortableServer loki logging baselogging baci baciStubs enumpropStdStubs
 
 alarmTest_COMMON = alarmTest
 alarmTest_OBJECTS=  $(alarmTest_COMMON) $(common_GENERATED)
-alarmTest_LIBS = enumpropTestDevice
+alarmTest_LIBS = enumpropTestDevice ACE TAO TAO_PortableServer loki logging baselogging baci baciStubs enumpropStdStubs
 
 onchangeMonitorTest_COMMON = onchangeMonitorTest
 onchangeMonitorTest_OBJECTS=  $(onchangeMonitorTest_COMMON) $(common_GENERATED)
-onchangeMonitorTest_LIBS = enumpropTestDevice
+onchangeMonitorTest_LIBS = enumpropTestDevice ACE TAO TAO_PortableServer loki logging baselogging baci baciStubs enumpropStdStubs
 
 alarmTestSetFFFM_COMMON = alarmTestSetFFFM
 alarmTestSetFFFM_OBJECTS = $(alarmTestSetFFFM_COMMON) $(common_GENERATED)
-alarmTestSetFFFM_LIBS = enumpropTestDevice
+alarmTestSetFFFM_LIBS = enumpropTestDevice ACE TAO TAO_PortableServer loki logging baselogging baci baciStubs enumpropStdStubs
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
