@@ -210,6 +210,7 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	make -C ../src all
 	@mkdir -p ref
 	@mkdir -p tmp
 	@if [ $(WIND_BASE) ]; then \
