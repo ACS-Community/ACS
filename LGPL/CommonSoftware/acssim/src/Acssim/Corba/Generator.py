@@ -196,7 +196,7 @@ def getRandomStruct(typeCode, compRef):
         raise CORBA.NO_IMPLEMENT(msg) 
 
     #create an instance of the struct using a kooky Python mechanism.
-    retVal = instance(tClass)
+    retVal = tClass.__new__(tClass) # instance(tClass)
 
     #populate the fields of the struct using the IFR
     for member in structDef._get_members():
