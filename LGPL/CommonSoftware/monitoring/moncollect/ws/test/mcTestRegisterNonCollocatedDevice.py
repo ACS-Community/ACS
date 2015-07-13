@@ -34,25 +34,77 @@ simpleClient = PySimpleClient()
 
 mc = simpleClient.getComponent(argv[1])
 
-print "Test EH(registerNonCollocatedMonitoredDevice): RegisteringDeviceProblem"
+# Test Case 1: Register non collocated device non registrable
+#              Test EH(registerNonCollocatedMonitoredDevice): RegisteringDeviceProblem"
+print "Test Case 1: Register non collocated device non registrable"
+print "--------------------------------------------"
 try:
     mc.registerNonCollocatedMonitoredDevice('FAKE_DEVICE', '98765')
+    print " TEST FAIL: FAKE_DEVICE registered"
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();
-    
-    
-mc.registerNonCollocatedMonitoredDevice('TEST_NONCOLLOCATED_PS_1', '98765')    
-mc.startMonitoring('TEST_NONCOLLOCATED_PS_1')    
-    
-print "Test EH(registerNonCollocatedMonitoredDevice): DeviceAlreadyRegistered"
+    print " TEST SUCCESS: FAKE_DEVICE not registered"
+
+# Test Case 2: Register non collocated device with success
+#              Test registerNonCollocatedMonitoredDevice: OK
+print "Test Case 2: Register non collocated device with success"
+print "--------------------------------------------"
 try:
     mc.registerNonCollocatedMonitoredDevice('TEST_NONCOLLOCATED_PS_1', '98765')
+    print " TEST SUCCESS: TEST_NONCOLLOCATED_PS_1 Monitored Device registered"
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
-    ex.Print();   
+    ex.Print();
+    print " TEST FAIL: TEST_NONCOLLOCATED_PS_1 not registered"
 
-mc.deregisterMonitoredDevice('TEST_NONCOLLOCATED_PS_1')
+# Test Case 3: Register non collocated device already registered
+#              Test EH(registerNonCollocatedMonitoredDevice): DeviceAlreadyRegistered
+print "Test Case 3: Register non collocated device already registered"
+print "--------------------------------------------"
+try:
+    mc.registerNonCollocatedMonitoredDevice('TEST_NONCOLLOCATED_PS_1', '98765')
+    print " TEST FAIL: TEST_NONCOLLOCATED_PS_1 registered"
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+    ex.Print();
+    print " TEST SUCCESS: TEST_NONCOLLOCATED_PS_1 not registered"
+
+# Test Case 4: Unregister non collocated device non registered
+#              Test EH(deregisterMonitoredDevice): DeviceNotRegisteredEx
+print "Test Case 4: Unregister device non registered"
+print "--------------------------------------------"
+try:
+    mc.deregisterMonitoredDevice('FAKE_DEVICE')
+    print " TEST FAIL: FAKE_DEVICE unregistered"
+except MonitorErr.DeviceNotRegisteredEx, _ex:
+    ex = MonitorErrImpl.DeviceNotRegisteredExImpl(exception=_ex)
+    ex.Print();
+    print " TEST SUCCESS: FAKE_DEVICE not unregistered"
+
+# Test Case 5: Unregister non collocated device with success
+#              Test deregisterMonitoredDevice: OK
+print "Test Case 5: Unregister device with success"
+print "--------------------------------------------"
+try:
+    mc.deregisterMonitoredDevice('TEST_NONCOLLOCATED_PS_1')
+    print " TEST SUCCESS: TEST_NONCOLLOCATED_PS_1 unregistered"
+except MonitorErr.DeviceNotRegisteredEx, _ex:
+    ex = MonitorErrImpl.DeviceNotRegisteredExImpl(exception=_ex)
+    ex.Print();
+    print " TEST FAIL: TEST_NONCOLLOCATED_PS_1 not unregistered"
+
+# Test Case 6: Unregister non collocated device already unregistered
+#              Test EH(deregisterMonitoredDevice): DeviceNotRegisteredEx
+print "Test Case 6: Unregister device already unregistered"
+print "--------------------------------------------"
+try:
+    mc.deregisterMonitoredDevice('TEST_NONCOLLOCATED_PS_1')
+    print " TEST FAIL: TEST_NONCOLLOCATED_PS_1 unregistered"
+except MonitorErr.DeviceNotRegisteredEx, _ex:
+    ex = MonitorErrImpl.DeviceNotRegisteredExImpl(exception=_ex)
+    ex.Print();
+    print " TEST SUCCESS: TEST_NONCOLLOCATED_PS_1 not unregistered"
 
 #cleanly disconnect
 simpleClient.releaseComponent(argv[1])

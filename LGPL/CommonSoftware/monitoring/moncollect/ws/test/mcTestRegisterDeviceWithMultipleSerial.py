@@ -35,35 +35,91 @@ simpleClient = PySimpleClient()
 
 mc = simpleClient.getComponent(argv[1])
 
-print "Test EH(registerMonitoredDeviceWithMultipleSerial): RegisteringDeviceProblem - not activated"
+# Test Case 1: Register collocated device with multiple serial non registrable
+#              Test EH(registerCollocatedMonitoredDeviceWithMultipleSerial): RegisteringDeviceProblem"
+print "Test Case 1: Register collocated device with multiple serial non registrable"
+print "--------------------------------------------"
 try:
     psns =[propertySerailNumber('asds', ['12124']),propertySerailNumber('sdfsfs', ['3432535'])]
-    
-    mc.registerMonitoredDeviceWithMultipleSerial('FAKE_DEVICE', psns)
+    mc.registerCollocatedMonitoredDeviceWithMultipleSerial('FAKE_DEVICE', psns)
+    print " TEST FAIL: FAKE_DEVICE registered"
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();
-    
-print "Test EH(registerMonitoredDeviceWithMultipleSerial): Property does not exist Problem"
+    print " TEST SUCCESS: FAKE_DEVICE not registered"
+
+# Test Case 2: Register collocated device with multiple serial when property does not exist
+#              Test EH(registerCollocatedMonitoredDeviceWithMultipleSerial): Property does not exist"
+print "Test Case 2: Register collocated device with multiple serial when property does not exist"
+print "--------------------------------------------"
 try:    
-    mc.registerMonitoredDeviceWithMultipleSerial('TEST_PS_1', psns)
+    mc.registerCollocatedMonitoredDeviceWithMultipleSerial('TEST_PS_1', psns)
+    print " TEST FAIL: TEST_PS_1 registered"
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();
+    print " TEST SUCCESS: TEST_PS_1 not registered"
 
-psns =[propertySerailNumber('current', ['12124']),propertySerailNumber('status', ['3432535'])]    
-mc.registerMonitoredDeviceWithMultipleSerial('TEST_PS_1', psns)    
-mc.startMonitoring('TEST_PS_1')    
-    
-print "Test EH(registerMonitoredDeviceWithMultipleSerial): DeviceAlreadyRegistered"
+# Test Case 3: Register collocated device with multiple serial with success
+#              Test registerCollocatedMonitoredDeviceWithMultipleSerial: OK"
+print "Test Case 3: Register collocated device with multiple serial with success"
+print "--------------------------------------------"
 try:
-    mc.registerMonitoredDeviceWithMultipleSerial('TEST_PS_1', psns)
+    psns =[propertySerailNumber('current', ['12124']),propertySerailNumber('status', ['3432535'])]    
+    mc.registerCollocatedMonitoredDeviceWithMultipleSerial('TEST_PS_1', psns)
+    print " TEST SUCCESS: TEST_PS_1 registered"
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
-    ex.Print();   
+    ex.Print();
+    print " TEST FAIL: TEST_PS_1 not registered"
 
+# Test Case 4: Register collocated device with multiple serial when device already registered
+#              Test EH(registerCollocatedMonitoredDeviceWithMultipleSerial): DeviceAlreadyRegistered"
+print "Test Case 4: Register collocated device with multiple serial when device already registered"
+print "--------------------------------------------"
+try:
+    mc.registerCollocatedMonitoredDeviceWithMultipleSerial('TEST_PS_1', psns)
+    print " TEST FAIL: TEST_PS_1 registered"
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+    ex.Print();
+    print " TEST SUCCESS: TEST_PS_1 not registered"
 
-mc.deregisterMonitoredDevice('TEST_PS_1')
+# Test Case 5: Unregister collocated device non registered
+#              Test EH(deregisterMonitoredDevice): DeviceNotRegisteredEx
+print "Test Case 5: Unregister device non registered"
+print "--------------------------------------------"
+try:
+    mc.deregisterMonitoredDevice('FAKE_DEVICE')
+    print " TEST FAIL: FAKE_DEVICE unregistered"
+except MonitorErr.DeviceNotRegisteredEx, _ex:
+    ex = MonitorErrImpl.DeviceNotRegisteredExImpl(exception=_ex)
+    ex.Print();
+    print " TEST SUCCESS: FAKE_DEVICE not unregistered"
+
+# Test Case 6: Unregister collocated device with success
+#              Test deregisterMonitoredDevice: OK
+print "Test Case 6: Unregister device with success"
+print "--------------------------------------------"
+try:
+    mc.deregisterMonitoredDevice('TEST_PS_1')
+    print " TEST SUCCESS: TEST_PS_1 unregistered"
+except MonitorErr.DeviceNotRegisteredEx, _ex:
+    ex = MonitorErrImpl.DeviceNotRegisteredExImpl(exception=_ex)
+    ex.Print();
+    print " TEST FAIL: TEST_PS_1 not unregistered"
+
+# Test Case 7: Unregister collocated device already unregistered
+#              Test EH(deregisterMonitoredDevice): DeviceNotRegisteredEx
+print "Test Case 7: Unregister device already unregistered"
+print "--------------------------------------------"
+try:
+    mc.deregisterMonitoredDevice('TEST_PS_1')
+    print " TEST FAIL: TEST_PS_1 unregistered"
+except MonitorErr.DeviceNotRegisteredEx, _ex:
+    ex = MonitorErrImpl.DeviceNotRegisteredExImpl(exception=_ex)
+    ex.Print();
+    print " TEST SUCCESS: TEST_PS_1 not unregistered"
 
 #cleanly disconnect
 simpleClient.releaseComponent(argv[1])

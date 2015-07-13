@@ -96,13 +96,13 @@ for d in data:
         for blobData in any.from_any(blob.blobDataSeq):
             # we use here a dirt trick, because we set timeout to 134608945243381570
             # so we know if the value comes from an alarm monitor or normal monitor
-            if blobData['time'] != 134608945243381570:
-                print "Alarm: \t", blobData
-            else:
+            if blobData['time'] != 134608945243381570: # Normal monitor
+                print "\t\t", blobData
+            else: # Alarm monitor
                 # here we prevent to write a value more than once what can happen during sleep of 1 s
                 # so that we have deterministic results of the test
-                if blobData['value'] != prevVal:
-                    print "\t\t", blobData
+                if blobData['value'] != prevVal: 
+                    print "Alarm: \t", blobData
                     prevVal = blobData['value']
             
 

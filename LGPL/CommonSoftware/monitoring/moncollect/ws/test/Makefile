@@ -101,8 +101,8 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = mcTestRegisterDevice mcTestRegisterDeviceWithMultipleSerial  mcTestDeviceWithSeqAndMultipleSerial \
-                  mcTestRegisterNonCollocatedDevice \
+PY_SCRIPTS_L       = mcTestRegisterDevice mcTestRegisterDeviceWithMultipleSerial  mcTestRegisterNonCollocatedDeviceWithMultipleSerial \
+                  mcTestDeviceWithSeqAndMultipleSerial mcTestRegisterNonCollocatedDevice \
 						mcTestComponent mcTestCyclicBuffer mcTestPropertiesComponent mcTestDynEnable mcTestDynSuppress mcTestDynInterval \
                   mcTestDynSupEn mcTestAlarmsComponent mcTestArchiveDelta mcTestArchiveDeltaPercent #mcTestManualPublish mcTestManualPublishOnSuppressed
 PY_MODULES         =

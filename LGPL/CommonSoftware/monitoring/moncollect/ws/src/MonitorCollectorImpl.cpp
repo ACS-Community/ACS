@@ -158,6 +158,7 @@ void MonitorCollectorImpl::registerNonCollocatedMonitoredDevice (const char * co
 void MonitorCollectorImpl::registerMonitoredDeviceWithMultipleSerial(const char*componentName, const TMCDB::propertySerialNumberSeq& serialNumbers)
 {
 	AUTO_TRACE("MonitorCollectorImpl::registerMonitoredDeviceWithMultipleSerial");
+	//it is depreciated, so we just delegate
 	registerCollocatedMonitoredDeviceWithMultipleSerial(componentName, serialNumbers);
 }
 
