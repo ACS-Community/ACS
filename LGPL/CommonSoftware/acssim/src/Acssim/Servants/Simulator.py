@@ -128,9 +128,9 @@ class BaseSimulator(DynamicImplementation):
             new_args = [self]
         self.recorder.record(meth_name, new_args[:-1])
         
-        local_namespace = getCompLocalNS(self.__name)
+        local_namespace = getCompLocalNS(self._get_name())
         local_namespace['SELF'] = self    
-        return _execute(self.__name,
+        return _execute(self._get_name(),
                         meth_name,
                         new_args,
                         local_namespace)
