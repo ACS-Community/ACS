@@ -293,4 +293,31 @@ namespace Logging {
 	{
 		lastPeriodNumberOfLogErrors = value;
 	};
+
+	// Statistics calculation getters
+	float
+	loggingStatistics::getMessageStatistics()
+	{
+		return messageStatistics;
+	};
+	float
+	loggingStatistics::getErrorStatistics()
+	{
+		return errorStatistics;
+	};
+	float
+	loggingStatistics::getMessageIncrement()
+	{
+		return messageIncrement;
+	};
+	float
+	loggingStatistics::getErrorIncrement()
+	{
+		return errorIncrement;
+	};
+	float
+	loggingStatistics::getActualStatisticsPeriod()
+	{
+		return actualStatisticsPeriod;
+	};
 };

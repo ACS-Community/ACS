@@ -119,6 +119,13 @@ namespace Logging
     	// Setter for lastPeriodNumberOfMessages
 		void setLastPeriodNumberOfLogErrors(uint32_t value);
 
+    	// Statistics calculation getters
+    	float getMessageStatistics();
+		float getErrorStatistics();
+		float getMessageIncrement();
+		float getErrorIncrement();
+		float getActualStatisticsPeriod();
+
         // Default constructor
 		loggingStatistics();
 

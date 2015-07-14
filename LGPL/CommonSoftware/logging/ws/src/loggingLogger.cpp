@@ -28,6 +28,8 @@
 #include <iostream>
 #include <sstream>
 #include <ace/Recursive_Thread_Mutex.h>
+#include <loggingErrTypes.h>
+
 
 static char *rcsId="@(#) $Id: loggingLogger.cpp,v 1.22 2012/01/20 22:07:44 tstaig Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
@@ -136,25 +138,21 @@ namespace Logging {
 			// Reset statistics
 			stats.resetStatistics();
 
-			// Retrive statistics logs
-			std::list<std::string> retrievedStatisticsLogs;
-			retrievedStatisticsLogs.clear();
-			stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
-
-			// Print statistics logs
-			LogRecord logItem;
-			for (std::list<std::string>::iterator it = retrievedStatisticsLogs.begin(); it != retrievedStatisticsLogs.end(); it++)
-			{
-				logItem.priority = LM_INFO;
-				logItem.file = __FILE__;
-				logItem.line = __LINE__;
-				logItem.method = __PRETTY_FUNCTION__;
-				logItem.timeStamp = getTimeStamp();
-				logItem.message = *it;
-				log(logItem);
-			}
-
+			// Retrieve and log logger statistics
+			loggingErrTypes::StatisticsCompletion statsLog(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			statsLog.setStatisticsIdentification(stats.getStatisticsIdentification().c_str());
+			statsLog.setLoggerId(getName().c_str());
+			statsLog.setLastPeriodDuration(stats.getActualStatisticsPeriod());
+			statsLog.setLastPeriodNumberOfMessages(stats.getLastPeriodNumberOfMessages());
+			statsLog.setStatisticsGranularity(stats.getStatisticsGranularity());
+			statsLog.setMessageStatistics(stats.getMessageStatistics());
+			statsLog.setMessageIncrement(stats.getMessageIncrement());
+			statsLog.setLastPeriodNumberOfErrorMessages(stats.getLastPeriodNumberOfLogErrors());
+			statsLog.setErrorMessageStatistics(stats.getErrorStatistics());
+			statsLog.setErrorMessageIncrement(stats.getErrorIncrement());
+			statsLog.log(Logging::acs2acePriority(LM_INFO));
 	    }
+
 		// remove from loggers list
 		if (loggerName_m != BaseLog::GLOBAL_LOGGER_NAME &&
 			this != ACE_Singleton<Logger_ptr, ACE_Recursive_Thread_Mutex>::instance()->globalLogger_m &&
@@ -459,23 +457,19 @@ namespace Logging {
 						// Reset statistics
 						stats.resetStatistics();
 
-						// Retrieve statistics logs
-						std::list<std::string> retrievedStatisticsLogs;
-						retrievedStatisticsLogs.clear();
-						stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
-
-						// Print statistics logs
-						LogRecord logItem;
-						for (std::list<std::string>::iterator it = retrievedStatisticsLogs.begin(); it != retrievedStatisticsLogs.end(); it++)
-						{
-							logItem.priority = LM_INFO;
-							logItem.file = __FILE__;
-							logItem.line = __LINE__;
-							logItem.method = __PRETTY_FUNCTION__;
-							logItem.timeStamp = getTimeStamp();
-							logItem.message = *it;
-							log(logItem);
-						}
+						// Retrieve and log logger statistics
+						loggingErrTypes::StatisticsCompletion statsLog(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+						statsLog.setStatisticsIdentification(stats.getStatisticsIdentification().c_str());
+						statsLog.setLoggerId(getName().c_str());
+						statsLog.setLastPeriodDuration(stats.getActualStatisticsPeriod());
+						statsLog.setLastPeriodNumberOfMessages(stats.getLastPeriodNumberOfMessages());
+						statsLog.setStatisticsGranularity(stats.getStatisticsGranularity());
+						statsLog.setMessageStatistics(stats.getMessageStatistics());
+						statsLog.setMessageIncrement(stats.getMessageIncrement());
+						statsLog.setLastPeriodNumberOfErrorMessages(stats.getLastPeriodNumberOfLogErrors());
+						statsLog.setErrorMessageStatistics(stats.getErrorStatistics());
+						statsLog.setErrorMessageIncrement(stats.getErrorIncrement());
+						statsLog.log(Logging::acs2acePriority(LM_INFO));
 
 					}
 				}

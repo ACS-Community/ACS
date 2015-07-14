@@ -35,7 +35,6 @@
 #include "loggingLogTrace.h"
 #include "logging.h"
 
-
 void logBatchDirectLog(Logging::Logger::LoggerSmartPtr logger)
 {
 	std::ostringstream oss;
@@ -121,6 +120,11 @@ int main(int argc, char *argv[])
 
     ACS_CHECK_LOGGER;
 
+    // proxy enabling xml file (cl)
+    LoggingProxy* m_logger = new LoggingProxy(5, 4, 8, 0, 0, 5);
+    LoggingProxy::init (m_logger);
+    m_logger->ProcessName(argv[0]);
+
     // First logger
     Logging::Logger::LoggerSmartPtr firstLoggerSmartPtr = getLogger();
     firstLoggerSmartPtr->setName("FirstLogger");
@@ -182,7 +186,7 @@ int main(int argc, char *argv[])
     // Activate statistics for second logger
     secondLoggerSmartPtr->log(Logging::Logger::LM_INFO, "Activate statistics for second logger -----------");
     secondLoggerSmartPtr->stats.configureStatistics("testLoggerStats",false, 3, 1);
-	// wait 2 seconds to force statistics to be calculated
+	// wait 3 seconds to force statistics to be calculated
 	unsigned int microseconds = 3100000;
 	usleep(microseconds);
 	// and send logs to all three loggers
