@@ -462,12 +462,16 @@ class Container(BaseClient, maci__POA.Container, Logging__POA.LoggingConfigurabl
             try:
                 temp[PYCLASS] = temp[EXE].split('.').pop() #get class name
                 temp[PYCLASS] = temp[COMPMODULE].__dict__.get(temp[PYCLASS]) #get class
-		temp[PYREF] = temp[PYCLASS].__new__(temp[PYCLASS]) #create Python object
-                #temp[PYREF] = instance(temp[PYCLASS]) #create Python object
+                try: # First try if it's a Simulator
+		    temp[PYREF] = temp[PYCLASS].__call__(temp[TYPE]) #create Python object
+                except TypeError, e: # When TypeError is thrown, this means that is not a Simulator, let's try like a normal component 
+		    temp[PYREF] = temp[PYCLASS].__new__(temp[PYCLASS]) #create Python object
             except Exception, e:
                 temp[PYCLASS] = temp[COMPMODULE].__dict__.get(temp[PYCLASS]) #get class
-                temp[PYREF] = temp[PYCLASS].__new__(temp[PYCLASS]) #create Python object
-                #temp[PYREF] = instance(temp[PYCLASS]) #create Python object
+                try: # First try if it's a Simulator
+		    temp[PYREF] = temp[PYCLASS].__call__(temp[TYPE]) #create Python object
+                except TypeError, e: # When TypeError is thrown, this means that is not a Simulator, let's try like a normal component
+		    temp[PYREF] = temp[PYCLASS].__new__(temp[PYCLASS]) #create Python object
 
         except (TypeError, ImportError), e:
             e2 = CannotActivateComponentExImpl(exception=e)
@@ -494,7 +498,10 @@ class Container(BaseClient, maci__POA.Container, Logging__POA.LoggingConfigurabl
         #instance(...) does not call the constructor!
         try:
             start = time()
-            temp[PYREF].__init__()
+            if temp[PYREF].__init__.func_code.co_argcount == 2: # First try if it's a Simulator
+                temp[PYREF].__init__(temp[TYPE])
+            else: # It's not the Simulator
+                temp[PYREF].__init__() 
             interval = time() - start
 
             log = LOG_CompAct_Instance_OK()
