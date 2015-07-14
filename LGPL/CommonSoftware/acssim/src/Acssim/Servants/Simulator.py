@@ -143,12 +143,15 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
     '''
     '''
     #------------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self,ir=None):
         '''
         Just call superclass constructors here.
         '''
-        CharacteristicComponent.__init__(self)
-        ContainerServices.__init__(self)
+        if ir != None:
+            CharacteristicComponent.__init__(self)
+            ContainerServices.__init__(self)
+            self.ir = ir
+            BaseSimulator.__init__(self,ir)
         return
     #------------------------------------------------------------------------------
     #--Override ComponentLifecycle methods-----------------------------------------
@@ -159,7 +162,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
         '''
         #we can finally access the IR location and call BaseSimulator's
         #constructor...dynamically changing this object's inheritance
-        BaseSimulator.__init__(self, self.ir, self._get_name())
+        #BaseSimulator.__init__(self, self.ir, self._get_name()) # Don't do it because is done in __init__
 
 #         # hook to call the initialize method from the Simulation Server
 #         simServer = getSimProxy(self._get_name(), self.ir).server_handler
