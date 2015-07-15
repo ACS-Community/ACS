@@ -23,6 +23,7 @@ package alma.acs.logging;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import alma.acs.util.IsoDateFormat;
 import alma.acs.util.StopWatch;
 import alma.maci.loggingconfig.UnnamedLogger;
 import alma.acs.logging.statistics.AcsLoggerStatistics;
+
 import java.util.Iterator;
 import java.util.ArrayList;
 
@@ -473,19 +475,25 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     				// Reset statistics
     				stats.resetStatistics();
 
-    				// Retrive statistics logs
-    				List<String> retrievedStatisticsLogs = new ArrayList<String>();
-    				retrievedStatisticsLogs.clear();
-    				stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
-    				
     				// Print statistics logs
     				AcsLogRecord logItem;
-    				Iterator<String> it = retrievedStatisticsLogs.iterator();
+
+    				Map<String, String> addedData = new HashMap<String, String>();
+    				addedData.put("StatisticsIdentification", stats.getStatisticsIdentification());
+    				addedData.put("LoggerId", getName() );
+    				addedData.put("LastPeriodDuration", String.valueOf(stats.getActualStatisticsPeriod()) );
+    				addedData.put("LastPeriodNumberOfMessages", String.valueOf(stats.getLastPeriodNumberOfMessages()) );
+    				addedData.put("StatisticsGranularity", String.valueOf(stats.getStatisticsGranularity()) );
+    				addedData.put("MessageStatistics", String.valueOf(stats.getMessageStatistics()) );
+    				addedData.put("MessageIncrement", String.valueOf(stats.getMessageIncrement()) );
+    				addedData.put("LastPeriodNumberOfErrorMessages", String.valueOf(stats.getLastPeriodNumberOfLogErrors()) );
+    				addedData.put("ErrorMessageStatistics", String.valueOf(stats.getErrorStatistics()) );
+    				addedData.put("ErrorMessageIncrement", String.valueOf(stats.getErrorIncrement()) );
     				
-    				while (it.hasNext()) {
-    					logItem = createAcsLogRecord(Level.INFO, it.next().toString());
-    					log(logItem);
-    				}
+    				logItem = createAcsLogRecord(Level.INFO, "LOGGING STATISTICS FOR: " + stats.getStatisticsIdentification() + "." + getName() );
+    				logItem.setParameters(new Object[] { addedData });
+    				
+    				log(logItem);
     			}
     		}
         } catch (Exception e) {
@@ -505,19 +513,25 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
     				// Reset statistics
     				stats.resetStatistics();
 
-    				// Retrive statistics logs
-    				List<String> retrievedStatisticsLogs = new ArrayList<String>();
-    				retrievedStatisticsLogs.clear();
-    				stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
-    				
     				// Print statistics logs
     				AcsLogRecord logItem;
-    				Iterator<String> it = retrievedStatisticsLogs.iterator();
+
+    				Map<String, String> addedData = new HashMap<String, String>();
+    				addedData.put("StatisticsIdentification", stats.getStatisticsIdentification());
+    				addedData.put("LoggerId", getName() );
+    				addedData.put("LastPeriodDuration", String.valueOf(stats.getActualStatisticsPeriod()) );
+    				addedData.put("LastPeriodNumberOfMessages", String.valueOf(stats.getLastPeriodNumberOfMessages()) );
+    				addedData.put("StatisticsGranularity", String.valueOf(stats.getStatisticsGranularity()) );
+    				addedData.put("MessageStatistics", String.valueOf(stats.getMessageStatistics()) );
+    				addedData.put("MessageIncrement", String.valueOf(stats.getMessageIncrement()) );
+    				addedData.put("LastPeriodNumberOfErrorMessages", String.valueOf(stats.getLastPeriodNumberOfLogErrors()) );
+    				addedData.put("ErrorMessageStatistics", String.valueOf(stats.getErrorStatistics()) );
+    				addedData.put("ErrorMessageIncrement", String.valueOf(stats.getErrorIncrement()) );
     				
-    				while (it.hasNext()) {
-    					logItem = createAcsLogRecord(Level.INFO, it.next().toString());
-    					log(logItem);
-    				}
+    				logItem = createAcsLogRecord(Level.INFO, "LOGGING STATISTICS FOR: " + stats.getStatisticsIdentification() + "." + getName() );
+    				logItem.setParameters(new Object[] { addedData });
+    				
+    				log(logItem);
     			}
     		}
             System.out.println("CRITICAL LOGGER FAILURE in " + getLoggerName());
@@ -655,19 +669,25 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 			// Reset statistics
 			stats.resetStatistics();
 
-			// Retrieve statistics logs
-			List<String> retrievedStatisticsLogs = new ArrayList<String>();
-			retrievedStatisticsLogs.clear();
-			stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
-				
 			// Print statistics logs
 			AcsLogRecord logItem;
-			Iterator<String> it = retrievedStatisticsLogs.iterator();
-				
-			while (it.hasNext()) {
-				logItem = createAcsLogRecord(Level.INFO, it.next().toString());
-				log(logItem);
-			}
+
+			Map<String, String> addedData = new HashMap<String, String>();
+			addedData.put("StatisticsIdentification", stats.getStatisticsIdentification());
+			addedData.put("LoggerId", getName() );
+			addedData.put("LastPeriodDuration", String.valueOf(stats.getActualStatisticsPeriod()) );
+			addedData.put("LastPeriodNumberOfMessages", String.valueOf(stats.getLastPeriodNumberOfMessages()) );
+			addedData.put("StatisticsGranularity", String.valueOf(stats.getStatisticsGranularity()) );
+			addedData.put("MessageStatistics", String.valueOf(stats.getMessageStatistics()) );
+			addedData.put("MessageIncrement", String.valueOf(stats.getMessageIncrement()) );
+			addedData.put("LastPeriodNumberOfErrorMessages", String.valueOf(stats.getLastPeriodNumberOfLogErrors()) );
+			addedData.put("ErrorMessageStatistics", String.valueOf(stats.getErrorStatistics()) );
+			addedData.put("ErrorMessageIncrement", String.valueOf(stats.getErrorIncrement()) );
+			
+			logItem = createAcsLogRecord(Level.INFO, "LOGGING STATISTICS FOR: " + stats.getStatisticsIdentification() + "." + getName() );
+			logItem.setParameters(new Object[] { addedData });
+			
+			log(logItem);
 		}
     }
 }
