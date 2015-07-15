@@ -61,43 +61,43 @@ EXECUTABLES_L   = 	testLogger testLoggerStats testNoLogging testMacros \
             testAnyLog testAUD_ARR testLog4cpp testIsInitThread testMultiThreads
 
 loggingXMLParserTest_OBJECTS = loggingXMLParserTest
-loggingXMLParserTest_LIBS = logging loggingErrTypes
+loggingXMLParserTest_LIBS = logging
 
 testLogger_OBJECTS = testLogger
-testLogger_LIBS    = logging loggingErrTypes
+testLogger_LIBS    = logging
 
 testLoggerStats_OBJECTS = testLoggerStats
-testLoggerStats_LIBS    = logging loggingErrTypes
+testLoggerStats_LIBS    = logging
 
 testLoggable_OBJECTS = testLoggable
-testLoggable_LIBS    = logging loggingErrTypes
+testLoggable_LIBS    = logging
 
 testGenericLogger_OBJECTS = testGenericLogger
-testGenericLogger_LIBS    = baselogging loggingErrTypes
+testGenericLogger_LIBS    = baselogging
 
 testNoLogging_OBJECTS = testNoLogging
-testNoLogging_LIBS    = logging loggingErrTypes
+testNoLogging_LIBS    = logging
 
 testMacros_OBJECTS	= testMacros
-testMacros_LIBS		= logging loggingErrTypes
+testMacros_LIBS		= logging
 
 testLoggingProxy_OBJECTS= testLoggingProxy
-testLoggingProxy_LIBS	= logging loggingErrTypes
+testLoggingProxy_LIBS	= logging
 
 testAnyLog_OBJECTS = testAnyLog
-testAnyLog_LIBS   = logging loggingErrTypes
+testAnyLog_LIBS   = logging
 
 testAUD_ARR_OBJECTS = testAUD_ARR
-testAUD_ARR_LIBS = logging maciClient loggingErrTypes
+testAUD_ARR_LIBS = logging maciClient
 
 testLog4cpp_OBJECTS = testLog4cpp
-testLog4cpp_LIBS   = logging maciClient acserr loggingErrTypes
+testLog4cpp_LIBS   = logging maciClient acserr
 
 testIsInitThread_OBJECTS= testIsInitThread
-testIsInitThread_LIBS	= logging loggingErrTypes
+testIsInitThread_LIBS	= logging
 
 testMultiThreads_OBJECTS= testMultiThreads
-testMultiThreads_LIBS	= logging loggingErrTypes
+testMultiThreads_LIBS	= logging
 
 #
 # <brief description of xxxxx program>

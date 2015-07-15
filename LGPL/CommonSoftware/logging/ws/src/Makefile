@@ -71,11 +71,11 @@ loggingService_OBJECTS = loggingService loggingACSLogFactory_i \
                          loggingACSStructuredPushSupplierXml loggingACSLog_i \
                          loggingHelper  loggingAcsLogServiceImpl
 
-loggingService_LIBS = logging logging_idlStubs TAO_CosNotification_Serv loggingErrTypes
+loggingService_LIBS = logging logging_idlStubs TAO_CosNotification_Serv
 #loggingService_LDFLAGS= -ggdb
 
 loggingClient_OBJECTS = loggingClient loggingHelper 
-loggingClient_LIBS = logging TAO_CosNotification_Serv loggingErrTypes
+loggingClient_LIBS = logging TAO_CosNotification_Serv
 #loggingClient_LDFLAGS= -ggdb
 
 # <brief description of xxxxx program>
@@ -121,7 +121,14 @@ LIBRARIES_L     =
 
 baselogging_OBJECTS =	loggingBaseLog loggingStatistics loggingHandler loggingLogger \
                         loggingLogTrace loggingGetLogger loggingGenericLogger \
-                        loggingStdoutHandler
+                        loggingStdoutHandler \
+                        loggingLoggingProxy loggingLocalFile loggingXMLElement \
+                        loggingRemoteSyslog loggingLocalSyslog loggingACSLogger loggingLogSvcHandler  \
+						loggingLogThrottle \
+						loggingACSLoggingEvent loggingXmlLayout \
+						loggingStdoutlayout loggingACSCategory \
+						loggingACSRemoteAppender loggingACSHierarchyMaintainer \
+						loggingLog4cpp loggingStopWatch loggingLogLevelDefinition loggingXMLParser
 ##
 ## @todo
 ## -lTAO_PortableServer and acsutil commented out because it makes the container crash on exit
@@ -129,7 +136,7 @@ baselogging_OBJECTS =	loggingBaseLog loggingStatistics loggingHandler loggingLog
 ##
 ##baselogging_LDFLAGS =   -lTAO_PortableServer
 ##baselogging_LIBS =    loki acsutil
-baselogging_LIBS =    acsutil loki loggingErrTypes
+baselogging_LIBS =    acsutil loki log4cpp logging_idlStubs
 baselogging_LDFLAGS = -ggdb
 baselogging_CFLAGS  = -DLOGGINGBASE_BUILD_DLL
 logging_OBJECTS 	=	logging loggingLoggable loggingXMLElement loggingXMLParser \
@@ -142,7 +149,7 @@ logging_OBJECTS 	=	logging loggingLoggable loggingXMLElement loggingXMLParser \
 						loggingACSRemoteAppender loggingACSHierarchyMaintainer \
 						loggingLog4cpp loggingStopWatch
 						
-logging_LIBS    =	logging_idlStubs acsutil acscommonStubs baselogging log4cpp pthread rt loggingErrTypes
+logging_LIBS    =	logging_idlStubs acsutil acscommonStubs baselogging log4cpp pthread rt
 logging_LDFLAGS =	-gdb
 logging_CFLAGS  = -DLOGGING_BUILD_DLL
 

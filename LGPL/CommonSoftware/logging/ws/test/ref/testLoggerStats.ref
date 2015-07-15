@@ -30,13 +30,13 @@
 1 - ----------T--:--:--.--- [ThirdLogger - ] Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
 1 - ----------T--:--:--.--- [ThirdLogger - ] Testing LM_TRACE message: Messages indicating function-calling sequence
 1 - ----------T--:--:--.--- [ThirdLogger - ] Testing LM_WARNING message: Warning messages
+1 - ----------T--:--:--.--- [ThirdLogger - ] Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
+1 - ----------T--:--:--.--- [ThirdLogger - ] Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
 1 - ----------T--:--:--.--- [GlobalLogger - TEST_MACROS] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - TEST_MACROS] Exiting...
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] LM_RUNTIME_CONTEXT inside TEST_MACROS
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] LM_RUNTIME_CONTEXT outside TEST_MACROS
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] LM_SOURCE_INFO inside TEST_MACROS
-1 - ----------T--:--:--.--- [ThirdLogger - ] Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
-1 - ----------T--:--:--.--- [ThirdLogger - ] Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
 1 - Log batch for logger [GeneralLogger]. USING ACS MACROS.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Test ACS_SHORT_LOG with LM_INFO
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] 
@@ -46,20 +46,20 @@
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] Test of LM_NOTICE log
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] Test of LM_TRACE log
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] Test of LM_WARNING log
-1 - ----------T--:--:--.--- [GlobalLogger - ] Activate statistics for first logger -----------
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] Test of ACS_DEBUG macro
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] Test of ACS_DEBUG_PARAM macro with param: param1
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] Test of LM_ALERT log
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] Test of LM_CRITICAL log
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] Test of LM_EMERGENCY log
 1 - ----------T--:--:--.--- [GlobalLogger - void logBatchUsingMacrosGeneralLogger()] Test of LM_ERROR log
+1 - ----------T--:--:--.--- [GlobalLogger - ] Activate statistics for first logger -----------
 1 - ----------T--:--:--.--- [GlobalLogger - ] Log batch for logger [FirstLogger]. USING log() functions.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
-1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_ERROR message: Error messages
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_INFO message: Informational messages
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_TRACE message: Messages indicating function-calling sequence
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_WARNING message: Warning messages
+1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_ERROR message: Error messages
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_CRITICAL message: Critical conditions, such as hard device errors
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_EMERGENCY message: A panic condition.  This is normally broadcast to all users
@@ -114,14 +114,14 @@
 1 - ----------T--:--:--.--- [StaticMethodLogger - void logBatchUsingMacrosStaticLogger()] Test of ACS_STATIC_DEBUG macro
 1 - ----------T--:--:--.--- [StaticMethodLogger - void logBatchUsingMacrosStaticLogger()] Test of ACS_STATIC_DEBUG_PARAM macro with param: param2
 1 - ----------T--:--:--.--- [GlobalLogger - ] FIRST LOGGER STATS ACTIVE
-1 - ----------T--:--:--.--- [GlobalLogger - virtual void Logging::Logger::log(const Logging::BaseLog::LogRecord&)] Message containing logging statistics (type=900998, code=0) ErrorMessageIncrement="nan" MessageIncrement="inf" LastPeriodNumberOfErrorMessages="0" LastPeriodNumberOfMessages="30" LastPeriodDuration="X" ErrorMessageStatistics="X" MessageStatistics="X" StatisticsGranularity="1" LoggerId="FirstLogger" StatisticsIdentification="testLoggerStats"
+1 - ----------T--:--:--.--- [GlobalLogger - virtual void Logging::Logger::log(const Logging::BaseLog::LogRecord&)] LOGGING STATISTICS FOR: testLoggerStats.FirstLogger ErrorMessageIncrement="nan" MessageIncrement="inf" LastPeriodNumberOfErrorMessages="0" LastPeriodNumberOfMessages="30" LastPeriodDuration="X" ErrorMessageStatistics="X" MessageStatistics="X" StatisticsGranularity="1" LoggerId="FirstLogger" StatisticsIdentification="testLoggerStats"
 1 - ----------T--:--:--.--- [SecondLogger - ] SECOND LOGGER STATS ACTIVE
-1 - ----------T--:--:--.--- [GlobalLogger - virtual void Logging::Logger::log(const Logging::BaseLog::LogRecord&)] Message containing logging statistics (type=900998, code=0) ErrorMessageIncrement="nan" MessageIncrement="inf" LastPeriodNumberOfErrorMessages="0" LastPeriodNumberOfMessages="1" LastPeriodDuration="X" ErrorMessageStatistics="X" MessageStatistics="X" StatisticsGranularity="1" LoggerId="SecondLogger" StatisticsIdentification="testLoggerStats"
 1 - ----------T--:--:--.--- [GlobalLogger - ] Log batch for logger [FirstLogger]. USING log() functions.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_DEBUG message: Messages that contain information normally of use only when debugging a program
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_INFO message: Informational messages
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_NOTICE message: Conditions that are not error conditions, but that may require
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_TRACE message: Messages indicating function-calling sequence
+1 - ----------T--:--:--.--- [SecondLogger - virtual void Logging::Logger::log(const Logging::BaseLog::LogRecord&)] LOGGING STATISTICS FOR: testLoggerStats.SecondLogger ErrorMessageIncrement="nan" MessageIncrement="inf" LastPeriodNumberOfErrorMessages="0" LastPeriodNumberOfMessages="1" LastPeriodDuration="X" ErrorMessageStatistics="X" MessageStatistics="X" StatisticsGranularity="1" LoggerId="SecondLogger" StatisticsIdentification="testLoggerStats"
 1 - ----------T--:--:--.--- [ThirdLogger - ] THIRD LOGGER STATS INACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_ALERT message: A condition that should be corrected immediately, such as a corrupted system database
 1 - ----------T--:--:--.--- [GlobalLogger - ] Testing LM_CRITICAL message: Critical conditions, such as hard device errors
@@ -184,10 +184,10 @@
 1 - ----------T--:--:--.--- [StaticMethodLogger - void logBatchUsingMacrosStaticLogger()] STATIC_LOG_TO_SCIENCE
 1 - ----------T--:--:--.--- [StaticMethodLogger - void logBatchUsingMacrosStaticLogger()] STATIC_LOG_TO_SCILOG
 1 - Log batch for logger [StaticLogger]. USING ACS MACROS.
-1 - ----------T--:--:--.--- [GlobalLogger - virtual Logging::Logger::~Logger()] Message containing logging statistics (type=900998, code=0) ErrorMessageIncrement="nan" MessageIncrement="1900" LastPeriodNumberOfErrorMessages="0" LastPeriodNumberOfMessages="20" LastPeriodDuration="X" ErrorMessageStatistics="X" MessageStatistics="X" StatisticsGranularity="1" LoggerId="SecondLogger" StatisticsIdentification="testLoggerStats"
+1 - ----------T--:--:--.--- [SecondLogger - virtual Logging::Logger::~Logger()] LOGGING STATISTICS FOR: testLoggerStats.SecondLogger ErrorMessageIncrement="nan" MessageIncrement="2000" LastPeriodNumberOfErrorMessages="0" LastPeriodNumberOfMessages="21" LastPeriodDuration="X" ErrorMessageStatistics="X" MessageStatistics="X" StatisticsGranularity="1" LoggerId="SecondLogger" StatisticsIdentification="testLoggerStats"
 1 - ----------T--:--:--.--- [StaticMethodLogger - ] Test ACS_STATIC_SHORT_LOG with LM_INFO
 1 - ----------T--:--:--.--- [StaticMethodLogger - void logBatchUsingMacrosStaticLogger()] 
 1 - ----------T--:--:--.--- [StaticMethodLogger - void logBatchUsingMacrosStaticLogger()] Test of ACS_STATIC_DEBUG macro
 1 - ----------T--:--:--.--- [StaticMethodLogger - void logBatchUsingMacrosStaticLogger()] Test of ACS_STATIC_DEBUG_PARAM macro with param: param2
-1 - ----------T--:--:--.--- [GlobalLogger - virtual Logging::Logger::~Logger()] Message containing logging statistics (type=900998, code=0) ErrorMessageIncrement="nan" MessageIncrement="-20" LastPeriodNumberOfErrorMessages="0" LastPeriodNumberOfMessages="24" LastPeriodDuration="X" ErrorMessageStatistics="X" MessageStatistics="X" StatisticsGranularity="1" LoggerId="FirstLogger" StatisticsIdentification="testLoggerStats"
-1 - ----------T--:--:--.--- [GlobalLogger - virtual Logging::Logger::~Logger()] Message containing logging statistics (type=900998, code=0) ErrorMessageIncrement="nan" MessageIncrement="inf" LastPeriodNumberOfErrorMessages="0" LastPeriodNumberOfMessages="8" LastPeriodDuration="X" ErrorMessageStatistics="X" MessageStatistics="X" StatisticsGranularity="1" LoggerId="StaticMethodLogger" StatisticsIdentification="testLoggerStats"
+1 - ----------T--:--:--.--- [GlobalLogger - virtual Logging::Logger::~Logger()] LOGGING STATISTICS FOR: testLoggerStats.FirstLogger ErrorMessageIncrement="nan" MessageIncrement="-26.6667" LastPeriodNumberOfErrorMessages="0" LastPeriodNumberOfMessages="22" LastPeriodDuration="X" ErrorMessageStatistics="X" MessageStatistics="X" StatisticsGranularity="1" LoggerId="FirstLogger" StatisticsIdentification="testLoggerStats"
+1 - ----------T--:--:--.--- [StaticMethodLogger - virtual Logging::Logger::~Logger()] LOGGING STATISTICS FOR: testLoggerStats.StaticMethodLogger ErrorMessageIncrement="nan" MessageIncrement="inf" LastPeriodNumberOfErrorMessages="0" LastPeriodNumberOfMessages="8" LastPeriodDuration="X" ErrorMessageStatistics="X" MessageStatistics="X" StatisticsGranularity="1" LoggerId="StaticMethodLogger" StatisticsIdentification="testLoggerStats"
