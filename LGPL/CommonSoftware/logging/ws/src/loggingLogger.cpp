@@ -572,24 +572,57 @@ namespace Logging {
 						// Reset statistics
 						stats.resetStatistics();
 
-						// Retrive statistics logs
-						std::list<std::string> retrievedStatisticsLogs;
-						retrievedStatisticsLogs.clear();
-						stats.retrieveStatisticsLogs(retrievedStatisticsLogs, getName() );
-
 						// Print statistics logs
 						LogRecord logItem;
-						for (std::list<std::string>::iterator it = retrievedStatisticsLogs.begin(); it != retrievedStatisticsLogs.end(); it++)
-						{
-							logItem.priority = LM_INFO;
-							logItem.file = __FILE__;
-							logItem.line = __LINE__;
-							logItem.method = __PRETTY_FUNCTION__;
-							logItem.timeStamp = getTimeStamp();
-							logItem.message = *it;
-							log(logItem);
-						}
 
+						// Temporal streamer for message construction
+						std::ostringstream oss;
+
+						// Generate statistics log
+						logItem.priority = LM_INFO;
+						logItem.file = __FILE__;
+						logItem.line = __LINE__;
+						logItem.method = __PRETTY_FUNCTION__;
+						logItem.timeStamp = getTimeStamp();
+						oss.clear();
+						oss.str(std::string());
+						oss << "LOGGING STATISTICS FOR: " << stats.getStatisticsIdentification().c_str() << "."<< getName().c_str();
+						logItem.message = oss.str();
+						LoggingProxy::AddData("StatisticsIdentification",stats.getStatisticsIdentification().c_str());
+						LoggingProxy::AddData("LoggerId",getName().c_str());
+						oss.clear();
+						oss.str(std::string());
+						oss << stats.getActualStatisticsPeriod();
+						LoggingProxy::AddData("LastPeriodDuration", oss.str().c_str() );
+						oss.clear();
+						oss.str(std::string());
+						oss << stats.getLastPeriodNumberOfMessages();
+						LoggingProxy::AddData("LastPeriodNumberOfMessages", oss.str().c_str());
+						oss.clear();
+						oss.str(std::string());
+						oss << stats.getStatisticsGranularity();
+						LoggingProxy::AddData("StatisticsGranularity", oss.str().c_str());
+						oss.clear();
+						oss.str(std::string());
+						oss << stats.getMessageStatistics();
+						LoggingProxy::AddData("MessageStatistics", oss.str().c_str());
+						oss.clear();
+						oss.str(std::string());
+						oss << stats.getMessageIncrement();
+						LoggingProxy::AddData("MessageIncrement", oss.str().c_str());
+						oss.clear();
+						oss.str(std::string());
+						oss << stats.getLastPeriodNumberOfLogErrors();
+						LoggingProxy::AddData("LastPeriodNumberOfErrorMessages", oss.str().c_str());
+						oss.clear();
+						oss.str(std::string());
+						oss << stats.getErrorStatistics();
+						LoggingProxy::AddData("ErrorMessageStatistics", oss.str().c_str());
+						oss.clear();
+						oss.str(std::string());
+						oss << stats.getErrorIncrement();
+						LoggingProxy::AddData("ErrorMessageIncrement", oss.str().c_str());
+						log(logItem);
 					}
 				}
 
