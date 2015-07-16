@@ -76,11 +76,11 @@ class LoggingStatistics(object):
         self._statisticsIdentification = 'Undefined'
         
         # Statistics calculation initialisations
-        self.messageStatistics = 0.0
-        self.errorStatistics = 0.0
-        self.messageIncrement = 0.0
-        self.errorIncrement = 0.0
-        self.actualStatisticsPeriod = 0.0
+        self._messageStatistics = 0.0
+        self._errorStatistics = 0.0
+        self._messageIncrement = 0.0
+        self._errorIncrement = 0.0
+        self._actualStatisticsPeriod = 0.0
     #------------------------------------------------------------------------ 
 
     # Getter for statisticsIdentification
@@ -147,6 +147,18 @@ class LoggingStatistics(object):
     def setLastPeriodNumberOfLogErrors(self, value):
         self._lastPeriodNumberOfLogErrors = value 
 
+    # Statistics calculation methods
+    def getActualStatisticsPeriod(self):
+        return self._actualStatisticsPeriod
+    def getMessageStatistics(self):
+        return self._messageStatistics
+    def getErrorStatistics(self):
+        return self._errorStatistics
+    def getMessageIncrement(self):
+        return self._messageIncrement
+    def getErrorIncrement(self):
+        return self._errorIncrement
+
     #------------------------------------------------------------------------
 
     def calculateLoggingStatistics(self):
@@ -161,21 +173,21 @@ class LoggingStatistics(object):
         '''
         
         # Calculate actual statistics period
-        self.actualStatisticsPeriod = (time.time() - self.getLastStatisticsRepportTime())
+        self._actualStatisticsPeriod = (time.time() - self.getLastStatisticsRepportTime())
 
         # Calculate basic statistics
-        self.messageStatistics = (self.getAccumulatedNumberOfMessages() * self.getStatisticsGranularity()) / self.actualStatisticsPeriod
-        self.errorStatistics = (self.getAccumulatedNumberOfLogErrors() * self.getStatisticsGranularity()) /  self.actualStatisticsPeriod
+        self._messageStatistics = (self.getAccumulatedNumberOfMessages() * self.getStatisticsGranularity()) / self._actualStatisticsPeriod
+        self._errorStatistics = (self.getAccumulatedNumberOfLogErrors() * self.getStatisticsGranularity()) /  self._actualStatisticsPeriod
 
         # Calculate variations
         if self.getLastPeriodNumberOfMessages() != 0:
-            self.messageIncrement = (self.getAccumulatedNumberOfMessages() - self.getLastPeriodNumberOfMessages() ) * (100 / self.getLastPeriodNumberOfMessages() )
+            self._messageIncrement = (self.getAccumulatedNumberOfMessages() - self.getLastPeriodNumberOfMessages() ) * (100 / self.getLastPeriodNumberOfMessages() )
         else:
-            self.messageIncrement = 0
+            self._messageIncrement = 0
         if self.getLastPeriodNumberOfLogErrors() != 0:
-            self.errorIncrement= (self.getAccumulatedNumberOfLogErrors() - self.getLastPeriodNumberOfLogErrors() ) * (100 / self.getLastPeriodNumberOfLogErrors() )
+            self._errorIncrement= (self.getAccumulatedNumberOfLogErrors() - self.getLastPeriodNumberOfLogErrors() ) * (100 / self.getLastPeriodNumberOfLogErrors() )
         else:
-            self.errorIncrement = 0
+            self._errorIncrement = 0
                 
     #------------------------------------------------------------------------
 
@@ -290,12 +302,12 @@ class LoggingStatistics(object):
 
         # Generate and store log for messages statistics
         logMsg = "Number of messages per " + repr(self.getStatisticsGranularity()) + " second(s)" + \
-            " during last " + repr(self.actualStatisticsPeriod) + " seconds = " + \
-            repr(self.messageStatistics)
+            " during last " + repr(self._actualStatisticsPeriod) + " seconds = " + \
+            repr(self._messageStatistics)
         statisticsLogList.append (logMsg)
 
         # Generate and store log for messages variability
-        logMsg = "Increment of messages from last period: " + repr(self.messageIncrement) + "%"
+        logMsg = "Increment of messages from last period: " + repr(self._messageIncrement) + "%"
         statisticsLogList.append (logMsg)
 
         # Generate and store log for number of errors
@@ -304,12 +316,12 @@ class LoggingStatistics(object):
 
         # Generate and store log for errors statistics
         logMsg = "Number of errors per " + repr(self.getStatisticsGranularity()) + " second(s)" \
-            + " during last " + repr(self.actualStatisticsPeriod) + " seconds = " \
-            + repr(self.errorStatistics)
+            + " during last " + repr(self._actualStatisticsPeriod) + " seconds = " \
+            + repr(self._errorStatistics)
         statisticsLogList.append (logMsg)
 
         # Generate and store log for errors variability
-        logMsg = "Increment of logging errors from last period: " + repr(self.errorIncrement) + "%"
+        logMsg = "Increment of logging errors from last period: " + repr(self._errorIncrement) + "%"
         statisticsLogList.append (logMsg)
 
         # Generate and store last line log: Separator
