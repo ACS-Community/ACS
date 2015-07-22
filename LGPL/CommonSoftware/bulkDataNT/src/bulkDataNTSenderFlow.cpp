@@ -128,6 +128,21 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+
+	// Ensure the stopSend has been invoked to left the receiver in the
+	// proper state to get another block of data
+	if (currentState_m==DataRcvState) {
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "BulkDataNTSenderFlow %s did not send stopData to the receiver",flowName_m.c_str()));
+		try {
+			this->stopSend();
+		} catch (StopSendErrorExImpl &ssEx) {
+			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Error in flow %s while trying to force a stopSend",flowName_m.c_str()));
+			ssEx.log();
+		} catch (...) {
+			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Generic error in flow %s while trying to force a stopSend",flowName_m.c_str()));
+		}
+	}
+
 	DDS::ReturnCode_t ret;
 	std::string streamName = senderStream_m->getName();
 	// no matter what happen we remove flow from the map

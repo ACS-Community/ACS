@@ -25,7 +25,7 @@
 
 from threading import Condition 
 
-class ContainerActivationMap(object):
+class ContainerActivationMap:
     '''
     ContainerActivationMap remembers which components the container is 
     activating/deactivating.

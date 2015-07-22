@@ -48,7 +48,7 @@ import CORBA
 #--GLOBALS---------------------------------------------------------------------
 __revision__ = "@(#) $Id$"
 #------------------------------------------------------------------------------
-class BehaviorProxy(object):
+class BehaviorProxy:
     '''
     Class BehaviorProxy is a baseclass which describes simulated components.
     '''

@@ -57,7 +57,7 @@ import exceptions
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-class ComponentLifecycle(object):
+class ComponentLifecycle:
     '''
     Class ComponentLifecycle is provided so that the developer does not have to
     expose startup/shutdown methods in an IDL interface for their component.

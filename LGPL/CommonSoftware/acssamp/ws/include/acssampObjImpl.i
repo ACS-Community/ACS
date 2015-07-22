@@ -371,10 +371,11 @@ void ACSSampObjImpl<ACS_SAMP_TL>::destroy()
 	if (!BACI_CORBA::DestroyCORBAObject(reference_p))
 	    {
 	    ACS_LOG(LM_RUNTIME_CONTEXT, "acssamp::ACSSampObjImpl::destroy",
-		    (LM_ERROR, "Failed to destroy CORBA object '%s', controlLoop_p->getName()"));
+		    (LM_ERROR, "Failed to destroy CORBA object '%s', controlLoop_p->getName().c_str()"));
 	    }
 	else
 	    {
+            CORBA::release(reference_p);
 	    _remove_ref();
 	    //delete this;
 	    }

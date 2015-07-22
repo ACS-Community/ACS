@@ -133,7 +133,7 @@ class CBvoid(ACS__POA.CBvoid):
         
         return TRUE
 #------------------------------------------------------------------------------
-class BaseValueCB(object):
+class BaseValueCB:
     '''
     This is the baseclass for all CB classes which use actual values (i.e.,
     not void).

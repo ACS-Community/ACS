@@ -51,8 +51,8 @@ void ReconnectionCallback::init( CORBA::ORB_ptr orb_mp,
         callback = NotifyExt::ReconnectionCallback::_narrow(obj);
    }
    else if (services_ != NULL){
-      callback = NotifyExt::ReconnectionCallback::_narrow(
-            services_->activateOffShoot(this));
+      ACS::OffShoot_var shoot = services_->activateOffShoot(this);
+      callback = NotifyExt::ReconnectionCallback::_narrow(shoot.in());
    }
    else
       return;

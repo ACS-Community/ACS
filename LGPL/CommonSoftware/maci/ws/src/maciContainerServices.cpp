@@ -900,9 +900,10 @@ void MACIContainerServices::deactivateOffShoot(PortableServer::Servant cbServant
 	}
 
 	// Deactivate the servant
-	PortableServer::ObjectId* id = m_offShootPOA->servant_to_id(cbServant);
+	PortableServer::ObjectId_var id;
+	id = m_offShootPOA->servant_to_id(cbServant);
 
-	m_offShootPOA->deactivate_object(*id);
+	m_offShootPOA->deactivate_object(id.in());
 }
 
 ComponentStateManager*
