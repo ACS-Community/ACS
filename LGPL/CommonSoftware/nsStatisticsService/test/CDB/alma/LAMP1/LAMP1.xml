@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Example Configuration Database Entry for a LAMP
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<LAMP xmlns="urn:schemas-cosylab-com:LAMP:1.0"
+             xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+			 xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <brightness description="brightness" units="%" min_step="1.0"
+  min_value="0.0" max_value="100"/>
+</LAMP>
+

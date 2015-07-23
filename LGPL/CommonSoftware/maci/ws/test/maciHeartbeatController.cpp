@@ -93,7 +93,7 @@ HeartbeatHandler::handle_timeout (const ACE_Time_Value &currentTime,
     {
 	m_failureCount = m_failureLimit;
 	ACS_DEBUG_PARAM("maci::HeartbeatHandler::handle_timeout", "Failed to connect to the client: %d.", (CORBA::ULong)m_handle);
-	ACE_PRINT_EXCEPTION(ex, "Exception occured while connecting to the client:");
+	ex._tao_print_exception( "Exception occured while connecting to the client:");
     }
 
     if (m_failureCount >= m_failureLimit)
@@ -187,7 +187,7 @@ HeartbeatInitializationHandler::handle_timeout (const ACE_Time_Value &currentTim
 	catch( CORBA::Exception &ex )
 	  {
 	    ACS_DEBUG("maci::HeartbeatInitializationHandler::handle_timeout", "Exception occured while setting PolicyCurrent.");
-	    ACE_PRINT_EXCEPTION(ex, "Exception occured while setting PolicyCurrent:");
+	    ex._tao_print_exception("Exception occured while setting PolicyCurrent:");
 	  }
 
       }

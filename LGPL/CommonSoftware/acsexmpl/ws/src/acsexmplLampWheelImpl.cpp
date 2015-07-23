@@ -38,7 +38,6 @@
  */
 const static int MOVE_ACTION  = 0;
 
-ACE_RCSID(acsexmpl, acsexmplLampWheelImpl, "$Id: acsexmplLampWheelImpl.cpp,v 1.21 2008/10/09 08:41:11 cparedes Exp $")
 
 using namespace baci;
 

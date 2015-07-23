@@ -35,7 +35,6 @@
 #include "baci.h"
 
 
-ACE_RCSID(baci, baci, "$Id: baci.cpp,v 1.106 2006/09/01 02:20:54 cparedes Exp $");
 
 namespace baci {
 

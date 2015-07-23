@@ -41,6 +41,9 @@
       </xs:element>
       
       <xs:element name="testBooleanVar" type="baci:ROboolean" />
+      <xs:element name="testAnotherBooleanVar" type="baci:ROboolean" />
+      <xs:element name="testBooleanNoAlarmsVar" type="baci:ROboolean" />
+      <xs:element name="testBooleanSeqVar" type="baci:RObooleanSeq" />
       
     </xs:sequence>
   </xs:complexType>

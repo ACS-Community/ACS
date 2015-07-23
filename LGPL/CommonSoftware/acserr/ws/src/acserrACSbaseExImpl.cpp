@@ -23,9 +23,6 @@
 * bjeram  2004-02-17  created 
 */
 
-static char *rcsId="@(#) $Id: acserrACSbaseExImpl.cpp,v 1.9 2011/04/05 10:35:07 bjeram Exp $"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
-
 #include "acserrACSbaseExImpl.h"
 
 using namespace ACSErr;

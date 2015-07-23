@@ -33,7 +33,6 @@
 #include "baciDB.h"
 
 
-ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.13 2011/03/30 17:57:23 tstaig Exp $");
 
 namespace baci {
 
@@ -90,8 +89,10 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
 
   try
      {
-	  archiveMechanism = dao->get_string("archive_mechanism");
-	  archiveSuppress = dao->get_string("archive_suppress");
+	  CORBA::String_var archMechanism = dao->get_string("archive_mechanism");
+	  archiveMechanism = archMechanism.in();
+	  CORBA::String_var archSuppress = dao->get_string("archive_suppress");
+	  archiveSuppress = archSuppress.in();
      }
   catch (...)
      {

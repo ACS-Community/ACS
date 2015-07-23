@@ -1,12 +1,10 @@
 package alma.acs.logclient;
 
 import com.cosylab.logging.engine.LogEngineException;
-
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
-
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
 
@@ -114,8 +112,8 @@ public class LogListener implements
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener
 	 */
 	public void xmlEntryReceived(String str) {
-		if (str.indexOf("testLTSClientpy")>=0 || 
-			str.indexOf("alma.acs.loggingtstest.LtsTestClient")>=0 ||
+		if (str.indexOf("../bin/testLTSClientpy")>=0 || 
+			str.indexOf("LtsTestClient.java")>=0 ||
 			str.indexOf("testLTSClient.cpp")>=0) {
 	//	if (str.indexOf("testLTSClient")>=0){
 			System.out.println("RAW log: "+str);
@@ -146,7 +144,7 @@ public class LogListener implements
 		}
 		if (
 				fileField.compareTo("../bin/testLTSClientpy")==0 ||
-				fileField.compareTo("alma.acs.loggingtstest.LtsTestClient")==0 ||
+				fileField.compareTo("LtsTestClient.java")==0 ||
 				fileField.compareTo("testLTSClient.cpp")==0) {
 		//if(log.getField(ILogEntry.FIELD_FILE).toString().indexOf("testLTSClient")>=0){
 			System.out.println("Log received: "+log.toString());
@@ -158,6 +156,6 @@ public class LogListener implements
 	 *
 	 */
 	public void disconnet() {
-		engine.disconnect();
+		engine.close(true);
 	}
 }

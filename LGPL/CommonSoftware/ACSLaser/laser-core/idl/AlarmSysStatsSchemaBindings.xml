@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<EntitybuilderSettings>
+
+    <EntitySchema schemaName="AlarmSystemStats.xsd" xmlNamespace="ACS/AlarmSystemStatistics"/>
+    <XmlNamespace2JPackage xmlNamespace="ACS/AlarmSystemStatistics" jPackage="alma.alarmsystem.statistics.generated"/>
+
+</EntitybuilderSettings>
+

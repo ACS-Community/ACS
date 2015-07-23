@@ -358,7 +358,7 @@ INTROOT)
         chmod 775 $ROOT_NAME/$dir
     done
     echo "\n Remember to define \$INTROOT to make this area accessible.\n"
-    echo "[Jira] [isInCvs: yes/no] [$USER] [comments:] [`date "+%Y/%b/%d"`]" >> $ROOT_NAME/responsible
+    echo "[Jira] [isInRepository: yes/no] [$USER] [comments:] [`date "+%Y/%b/%d"`]" >> $ROOT_NAME/responsible
     ;;
 
 ACSROOT)

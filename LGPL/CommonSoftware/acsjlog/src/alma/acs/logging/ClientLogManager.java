@@ -33,12 +33,15 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.ORBPackage.InvalidName;
+import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.DsLogAdmin.LogOperations;
 import org.slf4j.impl.HibernateLoggerHelper;
 import org.slf4j.impl.JacorbLoggerHelper;
 
 import si.ijs.maci.Manager;
-
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.Logging.AcsLogServiceHelper;
 import alma.Logging.AcsLogServiceOperations;
@@ -51,6 +54,7 @@ import alma.acs.logging.formatters.AcsBinLogFormatter;
 import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.util.ACSPorts;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
@@ -499,35 +503,45 @@ public class ClientLogManager implements LogConfigSubscriber
         }
         return loggerInfo.logger;
     }
-   
 
-    
-	/**
-	 * Enables loggers to send log records to the central ACS logger service.
-     * Tries to connect to the log service using the supplied ACS manager.
-     * As long as this connection fails, this method can sleep for 10 seconds and then try to connect again,
-     * if the parameter <code>retry</code> is <code>true</code>. Total retries are limited to 5,
-     * to detect a permanent problem before the log queue overflows.
-     * <p>
-     * Execution time can be significant, so consider calling this method in a separate thread 
-     * (which has no negative effect on the logging since all log records are cached and automatically sent off
-     * once the log service is available). 
-     * Use a daemon thread to avoid shutdown problems if this method still hangs in the login loop.
-     * <p>
-     * When the log service is obtained, the log queue used for remote logging will be flushed periodically 
-     * to the log service unless an otherwise triggered flush has done this already. 
-     * The default period is 10 seconds, but can be overridden in the CDB. <br>
+    /**
+     * Initialize the remote logging for a ACS service.
+     * <P>
+     * The implementation of this method is the same of  
+     * {@link #initRemoteLogging(ORB, Manager, int, boolean)} but the reference to the log service 
+     * is read from the naming service instead of being asked to the Manager. 
+     * <P>
+     * <B>Note</B>: this method must be called <EM>only</EM> by ACS services that starts before the manager.
+     * ACS services, in fact, do not log into the manager and therefore do not have a handle.
+     * <BR>Other ACS tools like containers and component clients must use {@link #initRemoteLogging(ORB, Manager, int, boolean)}
+     * to properly initialize the remote logging. 
      * 
-	 * @param orb  the ORB used in this JVM
-	 * @param manager  the ACS manager
-	 * @param managerHandle  handle assigned by the ACS Manager for this client
-     * @param retry  if true, a failing connection to the log service will trigger up to 5 other attempts, every 10 seconds.
-     * @return true if remote logging was initialized successfully
-     * @see #shutdown(boolean)
-	 */
-	public boolean initRemoteLogging(ORB orb, Manager manager, int managerHandle, boolean retry)
-	{
-        if (logDispatcher != null) {
+     * @param orb The not <code>null</code> ORB
+     * @param retry   if <code>true</code>, a failing connection to the log service will trigger up to 5 other attempts, every 10 seconds.
+     * @return <code>true</code> if remote logging was initialized successfully
+     * @see #initRemoteLogging(ORB, Manager, int, boolean), {@link #internalInitRemoteLogging(ORB, Manager, int, boolean)}
+     */
+    public boolean initRemoteLoggingForService(ORB orb, boolean retry) {
+    	return initRemoteLogging(orb, null, 0, retry);
+    }
+    
+    /**
+     * {@link #initRemoteLogging(ORB, Manager, int, boolean)} and {@link #initRemoteLoggingForService(ORB, boolean)}
+     * delegate to this method for the initialization of the remote logging.
+     * <P>
+     * If the passed manager is <code>null</code>, <code>internalInitRemoteLogging</code> gets
+     * the log service reference from the naming service; if the manager is not <code>null</code>,
+     * it asked the manager for the reference to the log service.
+     * 
+     * @param orb The not <code>null</code> ORB
+     * @param manager the ACS manager (it can be <code>null</code>)
+     * @param managerHandle the handle assigned by the ACS Manager for this client;
+     *                      ignored if the manager is <code>null</code>
+     * @param retry if <code>true</code>, a failing connection to the log service will trigger up to 5 other attempts, every 10 seconds.
+     * @return <code>true</code> if remote logging was initialized successfully
+     */
+    private boolean internalInitRemoteLogging(ORB orb, Manager manager, int managerHandle, boolean retry) {
+    	if (logDispatcher != null) {
             System.out.println("Ignoring call to ClientLogManager#init: already initialized!");
             // todo: or is there a case where we want to retrieve the log service again? 
             return false;
@@ -537,10 +551,13 @@ public class ClientLogManager implements LogConfigSubscriber
             System.out.println("Given ORB is null.");
             return false;
         }
-		if (manager == null || managerHandle <= 0) {
-            System.out.println("can't connect to log service: manager is null, or invalid handle " + managerHandle);
+        if (manager == null) {
+            System.out.println("Will retrieve the log service reference from the naming service..." );
+		} else if (managerHandle<=0) {
+        	System.out.println("can't connect to log service: invalid handle " + managerHandle);
             return false;
-		}
+        }
+		
         AcsLogServiceOperations logService = null;
         int count = 0;
         String errMsg;
@@ -551,7 +568,11 @@ public class ClientLogManager implements LogConfigSubscriber
                 // normally there will be a remote handler and log queue already, which has captured all log records produced so far.
                 // However, if suppressRemoteLogging was called, we need to set up remote logging from scratch. 
                 prepareRemoteLogging();
-                logService = getLogService(manager, managerHandle);
+                if (manager!=null) {
+                	logService = getLogService(manager, managerHandle);
+                } else {
+                	logService=getLogServiceFromNameSarvice(orb);
+                }
                 if (logService == null) {
                     errMsg = "Failed to obtain central log service '" + logServiceName + "': reference is 'null'. ";
                 }
@@ -615,6 +636,34 @@ public class ClientLogManager implements LogConfigSubscriber
         } while (retry && count <= 5 && errMsg != null);
         
         return (errMsg == null);
+    }
+   
+	/**
+	 * Enables loggers to send log records to the central ACS logger service.
+     * Tries to connect to the log service using the supplied ACS manager.
+     * As long as this connection fails, this method can sleep for 10 seconds and then try to connect again,
+     * if the parameter <code>retry</code> is <code>true</code>. Total retries are limited to 5,
+     * to detect a permanent problem before the log queue overflows.
+     * <p>
+     * Execution time can be significant, so consider calling this method in a separate thread 
+     * (which has no negative effect on the logging since all log records are cached and automatically sent off
+     * once the log service is available). 
+     * Use a daemon thread to avoid shutdown problems if this method still hangs in the login loop.
+     * <p>
+     * When the log service is obtained, the log queue used for remote logging will be flushed periodically 
+     * to the log service unless an otherwise triggered flush has done this already. 
+     * The default period is 10 seconds, but can be overridden in the CDB. <br>
+     * 
+	 * @param orb  the ORB used in this JVM
+	 * @param manager  the ACS manager
+	 * @param managerHandle  handle assigned by the ACS Manager for this client
+     * @param retry  if <code>true</code>, a failing connection to the log service will trigger up to 5 other attempts, every 10 seconds.
+     * @return <code>true</code> if remote logging was initialized successfully
+     * @see #shutdown(boolean)
+	 */
+	public boolean initRemoteLogging(ORB orb, Manager manager, int managerHandle, boolean retry)
+	{
+		return internalInitRemoteLogging(orb, manager, managerHandle, retry);
 	}
 
 	/**
@@ -625,6 +674,40 @@ public class ClientLogManager implements LogConfigSubscriber
 	 */
 	protected AcsLogServiceOperations getLogService(Manager manager, int managerHandle) throws ComponentNotAlreadyActivatedEx, CannotGetComponentEx, NoPermissionEx, ComponentConfigurationNotFoundEx {
 		return AcsLogServiceHelper.narrow(manager.get_service(managerHandle, logServiceName, true));
+	}
+	
+	/**
+	 * Get the log service from the name server. It is used by ACS services that do 
+	 * not log into the manager and therefore can't use {@link #getLogService(Manager, int)}.
+	 *    
+	 * @param orb The not <code>null</code> ORB
+	 * @return The log service
+	 * @throws InvalidName 
+	 */
+	protected AcsLogServiceOperations getLogServiceFromNameSarvice(ORB orb) throws InvalidName {
+		if (orb==null) {
+			throw new IllegalArgumentException("The ORB can't be null!");
+		}
+		
+		org.omg.CORBA.Object obj = orb.resolve_initial_references("NameService");
+		NamingContext context = NamingContextExtHelper.narrow(obj);
+		if (context==null) {
+			throw new NullPointerException("Got a null NamingContext");
+		}
+		
+		try {
+			// try naming service first
+			NameComponent[] nameComponent= new NameComponent[1];
+			nameComponent[0]=new NameComponent("Log","");
+			org.omg.CORBA.Object logObj = context.resolve(nameComponent);
+			return AcsLogServiceHelper.narrow(logObj);
+		} catch (Throwable th) {
+			System.out.println("Failed to obtain alarm service reference from naming service, trying corbaloc...");
+			
+		}
+		String corbaloc = "corbaloc::" + ACSPorts.getIP() + ":" + ACSPorts.getLogPort()+"/Log";
+		org.omg.CORBA.Object logObj = orb.string_to_object(corbaloc);
+		return AcsLogServiceHelper.narrow(logObj);
 	}
 
 	

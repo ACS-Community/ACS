@@ -106,7 +106,17 @@ public:
 	 */
 	void stopSend();
 
-	void dumpStatistics();
+	/**
+	 * Logs statistics for debugging
+	 * <P>
+	 * This log is usually submitted at the DEBUG level to avoid impacting
+	 * performances but in case of error we wish to force this log at ERROR
+	 * level.
+	 * With the parameter the user can freely customize the level of this log.
+	 * <P>
+	 * @param level: The level of the log
+	 */
+	void dumpStatistics(ACE_Log_Priority level=LM_DEBUG);
 
 protected:
 

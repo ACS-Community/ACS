@@ -19,8 +19,6 @@ namespace ddsnc{
 		OpenDDS::DCPS::SubscriberImpl *sub_impl;
 		DDS::DataReaderListener_var *listener;
 		
-		int attachToTransport();
-
 		/**
 		 * Creates the subscriber with default QoS or QoS with a partition
 		 *
@@ -131,7 +129,6 @@ namespace ddsnc{
 				subQos.partition.name.length(1);
 				subQos.partition.name[0]=CORBA::string_dup(partitionName);
 			}
-			initializeTransport();
 		
 			createSubscriber();
 			

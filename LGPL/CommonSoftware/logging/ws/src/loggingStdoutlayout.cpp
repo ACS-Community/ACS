@@ -60,8 +60,9 @@ void ACSstdoutLayout::formatISO8601inUTC(const ACE_Time_Value &timestamp,
 		ACE_TCHAR str[]) {
 	ACE_TCHAR ctp[20];
 	time_t ut(timestamp.sec());
-	struct tm *utc = ACE_OS::gmtime(&ut);
-	ACE_OS::strftime(ctp, sizeof(ctp), "%Y-%m-%dT%H:%M:%S", utc);
+	struct tm utc = {0};
+	ACE_OS::gmtime_r(&ut,&utc);
+	ACE_OS::strftime(ctp, sizeof(ctp), "%Y-%m-%dT%H:%M:%S", &utc);
 
 	ACE_OS::sprintf(str, ACE_TEXT("%s.%03ld"), ctp, timestamp.usec() / 1000);
 }

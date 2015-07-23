@@ -74,7 +74,7 @@ public class RepeatGuardLoggerTest extends TestCase {
 		logger2.log(Level.INFO, "Simple test.");
 		LogRecord[] records = logger0.getCollectedLogRecords();
 		assertEquals(1, records.length);
-		assertEquals("alma.acs.logging.RepeatGuardLoggerTest", records[0].getSourceClassName());
+		assertEquals("RepeatGuardLoggerTest.java", records[0].getSourceClassName());
 		assertEquals("testRepeatGuardLogger", records[0].getSourceMethodName());
 
 //		for (int i = 0; i < 50; i++) {

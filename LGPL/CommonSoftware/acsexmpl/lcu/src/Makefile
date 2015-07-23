@@ -115,8 +115,8 @@ COMMON_SOURCES = \
 
 
 # ../idl/acsexmplFridge.midl is added (also) sepratly becausse it has midl prefix and not idl
-# there is also created link ../idl/acsexmplFridge.idl which points to nowhere since ../idl/acsexmplFridge.idl does not exist
-LINK_FILES= $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES))) \
+# there is also created link ../idl/acsexmplFridge.idl which points to nowhere since ../idl/acsexmplFridge.idl does not exist 
+#!# (ICT-3855: commented out) LINK_FILES= $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES))) \
 	    ../idl/acsexmplFridge.midl \
             $(COMMON_SOURCES)
 

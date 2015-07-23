@@ -1350,24 +1350,9 @@ of the Plong propery.
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Pboolean">
-				<xs:attribute name="alarm_high_on" type="xs:boolean" use="optional" default="0">
+				<xs:attribute name="alarm_on" type="xs:boolean" use="optional" default="true">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="alarm_low_on" type="xs:boolean" use="optional" default="0">
-					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="alarm_high_off" type="xs:boolean" use="optional" default="0">
-					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="alarm_low_off" type="xs:boolean" use="optional" default="0">
-					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.							</xs:documentation>
+						<xs:documentation>When this value is equal to the property's value an alarm is activated and when it's different the alarm is deactivated</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
@@ -2271,24 +2256,9 @@ The values defined for the Characteristics apply to each single element of the s
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="PbooleanSeq">
-				<xs:attribute name="alarm_high_on" type="xs:boolean" use="optional" default="0">
+				<xs:attribute name="alarm_on" type="xs:boolean" use="optional" default="true">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROboolean propery.						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="alarm_low_on" type="xs:boolean" use="optional" default="0">
-					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROboolean propery.						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="alarm_high_off" type="xs:boolean" use="optional" default="0">
-					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROboolean propery.							</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="alarm_low_off" type="xs:boolean" use="optional" default="0">
-					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROboolean propery.							</xs:documentation>
+						<xs:documentation>For a description of this characteristic, see documentation of the ROboolean propery.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">

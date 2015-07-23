@@ -324,8 +324,9 @@ void ErrorTraceHelper::toString (ACSErr::ErrorTrace * c, int level, std::ostring
   long sec_ =  static_cast<CORBA::ULongLong>(c->timeStamp) / static_cast<ACE_UINT32>(10000000u) - ACE_UINT64_LITERAL(0x2D8539C80);
   long usec_ = (c->timeStamp % 10000000u) / 10;
   time_t tt(sec_);
-  struct tm *utc_p = ACE_OS::gmtime(&tt);
-  ACE_OS::strftime(ctp, sizeof(ctp), "%Y-%m-%dT%H:%M:%S.", utc_p);
+  struct tm utc_p = {0};
+  ACE_OS::gmtime_r(&tt,&utc_p);
+  ACE_OS::strftime(ctp, sizeof(ctp), "%Y-%m-%dT%H:%M:%S.", &utc_p);
 
   oss << "  " << ctp << std::setfill('0') << std::setw(3) << usec_/1000;
   oss << " in " << c->routine << " of file " << c->file <<  " at line " << c->lineNum << std::endl;

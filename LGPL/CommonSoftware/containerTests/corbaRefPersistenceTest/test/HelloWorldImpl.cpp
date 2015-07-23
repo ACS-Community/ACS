@@ -32,7 +32,6 @@
 #include <ACSErrTypeCommon.h>
 #include <iostream>
 
-ACE_RCSID(corbaRefPeristenceTest, HelloWorld, "$Id: HelloWorldImpl.cpp,v 1.3 2008/10/07 09:47:17 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 HelloWorld::HelloWorld( 

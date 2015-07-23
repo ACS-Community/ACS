@@ -35,8 +35,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES = ../idl/ACSErrTypeTest.xml  $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES))) $(addprefix ../test/, $(addsuffix .cpp,$(acserrTestServer_COMMON))) $(addprefix ../test/, $(addsuffix .cpp,$(acserrOldTestServer_COMMON))) ../test/addDataTest.cpp
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES = ../idl/ACSErrTypeTest.xml  $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES))) $(addprefix ../test/, $(addsuffix .cpp,$(acserrTestServer_COMMON))) $(addprefix ../test/, $(addsuffix .cpp,$(acserrOldTestServer_COMMON))) ../test/addDataTest.cpp
 
 #
 

@@ -401,7 +401,10 @@ Supplier::createSupplier()
 
 		char *name = 0;
 		if( component_mp != 0 )
-			name = component_mp->name();
+		{
+			CORBA::String_var tempName = component_mp->name();
+			name = tempName.in();
+		}
 		else
 			name = "Unknown";
 

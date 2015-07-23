@@ -35,8 +35,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES = ../test/cdbTest.cpp ../test/nodeTest.cpp
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES = ../test/cdbTest.cpp ../test/nodeTest.cpp
 #
 
 #
@@ -189,10 +189,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_links do_all
+all:	 do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_links clean_all 
+clean :  clean_all 
 	$(RM) *~ ../include/*~ ../dbl/*~ ../idl/*~ ../*~ ../../*~ core
 	@echo " . . . clean done"
 

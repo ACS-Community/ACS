@@ -28,6 +28,7 @@
 #include <baci.h>
 #include <ace/Timer_Heap_T.h>
 #include <ace/Timer_Queue_Adapters.h>
+#include <Event_Handler_Handle_Timeout_Upcall.h>
 #include <loggingLogger.h>
 ////////////////////////////////////////////////////////////////////////
 #include "acstimeS.h"
@@ -94,7 +95,7 @@ class TimerImpl : public virtual acscomponent::ACSComponentImpl,
   private:
     
     /// Event_Handler_Handle_Timeout_Upcall is defined in ace/Timer_Queue_T.h
-    typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_Null_Mutex> Upcall;
+    typedef ACE_Event_Handler_Handle_Timeout_Upcall Upcall;
     
     /// Timer_Heap_T is defined in ace/Timer_Heap_T.h
     typedef ACE_Timer_Heap_T<ACE_Event_Handler*,Upcall,ACE_Null_Mutex> Timer_Heap;

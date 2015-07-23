@@ -31,7 +31,7 @@ import CORBA
 from Acssim.Corba.Generator import getRandomValue
 from Acssim.Corba.Utilities import getTypeCode
 #---------------------------------------------------------------
-class MockComponent:
+class MockComponent(object):
     def __init__(self, name): self.name = name
     def _get_name(self): return self.name
     def activateOffShoot(self, os): return os

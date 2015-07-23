@@ -16,8 +16,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
-# List of files to be linked
-LINK_FILES = ../idl/ACSErrTypeACSCourse.xml ../idl/acscourseMount.idl acscourseMount1Impl.cpp acscourseMount2Impl.cpp acscourseMount2ImplDLL.cpp acscourseMount2LoopImpl.cpp acscourseMount2Impl.cpp
+# List of files to be linked 
+#!# (ICT-3855: commented out) LINK_FILES = ../idl/ACSErrTypeACSCourse.xml ../idl/acscourseMount.idl acscourseMount1Impl.cpp acscourseMount2Impl.cpp acscourseMount2ImplDLL.cpp acscourseMount2LoopImpl.cpp acscourseMount2Impl.cpp
 #
 
 #

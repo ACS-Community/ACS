@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Example Configuration Database Schema for a Test Power Supply ACS
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:TestPowerSupplyACS:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:TestPowerSupplyACS:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:powerSupply="urn:schemas-cosylab-com:PowerSupply:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:PowerSupply:1.0" schemaLocation="PowerSupply.xsd"/>
+	<xs:complexType name="TestPowerSupplyACS">
+		<xs:complexContent>
+			<xs:restriction base="powerSupply:PowerSupplyType">
+				<xs:sequence>
+					<xs:element name="current">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:RWdouble">
+									<xs:attribute name="description" type="xs:string" use="optional" default="-"/>
+									<xs:attribute name="format" type="xs:string" use="optional" default="%9.4f"/>
+									<xs:attribute name="units" type="xs:string" use="optional" default="A"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="65535"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.001"/>
+									<xs:attribute name="min_delta_trig" type="xs:double" use="optional" default="0.01526"/>
+									<xs:attribute name="default_value" type="xs:double" use="optional" default="0.0"/>
+									<xs:attribute name="graph_min" type="xs:double" use="optional" default="0"/>
+									<xs:attribute name="graph_max" type="xs:double" use="optional" default="1000.0"/>
+									<xs:attribute name="min_step" type="xs:double" use="optional" default="0.01526"/>
+									<xs:attribute name="min_value" type="xs:double" use="optional" default="0.0"/>
+									<xs:attribute name="max_value" type="xs:double" use="optional" default="1000.0"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="readback">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROdouble">
+									<xs:attribute name="description" type="xs:string" use="optional" default="-"/>
+									<xs:attribute name="format" type="xs:string" use="optional" default="%9.4f"/>
+									<xs:attribute name="units" type="xs:string" use="optional" default="A"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="65535"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.001"/>
+									<xs:attribute name="min_delta_trig" type="xs:double" use="optional" default="0.01526"/>
+									<xs:attribute name="default_value" type="xs:double" use="optional" default="0.0"/>
+									<xs:attribute name="graph_min" type="xs:double" use="optional" default="0"/>
+									<xs:attribute name="graph_max" type="xs:double" use="optional" default="1000.0"/>
+									<xs:attribute name="min_step" type="xs:double" use="optional" default="0.01526"/>
+									<xs:attribute name="alarm_low_on" type="xs:double" use="optional" default="10.0"/>
+									<xs:attribute name="alarm_low_off" type="xs:double" use="optional" default="20.0"/>
+									<xs:attribute name="alarm_high_off" type="xs:double" use="optional" default="980.0"/>
+									<xs:attribute name="alarm_high_on" type="xs:double" use="optional" default="990.0"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="status">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="baci:ROpattern">
+									<xs:attribute name="description" type="xs:string" use="optional" default="Status"/>
+									<xs:attribute name="format" type="xs:string" use="optional" default="%d"/>
+									<xs:attribute name="units" type="xs:string" use="optional" default="w/o"/>
+									<xs:attribute name="resolution" type="xs:unsignedLong" use="optional" default="3263"/>
+									<xs:attribute name="default_timer_trig" type="xs:double" use="optional" default="1.0"/>
+									<xs:attribute name="min_timer_trig" type="xs:double" use="optional" default="0.0001"/>
+									<xs:attribute name="default_value" type="xs:unsignedLong" use="optional" default="0"/>
+									<xs:attribute name="bitDescription" type="xs:string" use="optional" default="On,Remote,Sum Failure,External Interlock,DC Overcurrent,Phase Failure,Not Ready,State Inconsistent,Ramping"/>
+									<xs:attribute name="whenSet" type="xs:string" use="optional" default="2, 2, 0, 0, 0, 0, 1, 1, 1"/>
+									<xs:attribute name="whenCleared" type="xs:string" use="optional" default="3, 3, 3, 3, 3, 3, 3, 3, 3"/>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="TestPowerSupplyACS" type="TestPowerSupplyACS"/>
+</xs:schema>
+

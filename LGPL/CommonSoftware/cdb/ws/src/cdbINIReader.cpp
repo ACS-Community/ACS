@@ -30,7 +30,6 @@
 #include "cdbINIReader.h"
 #include "logging.h"
 
-ACE_RCSID(cdb, cdbINIReader, "$Id: cdbINIReader.cpp,v 1.27 2006/09/01 02:20:54 cparedes Exp $");
 
 namespace cdb {
 

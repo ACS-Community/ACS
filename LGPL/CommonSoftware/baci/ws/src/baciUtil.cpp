@@ -27,7 +27,6 @@
 
 #include "baciUtil.h"
 
-ACE_RCSID(baci, baci, "$Id: baciUtil.cpp,v 1.4 2007/06/12 08:02:23 nbarriga Exp $");
 
 namespace baci {
 

@@ -32,6 +32,7 @@ __version__ = "$Id: acspyTestLogging.py,v 1.1.1.1 2012/03/07 17:40:45 acaproni E
 
 from Acspy.Common.Log import getLogger
 import sys
+import time
 
 print ' '
 print '============= Basic tests ============'
@@ -66,7 +67,6 @@ print ' '
 
 
 print '============= Complex tests ============'
-
 #
 # More complex tests
 # Ignore if you are just learning how to log from Python
@@ -100,5 +100,27 @@ tempET = ACSErr.ErrorTrace(str("file"),        #string file;
                            [],       #NameValueSeq data;
                            [])  #sequence<ErrorTrace, 1> previousError;
 logger.logErrorTrace(tempET)
+
+print '============= Statistics tests ============'
+logger = getLogger("StatisticsTest")
+logger.logNotice('Message not included in statistics 1')
+logger.logNotice('Message not included in statistics 2')
+logger.logNotice('Message not included in statistics 3')
+logger.stats.configureStatistics("AcspyTestLogging", False, 2, 1)
+logger.logNotice('Message included in statistics. First batch: 1')
+logger.logNotice('Message included in statistics. First batch: 2')
+logger.logNotice('Message included in statistics. First batch: 3')
+# Force statistics
+time.sleep(2)
+logger.logNotice('Message included in statistics. Second batch: 1')
+logger.logNotice('Message included in statistics. Second batch: 2')
+logger.logNotice('Message included in statistics. Second batch: 3')
+logger.logNotice('Message included in statistics. Second batch: 4')
+logger.logNotice('Message included in statistics. Second batch: 5')
+# Force statistics
+time.sleep(2)
+logger.logNotice('Message included in statistics. Third batch: 1')
+logger.logNotice('Message included in statistics. Third batch: 2')
+logger.closeLogger()
 
 print "== The end __oOo__"

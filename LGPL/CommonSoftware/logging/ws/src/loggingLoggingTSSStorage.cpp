@@ -28,4 +28,3 @@
 
 #include "loggingLoggingTSSStorage.h"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingTSSStorage.cpp,v 1.1 2005/04/04 22:56:17 dfugate Exp $");

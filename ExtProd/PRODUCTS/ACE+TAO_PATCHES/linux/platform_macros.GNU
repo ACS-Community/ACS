@@ -1,8 +1,5 @@
 # -*- Makefile -*-
-# $Id: platform_macros.GNU,v 1.13 2010/06/08 08:02:03 bjeram Exp $
-
-# According to Bryon G. Rigg <bgrigg@opus.bcbnet.com>, this file
-# should allow ACE to be built on Linux.
+# $Id: platform_linux.GNU 97130 2013-05-13 17:36:26Z mesnier_p $
 
 include $(ACE_ROOT)/include/makeinclude/platform_linux_common.GNU
 
@@ -13,9 +10,6 @@ ifeq ($(insure),0)
 else
   CXX_FOR_VERSION_TEST ?= g++
 endif
-
-# fix this
-pipes ?= 1
 
 CXX_FULL_VERSION := $(shell $(CXX_FOR_VERSION_TEST) --version)
 CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion)
@@ -41,11 +35,6 @@ ifeq (4.1.1-3mdk, $(findstring 4.1.1-3mdk,$(CXX_FULL_VERSION)))
   gcc_template_instantiation_visibility ?= 1
 endif
 
-FLAGS_C_CC += -W -Wall -Wpointer-arith
-ifeq ($(threads),1)
-    CPPFLAGS  += -D_REENTRANT $(PLATFORM_AIO_SUPPORT)
-endif # threads
-
 ifeq ($(buildbits),32)
   FLAGS_C_CC += -m32
   LDFLAGS    += -m32
@@ -53,19 +42,12 @@ endif
 ifeq ($(buildbits),64)
   FLAGS_C_CC += -m64
   LDFLAGS    += -m64
-  ifneq ($(CROSS_COMPILE),)
-    PPC64_TARGET := $(shell echo '__powerpc64__' | $(CC) -E - | tail -n 1)
-    ifeq ($(PPC64_TARGET),1)
-      FLAGS_C_CC += -mminimal-toc
-    endif
-  else
-    ifeq ($(SYSARCH),ppc64)
-      FLAGS_C_CC += -mminimal-toc
-    endif
-  endif
 endif
 
-#
+# DT_RUNPATH is preferred over DT_RPATH, but the linker will only use it when
+# this extra flag option (enable-new-dtags) is present
+LD_RPATH_FLAGS += -Wl,--enable-new-dtags
+
 # Rely on _GNU_SOURCE to set these defaults defined in /usr/include/features.h
 # instead of setting them directly here (older versions of gcc don't set it
 # for you): _SVID_SOURCE _BSD_SOURCE _POSIX_SOURCE _POSIX_C_SOURCE=199506L, ...
@@ -78,16 +60,16 @@ LD       = $(CXX)
 LIBS     += -ldl
 
 ifeq ($(threads),1)
-  LIBS += -lpthread
-  # look for the rt library in the usual places
-  LIBS += $(shell test "`ls -L /usr/lib*/librt.so* /lib*/librt.so*`" && echo -lrt)
+  FLAGS_C_CC += -pthread
+  SOFLAGS += -pthread
+  LIBS += -lrt
 endif
 
 ifeq ($(optimize),1)
   SOFLAGS += -Wl,-O3
 endif
 
-SOFLAGS += $(CPPFLAGS) -shared
+SOFLAGS += -shared
 SOBUILD = $(COMPILE.cc) $(PIC) -o $(VSHDIR)$*.so $<; \
           $(SOLINK.cc) -o $@ $(LDFLAGS) $(VSHDIR)$*.o
 PRELIB  = @true
@@ -96,20 +78,6 @@ PRELIB  = @true
 # add -E to LDFLAGS if using GNU ld
 #
 include $(ACE_ROOT)/include/makeinclude/platform_g++_common.GNU
-
-ifneq ($(TCPU),)
-  ifeq ($(tunemodelflag),1)
-    FLAGS_C_CC += -mtune=$(TCPU)
-  endif
-  
-  ifeq ($(cpumodelflag),1)
-    FLAGS_C_CC += -mcpu=$(TCPU)
-  endif
-
-  ifeq ($(archmodelflag),1)
-    FLAGS_C_CC += -march=$(TCPU)
-  endif
-endif
 
 # TAO with GCC 4.0.2 and -O3 seems to result in runtime issues, for example
 # the ForwardRequest PI test will fail. For GCC 4.0.2 we default to -O2
@@ -120,9 +88,6 @@ else
   OCFLAGS ?= -O3
   OCCFLAGS ?= -O3
 endif
-
-CFLAGS  += $(FLAGS_C_CC)
-CCFLAGS += $(FLAGS_C_CC) $(TEMPLATES_FLAG)
 
 # Added line below to support "Executable Shared Object" files (as
 # needed by the service configurator).

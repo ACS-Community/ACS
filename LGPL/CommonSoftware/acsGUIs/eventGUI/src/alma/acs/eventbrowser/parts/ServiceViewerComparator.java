@@ -24,8 +24,8 @@ package alma.acs.eventbrowser.parts;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
-import alma.acs.eventbrowser.model.MCStatistics;
-import alma.acs.eventbrowser.model.NotifyServiceData;
+import alma.acs.nsstatistics.MCStatistics;
+import alma.acs.nsstatistics.NotifyServiceData;
 
 /**
  * Comparator used for node positions in ServiceSummaryPart and ChannelTreePart.

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="ws/test"/>
+	<classpathentry excluding="CDB/|ref/|tatlogs/|tmp/" kind="src" path="ws/test"/>
 	<classpathentry kind="src" path="ws/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
@@ -25,5 +25,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsCallbacksSupport.jar"/>
+	<classpathentry kind="var" path="ACSROOT"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>

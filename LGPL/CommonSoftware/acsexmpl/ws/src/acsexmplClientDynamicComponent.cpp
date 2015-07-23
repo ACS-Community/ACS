@@ -91,7 +91,6 @@ it's a <a href="group__ACSEXMPLHWDOC.html">Hello World</a> component.
 #include <maciSimpleClient.h>
 #include "acsexmplHelloWorldC.h"
 
-ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClientDynamicComponent.cpp,v 1.9 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
        
 /*******************************************************************************/

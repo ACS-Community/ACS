@@ -45,7 +45,6 @@
 #include <acsexmplMountImpl.h>
 #include <baciDB.h>
 
-ACE_RCSID(acsexmpl, acsexmplMountImpl, "$Id: acsexmplMountImpl.cpp,v 1.111 2008/10/01 04:30:47 cparedes Exp $")
 using namespace baci;
 
 /**

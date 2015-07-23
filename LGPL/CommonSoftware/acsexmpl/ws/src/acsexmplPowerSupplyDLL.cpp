@@ -35,6 +35,5 @@
 
 #include "acsexmplPowerSupplyImpl.h"
 
-ACE_RCSID(acsexmpl, acsexmplPowerSupplyDLL, "$Id: acsexmplPowerSupplyDLL.cpp,v 1.6 2004/01/15 01:45:37 dfugate Exp $")
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(PowerSupply)

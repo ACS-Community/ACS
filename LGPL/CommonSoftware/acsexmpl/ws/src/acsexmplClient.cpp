@@ -102,7 +102,6 @@ obtained asynchronously and it's value is logged.
 
 #include "acsexmplCallbacks.h"
 
-ACE_RCSID(acsexmpl, acsexmpClient, "$Id: acsexmplClient.cpp,v 1.98 2007/02/01 05:14:26 cparedes Exp $")
 using namespace maci;
        
 /*******************************************************************************/

@@ -12,7 +12,7 @@
 1 - Line: 52
 1 - Routine: main
 1 - Host: xxx
-1 - Process: xxx../bin/testLTSClient
+1 - Process: xxx
 1 - Context: 
 1 - Thread: main
 1 - Log Message: Simple Log
@@ -28,7 +28,7 @@
 1 - Line: 55
 1 - Routine: main
 1 - Host: xxx
-1 - Process: xxx../bin/testLTSClient
+1 - Process: xxx
 1 - Context: 
 1 - Thread: main
 1 - Log Message: Simple Log
@@ -46,7 +46,7 @@
 1 - Line: 59
 1 - Routine: main
 1 - Host: xxx
-1 - Process: xxx../bin/testLTSClient
+1 - Process: xxx
 1 - Context: 
 1 - Thread: main
 1 - Stack ID: 
@@ -64,7 +64,7 @@
 1 - Line: 66
 1 - Routine: main
 1 - Host: xxx
-1 - Process: xxx../bin/testLTSClient
+1 - Process: xxx
 1 - Context: 
 1 - Thread: main
 1 - Stack ID: 

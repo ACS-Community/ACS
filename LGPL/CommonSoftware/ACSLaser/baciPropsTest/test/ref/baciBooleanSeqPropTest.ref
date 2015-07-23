@@ -1,0 +1,48 @@
+1 - 
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] -------------------------------
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] component 'alma.acs.alarmsystem.test.BACIBooleanSeqPropertyTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] loading configuration...
+1 - ----------T--:--:--.--- WARNING [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] could not load configuration, using defaults
+1 - -- listing properties --
+1 - cmw.mom.notification=false
+1 - cmw.mom.brokerlist=sljas1:2506
+1 - cmw.mom.loadbalancing=false
+1 - cmw.mom.timetolive=60000
+1 - cmw.mom.username=cmw_usr
+1 - cmw.mom.retry=10
+1 - cmw.mom.sequential=true
+1 - cmw.mom.ping=5
+1 - cmw.mom.selectoratbroker=false
+1 - cmw.mom.maxretry=99999
+1 - cmw.mom.priority=4
+1 - cmw.mom.persistance=false
+1 - cmw.mom.password=cmw_pwd
+1 - cmw.mom.keepalive=0
+1 - 
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] subscribe(CMW.ALARM_SYSTEM.HEARTBEAT, listener, HEARTBEAT = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Alarm Heartbeat client check frequency : 30000 milliseconds
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] starting heartbeat check...
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] started heartbeat check
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.ROOT, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1, listener, NOT_REDUCED_MASKED_SET = TRUE)
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] subscribe(CMW.ALARM_SYSTEM.CLIENTS.nnnn, listener, (NOT_REDUCED_MASKED_SET = TRUE) OR LASER_INIT = TRUE)
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] unSubscribe(4)
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Source alarm received: <BaciPropTest#testBooleanSeqVar, TEST_COMPONENT, 1> ACTIVE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Source alarm received: <BaciPropTest#testBooleanSeqVar, TEST_COMPONENT, 1> ACTIVE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Alarm from categories: <BaciPropTest#testBooleanSeqVar:TEST_COMPONENT:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Source alarm received: <BaciPropTest#testBooleanSeqVar, TEST_COMPONENT, 1> TERMINATE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Alarm from categories: <BaciPropTest#testBooleanSeqVar:TEST_COMPONENT:1> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Source alarm received: <BaciPropTest#testBooleanSeqVar, TEST_COMPONENT, 1> TERMINATE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Source alarm received: <BaciPropTest#testBooleanSeqVar, TEST_COMPONENT, 1> ACTIVE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Alarm from categories: <BaciPropTest#testBooleanSeqVar:TEST_COMPONENT:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] Source alarm received: <BaciPropTest#testBooleanSeqVar, TEST_COMPONENT, 1> ACTIVE
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] stopped heartbeat check
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] stopping heartbeat check...
+1 - ----------T--:--:--.--- INFO [laser@BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] unSubscribeAll()
+1 - ----------T--:--:--.--- INFO [BACITest:BACIBooleanSeqPropertyTest#testROBooleanSeq] client 'alma.acs.alarmsystem.test.BACIBooleanSeqPropertyTest' has successfully delivered a component release request for curl=TEST_COMPONENT
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 

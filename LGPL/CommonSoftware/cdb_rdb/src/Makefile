@@ -118,6 +118,8 @@ install : install_all
 	@mkdir -p $(DDLDATA)/oracle/TMCDB_swconfigext
 	@mkdir -p $(DDLDATA)/hsqldb/TMCDB_swconfigcore
 	@mkdir -p $(DDLDATA)/hsqldb/TMCDB_swconfigext
+	@mkdir -p $(DDLDATA)/mysql/TMCDB_swconfigcore
+	@mkdir -p $(DDLDATA)/mysql/TMCDB_swconfigext
 	@echo "== Copying generic .ddl files to $(DDLDATA)/generic"
 	@cp generic/TMCDB_swconfigcore.ddl $(DDLDATA)/generic
 	@cp generic/TMCDB_swconfigext.ddl $(DDLDATA)/generic
@@ -127,6 +129,9 @@ install : install_all
 	@echo "== Copying generated HSQLDB .sql files to $(DDLDATA)/hsqldb"
 	@cp ../config/TMCDB_swconfigcore/hsqldb/* $(DDLDATA)/hsqldb/TMCDB_swconfigcore
 	@cp ../config/TMCDB_swconfigext/hsqldb/* $(DDLDATA)/hsqldb/TMCDB_swconfigext
+	@echo "== Copying generated MySQL .sql files to $(DDLDATA)/mysql"
+	@cp ../config/TMCDB_swconfigcore/mysql/* $(DDLDATA)/mysql/TMCDB_swconfigcore
+	@cp ../config/TMCDB_swconfigext/mysql/* $(DDLDATA)/mysql/TMCDB_swconfigext
 	@echo " . . . installation done"
 
 .done_generating_sql : generic/TMCDB_swconfigcore.ddl generic/TMCDB_swconfigext.ddl

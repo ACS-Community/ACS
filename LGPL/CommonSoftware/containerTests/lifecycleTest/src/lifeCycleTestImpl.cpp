@@ -36,7 +36,6 @@
 #include "loggingGetLogger.h"
 #include <iostream>
 
-ACE_RCSID(lifeCycleTest, lifeCycleTestImpl, "$Id: lifeCycleTestImpl.cpp,v 1.1 2008/03/24 07:43:35 cparedes Exp $")
 
 /* ----------------------------------------------------------------*/
 TestLifeCycleComp::TestLifeCycleComp( 

@@ -35,8 +35,7 @@ TimeOutTestImpl::TimeOutTestImpl (CORBA::ORB_ptr orb)
 
 CORBA::Long
 TimeOutTestImpl::echo (CORBA::Long x,
-                       CORBA::Long msecs
-                       ACE_ENV_ARG_DECL_NOT_USED)
+                       CORBA::Long msecs)
 {
   ACE_Time_Value tv (msecs / 1000, (msecs % 1000) * 1000);
 

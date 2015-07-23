@@ -87,10 +87,10 @@ killJava=options.killJava
 
 #PROCS is initially set to a list consisting of alingl known ACS binaries/scripts which exist
 #outside of $ACSROOT/bin and $INTROOT/bin
-PROCS = ["IFR_Service",
+PROCS = ["tao_ifr_service",
          "ird",
-         "Notify_Service",
-         "Naming_Service",
+         "tao_cosnotification",
+         "tao_cosnaming",
          ]
 #environment variables referencing directories which include a "bin" directory full of executables.
 ENVVARS = ['ACSROOT']

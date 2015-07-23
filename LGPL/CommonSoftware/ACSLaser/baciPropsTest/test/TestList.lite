@@ -34,5 +34,7 @@ PROLOGUE baciPropsTATPrologue
 2 baciEnumPropTest	"baciEnumPropTest"
 3 baciPatternPropTest	"baciPatternPropTest"
 4 baciDoublePropCompleteTest "baciDoublePropCompleteTest"
+5 baciBooleanPropTest "baciBooleanPropTest"
+6 baciBooleanSeqPropTest "baciBooleanSeqPropTest"
 
 EPILOGUE acsutilTATEpilogue

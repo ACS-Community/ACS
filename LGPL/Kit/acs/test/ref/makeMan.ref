@@ -8,4 +8,8 @@
 1 - ..local pages:
 1 - 	acsMakeManl.tcl
 1 -  ASCII to MIF:
+1 - acsMakeMan2.2 acsMakeMann.n acsMakeManl.l
 1 -  . . . man page(s) done
+1 - Cleaning up . . . .
+1 - 
+1 -  . . . clean done

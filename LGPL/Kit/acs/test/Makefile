@@ -190,9 +190,11 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	@$(RM) sed.scan
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
+	@rm -f sed.scan
 	@echo " . . . clean_dist done"
 
 man   : do_man 

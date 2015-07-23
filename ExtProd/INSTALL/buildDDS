@@ -48,7 +48,7 @@ mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/DDS
 # Unpack the tar file
 # put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 #
-FILE=OpenDDS-2.2
+FILE=OpenDDS-3.5.1
 ARCHIVE=`pwd`/../PRODUCTS/$FILE.tar.gz
 cd $ALMASW_ROOTDIR/$ALMASW_RELEASE
 echo "unpacking the archive"
