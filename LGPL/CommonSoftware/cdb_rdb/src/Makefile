@@ -147,7 +147,7 @@ install : install_all
 	@generateTmcdbHibernateStrategy generic/TMCDB_swconfigext.ddl .
 	@touch .done_generating_sql
 
-.done_generating_classes :../lib/TMCDBswconfigStrategy.jar
+.done_generating_classes: ../lib/TMCDBswconfigStrategy.jar
 	@echo "=="
 	@echo "== Generating Java domain classes"
 	@echo "=="
@@ -156,7 +156,8 @@ install : install_all
 	@rm -f CreateHsqldbTables.sql
 	@cat ../config/TMCDB_swconfigcore/hsqldb/CreateHsqldbTables.sql ../config/TMCDB_swconfigext/hsqldb/CreateHsqldbTables.sql > CreateHsqldbTables.sql
 	@acsStartJava org.hsqldb.cmdline.SqlTool --rcFile sqltool.rc tmcdb CreateHsqldbTables.sql
-	@CLASSPATH="$(shell acsMakeJavaClasspath)" ant generate
+	@ant -verbose generate
+	echo "Java domain classes generated"
 	@touch .done_generating_classes
 
 ../lib/$(POJOS_JAR): .done_generating_classes
@@ -164,12 +165,14 @@ install : install_all
 	@echo "== Compiling generated domain classes"
 	@cd gen;\
 	    CLASSPATH="$(shell acsMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; \
-	    jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; \
-	    mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/; \
+	    jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; 
+# Merge comment HSO (see ICT-5671): Unlike in ACS 2015-5, we include the xml files, 
+# leave the next line commented out because nobody has complained about it in the 2015-5 release.
+#	    mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/; \
 	    jar uf ../lib/$(POJOS_JAR) -C ../config/TMCDB_swconfigcore/ SwCore-orm.xml; \
 	    jar uf ../lib/$(POJOS_JAR) -C ../config/TMCDB_swconfigext/ SwExt-orm.xml;
 
-../lib/TMCDBswconfigStrategy.jar :.done_generating_sql 
+../lib/TMCDBswconfigStrategy.jar: .done_generating_sql 
 	@echo "== Compiling TMCDBswconfigStrategy.jar "
 	@CLASSPATH="$(shell acsMakeJavaClasspath)" javac alma/acs/tmcdb/translator/*.java; jar cf ../lib/TMCDBswconfigStrategy.jar alma/acs/tmcdb/translator/*.class; cd ..; jar uf lib/TMCDBswconfigStrategy.jar src/alma/acs/tmcdb/translator/*.java;
 	@rm -f alma/acs/tmcdb/translator/*.class
