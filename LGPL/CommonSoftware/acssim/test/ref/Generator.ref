@@ -32,13 +32,13 @@
 1 - 
 1 - -----------------------------------------------------
 1 - --Testing everything from acssimTest
-1 - Created an instance of ' IDL:alma/acssimTest/OnOffStates:1.0 ': <type 'instance'>
+1 - Created an instance of ' IDL:alma/acssimTest/OnOffStates:1.0 ': <class 'omniORB.EnumItem'>
 1 - 
-1 - Created an instance of ' IDL:alma/acssimTest/garbage:1.0 ': <type 'instance'>
-1 - Created an instance of ' IDL:alma/acssimTest/JunkCharComp:1.0 ': <type 'instance'>
-1 - Created an instance of ' IDL:alma/acssimTest/JunkBaciProp:1.0 ': <type 'instance'>
-1 - Created an instance of ' IDL:alma/acssimTest/complexStruct:1.0 ': <type 'instance'>
-1 - Created an instance of ' IDL:alma/acssimTest/JunkControl:1.0 ': <type 'instance'>
+1 - Created an instance of ' IDL:alma/acssimTest/garbage:1.0 ': <class 'acssimTest.garbage'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkCharComp:1.0 ': <class 'Acssim.Servants.Simulator.BaseSimulator_IDL:alma/acssimTest/JunkCharComp:1.0'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkBaciProp:1.0 ': <class 'Acssim.Servants.Simulator.BaseSimulator_IDL:alma/acssimTest/JunkBaciProp:1.0'>
+1 - Created an instance of ' IDL:alma/acssimTest/complexStruct:1.0 ': <class 'acssimTest.complexStruct'>
+1 - Created an instance of ' IDL:alma/acssimTest/JunkControl:1.0 ': <class 'Acssim.Servants.Simulator.BaseSimulator_IDL:alma/acssimTest/JunkControl:1.0'>
 1 - 
 1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/charSeq:1.0 ': <type 'str'>
 1 - Created an instance of ' IDL:alma/acssimTest/JunkControl/charArray:1.0 ': <type 'str'>
