@@ -49,7 +49,6 @@ import abc
 from Acspy.Util.ACSCorba     import acsLogSvc
 from Acspy.Common.TimeHelper import TimeUtil
 from log_audience            import NO_AUDIENCE
-import Acspy.Common.Log
 #------------------------------------------------------------------------------
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
