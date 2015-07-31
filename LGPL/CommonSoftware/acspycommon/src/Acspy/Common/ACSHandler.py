@@ -49,6 +49,7 @@ import abc
 from Acspy.Util.ACSCorba     import acsLogSvc
 from Acspy.Common.TimeHelper import TimeUtil
 from log_audience            import NO_AUDIENCE
+from Acspy.Common.LogThrottleAlarmerBase import LogThrottleAlarmerBase
 #------------------------------------------------------------------------------
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
@@ -235,7 +236,7 @@ class ACSHandler(logging.handlers.BufferingHandler):
         self.logThrottle.configureLogging(maxLogPerTimeInterval)
         if alarmSender!=None:
             # Is alarmSender a subclass of LogThrottleAlarmerBase?
-            if not isinstance(alarmSender, Acspy.Common.Log.LogThrottleAlarmerBase):
+            if not isinstance(alarmSender, LogThrottleAlarmerBase):
                 raise TypeError('The alarm sender is not a parent of LogThrottleAlarmerBase')
         self.logThrottleAlarmSender=alarmSender
     #--------------------------------------------------------------------------
