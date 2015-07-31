@@ -498,10 +498,13 @@ class Container(BaseClient, maci__POA.Container, Logging__POA.LoggingConfigurabl
         #instance(...) does not call the constructor!
         try:
             start = time()
-            if temp[PYREF].__init__.func_code.co_argcount == 2: # First try if it's a Simulator
-                temp[PYREF].__init__(temp[TYPE])
-            else: # It's not the Simulator
-                temp[PYREF].__init__() 
+            try:
+                if temp[PYREF].__init__.func_code.co_argcount == 2: # First try if it's a Simulator
+                    temp[PYREF].__init__(temp[TYPE])
+                else: # It's not the Simulator
+                    temp[PYREF].__init__() 
+            except AttributeError: # Could be that func_code is not defined so in this case an exception will be thrown
+                temp[PYREF].__init__()
             interval = time() - start
 
             log = LOG_CompAct_Instance_OK()
