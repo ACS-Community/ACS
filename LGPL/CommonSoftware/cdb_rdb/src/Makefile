@@ -156,7 +156,7 @@ install : install_all
 	@rm -f CreateHsqldbTables.sql
 	@cat ../config/TMCDB_swconfigcore/hsqldb/CreateHsqldbTables.sql ../config/TMCDB_swconfigext/hsqldb/CreateHsqldbTables.sql > CreateHsqldbTables.sql
 	@acsStartJava org.hsqldb.cmdline.SqlTool --rcFile sqltool.rc tmcdb CreateHsqldbTables.sql
-	@ant -verbose generate
+	@CLASSPATH="$(shell acsMakeJavaClasspath)" ant -verbose generate
 	echo "Java domain classes generated"
 	@touch .done_generating_classes
 
