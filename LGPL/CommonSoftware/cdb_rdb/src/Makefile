@@ -166,9 +166,7 @@ install : install_all
 	@cd gen;\
 	    CLASSPATH="$(shell acsMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; \
 	    jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; 
-# Merge comment HSO (see ICT-5671): Unlike in ACS 2015-5, we include the xml files, 
-# leave the next line commented out because nobody has complained about it in the 2015-5 release.
-#	    mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/; \
+	    mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/; \
 	    jar uf ../lib/$(POJOS_JAR) -C ../config/TMCDB_swconfigcore/ SwCore-orm.xml; \
 	    jar uf ../lib/$(POJOS_JAR) -C ../config/TMCDB_swconfigext/ SwExt-orm.xml;
 
