@@ -1659,19 +1659,31 @@ clean_tat_session:
 
 CLEAN_DIST_TARGET += clean_dist_all
 .PHONY : clean_dist_all
+# ICT-5630: do not remove directories that contain only symlinks
 clean_dist_all:
 	-@$(ECHO) " .\c"
 	-$(AT)find .. -name \*\.o -o -name \*\~ -o  -name \.\*\~ -o -name \*\.$(SHLIB_EXT) -o -name \*\.sl -print | $(XARGS) -i $(RM) {}    $(OUTPUT)
 	$(AT)echo "Cleaning empty directories..."
-	$(AT)for dir in $(foreach dir, $(CREATE_DIRS), $(dir)); \
+ifneq ($(strip $(MANSECTIONS)),)
+	$(AT) for i in $(MANSECTIONS) l ; \
 	do \
-		if [ -d ../$${dir} ];  then \
-		alpha=`find ../$${dir} -type f ! -path '*/CVS/*' ! -path '*/.svn/*'` ;\
-		if [ "$${alpha}" ==  "" ]; then \
-		$(RM) ../$${dir} ;\
+	    if [ -d ../man/man$${i} ]; then \
+	        alpha=`find ../man/man$${i} \\( -type f -o -type l \\) ! -path '*/CVS/*' ! -path '*/.svn/*'` ; \
+	        if [ "$${alpha}" == "" ]; then \
+	            $(RM) ../man/man$${i} ;\
+	        fi; \
+	    fi; \
+	done
+endif
+	$(AT)for dir in $(foreach dir, $(CREATE_DIRS) man, $(dir)); \
+	do \
+	    if [ -d ../$${dir} ];  then \
+	        alpha=`find ../$${dir} \\( -type f -o -type l \\) ! -path '*/CVS/*' ! -path '*/.svn/*'` ; \
+	        if [ "$${alpha}" == "" ]; then \
+	            $(RM) ../$${dir} ;\
 		fi; \
-	fi; \
-	done	
+	    fi; \
+	done
 
 
 

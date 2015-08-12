@@ -38,7 +38,7 @@
 
 12 PROLOGUE "tclsh acsMakeInstall2.tcl" \
    makeInstallTest2 "/usr/bin/make -f MakefileInstallTest install INCLUDES=duplicateFile" \
-   EPILOGUE "rm -Rf ../include/subdir1 ../include/subdir2 ../include/duplicateFile"
+   EPILOGUE "rm -Rf ../include/subdir1 ../include/subdir2 ../include/duplicateFile ../include/CVS"
 
 # Ensure that python compilation errors get properly reported (ICT-1643)
 # To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
@@ -57,3 +57,18 @@
 # Check that manpages can be made and cleaned (see also ICT-3851 and ICT_3853)
 20 PROLOGUE "rm -Rf ../man/man2 ../man/mann/makeMann.n ../man/manl/makeManl.l" \
    makeMan "/usr/bin/make -f MakefileMan man clean MAKE_FROMTAT=1"
+
+# Check that the clean_dist target does not remove dirs containing only symlinks (ICT-5630).
+# Note that after running this test, the content of ../bin/ will be gone!
+# To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
+# "make clean" with the MAKE_FROMTAT variable set
+21 SOURCE acsMakeCleanDist1.tcl \
+   makeCleanDist1 "/usr/bin/make -f Makefile clean_dist MAKE_FROMTAT=1" "@SLEEP 2" "/bin/ls ../idl" \
+   EPILOGUE "rm -Rf ../idl"
+
+# Check that the clean/clean_dist targets removes core etc (ICT-5703).
+# Note that after running this test, the content of ../bin/ will be gone!
+# To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
+# "make clean" with the MAKE_FROMTAT variable set
+#!#22 PROLOGUE "touch core removeMe~" \
+#!#   makeCleanDist2 "/usr/bin/make -f Makefile clean_dist MAKE_FROMTAT=1" "@SLEEP 2" "/bin/ls core removeMe~"
