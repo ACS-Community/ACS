@@ -3,7 +3,6 @@
 <#if property.equals(clazz.identifierProperty)>
  ${pojo.generateAnnIdGenerator()}
 <#if pojo.hasMetaAttribute("oracle-sequence") >
-    @${pojo.importType("javax.persistence.GeneratedValue")}(generator="generator")
     @${pojo.importType("org.hibernate.annotations.GenericGenerator")}(name="generator", strategy="native",
        parameters = {@${pojo.importType("org.hibernate.annotations.Parameter")}(name="sequence", value="${pojo.getMetaAsString("oracle-sequence")}")}
 	)

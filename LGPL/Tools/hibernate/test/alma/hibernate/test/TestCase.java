@@ -19,7 +19,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Interceptor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.Dialect;
@@ -49,7 +48,7 @@ public abstract class TestCase extends junit.framework.TestCase {
 	public static final Logger log = LoggerFactory.getLogger(TestCase.class);
 
 	private static SessionFactory sessions;
-	private static AnnotationConfiguration cfg;
+	private static Configuration cfg;
 	private static Class<?> lastTestClass;
 	private Session session;
 
@@ -76,7 +75,7 @@ public abstract class TestCase extends junit.framework.TestCase {
 		if ( getSessions() != null )
 			getSessions().close();
 		try {
-			setCfg(new AnnotationConfiguration());
+			setCfg(new Configuration());
 			configure(cfg);
 			if ( recreateSchema() ) {
 				cfg.setProperty(Environment.HBM2DDL_AUTO, "create-drop");
@@ -244,11 +243,11 @@ public abstract class TestCase extends junit.framework.TestCase {
 		return sessions;
 	}
 
-	protected static void setCfg( AnnotationConfiguration cfg ) {
+	protected static void setCfg( Configuration cfg ) {
 		TestCase.cfg = cfg;
 	}
 
-	protected static AnnotationConfiguration getCfg() {
+	protected static Configuration getCfg() {
 		return cfg;
 	}
 
