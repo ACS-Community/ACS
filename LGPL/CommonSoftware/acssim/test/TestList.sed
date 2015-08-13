@@ -25,4 +25,4 @@ s/=[0-9]*L/=xxxxL/g
 s/UnknownEx(.*)/UnknownEx(xxxx)/g
 s/OctetSeq:1.0 ': <type 'int'>/OctetSeq:1.0 ': <type 'xxx'>/
 s/OctetSeq:1.0 ': <type 'str'>/OctetSeq:1.0 ': <type 'xxx'>/
-s/: initialized by \w*@\w* / /g
+s/: initialized by [a-zA-Z0-9]\+@[a-zA-Z0-9_-]\+ / /g
