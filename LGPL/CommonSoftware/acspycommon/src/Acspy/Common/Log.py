@@ -65,6 +65,7 @@ from Acspy.Common.ACSHandler import ACSLogRecord
 from Acspy.Common.ACSHandler import makeACSLogRecord
 from Acspy.Common.TimeHelper import TimeUtil
 from Acspy.Common.loggingStatistics import LoggingStatistics
+from Acspy.Common.LogThrottleAlarmerBase import LogThrottleAlarmerBase
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
 #--GLOBALS---------------------------------------------------------------------
@@ -396,21 +397,6 @@ def isFlushRunning():
         return FLUSHTHREAD.isAlive()
     except:
         return False
-#------------------------------------------------------------------------------
-class LogThrottleAlarmerBase(object):
-    '''
-    Abstract base class for the LogThrottle to raise/clear alarms
-    '''
-    __metaclass__ = abc.ABCMeta
-    
-    @abc.abstractmethod
-    def sendThrottleAlarm(self, active):
-        '''
-        Send/Clear the alarm for the LogThrottle
-        
-        Raise the alarm if active=True and clear otherwise
-        '''
-        return
 #------------------------------------------------------------------------------
 class Logger(logging.Logger):
     '''
