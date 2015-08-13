@@ -96,13 +96,11 @@ public class TestPojosPersistence extends TestCase {
 		ClientLogManager.getAcsLogManager().shutdown(true);
 	}
 	
-	public void testCreateDB() throws Exception {
+	public void testCreateDrop() throws Exception {
 		createDB();
-	}
-
-	public void testDrop() throws Exception {
 		dropDB();
 	}
+
 
 	public void testSimpleSave() throws Exception {
 
