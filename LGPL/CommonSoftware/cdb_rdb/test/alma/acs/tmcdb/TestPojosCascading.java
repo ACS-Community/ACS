@@ -39,7 +39,6 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.jdbc.Work;
 
 import alma.acs.logging.ClientLogManager;
@@ -72,7 +71,7 @@ public class TestPojosCascading extends TestCase {
 		acsLoggerHelper.setHibernateSqlLogLevels(AcsLogLevelDefinition.TRACE, AcsLogLevelDefinition.TRACE);
 
 		hibernateUtil = HibernateUtil.getInstance(logger);
-		hibernateUtil.setConfiguration(new AnnotationConfiguration().configure("test-hibernate.cfg.xml"));
+		hibernateUtil.setConfiguration(new  org.hibernate.cfg.Configuration().configure("test-hibernate.cfg.xml"));
 		hibernateUtil.getSessionFactory().openSession();
 	}
 

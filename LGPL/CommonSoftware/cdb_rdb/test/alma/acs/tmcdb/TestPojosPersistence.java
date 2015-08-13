@@ -40,7 +40,6 @@ import junit.framework.TestCase;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.QueryException;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.jdbc.Work;
 
@@ -86,7 +85,7 @@ public class TestPojosPersistence extends TestCase {
 //		hibernateLoggerFactory.getLogger("blabla").info("Greetings from your hibernate logger");
 		
 		hibernateUtil = HibernateUtil.getInstance(logger);
-		hibernateUtil.setConfiguration(new AnnotationConfiguration().configure("test-hibernate.cfg.xml"));
+		hibernateUtil.setConfiguration(new org.hibernate.cfg.Configuration().configure("test-hibernate.cfg.xml"));
 		hibernateUtil.getSessionFactory().openSession();
 	}
 
