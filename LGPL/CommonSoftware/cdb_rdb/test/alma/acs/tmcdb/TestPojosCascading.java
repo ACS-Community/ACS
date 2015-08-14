@@ -121,8 +121,6 @@ public class TestPojosCascading extends TestCase {
 		} catch (Exception ex) {
 			logger.log(Level.WARNING, "Got a failure already before dropDB is called", ex);
 			throw ex;
-		} finally {
-			dropDB();
 		}
 
 	}
