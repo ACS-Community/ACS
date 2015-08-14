@@ -73,9 +73,13 @@ public class TestPojosCascading extends TestCase {
 		hibernateUtil = HibernateUtil.getInstance(logger);
 		hibernateUtil.setConfiguration(new  org.hibernate.cfg.Configuration().configure("test-hibernate.cfg.xml"));
 		hibernateUtil.getSessionFactory().openSession();
+		
+		createDB();
 	}
 
 	protected void tearDown() throws Exception {
+		dropDB();
+		
 		// null the various static logger references; otherwise junit will not create new loggers in subsequent setUp
 		HibernateUtil.clearInstance();
 		AcsLoggerHelper.getInstance().shutdown(); 
@@ -83,8 +87,6 @@ public class TestPojosCascading extends TestCase {
 	}
 
 	public void testNoCascading() throws Exception {
-
-		createDB();
 
 		try {
 			Configuration conf = new Configuration();
@@ -127,35 +129,25 @@ public class TestPojosCascading extends TestCase {
 
 	public void testCascadingAggregation() throws Exception {
 
-		createDB();
+		LoggingConfig lconf = new LoggingConfig();
 
-		try {
+		NamedLoggerConfig nlconf = new NamedLoggerConfig();
+		nlconf.setName("rtobarNamedLoggingConfig");
+		nlconf.setMinLogLevel((byte)0x01);
+		nlconf.setMinLogLevelLocal((byte)0x01);
+		nlconf.setLoggingConfig(lconf);
 
-			LoggingConfig lconf = new LoggingConfig();
+		Set<NamedLoggerConfig> nlconfs = new HashSet<NamedLoggerConfig>();
+		nlconfs.add(nlconf);
+		lconf.setNamedLoggerConfigs(nlconfs);
 
-			NamedLoggerConfig nlconf = new NamedLoggerConfig();
-			nlconf.setName("rtobarNamedLoggingConfig");
-			nlconf.setMinLogLevel((byte)0x01);
-			nlconf.setMinLogLevelLocal((byte)0x01);
-			nlconf.setLoggingConfig(lconf);
-
-			Set<NamedLoggerConfig> nlconfs = new HashSet<NamedLoggerConfig>();
-			nlconfs.add(nlconf);
-			lconf.setNamedLoggerConfigs(nlconfs);
-
-			hibernateUtil.beginTransaction();
-			hibernateUtil.getSession().save(lconf); // Should cascade the NamedLoggerConfig
-			hibernateUtil.commitTransaction();
-
-		} finally {
-			dropDB();
-		}
+		hibernateUtil.beginTransaction();
+		hibernateUtil.getSession().save(lconf); // Should cascade the NamedLoggerConfig
+		hibernateUtil.commitTransaction();
 	}
 
 	@SuppressWarnings("unchecked")
 	public void testCascadingInverseAggregation() throws Exception {
-
-		createDB();
 
 		try {
 			Component comp = createTrasientFilledComponent();
@@ -196,14 +188,11 @@ public class TestPojosCascading extends TestCase {
 		} catch (Exception ex) {
 			logger.log(Level.WARNING, "Got a failure already before dropDB is called", ex);
 			throw ex;
-		} finally  {
-			dropDB();
-		}
+		} 
 	}
 
 	@SuppressWarnings("unchecked")
 	public void testCascadingInverseComposition() throws Exception {
-		createDB();
 
 		try {
 			Component comp = createTrasientFilledComponent();
@@ -258,9 +247,7 @@ public class TestPojosCascading extends TestCase {
 		} catch (Exception ex) {
 			logger.log(Level.WARNING, "Got a failure already before dropDB is called", ex);
 			throw ex;
-		} finally  {
-			dropDB();
-		}
+		} 
 
 	}
 
