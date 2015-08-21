@@ -42,7 +42,7 @@
 # are part of the openORB distribution, but shall NOT be installed,
 # because they would collide with JacORB
 INSTALL_FILES = ../lib/hibernate3.jar \
-	../lib/hibernate-tools-3.6.0.CR1.jar \
+	../lib/hibernate-tools-3.6.0.Final.jar \
 	../lib/hibernate-jpa-2.0-api-1.0.1.Final.jar \
 	../lib/dom4j-1.6.1.jar \
 	../lib/freemarker-2.3.23.jar
