@@ -4,14 +4,13 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-gen"/>
-	<classpathentry kind="var" path="ACSROOT/lib/hibernate-annotations.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/hibernate-commons-annotations.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/hibernate-tools.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/hibernate3.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acslog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/hibernate-tools-3.6.0.Final.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
