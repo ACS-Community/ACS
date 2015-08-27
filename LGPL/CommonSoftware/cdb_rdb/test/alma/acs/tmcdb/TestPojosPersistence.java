@@ -453,7 +453,7 @@ public class TestPojosPersistence extends TestCase {
 		comp.setConfiguration(config);
 		comp.setXMLDoc("Something that is not XML");
 		comp.setRealTime(true);
-		comp.setImplLang(ComponentImplLang.JAVA);
+		comp.setImplLang(ImplLangEnum.JAVA);
 		comp.setIsAutostart(true);
 		comp.setIsDefault(false);
 		comp.setIsControl(true);

@@ -269,7 +269,7 @@ public class TestPojosCascading extends TestCase {
 		comp.setContainer(null); // Container can be null
 		comp.setComponentName("COMPONENT");
 		comp.setCode("Code");
-		comp.setImplLang(ComponentImplLang.JAVA);
+		comp.setImplLang(ImplLangEnum.JAVA);
 		comp.setRealTime(false);
 		comp.setPath(".");
 		comp.setIsAutostart(true);

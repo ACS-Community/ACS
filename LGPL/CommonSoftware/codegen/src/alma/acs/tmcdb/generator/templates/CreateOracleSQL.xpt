@@ -15,8 +15,8 @@
 -- // | Any changes will be lost when the file is re-generated. | //
 -- //  ---------------------------------------------------------  //
 -- /////////////////////////////////////////////////////////////////
-«REM»We add all the table definitions«ENDREM»
-«EXPAND TableDefinition FOREACH tables» 
+«REM»We add all the table definitions«ENDREM» 
+«EXPAND TableDefinition(this.enumerations.getEnums()) FOREACH tables»
 
 «REM»And we populate the TMCDBVersion table«ENDREM»
 «IF tables.select(e|e.name == "TMCDBVersion").size != 0»
@@ -36,12 +36,13 @@ For each table, we generate the following, in this order:
      1.5) For the boolean types, we generate a constraint check in '0','1'
  2) The FOREIGN KEY constraints (these are not mandatory)
  3) The CHECK constraints (these are not mandatory)
- 4) The UNIQUE constraint (depending if the key is GENERATED FROM)
- 5) The PRIMARY KEY constraint
+ 4) Any pre-defined enumerations
+ 5) The UNIQUE constraint (depending if the key is GENERATED FROM)
+ 6) The PRIMARY KEY constraint
  
- 6) The sequence and trigger for the generated keys, if needed
+ 7) The sequence and trigger for the generated keys, if needed
 «ENDREM»
-«DEFINE TableDefinition FOR Table-»
+«DEFINE TableDefinition(List[EnumDef] enums) FOR Table-»
 CREATE TABLE «this.name» (
 «IF isChild && finalKey().isGeneratedFrom-»
 	«LET finalKey().columns.first() AS c-»
@@ -49,7 +50,11 @@ CREATE TABLE «this.name» (
 	«ENDLET-»
 «ENDIF-»
 «FOREACH this.getColumns() AS c ITERATOR iter-»
+«IF c.type == null-»
+	`«c.name»` «c.enumDef.type.getOracleType()»«c.enumDef.type.getOracleLength()» «c.enumDef.specifier.getOracleSpecifier()»«IF !iter.lastIteration || getForeignKeyConstraints().size > 0 || getCheckConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+«ELSE-»
 	«c.name» «c.type.getOracleType()»«c.type.getOracleLength()» «c.specifier.getOracleSpecifier()»,
+«ENDIF-»	
 «ENDFOREACH-»
 «FOREACH getBooleanColumns() AS c-»
 	CONSTRAINT «shortTableName()»«c.shortColName()» CHECK («c.name» IN ('0', '1')),
@@ -62,6 +67,9 @@ CREATE TABLE «this.name» (
 «ENDFOREACH-»
 «FOREACH getCheckConstraints() AS const-»
 	CONSTRAINT «superTable!=null?"Child":""»«const.name» CHECK («const.column.name» IN («const.possibleValues.getPossibleValuesAsSQL()»)),
+«ENDFOREACH-»
+«FOREACH getColumnsWithEnumsInTable() AS c ITERATOR iter-»
+	CONSTRAINT `«this.name»«c.name»` CHECK (`«c.name»` IN («c.enumDef.possibleValues.getPossibleValuesAsSQL()»))«IF !iter.lastIteration || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
 «ENDFOREACH-»
 «FOREACH getUniquenessConstraints() AS const-»
 	CONSTRAINT «superTable!=null?"Child":""»«const.name» UNIQUE («const.columns.name.toString(", ")»),

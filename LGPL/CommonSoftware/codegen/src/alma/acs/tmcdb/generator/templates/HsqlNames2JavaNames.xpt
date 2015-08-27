@@ -88,6 +88,20 @@ public class TableInheritance_«modelName.name» extends AbstractTableInheritanc
 «ENDIF-»
 «ENDFOREACH-»
 
+		tablesImplementingIdentifiable = new ArrayList<String>();
+«FOREACH tables AS t-»
+«IF t.isIdentifiable-»
+			tablesImplementingIdentifiable.add("«t.name.toLowerCase()»");
+«ENDIF-»		
+«ENDFOREACH-»
+
+		tablesImplementingBackloggable = new ArrayList<String>();
+«FOREACH tables AS t-»
+«IF t.isBackloggable-»
+			tablesImplementingBackloggable.add("«t.name.toLowerCase()»");
+«ENDIF-»		
+«ENDFOREACH-»
+
 		keymap = new HashMap<String, String>();
 «FOREACH tables AS t-»
 «IF t.superTable != null-»
@@ -179,8 +193,13 @@ public class TableInheritance_«modelName.name» extends AbstractTableInheritanc
 			tmpMap = new HashMap<String,String>();
 	«FOREACH getCheckConstraints(t) AS constraint-»
 		«IF TextTypes.isInstance(constraint.column.type) || LengthDefinedTypes.isInstance(constraint.column.type)-»
-			tmpMap.put("«constraint.column.name.toLowerCase()»", "alma.acs.tmcdb.«constraint.name»");
+		tmpMap.put("«constraint.column.name.toLowerCase()»", "alma.acs.tmcdb.«constraint.name»");
 		«ENDIF-»
+	«ENDFOREACH-»
+	«FOREACH t.getColumns() AS c-»
+	«IF c.type == null-»
+	tmpMap.put("«c.name.toLowerCase()»", "alma.acs.tmcdb.«c.enumDef.name»");
+	«ENDIF-»
 	«ENDFOREACH-»
 			checkConstraints.put("«t.name.toLowerCase()»", tmpMap);
 «ENDFOREACH»

@@ -16,7 +16,7 @@
 -- //  ---------------------------------------------------------  //
 -- /////////////////////////////////////////////////////////////////
 «REM»We add all the table definitions«ENDREM»
-«EXPAND TableDefinition FOREACH tables» 
+«EXPAND TableDefinition(this.enumerations.getEnums()) FOREACH tables» 
 
 «REM»And we populate the TMCDBVersion table«ENDREM»
 «IF tables.select(e|e.name == "TMCDBVersion").size != 0»
@@ -34,12 +34,13 @@ For each table, we generate the following, in this order:
  1) Each of the columns of the table (for generated keys, the syntax is sligthly different)
  2) The FOREIGN KEY constraints (these are not mandatory)
  3) The CHECK constraints (these are not mandatory)
- 4) The UNIQUE constraint (depending if the key is GENERATED FROM)
- 5) The PRIMARY KEY constraint
+ 4) Any pre-defined enumerations
+ 5) The UNIQUE constraint (depending if the key is GENERATED FROM)
+ 6) The PRIMARY KEY constraint
  
- 6) The sequence and trigger for the generated keys, if needed
+ 7) The sequence and trigger for the generated keys, if needed
 «ENDREM»
-«DEFINE TableDefinition FOR Table-»
+«DEFINE TableDefinition(List[EnumDef] enums) FOR Table-»
 CREATE TABLE `«this.name»` (
 «IF isChild && finalKey().isGeneratedFrom-»
 	«LET finalKey().columns.first() AS c-»
@@ -47,17 +48,22 @@ CREATE TABLE `«this.name»` (
 	«ENDLET-»
 «ENDIF-»
 «FOREACH this.getColumns() AS c ITERATOR iter-»
-«IF finalKey().isGenerated && c.name == finalKey().columns.first().name-»
+«IF c.type == null-»
+	`«c.name»` «c.enumDef.type.getMysqlType()»«c.enumDef.type.getMysqlLength()» «c.enumDef.specifier.getMysqlSpecifier()»«IF !iter.lastIteration || getForeignKeyConstraints().size > 0 || getCheckConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+«ELSEIF finalKey().isGenerated && c.name == finalKey().columns.first().name-»
 	`«c.name»` «c.type.getMysqlType()»«c.type.getMysqlLength()» PRIMARY KEY AUTO_INCREMENT,
 «ELSE-»
 	`«c.name»` «c.type.getMysqlType()»«c.type.getMysqlLength()» «c.specifier.getMysqlSpecifier()»«IF !iter.lastIteration || getForeignKeyConstraints().size > 0 || getCheckConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
 «ENDIF-»
 «ENDFOREACH-»
 «FOREACH getForeignKeyConstraints() AS const-»
-	CONSTRAINT `«superTable!=null?"Child":""»«const.name»` FOREIGN KEY (`«const.columns.name.toString("`, `")»`) REFERENCES `«const.finalReferencedTable().name»`«IF const.foreignColumn!= null»(`«const.foreignColumn.name»`)«ELSE» (`«const.finalReferencedTable().finalKey().columns.name.toString("`, `")»`)«ENDIF»«IF getCheckConstraints().size > 0 || getUniquenessConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+	CONSTRAINT `«superTable!=null?"Child":""»«const.name»` FOREIGN KEY (`«const.columns.name.toString("`, `")»`) REFERENCES `«const.finalReferencedTable().name»`«IF const.foreignColumn!= null»(`«const.foreignColumn.name»`)«ELSE» (`«const.finalReferencedTable().finalKey().columns.name.toString("`, `")»`)«ENDIF»«IF getCheckConstraints().size > 0 || getColumnsWithEnumsInTable().size > 0 || getUniquenessConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
 «ENDFOREACH-»
 «FOREACH getCheckConstraints() AS const-»
 	CONSTRAINT `«superTable!=null?"Child":""»«const.name»` CHECK (`«const.column.name»` IN («const.possibleValues.getPossibleValuesAsSQL()»))«IF getUniquenessConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+«ENDFOREACH-»
+«FOREACH getColumnsWithEnumsInTable() AS c ITERATOR iter-»
+	CONSTRAINT `«this.name»«c.name»` CHECK (`«c.name»` IN («c.enumDef.possibleValues.getPossibleValuesAsSQL()»))«IF !iter.lastIteration || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
 «ENDFOREACH-»
 «FOREACH getUniquenessConstraints() AS const-»
 	CONSTRAINT `«superTable!=null?"Child":""»«const.name»` UNIQUE (`«const.columns.name.toString("`, `")»`)«IF finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»

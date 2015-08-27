@@ -108,13 +108,11 @@ import alma.acs.tmcdb.BACIPropArchMech;
 import alma.acs.tmcdb.BACIProperty;
 import alma.acs.tmcdb.ChannelMapping;
 import alma.acs.tmcdb.Component;
-import alma.acs.tmcdb.ComponentImplLang;
 import alma.acs.tmcdb.ComponentType;
 import alma.acs.tmcdb.Computer;
 import alma.acs.tmcdb.ComputerProcessorType;
 import alma.acs.tmcdb.Configuration;
 import alma.acs.tmcdb.Container;
-import alma.acs.tmcdb.ContainerImplLang;
 import alma.acs.tmcdb.ContainerStartupOption;
 import alma.acs.tmcdb.DomainsMapping;
 import alma.acs.tmcdb.Event;
@@ -123,6 +121,7 @@ import alma.acs.tmcdb.EventChannelConReliability;
 import alma.acs.tmcdb.EventChannelDiscardPolicy;
 import alma.acs.tmcdb.EventChannelEventReliability;
 import alma.acs.tmcdb.EventChannelOrderPolicy;
+import alma.acs.tmcdb.ImplLangEnum;
 import alma.acs.tmcdb.LoggingConfig;
 import alma.acs.tmcdb.Manager;
 import alma.acs.tmcdb.NamedLoggerConfig;
@@ -886,7 +885,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					container.setLoggingConfig(loggingConfig);
 					container.setComputer(hostComputer);
 					
-					container.setImplLang(ContainerImplLang.valueOfForEnum(readString(containerDAO, "ImplLang", "cpp"))); // cpp is default, since field is required
+					container.setImplLang(ImplLangEnum.valueOfForEnum(readString(containerDAO, "ImplLang", "cpp"))); // cpp is default, since field is required
 					container.setTypeModifiers(readString(containerDAO, "DeployInfo/TypeModifiers", null));
 					container.setStartOnDemand(Boolean.valueOf(readString(containerDAO, "DeployInfo/StartOnDemand", "false")));
 					
@@ -1036,7 +1035,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 								container.setConfiguration(config);
 								container.setLoggingConfig(loggingConfig);
 								container.setComputer(null);
-								container.setImplLang(ContainerImplLang.valueOfForEnum(readString(componentDAO, "ImplLang", "cpp"))); // cpp is default, since field is required
+								container.setImplLang(ImplLangEnum.valueOfForEnum(readString(componentDAO, "ImplLang", "cpp"))); // cpp is default, since field is required
 								container.setTypeModifiers(DUMMY_CONTAINER_FLAG);
 								container.setRealTime(false);
 								container.setRealTimeType(null);
@@ -1151,7 +1150,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					    component.setConfiguration(config);
 //					    component.setContainerId(componentContainerId);
 					    component.setContainer(tmpComponentContainer); // TODO verify this and clean up
-						component.setImplLang(ComponentImplLang.valueOfForEnum(readString(componentDAO, componentName+"/ImplLang", "cpp")));	// cpp is default, since field is required
+						component.setImplLang(ImplLangEnum.valueOfForEnum(readString(componentDAO, componentName+"/ImplLang", "cpp")));	// cpp is default, since field is required
 						component.setRealTime(false);
 						component.setCode(componentDAO.get_string(componentName+"/Code"));
 						component.setPath(path);

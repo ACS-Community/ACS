@@ -43,6 +43,8 @@ public abstract class AbstractTableInheritance {
 	protected Map<String, String> sequences;
 	protected Map<String, String> duplicatedForeignKeys;
 	protected Map<String, Map<String, String>> checkConstraints;
+	protected List<String> tablesImplementingIdentifiable;
+	protected List<String> tablesImplementingBackloggable;
 
 	/**
 	 * Returns the Java table name for the given sql-short table name
@@ -58,6 +60,19 @@ public abstract class AbstractTableInheritance {
 	 */
 	public String getKeynameLowercase(String table) { return keymap.get(table); }
 
+	
+	/**
+	 * @param table The name of the table
+	 * @return true if the class implementing this table needs to implement the Identifiable interface (needed for history)
+	 */
+	public boolean isIdentifiable(String table) {
+		return tablesImplementingIdentifiable.contains(table.toLowerCase());
+	}
+	
+	public boolean isBackloggable(String table) {
+		return tablesImplementingBackloggable.contains(table.toLowerCase());
+	}
+	
 	/**
 	 * Checks whether the indicated column of the given table is part of the pieces
 	 * that are supposed to generate the primary key. In the grammar, these are written
