@@ -72,3 +72,6 @@ s/logName="LOG_CompAct_Corba_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Corba
 s/logName="LOG_CompAct_Init_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Init_OK" TimeMillis="nnn"/g
 s/logName="LOG_CompAct_Instance_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Instance_OK" TimeMillis="nnn"/g
 s/logName="LOG_CompAct_Loading_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Loading_OK" TimeMillis="nnn"/g
+
+
+s/execution elapsed time 1.000000 sec/execution elapsed time 0.000000 sec/g
