@@ -10,7 +10,6 @@
 	<classpathentry kind="lib" path="lib/AcsCommandCenterEntities.jar"/>
 	<classpathentry kind="lib" path="lib/xtmodcoll-3.0.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/idl.jar"/>
-	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
@@ -43,9 +42,10 @@
 	<classpathentry kind="var" path="ACSROOT/lib/cdbrdb-pojos.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/hibernate3.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdb_rdb.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/mockito-core-1.9.5.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/objenesis-1.2.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/hamcrest-library-1.3.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb-3.6.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/mockito-core-1.10.19.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
