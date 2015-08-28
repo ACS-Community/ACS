@@ -40,6 +40,10 @@ ENDNOTE
 
 MODELNAME SwCore
 
+ENUMERATIONS
+	ImplLangEnum                LONGVARCHAR(6)          IN ('java', 'cpp', 'py') NOT NULL
+ENDENUMERATIONS
+
 // The ComponentType  characterizes a "type" of component.
 // For example, the DataCapture component is dynamically created by Control
 // whenever a scheduling block is executed.
@@ -238,7 +242,7 @@ TABLE Container
     Path                    LONGNAME                NOT NULL 
     ConfigurationId         INTEGER                 NOT NULL
     LoggingConfigId         INTEGER                 NOT NULL
-    ImplLang                LONGVARCHAR (6)         NOT NULL
+    ImplLang                ImplLangEnum
     RealTime                BOOLEAN                 DEFAULT FALSE
     RealTimeType            LONGVARCHAR (4)         DEFAULT 'NONE'
     KernelModuleLocation    TEXT                    NULL
@@ -321,7 +325,7 @@ TABLE Component
      ComponentName           LONGNAME                NOT NULL
      ConfigurationId         INTEGER                 NOT NULL
      ContainerId             INTEGER                 NULL
-     ImplLang                LONGVARCHAR (6)         NOT NULL
+     ImplLang                ImplLangEnum
      RealTime                BOOLEAN                 NOT NULL
      Code                    LONGNAME                NOT NULL
      Path                    LONGNAME                NOT NULL

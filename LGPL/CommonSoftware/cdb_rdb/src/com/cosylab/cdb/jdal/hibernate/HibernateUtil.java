@@ -30,7 +30,6 @@ import org.hibernate.Interceptor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
 
@@ -103,7 +102,7 @@ public class HibernateUtil {
 		this.logger = logger;
 	    // Create the initial SessionFactory from the default configuration files
         try {
-            configuration = new AnnotationConfiguration();
+            configuration = new Configuration();
             sessionFactory = configuration.configure(getConfigurationFileName()).buildSessionFactory();
             // We could also let Hibernate bind it to JNDI:
             // configuration.configure().buildSessionFactory()
@@ -127,7 +126,7 @@ public class HibernateUtil {
 	 */
 	public void setConfiguration(Properties extraProperties) {
         try {
-            Configuration config = new AnnotationConfiguration();
+            Configuration config = new Configuration();
             config.configure(getConfigurationFileName());
             config.addProperties(extraProperties);
             sessionFactory = config.buildSessionFactory();
