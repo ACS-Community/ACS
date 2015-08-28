@@ -1,5 +1,12 @@
 import tmcdbTables;
 
+boolean hasEnumForColumn(List[EnumDef] this, String name):
+	if this.exists( e | e.name == name ) then true
+	else false;
+	
+List[EnumDef] getEnumForColumn(List[EnumDef] this, String name):
+	this.select( e | e.name == name );
+
 
 String getPossibleValuesAsSQL(PossibleValues this):
 	if IntegerPossibleValues.isInstance(this)
