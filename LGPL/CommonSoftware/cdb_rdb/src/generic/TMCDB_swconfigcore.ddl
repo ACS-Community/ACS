@@ -212,7 +212,7 @@ ENDTABLE
 //                  HSO TODO: The separation of container name and path seems not used in practice. Should we go back to just one field that can contain slashes, like the CDB has it?
 // ConfigurationId  Reference to the Configuration.
 // LoggingConfigId  Link to the logging configuration for a container.
-// ImplLang         The programming language (PL) this container is written in (see constraint ContainerImplLang below).
+// ImplLang         The programming language (PL) this container is written in (see constraint defined in the ImplLangEnum ENUMERATIONS). 
 //                  The container PL must match the component PL for all components configured to run in this container.
 // KernelModule     Contains a comma-separated list of kernel module names to be loaded.
 // ComputerId       Links to the computer on which this container is supposed to run.
@@ -261,7 +261,6 @@ TABLE Container
     CONSTRAINT ContainerConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
     CONSTRAINT ContainerLoggingConfig FOREIGN KEY (LoggingConfigId) REFERENCES LoggingConfig CASCADING AGGREGATION
     CONSTRAINT ContainerComputer FOREIGN KEY (ComputerId) REFERENCES Computer CASCADING AGGREGATION
-    CONSTRAINT ContainerImplLang CHECK (ImplLang IN ('java', 'cpp', 'py'))
     CONSTRAINT ContainerRealTimeType CHECK (RealTimeType IN ('NONE', 'ABM', 'CORR'))
 ENDTABLE
 
@@ -304,7 +303,7 @@ ENDTABLE
 // ContainerId      Statically defined component instances link to the container they must be run in (Container.ContainerId). 
 //                  Otherwise -1 to indicate that the container will be assigned only at runtime. 
 //                  We do not use NULL because with JDBC it would be awkward to distinguish NULL from 0.
-// ImplLang         the PL this component is written in (see constraint ComponentImplLang below).
+// ImplLang         the PL this component is written in (see constraint defined in the ImplLangEnum ENUMERATIONS).
 //                  This attribute be redundant with Container.Type for all static components and some dynamic components.
 //                  Other dynamic components only get a container assigned at runtime, in which case it is useful to keep the component PL language separately.
 // ComponentTypeId  References the IDL type, such as "IDL:alma/MOUNT_ACS/Mount:1.0"
@@ -342,7 +341,6 @@ TABLE Component
      CONSTRAINT ComponentIDL FOREIGN KEY (ComponentTypeId) REFERENCES ComponentType 
      CONSTRAINT ComponentContainer FOREIGN KEY (ContainerId) REFERENCES Container 
      CONSTRAINT ComponentConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
-     CONSTRAINT ComponentImplLang CHECK (ImplLang IN ('java', 'cpp', 'py'))
 ENDTABLE
 
 // Entries in the BACIProperty table describe configuration for a single baci property.
