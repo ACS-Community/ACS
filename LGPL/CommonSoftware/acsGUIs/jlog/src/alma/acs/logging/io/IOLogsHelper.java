@@ -119,6 +119,7 @@ public class IOLogsHelper implements IOPorgressListener {
 			} finally {
 				progressMonitor.close();
 				progressMonitor=null;
+				isPerformingIO=false;
 			}
 			return null;
 		}
@@ -182,6 +183,7 @@ public class IOLogsHelper implements IOPorgressListener {
 				System.err.println("Exception downloading URL: "+t.getMessage());
 				t.printStackTrace(System.err);
 				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception downloading URL "+t.getMessage(),"Error downloading",JOptionPane.ERROR_MESSAGE);
+				isPerformingIO=false;
 				return null;
 			} finally {
 				progressMonitor.close();
@@ -205,7 +207,7 @@ public class IOLogsHelper implements IOPorgressListener {
 				loadLogs(br,logListener,errorListener,len);
 			} catch (Throwable fnfe) {
 				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), fnfe.getMessage(), "Error opening "+fileToLoad, JOptionPane.ERROR_MESSAGE);
-			}			
+			}	 		
 			return null;
 		}
 	}
@@ -255,6 +257,7 @@ public class IOLogsHelper implements IOPorgressListener {
 				System.err.println("Exception while saving logs: "+e.getMessage());
 				e.printStackTrace(System.err);
 				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
+				isPerformingIO=false;
 				return null;
 			}
 			progressMonitor= new ProgressMonitor(loggingClient.getContentPane(),"Saving logs...",null,0,cache.getSize());
@@ -271,6 +274,7 @@ public class IOLogsHelper implements IOPorgressListener {
 			} finally {
 				progressMonitor.close();
 				progressMonitor=null;
+				isPerformingIO=false;
 			}
 			return null;
 		}
@@ -313,6 +317,13 @@ public class IOLogsHelper implements IOPorgressListener {
 	private int logsWritten;
 	
 	/**
+	 * This variable is <code>true</code> when a I/O is in progress
+	 * and false otherwise. It will be used by the logging window to enable/disable
+	 * menu items.  
+	 */
+	private volatile boolean isPerformingIO=false;
+	
+	/**
 	 * Build an IOCacheHelper object
 	 *
 	 * @throws Exception IN case of error building the {@link IOHelper}
@@ -347,6 +358,7 @@ public class IOLogsHelper implements IOPorgressListener {
 		if (br==null || logListener==null|| errorListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
+		isPerformingIO=true;
 		executor.submit(new LoadLogs( br, logListener, errorListener, progressRange));
 	}
 	
@@ -370,6 +382,7 @@ public class IOLogsHelper implements IOPorgressListener {
 		if (url==null || logListener==null|| errorListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
+		isPerformingIO=true;
 		executor.submit(new LoadUrl(url,logListener,errorListener));
 	}
 	
@@ -420,6 +433,7 @@ public class IOLogsHelper implements IOPorgressListener {
 		if (cache==null) {
 			throw new IllegalArgumentException("The cache can't be null");
 		}
+		isPerformingIO=true;
 		executor.submit(new SaveLogs(fileName,	compress, level, cache));
 	}
 	
@@ -492,7 +506,7 @@ public class IOLogsHelper implements IOPorgressListener {
 	 * @return <code>true</code> if a load/save is in progress
 	 */
 	public boolean isPerformingIO() {
-		return false;
+		return isPerformingIO;
 	}
 
 	public IOHelper getIoHelper() {
