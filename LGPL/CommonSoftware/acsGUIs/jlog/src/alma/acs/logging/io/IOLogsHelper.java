@@ -23,10 +23,16 @@ package alma.acs.logging.io;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JOptionPane;
 import javax.swing.ProgressMonitor;
+import javax.swing.SwingUtilities;
 
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
@@ -61,7 +67,7 @@ public class IOLogsHelper implements IOPorgressListener {
 	 * @author acaproni
 	 *
 	 */
-	final class LoadLogs extends IOThread {
+	final class LoadLogs implements Callable<Void> {
 		
 		private final BufferedReader br;
 		private final ACSRemoteLogListener logListener;
@@ -84,15 +90,16 @@ public class IOLogsHelper implements IOPorgressListener {
 		}
 		
 		/**
-		 * @see Thread
+		 * @see Callable
 		 */
-		public void run() {
+		public Void call() throws Exception {
 			// Set the progress range
 			if (range<=0) {
 				progressMonitor = new ProgressMonitor(loggingClient.getContentPane(),"Loading logs...",null,0,Integer.MAX_VALUE);
 			} else {
 				progressMonitor= new ProgressMonitor(loggingClient.getContentPane(),"Loading logs...",null,0,range);
 			}
+			progressMonitor.setMillisToPopup(500);
 			
 			// Apply discard level, filters and audience to the IOHelper
 			LCEngine engine = loggingClient.getEngine();
@@ -105,15 +112,103 @@ public class IOLogsHelper implements IOPorgressListener {
 			bytesRead=0;
 			try {
 				ioHelper.loadLogs(br, logListener, null, errorListener, IOLogsHelper.this);
-			} catch (Exception ioe) {
+			} catch (Throwable ioe) {
 				System.err.println("Exception loading the logs: "+ioe.getMessage());
 				ioe.printStackTrace(System.err);
 				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception loading "+ioe.getMessage(),"Error loading",JOptionPane.ERROR_MESSAGE);
 			} finally {
 				progressMonitor.close();
+				progressMonitor=null;
 			}
+			return null;
 		}
 	};
+	
+	/**
+	 * A class to download logs from a remote URL.
+	 * The loading of logs from URL si done in 2 steps:
+	 * <OL>
+	 * 	<LI>Download the remote file in a temporary file
+	 * 	<Li>Read the downloaded file
+	 * </OL>
+	 * This is to be able to download compressed files (gz) transparently.
+	 * 
+	 * @see UrlDownloader
+	 * @author acaproni
+	 * @since 2015.8
+	 * 
+	 */
+	public class LoadUrl implements Callable<Void> {
+		
+		// The URL to download
+		private final URL url;
+		
+		private final ACSRemoteLogListener logListener;
+		private final ACSRemoteErrorListener errorListener;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param url The URL to download 
+		 * @param logListener  The callback for each new log read from the IO
+		 * @param errorListener  The listener of errors
+		 */
+		public LoadUrl(URL url, ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener) {
+			if (url==null) {
+				throw new IllegalArgumentException("Can't download from a NULL URL!");
+			}
+			this.url=url;
+			this.logListener=logListener;
+			this.errorListener=errorListener;
+		}
+		
+		public Void call() throws Exception {
+			
+			// Set the progress range
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					progressMonitor = new ProgressMonitor(loggingClient.getContentPane(),"Downloading from URL...",null,0,1);
+					progressMonitor.setMillisToPopup(250);
+				}
+			});
+			
+			// Download the remote URL
+			String fileToLoad;
+			try {
+				UrlDownloader urlDownloader = new UrlDownloader(url);
+				fileToLoad=urlDownloader.download();	
+			}  catch (Throwable t) {
+				System.err.println("Exception downloading URL: "+t.getMessage());
+				t.printStackTrace(System.err);
+				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception downloading URL "+t.getMessage(),"Error downloading",JOptionPane.ERROR_MESSAGE);
+				return null;
+			} finally {
+				progressMonitor.close();
+				progressMonitor=null;
+			}
+			
+			System.out.println("File downloaded "+fileToLoad);
+			
+			// Open and read the file
+			BufferedReader br = null;
+			int len=0;
+			try {
+				br=getIoHelper().getBufferedReader(fileToLoad);
+				File f = new File(fileToLoad);
+				f.deleteOnExit();
+				if (fileToLoad.toLowerCase().endsWith(".gz")) {
+					len=0; 
+				} else {
+					len=(int)f.length();
+				}
+				loadLogs(br,logListener,errorListener,len);
+			} catch (Throwable fnfe) {
+				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), fnfe.getMessage(), "Error opening "+fileToLoad, JOptionPane.ERROR_MESSAGE);
+			}			
+			return null;
+		}
+	}
 	
 	/**
 	 * The thread to save logs
@@ -121,7 +216,7 @@ public class IOLogsHelper implements IOPorgressListener {
 	 * @author acaproni
 	 *
 	 */
-	final class SaveLogs extends IOThread {
+	final class SaveLogs implements Callable<Void> {
 		
 		private final String fileName;
 		private final boolean compress;
@@ -150,7 +245,7 @@ public class IOLogsHelper implements IOPorgressListener {
 		/**
 		 * @see Thread
 		 */
-		public void run() {
+		public Void call() throws Exception {
 
 			// Open the output file
 			BufferedWriter outBW=null;
@@ -160,7 +255,7 @@ public class IOLogsHelper implements IOPorgressListener {
 				System.err.println("Exception while saving logs: "+e.getMessage());
 				e.printStackTrace(System.err);
 				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
-				return;
+				return null;
 			}
 			progressMonitor= new ProgressMonitor(loggingClient.getContentPane(),"Saving logs...",null,0,cache.getSize());
 			
@@ -169,7 +264,7 @@ public class IOLogsHelper implements IOPorgressListener {
 				ioHelper.writeHeader(outBW);
 				ioHelper.saveLogs(outBW, cache.iterator(), IOLogsHelper.this);
 				ioHelper.terminateSave(outBW, true);
-			} catch (IOException e) {
+			} catch (Throwable e) {
 				System.err.println("Exception while saving logs: "+e.getMessage());
 				e.printStackTrace(System.err);
 				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
@@ -177,16 +272,15 @@ public class IOLogsHelper implements IOPorgressListener {
 				progressMonitor.close();
 				progressMonitor=null;
 			}
-			
+			return null;
 		}
 		
 	}
 	
 	/**
-	 * The <code>Thread</code> executing I/O
-	 * @return
+	 * We want one single thread to execute IO tasks.
 	 */
-	private volatile IOThread thread=null;
+	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 	
 	/**
 	 * The dialog
@@ -253,12 +347,30 @@ public class IOLogsHelper implements IOPorgressListener {
 		if (br==null || logListener==null|| errorListener==null) {
 			throw new IllegalArgumentException("Null parameter received!");
 		}
-		if (thread!=null && thread.isAlive()) {
-			throw new IllegalStateException("An I/O is already in progress");
+		executor.submit(new LoadLogs( br, logListener, errorListener, progressRange));
+	}
+	
+	/**
+	 * Load logs from the passed url.
+	 * 
+	 * Loading logs from url is done in 2 steps:
+	 * <OL>
+	 * 	<LI>Download the file
+	 * 	<LI>Load the file
+	 * </OL>
+	 * 
+	 * Downloading the file and the reading it allows to download and read compressed (gz)
+	 * files.
+	 * 
+	 * @param logListener The callback for each new log read from the IO
+	 * @param errorListener The listener of errors
+	 * @param url The url to read
+	 */
+	public void loadLogsFromUrl(URL url, ACSRemoteLogListener logListener, ACSRemoteErrorListener errorListener) {
+		if (url==null || logListener==null|| errorListener==null) {
+			throw new IllegalArgumentException("Null parameter received!");
 		}
-		
-		thread = new LoadLogs( br, logListener, errorListener, progressRange);
-		thread.start();
+		executor.submit(new LoadUrl(url,logListener,errorListener));
 	}
 	
 	/**
@@ -308,13 +420,7 @@ public class IOLogsHelper implements IOPorgressListener {
 		if (cache==null) {
 			throw new IllegalArgumentException("The cache can't be null");
 		}
-		// Check if the thread is alive
-		if (thread!=null && thread.isAlive()) {
-			throw new IllegalStateException("An I/O is already in progress");
-		}
-		
-		thread = new SaveLogs(fileName,	compress, level, cache);
-		thread.start();
+		executor.submit(new SaveLogs(fileName,	compress, level, cache));
 	}
 	
 	/**
@@ -327,10 +433,7 @@ public class IOLogsHelper implements IOPorgressListener {
 	 * @param sync If it is <code>true</code> wait the termination of the threads before returning
 	 */
 	public void done(boolean sync) {
-		if (thread!=null) {
-			thread.stopThread(sync);
-			thread=null;	
-		}
+		executor.shutdownNow();
 	}
 	
 	/**
@@ -389,10 +492,7 @@ public class IOLogsHelper implements IOPorgressListener {
 	 * @return <code>true</code> if a load/save is in progress
 	 */
 	public boolean isPerformingIO() {
-		if (thread==null) {
-			return false;
-		}
-		return thread.isAlive();
+		return false;
 	}
 
 	public IOHelper getIoHelper() {
