@@ -89,9 +89,9 @@ public class IOLogsHelper implements IOPorgressListener {
 		public void run() {
 			// Set the progress range
 			if (range<=0) {
-				progressMonitor = new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,Integer.MAX_VALUE);
+				progressMonitor = new ProgressMonitor(loggingClient.getContentPane(),"Loading logs...",null,0,Integer.MAX_VALUE);
 			} else {
-				progressMonitor= new ProgressMonitor(loggingClient.getLogEntryTable(),"Loading logs...",null,0,range);
+				progressMonitor= new ProgressMonitor(loggingClient.getContentPane(),"Loading logs...",null,0,range);
 			}
 			
 			// Apply discard level, filters and audience to the IOHelper
@@ -108,9 +108,10 @@ public class IOLogsHelper implements IOPorgressListener {
 			} catch (Exception ioe) {
 				System.err.println("Exception loading the logs: "+ioe.getMessage());
 				ioe.printStackTrace(System.err);
-				JOptionPane.showMessageDialog(null, "Exception loading "+ioe.getMessage(),"Error loading",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception loading "+ioe.getMessage(),"Error loading",JOptionPane.ERROR_MESSAGE);
+			} finally {
+				progressMonitor.close();
 			}
-			progressMonitor.close();
 		}
 	};
 	
@@ -158,10 +159,10 @@ public class IOLogsHelper implements IOPorgressListener {
 			} catch (IOException e) {
 				System.err.println("Exception while saving logs: "+e.getMessage());
 				e.printStackTrace(System.err);
-				JOptionPane.showMessageDialog(null, "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			progressMonitor= new ProgressMonitor(loggingClient.getLogEntryTable(),"Saving logs...",null,0,cache.getSize());
+			progressMonitor= new ProgressMonitor(loggingClient.getContentPane(),"Saving logs...",null,0,cache.getSize());
 			
 			logsWritten=0;
 			try {
@@ -171,10 +172,12 @@ public class IOLogsHelper implements IOPorgressListener {
 			} catch (IOException e) {
 				System.err.println("Exception while saving logs: "+e.getMessage());
 				e.printStackTrace(System.err);
-				JOptionPane.showMessageDialog(null, "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception saving "+e.getMessage(),"Error saving",JOptionPane.ERROR_MESSAGE);
+			} finally {
+				progressMonitor.close();
+				progressMonitor=null;
 			}
-			progressMonitor.close();
-			progressMonitor=null;
+			
 		}
 		
 	}

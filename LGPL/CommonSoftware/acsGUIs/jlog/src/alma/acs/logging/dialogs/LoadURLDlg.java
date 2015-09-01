@@ -22,7 +22,6 @@
 package alma.acs.logging.dialogs;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,7 +30,6 @@ import java.net.URL;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -73,10 +71,7 @@ public class LoadURLDlg extends JDialog implements ActionListener {
 	 * @param initialValue The initial value of the URL
 	 */
 	public LoadURLDlg(String initialValue, LoggingClient client) {
-		super();
-		if (client==null) {
-			throw new IllegalArgumentException("Invalid null LoggingClient!");
-		}
+		super(client.getLogFrame());
 		loggingClient=client;
 		setTitle("Load from URL");
 		setModal(true);

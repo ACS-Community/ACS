@@ -35,7 +35,6 @@ import alma.acs.logging.io.LoadFileChooser;
 import alma.acs.logging.io.SaveFileChooser;
 
 import com.cosylab.logging.LoggingClient;
-import com.cosylab.logging.client.cache.LogCacheException;
 
 /**
  * Extends the <code>LogEntryTableModelBase</code> adding I/O, deletion of logs
@@ -116,7 +115,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 			in = new java.io.BufferedReader(new java.io.InputStreamReader(url.openStream()), 16384);
 		} catch (Throwable t) {
 				t.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Exception opening "
+				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception opening "
 						+ t.getMessage(), "Error opening " + url.toString(),
 						JOptionPane.ERROR_MESSAGE);
 				return;
@@ -129,7 +128,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 			getIOHelper().loadLogs(in, loggingClient, loggingClient, 0);
 		} catch (Throwable t) {
 			t.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Exception reading "
+			JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception reading "
 					+ t.getMessage(), "Error reading " + url.toString(),
 					JOptionPane.ERROR_MESSAGE);
 		} finally {
@@ -181,8 +180,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 			isSuspended = true;
 			getIOHelper().loadLogs(br,loggingClient,loggingClient,len);
 		} catch (Throwable fnfe) {
-			JOptionPane.showInternalMessageDialog(loggingClient.getLogEntryTable(), fnfe.getMessage(), "Error opening "+fileName, JOptionPane.ERROR_MESSAGE);
-			fnfe.printStackTrace();
+			JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), fnfe.getMessage(), "Error opening "+fileName, JOptionPane.ERROR_MESSAGE);
 		} 
 	}
 
@@ -191,7 +189,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 */
 	public void saveFile() {
 		
-		SaveFileChooser fc = new SaveFileChooser("Save",currentDir);
+		SaveFileChooser fc = new SaveFileChooser("Save",currentDir,loggingClient);
 		if (fc.getSelectedFile()!=null) {
 			try {
 				String filename = fc.getSelectedFile().getAbsolutePath();
@@ -206,12 +204,12 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 				// Checks whether the selected file exists
 				File fileToSave = new File(filename);
 				if (fileToSave.exists()) {
-					int act = JOptionPane.showConfirmDialog(null, filename + " already exists.  Overwrite?");
+					int act = JOptionPane.showInternalConfirmDialog(loggingClient.getContentPane(), "<HTML><BODY><CODE>"+filename + "</CODE> already exists.<BR>Overwrite?");
 					
 					// Checks whether a file exists
 					while (act == JOptionPane.NO_OPTION) {
-						fc = new SaveFileChooser("Save",currentDir);
-						act = JOptionPane.showConfirmDialog(null, filename + " already exists.  Overwrite?");
+						fc = new SaveFileChooser("Save",currentDir,loggingClient);
+						act = JOptionPane.showInternalConfirmDialog(loggingClient.getContentPane(), "<HTML><BODY><CODE>"+filename + "</CODE> already exists.<BR>Overwrite?");
 					}
 		
 					// Canceled saving action
@@ -244,7 +242,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		try {
 			getIOHelper().saveLogs(fileName,compress,level,allLogs);
 	 	} catch (Exception e) {
-	 		JOptionPane.showMessageDialog(null, "Exception saving the file: "+e.getMessage(),"Error saving "+fileName,JOptionPane.ERROR_MESSAGE);
+	 		JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception saving the file: "+e.getMessage(),"Error saving "+fileName,JOptionPane.ERROR_MESSAGE);
 	 	};
 	}
 	

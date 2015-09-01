@@ -18,6 +18,7 @@
 */
 package alma.acs.logging.io;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -50,9 +51,10 @@ public class LogsFileChooser extends JDialog implements ActionListener {
 	 * @param currentDir The dir whose content is shown at startup
 	 * @param load <code>true</code> if the file chooser is used to load,
 	 * 			<code>false</code> otherwise
+	 * @param win The window to show the dialog into. Can be <code>null</code>.
 	 */
-	public LogsFileChooser(String title, File currentDir, boolean load) {
-		super();
+	public LogsFileChooser(String title, File currentDir, boolean load, Window win) {
+		super(win);
 		setTitle(title);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
