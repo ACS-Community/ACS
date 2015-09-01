@@ -101,31 +101,22 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	}
 	
 	public void loadFromURL() {
-		LoadURLDlg urlDlg = new LoadURLDlg("http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/tmp/all_logs.xml",loggingClient);
+		LoadURLDlg urlDlg = new LoadURLDlg(
+				"http://websqa.hq.eso.org/alma/snapshotRHE/ACS-Reports/TestCoverage-Linux/ACS/LGPL/CommonSoftware/jcont/test/tmp/all_logs.xml",
+				loggingClient);
 		urlDlg.setVisible(true);
 		URL url = urlDlg.getURL();
 		if (url==null) {
 			// The user pressed Cancel
 			return;
 		}
-		System.out.println("URL: "+url.toString());
+		System.out.println("Loading from URL: "+url.toString());
 		
-		java.io.BufferedReader in = null;
-		try {
-			in = new java.io.BufferedReader(new java.io.InputStreamReader(url.openStream()), 16384);
-		} catch (Throwable t) {
-				t.printStackTrace();
-				JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception opening "
-						+ t.getMessage(), "Error opening " + url.toString(),
-						JOptionPane.ERROR_MESSAGE);
-				return;
-		}
-
 		try {
 			isSuspended = true;
 			clearAll();
-
-			getIOHelper().loadLogs(in, loggingClient, loggingClient, 0);
+			
+			getIOHelper().loadLogsFromUrl(url, loggingClient, loggingClient);
 		} catch (Throwable t) {
 			t.printStackTrace();
 			JOptionPane.showInternalMessageDialog(loggingClient.getContentPane(), "Exception reading "
@@ -134,6 +125,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		} finally {
 			isSuspended = false;
 		}
+
 	}
 	
 	
