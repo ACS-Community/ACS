@@ -80,4 +80,71 @@ PROLOGUE acsstartupTATPrologue
                                        "acsstartupTest_nslist" "@SLEEP 2" \
                                        "acsNamingService -b 9 -k"
 
+15 testNotifyServicePorts "acsNamingService -b 6 -s" "@SLEEP 2" \
+                          "acsNotifyService -b 6 -s -w -n TEST01" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST02" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST03" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST04" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST05" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST06" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST07" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST08" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST09" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST10" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST11" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST12" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST13" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST14" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST15" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST16" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST17" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST18" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST19" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST20" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST21" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST22" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST23" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST24" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST25" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST26" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST27" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST28" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST29" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST30" "@SLEEP 1"  \
+                          "acsNotifyService -b 6 -s -w -n TEST31" "@SLEEP 10" \
+                          "acsNotifyService -b 6 -k -n TEST01" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST02" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST03" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST04" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST05" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST06" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST07" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST08" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST09" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST10" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST11" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST12" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST13" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST14" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST15" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST16" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST17" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST18" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST19" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST20" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST21" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST22" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST23" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST24" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST25" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST26" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST27" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST28" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST29" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST30" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST31" "@SLEEP 2" \
+                          "acsNamingService -b 6 -k" \
+                          "acsstartupCatNotifyServicePorts"
+
+
 EPILOGUE acsstartupTATEpilogue
