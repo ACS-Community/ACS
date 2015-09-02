@@ -70,5 +70,5 @@
 # Note that after running this test, the content of ../bin/ will be gone!
 # To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
 # "make clean" with the MAKE_FROMTAT variable set
-#!#22 PROLOGUE "touch core removeMe~" \
-#!#   makeCleanDist2 "/usr/bin/make -f Makefile clean_dist MAKE_FROMTAT=1" "@SLEEP 2" "/bin/ls core removeMe~"
+22 PROLOGUE "touch core removeMe~" \
+   makeCleanDist2 "/usr/bin/make -f Makefile clean_dist MAKE_FROMTAT=1" "@SLEEP 2" "/bin/ls core removeMe~"

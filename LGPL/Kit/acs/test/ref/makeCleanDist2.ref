@@ -1,6 +1,6 @@
 1 - Cleaning up . . . .
 2 - /bin/ls: core: No such file or directory
 1 -  .Cleaning empty directories...
-2 - /bin/ls: *~: No such file or directory
+2 - /bin/ls: removeMe~: No such file or directory
 1 -  . . . clean done
 1 -  . . . clean_dist done

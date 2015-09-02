@@ -1596,10 +1596,11 @@ clean_dist: clean  $(CLEAN_DIST_TARGET) clean_tat_session
 
 
 .PHONY : clean_all
+# ICT-5703: execute find as intended (i.e. not only using the last pattern in the list)
 clean_all: $(CLEAN_TARGET)
 	-@$(ECHO) "Cleaning up .\c"
 	-@$(ECHO) " .\c"
-	-$(AT)find .. -name \#\* -o -name core -o -name \*\.gdb_history -print | $(XARGS) -i $(RM) {}
+	-$(AT)find .. \( -name \#\* -o -name core -o -name \*\.gdb_history \) -print | $(XARGS) -i $(RM) {}
 ifneq ($(strip $(MANSECTIONS)),)
 	-$(AT)  for i in $(MANSECTIONS) ; \
 		do \
@@ -1660,16 +1661,22 @@ clean_tat_session:
 CLEAN_DIST_TARGET += clean_dist_all
 .PHONY : clean_dist_all
 # ICT-5630: do not remove directories that contain only symlinks
+#    (Note: "ls -A <dir>" is about 15x faster than "find <dir> ( -type f -o -type l )"
+#     and still 20% faster than "find <dir> -empty")" ...)
+# ICT-5703: execute find as intended (i.e. not only using the last pattern in the list)
 clean_dist_all:
 	-@$(ECHO) " .\c"
-	-$(AT)find .. -name \*\.o -o -name \*\~ -o  -name \.\*\~ -o -name \*\.$(SHLIB_EXT) -o -name \*\.sl -print | $(XARGS) -i $(RM) {}    $(OUTPUT)
+	-$(AT)if [ "$(SHLIB_EXT)" == "" ]; then \
+	    find .. -name \*\.o -o -name \*\~ -o -name \.\*\~ | $(XARGS) -i $(RM) {}    $(OUTPUT) ; \
+	else \
+	    find .. -name \*\.o -o -name \*\~ -o -name \.\*\~ -o -name \*\.$(SHLIB_EXT) | $(XARGS) -i $(RM) {}    $(OUTPUT); \
+	fi
 	$(AT)echo "Cleaning empty directories..."
 ifneq ($(strip $(MANSECTIONS)),)
 	$(AT) for i in $(MANSECTIONS) l ; \
 	do \
 	    if [ -d ../man/man$${i} ]; then \
-	        alpha=`find ../man/man$${i} \\( -type f -o -type l \\) ! -path '*/CVS/*' ! -path '*/.svn/*'` ; \
-	        if [ "$${alpha}" == "" ]; then \
+	        if [ "`/bin/ls -A ../man/man$${i}`" == "" ]; then \
 	            $(RM) ../man/man$${i} ;\
 	        fi; \
 	    fi; \
@@ -1678,13 +1685,11 @@ endif
 	$(AT)for dir in $(foreach dir, $(CREATE_DIRS) man, $(dir)); \
 	do \
 	    if [ -d ../$${dir} ];  then \
-	        alpha=`find ../$${dir} \\( -type f -o -type l \\) ! -path '*/CVS/*' ! -path '*/.svn/*'` ; \
-	        if [ "$${alpha}" == "" ]; then \
+	        if [ "`/bin/ls -A ../$${dir}`" == "" ]; then \
 	            $(RM) ../$${dir} ;\
 		fi; \
 	    fi; \
 	done
-
 
 
 # define PHONY all names used as targets
@@ -1714,8 +1719,11 @@ includes_begin:
 install_include_%:	
 # COMP-498: Need to find subdir-location of include file
 # COMP-6627: cleaner exclusion of CVS/ and .svn/ administrative subdirectories.
+# ICT-5703: use precedence rules of find properly (note that the previous implementation also produced 
+#   the same result, but just by "coincidence", due to the presence of the -printf action. The current
+#   implementation is more logical/readable and will also work without such additional action).
 # The shell code here below to determine how many hits is much faster than piping tFile into "wc -w" !
-	$(AT)tFile=`(cd ../include; find . \( -type d -name CVS -prune -o -name .svn -prune \) -o -name $* -printf "%p ")` ; \
+	$(AT)tFile=`(cd ../include; find . \( ! \( -type d -name CVS -prune -o -name .svn -prune \) \) -name $* -printf "%p ")` ; \
 	nrHits=0; for x in $${tFile}; do (( ++nrHits )); done; \
 	if [ $${nrHits} -eq 1 ]; then \
 		tDir=`dirname $${tFile}` ;\
