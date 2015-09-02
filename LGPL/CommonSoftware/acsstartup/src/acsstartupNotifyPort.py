@@ -63,6 +63,8 @@ from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
 __DEBUG__ = False
 container_file = None
 BASESLEEPTIME = 127
+MIN_OFFSET_PORT=20
+MAX_OFFSET_PORT=50
 
 #-----------------------------------------------------------------------------
 #--Functions
@@ -231,7 +233,7 @@ def portNumberAlreadyUsed(port_number, host,
         return 1
 
 #-----------------------------------------------------------------------------
-def coercePortNumber(port_number):
+def coercePortNumber(port_number,cl_baseport):
     '''
     This helper function takes a port number which can be in string or integer
     format and converts it to an integer. In the event of any failure, it 
@@ -239,7 +241,7 @@ def coercePortNumber(port_number):
     from the ACS_INSTANCE, this method handles that as well.
     
     Params: port_number port number. Can be absolute (i.e., "3025") or dynamic 
-    (i.e., "0"-"9").
+    (i.e., "0"-"29"). cl_baseport base port.
     
     Returns: the port number in integer format or None if there was some sort
     of failure
@@ -252,8 +254,8 @@ def coercePortNumber(port_number):
         return None
     
     #we allow the possibility the port is specified but still dynamic
-    if port_number>=0 and port_number<10:
-        port_number = port_number + 20 + cl_baseport*100 + 3000
+    if port_number>=0 and port_number<(MAX_OFFSET_PORT - MIN_OFFSET_PORT):
+        port_number = port_number + MIN_OFFSET_PORT + cl_baseport*100 + 3000
         if __DEBUG__:
             stderr.write("port_number is dynamic:" +
                          str(port_number) + "\n")
@@ -270,8 +272,8 @@ def getNextAvailablePort(host, ports_dict, hosts_dict, baseport):
     
     ret_val = None
 
-    min_tcp = baseport*100 + 3000 + 20
-    max_tcp = baseport*100 + 3000 + 30
+    min_tcp = baseport*100 + 3000 + MIN_OFFSET_PORT
+    max_tcp = baseport*100 + 3000 + MAX_OFFSET_PORT
     
     #ignore odd-numbered ports
     for i in range(min_tcp,
@@ -394,7 +396,7 @@ Setting this flag overrides the value of $ACS_LOG_STDOUT.
         newPort = int(cl_port)
         
         #try to coerce the port number into a proper TCP port number
-        newPort = coercePortNumber(newPort)
+        newPort = coercePortNumber(newPort,cl_baseport)
     else:
         newPort=None
     
