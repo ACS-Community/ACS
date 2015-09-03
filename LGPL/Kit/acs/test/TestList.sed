@@ -1,4 +1,4 @@
-# Useful/necessary for the acsMakeInstall* tests only!
+# Useful/necessary for the acsMakeInstall* and makeCleanDist2 tests only!
 
 # Replace each of the used subdectories for this duplicateFile
 # by a generic name (<subdir>), as we are not sure in which order
@@ -17,3 +17,7 @@ s/\/.*\/acs\/test/<modpath>\/test/
 # The "Entering directory" and "Leaving directory" messages are stripped off by TestList.grep,
 # so what is left is to fake output from a single make level.
 s/make\[1\]:/make:/
+
+# The output from /bin/ls for non-existing files is different between RHEL 5.x and 6.x
+# (RHEL 6.x prepends "cannot access " to "<filename>: No such file or directory")
+s/ls: cannot access /ls: /
