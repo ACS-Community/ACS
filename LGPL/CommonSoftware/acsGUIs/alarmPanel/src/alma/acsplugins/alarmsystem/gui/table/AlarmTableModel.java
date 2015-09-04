@@ -27,9 +27,12 @@ package alma.acsplugins.alarmsystem.gui.table;
 
 import java.awt.Color;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
+import java.util.Map;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JComponent;
 import javax.swing.table.AbstractTableModel;
@@ -40,7 +43,6 @@ import alma.acsplugins.alarmsystem.gui.ConnectionListener;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar.ComboBoxValues;
 import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
 import alma.alarmsystem.clients.AlarmCategoryClient;
-import alma.alarmsystem.clients.CategoryClient;
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.services.selection.LaserHeartbeatException;
@@ -262,29 +264,17 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * The queue of alarms received from the <code>CategoryClient</code> that will be
 	 * injected in the table
 	 */
-	private final LinkedBlockingQueue<AlarmTableEntry> queue = new LinkedBlockingQueue<AlarmTableEntry>(QUEUE_SIZE);
+	private final Map<String, AlarmTableEntry> alarmsToAdd = Collections.synchronizedMap(new HashMap<String, AlarmTableEntry>());
 	
 	/**
-	 * The semaphore used to pause the thread
-	 * <P>
-	 * When the application is not paused, the thread acquire the semaphore
-	 * before getting an alarm from the queue and release it when done.
-	 * <BR>
-	 * The pause method acquires the semaphore blocking the thread.
-	 * When the application is upaused then the semaphore is released and the thread restarts.
-	 * 
+	 * The boolean to pause the refresh of the table if the user pressed the pause button 
 	 */
-	private final Semaphore paused=new Semaphore(1);
+	private final AtomicBoolean paused=new AtomicBoolean(false);
 	
 	/**
 	 * Signal the thread to terminate
 	 */
-	private volatile boolean terminateThread=false;
-	
-	/**
-	 * The thread
-	 */
-	private final Thread thread;
+	private final AtomicBoolean terminateThread= new AtomicBoolean(false);
 	
 	/**
 	 * The model of the table of undocumented alarms
@@ -315,14 +305,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
 			counters.put(alarmType, new AlarmCounter());
 		}
-		// Start the thread
-		thread = new Thread(this,"AlarmTableModel");
-		thread.setDaemon(true);
 	}
 	
 	/**
-	 * Add an alarm in the queue.
-	 * The thread will get the alarm from the queue and update the model (@see {@link #run()}).
+	 * Each received alarm is temporarily stored in the {@link #alarmsToAdd} map so that if it appears more then
+	 * once the last occurrence replaces the old one.
+	 * The thread will get alarms from this map and flush them in the container to updated the table (@see {@link #run()}).
 	 * 
 	 * @param alarm The alarm to add to the table.
 	 * @see AlarmSelectionListener
@@ -335,21 +323,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			return;
 		}
 		AlarmTableEntry tableEntry = new AlarmTableEntry(alarm);
-		// Add the alarm to the queue
-		if (waitIfQueueFull) {
-			// Wait if the queue is full
-			while (!terminateThread) {
-				try {
-					queue.put(tableEntry);
-				} catch (InterruptedException e) {
-					continue;
-				}
-				break;
-			}
-		} else {
-			// Does not care if the queue is full
-			queue.offer(tableEntry);
-		}
+		alarmsToAdd.put(alarm.getAlarmId(), tableEntry);
 	}
 	
 	private void dumpAlarm(Alarm alarm) {
@@ -519,22 +493,13 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * When the max has been reach, the oldest alarm is removed 
 	 * before adding a new one
 	 */
-	public static final int MAX_ALARMS=20000;
+	public static final int MAX_ALARMS=25000;
 	
 	/**
-	 * The max alarm in queue when the table is paused
+	 * The time interval (seconds) between 2 updates of the
+	 * content of the table
 	 */
-	public static final int QUEUE_SIZE=15000;
-	
-	/**
-	 * The behavior if the queue is full.
-	 * 
-	 * If it is <code>true</code> when a new alarm arrives and the queue is full then 
-	 * it waits until there is one free place in the queue.
-	 * 
-	 * If it is <code>false</code> and the queue is full then the incoming alarm will be discarded.
-	 */
-	private boolean waitIfQueueFull = false;
+	public static final int REFRESH_TIMEINTERVAL=2;
 	
 	/**
 	 * The owner component (used to show dialog messages) 
@@ -545,6 +510,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * The alarms in the table
 	 */
 	private AlarmsReductionContainer items=null;
+	
+	/**
+	 * The executor to schedule the update of the table every {@link #REFRESH_TIMEINTERVAL}
+	 * msecs.
+	 */
+	private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
 	
 	/**
 	 *	If <code>true</code> applies the reduction rules hiding reduced alarms 
@@ -872,61 +843,40 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param pause if <code>true</code> no new alarms are added in the table
 	 */
 	public void pause(boolean pause) {
-		if (pause) {
-			while (!terminateThread) {
-				try {
-					paused.acquire();
-					break;
-				} catch (InterruptedException e) {
-					continue;
-				}
-			}
-			
-		} else {
-			paused.release();
-		}
+		paused.set(pause);
 	}
 
 	/**
-	 * The thread getting alarms from the queue and injecting in the model.
+	 * The thread refreshes the content of the table at a fixed rate.
+	 * It is the {@link #executor} that schedules the execution of this thread 
+	 * at {@link #REFRESH_TIMEINTERVAL} ({@value #REFRESH_TIMEINTERVAL}) msecs. 
 	 * <P>
-	 * If an alarm with the same triplet is already in the table it is replaced.
-	 * 
-	 * @see java.lang.Runnable#run()
+	 * The thread flushes all the alarms from the {@link #alarmsToAdd} vector
+	 * in the table before firing the event to refresh the content of the table.
 	 */
 	@Override
 	public void run() {
-		// Get an alarm out of the queue
-		while (!terminateThread) {
-			AlarmTableEntry alarm;
-			
-			// Get an alarm from the queue waiting until an alarm
-			// is available
-			try { 
-				alarm=queue.take();
-			} catch (InterruptedException e) {
-				continue;
-			}
-			// Wait if the application is paused by getting the semaphore
-			try {
-				paused.acquire();
-			} catch (InterruptedException e) {
-				continue;
-			}
-			// The semaphore is immediately released to avoid blocking
-			// pause() for a long time
-			paused.release();
+		System.out.println("Flushing alarms in the containers...");
 		
-			// Debug messages for investigating reductions
-//			System.out.println("Adding "+alarm.getIdentifier());
-//			System.out.println("\tMultiplicity parent: "+alarm.isMultiplicityParent());
-//			System.out.println("\tMultiplicity child: "+alarm.isMultiplicityChild());
-//			System.out.println("\tNode parent: "+alarm.isNodeParent());
-//			System.out.println("\tNodechild: "+alarm.isNodeChild());
-//			System.out.println("Status:");
-//			System.out.println("\t\tMasked: "+alarm.getStatus().isMasked());
-//			System.out.println("\t\tReduced: "+alarm.getStatus().isReduced());
-//			System.out.println("\t\tActive: "+alarm.getStatus().isActive());
+		// Nothing to do if the user pressed the pause button or there are 
+		// now new alarms 
+		if (paused.get() || alarmsToAdd.isEmpty()) {
+			return;
+		}
+		// The alarms to add/update in the table
+		AlarmTableEntry[] alarms;
+		
+		synchronized (alarmsToAdd) {
+			alarms=new AlarmTableEntry[alarmsToAdd.size()];
+			System.out.println("alarms.size="+alarms.length);
+			alarmsToAdd.values().toArray(alarms);
+			alarmsToAdd.clear();
+		}
+		
+		System.out.println("alarms.size="+alarms.length);
+		for (int t=0; t<alarms.length && !terminateThread.get(); t++) {
+			AlarmTableEntry alarm=alarms[t];
+			System.out.println("\tAdding "+alarm.getAlarmId()+((alarm.getStatus().isActive())?" ACTIVE":" TERMINATE"));
 			
 			if (items.contains(alarm.getAlarmId())) {
 				replaceAlarm(alarm);
@@ -947,13 +897,28 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 					addAlarm(alarm);
 				}	
 			}
-			
-			EDTExecutor.instance().execute(new Runnable() {
-				public void run() {
-					fireTableDataChanged();
-				}
-			});
 		}
+		
+		System.out.println("\tAlarms added now refreshing ");
+		// Once all the alarms have been added, trigger the refresh of the content of the table
+		EDTExecutor.instance().execute(new Runnable() {
+			public void run() {
+				fireTableDataChanged();
+			}
+		});
+		
+			// Debug messages for investigating reductions
+//			System.out.println("Adding "+alarm.getIdentifier());
+//			System.out.println("\tMultiplicity parent: "+alarm.isMultiplicityParent());
+//			System.out.println("\tMultiplicity child: "+alarm.isMultiplicityChild());
+//			System.out.println("\tNode parent: "+alarm.isNodeParent());
+//			System.out.println("\tNodechild: "+alarm.isNodeChild());
+//			System.out.println("Status:");
+//			System.out.println("\t\tMasked: "+alarm.getStatus().isMasked());
+//			System.out.println("\t\tReduced: "+alarm.getStatus().isReduced());
+//			System.out.println("\t\tActive: "+alarm.getStatus().isActive());
+			
+
 	}
 	
 	/**
@@ -961,15 +926,16 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * 
 	 */
 	public void start() {
-		thread.start();
+		// Ask the executor to schedule the update of the table
+		executor.scheduleWithFixedDelay(this, 1, REFRESH_TIMEINTERVAL, TimeUnit.SECONDS);
 	}
 	
 	/**
 	 * Terminate the thread and free the resources.
 	 */
 	public void close() {
-		terminateThread=true;
-		thread.interrupt();
+		executor.shutdownNow();
+		terminateThread.set(true);
 	}
 
 	/**
