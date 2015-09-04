@@ -26,11 +26,10 @@ import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
-import cern.laser.client.data.Alarm;
-
 import alma.acs.gui.util.threadsupport.EDTExecutor;
 import alma.acs.util.IsoDateFormat;
 import alma.acsplugins.alarmsystem.gui.CernAlSysTabbedPane;
+import cern.laser.client.data.Alarm;
 
 public class UndocAlarmTableModel extends AbstractTableModel {
 	
@@ -117,6 +116,14 @@ public class UndocAlarmTableModel extends AbstractTableModel {
 			String alarmID=family+":"+component+":"+code;
 			String otherAlarmID=o.family+":"+o.component+":"+o.code;
 			return alarmID.compareTo(otherAlarmID);
+		}
+		
+		
+
+		@Override
+		public int hashCode() {
+			String alarmID=family+":"+component+":"+code;
+			return alarmID.hashCode();
 		}
 
 		@Override
