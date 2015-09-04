@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JComponent;
 import javax.swing.table.AbstractTableModel;
@@ -251,7 +252,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 *  <code>counters</code> is immutable. It is created in the constructor and never modified.
 	 *  Can we use a better data structure for that?
 	 */
-	private final HashMap<AlarmGUIType, AlarmCounter> counters = new HashMap<AlarmGUIType, AlarmCounter>();
+	private final HashMap<AlarmGUIType, AtomicInteger> counters = new HashMap<AlarmGUIType, AtomicInteger>();
 	
 	/**
 	 * The listener about the status of the connection
@@ -303,7 +304,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		this.items = new AlarmsReductionContainer(MAX_ALARMS);
 		// Put each alarm type in the has map of the counters
 		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
-			counters.put(alarmType, new AlarmCounter());
+			counters.put(alarmType, new AtomicInteger());
 		}
 	}
 	
@@ -359,7 +360,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			e.printStackTrace(System.err);
 			return;
 		}
-		counters.get(alarm.getAlarmType()).incCounter();
+		counters.get(alarm.getAlarmType()).incrementAndGet();
 	}
 	
 	/**
@@ -421,7 +422,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			e.printStackTrace(System.err);
 			return;
 		}
-		counters.get(AlarmGUIType.fromAlarm(alarm)).decCounter();
+		counters.get(AlarmGUIType.fromAlarm(alarm)).decrementAndGet();
 		EDTExecutor.instance().execute(new Runnable() {
 			@Override
 			public void run() {
@@ -453,8 +454,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			return;
 		}
 		// Update the counters
-		counters.get(oldAlarmEntry.getAlarmType()).incCounter();
-		counters.get(oldAlarmType).decCounter();
+		counters.get(oldAlarmEntry.getAlarmType()).incrementAndGet();
+		counters.get(oldAlarmType).decrementAndGet();
 		if (!newAlarm.getStatus().isActive()) {
 			// The alarm became INACTIVE
 			autoAcknowledge(newAlarm);
@@ -705,7 +706,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param type The type of the alarm
 	 * @return The counter for the alarm type
 	 */
-	public AlarmCounter getAlarmCounter(AlarmGUIType type) {
+	public AtomicInteger getAlarmCounter(AlarmGUIType type) {
 		if (type==null) {
 			throw new IllegalArgumentException("The alarm type can't be null");
 		}
@@ -748,7 +749,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		if (removed>0) {
 			for (int t=0; t<removed; t++) {
-				counters.get(AlarmGUIType.INACTIVE).decCounter();
+				counters.get(AlarmGUIType.INACTIVE).decrementAndGet();
 			}
 			EDTExecutor.instance().execute(new Runnable() {
 				@Override
@@ -892,7 +893,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 							e.printStackTrace(System.err);
 							return;
 						}
-						counters.get(removedAlarm.getAlarmType()).decCounter();
+						counters.get(removedAlarm.getAlarmType()).decrementAndGet();
 					}
 					addAlarm(alarm);
 				}	
