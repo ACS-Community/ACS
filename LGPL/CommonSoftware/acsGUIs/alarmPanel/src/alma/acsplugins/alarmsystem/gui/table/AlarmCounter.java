@@ -18,6 +18,8 @@
  */
 package alma.acsplugins.alarmsystem.gui.table;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * The counter for an alarm type
  * 
@@ -26,27 +28,27 @@ package alma.acsplugins.alarmsystem.gui.table;
  */
 public class AlarmCounter {
 	
-	private volatile int count=0;
+	private AtomicInteger count = new AtomicInteger(0);
 	
 	/**
-	 * Increase the counter
+	 * Increase and return the counter
+	 * 
+	 * @return The value of the increased counter
 	 */
-	public void incCounter() {
-		if (count==Integer.MAX_VALUE) {
-			count=1;
-			return;
-		}
-		count++;
+	public int incCounter() {
+		return count.incrementAndGet();
 	}
 	
 	/**
-	 * Decrease the counter
+	 * Decrease and return the counter
+	 * 
+	 * @return The value of the decremented counter
 	 */
-	public void decCounter() {
-		if (count<=0) {
+	public int decCounter() {
+		if (count.get()<=0) {
 			throw new IllegalStateException("Error managing counters");
 		}
-		count--;
+		return count.decrementAndGet();
 	}
 	
 	/**
@@ -54,7 +56,7 @@ public class AlarmCounter {
 	 * @return The value of the counter
 	 */
 	public int getCount() {
-		return count;
+		return count.get();
 	}
 	
 }
