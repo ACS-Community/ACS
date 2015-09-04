@@ -111,7 +111,9 @@ PROLOGUE acsstartupTATPrologue
                           "acsNotifyService -b 6 -s -w -n TEST28" "@SLEEP 1"  \
                           "acsNotifyService -b 6 -s -w -n TEST29" "@SLEEP 1"  \
                           "acsNotifyService -b 6 -s -w -n TEST30" "@SLEEP 1"  \
-                          "acsNotifyService -b 6 -s -w -n TEST31" "@SLEEP 10" \
+                          "acsNotifyService -b 6 -s -w -n TEST31" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -s -w -n TEST32" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -s -w -n TEST33" "@SLEEP 10" \
                           "acsNotifyService -b 6 -k -n TEST01" "@SLEEP 1" \
                           "acsNotifyService -b 6 -k -n TEST02" "@SLEEP 1" \
                           "acsNotifyService -b 6 -k -n TEST03" "@SLEEP 1" \
@@ -142,7 +144,9 @@ PROLOGUE acsstartupTATPrologue
                           "acsNotifyService -b 6 -k -n TEST28" "@SLEEP 1" \
                           "acsNotifyService -b 6 -k -n TEST29" "@SLEEP 1" \
                           "acsNotifyService -b 6 -k -n TEST30" "@SLEEP 1" \
-                          "acsNotifyService -b 6 -k -n TEST31" "@SLEEP 2" \
+                          "acsNotifyService -b 6 -k -n TEST31" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST32" "@SLEEP 1" \
+                          "acsNotifyService -b 6 -k -n TEST33" "@SLEEP 2" \
                           "acsNamingService -b 6 -k" \
                           "acsstartupCatNotifyServicePorts"
 

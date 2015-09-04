@@ -233,7 +233,11 @@ then
   ORBOPTS="-ORBDottedDecimalAddresses 1"
 fi
 
-
+if [ -z "$NOTIFY_SERVICE_PORT" ];
+then
+    ACS_LOG_ERROR "$COMMAND" "Notify event channel '$CL_NS_TYPE' port cannot be set!"
+    exit $EC_CANNOTUSE
+fi
 
 
 ################################

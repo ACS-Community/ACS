@@ -1,35 +1,39 @@
 32 - All ports are taken!
-63 - All ports are taken!
-65 - TEST 3620 a.b.c.d
-65 - TEST 3621 a.b.c.d
-65 - TEST 3622 a.b.c.d
-65 - TEST 3623 a.b.c.d
-65 - TEST 3624 a.b.c.d
-65 - TEST 3625 a.b.c.d
-65 - TEST 3626 a.b.c.d
-65 - TEST 3627 a.b.c.d
-65 - TEST 3628 a.b.c.d
-65 - TEST 3629 a.b.c.d
-65 - TEST 3630 a.b.c.d
-65 - TEST 3631 a.b.c.d
-65 - TEST 3632 a.b.c.d
-65 - TEST 3633 a.b.c.d
-65 - TEST 3634 a.b.c.d
-65 - TEST 3635 a.b.c.d
-65 - TEST 3636 a.b.c.d
-65 - TEST 3637 a.b.c.d
-65 - TEST 3638 a.b.c.d
-65 - TEST 3639 a.b.c.d
-65 - TEST 3640 a.b.c.d
-65 - TEST 3641 a.b.c.d
-65 - TEST 3642 a.b.c.d
-65 - TEST 3643 a.b.c.d
-65 - TEST 3644 a.b.c.d
-65 - TEST 3645 a.b.c.d
-65 - TEST 3646 a.b.c.d
-65 - TEST 3647 a.b.c.d
-65 - TEST 3648 a.b.c.d
-65 - TEST 3649 a.b.c.d
+33 - All ports are taken!
+34 - All ports are taken!
+65 - All ports are taken!
+66 - All ports are taken!
+67 - All ports are taken!
+69 - TEST 3620 a.b.c.d
+69 - TEST 3621 a.b.c.d
+69 - TEST 3622 a.b.c.d
+69 - TEST 3623 a.b.c.d
+69 - TEST 3624 a.b.c.d
+69 - TEST 3625 a.b.c.d
+69 - TEST 3626 a.b.c.d
+69 - TEST 3627 a.b.c.d
+69 - TEST 3628 a.b.c.d
+69 - TEST 3629 a.b.c.d
+69 - TEST 3630 a.b.c.d
+69 - TEST 3631 a.b.c.d
+69 - TEST 3632 a.b.c.d
+69 - TEST 3633 a.b.c.d
+69 - TEST 3634 a.b.c.d
+69 - TEST 3635 a.b.c.d
+69 - TEST 3636 a.b.c.d
+69 - TEST 3637 a.b.c.d
+69 - TEST 3638 a.b.c.d
+69 - TEST 3639 a.b.c.d
+69 - TEST 3640 a.b.c.d
+69 - TEST 3641 a.b.c.d
+69 - TEST 3642 a.b.c.d
+69 - TEST 3643 a.b.c.d
+69 - TEST 3644 a.b.c.d
+69 - TEST 3645 a.b.c.d
+69 - TEST 3646 a.b.c.d
+69 - TEST 3647 a.b.c.d
+69 - TEST 3648 a.b.c.d
+69 - TEST 3649 a.b.c.d
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST01 Notify Service
 2 - ReBound ID: MC_TEST01NotifyEventChannelFactory
@@ -91,10 +95,9 @@
 30 - ReBound ID: MC_TEST29NotifyEventChannelFactory
 31 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST30 Notify Service
 31 - ReBound ID: MC_TEST30NotifyEventChannelFactory
-32 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST31 Notify Service
-32 - ReBound ID: MC_TEST31NotifyEventChannelFactory
-33 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
-34 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+32 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+33 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+34 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
 35 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
 36 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
 37 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
@@ -124,4 +127,8 @@
 61 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
 62 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
 63 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
-64 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
+64 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+65 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+66 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+67 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+68 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
