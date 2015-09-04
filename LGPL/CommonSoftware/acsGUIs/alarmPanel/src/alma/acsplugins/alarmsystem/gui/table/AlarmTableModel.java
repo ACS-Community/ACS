@@ -857,7 +857,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 */
 	@Override
 	public void run() {
-		System.out.println("Flushing alarms in the containers...");
 		
 		// Nothing to do if the user pressed the pause button or there are 
 		// now new alarms 
@@ -869,46 +868,41 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		
 		synchronized (alarmsToAdd) {
 			alarms=new AlarmTableEntry[alarmsToAdd.size()];
-			System.out.println("alarms.size="+alarms.length);
 			alarmsToAdd.values().toArray(alarms);
 			alarmsToAdd.clear();
 		}
 		
-		System.out.println("alarms.size="+alarms.length);
-		for (int t=0; t<alarms.length && !terminateThread.get(); t++) {
-			AlarmTableEntry alarm=alarms[t];
-			System.out.println("\tAdding "+alarm.getAlarmId()+((alarm.getStatus().isActive())?" ACTIVE":" TERMINATE"));
-			
-			if (items.contains(alarm.getAlarmId())) {
-				replaceAlarm(alarm);
-			} else {
-				synchronized (items) {
-					// Enough room for the new alarm? If not remove the oldest
-					if (items.size(applyReductionRules)==MAX_ALARMS) {
-						AlarmTableEntry removedAlarm=null;
-						try {
-							removedAlarm = items.removeOldest(); // Remove the last one
-						} catch (Exception e) {
-							System.err.println("Error removing the oldest alarm: "+e.getMessage());
-							e.printStackTrace(System.err);
-							return;
-						}
-						counters.get(removedAlarm.getAlarmType()).decrementAndGet();
-					}
-					addAlarm(alarm);
-				}	
-			}
-		}
-		
-		System.out.println("\tAlarms added now refreshing ");
-		// Once all the alarms have been added, trigger the refresh of the content of the table
 		EDTExecutor.instance().execute(new Runnable() {
 			public void run() {
+				for (int t=0; t<alarms.length && !terminateThread.get(); t++) {
+					AlarmTableEntry alarm=alarms[t];
+					
+					if (items.contains(alarm.getAlarmId())) {
+						replaceAlarm(alarm);
+					} else {
+						synchronized (items) {
+							// Enough room for the new alarm? If not remove the oldest
+							if (items.size(applyReductionRules)==MAX_ALARMS) {
+								AlarmTableEntry removedAlarm=null;
+								try {
+									removedAlarm = items.removeOldest(); // Remove the last one
+								} catch (Exception e) {
+									System.err.println("Error removing the oldest alarm: "+e.getMessage());
+									e.printStackTrace(System.err);
+									return;
+								}
+								counters.get(removedAlarm.getAlarmType()).decrementAndGet();
+							}
+							addAlarm(alarm);
+						}	
+					}
+				}
 				fireTableDataChanged();
 			}
 		});
 		
-			// Debug messages for investigating reductions
+		
+			// Debug messages: enable to investigate reductions
 //			System.out.println("Adding "+alarm.getIdentifier());
 //			System.out.println("\tMultiplicity parent: "+alarm.isMultiplicityParent());
 //			System.out.println("\tMultiplicity child: "+alarm.isMultiplicityChild());
