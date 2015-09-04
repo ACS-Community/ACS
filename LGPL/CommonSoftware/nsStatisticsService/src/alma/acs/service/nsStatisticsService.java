@@ -157,7 +157,6 @@ public class nsStatisticsService extends Thread {
 			ServiceInfo serviceInfo = new ServiceInfo();
 			if(channels != null) {
 				for(int i = 0;i < channels.length;++i) {
-					//System.out.println("---<<PAU>>----------------------- Init status => Channel name: " + channels[i]); // TODO delete it
 					serviceInfo.channels.put(service + "#" + channels[i], new ChannelInfo());
 				}
 			}
@@ -218,7 +217,6 @@ public class nsStatisticsService extends Thread {
 			channel = it.next();
 			String channelName = channel.getQualifiedName();
 			String serviceName = channel.getParent().getName();
-			//System.out.println("channelName: " + channelName + ",   serviceName: " + serviceName); // TODO delete it
 			ServiceInfo serviceInfo = null;
 			if(status.containsKey(serviceName)) {
 				serviceInfo = status.get(serviceName);
@@ -232,7 +230,6 @@ public class nsStatisticsService extends Thread {
 			
 			ChannelInfo channelInfo = null;
 			if(serviceInfo.channels.containsKey(channelName)) {
-				//System.out.println("Service info " + serviceName + " already contains channel " + channelName); // TODO delete it
 				channelInfo = serviceInfo.channels.get(channelName);
 				if(Status.DISABLED == channelInfo.status) {
 					channelInfo.status = Status.ENABLED;
@@ -240,7 +237,6 @@ public class nsStatisticsService extends Thread {
 					channelInfo.status = Status.ENABLED;
 				}
 			} else {
-				//System.out.println("Service info " + serviceName + " doesn't contain channel " + channelName); // TODO delete it
 				channelInfo = new ChannelInfo(Status.ENABLED);
 				serviceInfo.channels.put(channelName, channelInfo);
 			}
@@ -293,13 +289,11 @@ public class nsStatisticsService extends Thread {
 		for(Iterator<String> it = registeredServices.iterator();it.hasNext();) {
 			String serviceName = it.next();
 			ServiceInfo serviceInfo = status.get(serviceName);
-			//System.out.println("SERVICE " + serviceName + " has " + String.valueOf(serviceInfo.channels.size()) + " channels"); // TODO delete it
 			Set<String> registeredChannels = serviceInfo.channels.keySet();
 			String chsNames = "";	
 			int nChannels = 0;
 			for(Iterator<String> itc = registeredChannels.iterator();itc.hasNext();) {
 				String channelName = itc.next();
-				//System.out.println("<<PAU>>--------------------------------- logStatus: Channel name is: " + channelName + " and service is " + serviceName); // TODO delete it
 				ChannelInfo channelInfo = serviceInfo.channels.get(channelName);
 				//if(channelInfo.status == Status.ENABLED) { 
 					Map<String,String> values = channelInfo.stats.getInfoParams(params);
@@ -324,73 +318,6 @@ public class nsStatisticsService extends Thread {
 				"STATISTICS OF NOTIFICATION FACTORY " + serviceName, params);
 		}
 	}
-	
-	/**
-	 * Update status of services
-	 * @param services
-	 */
-/*	protected void updateServicesStatus(List<NotifyServiceData> services) {
-		NotifyServiceData service = null;
-		
-		// Iterate services got from the EventModel
-		for(Iterator<NotifyServiceData> it = services.iterator();it.hasNext();) {				
-			service = it.next();
-			
-			// Status of the current service already exists
-			if(status.containsKey(service.getName())) {
-				ServiceInfo serviceInfo = status.get(service.getName());
-				
-				if(Status.DISABLED == serviceInfo.status) {
-					logger.warning("Notify Service '"+service.getName()+"' has been restarted");
-					serviceInfo.status = Status.ENABLED;
-				} else if(Status.UNKNOWN == serviceInfo.status) {
-					logger.warning("Notify Service '"+service.getName()+"' is running");
-					serviceInfo.status = Status.ENABLED;
-				}
-			// Status of the current service didn't exist so we create it
-			} else {
-				status.put(service.getName(), new ServiceInfo(Status.ENABLED));
-				logger.warning("Notify Service '"+service.getName()+"' is running");
-			}
-		}
-		
-		// Iterate services already registered
-		Set<String> registeredServices = status.keySet();
-		for(Iterator<String> it = registeredServices.iterator();it.hasNext();) {
-			String serviceName = it.next();
-			ServiceInfo serviceInfo = status.get(serviceName);
-			boolean found = false;
-			
-			for(Iterator<NotifyServiceData> it2 = services.iterator();it2.hasNext() && false == found;) {
-				service = it2.next();
-				
-				//logger.info("----------------------? " + service.getName() + " == " + serviceName);
-				if(service.getName().equals(serviceName)) {
-					found = true;
-				}
-			}
-			
-			if(false == found && Status.ENABLED == serviceInfo.status) {
-				logger.warning("Notify Service '" + serviceName + "' has been stopped");
-				serviceInfo.status = Status.DISABLED;
-			}
-		}
-		
-		// Log status of all services 
-		//for(Iterator<String> it = registeredServices.iterator();it.hasNext();) {
-		//	String serviceName = it.next();
-		//	ServiceInfo serviceInfo = status.get(serviceName);
-		//	String status = "";
-		//	if(serviceInfo.status == Status.ENABLED) {
-		//		status = "ENABLED";
-		//	} else if(serviceInfo.status == Status.DISABLED) {
-		//		status = "DISABLED";
-		//	} else if(serviceInfo.status == Status.UNKNOWN) {
-		//		status = "UNKNOWN";
-		//	}
-		//	logger.info("SERVICE " + serviceName + " STATUS: " + status);
-		//}
-	}*/
 	
 	/**
 	 * Should statistics of channel channelName be logged?  
@@ -544,44 +471,7 @@ public class nsStatisticsService extends Thread {
 		this.stop = true;
 	}
 	
-	/**
-	 * 
-	 * @param service
-	 */
-	/*
-	protected void logFactoryStatistics(NotifyServiceData service) {
-		//String str = "Factory " + service.getName() + " with ";
-		String [] activeChannelNames = null;
-		int activeChannelsCount = 0;
-		NotificationServiceMonitorControl nsm = service.getMc();
-		String [] statsNames = nsm.get_statistic_names();
-
-		Map<String,String> infoParams = new HashMap<String, String>();
-		//String infInfo = "\t\tSTATISTICS OF NOTIFICATION FACTORY " + service.getName() + "\n";
-		
-		for(int i = 0;i < statsNames.length;++i) {
-			try {
-				if(statsNames[i].contains("ActiveEventChannelCount")) {
-					Monitor.Numeric n = nsm.get_statistic(statsNames[i]).data_union.num();
-					activeChannelsCount = (int)n.last;
-				}
-				else if(statsNames[i].contains("ActiveEventChannelNames")) {
-					activeChannelNames = nsm.get_statistic(statsNames[i]).data_union.list();
-				}
-			} catch(InvalidName ex) {
-				logger.log(AcsLogLevel.ERROR, "Invalid name in ncStatisticsService::logService", ex);
-			}
-		}
-		
-		infoParams.put("Active event channels", getListString(activeChannelNames));
-		infoParams.put("Num active event channels", String.valueOf(activeChannelsCount));
-		//infInfo += "\tActive event channels [" + String.valueOf(activeChannelsCount) + "]\n";
-		//infInfo += getListStringDiffLines("\t\t", activeChannelNames);
-		
-		logger.log(AcsLogLevel.INFO, 
-				"STATISTICS OF NOTIFICATION FACTORY " + service.getName(), infoParams);
-	}*/
-	
+/*	
 	protected String getListString(String [] list) {
 		String str = "";
 		if(list != null)
@@ -632,7 +522,7 @@ public class nsStatisticsService extends Thread {
 		}
 		return maxVal;
 	}
-
+*/
 	protected void resetStats() {
 		Iterator services = status.entrySet().iterator();
 		while(services.hasNext()) {

@@ -368,18 +368,13 @@ class ChannelStats {
 		infoParams.put("Num consumers",data.toString()); 
 		data = aggregateData.get(N_SUPPLIERS);
 		infoParams.put("Num suppliers",data.toString()); 
-		//data = aggregateData.get(N_SLOWEST_CONSUMERS); 
-		//infoParams.put("Num slowest consumers",data.toString()); 
-		//data = aggregateData.get(N_CONSUMERS_ADMIN);
-		//infoParams.put("Num consumers admin",data.toString()); 
-		//data = aggregateData.get(N_SUPPLIERS_ADMIN);
-		//infoParams.put("Num suppliers admin",data.toString()); 
+
 
 		strMax = "";
 		strAvg = "";
 		lMax = 0;
 		for(Map.Entry<String, AggregateData> entry : queuesElementCount.entrySet()) {
-			strMax += /*entry.getKey() + ": " +*/ String.valueOf(entry.getValue().max) + ", ";	
+			strMax += String.valueOf(entry.getValue().max) + ", ";	
 			strAvg += String.valueOf(entry.getValue().avg) + ", ";
 			if(entry.getValue().max > lMax) {
 				lMax = entry.getValue().max;
@@ -392,17 +387,10 @@ class ChannelStats {
 			infoParams.put("Oldest event", String.valueOf(oldestEvent));
 		}
 
-		/*
-		str = "";
-		for(Map.Entry<String, AggregateData> entry : queuesSize.entrySet()) {
-			str += entry.getKey() + ": " + entry.getValue().toString() + ", ";
-		}
-		infoParams.put("Size of queues", str);*/
-
 		str = "";
 		lMax = 0;
 		for(Map.Entry<String, Long> entry : queuesSizeMax.entrySet()) {
-			str += /*entry.getKey() + ": " +*/ entry.getValue().toString() + ", ";
+			str +=  entry.getValue().toString() + ", ";
 			if(entry.getValue() > lMax) {
 				lMax = entry.getValue().longValue();
 			}
@@ -419,7 +407,7 @@ class ChannelStats {
 			} else {
 				avg = avg / counter;
 			}
-			str += /*entry.getKey() + ": " +*/ String.valueOf(avg) + ", ";
+			str +=  String.valueOf(avg) + ", ";
 		}
 		if(lMax >= params.getThQueueSize()) {
 			infoParams.put("Avg size of queues [bytes]", str);
@@ -434,37 +422,7 @@ class ChannelStats {
 		if(strList.size() > 0) {
 			infoParams.put("All slowest consumers", array2str(strList));
 		}
-/*
-		strList = currStringLists.get(CURR_CONSUMERS);
-		infoParams.put("Current consumers", array2str(strList));
 
-		strList = currStringLists.get(CURR_SUPPLIERS);
-		infoParams.put("Current suppliers", array2str(strList));
-
-		strList = currStringLists.get(CURR_SLOWEST_CONSUMERS);
-		infoParams.put("Current slowest consumers", array2str(strList));
-
-		strList = currStringLists.get(CURR_CONSUMERS_ADMIN);
-		infoParams.put("Current consumers admin", array2str(strList));
-
-		strList = currStringLists.get(CURR_SUPPLIERS_ADMIN);
-		infoParams.put("Current suppliers admin", array2str(strList));
-
-		strList = allStringLists.get(ALL_CONSUMERS);
-		infoParams.put("All consumers", array2str(strList));
-
-		strList = allStringLists.get(ALL_SUPPLIERS);
-		infoParams.put("All suppliers", array2str(strList));
-
-		strList = allStringLists.get(ALL_SLOWEST_CONSUMERS);
-		infoParams.put("All slowest consumers", array2str(strList));
-
-		strList = allStringLists.get(ALL_CONSUMERS_ADMIN);
-		infoParams.put("All consumers admin", array2str(strList));
-
-		strList = allStringLists.get(ALL_SUPPLIERS_ADMIN);
-		infoParams.put("All suppliers admin", array2str(strList));
-*/
 		return infoParams;
 	}
 
