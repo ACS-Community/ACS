@@ -39,7 +39,7 @@ testChannelCreation_OBJECTS =	testChannelCreation
 testChannelCreation_LIBS    =	acsnc maciClient acsncHelperTest
 
 
-SCRIPTS_L       = acsncTATRunTest.sh
+SCRIPTS_L       = acsncTATRunTest.sh acsncNslist.sh acsncExecDelChannelsNS.sh
 
 PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent
 

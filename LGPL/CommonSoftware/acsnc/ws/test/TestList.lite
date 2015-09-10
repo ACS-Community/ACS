@@ -47,4 +47,11 @@ PROLOGUE acsutilTATPrologue
 
 6 testNotificationServiceConfiguration "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" "acsutilTATTestRunner acsncTATRunTest.sh acsncTestSimpleComponent CDB_PROPS"
 
+#Check that after creating new channel, the tool acsncDelChannelsInNameS is able to remove the channel's entry in the Naming Service
+7 DeleteChannelsInNS  "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+		      "acsutilTATTestRunner acsncTATRunTest.sh acsncTestConSup CON1 SUP1" "@SLEEP 15" \
+		      "acsutilTATTestRunner acsncNslist.sh" "@SLEEP 2" \
+		      "acsutilTATTestRunner acsncExecDelChannelsNS.sh" "@SLEEP 2" \
+		      "acsutilTATTestRunner acsncNslist.sh"
+
 EPILOGUE acsutilTATEpilogue
