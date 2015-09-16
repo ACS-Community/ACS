@@ -49,7 +49,7 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/commons-logging-1.1.1.jar \
 	../lib/commons-math-2.1.jar \
 	../lib/commons-xml-resolver-1.2.jar \
-	../lib/ehcache-core-2.3.1.jar \
+	../lib/ehcache-core-2.4.3.jar \
 	../lib/gnu-regexp-1.1.4.jar \
 	../lib/hamcrest-core-1.3.jar \
 	../lib/hamcrest-library-1.3.jar \
