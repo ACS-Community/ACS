@@ -47,11 +47,23 @@ PROLOGUE acsutilTATPrologue
 
 6 testNotificationServiceConfiguration "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" "acsutilTATTestRunner acsncTATRunTest.sh acsncTestSimpleComponent CDB_PROPS"
 
-#Check that after creating new channel, the tool acsncDelChannelsInNameS is able to remove the channel's entry in the Naming Service
+# Check that after creating new channel, the tool acsncDelChannelsInNameS is able to remove the channel's entry in the Naming Service
+# At this point there are different channels in all Notify Services except the named ones so it creates a named Notify Service and one channel in it.
+# Finally, it deletes all channels in the following Notify Services:
+#  - Default Notify Service
+#  - Logging Notify Service
+#  - Archive Notify Service
+#  - Alarm Notify Service
+#  - NamedCh Notify Service
 7 DeleteChannelsInNS  "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
-		      "acsutilTATTestRunner acsncTATRunTest.sh acsncTestConSup CON1 SUP1" "@SLEEP 15" \
+                      "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 5" \
+		      "acsutilTATTestRunner acsncTATRunTest.sh acsncTestConSup NamedCh_CON1 NamedCh_SUP1" "@SLEEP 15" \
 		      "acsutilTATTestRunner acsncNslist.sh" "@SLEEP 2" \
-		      "acsutilTATTestRunner acsncExecDelChannelsNS.sh" "@SLEEP 2" \
+		      "acsutilTATTestRunner acsncExecDelChannelsNS.sh \"\"" "@SLEEP 2" \
+		      "acsutilTATTestRunner acsncExecDelChannelsNS.sh Logging" "@SLEEP 2" \
+		      "acsutilTATTestRunner acsncExecDelChannelsNS.sh Archive" "@SLEEP 2" \
+		      "acsutilTATTestRunner acsncExecDelChannelsNS.sh Alarm" "@SLEEP 2" \
+		      "acsutilTATTestRunner acsncExecDelChannelsNS.sh NamedCh" "@SLEEP 2" \
 		      "acsutilTATTestRunner acsncNslist.sh"
 
 EPILOGUE acsutilTATEpilogue

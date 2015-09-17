@@ -11,6 +11,7 @@
          <_ Name="HLA_*" NotificationService="HLANotifyService"/>	
          <_ Name="PARTICULAR1" NotificationService="Particular1NotifyEventChannelFactory"/>
          <_ Name="PARTICULAR2" NotificationService="Particular2"/>
+         <_ Name="NamedCh" NotificationService="NamedChNotifyEventChannelFactory"/>
       </Channels_>
    </NotificationServiceMapping>
 </Channels>

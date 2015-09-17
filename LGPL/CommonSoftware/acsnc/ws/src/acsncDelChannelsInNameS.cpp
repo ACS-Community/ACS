@@ -434,21 +434,37 @@ int main (int argc, char *argv[])
 		}
 
 		std::string port;
+
+		// Alarm Notify Service
 		if(notifyServiceName == ALARM_NOTIFY_CHANNEL || notifyServiceName == "Alarm")
 		{
 			notifyServiceName = ALARM_NOTIFY_CHANNEL;
 			port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
+		
+		// Archive Notify Service
 		} else if(notifyServiceName == ARCHIVE_NOTIFY_CHANNEL || notifyServiceName == "Archive") {
 			notifyServiceName = ARCHIVE_NOTIFY_CHANNEL;
 			port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
+
+		// Logging Notify Service
 		} else if(notifyServiceName == LOOGING_NOTIFY_CHANNEL || notifyServiceName == "Logging") {
 			notifyServiceName = LOOGING_NOTIFY_CHANNEL;
 			port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
+
+		// Default Notify Service
 		} else if(notifyServiceName == DEFAULT_NOTIFY_CHANNEL || notifyServiceName == "Notify" || notifyServiceName == "") {
 			notifyServiceName = DEFAULT_NOTIFY_CHANNEL;
 			port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
+
+		// Named Notify Service
 		} else {
-			port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
+			size_t posSuff = notifyServiceName.find(DEFAULT_NOTIFY_CHANNEL);
+			if(std::string::npos == posSuff) {
+				posSuff = notifyServiceName.size();
+				notifyServiceName = notifyServiceName + DEFAULT_NOTIFY_CHANNEL;
+			}
+			std::string nsNamePort = notifyServiceName.substr(0,posSuff);
+			port = ACSPorts::getNotifyServicePort(baseport, nsNamePort.c_str());
 		}
 
 		// ACSPorts returns port number and a null character in the end so we get only the number

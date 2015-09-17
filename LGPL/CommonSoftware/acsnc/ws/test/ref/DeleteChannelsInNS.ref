@@ -1,0 +1,197 @@
+10 - Naming Service: 
+4 - Naming Service: 
+5 - Looking for service 'NotifyEventChannelFactory' using port 3002 from baseport 0
+6 - Looking for service 'LoggingNotifyEventChannelFactory' using port 3005 from baseport 0
+7 - Looking for service 'ArchiveNotifyEventChannelFactory' using port 3006 from baseport 0
+8 - Looking for service 'AlarmNotifyEventChannelFactory' using port 3007 from baseport 0
+9 - Looking for service 'NamedChNotifyEventChannelFactory' using port 3020 from baseport 0
+10 - ---------------
+4 - ---------------
+5 - Channel singleChannel3@domainName1[X.X.X.X:PPPP] has been deleted in the Naming Service
+6 - Channel LoggingChannel@LOGGING[X.X.X.X:PPPP] has been deleted in the Naming Service
+7 - Channel ArchivingChannel@ARCHIVING[X.X.X.X:PPPP] has been deleted in the Naming Service
+8 - Channel singleChannel4@ALARMSYSTEM[X.X.X.X:PPPP] has been deleted in the Naming Service
+9 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] has been deleted in the Naming Service
+10 - + MC_NamedChNotifyEventChannelFactory: Object Reference
+4 - + MC_NamedChNotifyEventChannelFactory: Object Reference
+5 - Channel singleChannel2@DEFAULTDOMAIN[X.X.X.X:PPPP] has been deleted in the Naming Service
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+5 - Channel singleChannel1@DEFAULTDOMAIN[X.X.X.X:PPPP] has been deleted in the Naming Service
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+5 - Channel blarIL@DEFAULTDOMAIN[X.X.X.X:PPPP] has been deleted in the Naming Service
+10 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
+4 - + NamedCh@DEFAULTDOMAIN (Kind: channels): Object Reference
+5 - Channel blar@DEFAULTDOMAIN[X.X.X.X:PPPP] has been deleted in the Naming Service
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + AcsAlarmService: Object Reference
+4 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + CDB: Object Reference
+4 - + AcsAlarmService: Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + LoggingNotifyEventChannelFactory: Object Reference
+4 - + singleChannel3@domainName1 (Kind: channels): Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + ACSLogSvc: Object Reference
+4 - + CDB: Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + AlarmNotifyEventChannelFactory: Object Reference
+4 - + ArchivingChannel@ARCHIVING (Kind: channels): Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + InterfaceRepository: Object Reference
+4 - + LoggingNotifyEventChannelFactory: Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + MC_AlarmNotifyEventChannelFactory: Object Reference
+4 - + singleChannel2@DEFAULTDOMAIN (Kind: channels): Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + NotifyEventChannelFactory: Object Reference
+4 - + singleChannel1@DEFAULTDOMAIN (Kind: channels): Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + MC_LoggingNotifyEventChannelFactory: Object Reference
+4 - + ACSLogSvc: Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + NamedChNotifyEventChannelFactory: Object Reference
+4 - + AlarmNotifyEventChannelFactory: Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + Manager: Object Reference
+4 - + InterfaceRepository: Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + MC_NotifyEventChannelFactory: Object Reference
+4 - + MC_AlarmNotifyEventChannelFactory: Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + LogFactory: Object Reference
+4 - + blarIL@DEFAULTDOMAIN (Kind: channels): Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + Log: Object Reference
+4 - + NotifyEventChannelFactory: Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+10 - + ArchiveNotifyEventChannelFactory: Object Reference
+4 - + MC_LoggingNotifyEventChannelFactory: Object Reference
+10 - |   Protocol: IIOP
+4 - |   Protocol: IIOP
+10 - |   Endpoint: X.X.X.X:PPPP
+4 - |   Endpoint: X.X.X.X:PPPP
+4 - + NamedChNotifyEventChannelFactory: Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
+4 - + Manager: Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
+4 - + LoggingChannel@LOGGING (Kind: channels): Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
+4 - + MC_NotifyEventChannelFactory: Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
+4 - + LogFactory: Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
+4 - + Log: Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
+4 - + ArchiveNotifyEventChannelFactory: Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
+4 - + singleChannel4@ALARMSYSTEM (Kind: channels): Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
+4 - + blar@DEFAULTDOMAIN (Kind: channels): Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
+1 - Starting Container...
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+1 - Resolving reference: 'corbaloc::---:----/Manager'
+1 - Manager reference narrowed.
+1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
+1 - Configuration information for container 'bilboContainer' not available.
+1 - Starting as dynamic container.
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Deleting all entries in the Naming Service that belong to channels of the Notify Service
+2 - Looking for service 'NamedChNotifyEventChannelFactory' using port 3020 from baseport 0
+2 - Notify Service 'NamedChNotifyEventChannelFactory' not found!
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NamedCh Notification Service
+2 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine NamedCh notification service's process ID.
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NamedCh Notify Service
+2 - Using reactive client control.
+2 - Using 1 threads for each Supplier.
+2 - Using 1 threads for each Consumer.
+2 - Looking for service 'NamedChNotifyEventChannelFactory' using port 3020 from baseport 0
+2 - There are no channels in the endpoint X.X.X.X
+2 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
+1 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on addSubscription...OK.
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
