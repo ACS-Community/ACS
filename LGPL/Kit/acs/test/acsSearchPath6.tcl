@@ -1,4 +1,6 @@
 # -*- tcl -*-
+source acsRestoreEnv.tcl
+
 set ::env(INTROOT) /introot/myNotExistingIntroot/
 set ::env(INTLIST) /introot/herNotExistingIntroot:/introot/hisNotExistingIntroot
 set ::env(ACSROOT) /alma/ACSNotExisting/ACSSW

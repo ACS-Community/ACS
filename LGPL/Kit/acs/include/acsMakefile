@@ -201,9 +201,10 @@
 #                   "development d/m/y-H:M" otherwise
 #
 #   PRJTOP    prefix directory for "install" operations
-#             RULE: set to either INTROOT(/vw) or ACSROOT(/vw), if defined,
-#                   left undefined otherwise.
-#   INSTALL_ROOT  set to either INTROOT or ACSROOTif
+#             Rule: set to either INTROOT(/vw), the first directory in INTLIST
+#             (eventually with /vw appended) or ACSROOT(/vw) - if any of these
+#             variables is defined; left undefined otherwise.
+#   INSTALL_ROOT  set to either INTROOT, the first directory of INTLIST, or ACSROOT
 #   INCLUDE   target directory for installing .h files    $(PRJTOP)/include
 #   BINDIR    binary directory: bin for WSs, bin/$CPU for LCUs
 #   BIN       target directory for installing bin files   $(PRJTOP)/$(BINDIR)
@@ -1289,7 +1290,11 @@ I_PATH := -I. $(I_PATH)
 #  the way the variable is used is also different see ld(1) on both systems
 #
 
+# ICT-5840: ensure that the installation directory really exists, i.e. that
+# at least one of INTROOT/INTLIST/ACSROOT is defined and points to an existing
+# directory.
 ifdef PRJTOP
+    $(if $(wildcard $(PRJTOP)),,$(error The installation root-directory '$(PRJTOP)' does not exist - check your INTROOT/INTLIST/ACSROOT settings))
     # for VxWorks, binaries and libraries are organized according
     # to supported CPU types
     #
@@ -1297,6 +1302,8 @@ ifdef PRJTOP
     LIB     = $(PRJTOP)/$(LIBDIR)
     INCLUDE = $(PRJTOP)/include
     MAN     = $(PRJTOP)/man
+else
+    $(error INTROOT, INTLIST and ACSROOT are all undefined - cannot determine an installation root-directory) 
 endif
 
 #  
