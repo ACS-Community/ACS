@@ -27,7 +27,7 @@ ${pojo.generateAnnColumnAnnotation(property).replaceFirst("=\"", "=\"`").replace
 </#if>
 <#assign name = pojo.getPropertyName(property)?lower_case>
 <#if pojo.getMetaAsString("enum-types")?contains(name+"|")>
-    @${pojo.importType("org.hibernate.annotations.Type")}(type="${name}")
+	@${pojo.importType("org.hibernate.annotations.Type")}(type="${pojo.getJavaTypeName(property, jdk5)}")
 </#if>
 </#if>
 </#if>
