@@ -210,13 +210,13 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/scipy-0.16.0.tar.gz]
+if [ ! -e ../PRODUCTS/scipy-0.12.0.tar.gz]
 then
   echo Error: scipy sources are missing
 else
   echo "== Building scipy"
-  tar -zxf scipy-0.16.0.tar.gz
-  pushd scipy-0.16.0
+  tar -zxf scipy-0.12.0.tar.gz
+  pushd scipy-0.12.0
   $PYTHON_INTR setup.py config_fc --fcompiler=gnu95 install
   popd
 fi
