@@ -520,7 +520,8 @@ PWD = $(shell pwd)
 os     = $(shell uname)
 osrev  = $(shell uname -r)
 ifdef LINUX_HOME
-kernel_install_subfold := $(shell egrep --regexp="define[[:space:]]+UTS_RELEASE" $(LINUX_HOME)/include/linux/* | cut --delimiter="\"" --fields=2)
+    # ICT-5964: do not treat directories as text files when grep-ing for a pattern
+    kernel_install_subfold := $(shell egrep --directories=skip --regexp="define[[:space:]]+UTS_RELEASE" $(LINUX_HOME)/include/linux/* | cut --delimiter="\"" --fields=2)
 endif
 
 mustBuild = $(if $(MAKE_ONLY),$(if $(findstring $(1),$(MAKE_ONLY)),true,false),true)
