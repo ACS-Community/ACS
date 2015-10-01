@@ -5,17 +5,29 @@
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Loading of IDL interfaces in Interface Repository is being skipped due to up-to-date persistence file
-1 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Starting ACS Configuration Database
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Notify Service
-1 - JDAL is ready and waiting
+1 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the  Notify Service] 
+1 - Looking for service 'something' using port 3902 from baseport 9
+1 - There are no channels in the endpoint a.b.c.d
 1 - ReBound ID: MC_NotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
+1 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Logging Notify Service] 
+1 - Looking for service 'something' using port 3905 from baseport 9
+1 - There are no channels in the endpoint a.b.c.d
 1 - ReBound ID: MC_LoggingNotifyEventChannelFactory
+1 - ----------T--:--:--.--- INFO [acsLoggingService] Starting Logging Service
+1 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Starting ACS Configuration Database
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Archive Notify Service
+1 - JDAL is ready and waiting
+1 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Archive Notify Service] 
+1 - Looking for service 'something' using port 3906 from baseport 9
+1 - There are no channels in the endpoint a.b.c.d
 1 - ReBound ID: MC_ArchiveNotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Alarm Notify Service
+1 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Alarm Notify Service] 
+1 - Looking for service 'something' using port 3907 from baseport 9
+1 - There are no channels in the endpoint a.b.c.d
 1 - ReBound ID: MC_AlarmNotifyEventChannelFactory
-1 - ----------T--:--:--.--- INFO [acsLoggingService] Starting Logging Service
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 1 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
 1 - The alarm service is ready and waiting
@@ -35,17 +47,29 @@
 5 - ----------T--:--:--.--- INFO [acsStartORBSRVC]     Orb options:  -ORBDottedDecimalAddresses 1
 5 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 5 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
-5 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Starting ACS Configuration Database
 5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Notify Service
-5 - JDAL is ready and waiting
+5 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the  Notify Service] 
+5 - Looking for service 'something' using port 3802 from baseport 8
+5 - There are no channels in the endpoint a.b.c.d
 5 - ReBound ID: MC_NotifyEventChannelFactory
 5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
+5 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Logging Notify Service] 
+5 - Looking for service 'something' using port 3805 from baseport 8
+5 - There are no channels in the endpoint a.b.c.d
 5 - ReBound ID: MC_LoggingNotifyEventChannelFactory
+5 - ----------T--:--:--.--- INFO [acsLoggingService] Starting Logging Service
+5 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Starting ACS Configuration Database
 5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Archive Notify Service
+5 - JDAL is ready and waiting
+5 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Archive Notify Service] 
+5 - Looking for service 'something' using port 3806 from baseport 8
+5 - There are no channels in the endpoint a.b.c.d
 5 - ReBound ID: MC_ArchiveNotifyEventChannelFactory
 5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Alarm Notify Service
+5 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Alarm Notify Service] 
+5 - Looking for service 'something' using port 3807 from baseport 8
+5 - There are no channels in the endpoint a.b.c.d
 5 - ReBound ID: MC_AlarmNotifyEventChannelFactory
-5 - ----------T--:--:--.--- INFO [acsLoggingService] Starting Logging Service
 5 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 5 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
 5 - The alarm service is ready and waiting
@@ -80,9 +104,13 @@
 10 - ----------T--:--:--.--- INFO [acsStop] Stopping Manager
 10 - Max timeout exceeded!
 9 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
+9 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Notification Service
 9 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
+9 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Logging Notification Service
 9 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
+9 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Archive Notification Service
 9 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
+9 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Alarm Notification Service
 9 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
 9 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service
 9 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
@@ -95,9 +123,13 @@
 10 - ----------T--:--:--.--- INFO [acsAlarmService] Stopping the AlarmService
 10 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Stopping the CDB
 10 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
+10 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Notification Service
 10 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
+10 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Logging Notification Service
 10 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
+10 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Archive Notification Service
 10 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
+10 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Alarm Notification Service
 10 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
 10 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service
 10 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository

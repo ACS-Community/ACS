@@ -42,4 +42,5 @@ s/Starting Java application: org.jacorb.naming.NameServer .*/Starting Java appli
 
 s/TEST[0-9]* \([0-9]*\) [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/TEST \1 a.b.c.d/g
 s/Stopping the CORBA TEST[0-9]* Notification Service/Stopping the CORBA TEST Notification Service/g
-
+s/There are no channels in the endpoint [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/There are no channels in the endpoint a.b.c.d/g
+s/([0-9]*|[0-9]*) EXCEPTION/EXCEPTION/g

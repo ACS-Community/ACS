@@ -9,12 +9,16 @@
 1 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Stopping the CDB
 1 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine the naming service's process ID.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Notification Service
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine  notification service's process ID.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Logging Notification Service
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine Logging notification service's process ID.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Archive Notification Service
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine Archive notification service's process ID.
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Alarm Notification Service
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine Alarm notification service's process ID.
 1 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service

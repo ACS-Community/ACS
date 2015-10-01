@@ -49,6 +49,10 @@ then
   exit $EC_TIMEOUT
 fi
 
+# Delete all entries in the Naming Service belonging to channels of the Notify Service
+ACS_LOG_INFO "Deleting channels entries in the Name Service of the $CL_NS_TYPE Notify Service"
+acsncDelChannelsInNameS --name_service $ACS_NAME_SERVICE --notify_service "$CL_NS_TYPE" --baseport $ACS_INSTANCE
+
 if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
 then
   # Create the logging or archiving system channel now

@@ -263,7 +263,11 @@ then
   then
     $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name $NOTIFY_EVENT_CHANNEL -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
   fi
-  
+
+  # Delete all entries in the Naming Service that belong to channels of the Notify Service
+  ACS_LOG_INFO "$COMMAND" "Removing channels entries in the Naming Service of the ${CL_NS_TYPE_SP}Notification Service${LOGPOSTFIX}"
+  acsncDelChannelsInNameS --name_service $ACS_NAME_SERVICE --notify_service "$CL_NS_TYPE" --baseport $ACS_INSTANCE 2> /dev/null
+
   $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name ${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
   $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name MC_${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
 

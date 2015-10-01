@@ -1,0 +1,8 @@
+#!/bin/bash
+acsstartupCreateChannels.py -n corbaloc::$HOST:$1/NameService -notify_service LoggingNotifyEventChannelFactory -channel_name LOGGING_CH_1 -domain LOGGING
+acsstartupCreateChannels.py -n corbaloc::$HOST:$1/NameService -notify_service NotifyEventChannelFactory -channel_name CH_1 -domain DEFAULT_DOMAIN 
+acsstartupCreateChannels.py -n corbaloc::$HOST:$1/NameService -notify_service NotifyEventChannelFactory -channel_name CH_2 -domain OTHER_DOMAIN 
+acsstartupCreateChannels.py -n corbaloc::$HOST:$1/NameService -notify_service AlarmNotifyEventChannelFactory -channel_name ALARM_CH_1 -domain ALARM 
+acsstartupCreateChannels.py -n corbaloc::$HOST:$1/NameService -notify_service ArchiveNotifyEventChannelFactory -channel_name ARCHIVE_CH_1 -domain ARCHIVING 
+acsstartupCreateChannels.py -n corbaloc::$HOST:$1/NameService -notify_service NamedChNotifyEventChannelFactory -channel_name NAMED_CH_1 -domain MY_DOMAIN_1 
+acsstartupCreateChannels.py -n corbaloc::$HOST:$1/NameService -notify_service NamedChNotifyEventChannelFactory -channel_name NAMED_CH_2 -domain MY_DOMAIN_2

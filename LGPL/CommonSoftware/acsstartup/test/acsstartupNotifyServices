@@ -1,0 +1,19 @@
+#!/bin/bash
+MODE=$1
+
+if [[ $MODE == STOP ]]; then
+	acsNotifyService -b 0 -k -w -n Logging
+	acsNotifyService -b 0 -k -w -n Archive
+	acsNotifyService -b 0 -k -w -n Alarm
+	acsNotifyService -b 0 -k -w -n NamedCh
+	acsNotifyService -b 0 -k -w
+else
+	if [[ $MODE == START ]]; then
+		acsNotifyService -b 0 -s -w -n Logging
+		acsNotifyService -b 0 -s -w -n Archive
+		acsNotifyService -b 0 -s -w -n Alarm
+		acsNotifyService -b 0 -s -w -n NamedCh
+		acsNotifyService -b 0 -s -w
+	fi
+fi
+

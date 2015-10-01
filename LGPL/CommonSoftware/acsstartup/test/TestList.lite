@@ -151,4 +151,15 @@ PROLOGUE acsstartupTATPrologue
                           "acsstartupCatNotifyServicePorts"
 
 
+# Test that Name Service channels entries are cleared when Notify Services are stopped
+16 testRestartNotifyServices "acsNamingService -s -b 0" "@SLEEP 5" \
+                             "acsstartupNotifyServices START" "@SLEEP 10" \
+                             "acsstartupTest_nslist 3001" "@SLEEP 2" \
+                             "acsstartupCreateChannels 3001" "@SLEEP 5" \
+                             "acsstartupTest_nslist 3001" "@SLEEP 2" \
+                             "acsstartupNotifyServices STOP" "@SLEEP 10" \
+                             "acsstartupTest_nslist 3001" "@SLEEP 2" \
+                             "acsNamingService -k -b 0"
+
+
 EPILOGUE acsstartupTATEpilogue

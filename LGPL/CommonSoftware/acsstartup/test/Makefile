@@ -66,7 +66,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = acsstartupCreateChannels acsstartupNotifyServices
 SCRIPTS_L       = acsstartupTATPrologue acsstartupTATEpilogue \
 	acsstartupSetEnv \
 	testAcsInstance.sh testPids.sh \
@@ -84,7 +84,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         =
+PY_SCRIPTS         = acsstartupCreateChannels.py
 PY_SCRIPTS_L       = tcpBlocker acsstartupTestLoadIFR testContainerPortLock
 
 PY_MODULES         =

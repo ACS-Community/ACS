@@ -1,0 +1,143 @@
+3 - Naming Service: 
+4 - Channel LOGGING_CH_1@LOGGING created!
+5 - Naming Service: 
+7 - Naming Service: 
+3 - ---------------
+4 - Channel CH_1@DEFAULT_DOMAIN created!
+5 - ---------------
+7 - ---------------
+3 - + MC_NamedChNotifyEventChannelFactory: Object Reference
+4 - Channel CH_2@OTHER_DOMAIN created!
+5 - + MC_NamedChNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+4 - Channel ALARM_CH_1@ALARM created!
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+4 - Channel ARCHIVE_CH_1@ARCHIVING created!
+5 - |   Endpoint: a.b.c.d:p
+3 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
+4 - Channel NAMED_CH_1@MY_DOMAIN_1 created!
+5 - + ALARM_CH_1@ALARM (Kind: channels): Object Reference
+3 - |   Protocol: IIOP
+4 - Channel NAMED_CH_2@MY_DOMAIN_2 created!
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + ArchivingChannel@ARCHIVING (Kind: channels): Object Reference
+5 - + NAMED_CH_2@MY_DOMAIN_2 (Kind: channels): Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + LoggingNotifyEventChannelFactory: Object Reference
+5 - + NAMED_CH_1@MY_DOMAIN_1 (Kind: channels): Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + AlarmNotifyEventChannelFactory: Object Reference
+5 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + MC_AlarmNotifyEventChannelFactory: Object Reference
+5 - + ARCHIVE_CH_1@ARCHIVING (Kind: channels): Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + NotifyEventChannelFactory: Object Reference
+5 - + ArchivingChannel@ARCHIVING (Kind: channels): Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + MC_LoggingNotifyEventChannelFactory: Object Reference
+5 - + LoggingNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + NamedChNotifyEventChannelFactory: Object Reference
+5 - + AlarmNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + LoggingChannel@LOGGING (Kind: channels): Object Reference
+5 - + MC_AlarmNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + MC_NotifyEventChannelFactory: Object Reference
+5 - + NotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + ArchiveNotifyEventChannelFactory: Object Reference
+5 - + MC_LoggingNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+5 - + NamedChNotifyEventChannelFactory: Object Reference
+5 - |   Protocol: IIOP
+5 - |   Endpoint: a.b.c.d:p
+5 - + LoggingChannel@LOGGING (Kind: channels): Object Reference
+5 - |   Protocol: IIOP
+5 - |   Endpoint: a.b.c.d:p
+5 - + MC_NotifyEventChannelFactory: Object Reference
+5 - |   Protocol: IIOP
+5 - |   Endpoint: a.b.c.d:p
+5 - + CH_1@DEFAULT_DOMAIN (Kind: channels): Object Reference
+5 - |   Protocol: IIOP
+5 - |   Endpoint: a.b.c.d:p
+5 - + ArchiveNotifyEventChannelFactory: Object Reference
+5 - |   Protocol: IIOP
+5 - |   Endpoint: a.b.c.d:p
+5 - + LOGGING_CH_1@LOGGING (Kind: channels): Object Reference
+5 - |   Protocol: IIOP
+5 - |   Endpoint: a.b.c.d:p
+5 - + CH_2@OTHER_DOMAIN (Kind: channels): Object Reference
+5 - |   Protocol: IIOP
+5 - |   Endpoint: a.b.c.d:p
+1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
+2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Logging Notify Service] 
+2 - Looking for service 'something' using port 3005 from baseport 0
+2 - There are no channels in the endpoint a.b.c.d
+2 - ReBound ID: MC_LoggingNotifyEventChannelFactory
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Archive Notify Service
+2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Archive Notify Service] 
+2 - Looking for service 'something' using port 3006 from baseport 0
+2 - There are no channels in the endpoint a.b.c.d
+2 - ReBound ID: MC_ArchiveNotifyEventChannelFactory
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Alarm Notify Service
+2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Alarm Notify Service] 
+2 - Looking for service 'something' using port 3007 from baseport 0
+2 - There are no channels in the endpoint a.b.c.d
+2 - ReBound ID: MC_AlarmNotifyEventChannelFactory
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NamedCh Notify Service
+2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the NamedCh Notify Service] 
+2 - Looking for service 'something' using port 3020 from baseport 0
+2 - There are no channels in the endpoint a.b.c.d
+2 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Notify Service
+2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the  Notify Service] 
+2 - Looking for service 'something' using port 3002 from baseport 0
+2 - There are no channels in the endpoint a.b.c.d
+2 - ReBound ID: MC_NotifyEventChannelFactory
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Logging Notification Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Archive Notification Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Alarm Notification Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the NamedCh Notification Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NamedCh Notification Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Notification Service
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
+8 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service

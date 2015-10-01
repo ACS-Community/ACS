@@ -36,97 +36,217 @@
 69 - TEST 3649 a.b.c.d
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST01 Notify Service
-2 - ReBound ID: MC_TEST01NotifyEventChannelFactory
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST02 Notify Service
-3 - ReBound ID: MC_TEST02NotifyEventChannelFactory
+2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST01 Notify Service] 
+2 - Looking for service 'something' using port 3620 from baseport 6
+2 - There are no channels in the endpoint a.b.c.d
+2 - ReBound ID: MC_TEST01NotifyEventChannelFactory
 4 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST03 Notify Service
-4 - ReBound ID: MC_TEST03NotifyEventChannelFactory
+3 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST02 Notify Service] 
+3 - Looking for service 'something' using port 3621 from baseport 6
+3 - There are no channels in the endpoint a.b.c.d
+3 - ReBound ID: MC_TEST02NotifyEventChannelFactory
 5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST04 Notify Service
-5 - ReBound ID: MC_TEST04NotifyEventChannelFactory
+4 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST03 Notify Service] 
+4 - Looking for service 'something' using port 3622 from baseport 6
+4 - There are no channels in the endpoint a.b.c.d
+4 - ReBound ID: MC_TEST03NotifyEventChannelFactory
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST05 Notify Service
-6 - ReBound ID: MC_TEST05NotifyEventChannelFactory
+5 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST04 Notify Service] 
+5 - Looking for service 'something' using port 3623 from baseport 6
+5 - There are no channels in the endpoint a.b.c.d
+5 - ReBound ID: MC_TEST04NotifyEventChannelFactory
 7 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST06 Notify Service
+6 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST05 Notify Service] 
+6 - Looking for service 'something' using port 3624 from baseport 6
+6 - There are no channels in the endpoint a.b.c.d
+6 - ReBound ID: MC_TEST05NotifyEventChannelFactory
+7 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST06 Notify Service] 
+7 - Looking for service 'something' using port 3625 from baseport 6
+7 - There are no channels in the endpoint a.b.c.d
 7 - ReBound ID: MC_TEST06NotifyEventChannelFactory
 8 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST07 Notify Service
-8 - ReBound ID: MC_TEST07NotifyEventChannelFactory
 9 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST08 Notify Service
-9 - ReBound ID: MC_TEST08NotifyEventChannelFactory
+8 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST07 Notify Service] 
+8 - Looking for service 'something' using port 3626 from baseport 6
+8 - There are no channels in the endpoint a.b.c.d
+8 - ReBound ID: MC_TEST07NotifyEventChannelFactory
 10 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST09 Notify Service
-10 - ReBound ID: MC_TEST09NotifyEventChannelFactory
+9 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST08 Notify Service] 
+9 - Looking for service 'something' using port 3627 from baseport 6
+9 - There are no channels in the endpoint a.b.c.d
+9 - ReBound ID: MC_TEST08NotifyEventChannelFactory
 11 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST10 Notify Service
-11 - ReBound ID: MC_TEST10NotifyEventChannelFactory
+10 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST09 Notify Service] 
+10 - Looking for service 'something' using port 3628 from baseport 6
+10 - There are no channels in the endpoint a.b.c.d
+10 - ReBound ID: MC_TEST09NotifyEventChannelFactory
 12 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST11 Notify Service
-12 - ReBound ID: MC_TEST11NotifyEventChannelFactory
+11 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST10 Notify Service] 
+11 - Looking for service 'something' using port 3629 from baseport 6
+11 - There are no channels in the endpoint a.b.c.d
+11 - ReBound ID: MC_TEST10NotifyEventChannelFactory
 13 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST12 Notify Service
-13 - ReBound ID: MC_TEST12NotifyEventChannelFactory
+12 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST11 Notify Service] 
+12 - Looking for service 'something' using port 3630 from baseport 6
+12 - There are no channels in the endpoint a.b.c.d
+12 - ReBound ID: MC_TEST11NotifyEventChannelFactory
 14 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST13 Notify Service
-14 - ReBound ID: MC_TEST13NotifyEventChannelFactory
+13 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST12 Notify Service] 
+13 - Looking for service 'something' using port 3631 from baseport 6
+13 - There are no channels in the endpoint a.b.c.d
+13 - ReBound ID: MC_TEST12NotifyEventChannelFactory
 15 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST14 Notify Service
-15 - ReBound ID: MC_TEST14NotifyEventChannelFactory
+14 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST13 Notify Service] 
+14 - Looking for service 'something' using port 3632 from baseport 6
+14 - There are no channels in the endpoint a.b.c.d
+14 - ReBound ID: MC_TEST13NotifyEventChannelFactory
 16 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST15 Notify Service
-16 - ReBound ID: MC_TEST15NotifyEventChannelFactory
+15 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST14 Notify Service] 
+15 - Looking for service 'something' using port 3633 from baseport 6
+15 - There are no channels in the endpoint a.b.c.d
+15 - ReBound ID: MC_TEST14NotifyEventChannelFactory
 17 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST16 Notify Service
-17 - ReBound ID: MC_TEST16NotifyEventChannelFactory
+16 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST15 Notify Service] 
+16 - Looking for service 'something' using port 3634 from baseport 6
+16 - There are no channels in the endpoint a.b.c.d
+16 - ReBound ID: MC_TEST15NotifyEventChannelFactory
 18 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST17 Notify Service
-18 - ReBound ID: MC_TEST17NotifyEventChannelFactory
+17 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST16 Notify Service] 
+17 - Looking for service 'something' using port 3635 from baseport 6
+17 - There are no channels in the endpoint a.b.c.d
+17 - ReBound ID: MC_TEST16NotifyEventChannelFactory
 19 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST18 Notify Service
-19 - ReBound ID: MC_TEST18NotifyEventChannelFactory
+18 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST17 Notify Service] 
+18 - Looking for service 'something' using port 3636 from baseport 6
+18 - There are no channels in the endpoint a.b.c.d
+18 - ReBound ID: MC_TEST17NotifyEventChannelFactory
 20 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST19 Notify Service
-20 - ReBound ID: MC_TEST19NotifyEventChannelFactory
+19 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST18 Notify Service] 
+19 - Looking for service 'something' using port 3637 from baseport 6
+19 - There are no channels in the endpoint a.b.c.d
+19 - ReBound ID: MC_TEST18NotifyEventChannelFactory
 21 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST20 Notify Service
-21 - ReBound ID: MC_TEST20NotifyEventChannelFactory
+20 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST19 Notify Service] 
+20 - Looking for service 'something' using port 3638 from baseport 6
+20 - There are no channels in the endpoint a.b.c.d
+20 - ReBound ID: MC_TEST19NotifyEventChannelFactory
 22 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST21 Notify Service
-22 - ReBound ID: MC_TEST21NotifyEventChannelFactory
+21 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST20 Notify Service] 
+21 - Looking for service 'something' using port 3639 from baseport 6
+21 - There are no channels in the endpoint a.b.c.d
+21 - ReBound ID: MC_TEST20NotifyEventChannelFactory
 23 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST22 Notify Service
-23 - ReBound ID: MC_TEST22NotifyEventChannelFactory
+22 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST21 Notify Service] 
+22 - Looking for service 'something' using port 3640 from baseport 6
+22 - There are no channels in the endpoint a.b.c.d
+22 - ReBound ID: MC_TEST21NotifyEventChannelFactory
 24 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST23 Notify Service
-24 - ReBound ID: MC_TEST23NotifyEventChannelFactory
+23 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST22 Notify Service] 
+23 - Looking for service 'something' using port 3641 from baseport 6
+23 - There are no channels in the endpoint a.b.c.d
+23 - ReBound ID: MC_TEST22NotifyEventChannelFactory
 25 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST24 Notify Service
-25 - ReBound ID: MC_TEST24NotifyEventChannelFactory
+24 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST23 Notify Service] 
+24 - Looking for service 'something' using port 3642 from baseport 6
+24 - There are no channels in the endpoint a.b.c.d
+24 - ReBound ID: MC_TEST23NotifyEventChannelFactory
 26 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST25 Notify Service
-26 - ReBound ID: MC_TEST25NotifyEventChannelFactory
+25 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST24 Notify Service] 
+25 - Looking for service 'something' using port 3643 from baseport 6
+25 - There are no channels in the endpoint a.b.c.d
+25 - ReBound ID: MC_TEST24NotifyEventChannelFactory
 27 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST26 Notify Service
-27 - ReBound ID: MC_TEST26NotifyEventChannelFactory
+26 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST25 Notify Service] 
+26 - Looking for service 'something' using port 3644 from baseport 6
+26 - There are no channels in the endpoint a.b.c.d
+26 - ReBound ID: MC_TEST25NotifyEventChannelFactory
 28 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST27 Notify Service
-28 - ReBound ID: MC_TEST27NotifyEventChannelFactory
+27 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST26 Notify Service] 
+27 - Looking for service 'something' using port 3645 from baseport 6
+27 - There are no channels in the endpoint a.b.c.d
+27 - ReBound ID: MC_TEST26NotifyEventChannelFactory
 29 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST28 Notify Service
-29 - ReBound ID: MC_TEST28NotifyEventChannelFactory
+28 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST27 Notify Service] 
+28 - Looking for service 'something' using port 3646 from baseport 6
+28 - There are no channels in the endpoint a.b.c.d
+28 - ReBound ID: MC_TEST27NotifyEventChannelFactory
 30 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST29 Notify Service
-30 - ReBound ID: MC_TEST29NotifyEventChannelFactory
+29 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST28 Notify Service] 
+29 - Looking for service 'something' using port 3647 from baseport 6
+29 - There are no channels in the endpoint a.b.c.d
+29 - ReBound ID: MC_TEST28NotifyEventChannelFactory
 31 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST30 Notify Service
-31 - ReBound ID: MC_TEST30NotifyEventChannelFactory
+30 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST29 Notify Service] 
+30 - Looking for service 'something' using port 3648 from baseport 6
+30 - There are no channels in the endpoint a.b.c.d
+30 - ReBound ID: MC_TEST29NotifyEventChannelFactory
 32 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+31 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST30 Notify Service] 
+31 - Looking for service 'something' using port 3649 from baseport 6
+31 - There are no channels in the endpoint a.b.c.d
+31 - ReBound ID: MC_TEST30NotifyEventChannelFactory
 33 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
 34 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+35 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST01 Notification Service
 35 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+36 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST02 Notification Service
 36 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+37 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST03 Notification Service
 37 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+38 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST04 Notification Service
 38 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+39 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST05 Notification Service
 39 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+40 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST06 Notification Service
 40 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+41 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST07 Notification Service
 41 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+42 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST08 Notification Service
 42 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+43 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST09 Notification Service
 43 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+44 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST10 Notification Service
 44 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+45 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST11 Notification Service
 45 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+46 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST12 Notification Service
 46 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+47 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST13 Notification Service
 47 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+48 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST14 Notification Service
 48 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+49 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST15 Notification Service
 49 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+50 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST16 Notification Service
 50 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+51 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST17 Notification Service
 51 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+52 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST18 Notification Service
 52 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+53 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST19 Notification Service
 53 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+54 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST20 Notification Service
 54 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+55 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST21 Notification Service
 55 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+56 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST22 Notification Service
 56 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+57 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST23 Notification Service
 57 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+58 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST24 Notification Service
 58 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+59 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST25 Notification Service
 59 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+60 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST26 Notification Service
 60 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+61 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST27 Notification Service
 61 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+62 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST28 Notification Service
 62 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+63 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST29 Notification Service
 63 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+64 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST30 Notification Service
 64 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
 65 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
 66 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!

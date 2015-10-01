@@ -1,15 +1,17 @@
-3 - Naming Service: 
-5 - Naming Service: 
-3 - ---------------
-5 - ---------------
-3 - + TESTNotifyEventChannelFactory: Object Reference
-3 - |   Protocol: IIOP
-3 - |   Endpoint: a.b.c.d:p
-3 - + MC_TESTNotifyEventChannelFactory: Object Reference
-3 - |   Protocol: IIOP
-3 - |   Endpoint: a.b.c.d:p
+3 - EXCEPTION, Exception in nslist
+5 - EXCEPTION, Exception in nslist
+3 - system exception, ID 'something'
+5 - system exception, ID 'something'
+3 - OMG minor code (2), described as 'something', completed = NO
+5 - OMG minor code (2), described as 'something', completed = NO
+3 - 
+5 - 
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TESTNotifyEventChannelFactory Notify Service
+2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST Notify Service] 
+2 - Looking for service 'something' using port 3920 from baseport 9
+2 - There are no channels in the endpoint a.b.c.d
 2 - ReBound ID: MC_TESTNotifyEventChannelFactory
+4 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST Notification Service
 4 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
 6 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
