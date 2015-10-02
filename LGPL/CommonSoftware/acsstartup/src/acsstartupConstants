@@ -15,9 +15,9 @@ EC_NOPORT=44          # can't run requested servant: no port available
 EC_TIMEOUT=45         # can't run requested servant: launch attempt timed out
 
 ### Logging priorities
-ACS_DEBUG_PRIORITY=4
-ACS_INFO_PRIORITY=16
-ACS_ERROR_PRIORITY=258
+ACS_DEBUG_PRIORITY=3
+ACS_INFO_PRIORITY=4
+ACS_ERROR_PRIORITY=8
 
 ### Instance directories
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
