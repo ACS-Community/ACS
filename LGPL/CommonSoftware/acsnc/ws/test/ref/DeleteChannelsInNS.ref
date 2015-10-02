@@ -161,15 +161,14 @@
 1 - ContainerStatusMsg: Automatic component loading begins
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
-2 - ----------T--:--:--.--- INFO [acsNotifyService] Deleting all entries in the Naming Service that belong to channels of the Notify Service
-2 - Looking for service 'NamedChNotifyEventChannelFactory' using port 3020 from baseport 0
-2 - Notify Service 'NamedChNotifyEventChannelFactory' not found!
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the NamedCh Notification Service
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NamedCh Notification Service
 2 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine NamedCh notification service's process ID.
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NamedCh Notify Service
 2 - Using reactive client control.
 2 - Using 1 threads for each Supplier.
 2 - Using 1 threads for each Consumer.
+2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the NamedCh Notify Service] 
 2 - Looking for service 'NamedChNotifyEventChannelFactory' using port 3020 from baseport 0
 2 - There are no channels in the endpoint X.X.X.X
 2 - ReBound ID: MC_NamedChNotifyEventChannelFactory

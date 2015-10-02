@@ -427,7 +427,7 @@ int main (int argc, char *argv[])
 			try {
 				orb->destroy();
 			} catch(const CORBA::Exception &ex) {
-				ACS_SHORT_LOG((LM_ERROR, "CORBA exception: %s", ex._info().c_str()));
+				ACS_SHORT_LOG((LM_ERROR, "CORBA exception while destroying ORB: %s", ex._info().c_str()));
 				++err;
 			}
 			return err;
@@ -488,23 +488,26 @@ int main (int argc, char *argv[])
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + ACS_NC_DOMAIN_ALARMSYSTEM
 			if(notifyServiceName == ALARM_NOTIFY_CHANNEL)
 			{
-				std::string suffix = std::string(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR) 
+				/*std::string suffix = std::string(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR) 
 					+ std::string(acscommon::ACS_NC_DOMAIN_ALARMSYSTEM);
-				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointSuffixName(KIND_CHANNEL, endpoint, suffix));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointSuffixName(KIND_CHANNEL, endpoint, suffix));*/
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, endpoint, port));
 			
 			// Archive Notify Service has channels using a specific domain and port:
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + ACS_NC_DOMAIN_ARCHIVING 
 			} else if(notifyServiceName == ARCHIVE_NOTIFY_CHANNEL) {
-				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointSuffixName(KIND_CHANNEL, endpoint, 
+				/*fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointSuffixName(KIND_CHANNEL, endpoint, 
 					std::string(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR) 
-					+ std::string(acscommon::ACS_NC_DOMAIN_ARCHIVING)));
+					+ std::string(acscommon::ACS_NC_DOMAIN_ARCHIVING)));*/
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, endpoint, port));
 
 			// Logging Notify Service has channels using a specific domain and port:
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + ACS_NC_DOMAIN_LOGGING 
 			} else if(notifyServiceName == LOOGING_NOTIFY_CHANNEL) {
-				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointSuffixName(KIND_CHANNEL, endpoint, 
+				/*fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointSuffixName(KIND_CHANNEL, endpoint, 
 					std::string(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR) 
-					+ std::string(acscommon::ACS_NC_DOMAIN_LOGGING)));
+					+ std::string(acscommon::ACS_NC_DOMAIN_LOGGING)));*/
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, endpoint, port));
 
 			// Default Notify Service has channels using a specific port:
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT 
@@ -559,7 +562,7 @@ int main (int argc, char *argv[])
 	try {
 		orb->destroy();
 	} catch(const CORBA::Exception &ex) {
-		ACS_SHORT_LOG((LM_ERROR, "CORBA exception: %s", ex._info().c_str()));
+		ACS_SHORT_LOG((LM_ERROR, "CORBA exception while destroying ORB: %s", ex._info().c_str()));
 		++err;
 	}
 
