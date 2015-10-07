@@ -14,3 +14,4 @@ s/\(0x[a-z,A-Z,0-9]*\)/xxxxxxx/g
 s/\([0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]\)/12:00:00.000/g
 s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]/----------T--:--/g
 s/user='.*'/user=xxxx/g
+s/There are no channels in the endpoint [0-9]*.[0-9]*.[0-9]*.[0-9]*/There are no channels in the endpoint a.b.c.d/g

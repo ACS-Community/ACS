@@ -1,4 +1,12 @@
 1 -  Starting ORB Services
+1 - Looking for service 'NotifyEventChannelFactory' using port 3002 from baseport 0
+1 - There are no channels in the endpoint a.b.c.d
+1 - Looking for service 'LoggingNotifyEventChannelFactory' using port 3005 from baseport 0
+1 - There are no channels in the endpoint a.b.c.d
+1 - Looking for service 'ArchiveNotifyEventChannelFactory' using port 3006 from baseport 0
+1 - There are no channels in the endpoint a.b.c.d
+1 - Looking for service 'AlarmNotifyEventChannelFactory' using port 3007 from baseport 0
+1 - There are no channels in the endpoint a.b.c.d
 1 -  -D manager.debug.rememberOldHandles -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
 1 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger jacorb created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle is not known for the last 120 minutes.' ] 
