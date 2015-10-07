@@ -65,9 +65,9 @@ public class JarOrderOptimizer implements Comparator<File>
 		"maciErrType.jar",
 		"maciSchemaBindings.jar", 
 		"castor.jar",
-		// "jacorb-omgapi.jar" separate under $JACORB_HOME/endorsed/
-		"jacorb.jar",
-		"jacorb-services.jar",
+		// "jacorb-omgapi-3.6.jar" separate under $JACORB_HOME/endorsed/
+		"jacorb-3.6.jar",
+		"jacorb-services-3.6.jar",
 		"slf4j-api-1.7.6.jar",
 		"slf4j-acs.jar",
 		"acscomponent.jar",
@@ -93,9 +93,8 @@ public class JarOrderOptimizer implements Comparator<File>
 		"baci.jar",
 //		"xercesImpl.jar", currently separate, location defined by -Djava.endorsed.dirs=...
 		"xmljbind.jar",
-		"junit-4.8.2.jar",
+		"junit-dep-4.10.jar",
 		"oe.jar",
-		"abeansR2Components.jar",
 		"acscommandcenter.jar",
 		"AcsCommandCenterEntities.jar",
 		"lcEngine.jar",
