@@ -33,11 +33,16 @@ import MonitorErrImpl
 import MonitorErr
 import time
 
+# definition of in-test exceptions
+class noDataException (Exception) : pass
+class notNulDataException (Exception) : pass
+
 # Make an instance of the PySimpleClient
 simpleClient = PySimpleClient()
 
 mc = simpleClient.getComponent(argv[1])
 
+# Test preparation
 try:
     tc =   simpleClient.getComponent('MC_TEST_PROPERTIES_COMPONENT')
     psns =[propertySerailNumber('doubleROProp',    ['1' ]),
@@ -72,15 +77,52 @@ try:
            propertySerailNumber('EnumTestRWProp',  ['30'])
         ]
     mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_PROPERTIES_COMPONENT', psns)
-    mc.startMonitoring('MC_TEST_PROPERTIES_COMPONENT')    
-    time.sleep(3)
-    mc.stopMonitoring('MC_TEST_PROPERTIES_COMPONENT')
+    print "Test preparation with SUCCESS"
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
-    ex.Print();   
+    ex.Print();
+    print "Test preparation FAIL"
 
-data = mc.getMonitorData()
+# Test Case 1: Verify monitoring for all properties available
+try:
+    # Verify that no monitor values exist
+    data = mc.getMonitorData()
+    # Calculate if data is present
+    alreadyStoredData=0
+    for d in data:
+        for blob in d.monitorBlobs:
+            for blobData in any.from_any(blob.blobDataSeq):
+                alreadyStoredData+=1
+    if alreadyStoredData != 0:
+        print "TEST FAIL: Data present before start monitor"
+        raise notNulDataException
+    # Start monitor and wait some time to generate data
+    mc.startMonitoring('MC_TEST_PROPERTIES_COMPONENT')
+    time.sleep(3)
+    # Stop monitoring
+    mc.stopMonitoring('MC_TEST_PROPERTIES_COMPONENT')
+    # Verify if monitor data have been generated
+    data = mc.getMonitorData()
+    # Calculate if data is present
+    alreadyStoredData=0
+    for d in data:
+        for blob in d.monitorBlobs:
+            for blobData in any.from_any(blob.blobDataSeq):
+                alreadyStoredData+=1
+    if alreadyStoredData == 0:
+        print "TEST FAIL: No monitor data is found"
+        raise noDataException
 
+except noDataException:
+    pass
+except notNulDataException:
+    pass
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+    ex.Print();
+    
+# Print out recovered data
+print "RESULTS FROM TEST CASE1: Verify monitoring for all properties available"
 print "Number of Devices:", len(data);
 for d in data:
     print d.componentName, d.deviceSerialNumber 

@@ -1,3 +1,5 @@
+1 - Test preparation with SUCCESS
+1 - RESULTS FROM TEST CASE1: Verify monitoring for all properties available
 1 - Number of Devices: 1
 1 - MC_TEST_PROPERTIES_COMPONENT 
 1 - 	MC_TEST_PROPERTIES_COMPONENT:doubleROProp ['1']
