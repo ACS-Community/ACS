@@ -111,7 +111,7 @@ class AcsInstanceLockHelper(object):
         assert instance in range(10)
         lockFileName=self.__buildLockFileName(instance)
         print "Locking instance",str(instance),"with lock file",lockFileName
-        return call(["lockfile","-r-0",lockFileName])
+        return call(["lockfile","-r", "0",lockFileName], stderr=None)
         
     
     def unlock(self, instance):
