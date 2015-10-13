@@ -22,7 +22,7 @@
 # --------  --------  ----------------------------------------------
 # acaproni  2014-02-07  created
 #
-from os      import environ, makedirs, chmod
+from os      import environ, makedirs, chmod, devnull
 from os.path import exists 
 import stat
 from subprocess import call
@@ -111,7 +111,9 @@ class AcsInstanceLockHelper(object):
         assert instance in range(10)
         lockFileName=self.__buildLockFileName(instance)
         print "Locking instance",str(instance),"with lock file",lockFileName
-        return call(["lockfile","-r", "0",lockFileName], stderr=None)
+        # Redirect stderr output to /dev/null
+        devnullfdesc = open(devnull, 'w')
+        return call(["lockfile","-r", "0",lockFileName], stderr=devnullfdesc, stdout=devnullfdesc)
         
     
     def unlock(self, instance):
