@@ -4,8 +4,7 @@ import java.util.logging.Level;
 
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.client.ComponentClientTestCase;
-import alma.jconttest.DummyComponent;
-import alma.jconttest.DummyComponentHelper;
+import alma.jconttest.DummyComponentImpl.DummyComponentHelper;
 
 /**
  * Tests {@link alma.acs.container.corba.AcsCorba} and related usage of ORB and POAs.
@@ -92,7 +91,7 @@ public class AcsCorbaTestWithContainer extends ComponentClientTestCase {
 	private void _testComponentPOALifecycle(boolean destroyWhileBusy, int iterations) throws Exception {
 		// times in milliseconds
 		final int remoteCallDurationMin = (destroyWhileBusy ? 2000 : 0);
-		final int callOverheadMax = 500;
+		final int callOverheadMax = 600;
 				
 		for (int i=0; i < iterations; i++) {
 			
