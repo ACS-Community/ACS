@@ -1604,11 +1604,12 @@ clean_dist: clean  $(CLEAN_DIST_TARGET) clean_tat_session
 
 
 .PHONY : clean_all
-# ICT-5703: execute find as intended (i.e. not only using the last pattern in the list)
+# ICT-5703: execute find as intended (i.e. not only using the last pattern in the list),
+# and look only for particular files (exclude directories named "core")
 clean_all: $(CLEAN_TARGET)
 	-@$(ECHO) "Cleaning up .\c"
 	-@$(ECHO) " .\c"
-	-$(AT)find .. \( -name \#\* -o -name core -o -name \*\.gdb_history \) -print | $(XARGS) -i $(RM) {}
+	-$(AT)find .. -type f \( -name \#\* -o -name core -o -name \*\.gdb_history \) -print | $(XARGS) -i $(RM) {}
 ifneq ($(strip $(MANSECTIONS)),)
 	-$(AT)  for i in $(MANSECTIONS) ; \
 		do \

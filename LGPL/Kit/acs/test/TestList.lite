@@ -112,7 +112,7 @@
 # "make clean" with the MAKE_FROMTAT variable set
 21 SOURCE acsMakeCleanDist1.tcl \
    makeCleanDist1 "/usr/bin/make -f Makefile clean_dist MAKE_FROMTAT=1" "@SLEEP 2" "/bin/ls ../idl" \
-   EPILOGUE "rm -Rf ../idl"
+   EPILOGUE "rm -Rf ../idl core"
 
 # Check that the clean/clean_dist targets removes core etc (ICT-5703).
 # Note that after running this test, the content of ../bin/ will be gone!
@@ -120,7 +120,16 @@
 # "make clean" with the MAKE_FROMTAT variable set
 22 SOURCE acsRestoreEnv.tcl \
    PROLOGUE "touch core removeMe~" \
-   makeCleanDist2 "/usr/bin/make -f Makefile clean_dist MAKE_FROMTAT=1" "@SLEEP 2" "/bin/ls core removeMe~"
+   makeCleanDist2 "/usr/bin/make -f Makefile clean_dist MAKE_FROMTAT=1" "@SLEEP 1" "/bin/ls core removeMe~"
+
+# Check that the clean_dist target does not remove *directories* named core (ICT-5703).
+# Note that after running this test, the content of ../bin/ will be gone!
+# To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
+# "make clean" with the MAKE_FROMTAT variable set
+23 SOURCE acsRestoreEnv.tcl \
+   PROLOGUE "mkdir core" \
+   makeCleanDist3 "/usr/bin/make -f Makefile clean MAKE_FROMTAT=1" "@SLEEP 1" "/bin/ls -l core" \
+   EPILOGUE "rm -Rf core"
 
 # Check that if INTROOT points to a non-existing dir, the error msg is meaningful (ICT-5840)
 30 SOURCE acsRestoreEnv.tcl \
