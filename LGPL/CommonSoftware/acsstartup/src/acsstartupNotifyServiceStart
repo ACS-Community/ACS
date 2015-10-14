@@ -35,6 +35,11 @@
 #
 #------------------------------------------------------------------------
 #
+COMMAND=`basename $0`
+
+# Delete all entries in the Naming Service belonging to channels of the Notify Service
+ACS_LOG_DEBUG "$COMMAND" "Deleting channels entries in the Name Service of the $CL_NS_TYPE Notify Service [$HOST:$NOTIFY_SERVICE_PORT]"
+acsncDelChannelsInNameS --name_service $ACS_NAME_SERVICE --notify_service "$HOST:$NOTIFY_SERVICE_PORT"
 
 # I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
 # in order to get the correct svc.conf service configuration file.
@@ -49,16 +54,12 @@ then
   exit $EC_TIMEOUT
 fi
 
-# Delete all entries in the Naming Service belonging to channels of the Notify Service
-ACS_LOG_INFO "Deleting channels entries in the Name Service of the $CL_NS_TYPE Notify Service"
-acsncDelChannelsInNameS --name_service $ACS_NAME_SERVICE --notify_service "$CL_NS_TYPE" --baseport $ACS_INSTANCE
-
 if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
 then
   # Create the logging or archiving system channel now
   if [ "X" = "X$NOTIFY_EVENT_CHANNEL_DOMAIN" ]
   then
-    ACS_LOG_ERROR "The 'NOTIFY_EVENT_CHANNEL_DOMAIN' variable must be set if we want to create NC '$NOTIFY_EVENT_CHANNEL'."
+    ACS_LOG_ERROR "$COMMAND" "The 'NOTIFY_EVENT_CHANNEL_DOMAIN' variable must be set if we want to create NC '$NOTIFY_EVENT_CHANNEL'."
     exit $EC_FAILURE
   fi
   acsstartupCreateChannel --name_service $ACS_NAME_SERVICE --notify_service_id $NOTIFY_EVENT_CHANNEL_FACTORY --channel_id $NOTIFY_EVENT_CHANNEL --channel_domain $NOTIFY_EVENT_CHANNEL_DOMAIN # --max_queue_length 10 --reject_new_events true #--discard_policy FifoOrder #
