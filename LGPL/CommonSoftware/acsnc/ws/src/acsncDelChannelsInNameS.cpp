@@ -306,11 +306,11 @@ void analyzeNamingEntries(const CosNaming::NamingContext_ptr nc,
 	void showHelp(const std::string &name)
 	{
 		std::cout << std::endl;
-	std::cout << "\t> " << name << " options" << std::endl;
-	std::cout << "\tWhere options can be:" << std::endl;
+	std::cout << "\t> " << name << " OPTIONS" << std::endl;
+	std::cout << "\tWhere OPTIONS can be:" << std::endl;
 	std::cout << "\t" << PARAM_IOR_NS << "  IOR of the Naming Service" << std::endl;
-	std::cout << "\t" << PARAM_NOTIFY_SERVICE_NAME << "  Notify Service name" << std::endl;
-	std::cout << "\t" << PARAM_BASEPORT << "  Base port, an integer ranging from 0-10" << std::endl;
+	std::cout << "\t" << PARAM_NOTIFY_SERVICE_NAME << "  Notify Service name or IP:PORT" << std::endl;
+	std::cout << "\t" << PARAM_BASEPORT << "  Base port, an integer ranging from 0-9 that's only needed when the Notify Service passed is the name. When the baseport is not set, takes the value from ACS_INSTANCE" << std::endl;
 	std::cout << "\t" << "-h, -help, --help  Displays this information" << std::endl;
 	std::cout << std::endl;
 }
@@ -322,6 +322,7 @@ void getParams(int argc,char *argv[],
 		std::string &iorNamingService,std::string &notifyServiceName,int32_t &baseport)
 {
 	bool nsNameSet = false;
+	bool baseportSet = false;
 	iorNamingService = "";
 	notifyServiceName = "";
 	baseport = -1;
@@ -346,6 +347,7 @@ void getParams(int argc,char *argv[],
 			if(i + 1 < argc)
 			{
 				std::string strBaseport = std::string(argv[i+1]);
+				baseportSet = true;
 				try {
 					baseport = atoi(strBaseport.c_str());
 				} catch(...) {}
@@ -370,7 +372,7 @@ void getParams(int argc,char *argv[],
 		exit(1);
 	}
 
-	if(baseport < 0 || 10 < baseport)
+	if(true == baseportSet && (baseport < 0 || 10 < baseport))
 	{
 		ACS_SHORT_LOG((LM_ERROR, "Wrong Baseport. Must be an integer between 0-10"));
 		showHelp(APP_ID);
@@ -403,6 +405,20 @@ int main (int argc, char *argv[])
 		ACS_CHECK_LOGGER;
 		getNamedLogger("acsncDelChannelsInNameS");
 
+		// Set the ACS_INSTANCE value as baseport if baseport is not passed
+		if(baseport < 0)
+		{
+			std::string acsInstance = std::getenv("ACS_INSTANCE");
+			baseport = atoi(acsInstance.c_str());
+		}
+
+		// baseport wrong defined so we exit
+		if(baseport < 0 && baseport > 9)
+		{
+			ACS_SHORT_LOG((LM_ERROR, "Unable to set baseport"));
+			exit(1);
+		}
+
 		//Get reference to Root POA
 		CORBA::Object_var obj = orb->resolve_initial_references("RootPOA");
 		PortableServer::POA_var poa = PortableServer::POA::_narrow(obj.in());
@@ -423,7 +439,7 @@ int main (int argc, char *argv[])
 		if(CORBA::is_nil(root.in()))
 		{
 			++err;
-			ACS_SHORT_LOG((LM_INFO, "Nil Naming Context reference"));
+			ACS_SHORT_LOG((LM_ERROR, "Nil Naming Context reference"));
 			try {
 				orb->destroy();
 			} catch(const CORBA::Exception &ex) {
@@ -433,93 +449,93 @@ int main (int argc, char *argv[])
 			return err;
 		}
 
+		std::string ip;
 		std::string port;
 
-		// Alarm Notify Service
-		if(notifyServiceName == ALARM_NOTIFY_CHANNEL || notifyServiceName == "Alarm")
+		size_t pos = notifyServiceName.find_first_of(":");
+		if(pos != std::string::npos)
 		{
-			notifyServiceName = ALARM_NOTIFY_CHANNEL;
-			port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
-		
-		// Archive Notify Service
-		} else if(notifyServiceName == ARCHIVE_NOTIFY_CHANNEL || notifyServiceName == "Archive") {
-			notifyServiceName = ARCHIVE_NOTIFY_CHANNEL;
-			port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
-
-		// Logging Notify Service
-		} else if(notifyServiceName == LOOGING_NOTIFY_CHANNEL || notifyServiceName == "Logging") {
-			notifyServiceName = LOOGING_NOTIFY_CHANNEL;
-			port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
-
-		// Default Notify Service
-		} else if(notifyServiceName == DEFAULT_NOTIFY_CHANNEL || notifyServiceName == "Notify" || notifyServiceName == "") {
-			notifyServiceName = DEFAULT_NOTIFY_CHANNEL;
-			port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
-
-		// Named Notify Service
+			ip = notifyServiceName.substr(0, pos);
+			port = notifyServiceName.substr(pos + 1);
 		} else {
-			size_t posSuff = notifyServiceName.find(DEFAULT_NOTIFY_CHANNEL);
-			if(std::string::npos == posSuff) {
-				posSuff = notifyServiceName.size();
-				notifyServiceName = notifyServiceName + DEFAULT_NOTIFY_CHANNEL;
+			// Alarm Notify Service
+			if(notifyServiceName == ALARM_NOTIFY_CHANNEL || notifyServiceName == "Alarm")
+			{
+				notifyServiceName = ALARM_NOTIFY_CHANNEL;
+				port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
+			
+			// Archive Notify Service
+			} else if(notifyServiceName == ARCHIVE_NOTIFY_CHANNEL || notifyServiceName == "Archive") {
+				notifyServiceName = ARCHIVE_NOTIFY_CHANNEL;
+				port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
+
+			// Logging Notify Service
+			} else if(notifyServiceName == LOOGING_NOTIFY_CHANNEL || notifyServiceName == "Logging") {
+				notifyServiceName = LOOGING_NOTIFY_CHANNEL;
+				port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
+
+			// Default Notify Service
+			} else if(notifyServiceName == DEFAULT_NOTIFY_CHANNEL || notifyServiceName == "Notify" || notifyServiceName == "") {
+				notifyServiceName = DEFAULT_NOTIFY_CHANNEL;
+				port = ACSPorts::getNotifyServicePort(baseport, notifyServiceName.c_str());
+
+			// Named Notify Service
+			} else {
+				size_t posSuff = notifyServiceName.find(DEFAULT_NOTIFY_CHANNEL);
+				if(std::string::npos == posSuff) {
+					posSuff = notifyServiceName.size();
+					notifyServiceName = notifyServiceName + DEFAULT_NOTIFY_CHANNEL;
+				}
+				std::string nsNamePort = notifyServiceName.substr(0,posSuff);
+				port = ACSPorts::getNotifyServicePort(baseport, nsNamePort.c_str());
 			}
-			std::string nsNamePort = notifyServiceName.substr(0,posSuff);
-			port = ACSPorts::getNotifyServicePort(baseport, nsNamePort.c_str());
+
+			// ACSPorts returns port number and a null character in the end so we get only the number
+			port = port.substr(0,port.size() - 1);
+
+			ACS_SHORT_LOG((LM_DEBUG, "Looking for service '%s' using port %s from baseport %d",
+					notifyServiceName.c_str(), port.c_str(), baseport));
+
+			// Create fitlers to look for the Noitfy Service
+			fNotifyService.push_back(new ns::helpers::FilterByNamePort(notifyServiceName, port));
+
+			// Look for the Notify Service
+			analyzeNamingEntries(root.in(), 100, fNotifyService);
+
+			// Found one or more Notify Services
+			if(fNotifyService.front()->m_entries.size() > 0)
+			{
+				ip = fNotifyService.front()->m_entries.front().endpoint;	
+			}
 		}
 
-		// ACSPorts returns port number and a null character in the end so we get only the number
-		port = port.substr(0,port.size() - 1);
-
-		ACS_SHORT_LOG((LM_INFO, "Looking for service '%s' using port %s from baseport %d",
-				notifyServiceName.c_str(), port.c_str(), baseport));
-
-		// Create fitlers to look for the Noitfy Service
-		fNotifyService.push_back(new ns::helpers::FilterByNamePort(notifyServiceName, port));
-
-		// Look for the Notify Service
-		analyzeNamingEntries(root.in(), 100, fNotifyService);
-
 		// Found one or more Notify Services
-		if(fNotifyService.front()->m_entries.size() > 0)
+		if(false == ip.empty() && false == port.empty())
 		{
-			std::string endpoint = fNotifyService.front()->m_entries.front().endpoint;
-	
 			// Alarm Noitfy Service will create channels using a specific suffix:
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + ACS_NC_DOMAIN_ALARMSYSTEM
 			if(notifyServiceName == ALARM_NOTIFY_CHANNEL)
 			{
-				/*std::string suffix = std::string(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR) 
-					+ std::string(acscommon::ACS_NC_DOMAIN_ALARMSYSTEM);
-				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointSuffixName(KIND_CHANNEL, endpoint, suffix));*/
-				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, endpoint, port));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, ip, port));
 			
 			// Archive Notify Service has channels using a specific domain and port:
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + ACS_NC_DOMAIN_ARCHIVING 
 			} else if(notifyServiceName == ARCHIVE_NOTIFY_CHANNEL) {
-				/*fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointSuffixName(KIND_CHANNEL, endpoint, 
-					std::string(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR) 
-					+ std::string(acscommon::ACS_NC_DOMAIN_ARCHIVING)));*/
-				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, endpoint, port));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, ip, port));
 
 			// Logging Notify Service has channels using a specific domain and port:
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + ACS_NC_DOMAIN_LOGGING 
 			} else if(notifyServiceName == LOOGING_NOTIFY_CHANNEL) {
-				/*fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointSuffixName(KIND_CHANNEL, endpoint, 
-					std::string(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR) 
-					+ std::string(acscommon::ACS_NC_DOMAIN_LOGGING)));*/
-				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, endpoint, port));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, ip, port));
 
 			// Default Notify Service has channels using a specific port:
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT 
 			} else if(notifyServiceName == DEFAULT_NOTIFY_CHANNEL) {
-				/*fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointSuffixName(KIND_CHANNEL, endpoint, 
-					std::string(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR) 
-					+ std::string(acscommon::NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT)));*/
-				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, endpoint, port));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, ip, port));
 
 			// Channels owned by other kinds of Notify Services will be deleted according to the port
 			} else {
-				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, endpoint, port));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, ip, port));
 			}
 
 //			fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpoint(KIND_CHANNEL, endpoint));
@@ -542,15 +558,15 @@ int main (int argc, char *argv[])
 						name[0].kind = CORBA::string_dup (it->kind.c_str());
 						CORBA::Object_var objToDel = root->resolve(name);
 						root->unbind(name);
-						ACS_SHORT_LOG((LM_INFO, "Channel %s[%s:%s] has been deleted in the Naming Service", 
+						ACS_SHORT_LOG((LM_DEBUG, "Channel %s[%s:%s] deleted in the Naming Service", 
 								it->name.c_str(),it->endpoint.c_str(),it->port.c_str()));
 					}
 				}
 			} else {
-				ACS_SHORT_LOG((LM_INFO, "There are no channels in the endpoint %s", endpoint.c_str()));
+				ACS_SHORT_LOG((LM_DEBUG, "Name Service without channel entries in the endpoint %s:%s", ip.c_str(), port.c_str()));
 			}
 		} else {
-			ACS_SHORT_LOG((LM_INFO, "Notify Service '%s' not found!", notifyServiceName.c_str()));
+			ACS_SHORT_LOG((LM_DEBUG, "Notify Service '%s' not found!", notifyServiceName.c_str()));
 		}
 
 
