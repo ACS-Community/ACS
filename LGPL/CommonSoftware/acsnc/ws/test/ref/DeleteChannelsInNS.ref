@@ -1,4 +1,5 @@
 10 - Naming Service: 
+1 - Starting Container...
 4 - Naming Service: 
 5 - Looking for service 'NotifyEventChannelFactory' using port 3002 from baseport 0
 6 - Looking for service 'LoggingNotifyEventChannelFactory' using port 3005 from baseport 0
@@ -6,37 +7,46 @@
 8 - Looking for service 'AlarmNotifyEventChannelFactory' using port 3007 from baseport 0
 9 - Looking for service 'NamedChNotifyEventChannelFactory' using port 3020 from baseport 0
 10 - ---------------
+1 - Retrieving CDB reference from Manager using bootstrap ORB
 4 - ---------------
-5 - Channel singleChannel3@domainName1[X.X.X.X:PPPP] has been deleted in the Naming Service
-6 - Channel LoggingChannel@LOGGING[X.X.X.X:PPPP] has been deleted in the Naming Service
-7 - Channel ArchivingChannel@ARCHIVING[X.X.X.X:PPPP] has been deleted in the Naming Service
-8 - Channel singleChannel4@ALARMSYSTEM[X.X.X.X:PPPP] has been deleted in the Naming Service
-9 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] has been deleted in the Naming Service
+5 - Channel singleChannel3@domainName1[X.X.X.X:PPPP] deleted in the Naming Service
+6 - Channel LoggingChannel@LOGGING[X.X.X.X:PPPP] deleted in the Naming Service
+7 - Channel ArchivingChannel@ARCHIVING[X.X.X.X:PPPP] deleted in the Naming Service
+8 - Channel singleChannel4@ALARMSYSTEM[X.X.X.X:PPPP] deleted in the Naming Service
+9 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
 10 - + MC_NamedChNotifyEventChannelFactory: Object Reference
 4 - + MC_NamedChNotifyEventChannelFactory: Object Reference
-5 - Channel singleChannel2@DEFAULTDOMAIN[X.X.X.X:PPPP] has been deleted in the Naming Service
+5 - Channel singleChannel2@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
 10 - |   Protocol: IIOP
 4 - |   Protocol: IIOP
-5 - Channel singleChannel1@DEFAULTDOMAIN[X.X.X.X:PPPP] has been deleted in the Naming Service
+5 - Channel singleChannel1@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
 10 - |   Endpoint: X.X.X.X:PPPP
+1 - Resolving reference: 'corbaloc::---:----/Manager'
 4 - |   Endpoint: X.X.X.X:PPPP
-5 - Channel blarIL@DEFAULTDOMAIN[X.X.X.X:PPPP] has been deleted in the Naming Service
+5 - Channel blarIL@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
 10 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
+1 - Manager reference narrowed.
 4 - + NamedCh@DEFAULTDOMAIN (Kind: channels): Object Reference
-5 - Channel blar@DEFAULTDOMAIN[X.X.X.X:PPPP] has been deleted in the Naming Service
+5 - Channel blar@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
 10 - |   Protocol: IIOP
+1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
 4 - |   Protocol: IIOP
 10 - |   Endpoint: X.X.X.X:PPPP
+1 - Configuration information for container 'bilboContainer' not available.
 4 - |   Endpoint: X.X.X.X:PPPP
 10 - + AcsAlarmService: Object Reference
+1 - Starting as dynamic container.
 4 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
 10 - |   Protocol: IIOP
 4 - |   Protocol: IIOP
 10 - |   Endpoint: X.X.X.X:PPPP
+1 - ContainerStatusMsg: Startup begins
 4 - |   Endpoint: X.X.X.X:PPPP
 10 - + CDB: Object Reference
+1 - ContainerStatusMsg: ORB initialization begins
 4 - + AcsAlarmService: Object Reference
 10 - |   Protocol: IIOP
+1 - ContainerStatusMsg: ORB initialization ends
 4 - |   Protocol: IIOP
 10 - |   Endpoint: X.X.X.X:PPPP
 4 - |   Endpoint: X.X.X.X:PPPP
@@ -145,32 +155,18 @@
 4 - + blar@DEFAULTDOMAIN (Kind: channels): Object Reference
 4 - |   Protocol: IIOP
 4 - |   Endpoint: X.X.X.X:PPPP
-1 - Starting Container...
-1 - Retrieving CDB reference from Manager using bootstrap ORB
-1 - Resolving reference: 'corbaloc::---:----/Manager'
-1 - Manager reference narrowed.
-1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
-1 - Configuration information for container 'bilboContainer' not available.
-1 - Starting as dynamic container.
-1 - ContainerStatusMsg: Startup begins
-1 - ContainerStatusMsg: ORB initialization begins
-1 - ContainerStatusMsg: ORB initialization ends
 1 - ContainerStatusMsg: Manager access initialization begins
 1 - ContainerStatusMsg: Manager access initialization ends
 1 - ContainerStatusMsg: Startup ends
 1 - ContainerStatusMsg: Automatic component loading begins
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
-2 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the NamedCh Notification Service
-2 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NamedCh Notification Service
 2 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine NamedCh notification service's process ID.
-2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NamedCh Notify Service
+2 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+2 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 2 - Using reactive client control.
 2 - Using 1 threads for each Supplier.
 2 - Using 1 threads for each Consumer.
-2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the NamedCh Notify Service] 
-2 - Looking for service 'NamedChNotifyEventChannelFactory' using port 3020 from baseport 0
-2 - There are no channels in the endpoint X.X.X.X
 2 - ReBound ID: MC_NamedChNotifyEventChannelFactory
 1 - ----------T--:--:--.--- [bilboContainer-GL - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
 1 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on addSubscription...OK.

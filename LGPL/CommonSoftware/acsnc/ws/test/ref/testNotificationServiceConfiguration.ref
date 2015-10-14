@@ -21,4 +21,3 @@
 1 - domain: AlarmNotifyEventChannelFactory
 1 - non-existing domain: NotifyEventChannelFactory
 1 - /----/libbaci.so
-1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'bilboContainer' exited with code: 0.
