@@ -13,7 +13,7 @@
   <Autoload>
     <cdb:_ string="baci" />
   </Autoload>
-  <DeployInfo Host="gas01" Instance="0" Flags="" KeepAliveTime="-1"/>
+  <DeployInfo Host="gas01" Flags="" KeepAliveTime="-1"/>
   <LoggingConfig centralizedLogger="Log"
                  minLogLevel="3"
                  minLogLevelLocal="4"
