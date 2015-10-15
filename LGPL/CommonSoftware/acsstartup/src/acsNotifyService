@@ -259,13 +259,6 @@ then
   fi
 
   ACS_NAME_SERVICE=`acsstartupNSRef`
-  if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
-  then
-    $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name $NOTIFY_EVENT_CHANNEL -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
-  fi
-
-  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name ${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
-  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name MC_${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
 
   # SERVICE SHUTDOWN
   # --------------------------------------------------------------------------
@@ -274,6 +267,16 @@ then
   then
     acsKillProc $NOTIFY_SERVICE_PID 2> /dev/null && rm -f $NOTIFY_SERVICE_PIDFILE || ACS_LOG_ERROR "$COMMAND" "Cannot kill the ${CL_NS_TYPE_SP}Notification Service"
   fi 
+
+  # Delete notify channel entry from the Name Service
+  if [ "X" != "X$NOTIFY_EVENT_CHANNEL" ]
+  then
+    $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name $NOTIFY_EVENT_CHANNEL -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+  fi
+
+  # Delete factories entries from the Name Service
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name ${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
+  $ACE_ROOT/TAO/utils/nslist/tao_nsdel --name MC_${CL_NS_TYPE}NotifyEventChannelFactory -ORBInitRef NameService=$ACS_NAME_SERVICE $ORBOPTS 2> /dev/null
 
   # Clean channel entries in the Name Service belonging to the Notify Service which has been stopped
   ACS_LOG_DEBUG "$COMMAND" "Removing channels entries in the Naming Service of the ${CL_NS_TYPE_SP}Notification Service${LOGPOSTFIX} [$HOST:$NOTIFY_SERVICE_PORT] which has been stopped"

@@ -8,10 +8,8 @@
 5 - 
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TESTNotifyEventChannelFactory Notify Service
-2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the TEST Notify Service] 
-2 - Looking for service 'something' using port 3920 from baseport 9
-2 - There are no channels in the endpoint a.b.c.d
+2 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 2 - ReBound ID: MC_TESTNotifyEventChannelFactory
-4 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the TEST Notification Service
 4 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+4 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 6 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service

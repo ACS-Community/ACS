@@ -106,38 +106,32 @@
 5 - |   Endpoint: a.b.c.d:p
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
-2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Logging Notify Service] 
-2 - Looking for service 'something' using port 3005 from baseport 0
-2 - There are no channels in the endpoint a.b.c.d
+2 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 2 - ReBound ID: MC_LoggingNotifyEventChannelFactory
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Archive Notify Service
-2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Archive Notify Service] 
-2 - Looking for service 'something' using port 3006 from baseport 0
-2 - There are no channels in the endpoint a.b.c.d
+2 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 2 - ReBound ID: MC_ArchiveNotifyEventChannelFactory
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Alarm Notify Service
-2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the Alarm Notify Service] 
-2 - Looking for service 'something' using port 3007 from baseport 0
-2 - There are no channels in the endpoint a.b.c.d
+2 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 2 - ReBound ID: MC_AlarmNotifyEventChannelFactory
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NamedCh Notify Service
-2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the NamedCh Notify Service] 
-2 - Looking for service 'something' using port 3020 from baseport 0
-2 - There are no channels in the endpoint a.b.c.d
+2 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 2 - ReBound ID: MC_NamedChNotifyEventChannelFactory
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Notify Service
-2 - ----------T--:--:--.--- INFO [Deleting channels entries in the Name Service of the  Notify Service] 
-2 - Looking for service 'something' using port 3002 from baseport 0
-2 - There are no channels in the endpoint a.b.c.d
+2 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 2 - ReBound ID: MC_NotifyEventChannelFactory
-6 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Logging Notification Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
-6 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Archive Notification Service
+6 - Channel LoggingChannel@LOGGING[192.168.75.129:3005] deleted in the Naming Service
+6 - Channel LOGGING_CH_1@LOGGING[192.168.75.129:3005] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
-6 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Alarm Notification Service
+6 - Channel ARCHIVE_CH_1@ARCHIVING[192.168.75.129:3006] deleted in the Naming Service
+6 - Channel ArchivingChannel@ARCHIVING[192.168.75.129:3006] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
-6 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the NamedCh Notification Service
+6 - Channel ALARM_CH_1@ALARM[192.168.75.129:3007] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NamedCh Notification Service
-6 - ----------T--:--:--.--- INFO [acsNotifyService] Removing channels entries in the Naming Service of the Notification Service
+6 - Channel NAMED_CH_2@MY_DOMAIN_2[192.168.75.129:3020] deleted in the Naming Service
+6 - Channel NAMED_CH_1@MY_DOMAIN_1[192.168.75.129:3020] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
+6 - Channel CH_1@DEFAULT_DOMAIN[192.168.75.129:3002] deleted in the Naming Service
+6 - Channel CH_2@OTHER_DOMAIN[192.168.75.129:3002] deleted in the Naming Service
 8 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
