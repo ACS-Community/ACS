@@ -4,7 +4,8 @@ import java.util.logging.Level;
 
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.client.ComponentClientTestCase;
-import alma.jconttest.DummyComponentImpl.DummyComponentHelper;
+import alma.jconttest.DummyComponent;
+import alma.jconttest.DummyComponentHelper;
 
 /**
  * Tests {@link alma.acs.container.corba.AcsCorba} and related usage of ORB and POAs.
