@@ -15,3 +15,4 @@ s/\([0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]\)/12:00:00.000/g
 s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]/----------T--:--/g
 s/user='.*'/user=xxxx/g
 s/There are no channels in the endpoint [0-9]*.[0-9]*.[0-9]*.[0-9]*/There are no channels in the endpoint a.b.c.d/g
+s/Name Service without channel entries in the endpoint [0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*/Name Service without channel entries in the endpoint a.b.c.d:xxxx/g
