@@ -50,9 +50,9 @@
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
 1 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
-1 - Channel LoggingChannel@LOGGING[192.168.75.129:3005] deleted in the Naming Service
+1 - Channel LoggingChannel@LOGGING[a.b.c.d:xxxx] deleted in the Naming Service
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
-1 - Channel ArchivingChannel@ARCHIVING[192.168.75.129:3006] deleted in the Naming Service
+1 - Channel ArchivingChannel@ARCHIVING[a.b.c.d:xxxx] deleted in the Naming Service
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
 1 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 1 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service

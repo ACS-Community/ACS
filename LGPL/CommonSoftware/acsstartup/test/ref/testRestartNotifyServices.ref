@@ -121,17 +121,17 @@
 2 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 2 - ReBound ID: MC_NotifyEventChannelFactory
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
-6 - Channel LoggingChannel@LOGGING[192.168.75.129:3005] deleted in the Naming Service
-6 - Channel LOGGING_CH_1@LOGGING[192.168.75.129:3005] deleted in the Naming Service
+6 - Channel LoggingChannel@LOGGING[a.b.c.d:xxxx] deleted in the Naming Service
+6 - Channel LOGGING_CH_1@LOGGING[a.b.c.d:xxxx] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
-6 - Channel ARCHIVE_CH_1@ARCHIVING[192.168.75.129:3006] deleted in the Naming Service
-6 - Channel ArchivingChannel@ARCHIVING[192.168.75.129:3006] deleted in the Naming Service
+6 - Channel ARCHIVE_CH_1@ARCHIVING[a.b.c.d:xxxx] deleted in the Naming Service
+6 - Channel ArchivingChannel@ARCHIVING[a.b.c.d:xxxx] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
-6 - Channel ALARM_CH_1@ALARM[192.168.75.129:3007] deleted in the Naming Service
+6 - Channel ALARM_CH_1@ALARM[a.b.c.d:xxxx] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NamedCh Notification Service
-6 - Channel NAMED_CH_2@MY_DOMAIN_2[192.168.75.129:3020] deleted in the Naming Service
-6 - Channel NAMED_CH_1@MY_DOMAIN_1[192.168.75.129:3020] deleted in the Naming Service
+6 - Channel NAMED_CH_2@MY_DOMAIN_2[a.b.c.d:xxxx] deleted in the Naming Service
+6 - Channel NAMED_CH_1@MY_DOMAIN_1[a.b.c.d:xxxx] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
-6 - Channel CH_1@DEFAULT_DOMAIN[192.168.75.129:3002] deleted in the Naming Service
-6 - Channel CH_2@OTHER_DOMAIN[192.168.75.129:3002] deleted in the Naming Service
+6 - Channel CH_1@DEFAULT_DOMAIN[a.b.c.d:xxxx] deleted in the Naming Service
+6 - Channel CH_2@OTHER_DOMAIN[a.b.c.d:xxxx] deleted in the Naming Service
 8 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service

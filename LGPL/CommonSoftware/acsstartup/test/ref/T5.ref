@@ -90,9 +90,9 @@
 9 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
 9 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 9 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
-9 - Channel LoggingChannel@LOGGING[192.168.75.129:3905] deleted in the Naming Service
+9 - Channel LoggingChannel@LOGGING[a.b.c.d:xxxx] deleted in the Naming Service
 9 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
-9 - Channel ArchivingChannel@ARCHIVING[192.168.75.129:3906] deleted in the Naming Service
+9 - Channel ArchivingChannel@ARCHIVING[a.b.c.d:xxxx] deleted in the Naming Service
 9 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
 9 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 9 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service
@@ -109,9 +109,9 @@
 10 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
 10 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 10 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
-10 - Channel LoggingChannel@LOGGING[192.168.75.129:3805] deleted in the Naming Service
+10 - Channel LoggingChannel@LOGGING[a.b.c.d:xxxx] deleted in the Naming Service
 10 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
-10 - Channel ArchivingChannel@ARCHIVING[192.168.75.129:3806] deleted in the Naming Service
+10 - Channel ArchivingChannel@ARCHIVING[a.b.c.d:xxxx] deleted in the Naming Service
 10 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
 10 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 10 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service
