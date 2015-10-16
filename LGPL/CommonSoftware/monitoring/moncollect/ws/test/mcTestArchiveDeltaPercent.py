@@ -119,7 +119,7 @@ for d in data:
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
             if i<20:
-                print "\t\t", blobData, " i: ", i
+                print "\t\t", blobData
                 i+=1
 
 mc.deregisterMonitoredDevice(cname)

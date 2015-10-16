@@ -37,20 +37,22 @@ simpleClient = PySimpleClient()
 
 mc = simpleClient.getComponent(argv[1])
 
-# First test: Nominal test. Some data buffered and recovered 
+# First test: Nominal test. Some data buffered and recovered
+cname = 'MC_TEST_COMPONENT'
 try:
-    tc =   simpleClient.getComponent('MC_TEST_COMPONENT')
+    tc = simpleClient.getComponent(cname)
     psns =[propertySerailNumber('doubleSeqProp', ['12124']),propertySerailNumber('doubleProp', ['3432535'])]    
-    mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_COMPONENT', psns)
+    mc.registerMonitoredDeviceWithMultipleSerial(cname, psns)
     tc.reset();
-    mc.startMonitoring('MC_TEST_COMPONENT')    
+    mc.startMonitoring(cname)    
     time.sleep(2)
-    mc.stopMonitoring('MC_TEST_COMPONENT')
+    mc.stopMonitoring(cname)
     
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print(); 
-    
+
+time.sleep(1)
 data = mc.getMonitorData()
 
 # First log entry: Print results of the first part of the test
@@ -59,45 +61,41 @@ for d in data:
     print d.componentName, d.deviceSerialNumber 
     for blob in d.monitorBlobs:
         print "\t", blob.propertyName, blob.propertySerialNumber
-        i=0
         for blobData in any.from_any(blob.blobDataSeq):
             print "\t\t", blobData
-            i+=1
 
-# Second test: Cyclic buffering activation. Reseting MC_TEST_COMPONENT at beggining, verification of data loss
+# Second test: Cyclic buffering activation. Reseting MC_TEST_COMPONENT at beginning, verification of data loss
 try:
     tc.reset();
-    mc.startMonitoring('MC_TEST_COMPONENT')    
+    mc.startMonitoring(cname)
     time.sleep(220)
-    mc.stopMonitoring('MC_TEST_COMPONENT')
+    mc.stopMonitoring(cname)
     
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print(); 
-    
+
+time.sleep(1)
 data = mc.getMonitorData()
     
 # Second log entry: Print results of the second part of the test
 print "Cyclic buffer test. Number of Devices:", len(data);
 for d in data:
-    print d.componentName, d.deviceSerialNumber 
+    print d.componentName, d.deviceSerialNumber
     for blob in d.monitorBlobs:
         print "\t", blob.propertyName, blob.propertySerialNumber
-        i=0
         for blobData in any.from_any(blob.blobDataSeq):
             print "\t\t", blobData
-            i+=1
     
 # Third test: Verification of cyclic buffer restarted after acquisition (no MC_TEST_COMPONENT reset)
 try:
-    #tc.reset();
-    mc.startMonitoring('MC_TEST_COMPONENT')    
-    time.sleep(15)
-    mc.stopMonitoring('MC_TEST_COMPONENT')
+    mc.startMonitoring(cname)
+    time.sleep(10)
+    mc.stopMonitoring(cname)
     
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
-    ex.Print(); 
+    ex.Print();
     
 data = mc.getMonitorData()
     
@@ -109,10 +107,11 @@ for d in data:
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
-            print "\t\t", blobData
-            i+=1
+            if i<5:
+                print "\t\t", blobData
+                i+=1
 
-mc.deregisterMonitoredDevice('MC_TEST_COMPONENT')
+mc.deregisterMonitoredDevice(cname)
 
 #cleanly disconnect
 simpleClient.releaseComponent(argv[1])

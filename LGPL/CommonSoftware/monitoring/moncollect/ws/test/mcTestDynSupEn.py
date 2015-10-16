@@ -45,7 +45,7 @@ mc = simpleClient.getComponent(argv[1])
 # Test preparation
 cname = 'MC_TEST_COMPONENT2'
 try:
-    tc =   simpleClient.getComponent(cname)
+    tc = simpleClient.getComponent(cname)
     psns =[propertySerailNumber('doubleSeqProp', ['12124']),
            propertySerailNumber('doubleProp', ['3432535'])
            ]
@@ -112,7 +112,7 @@ for d in data:
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
-            if i<3:
+            if not "-" in str(blobData) and i<3:
                 print "\t\t", blobData
                 i+=1
 
@@ -170,9 +170,9 @@ for d in data:
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
-            if i<3:
+            if not "-" in str(blobData) and i<3:
                 print "\t\t", blobData
-                i+=1  
+                i+=1
 
 # Test Case 3: Verify dynamic archival disabling
 try:
@@ -228,9 +228,9 @@ for d in data:
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
-            if i<3:
+            if not "-" in str(blobData) and i<3:
                 print "\t\t", blobData
-                i+=1  
+                i+=1
 
 mc.deregisterMonitoredDevice(cname)
 
