@@ -120,7 +120,7 @@ for d in data:
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
-            if i<20:
+            if not "-" in str(blobData) and i<10:
                 print "\t\t", blobData
                 i+=1
 
