@@ -1,1 +1,1 @@
-../../ws/src/../test/addDataTest.cpp
+../../ws/test/addDataTest.cpp

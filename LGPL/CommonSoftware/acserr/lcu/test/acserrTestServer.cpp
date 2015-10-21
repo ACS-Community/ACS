@@ -1,1 +1,1 @@
-../../ws/src/../test/acserrTestServer.cpp
+../../ws/test/acserrTestServer.cpp
