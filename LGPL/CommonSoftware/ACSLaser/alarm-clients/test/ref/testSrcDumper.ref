@@ -1,12 +1,4 @@
-1 - java version....
-1 - Java... (build...)
-1 - Java... (build...)
-1 - 
 1 - TestSourceDumper Started
-1 - java version....
-1 - Java... (build...)
-1 - Java... (build...)
-1 - 
 1 - ----------T--:--:--.--- INFO [AlarmSourceDump] component 'alma.alarmsystem.dump.AlarmSourceDumper' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- CONFIG [alma.alarmsystem.dump.AlarmSourceDumper] Config issue for channel 'CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
 1 - AlarmSenderForDumperTest sending alarms.
