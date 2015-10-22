@@ -1,11 +1,13 @@
-3 - EXCEPTION, Exception in nslist
-5 - EXCEPTION, Exception in nslist
-3 - system exception, ID 'something'
-5 - system exception, ID 'something'
-3 - OMG minor code (2), described as 'something', completed = NO
-5 - OMG minor code (2), described as 'something', completed = NO
-3 - 
-5 - 
+3 - Naming Service: 
+5 - Naming Service: 
+3 - ---------------
+5 - ---------------
+3 - + TESTNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+3 - + MC_TESTNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TESTNotifyEventChannelFactory Notify Service
 2 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
