@@ -84,5 +84,8 @@ PROLOGUE acspyTATPrologue
    "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration PyTestContainer get PyTestContainer" \
    "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration PyTestContainer set PyTestContainer -c Default"\
    "@SLEEP 1" "acsutilTATTestRunner maciContainerLogStatsConfiguration PyTestContainer get PyTestContainer"
+
+20 testSupplierConsumerCallback "acsutilTATTestRunner acspyTestConsumer no_name 15 1" "@SLEEP 2" \
+                          "acsutilTATTestRunner acspyTestSupplierCallback no_name 15"
 #-------------------------------------------------------------------
 EPILOGUE acsutilTATEpilogue

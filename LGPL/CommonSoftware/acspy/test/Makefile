@@ -50,6 +50,7 @@ PY_SCRIPTS_L =	test_Acspy_Nc_CommonNC \
 		acspyTestCompReload \
 		acspyTestLoggingConsumer \
 		acspyTestSupplier \
+		acspyTestSupplierCallback \
 		acspyTestConsumer \
 		acspyTestQoSTimeout \
 		 acspyTestContainerActivationMap.py
