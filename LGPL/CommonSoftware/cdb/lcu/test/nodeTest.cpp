@@ -1,1 +1,1 @@
-../../ws/src/../test/nodeTest.cpp
+../../ws/test/nodeTest.cpp

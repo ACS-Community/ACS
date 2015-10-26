@@ -1,1 +1,1 @@
-../../ws/src/../test/cdbTest.cpp
+../../ws/test/cdbTest.cpp
