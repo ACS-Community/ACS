@@ -275,7 +275,7 @@ public class SubsysResourceMonitor {
 	 */
 	static class ResourceCheckRunner<T> implements Runnable {
 		
-		private volatile int callTimeoutSeconds = 10;
+		private volatile int callTimeoutSeconds = 60;
 		private final ResourceChecker<T> resourceChecker;
 		private final ResourceErrorHandler<T> err;
         private final Logger logger;
@@ -381,7 +381,11 @@ public class SubsysResourceMonitor {
 				callError = thr;
 			}
 			finally {
-				if (wasTimedOut) {
+				long currTime = System.currentTimeMillis();
+				if ( !wasTimedOut && currTime - timeBeforeCall  >= 10) {
+					logger.log(Level.WARNING, "Too much time taken (" + (currTime - timeBeforeCall) + " seconds), however we didn't time out (" + callTimeoutSeconds + " seconds) for resource '" + resourceChecker.getResourceName() + ". ");
+				}
+				if (wasTimedOut ) {
 					checkStateCallerWithTimeout.cancel();  // to suppress a possible later bad-state message 
 				}
 			}
