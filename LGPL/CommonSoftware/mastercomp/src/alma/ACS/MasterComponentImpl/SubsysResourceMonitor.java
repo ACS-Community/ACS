@@ -382,7 +382,7 @@ public class SubsysResourceMonitor {
 			}
 			finally {
 				long currTime = System.currentTimeMillis();
-				if ( !wasTimedOut && currTime - timeBeforeCall  >= 10) {
+				if ( !wasTimedOut && currTime - timeBeforeCall  >= 10000) {
 					logger.log(Level.WARNING, "Too much time taken (" + (currTime - timeBeforeCall) + " seconds), however we didn't time out (" + callTimeoutSeconds + " seconds) for resource '" + resourceChecker.getResourceName() + ". ");
 				}
 				if (wasTimedOut ) {
