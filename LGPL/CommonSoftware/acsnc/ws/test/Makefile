@@ -39,9 +39,9 @@ testChannelCreation_OBJECTS =	testChannelCreation
 testChannelCreation_LIBS    =	acsnc maciClient acsncHelperTest
 
 
-SCRIPTS_L       = acsncTATRunTest.sh acsncNslist.sh acsncExecDelChannelsNS.sh acsncCreateNamedNotifyS.sh
+SCRIPTS_L       = acsncTATRunTest.sh acsncNslist.sh acsncExecDelChannelsNS.sh acsncCreateNamedNotifyS.sh 
 
-PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent
+PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent acsncTestConSup2
 
 # Includes (.h) files (public and local)
 # ---------------------------------

@@ -64,6 +64,14 @@ PROLOGUE acsutilTATPrologue
 		      "acsutilTATTestRunner acsncExecDelChannelsNS.sh Archive" "@SLEEP 2" \
 		      "acsutilTATTestRunner acsncExecDelChannelsNS.sh Alarm" "@SLEEP 2" \
 		      "acsutilTATTestRunner acsncExecDelChannelsNS.sh NamedCh" "@SLEEP 2" \
-		      "acsutilTATTestRunner acsncNslist.sh"
+		      "acsutilTATTestRunner acsncNslist.sh" "@SLEEP 1" \
+		      "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 20" 
+
+8 RestartNotifyServiceWhilePublishing "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+                       "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 10" \
+                       "acsutilTATTestRunner acsncTestConSup2" "@SLEEP 5" \
+                       "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 25"
+#		       "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 30"
+		       
 
 EPILOGUE acsutilTATEpilogue

@@ -67,6 +67,8 @@ class RTSupplierCompImpl: public virtual acscomponent::ACSComponentImpl,
     /* --------------------- [ CORBA interface ] ----------------------*/
     virtual void 
     sendEvents(short numEvents);
+    virtual void 
+    sendEvents2(CORBA::Long numEvents,CORBA::Long sleepSec);
     
   private:
     nc::RTSupplier *m_testSupplier_p;

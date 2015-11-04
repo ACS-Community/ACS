@@ -67,6 +67,50 @@ SupplierCompImpl::sendEvents(short numEvents)
 	ACE_OS::sleep(1);
 	}
 }
+void 
+SupplierCompImpl::sendEvents2(CORBA::Long numEvents,CORBA::Long sleepSec)
+{
+    acsnc::EventDescription descrip;
+    descrip.name = CORBA::string_dup("none...this is a test");
+    descrip.timestamp = 41;
+    descrip.count = 41;
+
+    int32_t numEventsSent = 0;
+    int32_t numEventsErr = 0;
+
+    bool isSending = true;
+    int32_t numChanges = 0;
+
+    ACS_SHORT_LOG((LM_ALERT, "Start sending events via SimpleSupplier."));
+    for(CORBA::Long i=0; i<numEvents; i++)
+	{
+        try {
+		m_testSupplier_p->publishData<acsnc::EventDescription>(descrip);
+                ++numEventsSent;
+                if(false == isSending)
+		{
+			isSending = true;
+			++numChanges;
+		}
+	        //ACS_SHORT_LOG((LM_ALERT, "Sent %d event via SimpleSupplier.", i));
+	} catch(...) {
+	        //ACS_SHORT_LOG((LM_ALERT, "Event %d cannot be sent via SimpleSupplier.", i));
+                ++numEventsErr;
+		if(true == isSending)
+		{
+			isSending = false;
+			++numChanges;
+		}
+	}
+	if(sleepSec > 0)
+		{
+		ACE_OS::sleep(sleepSec);
+		}
+	}
+    ACS_SHORT_LOG((LM_ALERT, "Sent %d events via SimpleSupplier.", numEventsSent));
+    ACS_SHORT_LOG((LM_ALERT, "%d events cannot be sent via SimpleSupplier.", numEventsErr));
+    ACS_SHORT_LOG((LM_ALERT, "%d changes while sending via SimpleSupplier.", numChanges));
+}
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(SupplierCompImpl)

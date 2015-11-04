@@ -67,6 +67,8 @@ class SupplierCompImpl: public virtual acscomponent::ACSComponentImpl,
     /* --------------------- [ CORBA interface ] ----------------------*/
     virtual void 
     sendEvents(short numEvents);
+    virtual void 
+    sendEvents2(CORBA::Long numEvents,CORBA::Long sleepSec);
     
   private:
     nc::SimpleSupplier *m_testSupplier_p;

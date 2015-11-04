@@ -47,7 +47,7 @@ ConsumerCompImpl::myHandlerFunction(acsnc::EventDescription joe, void *handlerPa
 	{
 	ACS_STATIC_SHORT_LOG((LM_ALERT, "myHandlerFunction()...value is:%d", joe.count));
 	myself->m_count++;
-	ACE_OS::sleep(2.50);
+	//ACE_OS::sleep(2.50);
 	}
 }
 /* ----------------------------------------------------------------*/

@@ -172,21 +172,21 @@
 1 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on addSubscription...OK.
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
-1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
 1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
-1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
-1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
+1 - ----------T--:--:--.--- [NamedCh_CON1 - ] No exception on resume...OK.
+1 - ----------T--:--:--.--- [NamedCh_CON1 - ] No exception on suspend...OK.
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::addFilter failed for the 'NamedCh' channel, 'EventDescription' event type, and 'hope to god this filter doesn't work' filter!
+1 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on addFilter...OK.
+1 - /----/libbaci.so

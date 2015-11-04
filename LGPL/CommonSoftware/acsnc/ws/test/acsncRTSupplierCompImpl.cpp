@@ -63,6 +63,24 @@ RTSupplierCompImpl::sendEvents(short numEvents)
 	ACE_OS::sleep(1);
 	}
 }
+void 
+RTSupplierCompImpl::sendEvents2(CORBA::Long numEvents,CORBA::Long sleepSec)
+{
+    acsnc::EventDescription descrip;
+    descrip.name = CORBA::string_dup("none...this is a test");
+    descrip.timestamp = 41;
+    descrip.count = 41;
+
+    for(CORBA::Long i=0; i<numEvents; i++)
+	{
+	m_testSupplier_p->publishData<acsnc::EventDescription>(descrip);
+	ACS_SHORT_LOG((LM_ALERT, "Sent an event via SimpleSupplier."));
+	if(sleepSec > 0)
+		{
+		ACE_OS::sleep(sleepSec);
+		}
+	}
+}
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(RTSupplierCompImpl)
