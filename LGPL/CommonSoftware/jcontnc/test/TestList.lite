@@ -51,4 +51,11 @@ PROLOGUE acsutilTATPrologue -l
 
 10 testAnyAide "acsutilTATTestRunner runAnyAideTest.sh"
 
+# Check the reconnection of a publisher when its Notify Service is restarted. First of all,
+# we clean channels created in previous tests
+11 testReconnectionPublisherWhenNotifyServiceRestarts "acsutilTATTestRunner jcontncRestartDefaultNS.sh 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleSupplierReconnClient 100 1" "@SLEEP 5" \
+   "acsutilTATTestRunner jcontncRestartDefaultNS.sh 5 VERBOSE" "@SLEEP 25"
+
+
 EPILOGUE acsutilTATEpilogue
