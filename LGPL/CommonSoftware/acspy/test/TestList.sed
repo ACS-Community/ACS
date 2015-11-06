@@ -27,3 +27,9 @@ s/file=.*ACSSW/file='acspy/g
 s/lineNum=[0-9]*/lineNum=XXXX/g
 s/TimeMillis=[0-9]\+/TimeMillis=nnn/g
 s/: initialized by \w*@\S*/ initialized by user@host/g
+s/test_reconn@DEFAULTDOMAIN\[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\]/test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY]/g
+s/Name Service without channel entries in the endpoint [0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*/Name Service without channel entries in the endpoint X.X.X.X:YYYY/g
+s/Deleting channels entries in the Name Service of the  Notify Service \[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\]/Deleting channels entries in the Name Service of the  Notify Service [X.X.X.X:YYYY]/g
+s/Notification Service \[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\] which has been stopped/Notification Service [X.X.X.X:YYYY] which has been stopped/g
+s/[1-9][0-9]* events dropped/X events dropped/g
+s/@DEFAULTDOMAIN\[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\] deleted in the Naming Service/@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service/g

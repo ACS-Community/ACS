@@ -87,5 +87,13 @@ PROLOGUE acspyTATPrologue
 
 20 testSupplierConsumerCallback "acsutilTATTestRunner acspyTestConsumer no_name 15 1" "@SLEEP 2" \
                           "acsutilTATTestRunner acspyTestSupplierCallback no_name 15"
+
+# Check the reconnection of a publisher when its Notify Service is restarted. First of all,
+# we clean channels created in previous tests
+21 testReconnectionPublisherWhenNotifyServiceRestarts "acsutilTATTestRunner acspyRestartDefaultNS.sh 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acspyTestSupplierReconn test_reconn 20" "@SLEEP 5" \
+   "acsutilTATTestRunner acspyRestartDefaultNS.sh 7 VERBOSE" "@SLEEP 25"
+
+
 #-------------------------------------------------------------------
 EPILOGUE acsutilTATEpilogue
