@@ -1489,8 +1489,13 @@ xyz_$1_SRC = $(addsuffix .c,$2)
 
 rtai_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2))),,$1-objs := $(addsuffix .o,$2))
 
+# ICT-2680: kernel module must be re-built if Makefile was changed.
+# I.e. declare dependency on Makefile and clean-up Kbuild environment (otherwise
+# the kernel module components will not be re-compiled, as Kbuild doesn't know 
+# about a dependency on Makefile)
 #.NOTPARALLEL:../rtai/$(kernel_install_subfold)/$1.ko
-../rtai/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1
+../rtai/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1 Makefile
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
 	@$(ECHO) "== Making RTAI Module: $1" 
 # here we have to generate the hineous Kbuild file
 	$(AT)lockfile -s 2 -r 10 Kbuild.lock || echo "WARNING, ignoring lock Kbuild.lock"
@@ -1587,9 +1592,14 @@ xyz_$1_SRC = $(addsuffix .c,$2)
 
 kernel_module_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2))),,$1-objs := $(addsuffix .o,$2))
 
+# ICT-2680: kernel module must be re-built if Makefile was changed.
+# I.e. declare dependency on Makefile and clean-up Kbuild environment (otherwise
+# the kernel module components will not be re-compiled, as Kbuild doesn't know 
+# about a dependency on Makefile)
 #.NOTPARALLEL:../kernel/$(kernel_install_subfold)/$1.ko
-../kernel/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1
+../kernel/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1 Makefile
 	@$(ECHO) "== Making KERNEL Module: $1" 
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCKERNEL) M=$(PWD) clean ; fi
 # here we have to generate the hineous Kbuild file
 	$(AT)lockfile -s 2 -r 10 Kbuild.lock || echo "WARNING, ignoring lock Kbuild.lock"
 	$(AT)$(ECHO) "obj-m += $1.o" > Kbuild
