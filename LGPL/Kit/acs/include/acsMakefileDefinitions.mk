@@ -1598,18 +1598,20 @@ kernel_module_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(w
 	$(AT)$(ECHO) "USR_INC := $(USR_INC)"   >> Kbuild
 	$(AT)$(ECHO) "EXTRA_CFLAGS := $(EXTRA_CFLAGS)" >> Kbuild
 	$(AT)$(ECHO) "KBUILD_EXTRA_SYMBOLS=\"$(LINUX_HOME)/modules/Module.symvers\"" >> Kbuild
+# ICT-2680: remove "ARCH=i386" from list of compilation flags for plain linux kernel modules
 ifdef MAKE_VERBOSE
-	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) V=2 modules
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) M=$(PWD) V=2 modules
 else
-	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) V=0 modules
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) M=$(PWD) V=0 modules
 endif
 	$(AT)$(RM) Kbuild.lock
 	$(AT)mv $1.ko ../kernel/$(kernel_install_subfold)
 
 # LKM Support binaries
 .PHONY: clean_kernel_module_$1
+# ICT-2680: remove "ARCH=i386" from list of compilation flags for plain linux kernel modules
 clean_kernel_module_$1:
-	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) clean ; fi
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCKERNEL) M=$(PWD) clean ; fi
 	$(AT)$(RM) ../kernel/$(kernel_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
 
 #The following works on an STE
