@@ -70,8 +70,14 @@ class ORBHelper
      * the parameter (without using CORBA::ORB::_duplicate()).
      * @return 
      */
-    static void
+    static bool 
     setORB(CORBA::ORB_ptr);
+
+    /**
+     * isORBSet
+     */
+    static bool
+    isORBSet();
     
   protected:
     /**
