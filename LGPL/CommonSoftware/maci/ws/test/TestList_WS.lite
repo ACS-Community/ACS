@@ -26,5 +26,8 @@ PROLOGUE acsutilTATPrologue -l
    "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 get Container01" "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 set Container01 -c Enable -n testName -p 700 -g 2" \
    "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 get Container01" "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 set Container01 -c Default"\
    "@SLEEP 1" "maciContainerLogStatsConfiguration Container01 get Container01"
-11 maciTestAsyncCallback "@SLEEP 10" "startContainerWS.sh Container01 3068" "@SLEEP 20" "startMaciTestClient.sh @maciTestAsyncCallback.mts" "@SLEEP 10" "stopManagerWS.sh" "@SLEEP 20"
+11 maciTestSimpleClient2Instances "acsutilTATTestRunner maciTestSimpleClient2Instances"
+12 maciTestSimpleClientSubclass2Instances "acsutilTATTestRunner maciTestSimpleClientSubclass2Instances"
+13 maciTestCompSimpleClient "@SLEEP 10" "startContainerWS.sh Container01 3070" "@SLEEP 20" "acsutilTATTestRunner maciTestCompSimpleClientClient"
+14 maciTestAsyncCallback "@SLEEP 10" "startContainerWS.sh Container01 3068" "@SLEEP 20" "startMaciTestClient.sh @maciTestAsyncCallback.mts" "@SLEEP 10" "stopManagerWS.sh" "@SLEEP 20"
 EPILOGUE acsutilTATEpilogue

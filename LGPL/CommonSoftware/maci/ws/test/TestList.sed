@@ -70,3 +70,5 @@ s/logName="LOG_CompAct_Corba_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Corba
 s/logName="LOG_CompAct_Init_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Init_OK" TimeMillis="nnn"/g
 s/logName="LOG_CompAct_Instance_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Instance_OK" TimeMillis="nnn"/g
 s/logName="LOG_CompAct_Loading_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Loading_OK" TimeMillis="nnn"/g
+
+s/process:PID: [0-9]* Thread ID: [0-9]*/process:PID: XXX Thread ID: YYY/g
