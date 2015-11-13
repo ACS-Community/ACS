@@ -18,11 +18,7 @@
 #
 # "@(#) $Id: Makefile,v 1.7 2010/12/09 16:35:51 jagonzal Exp $"
 #
-# Makefile of gui (the package dealing with gui tests)
-#
-# who             when        what
-# ------------    ----------  ----------------------------------------------
-# bhola panta     2011-02-03  created based on containerTests-makefile
+# Makefile of Tools (the package dealing with TOOLS tests)
 #
 #*******************************************************************************
 # This Makefile follows ACS Standards (see Makefile(5) for more).
@@ -44,10 +40,25 @@ endef
 ###############################################
 
 #
-# Modules in the various gui sub-packages.
+# Modules in the various Tools sub-packages.
 #
-MODULES_GUI =  jfree
-SUBSYSTEM = "gui"
+# I skip doxygen, that should be after compat and before tat,
+# because it is already built in the prepare phase.
+#
+GMP = gmp
+
+ifeq ($(os),Linux)
+  majorRelNo :=  $(basename $(shell cat /etc/redhat-release | awk '{print $$(NF-1)}'))
+  ifeq ($(majorRelNo),6)
+    GMP =
+  endif
+endif
+
+MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt FITS astyle swig xercesc xercesj castor $(GMP) jfree xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache
+
+
+
+SUBSYSTEM = "Tools"
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
     MAKE_FLAGS = "NOCCS=1"
@@ -78,7 +89,7 @@ startupDir = $(shell pwd)
 #
 define canned
 	@$(ECHO) "############ Executing '$@' on all $(SUBSYSTEM) modules #################"
-	@for member in  $(foreach name, $(MODULES_GUI), $(name) ) ; do \
+	@for member in  $(foreach name, $(MODULES_TOOLS), $(name) ) ; do \
 		    $(ECHO) "############ $${member}" ;\
 		    if [ ! -d $${member} ]; then \
                          echo "### ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
@@ -157,7 +168,7 @@ clean_test_log:
 
 update:
 	@$(ECHO) "############ (Re-)build$ (SUBSYSTEM) Software         #################"| tee -a build.log
-	@for member in  $(foreach name, $(MODULES_GUI), $(name) ) ; do \
+	@for member in  $(foreach name, $(MODULES_TOOLS), $(name) ) ; do \
 	    if [ ! -d $${member} ]; then \
                  echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
             fi;\
@@ -224,7 +235,7 @@ endef
 #
 update_clean:
 	@$(ECHO) "############ (Re-)build $(SUBSYSTEM) Software         #################"| tee -a build.log
-	@for member in  $(foreach name, $(MODULES_GUI), $(name) ) ; do \
+	@for member in  $(foreach name, $(MODULES_TOOLS), $(name) ) ; do \
             $(update-clean-one-module);\
 	done;\
         true;
@@ -275,7 +286,7 @@ Test = test
 #
 $(Test): clean_test_log $(ACCDB_CONFIG)
 	@$(ECHO) "############ TEST $(SUBSYSTEM) Software #################"| tee -a test.log
-	@for member in $(foreach name,$(MODULES_GUI),$(name)); do\
+	@for member in $(foreach name,$(MODULES_TOOLS),$(name)); do\
                    $(test-one-module);\
 	done;\
         true;
@@ -284,7 +295,7 @@ $(Test): clean_test_log $(ACCDB_CONFIG)
 
 update_clean_test: clean_test_log $(ACCDB_CONFIG)
 	@$(ECHO) "############ UPDATE and TEST $(SUBSYSTEM) Software #################"| tee -a build.log
-	@for member in $(foreach name,$(MODULES_GUI),$(name)); do\
+	@for member in $(foreach name,$(MODULES_TOOLS),$(name)); do\
                    $(update-clean-one-module);\
                    $(test-one-module);\
 	done;\
@@ -296,12 +307,12 @@ update_clean_test: clean_test_log $(ACCDB_CONFIG)
 #
 # show_modules target
 #
-# Simply lists all MODULES_GUI that would be build
+# Simply lists all MODULES_TOOLS that would be build
 # with the current setup
 #
 show_modules:
 	@$(ECHO) "Modules in build list are:" 
-	@$(ECHO) ${MODULES_GUI}
+	@$(ECHO) ${MODULES_TOOLS}
 
 #
 # Standard canned targets
