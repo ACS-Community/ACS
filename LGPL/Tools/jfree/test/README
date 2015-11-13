@@ -1,0 +1,3 @@
+NOTE: a couple of the junit tests seem to fail for jfreechart and jcommon. 
+Rather than spend time investigating, I have simply made the tat ref files 
+reflect this fact.
