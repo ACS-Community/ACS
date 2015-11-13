@@ -37,10 +37,13 @@ int main (int argc, char **argv)
 
 	SimpleClient *client1 = NULL;
 	SimpleClient2 *client2 = NULL;
+	SimpleClient *client3 = NULL;
 
 	client1 = new SimpleClient();
+	printf("First client has been instantiated\n");
 
 	try {
+		printf("Trying to instantiated another client while the first one is alive\n");
 		client2 = new SimpleClient2();
 	} catch(ACSErrTypeCommon::CouldntCreateObjectExImpl &ex) {
                 std::string msg = ex.toString();
@@ -48,9 +51,27 @@ int main (int argc, char **argv)
 	}
 
 	delete client1;
+	printf("First client has been deleted\n");
 
 	client2 = new SimpleClient2();
 	printf("Second client has been instantiated\n");
+
+	try {
+		printf("Trying to instantiated another client while the second one is alive\n");
+		client3 = new SimpleClient();
+	} catch(ACSErrTypeCommon::CouldntCreateObjectExImpl &ex) {
+                std::string msg = ex.toString();
+                printf("%s\n", msg.c_str());
+	}
+
+	delete client2;
+	printf("Second client has been deleted\n");
+
+	client3 = new SimpleClient();
+	printf("Third client has been instantiated\n");
+
+	delete client3;
+	printf("Third client has been deleted\n");
 
 	return 0;
 }//main

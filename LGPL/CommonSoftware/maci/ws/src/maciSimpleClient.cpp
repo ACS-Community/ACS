@@ -92,20 +92,11 @@ SimpleClient::SimpleClient ():
   m_poaRoot = m_poaPersistent = PortableServer::POA::_nil();
 
   BACIThread::setInitializers(SimpleClient::initThread, SimpleClient::doneThread);
-  if(m_simpleClientInstance == 0) 
-  {
-  	m_simpleClientInstance = this;
-  } else {
-    ACSErrTypeCommon::CouldntCreateObjectExImpl ex(__FILE__, __LINE__,"maci::SimpleClient::SimpleClient"); 
-    ex.addData("reason","It's not allowed to have more than one SimpleClient instance running at the same time");
-    throw ex;
-  } 
 
-  // Increase the counter that stores the number of times Simple Client has been created
-  // When this is the first time, we have to check that ORB is not set yet. If it's set
-  // then we consider that this SimpleClient is running in a component.
-  ++m_simpleClientCreatedCounter;
-  if(m_simpleClientCreatedCounter == 1)
+  // When this is the first time SimpleClient is instantiated, we have to check that ORB 
+  // is not set yet. If it's set we consider that this SimpleClient is running in a component so
+  // an exception is thrown (ICT-730)
+  if(0 == m_simpleClientCreatedCounter)
   {
     if(true == ORBHelper::isORBSet())
     {
@@ -114,6 +105,20 @@ SimpleClient::SimpleClient ():
       throw ex;
     }
   }
+
+  // When a SimpleClient instance already exists then it's not possible to instantiate it again so in this
+  // case an exception is thrown (ICT-730)
+  if(0 == m_simpleClientInstance) 
+  {
+  	m_simpleClientInstance = this;
+  } else {
+    ACSErrTypeCommon::CouldntCreateObjectExImpl ex(__FILE__, __LINE__,"maci::SimpleClient::SimpleClient"); 
+    ex.addData("reason","It's not allowed to have more than one SimpleClient instance running at the same time");
+    throw ex;
+  } 
+
+  // Increase the counter that stores the number of times Simple Client has been created (ICT-730)
+  ++m_simpleClientCreatedCounter;
 
 }
 

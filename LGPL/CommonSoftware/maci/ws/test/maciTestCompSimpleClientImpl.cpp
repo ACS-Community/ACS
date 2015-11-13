@@ -55,11 +55,21 @@ MaciTestCompSimpleClient::createSimpleClient()
 
 	try {
 		client = new SimpleClient();
-		ACS_SHORT_LOG((LM_ERROR, "Instantiated SimpleClient inside a component"));
+		ACS_SHORT_LOG((LM_ERROR, "First time that SimpleClient is instantiated in a component"));
 	} catch(ACSErrTypeCommon::CouldntCreateObjectExImpl &ex) {
                 std::string msg = ex.toString();
-                //printf("%s\n", msg.c_str());
+		ACS_SHORT_LOG((LM_ERROR, "First time that SimpleClient thrown an exception when instantiating it"));
 		ACS_SHORT_LOG((LM_ERROR, msg.c_str()));
+	}
+
+        try {
+		client = new SimpleClient();
+		ACS_SHORT_LOG((LM_ERROR, "Second time that SimpleClient is instantiated in a component"));
+	} catch(ACSErrTypeCommon::CouldntCreateObjectExImpl &ex) {
+                std::string msg = ex.toString();
+		ACS_SHORT_LOG((LM_ERROR, "Second time that SimpleClient thrown an exception when instantiating it"));
+		ACS_SHORT_LOG((LM_ERROR, msg.c_str()));
+		
 	}
 }
 
