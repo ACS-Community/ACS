@@ -77,7 +77,8 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/xalan.jar \
 	../lib/xalan_serializer.jar \
 	../lib/xmlunit-1.3.jar \
-	../lib/mysql-connector-java-5.1.20-bin.jar
+	../lib/mysql-connector-java-5.1.20-bin.jar \
+	../lib/jchart2d-3.3.2.jar
 
 #
 #>>>>> END OF standard rules

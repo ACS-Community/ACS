@@ -46,7 +46,7 @@ endef
 #
 # Modules in the various gui sub-packages.
 #
-MODULES_GUI =  jchart2d jfree
+MODULES_GUI =  jfree
 SUBSYSTEM = "gui"
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
