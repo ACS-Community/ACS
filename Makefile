@@ -33,7 +33,7 @@ define makeIt
 endef
 
 define makeItAux
-   (( make $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
+   (( $(MAKE) $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
 endef
 ###############################################
 
@@ -267,7 +267,7 @@ update:	svn-tag checkModuleTree
 			 $(call makeItAux,$${member}/ws/src,install,build.log,$${member}/ws/src/NORM-BUILD-OUTPUT) \
 		    elif [ -f $${member}/Makefile ]; then \
 		         $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
-			 $(call makeItAux,$${member},-s $@,build.log,$${member}/NORM-BUILD-OUTPUT) \
+		         $(MAKE) $(MAKE_FLAGS) -C $${member}/ -s $@  2>&1 || echo "### ==> FAILED all ! " | (tee -a build.log | tee $${member}/NORM-BUILD-OUTPUT) \
 		    fi;\
 		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 			if [ -f $${member}/lcu/src/Makefile ]; then \
