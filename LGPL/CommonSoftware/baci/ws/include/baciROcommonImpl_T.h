@@ -177,6 +177,10 @@ protected:
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     ROcommonImpl(const ROcommonImpl&);
+
+    // mutex for thread-safe
+    ACE_Recursive_Thread_Mutex templateMutex;
+
 };// class ROcommonImpl
 
 };

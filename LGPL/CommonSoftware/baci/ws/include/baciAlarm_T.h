@@ -249,6 +249,9 @@ class baci_EXPORT AlarmEventStrategyDisc : public AlarmEventStrategy<T, TPROP, T
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     AlarmEventStrategyDisc(const AlarmEventStrategyDisc&);
+
+    // mutex for thread-safe
+    ACE_Recursive_Thread_Mutex templateMutex;
 };
 
 /***********************************************************************************************/
@@ -324,6 +327,9 @@ class baci_EXPORT AlarmEventStrategyContSeq : public AlarmEventStrategy<T, TPROP
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     AlarmEventStrategyContSeq(const AlarmEventStrategyContSeq&);
+
+    // mutex for thread-safe
+    ACE_Recursive_Thread_Mutex templateMutex;
 };
 
 /***********************************************************************************************/
@@ -364,6 +370,9 @@ class baci_EXPORT AlarmEventStrategyDiscSeq : public AlarmEventStrategy<T, TPROP
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     AlarmEventStrategyDiscSeq(const AlarmEventStrategyDiscSeq&);
+
+    // mutex for thread-safe
+    ACE_Recursive_Thread_Mutex templateMutex;
 };
 
 }; //namespace baci
