@@ -20,8 +20,7 @@ void DataReaderListenerImpl::on_requested_deadline_missed (
     const DDS::RequestedDeadlineMissedStatus &)
   throw (CORBA::SystemException)
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DataReaderListenerImpl::on_requested_deadline_missed", (LM_INFO,
-                              ""));
+	ACS_TRACE("DataReaderListenerImpl::on_requested_deadline_missed");
 }
 
 void DataReaderListenerImpl::on_requested_incompatible_qos (
@@ -29,8 +28,7 @@ void DataReaderListenerImpl::on_requested_incompatible_qos (
     const DDS::RequestedIncompatibleQosStatus &)
   throw (CORBA::SystemException)
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DataReaderListenerImpl::on_requested_incompatible_qos", (LM_INFO,
-                              ""));
+	ACS_TRACE("DataReaderListenerImpl::on_requested_incompatible_qos");
 
 }
 
@@ -39,8 +37,7 @@ void DataReaderListenerImpl::on_liveliness_changed (
     const DDS::LivelinessChangedStatus &)
   throw (CORBA::SystemException)
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DataReaderListenerImpl::on_liveliness_changed", (LM_INFO,
-                              ""));
+	ACS_TRACE("DataReaderListenerImpl::on_liveliness_changed");
 }
 
 void DataReaderListenerImpl::on_subscription_matched (
@@ -48,8 +45,7 @@ void DataReaderListenerImpl::on_subscription_matched (
     const DDS::SubscriptionMatchedStatus &)
   throw (CORBA::SystemException)
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DataReaderListenerImpl::on_subscription_matched", (LM_INFO,
-                              ""));
+	ACS_TRACE("DataReaderListenerImpl::on_subscription_matched");
 }
 
 void DataReaderListenerImpl::on_sample_rejected(
@@ -57,8 +53,7 @@ void DataReaderListenerImpl::on_sample_rejected(
     const DDS::SampleRejectedStatus&)
   throw (CORBA::SystemException)
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DataReaderListenerImpl::on_sample_rejected", (LM_INFO,
-                              ""));
+	ACS_TRACE("DataReaderListenerImpl::on_sample_rejected");
 }
 
 void DataReaderListenerImpl::on_sample_lost(
@@ -66,14 +61,12 @@ void DataReaderListenerImpl::on_sample_lost(
   const DDS::SampleLostStatus&)
   throw (CORBA::SystemException)
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DataReaderListenerImpl::on_sample_lost", (LM_INFO,
-                              ""));
+	ACS_TRACE("DataReaderListenerImpl::on_sample_lost");
 }
 
 void DataReaderListenerImpl::on_data_available(
   DDS::DataReader_ptr reader)
   throw (CORBA::SystemException)
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DataReaderListenerImpl::on_data_available", (LM_INFO,
-                              ""));
+	ACS_TRACE("DataReaderListenerImpl::on_data_available");
 }

@@ -10,8 +10,7 @@ DDSSubscriber::DDSSubscriber(CORBA::String_var channel_name):
 
 int DDSSubscriber::createSubscriber()
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::createSubscriber", (LM_INFO,
-			 ""));
+	ACS_TRACE("DDSSubscriber::createSubscriber");
 	if(partitionName==NULL){
 		sub=participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT,
 				DDS::SubscriberListener::_nil(),
@@ -45,8 +44,7 @@ int DDSSubscriber::createSubscriber()
 
 void DDSSubscriber::consumerReady()
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::consumerReady", (LM_INFO,
-			 ""));
+	ACS_TRACE("DDSSubscriber::consumerReady");
 
 	DDS::DataReader_var dr = sub->create_datareader(topic.in(),
 			drQos, listener->in(), OpenDDS::DCPS::DEFAULT_STATUS_MASK);

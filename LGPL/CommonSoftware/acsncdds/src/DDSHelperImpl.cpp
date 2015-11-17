@@ -88,8 +88,7 @@ void DDSHelper::init(const char* channelName, const char* DCPSInfoRepoLoc)
 }
 
 int DDSHelper::createParticipant(){
-    ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::createParticipant", (LM_INFO,
-			 ""));
+    ACS_TRACE("DDSHelper::createParticipant");
 	participant = dpf->create_participant(DOMAIN_ID,
 			PARTICIPANT_QOS_DEFAULT,
 			DDS::DomainParticipantListener::_nil(),
@@ -144,8 +143,7 @@ void DDSHelper::setPartitionName(const char* partitionName){
 
 void DDSHelper::disconnect()
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::disconnect", (LM_INFO,
-			 ""));
+	ACS_TRACE("DDSHelper::disconnect");
 	if(initialized==true){
 		participant->delete_contained_entities();
 		dpf->delete_participant(participant.in());
@@ -155,8 +153,7 @@ void DDSHelper::disconnect()
 
 DDSHelper::~DDSHelper()
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::~DDSHelper", (LM_INFO,
-			 ""));
+	ACS_TRACE("DDSHelper::~DDSHelper");
 	disconnect();
 	free(partitionName);
 	free(topicName);
@@ -164,8 +161,7 @@ DDSHelper::~DDSHelper()
 
 void DDSHelper::cleanUp()
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::cleanUp", (LM_INFO,
-			 ""));
+	ACS_TRACE("DDSHelper::cleanUp");
 	if (factories_init){
 		TheServiceParticipant->shutdown();
 	}
