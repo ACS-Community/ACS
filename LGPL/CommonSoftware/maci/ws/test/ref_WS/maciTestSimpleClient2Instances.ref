@@ -2,7 +2,7 @@
 1 - Trying to instantiated another client while the first one is alive
 1 - Error Trace Level : 0
 1 -   ----------T--:--:--.--- in maci::SimpleClient::SimpleClient of file maciSimpleClient.cpp at line 115
-1 -   HostName:alma, process:PID: XXX Thread ID: YYY,
+1 -   HostName:ZZZ, process:PID: XXX Thread ID: YYY,
 1 -   Severity=0 type=10 code=6 description:Object couldn't be created
 1 -     data[0] : reason = It's not allowed to have more than one SimpleClient instance running at the same time
 1 - 
@@ -13,7 +13,7 @@
 1 - Trying to instantiated another client while the second one is alive
 1 - Error Trace Level : 0
 1 -   ----------T--:--:--.--- in maci::SimpleClient::SimpleClient of file maciSimpleClient.cpp at line 115
-1 -   HostName:alma, process:PID: XXX Thread ID: YYY,
+1 -   HostName:ZZZ, process:PID: XXX Thread ID: YYY,
 1 -   Severity=0 type=10 code=6 description:Object couldn't be created
 1 -     data[0] : reason = It's not allowed to have more than one SimpleClient instance running at the same time
 1 - 
