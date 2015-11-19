@@ -34,7 +34,7 @@ module demo
     interface SupplierComp : ACS::ACSComponent
     {
         void sendEvents (in short numEvents);
-        void sendEvents2 (in long numEvents, in long sleepSec);
+        void sendEvents2 (in long numEvents, in long sleepSec,in boolean autoreconnect);
     };
 
     /**

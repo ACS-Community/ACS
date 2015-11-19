@@ -38,20 +38,22 @@ simpleClient = PySimpleClient()
 
 n_events = 20
 sleep_sec = 1 
-n_supp =1 
+n_supp = 5 
 
-def worker(i, num_events, sleep_value):
+def worker(i, num_events, sleep_value, autoreconnect):
 	name = "NamedCh_SUP" + str(i)
 	supplier = simpleClient.getComponent(name)
-	supplier.sendEvents2(num_events, sleep_value)
+	supplier.sendEvents2(num_events, sleep_value, autoreconnect)
 	sleep(15)
 	simpleClient.releaseComponent(name)
 	sleep(10)
 
 # Create one thread for each component
 threads = []
+autoreconnect = True
 for i in range(1, n_supp+1):
-	threads.append(threading.Thread(target=worker, args=(i, n_events, sleep_sec)))
+	threads.append(threading.Thread(target=worker, args=(i, n_events, sleep_sec, autoreconnect)))
+	autoreconnect = not autoreconnect
 
 # Start all threads
 for th in threads:

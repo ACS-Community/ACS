@@ -198,6 +198,8 @@ class Supplier :
 
     void setAntennaName(std::string antennaName);
 
+    void setAutoreconnect(bool autoreconnect);
+
   protected:
     /**
      * Destructor is protected.
@@ -348,6 +350,11 @@ class Supplier :
 
     CircularQueue eventBuff;
 
+    /**
+     * This is a boolean to reconnect to the channel when publishing an event 
+     * throws an OBJECT_NOT_EXIST exception.
+     */
+    bool autoreconnect_m;
 };
  }; 
 #endif

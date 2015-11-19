@@ -43,7 +43,8 @@ Supplier::Supplier(const char* channelName,
     typeName_mp(0),
     count_m(0),
     guardbl(10000000,50),
-    antennaName("")
+    antennaName(""),
+    autoreconnect_m(false)
 {
     ACS_TRACE("Supplier::Supplier");
     init(static_cast<CORBA::ORB_ptr>(0));
@@ -60,7 +61,8 @@ Supplier::Supplier(const char* channelName,
     component_mp(component),
     typeName_mp(0),
     count_m(0),
-    guardbl(10000000,50)
+    guardbl(10000000,50),
+    autoreconnect_m(false)
 {
     ACS_TRACE("Supplier::Supplier");
     init(orb_mp);
@@ -78,7 +80,8 @@ Supplier::Supplier(const char* channelName,
     component_mp(component),
     typeName_mp(0),
     count_m(0),
-    guardbl(10000000,50)
+    guardbl(10000000,50),
+    autoreconnect_m(false)
 {
     ACS_TRACE("Supplier::Supplier");
 
@@ -126,6 +129,11 @@ Supplier::~Supplier()
 {
     ACS_TRACE("Supplier::~Supplier");
     disconnect();
+    if(eventBuff.size() > 0)
+    {
+        ACS_SHORT_LOG((LM_WARNING,"Supplier of NC '%s' will lost %d events", 
+                       channelName_mp,eventBuff.size()));
+    }
 }
 //-----------------------------------------------------------------------------
 // TAO Developer's Guide p. 595
@@ -200,6 +208,38 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
     	// Invoke a method on consumer proxy
     	proxyConsumer_m->push_structured_event(event);
     }
+    catch(CORBA::OBJECT_NOT_EXIST &ex)
+    {
+       if(true == autoreconnect_m)
+       {
+          bool eventLost = false;
+
+          // Store the unpublished event to the circular buffer. When buffer is full
+          // it stores the event, removes the oldest one and throws an exception.
+          try {
+             eventBuff.push(event);
+          } catch(EventDroppedException &evEx) {
+             eventLost = true;
+          }
+
+          // Try to reconnect to the channel
+          if(orbHelper_mp != NULL)
+          {
+             init(orbHelper_mp->getORB());
+          } else {
+             init(NULL);
+          }
+
+          if(true == eventLost)
+          {
+             EventDroppedException exEvDr;
+             throw exEvDr;
+          }
+
+       }
+
+       throw ex; // autoreconnect_m is false or event added to the circular buffer without losing the oldest one
+    } 
     catch(CORBA::TRANSIENT &ex)
     {
        /* Probably the Notify Service is down.
@@ -513,6 +553,11 @@ void Supplier::setAntennaName(std::string antennaName) {
         event_m.filterable_data[1].name = CORBA::string_dup("antenna_name");
         event_m.filterable_data[1].value <<= antennaName.c_str();
     }
+}
+
+void Supplier::setAutoreconnect(bool autoreconnect)
+{
+    autoreconnect_m = autoreconnect;
 }
 
 //-----------------------------------------------------------------------------

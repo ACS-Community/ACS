@@ -70,8 +70,8 @@ PROLOGUE acsutilTATPrologue
 8 RestartNotifyServiceWhilePublishing "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
                        "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 10" \
                        "acsutilTATTestRunner acsncTestConSup2" "@SLEEP 5" \
-                       "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 25"
-#		       "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 30"
+                       "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 30"
+#		       "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 35"
 		       
 
 EPILOGUE acsutilTATEpilogue

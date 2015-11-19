@@ -68,12 +68,15 @@ SupplierCompImpl::sendEvents(short numEvents)
 	}
 }
 void 
-SupplierCompImpl::sendEvents2(CORBA::Long numEvents,CORBA::Long sleepSec)
+SupplierCompImpl::sendEvents2(CORBA::Long numEvents,CORBA::Long sleepSec,
+			      CORBA::Boolean autoreconnect)
 {
     acsnc::EventDescription descrip;
     descrip.name = CORBA::string_dup("none...this is a test");
     descrip.timestamp = 41;
     descrip.count = 41;
+
+    m_testSupplier_p->setAutoreconnect(autoreconnect);
 
     for(CORBA::Long i=0; i<numEvents; i++)
 	{

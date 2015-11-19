@@ -29,6 +29,22 @@
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Start sending events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP2 - ] Start sending events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP3 - ] Start sending events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP5 - ] Start sending events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP4 - ] Start sending events via SimpleSupplier.
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] X events cannot be sent via SimpleSupplier.
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] 2 changes while sending via SimpleSupplier.
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent X events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP5 - ] X events cannot be sent via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP5 - ] Sent X events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP5 - ] 2 changes while sending via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP2 - ] X events cannot be sent via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP2 - ] 1 changes while sending via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP2 - ] Sent X events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP4 - ] Sent X events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP4 - ] X events cannot be sent via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP4 - ] 1 changes while sending via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP3 - ] X events cannot be sent via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP3 - ] 2 changes while sending via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP3 - ] Sent X events via SimpleSupplier.
