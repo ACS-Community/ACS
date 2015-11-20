@@ -1,1 +1,1 @@
-../../ws/src/../test/testACSThreadCorrExmpl.cpp
+../../ws/test/testACSThreadCorrExmpl.cpp
