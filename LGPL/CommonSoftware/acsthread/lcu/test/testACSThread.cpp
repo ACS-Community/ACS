@@ -1,1 +1,1 @@
-../../ws/src/../test/testACSThread.cpp
+../../ws/test/testACSThread.cpp
