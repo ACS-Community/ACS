@@ -63,8 +63,9 @@ RTSupplierCompImpl::sendEvents(short numEvents)
 	ACE_OS::sleep(1);
 	}
 }
+/*
 void 
-RTSupplierCompImpl::sendEvents2(CORBA::Long numEvents,CORBA::Long sleepSec)
+RTSupplierCompImpl::sendEvents2(CORBA::Long numEvents,CORBA::Long sleepSec,CORBA::Boolean autoreconnect)
 {
     acsnc::EventDescription descrip;
     descrip.name = CORBA::string_dup("none...this is a test");
@@ -81,6 +82,13 @@ RTSupplierCompImpl::sendEvents2(CORBA::Long numEvents,CORBA::Long sleepSec)
 		}
 	}
 }
+*/
+void 
+RTSupplierCompImpl::testReconn1(CORBA::Boolean autoreconnect,CORBA::Boolean ncRestarted)
+{
+	// Implemented in csncSupplierNamedChCompImpl.cpp
+}
+
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(RTSupplierCompImpl)

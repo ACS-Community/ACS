@@ -67,26 +67,11 @@ SupplierCompImpl::sendEvents(short numEvents)
 	ACE_OS::sleep(1);
 	}
 }
+
 void 
-SupplierCompImpl::sendEvents2(CORBA::Long numEvents,CORBA::Long sleepSec,
-			      CORBA::Boolean autoreconnect)
+SupplierCompImpl::testReconn1(CORBA::Boolean autoreconnect,CORBA::Boolean ncRestarted)
 {
-    acsnc::EventDescription descrip;
-    descrip.name = CORBA::string_dup("none...this is a test");
-    descrip.timestamp = 41;
-    descrip.count = 41;
-
-    m_testSupplier_p->setAutoreconnect(autoreconnect);
-
-    for(CORBA::Long i=0; i<numEvents; i++)
-	{
-	m_testSupplier_p->publishData<acsnc::EventDescription>(descrip);
-	ACS_SHORT_LOG((LM_ALERT, "Sent an event via SimpleSupplier."));
-	if(sleepSec > 0)
-		{
-		ACE_OS::sleep(sleepSec);
-		}
-	}
+	// Implemented in csncSupplierNamedChCompImpl.cpp
 }
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>

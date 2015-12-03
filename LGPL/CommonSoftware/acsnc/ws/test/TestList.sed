@@ -1,4 +1,4 @@
-s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9]\{1,3\}/----------T--:--:--.---/g
+s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9]\{1,10\}/----------T--:--:--.---/g
 s/IOR:[a-z,0-9,.,-]*/IOR:xxxxxxxxxxxxxx/g
 s/iioploc:\/\/[a-z,0-9,.,-]*:[0-9]*/iioploc:\/\/xxxxx\.xxxxx:xxxx/g
 s/Handle: [0-9]*/Handle: xxxxxxxxx/g
@@ -48,3 +48,10 @@ s/Manager hostname obtained via command line: '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*'/M
 s/endpoint [0-9]*.[0-9]*.[0-9]*.[0-9]*/endpoint X.X.X.X/g
 s/Sent [0-9]* events via SimpleSupplier/Sent X events via SimpleSupplier/g
 s/[0-9]* events cannot be sent via SimpleSupplier/X events cannot be sent via SimpleSupplier/g
+
+s/===  Number of events dropped: [0-9]*/===  Number of events dropped: XXX/g
+s/===  Number of events sent: [0-9]*/===  Number of events sent: XXX/g
+s/===  Number of events queued: [0-9]*/===  Number of events queued: XXX/g
+s/===  Number of transitions: [0-9]/===  Number of transitions: Y/g
+s/===  Transitions in: [0-9,]*/===  Transitions in: YYY/g
+s/===  Number of exceptions caught: [0-9]*/===  Number of exceptions caught: ZZZ/g
