@@ -1,5 +1,5 @@
 s/MainThread, acspyTestLogging, [a-z,A-Z,0-9,-]*,/MainThread, acspyTestLogging, xxxx,/g 
-s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]/----------T--:--:--.---/g 
+s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9]\{1,10\}/----------T--:--:--.---/g 
 s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9]/----------T--:--:--/g 
 s/[0-9][0-9][0-9][0-9][\/][0-9][0-9][\/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [a-z,A-Z,0-9,-]*/---------- --:--:-- username/g
 s/acspyTestLogging.py,v [0-9]*.[0-9]*/acspyTestLogging.py,v x.x/g
@@ -31,5 +31,8 @@ s/test_reconn@DEFAULTDOMAIN\[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\]/test_reconn@DE
 s/Name Service without channel entries in the endpoint [0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*/Name Service without channel entries in the endpoint X.X.X.X:YYYY/g
 s/Deleting channels entries in the Name Service of the  Notify Service \[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\]/Deleting channels entries in the Name Service of the  Notify Service [X.X.X.X:YYYY]/g
 s/Notification Service \[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\] which has been stopped/Notification Service [X.X.X.X:YYYY] which has been stopped/g
-s/[1-9][0-9]* events dropped/X events dropped/g
 s/@DEFAULTDOMAIN\[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\] deleted in the Naming Service/@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service/g
+s/===  [0-9]*: [0-9]* exceptions caught/===  X: Y exceptions caught/g
+s/===  [0-9]*: [0-9]* events dropped/===  X: X events dropped/g
+s/===  [0-9]*: [0-9]* events sent/===  X: Y events sent/g
+s/===  [0-9]*: Transitions: \[[0-9, ]*\]/===  X: Transitions: [Y, Z, ...]/g

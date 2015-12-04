@@ -27,52 +27,126 @@
 Tests the Python Supplier.
 '''
 ###############################################################################
+# argv1: channel name
+# argv2: number of events to publish
+# argv3: autoreconnect
+# argv4: notify service restarted or stopped
 from Acspy.Nc.Supplier import Supplier
 from sys import argv
 from time import sleep
 import acsnc
+import datetime
 
-num_events_dropped = 0
+num_suppliers = 1 
+channel_name = str(argv[1])
+num_events = int(argv[2])
+autoreconnect = True if str(argv[3]) == "AUTORECONNECT" else False
+ns_restarted = True if str(argv[4]) == "NS_RESTARTED" else False
 
+idx_events = [0] * num_suppliers
+num_events_dropped = [0] * num_suppliers
+num_exceptions_thrown = [0] * num_suppliers
+num_events_sent = [0] * num_suppliers
+events_status = [True] * num_suppliers
+transitions = [[]] * num_suppliers
+
+#------------------------------------------------------------------------------
 class MyEventCallback:
+    def __init__(self,idx):
+        self.idx = idx
+
     def eventDropped(self,event): 
-        global num_events_dropped
-        num_events_dropped += 1
+        global idx_events, num_events_dropped, events_status, transitions
+        idx_events[self.idx] += 1
+        num_events_dropped[self.idx] += 1
+        if events_status[self.idx]:
+            events_status[self.idx] = False
+            transitions[self.idx].append(idx_events[self.idx])
 
     def eventSent(self,event):
-        pass
-        #print "Event sent!!!!"
+        global idx_events, num_events_sent, events_status, transitions
+        idx_events[self.idx] += 1
+        num_events_sent[self.idx] += 1
+        if not events_status[self.idx]:
+            events_status[self.idx] = True
+            transitions[self.idx].append(idx_events[self.idx])
+
+    def exceptionThrown(self,event):
+        global idx_events, num_exceptions_thrown, events_status, transitions
+        idx_events[self.idx] += 1
+        num_exceptions_thrown[self.idx] += 1
+        if events_status[self.idx]:
+            events_status[self.idx] = False
+            transitions[self.idx].append(idx_events[self.idx])
+       
+
+#------------------------------------------------------------------------------
+def publish_all_data(suppliers,num_events,data):
+    #send variable number of events
+    num_suppliers = len(suppliers)
+
+    # Create callback objects
+    cb_objs = []
+    for idx_supplier in range(len(suppliers)):
+        cb_objs.append(MyEventCallback(idx_supplier))
+
+    curr_t = datetime.datetime.now()
+    print curr_t," ===  Sending %d events" % (num_events)
+    for i in range(num_events):
+        for idx_supplier in range(len(suppliers)):
+            try:
+                #print "-------> Publishing event %d" % (i)
+                suppliers[idx_supplier].publishEvent(data,event_callback=cb_objs[idx_supplier])
+            except:
+                cb_objs[idx_supplier].exceptionThrown(data)
+
+        sleep(1)
+        curr_t = datetime.datetime.now()
+        print curr_t," ===  Published events at iteration %d" % (i)
+
+    for i in range(len(suppliers)):
+        print datetime.datetime.now()," ===  %d: %d exceptions caught" % (i,num_exceptions_thrown[i])
+        print datetime.datetime.now()," ===  %d: %d events dropped" % (i,num_events_dropped[i])
+        print datetime.datetime.now()," ===  %d: %d events sent" % (i,num_events_sent[i])
+        print datetime.datetime.now()," ===  %d: Transitions: %s" % (i,str(transitions[i]))
+        
+            
 
 
-#create supplier
-g = Supplier(str(argv[1]))
+#------------------------------------------------------------------------------
+
+#create suppliers
+g = Supplier(channel_name)
+g.set_autoreconnect(autoreconnect)
+#g_autorec = Supplier(channel_name)
+#g_autorec.set_autoreconnect(True)
+
 #create data to send
 h = acsnc.EventDescription("no name",
                            17L,
                            17L)
 
-#send variable number of events
-n_errors = 0
-n_changes = 0
-publishing = True
-print "Sending %d events" % (int(argv[2]))
-for i in range(int(argv[2])):
-    try:
-        #print "-------> Publishing event %d" % (i)
-        g.publishEvent(h,event_callback=MyEventCallback())
-        if not publishing:
-            publishing = True
-            n_changes += 1
-    except:
-        n_errors += 1
-        if publishing:
-            publishing = False
-            n_changes += 1
-    sleep(1)
+publish_all_data([g], num_events, h)
 
-print "%d exceptions caught" % (n_errors)
-print "%d events dropped" % (num_events_dropped)
-print "%d changes found while publishing events" % (n_changes)
+for idx in range(len(transitions)):
+    n_transitions = len(transitions[idx])
+    if autoreconnect:
+        if ns_restarted:
+            if n_transitions != 0 and n_transitions != 2:
+                print datetime.datetime.now(),"===  %d: Wrong number of transitions. We expected 0 or 2 but was %d" % (idx,n_transitions)
+        else:
+            if n_transitions != 1:
+                print datetime.datetime.now(),"===  %d: Wrong number of transitions. We expected 1 but was %d" % (idx,n_transitions)
+
+    else:
+        if ns_restarted:
+            if n_transitions != 1:
+                print datetime.datetime.now(),"===  %d: Wrong number of transitions. We expected 1 but was %d" % (idx,n_transitions)
+        else:
+            if n_transitions != 1:
+                print datetime.datetime.now(),"===  %d: Wrong number of transitions. We expected 1 but was %d" % (idx,n_transitions)
+
 
 #disconnect
 g.disconnect()
+#g_autorec.disconnect()

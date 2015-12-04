@@ -60,7 +60,7 @@ PY_PACKAGES = acspytestImpl acspyTestQoSImpl
 
 PY_PACKAGES_L = 
 
-SCRIPTS_L = acspyTATPrologue acspyRestartDefaultNS.sh
+SCRIPTS_L = acspyTATPrologue acspyExecNotifyService.sh
 
 
 #
