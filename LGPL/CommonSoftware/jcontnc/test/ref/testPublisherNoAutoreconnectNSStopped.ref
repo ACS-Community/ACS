@@ -1,0 +1,43 @@
+2 -  -- alma.acs.nc.SimpleSupplierReconnClient 13 5 NO_AUTORECONNECT NS_STOPPED
+1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
+1 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
+1 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
+1 - Using reactive client control.
+1 - Using 1 threads for each Supplier.
+1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
+1 - ReBound ID: MC_NotifyEventChannelFactory
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] component 'SimpleSupplierReconnClient' requested AdvancedContainerServices
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='test_reconn' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Autoreconnection: OFF
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] NS action: NS_STOPPED
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Start publishing 13 events
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 0
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 1
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 2
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 3
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 4
+3 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
+3 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 5
+3 - ----------T--:--:--.--- Stopping Notify Service 'NotifyEventChannelFactory'
+3 - ----------T--:--:--.--- Stopped Notify Service 'NotifyEventChannelFactory'
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 6
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 7
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 8
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 9
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 10
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 11
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 12
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of events queued: X
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of events sent: X
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of events dropped: X
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of exceptions: X
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Transitions: X,Y,
+2 - ----------T--:--:--.--- WARNING [SimpleSupplierReconnClient] Failed to cleanly disconnect NCPublisher for channel 'test_reconn': could not disconnect push consumer
+2 - org.omg.CORBA.TRANSIENT: Retries exceeded, couldn't reconnect to X.X.X.X:YYYY
+2 - ----------T--:--:--.--- WARNING [SimpleSupplierReconnClient] Failed to cleanly disconnect NCPublisher for channel 'test_reconn': could not destroy supplier admin
+2 - org.omg.CORBA.TRANSIENT: Retries exceeded, couldn't reconnect to X.X.X.X:YYYY
+2 - Test finished
