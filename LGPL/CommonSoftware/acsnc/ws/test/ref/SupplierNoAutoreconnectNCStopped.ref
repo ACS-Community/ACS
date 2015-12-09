@@ -8,13 +8,13 @@
 2 - ContainerStatusMsg: Startup begins
 2 - ContainerStatusMsg: ORB initialization begins
 2 - ContainerStatusMsg: ORB initialization ends
-1 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine NamedCh notification service's process ID.
 1 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 1 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 1 - Using reactive client control.
 1 - Using 1 threads for each Supplier.
 1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
 1 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
 1 - ReBound ID: MC_NamedChNotifyEventChannelFactory
 2 - ContainerStatusMsg: Manager access initialization begins
@@ -23,8 +23,6 @@
 2 - ContainerStatusMsg: Automatic component loading begins
 2 - ContainerStatusMsg: Automatic component loading ends
 2 - ContainerStatusMsg: Ready
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on addSubscription...OK.
 3 - ----------T--:--:--.--- None test4 - Calling supplier.testReconn1(False,False)
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Start sending 20 events via SimpleSupplier.
 2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
@@ -36,9 +34,9 @@
 2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 3
 2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 4
 4 - ----------T--:--:--.--- Stopping Notify Service 'NamedCh'
 4 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 4
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 5
 4 - ----------T--:--:--.--- Stopped Notify Service 'NamedCh'
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 6
@@ -61,17 +59,13 @@
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events dropped: XXX
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events queued: XXX
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events sent: XXX
-2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of exceptions caught: ZZZ
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of transitions: Y
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Transitions in: YYY
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of exceptions caught: ZZZ
 3 - ----------T--:--:--.--- None test4 - Waiting 10 seconds ...
 3 - ----------T--:--:--.--- None test4 - Releasing component NamedCh_SUP1
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Supplier::disconnect failed for the 'NamedCh' channel!
 3 - ----------T--:--:--.--- None test4 - Releasing component NamedCh_CON1
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on resume...bad.
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on suspend...bad.
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::addFilter failed for the 'NamedCh' channel, 'EventDescription' event type, and 'hope to god this filter doesn't work' filter!
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on addFilter...OK.
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed for the 'NamedCh' channel!
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed to destroy consumer admin for the 'NamedCh' channel!
 2 - /----/libbaci.so

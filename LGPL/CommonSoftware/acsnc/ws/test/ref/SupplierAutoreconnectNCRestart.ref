@@ -8,21 +8,19 @@
 2 - ContainerStatusMsg: Startup begins
 2 - ContainerStatusMsg: ORB initialization begins
 2 - ContainerStatusMsg: ORB initialization ends
-1 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine NamedCh notification service's process ID.
 1 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 1 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 1 - Using reactive client control.
 1 - Using 1 threads for each Supplier.
 1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
 1 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
 1 - ReBound ID: MC_NamedChNotifyEventChannelFactory
 2 - ContainerStatusMsg: Manager access initialization begins
 2 - ContainerStatusMsg: Manager access initialization ends
 2 - ContainerStatusMsg: Startup ends
 2 - ContainerStatusMsg: Automatic component loading begins
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on addSubscription...OK.
 2 - ContainerStatusMsg: Automatic component loading ends
 2 - ContainerStatusMsg: Ready
 3 - ----------T--:--:--.--- None test1 - Calling supplier.testReconn1(True,True)
@@ -44,9 +42,9 @@
 4 - Using reactive client control.
 4 - Using 1 threads for each Supplier.
 4 - Using 1 threads for each Consumer.
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 6
 4 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
 4 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 6
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 7
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 8
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 9
@@ -72,10 +70,6 @@
 3 - ----------T--:--:--.--- None test1 - Waiting 10 seconds ...
 3 - ----------T--:--:--.--- None test1 - Releasing component NamedCh_SUP1
 3 - ----------T--:--:--.--- None test1 - Releasing component NamedCh_CON1
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on suspend...bad.
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on resume...bad.
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::addFilter failed for the 'NamedCh' channel, 'EventDescription' event type, and 'hope to god this filter doesn't work' filter!
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on addFilter...OK.
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed for the 'NamedCh' channel!
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed to destroy consumer admin for the 'NamedCh' channel!
 2 - /----/libbaci.so

@@ -22,8 +22,6 @@
 2 - ContainerStatusMsg: Automatic component loading begins
 2 - ContainerStatusMsg: Automatic component loading ends
 2 - ContainerStatusMsg: Ready
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on addSubscription...OK.
 3 - ----------T--:--:--.--- None test2 - Calling supplier.testReconn1(False,True)
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Start sending 20 events via SimpleSupplier.
 2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
@@ -58,24 +56,20 @@
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 16
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 17
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 18
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Finished sending 20 events via SimpleSupplier.
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 19
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Finished sending 20 events via SimpleSupplier.
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Autoreconnect: no
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  NC: restarted
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events dropped: XXX
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events queued: XXX
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events sent: XXX
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of transitions: Y
-2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of exceptions caught: ZZZ
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Transitions in: YYY
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of exceptions caught: ZZZ
 3 - ----------T--:--:--.--- None test2 - Waiting 10 seconds ...
 3 - ----------T--:--:--.--- None test2 - Releasing component NamedCh_SUP1
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Supplier::disconnect failed for the 'NamedCh' channel!
 3 - ----------T--:--:--.--- None test2 - Releasing component NamedCh_CON1
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on resume...bad.
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on suspend...bad.
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::addFilter failed for the 'NamedCh' channel, 'EventDescription' event type, and 'hope to god this filter doesn't work' filter!
-2 - ----------T--:--:--.--- [NamedCh_CON1 - ] An exception on addFilter...OK.
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed for the 'NamedCh' channel!
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed to destroy consumer admin for the 'NamedCh' channel!
 2 - /----/libbaci.so

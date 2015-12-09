@@ -57,15 +57,7 @@ ConsumerCompImpl::ConsumerCompImpl(const ACE_CString &name,
 {
     m_count = 0;
     ACS_NEW_SIMPLE_CONSUMER(m_testConsumer_p, acsnc::EventDescription, "NamedCh", myHandlerFunction, (void *)this);
-    try
-	{
-	m_testConsumer_p->addSubscription<acsnc::EventDescription>(myHandlerFunction);
-	ACS_SHORT_LOG((LM_ALERT, "No exception on addSubscription...bad."));
-	}
-    catch(CouldntPerformActionEx err)
-	{
-	ACS_SHORT_LOG((LM_ALERT, "An exception on addSubscription...OK."));
-	}
+
     m_testConsumer_p->consumerReady();
     
     //Test suspend/resume
@@ -75,41 +67,6 @@ ConsumerCompImpl::ConsumerCompImpl(const ACE_CString &name,
 /* ----------------------------------------------------------------*/
 ConsumerCompImpl::~ConsumerCompImpl()
 {
-    //test bad suspend
-    try
-	{
-	m_testConsumer_p->suspend();
-	m_testConsumer_p->suspend();
-	ACS_SHORT_LOG((LM_ALERT, "No exception on suspend...OK."));
-	}
-    catch(...)
-	{
-	ACS_SHORT_LOG((LM_ALERT, "An exception on suspend...bad."));
-	}
-
-    //test bad resume
-    try
-	{
-	m_testConsumer_p->resume();
-	m_testConsumer_p->resume();
-	ACS_SHORT_LOG((LM_ALERT, "No exception on resume...OK."));
-	}
-    catch(...)
-	{
-	ACS_SHORT_LOG((LM_ALERT, "An exception on resume...bad."));
-	}
-    
-    //test bad filter
-    try
-	{
-	m_testConsumer_p->addFilter("EventDescription", "hope to god this filter doesn't work");
-	ACS_SHORT_LOG((LM_ALERT, "No exception on addFilter...bad."));
-	}
-    catch(...)
-	{
-	ACS_SHORT_LOG((LM_ALERT, "An exception on addFilter...OK."));
-	}
-    
     m_testConsumer_p->disconnect();
     m_testConsumer_p = 0;
 }
