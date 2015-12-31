@@ -50,30 +50,22 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/commons-math-2.1.jar \
 	../lib/commons-xml-resolver-1.2.jar \
 	../lib/ehcache-core-2.4.3.jar \
-	../lib/gnu-regexp-1.1.4.jar \
 	../lib/hamcrest-core-1.3.jar \
 	../lib/hamcrest-library-1.3.jar \
 	../lib/hsqldb.jar \
-	../lib/icons.jar \
-	../lib/infobus.jar \
 	../lib/jakarta-oro-2.0.5.jar \
 	../lib/jakarta-regexp-1.2.jar \
 	../lib/javassist-3.4.GA.jar \
 	../lib/jaxen-1.1.3.jar \
 	../lib/jdom.jar \
-	../lib/jlibeps-0.1.jar \
-	../lib/jnlp.jar \
 	../lib/jta-1.1.jar \
 	../lib/junit-dep-4.10.jar \
 	../lib/log4j-1.2.15.jar \
 	../lib/mockito-core-1.9.5.jar \
 	../lib/objenesis-1.2.jar \
 	../lib/prevayler-1.02.001.jar \
-	../lib/saxpath.jar \
-	../lib/servlet-api-3.0.jar \
 	../lib/slf4j-api-1.7.6.jar \
 	../lib/sqltool.jar \
-	../lib/tablelayout.jar \
 	../lib/xalan.jar \
 	../lib/xalan_serializer.jar \
 	../lib/xmlunit-1.3.jar \
