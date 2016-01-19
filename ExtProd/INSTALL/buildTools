@@ -180,14 +180,14 @@ else
   bash --login ./buildTAO &>/dev/null &&  echo_success || echo_failure
 fi
 
-echo -n "buildDDS"
-./buildDDS  &&  echo_success || echo_failure
-echo -n "buildOpenSpliceDDS"
-if [ "$OS" = "$CYGWIN_VER" ]; then
-  ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
-else
-  bash --login ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
-fi
+#echo -n "buildDDS"
+#./buildDDS  &&  echo_success || echo_failure
+#echo -n "buildOpenSpliceDDS"
+#if [ "$OS" = "$CYGWIN_VER" ]; then
+#  ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
+#else
+#  bash --login ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
+#fi
 echo -n "buildMaven"
 ./buildMaven && echo_success || echo_failure
 echo -n "buildAnt"
