@@ -22,7 +22,7 @@ MODULES_TOOLS = Tools
 # because it is already built in the prepare phase.
 #
 
-MODULES_ACS = jacsutil xmljbind xmlpybind acserridl acsidlcommon acsutil acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task acstime acsnc acsncdds acsdaemon acslog acstestcompcpp acsexmpl jlogEngine acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities jcont jcontnc nsStatisticsService jacsalarmtest jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssim bulkDataNT bulkData containerTests acscourse ACSLaser acsGUIs
+MODULES_ACS = jacsutil xmljbind xmlpybind acserridl acsidlcommon acsutil acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task acstime acsnc acsdaemon acslog acstestcompcpp acsexmpl jlogEngine acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities jcont jcontnc nsStatisticsService jacsalarmtest jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssim bulkDataNT bulkData containerTests acscourse ACSLaser acsGUIs
 ######## end Modules ###########################
 
 ###############################################
