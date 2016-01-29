@@ -3,3 +3,10 @@ Log outputed to the local file
 lcuboot: open
 The actual time...
 Should be January 1st 2004...
+Generated log
+failed to send a logging event
+Checker - ACS::Thread
+deleted in the Naming Service
+Name Service without channel entries in the endpoint
+ERROR \[acsstartupPids\] Unable to determine the naming service
+ERROR \[acsstartupPids\] Unable to determine Logging notification service

@@ -26,7 +26,9 @@
 
 
 #include "loggingACSStructuredPushSupplierBin.h"
+#include "loggingACEMACROS.h"
 #include <iostream>
+#include <loggingService.h>
 
 /*****************************************************************/
 
@@ -37,11 +39,18 @@ ACSStructuredPushSupplierBin::send_event (const CosNotification::StructuredEvent
   ACE_ASSERT (!CORBA::is_nil (this->proxy_consumer_.in ()));
 
   try
-      {
-      proxy_consumer_->push_structured_event (event);
-      }
+    {
+        proxy_consumer_->push_structured_event (event);
+        if(m_numLostLogs > 0)
+        {
+            // Create new log with the number of logs lost
+            ACS_SHORT_LOG((LM_INFO, "%d logs have been lost", m_numLostLogs));
+            m_numLostLogs = 0;
+        }
+    }
   catch(CORBA::COMM_FAILURE ex)
 	{
+    ++m_numLostLogs;
 //	const char * xmlLog;
 //	event.remainder_of_body >>= xmlLog;
 	
@@ -52,6 +61,7 @@ ACSStructuredPushSupplierBin::send_event (const CosNotification::StructuredEvent
 	}
     catch(CORBA::TRANSIENT ex)
 	{
+    ++m_numLostLogs;
 //	const char * xmlLog;
 //	event.remainder_of_body >>= xmlLog;
 	
@@ -60,8 +70,47 @@ ACSStructuredPushSupplierBin::send_event (const CosNotification::StructuredEvent
 //	std::cerr << xmlLog;
 	std::cerr << "'!" << std::endl;
 	}
+    catch(CORBA::OBJECT_NOT_EXIST ex)
+    {
+    ++m_numLostLogs;
+//	const char * xmlLog;
+//	event.remainder_of_body >>= xmlLog;
+
+	std::cerr << "ERROR (CORBA::OBJECT_NOT_EXIST): ";
+	std::cerr << "failed to send a logging event  - '";
+//	std::cerr << xmlLog; 
+	std::cerr << "'!" << std::endl;
+    if(m_service != NULL && true == m_service->autoreconnect())
+    {
+        try {
+            m_service->reinit();
+            proxy_consumer_->push_structured_event (event);
+            --m_numLostLogs;
+        } catch(...) {}
+    }
+    }
+    catch(CORBA::BAD_OPERATION ex) 
+    {  
+    ++m_numLostLogs;
+//	const char * xmlLog;
+//	event.remainder_of_body >>= xmlLog;
+
+	std::cerr << "ERROR (CORBA::BAD_OPERATION): ";
+	std::cerr << "failed to send a logging event  - '";
+//	std::cerr << xmlLog; 
+	std::cerr << "'!" << std::endl;
+    if(m_service != NULL && true == m_service->autoreconnect())
+    {
+        try {
+            m_service->reinit();
+            proxy_consumer_->push_structured_event (event);
+            --m_numLostLogs;
+        } catch(...) {}
+    }
+    }
     catch(...)
 	{
+    ++m_numLostLogs;
 //	const char * xmlLog;
 //	event.remainder_of_body >>= xmlLog;
 
