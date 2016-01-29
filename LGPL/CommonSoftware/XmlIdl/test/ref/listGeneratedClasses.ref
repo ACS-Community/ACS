@@ -7,7 +7,7 @@
 1 - /**
 1 -  * Generated from IDL struct "CharacteristicComponentDesc".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -77,7 +77,7 @@
 1 - /**
 1 -  * Generated from IDL struct "CharacteristicComponentDesc".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -113,7 +113,7 @@
 1 - /**
 1 -  * Generated from IDL struct "CharacteristicComponentDesc".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -137,7 +137,7 @@
 1 - /**
 1 -  * Generated from IDL interface "CharacteristicComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -227,7 +227,7 @@
 1 - /**
 1 -  * Generated from IDL interface "CharacteristicComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -260,7 +260,7 @@
 1 - /**
 1 -  * Generated from IDL interface "CharacteristicComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -276,7 +276,7 @@
 1 - /**
 1 -  * Generated from IDL interface "CharacteristicComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -295,7 +295,7 @@
 1 - /**
 1 -  * Generated from IDL interface "CharacteristicComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -371,7 +371,7 @@
 1 - /**
 1 -  * Generated from IDL interface "CharacteristicComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -442,7 +442,7 @@
 1 - /**
 1 -  * Generated from IDL interface "CharacteristicComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -719,7 +719,7 @@
 1 - /**
 1 -  * Generated from IDL alias "ObsProposal".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -795,7 +795,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -885,7 +885,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -918,7 +918,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -934,7 +934,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -953,7 +953,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1015,7 +1015,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1076,7 +1076,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1185,7 +1185,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithXmlStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1275,7 +1275,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithXmlStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1308,7 +1308,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithXmlStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1324,7 +1324,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithXmlStructJ".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1343,7 +1343,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithXmlStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1362,7 +1362,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithXmlStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1424,7 +1424,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithXmlStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1485,7 +1485,7 @@
 1 - /**
 1 -  * Generated from IDL interface "OffshootWithXmlStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1594,7 +1594,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructWithOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1664,7 +1664,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructWithOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1700,7 +1700,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructWithOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1724,7 +1724,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructWithXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1794,7 +1794,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructWithXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1830,7 +1830,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructWithXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1887,7 +1887,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -1977,7 +1977,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2010,7 +2010,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2026,7 +2026,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootWithStructJ".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2046,7 +2046,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2066,7 +2066,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2135,7 +2135,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2201,7 +2201,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootWithStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2394,7 +2394,7 @@
 1 - /**
 1 -  * Generated from IDL struct "XmlStructWithOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2466,7 +2466,7 @@
 1 - /**
 1 -  * Generated from IDL struct "XmlStructWithOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2502,7 +2502,7 @@
 1 - /**
 1 -  * Generated from IDL struct "XmlStructWithOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2564,7 +2564,7 @@
 1 - /**
 1 -  * Generated from IDL alias "EvenMoreHiddenEntityClass".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2640,7 +2640,7 @@
 1 - /**
 1 -  * Generated from IDL interface "IFWithIndirectEntityUsage".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2730,7 +2730,7 @@
 1 - /**
 1 -  * Generated from IDL interface "IFWithIndirectEntityUsage".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2763,7 +2763,7 @@
 1 - /**
 1 -  * Generated from IDL interface "IFWithIndirectEntityUsage".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2779,7 +2779,7 @@
 1 - /**
 1 -  * Generated from IDL interface "IFWithIndirectEntityUsageJ".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2799,7 +2799,7 @@
 1 - /**
 1 -  * Generated from IDL interface "IFWithIndirectEntityUsage".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2819,7 +2819,7 @@
 1 - /**
 1 -  * Generated from IDL interface "IFWithIndirectEntityUsage".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2904,7 +2904,7 @@
 1 - /**
 1 -  * Generated from IDL interface "IFWithIndirectEntityUsage".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -2980,7 +2980,7 @@
 1 - /**
 1 -  * Generated from IDL interface "IFWithIndirectEntityUsage".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -3341,7 +3341,7 @@
 1 - /**
 1 -  * Generated from IDL interface "MyBaseInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -3431,7 +3431,7 @@
 1 - /**
 1 -  * Generated from IDL interface "MyBaseInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -3464,7 +3464,7 @@
 1 - /**
 1 -  * Generated from IDL interface "MyBaseInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -3480,7 +3480,7 @@
 1 - /**
 1 -  * Generated from IDL interface "MyBaseInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -3500,7 +3500,7 @@
 1 - /**
 1 -  * Generated from IDL interface "MyBaseInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -3576,7 +3576,7 @@
 1 - /**
 1 -  * Generated from IDL interface "MyBaseInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -3647,7 +3647,7 @@
 1 - /**
 1 -  * Generated from IDL interface "MyBaseInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -3925,7 +3925,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4015,7 +4015,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4048,7 +4048,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4064,7 +4064,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4082,7 +4082,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4143,7 +4143,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4204,7 +4204,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4314,7 +4314,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4404,7 +4404,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4437,7 +4437,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4453,7 +4453,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4472,7 +4472,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4549,7 +4549,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4620,7 +4620,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4898,7 +4898,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLIndirectAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -4988,7 +4988,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLIndirectAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5021,7 +5021,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLIndirectAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5037,7 +5037,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLIndirectAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5053,7 +5053,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLIndirectAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5130,7 +5130,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLIndirectAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5201,7 +5201,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NonXMLIndirectAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5479,7 +5479,7 @@
 1 - /**
 1 -  * Generated from IDL struct "NonXmlStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5552,7 +5552,7 @@
 1 - /**
 1 -  * Generated from IDL struct "NonXmlStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5588,7 +5588,7 @@
 1 - /**
 1 -  * Generated from IDL struct "NonXmlStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5614,7 +5614,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5704,7 +5704,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5737,7 +5737,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5753,7 +5753,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5772,7 +5772,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5848,7 +5848,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -5919,7 +5919,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6197,7 +6197,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6287,7 +6287,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6320,7 +6320,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6336,7 +6336,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingXmlOffshootJ".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6355,7 +6355,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6374,7 +6374,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6450,7 +6450,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6521,7 +6521,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NormalComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6799,7 +6799,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NoXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6889,7 +6889,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NoXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6922,7 +6922,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NoXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6938,7 +6938,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NoXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -6957,7 +6957,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NoXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7018,7 +7018,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NoXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7079,7 +7079,7 @@
 1 - /**
 1 -  * Generated from IDL interface "NoXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7187,7 +7187,7 @@
 1 - /**
 1 -  * Generated from IDL struct "ObsProjectTree".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7259,7 +7259,7 @@
 1 - /**
 1 -  * Generated from IDL struct "ObsProjectTree".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7295,7 +7295,7 @@
 1 - /**
 1 -  * Generated from IDL struct "ObsProjectTree".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7355,7 +7355,7 @@
 1 - /**
 1 -  * Generated from IDL alias "ObsProposal".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7431,7 +7431,7 @@
 1 - /**
 1 -  * Generated from IDL interface "ReturnInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7521,7 +7521,7 @@
 1 - /**
 1 -  * Generated from IDL interface "ReturnInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7554,7 +7554,7 @@
 1 - /**
 1 -  * Generated from IDL interface "ReturnInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7570,7 +7570,7 @@
 1 - /**
 1 -  * Generated from IDL interface "ReturnInterfaceJ".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7590,7 +7590,7 @@
 1 - /**
 1 -  * Generated from IDL interface "ReturnInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7609,7 +7609,7 @@
 1 - /**
 1 -  * Generated from IDL alias "NonXmlStructTypedef".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7670,7 +7670,7 @@
 1 - /**
 1 -  * Generated from IDL alias "ProjectTreeSeq".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7754,7 +7754,7 @@
 1 - /**
 1 -  * Generated from IDL alias "ProjectTreeSeq".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7805,7 +7805,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructInsideInterfaceWithXmlViaMemberStruct2".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7877,7 +7877,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructInsideInterfaceWithXmlViaMemberStruct2".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7913,7 +7913,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructInsideInterfaceWithXmlViaMemberStruct2".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -7974,7 +7974,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructInsideInterfaceWithXmlViaMemberStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8046,7 +8046,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructInsideInterfaceWithXmlViaMemberStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8082,7 +8082,7 @@
 1 - /**
 1 -  * Generated from IDL struct "StructInsideInterfaceWithXmlViaMemberStruct".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8143,7 +8143,7 @@
 1 - /**
 1 -  * Generated from IDL interface "ReturnInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8227,7 +8227,7 @@
 1 - /**
 1 -  * Generated from IDL interface "ReturnInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8303,7 +8303,7 @@
 1 - /**
 1 -  * Generated from IDL interface "ReturnInterface".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8665,7 +8665,7 @@
 1 - /**
 1 -  * Generated from IDL alias "SchedBlock".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8740,7 +8740,7 @@
 1 - /**
 1 -  * Generated from IDL alias "SchedBlockSeq".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8824,7 +8824,7 @@
 1 - /**
 1 -  * Generated from IDL alias "SchedBlockSeq".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8875,7 +8875,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8965,7 +8965,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -8998,7 +8998,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9014,7 +9014,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLAcsComponentJ".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9034,7 +9034,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9054,7 +9054,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9138,7 +9138,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9214,7 +9214,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9576,7 +9576,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9666,7 +9666,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9699,7 +9699,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9715,7 +9715,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingNormalOffshootJ".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9735,7 +9735,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9755,7 +9755,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9838,7 +9838,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -9914,7 +9914,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingNormalOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -10276,7 +10276,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -10366,7 +10366,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -10399,7 +10399,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -10415,7 +10415,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingXmlOffshootJ".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -10435,7 +10435,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -10455,7 +10455,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -10538,7 +10538,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -10614,7 +10614,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlComponentUsingXmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -10976,7 +10976,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLNonAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11066,7 +11066,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLNonAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11099,7 +11099,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLNonAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11115,7 +11115,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLNonAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11134,7 +11134,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLNonAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11203,7 +11203,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLNonAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11269,7 +11269,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XMLNonAcsComponent".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11463,7 +11463,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot2".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11553,7 +11553,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot2".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11586,7 +11586,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot2".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11602,7 +11602,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot2J".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11621,7 +11621,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot2".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11640,7 +11640,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot2".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11701,7 +11701,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot2".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11762,7 +11762,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot2".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11872,7 +11872,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11962,7 +11962,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -11995,7 +11995,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12011,7 +12011,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootJ".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12032,7 +12032,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12053,7 +12053,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12130,7 +12130,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12201,7 +12201,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootReferencingOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12291,7 +12291,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootReferencingOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12324,7 +12324,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootReferencingOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12340,7 +12340,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootReferencingOffshootJ".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12359,7 +12359,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootReferencingOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12378,7 +12378,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootReferencingOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12440,7 +12440,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootReferencingOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12501,7 +12501,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshootReferencingOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12609,7 +12609,7 @@
 1 - /**
 1 -  * Generated from IDL alias "XmlOffshootSeq".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12693,7 +12693,7 @@
 1 - /**
 1 -  * Generated from IDL alias "XmlOffshootSeq".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 
@@ -12744,7 +12744,7 @@
 1 - /**
 1 -  * Generated from IDL interface "XmlOffshoot".
 1 -  *
-1 -  * @author JacORB IDL compiler V 3.4
+1 -  * @author JacORB IDL compiler...
 1 -  * @version generated at xxx
 1 -  */
 1 - 

@@ -3760,8 +3760,17 @@ public class ManagerImplTest extends TestCase
 			assertEquals(2, infos.length);
 
 			// IMMORTAL has to have manager as a client
-			assertTrue(infos[0].getClients().contains(manager.getHandle()));
-			assertTrue(!infos[1].getClients().contains(manager.getHandle()));
+			for (ComponentInfo cInfo: infos) {
+				if (cInfo.getName().equals("IMMORTAL")) {
+					assertTrue(cInfo.getClients().contains(manager.getHandle()));
+				} else {
+					assertTrue(!cInfo.getClients().contains(manager.getHandle()));
+				}
+			}
+			
+			
+			//assertTrue(infos[0].getClients().contains(manager.getHandle()));
+			//assertTrue(!infos[1].getClients().contains(manager.getHandle()));
 
 			// check immortality
 			try {
@@ -3771,7 +3780,11 @@ public class ManagerImplTest extends TestCase
 			}
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
 			assertEquals(2, infos.length);
-			assertTrue(infos[0].getClients().contains(manager.getHandle()));
+			for (ComponentInfo cInfo: infos) {
+				if (cInfo.getName().equals("IMMORTAL")) {
+					assertTrue(cInfo.getClients().contains(manager.getHandle()));
+				} 
+			}
 
 			final int KEEP_ALIVE_TIME = 5000 + 2000;
 

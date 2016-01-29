@@ -53,7 +53,7 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
                         CORBA::String_var repId = property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected by time interval, because archive_max_int is 0 (%f).",
 					propName.in(),
-					repId.in(),
+				        repId.in(),
 					archiveMaxInt
 			));
 			archivingInterval_m = 0;

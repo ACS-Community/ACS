@@ -157,7 +157,7 @@ then
 fi
 if [ X"$ALMASW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   ALMASW_RELEASE=ACS-2015.2
+   ALMASW_RELEASE=ACS-2015.4
 fi
 
 # Combined absolute path where ACS software and tools are installed.
@@ -1338,7 +1338,7 @@ fi
 
 # We only add jar files to the CLASSPATH which cannot be picked up by the AcsSystemClassloader that the acsStartJava script enables.
 # 
-CLASSPATH=$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/jacorb-services.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
+CLASSPATH=$JACORB_HOME/lib/jacorb-3.6.jar$PATH_SEP$JACORB_HOME/lib/jacorb-services-3.6.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
 
 #
 # Now that PATH and LD_LIBRARY_PATH are properly set, I first need

@@ -21,7 +21,7 @@
  */
 package alma.acs.logging.table.reduction;
 
-import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Set;
 import java.util.Vector;
 
@@ -63,7 +63,7 @@ public class SourceAntennaRule extends ReductionRule {
 	/**
 	 * The set of the sources reduced by this rule.
 	 * <P>
-	 * It always include at list the source of the initial log (if it contains
+	 * It always include at least the source of the initial log (if it contains
 	 * an antenna).
 	 */
 	private final Set<String> sourceObjects;
@@ -100,7 +100,7 @@ public class SourceAntennaRule extends ReductionRule {
 		isReducible=initialAntenna!=null;
 		if (initialAntenna!=null) {
 			baseSourceMessage=source.toString();
-			sourceObjects=new HashSet<String>();
+			sourceObjects=new TreeSet<String>();
 			sourceObjects.add(src);
 			initialLogMessage=(String)initialLog.getField(LogField.LOGMESSAGE);
 		} else {

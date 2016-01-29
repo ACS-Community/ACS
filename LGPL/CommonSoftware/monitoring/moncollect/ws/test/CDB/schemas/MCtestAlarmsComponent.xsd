@@ -10,7 +10,7 @@
 	<xs:complexType name="MCtestAlarmsComponent">
 		<xs:sequence>
 			<xs:element name="doubleROProp"     type="baci:ROdouble" />
-			<xs:element name="floatROProp"      type="baci:ROfloat" />
+			<xs:element name="floatROProp"     type="baci:ROfloat" />
 			<xs:element name="longROProp"       type="baci:ROlong" />
 			<xs:element name="uLongROProp"      type="baci:ROuLong" />
 			<xs:element name="longLongROProp"   type="baci:ROlongLong" />
@@ -22,6 +22,7 @@
 			<xs:element name="uLongSeqROProp"   type="baci:ROuLongSeq" />
 			<xs:element name="booleanSeqROProp" type="baci:RObooleanSeq" />
 			<xs:element name="EnumTestROProp"   type="baci:ROEnum" />
+			
 		</xs:sequence>
 	</xs:complexType>
 	<xs:element name="MCtestAlarmsComponent" type="MCtestAlarmsComponent"/>

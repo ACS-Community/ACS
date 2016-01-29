@@ -171,6 +171,7 @@ void ROEnumImpl<ACS_ENUM_T(T), SK>::destroy()
                 CORBA::release(reference_mp);
 		this->_remove_ref();
             }
+
     }
   
 }

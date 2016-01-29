@@ -76,8 +76,10 @@ unpacked:
 	@rm -rf jchart2d_tmp
 	
 # The external file jchart2d/ext/build/proguard-4.2.jar is not JDK 7 compatibile.
-# Thus we bring in the more recent proguard-4.10.jar in disguise, see http://ictjira.alma.cl/browse/ICT-1187 
-	cp proguard-4.10.jar jchart2d/ext/build/proguard-4.2.jar
+# Thus we bring in the more recent proguard-4.10.jar in disguise, see http://ictjira.alma.cl/browse/ICT-1187
+	@tar xf proguard5.2.tar.gz
+	@cp proguard5.2/lib/proguard.jar jchart2d/ext/build/proguard-4.2.jar
+	@rm -rf proguard5.2
 	
 	@touch unpacked
 

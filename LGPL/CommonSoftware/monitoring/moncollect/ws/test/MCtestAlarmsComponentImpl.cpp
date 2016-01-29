@@ -412,7 +412,7 @@ void MCtestAlarmsComponentImpl::increase()
 		m_booleanSeqROVal[i] = true;
 	m_booleanSeqROProp_p->getDevIO()->write(m_booleanSeqROVal, m_time12);
 	m_EnumTestROVal = m_EnumTestROVal + 1;
-	m_EnumTestROProp_p->getDevIO()->write(m_EnumTestROVal, m_time3);
+	m_EnumTestROProp_p->getDevIO()->write(m_EnumTestROVal, m_time13);
 }
 
 void MCtestAlarmsComponentImpl::decrease()

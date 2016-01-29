@@ -11,6 +11,7 @@ s/Cache saved to '[^']*'/Cache saved to '.\/log_cache.dat__XXXXXXXX_XXX'/g
 s/ Function took [0-9]*\.[0-9]* sec//g
 s/_[0-9]*:/_XXXXX:/g
 s/during last [.,0-9]* seconds = [.,0-9]*/during last X seconds = X/g
+s/Increment of logging errors from last period: -nan%/Increment of logging errors from last period: nan%/g
 s|/.*/logging/ws/test/tmp|\<logging/ws/test\>/tmp|g
 s/Routine="" Host=".*"/Routine="" Host="<host>"/g
 /acs_tmp/!{s|Log file created = .*/tmp/[^\/]*/ACS|Log file created = tmp/<host>/ACS|}

@@ -616,7 +616,7 @@ then
     then
         JAVA_OPTIONS_MEMORY="-client"
     else
-        JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+CMSParallelRemarkEnabled"
+        JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled"
     fi
 
     # Options for JVM heap size and thread stack size

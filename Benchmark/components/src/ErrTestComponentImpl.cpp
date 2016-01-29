@@ -1,8 +1,6 @@
 #include "ErrTestComponentImpl.h"
 #include <string.h>
 
-ACE_RCSID(acstests, ErrTestComponentImpl, "$Id: ErrTestComponentImpl.cpp,v 1.6 2008/10/08 01:57:23 cparedes Exp $")
-
 ErrTestComponentImpl::ErrTestComponentImpl(const ACE_CString& name,
     maci::ContainerServices *containerServices) :
     BasePerfCompImpl(name, containerServices)

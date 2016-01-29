@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry excluding=".cvsignore|.done_generating_classes|.done_generating_sql|Makefile|gen/" kind="src" path="src"/>
-	<classpathentry excluding=".cvsignore|Makefile|tmcdb/" kind="src" path="test"/>
+	<classpathentry excluding=".cvsignore|CDB/|Makefile|ref/|tmcdb/" kind="src" path="test"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbjDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
@@ -16,7 +16,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ejb3-persistence.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/tmcdbGenerator.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsalarmSchemaBindings.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/slf4j-api-1.7.6.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>

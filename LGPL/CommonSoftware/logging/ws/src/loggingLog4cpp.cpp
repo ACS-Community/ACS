@@ -106,7 +106,7 @@ void Logger::enableRemoteAppender(unsigned long cacheSize,
 		}
 
                 delete loggers;
-		loggers = NULL;
+                loggers = NULL;
 	}
 	initMutex.release();
 }
@@ -129,7 +129,7 @@ void Logger::enableSyslogAppender() {
 		}
 
                 delete loggers;
-		loggers = NULL;
+                loggers = NULL;
 	}
 	initMutex.release();
 }

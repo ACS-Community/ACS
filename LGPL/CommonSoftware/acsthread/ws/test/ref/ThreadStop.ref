@@ -10,10 +10,6 @@
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----''.
 1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::run] 
-1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (0)
-1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (1)
-1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (2)
-1 - ----------T--:--:--.--- [TestThreadA - TestACSThread::runLoop] TestThreadA: runLoop (3)
 1 - ----------T--:--:--.--- [GlobalLogger - main] Stopping thread
 1 - ----------T--:--:--.--- [TestThreadA - ThreadBase::stop] Thread TestThreadA
 1 - ----------T--:--:--.--- [TestThreadA - ACS::Thread::commonStop] 

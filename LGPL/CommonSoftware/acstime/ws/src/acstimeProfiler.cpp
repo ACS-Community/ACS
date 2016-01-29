@@ -23,7 +23,7 @@
 #include <acsutilPorts.h>
 #include "acsutilTimeStamp.h"
 //------------------------------------------------------------------------------
-Profiler::Profiler() 
+Profiler::Profiler()
 {
     reset();
 }

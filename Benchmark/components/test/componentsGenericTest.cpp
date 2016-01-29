@@ -34,7 +34,6 @@
 #include <perftestC.h>
 #include <stdlib.h>
 
-ACE_RCSID(acsexmpl, acsexmplHelloWorldClient, "$Id: componentsGenericTest.cpp,v 1.2 2004/10/21 16:55:57 dfugate Exp $")
 using namespace maci;
 
 /*******************************************************************************/

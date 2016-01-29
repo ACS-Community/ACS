@@ -1,8 +1,6 @@
 #include <SupplierTestComponentImpl.h>
 #include <string.h>
 
-ACE_RCSID(acstests, SupplierTestComponentImpl, "$Id: SupplierTestComponentImpl.cpp,v 1.6 2008/10/08 01:57:23 cparedes Exp $")
-
 SupplierTestComponentImpl::SupplierTestComponentImpl(const ACE_CString& name,
     maci::ContainerServices *containerServices) :
     BasePerfCompImpl(name, containerServices),

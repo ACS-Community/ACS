@@ -265,6 +265,7 @@ public class MultiFileCacheTest extends TestCase {
 	 * Test the clearing of the cache
 	 */
 	public void testClear() throws Exception {
+		System.out.println("testClear started");
 		// Create and populate the cache
 		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
 		assertEquals(1000, logCollection.size());
@@ -281,12 +282,14 @@ public class MultiFileCacheTest extends TestCase {
 		assertEquals(0, cache.getNumberOfCacheFiles());
 		assertNull(cache.getFirstLog());
 		assertNull(cache.getLastLog());
+		System.out.println("testClear done");
 	}
 	
 	/**
 	 * Test getFirstLog()
 	 */
 	public void testGetFirstLog() throws Exception {
+		System.out.println("testGetFirstLog started");
 		// Create and populate the cache
 		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
 		assertEquals(1000, logCollection.size());
@@ -308,12 +311,14 @@ public class MultiFileCacheTest extends TestCase {
 				assertNull(cache.getFirstLog());
 			}
 		}
+		System.out.println("testGetFirstLog done");
 	}
 	
 	/**
 	 * Test getLastLog()
 	 */
 	public void testGetLastLog() throws Exception {
+		System.out.println("testGetLastLog started");
 		// Create and populate the cache
 		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
 		assertEquals(1000, logCollection.size());
@@ -337,6 +342,7 @@ public class MultiFileCacheTest extends TestCase {
 				assertNull(cache.getLastLog());
 			}
 		}
+		System.out.println("testGetLastLog done");
 	}
 	
 	/**
@@ -345,6 +351,7 @@ public class MultiFileCacheTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testkKeySet() throws Exception {
+		System.out.println("testKeySet started");
 		// Create and populate the cache
 		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(1000);
 		assertEquals(1000, logCollection.size());
@@ -369,6 +376,7 @@ public class MultiFileCacheTest extends TestCase {
 		}
 		// If keySet() returned all the key, the cache is empty at the end
 		assertTrue(cache.getSize()==0);
+		System.out.println("testKeySet done");
 	}
 	
 	/**
@@ -377,6 +385,7 @@ public class MultiFileCacheTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testGet() throws Exception {
+		System.out.println("testGet started");
 		// Create and populate the cache
 		Collection<ILogEntry> logCollection = CacheUtils.generateLogs(5000);
 		assertEquals(5000, logCollection.size());
@@ -396,6 +405,7 @@ public class MultiFileCacheTest extends TestCase {
 			assertNotNull(message);
 			assertTrue(message.contains(t.toString()));
 		}
+		System.out.println("testGet done");
 	}
 	
 	/**
@@ -404,6 +414,7 @@ public class MultiFileCacheTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testReplace() throws Exception {
+		System.out.println("testReplace started");
 		ACSLogParser parser = ACSLogParserFactory.getParser();
 		assertNotNull(parser);
 		// Create and populate the cache
@@ -426,7 +437,6 @@ public class MultiFileCacheTest extends TestCase {
 			ILogEntry replacedLog =cache.getLog(t);
 			assertEquals(newLog.getField(LogField.LOGMESSAGE), replacedLog.getField(LogField.LOGMESSAGE));
 		}
+		System.out.println("testReplace done");
 	}
-		
-
 }

@@ -2,8 +2,6 @@
 
 using namespace baci;
 
-ACE_RCSID(acstests, ComplexBACIComponentImpl, "$Id: ComplexBACIComponentImpl.cpp,v 1.6 2008/10/08 01:57:23 cparedes Exp $")
-
 /////////////////////////////////////////////////
 // ComplexBACIComponent
 /////////////////////////////////////////////////

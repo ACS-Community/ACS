@@ -159,7 +159,6 @@ public class LogMultiFileCache  implements ILogMap {
 	 * 
 	 */
 	private MultiFileTableRecord createNewFileRecord() throws LogCacheException {
-
 		MultiFileTableRecord newFileRec=new MultiFileTableRecord();
 		
 		// Add new record to vector
@@ -319,8 +318,8 @@ public class LogMultiFileCache  implements ILogMap {
 		if (fileRecord.getNumOfLogs()==0) {		
 			fileRecord.clear();
 			
-			printDebugTrace("Delete log file: recId " + idx + " num. of logs = "+fileRecord.getNumOfLogs()+ "Range keys = ["
-					+fileRecord.getMinLogIdx()+", "+fileRecord.getMaxLogIdx()+"]");
+			printDebugTrace("Delete log file: recId " + idx + " num. of logs = "+fileRecord.getNumOfLogs()+ " Range keys = ["
+					+fileRecord.getMinLogIdx()+", "+fileRecord.getMaxLogIdx()+"] files in table "+logFileTable.size());
 
 			// Remove vector element
 			logFileTable.remove(fileRecord);

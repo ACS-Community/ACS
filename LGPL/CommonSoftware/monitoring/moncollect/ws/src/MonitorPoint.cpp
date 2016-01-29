@@ -404,8 +404,8 @@ ROEnumMonitorPoint::ROEnumMonitorPoint(const char *propertyName, const ACS::Time
 		std::istringstream i2(strCharacteristic);
 		i2 >> valPer;
 		if ( valPer == 0 ) {
-			CORBA::String_var propName = property_m->name();
-			CORBA::String_var repId = property_m->_repository_id();
+			CORBA::String_var propName = this->property_m->name();
+			CORBA::String_var repId = this->property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"ROEnumMonitorPoint::ROEnumMonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected when alarms are raised, because alarm_timer_trig is set to '%s'.",
 					propName.in(),
 					repId.in(),

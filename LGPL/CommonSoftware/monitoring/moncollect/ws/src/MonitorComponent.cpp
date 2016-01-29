@@ -62,7 +62,7 @@ MonitorComponent::~MonitorComponent()
 			monitorPoints_m[i]->stopMonitoring();
 			monitorPoints_m[i]->deactivate(containerServices_m);
 			delete monitorPoints_m[i];
-                        monitorPoints_m[i] = NULL;
+			monitorPoints_m[i] = NULL;
 	}
 }//~MonitorComponent
 
@@ -188,7 +188,7 @@ bool MonitorComponent::addProperty(const char *propName)
 
 		if (strcmp(compDesc_m->properties[i].name.in(), propName)==0)
 		{
-			CORBA::String_var propType = compDesc_m->properties[i].property_ref->_repository_id();
+			CORBA::String_var  propType = compDesc_m->properties[i].property_ref->_repository_id();
 
 			ACS::TimeInterval monitoringInterval = propertyArchivingInterval(&compDesc_m->properties[i]);
  			if ( monitoringInterval!=0 )

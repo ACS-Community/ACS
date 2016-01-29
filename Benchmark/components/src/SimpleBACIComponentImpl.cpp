@@ -1,7 +1,5 @@
 #include <SimpleBACIComponentImpl.h>
 
-ACE_RCSID(acstests, SimpleBACIComponentImpl, "$Id: SimpleBACIComponentImpl.cpp,v 1.6 2008/10/08 01:57:23 cparedes Exp $")
-
 /////////////////////////////////////////////////
 // SimpleBACIComponent
 /////////////////////////////////////////////////

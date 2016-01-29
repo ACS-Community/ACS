@@ -62,7 +62,7 @@ exec > $LOG 2>&1
 
 date
 
-JACORB_VERSION=3.4
+JACORB_VERSION=3.6
 
 ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
 JACORB_SOURCES=`pwd`/../PRODUCTS
@@ -122,25 +122,25 @@ cd $JACORB_HOME
 # .. and we get new comulative patch: JacORB-ACS-2006-07-31.patch.gz
 
 echo ==== Cumulative Patch
-if [ -f $JACORB_SOURCES/JacORB-all-2014-01-03.patch.gz ]
+if [ -f $JACORB_SOURCES/JacORB-all-2015-02-26.patch.gz ]
 then
-    gunzip -c $JACORB_SOURCES/JacORB-all-2014-01-03.patch.gz >$JACORB_SOURCES/JacORB-all-2014-01-03.patch
+    gunzip -c $JACORB_SOURCES/JacORB-all-2015-02-26.patch.gz >$JACORB_SOURCES/JacORB-all-2015-02-26.patch
 else
-    echo "file $JACORB_SOURCES/JacORB-all-2014-01-03.patch.gz not found"
+    echo "file $JACORB_SOURCES/JacORB-all-2015-02-26.patch.gz not found"
     echo "Installation aborted"
     exit 3
 fi
 if [ "$OS" = "$CYGWIN_VER" ]; then
-  dos2unix $JACORB_SOURCES/JacORB-all-2014-01-03.patch.gz
+  dos2unix $JACORB_SOURCES/JacORB-all-2015-02-26.patch.gz
 fi
-patch -p1 < $JACORB_SOURCES/JacORB-all-2014-01-03.patch
+patch -p1 < $JACORB_SOURCES/JacORB-all-2015-02-26.patch
 if [ $? -ne 0 ]
 then
-    rm $JACORB_SOURCES/JacORB-all-2014-01-03.patch
+    rm $JACORB_SOURCES/JacORB-all-2015-02-26.patch
     echo "========= FAILED =========="
 	exit 1
 else
-    rm $JACORB_SOURCES/JacORB-all-2014-01-03.patch
+    rm $JACORB_SOURCES/JacORB-all-2015-02-26.patch
 fi
 
 #
@@ -253,9 +253,9 @@ fi
 
 echo ==== JacORB Version Patch
 
-cp src/main/resources/org/jacorb/util/Version.java src/main/resources/org/jacorb/util/Version.java.bak
+cp core/src/main/java-templates/org/jacorb/util/Version.java core/src/main/java-templates/org/jacorb/util/Version.java.bak
 BUILD_TS=`date "+%d %B %Y %H:%M"`
-sed -e "s/@releaseYear@/2014/;s/@timestamp@/$BUILD_TS/;s/@buildNumber@/ACS build based on bcb5122a/;s/@project.version@/$JACORB_VERSION/" < src/main/resources/org/jacorb/util/Version.java.bak > src/main/resources/org/jacorb/util/Version.java
+sed -e "s/@releaseYear@/2015/;s/@timestamp@/$BUILD_TS/;s/@buildNumber@/ACS build based on 150a4c9/;s/@project.version@/$JACORB_VERSION/" < core/src/main/java-templates/org/jacorb/util/Version.java.bak > core/src/main/java-templates/org/jacorb/util/Version.java
 
 echo "========= Done with unpacking and patching, can compile now... =========="
 
@@ -273,22 +273,14 @@ cd $JACORB_HOME/
 
 # get rid of precompiled jacorb jars which sometimes mess with the classpath
 # to the effect that incompatible versions of some org.omg interface come in from the JDK libs
-ant realclean || exit 1
+###ant realclean || exit 1
+# The files to purge are extracted from ACS-jacorb 3.4 build.xml directive
+rm -f $JACORB_HOME/lib/jacorb-3.6.jar
+rm -f $JACORB_HOME/lib/idl.jar
+#rm -f $JACORB_HOME/lib/jacorb-sources.jar #This jar is not present anymore
+rm -f $JACORB_HOME/lib/jacorb-services-3.6.jar
 
-# JacORB 3.4 uses slf4j for logging and ships with version 1.6.4 of both
-# the API and the JDK1.4 implementation, located under $JACORB_HOME.
-# ACS also uses slf4j, installed under $ACSROOT etc, and would normally supply it from ACS/LGPL/Tools/.
-# To avoid keeping two copies of the slf4j API jar file, ACS keeps its own copy
-# here under ExtProd and uses it both for building JacORB and for other purposes
-# (c.f. copying of that file in Tools/extjars/src/Makefile.
-# Note that JacORB compiles with just the slf4j API on the classpath;
-# later in the build, ACS module acsjlog will provide the slf4j implemenation jar.
-rm -f $JACORB_HOME/lib/slf4j-api-1.6.4.jar
-rm -f $JACORB_HOME/lib/slf4j-jdk14-1.6.4.jar
-cp $JACORB_SOURCES/jacorb-jars/slf4j-api-1.7.5.jar $JACORB_HOME/lib/ || exit 1
-
-
-cd $JACORB_SOURCES
+###cd $JACORB_SOURCES
 
 echo "==== Build Notification service IDL"
 
@@ -325,7 +317,7 @@ then
 	exit 1
 fi
 
-cd $JACORB_HOME/idl
+###cd $JACORB_HOME/idl
 
 
 echo ==== Build with extra IDLs
@@ -340,12 +332,13 @@ fi
 # To include debug information, exchange the following two lines:
 #ant -DJVERSION=$JACORB_VERSION -Ddebug=true -Ddebuglevel=lines,vars,source all 
 
-CLASSPATH="" ant -DJVERSION=$JACORB_VERSION
-if [ $? -ne 0 ]
-then
-     echo "========= FAILED =========="
-	exit 1
-fi
+ mvn clean install -e -X -DskipTests=true -DskipPDFGeneration=true -DskipJavadoc=true -Dmaven.clean.failOnError=false -Dmaven.javadoc.failOnError=false
+###CLASSPATH="" ant -DJVERSION=$JACORB_VERSION
+###if [ $? -ne 0 ]
+###then
+###     echo "========= FAILED =========="
+###	exit 1
+###fi
 
 # 3.4 splits jacorb.jar into implementation and omg stub jars
 # The latter jar will be placed into an endorsed directory
@@ -353,7 +346,7 @@ fi
 # support.
 
 mkdir $JACORB_HOME/lib/endorsed
-mv $JACORB_HOME/lib/jacorb-omgapi.jar $JACORB_HOME/lib/endorsed
+mv $JACORB_HOME/lib/jacorb-omgapi-3.6.jar $JACORB_HOME/lib/endorsed
 
 cd $CUR_DIR
 
@@ -362,8 +355,8 @@ echo "==== JacORB fully built   =========="
 echo "Make sure that the following environment variables"
 echo "are set before using JacORB:"
 echo " - JACORB_HOME=$JACORB_HOME"
-echo " - CLASSPATH contains: $JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/jacorb-services.jar:$JACORB_HOME/lib/idl.jar"
-echo $ - jacorb-omgapi.jar is in $JACORB_HOME/lib/endorsed which is defined in java.endorsed.dirs
+echo " - CLASSPATH contains: $JACORB_HOME/lib/jacorb-3.6.jar:$JACORB_HOME/lib/jacorb-services-3.6.jar:$JACORB_HOME/lib/idl.jar"
+echo $ - jacorb-omgapii-3.6.jar is in $JACORB_HOME/lib/endorsed which is defined in java.endorsed.dirs
 echo " - PATH      contains: $JACORB_HOME/bin"
 echo "========= DONE   =========="
 

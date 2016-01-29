@@ -23,6 +23,6 @@
 export ACS_TMP=../test/tmp
 acscontainerdaemonSmartStart
 sleep 5
-acsutilTATTestRunner acsStartJava -Duser.dir=$PWD junit.textui.TestRunner alma.test.benchmark.components.StressStartComponents
+acsutilTATTestRunner acsStartJava -Duser.dir=$PWD -Djacorb.poa.queue_max=250 -Djacorb.poa.thread_pool_max=200 -Djacorb.connection.nonblocking=on junit.textui.TestRunner alma.test.benchmark.components.StressStartComponents
 sleep 5
 acscontainerdaemonStop

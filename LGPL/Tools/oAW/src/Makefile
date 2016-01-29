@@ -38,6 +38,7 @@
 # jar files to be installed
 #----------------------------
 INSTALL_FILES = \
+	../lib/ecj-4.4.2.jar \
          ../lib/antlr-generator-3.0.1.jar \
          ../lib/com.google.collect_0.8.0.v201008251220.jar \
          ../lib/com.google.inject_2.0.0.v201003051000.jar \
@@ -53,7 +54,6 @@ INSTALL_FILES = \
          ../lib/org.eclipse.emf.mwe.core_1.0.0.v201008251122.jar \
          ../lib/org.eclipse.emf.mwe.utils_1.0.0.v201008251122.jar \
          ../lib/org.eclipse.equinox.common_3.6.0.v20100503.jar \
-         ../lib/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar \
          ../lib/org.eclipse.text_3.5.0.v20100601-1300.jar \
          ../lib/org.eclipse.uml2.common_1.5.0.v201005031530.jar \
          ../lib/org.eclipse.uml2.uml_3.1.1.v201008191505.jar \

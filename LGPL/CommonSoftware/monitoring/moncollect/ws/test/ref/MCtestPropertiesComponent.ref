@@ -40,8 +40,8 @@
 1 - 		{'value': [0L, 0L], 'time': ------------------L}
 1 - 		{'value': [0L, 0L], 'time': ------------------L}
 1 - 	MC_TEST_PROPERTIES_COMPONENT:booleanSeqROProp ['14']
-1 - 		{'value': [False, False], 'time': ------------------L}
-1 - 		{'value': [False, False], 'time': ------------------L}
+1 - 		{'value': [], 'time': ------------------L}
+1 - 		{'value': [], 'time': ------------------L}
 1 - 	MC_TEST_PROPERTIES_COMPONENT:EnumTestROProp ['15']
 1 - 		{'value': 0L, 'time': ------------------L}
 1 - 		{'value': 0L, 'time': ------------------L}

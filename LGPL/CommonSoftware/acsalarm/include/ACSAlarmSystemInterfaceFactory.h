@@ -38,7 +38,7 @@
 #include "AlarmSystemInterface.h"
 #include "ACSAlarmSystemInterfaceFactory.h"
 #include "ACSAlarmSystemInterfaceProxy.h"
-#include "maciS.h"
+#include <maciS.h>
 #include "acsErrTypeAlarmSourceFactory.h"
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
