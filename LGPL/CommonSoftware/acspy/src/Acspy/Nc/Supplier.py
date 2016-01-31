@@ -348,7 +348,7 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         try:
             self.sppc.push_structured_event(se)
             if event_callback != None:
-                event_calback.eventSent(simple_data)
+                event_callback.eventSent(simple_data)
 
             #For HLA/ITS - to be removed later!
             if get_integration_logs(self.channelName)==1:
