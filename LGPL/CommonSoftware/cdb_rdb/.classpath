@@ -41,10 +41,10 @@
 	<classpathentry kind="var" path="ACSROOT/lib/commons-math-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/cdb_rdb.jar"/>
 	<classpathentry kind="lib" path="lib/cdbrdb-pojos.jar"/>
-	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb-3.6.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb-3.6.1.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/hibernate-tools-3.6.0.CR1.jar"/>
-	<classpathentry kind="var" path="JACORB_HOME/lib/endorsed/jacorb-omgapi-3.6.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/endorsed/jacorb-omgapi-3.6.1.jar"/>
 	<classpathentry kind="var" path="INTROOT"/>
 	<classpathentry kind="var" path="INTROOT/lib/acscodegen.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/tmcdbGenerator.jar"/>
