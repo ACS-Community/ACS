@@ -62,7 +62,7 @@ exec > $LOG 2>&1
 
 date
 
-JACORB_VERSION=3.6
+JACORB_VERSION=3.6.1
 
 ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
 JACORB_SOURCES=`pwd`/../PRODUCTS
@@ -122,25 +122,17 @@ cd $JACORB_HOME
 # .. and we get new comulative patch: JacORB-ACS-2006-07-31.patch.gz
 
 echo ==== Cumulative Patch
-if [ -f $JACORB_SOURCES/JacORB-all-2015-02-26.patch.gz ]
+if [ ! -f $JACORB_SOURCES/JacORB-all-2015-02-26.patch ]
 then
-    gunzip -c $JACORB_SOURCES/JacORB-all-2015-02-26.patch.gz >$JACORB_SOURCES/JacORB-all-2015-02-26.patch
-else
-    echo "file $JACORB_SOURCES/JacORB-all-2015-02-26.patch.gz not found"
+    echo "file $JACORB_SOURCES/JacORB-all-2015-02-26.patch not found"
     echo "Installation aborted"
     exit 3
-fi
-if [ "$OS" = "$CYGWIN_VER" ]; then
-  dos2unix $JACORB_SOURCES/JacORB-all-2015-02-26.patch.gz
 fi
 patch -p1 < $JACORB_SOURCES/JacORB-all-2015-02-26.patch
 if [ $? -ne 0 ]
 then
-    rm $JACORB_SOURCES/JacORB-all-2015-02-26.patch
     echo "========= FAILED =========="
 	exit 1
-else
-    rm $JACORB_SOURCES/JacORB-all-2015-02-26.patch
 fi
 
 #
@@ -275,10 +267,10 @@ cd $JACORB_HOME/
 # to the effect that incompatible versions of some org.omg interface come in from the JDK libs
 ###ant realclean || exit 1
 # The files to purge are extracted from ACS-jacorb 3.4 build.xml directive
-rm -f $JACORB_HOME/lib/jacorb-3.6.jar
+rm -f $JACORB_HOME/lib/jacorb-3.6.1.jar
 rm -f $JACORB_HOME/lib/idl.jar
 #rm -f $JACORB_HOME/lib/jacorb-sources.jar #This jar is not present anymore
-rm -f $JACORB_HOME/lib/jacorb-services-3.6.jar
+rm -f $JACORB_HOME/lib/jacorb-services-3.6.1.jar
 
 ###cd $JACORB_SOURCES
 
@@ -346,7 +338,7 @@ fi
 # support.
 
 mkdir $JACORB_HOME/lib/endorsed
-mv $JACORB_HOME/lib/jacorb-omgapi-3.6.jar $JACORB_HOME/lib/endorsed
+mv $JACORB_HOME/lib/jacorb-omgapi-3.6.1.jar $JACORB_HOME/lib/endorsed
 
 cd $CUR_DIR
 
@@ -355,8 +347,8 @@ echo "==== JacORB fully built   =========="
 echo "Make sure that the following environment variables"
 echo "are set before using JacORB:"
 echo " - JACORB_HOME=$JACORB_HOME"
-echo " - CLASSPATH contains: $JACORB_HOME/lib/jacorb-3.6.jar:$JACORB_HOME/lib/jacorb-services-3.6.jar:$JACORB_HOME/lib/idl.jar"
-echo $ - jacorb-omgapii-3.6.jar is in $JACORB_HOME/lib/endorsed which is defined in java.endorsed.dirs
+echo " - CLASSPATH contains: $JACORB_HOME/lib/jacorb-3.6.1.jar:$JACORB_HOME/lib/jacorb-services-3.6.1.jar:$JACORB_HOME/lib/idl.jar"
+echo $ - jacorb-omgapii-3.6.1.jar is in $JACORB_HOME/lib/endorsed which is defined in java.endorsed.dirs
 echo " - PATH      contains: $JACORB_HOME/bin"
 echo "========= DONE   =========="
 
