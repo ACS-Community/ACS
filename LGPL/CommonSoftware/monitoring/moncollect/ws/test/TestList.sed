@@ -10,3 +10,6 @@ s/Thread=RequestProcessor-[0-9]*/Thread=RequestProcessor-XX/g
 s/ime=[0-9]*L/ime=XXXX/g
 s/'time': [0-9]*L/'time': ------------------L/g
 
+s/Great! First blob has the expected value:  [0-9][\.,0-9]*/Great! First blob has the expected value:  XX/g
+s/Great! Collected at least 9 values: [0-9][0-9]*/Great! Collected at least 9 values: XX/g
+s/Great! Collected at most 20 values: [0-9][0-9]*/Great! Collected at most 20 values: XX/g
