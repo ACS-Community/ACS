@@ -140,7 +140,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('ALMASW_RELEASE','--DUMP--'),\
                 ('ALMASW_ROOTDIR','--DUMP--'),\
                 ('ANT_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/ant'),\
-                ('CLASSPATH','$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/jacorb-services.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar'),\
+                ('CLASSPATH','$JACORB_HOME/lib/jacorb-3.6.1.jar:$JACORB_HOME/lib/jacorb-services-3.6.1.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar'),\
                 ('GNU_ROOT','/usr'),\
                 ('INTROOT','--DUMP--'),\
                 ('JACORB_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB'),\
