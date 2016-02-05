@@ -133,14 +133,6 @@ namespace Logging {
 	    errorIncrement= (float(getAccumulatedNumberOfLogErrors()) - float(getLastPeriodNumberOfLogErrors()) ) *
 		                (float(100) / float(getLastPeriodNumberOfLogErrors()) );
 
-	    std::cout<< "actualStatisticsPeriod "<< actualStatisticsPeriod<<std::endl;
-	    std::cout<< "getAccumulatedNumberOfMessages() " << getAccumulatedNumberOfMessages() <<std::endl;
-	    std::cout<< "getStatisticsGranularity() " << getStatisticsGranularity()<<std::endl;
-	    std::cout<< "messageIncrement " << messageIncrement<<std::endl;
-
-	    std::cout<< "getAccumulatedNumberOfLogErrors() " << getAccumulatedNumberOfLogErrors()<<std::endl;
-	    std::cout<< "getLastPeriodNumberOfLogErrors() " << getLastPeriodNumberOfLogErrors()<<std::endl;
-	    std::cout<< "errorIncrement " << errorIncrement<<std::endl;
     }
 
     void
