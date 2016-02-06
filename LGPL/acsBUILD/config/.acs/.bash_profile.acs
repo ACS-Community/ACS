@@ -568,10 +568,10 @@ then
     then
         if [ "$ARCH" = "x86_64" ]
         then
-            JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
+            JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
         elif [ "$ARCH" = "i686" ]
         then
-            JAVA_HOME="/usr/lib/jvm/java-7-openjdk-i386"
+            JAVA_HOME="/usr/lib/jvm/java-8-openjdk-i386"
         fi
     else
       	JAVA_HOME=/usr/java/default
@@ -732,12 +732,7 @@ fi
 # Maven stuff
 if [ X"$M2_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   if [ "$DISTRO" = DEBIAN ]
-   then
-      unset M2_HOME
-   else
       M2_HOME=$ALMASW_INSTDIR/maven
-   fi
 fi
 
 # RTOS
