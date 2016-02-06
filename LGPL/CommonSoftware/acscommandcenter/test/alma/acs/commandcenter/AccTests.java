@@ -21,14 +21,12 @@ import junit.framework.TestSuite;
  */
 public class AccTests {
 
-	/* $Id: AccTests.java,v 1.5 2007/10/22 14:13:37 mschilli Exp $ */
-
-
 	public static Test suite() {
 		TestSuite ret = new TestSuite("Test for " + AccTests.class.getPackage().getName());
 
 		ret.addTest(alma.acs.commandcenter.app._Tests.suite());
 		ret.addTest(alma.acs.commandcenter.engine._Tests.suite());
+		ret.addTest(alma.acs.commandcenter.meta._Tests.suite());
 		ret.addTest(alma.acs.commandcenter.util._Tests.suite());
 		
 		return ret;

@@ -70,6 +70,7 @@ ACE_TSS<LoggingTSSStorage> * LoggingProxy::tss = 0;
 char LoggingProxy::m_process[256];
 ACE_Recursive_Thread_Mutex LoggingProxy::classMutex;
 
+
 void
 LoggingProxy::log(ACE_Log_Record &log_record)
 {
@@ -1113,6 +1114,7 @@ LoggingProxy::~LoggingProxy()
 
   // Thread protection for instances and tss
   ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, classMutex, printf("problem acquring mutex in loggingProxy::~LoggingProxy () errno: %d\n", errno);return);
+
   instances--;
   if (tss && !instances)
   {

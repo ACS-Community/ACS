@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 5 - Creating thread with long period and stop() it"));
     b = new TestACSThread("TestThreadC", 
-				 20*100*1000*10 /*=2sec*/, 100*100*1000*10 /*10 sec*/);
+				 20*100*1000*10 /*=2sec*/, 120*100*1000*10 /*12 sec*/);
     /*
      * Nothing happens here until I resume, because the thread is born
      * suspended no matter what parameter we pass.
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Wait a few seconds. Nothing should happen"));
     b->resume();
-    sleep(5);
+    sleep(3);
 
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Stopping thread"));
@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
 	}
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Deleting thread"));
-    sleep(2);
+    sleep(10);
     delete b;
 
     /*

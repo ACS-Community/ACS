@@ -90,7 +90,7 @@ LoggingHelper::resolveNameService(CORBA::ORB_ptr orb,
     }
   catch(CORBA::SystemException &ex)
       {
-      ACE_PRINT_EXCEPTION(ex, "logging::LoggingHelper::resolveNameService");
+      ex._tao_print_exception("logging::LoggingHelper::resolveNameService");
       ACS_SHORT_LOG((LM_WARNING, "(logging::LoggingHelper::resolveNameService) CORBA exception caught! - will try to use other possiblities"));
       }
   catch(...)

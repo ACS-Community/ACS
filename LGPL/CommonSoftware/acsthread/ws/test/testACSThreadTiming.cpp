@@ -20,7 +20,8 @@
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
-* bjeram  2005-02-15  created
+* bjeram   2005-02-15  created
+* pcolomer 2015-04-23 upgraded code to check execution time of the thread
 */
 
 // Uncomment this if you are using the VLT environment
@@ -33,6 +34,46 @@
 
 static char *rcsId="@(#) $Id: testACSThreadTiming.cpp,v 1.3 2006/03/24 12:42:31 vwang Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
+
+
+static uint64_t timeStart = 0;
+static uint64_t timeStop = 0;
+
+uint64_t getTimeInMs()
+{
+    struct timespec t;
+    clock_gettime(CLOCK_MONOTONIC, &t);
+    return t.tv_sec * 1000 + (t.tv_nsec / 1000000);
+}
+
+class TimingACSThread :public TestACSThread
+{
+  public:
+    TimingACSThread(const ACE_CString& name, 
+		  const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
+		  const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
+		  bool del=false
+	) :
+	TestACSThread(name, responseTime, sleepTime, del)
+	{
+	}
+
+    virtual ~TimingACSThread()
+	{
+	}
+
+    virtual void onStart()
+    {
+        timeStart = getTimeInMs();
+    }
+
+    virtual void onStop()
+    {
+        timeStop = getTimeInMs();
+    }
+
+};
+
 
 int main(int argc, char *argv[])
 {
@@ -55,18 +96,24 @@ int main(int argc, char *argv[])
      * we do not need to assign it to a variable
      */
     // TestACSThread *a = 
-	tm.create<TestACSThread>("TestThreadA", 
+	tm.create<TimingACSThread>("TestThreadA", 
 				 ti, ti,
 				 true);
     tm.resume("TestThreadA");
 
     /**
-     * TODO GCH
-     * Add here measure of time.
-     * For the time being we simply assume that in 4 seconds
-     * it will have completed.
+     * We wait more than needed to ensure that the thread will be deleted before
+     * manager's deletion
      */
-    sleep(4);
+    sleep(7);
+
+    // Check execution time of the thread
+    int64_t diff = timeStop - timeStart;
+    if(diff >= 3400)
+    {
+        ACS_LOG(LM_SOURCE_INFO,"main",
+            (LM_INFO, "Execution time of thread greater than 3400ms: %ld ms", diff));
+    }
 
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Done"));

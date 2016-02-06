@@ -111,8 +111,9 @@ SCRIPTS         = acsBUILDBeforeInstall.sh acsBUILDTest \
 SCRIPTS_L       = 
 
 
-PY_SCRIPTS =
+PY_SCRIPTS = acsJdocMaker
 PY_SCRIPTS_L = acsGenGlobalPythonIndex
+PY_PACKAGES = AcsJavadoc
 
 #
 # TCL scripts (public and local)

@@ -18,7 +18,6 @@ import junit.framework.TestSuite;
  */
 public class _Tests {
 
-	/* $Id: _Tests.java,v 1.3 2005/02/14 12:26:07 mschilli Exp $ */
 
 	public static Test suite() {
 		TestSuite ret = new TestSuite("Test for " + _Tests.class.getPackage().getName());

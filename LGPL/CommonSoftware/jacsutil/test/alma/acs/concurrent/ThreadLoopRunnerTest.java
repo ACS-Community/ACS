@@ -97,7 +97,7 @@ public class ThreadLoopRunnerTest extends TestCase
 				if (delayMode == ScheduleDelayMode.FIXED_DELAY) {
 					expectedDurationMillis += (expectedInvocationsPerCycle - 1) * actionWaitMillis;
 				}
-				int timeoutMillis = expectedDurationMillis + allowedThreadJitterMillis;
+				int timeoutMillis = expectedDurationMillis + allowedThreadJitterMillis+100;
 				boolean awaitRet = sync.await(timeoutMillis, TimeUnit.MILLISECONDS);
 				int actualDuration = (int) sw.getLapTimeMillis();
 				int actualInvocations = myAction.getCount();

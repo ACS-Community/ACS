@@ -160,7 +160,7 @@ class DynamicImplementation:
         
         #now that all the underlying infrastructure is in place, we can finally use
         #CORBA introspection to start adding methods!
-        #get the interface repository.       
+        #get the interface repository.
         ifr = interfaceRepository()
                                    
         #assume this can be found in a subclass as well.

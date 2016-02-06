@@ -1,7 +1,5 @@
 #include <MethodTestComponentImpl.h>
 
-ACE_RCSID(acstests, MethodTestComponentImpl, "$Id: MethodTestComponentImpl.cpp,v 1.6 2008/10/08 01:57:23 cparedes Exp $")
-
 /////////////////////////////////////////////////
 // MethodTestComponent
 /////////////////////////////////////////////////

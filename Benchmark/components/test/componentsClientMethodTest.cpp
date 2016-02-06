@@ -33,7 +33,6 @@
 #include <acstimeProfiler.h>
 #include <sstream>
 
-ACE_RCSID(acsexmpl, acsexmplHelloWorldClient, "$Id: componentsClientMethodTest.cpp,v 1.4 2004/11/19 19:25:12 dfugate Exp $")
 using namespace maci;
 
 /*******************************************************************************/

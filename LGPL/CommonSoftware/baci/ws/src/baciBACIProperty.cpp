@@ -89,10 +89,10 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
 
   try
      {
-	  CORBA::String_var archMechanism = dao->get_string("archive_mechanism");
-	  archiveMechanism = archMechanism.in();
-	  CORBA::String_var archSuppress = dao->get_string("archive_suppress");
-	  archiveSuppress = archSuppress.in();
+          CORBA::String_var archMechanism = dao->get_string("archive_mechanism");
+          archiveMechanism = archMechanism.in();
+          CORBA::String_var archSuppress = dao->get_string("archive_suppress");
+          archiveSuppress = archSuppress.in();
      }
   catch (...)
      {

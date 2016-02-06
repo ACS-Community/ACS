@@ -603,7 +603,7 @@ void baci::MonitorBasic<ACS_MONITOR_BASIC_T>::destroy ()
 	ACS_LOG(LM_RUNTIME_CONTEXT, "baci::MonitorBasic&lt;&gt;::destroy",
 		(LM_ERROR, "Failed to destroy CORBA object"));
       } else {
-        CORBA::release(reference_mp);          
+        CORBA::release(reference_mp);
       }
     }
 

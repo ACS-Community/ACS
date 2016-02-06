@@ -70,7 +70,7 @@ class FastACSThread :public ACS::Thread
 		  bool del,
 		  const long _thrFlags
 	) :
-	ACS::Thread(name, responseTime, sleepTime, del, _thrFlags, 512)
+	ACS::Thread(name, responseTime, sleepTime, del, _thrFlags,1048576/*1Mb*/)
 	{
 	    ACS_TRACE("FastACSThread::FastACSThread");
 	    num = i;
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 	    {
 	    FastACSThread *a = tm.create<FastACSThread, int>("TestThreadA",
 							     l,
-							5000000, /* 500ms */
+							30000000, /* 500ms */
 							1000000, /* 100ms */
 							false,
 							THR_NEW_LWP | THR_DETACHED);
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
 	    {
 	    FastACSThread *a = tm.create<FastACSThread, int>("TestThreadA",
 							     l,
-							5000000, /* 500ms */
+							30000000, /* 500ms */
 							1000000, /* 100ms */
 							false,
 							THR_NEW_LWP | THR_JOINABLE);
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
 	    {
 	    FastACSThread *a = tm.create<FastACSThread, int>("TestThreadA",
 							     l,
-							5000000, /* 500ms */
+							30000000, /* 500ms */
 							1000000, /* 100ms */
 							false,
 							THR_NEW_LWP | THR_JOINABLE);
@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
     try {
     FastACSThread *a = tm.create<FastACSThread, int>("TestThreadA",
 						     l,
- 						    5000000, /* 500ms */
+ 						    30000000, /* 500ms */
 						    1000000, /* 100ms */
 						    false,
 						    THR_NEW_LWP | THR_DETACHED);

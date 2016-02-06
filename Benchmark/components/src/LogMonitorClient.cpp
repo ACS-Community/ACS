@@ -30,7 +30,6 @@
 #include <maciSimpleClient.h>
 #include <IdlCompilationTimeC.h>
 
-ACE_RCSID(Benchmark,LogSenderClient , "$Id: LogMonitorClient.cpp,v 1.1 2008/10/22 02:47:49 cparedes Exp $")
 using namespace maci;
     
 int main(int argc, char *argv[])

@@ -4,6 +4,7 @@
 1 - ----------T--:--:----- INFO [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] calling orbresolve_initial_references
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] POA activated
+1 - ----------T--:--:----- FINER [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] Orb profiling was not selected (see property 'almaacsorbprofilerclass')
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] manager reference not yet available in method loginToManager; will try to find the manager first
 1 - ----------T--:--:----- FINE [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] Manager login done ...
 1 - ----------T--:--:----- DEBUG [almaalarmsystemalarmsourcetestAlarmSenderTest#testAlarmSending] Alarm system type: ACS

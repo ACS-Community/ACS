@@ -36,7 +36,7 @@
 
 #include "AlarmSystemInterface.h"
 #include "FaultState.h"
-#include "maciS.h"
+#include <maciS.h>
 
 namespace acsalarm
 {

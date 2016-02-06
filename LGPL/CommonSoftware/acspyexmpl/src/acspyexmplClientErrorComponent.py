@@ -40,6 +40,7 @@ What can I gain from this example?
 '''
 
 from sys import argv
+from time import sleep
 import CORBA
 from Acspy.Clients.SimpleClient import PySimpleClient
 from Acspy.Common.TimeHelper    import getTimeStamp
@@ -94,11 +95,7 @@ class ClientErrorComponent:
         if self.foo == None:
             raise ACSErrTypeCommonImpl.CouldntAccessComponentExImpl()
         
-    def __del__(self):
-        '''
-        Destructor. Releases ErrorComponent
-        '''
-        self.logger.logTrace("ClientErrorComponent")
+    def releaseComponent(self):
         self.client.releaseComponent(self.error_comp)
         
     def TestOk(self):
@@ -405,18 +402,18 @@ class ClientErrorComponent:
 #-----------------------------------------------------------------------------  
 if __name__=="__main__":
     
-    client = PySimpleClient()
+    client = PySimpleClient("acspyexmplClientErrorComponent")
 
     print("starting acspyexmplClientErrorComponent")
     # Here we instantiate the object used to show examples of error handling.
     # Each method call demonstrate one aspect of error hanlding.
     # See the class documentation for details.
     try:
-	print("Creating ClientErrorComponent");
+        print("Creating ClientErrorComponent");
         clientErrorComponent = ClientErrorComponent(client, argv[1])
         
         #Call the displayMessage() method existing in the interface for ErrorComponent
-	clientErrorComponent.TestOk()
+        clientErrorComponent.TestOk()
         clientErrorComponent.TestReceiveRemoteException()
         clientErrorComponent.TestReceiveRemoteCompletion()
         clientErrorComponent.testExceptionFromCompletion() 
@@ -440,7 +437,7 @@ if __name__=="__main__":
         badMethodEx.setData("Reason", "Examples of error handling have thrown an UNEXPECTED exception")
         badMethodEx.log(self.logger)
         
-    else:
-        del clientErrorComponent
+    finally:
+        clientErrorComponent.releaseComponent()
     
     client.disconnect()

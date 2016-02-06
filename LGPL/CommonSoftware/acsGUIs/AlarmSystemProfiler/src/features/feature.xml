@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="AlarmSystemProfiler.feature"
+      label="Alarm System Profiler"
+      version="1.0.0"
+      provider-name="European Southern Observatory"
+      plugin="alma.acs.alarmsystemprofiler">
+
+   <description url="http://www.eso.org">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.eso.org">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.eso.org">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.eclipse.e4.rcp"
+         version="0.0.0"
+         os="linux"
+         ws="gtk"
+         arch="x86"/>
+
+   <requires>
+      <import feature="org.eclipse.e4.rcp" version="1.1.2.v20130130-191718-91FUvGP7GIX2Kgz-z-gvjMvXV1NS"/>
+      <import plugin="javax.inject" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.swt" version="3.100.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface" version="3.8.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.ui.services" version="0.10.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.ui.workbench" version="0.10.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.core.di" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.ui.di" version="0.10.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.e4.core.contexts" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.104.0" match="greaterOrEqual"/>
+      <import plugin="alma.acs.jars" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.swtchart"/>
+   </requires>
+
+   <plugin
+         id="alma.acs.alarmsystemprofiler"
+         os="linux"
+         ws="gtk"
+         nl="en_US"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -136,9 +136,9 @@ int main(int argc, char *argv[])
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "=============== 5 - Creating thread with long period and stop() it"));
     b = tm.create<TestACSThread>("TestThreadC", 
-				 20*100*1000*10 /*=2sec*/, 100*100*1000*10 /*10 sec*/);
+				 20*100*1000*10 /*=2 sec*/, 150*100*1000*10 /*15 sec*/);
     b->resume();
-    sleep(5);
+    sleep(3);
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Stopping thread"));
     if(b->stop() == false)
@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
 	ACS_LOG(LM_SOURCE_INFO,"main", 
 		(LM_INFO, "Stop succeded but should have failed"));
 	}
+    sleep(15);
     ACS_LOG(LM_SOURCE_INFO,"main", 
 	    (LM_INFO, "Deleting thread"));
     delete b;
