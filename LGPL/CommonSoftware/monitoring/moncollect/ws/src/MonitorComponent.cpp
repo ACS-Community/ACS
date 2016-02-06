@@ -46,7 +46,8 @@ MonitorComponent::MonitorComponent(ACS::CharacteristicComponent_ptr comp, maci::
 	compDesc_m = component_m->descriptor();
 	numOfProp_m = compDesc_m->properties.length();
 
-	monitorDataBlock_m.componentName = comp->name(); //CORBA::string_dup(comp->name());
+	CORBA::String_var compName = comp->name();
+	monitorDataBlock_m.componentName = compName.in(); //CORBA::string_dup(comp->name());
 	monitorDataBlock_m.startTime = monitorDataBlock_m.stopTime = 0;
   }//MonitorComponent
 
@@ -60,6 +61,8 @@ MonitorComponent::~MonitorComponent()
 	{
 			monitorPoints_m[i]->stopMonitoring();
 			monitorPoints_m[i]->deactivate(containerServices_m);
+			delete monitorPoints_m[i];
+                        monitorPoints_m[i] = NULL;
 	}
 }//~MonitorComponent
 
@@ -125,9 +128,10 @@ ACS::TimeInterval MonitorComponent::propertyArchivingInterval(ACS::PropertyDesc 
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
 		if ( strcmp(strCharacteristic, "monitor_collector")!=0 )
 		{
+			CORBA::String_var repId = property->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"MonitorComponent::propertyArchivingInterval", (LM_DEBUG, "Values from property %s (%s) will NOT be collected, because archive_mechanism is NOT set to 'monitor_collector', but to: %s.",
 					propertyDesc->name.in(),
-					property->_repository_id(),
+					repId.in(),
 					strCharacteristic
 			));
 			return 0;
@@ -147,12 +151,13 @@ ACS::TimeInterval MonitorComponent::propertyArchivingInterval(ACS::PropertyDesc 
 		minTimerTrigger *= static_cast<double>(10000000.0); //we have to convert to 100s nsec.
 		if ( archiveMaxInt< minTimerTrigger ) //we can not get values faster than minTimmerTrigger
 		{
+			CORBA::String_var repId = property->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"MonitorComponent::propertyArchivingInterval",
 								(LM_WARNING, "Because archive_max_int (%f) is smaller than min_timer_trig(%f), the values of property %s (%s) will be collected with time trigger: %f .",
 								archiveMaxInt,
 								minTimerTrigger,
 								propertyDesc->name.in(),
-								property->_repository_id(),
+								repId.in(),
 								minTimerTrigger
 						));
 						return static_cast<ACS::TimeInterval>(minTimerTrigger);
@@ -183,13 +188,13 @@ bool MonitorComponent::addProperty(const char *propName)
 
 		if (strcmp(compDesc_m->properties[i].name.in(), propName)==0)
 		{
-			ACE_CString  propType = compDesc_m->properties[i].property_ref->_repository_id();
+			CORBA::String_var propType = compDesc_m->properties[i].property_ref->_repository_id();
 
 			ACS::TimeInterval monitoringInterval = propertyArchivingInterval(&compDesc_m->properties[i]);
  			if ( monitoringInterval!=0 )
  			{
  				//should we check the return value ?
-				return addProperty(compDesc_m->properties[i].name.in(), propType.c_str(), compDesc_m->properties[i].property_ref, monitoringInterval);
+				return addProperty(compDesc_m->properties[i].name.in(), propType.in(), compDesc_m->properties[i].property_ref, monitoringInterval);
  			}//if
 			break;
 		}//if
@@ -711,7 +716,7 @@ void MonitorComponent::addAllProperties()
 
 	ACS::TimeInterval monitoringInterval=0;
 
-	ACE_CString propType;
+	CORBA::String_var propType;
 
 	ACE_Guard<ACE_Thread_Mutex>   prot(m_proMutex);
 
@@ -730,7 +735,7 @@ void MonitorComponent::addAllProperties()
  		if ( monitoringInterval!=0 )
  		{
  			//should we check the return value ?
- 			addProperty(compDesc_m->properties[i].name.in(), propType.c_str(), compDesc_m->properties[i].property_ref, monitoringInterval);
+ 			addProperty(compDesc_m->properties[i].name.in(), propType.in(), compDesc_m->properties[i].property_ref, monitoringInterval);
  		}//if
 	}//for
 
@@ -806,7 +811,8 @@ void MonitorComponent::set_archiving_interval(const char* propertyName, ACS::Tim
 {
 	AUTO_TRACE("MonitorComponent::set_archiving_interval");
 	unsigned int numOfProp = monitorPoints_m.size();
-	ACE_CString prop(ACE_CString(component_m->name())+ACE_CString(":")+ACE_CString(propertyName));
+	CORBA::String_var compName = component_m->name();
+	ACE_CString prop(ACE_CString(compName.in())+ACE_CString(":")+ACE_CString(propertyName));
 
 	for( unsigned int i=0; i<numOfProp; i++ )
 		if(strcmp(monitorPoints_m[i]->getPropertyName().c_str(), prop.c_str())==0)
@@ -817,7 +823,8 @@ void MonitorComponent::suppress_archiving(const char* propertyName)
 {
 	AUTO_TRACE("MonitorComponent::supress_archiving");
 	unsigned int numOfProp = monitorPoints_m.size();
-	ACE_CString prop(ACE_CString(component_m->name())+ACE_CString(":")+ACE_CString(propertyName));
+	CORBA::String_var compName = component_m->name();
+	ACE_CString prop(ACE_CString(compName.in())+ACE_CString(":")+ACE_CString(propertyName));
 
 	for( unsigned int i=0; i<numOfProp; i++ ) {
 		if(strcmp(monitorPoints_m[i]->getPropertyName().c_str(), prop.c_str())==0)
@@ -829,7 +836,8 @@ void MonitorComponent::enable_archiving(const char* propertyName)
 {
 	AUTO_TRACE("MonitorComponent::enable_archiving");
 	unsigned int numOfProp = monitorPoints_m.size();
-	ACE_CString prop(ACE_CString(component_m->name())+ACE_CString(":")+ACE_CString(propertyName));
+	CORBA::String_var compName = component_m->name();
+	ACE_CString prop(ACE_CString(compName.in())+ACE_CString(":")+ACE_CString(propertyName));
 
 	for( unsigned int i=0; i<numOfProp; i++ )
 		if(strcmp(monitorPoints_m[i]->getPropertyName().c_str(), prop.c_str())==0)

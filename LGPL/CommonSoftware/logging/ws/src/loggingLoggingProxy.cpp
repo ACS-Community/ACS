@@ -68,11 +68,16 @@ int LoggingProxy::m_minReconnectionTime = 15;      // sec
 ACE_TSS<LoggingTSSStorage> * LoggingProxy::tss = 0;
 //ACE_CString LoggingProxy::m_process=""; // for some reason does not work in cases wherr logs come from ditructor of objects.
 char LoggingProxy::m_process[256];
-
+ACE_Recursive_Thread_Mutex LoggingProxy::classMutex;
 
 void
 LoggingProxy::log(ACE_Log_Record &log_record)
 {
+    if (!tss)
+    {
+        std::cout << "SEVERE ERROR in loggingProxy::log(). TSS is NULL" << std::endl;
+        return;
+    }
     unsigned long priority = getPriority(log_record);
     int privateFlags = (*tss)->privateFlags();
     // 1 - default/priority local prohibit
@@ -1057,11 +1062,14 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
 	  m_noLogger = true;
   }
 
+  // Thread protection for instances and tss
+  ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, classMutex, printf("problem acquring mutex in loggingProxy::LoggingProxy () errno: %d\n", errno);return);
+
+  instances++;
   if (!tss)
   {
       tss = new ACE_TSS<LoggingTSSStorage>;
   }
-  instances++;
 
   char *acsSTDIO = getenv("ACS_LOG_STDOUT");
   if (acsSTDIO && *acsSTDIO)
@@ -1103,6 +1111,8 @@ LoggingProxy::~LoggingProxy()
   // unregister ACE callback
   done();
 
+  // Thread protection for instances and tss
+  ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, classMutex, printf("problem acquring mutex in loggingProxy::~LoggingProxy () errno: %d\n", errno);return);
   instances--;
   if (tss && !instances)
   {
@@ -1745,7 +1755,12 @@ LoggingProxy::getPriority(ACE_Log_Record &log_record)
     // ACE default
 // here we have to add 1 to align ACE and ACS priorities. In past it was OK due to a bug in ACE
     unsigned long priority = log_record.priority()+1;
-    unsigned long flag_prio = (*tss)->flags() & 0x0F;
+    unsigned long flag_prio = 0;
+    if (tss != NULL)
+        flag_prio = (*tss)->flags() & 0x0F;
+    else
+	std::cerr << "SEVERE ERROR in loggingProxy::getPriority(). TSS is NULL";
+
     //DELOUSE case
     if(priority == 13)
         priority = 2;

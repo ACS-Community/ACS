@@ -45,7 +45,7 @@ from omniORB                      import any
 
 #--GLOBALS---------------------------------------------------------------------
 #------------------------------------------------------------------------------
-class CharacteristicModel(object):
+class CharacteristicModel:
     '''
     Models can be derived from CharacteristicModel only if their IDL derives from
     ACS::CharacteristicModel.

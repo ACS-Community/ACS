@@ -16,8 +16,8 @@
 1 - ----------T--:--:--.--- CLOCK2 __init__ - Some problem occurred when attempting to retrieve data from the ACS CDB for: alma/CLOCK2/TAI2UTC
 1 - ----------T--:--:--.--- CLOCK2 __init__ - Some problem occurred when attempting to retrieve data from the ACS CDB for: alma/CLOCK2/now
 1 - ----------T--:--:--.--- pyContainer2 activate_component - Activated component: CLOCK2
-1 - Params passed to getTimeInterval [acstime.Epoch(value=xxxxL), <Acssim.Servants.Simulator.Simulator object at 0xXXXX>]
-1 - Params passed to toISO8601 [TSArray, acstime.Epoch(value=xxxxL), <Acssim.Servants.Simulator.Simulator object at 0xXXXX>]
+1 - Params passed to getTimeInterval [acstime.Epoch(value=xxxxL), <Acssim.Servants.Simulator.Simulator instance at 0xXXXX>]
+1 - Params passed to toISO8601 [TSArray, acstime.Epoch(value=xxxxL), <Acssim.Servants.Simulator.Simulator instance at 0xXXXX>]
 1 - ----------T--:--:--.--- pyContainer2 deactivate_component - Deactivating component: CLOCK2
 2 - ----------T--:--:--.--- Python Client disconnect - Disconnect called for client
 2 - ----------T--:--:--.--- Python Client disconnect - Disconnect called for client

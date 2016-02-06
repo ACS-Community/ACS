@@ -84,7 +84,8 @@ PY_SCRIPTS_L       = acssimGenericTest acssimCallbackTest acssimInParamsTest acs
 			acssimDynamicImplementation acssimUtilities \
 			acssimGoodies \
 			acssimBaseRepresentation acssimAPI acssimGUI acssimBehaviorProxy acssimCDB acssimDynamic \
-			acssimEventDispatcher acssimGenerator acssimServerRepresentation
+			acssimEventDispatcher acssimGenerator acssimServerRepresentation \
+			acssimLoadSameDynamicCompTwice
 PY_MODULES         = mastercompsim interfaceInheritance
 PY_MODULES_L       = 
 

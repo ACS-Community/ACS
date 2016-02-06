@@ -32,9 +32,11 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 		anyCharacteristic = property_m->get_characteristic_by_name("archive_suppress");
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
 		if ( strcmp(strCharacteristic, "false")!=0 ) {
+                        CORBA::String_var propName = property_m->name();
+                        CORBA::String_var repId = property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected, because archive_suppress is set to 'false', but to: %s.",
-					property_m->name(),
-					property_m->_repository_id(),
+					propName.in(),
+					repId.in(),
 					strCharacteristic
 			));
 			monitorSuppressed_m = true;
@@ -47,9 +49,11 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 		archiveMaxInt *= static_cast<double>(10000000.0); //we have to convert to 100s nsec.
 		if ( archiveMaxInt==0.0 )
 		{
+                        CORBA::String_var propName = property_m->name();
+                        CORBA::String_var repId = property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected by time interval, because archive_max_int is 0 (%f).",
-					property_m->name(),
-					property_m->_repository_id(),
+					propName.in(),
+					repId.in(),
 					archiveMaxInt
 			));
 			archivingInterval_m = 0;
@@ -61,9 +65,11 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 		std::istringstream i1(strCharacteristic);
 		i1 >> val;
 		if ( val == 0 ) {
+                        CORBA::String_var propName = property_m->name();
+                        CORBA::String_var repId = property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (static_cast<ACE_Log_Priority>(LM_DELOUSE), "Values from property %s (%s) will NOT be collected on value change, because archive_delta is set to '%s'.",
-					property_m->name(),
-					property_m->_repository_id(),
+					propName.in(),
+					repId.in(),
 					strCharacteristic
 			));
 		} else {
@@ -75,9 +81,11 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 		std::istringstream i2(strCharacteristic);
 		i2 >> valPer;
 		if ( valPer == 0 ) {
+                        CORBA::String_var propName = property_m->name();
+                        CORBA::String_var repId = property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"MonitorPoint<>::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected on value percentage change, because archive_delta_percent is set to '%s'.",
-					property_m->name(),
-					property_m->_repository_id(),
+					propName.in(),
+					repId.in(),
 					strCharacteristic
 			));
 		} else {
@@ -118,7 +126,7 @@ void MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::activate(maci::ContainerServ
 	try
 	{
 		this->monitorCallback_m = cs->activateOffShoot(monitorServant_m);
-		monitorServant_m->_remove_ref(); //Decrease ref count to 1
+                // At this point ref count of monitorServant_m will be 2
 	}
 	catch(CORBA::Exception &ex)
 	{
@@ -364,9 +372,11 @@ ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::ROMonitorP
 		std::istringstream i2(strCharacteristic);
 		i2 >> valPer;
 		if ( valPer == 0 ) {
+                        CORBA::String_var propName = this->property_m->name();
+                        CORBA::String_var repId = this->property_m->_repository_id();
 			ACS_LOG(LM_FULL_INFO ,"ROMonitorPoint<>::ROMonitorPoint", (static_cast<ACE_Log_Priority>(LM_DELOUSE), "Values from property %s (%s) will NOT be collected when alarms are raised, because alarm_timer_trig is set to '%s'.",
-					this->property_m->name(),
-					this->property_m->_repository_id(),
+					propName.in(),
+					repId.in(),
 					strCharacteristic
 			));
 		} else {
@@ -400,7 +410,7 @@ void ROMonitorPoint<T, TBLOB_SEQ, TPROP, TMCB, TACB, TBASE, TSEQ, TALARM>::activ
 	try
 	{
 		this->alarmCallback_m = cs->activateOffShoot(alarmServant_m);
-		alarmServant_m->_remove_ref(); //Decrease ref count to 1
+                // At this point ref count of alarmServant_m will be 2
 	}
 	catch(CORBA::Exception &ex)
 	{

@@ -104,4 +104,7 @@ PROLOGUE acssimTATPrologue
 # Tests to ensure in/inout parameters are accessible
 23 inParams "@SLEEP 2" "acssimInParamsHelper" "@SLEEP 20" "acsutilTATTestRunner acssimInParamsTest CLOCK2"
 
+# Tests to ensure a dynamic component can be retrieved twice 
+24 DynamicCompTwice "acsutilTATTestRunner acssimLoadSameDynamicCompTwice"
+
 EPILOGUE acsutilTATEpilogue

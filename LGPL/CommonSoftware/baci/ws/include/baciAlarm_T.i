@@ -34,7 +34,8 @@ baci::MonitorEventDispatcher<T, TCB, POA_CB>::MonitorEventDispatcher(const CBDes
     // create monitor callback
     callbackServant_mp = new EventCB<T, TCB, POA_CB>(this);        // !!!! destruction of the servant
     ACE_CString cbName = ACE_CString(property->getName())+"_callbackEventDispatcher";
-    monitorCallback_mp = TCB::_narrow(BACI_CORBA::ActivateCORBAObject(callbackServant_mp, cbName.c_str()));
+    CORBA::Object_var obj = BACI_CORBA::ActivateCORBAObject(callbackServant_mp, cbName.c_str());
+    monitorCallback_mp = TCB::_narrow(obj.in());
     if (CORBA::is_nil(monitorCallback_mp)==true)
 	{
 	ACS_LOG(LM_RUNTIME_CONTEXT, "MonitorEventDispatcher&lt;&gt;::MonitorEventDispathcer&lt;&gt;",
@@ -77,6 +78,7 @@ baci::MonitorEventDispatcher<T, TCB, POA_CB>::~MonitorEventDispatcher()
     if (monitorCallback_mp!=0) 
 	{ 
 	BACI_CORBA::DestroyCORBAObject(monitorCallback_mp/*.in()*/); 
+        CORBA::release(monitorCallback_mp);
 	}
 }
 
@@ -445,7 +447,9 @@ void baci::AlarmEventStrategy<T, TPROP, TALARM>::destroy ()
 	{
 	  ACS_LOG(LM_RUNTIME_CONTEXT, "AlarmEventStrategy&lt;&gt;::destroy",
 		  (LM_ERROR, "Failed to destroy CORBA object"));
-	}
+	} else {
+          CORBA::release(reference_mp);
+        }
     }
 }
 

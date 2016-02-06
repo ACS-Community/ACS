@@ -40,7 +40,7 @@ from AcsutilPy.ACSPorts      import getIP
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-class Profiler(object):
+class Profiler:
     '''
     Profiler is a utility class providing a very simple profiling mechanism.
     '''

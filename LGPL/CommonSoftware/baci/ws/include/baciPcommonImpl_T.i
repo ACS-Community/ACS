@@ -137,8 +137,10 @@ void baci::PcommonImpl<ACS_P_TL>::destroy()
 		ACS_LOG(LM_RUNTIME_CONTEXT, "baci::PcommonImpl&lt;&gt;::~PcommonImpl",
 			(LM_ERROR, "Failed to destroy CORBA object '%s'", property_mp->getName()));
 	    }
-	  else
+	  else {
+              CORBA::release(reference_mp);
 	      _remove_ref();
+          }
     }
   
 }
