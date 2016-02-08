@@ -54,7 +54,7 @@ ifeq ($(os),Linux)
   endif
 endif
 
-MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt astyle swig xercesc xercesj castor $(GMP) extidl vtd-xml oAW shunit2 log4cpp scxml_apache
+MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt astyle swig xercesc xercesj castor $(GMP) xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache
 
 
 
