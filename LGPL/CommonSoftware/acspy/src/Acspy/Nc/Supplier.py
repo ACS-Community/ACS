@@ -364,7 +364,7 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         except (CORBA.COMM_FAILURE, CORBA.TRANSIENT):
             #Notify Service is down
             if event_callback != None:
-                event_calback.eventDropped(simple_data)
+                event_callback.eventDropped(simple_data)
 
         except Exception, e:
             print_exc()
