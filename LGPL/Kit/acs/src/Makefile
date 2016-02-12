@@ -128,6 +128,7 @@ ASCII_TO_MIF =
 INSTALL_FILES = ../include/acsMakefile       \
 		../include/acsMakefileDefinitions.mk \
 		../include/acsMakefileCore.mk \
+		../include/acsMakefileVxWorks.mk \
                 ../include/Makefile_LCU.template \
                 ../include/Makefile_WS.template \
                 ../include/Makefile_PACKAGE.template \

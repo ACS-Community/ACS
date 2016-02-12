@@ -1010,7 +1010,45 @@ do_exe_$2: ../bin/$2
 	-@echo == Building executable: ../bin/$2 
 	-@echo $(MESSAGE)
 ifdef MAKE_VXWORKS
+ifeq ($(strip $(VX_VERSION)),6.7)
 	$(AT)$(LD) $(LDFLAGS) $(L_PATH) $4 -r $($2_exe_objList)  $($2_exe_lList)  -o ../bin/$2
+else ifeq ($(strip $(VX_VERSION)),6.9)
+# Correct rule would be like 6.9 except remove the -tag option, but for now keep legacy method
+# Todo: -tags folder is 32/64bit and SMP(multicore)/unicore specific!
+#          The final link step is different for 68k. munch.tcl is version specific.
+# new VLSTSW link: 64/32 flags into LDFLAGS.
+# VxWorks build system for final step is using the TOOL_FAMILY dependent compiler driver.
+# Also support required even for C with VxWorks 6.9: ctdt.c containing OSCB - arch build
+# details (smp 64 etc...) for load compatiblility check
+# With CC for munch: oscb compatibility marker causes warnings. Use only architecture flags
+# like VxWorks build system.
+#	-fdollars-in-identifiers no longer needed without -ansi
+#   ctdt has a defined content and exact defined compilation - filter away USER_CFLAGS and $($*_CFLAGS)
+#       maybe allow (C_ONLY_FLAGS)
+#	-ansi and -fno-zero-initialized-in-bss are not used by corresponding VxWorks build,
+#       but no need to be that picky.
+# By parameter translation LD can be used instead of CC for linking.
+# "munch parameters..." does not work!!!
+# Must use "tclsh $(WIND_BASE)/host/resource/hutils/tcl/munch.tcl..." as suggested
+# by Wind River builds!!!
+# Otherwise on C++ class instances on file levels, the constructors will not be executed
+# and there will be a missing symbol
+
+# Indeed even with vx6.9 the munch sh/cmd.exe wrapper does not forward any arguments!
+# For proper C language munch , "-c $(VX_CPU_FAMILY)" is mandatory
+# Now handling C++ always, no harm with C
+	-$(AT)$(RM) ../object/$2_partialImage.o
+	$(AT)$(LD) -r -nostdlib -X $4 $$(L_PATH)  -o ../object/$2_partialImage.o $($2_exe_objList) $($2_exe_lList)
+	-$(AT)$(RM) ../object/$2_ctdt.c
+	$(AT)$(NM) ../object/$2_partialImage.o | tclsh $(WIND_BASE)/host/resource/hutils/tcl/munch.tcl -c $(VX_CPU_FAMILY) -tags $(VXROOT)/lib/tags/$(VX_CPU_FAMILY)/$(CPU)/common/dkm.tags > ../object/$2_ctdt.c
+	-$(AT)$(RM) ../object/$2_ctdt.o
+	$(AT)$(subst -ansi,,$(CC)) -c $(patsubst -W%,,$(filter-out $(USER_CFLAGS),$(CFLAGS))) -Wall $(I_PATH) -o ../object/$2_ctdt.o ../object/$2_ctdt.c
+	$(AT)$(LD) -r -nostdlib -X $(LDFLAGS) -T $(VXROOT)/h/tool/gnu/ldscripts/link.OUT ../object/$2_ctdt.o ../object/$2_partialImage.o -o ../bin/$2
+else
+# entire recipe is expanded by $(eval) ahead of time. Therefore $_(_error) executed even if it does not apply
+	$echo linking ../bin/$2: unsupported version VX_VERSION=$(VX_VERSION)
+	exit 1
+endif
 else
 ifeq ($(strip $(MAKE_NOSHARED) $($2_NOSHARED)),)
 ifeq ($(platform),Cygwin)
@@ -1025,7 +1063,7 @@ endif
 
 .PHONY: clean_exe_$2
 clean_exe_$2: 
-	$(AT)$(RM) ../bin/$2 $($2_exe_objList) $($2_exe_depList)
+	$(AT)$(RM) ../bin/$2 ../object/$2_ctdt.c ../object/$2_ctdt.o ../object/$2_partialImage.o $($2_exe_objList) $($2_exe_depList)
 
 .PHONY: clean_dist_exe_$2
 clean_dist_exe_$2: clean_exe_$2;

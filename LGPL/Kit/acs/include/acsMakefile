@@ -548,32 +548,30 @@ endif
 ifndef platform
     #
     # force a syntax error, so that acsMake stops
-$(error  UNSUPPORTED platform)
+    $(error UNSUPPORTED platform)
 endif
 
 ifndef GNU_ROOT
     #
     # force a syntax error, so that acsMake stops 
-$(error GNU_ROOT must be defined)
+    $(error GNU_ROOT must be defined)
 endif
 
 ifndef TCLTK_ROOT
     #
     # force a syntax error, so that acsMake stops 
-    TCLTK_ROOT must be defined
-endif
-
-#
-# the following is used to switch from the WS to the LCU part:
-ifdef MAKE_VXWORKS
-    VW = /vw
-else
-    VW =
+    $(error TCLTK_ROOT must be defined)
 endif
 
 # define WS or LCU related variables
+ifndef MAKEDIR
+    MAKEDIR = $(ACSROOT)/include
+endif
 
-ifndef MAKE_VXWORKS
+ifdef MAKE_VXWORKS
+    -include $(MAKEDIR)/acsMakefileVxWorks.mk
+else
+    VW =
 
     #
     # define UNIX environment   
@@ -591,19 +589,19 @@ ifndef MAKE_VXWORKS
     #
     # for the time being, NO WARNINGS!!!!
     #CC_FLAGS   = -w
-#    ifndef MAKE_NO_WARNINGS
-#      CC_FLAGS   = -Wall                  \
-#                   -Wundef                \
-#                   -W                     \
-#                   -Wno-unused            \
-#                   -Wpointer-arith        \
-#                   -Wwrite-strings        \
-#                   -Wstrict-prototypes    \
-#                   -Wmissing-prototypes   \
-#                   -Wmissing-declarations
-#    else
-#      CC_FLAGS   = -Wall
-#    endif
+    #    ifndef MAKE_NO_WARNINGS
+    #      CC_FLAGS   = -Wall                  \
+    #                   -Wundef                \
+    #                   -W                     \
+    #                   -Wno-unused            \
+    #                   -Wpointer-arith        \
+    #                   -Wwrite-strings        \
+    #                   -Wstrict-prototypes    \
+    #                   -Wmissing-prototypes   \
+    #                   -Wmissing-declarations
+    #    else
+    #      CC_FLAGS   = -Wall
+    #    endif
 
     CC_FLAGS   = -Wall
 
@@ -623,12 +621,12 @@ ifndef MAKE_VXWORKS
     endif
 
     CC_FLAGS   := $(CC_FLAGS) -fPIC
-# COMP-800
-ifdef MAKE_NO_PERMISSIVE
-    C_PLUS_PLUS_FLAGS = -fno-operator-names 
-else
-    C_PLUS_PLUS_FLAGS = -fno-operator-names -fpermissive
-endif
+    # COMP-800
+    ifdef MAKE_NO_PERMISSIVE
+        C_PLUS_PLUS_FLAGS = -fno-operator-names 
+    else
+        C_PLUS_PLUS_FLAGS = -fno-operator-names -fpermissive
+    endif
     ifeq ($(platform),Linux)
 
         # WARNING GCH: Commented out -ansi option for c,c++ and dependencies. 
@@ -648,19 +646,19 @@ endif
         XLIB_DEFAULT  = -L/usr/X11R6/lib     
         CXX_FOR_VERSION_TEST := gcc
 
+        # Todo: In ALMA/Apex ACS_GXX_4_OR_BETTER=1 is always fullfilled!
+        # Only one reference - should remove legacy branch
         ACS_CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion) 
-ifeq (cmd,$(findstring cmd,$(SHELL))) 
-        ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e "s/[^0-9\.]//g" | sed -e "s/\..*$$//") 
-else 
-        ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e 's/[^0-9\.]//g' | sed -e 's/\..*$$//') 
-endif 
-ifeq ($(findstring $(ACS_CXX_MAJOR_VERSION),1 2 3),$(ACS_CXX_MAJOR_VERSION)) 
-       ACS_GXX_4_OR_BETTER := 0
-else 
-       ACS_GXX_4_OR_BETTER := 1
-endif 
-
-
+        ifeq (cmd,$(findstring cmd,$(SHELL))) 
+            ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e "s/[^0-9\.]//g" | sed -e "s/\..*$$//") 
+        else 
+            ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e 's/[^0-9\.]//g' | sed -e 's/\..*$$//') 
+        endif 
+        ifeq ($(findstring $(ACS_CXX_MAJOR_VERSION),1 2 3),$(ACS_CXX_MAJOR_VERSION)) 
+           ACS_GXX_4_OR_BETTER := 0
+        else 
+           ACS_GXX_4_OR_BETTER := 1
+        endif 
 
     endif
 
@@ -683,6 +681,8 @@ endif
         XLIB_DEFAULT  = -L/usr/X11R6/lib
         CXX_FOR_VERSION_TEST := g++
 
+        # Todo: In ALMA/Apex ACS_GXX_4_OR_BETTER=1 is always fullfilled!
+        # Only one reference - should remove legacy branch
         ACS_CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion)
         ifeq (cmd,$(findstring cmd,$(SHELL)))
             ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e "s/[^0-9\.]//g" | sed -e "s/\..*$$//")
@@ -701,151 +701,44 @@ endif
     BINDIR   = bin
     LIBDIR   = lib
 
-else
-# MAKE_VXWORKS is defined
-########################################################################################
-###### VXWORKS DEFINITIONS #############################################################
-########################################################################################
-
-VX_VERSION=6.7
-
-ifneq ($(strip $(ACE_ROOT_VW)),)
-  override ACE_ROOT=$(ACE_ROOT_VW)
-else
-#  ACE_ROOT_DIR not defined, required to build ACE_ROOT for VxWorks
-  ACE_ROOT=
-  unexport ACE_ROOT
-endif
-
-
-#    ifeq ($(CPU),MC68000)
-
-#       ifneq ($(VX_VERSION), 5.5)
-#          $(eval $(call vw5.5Definitions))	
-#       endif 
-#    endif
-
-#   ifeq ($(CPU),MC68040)
-
     #
-    # CPU must be one of the supported types:
-    ifeq ($(CPU),PPC604)
-        VX_CPU_FAMILY = ppc
-        ifeq ($(VX_VERSION), 6.7) 
-          # this was taken from ALMA
-          CPU_CFLAGS = -DCPU=$(CPU) -mlongcall -mcpu=604 -mcpu=604 -DTOOL=gnu
-        endif	
-    endif
-    ifeq ($(CPU),PPC603)
-        VX_CPU_FAMILY = ppc
-        CPU_CFLAGS = -DCPU=$(CPU) -mlongcall
-    endif
-    ifndef VX_CPU_FAMILY
-        #
-        # force a syntax error, so that ACSMake stops on a
-        $(error UNSUPPORTED CPU type)
+    # the following awful construction is needed to implement an 
+    # OR conditional
+    # I want MAKE_PURE to cause both Purify and Purecoverage 
+    # and MAKE_PURIFY and MAKE_PURECOV to be used to activate them
+    # selectively.
+    # Notice that on Linux, PurifyPlus does both coverage and memory
+    # analysis with the same tool.
+    # Mzampare August '03
+    #
+    ifndef MAKE_PURIFY_TYPE
+        MAKE_PURIFY_TYPE=OCI
     endif
 
-	#
-	# GNU-VXWORKS environment
-        ifeq ($(VX_VERSION), 6.7)
-	   CC       = cc$(VX_CPU_FAMILY) -ansi -fno-builtin -mstrict-align
-        endif	
-
-	CXX      = cc$(VX_CPU_FAMILY) -ansi -fno-builtin
-	CCDEP    = cc$(VX_CPU_FAMILY) -MM -ansi -fno-builtin
-        ifeq ($(VX_VERSION), 6.7)
-           CC_FLAGS = $(CPU_CFLAGS) -DTOOL_FAMILY=gnu -DMAKE_VXWORKS -Wall -c 
-        endif	
-
-    # all warnings left out for the default (see above) must be added here
-    ifdef MAKE_ALL_WARNINGS
-	CC_FLAGS   := $(CC_FLAGS) -Wshadow     \
-                        -Wcast-qual            \
-                        -Wcast-align           \
-#                       -W                     
-                        -Wno-unused            \
-                        -Wpointer-arith        \
-                        -Wwrite-strings        
-#                        -Wmissing-prototypes   \
-#                        -Wmissing-declarations 
+    ifdef MAKE_PURE
+        ENABLE_PURIFY=on
+        ENABLE_PURECOV=on
     endif
 
-    LD       = ld$(VX_CPU_FAMILY)
-    AR       = ar$(VX_CPU_FAMILY)
-    RANLIB   = ranlib$(VX_CPU_FAMILY)
-    NM       = nm$(VX_CPU_FAMILY)
-
-    ifdef CPU
-        BINDIR   = bin/$(CPU)
-        LIBDIR   = lib/$(CPU)
-    else
-        #
-        # force a syntax error, so that ACSMake stops
-        $(error CPU not defined (required when MAKE_VXWORKS is defined))
+    ifneq ($(MAKE_PURIFY_TYPE),SCI)
+        ifdef MAKE_PUREGUI
+            ENABLE_PURIFY=on
+            ENABLE_PURECOV=on
+        endif
     endif
 
-    C_PLUS_PLUS_FLAGS = -r
+    ifdef MAKE_PURIFY
+    ENABLE_PURIFY=on
+    endif
 
-    CXX_FOR_VERSION_TEST := cc$(VX_CPU_FAMILY)
+    ifdef MAKE_PURECOV
+        ENABLE_PURECOV=on
+        ifeq ($(MAKE_PURIFY_TYPE),SCI)
+            ENABLE_PURIFY=on
+        endif
+    endif
 
-    ACS_CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion) 
-ifeq (cmd,$(findstring cmd,$(SHELL))) 
-        ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e "s/[^0-9\.]//g" | sed -e "s/\..*$$//") 
-else 
-        ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e 's/[^0-9\.]//g' | sed -e 's/\..*$$//') 
-endif 
-ifeq ($(findstring $(ACS_CXX_MAJOR_VERSION),1 2 3),$(ACS_CXX_MAJOR_VERSION)) 
-       ACS_GXX_4_OR_BETTER := 0
-else 
-       ACS_GXX_4_OR_BETTER := 1
-endif  
-
-
-endif
-
-
-
-ifndef MAKE_VXWORKS
-#
-#the following awful construction is needed to implement an 
-# OR conditional
-# I want MAKE_PURE to cause both Purify and Purecoverage 
-# and MAKE_PURIFY and MAKE_PURECOV to be used to activate them
-# selectively.
-# Notice that on Linux, PurifyPlus does both coverage and memory
-# analysis with the same tool.
-# Mzampare August '03
-#
-
-ifndef MAKE_PURIFY_TYPE
-MAKE_PURIFY_TYPE=OCI
-endif
-
-ifdef MAKE_PURE
-ENABLE_PURIFY=on
-ENABLE_PURECOV=on
-endif
-
-ifneq ($(MAKE_PURIFY_TYPE),SCI)
-ifdef MAKE_PUREGUI
-ENABLE_PURIFY=on
-ENABLE_PURECOV=on
-endif
-endif
-
-ifdef MAKE_PURIFY
-ENABLE_PURIFY=on
-endif
-
-ifdef MAKE_PURECOV
-ENABLE_PURECOV=on
-ifeq ($(MAKE_PURIFY_TYPE),SCI)
-ENABLE_PURIFY=on
-endif
-endif
-
-ifdef ENABLE_PURIFY
+    ifdef ENABLE_PURIFY
 	PURIFY = purify \
             -always-use-cache-dir \
 	     -user-path="../test:../src:src:test" \
@@ -853,93 +746,87 @@ ifdef ENABLE_PURIFY
 	     -linker=$(GNU_ROOT)/bin/ld \
              -log-file=./.purifydir/MemoryReport -append-logfile=yes \
              -messages=batch -view-file=./.purifydir/purify-%v.pv 
-ifdef MAKE_PUREGUI
-	PURIFY = purify \
-            -always-use-cache-dir \
-            -user-path="../test:../src:src:test" \
-            -g++=yes \
-            -linker=$(GNU_ROOT)/bin/ld 
-endif
-else
-    PURIFY =
-endif
-
-ifdef ENABLE_PURECOV
-       PURECOV = purecov -dlclose-mode=2 -follow-child-processes=yes -always-use-cache-dir -counts-file=./.purifydir/purecov-%v.pcv
-       ifdef MAKE_PUREGUI
-          PURECOV = purecov -dlclose-mode=2 -follow-child-processes=yes -always-use-cache-dir 
-       endif
-       NEED_DEBUG = on
-else 
-    PURECOV =
-endif
-endif # MAKE_VXWORKS
-
-#
-# complete CFLAGS definition
-ifdef NEED_DEBUG
-    # Purify and Purecoverage require the debug options. 
-    # Other user's choices are override, even if they come from 
-    # the command line (see override directive)
-    # 28/05/00 PSI: Purify is taken out (see SPR 990338)
-    override OPTIMIZE =
-    override DEBUG = defined
-endif
-
-# the user can ask one out of: optimized/non optimized/debuggable code
-ifdef DEBUG
-    CFLAGS = $(CC_FLAGS) -g3 -ggdb3 -DDEBUG                
-endif
-
-ifdef OPTIMIZE
-    O_LEVEL = -O
-    ifeq ($(OPTIMIZE),0)
-        O_LEVEL = -O0
-    endif
-    ifeq ($(OPTIMIZE),1)
-        O_LEVEL = -O1
-    endif
-    ifeq ($(OPTIMIZE),2)
-        O_LEVEL = -O2
-    endif
-    ifeq ($(OPTIMIZE),3)
-        O_LEVEL = -O3
-    endif
-    ifeq ($(OPTIMIZE),4)
-        O_LEVEL = -O4
-    endif
-    ifeq ($(OPTIMIZE),5)
-        O_LEVEL = -O5
-    endif
-    ifeq ($(OPTIMIZE),6)
-        O_LEVEL = -O6
-    endif
-    ifeq ($(OPTIMIZE),7)
-        O_LEVEL = -O7
-    endif
-    ifeq ($(OPTIMIZE),8)
-        O_LEVEL = -O8
-    endif
-    ifeq ($(OPTIMIZE),9)
-        O_LEVEL = -O9
-    endif
-    ifdef DEBUG
-        CFLAGS = $(CC_FLAGS) -g -DDEBUG $(O_LEVEL)
+        ifdef MAKE_PUREGUI
+            PURIFY = purify \
+                -always-use-cache-dir \
+                -user-path="../test:../src:src:test" \
+                -g++=yes \
+                -linker=$(GNU_ROOT)/bin/ld 
+        endif
     else
-        CFLAGS = $(CC_FLAGS) $(O_LEVEL)
+        PURIFY =
     endif
-endif
+
+    ifdef ENABLE_PURECOV
+        PURECOV = purecov -dlclose-mode=2 -follow-child-processes=yes -always-use-cache-dir -counts-file=./.purifydir/purecov-%v.pcv
+        ifdef MAKE_PUREGUI
+            PURECOV = purecov -dlclose-mode=2 -follow-child-processes=yes -always-use-cache-dir 
+        endif
+        # Purify and Purecoverage require the debug options. 
+        # Other user-choices are overridden, even if they come from the command line (see override directive)
+        override OPTIMIZE =
+        override DEBUG = defined
+    else 
+        PURECOV =
+    endif
+
+    # the user can ask one out of: optimized/non optimized/debuggable code
+    ifdef DEBUG
+        CFLAGS = $(CC_FLAGS) -g3 -ggdb3 -DDEBUG                
+    endif
+
+    ifdef OPTIMIZE
+        O_LEVEL = -O
+        ifeq ($(OPTIMIZE),0)
+            O_LEVEL = -O0
+        endif
+        ifeq ($(OPTIMIZE),1)
+            O_LEVEL = -O1
+        endif
+        ifeq ($(OPTIMIZE),2)
+            O_LEVEL = -O2
+        endif
+        ifeq ($(OPTIMIZE),3)
+            O_LEVEL = -O3
+        endif
+        ifeq ($(OPTIMIZE),4)
+            O_LEVEL = -O4
+        endif
+        ifeq ($(OPTIMIZE),5)
+            O_LEVEL = -O5
+        endif
+        ifeq ($(OPTIMIZE),6)
+            O_LEVEL = -O6
+        endif
+        ifeq ($(OPTIMIZE),7)
+            O_LEVEL = -O7
+        endif
+        ifeq ($(OPTIMIZE),8)
+            O_LEVEL = -O8
+        endif
+        ifeq ($(OPTIMIZE),9)
+            O_LEVEL = -O9
+        endif
+        ifdef DEBUG
+            CFLAGS = $(CC_FLAGS) -g -DDEBUG $(O_LEVEL)
+        else
+            CFLAGS = $(CC_FLAGS) $(O_LEVEL)
+        endif
+    endif
 
     # default case, used during development, depends on OS
-ifndef DEBUG
-  ifndef OPTIMIZE
-    ifdef MAKE_VXWORKS
-        CFLAGS = $(CC_FLAGS) -g -DDEBUG 
-    else
-        CFLAGS = $(CC_FLAGS) -g -DDEBUG -O
+    ifndef DEBUG
+        ifndef OPTIMIZE
+            ifdef MAKE_VXWORKS
+                CFLAGS = $(CC_FLAGS) -g -DDEBUG 
+            else
+                CFLAGS = $(CC_FLAGS) -g -DDEBUG -O
+            endif
+        endif
     endif
-  endif
-endif
+
+endif # MAKE_VXWORKS
+
 
 CFLAGS := $(CFLAGS)                           
 
@@ -974,23 +861,41 @@ MAKE_FLAGS += $(MAKE_PARS)
 #   TAO search paths for include files and libraries             #
 ##################################################################
 ifneq ($(strip $(ACE_ROOT_DIR)),)
-ifneq ($(strip $(ACE_ROOT)),)
+    ifneq ($(strip $(ACE_ROOT)),)
 
-ifndef TAO_ROOT
-  TAO_ROOT = $(ACE_ROOT)/TAO
+        ifndef TAO_ROOT
+            TAO_ROOT = $(ACE_ROOT)/TAO
+        endif
+
+        ifndef MAKE_VXWORKS
+            CFLAGS :=  -pipe -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DACE_HAS_AIO_CALLS   $(CFLAGS) 
+            CPPFLAGS = -fcheck-new
+        else
+            # There is nothing ACE/TAO specific for Compiler/linker settings!
+            # The problem was that C++ was not handled at all by original linker command!
+            # Only because of wrong munch version/arguments the perl workaround was necessary.
+            # Now going back to the widely used recommended and proven linking variant.
+            # For compilation don't override the architecture/version/optimization specific flags with hardcoded ones.
+            # Only set the ACE/TAO specific flags.
+            # New settings are valid also for vx 6.7, but at various places kept legacy for 6.7
+            ifeq ($(strip $(VX_VERSION)),6.9)
+                # For 6.9 use new settings
+                # Todo:
+                # -fcheck-new unnecessary, because C++ raises an exception if new would return NULL.
+                #  Also not allowed for C e.g. ctdt.c . Relocated to C_PLUS_PLUS_FLAGS
+                # -Wno-uninitialized overrridden by -Wall later on command line, superflous/no effect.
+                # -pipe might just make the compiler faster, not creating faster code. Could be applied generally, not only for TAO.
+                #   Relocated to general CC setting.
+                 CFLAGS := -D_REENTRANT -DACE_VXWORKS=0x690 -DACE_LACKS_RTTI $(CFLAGS)
+            else
+                # For 6.7 keep legacy
+                CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -DACE_VXWORKS=0x690 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
+                LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r -T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT
+
+            endif
+        endif  
+    endif
 endif
-
-ifndef MAKE_VXWORKS
-  CFLAGS :=  -pipe -D_POSIX_THREADS -D_POSIX_THREAD_SAFE_FUNCTIONS -D_REENTRANT -DACE_HAS_AIO_CALLS   $(CFLAGS) 
-  CPPFLAGS = -fcheck-new
-else
-  CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -DACE_VXWORKS=0x670 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
-  LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r -T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT
-
-endif
-endif  
-endif
-
 
 #################################################
 # IDL                                           #
@@ -1263,7 +1168,9 @@ L_PATH   = $(MODLIB) $(USER_LIB) $(ACSLIB)
 MK_IDL_PATH = $(MODIDL) $(USER_IDL) $(ACSIDL) 
 ifdef MAKE_VXWORKS
     #                   -VxWorks-
-    I_PATH := $(I_PATH) $(VXINC) $(TOOLS_INC)
+    # Additional paths must come after -I-. VX_IPNET_INC_ALLOBJECTS for vx6.5+ 
+    # network stack extensions.
+    I_PATH := $(I_PATH) $(VXINC) $(VX_IPNET_INC_ALLOBJECTS) $(TOOLS_INC)
     L_PATH := $(L_PATH) $(VXLIB) 
 else
     #                   --X11-- -GNU&TCLTK-
@@ -1279,6 +1186,8 @@ endif
 # -I. is added to allow includes from current directory (this is the case of
 #                lcc software)
 
+# Todo: Here was the only reference of ACS_GXX_4_OR_BETTER to conditionally add -I-.
+# So the definition can be removed.
 I_PATH := -I. $(I_PATH)
 
 
@@ -1358,6 +1267,14 @@ CLEAN_TARGET=
 CLEAN_DIST_TARGET=
 ALL_TARGET=
 
+ifneq ($(strip $(MAKE_VXWORKS)),)
+    ifneq ($(strip $(VX_VERSION)),5.5)
+        # vxworks_license_check must remain to make sure that license server is accessible.
+        # Otherwise unclear delays or legal state.
+        ALL_TARGET := vxworks_license_check $(ALL_TARGET)
+    endif
+endif
+
 ifneq ($(strip $(INCLUDES)),)
     INSTALL_TARGET := $(INSTALL_TARGET) install_includes
 endif
@@ -1396,20 +1313,34 @@ endif
 CREATE_DIRS = include object doc $(if $(RTAI_HOME),rtai/$(kernel_install_subfold),) $(if $(RTAI_HOME),,$(if $(LINUX_HOME),kernel/$(kernel_install_subfold),)) bin lib lib/ACScomponents lib/python/site-packages idl config
 
 ifneq ($(strip $(MAKE_VXWORKS)),)
-CREATE_DIRS += src/.obj
-CREATE_DIRS += test/.obj
+    ifneq ($(strip $(VX_VERSION)),6.9)
+        # With new linking rules, folders are superfluous.
+        CREATE_DIRS += src/.obj
+        CREATE_DIRS += test/.obj
+    endif
 endif
 
 
+# Never needed for VxWorks. $(platform) is the host OS, not the target OS, useless test.
+# For now keep for legacy VxWorks 6.7
 ifeq ($(platform),Linux)
-CREATE_DIRS += src/.purifydir
-CREATE_DIRS += test/.purifydir
+    ifneq ($(strip $(MAKE_VXWORKS)),)
+        ifneq ($(strip $(VX_VERSION)),6.9)
+            CREATE_DIRS += src/.purifydir
+            CREATE_DIRS += test/.purifydir
+        endif
+    endif
 endif
 
 _MKDIRS:= $(shell for dir in $(CREATE_DIRS); \
 	do \
 	  [[ -d ../$$dir ]] || mkdir -p ../$$dir; \
 	done)
+
+.PHONY: vxworks_license_check
+vxworks_license_check:
+	$(AT) lmutil lmstat -c $(WRSD_LICENSE_FILE) >/dev/null || ( $(ECHO) "=== License Server not Reachable! Please contact your system administrator ==="; exit -1);
+
 
 CHECKS1 := $(foreach idl, $(IDL_FILES), $(foreach jar, $(JARFILES), $(if $(filter $(idl),$(jar)),$(error "$(idl) is duplicated in JARFILES and IDL_FILES",)) ) )
 CHECKS2 := $(foreach cjar, $(COMPONENT_JARFILES), $(foreach jar, $(JARFILES), $(if $(filter $(cjar),$(jar)),$(error "$(cjar) is duplicated in JARFILES and COMPONENT_JARFILES",)) ) )
@@ -1518,10 +1449,6 @@ endif
 version:
 	-@$(ECHO) "acsMakefile in use: $(MAKEDIR)/acsMakefile"
 	-@ident $(MAKEDIR)/acsMakefile
-
-ifndef MAKEDIR
-    MAKEDIR = $(ACSROOT)/include
-endif
 
 -include $(MAKEDIR)/acsMakefileDefinitions.mk
 -include $(MAKEDIR)/acsMakefileCore.mk
@@ -1883,6 +1810,7 @@ vpath  %.jar  $(LIB_PATH_LIST)
 #
 # if the list of C-sources names is not empty, include dependencies files. 
 
+# Todo: Nowhere used
 CSOURCENAMES := $(sort $(CSOURCENAMES))
 
 
@@ -1899,12 +1827,22 @@ CSOURCENAMES := $(sort $(CSOURCENAMES))
 .PHONY : do_all_aux
 do_all_aux : $(_MKDIR) $(ALL_TARGET)
 
+# Use built in Macros for passing on arguments to nested makes, to avoid that
+# MACRO=... gets lost on more targets.
+# MAKEFLAGS is like export "MAKEFLAGS=w -- MACRO=value"
+# -$(MAKEFLAGS) tricks for auto prepending - fails if starting with a whitespace 
+# after auto removal of special options, e.g. b.
+# Therefore we use the old variant $(MFLAGS) $(MAKEOVERRIDES) which always starts with a dash.
+# Must be last option before the target, because a "--" is inserted.
+# Todo: Is recursive makefile call needed at all, if no output filtering is in place?
 
 .PHONY : do_all
 #!!#do_all : $(if $(strip $(LINK_FILES)),do_links_internal,)
 do_all :
-	$(AT) $(MAKE) -f $(THIS_MAKEFILE) DEPENDENCIES=on $(MAKE_FLAGS) do_all_aux
+#	$(AT) $(MAKE) -f $(THIS_MAKEFILE) DEPENDENCIES=on $(MAKE_FLAGS) do_all_aux
+	$(AT) $(MAKE) --no-print-directory -f $(THIS_MAKEFILE) DEPENDENCIES=on $(MAKE_FLAGS) $(MFLAGS) $(MAKEOVERRIDES) do_all_aux
 
+# Todo: Nowhere used
 .PHONY : CppFiles
 CppFiles: $(addprefix ../object/, $(addsuffix .d, $(CSOURCENAMES)))
 
@@ -1917,4 +1855,3 @@ directory_structure:
 	@echo "This target ($@) does nothing and will be removed in future versions"
 #
 #___oOo___
-
