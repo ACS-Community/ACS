@@ -50,7 +50,7 @@ endef
 GMP = gmp
 
 ifeq ($(os),Linux)
-  majorRelNo :=  $(basename $(shell cat /etc/redhat-release | awk '{print $$(NF-1)}')
+  majorRelNo :=  $(basename $(shell cat /etc/redhat-release | awk '{print $$(NF-1)}'))
   ifeq ($(majorRelNo),6)
     GMP =
   endif
