@@ -60,8 +60,14 @@ JAVA_EDIRS = $(JACORB_ENDORSED)$(subst $(SPACE),,$(foreach dir,$(subst -L,,$(str
 AlmaIDLMainClass=alma.tools.idlgen.XmlIdlCompiler
 #
 #  RTAI
+CPU := $(shell uname -p)
 ifneq ($(strip $(RTAI_HOME)),)
-RTAI_CFLAGS = -D__KERNEL__ -DMODULE -O2 -Wall -Wstrict-prototypes -Wno-trigraphs  -fomit-frame-pointer -fno-strict-aliasing -fno-common -pipe  -march=i686 -falign-functions=4 -I$(LINUX_HOME)/include/linux -I$(LINUX_HOME)/include/asm-i386/mach-default $(USER_RTAI_CFLAGS) 
+ifeq ($(CPU),x86_64)
+RTAI_CFLAGS = -D__KERNEL__ -DMODULE -O2 -Wall -Wstrict-prototypes -Wno-trigraphs  -fomit-frame-pointer -fno-strict-aliasing -fno-common -pipe -falign-functions=4 -I$(LINUX_HOME)/include/linux -I$(LINUX_HOME)/include/asm-i386/mach-default $(USER_RTAI_CFLAGS) 
+else
+RTAI_CFLAGS = -D__KERNEL__ -DMODULE -O2 -Wall -Wstrict-prototypes -Wno-trigraphs  -fomit-frame-pointer -fno-strict-aliasing -fno-common -pipe  -march=i686 -falign-functions=4 -I$(LINUX_HOME)/include/linux -I$(LINUX_HOME)/include/asm-i386/mach-default $(USER_RTAI_CFLAGS)
+endif
+ 
 RTAI_CONFIG := $(RTAI_HOME)/bin/rtai-config
 KDIR := $(shell $(RTAI_CONFIG) --linux-dir)
 CCRTAI:=$(shell $(RTAI_CONFIG) --cc)
@@ -72,7 +78,11 @@ endif
 #  Kernel modules
 ifeq ($(strip $(RTAI_HOME)),)
 ifneq ($(strip $(LINUX_HOME)),)
-KERNEL_MODULE_CFLAGS = -D__KERNEL__ -DMODULE -O2 -Wall -Wstrict-prototypes -Wno-trigraphs  -fomit-frame-pointer -fno-strict-aliasing -fno-common -pipe  -march=i686 -falign-functions=4 -I$(LINUX_HOME)/include/linux -I$(LINUX_HOME)/include/asm-i386/mach-default $(USER_KERNEL_MODULE_CFLAGS) 
+ifeq ($(CPU),x86_64)
+KERNEL_MODULE_CFLAGS = -D__KERNEL__ -DMODULE -O2 -Wall -Wstrict-prototypes -Wno-trigraphs  -fomit-frame-pointer -fno-strict-aliasing -fno-common -pipe -falign-functions=4 -I$(LINUX_HOME)/include/linux -I$(LINUX_HOME)/include/asm-i386/mach-default $(USER_KERNEL_MODULE_CFLAGS)
+else
+KERNEL_MODULE_CFLAGS = -D__KERNEL__ -DMODULE -O2 -Wall -Wstrict-prototypes -Wno-trigraphs  -fomit-frame-pointer -fno-strict-aliasing -fno-common -pipe  -march=i686 -falign-functions=4 -I$(LINUX_HOME)/include/linux -I$(LINUX_HOME)/include/asm-i386/mach-default $(USER_KERNEL_MODULE_CFLAGS)
+endif 
 KDIR := /lib/modules/$(kernel_install_subfold)/build
 CCKERNEL:=cc
 USR_INC = -I$(LINUX_HOME)/include  $(patsubst -I..%,-I$(PWD)/..%,$(I_PATH))
