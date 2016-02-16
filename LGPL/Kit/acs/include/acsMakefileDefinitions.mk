@@ -1496,11 +1496,11 @@ rtai_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2)
 #.NOTPARALLEL:../rtai/$(kernel_install_subfold)/$1.ko
 CPU := $(shell uname -p)
 ../rtai/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1 Makefile
-	ifeq ($(CPU),x86_64)
+ifeq ($(CPU),x86_64)
 	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
-	else
+else
 	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
-	endif
+endif
 	@$(ECHO) "== Making RTAI Module: $1" 
 # here we have to generate the hineous Kbuild file
 	$(AT)lockfile -s 2 -r 10 Kbuild.lock || echo "WARNING, ignoring lock Kbuild.lock"
@@ -1511,11 +1511,11 @@ CPU := $(shell uname -p)
 	$(AT)$(ECHO) "EXTRA_CFLAGS := $(EXTRA_CFLAGS)" >> Kbuild
 	$(AT)$(ECHO) "KBUILD_EXTRA_SYMBOLS=\"$(RTAI_HOME)/modules/Module.symvers\"" >> Kbuild
 ifdef MAKE_VERBOSE
-	ifeq ($(CPU),x86_64)
+ifeq ($(CPU),x86_64)
 	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=2 modules
-	else
+else
 	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=2 modules
-	endif
+endif
 else
 	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=0 modules
 endif
@@ -1525,11 +1525,11 @@ endif
 # LKM Support binaries
 .PHONY: clean_rtai_$1
 clean_rtai_$1i:
-	ifeq ($(CPU),x86_64)
+ifeq ($(CPU),x86_64)
 	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
-	else
+else
 	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
-	endif
+endif
 	$(AT)$(RM) ../rtai/$(kernel_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
 
 #../bin/installLKM-$1: 
