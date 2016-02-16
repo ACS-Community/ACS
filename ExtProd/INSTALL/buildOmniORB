@@ -75,17 +75,17 @@ echo installing the omniORB distribution
 #   PYTHON = /home/alma/packages/bin/python
 #
 
-if [ ! -e ../PRODUCTS/omniORB-4.2.1-2.tar.bz2 ]
+if [ ! -e ../PRODUCTS/omniORB-4.2.0.tar.bz2 ]
 then
-  echo Error: omniORB-4.2.1-2 sources are missing
+  echo Error: omniORB-4.2.0 sources are missing
   exit 2
 fi
 
 rm -rf $OMNI_ROOT
 CWD=`pwd`
 cd ../PRODUCTS
-tar -jxf omniORB-4.2.1-2.tar.bz2
-mv  omniORB-4.2.1 $OMNI_ROOT
+tar -jxf omniORB-4.2.0.tar.bz2
+mv  omniORB-4.2.0 $OMNI_ROOT
 
 cd $OMNI_ROOT
 
@@ -111,19 +111,19 @@ cd $CWD
 #
 # Notes: See omniORBpy/ReleaseNote for help
 #
-if [ ! -e ../PRODUCTS/omniORBpy-4.2.1-2.tar.bz2 ]
+if [ ! -e ../PRODUCTS/omniORBpy-4.2.0.tar.bz2 ]
 then
-  echo Error: omniORBpy-4.2.1-2 sources are missing
+  echo Error: omniORBpy-4.2.0 sources are missing
   exit 2
 fi
 
 cd ../PRODUCTS
-tar -jxf omniORBpy-4.2.1-2.tar.bz2 -C $OMNI_ROOT/src/lib
+tar -jxf omniORBpy-4.2.0.tar.bz2 -C $OMNI_ROOT/src/lib
 
 cp omniORB-patches/CosProperty.idl $OMNI_ROOT/idl/COS
 
 mkdir -p $OMNI_ROOT/src/lib/
-mv $OMNI_ROOT/src/lib/omniORBpy-4.2.1 $OMNI_ROOT/src/lib/omniORBpy
+mv $OMNI_ROOT/src/lib/omniORBpy-4.2.0 $OMNI_ROOT/src/lib/omniORBpy
 cd $OMNI_ROOT/src/lib/omniORBpy
 mkdir -p build
 cd build
