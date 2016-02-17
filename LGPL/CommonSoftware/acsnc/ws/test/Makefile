@@ -41,12 +41,12 @@ testChannelCreation_LIBS    =	acsnc maciClient acsncHelperTest
 
 SCRIPTS_L       = acsncTATRunTest.sh acsncNslist.sh acsncExecDelChannelsNS.sh acsncCreateNamedNotifyS.sh acsncKillNamedNotifyS.sh
 
-PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent acsncTestSupReconn
+PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent acsncTestSupReconn acsncRunConComp acsncRunSupComp
 
 # Includes (.h) files (public and local)
 # ---------------------------------
 INCLUDES        = 
-INCLUDES_L      = acsncConsumerCompImpl.h acsncSupplierCompImpl.h
+INCLUDES_L      = acsncConsumerCompImpl.h acsncSupplierCompImpl.h acsncConCompImpl.h acsncSupCompImpl.h
 
 # Libraries (public and local)
 # ----------------------------
@@ -55,8 +55,14 @@ LIBRARIES       = acsncConsumerCompImpl acsncSupplierCompImpl acsncRTSupplierCom
 		testCDBProps  \
 		acsncConsumerILCompImpl acsncSupplierILCompImpl \
 		acsncConsumerNamedChCompImpl acsncSupplierNamedChCompImpl \
-        acsncHelperTest
+        acsncHelperTest acsncConCompImpl acsncSupCompImpl
 LIBRARIES_L     = 
+
+acsncSupCompImpl_OBJECTS = acsncSupCompImpl
+acsncSupCompImpl_LIBS = EventComponentStubs acsnc acscomponent
+
+acsncConCompImpl_OBJECTS = acsncConCompImpl
+acsncConCompImpl_LIBS = EventComponentStubs acsnc acscomponent
 
 acsncHelperTest_OBJECTS = acsncHelperTest
 acsncHelperTest_LIBS = acsnc

@@ -55,3 +55,6 @@ s/===  Number of events queued: [0-9]*/===  Number of events queued: XXX/g
 s/===  Number of transitions: [0-9]/===  Number of transitions: Y/g
 s/===  Transitions in: [0-9,]*/===  Transitions in: YYY/g
 s/===  Number of exceptions caught: [0-9]*/===  Number of exceptions caught: ZZZ/g
+
+s/count is greater than 2000 \[[0-9]*\]/count is greater than 2000 [XXX]/g
+s/count is lower than 2000 \[[0-9]*\]/count is lower than 2000 [XXX]/g

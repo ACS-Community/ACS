@@ -31,6 +31,8 @@ using namespace ACSErrTypeCommon;
 namespace nc {
 //-----------------------------------------------------------------------------
 double Consumer::DEFAULT_MAX_PROCESS_TIME = 2.0;
+const int Consumer::NC_CHECKER_FREQ = 2;
+const bool Consumer::DEFAULT_AUTORECONNECT = false;
 //-----------------------------------------------------------------------------
 Consumer::Consumer(const char* channelName, const char* acsNCDomainName) :
     Helper(channelName,acsNCDomainName),
@@ -40,7 +42,12 @@ Consumer::Consumer(const char* channelName, const char* acsNCDomainName) :
     reference_m(0),
     profiler_mp(0),
     antennaName(""),
-    orb_mp(0)
+    autoreconnect_m(DEFAULT_AUTORECONNECT),
+    orb_mp(0),
+    checkNC_m(false),
+    stopNCCheckerThread(false),
+    reinitFailed(false),
+    ncCheckerThread(0)
 {
     ACS_TRACE("Consumer::Consumer");
     orb_mp = static_cast<CORBA::ORB_ptr>(0);
@@ -53,7 +60,12 @@ Consumer::Consumer(const char* channelName, CORBA::ORB_ptr orb, const char* acsN
     numEvents_m(0),
     reference_m(0),
     profiler_mp(0),
-    orb_mp(0)
+    autoreconnect_m(DEFAULT_AUTORECONNECT),
+    orb_mp(0),
+    checkNC_m(false),
+    stopNCCheckerThread(false),
+    reinitFailed(false),
+    ncCheckerThread(0)
 {
     ACS_TRACE("Consumer::Consumer");
     orb_mp = orb;
@@ -66,7 +78,12 @@ Consumer::Consumer(const char* channelName, int argc, char *argv[], const char* 
     numEvents_m(0),
     reference_m(0),
     profiler_mp(0),
-    orb_mp(0)
+    autoreconnect_m(DEFAULT_AUTORECONNECT),
+    orb_mp(0),
+    checkNC_m(false),
+    stopNCCheckerThread(false),
+    reinitFailed(false),
+    ncCheckerThread(0)
 {
     ACS_TRACE("Consumer::Consumer");
     
@@ -116,10 +133,67 @@ Consumer::init(CORBA::ORB_ptr orb)
        callback_m->init(orb, notifyFactory_m);
 }
 //-----------------------------------------------------------------------------
+void
+Consumer::reinit()
+{
+    CORBA::ORB_ptr orb = orbHelper_mp != NULL ? orbHelper_mp->getORB() : NULL;
+
+    // Resolve the naming service using the orb
+    resolveNamingService(orb);
+
+    // If a notification channel already exists, then use it, otherwise
+    // Create the NC
+    if(!resolveInternalNotificationChannel())
+        ACS_SHORT_LOG((LM_ERROR,"Consumer::reinit NC '%s' couldn't be created nor resolved", channelName_mp));  
+
+    //Finally we can create the supplier admin, consumer proxy, etc.
+    createConsumer();
+    
+    resolveNotificationFactory();
+
+    // Disconnect callback object
+    try {
+        callback_m->disconnect();
+    } catch(...) {
+        ACS_SHORT_LOG((LM_ERROR, "Consumer::reinit Callback object thrown an exception on disconnecting it"));
+    }
+
+    // Initialize callback object
+    if (orbHelper_mp !=0)
+    {
+        callback_m->init(orbHelper_mp->getORB(), notifyFactory_m);
+    } else {
+        callback_m->init(orb, notifyFactory_m);
+    }
+
+    ACS_SHORT_LOG((LM_INFO, "Consumer has reinitialized the connection to the channel %s", channelName_mp));
+}
+
+
+//-----------------------------------------------------------------------------
 void 
 Consumer::disconnect()
 {
     ACS_TRACE("Consumer::disconnect");
+
+    checkNC_m = false;
+    stopNCCheckerThread = true;
+    int resJoin = pthread_join(ncCheckerThread, NULL);
+    switch(resJoin)
+    {
+    case 0:
+        ncCheckerThread = 0;
+        break;
+    case EDEADLK:
+        ACS_SHORT_LOG((LM_ERROR,"Consumer::disconnect: A deadlock was detected while waiting to join the thread responsible for checking the status of channel %s", channelName_mp));
+        break;
+    case EINVAL:
+        ACS_SHORT_LOG((LM_ERROR,"Consumer::disconnect: The thread responsible for checking the status of channel %s is not joinable", channelName_mp));
+        break;
+    case ESRCH:
+        ACS_SHORT_LOG((LM_ERROR,"Consumer::disconnect: The thread responsible for checking the status of channel %s has not been found", channelName_mp));
+        break;
+    }
 
     callback_m->disconnect();
 
@@ -233,6 +307,91 @@ Consumer::consumerReady()
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Consumer::consumerReady");
 	throw err.getCORBAProblemEx();
 	}
+
+    // Create the thread responsible for checking the status of the Notify Channel
+    if(0 == ncCheckerThread)
+    {
+        if(0 != pthread_create(&ncCheckerThread, NULL, Consumer::ncChecker,reinterpret_cast<void *>(this)))
+        {
+            ACS_SHORT_LOG((LM_ERROR,
+                "The thread responsible for checking the status of the Notify Channel %s cannot be created in the consumer", 
+                channelName_mp));
+            ncCheckerThread = 0;
+        } else {
+            ACS_SHORT_LOG((LM_INFO, "Created the thread responsible for checking the status of the Notify Channel %s",
+                channelName_mp));
+        }
+    }
+    checkNC_m = true;
+}
+//-----------------------------------------------------------------------------
+bool
+Consumer::isReadyToCheckNC()
+{
+    return checkNC_m && 0 != reference_m.in() && !::CORBA::is_nil(proxySupplier_m);
+}
+//-----------------------------------------------------------------------------
+bool
+Consumer::isConnected()
+{
+    try {
+        proxySupplier_m->connect_structured_push_consumer(reference_m.in());
+        return true;
+    } catch(CORBA::OBJECT_NOT_EXIST &ex) { 
+        return false;
+    } catch(CosEventChannelAdmin::AlreadyConnected &ex) {
+        return true;
+    } catch(...) {}
+    return false;
+}
+//-----------------------------------------------------------------------------
+void*
+Consumer::ncChecker(void* arg)
+{
+    Consumer *consumer = static_cast<Consumer*>(arg);
+
+    //Logging Initialization for the thread
+    CosNaming::Name name;
+    name.length(1);
+    name[0].id = CORBA::string_dup("Log");
+    CORBA::Object_ptr obj = consumer->namingContext_m->resolve(name);
+    Logging::AcsLogService_ptr remote_logger =
+            Logging::AcsLogService::_narrow(obj);
+    LoggingProxy *m_logger = new LoggingProxy(0, 0, 31);
+    LoggingProxy::init(m_logger);
+    m_logger->setCentralizedLogger(remote_logger);
+
+    consumer->checkNotifyChannel();
+
+    delete m_logger;
+
+    return 0;
+}
+//-----------------------------------------------------------------------------
+void
+Consumer::checkNotifyChannel()
+{
+    while(false == stopNCCheckerThread)
+    {
+        if(autoreconnect_m && isReadyToCheckNC() && false == isConnected())
+        {
+            if(false == reinitFailed)
+            {
+                ACS_SHORT_LOG((LM_INFO, "Consumer is reinitializing the connection to the channel %s", channelName_mp));
+            }
+            try {
+                reinit();
+                reinitFailed = false;
+            } catch(...) {
+                if(false == reinitFailed)
+                {
+                    reinitFailed = true;
+                    ACS_SHORT_LOG((LM_ERROR, "Consumer couldn't reinitialize the connection to the channel %s", channelName_mp));
+                }
+            }
+        }
+        ACE_OS::sleep(NC_CHECKER_FREQ);
+    }
 }
 //-----------------------------------------------------------------------------
 void 
@@ -628,6 +787,12 @@ void Consumer::setAntennaName(std::string antennaName) {
         filter->add_constraints(constraint_list);
         proxySupplier_m->add_filter(filter.in());
     }
+}
+
+//-----------------------------------------------------------------------------
+void Consumer::setAutoreconnect(bool autoreconnect)
+{
+    autoreconnect_m = autoreconnect;
 }
 
 //-----------------------------------------------------------------------------

@@ -34,6 +34,8 @@
 <_ Name="NamedCh_SUP21"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
 
 <_ Name="NamedCh_CON1"		Code="acsncConsumerNamedChCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="CON_COMP_1"		Code="acsncConCompImpl"  	  Type="IDL:alma/demo/ConComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="SUP_COMP_1"		Code="acsncSupCompImpl"  	  Type="IDL:alma/demo/SupComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
 
       <_ Name="RTSUP1"		Code="acsncRTSupplierCompImpl"    Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
       <_ Name="CON1"		Code="acsncConsumerCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"			Container="bilboContainer" ImplLang="cpp" />

@@ -326,6 +326,15 @@ class Consumer :
     
     void setAntennaName(std::string antennaName);
 
+    /**
+     * This method is used to set the autoreconnect attribute. This is a boolean to 
+     * reconnect to the channel when the publication of an event throws an 
+     * OBJECT_NOT_EXIST exception. That is, the Notify Service doesn't exist.
+     * This could happen when the Notify Service restarts.
+     * @see autoreconnect_m
+     */
+    void setAutoreconnect(bool autoreconnect);
+
   protected:
     /**
      * Utility method.
@@ -415,6 +424,14 @@ class Consumer :
     Profiler *profiler_mp;
 
     std::string antennaName;
+
+    /**
+     * This is a boolean to reconnect to the channel when the publication of an event 
+     * throws an OBJECT_NOT_EXIST exception. That is, the Notify Service doesn't exist.
+     * This could happen when the Notify Service restarts.
+     */
+    bool autoreconnect_m;
+
   private:
 
     /**
@@ -428,6 +445,32 @@ class Consumer :
     */
     void
     init(CORBA::ORB_ptr orb);
+
+    /**
+     *
+     */
+    void reinit();
+
+    /**
+     *
+     */
+    bool isReadyToCheckNC();
+
+    /**
+     *
+     */
+    bool isConnected();
+
+    /**
+     *
+     */
+    static void* ncChecker(void* arg);
+
+    /**
+     *
+     */
+    void checkNotifyChannel();
+
 
     /**
      * ORB used by this consumer.
@@ -473,6 +516,13 @@ class Consumer :
 
     CosNotifyChannelAdmin::AdminID adminid;
     CosNotifyChannelAdmin::ProxyID proxySupplierID;
+
+    static const int NC_CHECKER_FREQ;
+    static const bool DEFAULT_AUTORECONNECT;
+    bool checkNC_m;
+    bool stopNCCheckerThread;
+    bool reinitFailed;
+    pthread_t ncCheckerThread;
     ///////////////////////////////////////////////////////////////////////////////////////
 };
  }; 
