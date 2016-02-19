@@ -55,7 +55,7 @@ BDNTSenderSimulatorFlow::BDNTSenderSimulatorFlow(
 	if (threadManager.spawn((ACE_THR_FUNC)BDNTSenderSimulatorFlow::threadFunc, this, 0, &threadId) == -1) {
 		cerr << "Error spawning thread" << name << endl;
 	} else {
-		cout << "Thread for "<< name << " name started with Id=" << threadId << endl;
+		cout << "Thread for "<< name << " name started with Id=" << threadId << ": will send "<< size << " bytes" << endl;
 	}
 }
 
