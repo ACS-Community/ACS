@@ -47,7 +47,11 @@ void print_usage(char *argv[]) {
 	cout << "\t[-a] \t ACK timeout in sec. Default: 5.0" << endl;
 	cout << "\t[-o] \t throttling in MBytes/sec. Default: 0.0 (no throttling)" << endl;
 	cout << "\t[-r] \t Recreate streams/flows between iterations (default false)" << endl;
+	cout << "\t[-q] \t qosFileName: load the QoS from qosFileName XML file (use default if not set)" << endl;
+	cout << "\t[-x] \t qosLibName: load the QoS library from qosLibName file (use default if not set)" << endl;
 
+	cout << "EXAMPLE:" << endl;
+	cout << argv[0] << "-s sName -f fname1,fname2 -b 650000,564123 -g 12:37:30 -l 2 -d 3" << endl << endl;
 	exit(1);
 }
 
@@ -129,16 +133,25 @@ bool sleepUntil(char* startTime) {
 
 int main(int argc, char *argv[])
 {
-	char c;
+
 	bool recreate=false;
 	double sendTimeout=5.0, ACKtimeout=5.0;
 	ACE_Time_Value start_time, elapsed_time;
 	char *streamName = "DefaultStream";
 
+	/**
+	 * The name of the XML file with the QoS definition
+	 */
+	std::string qosFileName="";
+
+	/**
+	 * The name of the QoS library
+	 */
+	std::string qosLibFileName="";
+
 	// Set if the process must start to send data at the passed time hh:mm:ss
 	char *startAt = 0;
 
-	std::string param="defaultParameter";
 	unsigned int dataSize=65000;
 	double throttling=0.0;
 
@@ -154,8 +167,9 @@ int main(int argc, char *argv[])
 	unsigned int numOfIterations = 1;
 
 	// Parse the args
-    ACE_Get_Opt get_opts (argc, argv, "g:s:f:b:l:d:t:a:o:r");
-    while(( c = get_opts()) != -1 ) {
+    ACE_Get_Opt get_opts (argc, argv, "g:s:f:b:l:d:t:a:o:q:x:r");
+    char c;
+    while((c = get_opts()) != -1 ) {
     	switch(c) {
 
 		case 'l':
@@ -216,6 +230,16 @@ int main(int argc, char *argv[])
 			startAt = strdup(get_opts.opt_arg());
 			break;
 		}
+    	case 'q':
+		{
+			qosFileName = get_opts.opt_arg();
+			break;
+		}
+    	case 'x':
+		{
+			qosLibFileName = get_opts.opt_arg();
+			break;
+		}
     	default:
     	{
     		cerr << "Unrecognized option/switch in command line" << endl;
@@ -252,6 +276,8 @@ int main(int argc, char *argv[])
     cout << "ACK timeout " << ACKtimeout << endl;
     cout << "Send timeout " << sendTimeout << endl;
     cout << "Throttling " << throttling << endl;
+    if (!qosFileName.empty()) cout << "Load QoS settings from " <<  qosFileName << endl;
+    if (!qosLibFileName.empty()) cout << "Load QoS library from " <<  qosLibFileName << endl;
     if (recreate) cout << "Recreate streams/flows and each iteration" << endl << endl;
 
 	LoggingProxy m_logger(0, 0, 31, 0);
@@ -263,20 +289,28 @@ int main(int argc, char *argv[])
 	SenderStreamConfiguration scfg;
 	BulkDataNTSenderStream senderStream(streamName, scfg);
 
-	// let's create flows
-	list<char *>::iterator it;
+	// Configure the stream
 	SenderFlowConfiguration cfg;
 	cfg.setACKsTimeout(ACKtimeout);
 	cfg.setSendFrameTimeout(sendTimeout);
 	cfg.setThrottling(throttling);
+	if (!qosFileName.empty()) {
+		cfg.setQosProfile(qosFileName);
+	}
+	if (!qosLibFileName.empty()) {
+		cfg.setQosLibrary(qosLibFileName);
+	}
 
 	// The barrier to start all the sending at the same time
+	// There is one thread for each flow pluse the one of the main
 	ACE_Barrier* theStartBarrier = new ACE_Barrier(flowNames.size()+1,"BDNT simulator start send barrier");
 
 	// The barrier to notify that all the sending have been completed
+	// There is one thread for each flow pluse the one of the main
 	ACE_Barrier* theDoneBarrier = new ACE_Barrier(flowNames.size()+1,"BDNT simulator done send barrier");
 
 	// Build the flows and the associated BDNTSenderSimulatorFlow's
+	list<char *>::iterator it;
 	for(it = flowNames.begin(); it != flowNames.end(); it++) {
 		//std::cout << cfg.getQosProfile() << std::endl;
 		BulkDataNTSenderFlow *flow = senderStream.createFlow((*it), cfg);
