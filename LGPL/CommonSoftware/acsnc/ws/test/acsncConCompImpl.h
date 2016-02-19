@@ -64,6 +64,7 @@ class ConCompImpl: public virtual acscomponent::ACSComponentImpl,
     virtual ~ConCompImpl();
 
     virtual void execTest(const char* channelName,CORBA::Boolean autoreconnect);
+    virtual void execTestResumeSuspend(const char* channelName);
     virtual void checkCounterGreaterThan(CORBA::Long value);
     virtual void checkCounterLowerThan(CORBA::Long value);
 

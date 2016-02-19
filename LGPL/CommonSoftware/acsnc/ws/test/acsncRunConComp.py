@@ -30,22 +30,31 @@ from Acspy.Clients.SimpleClient import PySimpleClient
 from sys                        import argv
 from time                       import sleep
 
-autoconnect = str(argv[3]) == 'autoreconnect'
-sleep_time = int(argv[4])
-counter_lower_than = int(argv[5])
-counter_greater_than = int(argv[6])
+# Get input parameters
+test_num = int(argv[1])
+comp_name = str(argv[2])
+ch_name = str(argv[3])
 
 # Make an instance of the PySimpleClient
 simpleClient = PySimpleClient()
+consumer = simpleClient.getComponent(comp_name)
 
-consumer = simpleClient.getComponent(argv[1])
-consumer.execTest(argv[2], autoconnect)
-sleep(sleep_time)
-if counter_lower_than > 0:
-    consumer.checkCounterLowerThan(counter_lower_than)
-if counter_greater_than > 0:
-    consumer.checkCounterGreaterThan(counter_greater_than)
+if test_num == 1:
+    autoconnect = str(argv[4]) == 'autoreconnect'
+    sleep_time = int(argv[5])
+    counter_lower_than = int(argv[6])
+    counter_greater_than = int(argv[7])
+    consumer.execTest(ch_name, autoconnect)
+    sleep(sleep_time)
+    if counter_lower_than > 0:
+        consumer.checkCounterLowerThan(counter_lower_than)
+    if counter_greater_than > 0:
+        consumer.checkCounterGreaterThan(counter_greater_than)
+
+elif test_num == 2:
+    consumer.execTestResumeSuspend(ch_name)
+
 sleep(5)
-simpleClient.releaseComponent(argv[1])
+simpleClient.releaseComponent(comp_name)
 sleep(2)
 simpleClient.disconnect()

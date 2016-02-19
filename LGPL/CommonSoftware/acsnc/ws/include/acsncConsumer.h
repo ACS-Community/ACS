@@ -447,30 +447,39 @@ class Consumer :
     init(CORBA::ORB_ptr orb);
 
     /**
-     *
+     * Method that reinitializes the connection to the channel 
      */
     void reinit();
 
     /**
-     *
+     * Method that decides when it needs to reconnect to the channel
      */
-    bool isReadyToCheckNC();
+    bool shouldReconnect();
 
     /**
-     *
-     */
-    bool isConnected();
-
-    /**
-     *
+     * Entry point of the thread responsible for checking the connection to the channel and
+     * reconnect to it if needed.
      */
     static void* ncChecker(void* arg);
 
     /**
-     *
+     * Main loop of the thread responsible for checking the connection to the channel. It calls
+     * reinit method when shouldReconnect returns true.
      */
     void checkNotifyChannel();
 
+    /**
+     * Creates the thread responsible for checking the connection to the channel. This method is called
+     * in consumerReady and resume. Therefore, the thread have to run when the consumer it's supposed
+     * to receive events.
+     */
+    void createCheckerThread();
+
+    /**
+     * Destroys the thread responsible for checking the connection to the channel. This method is called
+     * when the consumer is suspended or disconnected.
+     */
+    void destroyCheckerThread();
 
     /**
      * ORB used by this consumer.
@@ -519,7 +528,6 @@ class Consumer :
 
     static const int NC_CHECKER_FREQ;
     static const bool DEFAULT_AUTORECONNECT;
-    bool checkNC_m;
     bool stopNCCheckerThread;
     bool reinitFailed;
     pthread_t ncCheckerThread;

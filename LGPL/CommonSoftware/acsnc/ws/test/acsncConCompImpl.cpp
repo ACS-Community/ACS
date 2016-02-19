@@ -81,6 +81,28 @@ void ConCompImpl::execTest(const char* channelName,CORBA::Boolean autoreconnect)
     m_testCon_p->resume();
 }
 /* ----------------------------------------------------------------*/
+// Test that checks:
+//  - resume after it's ready
+//  - resume after resume
+//  - NS restarted while it's suspended
+void ConCompImpl::execTestResumeSuspend(const char* channelName)
+{
+    m_count = 0;
+    ACS_NEW_SIMPLE_CONSUMER(m_testCon_p, acsnc::EventDescription, channelName, 
+                            myHandlerFunction, (void *)this);
+    m_testCon_p->setAutoreconnect(true);
+    m_testCon_p->consumerReady();
+    m_testCon_p->resume();
+    m_testCon_p->suspend();
+    m_testCon_p->resume();
+    m_testCon_p->resume();
+    m_testCon_p->resume();
+    m_testCon_p->suspend();
+    ACE_OS::sleep(20);
+    m_testCon_p->resume();
+    m_testCon_p->resume();
+}
+/* ----------------------------------------------------------------*/
 void ConCompImpl::checkCounterGreaterThan(CORBA::Long value)
 {
     if(m_count > value)

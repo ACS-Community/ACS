@@ -56,7 +56,7 @@ SupCompImpl::~SupCompImpl()
             m_testSup_p = 0;
         }
     } catch(...) {
-        ACS_SHORT_LOG((LM_ERROR, "Exception thrown while disconnecting the consumer"));
+        ACS_SHORT_LOG((LM_ERROR, "Exception thrown while disconnecting the supplier"));
     }
 }
 

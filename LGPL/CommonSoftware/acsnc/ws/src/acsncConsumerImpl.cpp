@@ -44,7 +44,6 @@ Consumer::Consumer(const char* channelName, const char* acsNCDomainName) :
     antennaName(""),
     autoreconnect_m(DEFAULT_AUTORECONNECT),
     orb_mp(0),
-    checkNC_m(false),
     stopNCCheckerThread(false),
     reinitFailed(false),
     ncCheckerThread(0)
@@ -62,7 +61,6 @@ Consumer::Consumer(const char* channelName, CORBA::ORB_ptr orb, const char* acsN
     profiler_mp(0),
     autoreconnect_m(DEFAULT_AUTORECONNECT),
     orb_mp(0),
-    checkNC_m(false),
     stopNCCheckerThread(false),
     reinitFailed(false),
     ncCheckerThread(0)
@@ -80,7 +78,6 @@ Consumer::Consumer(const char* channelName, int argc, char *argv[], const char* 
     profiler_mp(0),
     autoreconnect_m(DEFAULT_AUTORECONNECT),
     orb_mp(0),
-    checkNC_m(false),
     stopNCCheckerThread(false),
     reinitFailed(false),
     ncCheckerThread(0)
@@ -166,7 +163,9 @@ Consumer::reinit()
         callback_m->init(orb, notifyFactory_m);
     }
 
-    ACS_SHORT_LOG((LM_INFO, "Consumer has reinitialized the connection to the channel %s", channelName_mp));
+    proxySupplier_m->connect_structured_push_consumer(reference_m.in());
+
+    ACS_SHORT_LOG((LM_INFO, "Consumer reinitialized the connection to the channel %s", channelName_mp));
 }
 
 
@@ -176,24 +175,7 @@ Consumer::disconnect()
 {
     ACS_TRACE("Consumer::disconnect");
 
-    checkNC_m = false;
-    stopNCCheckerThread = true;
-    int resJoin = pthread_join(ncCheckerThread, NULL);
-    switch(resJoin)
-    {
-    case 0:
-        ncCheckerThread = 0;
-        break;
-    case EDEADLK:
-        ACS_SHORT_LOG((LM_ERROR,"Consumer::disconnect: A deadlock was detected while waiting to join the thread responsible for checking the status of channel %s", channelName_mp));
-        break;
-    case EINVAL:
-        ACS_SHORT_LOG((LM_ERROR,"Consumer::disconnect: The thread responsible for checking the status of channel %s is not joinable", channelName_mp));
-        break;
-    case ESRCH:
-        ACS_SHORT_LOG((LM_ERROR,"Consumer::disconnect: The thread responsible for checking the status of channel %s has not been found", channelName_mp));
-        break;
-    }
+    destroyCheckerThread();
 
     callback_m->disconnect();
 
@@ -309,40 +291,27 @@ Consumer::consumerReady()
 	}
 
     // Create the thread responsible for checking the status of the Notify Channel
-    if(0 == ncCheckerThread)
+    createCheckerThread();
+}
+//-----------------------------------------------------------------------------
+bool
+Consumer::shouldReconnect()
+{
+    // We cannot reconnect when the Proxy Supplier is NULL or autoreconnect is disabled
+    if(::CORBA::is_nil(proxySupplier_m) || false == autoreconnect_m)
     {
-        if(0 != pthread_create(&ncCheckerThread, NULL, Consumer::ncChecker,reinterpret_cast<void *>(this)))
-        {
-            ACS_SHORT_LOG((LM_ERROR,
-                "The thread responsible for checking the status of the Notify Channel %s cannot be created in the consumer", 
-                channelName_mp));
-            ncCheckerThread = 0;
-        } else {
-            ACS_SHORT_LOG((LM_INFO, "Created the thread responsible for checking the status of the Notify Channel %s",
-                channelName_mp));
-        }
-    }
-    checkNC_m = true;
-}
-//-----------------------------------------------------------------------------
-bool
-Consumer::isReadyToCheckNC()
-{
-    return checkNC_m && 0 != reference_m.in() && !::CORBA::is_nil(proxySupplier_m);
-}
-//-----------------------------------------------------------------------------
-bool
-Consumer::isConnected()
-{
-    try {
-        proxySupplier_m->connect_structured_push_consumer(reference_m.in());
-        return true;
-    } catch(CORBA::OBJECT_NOT_EXIST &ex) { 
         return false;
-    } catch(CosEventChannelAdmin::AlreadyConnected &ex) {
-        return true;
+    }
+
+    try {
+        proxySupplier_m->resume_connection();
+        return false;
+    } catch(CosNotifyChannelAdmin::ConnectionAlreadyActive &ex) {
+        return false;
+    } catch(CosNotifyChannelAdmin::NotConnected e) {
+        return true; 
     } catch(...) {}
-    return false;
+    return true;
 }
 //-----------------------------------------------------------------------------
 void*
@@ -373,7 +342,7 @@ Consumer::checkNotifyChannel()
 {
     while(false == stopNCCheckerThread)
     {
-        if(autoreconnect_m && isReadyToCheckNC() && false == isConnected())
+        if(shouldReconnect())
         {
             if(false == reinitFailed)
             {
@@ -394,14 +363,61 @@ Consumer::checkNotifyChannel()
     }
 }
 //-----------------------------------------------------------------------------
+void Consumer::createCheckerThread()
+{
+    if(0 == ncCheckerThread)
+    {
+        stopNCCheckerThread = false;
+        if(0 != pthread_create(&ncCheckerThread, NULL, Consumer::ncChecker,reinterpret_cast<void *>(this)))
+        {
+            ACS_SHORT_LOG((LM_ERROR,
+                "The thread responsible for checking the status of the Notify Channel %s cannot be created in the consumer", 
+                channelName_mp));
+            ncCheckerThread = 0;
+        } else {
+            ACS_SHORT_LOG((LM_INFO, "Created the thread responsible for checking the status of the Notify Channel %s",
+                channelName_mp));
+        }
+    }
+}
+//-----------------------------------------------------------------------------
+void Consumer::destroyCheckerThread()
+{
+    if(0 != ncCheckerThread)
+    {
+        stopNCCheckerThread = true;
+        int resJoin = pthread_join(ncCheckerThread, NULL);
+        switch(resJoin)
+        {
+        case 0:
+            ACS_SHORT_LOG((LM_INFO, "Destroyed the thread responsible for checking the status of the Notify Channel %s",
+                    channelName_mp));
+            ncCheckerThread = 0;
+            break;
+        case EDEADLK:
+            ACS_SHORT_LOG((LM_ERROR,"Consumer::destroyCheckerThread: A deadlock was detected while waiting to join the thread responsible for checking the status of channel %s", channelName_mp));
+            break;
+        case EINVAL:
+            ACS_SHORT_LOG((LM_ERROR,"Consumer::destroyCheckerThread: The thread responsible for checking the status of channel %s is not joinable", channelName_mp));
+            break;
+        case ESRCH:
+            ncCheckerThread = 0;
+            ACS_SHORT_LOG((LM_ERROR,"Consumer::destroyCheckerThread: The thread responsible for checking the status of channel %s has not been found", channelName_mp));
+            break;
+        }
+    }
+}
+//-----------------------------------------------------------------------------
 void 
 Consumer::resume()
 {
     ACS_TRACE("Consumer::resume");
-    
+
     try
 	{
-	proxySupplier_m->resume_connection();
+    proxySupplier_m->resume_connection();
+    // Create the thrad responsible for checking the connection to the channel
+    createCheckerThread();
 	}
     catch(CosNotifyChannelAdmin::ConnectionAlreadyActive e)
 	{
@@ -417,10 +433,23 @@ Consumer::resume()
 	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_INFO,"Consumer::resume failed for the '%s' channel!",
-		       channelName_mp));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Consumer::resume");
-	throw err.getCORBAProblemEx();
+    // Maybe the exception has been thrown because the consumer lost the connection to the channel
+    // so we will try to reconnect
+    if(autoreconnect_m)
+    {
+        try {
+            reinit();
+            createCheckerThread();
+            return; // Consumer reconnected again!
+        } catch(...) {
+            ACS_SHORT_LOG((LM_ERROR, 
+                "Consumer couldn't reinitialize the connection to the channel %s", channelName_mp));
+        }
+    }
+    ACS_SHORT_LOG((LM_INFO,"Consumer::resume failed for the '%s' channel!",
+               channelName_mp));
+    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Consumer::resume");
+    throw err.getCORBAProblemEx();
 	}
 }
 //-----------------------------------------------------------------------------
@@ -431,6 +460,7 @@ Consumer::suspend()
     
     try
 	{
+    destroyCheckerThread();
 	proxySupplier_m->suspend_connection();
 	}
     catch(CosNotifyChannelAdmin::ConnectionAlreadyInactive e)
