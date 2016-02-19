@@ -162,17 +162,33 @@ void buildFlows(
 		vector<BDNTSenderSimulatorFlow*>& simSenders,
 		SenderFlowConfiguration& cfg,
 		vector<int> bytesToSend,
-		ACE_Barrier& startBarrier,
-		ACE_Barrier& doneBarrier,
+		ACE_Barrier** startBarrier,
+		ACE_Barrier** doneBarrier,
 		LoggingProxy& logger,
 		bool clean) {
 	if (clean) {
+		if (*startBarrier!=NULL) {
+			(*startBarrier)->shutdown();
+			delete *startBarrier;
+			*startBarrier=NULL;
+		}
+		if (*doneBarrier!=NULL) {
+			(*doneBarrier)->shutdown();
+			delete *doneBarrier;
+			*doneBarrier=NULL;
+		}
 		cleanSimSenders(simSenders);
+	}
+	if (*startBarrier==NULL) {
+		*startBarrier= new ACE_Barrier(fNames.size()+1,"BDNT simulator start send barrier");
+	}
+	if (*doneBarrier==NULL) {
+		*doneBarrier = new ACE_Barrier(fNames.size()+1,"BDNT simulator done send barrier");
 	}
 	for(unsigned int t=0; t<fNames.size(); t++) {
 		//std::cout << cfg.getQosProfile() << std::endl;
-		BulkDataNTSenderFlow *flow = stream.createFlow(fNames[t].c_str(), cfg);
-		BDNTSenderSimulatorFlow* senderFlow = new  BDNTSenderSimulatorFlow(stream.getName().c_str(),fNames[t].c_str(),bytesToSend[t],startBarrier,doneBarrier,logger,flow);
+		BulkDataNTSenderFlow* flow = stream.createFlow(fNames[t].c_str(), cfg);
+		BDNTSenderSimulatorFlow* senderFlow = new  BDNTSenderSimulatorFlow(stream.getName().c_str(),fNames[t].c_str(),bytesToSend[t],*(*startBarrier),*(*doneBarrier),logger,flow);
 		simSenders.push_back(senderFlow);
 	}
 }
@@ -314,7 +330,7 @@ int main(int argc, char *argv[])
     // Dump the received params before starting the real computation
     cout << endl << "Computation will begin at " << startAt << endl;
     cout << "Will send data through " << flowNames.size() << " flows of the " << streamName << " stream:" << endl;
-    for (int t=0; t<flowNames.size(); t++) {
+    for (unsigned int t=0; t<flowNames.size(); t++) {
     	cout << "\t" << flowDataSize[t] << " bytes through flow " << flowNames[t] << endl;
     }
     cout << "Will run " << numOfIterations << " iterations " << " with a delay of " << delay << " seconds" << endl;
@@ -348,14 +364,16 @@ int main(int argc, char *argv[])
 
 	// The barrier to start all the sending at the same time
 	// There is one thread for each flow pluse the one of the main
-	ACE_Barrier* theStartBarrier = new ACE_Barrier(flowNames.size()+1,"BDNT simulator start send barrier");
+	ACE_Barrier* theStartBarrier=NULL;
 
 	// The barrier to notify that all the sending have been completed
 	// There is one thread for each flow pluse the one of the main
-	ACE_Barrier* theDoneBarrier = new ACE_Barrier(flowNames.size()+1,"BDNT simulator done send barrier");
+	ACE_Barrier* theDoneBarrier=NULL;
 
 	// Build the flows and the associated BDNTSenderSimulatorFlow's
-	buildFlows(flowNames, senderStream,bdntSenderSimFlow,cfg,flowDataSize,*theStartBarrier,*theDoneBarrier,m_logger,true);
+	if (!recreate) {
+		buildFlows(flowNames,senderStream,bdntSenderSimFlow,cfg,flowDataSize,&theStartBarrier,&theDoneBarrier,m_logger,true);
+	}
 
 	sleepUntil(startAt);
 
@@ -364,6 +382,9 @@ int main(int argc, char *argv[])
 	{
 		// Start all the thread i.e. all the sending
 		std::cout << "\nIteration: " << n << " of " << numOfIterations << std::endl;
+		if (recreate) {
+			buildFlows(flowNames,senderStream,bdntSenderSimFlow,cfg,flowDataSize,&theStartBarrier,&theDoneBarrier,m_logger,true);
+		}
 		theStartBarrier->wait();
 		ACE_Time_Value totSendTime = ACE_OS::gettimeofday();
 		// Waiting for the sending to terminate from all the threads
@@ -382,7 +403,7 @@ int main(int argc, char *argv[])
 		cout << "Total transfer rate "<< totalThroughput << "MBytes/sec" << endl << endl;
 
 		if (n<numOfIterations) {
-			cout << "Waiting " << delay << " before next iteration..." << endl;
+			cout << "Waiting " << delay << " secs before next iteration..." << endl;
 			sleep(delay);
 		} else {
 			cout << "All iterations executed" << endl;
