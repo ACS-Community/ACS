@@ -114,6 +114,7 @@ bool sleepUntil(char* startTime) {
 
 	if ((requestedTimeInSecs-actualTimeInSecs)<=0) {
 		cerr << "Start time is in the past!" << endl;
+		exit(1);
 	}
 	cout << "Going to sleep till " << h << ":" << m << ":" << s <<" (" << (requestedTimeInSecs-actualTimeInSecs) << " secs)" << endl ;
 	sleep(requestedTimeInSecs-actualTimeInSecs);
