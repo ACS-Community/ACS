@@ -308,8 +308,13 @@ int main(int argc, char *argv[])
 		double totalThroughput=(totBytesSent/(1024.0*1024.0))/send_time;
 		cout << "Total transfer rate "<< totalThroughput << "MBytes/sec" << endl << endl;
 
-		cout << "Waiting " << delay << " before next iteration..." << endl;
-		sleep(delay);
+		if (n<numOfIterations) {
+			cout << "Waiting " << delay << " before next iteration..." << endl;
+			sleep(delay);
+		} else {
+			cout << "All iterations executed" << endl;
+		}
+
 	}
 
 	// Terminate all the threads
