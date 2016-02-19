@@ -229,11 +229,15 @@ int main(int argc, char *argv[])
 	unsigned int numOfIterations = 1;
 
 	// Parse the args
-    ACE_Get_Opt get_opts (argc, argv, "g:s:f:b:l:d:t:a:o:q:x:r");
+    ACE_Get_Opt get_opts (argc, argv, "g:s:f:b:l:d:t:a:o:q:x:rh");
     char c;
     while((c = get_opts()) != -1 ) {
     	switch(c) {
-
+    	case 'h':
+		{
+			print_usage(argv);
+			break;
+		}
 		case 'l':
 		{
 			numOfIterations = atoi(get_opts.opt_arg());
