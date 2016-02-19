@@ -112,6 +112,9 @@ bool sleepUntil(char* startTime) {
 	time_t requestedTimeInSecs = mktime(requestedTime);
 	time_t actualTimeInSecs = time (NULL);
 
+	if ((requestedTimeInSecs-actualTimeInSecs)<=0) {
+		cerr << "Start time is in the past!" << endl;
+	}
 	cout << "Going to sleep till " << h << ":" << m << ":" << s <<" (" << (requestedTimeInSecs-actualTimeInSecs) << " secs)" << endl ;
 	sleep(requestedTimeInSecs-actualTimeInSecs);
 
