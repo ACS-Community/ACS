@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 	int delay =10;
 
 	// The name fo the flows
-	list<char *> flowNames;
+	list<std::string> flowNames;
 
 	// The number of bytes to sent through each flow (default is dataSize)
 	list<int> flowDataSize;
@@ -211,9 +211,10 @@ int main(int argc, char *argv[])
     	{
     		ACE_Tokenizer tok(get_opts.opt_arg());
     		tok.delimiter_replace(',', 0);
-    		for(char *p = tok.next(); p; p = tok.next())
-    			flowNames.push_back(p);
-
+    		for(char *p = tok.next(); p; p = tok.next()) {
+    			std::string flowName(p);
+    			flowNames.push_back(flowName);
+    		}
     		break;
     	}
     	case 'b':
@@ -264,11 +265,11 @@ int main(int argc, char *argv[])
     	flowDataSize.push_back(dataSize);
     }
 
-    // Dump the received params before starting the rela compiutation
+    // Dump the received params before starting the real computation
     cout << endl << "Computation will begin at " << startAt << endl;
     cout << "Will send data through " << flowNames.size() << " flows of the " << streamName << " stream:" << endl;
     list<int>::iterator sizesIt = flowDataSize.begin();
-    for (list<char *>::iterator it = flowNames.begin(); it != flowNames.end(); it++) {
+    for (list<std::string>::iterator it = flowNames.begin(); it != flowNames.end(); it++) {
     	cout << "\t" << (*sizesIt) << " bytes through flow " << (*it) << endl;
     	sizesIt++;
     }
@@ -310,11 +311,11 @@ int main(int argc, char *argv[])
 	ACE_Barrier* theDoneBarrier = new ACE_Barrier(flowNames.size()+1,"BDNT simulator done send barrier");
 
 	// Build the flows and the associated BDNTSenderSimulatorFlow's
-	list<char *>::iterator it;
+	list<std::string>::iterator it;
 	for(it = flowNames.begin(); it != flowNames.end(); it++) {
 		//std::cout << cfg.getQosProfile() << std::endl;
-		BulkDataNTSenderFlow *flow = senderStream.createFlow((*it), cfg);
-		BDNTSenderSimulatorFlow* senderFlow = new  BDNTSenderSimulatorFlow(streamName,(*it),65000,*theStartBarrier,*theDoneBarrier,m_logger,flow);
+		BulkDataNTSenderFlow *flow = senderStream.createFlow((*it).c_str(), cfg);
+		BDNTSenderSimulatorFlow* senderFlow = new  BDNTSenderSimulatorFlow(streamName,(*it).c_str(),65000,*theStartBarrier,*theDoneBarrier,m_logger,flow);
 		bdntSenderSimFlow.push_back(senderFlow);
 	}
 
