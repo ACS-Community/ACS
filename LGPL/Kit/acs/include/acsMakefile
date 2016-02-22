@@ -834,6 +834,11 @@ ifdef USER_CFLAGS
     CFLAGS := $(CFLAGS) $(USER_CFLAGS)                               
 endif
 
+ifdef MAKE_GCOV
+    CFLAGS := $(CFLAGS) -g -fprofile-arcs -ftest-coverage
+    LDFLAGS_GCOV= -fprofile-arcs -ftest-coverage  
+endif
+
 #
 # shell command to remove files and/or directories
 RM = rm -rf
@@ -1737,6 +1742,9 @@ pureClean:
 	$(AT) echo "Purify files cleaned."
 
 
+.PHONY: gcovClean
+gcovClean: $(foreach lib,$(LIBRARY_LIST),clean_gcov_lib_$(lib)) $(foreach exe,$(EXECUTABLE_LIST),clean_gcov_exe_$(exe))
+	$(AT)$(ECHO) "Gcov files cleaned."
 
 
 
