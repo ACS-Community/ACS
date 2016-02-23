@@ -31,3 +31,5 @@ cdbChannelConfigExists
 Manager hostname obtained via command line
 ManagerReference obtained via command line
 Bootstrap ORB
+Created the thread responsible for checking the status of the Notify Channel
+Destroyed the thread responsible for checking the status of the Notify Channel
