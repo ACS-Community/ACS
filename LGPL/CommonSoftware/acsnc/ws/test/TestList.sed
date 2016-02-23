@@ -58,3 +58,5 @@ s/===  Number of exceptions caught: [0-9]*/===  Number of exceptions caught: ZZZ
 
 s/count is greater than 2000 \[[0-9]*\]/count is greater than 2000 [XXX]/g
 s/count is lower than 2000 \[[0-9]*\]/count is lower than 2000 [XXX]/g
+
+s/initialized by [a-z,A-Z,0-9,-]*@[a-z,A-Z,0-9,-]* disconnect - Disconnect called for client/initialized by alma@alma disconnect - Disconnect called for client/g

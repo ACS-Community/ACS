@@ -21,8 +21,8 @@
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::getManager] Resolving manager...
 2 - ----------T--:--:--.--- [bilboContainer - maci::Container::init] Recovery enabled.
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Container 'bilboContainer' activated.
-2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Container 'bilboContainer' initialized successfuly
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Connecting to the Manager...
@@ -34,10 +34,10 @@
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Connected to the Centralized Logger.
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Logging into the Manager...
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
-2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Logged into the Manager.
 2 - ----------T--:--:--.--- [bilboContainer - ContainerImpl::run] Container running...
-2 - ContainerStatusMsg: Manager access initialization ends
+2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::init] Logged into the Manager.
 2 - ContainerStatusMsg: Automatic component loading begins
+2 - ContainerStatusMsg: Manager access initialization ends
 2 - ContainerStatusMsg: Startup ends
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 0 components queued to be activated.
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
@@ -50,20 +50,20 @@
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Switched state of component CON_COMP_1: INITIALIZING -> INITIALIZED
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Switched state of component CON_COMP_1: NEW -> INITIALIZING
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::activate_component] Component 'CON_COMP_1' activated.
-2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libacsncSupCompImpl.so'
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsncSupCompImpl'.
+2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libacsncSupCompImpl.so'
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libacsncSupCompImpl.so'.
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Switched state of component SUP_COMP_1: NEW -> INITIALIZING
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Switched state of component SUP_COMP_1: INITIALIZED -> OPERATIONAL
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Switched state of component SUP_COMP_1: INITIALIZING -> INITIALIZED
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Switched state of component SUP_COMP_1: INITIALIZED -> OPERATIONAL
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::activate_component] Component 'SUP_COMP_1' activated.
 2 - ----------T--:--:--.--- [SUP_COMP_1 - ] Start sending 3000 events via SimpleSupplier.
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::addSubscription subscribing to 'EventDescription' events for the 'NamedCh' channel!
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Created the thread responsible for checking the status of the Notify Channel NamedCh
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::resume failed because already resumed for the 'NamedCh' channel!
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Destroyed the thread responsible for checking the status of the Notify Channel NamedCh
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Created the thread responsible for checking the status of the Notify Channel NamedCh
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::resume failed because already resumed for the 'NamedCh' channel!
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Created the thread responsible for checking the status of the Notify Channel NamedCh
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::resume failed because already resumed for the 'NamedCh' channel!
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Destroyed the thread responsible for checking the status of the Notify Channel NamedCh
 5 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NamedCh Notification Service
@@ -83,18 +83,18 @@
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Switched state of component CON_COMP_1: DESTROYING -> DEFUNCT
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Destroyed the thread responsible for checking the status of the Notify Channel NamedCh
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::etherealizeComponent] Component 'CON_COMP_1' etherealized.
-2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::deactivate_component] Component 'CON_COMP_1' deactivated.
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacsncConCompImpl.so'.
-3 - ----------T--:--:--.--- Python Client: initialized by almadev@alma disconnect - Disconnect called for client
-3 - ----------T--:--:--.--- Python Client: initialized by almadev@alma disconnect - Disconnect called for client
+2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::deactivate_component] Component 'CON_COMP_1' deactivated.
+3 - ----------T--:--:--.--- Python Client: initialized by alma@alma disconnect - Disconnect called for client
+3 - ----------T--:--:--.--- Python Client: initialized by alma@alma disconnect - Disconnect called for client
 2 - ----------T--:--:--.--- [SUP_COMP_1 - ] Finished sending 3000 events via SimpleSupplier.
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Switched state of component SUP_COMP_1: OPERATIONAL -> DESTROYING
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Switched state of component SUP_COMP_1: DESTROYING -> DEFUNCT
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Switched state of component SUP_COMP_1: OPERATIONAL -> DESTROYING
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::etherealizeComponent] Component 'SUP_COMP_1' etherealized.
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacsncSupCompImpl.so'.
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::deactivate_component] Component 'SUP_COMP_1' deactivated.
-4 - ----------T--:--:--.--- Python Client: initialized by almadev@alma disconnect - Disconnect called for client
-4 - ----------T--:--:--.--- Python Client: initialized by almadev@alma disconnect - Disconnect called for client
+4 - ----------T--:--:--.--- Python Client: initialized by alma@alma disconnect - Disconnect called for client
+4 - ----------T--:--:--.--- Python Client: initialized by alma@alma disconnect - Disconnect called for client
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::logout] Logging out from the Manager.
 2 - ----------T--:--:--.--- [bilboContainer - maci::ContainerImpl::logout] Logged out from the Manager.
 2 - ----------T--:--:--.--- [bilboContainer - ContainerImpl::run] Container stopping...
