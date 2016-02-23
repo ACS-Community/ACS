@@ -53,3 +53,4 @@ Loaded SCXML file jar
 Started SM execution
 Logger jacorb@.* created with custom log levels local=Info, remote=Info
 Created the thread responsible for checking the status of the Notify Channel
+Destroyed the thread responsible for checking the status of the Notify Channel
