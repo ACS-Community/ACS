@@ -32,7 +32,7 @@ SOURCE acsstartupTATEnvironment
 PROLOGUE acsstartupTATPrologue
 0  testAcsInstance  "testAcsInstance.sh"
 1  T1  "acsStartORBSRVC -noloadIFR -b 9" "@SLEEP 30" "acsStop -b 9"
-2  T2  "acsStartORBSRVC -noloadIFR -b 9" "@SLEEP 30" "acsStartManager -b 9" "@SLEEP 3" "acsStop -b 9"
+2  T2  "acsStartORBSRVC -noloadIFR -b 9" "@SLEEP 50" "acsStartManager -b 9" "@SLEEP 3" "acsStop -b 9"
 3  T3  "acsStart -noloadifr -b 9" "@SLEEP 30" \
        "acsStartContainer -java -b 9 jCont" "@SLEEP 2" \
        "acsStartContainer -py -b 9 pyCont"  "@SLEEP 2" \
