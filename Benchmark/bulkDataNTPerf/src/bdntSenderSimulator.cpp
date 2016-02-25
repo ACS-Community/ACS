@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
 	bool recreate=false;
 	double sendTimeout=5.0, ACKtimeout=5.0;
 	ACE_Time_Value start_time, elapsed_time;
-	char *streamName = "DefaultStream";
+	string streamName = "DefaultStream";
 
 	/**
 	 * The name of the XML file with the QoS definition
@@ -352,7 +352,7 @@ int main(int argc, char *argv[])
 	vector<BDNTSenderSimulatorFlow*> bdntSenderSimFlow;
 	// first we need a stream
 	SenderStreamConfiguration scfg;
-	BulkDataNTSenderStream senderStream(streamName, scfg);
+	BulkDataNTSenderStream senderStream(streamName.c_str(), scfg);
 
 	// Configure the stream
 	SenderFlowConfiguration cfg;
