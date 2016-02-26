@@ -22,6 +22,7 @@
 * almadev  2016-02-18  created 
 */
 #include "BDNTSenderSimulatorFlow.h"
+#include "ACS_BD_Errors.h"
 
 BDNTSenderSimulatorFlow::BDNTSenderSimulatorFlow(
 		const char* streamName,
@@ -72,24 +73,45 @@ int BDNTSenderSimulatorFlow::svc(void) {
 		//
 		// the param is the name of this object (i.e flow@stream)
 		cout << name << " is going to call startSend with parameter [" << name << "] to " << flow->getNumberOfReceivers() << " receiver(s)" << endl;
-		startSendExecTime = ACE_OS::gettimeofday();
-		flow->startSend((const unsigned char*)name.c_str(), name.size());
-		startSendExecTime = ACE_OS::gettimeofday() - startSendExecTime;
+		try {
+			startSendExecTime = ACE_OS::gettimeofday();
+			flow->startSend((const unsigned char*)name.c_str(), name.size());
+			startSendExecTime = ACE_OS::gettimeofday() - startSendExecTime;
+		} catch (ACS_BD_Errors::StartSendErrorExImpl e) {
+			cout <<  name << ": StartSendErrorExImpl exception caught! "  << endl;
+			e.log();
+		} catch (...) {
+			cout << name <<  ": eneric C++ exception caught while starting data"  << endl;
+		}
 
 		// sendData
 		cout << name << " is going to send " << size << " bytes to " << flow->getNumberOfReceivers() << " receiver(s)" << endl;
-		sendDataExecTime = ACE_OS::gettimeofday();
-		flow->sendData(charsToSend, size);
-		sendDataExecTime = ACE_OS::gettimeofday() - sendDataExecTime;
-		double send_time = (sendDataExecTime.sec()+( sendDataExecTime.usec() / 1000000. ));
-		throuhgput = (size/(1024.0*1024.0))/send_time;
-		cout << name << " sent " << size << " bytes to " << flow->getNumberOfReceivers() << " receiver(s)" << endl;
+		try {
+			sendDataExecTime = ACE_OS::gettimeofday();
+			flow->sendData(charsToSend, size);
+			sendDataExecTime = ACE_OS::gettimeofday() - sendDataExecTime;
+			double send_time = (sendDataExecTime.sec()+( sendDataExecTime.usec() / 1000000. ));
+			throuhgput = (size/(1024.0*1024.0))/send_time;
+			cout << name << " sent " << size << " bytes to " << flow->getNumberOfReceivers() << " receiver(s)" << endl;
+		} catch (ACS_BD_Errors::SendDataErrorExImpl e) {
+			cout << name << ": SendDataErrorExImpl exception caught! "  << endl;
+			e.log();
+		} catch (...) {
+			cout << name <<  ": generic C++ exception caught while sending data"  << endl;
+		}
 
 		// stopSend
 		cout << name << " is going to call stopSend to " << flow->getNumberOfReceivers() << " receiver(s)" << endl;
-		stopSendExecTime = ACE_OS::gettimeofday();
-		flow->stopSend();
-		stopSendExecTime = ACE_OS::gettimeofday() - stopSendExecTime;
+		try {
+			stopSendExecTime = ACE_OS::gettimeofday();
+			flow->stopSend();
+			stopSendExecTime = ACE_OS::gettimeofday() - stopSendExecTime;
+		} catch (ACS_BD_Errors::StopSendErrorExImpl  e) {
+			cout << name << ": StopSendErrorExImpl exception caught! "  << endl;
+			e.log();
+		} catch (...) {
+			cout << name << ": generic C++ exception caught while sending data"  << endl;
+		}
 
 		// Signal that the iteration terminated
 		doneSendBarrier.wait();
