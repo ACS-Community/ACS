@@ -106,6 +106,28 @@ int ReceiverFlowSimCallback::cbStop()
 	return 0;
 }
 
+void ReceiverFlowSimCallback::onError(ACSErr::CompletionImpl &error)
+{
+	error.log();
+	std:: cout << "An error occurred to flow " << fn << ": type=" << error.getType() << " code=" << error.getCode() << std::endl;
+}
+
+void ReceiverFlowSimCallback::onSenderConnect(unsigned short totalSenders)
+{
+	std:: cout << "A new sender connected to " << fn << ": number of connected senders " << totalSenders << std::endl;
+}
+
+void ReceiverFlowSimCallback::onSenderDisconnect(unsigned short totalSenders)
+{
+	std:: cout << "A sender disconnected from " << fn << ": number of connected senders " << totalSenders << std::endl;
+}
+
+void ReceiverFlowSimCallback::onDataLost(unsigned long frameCount, unsigned long totalFrames, ACSErr::CompletionImpl &error)
+{
+	std:: cout << fn << ": frame " << frameCount << " out of a total of "<< totalFrames << "did not arrive!" << std::endl;
+	error.log();
+}
+
 
 
 /*___oOo___*/

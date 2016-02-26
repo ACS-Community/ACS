@@ -59,6 +59,48 @@ public:
 	static long cbDealy;
 	static bool cbReceivePrint;
 
+	/**
+		 * This method is called when an error happens in the flow's callback (cbStart/cbReceive/cbStop),
+		 *
+		 * @param error - at the moment possible completion errors are:
+		 * #WrongFrameOrderCompletion
+		 * #UnknownDataTypeCompletion
+		 * #DDSReturnErrorCompletion
+		 * #CBReceiveProcessTimeoutCompletion
+		 * #DDSRequestedDeadlineMissedCompletion Requested
+		 * #DDSRequestedIncompatibleQoSCompletion
+		 *
+		 * @see AcsBulkdata::BulkDataNTCallback
+		 */
+		virtual void onError(ACSErr::CompletionImpl &error);
+
+		/**
+		 * The method is called when a new sender is connected to a flow
+		 * @param totalSeners new number os senders after connect
+		 *
+		 * @see AcsBulkdata::BulkDataNTCallback
+		 */
+		virtual void onSenderConnect(unsigned short totalSenders);
+
+		/**
+		 * The method is called when a sender is disconnected for a flow
+		 * @param totalSeners new number of senders, after disconnect
+		 *
+		 * @see AcsBulkdata::BulkDataNTCallback
+		 */
+		virtual void onSenderDisconnect(unsigned short totalSenders);
+
+		/**
+		 * The method is called when a frame (DDS sample) did not arrive.
+		 * The default implementation just log the completion.
+		 * @param frmaeCount - missed frame number/count
+		 * @param totalFrames - total number of frames that should arrived
+		 * @param error completion: #SampleLostCompletion, if detected by DDS or #FrameLostCompletion if detected by BD
+		 *
+		 * @see AcsBulkdata::BulkDataNTCallback
+		 */
+		virtual void onDataLost(unsigned long frameCount, unsigned long totalFrames, ACSErr::CompletionImpl &error);
+
 private:
 	std::string fn; ///flow Name
 	std::string sn; ///stream name
