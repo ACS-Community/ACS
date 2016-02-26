@@ -17,3 +17,4 @@ object is activated
 object is deactivated
 servant is etherealized
 Logger jacorb@.* created with custom log levels local=Info, remote=Info
+===   Exceptions found:
