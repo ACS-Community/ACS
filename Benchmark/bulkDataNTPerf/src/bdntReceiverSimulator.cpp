@@ -32,7 +32,7 @@
 using namespace std;
 
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in usec] [-u[unicast port] unicast mode] [-m multicast address] [-n suppers printing in cbReceive] [-w output filename prefix]" << endl;
+	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in usec] [-u[unicast port] unicast mode] [-m multicast address] [-n suppers printing in cbReceive] [-w output filename prefix] [-q qosFileName] [-x qosLibName]" << endl;
 	exit(1);
 }
 
@@ -45,7 +45,8 @@ int main(int argc, char *argv[])
 	ReceiverFlowConfiguration flowCfg;
 	char *streamName = "DefaultStream";
 	char *outputFilenamePrefix = 0;
-	string qosLib="BulkDataQoSLibrary";
+	string qosLibFileName="BulkDataQoSLibrary";
+	string qosFileName;
 	/*char unicastPortQoS[250];
 	unsigned int unicastPort=24000;
 	*/
@@ -53,21 +54,11 @@ int main(int argc, char *argv[])
 	list<char *> flowNames;
 
 	// Parse the args
-	ACE_Get_Opt get_opts (argc, argv, "s:f:d:m:u::nw:");
-	if(get_opts.long_option(ACE_TEXT ("qos_lib"), 0, ACE_Get_Opt::ARG_REQUIRED) == -1)
-	    {
-	    	cerr << "long option: qos_lib can not be added" << endl;
-	    	return -1;
-	    }
+	ACE_Get_Opt get_opts (argc, argv, "q:x:s:f:d:m:u::nw:");
 
 	while(( c = get_opts()) != -1 ) {
 
 		switch(c) {
-			case 0: //long option (qos_lib)
-			{
-				qosLib = get_opts.opt_arg();
-				break;
-			}
 			case 'n':
 			{
 				ReceiverFlowSimCallback::cbReceivePrint=false;
@@ -111,6 +102,16 @@ int main(int argc, char *argv[])
 				outputFilenamePrefix = strdup(get_opts.opt_arg());
 				break;
 			}
+			case 'q':
+			{
+				qosFileName = get_opts.opt_arg();
+				break;
+			}
+			case 'x':
+			{
+				qosLibFileName = get_opts.opt_arg();
+				break;
+			}
 		}//case
 
 	}//while
@@ -125,9 +126,22 @@ int main(int argc, char *argv[])
 	vector<BulkDataNTReceiverFlow*> flows;
 	vector<ReceiverFlowSimCallback*> callbacks;
 
+	cout << "Will receive data through " << flowNames.size() << " flows of the " << streamName << " stream:" << endl;
+	list<char *>::iterator it;
+	for (it = flowNames.begin(); it != flowNames.end(); it++) {
+		cout << "\t" << *it << endl;
+	}
+	if (!qosFileName.empty()) cout << "Load QoS settings from " <<  qosFileName << endl;
+	if (!qosLibFileName.empty()) cout << "Load QoS library from " <<  qosLibFileName << endl;
+
 	//streamCfg.setUseIncrementUnicastPort(false);
 	//streamCfg.setParticipantPerStream(true);
-	streamCfg.setQosLibrary(qosLib.c_str());//"TCPBulkDataQoSLibrary");
+	if (!qosFileName.empty()) {
+		streamCfg.setQosProfile(qosFileName);
+	}
+	if (!qosLibFileName.empty()) {
+		streamCfg.setQosLibrary(qosLibFileName);
+	}
 
 /*	ReceiverStreamConfiguration streamCfg100;
 	streamCfg100.setQosLibrary("XBulkDataQoSLibrary");
@@ -137,8 +151,8 @@ int main(int argc, char *argv[])
 
 
 	//flowCfg.setUnicastPort(47000);
-	flowCfg.setQosLibrary(qosLib.c_str());//"TCPBulkDataQoSLibrary");
-	list<char *>::iterator it;
+	flowCfg.setQosLibrary(qosLibFileName.c_str());//"TCPBulkDataQoSLibrary");
+
 	//unsigned int j=0;
 	for(it = flowNames.begin(); it != flowNames.end(); it++) {
 		/*
