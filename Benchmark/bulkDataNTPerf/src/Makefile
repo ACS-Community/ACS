@@ -74,14 +74,14 @@ endif
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = bdntSenderSimulator bulkDataNTGenReceiver
+EXECUTABLES     = bdntSenderSimulator bdntReceiverSimulator
 EXECUTABLES_L   = 
 
 bdntSenderSimulator_OBJECTS = bdntSenderSimulator BDNTSenderSimulatorFlow SenderFlowSimCallback
 bdntSenderSimulator_LIBS= bulkDataNTSender
 
-bulkDataNTGenReceiver_OBJECTS = bulkDataNTGenReceiver ReceiverFlowSimCallback
-bulkDataNTGenReceiver_LIBS= bulkDataNTReceiver 
+bdntReceiverSimulator_OBJECTS = bdntReceiverSimulator ReceiverFlowSimCallback
+bdntReceiverSimulator_LIBS= bulkDataNTReceiver 
 
 #
 # <brief description of xxxxx program>
