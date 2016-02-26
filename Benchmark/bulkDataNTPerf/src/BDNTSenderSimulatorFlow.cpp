@@ -91,7 +91,7 @@ void BDNTSenderSimulatorFlow::sendDataThread() {
 		sendDataExecTime = ACE_OS::gettimeofday() - sendDataExecTime;
 		double send_time = (sendDataExecTime.sec()+( sendDataExecTime.usec() / 1000000. ));
 		throuhgput = (size/(1024.0*1024.0))/send_time;
-
+		cout << name << " sent " << size << " bytes to " << flow->getNumberOfReceivers() << " receiver(s)" << endl;
 
 		// stopSend
 		cout << name << " is going to call stopSend to " << flow->getNumberOfReceivers() << " receiver(s)" << endl;
