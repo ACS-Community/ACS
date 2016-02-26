@@ -23,124 +23,13 @@
 * bjeram  2011-04-19  created
 */
 #include "bulkDataNTReceiverStream.h"
-#include "bulkDataNTCallback.h"
+#include "ReceiverFlowSimCallback.h"
 #include <iostream>
 #include <iosfwd>
 #include <ace/Get_Opt.h>
 #include <ace/Tokenizer_T.h>
 
 using namespace std;
-
-class  TestCB:  public BulkDataNTCallback
-{
-public:
-	TestCB() :
-		dataToStore(0)
-	{
-		totalRcvData=0;
-	}
-
-	virtual ~TestCB()
-	{
-		std::cout << "Total received data for: " << getStreamName() << "#" << getFlowName()  << " : " << totalRcvData << std::endl;
-	}
-
-	int cbStart(unsigned char* userParam_p, unsigned  int size)
-	{
-		// we cannot initialize flow name and flow stream in ctor, because they are after CB object is created
-		fn = getFlowName();
-		sn = getStreamName();
-
-		std::cout << "cbStart[ " << sn << "#" << fn  << " ]: got a parameter: ";
-		if( storeData ) {
-			dataToStore.push_back(size); // TODO: this trims an uint into an unsigned char (2/4 bytes to 1)
-		}
-		for(unsigned int i=0; i<size; i++)
-		{
-			std::cout <<  *(char*)(userParam_p+i);
-			if( storeData ) {
-				dataToStore.push_back(*(userParam_p+i));
-			}
-		}
-		std::cout << " of size: " << size << std::endl;
-		frameCount = 0;
-		rcvDataStartStop = 0;
-
-		return 0;
-	}//cbStart
-
-	int cbReceive(unsigned char* data, unsigned  int size)
-	{
-
-		rcvDataStartStop+=size;
-		totalRcvData+=size;
-		frameCount++;
-		if (cbReceivePrint)
-		{
-			std::cout << "cbReceive[ " << sn << "#" << fn << " ]: got data of size: " << size << " (";
-			std::cout <<  rcvDataStartStop << ", " << frameCount << ") :";
-			/*		for(unsigned int i=0; i<frame_p->length(); i++)
-		{
-			std::cout <<  *(char*)(frame_p->base()+i);
-		}
-			 */
-			std::cout << std::endl;
-		}
-		if (cbDealy>0) 
-		  {
-		    ACE_Time_Value start_time, elapsed_time;
-		    start_time =  ACE_OS::gettimeofday();
-		    elapsed_time =  ACE_OS::gettimeofday() - start_time;
-		    // usleep(cbDealy);
-		    while (elapsed_time.usec() <  cbDealy)
-		      {
-			elapsed_time = ACE_OS::gettimeofday() - start_time;
-		      }
-
-		  }
-
-		if( storeData ) {
-			for(unsigned int i=0; i<size; i++) {
-				dataToStore.push_back(*(data + i));
-			}
-		}
-		return 0;
-	}
-
-	int cbStop()
-	{
-		std::cout << "cbStop[ " << sn << "#" << fn << " ]" << std::endl;
-		return 0;
-	}
-
-	void setStoreData(bool shouldStoreData) {
-		storeData = shouldStoreData;
-	}
-
-	list<unsigned char> getData() {
-		return dataToStore;
-	}
-
-	uint16_t getUserParamSize() {
-		return userParamSize;
-	}
-
-	static long cbDealy;
-	static bool cbReceivePrint;
-
-private:
-	std::string fn; ///flow Name
-	std::string sn; ///stream name
-	unsigned int totalRcvData; ///total size of all received data
-	unsigned int rcvDataStartStop; ///size of received data between Start/stop
-	unsigned int frameCount; ///frame count
-	bool storeData;
-	uint16_t userParamSize;
-	list<unsigned char> dataToStore;
-};
-
-long TestCB::cbDealy = 0;
-bool TestCB::cbReceivePrint=true;
 
 void print_usage(char *argv[]) {
 	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in usec] [-u[unicast port] unicast mode] [-m multicast address] [-n suppers printing in cbReceive] [-w output filename prefix]" << endl;
@@ -181,7 +70,7 @@ int main(int argc, char *argv[])
 			}
 			case 'n':
 			{
-				TestCB::cbReceivePrint=false;
+				ReceiverFlowSimCallback::cbReceivePrint=false;
 				break;
 			}
 			case 'm':
@@ -214,7 +103,7 @@ int main(int argc, char *argv[])
 			}
 			case 'd':
 			{
-				TestCB::cbDealy = atoi(get_opts.opt_arg());
+				ReceiverFlowSimCallback::cbDealy = atoi(get_opts.opt_arg());
 				break;
 			}
 			case 'w':
@@ -234,7 +123,7 @@ int main(int argc, char *argv[])
 	ACS_CHECK_LOGGER;
 
 	vector<BulkDataNTReceiverFlow*> flows;
-	vector<TestCB*> callbacks;
+	vector<ReceiverFlowSimCallback*> callbacks;
 
 	//streamCfg.setUseIncrementUnicastPort(false);
 	//streamCfg.setParticipantPerStream(true);
@@ -244,7 +133,7 @@ int main(int argc, char *argv[])
 	streamCfg100.setQosLibrary("XBulkDataQoSLibrary");
 	AcsBulkdata::BulkDataNTReceiverStream<TestCB> receiverStream100("TEST", streamCfg100);
 */
-	AcsBulkdata::BulkDataNTReceiverStream<TestCB> receiverStream(streamName, streamCfg);
+	AcsBulkdata::BulkDataNTReceiverStream<ReceiverFlowSimCallback> receiverStream(streamName, streamCfg);
 
 
 	//flowCfg.setUnicastPort(47000);
@@ -260,7 +149,7 @@ int main(int argc, char *argv[])
 		sprintf(multicastAdd, "225.3.2.%d", j++);
 		flowCfg.setMulticastAddress(multicastAdd);
 		*/
-		TestCB *cb = new TestCB();
+		ReceiverFlowSimCallback *cb = new ReceiverFlowSimCallback();
 		cb->setStoreData(outputFilenamePrefix != 0);
 		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), flowCfg, cb);
 		flows.push_back(flow);
