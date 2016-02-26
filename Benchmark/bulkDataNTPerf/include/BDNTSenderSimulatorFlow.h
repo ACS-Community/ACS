@@ -26,6 +26,7 @@
 
 #include <string>
 #include <ace/Barrier.h>
+#include <ace/Task.h>
 #include <ace/Thread_Manager.h>
 #include <ace/Thread.h>
 #include <logging.h>
@@ -48,7 +49,7 @@
  * sent through each flow can be substantially different so it would be
  * the time required to complete the sending.
  */
-class BDNTSenderSimulatorFlow {
+class BDNTSenderSimulatorFlow : public ACE_Task_Base {
 	public:
 	/**
 	 * Constructor
@@ -83,11 +84,12 @@ class BDNTSenderSimulatorFlow {
 	virtual ~BDNTSenderSimulatorFlow();
 
 	/**
-	 * This is the function that will be running in the spawned thread.
-	 * It does nothing else then invoke sendDataThread()
-	 * of the passed BDNTSenderSimulatorFlow object
+	 * This is the function that will be running in the spawned ACE thread.
+	 * It sends data through the flow: it waits for the barrier to start
+	 * then sends data through the DDS flow. When done blocks again in the barrier,
+	 * ready to start the next iteration
 	 */
-	static void* threadFunc(void *arg);
+	virtual int svc(void);
 
 	/**
 	 * Getter
@@ -177,9 +179,6 @@ class BDNTSenderSimulatorFlow {
 	 * to send data at a given iteration
 	 */
 	ACE_Barrier& doneSendBarrier;
-
-	// The thread manager
-	static ACE_Thread_Manager threadManager;
 
 	// Thread ID
 	ACE_thread_t threadId;

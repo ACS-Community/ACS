@@ -23,8 +23,6 @@
 */
 #include "BDNTSenderSimulatorFlow.h"
 
-ACE_Thread_Manager BDNTSenderSimulatorFlow::threadManager;
-
 BDNTSenderSimulatorFlow::BDNTSenderSimulatorFlow(
 		const char* streamName,
 		const char* flowName,
@@ -52,26 +50,20 @@ BDNTSenderSimulatorFlow::BDNTSenderSimulatorFlow(
 	}
 
 	// Start the thread
-	if (threadManager.spawn((ACE_THR_FUNC)BDNTSenderSimulatorFlow::threadFunc, this, 0, &threadId) == -1) {
-		cerr << "Error spawning thread" << name << endl;
-	} else {
-		cout << "Thread for "<< name << " started with Id=" << threadId << ": will send "<< size << " bytes" << endl;
-	}
+	this->activate(THR_NEW_LWP | THR_JOINABLE | THR_SUSPENDED | THR_SCHED_DEFAULT);
+	cout  << "Thread for "<< name << " started with Id=" << this->grp_id() << ": will send "<< size << " bytes (thread count " << this->thr_count() << ')'<< endl;
+	this->resume();
 }
 
 BDNTSenderSimulatorFlow::~BDNTSenderSimulatorFlow() {
+	// Ensure the thread terminated
+	this->wait();
 	delete charsToSend;
 	charsToSend = NULL;
 	cout << "BDNTSenderSimulatorFlow " << name << " destroyed" << endl;
 }
 
-void* BDNTSenderSimulatorFlow::threadFunc(void *arg) {
-	BDNTSenderSimulatorFlow* simSenderFlow = (BDNTSenderSimulatorFlow*)arg;
-	simSenderFlow->sendDataThread();
-	return NULL;
-}
-
-void BDNTSenderSimulatorFlow::sendDataThread() {
+int BDNTSenderSimulatorFlow::svc(void) {
 	cout << "Sender thread " << name << " started. Now entering the loop." << endl;
 	while (startSendBarrier.wait()!=-1) {
 		cout << "Sender thread " << name << " iteration #" << (++numOfIterations) << endl;
@@ -103,7 +95,7 @@ void BDNTSenderSimulatorFlow::sendDataThread() {
 		doneSendBarrier.wait();
 	}
 	cout << "Sender thread " << name << " now exiting." << endl;
+	return 0;
 }
-
 
 /*___oOo___*/
