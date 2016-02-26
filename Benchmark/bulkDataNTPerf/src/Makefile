@@ -77,7 +77,7 @@ endif
 EXECUTABLES     = bdntSenderSimulator bulkDataNTGenReceiver
 EXECUTABLES_L   = 
 
-bdntSenderSimulator_OBJECTS = bdntSenderSimulator BDNTSenderSimulatorFlow
+bdntSenderSimulator_OBJECTS = bdntSenderSimulator BDNTSenderSimulatorFlow SenderFlowSimCallback
 bdntSenderSimulator_LIBS= bulkDataNTSender
 
 bulkDataNTGenReceiver_OBJECTS = bulkDataNTGenReceiver
