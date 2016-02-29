@@ -106,17 +106,18 @@ public:
 	 */
 	void stopSend();
 
-	/**
-	 * Logs statistics for debugging
-	 * <P>
-	 * This log is usually submitted at the DEBUG level to avoid impacting
-	 * performances but in case of error we wish to force this log at ERROR
-	 * level.
-	 * With the parameter the user can freely customize the level of this log.
-	 * <P>
-	 * @param level: The level of the log
-	 */
 	void dumpStatistics(ACE_Log_Priority level=LM_DEBUG);
+	/**
+	 * Get and optionally logs the DataWriter statistics.
+	 *
+	 * RTI DDS collects global statistics and the changes from the last set of statistics so getting
+	 * the statistics has the effect to clean the dfference.
+	 * If this method is called before an operation then it is the same as performing a "clean"
+	 * and in case of error the stats read from the DataWriter refers to the last operation only.
+	 *
+	 * @param print: if true log the statistics
+	 */
+	void getStatistics(bool log);
 
 protected:
 
