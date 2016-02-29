@@ -359,6 +359,16 @@ void BulkDataNTReaderListener::on_liveliness_changed(DDS::DataReader*, const DDS
               (LM_INFO, "A new sender has connected to flow: %s of the stream: %s. Total alive connection(s): %d",
                   callback_mp->getFlowName(), callback_mp->getStreamName(),
                   lcs.alive_count));
+
+          // Check how many senders are connected to this flow
+          // because with the actual version only one sender can be connected at a given time
+          // (only one will receive the ACK, the others will timeout!)
+          if (lcs.alive_count>1) {
+        	  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+        	                (LM_WARNING, "Too many connected senders to flow: %s of the stream: %s: %d Max allowed 1",
+        	                    callback_mp->getFlowName(), callback_mp->getStreamName(),
+        	                    lcs.alive_count));
+          }
           BDNT_LISTENER_USER_ERR( callback_mp->onSenderConnect(lcs.alive_count) )
         }//for
     }else
