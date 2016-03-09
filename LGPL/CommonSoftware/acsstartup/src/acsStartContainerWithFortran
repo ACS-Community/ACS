@@ -31,10 +31,11 @@
 ACS_LOG_COMMAND $@
 
 ARCH=`uname -i`
-if [ "$ARCH" == "x86_64" ]; then
-	export LD_PRELOAD=libgfortran.so.1
+REL=$(lsb_release -r |awk '{print $2}')
+if [[ $REL == 6.* ]]; then
+    export LD_PRELOAD=libgfortran.so.3
 else
-	export LD_PRELOAD=libgfortran.so.1
+    export LD_PRELOAD=libgfortran.so.1
 fi
 # Start the container in the CASA environment
 acsStartContainer "$@"
