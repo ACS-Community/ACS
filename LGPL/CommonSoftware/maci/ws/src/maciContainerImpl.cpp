@@ -201,7 +201,8 @@ public:
 				// retry in case of COMM_FAILURE or TIMEOUT
 				if (tryNo < tries &&
 					(ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/COMM_FAILURE:1.0") ||
-					 ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/TIMEOUT:1.0"))
+					 ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/TIMEOUT:1.0") ||
+					 ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/TRANSIENT:1.0"))
 				)
 				{
 					ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ActivationMethod::call",
