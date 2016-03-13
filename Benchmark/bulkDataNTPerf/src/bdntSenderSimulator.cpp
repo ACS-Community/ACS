@@ -352,7 +352,7 @@ int main(int argc, char *argv[])
 	vector<BDNTSenderSimulatorFlow*> bdntSenderSimFlow;
 	// first we need a stream
 	SenderStreamConfiguration scfg;
-	scfg.setQosLibrary(qosFileName.c_str())
+	scfg.setQosLibrary(qosFileName.c_str());
 	BulkDataNTSenderStream senderStream(streamName.c_str(), scfg);
 
 	// Configure the stream
@@ -382,7 +382,9 @@ int main(int argc, char *argv[])
 
 	sleepUntil(startAt);
 
-	// first startSend
+	// The average of all the sending (i.e. totalthough put fro the number of iterations)
+	double averagedThoughput=0.0;
+
 	for(unsigned int n=1; n<=numOfIterations; n++)
 	{
 		// Start all the thread i.e. all the sending
@@ -406,7 +408,7 @@ int main(int argc, char *argv[])
 		double send_time = (totSendTime.sec()+( totSendTime.usec() / 1000000. ));
 		double totalThroughput=(totBytesSent/(1024.0*1024.0))/send_time;
 		cout << "Total transfer rate "<< totalThroughput << "MBytes/sec" << endl << endl;
-
+		averagedThoughput+=averagedThoughput;
 		if (n<numOfIterations) {
 			cout << "Waiting " << delay << " secs before next iteration..." << endl;
 			sleep(delay);
@@ -415,6 +417,8 @@ int main(int argc, char *argv[])
 		}
 
 	}
+
+	cout << endl << "**** Throughput averaged for the number of iterations: " << (averagedThoughput/numOfIterations) << endl <<endl;
 
 	// Terminate all the threads
 	theStartBarrier->shutdown();
