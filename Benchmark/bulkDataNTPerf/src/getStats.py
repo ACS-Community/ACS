@@ -111,9 +111,25 @@ if __name__ == "__main__":
     #print "allStats",allStats
     
     # Print the statistics of each flow of each file
+    print
+    print "==============================================================="
+    totMin=0
+    totAvg=0
+    totMax=0
+    totEntries=0
     for fileStat in allStats:
         for flowStat in fileStat:
             print "From file",flowStat['FileName']+":","Flow",flowStat['Name'],": min=",flowStat['Min'],"avg=",flowStat['Avg'], "max=",flowStat['Max']
+            totMin = totMin + flowStat['Min']
+            totAvg = totAvg + flowStat['Avg']
+            totMax = totMax + flowStat['Max']
+            totEntries = totEntries +1
+    print
+    print "Summary: min=",totMin/totEntries,"avg=",totAvg/totEntries, "max=",totMax/totEntries
+    print "==============================================================="
+    print 
+    print
+
     
             
      
