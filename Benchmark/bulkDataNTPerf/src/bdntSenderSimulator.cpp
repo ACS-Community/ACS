@@ -352,7 +352,6 @@ int main(int argc, char *argv[])
 	vector<BDNTSenderSimulatorFlow*> bdntSenderSimFlow;
 	// first we need a stream
 	SenderStreamConfiguration scfg;
-	scfg.setQosLibrary(qosFileName.c_str());
 	BulkDataNTSenderStream senderStream(streamName.c_str(), scfg);
 
 	// Configure the stream
