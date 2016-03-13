@@ -407,7 +407,7 @@ int main(int argc, char *argv[])
 		double send_time = (totSendTime.sec()+( totSendTime.usec() / 1000000. ));
 		double totalThroughput=(totBytesSent/(1024.0*1024.0))/send_time;
 		cout << "Total transfer rate "<< totalThroughput << "MBytes/sec" << endl << endl;
-		averagedThoughput+=averagedThoughput;
+		averagedThoughput+=totalThroughput;
 		if (n<numOfIterations) {
 			cout << "Waiting " << delay << " secs before next iteration..." << endl;
 			sleep(delay);
