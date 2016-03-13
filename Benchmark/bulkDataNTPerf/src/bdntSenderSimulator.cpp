@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
 	/**
 	 * The name of the XML file with the QoS definition
 	 */
-	std::string qosFileName="";
+	std::string qosFileName="BulkDataQoSLibrary";
 
 	/**
 	 * The name of the QoS library
