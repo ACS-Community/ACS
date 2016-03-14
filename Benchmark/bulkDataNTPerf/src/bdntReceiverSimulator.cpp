@@ -32,7 +32,7 @@
 using namespace std;
 
 void print_usage(char *argv[]) {
-	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in usec] [-u[unicast port] unicast mode] [-m multicast address] [-n suppers printing in cbReceive] [-w output filename prefix] [-q qosFileName] [-x qosLibName]" << endl;
+	cout << "Usage: " << argv[0] << " [-s streamName] -f flow1Name[,flow2Name,flow3Name...] [-d cbReceive delay(sleep) in usec] [-u[unicast port] unicast mode] [-m multicast address] [-w output filename prefix] [-q qosFileName] [-x qosLibName]" << endl;
 	exit(1);
 }
 
@@ -59,11 +59,6 @@ int main(int argc, char *argv[])
 	while(( c = get_opts()) != -1 ) {
 
 		switch(c) {
-			case 'n':
-			{
-				ReceiverFlowSimCallback::cbReceivePrint=false;
-				break;
-			}
 			case 'm':
 			{
 				flowCfg.setMulticastAddress(get_opts.opt_arg());
