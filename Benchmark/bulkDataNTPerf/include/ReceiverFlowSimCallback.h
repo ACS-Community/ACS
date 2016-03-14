@@ -57,7 +57,6 @@ public:
 	}
 
 	static long cbDealy;
-	static bool cbReceivePrint;
 
 	/**
 		 * This method is called when an error happens in the flow's callback (cbStart/cbReceive/cbStop),
@@ -110,6 +109,16 @@ private:
 	bool storeData;
 	uint16_t userParamSize;
 	std::list<unsigned char> dataToStore;
+
+	/**
+	 * The number of iterations i.e start-receive-stop
+	 */
+	int iterationsNum;
+
+	/**
+	 * Start time of ech iteration (to print out teh data rate in cbStop)
+	 */
+	ACE_Time_Value cbStartTime;
 };
 
 #endif /*!RECEIVERFLOWSIMCALLBACK_H*/

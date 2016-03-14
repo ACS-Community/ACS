@@ -25,10 +25,9 @@
 #include "ReceiverFlowSimCallback.h"
 
 long ReceiverFlowSimCallback::cbDealy = 0;
-bool ReceiverFlowSimCallback::cbReceivePrint=true;
 
 ReceiverFlowSimCallback::ReceiverFlowSimCallback() :
-	dataToStore(0)
+	dataToStore(0), iterationsNum(0)
 {
 	totalRcvData=0;
 }
@@ -40,11 +39,12 @@ ReceiverFlowSimCallback::~ReceiverFlowSimCallback()
 
 int ReceiverFlowSimCallback::cbStart(unsigned char* userParam_p, unsigned  int size)
 	{
+	// Record the start time of this iteration (start-receive-stop)
+	cbStartTime = ACE_OS::gettimeofday();
 	// we cannot initialize flow name and flow stream in ctor, because they are after CB object is created
 	fn = getFlowName();
 	sn = getStreamName();
 
-	std::cout << "cbStart[ " << sn << "#" << fn  << " ]: got a parameter: ";
 	if( storeData ) {
 		dataToStore.push_back(size); // TODO: this trims an uint into an unsigned char (2/4 bytes to 1)
 	}
@@ -68,17 +68,6 @@ int ReceiverFlowSimCallback::cbReceive(unsigned char* data, unsigned  int size)
 	rcvDataStartStop+=size;
 	totalRcvData+=size;
 	frameCount++;
-	if (cbReceivePrint)
-	{
-		std::cout << "cbReceive[ " << sn << "#" << fn << " ]: got data of size: " << size << " (";
-		std::cout <<  rcvDataStartStop << ", " << frameCount << ") :";
-		/*		for(unsigned int i=0; i<frame_p->length(); i++)
-	{
-		std::cout <<  *(char*)(frame_p->base()+i);
-	}
-		 */
-		std::cout << std::endl;
-	}
 	if (cbDealy>0)
 	  {
 		ACE_Time_Value start_time, elapsed_time;
@@ -86,9 +75,9 @@ int ReceiverFlowSimCallback::cbReceive(unsigned char* data, unsigned  int size)
 		elapsed_time =  ACE_OS::gettimeofday() - start_time;
 		// usleep(cbDealy);
 		while (elapsed_time.usec() <  cbDealy)
-		  {
-		elapsed_time = ACE_OS::gettimeofday() - start_time;
-		  }
+		{
+			elapsed_time = ACE_OS::gettimeofday() - start_time;
+		}
 
 	  }
 
@@ -102,7 +91,15 @@ int ReceiverFlowSimCallback::cbReceive(unsigned char* data, unsigned  int size)
 
 int ReceiverFlowSimCallback::cbStop()
 {
-	std::cout << "cbStop[ " << sn << "#" << fn << " ]" << std::endl;
+	// Time between start and stop
+	ACE_Time_Value iterationDuration = ACE_OS::gettimeofday() - cbStartTime;
+
+	double duration = (iterationDuration.sec()+( iterationDuration.usec() / 1000000. ));
+	double throuhgput = (rcvDataStartStop/(1024.0*1024.0))/duration;
+
+	std::cout << "cbStop[ " << fn << "@" << sn << " ] Iteration=" << ++iterationsNum;
+	std::cout << " tot. bytes received: " << rcvDataStartStop;
+	std::cout << " @ " << throuhgput << "Mb/s" <<std::endl;
 	return 0;
 }
 
