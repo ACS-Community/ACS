@@ -27,7 +27,7 @@ void AlarmSystemMonitorSeqDisc<T, TPROP>::check(BACIValue &val,
 	{
 	if (alarmsRaised_mp != 0)
 	    { 
-	    delete alarmsRaised_mp; 
+	    delete [] alarmsRaised_mp; 
 	    alarmsRaised_mp = 0; 
 	    alarmsRaisedLength_m = 0;
 	    }
