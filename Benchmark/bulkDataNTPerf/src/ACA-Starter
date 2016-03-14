@@ -1,0 +1,5 @@
+STARTDATE="20:05:00"
+
+~/acaproni/Benchmark/bulkDataNTPerf/bin/bdntSenderSimulator -s ACA-CDPM -f CH1,SP1 -b 13780707,53394 -o 3.7 -g $STARTDATE -d 3 -l 100 >ACA-Sender1.out &
+~/acaproni/Benchmark/bulkDataNTPerf/bin/bdntSenderSimulator -s ACA-CDPM -f CH2,SP2 -b 13780707,53394 -o 3.7 -g $STARTDATE -d 3 -l 100 >ACA-Sender2.out &
+wait

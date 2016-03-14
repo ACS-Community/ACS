@@ -1,0 +1,4 @@
+STARTDATE="20:05:00"
+
+~/acaproni/Benchmark/bulkDataNTPerf/bin/bdntSenderSimulator -s TotalPowerDataFlow -f TPS1,TPS2,TPS3,TPS4,TPS5,TPS6 -b 50698508,50698508,50698508,50698508,50698508,50698508 -g $STARTDATE -o 4.5 -d 3 -l 100 >TPP-Sender.out
+wait

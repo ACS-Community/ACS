@@ -1,0 +1,7 @@
+STARTDATE="20:05:00"
+
+~/acaproni/Benchmark/x86_64/bulkDataNTPerf/bin/bdntSenderSimulator -s BL-stream -f CH1,SP1 -b 175892242i,4880699 -g $STARTDATE -o 70 -d 3 -l 100 >BL-Sender1.out &
+~/acaproni/Benchmark/x86_64/bulkDataNTPerf/bin/bdntSenderSimulator -s BL-stream -f CH2,SP2 -b 175892242i,4880699 -g $STARTDATE -o 70 -d 3 -l 100 >BL-Sender2.out &
+~/acaproni/Benchmark/x86_64/bulkDataNTPerf/bin/bdntSenderSimulator -s BL-stream -f CH3,SP3 -b 175892242i,4880699 -g $STARTDATE -o 70 -d 3 -l 100 >BL-Sender3.out &
+~/acaproni/Benchmark/x86_64/bulkDataNTPerf/bin/bdntSenderSimulator -s BL-stream -f CH4,SP4 -b 175892242i,4880699 -g $STARTDATE -o 70 -d 3 -l 100 >BL-Sender4.out &
+wait
