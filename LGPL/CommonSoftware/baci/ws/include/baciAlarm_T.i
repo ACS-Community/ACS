@@ -456,6 +456,21 @@ void baci::AlarmEventStrategy<T, TPROP, TALARM>::destroy ()
 /*********************************** IMPLEMENTATION AlarmEventStrategyDisc **********************/
 
 template<class T, class TPROP, class TALARM>
+baci::AlarmEventStrategyDisc<T, TPROP, TALARM>::AlarmEventStrategyDisc(TPROP * property, 
+    EventDispatcher * eventDispatcher) 
+    : AlarmEventStrategy<T, TPROP, TALARM>(property, eventDispatcher)
+{}
+    
+template<class T, class TPROP, class TALARM>
+baci::AlarmEventStrategyDisc<T, TPROP, TALARM>::AlarmEventStrategyDisc(Callback_ptr callback_p,
+           const CBDescIn& descIn,
+           const ACS::TimeInterval& interval,
+           TPROP * property,
+           EventDispatcher * eventDispatcher) 
+    : AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher)
+{}
+
+template<class T, class TPROP, class TALARM>
 void baci::AlarmEventStrategyDisc<T, TPROP, TALARM>::check(BACIValue &val,
 					     const ACSErr::Completion & c,
 					     const ACS::CBDescOut & desc
@@ -514,6 +529,21 @@ void baci::AlarmEventStrategyDisc<T, TPROP, TALARM>::check(BACIValue &val,
 }
 
 /*********************************** IMPLEMENTATION AlarmEventStrategyCont **********************/
+
+template<class T, class TPROP, class TALARM>
+baci::AlarmEventStrategyCont<T, TPROP, TALARM>::AlarmEventStrategyCont(TPROP * property, 
+        EventDispatcher * eventDispatcher) 
+: AlarmEventStrategy<T, TPROP, TALARM>(property, eventDispatcher)
+{}
+
+template<class T, class TPROP, class TALARM>
+baci::AlarmEventStrategyCont<T, TPROP, TALARM>::AlarmEventStrategyCont(Callback_ptr callback_p,
+           const CBDescIn& descIn,
+           const ACS::TimeInterval& interval,
+           TPROP * property,
+           EventDispatcher * eventDispatcher) 
+: AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher)
+{}
 
 template<class T, class TPROP, class TALARM>
 void baci::AlarmEventStrategyCont<T, TPROP, TALARM>::check(BACIValue &val,
@@ -591,6 +621,22 @@ void baci::AlarmEventStrategyCont<T, TPROP, TALARM>::check(BACIValue &val,
           }
 }
 /*********************************** IMPLEMENTATION AlarmEventStrategyContSeq **********************/
+
+template<class T, class TPROP, class TALARM>
+baci::AlarmEventStrategyContSeq<T, TPROP, TALARM>::AlarmEventStrategyContSeq(TPROP * property, 
+    EventDispatcher * eventDispatcher) 
+: AlarmEventStrategy<T, TPROP, TALARM>(property, eventDispatcher), alarmsRaised_mp(0), alarmsRaisedLength_m(-1)
+{}
+
+template<class T, class TPROP, class TALARM>
+baci::AlarmEventStrategyContSeq<T, TPROP, TALARM>::AlarmEventStrategyContSeq(Callback_ptr callback_p,
+              const CBDescIn& descIn,
+              const ACS::TimeInterval& interval,
+              TPROP * property,
+              EventDispatcher * eventDispatcher) 
+: AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher), 
+  alarmsRaised_mp(0), alarmsRaisedLength_m(-1)
+{}
 
 template<class T, class TPROP, class TALARM>
 void baci::AlarmEventStrategyContSeq<T, TPROP, TALARM>::check(BACIValue &val,
@@ -693,6 +739,22 @@ void baci::AlarmEventStrategyContSeq<T, TPROP, TALARM>::check(BACIValue &val,
 
 /*********************************** IMPLEMENTATION AlarmEventStrategyDiscSeq **********************/
 // I do not know if this code works or not. It is here that DiscreteSeq can build. Anywat alarm system will be replaced soon.
+
+template<class T, class TPROP, class TALARM>
+baci::AlarmEventStrategyDiscSeq<T, TPROP, TALARM>::AlarmEventStrategyDiscSeq(TPROP * property, 
+    EventDispatcher * eventDispatcher) 
+: AlarmEventStrategy<T, TPROP, TALARM>(property, eventDispatcher), alarmsRaised_mp(0), alarmsRaisedLength_m(-1)
+{}
+
+template<class T, class TPROP, class TALARM>
+baci::AlarmEventStrategyDiscSeq<T, TPROP, TALARM>::AlarmEventStrategyDiscSeq(Callback_ptr callback_p,
+              const CBDescIn& descIn,
+              const ACS::TimeInterval& interval,
+              TPROP * property,
+              EventDispatcher * eventDispatcher) 
+: AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher), 
+  alarmsRaised_mp(0), alarmsRaisedLength_m(-1)
+{}
 
 template<class T, class TPROP, class TALARM>
 void baci::AlarmEventStrategyDiscSeq<T, TPROP, TALARM>::check(BACIValue &val,
