@@ -81,6 +81,8 @@ ACS::Subscription_ptr baci::ROSeqContImpl<ACS_RO_TL>::new_subscription_Alarm (TA
   if (eventStrategy_p==0)
       throw CORBA::NO_RESOURCES();
 
+  this->monitorEventDispatcher_mp->subscribe(eventStrategy_p);
+
   ACS::Subscription_var subscription = 
     ACS::Subscription::_narrow(eventStrategy_p->getCORBAReference());
 

@@ -258,8 +258,6 @@ baci::AlarmEventStrategy<T, TPROP, TALARM>::AlarmEventStrategy(Callback_ptr call
   else
     this->_remove_ref();
   
-  // subscribe to event dispatcher
-  eventDispatcher_mp->subscribe(this);
   
   BACIRecoveryManager::getInstance()->addRecoverableObject(this);
   
