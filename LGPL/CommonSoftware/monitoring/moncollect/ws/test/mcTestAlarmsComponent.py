@@ -33,84 +33,88 @@ import MonitorErrImpl
 import MonitorErr
 import time
 
-# Make an instance of the PySimpleClient
-simpleClient = PySimpleClient()
+n_exec = int(argv[2])
 
-mc = simpleClient.getComponent(argv[1])
+for index_loop in range(0,n_exec):
+    # Make an instance of the PySimpleClient
+    simpleClient = PySimpleClient()
 
-try:
-    tc =   simpleClient.getComponent('MC_TEST_ALARMS_COMPONENT')
-    psns =[propertySerailNumber('doubleROProp',    ['1' ]),
-           propertySerailNumber('floatROProp',     ['2' ]),
-           propertySerailNumber('longROProp',      ['3' ]),
-           propertySerailNumber('uLongROProp',     ['4' ]),
-           propertySerailNumber('longLongROProp',  ['5' ]),
-           propertySerailNumber('uLongLongROProp', ['6' ]),
-           propertySerailNumber('booleanROProp',   ['7' ]),
-           propertySerailNumber('doubleSeqROProp', ['8' ]),
-           propertySerailNumber('floatSeqROProp',  ['9' ]),
-           propertySerailNumber('longSeqROProp',   ['10']),
-           propertySerailNumber('uLongSeqROProp',  ['11']),
-           propertySerailNumber('booleanSeqROProp',['12']),
-           propertySerailNumber('EnumTestROProp',  ['13'])
-        ]
-    mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_ALARMS_COMPONENT', psns)
-    tc.reset();
-    time.sleep(1)
-    mc.startMonitoring('MC_TEST_ALARMS_COMPONENT')    
-    time.sleep(1)
-    tc.increase()
-    time.sleep(1)
-    #mc.stopMonitoring('MC_TEST_ALARMS_COMPONENT')
-    tc.increase()
-    time.sleep(1)
-    tc.increase()
-    time.sleep(1)
-    tc.increase()
-    time.sleep(1)
-    tc.increase()
-    time.sleep(1)
-    tc.increase()
-    time.sleep(1)
-    tc.increase()
-    time.sleep(1)
-    tc.increase()
-    time.sleep(1)
-    tc.increase()
-    time.sleep(1)
-    tc.increase()
-    mc.stopMonitoring('MC_TEST_ALARMS_COMPONENT')
-except MonitorErr.RegisteringDeviceProblemEx, _ex:
-    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
-    ex.Print();   
+    mc = simpleClient.getComponent(argv[1])
 
-data = mc.getMonitorData()
+    try:
+        tc =   simpleClient.getComponent('MC_TEST_ALARMS_COMPONENT')
+        psns =[propertySerailNumber('doubleROProp',    ['1' ]),
+               propertySerailNumber('floatROProp',     ['2' ]),
+               propertySerailNumber('longROProp',      ['3' ]),
+               propertySerailNumber('uLongROProp',     ['4' ]),
+               propertySerailNumber('longLongROProp',  ['5' ]),
+               propertySerailNumber('uLongLongROProp', ['6' ]),
+               propertySerailNumber('booleanROProp',   ['7' ]),
+               propertySerailNumber('doubleSeqROProp', ['8' ]),
+               propertySerailNumber('floatSeqROProp',  ['9' ]),
+               propertySerailNumber('longSeqROProp',   ['10']),
+               propertySerailNumber('uLongSeqROProp',  ['11']),
+               propertySerailNumber('booleanSeqROProp',['12']),
+               propertySerailNumber('EnumTestROProp',  ['13'])
+            ]
+        mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_ALARMS_COMPONENT', psns)
+        tc.reset();
+        time.sleep(1)
+        mc.startMonitoring('MC_TEST_ALARMS_COMPONENT')    
+        time.sleep(1)
+        tc.increase()
+        time.sleep(1)
+        #mc.stopMonitoring('MC_TEST_ALARMS_COMPONENT')
+        tc.increase()
+        time.sleep(1)
+        tc.increase()
+        time.sleep(1)
+        tc.increase()
+        time.sleep(1)
+        tc.increase()
+        time.sleep(1)
+        tc.increase()
+        time.sleep(1)
+        tc.increase()
+        time.sleep(1)
+        tc.increase()
+        time.sleep(1)
+        tc.increase()
+        time.sleep(1)
+        tc.increase()
+        mc.stopMonitoring('MC_TEST_ALARMS_COMPONENT')
+    except MonitorErr.RegisteringDeviceProblemEx, _ex:
+        ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+        ex.Print();   
 
-print "Number of Devices:", len(data);
-for d in data:
-    print d.componentName, d.deviceSerialNumber 
-    for blob in d.monitorBlobs:
-        print "\t", blob.propertyName, blob.propertySerialNumber
-        i=0
-        prevVal=-333
-        for blobData in any.from_any(blob.blobDataSeq):
-            # we use here a dirt trick, because we set timeout to 134608945243381570
-            # so we know if the value comes from an alarm monitor or normal monitor
-            if blobData['time'] != 134608945243381570: # Normal monitor
-                print "\t\t", blobData
-            else: # Alarm monitor
-                # here we prevent to write a value more than once what can happen during sleep of 1 s
-                # so that we have deterministic results of the test
-                if blobData['value'] != prevVal: 
-                    print "Alarm: \t", blobData
-                    prevVal = blobData['value']
+    data = mc.getMonitorData()
+
+    print "Number of Devices:", len(data);
+    for d in data:
+        print d.componentName, d.deviceSerialNumber 
+        for blob in d.monitorBlobs:
+            print "\t", blob.propertyName, blob.propertySerialNumber
+            i=0
+            prevVal=-333
+            for blobData in any.from_any(blob.blobDataSeq):
+                # we use here a dirt trick, because we set timeout to 134608945243381570
+                # so we know if the value comes from an alarm monitor or normal monitor
+                if blobData['time'] != 134608945243381570: # Normal monitor
+                    print "\t\t", blobData
+                else: # Alarm monitor
+                    # here we prevent to write a value more than once what can happen during sleep of 1 s
+                    # so that we have deterministic results of the test
+                    if blobData['value'] != prevVal: 
+                        print "Alarm: \t", blobData
+                        prevVal = blobData['value']
             
 
-mc.deregisterMonitoredDevice('MC_TEST_ALARMS_COMPONENT')
+    mc.deregisterMonitoredDevice('MC_TEST_ALARMS_COMPONENT')
 
-#cleanly disconnect
-simpleClient.releaseComponent(argv[1])
-simpleClient.disconnect()
-stdout.flush()
+    #cleanly disconnect
+    simpleClient.releaseComponent(argv[1])
+    simpleClient.disconnect()
+    stdout.flush()
 
+    print ":::::::::::  Finished execution ", index_loop
 

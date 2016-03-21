@@ -118,7 +118,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 	 
 	<floatSeqROProp
 		default_timer_trig="1.0"
