@@ -15,7 +15,7 @@ PROLOGUE MCTestPrologue
 
 11 "DeviceWithSeqAndMultipleSerial" "acsutilTATTestRunner mcTestDeviceWithSeqAndMultipleSerial MONITOR_COLLECTOR_TEST"
 12 "MCtestCyclicBuffer" "acsutilTATTestRunner mcTestCyclicBuffer MONITOR_COLLECTOR_TEST"
-#13 "MCtestAlarmsComponent" "acsutilTATTestRunner mcTestAlarmsComponent MONITOR_COLLECTOR_TEST 1"
+13 "MCtestAlarmsComponent" "acsutilTATTestRunner mcTestAlarmsComponent MONITOR_COLLECTOR_TEST 1"
 
 # Why those tests are commented out?
 ##10 "MCtestManualPublish" "acsutilTATTestRunner mcTestManualPublish MONITOR_COLLECTOR_TEST"

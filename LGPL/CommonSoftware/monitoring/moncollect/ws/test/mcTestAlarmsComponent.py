@@ -100,7 +100,8 @@ for index_loop in range(0,n_exec):
                 # we use here a dirt trick, because we set timeout to 134608945243381570
                 # so we know if the value comes from an alarm monitor or normal monitor
                 if blobData['time'] != 134608945243381570: # Normal monitor
-                    print "\t\t", blobData
+                    #print "\t\t", blobData
+                    continue
                 else: # Alarm monitor
                     # here we prevent to write a value more than once what can happen during sleep of 1 s
                     # so that we have deterministic results of the test
