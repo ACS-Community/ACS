@@ -9,64 +9,82 @@
 3 - + MC_NamedChNotifyEventChannelFactory: Object Reference
 4 - Channel CH_2@OTHER_DOMAIN created!
 5 - + MC_NamedChNotifyEventChannelFactory: Object Reference
+7 - + ArchivingChannel@ARCHIVING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 3 - |   Protocol: IIOP
 4 - Channel ALARM_CH_1@ALARM created!
 5 - |   Protocol: IIOP
+7 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 4 - Channel ARCHIVE_CH_1@ARCHIVING created!
 5 - |   Endpoint: a.b.c.d:p
+7 - |   Endpoint: a.b.c.d:p
 3 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
 4 - Channel NAMED_CH_1@MY_DOMAIN_1 created!
 5 - + ALARM_CH_1@ALARM (Kind: channels): Object Reference
+7 - + LoggingChannel@LOGGING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 3 - |   Protocol: IIOP
 4 - Channel NAMED_CH_2@MY_DOMAIN_2 created!
 5 - |   Protocol: IIOP
+7 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + ArchivingChannel@ARCHIVING (Kind: channels): Object Reference
+7 - |   Endpoint: a.b.c.d:p
+3 - + ArchivingChannel@ARCHIVING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 5 - + NAMED_CH_2@MY_DOMAIN_2 (Kind: channels): Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + LoggingNotifyEventChannelFactory: Object Reference
+3 - + ArchivingChannel@ARCHIVING (Kind: channels): Object Reference
 5 - + NAMED_CH_1@MY_DOMAIN_1 (Kind: channels): Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + AlarmNotifyEventChannelFactory: Object Reference
+3 - + LoggingNotifyEventChannelFactory: Object Reference
 5 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + MC_AlarmNotifyEventChannelFactory: Object Reference
+3 - + AlarmNotifyEventChannelFactory: Object Reference
 5 - + ARCHIVE_CH_1@ARCHIVING (Kind: channels): Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + NotifyEventChannelFactory: Object Reference
+3 - + MC_AlarmNotifyEventChannelFactory: Object Reference
+5 - + ArchivingChannel@ARCHIVING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + LoggingChannel@LOGGING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 5 - + ArchivingChannel@ARCHIVING (Kind: channels): Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + MC_LoggingNotifyEventChannelFactory: Object Reference
+3 - + NotifyEventChannelFactory: Object Reference
 5 - + LoggingNotifyEventChannelFactory: Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + NamedChNotifyEventChannelFactory: Object Reference
+3 - + MC_LoggingNotifyEventChannelFactory: Object Reference
 5 - + AlarmNotifyEventChannelFactory: Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + LoggingChannel@LOGGING (Kind: channels): Object Reference
+3 - + NamedChNotifyEventChannelFactory: Object Reference
 5 - + MC_AlarmNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + LoggingChannel@LOGGING (Kind: channels): Object Reference
+5 - + LoggingChannel@LOGGING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p

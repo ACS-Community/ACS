@@ -63,6 +63,8 @@ TODO:
 '''
 
 from optparse import OptionParser
+import time
+import datetime
 
 
 #------------------------------------------------------------------------------
@@ -110,6 +112,12 @@ parser.add_option("--channel_kind",
                   dest="channel_kind",
                   default="channels",
                   help="Kind of the Notification Channel to be created as registered with the CORBA Naming Service. Optional.")
+
+#timestamp channel kind
+parser.add_option("--ts_channel_kind",
+                   dest="ts_channel_kind",
+                   default="NCSupport",
+                   help="Kind of the entry in the Naming Service that stores the timestamp of the Notification Channel to be created. Optional.")
 
 #-----------------------------
 #channel admin props
@@ -238,6 +246,9 @@ else:
 
 #channel_kind
 cl_channel_kind = options.channel_kind
+
+#ts_channel_kind
+cl_ts_channel_kind = options.ts_channel_kind
 
 
 #-----------------------------
@@ -368,6 +379,18 @@ channel_id_with_domain = cl_channel_id + "@" + cl_channel_domain
 channel_name = CosNaming.NameComponent(channel_id_with_domain,
                                        cl_channel_kind)
 NAME_SERVICE.rebind([channel_name], CHANNEL_REF)
+
+#------------------------------------------------------------------------------
+#--Register the channel with the naming service using a name that includes 
+# the timestamp to be used by consumers and suppliers in order to be 
+# reconnected (ICT-4730)
+ts = time.time()
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
+channel_id_with_domain_and_timestamp = channel_id_with_domain + "-" + st
+channel_name_timestamp = CosNaming.NameComponent(channel_id_with_domain_and_timestamp,
+                                       cl_ts_channel_kind)
+NAME_SERVICE.rebind([channel_name_timestamp], CHANNEL_REF)
+
 
 #------------------------------------------------------------------------------
 #--Exit
