@@ -5,11 +5,32 @@
 1 - Alarm: 	{'value': 2.0, 'time': ------------------L}
 1 - Alarm: 	{'value': 3.0, 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:floatROProp ['2']
+1 - Alarm: 	{'value': 1.0, 'time': ------------------L}
+1 - Alarm: 	{'value': 2.0, 'time': ------------------L}
+1 - Alarm: 	{'value': 3.0, 'time': ------------------L}
+1 - Alarm: 	{'value': 4.0, 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:longROProp ['3']
+1 - Alarm: 	{'value': 1, 'time': ------------------L}
+1 - Alarm: 	{'value': 2, 'time': ------------------L}
+1 - Alarm: 	{'value': 3, 'time': ------------------L}
+1 - Alarm: 	{'value': 4, 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:uLongROProp ['4']
+1 - Alarm: 	{'value': 1L, 'time': ------------------L}
+1 - Alarm: 	{'value': 2L, 'time': ------------------L}
+1 - Alarm: 	{'value': 3L, 'time': ------------------L}
+1 - Alarm: 	{'value': 4L, 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:longLongROProp ['5']
+1 - Alarm: 	{'value': 1L, 'time': ------------------L}
+1 - Alarm: 	{'value': 2L, 'time': ------------------L}
+1 - Alarm: 	{'value': 3L, 'time': ------------------L}
+1 - Alarm: 	{'value': 4L, 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:uLongLongROProp ['6']
+1 - Alarm: 	{'value': 1L, 'time': ------------------L}
+1 - Alarm: 	{'value': 2L, 'time': ------------------L}
+1 - Alarm: 	{'value': 3L, 'time': ------------------L}
+1 - Alarm: 	{'value': 4L, 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:booleanROProp ['7']
+1 - Alarm: 	{'value': True, 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:doubleSeqROProp ['8']
 1 - Alarm: 	{'value': [1.0, 1.0], 'time': ------------------L}
 1 - Alarm: 	{'value': [2.0, 2.0], 'time': ------------------L}
@@ -20,8 +41,33 @@
 1 - Alarm: 	{'value': [3.0, 3.0], 'time': ------------------L}
 1 - Alarm: 	{'value': [4.0, 4.0], 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:floatSeqROProp ['9']
+1 - Alarm: 	{'value': [1.0, 1.0], 'time': ------------------L}
+1 - Alarm: 	{'value': [2.0, 2.0], 'time': ------------------L}
+1 - Alarm: 	{'value': [3.0, 3.0], 'time': ------------------L}
+1 - Alarm: 	{'value': [4.0, 4.0], 'time': ------------------L}
+1 - Alarm: 	{'value': [1.0, 1.0], 'time': ------------------L}
+1 - Alarm: 	{'value': [2.0, 2.0], 'time': ------------------L}
+1 - Alarm: 	{'value': [3.0, 3.0], 'time': ------------------L}
+1 - Alarm: 	{'value': [4.0, 4.0], 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:longSeqROProp ['10']
+1 - Alarm: 	{'value': [1, 1], 'time': ------------------L}
+1 - Alarm: 	{'value': [2, 2], 'time': ------------------L}
+1 - Alarm: 	{'value': [3, 3], 'time': ------------------L}
+1 - Alarm: 	{'value': [4, 4], 'time': ------------------L}
+1 - Alarm: 	{'value': [1, 1], 'time': ------------------L}
+1 - Alarm: 	{'value': [2, 2], 'time': ------------------L}
+1 - Alarm: 	{'value': [3, 3], 'time': ------------------L}
+1 - Alarm: 	{'value': [4, 4], 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:uLongSeqROProp ['11']
+1 - Alarm: 	{'value': [1L, 1L], 'time': ------------------L}
+1 - Alarm: 	{'value': [2L, 2L], 'time': ------------------L}
+1 - Alarm: 	{'value': [3L, 3L], 'time': ------------------L}
+1 - Alarm: 	{'value': [4L, 4L], 'time': ------------------L}
+1 - Alarm: 	{'value': [1L, 1L], 'time': ------------------L}
+1 - Alarm: 	{'value': [2L, 2L], 'time': ------------------L}
+1 - Alarm: 	{'value': [3L, 3L], 'time': ------------------L}
+1 - Alarm: 	{'value': [4L, 4L], 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:booleanSeqROProp ['12']
+1 - Alarm: 	{'value': [True, True], 'time': ------------------L}
 1 - 	MC_TEST_ALARMS_COMPONENT:EnumTestROProp ['13']
 1 - :::::::::::  Finished execution  0
