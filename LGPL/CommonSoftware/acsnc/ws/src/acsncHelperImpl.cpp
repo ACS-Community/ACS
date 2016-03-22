@@ -29,7 +29,7 @@
 #include "acsncHelper.h"
 #include <maciContainerImpl.h>
 #include <baciCORBA.h>
-#include <acscommonC.h>
+//#include <acscommonC.h>
 #include <AcsNCTraceLog.h>
 #include "acsncCDBProperties.h"
 //-----------------------------------------------------------------------------
@@ -300,6 +300,30 @@ void Helper::createNotificationChannel() {
         }
         //really bind the reference here
         namingContext_m->rebind(name, notifyChannel_m.in());
+
+        // Create an entry into the Naming Service to set the timestamp to allow consumers to reconnect (ICT-4730)
+        time_t timer;
+        time(&timer);
+        struct tm * ptm;
+        ptm = gmtime (&timer);
+        CosNaming::Name nameTimestamp(1);
+        nameTimestamp.length(1);
+        std::ostringstream oss;
+        oss << channelAndDomainName_m << "-" << (ptm->tm_year + 1900) << "-";
+        if(ptm->tm_mon + 1 < 10) oss << "0";
+        oss << (ptm->tm_mon + 1) << "-";
+        if(ptm->tm_mday < 10) oss << "0";
+        oss << ptm->tm_mday << "_";
+        if(ptm->tm_hour < 10) oss << "0";
+        oss << ptm->tm_hour << ":";
+        if(ptm->tm_min < 10) oss << "0";
+        oss << ptm->tm_min << ":";
+        if(ptm->tm_sec < 10) oss << "0";
+        oss << ptm->tm_sec;
+        nameTimestamp[0].id = CORBA::string_dup(oss.str().c_str());
+        nameTimestamp[0].kind = "NCSupport"; //TODO must be changed to acscommon::NC_KIND_NCSUPPORT;
+        namingContext_m->rebind(nameTimestamp, notifyChannel_m.in());
+        
     } catch (NotifyMonitoringExt::NameAlreadyUsed e) {
         ACS_SHORT_LOG(
                 (LM_TRACE, "Helper::createNotificationChannel() failed for the '%s' channel, the name is already used!", channelName_mp));

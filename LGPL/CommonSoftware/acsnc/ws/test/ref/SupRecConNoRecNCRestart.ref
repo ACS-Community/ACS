@@ -10,6 +10,7 @@
 2 - ContainerStatusMsg: ORB initialization ends
 1 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
 1 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
+1 - Channel NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
 1 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 1 - Using reactive client control.
 1 - Using 1 threads for each Supplier.
@@ -25,6 +26,7 @@
 2 - ----------T--:--:--.--- [SUP_COMP_1 - ] Start sending 3000 events via SimpleSupplier.
 5 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
 5 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
+5 - Channel NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
 5 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 5 - Using reactive client control.
 5 - Using 1 threads for each Supplier.

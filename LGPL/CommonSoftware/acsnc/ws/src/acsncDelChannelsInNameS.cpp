@@ -293,6 +293,7 @@ void analyzeNamingEntries(const CosNaming::NamingContext_ptr nc,
 	static const std::string APP_ID = "acsncDelChannelsInNameS";
 
 	static const std::string KIND_CHANNEL = "channels";
+	static const std::string KIND_NC_SUPPORT = "NCSupport"; // Notify Channels are registered twice in the Naming Service in order to allow the subscribers to reconnect to them (ICT-4730)
 
 	static const std::string PARAM_IOR_NS = "--name_service";
 	static const std::string PARAM_NOTIFY_SERVICE_NAME = "--notify_service";
@@ -517,51 +518,69 @@ int main (int argc, char *argv[])
 			if(notifyServiceName == ALARM_NOTIFY_CHANNEL)
 			{
 				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, ip, port));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_NC_SUPPORT, ip, port));
 			
 			// Archive Notify Service has channels using a specific domain and port:
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + ACS_NC_DOMAIN_ARCHIVING 
 			} else if(notifyServiceName == ARCHIVE_NOTIFY_CHANNEL) {
 				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, ip, port));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_NC_SUPPORT, ip, port));
 
 			// Logging Notify Service has channels using a specific domain and port:
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + ACS_NC_DOMAIN_LOGGING 
 			} else if(notifyServiceName == LOOGING_NOTIFY_CHANNEL) {
 				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, ip, port));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_NC_SUPPORT, ip, port));
 
 			// Default Notify Service has channels using a specific port:
 			// NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR + NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT 
 			} else if(notifyServiceName == DEFAULT_NOTIFY_CHANNEL) {
 				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, ip, port));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_NC_SUPPORT, ip, port));
 
 			// Channels owned by other kinds of Notify Services will be deleted according to the port
 			} else {
 				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_CHANNEL, ip, port));
+				fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpointPort(KIND_NC_SUPPORT, ip, port));
 			}
 
 //			fNotifyChannels.push_back(new ns::helpers::FilterByKindEndpoint(KIND_CHANNEL, endpoint));
 			analyzeNamingEntries(root.in(), 100, fNotifyChannels);
 
-			// Found entries
-			ns::helpers::NSEntryInfoVector entries = fNotifyChannels.front()->m_entries;
-			if(entries.size() > 0)
+			// Check if it found entries
+            bool foundEntries = false;
+            for(ns::helpers::PFilterVector::const_iterator it = fNotifyChannels.begin(); 
+                it != fNotifyChannels.end() && false == foundEntries; ++it)
+            {
+                if((*it)->m_entries.size() > 0)
+                {
+                    foundEntries = true;
+                }
+            }
+
+			if(true == foundEntries)
 			{
-				for(ns::helpers::NSEntryInfoVector::iterator it = entries.begin();
-						it != entries.end();++it)
-				{
-					if(show == true)
-					{
-						ACS_SHORT_LOG((LM_INFO, "Channel %s to be deleted in the Naming Service", it->name.c_str()));
-					} else {
-						CosNaming::Name name;
-						name.length (1);
-						name[0].id = CORBA::string_dup (it->name.c_str());
-						name[0].kind = CORBA::string_dup (it->kind.c_str());
-						CORBA::Object_var objToDel = root->resolve(name);
-						root->unbind(name);
-						ACS_SHORT_LOG((LM_DEBUG, "Channel %s[%s:%s] deleted in the Naming Service", 
-								it->name.c_str(),it->endpoint.c_str(),it->port.c_str()));
-					}
-				}
+                for(ns::helpers::PFilterVector::const_iterator itf = fNotifyChannels.begin(); 
+                    itf != fNotifyChannels.end(); ++itf)
+                {
+                    for(ns::helpers::NSEntryInfoVector::iterator it = (*itf)->m_entries.begin();
+                            it != (*itf)->m_entries.end();++it)
+                    {
+                        if(show == true)
+                        {
+                            ACS_SHORT_LOG((LM_INFO, "Channel %s to be deleted in the Naming Service", it->name.c_str()));
+                        } else {
+                            CosNaming::Name name;
+                            name.length (1);
+                            name[0].id = CORBA::string_dup (it->name.c_str());
+                            name[0].kind = CORBA::string_dup (it->kind.c_str());
+                            CORBA::Object_var objToDel = root->resolve(name);
+                            root->unbind(name);
+                            ACS_SHORT_LOG((LM_DEBUG, "Channel %s[%s:%s] deleted in the Naming Service", 
+                                    it->name.c_str(),it->endpoint.c_str(),it->port.c_str()));
+                        }
+                    }
+                }
 			} else {
 				ACS_SHORT_LOG((LM_DEBUG, "Name Service without channel entries in the endpoint %s:%s", ip.c_str(), port.c_str()));
 			}

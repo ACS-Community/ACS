@@ -26,12 +26,13 @@
 2 - ----------T--:--:--.--- [SUP_COMP_1 - ] Start sending 3000 events via SimpleSupplier.
 5 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
 5 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
+5 - Channel NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
 5 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 5 - Using reactive client control.
 5 - Using 1 threads for each Supplier.
 5 - Using 1 threads for each Consumer.
 5 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
 5 - ReBound ID: MC_NamedChNotifyEventChannelFactory
-2 - ----------T--:--:--.--- [SUP_COMP_1 - ] Finished sending 3000 events via SimpleSupplier.
+2 - ----------T--:--:--.--- [SUP_COMP_1 - ] Finished sending 3000 events via SimpleSupplier. logName="LOG_NC_ChannelCreated_ATTEMPT"
 2 - ----------T--:--:--.--- [CON_COMP_1 - ] :: Great! count is greater than 2000 [XXX]
 2 - /----/libbaci.so

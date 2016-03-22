@@ -35,13 +35,14 @@
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 3
 2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 4
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 5
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 6
 4 - ----------T--:--:--.--- Stopping Notify Service 'NamedCh'
 4 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 5
-4 - ----------T--:--:--.--- Stopped Notify Service 'NamedCh'
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 6
+4 - Channel NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 7
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 8
+4 - ----------T--:--:--.--- Stopped Notify Service 'NamedCh'
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 9
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 10
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 11
@@ -52,16 +53,16 @@
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 16
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 17
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 18
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Finished sending 20 events via SimpleSupplier.
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 19
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Finished sending 20 events via SimpleSupplier.
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Autoreconnect: no
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  NC: stopped
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events dropped: XXX
-2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events queued: XXX
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events sent: XXX
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events queued: XXX
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of exceptions caught: ZZZ
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of transitions: Y
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Transitions in: YYY
-2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of exceptions caught: ZZZ
 3 - ----------T--:--:--.--- None test4 - Waiting 10 seconds ...
 3 - ----------T--:--:--.--- None test4 - Releasing component NamedCh_SUP1
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Supplier::disconnect failed for the 'NamedCh' channel!
