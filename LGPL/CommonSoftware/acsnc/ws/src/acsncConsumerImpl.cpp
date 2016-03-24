@@ -297,21 +297,39 @@ Consumer::consumerReady()
 bool
 Consumer::shouldReconnect()
 {
-    // We cannot reconnect when the Proxy Supplier is NULL or autoreconnect is disabled
+    // It cannot reconnect when the Proxy Supplier is NULL or auto reconnect is disabled
     if(::CORBA::is_nil(proxySupplier_m) || false == autoreconnect_m)
     {
         return false;
     }
 
-    try {
-        proxySupplier_m->resume_connection();
-        return false;
-    } catch(CosNotifyChannelAdmin::ConnectionAlreadyActive &ex) {
-        return false;
-    } catch(CosNotifyChannelAdmin::NotConnected e) {
-        return true; 
-    } catch(...) {}
-    return true;
+    // Reconnect when the consumer has a timestamp lower than the one registered in the Naming Service
+    time_t channelTimestamp;
+    if(true == getChannelTimestamp(channelTimestamp))
+    {
+        if(channelTimestamp > channelTimestamp_m)
+        {
+            return true;
+        } else {
+            return false;
+        }
+
+    // Timestamp is not registered into the Naming Service, we will check the connection by calling
+    // a proxy's method
+    } else {
+        try {
+            proxySupplier_m->resume_connection();
+            return false;
+        } catch(CosNotifyChannelAdmin::ConnectionAlreadyActive &ex) {
+            return false;
+        } catch(CosNotifyChannelAdmin::NotConnected e) {
+            return true; 
+        } catch(...) {}
+        return true;
+    }
+
+    // This will never be executed
+    return false;
 }
 //-----------------------------------------------------------------------------
 void*
@@ -340,26 +358,34 @@ Consumer::ncChecker(void* arg)
 void
 Consumer::checkNotifyChannel()
 {
+    unsigned long long prevNumEvents = numEvents_m;
     while(false == stopNCCheckerThread)
     {
-        if(shouldReconnect())
+        ACE_OS::sleep(NC_CHECKER_FREQ);
+
+        // No events have been recevied for the last NC_CHECKER_FREQ seconds so it's
+        // time to check if the consumer should reconnect to the channel
+        if(prevNumEvents == numEvents_m)
         {
-            if(false == reinitFailed)
+            if(shouldReconnect())
             {
-                ACS_SHORT_LOG((LM_INFO, "Consumer is reinitializing the connection to the channel %s", channelName_mp));
-            }
-            try {
-                reinit();
-                reinitFailed = false;
-            } catch(...) {
                 if(false == reinitFailed)
                 {
-                    reinitFailed = true;
-                    ACS_SHORT_LOG((LM_ERROR, "Consumer couldn't reinitialize the connection to the channel %s", channelName_mp));
+                    ACS_SHORT_LOG((LM_INFO, "Consumer is reinitializing the connection to the channel %s", channelName_mp));
+                }
+                try {
+                    reinit();
+                    reinitFailed = false;
+                } catch(...) {
+                    if(false == reinitFailed)
+                    {
+                        reinitFailed = true;
+                        ACS_SHORT_LOG((LM_ERROR, "Consumer couldn't reinitialize the connection to the channel %s", channelName_mp));
+                    }
                 }
             }
         }
-        ACE_OS::sleep(NC_CHECKER_FREQ);
+        prevNumEvents = numEvents_m;
     }
 }
 //-----------------------------------------------------------------------------

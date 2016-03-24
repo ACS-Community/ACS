@@ -278,6 +278,20 @@ class Helper
     virtual const CosNotification::AdminProperties 
     getAdminProps();    
     
+    /**
+     * Sets the channel timestamp by registering the channel to the Naming Service
+     * using its name but appending to it the timestmap.
+     * Returns true when the channel could be registered to the Naming Service. Otherwise
+     * returns false.
+     */
+    bool setChannelTimestamp();
+
+    /**
+     * Looks for the timestamp of the channel in the Naming Service
+     * Returns true when the timestamp has been found and it's correct. Otherwise returns false
+     */
+    bool getChannelTimestamp(time_t &timestamp);
+    bool getChannelTimestamp(time_t &timestamp,const CosNaming::BindingList &bl);
 
     /**
      *  A naming context (i.e., Naming Service reference)
@@ -355,6 +369,11 @@ class Helper
     integrationLog(const std::string& log);
 
     ReconnectionCallback *callback_m;
+
+    /**
+     * Channel creation timestamp
+     */
+    time_t channelTimestamp_m;
 
   private:
     
