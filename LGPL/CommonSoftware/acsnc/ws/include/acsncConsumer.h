@@ -529,7 +529,6 @@ class Consumer :
     static const int NC_CHECKER_FREQ;
     static const bool DEFAULT_AUTORECONNECT;
     bool stopNCCheckerThread;
-    bool reinitFailed;
     pthread_t ncCheckerThread;
     ///////////////////////////////////////////////////////////////////////////////////////
 };

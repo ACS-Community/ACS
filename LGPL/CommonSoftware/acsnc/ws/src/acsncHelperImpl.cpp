@@ -577,7 +577,7 @@ Helper::resolveNotifyChannel()
 	}
 
     // The channel exists therfore we will get the creation timestamp. In the case that we cannot get
-    // the timestamp
+    // the timestamp we consider the notify channel as not resolved
     if(false == getChannelTimestamp(channelTimestamp_m))
     {
         ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotifyChannel creation timestamp not found for the channel '%s'", 

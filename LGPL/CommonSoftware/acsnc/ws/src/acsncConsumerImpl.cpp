@@ -45,7 +45,6 @@ Consumer::Consumer(const char* channelName, const char* acsNCDomainName) :
     autoreconnect_m(DEFAULT_AUTORECONNECT),
     orb_mp(0),
     stopNCCheckerThread(false),
-    reinitFailed(false),
     ncCheckerThread(0)
 {
     ACS_TRACE("Consumer::Consumer");
@@ -62,7 +61,6 @@ Consumer::Consumer(const char* channelName, CORBA::ORB_ptr orb, const char* acsN
     autoreconnect_m(DEFAULT_AUTORECONNECT),
     orb_mp(0),
     stopNCCheckerThread(false),
-    reinitFailed(false),
     ncCheckerThread(0)
 {
     ACS_TRACE("Consumer::Consumer");
@@ -79,7 +77,6 @@ Consumer::Consumer(const char* channelName, int argc, char *argv[], const char* 
     autoreconnect_m(DEFAULT_AUTORECONNECT),
     orb_mp(0),
     stopNCCheckerThread(false),
-    reinitFailed(false),
     ncCheckerThread(0)
 {
     ACS_TRACE("Consumer::Consumer");
@@ -164,6 +161,12 @@ Consumer::reinit()
     }
 
     proxySupplier_m->connect_structured_push_consumer(reference_m.in());
+
+    try {
+        proxySupplier_m->resume_connection();
+    } catch(CosNotifyChannelAdmin::ConnectionAlreadyActive &ex) {
+        // Nothing to do
+    }
 
     ACS_SHORT_LOG((LM_INFO, "Consumer reinitialized the connection to the channel %s", channelName_mp));
 }
@@ -318,14 +321,13 @@ Consumer::shouldReconnect()
     // a proxy's method
     } else {
         try {
-            proxySupplier_m->resume_connection();
+            if(proxySupplier_m->_non_existent()) {
+                return true;
+            }
             return false;
-        } catch(CosNotifyChannelAdmin::ConnectionAlreadyActive &ex) {
+        } catch(...) {
             return false;
-        } catch(CosNotifyChannelAdmin::NotConnected e) {
-            return true; 
-        } catch(...) {}
-        return true;
+        }
     }
 
     // This will never be executed
@@ -358,6 +360,7 @@ Consumer::ncChecker(void* arg)
 void
 Consumer::checkNotifyChannel()
 {
+    bool reinitFailed = false;
     unsigned long long prevNumEvents = numEvents_m;
     while(false == stopNCCheckerThread)
     {
