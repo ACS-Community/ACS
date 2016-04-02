@@ -215,7 +215,14 @@ public class ComponentInfoTopologicalSortManager implements Runnable {
 			{
 				activationPendingRWLock.writeLock().unlock();
 			}
-
+			try{
+				Thread.sleep(100);
+			}catch(InterruptedException ex){
+				logger.log(Level.WARNING,
+	                                   "Exception caught while waiting in run() method");
+				ex.printStackTrace();
+			}
+		
 		}
 	}
 	
