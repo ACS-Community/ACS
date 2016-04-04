@@ -32,9 +32,16 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.text.ParseException;
 
 import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.IntHolder;
+import org.omg.CosNaming.Binding;
+import org.omg.CosNaming.BindingIteratorHolder;
+import org.omg.CosNaming.BindingListHolder;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
@@ -121,6 +128,11 @@ public class Helper {
 	 * The optional NC domain name, e.g. "ALARMSYSTEM".
 	 */
 	protected final String domainName;
+
+    /**
+     * Creation time of the channel to be used in order to know the restart of the Notify Service
+     */
+    protected Date channelTimestamp = new Date(0);
 	
 	/**
 	 * channelId is used to reconnect to channel in case that Notify Server crashes
@@ -393,9 +405,19 @@ public class Helper {
 					}
 				}
 			}
-//			else {
+
+            // The channel could be resolved from the Naming Service
+			else {
+                // Get the channel timestamp located into the Naming Service. When the timestamp cannot be
+                // retrieved from the Naming Service, the channel is considered as not resolved
+                channelTimestamp = getChannelTimestamp();
+                if(0 == channelTimestamp.getTime()) {
+                    m_logger.log(AcsLogLevel.ERROR, "Timestamp of the NC '" + channelName + "' couldn't be retrieved from the Naming Service");
+                    retValue = null;
+                }
+
 //				System.out.println("*** Got NC " + channelName + " from the naming service");
-//			}
+			}
 		} while (retValue == null && --retryNumberAttempts >= 0);
 		
 		if (retValue == null) {
@@ -522,6 +544,25 @@ public class Helper {
 				NameComponent[] t_NameChannel = { new NameComponent(
 						combineChannelAndDomainName(channelName, domainName), channelKind) };
 				getNamingService().rebind(t_NameChannel, retValue);
+
+                // Create an entry into the Naming Service to store the timestamp of the channel in order to allow
+                // subscribers to reconnect to the channel (ICT-4730)
+                int nAttempts = 10;
+                boolean timestampCreated = setChannelTimestamp(retValue);
+                while(false == timestampCreated && nAttempts >= 0) {
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException ex1) {
+						// too bad
+					}
+                    nAttempts--;
+                    timestampCreated = setChannelTimestamp(retValue);
+                }
+
+                if(false == timestampCreated) {
+                    m_logger.log(AcsLogLevel.ERROR, "Failed to register the timestamp of the channel '" + channelName 
+                            + "' into the Naming Service after " + String.valueOf(nAttempts) + " attempts. Subscribers will not be able to reconnect");
+                }
 			}
 			catch (org.omg.CosNaming.NamingContextPackage.NotFound ex) {
 				// Corba spec: "If already bound, the previous binding must be of type nobject; 
@@ -532,6 +573,7 @@ public class Helper {
 				ex2.setInfo(reason);
 				throw ex2;
 			}
+
 		} catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
 			// Think there is virtually no chance of this every happening but...
 			Throwable cause = new Throwable(e.getMessage());
@@ -551,6 +593,70 @@ public class Helper {
 		return retValue;
 	}
 
+    /**
+     *
+     */
+    protected boolean setChannelTimestamp(EventChannel eventChannel) {
+        Date timestamp = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String id = combineChannelAndDomainName(channelName, domainName) + "-" + dateFormat.format(timestamp);
+        String kind = "NCSupport"; // TODO change it by using acscommon::NC_KIND_NCSUPPORT
+
+        try {
+			NameComponent[] t_NameChannel = { new NameComponent(id, kind) };
+			getNamingService().rebind(t_NameChannel, eventChannel);
+            channelTimestamp = timestamp;
+            return true;
+		} catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
+            m_logger.log(AcsLogLevel.ERROR, "Rebinding channel '" + channelName + "' in order to store the timestamp threw a NotFound exception", e);
+	    } catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
+            m_logger.log(AcsLogLevel.ERROR, "Rebinding channel '" + channelName + "' in order to store the timestamp threw a CannotProceed exception", e);
+        } catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
+            m_logger.log(AcsLogLevel.ERROR, "Rebinding channel '" + channelName + "' in order to store the timestamp threw a InvalidName exception", e);
+        }
+        return false;
+    }
+
+    /**
+     * Returns the current channel's timestamp registered in the Naming Service.
+     */
+    public Date getChannelTimestamp() {
+        Date timestamp = new Date(0);
+
+        BindingListHolder bl = new BindingListHolder();
+        BindingIteratorHolder bi = new BindingIteratorHolder();
+
+        String chNameAndDomain = combineChannelAndDomainName(channelName, domainName);
+
+        try {
+            // Get names of all objects bound in the naming service
+            getNamingService().list(-1, bl, bi);
+
+            // Extract the useful binding information Id and Kind
+            for (Binding binding : bl.value) {
+                if(binding.binding_name[0].kind.equals("NCSupport")) { // TODO change it by using acscommon::NC_KIND_NCSUPPORT
+                    if(binding.binding_name[0].id.startsWith(chNameAndDomain)) {
+                        String sts = binding.binding_name[0].id.substring(chNameAndDomain.length() + 1); 
+                        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+                        try {
+                            timestamp = df.parse(sts);
+                        } catch(ParseException e) {
+                        }
+                    }
+                }
+            }
+        } catch(Exception e) {
+        }
+
+        return timestamp;
+    }
+
+    /**
+     * Returns the last timestamp retrieved from the Naming Service
+     */
+    public Date getLastRegisteredChannelTimestamp() {
+        return channelTimestamp;
+    }
 
 	/**
 	 * Broken out from {@link #createNotificationChannel(String, String, String)}
