@@ -626,28 +626,30 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
 
 
     /**
-     * Test to be run twice in different processes at the same time
+     * Test the reconnection when resuming consumers
      */
-    /*public void test8() throws Exception {
-        int nProc = 3;
+    public void test8() throws Exception {
+        int nProc = 1;
         int numSubs = 5;
         int nEvents = 20;
-        m_logger.info("=== Test7");
+        m_logger.info("=== Test8");
         m_logger.info("=========================  Create few subscribers and await events");
-        //createSubscriber(true);
         createOtherSubscribers(numSubs, true);
-        //m_subscriber.startReceivingEvents();
         startReceivingEventsOtherSubscribers();
+        waitSec(5);
+        m_logger.info("=========================  Suspend subscribers");
+        suspendOtherSubscribers();
         m_logger.info("=========================  From this point we expect the Notify Service to restart");
-        waitSec(30); // Here we expect the restart of the Notify Service
+        waitSec(20); // Here we expect the restart of the Notify Service
         m_logger.info("=========================  At this point the Notify Service should have been restarted");
+        m_logger.info("=========================  Resume subscribers");
+        resumeOtherSubscribers();
         m_logger.info("=========================  Creating the publisher and start sending events");
         createPublisher(true);
         sendEvents(nEvents, 100);
         m_logger.info("=========================  Waiting 20 sec to receive events comming from other processes");
         waitSec(20);
         m_logger.info("=========================  Disconnect subscribers and publisher");
-        //disconnectSubscriber();
         disconnectOtherSubscribers();
         disconnectPublisher();
         m_logger.info("=========================  Subscribers and publisher have been disconnected!");
@@ -662,7 +664,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
             m_logger.info("Error! Expected " + String.valueOf(numEventsExpected) + " events but was " + String.valueOf(received) 
                     + ". Last received event was " + String.valueOf(lastReceived));
         }       
-    }*/
+    }
 
 
 	/**
@@ -683,7 +685,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         } catch(NumberFormatException e) {
         }
 
-        if(numTest < 1 || 7 < numTest) {
+        if(numTest < 1 || 8 < numTest) {
             System.out.println("Wrong test number: " + args[0]);
             System.exit(1);
         }
@@ -709,6 +711,9 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
                 break;
             case 7:
                 client.test7();
+                break;
+            case 8:
+                client.test8();
                 break;
         }
 		

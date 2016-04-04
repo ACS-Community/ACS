@@ -110,5 +110,10 @@ PROLOGUE acsutilTATPrologue -l
    "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 1" "@SLEEP 10" \
    "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 4" "@SLEEP 75"
    
+# Test 8 autoreconnect of consumers
+22 test8ConsumerAutoreconnect "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 8" "@SLEEP 20" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 4" "@SLEEP 55"
+
 
 EPILOGUE acsutilTATEpilogue
