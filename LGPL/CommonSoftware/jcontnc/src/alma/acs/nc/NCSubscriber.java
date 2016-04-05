@@ -1175,11 +1175,6 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
     //////////////////////////// AUTORECONNECTION /////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
     /**
-     * Constant that defines the default frequency is seconds at which the connection will be checked
-     */
-    static final int CONNECTION_CHECKER_INTERVAL = 2;
-
-    /**
      * Constant that defines the default auto reconnect value.
      */
     static final boolean DEFAULT_AUTORECONNECT = false;
@@ -1203,6 +1198,18 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
      * Thread responsible for checking the connection to the channel
      */
     private ConnectionChecker conCheckerThread = null;
+
+    /**
+     * Frequency in seconds at which the connection status will be checked when the subscriber 
+     * doesn't receive any event. Default value is 2 seconds.
+     */
+    private int connectionCheckerFreq = 2;
+
+    /**
+     * Time to wait in seconds after receiving the last event to consider that the consumer is 
+     * not receiving events. Default value is 2 seconds.
+     */
+    private int eventReceptionTimeout = 2;
 
     /**
      * Method that checks if the connection to the Notification Channel is still alive. In order
@@ -1265,13 +1272,34 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
             int currentSec = 0;
             long prevNumEvents = numEventsReceived;
             boolean reinitFailed = false;
+            boolean eventsReceived = true;
+            int waitingTime = eventReceptionTimeout;
 
             while (!terminateConChecker) {
-                // wait for CONNECTION_CHECKER_INTERVAL secs..
-                while (currentSec < CONNECTION_CHECKER_INTERVAL) {
+                
+                // If we are reciving events we have to wait eventReceptionTimeout seconds
+                if(eventsReceived) {
+                    waitingTime = eventReceptionTimeout;
+
+                // If we don't receive events we have to wait connectionCheckerFreq seconds
+                } else {
+                    waitingTime = connectionCheckerFreq;
+                }
+
+                // Wait but every second we also check if new events have been received. If this is
+                // the case, we restart the waiting period
+                while (currentSec < waitingTime) {
                     try {
                         Thread.sleep(1000);
                         currentSec++;
+
+                        // If while we are waiting we receive an event, the waiting time is reset
+                        if(prevNumEvents != numEventsReceived) {
+                            waitingTime = eventReceptionTimeout;
+                            currentSec = 0;
+                            prevNumEvents = numEventsReceived;
+                        }
+
                         if (terminateConChecker) {
                             logger.log(AcsLogLevel.DEBUG, "Finishing consumer thread responsible for checking the connection to the channel '" 
                                     + channelName + "'");
@@ -1284,9 +1312,10 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
                 currentSec = 0;
 
-                // No events have been received for the last CONNECTION_CHECKER_INTERVAL seconds so it's
+                // No events have been received for the last waiting period so it's
                 // time to check if the consumer should reconnect to the channel
                 if(prevNumEvents == numEventsReceived) {
+                    eventsReceived = false;
                     if(shouldReconnect()) {
                         if(false == reinitFailed) {
                             logger.log(AcsLogLevel.INFO, "Consumer is reinitializing the connection to the channel '" + channelName + "'");
@@ -1302,8 +1331,11 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
                             }
                         }
                     }
+                } else {
+                    eventsReceived = true;
                 }
 
+                // Update the number of events received so far
                 prevNumEvents = numEventsReceived;
             }
             
@@ -1382,9 +1414,33 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	}
 
     /**
+     * Time to wait in seconds after the last received event to consider that the consumer is not receiving events.
+     * @return Returns false when the timeout passed is 0 or negative. Otherwise returns true.
+     */
+    public boolean setEventReceptionTimeout(int eventReceptionTimeout) {
+        if(eventReceptionTimeout <= 0) {
+            return false;
+        }
+        this.eventReceptionTimeout = eventReceptionTimeout;
+        return true;
+    }
+
+    /**
+     * Frequency in seconds at which the connection status will be checked
+     * @return Returns false when the value given is 0 or negative. Otherwise returns true.
+     */
+    public boolean setConnectionCheckerFreq(int connectionCheckerFreq) {
+        if(connectionCheckerFreq <= 0) {
+            return false;
+        }
+        this.connectionCheckerFreq = connectionCheckerFreq;
+        return true;
+    }
+
+    /**
      * Creates the thread responsible for checking the connection to the Notification Channel.
      */
-    private void createConCheckerThread() {
+    private synchronized void createConCheckerThread() {
         if(conCheckerThread == null || !conCheckerThread.isAlive()) {
             terminateConChecker = false;
             conCheckerThread = new ConnectionChecker();
@@ -1398,7 +1454,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
      * Stops the thread responsible for checking the connection to the Notification Channel. It
      * waits the end of the thread.
      */
-    private void stopConCheckerThread() {
+    private synchronized void stopConCheckerThread() {
         terminateConChecker = true;
         if(conCheckerThread != null) {
             conCheckerThread.interrupt();
