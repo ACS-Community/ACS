@@ -130,6 +130,7 @@ Consumer::init(CORBA::ORB_ptr orb)
 void
 Consumer::reinit()
 {
+    ACS_TRACE("Consumer::reinit");
     CORBA::ORB_ptr orb = orbHelper_mp != NULL ? orbHelper_mp->getORB() : NULL;
 
     // Resolve the naming service using the orb
@@ -162,11 +163,12 @@ Consumer::reinit()
 
     proxySupplier_m->connect_structured_push_consumer(reference_m.in());
 
+    /*
     try {
         proxySupplier_m->resume_connection();
     } catch(CosNotifyChannelAdmin::ConnectionAlreadyActive &ex) {
         // Nothing to do
-    }
+    }*/
 
     ACS_SHORT_LOG((LM_INFO, "Consumer reinitialized the connection to the channel %s", channelName_mp));
 }
@@ -177,8 +179,6 @@ void
 Consumer::disconnect()
 {
     ACS_TRACE("Consumer::disconnect");
-
-    destroyCheckerThread();
 
     callback_m->disconnect();
 
@@ -360,6 +360,7 @@ Consumer::ncChecker(void* arg)
 void
 Consumer::checkNotifyChannel()
 {
+    ACS_TRACE("Consumer::checkNotifyChannel");
     bool reinitFailed = false;
     unsigned long long prevNumEvents = numEvents_m;
     while(false == stopNCCheckerThread)
@@ -394,6 +395,8 @@ Consumer::checkNotifyChannel()
 //-----------------------------------------------------------------------------
 void Consumer::createCheckerThread()
 {
+    ACS_TRACE("Consumer::createCheckerThread");
+    ACE_Guard<ACE_Thread_Mutex> guard(checkerThMutex_m);
     if(0 == ncCheckerThread)
     {
         stopNCCheckerThread = false;
@@ -412,6 +415,8 @@ void Consumer::createCheckerThread()
 //-----------------------------------------------------------------------------
 void Consumer::destroyCheckerThread()
 {
+    ACS_TRACE("Consumer::destroyCheckerThread");
+    ACE_Guard<ACE_Thread_Mutex> guard(checkerThMutex_m);
     if(0 != ncCheckerThread)
     {
         stopNCCheckerThread = true;

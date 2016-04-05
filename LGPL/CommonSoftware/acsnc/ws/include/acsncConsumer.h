@@ -530,6 +530,7 @@ class Consumer :
     static const bool DEFAULT_AUTORECONNECT;
     bool stopNCCheckerThread;
     pthread_t ncCheckerThread;
+    ACE_Thread_Mutex checkerThMutex_m;
     ///////////////////////////////////////////////////////////////////////////////////////
 };
  }; 
