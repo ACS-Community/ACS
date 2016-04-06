@@ -409,7 +409,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         createSubscriber(true);
 		m_subscriber.startReceivingEvents();
         m_logger.info("=========================  From this point we expect the Notify Service to restart");
-        waitSec(15); // Here we expect the restart of the Notify Service
+        waitSec(18); // Here we expect the restart of the Notify Service
         m_logger.info("=========================  At this point the Notify Service should have been restarted");
         m_logger.info("=========================  Create the publisher and start sending events");
         createPublisher(true);

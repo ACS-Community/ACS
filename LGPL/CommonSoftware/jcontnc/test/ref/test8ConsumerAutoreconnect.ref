@@ -1,4 +1,5 @@
 2 -  -- alma.acs.nc.SimpleConsumerReconnClient 8
+4 - ::::  END_TEST_8_CONSUMER_AUTORECONNECT
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 1 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 1 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
@@ -7,9 +8,9 @@
 1 - Using reactive client control.
 1 - Using 1 threads for each Supplier.
 1 - Using 1 threads for each Consumer.
-1 - ReBound ID: MC_NotifyEventChannelFactory
 1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 1 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
+1 - ReBound ID: MC_NotifyEventChannelFactory
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create few subscribers and await events
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] === Test8
 2 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger scxml@SimpleConsumerReconnClient-XXXXX created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.

@@ -1,4 +1,5 @@
 2 -  -- alma.acs.nc.SimpleConsumerReconnClient 1
+4 - ::::  END_TEST_1_CONSUMER_AUTORECONNECT
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine  notification service's process ID.
 1 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
@@ -29,10 +30,10 @@ X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully
 3 - Using 1 threads for each Consumer.
 X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='test_reconn' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
+3 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
+3 - ReBound ID: MC_NotifyEventChannelFactory
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  At this point the Notify Service should have been restarted
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create the publisher and start sending events
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Start publishing 5 events
-3 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
-3 - ReBound ID: MC_NotifyEventChannelFactory
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Great! All events have been received
 2 - Test finished

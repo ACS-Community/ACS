@@ -37,7 +37,7 @@ archiveeventsSupplier_LIBS    = baci maciClient maciStubs maci
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = runHelperTest.sh jcontncTATRunTest.sh runNCSubscriberTests.sh runAnyAideTest.sh jcontncExecNotifyService.sh
+SCRIPTS_L       = runHelperTest.sh jcontncTATRunTest.sh runNCSubscriberTests.sh runAnyAideTest.sh jcontncExecNotifyService.sh jcontncEcho.sh
 
 
 #
