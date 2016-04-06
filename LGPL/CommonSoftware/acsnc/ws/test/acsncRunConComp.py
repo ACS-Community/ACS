@@ -56,5 +56,3 @@ elif test_num == 2:
 
 sleep(5)
 simpleClient.releaseComponent(comp_name)
-sleep(2)
-simpleClient.disconnect()
