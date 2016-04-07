@@ -537,7 +537,10 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
                     createConCheckerThread();
                 } else {
                     logger.log(AcsLogLevel.ERROR, "Consumer couldn't reconnect after " + String.valueOf(nRetries) + " attempts to the channel " + channelName);
+                    throw new AcsJStateMachineActionEx(ex);
                 }
+            } else {
+                throw new AcsJStateMachineActionEx(ex);
             }
         }
 		super.resumeAction(evtDispatcher, errRep, scInstance, derivedEvents);
