@@ -408,14 +408,8 @@ public class Helper {
 
             // The channel could be resolved from the Naming Service
 			else {
-                // Get the channel timestamp located into the Naming Service. When the timestamp cannot be
-                // retrieved from the Naming Service, the channel is considered as not resolved
-                channelTimestamp = getChannelTimestamp();
-                if(0 == channelTimestamp.getTime()) {
-                    m_logger.log(AcsLogLevel.ERROR, "Timestamp of the NC '" + channelName + "' couldn't be retrieved from the Naming Service");
-                    retValue = null;
-                }
-
+                // Get the channel timestamp located into the Naming Service or set it to the current time
+                initChannelTimestamp();
 //				System.out.println("*** Got NC " + channelName + " from the naming service");
 			}
 		} while (retValue == null && --retryNumberAttempts >= 0);
@@ -547,9 +541,10 @@ public class Helper {
 
                 // Create an entry into the Naming Service to store the timestamp of the channel in order to allow
                 // subscribers to reconnect to the channel (ICT-4730)
-                int nAttempts = 10;
+                int maxNumAttempts = 10;
+                int nAttempts = maxNumAttempts;
                 boolean timestampCreated = setChannelTimestamp(retValue);
-                while(false == timestampCreated && nAttempts >= 0) {
+                while(false == timestampCreated && nAttempts > 0) {
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException ex1) {
@@ -560,8 +555,9 @@ public class Helper {
                 }
 
                 if(false == timestampCreated) {
-                    m_logger.log(AcsLogLevel.ERROR, "Failed to register the timestamp of the channel '" + channelName 
-                            + "' into the Naming Service after " + String.valueOf(nAttempts) + " attempts. Subscribers will not be able to reconnect");
+                    Throwable cause = new Throwable("Failed to register the timestamp of the channel '" + channelName 
+                            + "' into the Naming Service after " + String.valueOf(maxNumAttempts) + " attempts");
+                    throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(cause); // TODO: more specific ex type
                 }
 			}
 			catch (org.omg.CosNaming.NamingContextPackage.NotFound ex) {
@@ -649,6 +645,29 @@ public class Helper {
         }
 
         return timestamp;
+    }
+
+    /**
+     * Initialize the channel timestamp attribute by retrieving its value from the Naming Service. If after
+     * 10 attempts the timestamp cannot be retrieved then it's set to the current time.
+     */
+    public void initChannelTimestamp() {
+        int nAttempts = 10;
+        channelTimestamp = getChannelTimestamp();
+        while(channelTimestamp.getTime() == 0 && nAttempts > 0) {
+            channelTimestamp = getChannelTimestamp();
+            nAttempts--;
+            try {
+                Thread.sleep(2000);
+            } catch(InterruptedException ex1) {}
+        }
+
+        if(channelTimestamp.getTime() == 0) {
+            channelTimestamp = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            m_logger.log(AcsLogLevel.WARNING, "Timestamp of NC '" + channelName + "' couldn't be retrieved from the Naming Service. Initialized to: " 
+                    + dateFormat.format(channelTimestamp));
+        }
     }
 
     /**
