@@ -28,6 +28,8 @@ Provides functionality common to both NC suppliers and consumers.
 __revision__ = "$Id: CommonNC.py,v 1.10 2012/01/25 16:45:33 acaproni Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
+import time
+import datetime
 from traceback import print_exc
 from AcsutilPy.WildcharMatcher import wildcharMatch
 #--CORBA STUBS-----------------------------------------------------------------
@@ -97,6 +99,9 @@ class CommonNC(object):
         #create the reconnection callback
         self.channel_factory = None
         self.callback = ReconnectionCallback(self)
+        self.channelTimestamp = None
+        #Autoreconnect when detecting that the connection to the channel has been lost
+        self.autoreconnect = False
     #------------------------------------------------------------------------------
     def combineChannelAndDomainName(self):
         return self.channelName+NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+self.domainName
@@ -239,7 +244,8 @@ class CommonNC(object):
         try:
             self.nt = NameTree.nameTree(getORB())
         except Exception, e:
-            print_exc()
+            if not self.autoreconnect: # Only print the exception when autoreconnect is disabled
+                print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("exception",
@@ -258,6 +264,9 @@ class CommonNC(object):
             self.channel_factory = self.channel_factory._narrow(NotifyMonitoringExt.EventChannelFactory)
             obj = self.nt.getObject(self.combineChannelAndDomainName(), self.getChannelKind())
             self.evtChan = obj._narrow(NotifyMonitoringExt.EventChannel)
+
+            # The channel could be resolved so we get also the timestamp from the Naming Service
+            self.iniChannelTimestamp()
         except:
             try:
                 self.createNotificationChannel()
@@ -268,6 +277,9 @@ class CommonNC(object):
                         try:
                             obj = self.nt.getObject(self.combineChannelAndDomainName(), self.getChannelKind())
                             self.evtChan = obj._narrow(NotifyMonitoringExt.EventChannel)
+
+                            # The channel could be resolved so we get also the timestamp from the Naming Service
+                            self.iniChannelTimestamp()
                         except:
                             pass
                         if self.evtChan is not None:
@@ -323,7 +335,8 @@ class CommonNC(object):
             self.channel_factory = self.nt.getObject(self.getNotificationFactoryName(), "")
             self.channel_factory = self.channel_factory._narrow(NotifyMonitoringExt.EventChannelFactory)
         except Exception, e:
-            print_exc()
+            if not self.autoreconnect: # Only print the exception when autoreconnect is disabled
+                print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("reason",
@@ -340,7 +353,8 @@ class CommonNC(object):
             chan_id = None
             
         except AttributeError, e:
-            print_exc()
+            if not self.autoreconnect: # Only print the exception when autoreconnect is disabled
+                print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("reason",
@@ -348,7 +362,8 @@ class CommonNC(object):
                                             NameValue("exception",
                                                       str(e))])
         except Exception, e:
-            print_exc()
+            if not self.autoreconnect: # Only print the exception when autoreconnect is disabled
+                print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("reason",
@@ -360,8 +375,18 @@ class CommonNC(object):
         # type. The event channel is now ready for action.
         try:
             self.nt.putObject(self.combineChannelAndDomainName(), self.getChannelKind(), self.evtChan)
+            n_attempts = 10
+            timestamp_created = self.setChannelTimestamp()
+            while timestamp_created == False and n_attempts >= 0:
+               time.sleep(2)
+               timestamp_created = self.setChannelTimestamp()
+               n_attemps -= 1
+            
+            if timestamp_created == False:
+                self.logger.logError("Failed to register the timestamp of the channel '%s' after %d attempts. Subscribers will not be able to reconnect"%(self.channelName,n_attempts))
         except Exception, e:
-            print_exc()
+            if not self.autoreconnect: # Only print the exception when autoreconnect is disabled
+                print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("reason",
@@ -370,4 +395,66 @@ class CommonNC(object):
                                                       str(e))])
         return
 #------------------------------------------------------------------------------
+    def set_autoreconnect(self, autoreconnect):
+        '''
+        Set autoreconnection on/off in case the Notify Service restarted.
 
+        Params: Nothing
+
+        Returns: Nothing
+
+        Raises: Nothing
+        '''
+        self.autoreconnect = autoreconnect
+#------------------------------------------------------------------------------
+    def setChannelTimestamp(self):
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
+        channel_name_timestamp = self.combineChannelAndDomainName() + "-" + st
+                                                
+        try:
+            self.nt.putObject(channel_name_timestamp, self.getChannelTimestampKind(), self.evtChan)
+            self.channelTimestamp = datetime.datetime.fromtimestamp(ts)
+            return True
+        except Exception, e:
+            self.logger.logError("Failed to bind the timestamp of the channel '%s'"%(self.channelName))
+            print_exc()
+            return False
+#------------------------------------------------------------------------------
+    def getChannelTimestamp(self):
+        name = self.combineChannelAndDomainName()
+        entries = self.nt.listdir()
+        for entry in entries:
+            if entry[0].endswith("." + self.getChannelTimestampKind()) and entry[0].startswith(name):
+                try:
+                    pos_end = entry[0].rindex("." + self.getChannelTimestampKind())
+                    timestamp = entry[0][(len(name)+1):pos_end]
+                    return datetime.datetime.strptime(timestamp,'%Y-%m-%d_%H:%M:%S')
+                except Exception:
+                    return None
+        return None
+#------------------------------------------------------------------------------
+    def getChannelTimestampKind(self):
+        '''
+        Parameters: None
+        
+        Returns:a constant string.
+        
+        Raises: Nothing
+        '''
+        return "NCSupport" # TODO change it to use the constant defined in acscommon
+#------------------------------------------------------------------------------
+    def iniChannelTimestamp(self):
+        n_attempts = 10
+        # The channel could be resolved so we get also the timestamp from the Naming Service
+        self.channelTimestamp = self.getChannelTimestamp()
+        while self.channelTimestamp == None and n_attempts > 0:
+            self.channelTimestamp = self.getChannelTimestamp()
+            n_attemps -= 1
+            time.sleep(2)
+
+        # The channel timestamp couldn't be retrieved from the Naming Service. It will
+        # be initialized with the current time. 
+        if self.channelTimestamp == None:
+            self.channelTimestamp = datetime.datetime.fromtimestamp(time.time())
+            self.logger.logWarning("Timestamp of NC '%s' couldn't be retrieved from the Naming Service. Initialized to: %s"%(self.channelName,str(self.channelTimestamp)))

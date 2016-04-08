@@ -38,6 +38,8 @@ import CosNotification
 import CosNotifyFilter
 import acsnc
 import Queue
+import time
+import threading
 from threading import Thread
 from ACSErrTypeCommonImpl         import CORBAProblemExImpl
 from ACSErr                       import NameValue
@@ -97,6 +99,10 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         self.handlerTimeoutDict = getEventHandlerTimeoutDict(name)
         #profiler to time how long it takes events to be processed
         self.profiler = Profiler()
+        #Is the consumer suspended?
+        self.suspended = False
+        #Lock used to read & write suspended attribute
+        self.lockAction = threading.Lock()
        
         #Handle all of the CORBA stuff now
         CommonNC.initCORBA(self)
@@ -133,7 +139,8 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
             adminid = 0
             
         except Exception, e:
-            print_exc()
+            if not self.autoreconnect: # Only print the exception when autoreconnect is disabled
+                print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("reason",
@@ -260,9 +267,13 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
 
         Raises: ACSErrTypeCommonImpl.CORBAProblemExImpl on critical failures
         '''
+        self.lockAction.acquire()
         try:
             self.spps.suspend_connection()
+            self.suspended = True
+            self.lockAction.release()
         except Exception, e:
+            self.lockAction.release()
             print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
@@ -280,11 +291,33 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
 
         Raises: ACSErrTypeCommonImpl.CORBAProblemExImpl on critical failures
         '''
+        self.lockAction.acquire()
         try:
             self.spps.resume_connection()
+            self.suspended = False
+            self.lockAction.release()
         except Exception, e:
-            print_exc()
-            raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
+            throw_ex = True
+            if self.autoreconnect:
+                nAttempts = 5
+                connected = False
+                while not connected and nAttempts > 0:
+                    try:
+                        self.reinitConnection()
+                        connected = True
+                    except:
+                        time.sleep(1)
+                    nAttempts -= 1
+                if not connected:
+                    self.logger.logError("After 5 attempts the consumer couldn't reconnect to the channel '%s'"%(self.channelName))
+                else:
+                    throw_ex = False
+                    self.suspended = False
+
+            self.lockAction.release()
+            if throw_ex:
+                print_exc()
+                raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("exception",
                                                       str(e))])
@@ -299,14 +332,33 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
 
         Raises: ACSErrTypeCommonImpl.CORBAProblemExImpl on critical failures
         '''
+        self.lockAction.acquire()
         try:
             self.spps.connect_structured_push_consumer(self._this())
+            self.suspended = False
+            self.lockAction.release()
         except Exception, e:
+            self.lockAction.release()
             print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("exception",
                                                       str(e))])
+    #--------------------------------------------------------------------------
+    def reinitConnection(self):
+        '''
+        Consumer reinitializes the connection to the Channel.
+
+        Parameters: None
+        
+        Returns: Nothing
+
+        Raises: ACSErrTypeCommonImpl.CORBAProblemExImpl on critical failures
+        '''
+        CommonNC.initCORBA(self)
+        self.initCORBA()
+        self.spps.connect_structured_push_consumer(self._this())
+        self.logger.logInfo("Consumer reconnected to the channel '%s'"%(self.channelName))
     #--------------------------------------------------------------------------
     def addSubscription (self, name, handler_function=None):
         '''
@@ -557,6 +609,13 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
             try:
                 event = self.__buffer.get(block = True, timeout = 2)
             except Queue.Empty, e:
+                if self.autoreconnect:
+                    self.lockAction.acquire()
+                    # Reconnect only when the consumer is not suspended
+                    if not self.suspended:
+                        self.__check_connection_and_reconnect_if_needed()
+                    self.lockAction.release()
+                    
                 continue
             #For HLA - maximum amount of time the consumer has to process the event
             if self.handlerTimeoutDict.has_key(event.header.fixed_header.event_type.type_name) == 0:
@@ -628,5 +687,50 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
                 print_exc()
             #Just to make happy the Python queue API
             self.__buffer.task_done()
+    #------------------------------------------------------------------------------
+    def __check_connection_and_reconnect_if_needed(self):
+        '''
+        Checks the connection to the channel and reconnects to it when one of the 
+        following conditions is true:
+        - Consumer's timestamp is null
+        - The timestamp located in the Naming Service is newer than the consumer's one
+        - _non_existent call returns false or throw an exception
 
-        
+        Params: Nothing
+
+        Returns: Nothing
+
+        Raises: Nothing
+        '''
+        reconnect = False
+
+        # Get the timestamp from the Naming Service
+        ns_timestamp = self.getChannelTimestamp()
+
+        # The consumer doesn't have a timestamp which is set when creating the channel
+        # or connecting to the channel
+        if self.channelTimestamp == None:
+            reconnect = True
+        else:
+            if ns_timestamp == None:
+                # Timestamp couldn't be retrieved from the Naming Service, we will
+                # check the connection by calling a CORBA method
+                try:
+                    if self.spps._non_existent():
+                        reconnect = True
+                except:
+                    # _non_existent call throw an exception, so we reconnect
+                    reconnect = True
+            # Timestamp could be retrieved from the Naming Service, so we will check if it's
+            # newer than the consumer's timestamp
+            else:
+                if ns_timestamp > self.channelTimestamp:
+                    reconnect = True
+
+        if reconnect:
+            self.logger.logInfo("Consumer is reconnecting to the channel '%s' ..."%(self.channelName))            
+            try:
+                self.reinitConnection()
+            except:
+                self.logger.logError("Consumer couldn't reconnect to the channel '%s'"%(self.channelName))
+

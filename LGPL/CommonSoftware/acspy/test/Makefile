@@ -54,7 +54,8 @@ PY_SCRIPTS_L =	test_Acspy_Nc_CommonNC \
 		acspyTestConsumer \
 		acspyTestQoSTimeout \
 		acspyTestContainerActivationMap.py \
-		acspyTestSupplierReconn
+		acspyTestSupplierReconn \
+		acspyTestConsumerReconn
 
 PY_PACKAGES = acspytestImpl acspyTestQoSImpl
 
