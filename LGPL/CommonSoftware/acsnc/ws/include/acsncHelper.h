@@ -279,6 +279,11 @@ class Helper
     getAdminProps();    
     
     /**
+     *
+     */
+    std::string timestamp2str(time_t timer);
+
+    /**
      * Sets the channel timestamp by registering the channel to the Naming Service
      * using its name but appending to it the timestmap.
      * Returns true when the channel could be registered to the Naming Service. Otherwise
@@ -292,6 +297,11 @@ class Helper
      */
     bool getChannelTimestamp(time_t &timestamp);
     bool getChannelTimestamp(time_t &timestamp,const CosNaming::BindingList &bl);
+
+    /**
+     *
+     */
+    void initChannelTimestamp();
 
     /**
      *  A naming context (i.e., Naming Service reference)

@@ -131,7 +131,7 @@ PROLOGUE acsutilTATPrologue
                 "acsutilTATTestRunner acsncRunConComp 1 CON_COMP_5 NamedCh autoreconnect 55 0 2000" \
                 "acsutilTATTestRunner acsncRunConComp 1 CON_COMP_6 NamedCh autoreconnect 55 0 2000" "@SLEEP 10" \
                 "acsutilTATTestRunner acsncRunSupComp SUP_COMP_1 NamedCh autoreconnect 30 100 1" "@SLEEP 12" \
-                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 50" \
+                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 55" \
                 "acsutilTATTestRunner acsStopContainer bilboContainer"
 
 

@@ -335,6 +335,19 @@ class Consumer :
      */
     void setAutoreconnect(bool autoreconnect);
 
+    /**
+     * Time to wait in seconds after the last received event to consider that the consumer is not receiving events.
+     * @return Returns false when the timeout passed is 0 or negative. Otherwise returns true.
+     */
+    bool setEventReceptionTimeout(int eventReceptionTimeout); 
+
+    /**
+     * Frequency in seconds at which the connection status will be checked
+     * @return Returns false when the value given is 0 or negative. Otherwise returns true.
+     */
+    bool setConnectionCheckerFreq(int connectionCheckerFreq);
+
+
   protected:
     /**
      * Utility method.
@@ -526,11 +539,14 @@ class Consumer :
     CosNotifyChannelAdmin::AdminID adminid;
     CosNotifyChannelAdmin::ProxyID proxySupplierID;
 
-    static const int NC_CHECKER_FREQ;
     static const bool DEFAULT_AUTORECONNECT;
+    static const int DEFAULT_EVENT_RECEPTION_TIMEOUT;
+    static const int DEFAULT_CONNECTION_CHECKER_FREQ;
     bool stopNCCheckerThread;
     pthread_t ncCheckerThread;
     ACE_Thread_Mutex checkerThMutex_m;
+    int eventReceptionTimeout_m;
+    int connectionCheckerFreq_m;
     ///////////////////////////////////////////////////////////////////////////////////////
 };
  }; 
