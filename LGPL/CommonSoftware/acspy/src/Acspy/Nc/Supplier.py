@@ -379,7 +379,7 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
             if event_callback != None:
                 event_callback.eventDropped(simple_data)
 
-        except CORBA.OBJECT_NOT_EXIST, e:
+        except (CORBA.OBJECT_NOT_EXIST, CORBA.BAD_OPERATION) as e:
             #Notify Service is down
             if self.autoreconnect:
                 # Recreate the channel

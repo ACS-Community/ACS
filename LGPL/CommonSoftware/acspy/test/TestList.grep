@@ -21,3 +21,4 @@ Aborted
 terminate called after throwing an instance of 'omni_thread_fatal'
 got duplicate tcp line
 line 52, in fakeCORBAMethod
+__check_connection_and_reconnect_if_needed - Consumer is reconnecting to the channel

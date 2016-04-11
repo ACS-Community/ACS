@@ -271,14 +271,16 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         try:
             self.spps.suspend_connection()
             self.suspended = True
-            self.lockAction.release()
+        except CosNotifyChannelAdmin.ConnectionAlreadyInactive:
+            self.suspended = True
         except Exception, e:
-            self.lockAction.release()
             print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("exception",
                                                       str(e))])
+        finally:
+            self.lockAction.release()
     #--------------------------------------------------------------------------
     def resume(self):
         '''
@@ -295,7 +297,8 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         try:
             self.spps.resume_connection()
             self.suspended = False
-            self.lockAction.release()
+        except CosNotifyChannelAdmin.ConnectionAlreadyActive:
+            self.suspended = False
         except Exception, e:
             throw_ex = True
             if self.autoreconnect:
@@ -314,13 +317,14 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
                     throw_ex = False
                     self.suspended = False
 
-            self.lockAction.release()
             if throw_ex:
                 print_exc()
                 raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("exception",
                                                       str(e))])
+        finally:
+            self.lockAction.release()
     #--------------------------------------------------------------------------
     def consumerReady(self):
         '''
@@ -336,14 +340,14 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         try:
             self.spps.connect_structured_push_consumer(self._this())
             self.suspended = False
-            self.lockAction.release()
         except Exception, e:
-            self.lockAction.release()
             print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
                                                       self.channelName),
                                             NameValue("exception",
                                                       str(e))])
+        finally:
+            self.lockAction.release()
     #--------------------------------------------------------------------------
     def reinitConnection(self):
         '''
@@ -604,6 +608,7 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         self.supplierAdmin.set_qos(self.configAdminProps())
         
     def __process_event(self):
+        first_time_reconnect = True
         while not self.__stop_thread:
             event = None
             try:
@@ -613,10 +618,10 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
                     self.lockAction.acquire()
                     # Reconnect only when the consumer is not suspended
                     if not self.suspended:
-                        self.__check_connection_and_reconnect_if_needed()
+                        first_time_reconnect = self.__check_connection_and_reconnect_if_needed(first_time_reconnect)
                     self.lockAction.release()
-                    
                 continue
+            first_time_reconnect = True
             #For HLA - maximum amount of time the consumer has to process the event
             if self.handlerTimeoutDict.has_key(event.header.fixed_header.event_type.type_name) == 0:
             #give it the default timeout if it's undefined by the CDB
@@ -688,7 +693,7 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
             #Just to make happy the Python queue API
             self.__buffer.task_done()
     #------------------------------------------------------------------------------
-    def __check_connection_and_reconnect_if_needed(self):
+    def __check_connection_and_reconnect_if_needed(self,first_time_reconnect):
         '''
         Checks the connection to the channel and reconnects to it when one of the 
         following conditions is true:
@@ -696,7 +701,8 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         - The timestamp located in the Naming Service is newer than the consumer's one
         - _non_existent call returns false or throw an exception
 
-        Params: Nothing
+        Params:
+        - first_time_reconnect: Is the first time we try to reconnect
 
         Returns: Nothing
 
@@ -728,9 +734,14 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
                     reconnect = True
 
         if reconnect:
-            self.logger.logInfo("Consumer is reconnecting to the channel '%s' ..."%(self.channelName))            
+            if first_time_reconnect:
+                self.logger.logInfo("Consumer is reconnecting to the channel '%s' ..."%(self.channelName))            
             try:
                 self.reinitConnection()
+                first_time_reconnect = False
             except:
-                self.logger.logError("Consumer couldn't reconnect to the channel '%s'"%(self.channelName))
+                if first_time_reconnect:
+                    self.logger.logError("Consumer couldn't reconnect to the channel '%s'"%(self.channelName))
+                    first_time_reconnect = False
+        return first_time_reconnect
 
