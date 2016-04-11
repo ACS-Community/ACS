@@ -11,8 +11,8 @@
 1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 1 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
 1 - ReBound ID: MC_NotifyEventChannelFactory
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] === Test1
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create the subscriber and await events
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] === Test1
 2 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger scxml@SimpleConsumerReconnClient-XXXXX created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] component 'SimpleConsumerReconnClient-XXXXX' requested AdvancedContainerServices
 X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='test_reconn' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
@@ -36,4 +36,6 @@ X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create the publisher and start sending events
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Start publishing 5 events
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Great! All events have been received
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time first event received: XXX
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time last event received: XXX
 2 - Test finished

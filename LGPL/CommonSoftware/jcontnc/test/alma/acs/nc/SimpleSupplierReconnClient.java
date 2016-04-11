@@ -221,7 +221,7 @@ public class SimpleSupplierReconnClient implements Callback<EventDescription> {
 
         if(m_autoreconnect) {
             if(m_nsAction.equals(NS_RESTARTED)) {
-                if(m_cbObj.m_transitions.size() != 2) {
+                if(m_cbObj.m_transitions.size() != 2 && m_cbObj.m_transitions.size() != 0) {
                     m_logger.info("===   Wrong number of transitions: " 
                         + String.valueOf(m_cbObj.m_transitions.size()) + ". We expected 0 or 2");
                 }

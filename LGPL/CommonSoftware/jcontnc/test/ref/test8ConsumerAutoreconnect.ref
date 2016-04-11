@@ -1,5 +1,6 @@
 2 -  -- alma.acs.nc.SimpleConsumerReconnClient 8
 4 - ::::  END_TEST_8_CONSUMER_AUTORECONNECT
+1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 1 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 1 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
@@ -8,21 +9,20 @@
 1 - Using reactive client control.
 1 - Using 1 threads for each Supplier.
 1 - Using 1 threads for each Consumer.
-1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 1 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
 1 - ReBound ID: MC_NotifyEventChannelFactory
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create few subscribers and await events
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] === Test8
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create few subscribers and await events
 2 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger scxml@SimpleConsumerReconnClient-XXXXX created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] component 'SimpleConsumerReconnClient-XXXXX' requested AdvancedContainerServices
 X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='test_reconn' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Created 5 extra subscribers
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Suspend subscribers
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  From this point we expect the Notify Service to restart
+3 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 3 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 3 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
-3 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
 3 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
 3 - Using reactive client control.
@@ -45,4 +45,6 @@ X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Subscribers and publisher have been disconnected!
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Tear down the client
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Great! All events have been received
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time first event received: XXX
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time last event received: XXX
 2 - Test finished

@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.text.SimpleDateFormat;
 
 import org.omg.CORBA.portable.IDLEntity;
 
@@ -377,14 +378,60 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         }
     }
 
+
+    Date m_tFirstEventReceived;
+    Date m_tLastEventReceived;
+    List<Long> m_eventsReceived = new ArrayList<Long>();
+
 	@Override
 	public void receive(EventDescription event, EventDescription eventDescrip) {
+        if(m_tFirstEventReceived == null) {
+            m_tFirstEventReceived = new Date();
+        }
+        Date currDate = new Date();
+        if(m_tLastEventReceived == null || currDate.after(m_tLastEventReceived)) {
+            m_tLastEventReceived = currDate;
+        }
+        m_eventsReceived.add(new Long(event.count));
 		received++;
         if(lastReceived < event.count) {
             lastReceived = event.count;
         }
 		//m_logger.info(":::[TestSubscriberReconn] Received: " + received);
 	}
+
+    public void logReceivedInfo(int nProcs,int nEventsSent) {
+        String sTimeFirstEvent = "";
+        if(m_tFirstEventReceived != null) {
+            sTimeFirstEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(m_tFirstEventReceived);
+        }
+        String sTimeLastEvent = "";
+        if(m_tLastEventReceived != null) {
+            sTimeLastEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(m_tLastEventReceived);
+        }
+        m_logger.info("Time first event received: " + sTimeFirstEvent);
+        m_logger.info("Time last event received: " + sTimeLastEvent);
+
+        //int nEventsExpected = nProcs * nEventsSent;
+
+        long [] record = new long[nEventsSent];
+        for(int i = 0;i < nEventsSent;i++) {
+            record[i] = 0;
+        }
+
+        Iterator<Long> it = m_eventsReceived.iterator();
+        while(it.hasNext()) {
+            int value = it.next().intValue();
+            record[value]++;
+        }
+
+        for(int i = 0;i < nEventsSent;i++) {
+            if(record[i] < nProcs) {
+                m_logger.info("Error! Received " + String.valueOf(record[i]) + " events with count=" + String.valueOf(i) 
+                        + " but should be " + String.valueOf(nProcs));
+            }
+        }
+    }
 
 	@Override
 	public Class<EventDescription> getEventType() {
@@ -404,6 +451,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
      * and it starts to send events.
      */
     public void test1() throws Exception {
+        int nEvents = 5;
         m_logger.info("=== Test1");
         m_logger.info("=========================  Create the subscriber and await events");
         createSubscriber(true);
@@ -413,14 +461,15 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         m_logger.info("=========================  At this point the Notify Service should have been restarted");
         m_logger.info("=========================  Create the publisher and start sending events");
         createPublisher(true);
-        sendEvents(5,250);
+        sendEvents(nEvents,250);
         disconnectAndReport();    
 		m_client.tearDown();
-        if(received == 5) {
+        if(received == nEvents) {
             m_logger.info("Great! All events have been received");
         } else {
             m_logger.info("Error! Expected 5 events but was " + String.valueOf(received));
         }
+        logReceivedInfo(1, nEvents);
     }
 
     /**
@@ -428,6 +477,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
      * The Notify Service is restarted and after 15sec a publisher is created and starts to send events.
      */
     public void test2() throws Exception {
+        int nEvents = 5;
         m_logger.info("=== Test2");
         m_logger.info("=========================  Create the subscriber and await events");
         createSubscriber(true);
@@ -445,14 +495,15 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         }
         m_logger.info("=========================  At this point the Notify Service should have been restarted");
         createPublisher(true);
-        sendEvents(5,250);
+        sendEvents(nEvents,250);
         disconnectAndReport();
 		m_client.tearDown();
-        if(received == 5) {
+        if(received == nEvents) {
             m_logger.info("Great! All events have been received");
         } else {
-            m_logger.info("Error! Expected 5 events but was " + String.valueOf(received));
+            m_logger.info("Error! Expected " + String.valueOf(nEvents) + " events but was " + String.valueOf(received));
         }    
+        logReceivedInfo(1, nEvents);
     }
 
     /**
@@ -460,6 +511,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
      * a publisher is created and starts to send events.
      */ 
     public void test3() throws Exception {
+        int nEvents = 5;
         m_logger.info("=== Test3");
         m_logger.info("=========================  Create the subscriber suspended");
         createSubscriber(true);
@@ -473,14 +525,15 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         waitSec(4);
         m_logger.info("=========================  Create the publisher and send events");
         createPublisher(true);
-        sendEvents(5,250); // Send 5 events. We expect to receive all of them in the subscriber
+        sendEvents(nEvents,250); // Send 5 events. We expect to receive all of them in the subscriber
         disconnectAndReport();
 		m_client.tearDown();
-        if(received == 5) {
+        if(received == nEvents) {
             m_logger.info("Great! All events have been received");
         } else {
-            m_logger.info("Error! Expected 5 events but was " + String.valueOf(received));
+            m_logger.info("Error! Expected "+ nEvents +" events but was " + String.valueOf(received));
         }
+        logReceivedInfo(1, nEvents);
     }
 
     /**
@@ -492,6 +545,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
      * Publish more events
      */
     public void test4() throws Exception {
+        int nEvents = 5;
         m_logger.info("=== Test4");
         m_logger.info("=========================  Create a subscriber suspended");
         createSubscriber(true);
@@ -505,18 +559,20 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         m_logger.info("=========================  At this point the Notify Service should have been restarted");
         m_logger.info("=========================  Resume the subscriber and the publisher starts sending events");
         m_subscriber.resume();
-        sendEvents(5,250);
+        sendEvents(nEvents,250);
         disconnectAndReport();
 		m_client.tearDown();
-        if(received == 5) {
+        if(received == nEvents) {
             m_logger.info("Great! All events have been received");
         } else {
-            m_logger.info("Error! Expected 5 events but was " + String.valueOf(received));
+            m_logger.info("Error! Expected " + nEvents + " events but was " + String.valueOf(received));
         }
+        logReceivedInfo(1, nEvents);
     }
 
     public void test5() throws Exception {
         int numSubs = 5;
+        int nEvents = 5;
         m_logger.info("=== Test5");
         m_logger.info("=========================  Create few subscribers and await events");
         createSubscriber(true);
@@ -524,20 +580,21 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         m_subscriber.startReceivingEvents();
         startReceivingEventsOtherSubscribers();
         m_logger.info("=========================  From this point we expect the Notify Service to restart");
-        waitSec(15); // Here we expect the restart of the Notify Service
+        waitSec(20); // Here we expect the restart of the Notify Service
         m_logger.info("=========================  At this point the Notify Service should have been restarted");
         m_logger.info("=========================  Creating the publisher and start sending events");
         createPublisher(true);
-        sendEvents(5,250);
+        sendEvents(nEvents,250);
         waitSec(2);
         disconnectOtherSubscribers();
         disconnectAndReport();
 		m_client.tearDown();
-        if(received == (5 * (1+numSubs))) {
+        if(received == (nEvents * (1+numSubs))) {
             m_logger.info("Great! All events have been received");
         } else {
-            m_logger.info("Error! Expected " + String.valueOf(5 * (1+numSubs)) + " events but was " + String.valueOf(received));
+            m_logger.info("Error! Expected " + String.valueOf(nEvents * (1+numSubs)) + " events but was " + String.valueOf(received));
         }
+        logReceivedInfo((numSubs+1), nEvents);
     }
 
     /**
@@ -573,6 +630,8 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         } else {
             m_logger.info("Error! Expected " + String.valueOf(numEventsExpected) + " events but was " + String.valueOf(received));
         }       
+
+        logReceivedInfo(nProc * numSubs, nEvents);
     }
 
     /**
@@ -622,6 +681,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
             m_logger.info("Error! Expected " + String.valueOf(numEventsExpected) + " events but was " + String.valueOf(received) 
                     + ". Last received event was " + String.valueOf(lastReceived));
         }       
+        logReceivedInfo(nProc * numSubs, nEvents);
     }
 
 
@@ -664,6 +724,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
             m_logger.info("Error! Expected " + String.valueOf(numEventsExpected) + " events but was " + String.valueOf(received) 
                     + ". Last received event was " + String.valueOf(lastReceived));
         }       
+        logReceivedInfo(nProc * numSubs, nEvents);
     }
 
 

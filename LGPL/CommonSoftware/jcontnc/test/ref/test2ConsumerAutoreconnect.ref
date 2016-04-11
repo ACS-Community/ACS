@@ -35,4 +35,6 @@ X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  At this point the Notify Service should have been restarted
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Start publishing 5 events
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Great! All events have been received
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time first event received: XXX
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time last event received: XXX
 2 - Test finished

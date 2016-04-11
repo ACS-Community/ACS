@@ -3,12 +3,12 @@
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 1 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 1 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
-1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
 1 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
 1 - Using reactive client control.
 1 - Using 1 threads for each Supplier.
 1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 1 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
 1 - ReBound ID: MC_NotifyEventChannelFactory
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create the subscriber suspended
@@ -36,4 +36,6 @@ X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create the publisher and send events
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Start publishing 5 events
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Great! All events have been received
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time first event received: XXX
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time last event received: XXX
 2 - Test finished

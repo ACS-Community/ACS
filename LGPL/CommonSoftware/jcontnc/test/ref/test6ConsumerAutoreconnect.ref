@@ -15,24 +15,24 @@
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create few subscribers and await events
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] === Test6
 2 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger scxml@SimpleConsumerReconnClient-XXXXX created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
+3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create few subscribers and await events
+3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] === Test6
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] component 'SimpleConsumerReconnClient-XXXXX' requested AdvancedContainerServices
 X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='test_reconn' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Main subscriber has been created
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Created 5 extra subscribers
-3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Create few subscribers and await events
-3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] === Test6
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  From this point we expect the Notify Service to restart
 3 - ----------T--:--:--.--- INFO [alma.acs.logging] Logger scxml@SimpleConsumerReconnClient-XXXXX created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] component 'SimpleConsumerReconnClient-XXXXX' requested AdvancedContainerServices
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Main subscriber has been created
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Created 5 extra subscribers
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Created 5 extra subscribers
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  From this point we expect the Notify Service to restart
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  From this point we expect the Notify Service to restart
 4 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 4 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 4 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
 4 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
 4 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
 4 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
 4 - Using reactive client control.
@@ -44,38 +44,42 @@ X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
-3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
+3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer is reinitializing the connection to the channel 'test_reconn'
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
-3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
+3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
 4 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
 4 - ReBound ID: MC_NotifyEventChannelFactory
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  At this point the Notify Service should have been restarted
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Creating the publisher and start sending events
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Start publishing 20 events
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  At this point the Notify Service should have been restarted
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Creating the publisher and start sending events
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  At this point the Notify Service should have been restarted
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Creating the publisher and start sending events
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Start publishing 20 events
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Waiting 10 sec to receive events comming from the other process
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Start publishing 20 events
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Waiting 10 sec to receive events comming from the other process
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Disconnect subscribers and publisher
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Waiting 10 sec to receive events comming from the other process
 3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Disconnect subscribers and publisher
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Disconnect subscribers and publisher
+3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Ssubscribers and publisher have been disconnected!
+3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Great! All events have been received
+3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time first event received: XXX
+3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time last event received: XXX
+3 - Test finished
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Great! All events have been received
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Ssubscribers and publisher have been disconnected!
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time first event received: XXX
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Time last event received: XXX
 2 - Test finished
-3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Great! All events have been received
-3 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Ssubscribers and publisher have been disconnected!
-3 - Test finished
