@@ -39,7 +39,7 @@ import java.rmi.dgc.VMID;
  * @author rtobar, Nov 16th, 2010
  *
  */
-public class SimpleConsumerReconnClient implements Callback<EventDescription> {
+public class SimpleConsumerReconnClient /*implements Callback<EventDescription>*/ {
 
 	// For creating the clients
     private static final VMID vmid = new VMID();
@@ -50,8 +50,8 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
     public static final String NS_RESTARTED = "NS_RESTARTED";
     public static final String NS_STOPPED = "NS_STOPPED";
 
-	private volatile int received = 0;
-    private volatile long lastReceived = -1;
+	//private volatile int received = 0;
+    //private volatile long lastReceived = -1;
 	private int m_interval;
 	private int m_nEvents;
 	private boolean m_autoreconnect;
@@ -66,6 +66,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
 	private AcsEventPublisher<IDLEntity> m_publisher;
 	private AcsEventSubscriber<EventDescription> m_subscriber;
 	private List<AcsEventSubscriber<EventDescription>> m_subscribers;
+    private List<Receiver> m_receivers;
 	
 	private ComponentClient m_client;
 
@@ -154,6 +155,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
 	public SimpleConsumerReconnClient() throws Exception {
         m_cbObj = new CallbackObject();
 		m_logger.setLevel(Level.INFO);
+        m_receivers = new ArrayList<Receiver>();
         m_client = new ComponentClient(m_logger, System.getProperty("ACS.manager"), "SimpleConsumerReconnClient-"+String.valueOf(CL_ID));
 	}
 
@@ -172,7 +174,9 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
 	public void createSubscriber(boolean autoreconnect) {
         try {
             m_subscriber = m_client.getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, EventDescription.class);
-            m_subscriber.addSubscription(this);
+            Receiver receiver = new Receiver(0);            
+            m_receivers.add(receiver);
+            m_subscriber.addSubscription(receiver);
             ((NCSubscriber)m_subscriber).setAutoreconnect(autoreconnect);
             m_logger.info("Main subscriber has been created");
         } catch (AcsJContainerServicesEx e) {
@@ -192,7 +196,9 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
             try {
                 AcsEventSubscriber<EventDescription> subs 
                     = m_client.getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, EventDescription.class);
-                subs.addSubscription(this);
+                Receiver receiver = new Receiver(i+1);
+                m_receivers.add(receiver);
+                subs.addSubscription(receiver);
                 ((NCSubscriber)subs).setAutoreconnect(autoreconnect);
                 m_subscribers.add(subs);
             } catch (AcsJContainerServicesEx e) {
@@ -383,6 +389,44 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
     Date m_tLastEventReceived;
     List<Long> m_eventsReceived = new ArrayList<Long>();
 
+
+    public class Receiver implements Callback<EventDescription> {
+
+        public int id;
+        public volatile int received = 0;
+        public volatile long lastReceived = -1;
+        public volatile Date m_tFirstEvent;
+        public volatile Date m_tLastEvent;
+        public volatile List<Long> m_eventsReceived = new ArrayList<Long>();
+
+        public Receiver(int id) {
+            this.id = id;
+        }
+
+        @Override
+        public void receive(EventDescription event, EventDescription eventDescrip) {
+            if(m_tFirstEvent == null) {
+                m_tFirstEvent = new Date();
+            }
+            Date currDate = new Date();
+            if(m_tLastEvent == null || currDate.after(m_tLastEvent)) {
+                m_tLastEvent = currDate;
+            }
+            m_eventsReceived.add(new Long(event.count));
+            received++;
+            if(lastReceived < event.count) {
+                lastReceived = event.count;
+            }
+            //m_logger.info(":::[TestSubscriberReconn] Received: " + received);
+        }   
+
+        @Override
+        public Class<EventDescription> getEventType() {
+            return EventDescription.class;
+        }
+    }
+
+    /*
 	@Override
 	public void receive(EventDescription event, EventDescription eventDescrip) {
         if(m_tFirstEventReceived == null) {
@@ -398,33 +442,61 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
             lastReceived = event.count;
         }
 		//m_logger.info(":::[TestSubscriberReconn] Received: " + received);
-	}
+	}*/
+
+    public int numEventsReceived() {
+        int nEvents = 0;
+        Iterator<Receiver> itr = m_receivers.iterator();
+        while(itr.hasNext()) {
+            Receiver rec = itr.next();
+            nEvents += rec.received;
+        }
+        return nEvents;
+    }
 
     public void logReceivedInfo(int nProcs,int nEventsSent) {
-        String sTimeFirstEvent = "";
-        if(m_tFirstEventReceived != null) {
-            sTimeFirstEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(m_tFirstEventReceived);
-        }
-        String sTimeLastEvent = "";
-        if(m_tLastEventReceived != null) {
-            sTimeLastEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(m_tLastEventReceived);
-        }
-        m_logger.info("Time first event received: " + sTimeFirstEvent);
-        m_logger.info("Time last event received: " + sTimeLastEvent);
-
-        //int nEventsExpected = nProcs * nEventsSent;
-
         long [] record = new long[nEventsSent];
         for(int i = 0;i < nEventsSent;i++) {
             record[i] = 0;
         }
 
-        Iterator<Long> it = m_eventsReceived.iterator();
-        while(it.hasNext()) {
-            int value = it.next().intValue();
-            record[value]++;
+        Date tFirstEvent = null;
+        Date tLastEvent = null;
+
+        Iterator<Receiver> itr = m_receivers.iterator();
+        while(itr.hasNext()) {
+            Receiver rec = itr.next();
+
+            if(rec.m_tFirstEvent != null) {
+                if(tFirstEvent == null || tFirstEvent.after(rec.m_tFirstEvent)) {
+                    tFirstEvent = rec.m_tFirstEvent;
+                }
+            }
+
+            if(rec.m_tLastEvent != null) {
+                if(tLastEvent == null || tLastEvent.before(rec.m_tLastEvent)) {
+                    tLastEvent = rec.m_tLastEvent;
+                }
+            }
+
+            Iterator<Long> it = rec.m_eventsReceived.iterator();
+            while(it.hasNext()) {
+                int value = it.next().intValue();
+                record[value]++;
+            }
         }
 
+        String strTimeFirstEvent = "";
+        String strTimeLastEvent = "";
+        if(tFirstEvent != null) {
+            strTimeFirstEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(tFirstEvent);
+        }
+        if(tLastEvent != null) {
+            strTimeLastEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(tLastEvent);
+        }
+        m_logger.info("Time first event received: " + strTimeFirstEvent);
+        m_logger.info("Time last event received: " + strTimeLastEvent);
+        
         for(int i = 0;i < nEventsSent;i++) {
             if(record[i] < nProcs) {
                 m_logger.info("Error! Received " + String.valueOf(record[i]) + " events with count=" + String.valueOf(i) 
@@ -433,10 +505,11 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         }
     }
 
+    /*
 	@Override
 	public Class<EventDescription> getEventType() {
 		return EventDescription.class;
-	}
+	}*/
 
     public boolean waitSec(int nSec) {
         try {
@@ -464,6 +537,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         sendEvents(nEvents,250);
         disconnectAndReport();    
 		m_client.tearDown();
+        int received = numEventsReceived();
         if(received == nEvents) {
             m_logger.info("Great! All events have been received");
         } else {
@@ -498,6 +572,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         sendEvents(nEvents,250);
         disconnectAndReport();
 		m_client.tearDown();
+        int received = numEventsReceived();
         if(received == nEvents) {
             m_logger.info("Great! All events have been received");
         } else {
@@ -528,6 +603,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         sendEvents(nEvents,250); // Send 5 events. We expect to receive all of them in the subscriber
         disconnectAndReport();
 		m_client.tearDown();
+        int received = numEventsReceived();
         if(received == nEvents) {
             m_logger.info("Great! All events have been received");
         } else {
@@ -562,6 +638,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         sendEvents(nEvents,250);
         disconnectAndReport();
 		m_client.tearDown();
+        int received = numEventsReceived();
         if(received == nEvents) {
             m_logger.info("Great! All events have been received");
         } else {
@@ -589,6 +666,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         disconnectOtherSubscribers();
         disconnectAndReport();
 		m_client.tearDown();
+        int received = numEventsReceived();
         if(received == (nEvents * (1+numSubs))) {
             m_logger.info("Great! All events have been received");
         } else {
@@ -625,6 +703,7 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
         m_logger.info("=========================  Ssubscribers and publisher have been disconnected!");
         
         int numEventsExpected = nProc * nEvents * (1+numSubs);
+        int received = numEventsReceived();
         if(received == numEventsExpected) {
             m_logger.info("Great! All events have been received");
         } else {
@@ -675,11 +754,11 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
 		m_client.tearDown();
         
         int numEventsExpected = nProc * nEvents * (numSubs);
+        int received = numEventsReceived();
         if(received == numEventsExpected) {
             m_logger.info("Great! All events have been received");
         } else {
-            m_logger.info("Error! Expected " + String.valueOf(numEventsExpected) + " events but was " + String.valueOf(received) 
-                    + ". Last received event was " + String.valueOf(lastReceived));
+            m_logger.info("Error! Expected " + String.valueOf(numEventsExpected) + " events but was " + String.valueOf(received));
         }       
         logReceivedInfo(nProc * numSubs, nEvents);
     }
@@ -718,11 +797,11 @@ public class SimpleConsumerReconnClient implements Callback<EventDescription> {
 		m_client.tearDown();
         
         int numEventsExpected = nProc * nEvents * (numSubs);
+        int received = numEventsReceived();
         if(received == numEventsExpected) {
             m_logger.info("Great! All events have been received");
         } else {
-            m_logger.info("Error! Expected " + String.valueOf(numEventsExpected) + " events but was " + String.valueOf(received) 
-                    + ". Last received event was " + String.valueOf(lastReceived));
+            m_logger.info("Error! Expected " + String.valueOf(numEventsExpected) + " events but was " + String.valueOf(received));
         }       
         logReceivedInfo(nProc * numSubs, nEvents);
     }

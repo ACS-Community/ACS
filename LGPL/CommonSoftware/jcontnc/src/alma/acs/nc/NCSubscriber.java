@@ -211,7 +211,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
     /**
      * Number of events received
      */
-    private long numEventsReceived = 0;
+    private volatile long numEventsReceived = 0;
 
 	/**
 	 * Maps event names to the maximum amount of time allowed for receiver
@@ -1195,7 +1195,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
     /**
      * Boolean attribute used to stop the thread responsible for checking the connection to the channel 
      */
-    private boolean terminateConChecker = false;
+    private volatile boolean terminateConChecker = false;
 
     /**
      * Thread responsible for checking the connection to the channel
