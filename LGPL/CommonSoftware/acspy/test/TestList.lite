@@ -109,7 +109,7 @@ PROLOGUE acspyTATPrologue
    "acsutilTATTestRunner acspyExecNotifyService.sh NotifyEventChannelFactory STOP" "@SLEEP 25"
 
 # Check the reconnection of consumers when autoreconnection is ON and its Notify Service is restarted
-25 SOURCE acspyTATIncreaseLogLevel testConsumerAutoreconnectNSRestarted "acsutilTATTestRunner acspyExecNotifyService.sh NotifyEventChannelFactory RESTART" "@SLEEP 4" \
+25 testConsumerAutoreconnectNSRestarted "acsutilTATTestRunner acspyExecNotifyService.sh NotifyEventChannelFactory RESTART" "@SLEEP 4" \
    "acsutilTATTestRunner acspyTestConsumerReconn test_reconn 20 AUTORECONNECT NS_RESTARTED"
 
 
