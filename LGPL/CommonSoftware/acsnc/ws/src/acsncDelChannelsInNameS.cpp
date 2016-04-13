@@ -293,7 +293,7 @@ void analyzeNamingEntries(const CosNaming::NamingContext_ptr nc,
 	static const std::string APP_ID = "acsncDelChannelsInNameS";
 
 	static const std::string KIND_CHANNEL = "channels";
-	static const std::string KIND_NC_SUPPORT = "NCSupport"; // Notify Channels are registered twice in the Naming Service in order to allow the subscribers to reconnect to them (ICT-4730)
+	static const std::string KIND_NC_SUPPORT = acscommon::NC_KIND_NCSUPPORT; // Notify Channels are registered twice in the Naming Service in order to allow the subscribers to reconnect to them (ICT-4730)
 
 	static const std::string PARAM_IOR_NS = "--name_service";
 	static const std::string PARAM_NOTIFY_SERVICE_NAME = "--notify_service";

@@ -29,7 +29,7 @@
 #include "acsncHelper.h"
 #include <maciContainerImpl.h>
 #include <baciCORBA.h>
-//#include <acscommonC.h>
+#include <acscommonC.h>
 #include <AcsNCTraceLog.h>
 #include "acsncCDBProperties.h"
 //-----------------------------------------------------------------------------
@@ -421,7 +421,7 @@ bool Helper::setChannelTimestamp()
     oss << ptm->tm_sec;*/
     std::string id = oss.str();
     nameTimestamp[0].id = CORBA::string_dup(id.c_str());
-    nameTimestamp[0].kind = "NCSupport"; //TODO must be changed to acscommon::NC_KIND_NCSUPPORT;
+    nameTimestamp[0].kind = acscommon::NC_KIND_NCSUPPORT; 
 
     try 
     {
@@ -476,7 +476,7 @@ bool Helper::getChannelTimestamp(time_t &timestamp,const CosNaming::BindingList 
         std::string id(bl[i].binding_name[0].id);
         std::string kind(bl[i].binding_name[0].kind);
 
-        if(kind == "NCSupport") // TODO change it to use acscommon::NC_KIND_NCSUPPORT
+        if(kind == acscommon::NC_KIND_NCSUPPORT) 
         {
             if(id.compare(0,channelAndDomainName_m.size(),channelAndDomainName_m) == 0)
             {
