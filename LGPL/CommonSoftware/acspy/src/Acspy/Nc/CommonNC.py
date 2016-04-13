@@ -49,6 +49,7 @@ from Acspy.Nc.ReconnectionCallback import ReconnectionCallback
 
 from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT
 from acscommon import NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR
+from acscommon import NC_KIND_NCSUPPORT
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -436,13 +437,14 @@ class CommonNC(object):
 #------------------------------------------------------------------------------
     def getChannelTimestampKind(self):
         '''
+        Naming context Kind value used to bind the channel with its creation time
         Parameters: None
         
         Returns:a constant string.
         
         Raises: Nothing
         '''
-        return "NCSupport" # TODO change it to use the constant defined in acscommon
+        return NC_KIND_NCSUPPORT
 #------------------------------------------------------------------------------
     def iniChannelTimestamp(self):
         n_attempts = 10
