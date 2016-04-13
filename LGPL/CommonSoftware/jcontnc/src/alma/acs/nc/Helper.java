@@ -86,6 +86,7 @@ import alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME;
 import alma.acscommon.NAMESERVICE_BINDING_NC_DOMAIN_DEFAULT;
 import alma.acscommon.NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR;
 import alma.acscommon.NC_KIND;
+import alma.acscommon.NC_KIND_NCSUPPORT;
 
 
 /**
@@ -596,7 +597,7 @@ public class Helper {
         Date timestamp = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String id = combineChannelAndDomainName(channelName, domainName) + "-" + dateFormat.format(timestamp);
-        String kind = "NCSupport"; // TODO change it by using acscommon::NC_KIND_NCSUPPORT
+        String kind = NC_KIND_NCSUPPORT.value; 
 
         try {
 			NameComponent[] t_NameChannel = { new NameComponent(id, kind) };
@@ -630,7 +631,7 @@ public class Helper {
 
             // Extract the useful binding information Id and Kind
             for (Binding binding : bl.value) {
-                if(binding.binding_name[0].kind.equals("NCSupport")) { // TODO change it by using acscommon::NC_KIND_NCSUPPORT
+                if(binding.binding_name[0].kind.equals(NC_KIND_NCSUPPORT.value)) { 
                     if(binding.binding_name[0].id.startsWith(chNameAndDomain)) {
                         String sts = binding.binding_name[0].id.substring(chNameAndDomain.length() + 1); 
                         DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
