@@ -24,20 +24,20 @@
 2 - ContainerStatusMsg: Automatic component loading ends
 2 - ContainerStatusMsg: Ready
 2 - ----------T--:--:--.--- [SUP_COMP_1 - ] Start sending 3000 events via SimpleSupplier.
-10 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
-10 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
-10 - Channel NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
-10 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
-10 - Using reactive client control.
-10 - Using 1 threads for each Supplier.
-10 - Using 1 threads for each Consumer.
-10 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
-10 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+4 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
+4 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
+4 - Channel NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
+4 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+4 - Using reactive client control.
+4 - Using 1 threads for each Supplier.
+4 - Using 1 threads for each Consumer.
+4 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
+4 - ReBound ID: MC_NamedChNotifyEventChannelFactory
 2 - ----------T--:--:--.--- [SUP_COMP_1 - ] Finished sending 3000 events via SimpleSupplier.
-2 - ----------T--:--:--.--- [CON_COMP_4 - ] :: Great! count is greater than 2000 [XXX]
-2 - ----------T--:--:--.--- [CON_COMP_2 - ] :: Great! count is greater than 2000 [XXX]
-2 - ----------T--:--:--.--- [CON_COMP_6 - ] :: Great! count is greater than 2000 [XXX]
 2 - ----------T--:--:--.--- [CON_COMP_3 - ] :: Great! count is greater than 2000 [XXX]
-2 - ----------T--:--:--.--- [CON_COMP_1 - ] :: Great! count is greater than 2000 [XXX]
 2 - ----------T--:--:--.--- [CON_COMP_5 - ] :: Great! count is greater than 2000 [XXX]
+2 - ----------T--:--:--.--- [CON_COMP_6 - ] :: Great! count is greater than 2000 [XXX]
+2 - ----------T--:--:--.--- [CON_COMP_2 - ] :: Great! count is greater than 2000 [XXX]
+2 - ----------T--:--:--.--- [CON_COMP_4 - ] :: Great! count is greater than 2000 [XXX]
+2 - ----------T--:--:--.--- [CON_COMP_1 - ] :: Great! count is greater than 2000 [XXX]
 2 - /----/libbaci.so
