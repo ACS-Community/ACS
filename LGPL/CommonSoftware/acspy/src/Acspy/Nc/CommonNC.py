@@ -378,10 +378,10 @@ class CommonNC(object):
             self.nt.putObject(self.combineChannelAndDomainName(), self.getChannelKind(), self.evtChan)
             n_attempts = 10
             timestamp_created = self.setChannelTimestamp()
-            while timestamp_created == False and n_attempts >= 0:
+            while timestamp_created == False and n_attempts > 0:
                time.sleep(2)
                timestamp_created = self.setChannelTimestamp()
-               n_attemps -= 1
+               n_attempts -= 1
             
             if timestamp_created == False:
                 self.logger.logError("Failed to register the timestamp of the channel '%s' after %d attempts. Subscribers will not be able to reconnect"%(self.channelName,n_attempts))
@@ -452,7 +452,7 @@ class CommonNC(object):
         self.channelTimestamp = self.getChannelTimestamp()
         while self.channelTimestamp == None and n_attempts > 0:
             self.channelTimestamp = self.getChannelTimestamp()
-            n_attemps -= 1
+            n_attempts -= 1
             time.sleep(2)
 
         # The channel timestamp couldn't be retrieved from the Naming Service. It will
