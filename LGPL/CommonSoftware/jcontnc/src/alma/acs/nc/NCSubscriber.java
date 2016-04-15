@@ -1180,7 +1180,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
     /**
      * Constant that defines the default auto reconnect value.
      */
-    static final boolean DEFAULT_AUTORECONNECT = false;
+    static final boolean DEFAULT_AUTORECONNECT = true;
 
     /**
      * Maximum number of retries to reconnect when resuming the connection threw an exception
