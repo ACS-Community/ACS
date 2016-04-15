@@ -44,7 +44,7 @@ Supplier::Supplier(const char* channelName,
     count_m(0),
     guardbl(10000000,50),
     antennaName(""),
-    autoreconnect_m(false)
+    autoreconnect_m(true)
 {
     ACS_TRACE("Supplier::Supplier");
     init(static_cast<CORBA::ORB_ptr>(0));
@@ -62,7 +62,7 @@ Supplier::Supplier(const char* channelName,
     typeName_mp(0),
     count_m(0),
     guardbl(10000000,50),
-    autoreconnect_m(false)
+    autoreconnect_m(true)
 {
     ACS_TRACE("Supplier::Supplier");
     init(orb_mp);
@@ -81,7 +81,7 @@ Supplier::Supplier(const char* channelName,
     typeName_mp(0),
     count_m(0),
     guardbl(10000000,50),
-    autoreconnect_m(false)
+    autoreconnect_m(true)
 {
     ACS_TRACE("Supplier::Supplier");
 
