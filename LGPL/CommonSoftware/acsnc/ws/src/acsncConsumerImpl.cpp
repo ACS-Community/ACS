@@ -31,7 +31,7 @@ using namespace ACSErrTypeCommon;
 namespace nc {
 //-----------------------------------------------------------------------------
 double Consumer::DEFAULT_MAX_PROCESS_TIME = 2.0;
-const bool Consumer::DEFAULT_AUTORECONNECT = false;
+const bool Consumer::DEFAULT_AUTORECONNECT = true;
 const int Consumer::DEFAULT_EVENT_RECEPTION_TIMEOUT = 2;
 const int Consumer::DEFAULT_CONNECTION_CHECKER_FREQ = 2;
 //-----------------------------------------------------------------------------
