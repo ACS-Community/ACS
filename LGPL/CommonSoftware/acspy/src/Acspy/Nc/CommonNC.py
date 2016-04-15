@@ -102,7 +102,7 @@ class CommonNC(object):
         self.callback = ReconnectionCallback(self)
         self.channelTimestamp = None
         #Autoreconnect when detecting that the connection to the channel has been lost
-        self.autoreconnect = False
+        self.autoreconnect = True
     #------------------------------------------------------------------------------
     def combineChannelAndDomainName(self):
         return self.channelName+NAMESERVICE_BINDING_NC_DOMAIN_SEPARATOR+self.domainName
