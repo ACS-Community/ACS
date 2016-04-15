@@ -243,7 +243,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		this.channelName = channelName;
 		this.channelNotifyServiceDomainName = channelNotifyServiceDomainName;
 		this.services = services;
-		this.autoreconnect = false;
+		this.autoreconnect = true;
 		logger = services.getLogger();
 
 		anyAide = new AnyAide(this.services);
