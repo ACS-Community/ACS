@@ -678,6 +678,13 @@ public class Helper {
         return channelTimestamp;
     }
 
+    /**
+     * Set the last channel timestamp
+     */
+    public void setLastRegisteredChannelTimestamp(Date timestamp) {
+        channelTimestamp = timestamp;
+    }
+
 	/**
 	 * Broken out from {@link #createNotificationChannel(String, String, String)}
 	 * to give tests better control about the timing when this call to the event factory is made.
