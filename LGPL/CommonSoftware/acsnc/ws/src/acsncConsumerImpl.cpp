@@ -140,42 +140,52 @@ Consumer::reinit()
     ACS_TRACE("Consumer::reinit");
     CORBA::ORB_ptr orb = orbHelper_mp != NULL ? orbHelper_mp->getORB() : NULL;
 
-    // Resolve the naming service using the orb
-    resolveNamingService(orb);
+    time_t oldChannelTimestamp = channelTimestamp_m;
 
-    // If a notification channel already exists, then use it, otherwise
-    // Create the NC
-    if(!resolveInternalNotificationChannel())
-        ACS_SHORT_LOG((LM_ERROR,"Consumer::reinit NC '%s' couldn't be created nor resolved", channelName_mp));  
-
-    //Finally we can create the supplier admin, consumer proxy, etc.
-    createConsumer();
-    
-    resolveNotificationFactory();
-
-    // Disconnect callback object
     try {
-        callback_m->disconnect();
+
+        // Resolve the naming service using the orb
+        resolveNamingService(orb);
+
+        // If a notification channel already exists, then use it, otherwise
+        // Create the NC
+        if(!resolveInternalNotificationChannel())
+            ACS_SHORT_LOG((LM_ERROR,"Consumer::reinit NC '%s' couldn't be created nor resolved", channelName_mp));  
+
+        //Finally we can create the supplier admin, consumer proxy, etc.
+        createConsumer();
+        
+        resolveNotificationFactory();
+
+        // Disconnect callback object
+        try {
+            callback_m->disconnect();
+        } catch(...) {
+            ACS_SHORT_LOG((LM_ERROR, "Consumer::reinit Callback object thrown an exception on disconnecting it"));
+        }
+
+        // Initialize callback object
+        if (orbHelper_mp !=0)
+        {
+            callback_m->init(orbHelper_mp->getORB(), notifyFactory_m);
+        } else {
+            callback_m->init(orb, notifyFactory_m);
+        }
+
+        proxySupplier_m->connect_structured_push_consumer(reference_m.in());
+
+        /*
+        try {
+            proxySupplier_m->resume_connection();
+        } catch(CosNotifyChannelAdmin::ConnectionAlreadyActive &ex) {
+            // Nothing to do
+        }*/
+
+    // If any exception occurs, ensure the channel timestamp has not changed    
     } catch(...) {
-        ACS_SHORT_LOG((LM_ERROR, "Consumer::reinit Callback object thrown an exception on disconnecting it"));
+        channelTimestamp_m = oldChannelTimestamp;
+        throw;
     }
-
-    // Initialize callback object
-    if (orbHelper_mp !=0)
-    {
-        callback_m->init(orbHelper_mp->getORB(), notifyFactory_m);
-    } else {
-        callback_m->init(orb, notifyFactory_m);
-    }
-
-    proxySupplier_m->connect_structured_push_consumer(reference_m.in());
-
-    /*
-    try {
-        proxySupplier_m->resume_connection();
-    } catch(CosNotifyChannelAdmin::ConnectionAlreadyActive &ex) {
-        // Nothing to do
-    }*/
 
     ACS_SHORT_LOG((LM_INFO, "Consumer reinitialized the connection to the channel %s", channelName_mp));
 }
