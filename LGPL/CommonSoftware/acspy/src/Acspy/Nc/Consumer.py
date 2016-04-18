@@ -359,9 +359,14 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
 
         Raises: ACSErrTypeCommonImpl.CORBAProblemExImpl on critical failures
         '''
-        CommonNC.initCORBA(self)
-        self.initCORBA()
-        self.spps.connect_structured_push_consumer(self._this())
+        oldChannelTimestamp = self.channelTimestamp
+        try:
+            CommonNC.initCORBA(self)
+            self.initCORBA()
+            self.spps.connect_structured_push_consumer(self._this())
+        except:
+            self.channelTimestamp = oldChannelTimestamp
+            raise
         self.logger.logInfo("Consumer reconnected to the channel '%s'"%(self.channelName))
     #--------------------------------------------------------------------------
     def addSubscription (self, name, handler_function=None):
