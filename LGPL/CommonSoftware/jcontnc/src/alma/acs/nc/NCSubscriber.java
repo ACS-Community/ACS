@@ -1351,57 +1351,66 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
      */
     private void reconnect() throws AcsJException {
 
-        channel = helper.getNotificationChannel(getNotificationFactoryName()); // get the channel
-        sharedConsumerAdmin = getSharedAdmin(); // get the admin object
-        proxySupplier = createProxySupplier(); // get the proxy Supplier
-        // Just check if our shared consumer admin is handling more proxies than it should, and log it
-        // (11) goes for the dummy proxy that we're using the transition between old and new NC classes
-        int currentProxies = sharedConsumerAdmin.push_suppliers().length - 1;
-        if( currentProxies > PROXIES_PER_ADMIN ) {
-            LOG_NC_ConsumerAdmin_Overloaded.log(logger, sharedConsumerAdmin.MyID(),
-                    currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName == null ? "none" : channelNotifyServiceDomainName);
-        }
-        // The user might create this object, and later call startReceivingEvents(), without attaching any receiver.
-        // If so, it's useless to get all the events, so we start with an all-exclusive filter in the server
-        // TODO should all events be discarded?
-        //discardAllEvents();
+        Date oldChannelTimestamp = helper.getLastRegisteredChannelTimestamp();
 
-		try {
-			// Clean up callback for reconnection requests
-			channelReconnectionCallback.disconnect();
-        } catch(org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
-			// this is OK, because someone else has already destroyed the remote resources
-        }
-        channelReconnectionCallback = null;
-
-		try {
-			// Register callback for reconnection requests
-			channelReconnectionCallback = new AcsNcReconnectionCallback(NCSubscriber.this, logger);
-			channelReconnectionCallback.registerForReconnect(services, helper.getNotifyFactory()); // if the factory is null, the reconnection callback is not registered
-
-			proxySupplier.connect_structured_push_consumer(org.omg.CosNotifyComm.StructuredPushConsumerHelper.narrow(corbaRef));
-		} catch (AcsJContainerServicesEx ex) {
-            AcsJException e = new AcsJGenericErrorEx(ex);
-			throw e;
-		} catch (org.omg.CosEventChannelAdmin.AlreadyConnected ex) {
-            AcsJException e = new AcsJGenericErrorEx(ex);
-			throw e;
-		} catch (org.omg.CosEventChannelAdmin.TypeError ex) {
-            AcsJException e = new AcsJGenericErrorEx(ex);
-			throw e;
-		} catch (AcsJIllegalArgumentEx ex) {
-            AcsJException e = new AcsJGenericErrorEx(ex);
-			throw e;
-		}
-
-        /* We only have to resume the connection when it has been suspended
         try {
-            proxySupplier.resume_connection();
-        } catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyActive ex) {
-        } catch (Exception ex) {
-            AcsJException e = new AcsJGenericErrorEx(ex);
+            channel = helper.getNotificationChannel(getNotificationFactoryName()); // get the channel
+            sharedConsumerAdmin = getSharedAdmin(); // get the admin object
+            proxySupplier = createProxySupplier(); // get the proxy Supplier
+            // Just check if our shared consumer admin is handling more proxies than it should, and log it
+            // (11) goes for the dummy proxy that we're using the transition between old and new NC classes
+            int currentProxies = sharedConsumerAdmin.push_suppliers().length - 1;
+            if( currentProxies > PROXIES_PER_ADMIN ) {
+                LOG_NC_ConsumerAdmin_Overloaded.log(logger, sharedConsumerAdmin.MyID(),
+                        currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName == null ? "none" : channelNotifyServiceDomainName);
+            }
+            // The user might create this object, and later call startReceivingEvents(), without attaching any receiver.
+            // If so, it's useless to get all the events, so we start with an all-exclusive filter in the server
+            // TODO should all events be discarded?
+            //discardAllEvents();
+
+            try {
+                // Clean up callback for reconnection requests
+                channelReconnectionCallback.disconnect();
+            } catch(org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
+                // this is OK, because someone else has already destroyed the remote resources
+            }
+            channelReconnectionCallback = null;
+
+            try {
+                // Register callback for reconnection requests
+                channelReconnectionCallback = new AcsNcReconnectionCallback(NCSubscriber.this, logger);
+                channelReconnectionCallback.registerForReconnect(services, helper.getNotifyFactory()); // if the factory is null, the reconnection callback is not registered
+
+                proxySupplier.connect_structured_push_consumer(org.omg.CosNotifyComm.StructuredPushConsumerHelper.narrow(corbaRef));
+            } catch (AcsJContainerServicesEx ex) {
+                AcsJException e = new AcsJGenericErrorEx(ex);
+                throw e;
+            } catch (org.omg.CosEventChannelAdmin.AlreadyConnected ex) {
+                AcsJException e = new AcsJGenericErrorEx(ex);
+                throw e;
+            } catch (org.omg.CosEventChannelAdmin.TypeError ex) {
+                AcsJException e = new AcsJGenericErrorEx(ex);
+                throw e;
+            } catch (AcsJIllegalArgumentEx ex) {
+                AcsJException e = new AcsJGenericErrorEx(ex);
+                throw e;
+            }
+
+            /* We only have to resume the connection when it has been suspended
+            try {
+                proxySupplier.resume_connection();
+            } catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyActive ex) {
+            } catch (Exception ex) {
+                AcsJException e = new AcsJGenericErrorEx(ex);
+                throw e;
+            }*/
+
+        // In case any exception occurs, ensure the channel timestamp has not changed            
+        } catch(Throwable e) {
+            helper.setLastRegisteredChannelTimestamp(oldChannelTimestamp);
             throw e;
-        }*/
+        }
  
         logger.log(Level.INFO, "Consumer reconnected to the channel '" + channelName + "'");
     }
