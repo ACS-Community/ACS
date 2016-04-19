@@ -267,8 +267,6 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 			if (e.isPopupTrigger()) {
 				// The mouse button is the pop up trigger so we show the menu
 				// but only if the user selected at least one row
-				System.out.println("Number of selected rows: "+getSelectedRowCount());
-				System.out.println("Text under mouse "+getCellStringContent(row, col)+", row="+row+", col="+col);
 				if (getSelectedRowCount()>0) {
 					String textUnderMouse = getCellStringContent(row, col); 
 					popupMenu.show(LogEntryTable.this,e.getX(),e.getY(),row,col,textUnderMouse);
