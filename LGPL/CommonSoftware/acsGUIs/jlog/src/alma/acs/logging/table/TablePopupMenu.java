@@ -44,17 +44,20 @@ import javax.swing.JPopupMenu;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.cosylab.logging.LoggingClient;
+import com.cosylab.logging.engine.ExactFilter;
+import com.cosylab.logging.engine.FiltersVector;
+import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogField;
+import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.settings.UserInfoDlg;
+
 import alma.acs.logging.tools.CSVConverter;
 import alma.acs.logging.tools.LogConverter;
 import alma.acs.logging.tools.TextConverter;
 import alma.acs.logging.tools.TwikiTableConverter;
 import alma.acs.logging.tools.XMLConverter;
-
-import com.cosylab.logging.LoggingClient;
-import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.LogField;
-import com.cosylab.logging.settings.UserInfoDlg;
+import alma.acs.util.IsoDateFormat;
 
 /**
  * The JPopupMenu displayed when the user presses the right mouse button
@@ -266,22 +269,37 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	/**
 	 * Copy the clipboard as text
 	 */
-	private JMenuItem copyClipTxt= new JMenuItem("Copy as text",saveTextIcon);
+	private final JMenuItem copyClipTxt= new JMenuItem("Copy as text",saveTextIcon);
 	
 	/**
 	 * Copy the clipboard as XML
 	 */
-	private JMenuItem copyClipXml= new JMenuItem("Copy as XML",saveXmlIcon);
+	private final JMenuItem copyClipXml= new JMenuItem("Copy as XML",saveXmlIcon);
 	
 	/**
 	 * Copy the clipboard as twiki table
 	 */
-	private JMenuItem copyClipTwikiTable= new JMenuItem("Copy as TwikiTable",saveTwikiTableIcon);
+	private final JMenuItem copyClipTwikiTable= new JMenuItem("Copy as TwikiTable",saveTwikiTableIcon);
 	
 	/**
 	 * Copy the clipboard as CSV
 	 */
-	private JMenuItem copyClipCSV= new JMenuItem("Copy as CSV",saveCsvIcon);
+	private final JMenuItem copyClipCSV= new JMenuItem("Copy as CSV",saveCsvIcon);
+	
+	/** 
+	 * The menu to copy the text to the clipboard
+	 */
+	private final JMenu quickFiltersMenu = new JMenu("Table filtering");
+	
+	/**
+	 * Shows only entries like the one under the mouse pointer
+	 */
+	private final JMenuItem showsOnlyMI = new JMenuItem("Shows only");
+	
+	/**
+	 * Filters out entries like the one under the mouse pointer
+	 */
+	private final JMenuItem filtersOutMI = new JMenuItem("Filters out");
 	
 	/** 
 	 * The text to copy
@@ -289,9 +307,14 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	private String textToCopy;
 	
 	/** 
-	 * The row and column under the mouse pointer
+	 * The row under the mouse pointer
 	 */
 	private int row;
+	
+	/** 
+	 * The column under the mouse pointer
+	 */
+	private int col;
 	
 	/**
 	 * This property is used to select the logs for the error browser.
@@ -367,6 +390,14 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		add(copyClipboard);
 		add(addUserInfo);
 		
+		addSeparator();
+		quickFiltersMenu.add(filtersOutMI);
+		filtersOutMI.setToolTipText("Filters out logs like the one under the mouse pointer");
+		quickFiltersMenu.add(showsOnlyMI);
+		showsOnlyMI.setToolTipText("Shows only logs like the one under the mouse pointer");
+		
+		add(quickFiltersMenu);
+		
 		// Add the listeners
 		showErrorStack.addActionListener(this);
 		copyClipXml.addActionListener(this);
@@ -378,6 +409,9 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		saveSelectedAsText.addActionListener(this);
 		saveSelectedAsTwiki.addActionListener(this);
 		saveSelectedAsXML.addActionListener(this);
+		filtersOutMI.addActionListener(this);
+		showsOnlyMI.addActionListener(this);
+		
 	}
 	
 	/**
@@ -449,9 +483,58 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
         	t.setDaemon(true);
         	t.setName("TablePopupMenu.actionPerformed.Zoom");
         	t.start();
-		} else {
+		} else if (e.getSource()==showsOnlyMI || e.getSource()==filtersOutMI) {
+			filters(e.getSource()==filtersOutMI);
+		}else {
 			System.err.println("Unhandled event "+e);
 		}
+	}
+	
+	/**
+	 * Filters out or shows only the longs under the mouse pointer
+	 * by settng a new filter in the table.
+	 * 
+	 * @param out If <code>true</code> filters out logs
+	 */
+	private void filters(boolean out) {
+		// Clean the string from XML tags
+		if (this.textToCopy.startsWith("<html>")) {
+			this.textToCopy=this.textToCopy.substring(6, this.textToCopy.length());
+			if (this.textToCopy.endsWith("</html>")) {
+				this.textToCopy=this.textToCopy.substring(0, this.textToCopy.length()-7);
+			}
+		}
+		int colModelIndex=table.convertColumnIndexToModel(col);
+		
+		Comparable comparable=null;
+		if (LogField.values()[colModelIndex-1].getType()==String.class) {
+			comparable= this.textToCopy;
+		} else if (LogField.values()[colModelIndex-1].getType()==Integer.class) {
+			comparable = Integer.valueOf(this.textToCopy);
+		} else if (LogField.values()[colModelIndex-1].getType()==LogTypeHelper.class) {
+			comparable = LogTypeHelper.fromLogTypeDescription(this.textToCopy);
+		} else if (LogField.values()[colModelIndex-1].getType()==Long.class) {
+			// Timestamp
+			try {
+				comparable = Long.valueOf(IsoDateFormat.parseIsoTimestamp(this.textToCopy).getTime());
+			} catch (Throwable t) {
+				System.err.println("Error parsing date "+this.textToCopy+": "+t.getMessage());
+				t.printStackTrace(System.err);
+				return;
+			}
+		}
+		
+		
+		FiltersVector newFilterVector = new FiltersVector();
+		try {
+			ExactFilter newFilter = new ExactFilter(LogField.values()[colModelIndex-1], false,comparable,out );
+			newFilterVector.addFilter(newFilter,true);
+		} catch (Throwable t) {
+			System.err.println("Error creating filter "+t.getMessage());
+			t.printStackTrace(System.err);
+		}
+		table.setFilters(newFilterVector, true);
+		loggingClient.setTableFilterLbl();
 	}
 	
 	/**
@@ -522,8 +605,9 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	 * @param col The col below the pointer
 	 * @param txt The text below the pointer
 	 */
-	public void show(Component invoker, int x, int y, int row, String txt) {
+	public void show(Component invoker, int x, int y, int row, int col, String txt) {
 		this.row=row;
+		this.col=col;
 		this.textToCopy=txt;
 		
 		// Hide the unneeded buttons
@@ -544,6 +628,9 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		addUserInfo.setEnabled(singleLineSelected);
 		copyClipboard.setEnabled(true);
 		saveSelected.setEnabled(true);
+		
+		int colModelIndex=table.convertColumnIndexToModel(col);
+		quickFiltersMenu.setEnabled(colModelIndex>0);
 		
 		// Disable the menu items if the test is null or empty
 		if (textToCopy==null || textToCopy.length()==0) {
