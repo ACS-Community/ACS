@@ -25,5 +25,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsGUIutil.jar"/>
+	<classpathentry kind="var" path="ACSROOT"/>
+	<classpathentry kind="var" path="INTROOT"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
