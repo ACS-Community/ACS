@@ -348,6 +348,11 @@ class Supplier :
      */
     bool autoreconnect_m;
 
+    /**
+     * Ensure mutual execution of publish methods
+     */
+    ACE_Recursive_Thread_Mutex m_publishMutex;
+
   private:
     
 

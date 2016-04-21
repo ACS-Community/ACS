@@ -223,6 +223,7 @@ Supplier::disconnect()
 void
 Supplier::publishEvent(const CORBA::Any &eventData)
 {
+    ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_publishMutex);
     populateHeader(eventData);
     publishEvent(event_m);
 }
@@ -230,6 +231,7 @@ Supplier::publishEvent(const CORBA::Any &eventData)
 void
 Supplier::publishEvent(const CosNotification::StructuredEvent &event)
 {
+    ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_publishMutex);
     //First a sanity check.
     if(CORBA::is_nil(proxyConsumer_m.in()) == true)
 	{

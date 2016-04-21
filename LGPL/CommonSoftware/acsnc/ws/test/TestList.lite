@@ -128,6 +128,12 @@ PROLOGUE acsutilTATPrologue
                 "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 50" \
                 "acsutilTATTestRunner acsStopContainer bilboContainer"
 
+# Supplier publishing events from 6 different threads
+16 MultiThreadSupplier "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+                "acsutilTATTestRunner acsncTestMThSup" "@SLEEP 25" \
+                "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
+
 
 
 EPILOGUE acsutilTATEpilogue
