@@ -163,12 +163,12 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_SLOW' activated.
 1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Calling maci::CBComponentInfo::done with descOut.id_tag = 1.
 1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] CORBA Problem (type=10, code=13) Info="system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
-1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Call to maci::CBComponentInfo::done for component MACI_SLOW with descOut.id_tag = 1 failed, retrying...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Call to maci::CBComponentInfo::done for component MACI_SLOW with descOut.id_tag = 1 failed with IDL:omg.org/CORBA/TRANSIENT:1.0, retrying...
 1 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
 1 - " CompletionStatus="1" Minor="1330446338"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] CORBA Problem (type=10, code=13) Info="system exception, ID 'IDL:omg.org/CORBA/TRANSIENT:1.0'
 1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Calling maci::CBComponentInfo::done with descOut.id_tag = 1.
-1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Call to maci::CBComponentInfo::done for component MACI_SLOW with descOut.id_tag = 1 failed, retrying...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Call to maci::CBComponentInfo::done for component MACI_SLOW with descOut.id_tag = 1 failed with IDL:omg.org/CORBA/TRANSIENT:1.0, retrying...
 1 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
 1 - " CompletionStatus="1" Minor="1330446338"
 1 - ----------T--:--:--.--- (----|----) EXCEPTION, maci::MACIHelper::resolveManager
@@ -181,7 +181,7 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_SLOW': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_SLOW of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Call to maci::CBComponentInfo::done for component MACI_SLOW with descOut.id_tag = 1 failed, deactivating the component.
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] Call to maci::CBComponentInfo::done for component MACI_SLOW with descOut.id_tag = 1 failed with IDL:omg.org/CORBA/TRANSIENT:1.0, deactivating the component.
 1 - OMG minor code (2), described as 'No usable profile in IOR.', completed = NO
 1 - ----------T--:--:--.--- [Container01 - ContainerImpl::deactivate_component - __cleanUp()] StopWatch starts ...
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
