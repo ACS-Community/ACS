@@ -206,7 +206,7 @@ public:
 				)
 				{
 					ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ActivationMethod::call",
-							(LM_WARNING, "Call to maci::CBComponentInfo::done for component %s with descOut.id_tag = %d failed, retrying...", name_.c_str(), descOut_.id_tag));
+							(LM_WARNING, "Call to maci::CBComponentInfo::done for component %s with descOut.id_tag = %d failed with %s, retrying...", name_.c_str(), descOut_.id_tag, _ex._rep_id()));
 
 					// sleep for a second
 					ACE_OS::sleep(1);
@@ -215,7 +215,7 @@ public:
 				}
 
 				ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ActivationMethod::call",
-						(LM_WARNING, "Call to maci::CBComponentInfo::done for component %s with descOut.id_tag = %d failed, deactivating the component.", name_.c_str(), descOut_.id_tag));
+						(LM_WARNING, "Call to maci::CBComponentInfo::done for component %s with descOut.id_tag = %d failed with %s, deactivating the component.", name_.c_str(), descOut_.id_tag, _ex._rep_id()));
 
 				try
 				{
