@@ -512,26 +512,25 @@ Supplier::createSupplier()
 	CosNotifyChannelAdmin::ProxyConsumer_var proxyconsumer = 0;
 	if( isAdminExt ) {
 
-		char *name = 0;
+        CORBA::String_var name;
 		if( component_mp != 0 )
 		{
-			CORBA::String_var tempName = component_mp->name();
-			name = const_cast<char*>(tempName.in());
+			name = component_mp->name();
 		}
 		else
 			name = "Unknown";
 
-		std::string proxyName(createRandomizedClientName(name));
+		std::string proxyName(createRandomizedClientName(name.in()));
 		NotifyMonitoringExt::SupplierAdmin_var supplierAdminExt = NotifyMonitoringExt::SupplierAdmin::_narrow(SupplierAdmin_m);
 
 		while( proxyconsumer == 0 ) {
 			try {
 				proxyconsumer = supplierAdminExt->obtain_named_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxyConsumerID, proxyName.c_str());
-	    		//ACS_SHORT_LOG((LM_INFO,"Consumer::createConsumer Got named proxy supplier '%s' with proxyID %d", proxyName.c_str(), proxyconsumerID));
+	    		//ACS_SHORT_LOG((LM_INFO,"Consumer::createConsumer Got named proxy supplier '%s' with proxyID %d", proxyName.c_str(), proxyConsumerID));
 			} catch (NotifyMonitoringExt::NameAlreadyUsed &ex) {
 				// If the original name is already in use, append "-<tries>" and try again
 				// until we find a free name
-				proxyName = createRandomizedClientName(name);
+				proxyName = createRandomizedClientName(name.in());
 			} catch (...) {
 				// If any unexpected problem appears, try the unnamed version
 				proxyconsumer = SupplierAdmin_m->obtain_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxyConsumerID);
