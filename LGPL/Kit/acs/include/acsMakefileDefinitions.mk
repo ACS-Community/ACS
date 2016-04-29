@@ -1517,7 +1517,11 @@ else
 	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=2 modules
 endif
 else
+ifeq ($(CPU),x86_64)
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=0 modules
+else
 	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=0 modules
+endif
 endif
 	$(AT)$(RM) Kbuild.lock
 	$(AT)mv $1.ko ../rtai/$(kernel_install_subfold)
