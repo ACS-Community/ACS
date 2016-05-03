@@ -306,7 +306,7 @@ void DataSupplier::run(const SuppParams &params)
     {
 	    m_timer = new SupplierTimer(*this);
     }
-	ACE_Time_Value timeout(params.outputDelay* 60, 0);
+	ACE_Time_Value timeout(params.outputDelay * 60, 0);
 	this->orb->orb_core()->reactor()->schedule_timer(m_timer, 0, timeout, timeout);
 
 	timeval currTime;

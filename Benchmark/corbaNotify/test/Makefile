@@ -81,7 +81,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = runDataSupplier runDataConsumer killDataSupCon
 SCRIPTS_L       = corbaNotifyTATPrologue corbaNotifyTATEpilogue
 
 

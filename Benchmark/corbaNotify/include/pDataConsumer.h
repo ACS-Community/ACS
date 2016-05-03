@@ -51,7 +51,7 @@ static const CosNotifyChannelAdmin::ChannelID DEFAULT_CHANNEL_ID = -1;
 static const std::string DEFAULT_IOR_NS = "";
 static const double DEFAULT_MAX_DELAY_SEC = 0;
 static const std::string DEFAULT_DELAY_TYPE = DT_SUPP_CON;
-static const int32_t DEFAULT_INTERVAL = 0;
+static const int32_t DEFAULT_INTERVAL = 1;
 
 
 struct ConsumerParams {

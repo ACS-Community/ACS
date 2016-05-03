@@ -321,7 +321,7 @@ void Consumer::push (const CORBA::Any &event)
                     }
 
                 } else {
-                    ACE_DEBUG((LM_INFO, "%T Event received: %s [length=%d] with delay %q ms, supplier delay %q ms and consumer delay %q ms\n",
+                    ACE_DEBUG((LM_NOTICE, "%T Event received %s [length=%d] with delay %q ms, supplier delay %q ms and consumer delay %q ms\n",
                         data->antennaName.in(), seqLength, tSuppConDiff, tsSupplierDiff, tConsumerDiff));
                 }
             }
