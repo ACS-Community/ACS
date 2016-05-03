@@ -38,7 +38,10 @@
 #include <orbsvcs/CosNotifyChannelAdminC.h>
 #include <stdint.h>
 
+class SupplierTimer;
+
 static const uint32_t DEFAULT_SEND_INTERVAL = 1000;
+static const uint32_t DEFAULT_ARRAY_LENGTH = 1;
 static const uint32_t DEFAULT_NUM_ITEMS = 0;
 static const std::string DEFAULT_IOR_NS = "";
 static const std::string DEFAULT_CHANNEL_FILE = "";
@@ -48,6 +51,7 @@ static const std::string DEFAULT_ANTENNA_PREFIX_NAME = "ANTENNA_";
 
 struct SuppParams {
 	uint32_t sendInterval;
+    uint32_t arrayLength;
 	uint32_t nItems;
 	std::string iorNS;
 	std::string channelFile;
@@ -85,6 +89,7 @@ private:
 	PortableServer::POA_var root_poa_;
 	bool m_stop;
 	uint64_t m_numEventsSent;
+    SupplierTimer *m_timer;
 };
 
 #endif /*!PDATASUPPLIER_H*/

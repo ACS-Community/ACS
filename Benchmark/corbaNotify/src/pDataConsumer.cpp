@@ -249,6 +249,8 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 
 		m_orb->destroy();
 
+        delete timer;
+
 	} catch(CORBA::Exception &ex) {
 		ex._tao_print_exception ("Consumer::run");
 	} catch(std::exception &stdEx) {
@@ -266,63 +268,74 @@ void Consumer::push (const CORBA::Any &event)
 	int64_t tsSupplierDiff;
 	int64_t tSuppConDiff;
 	int64_t tConsumerDiff;
+    int32_t seqLength;
 	//timeval tSupplierDiff;
 	//timeval tSuppConDiff;
 	timeval tEvent;
 
-	benchmark::MountStatusData *data;
-	if(event >>= data)
+    benchmark::MountStatusData *data;
+	benchmark::MountStatusDataSeq *dataSeq;
+	if(event >>= dataSeq)
 	{
 		++m_numEventsReceived;
 
-		// Calculate current event time
-		TimevalUtils::get_current_timeval(tEvent);
-		currTimestamp = TimevalUtils::timeval_2_ms(tEvent);
+        if(dataSeq->length() > 0)
+        {
+            seqLength = dataSeq->length();
+            data = &(*dataSeq)[0];
 
-		// Check the delay of the current event
-		if(m_tLastEvent.tv_sec > 0 || m_tLastEvent.tv_usec > 0)
-		{
-			// Calculate delay between consecutive events in the consumer
-			tConsumerDiff = TimevalUtils::diff_timeval(tEvent, m_tLastEvent);
+            // Calculate current event time
+            TimevalUtils::get_current_timeval(tEvent);
+            currTimestamp = TimevalUtils::timeval_2_ms(tEvent);
 
-			// Calculate delay between consecutive events in the supplier
-			tsSupplierDiff = (int64_t)data->timestamp - (int64_t)m_lastEventTimestamp;
+            // Check the delay of the current event
+            if(m_tLastEvent.tv_sec > 0 || m_tLastEvent.tv_usec > 0)
+            {
+                // Calculate delay between consecutive events in the consumer
+                tConsumerDiff = TimevalUtils::diff_timeval(tEvent, m_tLastEvent);
 
-			// Calculate delay between supplier and consumer
-			tSuppConDiff = (int64_t)currTimestamp - (int64_t)data->timestamp;
+                // Calculate delay between consecutive events in the supplier
+                tsSupplierDiff = (int64_t)data->timestamp - (int64_t)m_lastEventTimestamp;
 
-			if(m_maxDelay > 0)
-			{
-				if(m_maxDelay < tsSupplierDiff && m_delayType == DT_SUPPLIER)
-				{
-					ACE_DEBUG((LM_NOTICE, "%T Event received %s with supplier delay %q ms but maximum allowed is %q ms\n",
-						data->antennaName.in(), tsSupplierDiff, m_maxDelay));
-				}
+                // Calculate delay between supplier and consumer
+                tSuppConDiff = (int64_t)currTimestamp - (int64_t)data->timestamp;
 
-				if(m_maxDelay < tConsumerDiff && m_delayType == DT_CONSUMER)
-				{
-					ACE_DEBUG((LM_NOTICE, "%T Event received %s with consumer delay %q ms but maximum allowed is %q ms\n",
-						data->antennaName.in(), tConsumerDiff, m_maxDelay));
-				}
+                if(m_maxDelay > 0)
+                {
+                    if(m_maxDelay < tsSupplierDiff && m_delayType == DT_SUPPLIER)
+                    {
+                        ACE_DEBUG((LM_NOTICE, "%T Event received %s [length=%d] with supplier delay %q ms but maximum allowed is %q ms\n",
+                            data->antennaName.in(), seqLength, tsSupplierDiff, m_maxDelay));
+                    }
 
-				if(m_maxDelay < tSuppConDiff && m_delayType == DT_SUPP_CON)
-				{
-					ACE_DEBUG((LM_NOTICE, "%T Event received %s with delay %q ms but maximum allowed is %q ms\n",
-						data->antennaName.in(), tSuppConDiff, m_maxDelay));
-				}
+                    if(m_maxDelay < tConsumerDiff && m_delayType == DT_CONSUMER)
+                    {
+                        ACE_DEBUG((LM_NOTICE, "%T Event received %s [length=%d] with consumer delay %q ms but maximum allowed is %q ms\n",
+                            data->antennaName.in(), seqLength, tConsumerDiff, m_maxDelay));
+                    }
 
-			} else {
-				ACE_DEBUG((LM_INFO, "%T Event received: %s with delay %q ms, supplier delay %q ms and consumer delay %q ms\n",
-					data->antennaName.in(), tSuppConDiff, tsSupplierDiff, tConsumerDiff));
-			}
-		}
+                    if(m_maxDelay < tSuppConDiff && m_delayType == DT_SUPP_CON)
+                    {
+                        ACE_DEBUG((LM_NOTICE, "%T Event received %s [length=%d] with delay %q ms but maximum allowed is %q ms\n",
+                            data->antennaName.in(), seqLength, tSuppConDiff, m_maxDelay));
+                    }
 
-		// Update last event received time
-		TimevalUtils::set_timeval(m_tLastEvent, tEvent.tv_sec, tEvent.tv_usec);
-		m_lastEventTimestamp = data->timestamp;
+                } else {
+                    ACE_DEBUG((LM_INFO, "%T Event received: %s [length=%d] with delay %q ms, supplier delay %q ms and consumer delay %q ms\n",
+                        data->antennaName.in(), seqLength, tSuppConDiff, tsSupplierDiff, tConsumerDiff));
+                }
+            }
+
+            // Update last event received time
+            TimevalUtils::set_timeval(m_tLastEvent, tEvent.tv_sec, tEvent.tv_usec);
+            m_lastEventTimestamp = data->timestamp;
+
+        } else {
+            ACE_DEBUG((LM_ERROR, "Event received but is an empty sequence!\n"));
+        }
 
 	} else {
-		ACE_DEBUG((LM_WARNING, "Event received but it's not of type MountStatusData\n"));
+		ACE_DEBUG((LM_WARNING, "Event received but it's not of type MountStatusDataSeq\n"));
 	}
 }
 

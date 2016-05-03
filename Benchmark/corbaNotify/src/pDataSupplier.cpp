@@ -49,8 +49,9 @@ void printUsage(const std::string &msgErr="") {
 		std::cout << std::endl << "\tERROR: " << msgErr << std::endl << std::endl;
 	}
 
-	std::cout << "\tUSAGE: pDataSupplier -i sendInterval -n nItems -r IOR -c channel -f channelFile -o outputDelay -a antennaPrefixName -b ORBOptions" << std::endl;
+	std::cout << "\tUSAGE: pDataSupplier -i sendInterval -l arrayLength -n nItems -r IOR -c channel -f channelFile -o outputDelay -a antennaPrefixName -b ORBOptions" << std::endl;
 	std::cout << "\t\tsendInterval: interval of time (msec) between 2 sends of a pData" << std::endl;
+    std::cout << "\t\tarrayLength: length of the array sent. Default value is 1" << std::endl;
 	std::cout << "\t\tnItems: number of items to send (0 means forever)" << std::endl;
 	std::cout << "\t\tIOR: the IOR of the notify service" << std::endl;
 	std::cout << "\t\tchannel: channel ID. New channel is created when the channel ID is not defined" << std::endl;
@@ -71,6 +72,7 @@ void getParams(int argc,char *argv[],SuppParams &params)
 	std::string str;
 
 	params.sendInterval = DEFAULT_SEND_INTERVAL;
+    params.arrayLength = DEFAULT_ARRAY_LENGTH;
 	params.nItems = DEFAULT_NUM_ITEMS;
 	params.iorNS = DEFAULT_IOR_NS;
 	params.channelFile = DEFAULT_CHANNEL_FILE;
@@ -78,7 +80,7 @@ void getParams(int argc,char *argv[],SuppParams &params)
 	params.channelID = DEFAULT_CHANNEL_ID;
 	params.antennaPrefixName = DEFAULT_ANTENNA_PREFIX_NAME;
 
-	while((c = getopt(argc, argv, "a:b:c:i:n:r:f:o:")) != -1)
+	while((c = getopt(argc, argv, "a:b:c:i:l:n:r:f:o:")) != -1)
 	{
 		switch(c)
 		{
@@ -104,6 +106,15 @@ void getParams(int argc,char *argv[],SuppParams &params)
 				params.sendInterval = atoi(str.c_str());
 			} else {
 				printUsage("Wrong send interval. Must be an integer");
+			}
+			break;
+        case 'l':
+            str = optarg;
+			if(str.find_first_not_of("0123456789") == std::string::npos)
+			{
+				params.arrayLength = atoi(str.c_str());
+			} else {
+				printUsage("Wrong array length. Must be an integer");
 			}
 			break;
 		case 'n':
@@ -187,12 +198,16 @@ int main(int argc, char *argv[])
 }
 
 DataSupplier::DataSupplier()
-	: m_stop(false), m_numEventsSent(0)
+	: m_stop(false), m_numEventsSent(0), m_timer(0)
 {
 }
 
 DataSupplier::~DataSupplier()
 {
+    if(m_timer != 0)
+    {
+        delete m_timer;
+    }
 }
 
 void DataSupplier::init_ORB (int argc,
@@ -201,9 +216,8 @@ void DataSupplier::init_ORB (int argc,
 {
 	this->orb = CORBA::ORB_init (argc,  argv, "");
 
-	CORBA::Object_ptr poa_object  =
+	CORBA::Object_var poa_object  =
 		this->orb->resolve_initial_references("RootPOA");
-
 
 	if (CORBA::is_nil (poa_object))
 	{
@@ -288,9 +302,12 @@ void DataSupplier::run(const SuppParams &params)
 	consumer->connect_push_supplier(nilSupplier);
 
 	// Set a timer to periodically output the number of messages sent
-	SupplierTimer *timer = new SupplierTimer(*this);
+    if(m_timer == 0)
+    {
+	    m_timer = new SupplierTimer(*this);
+    }
 	ACE_Time_Value timeout(params.outputDelay* 60, 0);
-	this->orb->orb_core()->reactor()->schedule_timer(timer, 0, timeout, timeout);
+	this->orb->orb_core()->reactor()->schedule_timer(m_timer, 0, timeout, timeout);
 
 	timeval currTime;
 	TimevalUtils::get_current_timeval(currTime);
@@ -335,20 +352,32 @@ void DataSupplier::run(const SuppParams &params)
     data.subrefCmdTilt = 5.5; // Commanded tilt of the subreflector
     data.subrefRotationCmdValid = true; // true if a command was sent to rotate the subreflector
 
+	benchmark::MountStatusDataSeq dataSeq;
+    dataSeq.length(params.arrayLength);
+    for(uint32_t i = 0;i < params.arrayLength;++i)
+    {
+        dataSeq[i] = data;
+    }
+
+    ACE_DEBUG((LM_INFO, "%T Sequence to be sent has been initialized with %d items\n", params.arrayLength));
+
 	for(uint32_t i = 0;(params.nItems == 0 || i < params.nItems) && m_stop == false; ++i)
 	{
 
-		std::ostringstream oss;
-		oss << params.antennaPrefixName << i;
-		data.antennaName = oss.str().c_str();
+        for(uint32_t j = 0;j < params.arrayLength;++j)
+        {
+		    std::ostringstream oss;
+		    oss << params.antennaPrefixName << i;
+		    dataSeq[j].antennaName = oss.str().c_str();
 
-		TimevalUtils::get_current_timeval(currTime);
-		data.timestamp = TimevalUtils::timeval_2_ms(currTime);
+    		TimevalUtils::get_current_timeval(currTime);
+	    	dataSeq[j].timestamp = TimevalUtils::timeval_2_ms(currTime);
+        }
 
 		//ACE_DEBUG((LM_INFO, "%T Iteration %d in channel %d with timestamp %q\n", i, id, (int64_t)data.timestamp));
 
 		CORBA::Any any;
-		any <<= data;
+		any <<= dataSeq;
 		consumer->push(any);
 
 		if(params.sendInterval > 0)
