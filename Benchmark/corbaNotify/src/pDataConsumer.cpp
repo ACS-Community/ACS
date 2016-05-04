@@ -161,7 +161,9 @@ Consumer consumer;
 void signal_handler(int sig)
 {
 	ACE_DEBUG((LM_INFO, "%T Stopping it ...\n"));
-	consumer.disconnect_push_consumer();
+    try {
+	    consumer.disconnect_push_consumer();
+    } catch(...) {}
 }
 
 int main(int argc, char *argv[])
@@ -185,10 +187,15 @@ Consumer::Consumer()
 	m_lastEventTimestamp = 0;
 	m_delayType = DT_SUPP_CON;
 	m_numEventsReceived = 0;
+    m_timer = 0;
 }
 
 Consumer::~Consumer()
 {
+    if(m_timer != 0)
+    {
+        delete m_timer;
+    }
 }
 
 
@@ -232,9 +239,12 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 		ACE_DEBUG((LM_INFO, "Waiting for events in channel %d ...\n", params.channelID));
 
 		// Create & schedule the timer
-		ConsumerTimer *timer = new ConsumerTimer(*this);
+        if(0 == m_timer)
+        {
+		    m_timer = new ConsumerTimer(*this);
+        }
 		ACE_Time_Value timeout(params.interval * 60, 0);
-		m_orb->orb_core()->reactor()->schedule_timer(timer, 0, timeout, timeout);
+		m_orb->orb_core()->reactor()->schedule_timer(m_timer, 0, timeout, timeout);
 
 		ORB_Task task(m_orb);
 
@@ -246,10 +256,6 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 		}
 
 		task.wait();
-
-		m_orb->destroy();
-
-        delete timer;
 
 	} catch(CORBA::Exception &ex) {
 		ex._tao_print_exception ("Consumer::run");
@@ -351,6 +357,7 @@ uint64_t Consumer::getNumEventsReceived() const
 
 void Consumer::disconnect_push_consumer (void)
 {
+    m_orb->destroy();
 	m_orb->shutdown(0);
 }
 

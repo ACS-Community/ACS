@@ -53,6 +53,7 @@ static const double DEFAULT_MAX_DELAY_SEC = 0;
 static const std::string DEFAULT_DELAY_TYPE = DT_SUPP_CON;
 static const int32_t DEFAULT_INTERVAL = 1;
 
+class ConsumerTimer;
 
 struct ConsumerParams {
 	CosNotifyChannelAdmin::ChannelID channelID;
@@ -90,6 +91,7 @@ protected:
 	ACS::Time m_lastEventTimestamp;
 	std::string m_delayType;
 	uint64_t m_numEventsReceived;
+    ConsumerTimer *m_timer;
 };
 
 #endif /*!PDATACONSUMER_H*/
