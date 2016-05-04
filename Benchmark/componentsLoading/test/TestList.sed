@@ -38,3 +38,4 @@ s/Container bilboContainer_. stopped in .*/Container bilboContainer_X stopped in
 s/Containers stopped in .*/Containers stopped in hh:mm:ss.ddd in thread main/g
 s/Stopping container bilboContainer_. in.*/Stopping container bilboContainer_X/g
 s/The threads got all the components in .*/The threads got all the components in hh:mm:ss.ddd in thread main/g
+s/Authenticate with id=[0-9]*/Authenticate with id=xxx/g
