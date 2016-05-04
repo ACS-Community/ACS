@@ -270,6 +270,9 @@ public class StressStartComponents extends ComponentClientTestCase {
 		ContainerData[] containers = new ContainerData[startedContainers.size()];
 		startedContainers.toArray(containers);
 		
+		// The names of the components to start and stop
+		Vector<String> componentNames = new Vector<String>(totComponentsToStart);
+		
 		// Start the components
 		Vector<Future<MountOperations>> tasks = new Vector<Future<MountOperations>>();
 		int c=0; // to cycle through containers in the array
@@ -286,7 +289,9 @@ public class StressStartComponents extends ComponentClientTestCase {
 					"mount", 
 					contName);
 			tasks.add(componentAccessUtil.getDynamicComponentConcurrent(spec, MountOperations.class));
+			componentNames.addElement(name);
 		}
+		assertEquals("The size of the names and the components to start does not match!",totComponentsToStart, componentNames.size());
 		
 		// wait for the termination of all the tasks
 		int n=1;
@@ -324,7 +329,7 @@ public class StressStartComponents extends ComponentClientTestCase {
 		logger.info("Releasing components");
 		// release all the components in parallel
 		long startTime=System.currentTimeMillis();
-		componentAccessUtil.releaseAllComponents(true);
+		componentAccessUtil.releaseComponents(componentNames,true);
 		long endTime=System.currentTimeMillis();
 		logTime("Components released in ", endTime-startTime);
 		// The unloading of the components took around 1m 150s in te91
