@@ -18,5 +18,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ACS_Benchmark_util"/>
+	<classpathentry kind="var" path="ACSROOT/lib/benchmarkUtil.jar"/>
 	<classpathentry kind="output" path="lib"/>
 </classpath>
