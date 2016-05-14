@@ -26,6 +26,10 @@ ifeq ($(os),Linux)
   ifeq ($(majorRelNo),6)
     GMP =
   endif
+  ubuntuDist:= $(basename $(shell (lsb_release -d | awk '{print $2}')))
+  ifneq (,$(findstring Ubuntu,$(ubuntuDist)))
+   GMP =
+  endif
 endif
 
 MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt FITS astyle swig xercesc xercesj castor $(GMP) gui xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache

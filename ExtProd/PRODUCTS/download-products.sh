@@ -1,7 +1,6 @@
 #!/bin/bash
 
 DOWNLOAD_LIST=extprods.links.txt
-sufix='-x86_64'
 arch=`uname -m`
 for item in `cat $DOWNLOAD_LIST`; do
         if [[ "$item" == *"eclipse"* ]]
