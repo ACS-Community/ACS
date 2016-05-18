@@ -27,18 +27,17 @@ package alma.archive.logging;
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
-import alma.archive.database.helpers.ArchiveConfiguration;
-import alma.archive.database.helpers.DBConfiguration;
-import alma.archive.exceptions.general.DatabaseException;
 
 import com.cosylab.logging.engine.ACS.LCEngine;
 
@@ -58,15 +57,72 @@ import com.cosylab.logging.engine.ACS.LCEngine;
  */
 public class ArchiveLoggerImpl extends ComponentImplBase implements
 		alma.xmlstore.LoggerOperations {
+	
+	/**
+	 * Container services
+	 */
 	private ContainerServices cs;
-	private Logger m_logger = Logger.getAnonymousLogger();
-	// The engine that connects to the logging client
+	
+	/**
+	 * The logger
+	 */
+	private Logger m_logger;
+	
+	/**
+	 *  The logging client engine that connects to the logging client
+	 */
 	private LCEngine engine;
-	private ACSAlarmSystemInterface alarmSource;
-	private short archiveLogLevel;
+	
+	/**
+	 * The name of the java property to set the log level
+	 */
+	static public final String MINLOGLEVEL_PROPNAME = "alma.acs.extras.archivelogger.minloglevel";
+	
+	/**
+	 * The default min log level
+	 */
+	static public final int DEFAULTMINLOGLEVEL = AcsLogLevel.INFO.intValue();
+	
+	/**
+	 * The name of the java property to set the max size of each file of logs
+	 */
+	static public final String MAXFILESIZE_PROPNAME = "alma.acs.extras.archivelogger.maxFileSize";
+	
+	/**
+	 * The default max size of each file of logs
+	 */
+	static public final int DEFAULTMAXFILESIZE = 134217728;
+	
+	/**
+	 * The name of the java property to set the max number of file of logs
+	 */
+	static public final String MAXNUMBEROFFILES_PROPNAME = "alma.acs.extras.archivelogger.maxNumberFiles";
+	
+	/**
+	 * The default max number of file of logs
+	 */
+	static public final int DEFAULTMAXNUMBEROFFILES = 750;
+	
+	/**
+	 * The name of the java property to set the path to save the file of logs
+	 */
+	static public final String LOGDIR_PROPNAME = "alma.acs.extras.archivelogger.logDir";
+	
+	/**
+	 * The default max number of file of logs
+	 */
+	static public final String DEFAULLOGDIR = "/mnt/gas02/data1/AcsLogs-8.1";
+	
+	/**
+	 * The log level is initialized from the value assigned to the 
+	 * {@link #MINLOGLEVEL_PROPNAME} java property or to the value of
+	 * {@link #DEFAULTMINLOGLEVEL}
+	 */
+	private final AtomicInteger archiveLogLevel = 
+			new AtomicInteger(Integer.getInteger(ArchiveLoggerImpl.MINLOGLEVEL_PROPNAME, ArchiveLoggerImpl.DEFAULTMINLOGLEVEL));
 
 	/**
-	 *  
+	 *  Constructor
 	 */
 	public ArchiveLoggerImpl() {
 		super();
@@ -80,34 +136,39 @@ public class ArchiveLoggerImpl extends ComponentImplBase implements
 		super.initialize(containerServices);
 		cs = containerServices;
 		m_logger = cs.getLogger();
-		try {
-			alarmSource = ACSAlarmSystemInterfaceFactory.createSource("ARCHIVE_LOGGER");
-		} catch (Exception e) {
-			m_logger.severe("Could not create alarmSource: "+e);
-		}
 		
 		try {
-			DBConfiguration config = ArchiveConfiguration.instance(m_logger);
-			String logFilePath = getString(config, "archive.log.dir");
+			String logFilePath = System.getProperty(ArchiveLoggerImpl.LOGDIR_PROPNAME, ArchiveLoggerImpl.DEFAULLOGDIR);
 			File f = new File(logFilePath);
-			if (!f.exists()) f.mkdirs();
-			short fileMax = getInteger(config, "archive.log.maxNumberFiles").shortValue();
-			int fileSizeLimit = getInteger(config, "archive.log.maxFileSize").intValue();
-			// the properties above are mandatory:
-			if (fileMax < 1 || fileSizeLimit < 100000 ) {
-				throw new ComponentLifecycleException("Properties archive.log.maxNumberFiles or archive.log.maxFileSize unreasonably small, please check archiveConfig.properties.");
+			if (!f.exists()) {
+				f.mkdirs();
 			}
-			m_logger.info("Retrieved config info for ArchiveLogger. Log file dir: " + logFilePath
-					+ ". Max log file size: " + fileSizeLimit
-					+ ". Max # log files: " + fileMax);
-
+			
+			int fileMax = Integer.getInteger(ArchiveLoggerImpl.MAXNUMBEROFFILES_PROPNAME, ArchiveLoggerImpl.DEFAULTMAXNUMBEROFFILES);
+			int fileSizeLimit = Integer.getInteger(ArchiveLoggerImpl.MAXFILESIZE_PROPNAME, ArchiveLoggerImpl.DEFAULTMAXFILESIZE);
+			if (fileMax < 1 || fileSizeLimit < 100000 ) {
+				StringBuilder str = new StringBuilder(ArchiveLoggerImpl.MAXNUMBEROFFILES_PROPNAME);
+				str.append(" must be greater then 1 and ");
+				str.append(ArchiveLoggerImpl.MAXFILESIZE_PROPNAME);
+				str.append(" must be greater then 100000");
+				throw new ComponentLifecycleException(str.toString());
+			}
+			
+			StringBuilder str = new StringBuilder("Will save log files in : ");
+			str.append(logFilePath);
+			str.append(" (max log file size: ");
+			str.append(fileSizeLimit);
+			str.append(", max # log files: " );
+			str.append(fileMax);
+			str.append(')');
+			m_logger.info(str.toString());
+			
 			connectToLoggingChannel(logFilePath, fileMax, fileSizeLimit);
-		}
-		catch (DatabaseException e) {
-			String errorMessage = "could not configure component: " + e.getMessage();
+		} catch (Throwable t) {
+			String errorMessage = "could not configure component: " + t.getMessage();
 			m_logger.severe(errorMessage);
 			sendAlarm(2);
-			throw new ComponentLifecycleException(errorMessage);
+			throw new ComponentLifecycleException(errorMessage,t);
 		}
 	}
 
@@ -118,7 +179,7 @@ public class ArchiveLoggerImpl extends ComponentImplBase implements
 	 * @param fileSizeLimit
 	 * @throws ComponentLifecycleException
 	 */
-	private void connectToLoggingChannel(String logFilePath, short fileMax,
+	private void connectToLoggingChannel(String logFilePath, int fileMax,
 			int fileSizeLimit) throws ComponentLifecycleException {
 		try {
 			// connect to LoggingChannel
@@ -142,42 +203,6 @@ public class ArchiveLoggerImpl extends ComponentImplBase implements
 
 	/**
 	 * 
-	 * @param config
-	 * @throws ComponentLifecycleException
-	 */
-	private Integer getInteger(DBConfiguration config, String parameterName)
-			throws ComponentLifecycleException {
-		try {
-			return Integer.parseInt(config.get(parameterName));
-		} 
-		catch (NumberFormatException e) {
-			String errorMessage = "Invalid integer value for " + parameterName + " \"" + config.get(parameterName) + "\"";
-			m_logger.severe(errorMessage);
-			sendAlarm(2);
-			throw new ComponentLifecycleException(errorMessage);
-		}
-	}
-	
-	/**
-	 * 
-	 * @param config
-	 * @throws ComponentLifecycleException
-	 */
-	private String getString(DBConfiguration config, String parameterName)
-			throws ComponentLifecycleException {
-		String value = config.get(parameterName);
-		if (value == null || value.trim().isEmpty()) {
-			String errorMessage = "Invalid integer value for " + parameterName + " \"" + config.get(parameterName) + "\"";
-			m_logger.severe(errorMessage);
-			sendAlarm(2);
-			throw new ComponentLifecycleException(errorMessage);
-			
-		}
-		return value;
-	}
-
-	/**
-	 * 
 	 */
 	public void cleanUp() throws alma.maciErrType.wrappers.AcsJComponentCleanUpEx {
 		super.cleanUp();
@@ -189,29 +214,16 @@ public class ArchiveLoggerImpl extends ComponentImplBase implements
 	 * 
 	 */
 	private void sendAlarm(int code) {
-		try {
-			ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(
-					"Logging", "ARCHIVE_LOGGER", code);
-			fs.setDescriptor(ACSFaultState.TERMINATE);
-			fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
-
-			Properties props = new Properties();
-			props.setProperty(ACSFaultState.ASI_PREFIX_PROPERTY, "prefix");
-			props.setProperty(ACSFaultState.ASI_SUFFIX_PROPERTY, "suffix");
-			fs.setUserProperties(props);
-			alarmSource.push(fs);
-		} catch (Exception e) {
-			m_logger.warning("Failure when sending alarm: " + e);
-		}
+		cs.getAlarmSource().setAlarm("Logging", "ARCHIVE_LOGGER", code, true);
 	}
 
 	@Override
 	public short getArchiveLevel() {
-		return this.archiveLogLevel;
+		return this.archiveLogLevel.shortValue();
 	}
 
 	@Override
 	public void setArchiveLevel(short newLevel) {
-		this.archiveLogLevel = newLevel;
+		this.archiveLogLevel.set(newLevel);
 	}
 }

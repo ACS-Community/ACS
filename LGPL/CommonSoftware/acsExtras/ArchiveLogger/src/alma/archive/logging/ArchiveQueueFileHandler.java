@@ -31,8 +31,8 @@ import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.logging.Logger;
 
+import alma.acs.util.IsoDateFormat;
 import alma.acs.util.stringqueue.TimestampedStringQueueFileHandler;
-import alma.archive.wrappers.ArchiveTimeStamp;
 
 /**
  * 
@@ -77,7 +77,7 @@ public class ArchiveQueueFileHandler extends TimestampedStringQueueFileHandler {
 	@Override
 	public File getNewFile() throws IOException {
 		// ICT-4314 defines the filename format for a new file
-		final String startTimestamp = new ArchiveTimeStamp(new Timestamp(System.currentTimeMillis())).toISOString();
+		final String startTimestamp = IsoDateFormat.formatCurrentDate();
 		final String endTimestamp = "YYYY-MM-DDTHH:MM:SS.mmm";
 		String fileName = String.format(FILENAME_TEMPLATE, startTimestamp, endTimestamp);
 		return new File(logDir, fileName);
