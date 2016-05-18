@@ -20,7 +20,7 @@
  *    MA 02111-1307  USA
  */
 
-package alma.acs.xmlfilestore.LoggerImpl;
+package alma.acs.xmlfilestore.logging.impl;
 
 import java.util.logging.Logger;
 
