@@ -132,7 +132,7 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES = archiveLogger 
+IDL_FILES = xmlStoreLogs 
 IDL_TAO_FLAGS =
 USER_IDL =
 #
