@@ -58,4 +58,4 @@ module xmlstore
 };
 
 
-#endif /* _CDBDAL_IDL_ */
+#endif /* _ARCHIVELOGGER_IDL */
