@@ -138,9 +138,9 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= archiveLoggerImpl
-archiveLoggerImpl_DIRS= alma
-archiveLoggerImpl_JLIBS=archiveLogger
+JARFILES= xmlFileStorLoggerImpl
+xmlFileStorLoggerImpl_DIRS= alma
+xmlFileStorLoggerImpl_JLIBS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
