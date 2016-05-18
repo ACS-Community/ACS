@@ -76,12 +76,12 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = archiveLogger 
+LIBRARIES       = xmlStoreLogs 
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-archiveLogger_OBJECTS   = archiveLoggerC
+xmlStoreLogs_OBJECTS   = xmlStoreLogsC
 
 #
 # Scripts (public and local)
