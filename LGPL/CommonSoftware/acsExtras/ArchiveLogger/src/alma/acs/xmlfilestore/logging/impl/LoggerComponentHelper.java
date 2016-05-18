@@ -30,7 +30,7 @@ import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
 import alma.xmlFileStore.LoggerOperations;
 import alma.xmlFileStore.LoggerPOATie;
-import alma.acs.xmlfilestore.logging.ArchiveLoggerImpl;
+import alma.acs.xmlfilestore.logging.XmlFileStoreLoggerImpl;
 
 /**
  * Component helper class. 
@@ -61,7 +61,7 @@ public class LoggerComponentHelper extends ComponentHelper
 	*/
 	protected ComponentLifecycle _createComponentImpl()
 	{
-		return new ArchiveLoggerImpl();
+		return new XmlFileStoreLoggerImpl();
 	}
 
 	/**

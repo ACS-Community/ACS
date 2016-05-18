@@ -55,7 +55,7 @@ import com.cosylab.logging.engine.ACS.LCEngine;
  * 
  *  
  */
-public class ArchiveLoggerImpl extends ComponentImplBase implements
+public class XmlFileStoreLoggerImpl extends ComponentImplBase implements
 		alma.xmlFileStore.LoggerOperations {
 	
 	/**
@@ -119,12 +119,12 @@ public class ArchiveLoggerImpl extends ComponentImplBase implements
 	 * {@link #DEFAULTMINLOGLEVEL}
 	 */
 	private final AtomicInteger archiveLogLevel = 
-			new AtomicInteger(Integer.getInteger(ArchiveLoggerImpl.MINLOGLEVEL_PROPNAME, ArchiveLoggerImpl.DEFAULTMINLOGLEVEL));
+			new AtomicInteger(Integer.getInteger(XmlFileStoreLoggerImpl.MINLOGLEVEL_PROPNAME, XmlFileStoreLoggerImpl.DEFAULTMINLOGLEVEL));
 
 	/**
 	 *  Constructor
 	 */
-	public ArchiveLoggerImpl() {
+	public XmlFileStoreLoggerImpl() {
 		super();
 	}
 
@@ -138,18 +138,18 @@ public class ArchiveLoggerImpl extends ComponentImplBase implements
 		m_logger = cs.getLogger();
 		
 		try {
-			String logFilePath = System.getProperty(ArchiveLoggerImpl.LOGDIR_PROPNAME, ArchiveLoggerImpl.DEFAULLOGDIR);
+			String logFilePath = System.getProperty(XmlFileStoreLoggerImpl.LOGDIR_PROPNAME, XmlFileStoreLoggerImpl.DEFAULLOGDIR);
 			File f = new File(logFilePath);
 			if (!f.exists()) {
 				f.mkdirs();
 			}
 			
-			int fileMax = Integer.getInteger(ArchiveLoggerImpl.MAXNUMBEROFFILES_PROPNAME, ArchiveLoggerImpl.DEFAULTMAXNUMBEROFFILES);
-			int fileSizeLimit = Integer.getInteger(ArchiveLoggerImpl.MAXFILESIZE_PROPNAME, ArchiveLoggerImpl.DEFAULTMAXFILESIZE);
+			int fileMax = Integer.getInteger(XmlFileStoreLoggerImpl.MAXNUMBEROFFILES_PROPNAME, XmlFileStoreLoggerImpl.DEFAULTMAXNUMBEROFFILES);
+			int fileSizeLimit = Integer.getInteger(XmlFileStoreLoggerImpl.MAXFILESIZE_PROPNAME, XmlFileStoreLoggerImpl.DEFAULTMAXFILESIZE);
 			if (fileMax < 1 || fileSizeLimit < 100000 ) {
-				StringBuilder str = new StringBuilder(ArchiveLoggerImpl.MAXNUMBEROFFILES_PROPNAME);
+				StringBuilder str = new StringBuilder(XmlFileStoreLoggerImpl.MAXNUMBEROFFILES_PROPNAME);
 				str.append(" must be greater then 1 and ");
-				str.append(ArchiveLoggerImpl.MAXFILESIZE_PROPNAME);
+				str.append(XmlFileStoreLoggerImpl.MAXFILESIZE_PROPNAME);
 				str.append(" must be greater then 100000");
 				throw new ComponentLifecycleException(str.toString());
 			}
@@ -183,7 +183,7 @@ public class ArchiveLoggerImpl extends ComponentImplBase implements
 			int fileSizeLimit) throws ComponentLifecycleException {
 		try {
 			// connect to LoggingChannel
-			ArchiveQueueFileHandler queueFileHandler = new ArchiveQueueFileHandler(m_logger, logFilePath, fileMax, fileSizeLimit);
+			QueueFileHandler queueFileHandler = new QueueFileHandler(m_logger, logFilePath, fileMax, fileSizeLimit);
 			queueFileHandler.setAlarmHandler(new AlarmHandler() {				
 				@Override
 				public void sendAlarm(int code) {

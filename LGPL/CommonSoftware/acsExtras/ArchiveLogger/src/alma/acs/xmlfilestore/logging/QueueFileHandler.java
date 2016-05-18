@@ -39,7 +39,7 @@ import alma.acs.util.stringqueue.TimestampedStringQueueFileHandler;
  * @author almadev
  *
  */
-public class ArchiveQueueFileHandler extends TimestampedStringQueueFileHandler {
+public class QueueFileHandler extends TimestampedStringQueueFileHandler {
 	private static final String FILENAME_PREFIX = "log";
 	private static final String FILENAME_SUFFIX = ".xml";
 	private static final String FILENAME_TEMPLATE = FILENAME_PREFIX + "%s_%s" + FILENAME_SUFFIX;
@@ -63,7 +63,7 @@ public class ArchiveQueueFileHandler extends TimestampedStringQueueFileHandler {
 	 * @throws Exception
 	 *  
 	 */
-	public ArchiveQueueFileHandler(Logger myLogger, String logDir,
+	public QueueFileHandler(Logger myLogger, String logDir,
 			int myFileMax, long myMaxFileSize) throws Exception {
 		super(myMaxFileSize, FILENAME_PREFIX);
 		m_logger = myLogger;

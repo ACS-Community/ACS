@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
-import alma.acs.xmlfilestore.logging.ArchiveLoggerImpl;
+import alma.acs.xmlfilestore.logging.XmlFileStoreLoggerImpl;
 import alma.xmlFileStore.LoggerOperations;
 import alma.xmlFileStore.LoggerPOATie;
 
@@ -76,7 +76,7 @@ public class LoggerHelper extends ComponentHelper {
 	 * @see alma.acs.container.ComponentHelper#_createComponentImpl()
 	 */
 	protected ComponentLifecycle _createComponentImpl() {
-		return new ArchiveLoggerImpl();
+		return new XmlFileStoreLoggerImpl();
 	}
 
 	/**

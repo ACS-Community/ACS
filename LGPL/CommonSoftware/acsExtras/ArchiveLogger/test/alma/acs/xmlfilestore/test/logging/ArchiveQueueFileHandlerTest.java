@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import alma.acs.xmlfilestore.logging.ArchiveQueueFileHandler;
+import alma.acs.xmlfilestore.logging.QueueFileHandler;
 import junit.framework.TestCase;
 
 /**
@@ -61,7 +61,7 @@ public class ArchiveQueueFileHandlerTest extends TestCase {
 	 */
 	public void testGetNewFile() throws Exception {
 		final String filenamePattern = "log\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}_YYYY-MM-DDTHH:MM:SS\\.mmm\\.xml";
-		ArchiveQueueFileHandler handler = new ArchiveQueueFileHandler(LOG, logDir.getAbsolutePath(), 1, 1025L);
+		QueueFileHandler handler = new QueueFileHandler(LOG, logDir.getAbsolutePath(), 1, 1025L);
 		File f = handler.getNewFile();
 		assertNotNull(f);
 		assertTrue(f.getName(), f.getName().matches(filenamePattern));
@@ -76,7 +76,7 @@ public class ArchiveQueueFileHandlerTest extends TestCase {
 		File oldLogFile = new File(logDir, "log1970-01-21T00:00:00.000_YYYY-MM-DDTHH:MM:SS.mmm.xml");
 		// touch the log file
 		try (FileOutputStream ofs = new FileOutputStream(oldLogFile)) {;;}
-		ArchiveQueueFileHandler handler = new ArchiveQueueFileHandler(LOG, logDir.getAbsolutePath(), 1, 1025L);
+		QueueFileHandler handler = new QueueFileHandler(LOG, logDir.getAbsolutePath(), 1, 1025L);
 		String earliestLogTimestamp = "2014-12-06T13:00:00.000";
 		String lastLogTimestamp = "2014-12-06T15:12:34.567";
 		handler.fileProcessed(oldLogFile, earliestLogTimestamp, lastLogTimestamp);
