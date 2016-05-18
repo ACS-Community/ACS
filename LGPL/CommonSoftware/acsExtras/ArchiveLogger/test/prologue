@@ -20,33 +20,15 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #*******************************************************************************
-export JAVA_OPTIONS="-Darchive.configFile=$PWD/archiveConfig.properties"
 
-export LOCATION=$HOST
+#! /bin/bash
+OLD_CDB=$ACS_CDB
+ACS_CDB=../test
 
-mkdir -p /tmp/bla
-#echo "cleaning database.."
-#tomcat start >& tomcatStart.log 2>&1
-#archiveCleanTest >& archiveCleanTest.log 2>&1
-#archiveLoadSchema -u $ACSROOT/idl/loggingMI.xsd >& archiveLoadSchema.log 2>&1
+ACS_TMP=$PWD/tmp
 
-# Start acs processes
-echo " Starting ACS"
-#acsStart >& acsStart.log
+#Start the ORB services and manager.
 acsutilTATPrologue -l
 
-#rm -f ../test/tmp/acs_instance
-#export ACS_INSTANCE=`grep "For this ACS session, please do an" acsStart.log | head -n 1 | cut -d\' -f2 | cut -d= -f2`
-#echo $ACS_INSTANCE > ../test/tmp/acs_instance
-
 echo " Starting frodoContainer"
-#acsStartContainer -java frodoContainer >& frodoContainer.log &
-#export ACS_LOG_STDOUT=0
-export CLASSPATH=$CLASSPATH:$INTROOT/lib/oracle/xmlparserv2.jar:$ACSROOT/lib/oracle/xmlparserv2.jar
 acsutilAwaitContainerStart -java frodoContainer
-
-echo " Starting the archive"
-acsStartJava  -noDirectory -endorsed alma.archive.manager.ArchiveMasterClient >& archiveStart.log 2>&1
-
-#archive start >& archiveStart.log 2>&1
-

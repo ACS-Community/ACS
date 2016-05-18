@@ -5,7 +5,7 @@
   <category is-default="true" path="ARCHIVE">
     <description>Archive</description>
     <alarms>
-      <FaultFamily>Backend</FaultFamily>
+      <FaultFamily>Logging</FaultFamily>
     </alarms>
   </category>
 </categories>

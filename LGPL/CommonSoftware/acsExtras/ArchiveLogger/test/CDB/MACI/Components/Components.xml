@@ -3,28 +3,10 @@
        xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<_ Name="ARCHIVE_CONNECTION" Code="alma.archive.helpers.ArchiveConnectionHelper"
-                             Type="IDL:alma/xmlstore/ArchiveConnection:1.0"
-                            ImplLang="java"
-                             Container="frodoContainer"
-                             Default="true"/>
-
-<_ Name="ARCHIVE_IDENTIFIER" Code="alma.archive.helpers.IdentifierHelper"
-                             Type="IDL:alma/xmlstore/Identifier:1.0"
-                            ImplLang="java"
-                             Container="frodoContainer"
-                             Default="true"/>
-
-<_ Name="ARCHIVE_MASTER_COMP" Code="alma.archive.manager.ArchiveSubsystemMasterHelper"
-                              Type="IDL:alma/archive/ArchiveSubsystemMasterIF:1.0"
-                              Container="frodoContainer"
-                            ImplLang="java"
-                              Default="true"/>
-
-<_ Name="ARCHIVE_LOGGER" Code="alma.xmlstore.LoggerImpl.LoggerHelper"
+  <_ Name="ARCHIVE_LOGGER" Code="alma.xmlstore.LoggerImpl.LoggerHelper"
                          Type="IDL:alma/xmlstore/Logger:1.0"
                          Container="frodoContainer"
-                            ImplLang="java"
+                         ImplLang="java"
                          Default="true"
                          Autostart="true"/>
 </Components>

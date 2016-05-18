@@ -92,8 +92,8 @@ lllll_LIBS      =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = TestArchiveQueueFileHandler TestArchiveLoggerFsr
-SCRIPTS_L       =
+SCRIPTS         = TestArchiveQueueFileHandler
+SCRIPTS_L       = prologue
 
 #
 # TCL scripts (public and local)
@@ -214,8 +214,6 @@ endif
 # TARGETS
 # -------
 all:	do_all
-	cp epilogue ../bin
-	cp prologue ../bin
 	mkdir -p tmp
 	@echo " . . . 'all' done" 
 
