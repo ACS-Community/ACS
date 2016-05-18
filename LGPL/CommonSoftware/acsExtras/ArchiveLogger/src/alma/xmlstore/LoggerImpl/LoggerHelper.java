@@ -26,8 +26,8 @@ import java.util.logging.Logger;
 
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
-import alma.xmlstore.LoggerOperations;
-import alma.xmlstore.LoggerPOATie;
+import alma.xmlFileStore.LoggerOperations;
+import alma.xmlFileStore.LoggerPOATie;
 import alma.archive.logging.ArchiveLoggerImpl;
 
 /**

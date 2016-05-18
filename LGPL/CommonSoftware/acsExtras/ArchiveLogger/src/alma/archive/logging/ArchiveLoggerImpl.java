@@ -56,7 +56,7 @@ import com.cosylab.logging.engine.ACS.LCEngine;
  *  
  */
 public class ArchiveLoggerImpl extends ComponentImplBase implements
-		alma.xmlstore.LoggerOperations {
+		alma.xmlFileStore.LoggerOperations {
 	
 	/**
 	 * Container services

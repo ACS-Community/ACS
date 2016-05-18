@@ -4,7 +4,7 @@
        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <_ Name="ARCHIVE_LOGGER" Code="alma.xmlstore.LoggerImpl.LoggerHelper"
-                         Type="IDL:alma/xmlstore/Logger:1.0"
+                         Type="IDL:alma/xmlFileStore/Logger:1.0"
                          Container="frodoContainer"
                          ImplLang="java"
                          Default="true"
