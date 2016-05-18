@@ -1,0 +1,9 @@
+export ACS_INSTANCE=`cat ../test/tmp/acs_instance`
+acsutilTATTestRunner tomcat stop 2>&1
+
+# Shutdown acs and java processes
+#acsStop >&  /dev/null
+acsutilTATEpilogue
+
+# there should no be log files available which have not been renamed.
+ls logDir/log*YYYY*.xml

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fault-family name="Backend" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-acs:AcsAlarmSystem:1.0 ../../../acsalarm-fault-family.xsd ">
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://almasw.hq.eso.org/almasw/bin/view/Archive/ArchiveTools</help-url>
+  <contact email="amanning@eso.org" gsm="" name="ARCHIVE/ArchiveLogger test"/>
+  <fault-code value="1">
+    <priority>3</priority>
+    <cause>Failure in one of the Archive backends (NGAS/Oracle/eXist)</cause>
+    <action>Repair backend process</action>
+    <consequence>Archive becomes unoperational</consequence>
+    <problem-description>Failure in one of the Archive backends (NGAS/Oracle/eXist)</problem-description>
+  </fault-code>
+  <fault-member name="Oracle">
+    <location>
+      <building>building</building>
+      <floor>floor</floor>
+      <room>room</room>
+      <mnemonic>mnemonic</mnemonic>
+      <position>Antenna position</position>
+    </location>
+  </fault-member>
+  <fault-member name="NGAS">
+    <location>
+      <building>building</building>
+      <floor>floor</floor>
+      <room>room</room>
+      <mnemonic>mnemonic</mnemonic>
+      <position>Antenna position</position>
+    </location>
+  </fault-member>
+  <fault-member name="eXist">
+    <location>
+      <building>building</building>
+      <floor>floor</floor>
+      <room>room</room>
+      <mnemonic>mnemonic</mnemonic>
+      <position>Antenna position</position>
+    </location>
+  </fault-member>
+</fault-family>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fault-family name="Backend" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:schemas-acs:AcsAlarmSystem:1.0 ../../../acsalarm-fault-family.xsd ">
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://almasw.hq.eso.org/almasw/bin/view/Archive/ArchiveTools</help-url>
+  <contact email="amanning@eso.org" gsm="" name="ARCHIVE/ArchiveLogger test"/>
+  <fault-code value="1">
+    <priority>3</priority>
+    <cause>Too many logs received by ArchiveLogger to be stored in Oracle.</cause>
+    <action>Reduce # logs emitted or increase # logs/sec in CDB.</action>
+    <consequence>Only subset of all logs will be stored in Oracle.</consequence>
+    <problem-description>ArchiveLogger receives more logs/sec than
+allowed by CDB.</problem-description>
+  </fault-code>
+  <fault-member name="ArchiveLogger">
+    <location>
+      <building>building</building>
+      <floor>floor</floor>
+      <room>room</room>
+      <mnemonic>mnemonic</mnemonic>
+      <position>Antenna position</position>
+    </location>
+  </fault-member>
+</fault-family>

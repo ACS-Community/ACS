@@ -1,0 +1,2 @@
+
+acsStartJava  -noDirectory -endorsed junit.textui.TestRunner alma.archive.logging.ArchiveQueueFileHandlerTest
