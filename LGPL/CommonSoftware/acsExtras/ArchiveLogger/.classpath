@@ -25,10 +25,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jacsutil2.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/archive_xmlstore_if.jar" sourcepath="/ACSROOT/lib/archive_xmlstore_if.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/archive_database.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar" sourcepath="ACSROOT/lib/jcont.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/archiveLogger.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/ojdbc6.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar" sourcepath="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
