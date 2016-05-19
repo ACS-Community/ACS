@@ -37,7 +37,7 @@ os     = $(shell uname)
 #
 # Modules in the various Laser sub-packages.
 #
-MODULES_ACSEXTRAS  = 
+MODULES_ACSEXTRAS  = acsXmlFileStore
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
     MAKE_FLAGS = "NOCCS=1"
