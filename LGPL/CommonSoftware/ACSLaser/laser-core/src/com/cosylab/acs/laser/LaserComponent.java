@@ -225,6 +225,11 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 	 * The engine to provide statistics
 	 */
 	private StatsCalculator statisticsCalculator; 
+
+    /**
+     * The subscriber that receives JMS messages from the channel CMW.ALARM_SYSTEM.ADMIN_CACHE_LOADER
+     */
+    private TopicSubscriber subscriberAdminCacheLoader;
 	
 	/**
 	 * Constructor
@@ -260,7 +265,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 			Topic topicAdminCacheLoader = new ACSJMSTopic(
 					"CMW.ALARM_SYSTEM.ADMIN_CACHE_LOADER");
 
-			TopicSubscriber subscriberAdminCacheLoader = ts
+			subscriberAdminCacheLoader = ts
 					.createSubscriber(topicAdminCacheLoader);
 
 			subscriberAdminCacheLoader
@@ -438,6 +443,11 @@ public class LaserComponent extends CERNAlarmServicePOA implements SourceListene
 		}
 		closed=true;
 		logger.log(AcsLogLevel.DEBUG,"Shutting down");
+
+        // Close the subscriber
+        try {
+            subscriberAdminCacheLoader.close();
+        } catch(Throwable e) {}
 		
 		Thread t = new Thread(new LaserComponentTerminator(),"LaserComponentTerminator");
 		t.start();
