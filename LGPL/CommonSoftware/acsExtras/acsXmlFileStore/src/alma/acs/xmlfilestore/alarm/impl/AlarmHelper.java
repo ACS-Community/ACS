@@ -44,7 +44,7 @@ public class AlarmHelper extends ComponentHelper {
 	 * @see alma.acs.container.ComponentHelper#_createComponentImpl()
 	 */
 	protected ComponentLifecycle _createComponentImpl() {
-		return new XmlFileStoreAlarmLoggerImpl();
+		return new XmlFileStoreAlarmImpl();
 	}
 
 	/**

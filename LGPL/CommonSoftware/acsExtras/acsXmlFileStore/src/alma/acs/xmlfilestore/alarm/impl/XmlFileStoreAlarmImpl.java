@@ -36,7 +36,7 @@ import cern.laser.source.alarmsysteminterface.FaultState;
  * @since   ACS 2016.6
  */
 
-public class XmlFileStoreAlarmLoggerImpl extends ComponentImplBase implements AlarmsXmlStoreOperations, SourceListener {
+public class XmlFileStoreAlarmImpl extends ComponentImplBase implements AlarmsXmlStoreOperations, SourceListener {
 	
 	/**
 	 * @see SourceListener#sourceXMLMsgReceived(String)
@@ -80,7 +80,7 @@ public class XmlFileStoreAlarmLoggerImpl extends ComponentImplBase implements Al
 	/**
 	 *  Constructor
 	 */
-	public XmlFileStoreAlarmLoggerImpl() {
+	public XmlFileStoreAlarmImpl() {
 		super();
 	}
 	
