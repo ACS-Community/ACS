@@ -1,5 +1,0 @@
- --clientVM -- com.cosylab.cdb.DALShutdown -d corbaloc::192.168.64.140:3012/CDB
-2016-05-20T11:48:26.821 INFO [acsStartJava] Starting Java application: com.cosylab.cdb.DALShutdown -d corbaloc::192.168.64.140:3012/CDB
-2016-05-20T11:48:26.831 INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/alma/ACS-2016.6/JacORB/lib/endorsed:
-2016-05-20T11:48:27.274 INFO [DALShutdown] Connecting with ior:corbaloc::192.168.64.140:3012/CDB
-2016-05-20T11:48:27.419 INFO [alma.acs.logging] Logger jacorb@DALShutdown created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.

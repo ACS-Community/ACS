@@ -1,2 +1,0 @@
-2016-05-20T11:48:27.904 INFO Stopping the CORBA Notification Service
-2016-05-20T11:48:28.286 DEBUG Removing channels entries in the Naming Service of the Notification Service [192.168.64.140:3002] which has been stopped

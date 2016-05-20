@@ -1,4 +1,0 @@
-2016-05-20T11:48:20.012 INFO Stopping all ACS processes using 'ACS_INSTANCE=0'
-2016-05-20T11:48:20.019 INFO Shutting down containers...
-2016-05-20T11:48:20.027 INFO Shutting down frodoContainer container
-2016-05-20T11:48:23.135 INFO Stopping Manager

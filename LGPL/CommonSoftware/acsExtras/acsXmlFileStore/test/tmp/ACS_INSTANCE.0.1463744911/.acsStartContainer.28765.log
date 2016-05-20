@@ -1,3 +1,0 @@
-2016-05-20T11:48:15.275 WARNING /diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/tmp/ACS_INSTANCE.0/pids already exists!
-2016-05-20T11:48:15.335 INFO Running the container with these arguments: 'acsStartJavaContainer frodoContainer alma.acs.container.AcsContainerRunner -OAIAddr 192.168.64.140 -OAport 4000 -m corbaloc::192.168.64.140:3000/Manager'
-2016-05-20T11:48:22.728 INFO Container: 'frodoContainer' exited with code: 0.
