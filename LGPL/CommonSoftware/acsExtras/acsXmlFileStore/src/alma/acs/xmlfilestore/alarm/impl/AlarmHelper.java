@@ -28,7 +28,7 @@ import alma.xmlFileStore.AlarmsXmlStoreOperations;
  * @author  acaproni
  * @since   ACS 2016.6
  */
-public class AlarmLoggerHelper extends ComponentHelper {
+public class AlarmHelper extends ComponentHelper {
 	
 	/**
 	 * Constructor
@@ -36,7 +36,7 @@ public class AlarmLoggerHelper extends ComponentHelper {
 	 * @param containerLogger
 	 *            logger used only by the parent class.
 	 */
-	public AlarmLoggerHelper(Logger containerLogger) {
+	public AlarmHelper(Logger containerLogger) {
 		super(containerLogger);
 	}
 

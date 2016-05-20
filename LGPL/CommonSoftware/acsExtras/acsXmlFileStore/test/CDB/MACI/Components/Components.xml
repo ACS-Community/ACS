@@ -9,7 +9,7 @@
                          ImplLang="java"
                          Default="true"
                          Autostart="true"/>
-  <_ Name="ALARMS_XMLSTORE" Code="alma.acs.xmlfilestore.alarm.impl.AlarmLoggerHelper"
+  <_ Name="ALARMS_XMLSTORE" Code="alma.acs.xmlfilestore.alarm.impl.AlarmHelper"
                          Type="IDL:alma/xmlFileStore/AlarmsXmlStore:1.0"
                          Container="frodoContainer"
                          ImplLang="java"
