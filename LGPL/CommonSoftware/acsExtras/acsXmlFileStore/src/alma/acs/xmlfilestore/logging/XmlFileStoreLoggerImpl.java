@@ -172,7 +172,7 @@ public class XmlFileStoreLoggerImpl extends ComponentImplBase implements LogsXml
 		} catch (Throwable t) {
 			String errorMessage = "could not configure component: " + t.getMessage();
 			m_logger.severe(errorMessage);
-			sendAlarm(2);
+			cs.getAlarmSource().setAlarm("Logging", cs.getName(), 2, true);
 			throw new ComponentLifecycleException(errorMessage,t);
 		}
 	}
@@ -188,20 +188,14 @@ public class XmlFileStoreLoggerImpl extends ComponentImplBase implements LogsXml
 			int fileSizeLimit) throws ComponentLifecycleException {
 		try {
 			// connect to LoggingChannel
-			QueueFileHandler queueFileHandler = new QueueFileHandler(m_logger, logFilePath, fileMax, fileSizeLimit,"log");
-			queueFileHandler.setAlarmHandler(new AlarmHandler() {				
-				@Override
-				public void sendAlarm(int code) {
-					this.sendAlarm(code);
-				}
-			});
+			QueueFileHandler queueFileHandler = new QueueFileHandler(cs, logFilePath, fileMax, fileSizeLimit,"log","Logging");
 			engine = new LCEngine(queueFileHandler);
 			engine.connect(cs.getAdvancedContainerServices().getORB(), null);
 			engine.enableAutoReconnection(true);
 		} catch (Throwable e) {
 			m_logger
 					.severe("Could not initialize connection to logging channel.");
-			sendAlarm(2);
+			cs.getAlarmSource().setAlarm("Logging", cs.getName(), 2, true);
 			throw new ComponentLifecycleException(e);
 		}
 	}
@@ -215,13 +209,6 @@ public class XmlFileStoreLoggerImpl extends ComponentImplBase implements LogsXml
 		super.cleanUp();
 		if (m_logger.isLoggable(Level.FINE)) m_logger.fine("cleaning up");
 		engine.close(true);
-	}
-
-	/**
-	 * 
-	 */
-	private void sendAlarm(int code) {
-		cs.getAlarmSource().setAlarm("Logging", "ARCHIVE_LOGGER", code, true);
 	}
 
 	@Override

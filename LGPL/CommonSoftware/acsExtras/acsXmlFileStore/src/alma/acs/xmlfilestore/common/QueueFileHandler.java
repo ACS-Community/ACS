@@ -30,9 +30,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.logging.Logger;
 
+import alma.acs.container.ContainerServices;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.stringqueue.TimestampedStringQueueFileHandler;
-import alma.acs.xmlfilestore.logging.AlarmHandler;
 
 /**
  * 
@@ -55,7 +55,12 @@ public class QueueFileHandler extends TimestampedStringQueueFileHandler {
 	/**
 	 * Th elogger
 	 */
-	private Logger m_logger;
+	private final Logger m_logger;
+	
+	/**
+	 * The FaultFamily to send alarms (the FaultMemeber is the name of the component)
+	 */
+	private final String faultFamily; 
 	
 	/**
 	 * The path to location to save files files
@@ -69,16 +74,17 @@ public class QueueFileHandler extends TimestampedStringQueueFileHandler {
 	 */
 	private int maxNumOfXmlFiles;
 	
-	/**
-	 * The alarm handler to send alarms
-	 */
-	private AlarmHandler alarmHandler;
 	private FilenameFilter logFileFilter = new FilenameFilter() {
 		@Override
 		public boolean accept(File dir, String name) {
 			return name.startsWith(fileNamePrefix);
 		}
 	};
+	
+	/**
+	 * Container services
+	 */
+	private final ContainerServices cs;
 
 	/**
 	 * Constructor
@@ -88,16 +94,18 @@ public class QueueFileHandler extends TimestampedStringQueueFileHandler {
 	 * @param myFileMax Max number of XML files to keep in the folder
 	 * @param myMaxFileSize Max length of each XML file
 	 * @param fileNamePrefix The prefix to each name of XML file
-	 * 
+	 * @param faultFamily The FF to send alarms
 	 * @throws Exception
 	 *  
 	 */
-	public QueueFileHandler(Logger myLogger, String folder,
-			int myFileMax, long myMaxFileSize, String fileNamePrefix) throws Exception {
+	public QueueFileHandler(ContainerServices cs, String folder,
+			int myFileMax, long myMaxFileSize, String fileNamePrefix, String faultFamily) throws Exception {
 		super(myMaxFileSize, fileNamePrefix);
+		this.cs=cs;
+		this.faultFamily=faultFamily;
 		this.fileNamePrefix=fileNamePrefix;
 		this.fileNameTemplate = fileNamePrefix+"%s_%s.xml";
-		this.m_logger = myLogger;
+		this.m_logger = cs.getLogger();
 		this.maxNumOfXmlFiles = myFileMax;
 		this.folderForXMLs = new File(folder);
 	}
@@ -127,22 +135,18 @@ public class QueueFileHandler extends TimestampedStringQueueFileHandler {
 			int numLogFiles = folderForXMLs.list(logFileFilter).length;
 			if (numLogFiles > this.maxNumOfXmlFiles) {
 				m_logger.warning(fileNamePrefix+" file directory contains " + numLogFiles + " XML files, exceeding the limit of " + this.maxNumOfXmlFiles);
-				if (!fileWriteAlarmActive) alarmHandler.sendAlarm(2);
+				if (!fileWriteAlarmActive) {
+					cs.getAlarmSource().setAlarm("Logging", cs.getName(), 2, true);
+				}
 				fileWriteAlarmActive = true;
 			}
 		}
 		catch (Exception e) {
 			m_logger.warning("Could not rename XML file from \"" + oldFile.getAbsolutePath() + "\" to \"" + newFile.getAbsolutePath() + "\"");
-			if (!fileWriteAlarmActive) alarmHandler.sendAlarm(2);
+			if (!fileWriteAlarmActive) {
+				cs.getAlarmSource().setAlarm("Logging", cs.getName(), 2, true);
+			}
 			fileWriteAlarmActive = true;
 		}
-	}
-
-	/**
-	 * 
-	 * @param alarmHandler
-	 */
-	public void setAlarmHandler(AlarmHandler alarmHandler) {
-		this.alarmHandler = alarmHandler;
 	}
 }
