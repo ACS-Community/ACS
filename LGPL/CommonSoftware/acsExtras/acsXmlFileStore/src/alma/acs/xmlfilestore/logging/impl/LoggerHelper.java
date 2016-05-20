@@ -27,8 +27,8 @@ import java.util.logging.Logger;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
 import alma.acs.xmlfilestore.logging.XmlFileStoreLoggerImpl;
-import alma.xmlFileStore.LoggerOperations;
-import alma.xmlFileStore.LoggerPOATie;
+import alma.xmlFileStore.LogsXmlStoreOperations;
+import alma.xmlFileStore.LogsXmlStorePOATie;
 
 /**
  * Component helper class. Generated for convenience, but can be modified by the
@@ -83,14 +83,14 @@ public class LoggerHelper extends ComponentHelper {
 	 * @see alma.acs.container.ComponentHelper#_getPOATieClass()
 	 */
 	protected Class _getPOATieClass() {
-		return LoggerPOATie.class;
+		return LogsXmlStorePOATie.class;
 	}
 
 	/**
 	 * @see alma.acs.container.ComponentHelper#getOperationsInterface()
 	 */
 	protected Class _getOperationsInterface() {
-		return LoggerOperations.class;
+		return LogsXmlStoreOperations.class;
 	}
 
 }

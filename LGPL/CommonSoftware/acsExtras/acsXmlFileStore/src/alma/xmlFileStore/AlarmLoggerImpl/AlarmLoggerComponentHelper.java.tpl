@@ -20,7 +20,7 @@
  *    MA 02111-1307  USA
  */
 
-package alma.acs.xmlfilestore.logging.impl;
+package alma.xmlFileStore.AlarmLoggerImpl;
 
 import java.util.logging.Logger;
 
@@ -28,9 +28,9 @@ import org.omg.PortableServer.Servant;
 import alma.ACS.ACSComponentOperations;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
-import alma.xmlFileStore.LogsXmlStoreOperations;
-import alma.xmlFileStore.LogsXmlStorePOATie;
-import alma.acs.xmlfilestore.logging.XmlFileStoreLoggerImpl;
+import alma.xmlFileStore.AlarmLoggerOperations;
+import alma.xmlFileStore.AlarmLoggerPOATie;
+import alma.xmlFileStore.AlarmLoggerImpl.AlarmLoggerImpl;
 
 /**
  * Component helper class. 
@@ -41,17 +41,17 @@ import alma.acs.xmlfilestore.logging.XmlFileStoreLoggerImpl;
  * copy the line below into a new entry in the file $ACS_CDB/MACI/Components/Components.xml 
  * and modify the instance name of the component and the container: 
  * <p>
- * Name="LOGGER_1" Code="alma.xmlstore.LoggerImpl.LoggerComponentHelper" Type="IDL:alma/xmlstore/Logger:1.0" Container="frodoContainer" ImplLang="java"
+ * Name="ALARMLOGGER_1" Code="alma.xmlFileStore.AlarmLoggerImpl.AlarmLoggerComponentHelper" Type="IDL:alma/xmlFileStore/AlarmLogger:1.0" Container="frodoContainer" ImplLang="java"
  * <p>
  * @author alma-component-helper-generator-tool
  */
-public class LoggerComponentHelper extends ComponentHelper
+public class AlarmLoggerComponentHelper extends ComponentHelper
 {
 	/**
 	 * Constructor
 	 * @param containerLogger logger used only by the parent class.
 	 */
-	public LoggerComponentHelper(Logger containerLogger)
+	public AlarmLoggerComponentHelper(Logger containerLogger)
 	{
 		super(containerLogger);
 	}
@@ -61,7 +61,7 @@ public class LoggerComponentHelper extends ComponentHelper
 	*/
 	protected ComponentLifecycle _createComponentImpl()
 	{
-		return new XmlFileStoreLoggerImpl();
+		return new AlarmLoggerImpl();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class LoggerComponentHelper extends ComponentHelper
 	*/
 	protected Class<? extends Servant> _getPOATieClass()
 	{
-		return LogsXmlStorePOATie.class;
+		return AlarmLoggerPOATie.class;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class LoggerComponentHelper extends ComponentHelper
 	*/
 	protected Class<? extends ACSComponentOperations> _getOperationsInterface()
 	{
-		return LogsXmlStoreOperations.class;
+		return AlarmLoggerOperations.class;
 	}
 
 }

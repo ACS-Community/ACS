@@ -3,8 +3,14 @@
        xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
        xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <_ Name="ARCHIVE_LOGGER" Code="alma.acs.xmlfilestore.logging.impl.LoggerHelper"
-                         Type="IDL:alma/xmlFileStore/Logger:1.0"
+  <_ Name="LOGS_XMLSTORE" Code="alma.acs.xmlfilestore.logging.impl.LoggerHelper"
+                         Type="IDL:alma/xmlFileStore/LogsXmlStore:1.0"
+                         Container="frodoContainer"
+                         ImplLang="java"
+                         Default="true"
+                         Autostart="true"/>
+  <_ Name="ALARMS_XMLSTORE" Code="alma.acs.xmlfilestore.alarm.impl.AlarmLoggerHelper"
+                         Type="IDL:alma/xmlFileStore/AlarmsXmlStore:1.0"
                          Container="frodoContainer"
                          ImplLang="java"
                          Default="true"

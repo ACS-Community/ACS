@@ -20,7 +20,7 @@
  *    MA 02111-1307  USA
  */
 
-package alma.acs.xmlfilestore.logging.impl;
+package alma.xmlFileStore.LoggerImpl;
 
 import java.util.logging.Logger;
 
@@ -28,9 +28,9 @@ import org.omg.PortableServer.Servant;
 import alma.ACS.ACSComponentOperations;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
-import alma.xmlFileStore.LogsXmlStoreOperations;
-import alma.xmlFileStore.LogsXmlStorePOATie;
-import alma.acs.xmlfilestore.logging.XmlFileStoreLoggerImpl;
+import alma.xmlFileStore.LoggerOperations;
+import alma.xmlFileStore.LoggerPOATie;
+import alma.xmlFileStore.LoggerImpl.LoggerImpl;
 
 /**
  * Component helper class. 
@@ -41,7 +41,7 @@ import alma.acs.xmlfilestore.logging.XmlFileStoreLoggerImpl;
  * copy the line below into a new entry in the file $ACS_CDB/MACI/Components/Components.xml 
  * and modify the instance name of the component and the container: 
  * <p>
- * Name="LOGGER_1" Code="alma.xmlstore.LoggerImpl.LoggerComponentHelper" Type="IDL:alma/xmlstore/Logger:1.0" Container="frodoContainer" ImplLang="java"
+ * Name="LOGGER_1" Code="alma.xmlFileStore.LoggerImpl.LoggerComponentHelper" Type="IDL:alma/xmlFileStore/Logger:1.0" Container="frodoContainer" ImplLang="java"
  * <p>
  * @author alma-component-helper-generator-tool
  */
@@ -61,7 +61,7 @@ public class LoggerComponentHelper extends ComponentHelper
 	*/
 	protected ComponentLifecycle _createComponentImpl()
 	{
-		return new XmlFileStoreLoggerImpl();
+		return new LoggerImpl();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class LoggerComponentHelper extends ComponentHelper
 	*/
 	protected Class<? extends Servant> _getPOATieClass()
 	{
-		return LogsXmlStorePOATie.class;
+		return LoggerPOATie.class;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class LoggerComponentHelper extends ComponentHelper
 	*/
 	protected Class<? extends ACSComponentOperations> _getOperationsInterface()
 	{
-		return LogsXmlStoreOperations.class;
+		return LoggerOperations.class;
 	}
 
 }

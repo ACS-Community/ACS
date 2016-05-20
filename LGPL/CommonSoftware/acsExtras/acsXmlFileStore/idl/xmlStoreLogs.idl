@@ -29,7 +29,10 @@
 module xmlFileStore
 {	
 	
-	interface Logger : ACS::ACSComponent
+	/**
+	 * The component saving logs in a set of XML files
+	 */
+	interface LogsXmlStore : ACS::ACSComponent
 	{	
         /**
          *  get current level for logging to Archive
@@ -50,6 +53,12 @@ module xmlFileStore
         void setArchiveLevel(in short level);
 	
 	};
+	
+	/**
+		 * The component saving CERN alarms in a set of XML files
+		 */
+	interface AlarmsXmlStore : ACS::ACSComponent
+	{};
 };
 
 

@@ -41,6 +41,8 @@ import alma.alarmsystem.source.ACSFaultState;
 
 import com.cosylab.logging.engine.ACS.LCEngine;
 
+import alma.xmlFileStore.LogsXmlStoreOperations;
+
 /**
  * @author hmeuss
  * 
@@ -55,8 +57,8 @@ import com.cosylab.logging.engine.ACS.LCEngine;
  * 
  *  
  */
-public class XmlFileStoreLoggerImpl extends ComponentImplBase implements
-		alma.xmlFileStore.LoggerOperations {
+public class XmlFileStoreLoggerImpl extends ComponentImplBase implements LogsXmlStoreOperations
+	{
 	
 	/**
 	 * Container services
@@ -129,8 +131,10 @@ public class XmlFileStoreLoggerImpl extends ComponentImplBase implements
 	}
 
 	/**
+	 * Life cycle
 	 * @see alma.acs.component.ComponentLifecycle#initialize()
 	 */
+	@Override
 	public void initialize(ContainerServices containerServices)
 			throws ComponentLifecycleException {
 		super.initialize(containerServices);
@@ -202,8 +206,10 @@ public class XmlFileStoreLoggerImpl extends ComponentImplBase implements
 	}
 
 	/**
-	 * 
+	 * Life cycle
+	 * @see alma.acs.component.ComponentLifecycle#cleanUp()
 	 */
+	@Override
 	public void cleanUp() throws alma.maciErrType.wrappers.AcsJComponentCleanUpEx {
 		super.cleanUp();
 		if (m_logger.isLoggable(Level.FINE)) m_logger.fine("cleaning up");
