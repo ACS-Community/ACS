@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.sql.Timestamp;
 import java.util.logging.Logger;
 
 import alma.acs.util.IsoDateFormat;
@@ -41,69 +40,99 @@ import alma.acs.xmlfilestore.logging.AlarmHandler;
  *
  */
 public class QueueFileHandler extends TimestampedStringQueueFileHandler {
-	private static final String FILENAME_PREFIX = "log";
 	private static final String FILENAME_SUFFIX = ".xml";
-	private static final String FILENAME_TEMPLATE = FILENAME_PREFIX + "%s_%s" + FILENAME_SUFFIX;
+	
+	/**
+	 * The template of each file name
+	 */
+	private final String fileNameTemplate;
+	
+	/**
+	 * The prefix of each file ("log' for logs, "alarm" for alarms and so on)
+	 */
+	private final String fileNamePrefix;
 
-	// TBD - can I log in the logger? tests don't seem to create an infinite recursion
+	/**
+	 * Th elogger
+	 */
 	private Logger m_logger;
-	// path to location for log files, consists of logFilePath and the prefix
-	private File logDir;
+	
+	/**
+	 * The path to location to save files files
+	 */
+	private File folderForXMLs;
+	
 	private boolean fileWriteAlarmActive = false;
-	// max number of files in rotating queue dir
-	private int maxNumLogFiles;
+	
+	/**
+	 *  max number of files in rotating queue dir
+	 */
+	private int maxNumOfXmlFiles;
+	
+	/**
+	 * The alarm handler to send alarms
+	 */
 	private AlarmHandler alarmHandler;
 	private FilenameFilter logFileFilter = new FilenameFilter() {
 		@Override
 		public boolean accept(File dir, String name) {
-			return name.startsWith(FILENAME_PREFIX);
+			return name.startsWith(fileNamePrefix);
 		}
 	};
 
 	/**
+	 * Constructor
+	 * 
+	 * @param myLogger The logger
+	 * @param folder The folder to save XMLs
+	 * @param myFileMax Max number of XML files to keep in the folder
+	 * @param myMaxFileSize Max length of each XML file
+	 * @param fileNamePrefix The prefix to each name of XML file
+	 * 
 	 * @throws Exception
 	 *  
 	 */
-	public QueueFileHandler(Logger myLogger, String logDir,
-			int myFileMax, long myMaxFileSize) throws Exception {
-		super(myMaxFileSize, FILENAME_PREFIX);
-		m_logger = myLogger;
-		maxNumLogFiles = myFileMax;
-		this.logDir = new File(logDir);
+	public QueueFileHandler(Logger myLogger, String folder,
+			int myFileMax, long myMaxFileSize, String fileNamePrefix) throws Exception {
+		super(myMaxFileSize, fileNamePrefix);
+		this.fileNamePrefix=fileNamePrefix;
+		this.fileNameTemplate = fileNamePrefix+"%s_%s.xml";
+		this.m_logger = myLogger;
+		this.maxNumOfXmlFiles = myFileMax;
+		this.folderForXMLs = new File(folder);
 	}
 
 	/**
-	 * @see com.cosylab.logging.engine.cache.ILogQueueFileHandler#getNewFile()
+	 * @see TimestampedStringQueueFileHandlerr#getNewFile()
 	 */
 	@Override
 	public File getNewFile() throws IOException {
 		// ICT-4314 defines the filename format for a new file
 		final String startTimestamp = IsoDateFormat.formatCurrentDate();
 		final String endTimestamp = "YYYY-MM-DDTHH:MM:SS.mmm";
-		String fileName = String.format(FILENAME_TEMPLATE, startTimestamp, endTimestamp);
-		return new File(logDir, fileName);
+		String fileName = String.format(fileNameTemplate, startTimestamp, endTimestamp);
+		return new File(folderForXMLs, fileName);
 	}
 
 	/**
-	 * @see com.cosylab.logging.engine.cache.ILogQueueFileHandler#fileProcessed(java.io.File,
-	 *      java.lang.String, java.lang.String)
+	 * @see TimestampedStringQueueFileHandlerr#fileProcessed(java.io.File,java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void fileProcessed(File oldFile, String earliestLogTimestamp, String lastLogTimestamp) {
-		final String newFileName = String.format(FILENAME_TEMPLATE, earliestLogTimestamp, lastLogTimestamp);
-		final File newFile = new File(logDir, newFileName);
+	public void fileProcessed(File oldFile, String earliestTimestamp, String lastTimestamp) {
+		final String newFileName = String.format(fileNameTemplate, earliestTimestamp, lastTimestamp);
+		final File newFile = new File(folderForXMLs, newFileName);
 		try {
 			Files.move(oldFile.toPath(), newFile.toPath());
-			// now check if the log files in the log directory are not being moved somewhere elses
-			int numLogFiles = logDir.list(logFileFilter).length;
-			if (numLogFiles > this.maxNumLogFiles) {
-				m_logger.warning("log file directory contains " + numLogFiles + " log files, exceeding the limit of " + this.maxNumLogFiles);
+			// now check if the files in the log directory are not being moved somewhere else
+			int numLogFiles = folderForXMLs.list(logFileFilter).length;
+			if (numLogFiles > this.maxNumOfXmlFiles) {
+				m_logger.warning(fileNamePrefix+" file directory contains " + numLogFiles + " XML files, exceeding the limit of " + this.maxNumOfXmlFiles);
 				if (!fileWriteAlarmActive) alarmHandler.sendAlarm(2);
 				fileWriteAlarmActive = true;
 			}
 		}
 		catch (Exception e) {
-			m_logger.warning("Could not rename log file from \"" + oldFile.getAbsolutePath() + "\" to \"" + newFile.getAbsolutePath() + "\"");
+			m_logger.warning("Could not rename XML file from \"" + oldFile.getAbsolutePath() + "\" to \"" + newFile.getAbsolutePath() + "\"");
 			if (!fileWriteAlarmActive) alarmHandler.sendAlarm(2);
 			fileWriteAlarmActive = true;
 		}

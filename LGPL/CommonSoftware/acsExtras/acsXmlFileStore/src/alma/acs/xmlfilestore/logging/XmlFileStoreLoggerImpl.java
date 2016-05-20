@@ -188,7 +188,7 @@ public class XmlFileStoreLoggerImpl extends ComponentImplBase implements LogsXml
 			int fileSizeLimit) throws ComponentLifecycleException {
 		try {
 			// connect to LoggingChannel
-			QueueFileHandler queueFileHandler = new QueueFileHandler(m_logger, logFilePath, fileMax, fileSizeLimit);
+			QueueFileHandler queueFileHandler = new QueueFileHandler(m_logger, logFilePath, fileMax, fileSizeLimit,"log");
 			queueFileHandler.setAlarmHandler(new AlarmHandler() {				
 				@Override
 				public void sendAlarm(int code) {
