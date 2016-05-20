@@ -24,8 +24,11 @@ import java.util.logging.Logger;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-
+import alma.alarmsystem.clients.SourceClient;
+import alma.alarmsystem.clients.source.SourceListener;
 import alma.xmlFileStore.AlarmsXmlStoreOperations;
+
+import cern.laser.source.alarmsysteminterface.FaultState;
 
 
 /** 
@@ -33,8 +36,30 @@ import alma.xmlFileStore.AlarmsXmlStoreOperations;
  * @since   ACS 2016.6
  */
 
-public class XmlFileStoreAlarmLoggerImpl extends ComponentImplBase implements AlarmsXmlStoreOperations {
+public class XmlFileStoreAlarmLoggerImpl extends ComponentImplBase implements AlarmsXmlStoreOperations, SourceListener {
 	
+	/**
+	 * @see SourceListener#sourceXMLMsgReceived(String)
+	 */
+	@Override
+	public void sourceXMLMsgReceived(String xml) {
+		// ASI message begins with XML start tag that we will remove
+		xml=xml.trim();
+		if (xml.startsWith("<?xml")) {
+			int retChar=xml.indexOf('>');
+			xml=xml.substring(retChar+1).trim();
+		}
+		System.out.println(xml);
+		
+	}
+	
+	/**
+	 * This method does nothing as we are interested in storing the XMLs
+	 * @see SourceListener#faultStateReceived(cern.laser.source.alarmsysteminterface.FaultState)
+	 */
+	@Override
+	public void faultStateReceived(FaultState fs) {}
+
 	/**
 	 * Container services
 	 */
@@ -44,6 +69,11 @@ public class XmlFileStoreAlarmLoggerImpl extends ComponentImplBase implements Al
 	 * The logger
 	 */
 	private Logger m_logger;
+	
+	/**
+	 * The alarm source client to get the XML to store on files
+	 */
+	private SourceClient alarmSourceClient;
 	
 	/**
 	 *  Constructor
@@ -62,6 +92,14 @@ public class XmlFileStoreAlarmLoggerImpl extends ComponentImplBase implements Al
 		super.initialize(containerServices);
 		cs = containerServices;
 		m_logger = cs.getLogger();
+		
+		try {
+			alarmSourceClient = new SourceClient(cs);
+			alarmSourceClient.connect();
+		} catch (Throwable t) {
+			throw new ComponentLifecycleException("Could not connect to alarm source NC",t);
+		}
+		alarmSourceClient.addAlarmListener(this);
 	}
 	
 	/**
@@ -70,7 +108,8 @@ public class XmlFileStoreAlarmLoggerImpl extends ComponentImplBase implements Al
 	 */
 	@Override
 	public void cleanUp() throws alma.maciErrType.wrappers.AcsJComponentCleanUpEx {
-		super.cleanUp();
+		alarmSourceClient.close();
 		if (m_logger.isLoggable(Level.FINE)) m_logger.fine("cleaning up");
+		super.cleanUp();
 	}
 }
