@@ -92,7 +92,7 @@ lllll_LIBS      =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = TestArchiveQueueFileHandler
+SCRIPTS         = testQueueFileHandler
 SCRIPTS_L       = prologue
 
 #

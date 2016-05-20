@@ -28,5 +28,5 @@
 
 SOURCE   logStoreTATEnvironment
 PROLOGUE prologue
-1 queueHandler		"acsutilTATTestRunner TestArchiveQueueFileHandler" 
+1 queueHandler		"acsutilTATTestRunner testQueueFileHandler" 
 EPILOGUE acsutilTATEpilogue
