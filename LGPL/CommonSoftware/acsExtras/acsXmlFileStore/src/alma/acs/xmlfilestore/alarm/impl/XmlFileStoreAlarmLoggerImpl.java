@@ -70,6 +70,8 @@ public class XmlFileStoreAlarmLoggerImpl extends ComponentImplBase implements Al
 	 */
 	private Logger m_logger;
 	
+	
+	
 	/**
 	 * The alarm source client to get the XML to store on files
 	 */

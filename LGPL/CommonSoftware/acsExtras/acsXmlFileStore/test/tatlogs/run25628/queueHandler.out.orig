@@ -1,0 +1,10 @@
+1 -  --noDirectory --endorsed -- junit.textui.TestRunner alma.acs.xmlfilestore.test.logging.ArchiveQueueFileHandlerTest
+1 - 2016-05-20T11:48:19.374 INFO [acsStartJava] Starting Java application: junit.textui.TestRunner alma.acs.xmlfilestore.test.logging.ArchiveQueueFileHandlerTest
+1 - 2016-05-20T11:48:19.387 INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/diska/home/almadev/introot/lib/endorsed:/alma/ACS-2016.6/ACSSW/lib/endorsed:/alma/ACS-2016.6/JacORB/lib/endorsed:
+1 - .INFO [Thread-1] ArchiveQueueFileHandlerTest.testGetNewFile: /diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/tmp/logOfTest/log2016-05-20T11:48:19.913_YYYY-MM-DDTHH:MM:SS.mmm.xml
+1 - INFO [Thread-1] ArchiveQueueFileHandlerTest.testGetNewFile: /diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/tmp/logOfTest/log2016-05-20T11:48:19.913_YYYY-MM-DDTHH:MM:SS.mmm.xml
+1 - .
+1 - Time: 0.075
+1 - 
+1 - OK (2 tests)
+1 - 

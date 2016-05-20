@@ -1,0 +1,5 @@
+2016-05-20T11:47:59.955 WARNING /diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/tmp/ACS_INSTANCE.0 already exists!
+2016-05-20T11:47:59.962 WARNING /diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/tmp/ACS_INSTANCE.0/USED_CONTAINER_PORTS already exists!
+2016-05-20T11:47:59.966 WARNING /diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/tmp/ACS_INSTANCE.0/USED_NOTIFY_PORTS already exists!
+2016-05-20T11:47:59.971 WARNING /diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/tmp/ACS_INSTANCE.0/pids already exists!
+2016-05-20T11:47:59.989 INFO Starting Naming Service

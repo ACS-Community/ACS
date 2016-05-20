@@ -1,0 +1,16 @@
+ --endorsed --maxHeapSize 512m -D jacorb.poa.thread_pool_max=200 -D jacorb.connection.client.pending_reply_timeout=30000 -D ACS.cdbpath=/diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/../config/CDB/schemas:../test/CDB/schemas:/diska/home/almadev/introot/config/CDB/schemas:/alma/ACS-2016.6/ACSSW/config/CDB/schemas -- com.cosylab.cdb.jdal.Server -jacorb -root ../test -OAIAddr 192.168.64.140 -OAport 3012 -n
+2016-05-20T11:48:06.014 INFO [acsStartJava] Starting Java application: com.cosylab.cdb.jdal.Server -jacorb -root ../test -OAIAddr 192.168.64.140 -OAport 3012 -n
+2016-05-20T11:48:06.023 INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/diska/home/almadev/introot/lib/endorsed:/alma/ACS-2016.6/ACSSW/lib/endorsed:/alma/ACS-2016.6/JacORB/lib/endorsed:
+2016-05-20T11:48:06.577 INFO [alma.acs.logging] Logger jacorb@CDB created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
+2016-05-20T11:48:06.742 INFO [CDB] DALImpl will use XSD caching for xerces sax parser ? false
+2016-05-20T11:48:06.744 INFO [CDB] DAL root is: /diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/../test/CDB/
+2016-05-20T11:48:06.894 INFO [CDB] JDAL is ready and waiting ...
+JDAL is ready and waiting ...
+Will retrieve the log service reference from the naming service...
+2016-05-20T11:48:10.843 NOTICE [CDB] Curl 'MACI/Channels/CMW.ALARM_SYSTEM.ADMIN_CACHE_LOADER' does not exist.
+2016-05-20T11:48:10.885 NOTICE [CDB] Curl 'MACI/Channels' does not exist.
+2016-05-20T11:48:11.091 NOTICE [CDB] Curl '/Alarms/Administrative/ReductionDefinitions' does not exist.
+2016-05-20T11:48:11.283 NOTICE [CDB] Curl 'MACI/Channels/CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES' does not exist.
+2016-05-20T11:48:11.360 NOTICE [CDB] Curl 'MACI/Channels/CMW.ALARM_SYSTEM.HEARTBEAT' does not exist.
+2016-05-20T11:48:13.004 INFO [CDB] Recovery file: /diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/tmp/ACS_INSTANCE.0/CDB_Recovery.txt
+2016-05-20T11:48:27.555 INFO [CDB] JDAL exiting ORB loop ...

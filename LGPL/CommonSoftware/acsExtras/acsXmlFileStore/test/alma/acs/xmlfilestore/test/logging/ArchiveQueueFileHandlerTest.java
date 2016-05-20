@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import alma.acs.xmlfilestore.logging.QueueFileHandler;
+import alma.acs.xmlfilestore.common.QueueFileHandler;
 import junit.framework.TestCase;
 
 /**

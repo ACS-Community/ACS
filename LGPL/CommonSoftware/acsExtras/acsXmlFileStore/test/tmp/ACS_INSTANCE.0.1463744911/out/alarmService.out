@@ -1,0 +1,35 @@
+ --endorsed -- alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr 192.168.64.140 -OAport 3013
+2016-05-20T11:48:09.700 INFO [acsStartJava] Starting Java application: alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr 192.168.64.140 -OAport 3013
+2016-05-20T11:48:09.709 INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/diska/home/almadev/introot/lib/endorsed:/alma/ACS-2016.6/ACSSW/lib/endorsed:/alma/ACS-2016.6/JacORB/lib/endorsed:
+2016-05-20T11:48:10.289 INFO [alma.acs.logging] Logger jacorb@AlarmService created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.
+Will retrieve the log service reference from the naming service...
+2016-05-20T11:48:10.599 INFO [AlarmService] Starting the CERN implementation of the alarm service
+2016-05-20T11:48:10.606 INFO [AlarmService] Activating the CERN alarm service
+2016-05-20T11:48:10.671 INFO [alma.acs.logging] Logger scxml@AlarmService created with custom log levels local=Warning, remote=Warning to avoid log jams due to careless default log level settings.
+2016-05-20T11:48:10.936 INFO [AlarmService] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.ADMIN_CACHE_LOADER' ChannelId='2' Service='NotifyEventChannelFactory' TimeMillis='42' ]
+2016-05-20T11:48:11.091 WARNING [AlarmService] No reduction rules defined in CDB
+SynchroBuffer[minWindowSize=1000,maxWindowSize=5000,windowGrowthFactor=100,duplicatePolicy=DUPLICATE_OK]
+SynchroBuffer[minWindowSize=1000,maxWindowSize=10000,windowGrowthFactor=200,duplicatePolicy=DUPLICATE_REPLACE]
+SynchroBuffer[minWindowSize=5000,maxWindowSize=30000,windowGrowthFactor=200,duplicatePolicy=DUPLICATE_REPLACE]
+2016-05-20T11:48:11.250 INFO [AlarmService] Gathering of statistics enabled [ LoggedParameter='Time interval' LoggedParameter='10' ]
+2016-05-20T11:48:11.330 INFO [AlarmService] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES' ChannelId='6' Service='NotifyEventChannelFactory' TimeMillis='37' ]
+2016-05-20T11:48:11.349 INFO [laser@AlarmService] AlarmImpl Heartbeat frequency : 60000 milliseconds
+2016-05-20T11:48:11.349 INFO [laser@AlarmService] starting heartbeat...
+2016-05-20T11:48:11.349 INFO [laser@AlarmService] started heartbeat
+The alarm service is ready and waiting
+2016-05-20T11:48:11.396 INFO [AlarmService] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.HEARTBEAT' ChannelId='10' Service='NotifyEventChannelFactory' TimeMillis='30' ]
+2016-05-20T11:48:26.296 INFO [AlarmService] Shutting down stats calucaltion
+2016-05-20T11:48:27.300 INFO [laser@AlarmService] stopping heartbeat...
+2016-05-20T11:48:27.300 INFO [laser@AlarmService] stopped heartbeat
+2016-05-20T11:48:29.018 INFO [AlarmService] Consumer is reinitializing the connection to the channel 'CMW.ALARM_SYSTEM.ADMIN_CACHE_LOADER'
+2016-05-20T11:48:29.018 ERROR [AlarmService] Consumer couldn't reconnect to the channel 'CMW.ALARM_SYSTEM.ADMIN_CACHE_LOADER'
+org.omg.CORBA.BAD_INV_ORDER: 
+	at org.jacorb.orb.ORB.work_pending(ORB.java:2571)
+	at org.jacorb.orb.ORB.perform_work(ORB.java:2558)
+	at org.jacorb.orb.Delegate.request(Delegate.java:2240)
+	at org.omg.CORBA.portable.ObjectImpl._request(ObjectImpl.java:74)
+	at org.omg.CosNaming._NamingContextStub.resolve(_NamingContextStub.java:1087)
+	at alma.acs.nc.Helper.getNotificationChannel(Helper.java:379)
+	at alma.acs.nc.NCSubscriber.reconnect(NCSubscriber.java:1357)
+	at alma.acs.nc.NCSubscriber.access$500(NCSubscriber.java:133)
+	at alma.acs.nc.NCSubscriber$ConnectionChecker.run(NCSubscriber.java:1327)

@@ -1,0 +1,5 @@
+ --endorsed -- alma.acs.alarmsystem.corbaservice.AlarmServiceUtils -s
+2016-05-20T11:48:25.537 INFO [acsStartJava] Starting Java application: alma.acs.alarmsystem.corbaservice.AlarmServiceUtils -s
+2016-05-20T11:48:25.546 INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/diska/home/almadev/introot/lib/endorsed:/alma/ACS-2016.6/ACSSW/lib/endorsed:/alma/ACS-2016.6/JacORB/lib/endorsed:
+HERE
+2016-05-20T11:48:26.071 INFO [alma.acs.logging] Logger jacorb@AlarmServiceUtils created with custom log levels local=Info, remote=Info to avoid log jams due to careless default log level settings.

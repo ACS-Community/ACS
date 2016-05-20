@@ -1,0 +1,2 @@
+2016-05-20T11:48:29.055 INFO Stopping the CORBA Archive Notification Service
+2016-05-20T11:48:29.408 DEBUG Removing channels entries in the Naming Service of the Archive Notification Service [192.168.64.140:3006] which has been stopped

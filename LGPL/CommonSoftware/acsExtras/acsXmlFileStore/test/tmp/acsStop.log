@@ -1,0 +1,30 @@
+2016-05-20T11:48:20.012 INFO [acsStop] Stopping all ACS processes using 'ACS_INSTANCE=0'
+2016-05-20T11:48:20.019 INFO [acsStop] Shutting down containers...
+2016-05-20T11:48:20.027 INFO [acsStop] Shutting down frodoContainer container
+2016-05-20T11:48:23.135 INFO [acsStop] Stopping Manager
+2016-05-20T11:48:25.325 INFO [acsManager] acsManager: done.
+2016-05-20T11:48:25.379 INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=0'
+2016-05-20T11:48:25.466 INFO [acsAlarmService] Stopping the AlarmService
+2016-05-20T11:48:26.683 INFO [acsConfigurationDatabase] Stopping the CDB
+2016-05-20T11:48:27.904 INFO [acsNotifyService] Stopping the CORBA Notification Service
+Channel CMW.ALARM_SYSTEM.ADMIN_CACHE_LOADER@ALARMSYSTEM[192.168.64.140:3002] deleted in the Naming Service
+Channel CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES@ALARMSYSTEM[192.168.64.140:3002] deleted in the Naming Service
+Channel CMW.ALARM_SYSTEM.HEARTBEAT@ALARMSYSTEM[192.168.64.140:3002] deleted in the Naming Service
+Channel CMW.ALARM_SYSTEM.HEARTBEAT@ALARMSYSTEM-2016-05-20_11:48:11[192.168.64.140:3002] deleted in the Naming Service
+Channel CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES@ALARMSYSTEM-2016-05-20_11:48:11[192.168.64.140:3002] deleted in the Naming Service
+Channel CMW.ALARM_SYSTEM.ADMIN_CACHE_LOADER@ALARMSYSTEM-2016-05-20_11:48:10[192.168.64.140:3002] deleted in the Naming Service
+2016-05-20T11:48:28.513 INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
+Channel LoggingChannel@LOGGING[192.168.64.140:3005] deleted in the Naming Service
+Channel LoggingChannel@LOGGING-2016-05-20_11:48:04[192.168.64.140:3005] deleted in the Naming Service
+2016-05-20T11:48:29.055 INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
+Channel ArchivingChannel@ARCHIVING[192.168.64.140:3006] deleted in the Naming Service
+Channel ArchivingChannel@ARCHIVING-2016-05-20_11:48:07[192.168.64.140:3006] deleted in the Naming Service
+2016-05-20T11:48:29.626 INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
+Name Service without channel entries in the endpoint 192.168.64.140:3007
+2016-05-20T11:48:30.155 INFO [acsLoggingService] Stopping the CORBA Logging Service
+2016-05-20T11:48:30.611 INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
+2016-05-20T11:48:31.094 INFO [acsACSLogService] Stopping the ACS Log Service
+2016-05-20T11:48:31.505 INFO [acsNamingService] Stopping the CORBA Naming Service
+2016-05-20T11:48:31.835 INFO [acsStopORBSRVC] Killing any rogue ACS processes...
+2016-05-20T11:48:31.960 INFO [acsStopORBSRVC] Freeing /diska/home/almadev/SVNWORK/TRUNK/ACS/LGPL/CommonSoftware/acsExtras/acsXmlFileStore/test/tmp/ACS_INSTANCE.0
+Freeing instance 0 removing lock file /alma/ACS-2016.6/acsdata/tmp/acsInstance0.lock

@@ -35,6 +35,7 @@ import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.xmlfilestore.common.QueueFileHandler;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
