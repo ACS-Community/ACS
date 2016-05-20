@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.xmlfilestore.common.QueueFileHandler;
 import junit.framework.TestCase;
 
@@ -16,8 +17,8 @@ import junit.framework.TestCase;
  * 
  * @author almadev
  */
-public class ArchiveQueueFileHandlerTest extends TestCase {
-	private final static Logger LOG = Logger.getLogger(ArchiveQueueFileHandlerTest.class.getSimpleName());
+public class QueueFileHandlerTest extends ComponentClientTestCase {
+	private final static Logger LOG = Logger.getLogger(QueueFileHandlerTest.class.getSimpleName());
 
 	/**
 	 * The folder to store log files
@@ -27,7 +28,8 @@ public class ArchiveQueueFileHandlerTest extends TestCase {
 	/**
 	 * Constructor 
 	 */
-	public ArchiveQueueFileHandlerTest() {
+	public QueueFileHandlerTest() throws Exception {
+		super("ArchiveQueueFileHandlerTest");
 		LOG.setUseParentHandlers(false);
 		LOG.setLevel(Level.FINER);
 		LOG.addHandler(new Handler() {
@@ -61,7 +63,7 @@ public class ArchiveQueueFileHandlerTest extends TestCase {
 	 */
 	public void testGetNewFile() throws Exception {
 		final String filenamePattern = "log\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}_YYYY-MM-DDTHH:MM:SS\\.mmm\\.xml";
-		QueueFileHandler handler = new QueueFileHandler(LOG, logDir.getAbsolutePath(), 1, 1025L);
+		QueueFileHandler handler = new QueueFileHandler(this.getContainerServices(), logDir.getAbsolutePath(), 1, 1025L,"log","Logging");
 		File f = handler.getNewFile();
 		assertNotNull(f);
 		assertTrue(f.getName(), f.getName().matches(filenamePattern));
@@ -76,7 +78,7 @@ public class ArchiveQueueFileHandlerTest extends TestCase {
 		File oldLogFile = new File(logDir, "log1970-01-21T00:00:00.000_YYYY-MM-DDTHH:MM:SS.mmm.xml");
 		// touch the log file
 		try (FileOutputStream ofs = new FileOutputStream(oldLogFile)) {;;}
-		QueueFileHandler handler = new QueueFileHandler(LOG, logDir.getAbsolutePath(), 1, 1025L);
+		QueueFileHandler handler = new QueueFileHandler(this.getContainerServices(), logDir.getAbsolutePath(), 1, 1025L,"log","Logging");
 		String earliestLogTimestamp = "2014-12-06T13:00:00.000";
 		String lastLogTimestamp = "2014-12-06T15:12:34.567";
 		handler.fileProcessed(oldLogFile, earliestLogTimestamp, lastLogTimestamp);
@@ -100,11 +102,11 @@ public class ArchiveQueueFileHandlerTest extends TestCase {
 	 */
 	@Override
 	protected void tearDown() throws Exception {
-		super.tearDown();
 		for (File nextFile: logDir.listFiles()) {
 			nextFile.delete();
 		}
 		logDir.delete();
+		super.tearDown();
 	}
 	
 }
