@@ -76,6 +76,12 @@ public:
 	void stop();
 
 	uint64_t getNumEventsSent() const;
+	uint64_t getNumEventsSentOk() const;
+	uint64_t getNumEventsSentErrTimeout() const;
+	uint64_t getNumEventsSentErrTransient() const;
+	uint64_t getNumEventsSentErrObjNotExist() const;
+	uint64_t getNumEventsSentErrCommFailure() const;
+	uint64_t getNumEventsSentErrUnknown() const;
 
 	/**
 	 * Disconnect from the NC and close the ORB
@@ -85,10 +91,19 @@ private:
 
 	void saveChannelId(const std::string &file,CosNotifyChannelAdmin::ChannelID channelID);
 
+	static const uint32_t POS_ERR_TIMEOUT=0;
+	static const uint32_t POS_ERR_TRANSIENT=1;
+	static const uint32_t POS_ERR_OBJ_NOT_EXIST=2;
+	static const uint32_t POS_ERR_COMM_FAILURE=3;
+	static const uint32_t POS_ERR_UNKNOWN=4;
+	static const uint32_t NUM_ERR=5;
+
 	CORBA::ORB_var orb;
 	PortableServer::POA_var root_poa_;
 	bool m_stop;
 	uint64_t m_numEventsSent;
+	uint64_t m_numEventsSentOk;
+	uint64_t m_numEventsSentErr[NUM_ERR];
     SupplierTimer *m_timer;
 };
 

@@ -198,8 +198,12 @@ int main(int argc, char *argv[])
 }
 
 DataSupplier::DataSupplier()
-	: m_stop(false), m_numEventsSent(0), m_timer(0)
+	: m_stop(false), m_numEventsSent(0), m_numEventsSentOk(0), m_timer(0)
 {
+	for(uint32_t i = 0;i < NUM_ERR;++i)
+	{
+		m_numEventsSentErr[i] = 0;
+	}
 }
 
 DataSupplier::~DataSupplier()
@@ -241,6 +245,37 @@ uint64_t DataSupplier::getNumEventsSent() const
 {
 	return m_numEventsSent;
 }
+
+uint64_t DataSupplier::getNumEventsSentOk() const
+{
+	return m_numEventsSentOk;
+}
+
+uint64_t DataSupplier::getNumEventsSentErrTimeout() const
+{
+	return m_numEventsSentErr[POS_ERR_TIMEOUT];
+}
+
+uint64_t DataSupplier::getNumEventsSentErrTransient() const
+{
+	return m_numEventsSentErr[POS_ERR_TRANSIENT];
+}
+
+uint64_t DataSupplier::getNumEventsSentErrObjNotExist() const
+{
+	return m_numEventsSentErr[POS_ERR_OBJ_NOT_EXIST];
+}
+
+uint64_t DataSupplier::getNumEventsSentErrCommFailure() const
+{
+	return m_numEventsSentErr[POS_ERR_COMM_FAILURE];
+}
+
+uint64_t DataSupplier::getNumEventsSentErrUnknown() const
+{
+	return m_numEventsSentErr[POS_ERR_UNKNOWN];
+}
+
 
 void DataSupplier::run(const SuppParams &params)
 {
@@ -378,7 +413,21 @@ void DataSupplier::run(const SuppParams &params)
 
 		CORBA::Any any;
 		any <<= dataSeq;
-		consumer->push(any);
+
+		try {
+			consumer->push(any);
+			++m_numEventsSentOk;
+	        } catch(CORBA::TIMEOUT &ex) {
+			++m_numEventsSentErr[POS_ERR_TIMEOUT];
+		} catch(CORBA::OBJECT_NOT_EXIST &ex) {
+			++m_numEventsSentErr[POS_ERR_OBJ_NOT_EXIST];
+		} catch(CORBA::TRANSIENT &ex) {
+			++m_numEventsSentErr[POS_ERR_TRANSIENT];
+		} catch(CORBA::COMM_FAILURE &ex) {
+			++m_numEventsSentErr[POS_ERR_COMM_FAILURE];
+	        } catch(...) {
+			++m_numEventsSentErr[POS_ERR_UNKNOWN];
+	        }
 
 		if(params.sendInterval > 0)
 		{
