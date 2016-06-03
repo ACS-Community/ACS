@@ -30,6 +30,7 @@
 #include <orbsvcs/CosNotificationC.h>
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExtC.h>
+#include <tao/Messaging/Messaging.h>
 
 #include <ORB_Core.h>
 #include <Reactor.h>
@@ -49,7 +50,7 @@ void printUsage(const std::string &msgErr="") {
 		std::cout << std::endl << "\tERROR: " << msgErr << std::endl << std::endl;
 	}
 
-	std::cout << "\tUSAGE: pDataSupplier -i sendInterval -l arrayLength -n nItems -r IOR -c channel -f channelFile -o outputDelay -a antennaPrefixName -b ORBOptions" << std::endl;
+	std::cout << "\tUSAGE: pDataSupplier -i sendInterval -l arrayLength -n nItems -r IOR -c channel -f channelFile -o outputDelay -a antennaPrefixName -b ORBOptions -t timeout" << std::endl;
 	std::cout << "\t\tsendInterval: interval of time (msec) between 2 sends of a pData" << std::endl;
     std::cout << "\t\tarrayLength: length of the array sent. Default value is 1" << std::endl;
 	std::cout << "\t\tnItems: number of items to send (0 means forever)" << std::endl;
@@ -59,8 +60,62 @@ void printUsage(const std::string &msgErr="") {
 	std::cout << "\t\toutputDelay: time interval in minutes between two consecutive output messages. Default is 1 minute." << std::endl;
 	std::cout << "\t\tantennaPrefixName: antenna prefix name. Default value is ANTENNA_" << std::endl;
 	std::cout << "\t\tORBOptions: options passed in the initialization of ORB" << std::endl;
+    std::cout << "\t\ttimeout: timeout in milliseconds at different levels: \"orb:10,thread:100,proxy:100\"" << std::endl;
 	std::cout << std::endl;
 	exit(1);
+}
+
+static const std::string STR_TIMEOUT_ORB="orb";
+static const std::string STR_TIMEOUT_THREAD="thread";
+static const std::string STR_TIMEOUT_PROXY="proxy";
+
+void fillTimeout(TimeoutMS &timeout,const std::string &config)
+{
+    
+    std::string substr = config;
+    std::string keyValue;
+    std::string key;
+    std::string value;
+    uint32_t iValue;
+    std::size_t pos = substr.find_first_of(",");
+    if(pos == std::string::npos)
+    {
+        pos = substr.size();
+    }
+    std::size_t pos2;
+    while(false == substr.empty())
+    {
+        keyValue = substr.substr(0, pos);
+        pos2 = keyValue.find_first_of(":");
+        if(pos2 != std::string::npos)
+        {
+            key = keyValue.substr(0,pos2);
+            value = keyValue.substr(pos2+1);
+            if(value.find_first_not_of("0123456789") == std::string::npos)
+            {
+                iValue = atoi(value.c_str());
+                if(key == STR_TIMEOUT_ORB)
+                {
+                    timeout.orb = iValue;
+                } else if(key == STR_TIMEOUT_THREAD) {
+                    timeout.thread = iValue;
+                } else if(key == STR_TIMEOUT_PROXY) {
+                    timeout.proxy = iValue;
+                }    
+            }    
+        }
+        if(substr.size() > pos + 1)
+        {
+            substr = substr.substr(pos + 1);
+        } else {
+            substr = std::string();
+        }
+        pos = substr.find_first_of(",");
+        if(pos == std::string::npos)
+        {
+            pos = substr.size();
+        }
+    }
 }
 
 /**
@@ -79,8 +134,11 @@ void getParams(int argc,char *argv[],SuppParams &params)
 	params.outputDelay = DEFAULT_OUTPUT_DELAY;
 	params.channelID = DEFAULT_CHANNEL_ID;
 	params.antennaPrefixName = DEFAULT_ANTENNA_PREFIX_NAME;
+    params.timeout.orb = 0;
+    params.timeout.thread = 0;
+    params.timeout.proxy = 0;
 
-	while((c = getopt(argc, argv, "a:b:c:i:l:n:r:f:o:")) != -1)
+	while((c = getopt(argc, argv, "a:b:c:i:l:n:r:t:f:o:")) != -1)
 	{
 		switch(c)
 		{
@@ -138,6 +196,9 @@ void getParams(int argc,char *argv[],SuppParams &params)
 		case 'r':
 			params.iorNS = optarg;
 			break;
+        case 't':
+            fillTimeout(params.timeout, optarg);
+            break;
 		case 'f':
 			params.channelFile = optarg;
 			break;
@@ -180,6 +241,9 @@ int main(int argc, char *argv[])
     try {
 		ds.init_ORB(argc, argv);
 		ds.run(params);
+    } catch(CORBA::TIMEOUT &ex) {
+        ACE_DEBUG((LM_ERROR, "%T CORBA::TIMEOUT Exception: %s\n", ex._info().c_str()));
+        ret = 1;
 	} catch(std::exception &ex) {
 		ACE_DEBUG((LM_ERROR, "%T Exception: %s\n", ex.what()));
 		ret = 1;
@@ -279,13 +343,51 @@ uint64_t DataSupplier::getNumEventsSentErrUnknown() const
 
 void DataSupplier::run(const SuppParams &params)
 {
+    // Set timeout at ORB level
+    if(params.timeout.orb > 0)
+    {
+        // Set the policy value
+        TimeBase::TimeT relative_rt_timeout = params.timeout.orb * 10000/*1millisecond*/;
+        CORBA::Any relative_rt_timeout_as_any;  
+        relative_rt_timeout_as_any <<= relative_rt_timeout;  
+
+        // Create the policy and add it to a CORBA::PolicyList.  
+        CORBA::PolicyList policy_list;  
+        policy_list.length(1);  
+        policy_list[0] = orb->create_policy (Messaging::RELATIVE_RT_TIMEOUT_POLICY_TYPE, relative_rt_timeout_as_any);  
+
+        // Apply the policy at the ORB level.  
+        CORBA::Object_var obj = orb->resolve_initial_references("ORBPolicyManager");  
+        CORBA::PolicyManager_var policy_manager = CORBA::PolicyManager::_narrow(obj.in());  
+        policy_manager->set_policy_overrides (policy_list, CORBA::ADD_OVERRIDE);
+        ACE_DEBUG((LM_INFO, "%T Changed ORB timeout to be: %dms\n", params.timeout.orb));
+    }
+
+    // Set timeout at thread level
+    if(params.timeout.thread > 0)
+    {
+        // Set the policy value
+        TimeBase::TimeT relative_rt_timeout = params.timeout.thread * 10000/*1millisecond*/;
+        CORBA::Any relative_rt_timeout_as_any;  
+        relative_rt_timeout_as_any <<= relative_rt_timeout;  
+
+        // Create the policy and add it to a CORBA::PolicyList.  
+        CORBA::PolicyList policy_list;  
+        policy_list.length(1);  
+        policy_list[0] = orb->create_policy (Messaging::RELATIVE_RT_TIMEOUT_POLICY_TYPE, relative_rt_timeout_as_any);  
+
+        // Apply the policy at the thread level.  
+        CORBA::Object_var obj = orb->resolve_initial_references("PolicyCurrent");  
+        CORBA::PolicyManager_var policy_manager = CORBA::PolicyManager::_narrow(obj.in());  
+        policy_manager->set_policy_overrides (policy_list, CORBA::ADD_OVERRIDE);
+        ACE_DEBUG((LM_INFO, "%T Changed thread timeout to be: %dms\n", params.timeout.thread));
+    }
+
+
 	CORBA::Object_var obj = orb->string_to_object(params.iorNS.c_str());
 
 	CosNotifyChannelAdmin::EventChannelFactory_var ecf
 	  = CosNotifyChannelAdmin::EventChannelFactory::_narrow(obj.in());
-
-	//NotifyMonitoringExt::EventChannelFactory_var ecf
-	//  = NotifyMonitoringExt::EventChannelFactory::_narrow(ecf1.in());
 
 	if (CORBA::is_nil(ecf.in()))
 		throw std::runtime_error("no event channel factory");
@@ -329,6 +431,43 @@ void DataSupplier::run(const SuppParams &params)
 	// Obtain a ProxyPushConsumer from the SupplierAdmin.
 	CosEventChannelAdmin::ProxyPushConsumer_var consumer
 	  = supplierAdmin->obtain_push_consumer();
+
+// Check timeout policies in the Admin
+/*
+    //ACE_DEBUG((LM_INFO, "Checking policies of admin\n"));
+    CORBA::PolicyTypeSeq policies;
+    policies.length(1);
+    policies[0] = Messaging::RELATIVE_RT_TIMEOUT_POLICY_TYPE;
+    CORBA::PolicyList *policy_list = supplierAdmin->_get_policy_overrides(policies);
+    for(CORBA::ULong i = 0;i < policy_list->length();++i)
+    {
+        CORBA::PolicyType type = (*policy_list)[i]->policy_type();
+        if(type == Messaging::RELATIVE_RT_TIMEOUT_POLICY_TYPE) 
+        {
+            Messaging::RelativeRoundtripTimeoutPolicy_var pol
+                = Messaging::RelativeRoundtripTimeoutPolicy::_narrow(policies[i]);
+            TimeBase::TimeT timeout = pol->relative_expiry();
+            ACE_DEBUG((LM_INFO, "Round-trip Timeout: %lu ms\n", (unsigned long)(timeout/10000)));
+        }
+    }*/
+
+    // Set timeout at proxy level
+    if(params.timeout.proxy > 0)
+    {
+        // Set the policy value
+        TimeBase::TimeT relative_rt_timeout = params.timeout.proxy * 10000/*1millisecond*/;
+        CORBA::Any relative_rt_timeout_as_any;
+        relative_rt_timeout_as_any <<= relative_rt_timeout;
+
+        // Create the policy and add it to a CORBA::PolicyList.  
+        CORBA::PolicyList policy_list;  
+        policy_list.length(1);  
+        policy_list[0] = orb->create_policy (Messaging::RELATIVE_RT_TIMEOUT_POLICY_TYPE, relative_rt_timeout_as_any);  
+
+        // Apply the policy at the proxy level.  
+        consumer->_set_policy_overrides(policy_list, CORBA::SET_OVERRIDE);
+        ACE_DEBUG((LM_INFO, "%T Changed proxy timeout to be: %dms\n", params.timeout.proxy));
+    }
 
 	// Invoke the connect_push_supplier operation, passing
 	// a nil PushSupplier reference to it.
