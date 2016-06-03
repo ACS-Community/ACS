@@ -8,6 +8,11 @@
 #include "TimevalUtils.h"
 #include <stddef.h>
 
+
+const std::string TimevalUtils::STR_TIMEOUT_ORB="orb";
+const std::string TimevalUtils::STR_TIMEOUT_THREAD="thread";
+const std::string TimevalUtils::STR_TIMEOUT_PROXY="proxy";
+
 void TimevalUtils::set_timeval(timeval &t,int64_t sec,int64_t msec)
 {
 	t.tv_sec = sec;
@@ -40,3 +45,51 @@ void TimevalUtils::ms_2_timeval(uint64_t t,timeval &tv)
 	tv.tv_usec = (t - tv.tv_sec * SEC_2_MSEC) * SEC_2_MSEC;
 }
 
+void TimevalUtils::fillTimeout(TimeoutMS &timeout,const std::string &config)
+{
+    
+    std::string substr = config;
+    std::string keyValue;
+    std::string key;
+    std::string value;
+    uint32_t iValue;
+    std::size_t pos = substr.find_first_of(",");
+    if(pos == std::string::npos)
+    {
+        pos = substr.size();
+    }
+    std::size_t pos2;
+    while(false == substr.empty())
+    {
+        keyValue = substr.substr(0, pos);
+        pos2 = keyValue.find_first_of(":");
+        if(pos2 != std::string::npos)
+        {
+            key = keyValue.substr(0,pos2);
+            value = keyValue.substr(pos2+1);
+            if(value.find_first_not_of("0123456789") == std::string::npos)
+            {
+                iValue = atoi(value.c_str());
+                if(key == STR_TIMEOUT_ORB)
+                {
+                    timeout.orb = iValue;
+                } else if(key == STR_TIMEOUT_THREAD) {
+                    timeout.thread = iValue;
+                } else if(key == STR_TIMEOUT_PROXY) {
+                    timeout.proxy = iValue;
+                }    
+            }    
+        }
+        if(substr.size() > pos + 1)
+        {
+            substr = substr.substr(pos + 1);
+        } else {
+            substr = std::string();
+        }
+        pos = substr.find_first_of(",");
+        if(pos == std::string::npos)
+        {
+            pos = substr.size();
+        }
+    }
+}

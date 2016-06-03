@@ -65,58 +65,6 @@ void printUsage(const std::string &msgErr="") {
 	exit(1);
 }
 
-static const std::string STR_TIMEOUT_ORB="orb";
-static const std::string STR_TIMEOUT_THREAD="thread";
-static const std::string STR_TIMEOUT_PROXY="proxy";
-
-void fillTimeout(TimeoutMS &timeout,const std::string &config)
-{
-    
-    std::string substr = config;
-    std::string keyValue;
-    std::string key;
-    std::string value;
-    uint32_t iValue;
-    std::size_t pos = substr.find_first_of(",");
-    if(pos == std::string::npos)
-    {
-        pos = substr.size();
-    }
-    std::size_t pos2;
-    while(false == substr.empty())
-    {
-        keyValue = substr.substr(0, pos);
-        pos2 = keyValue.find_first_of(":");
-        if(pos2 != std::string::npos)
-        {
-            key = keyValue.substr(0,pos2);
-            value = keyValue.substr(pos2+1);
-            if(value.find_first_not_of("0123456789") == std::string::npos)
-            {
-                iValue = atoi(value.c_str());
-                if(key == STR_TIMEOUT_ORB)
-                {
-                    timeout.orb = iValue;
-                } else if(key == STR_TIMEOUT_THREAD) {
-                    timeout.thread = iValue;
-                } else if(key == STR_TIMEOUT_PROXY) {
-                    timeout.proxy = iValue;
-                }    
-            }    
-        }
-        if(substr.size() > pos + 1)
-        {
-            substr = substr.substr(pos + 1);
-        } else {
-            substr = std::string();
-        }
-        pos = substr.find_first_of(",");
-        if(pos == std::string::npos)
-        {
-            pos = substr.size();
-        }
-    }
-}
 
 /**
  * Get command line parameters
@@ -197,7 +145,7 @@ void getParams(int argc,char *argv[],SuppParams &params)
 			params.iorNS = optarg;
 			break;
         case 't':
-            fillTimeout(params.timeout, optarg);
+            TimevalUtils::fillTimeout(params.timeout, optarg);
             break;
 		case 'f':
 			params.channelFile = optarg;

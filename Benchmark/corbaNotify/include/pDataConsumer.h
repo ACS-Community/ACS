@@ -41,6 +41,7 @@
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExtC.h>
 #include "corbaNotifyTest_ifC.h"
+#include "TimevalUtils.h"
 
 static const std::string DT_CONSUMER = "CONSUMER";
 static const std::string DT_SUPPLIER = "SUPPLIER";
@@ -64,6 +65,7 @@ struct ConsumerParams {
 	int32_t interval;
 	std::string ORBOptions;
 	uint32_t sleepTimeRecvEvent;
+    TimevalUtils::TimeoutMS timeout;
 };
 
 class Consumer : public POA_CosNotifyComm::PushConsumer

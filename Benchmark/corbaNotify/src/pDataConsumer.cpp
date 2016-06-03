@@ -27,6 +27,7 @@
 #include "ConsumerTimer.h"
 #include "CorbaNotifyUtils.h"
 
+#include <tao/Messaging/Messaging.h>
 #include <ORB_Core.h>
 #include <Reactor.h>
 
@@ -48,7 +49,7 @@ void printUsage(const std::string &errMsg="")
 		std::cout << std::endl << "\tERROR: " << errMsg << std::endl << std::endl;
 	}
 
-	std::cout << "\tUSAGE: pDataConsummer -c channel -r IOR -d maxDelaySec -t delayType -i intervalMin -o ORBOptions -s sleepTimeRecvEvent" << std::endl;
+	std::cout << "\tUSAGE: pDataConsummer -c channel -r IOR -d maxDelaySec -t delayType -i intervalMin -m timeout -o ORBOptions -s sleepTimeRecvEvent" << std::endl;
 	std::cout << "\t\tchannel: the ID of the notification channel or the path where the channel ID is stored. If the ID is not set, it creates a new channel" << std::endl;
 	std::cout << "\t\tIOR: the IOR of the Notify Service" << std::endl;
 	std::cout << "\t\tmaxDelaySec: maximum delay allowed in seconds" << std::endl;
@@ -58,12 +59,17 @@ void printUsage(const std::string &errMsg="")
 	std::cout << "\t\t\tSUPP_CON: delay of one event" << std::endl;
 	std::cout << "\t\t\tDefault is SUPP_CON" << std::endl;
 	std::cout << "\t\tintervalMin: time interval in minutes between consecutive output messages showing the number of events received" << std::endl;
+    std::cout << "\t\ttimeout: timeout in milliseconds at different levels: \"orb:10,thread:100\"" << std::endl;
 	std::cout << "\t\tORBOptions: options passed in the initialization of ORB" << std::endl;
 	std::cout << "\t\tsleepTimeRecvEvent: sleep time set when receiving an event. Default value is 0." << std::endl;
 
 	std::cout << std::endl;
 	exit(1);
 }
+
+static const std::string STR_TIMEOUT_ORB="orb";
+static const std::string STR_TIMEOUT_THREAD="thread";
+static const std::string STR_TIMEOUT_PROXY="proxy";
 
 void getParams(int argc,char *argv[],ConsumerParams &params)
 	 
@@ -80,8 +86,11 @@ void getParams(int argc,char *argv[],ConsumerParams &params)
 	params.delayType = DEFAULT_DELAY_TYPE;
 	params.interval = DEFAULT_INTERVAL;
 	params.sleepTimeRecvEvent = DEFAULT_SLEEP_TIME_RECV_EVENT;
+    params.timeout.orb = 0;
+    params.timeout.thread = 0;
+    params.timeout.proxy = 0;
 
-	while((c = getopt(argc, argv, "c:i:o:r:d:s:t:")) != -1)
+	while((c = getopt(argc, argv, "c:i:o:r:d:m:s:t:")) != -1)
 	{
 		switch(c)
 		{
@@ -132,6 +141,9 @@ void getParams(int argc,char *argv[],ConsumerParams &params)
 				params.maxDelaySec = atof(str.c_str());
 			}
 			break;
+        case 'm':
+            TimevalUtils::fillTimeout(params.timeout, optarg);
+            break;
 		case 's':
 			str = optarg;
 			if(str.find_first_not_of("0123456789.") != std::string::npos)
@@ -233,6 +245,48 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 		{
 			return false;	
 		}
+
+
+        // Set timeout at ORB level
+        if(params.timeout.orb > 0)
+        {
+            // Set the policy value
+            TimeBase::TimeT relative_rt_timeout = params.timeout.orb * 10000/*1millisecond*/;
+            CORBA::Any relative_rt_timeout_as_any;  
+            relative_rt_timeout_as_any <<= relative_rt_timeout;  
+
+            // Create the policy and add it to a CORBA::PolicyList.  
+            CORBA::PolicyList policy_list;  
+            policy_list.length(1);  
+            policy_list[0] = m_orb->create_policy (Messaging::RELATIVE_RT_TIMEOUT_POLICY_TYPE, relative_rt_timeout_as_any);  
+
+            // Apply the policy at the ORB level.  
+            CORBA::Object_var obj = m_orb->resolve_initial_references("ORBPolicyManager");  
+            CORBA::PolicyManager_var policy_manager = CORBA::PolicyManager::_narrow(obj.in());  
+            policy_manager->set_policy_overrides (policy_list, CORBA::ADD_OVERRIDE);
+            ACE_DEBUG((LM_INFO, "%T Changed ORB timeout to be: %dms\n", params.timeout.orb));
+        }
+
+        // Set timeout at thread level
+        if(params.timeout.thread > 0)
+        {
+            // Set the policy value
+            TimeBase::TimeT relative_rt_timeout = params.timeout.thread * 10000/*1millisecond*/;
+            CORBA::Any relative_rt_timeout_as_any;  
+            relative_rt_timeout_as_any <<= relative_rt_timeout;  
+
+            // Create the policy and add it to a CORBA::PolicyList.  
+            CORBA::PolicyList policy_list;  
+            policy_list.length(1);  
+            policy_list[0] = m_orb->create_policy (Messaging::RELATIVE_RT_TIMEOUT_POLICY_TYPE, relative_rt_timeout_as_any);  
+
+            // Apply the policy at the thread level.  
+            CORBA::Object_var obj = m_orb->resolve_initial_references("PolicyCurrent");  
+            CORBA::PolicyManager_var policy_manager = CORBA::PolicyManager::_narrow(obj.in());  
+            policy_manager->set_policy_overrides (policy_list, CORBA::ADD_OVERRIDE);
+            ACE_DEBUG((LM_INFO, "%T Changed thread timeout to be: %dms\n", params.timeout.thread));
+        }
+
 
 		CosNotifyChannelAdmin::EventChannel_var channel;
 		CosEventChannelAdmin::ConsumerAdmin_var consumer_admin;

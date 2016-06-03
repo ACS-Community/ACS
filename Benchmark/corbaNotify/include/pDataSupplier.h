@@ -37,6 +37,7 @@
 #include <PortableServer.h>
 #include <orbsvcs/CosNotifyChannelAdminC.h>
 #include <stdint.h>
+#include "TimevalUtils.h"
 
 class SupplierTimer;
 
@@ -49,11 +50,6 @@ static const uint32_t DEFAULT_OUTPUT_DELAY = 1;
 static const int32_t DEFAULT_CHANNEL_ID = -1;
 static const std::string DEFAULT_ANTENNA_PREFIX_NAME = "ANTENNA_";
 
-struct TimeoutMS {
-    uint32_t orb;
-    uint32_t thread;
-    uint32_t proxy;
-};
 
 struct SuppParams {
 	uint32_t sendInterval;
@@ -65,7 +61,7 @@ struct SuppParams {
 	int32_t channelID;
 	std::string antennaPrefixName;
 	std::string ORBOptions;
-    TimeoutMS timeout;
+    TimevalUtils::TimeoutMS timeout;
 };
 
 class DataSupplier {
