@@ -112,7 +112,7 @@ SCRIPTS_L       =
 
 
 PY_SCRIPTS = acsJdocMaker
-PY_SCRIPTS_L = acsGenGlobalPythonIndex
+PY_SCRIPTS_L = acsGenGlobalPythonIndex 
 PY_PACKAGES = 
 
 #
