@@ -81,7 +81,7 @@ public:
 protected:
 	bool init_ORB(int argc, ACE_TCHAR* argv[]);
 	bool getNotificationChannel(const std::string &iorNS,
-			CosNotifyChannelAdmin::ChannelID channelID,
+			CosNotifyChannelAdmin::ChannelID &channelID,
 			CosNotifyChannelAdmin::EventChannel_var &channel,
 			std::string &errMsg);
 

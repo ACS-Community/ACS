@@ -49,7 +49,7 @@ void printUsage(const std::string &errMsg="")
 	}
 
 	std::cout << "\tUSAGE: pDataConsummer -c channel -r IOR -d maxDelaySec -t delayType -i intervalMin -o ORBOptions" << std::endl;
-	std::cout << "\t\tchannel: the ID of the notification channel or the path where the channel ID is stored" << std::endl;
+	std::cout << "\t\tchannel: the ID of the notification channel or the path where the channel ID is stored. If the ID is not set, it creates a new channel" << std::endl;
 	std::cout << "\t\tIOR: the IOR of the Notify Service" << std::endl;
 	std::cout << "\t\tmaxDelaySec: maximum delay allowed in seconds" << std::endl;
 	std::cout << "\t\tdelayType: type of the delay to calculate. Can be:" << std::endl;
@@ -145,10 +145,11 @@ void getParams(int argc,char *argv[],ConsumerParams &params)
 		}
 	}
 
+	/*
 	if(params.channelID == -1)
 	{
 		printUsage("A channel ID is required");
-	}
+	}*/
 
 	if(params.iorNS.size() <= 0)
 	{
@@ -224,8 +225,9 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 		CosEventChannelAdmin::ConsumerAdmin_var consumer_admin;
 		CosEventChannelAdmin::ProxyPushSupplier_var supplier;
 		CosEventComm::PushConsumer_var consumer;
+		CosNotifyChannelAdmin::ChannelID channelID = params.channelID;
 
-		if(getNotificationChannel(params.iorNS,params.channelID,channel,errMsg) == false)
+		if(getNotificationChannel(params.iorNS,channelID,channel,errMsg) == false)
 		{
 			ACE_DEBUG((LM_ERROR, "Error: %s", errMsg.c_str()));
 			return false;
@@ -236,7 +238,7 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 		consumer = this->_this ();
 		supplier->connect_push_consumer (consumer.in ());
 
-		ACE_DEBUG((LM_INFO, "Waiting for events in channel %d ...\n", params.channelID));
+		ACE_DEBUG((LM_INFO, "Waiting for events in channel %d ...\n", channelID));
 
 		// Create & schedule the timer
         if(0 == m_timer)
@@ -383,7 +385,7 @@ bool Consumer::init_ORB(int argc, ACE_TCHAR* argv[])
 
 
 bool Consumer::getNotificationChannel(const std::string &iorNS,
-		CosNotifyChannelAdmin::ChannelID channelID,
+		CosNotifyChannelAdmin::ChannelID &channelID,
 		CosNotifyChannelAdmin::EventChannel_var &channel,
 		std::string &errMsg)
 {
@@ -400,14 +402,30 @@ bool Consumer::getNotificationChannel(const std::string &iorNS,
 			return false;
 		}
 
-// Get the channel
-		channel = ecf->get_event_channel(channelID);
-		if(CORBA::is_nil(channel.in()))
+// Create a channel if no channel ID is given
+		if(channelID <= 0)
 		{
-			std::ostringstream oss;
-			oss << "Unable to get the channel " << channelID;
-			errMsg = oss.str();
-			return false;
+			ACE_DEBUG((LM_INFO, "%T Creating a channel ...\n"));
+			CosNotification::QoSProperties init_qos(0); 
+			CosNotification::AdminProperties init_admin(0); 
+			channel = ecf->create_channel(init_qos, init_admin, channelID);
+			if(CORBA::is_nil(channel.in()))
+			{
+				throw std::runtime_error("channel cannot be created!");
+			} else {
+				ACE_DEBUG((LM_INFO, "%T Channel created: %d\n", channelID));
+				return true;
+			}
+		} else {
+// Get the channel
+			channel = ecf->get_event_channel(channelID);
+			if(CORBA::is_nil(channel.in()))
+			{
+				std::ostringstream oss;
+				oss << "Unable to get the channel " << channelID;
+				errMsg = oss.str();
+				return false;
+			}
 		}
 
 	} catch(CosNotifyChannelAdmin::ChannelNotFound &ex) {
