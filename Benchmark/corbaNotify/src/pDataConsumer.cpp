@@ -48,7 +48,7 @@ void printUsage(const std::string &errMsg="")
 		std::cout << std::endl << "\tERROR: " << errMsg << std::endl << std::endl;
 	}
 
-	std::cout << "\tUSAGE: pDataConsummer -c channel -r IOR -d maxDelaySec -t delayType -i intervalMin -o ORBOptions" << std::endl;
+	std::cout << "\tUSAGE: pDataConsummer -c channel -r IOR -d maxDelaySec -t delayType -i intervalMin -o ORBOptions -s sleepTimeRecvEvent" << std::endl;
 	std::cout << "\t\tchannel: the ID of the notification channel or the path where the channel ID is stored. If the ID is not set, it creates a new channel" << std::endl;
 	std::cout << "\t\tIOR: the IOR of the Notify Service" << std::endl;
 	std::cout << "\t\tmaxDelaySec: maximum delay allowed in seconds" << std::endl;
@@ -59,6 +59,7 @@ void printUsage(const std::string &errMsg="")
 	std::cout << "\t\t\tDefault is SUPP_CON" << std::endl;
 	std::cout << "\t\tintervalMin: time interval in minutes between consecutive output messages showing the number of events received" << std::endl;
 	std::cout << "\t\tORBOptions: options passed in the initialization of ORB" << std::endl;
+	std::cout << "\t\tsleepTimeRecvEvent: sleep time set when receiving an event. Default value is 0." << std::endl;
 
 	std::cout << std::endl;
 	exit(1);
@@ -78,8 +79,9 @@ void getParams(int argc,char *argv[],ConsumerParams &params)
 	params.maxDelaySec = DEFAULT_MAX_DELAY_SEC;
 	params.delayType = DEFAULT_DELAY_TYPE;
 	params.interval = DEFAULT_INTERVAL;
+	params.sleepTimeRecvEvent = DEFAULT_SLEEP_TIME_RECV_EVENT;
 
-	while((c = getopt(argc, argv, "c:i:o:r:d:t:")) != -1)
+	while((c = getopt(argc, argv, "c:i:o:r:d:s:t:")) != -1)
 	{
 		switch(c)
 		{
@@ -128,6 +130,15 @@ void getParams(int argc,char *argv[],ConsumerParams &params)
 				printUsage("Wrong delay. Must be a number");
 			} else {
 				params.maxDelaySec = atof(str.c_str());
+			}
+			break;
+		case 's':
+			str = optarg;
+			if(str.find_first_not_of("0123456789.") != std::string::npos)
+			{
+				printUsage("Wrong sleep time. Must be a number");
+			} else {
+				params.sleepTimeRecvEvent = atof(str.c_str());
 			}
 			break;
 		case 't':
@@ -188,7 +199,8 @@ Consumer::Consumer()
 	m_lastEventTimestamp = 0;
 	m_delayType = DT_SUPP_CON;
 	m_numEventsReceived = 0;
-    m_timer = 0;
+	m_timer = 0;
+	m_sleepTimeRecvEvent = 0;
 }
 
 Consumer::~Consumer()
@@ -204,6 +216,7 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 {
 	
 	m_maxDelay = params.maxDelaySec * 1000;
+	m_sleepTimeRecvEvent = params.sleepTimeRecvEvent;
 	ACE_DEBUG((LM_INFO, "Max delay: %q ms\n", m_maxDelay));
 	m_delayType = params.delayType;
 
@@ -344,6 +357,11 @@ void Consumer::push (const CORBA::Any &event)
 
 	} else {
 		ACE_DEBUG((LM_WARNING, "Event received but it's not of type MountStatusDataSeq\n"));
+	}
+
+	if(m_sleepTimeRecvEvent > 0)
+	{
+		ACE_OS::sleep(m_sleepTimeRecvEvent);
 	}
 }
 

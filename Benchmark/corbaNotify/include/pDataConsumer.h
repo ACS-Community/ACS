@@ -52,6 +52,7 @@ static const std::string DEFAULT_IOR_NS = "";
 static const double DEFAULT_MAX_DELAY_SEC = 0;
 static const std::string DEFAULT_DELAY_TYPE = DT_SUPP_CON;
 static const int32_t DEFAULT_INTERVAL = 1;
+static const int32_t DEFAULT_SLEEP_TIME_RECV_EVENT = 0;
 
 class ConsumerTimer;
 
@@ -62,6 +63,7 @@ struct ConsumerParams {
 	std::string delayType;
 	int32_t interval;
 	std::string ORBOptions;
+	uint32_t sleepTimeRecvEvent;
 };
 
 class Consumer : public POA_CosNotifyComm::PushConsumer
@@ -92,6 +94,7 @@ protected:
 	std::string m_delayType;
 	uint64_t m_numEventsReceived;
     ConsumerTimer *m_timer;
+	uint32_t m_sleepTimeRecvEvent;
 };
 
 #endif /*!PDATACONSUMER_H*/
