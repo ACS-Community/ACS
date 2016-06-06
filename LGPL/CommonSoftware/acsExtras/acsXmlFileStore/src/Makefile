@@ -140,7 +140,7 @@ USER_IDL =
 #
 JARFILES= xmlFileStorLoggerImpl
 xmlFileStorLoggerImpl_DIRS= alma
-xmlFileStorLoggerImpl_JLIBS=
+xmlFileStorLoggerImpl_JLIBS= xmlStoreLogs
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
