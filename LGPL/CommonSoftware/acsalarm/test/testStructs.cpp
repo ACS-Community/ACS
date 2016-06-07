@@ -30,8 +30,6 @@
  * XML testing. XML is in fact generated in the CERN implementation and tested there.
  */
 
-static char *rcsId="@(#) $Id: testStructs.cpp,v 1.1 2012/04/05 13:18:16 acaproni Exp $"; 
-
 #include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
