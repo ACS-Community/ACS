@@ -207,6 +207,16 @@ class Supplier :
      */
     void setAutoreconnect(bool autoreconnect);
 
+    /**
+     * Increase the event buffer size used to store events that couldn't be published
+     */
+    bool increaseEventBufferSize(unsigned int bufferSize);
+
+    /**
+     * Return the event buffer size
+     */
+    unsigned int getEventBufferSize() const;
+
   protected:
     /**
      * Destructor is protected.
@@ -355,6 +365,7 @@ class Supplier :
 
   private:
     
+    static const uint32_t SLEEP_TIME_BEFORE_SENDING_BUFFERED_EVENTS;
 
     /**
      * ALMA C++ coding standards state assignment operators should be disabled.

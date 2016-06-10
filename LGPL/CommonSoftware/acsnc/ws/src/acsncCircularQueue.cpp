@@ -71,3 +71,17 @@ CosNotification::StructuredEvent *CircularQueue::front() {
 	return new CosNotification::StructuredEvent(tmp);
 }
 
+bool CircularQueue::setMaxSize(unsigned int size)
+{
+    if(size > max_size)
+    {
+        max_size = size;
+        return true;
+    }
+    return false;
+}
+
+unsigned int CircularQueue::getMaxSize() const
+{
+    return max_size;
+}
