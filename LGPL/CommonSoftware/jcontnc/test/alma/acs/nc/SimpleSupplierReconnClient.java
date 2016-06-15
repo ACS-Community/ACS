@@ -181,6 +181,13 @@ public class SimpleSupplierReconnClient implements Callback<EventDescription> {
 		event1.onOff = OnOffStates.ON;
 		event1.period = 0.2f;
 
+        m_publisher.increaseEventBufferSize(200);
+        int bufferSize = m_publisher.getEventBufferSize();
+        if(bufferSize < 200) {
+            m_logger.info("Wrong buffer size. Should be equal or greater than 200 but was " + String.valueOf(bufferSize));
+        }
+        m_publisher.setEventProcessingHandler(m_cbObj);
+
         m_logger.info("NS action: " + m_nsAction);
         if(m_autoreconnect) {
             m_logger.info("Autoreconnection: ON");
