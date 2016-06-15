@@ -71,6 +71,30 @@ class InMemoryPublisher<T> implements AcsEventPublisher<T>
 	public void enableEventQueue(int queueSize, EventProcessingHandler<T> handler) {
 		throw new UnsupportedOperationException("Event queue handling is currently not supported for in-memory fake NCs. See http://jira.alma.cl/browse/COMP-2890.");
 	}
+
+	/**
+	 * @throws UnsupportedOperationException because it's not (yet) supported; please report if you need it.
+	 */
+	@Override
+    public boolean increaseEventBufferSize(int bufferSize) {
+		throw new UnsupportedOperationException("Event queue handling is currently not supported for in-memory fake NCs. See http://jira.alma.cl/browse/COMP-2890.");
+	}
+
+	/**
+	 * @throws UnsupportedOperationException because it's not (yet) supported; please report if you need it.
+	 */
+	@Override
+    public int getEventBufferSize() {
+		throw new UnsupportedOperationException("Event queue handling is currently not supported for in-memory fake NCs. See http://jira.alma.cl/browse/COMP-2890.");
+    }
+
+	/**
+	 * @throws UnsupportedOperationException because it's not (yet) supported; please report if you need it.
+	 */
+	@Override
+    public void setEventProcessingHandler(EventProcessingHandler<T> handler) {
+		throw new UnsupportedOperationException("Event queue handling is currently not supported for in-memory fake NCs. See http://jira.alma.cl/browse/COMP-2890.");
+    }
 	
 	/**
 	 * Returns the total number of events published. 
