@@ -54,12 +54,12 @@ PROLOGUE acsutilTATPrologue -l
 # Check the reconnection of a publisher when autoreconnection is ON and its Notify Service is restarted.
 11 testPublisherAutoreconnectNSRestarted "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
    "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleSupplierReconnClient 30 5 AUTORECONNECT NS_RESTARTED" "@SLEEP 5" \
-   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 3" "@SLEEP 25"
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 3" "@SLEEP 40"
 
 # Check the reconnection of a publisher when autoreconnection is ON and its Notify Service is stopped.
 12 testPublisherAutoreconnectNSStopped "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
    "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleSupplierReconnClient 13 5 AUTORECONNECT NS_STOPPED" "@SLEEP 5" \
-   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory STOP" "@SLEEP 50"
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory STOP" "@SLEEP 65"
 
 # Check the reconnection of a publisher when autoreconnection is OFF and its Notify Service is restarted.
 13 testPublisherNoAutoreconnectNSRestarted "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
@@ -114,13 +114,13 @@ PROLOGUE acsutilTATPrologue -l
    "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 7" \
    "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 7" "@SLEEP 15" \
    "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 1" "@SLEEP 10" \
-   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 4" "@SLEEP 75" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 4" "@SLEEP 90" \
    "acsutilTATTestRunner jcontncEcho.sh END_TEST_7_CONSUMER_AUTORECONNECT"
    
 # Test 8 autoreconnect of consumers
 22 test8ConsumerAutoreconnect "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
    "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 8" "@SLEEP 20" \
-   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 4" "@SLEEP 55" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 4" "@SLEEP 85" \
    "acsutilTATTestRunner jcontncEcho.sh END_TEST_8_CONSUMER_AUTORECONNECT"
 
 

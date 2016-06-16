@@ -732,8 +732,8 @@ public class SimpleConsumerReconnClient /*implements Callback<EventDescription>*
         m_logger.info("=========================  Creating the publisher and start sending events");
         createPublisher(true);
         sendEvents(nEvents, 100);
-        m_logger.info("=========================  Waiting 20 sec to receive events comming from other processes");
-        waitSec(20);
+        m_logger.info("=========================  Waiting 35 sec to receive events comming from other processes");
+        waitSec(35);
 /*        m_logger.info("=========================  Suspend susbcribers and expect to restart the Notify Service");
         suspendOtherSubscribers();
         waitSec(10); // Here we expect the restart of the Notify Service
@@ -779,15 +779,15 @@ public class SimpleConsumerReconnClient /*implements Callback<EventDescription>*
         m_logger.info("=========================  Suspend subscribers");
         suspendOtherSubscribers();
         m_logger.info("=========================  From this point we expect the Notify Service to restart");
-        waitSec(20); // Here we expect the restart of the Notify Service
+        waitSec(35); // Here we expect the restart of the Notify Service
         m_logger.info("=========================  At this point the Notify Service should have been restarted");
         m_logger.info("=========================  Resume subscribers");
         resumeOtherSubscribers();
         m_logger.info("=========================  Creating the publisher and start sending events");
         createPublisher(true);
         sendEvents(nEvents, 100);
-        m_logger.info("=========================  Waiting 20 sec to receive events comming from other processes");
-        waitSec(20);
+        m_logger.info("=========================  Waiting 35 sec to receive events comming from other processes");
+        waitSec(35);
         m_logger.info("=========================  Disconnect subscribers and publisher");
         disconnectOtherSubscribers();
         disconnectPublisher();
