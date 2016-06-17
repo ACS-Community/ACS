@@ -1,0 +1,58 @@
+# The list of jar files that are sufficient to start an ACS container or other basic ACS software.
+# The class loader will sort these jar files toward the beginning of the classpath (in the given order),
+# and will append jar files from the optional property acs.system.classpath.appltopjars.
+# @see alma.acs.classloading.JarOrderOptimizer
+
+# Format of this file:
+#   * no more then one jar file name in each line
+#   * whatever follows a '#' character is a comment and will be ignored
+#   * white spaces at the beginning or the end of the line can be used for indentation if needed
+
+jcont.jar
+JavaContainerError.jar
+jACSUtil.jar
+jacsutil2.jar
+logging_idl.jar
+acsjlog.jar
+repeatGuard.jar
+maci.jar
+maciErrType.jar
+maciSchemaBindings.jar
+castor.jar
+jacorb-3.6.1.jar
+jacorb-services-3.6.1.jar
+slf4j-api-1.7.6.jar
+slf4j-acs.jar
+acscomponent.jar
+acsCallbacksSupport.jar
+jbaci.jar
+cdbSchemaBindings.jar
+jManager.jar
+jmanagerErrType.jar
+prevayler-1.02.001.jar
+CDB.jar
+cdbDAL.jar
+cdbErrType.jar
+archive_xmlstore_if.jar
+xmlentity.jar
+systementities.jar
+acserr.jar
+acserrj.jar
+acscommon.jar
+ACSErrTypeCommon.jar
+acsnc.jar
+baci.jar
+xmljbind.jar
+junit-dep-4.10.jar
+oe.jar
+acscommandcenter.jar
+AcsCommandCenterEntities.jar
+lcEngine.jar
+lc.jar # cosylab logging client
+jdom.jar
+acsASsources.jar
+acsErrTypeAlarmSourceFactory.jar
+xalan.jar
+xalan_serializer.jar
+commons-logging-1.1.1.jar
+acsContainerServices.jar
