@@ -76,3 +76,4 @@ java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner al
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.testsupport.ProcessUtilTest
 java -cp "$JACSUTIL${PATH_SEP}$JAVA_HOME/lib/tools.jar" $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.RemoteThreadsClientTest
 java -cp "$JACSUTIL${PATH_SEP}$JAVA_HOME/lib/tools.jar" $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.RemoteThreadsMBeanTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.classloading.TestJarOrderOptmizer
