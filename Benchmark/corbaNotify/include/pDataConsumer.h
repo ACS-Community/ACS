@@ -42,6 +42,7 @@
 #include <orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExtC.h>
 #include "corbaNotifyTest_ifC.h"
 #include "TimevalUtils.h"
+#include "QoSProps.h"
 
 static const std::string DT_CONSUMER = "CONSUMER";
 static const std::string DT_SUPPLIER = "SUPPLIER";
@@ -66,9 +67,10 @@ struct ConsumerParams {
 	std::string ORBOptions;
 	uint32_t sleepTimeRecvEvent;
     TimevalUtils::TimeoutMS timeout;
+    QoSProps *qosProps;
 };
 
-class Consumer : public POA_CosNotifyComm::PushConsumer
+class Consumer : public POA_CosNotifyComm::StructuredPushConsumer
 {
 public:
 	Consumer(void);
@@ -76,8 +78,8 @@ public:
 
 	bool run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params);
 
-	virtual void push (const CORBA::Any &event);
-	virtual void disconnect_push_consumer (void);
+    virtual void push_structured_event (const CosNotification::StructuredEvent &event);
+	virtual void disconnect_structured_push_consumer (void);
 	virtual void offer_change(const CosNotification::EventTypeSeq&, const CosNotification::EventTypeSeq&);
 
 	uint64_t getNumEventsReceived() const;
@@ -87,7 +89,7 @@ protected:
 	bool getNotificationChannel(const std::string &iorNS,
 			CosNotifyChannelAdmin::ChannelID &channelID,
 			CosNotifyChannelAdmin::EventChannel_var &channel,
-			std::string &errMsg);
+			std::string &errMsg,const ConsumerParams &params);
 
 	CORBA::ORB_ptr m_orb;
 	timeval m_tLastEvent;

@@ -38,6 +38,7 @@
 #include <orbsvcs/CosNotifyChannelAdminC.h>
 #include <stdint.h>
 #include "TimevalUtils.h"
+#include "QoSProps.h"
 
 class SupplierTimer;
 
@@ -62,6 +63,7 @@ struct SuppParams {
 	std::string antennaPrefixName;
 	std::string ORBOptions;
     TimevalUtils::TimeoutMS timeout;
+    QoSProps *qosProps;
 };
 
 class DataSupplier {
@@ -108,6 +110,7 @@ private:
 	uint64_t m_numEventsSentOk;
 	uint64_t m_numEventsSentErr[NUM_ERR];
     SupplierTimer *m_timer;
+    char *m_eventTypeName;
 };
 
 #endif /*!PDATASUPPLIER_H*/

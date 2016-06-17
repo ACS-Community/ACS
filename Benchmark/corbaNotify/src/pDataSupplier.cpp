@@ -85,8 +85,9 @@ void getParams(int argc,char *argv[],SuppParams &params)
     params.timeout.orb = 0;
     params.timeout.thread = 0;
     params.timeout.proxy = 0;
+    params.qosProps = NULL;
 
-	while((c = getopt(argc, argv, "a:b:c:i:l:n:r:t:f:o:")) != -1)
+	while((c = getopt(argc, argv, "a:b:c:i:l:n:r:t:f:o:q:")) != -1)
 	{
 		switch(c)
 		{
@@ -141,6 +142,9 @@ void getParams(int argc,char *argv[],SuppParams &params)
 				printUsage("Wrong output delay. Must be an integer");
 			}
 			break;
+        case 'q':
+            params.qosProps = new QoSProps(optarg);
+            break;
 		case 'r':
 			params.iorNS = optarg;
 			break;
@@ -160,6 +164,11 @@ void getParams(int argc,char *argv[],SuppParams &params)
 	{
 		printUsage("IOR of the Notify Service is required");
 	}
+
+    if(params.qosProps == NULL)
+    {
+        params.qosProps = new QoSProps("");
+    }
 }
 
 DataSupplier ds;
@@ -210,8 +219,9 @@ int main(int argc, char *argv[])
 }
 
 DataSupplier::DataSupplier()
-	: m_stop(false), m_numEventsSent(0), m_numEventsSentOk(0), m_timer(0)
+	: m_stop(false), m_numEventsSent(0), m_numEventsSentOk(0), m_timer(0), m_eventTypeName(0)
 {
+    m_eventTypeName = CORBA::string_dup("My Event Type Name");
 	for(uint32_t i = 0;i < NUM_ERR;++i)
 	{
 		m_numEventsSentErr[i] = 0;
@@ -357,6 +367,18 @@ void DataSupplier::run(const SuppParams &params)
 		else
 			ACE_DEBUG((LM_INFO, "%T Channel created: %d\n", id));
 
+        // Set the channel QoS properties
+        if(params.qosProps->getChannelQoSProps().length() > 0)
+        {
+            channel->set_qos(params.qosProps->getChannelQoSProps());
+        }
+
+        // Set the channel admin properties
+        if(params.qosProps->getChannelAdminProps().length() > 0)
+        {
+            channel->set_admin(params.qosProps->getChannelAdminProps());
+        }
+
 	// Get the channel associated to the given channel ID
 	} else {
 		ACE_DEBUG((LM_INFO, "%T Getting the channel ...\n"));
@@ -373,12 +395,28 @@ void DataSupplier::run(const SuppParams &params)
 	saveChannelId(params.channelFile, id);
 
 	// Get the admin object to the event channel 
-	CosEventChannelAdmin::SupplierAdmin_var supplierAdmin 
-	  = channel->for_suppliers();
+    CosNotifyChannelAdmin::AdminID adminid;
+	CosNotifyChannelAdmin::SupplierAdmin_var supplierAdmin 
+	  = channel->new_for_suppliers(CosNotifyChannelAdmin::AND_OP, adminid);
+
+    if(params.qosProps->getAdminProps().length() > 0)
+    {
+        supplierAdmin->set_qos(params.qosProps->getAdminProps());
+    }
   
 	// Obtain a ProxyPushConsumer from the SupplierAdmin.
-	CosEventChannelAdmin::ProxyPushConsumer_var consumer
-	  = supplierAdmin->obtain_push_consumer();
+    CosNotifyChannelAdmin::ProxyID proxyid;
+	CosNotifyChannelAdmin::ProxyConsumer_var consumer
+//	  = supplierAdmin->obtain_notification_push_consumer(CosNotifyChannelAdmin::ANY_EVENT,proxyid);
+	  = supplierAdmin->obtain_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT,proxyid);
+
+    CosNotifyChannelAdmin::StructuredProxyPushConsumer_var proxyConsumer 
+        = CosNotifyChannelAdmin::StructuredProxyPushConsumer::_narrow(consumer.in());
+
+    if(params.qosProps->getProxyProps().length() > 0)
+    {
+        proxyConsumer->set_qos(params.qosProps->getProxyProps());
+    }
 
 // Check timeout policies in the Admin
 /*
@@ -413,15 +451,15 @@ void DataSupplier::run(const SuppParams &params)
         policy_list[0] = orb->create_policy (Messaging::RELATIVE_RT_TIMEOUT_POLICY_TYPE, relative_rt_timeout_as_any);  
 
         // Apply the policy at the proxy level.  
-        consumer->_set_policy_overrides(policy_list, CORBA::SET_OVERRIDE);
+        proxyConsumer->_set_policy_overrides(policy_list, CORBA::SET_OVERRIDE);
         ACE_DEBUG((LM_INFO, "%T Changed proxy timeout to be: %dms\n", params.timeout.proxy));
     }
 
 	// Invoke the connect_push_supplier operation, passing
 	// a nil PushSupplier reference to it.
-	CosEventComm::PushSupplier_var nilSupplier 
-	  = CosEventComm::PushSupplier::_nil();
-	consumer->connect_push_supplier(nilSupplier);
+	CosNotifyComm::StructuredPushSupplier_var nilSupplier 
+	  = CosNotifyComm::StructuredPushSupplier::_nil();
+	proxyConsumer->connect_structured_push_supplier(nilSupplier);
 
 	// Set a timer to periodically output the number of messages sent
     if(m_timer == 0)
@@ -483,6 +521,8 @@ void DataSupplier::run(const SuppParams &params)
 
     ACE_DEBUG((LM_INFO, "%T Sequence to be sent has been initialized with %d items\n", params.arrayLength));
 
+    CosNotification::StructuredEvent event;
+
 	for(uint32_t i = 0;(params.nItems == 0 || i < params.nItems) && m_stop == false; ++i)
 	{
 
@@ -498,11 +538,20 @@ void DataSupplier::run(const SuppParams &params)
 
 		//ACE_DEBUG((LM_INFO, "%T Iteration %d in channel %d with timestamp %q\n", i, id, (int64_t)data.timestamp));
 
-		CORBA::Any any;
-		any <<= dataSeq;
+		//CORBA::Any any;
+		//any <<= dataSeq;
+
+        m_eventTypeName = CORBA::string_dup("My Event Type");
+
+        event.header.fixed_header.event_type.domain_name = "";
+        event.header.fixed_header.event_type.type_name = m_eventTypeName;
+        event.header.fixed_header.event_name = "";
+        event.header.variable_header.length(0);
+        event.remainder_of_body <<= dataSeq;
 
 		try {
-			consumer->push(any);
+			//consumer->push(any);
+			proxyConsumer->push_structured_event(event);
 			++m_numEventsSentOk;
 	        } catch(CORBA::TIMEOUT &ex) {
 			++m_numEventsSentErr[POS_ERR_TIMEOUT];
@@ -529,7 +578,8 @@ void DataSupplier::run(const SuppParams &params)
 		ACE_DEBUG((LM_INFO, "%T Stopping it ...\n"));
 	}
 
-	consumer->disconnect_push_consumer();
+	//consumer->disconnect_push_consumer();
+	proxyConsumer->disconnect_structured_push_consumer();
 
 	if(params.channelID < 0)
 	{

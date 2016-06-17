@@ -89,8 +89,9 @@ void getParams(int argc,char *argv[],ConsumerParams &params)
     params.timeout.orb = 0;
     params.timeout.thread = 0;
     params.timeout.proxy = 0;
+    params.qosProps = NULL;
 
-	while((c = getopt(argc, argv, "c:i:o:r:d:m:s:t:")) != -1)
+	while((c = getopt(argc, argv, "c:i:o:r:d:m:q:s:t:")) != -1)
 	{
 		switch(c)
 		{
@@ -144,6 +145,9 @@ void getParams(int argc,char *argv[],ConsumerParams &params)
         case 'm':
             TimevalUtils::fillTimeout(params.timeout, optarg);
             break;
+        case 'q':
+            params.qosProps = new QoSProps(optarg);
+            break;
 		case 's':
 			str = optarg;
 			if(str.find_first_not_of("0123456789.") != std::string::npos)
@@ -178,6 +182,11 @@ void getParams(int argc,char *argv[],ConsumerParams &params)
 	{
 		printUsage("IOR of the Notify Service is required");
 	}
+
+    if(params.qosProps == NULL)
+    {
+        params.qosProps = new QoSProps("");
+    }
 }
 
 Consumer consumer;
@@ -186,7 +195,7 @@ void signal_handler(int sig)
 {
 	ACE_DEBUG((LM_INFO, "%T Stopping it ...\n"));
     try {
-	    consumer.disconnect_push_consumer();
+	    consumer.disconnect_structured_push_consumer();
     } catch(...) {}
 }
 
@@ -288,22 +297,41 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
         }
 
 
+        CosNotifyChannelAdmin::AdminID adminid;
+        CosNotifyChannelAdmin::ProxyID proxyid;
 		CosNotifyChannelAdmin::EventChannel_var channel;
-		CosEventChannelAdmin::ConsumerAdmin_var consumer_admin;
-		CosEventChannelAdmin::ProxyPushSupplier_var supplier;
-		CosEventComm::PushConsumer_var consumer;
+		CosNotifyChannelAdmin::ConsumerAdmin_var consumer_admin;
+		CosNotifyChannelAdmin::ProxySupplier_var supplier;
+		CosNotifyComm::StructuredPushConsumer_var consumer;
 		CosNotifyChannelAdmin::ChannelID channelID = params.channelID;
 
-		if(getNotificationChannel(params.iorNS,channelID,channel,errMsg) == false)
+		if(getNotificationChannel(params.iorNS,channelID,channel,errMsg,params) == false)
 		{
 			ACE_DEBUG((LM_ERROR, "Error: %s", errMsg.c_str()));
 			return false;
 		}
 
-		consumer_admin = channel->for_consumers ();
-		supplier = consumer_admin->obtain_push_supplier ();
+		consumer_admin = channel->new_for_consumers (CosNotifyChannelAdmin::AND_OP, adminid);
+
+        if(params.qosProps->getAdminProps().length() > 0)
+        {
+            ACE_DEBUG((LM_INFO, "Set QoS properties to admin\n"));
+            consumer_admin->set_qos(params.qosProps->getAdminProps());
+        }
+
+		supplier = consumer_admin->obtain_notification_push_supplier (CosNotifyChannelAdmin::STRUCTURED_EVENT,proxyid);
+
+        CosNotifyChannelAdmin::StructuredProxyPushSupplier_var proxySupplier
+                    = CosNotifyChannelAdmin::StructuredProxyPushSupplier::_narrow(supplier.in());
+
+        if(params.qosProps->getProxyProps().length() > 0)
+        {
+            ACE_DEBUG((LM_INFO, "Set QoS properties to proxy supplier\n"));
+            proxySupplier->set_qos(params.qosProps->getProxyProps());
+        }
+
 		consumer = this->_this ();
-		supplier->connect_push_consumer (consumer.in ());
+		proxySupplier->connect_structured_push_consumer (consumer.in ());
 
 		ACE_DEBUG((LM_INFO, "Waiting for events in channel %d ...\n", channelID));
 
@@ -337,7 +365,7 @@ bool Consumer::run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params)
 	return true;
 }
 
-void Consumer::push (const CORBA::Any &event)
+void Consumer::push_structured_event (const CosNotification::StructuredEvent &event)
 {
 	uint64_t currTimestamp;
 	int64_t tsSupplierDiff;
@@ -348,9 +376,11 @@ void Consumer::push (const CORBA::Any &event)
 	//timeval tSuppConDiff;
 	timeval tEvent;
 
+    //const clock_t begin_time = clock();
+
     benchmark::MountStatusData *data;
 	benchmark::MountStatusDataSeq *dataSeq;
-	if(event >>= dataSeq)
+	if(event.remainder_of_body >>= dataSeq)
 	{
 		++m_numEventsReceived;
 
@@ -413,6 +443,8 @@ void Consumer::push (const CORBA::Any &event)
 		ACE_DEBUG((LM_WARNING, "Event received but it's not of type MountStatusDataSeq\n"));
 	}
 
+    //ACE_DEBUG((LM_INFO, "%T Elapsed time: %.f\n", float( clock () - begin_time ) /  CLOCKS_PER_SEC));
+
 	if(m_sleepTimeRecvEvent > 0)
 	{
 		ACE_OS::sleep(m_sleepTimeRecvEvent);
@@ -429,7 +461,7 @@ uint64_t Consumer::getNumEventsReceived() const
 	return m_numEventsReceived;
 }
 
-void Consumer::disconnect_push_consumer (void)
+void Consumer::disconnect_structured_push_consumer (void)
 {
     m_orb->destroy();
 	m_orb->shutdown(0);
@@ -459,7 +491,7 @@ bool Consumer::init_ORB(int argc, ACE_TCHAR* argv[])
 bool Consumer::getNotificationChannel(const std::string &iorNS,
 		CosNotifyChannelAdmin::ChannelID &channelID,
 		CosNotifyChannelAdmin::EventChannel_var &channel,
-		std::string &errMsg)
+		std::string &errMsg,const ConsumerParams &params)
 {
 	try {
 // Get the Notification Channel Factory
@@ -486,6 +518,21 @@ bool Consumer::getNotificationChannel(const std::string &iorNS,
 				throw std::runtime_error("channel cannot be created!");
 			} else {
 				ACE_DEBUG((LM_INFO, "%T Channel created: %d\n", channelID));
+
+                // Set QoS properties
+                if(params.qosProps->getChannelQoSProps().length() > 0)
+                {
+                    ACE_DEBUG((LM_INFO, "Set QoS properties to the channel\n"));
+                    channel->set_qos(params.qosProps->getChannelQoSProps());
+                }
+
+                // Set Admin properties
+                if(params.qosProps->getChannelAdminProps().length() > 0)
+                {
+                    ACE_DEBUG((LM_INFO, "Set Admin properties to the channel\n"));
+                    channel->set_admin(params.qosProps->getChannelAdminProps());
+                }
+
 				return true;
 			}
 		} else {
