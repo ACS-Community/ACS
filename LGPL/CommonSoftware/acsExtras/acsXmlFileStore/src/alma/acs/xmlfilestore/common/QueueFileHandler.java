@@ -35,9 +35,13 @@ import alma.acs.util.IsoDateFormat;
 import alma.acs.util.stringqueue.TimestampedStringQueueFileHandler;
 
 /**
+ * Implements {@link TimestampedStringQueueFileHandler} to rename the file once it has been
+ * processed.
+ * The final name initially agreed in ICT-4314, has been redefined in ICT-5523
+ * to show the creation and closing timestamps of the file instead of
+ * oldest and newer timestamps in the string.
  * 
- * @author almadev
- *
+ * @author acaproni
  */
 public class QueueFileHandler extends TimestampedStringQueueFileHandler {
 	private static final String FILENAME_SUFFIX = ".xml";
@@ -115,7 +119,8 @@ public class QueueFileHandler extends TimestampedStringQueueFileHandler {
 	 */
 	@Override
 	public File getNewFile() throws IOException {
-		// ICT-4314 defines the filename format for a new file
+		// ICT-4314 defines the filename format for a new file but it has been ameneded by ICT-5523.
+		// The final renaming of the file is done by the fileProcessed(...) 
 		final String startTimestamp = IsoDateFormat.formatCurrentDate();
 		final String endTimestamp = "YYYY-MM-DDTHH:MM:SS.mmm";
 		String fileName = String.format(fileNameTemplate, startTimestamp, endTimestamp);
@@ -123,11 +128,16 @@ public class QueueFileHandler extends TimestampedStringQueueFileHandler {
 	}
 
 	/**
+	 * In ICT-5523, it has been decided that the file name must be that of the creation and closing of the file.
+	 * 
 	 * @see TimestampedStringQueueFileHandlerr#fileProcessed(java.io.File,java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void fileProcessed(File oldFile, String earliestTimestamp, String lastTimestamp) {
-		final String newFileName = String.format(fileNameTemplate, earliestTimestamp, lastTimestamp);
+		String fileName = oldFile.getName();
+		int pos = fileName.lastIndexOf('_');
+		String tmp = fileName.substring(0, pos+1);
+		String newFileName= tmp+IsoDateFormat.formatCurrentDate()+".xml";
 		final File newFile = new File(folderForXMLs, newFileName);
 		try {
 			Files.move(oldFile.toPath(), newFile.toPath());
