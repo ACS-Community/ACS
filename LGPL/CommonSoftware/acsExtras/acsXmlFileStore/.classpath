@@ -27,5 +27,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/archive_xmlstore_if.jar" sourcepath="/ACSROOT/lib/archive_xmlstore_if.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar" sourcepath="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar" sourcepath="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsAlarmClients.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/alarmsysteminterface.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
