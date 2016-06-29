@@ -450,20 +450,24 @@ bool Helper::getChannelTimestamp(time_t &timestamp)
 	CosNaming::BindingIterator_var it;
 	CosNaming::BindingList_var bl;
 
-	namingContext_m->list(100, bl, it);
-    found = getChannelTimestamp(timestamp, bl.in());
+    try {
+        namingContext_m->list(100, bl.out(), it.out());
+        found = getChannelTimestamp(timestamp, bl.in());
 
-    if(!CORBA::is_nil(it.in()) && false == found)
-    {
-        CORBA::Boolean more;
-
-        do
+        if(!CORBA::is_nil(it.in()) && false == found)
         {
-            more = it->next_n(100, bl);
-            found = getChannelTimestamp(timestamp, bl.in());
-        } while(more && false == found);
+            CORBA::Boolean more;
 
-        it->destroy();
+            do
+            {
+                more = it->next_n(100, bl.out());
+                found = getChannelTimestamp(timestamp, bl.in());
+            } while(more && false == found);
+
+            it->destroy();
+        }
+    } catch(CORBA::Exception &ex) {
+        return false;
     }
 
     return found;        
