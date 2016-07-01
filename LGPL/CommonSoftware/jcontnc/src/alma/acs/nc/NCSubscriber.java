@@ -21,10 +21,13 @@ package alma.acs.nc;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import org.apache.commons.scxml.ErrorReporter;
 import org.apache.commons.scxml.EventDispatcher;
@@ -96,6 +99,7 @@ import alma.acsnc.OSPushConsumerOperations;
 import alma.acsnc.OSPushConsumerPOA;
 import alma.acsnc.OSPushConsumerPOATie;
 import alma.acscommon.NC_KIND;
+import alma.acscommon.NC_KIND_NCSUPPORT;
 import org.omg.CosNaming.NameComponent;
 
 /**
@@ -356,6 +360,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 						currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName == null ? "none" : channelNotifyServiceDomainName);
 			}
 
+
 			// The user might create this object, and later call startReceivingEvents(), without attaching any receiver.
 			// If so, it's useless to get all the events, so we start with an all-exclusive filter in the server
 			discardAllEvents();
@@ -391,6 +396,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			sharedConsumerAdmin = null;
 			channel = null;
 		}
+
+        // Remove the proxy registered in the Naming Service
+        removeProxyFromNS();
 		
 		super.destroyEnvironmentAction(evtDispatcher, errRep, scInstance, derivedEvents);
 	}
@@ -807,6 +815,16 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			ex2.setInfo("Failed to create proxy supplier on NC '" + channelName + "' for client '" + clientName + "': " + errMsg);
 			throw ex2;
 		}
+
+        // Register the consumer to the Naming Service in order to know when to reconnect to the channel in case the channel restarts
+        if(false == setConsumerTimestamp(ret)) {
+            errMsg = "the proxy supplier couldn't be registered to the Naming Service";
+            LOG_NC_SupplierProxyCreation_FAIL.log(logger, clientName, channelName, getNotificationFactoryName(), errMsg);
+            AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx();
+            ex2.setInfo("Failed to create proxy supplier on NC '" + channelName + "' for client '" + clientName + "': " + errMsg);
+            throw ex2;
+        }
+
 		return ret;
 	}
 
@@ -1215,6 +1233,11 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
     private int eventReceptionTimeout = 2;
 
     /**
+     * Proxy name registered to the Naming Service when the subscriber is connected to the channel
+     */
+    private String registeredProxyName = "";
+
+    /**
      * Method that checks if the connection to the Notification Channel is still alive. In order
      * to check it, it gets the last timestamp registered in the Naming Service. If the timestamp
      * cannot be retrieved it calls the _non_existent method of the proxy supplier.
@@ -1225,6 +1248,10 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
             return false;
         }
 
+        if(shouldReconnectDueToNotRegisteredProxy()) {
+            return true;
+        } else {
+/*********************************************************************************************
         // Reconnect when the consumer has a timestamp older than the one registered in the Naming Service
         Date nsChannelTimestamp = helper.getChannelTimestamp();
         Date lastChannelTimestamp = helper.getLastRegisteredChannelTimestamp();
@@ -1242,6 +1269,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
         // Timestamp not registered into the Naming Service, we will check the connection by calling a proxy's method            
         } else {
+*********************************************************************************************/        
             try {
                 if(proxySupplier._non_existent()) {
                     return true;
@@ -1481,4 +1509,89 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
         }
     }
 
+    private boolean removeProxyFromNS() {
+        NamingContext namingService = helper.getNamingService();
+        if(null == namingService || registeredProxyName.isEmpty()) {
+            return false;
+        }
+
+        try {
+                String kind = NC_KIND_NCSUPPORT.value; 
+                NameComponent[] t_Name = { new NameComponent(registeredProxyName, kind) };
+                namingService.unbind(t_Name);
+                registeredProxyName = "";
+                return true;
+        } catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
+            return true;
+        } catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
+        } catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
+        }
+        return false;
+    }
+
+    private boolean setConsumerTimestamp(StructuredProxyPushSupplier proxy) {
+        NamingContext namingService = helper.getNamingService();
+        if(null == namingService || null == proxy) {
+            return false;
+        }
+        
+        Random random = new Random(System.currentTimeMillis());
+
+        int retries = 30;
+        do {
+            Date timestamp = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String id = "Subscriber-" + helper.combineChannelAndDomainName(channelName,channelNotifyServiceDomainName) 
+                        + "-" + dateFormat.format(timestamp)
+                        + String.format("%05d", random.nextInt(Integer.MAX_VALUE));
+            String kind = NC_KIND_NCSUPPORT.value; 
+
+            try {
+                NameComponent[] t_Name = { new NameComponent(id, kind) };
+                namingService.bind(t_Name, proxy);
+                registeredProxyName = id;
+                return true;
+            } catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
+                logger.log(AcsLogLevel.ERROR, "Binding proxy supplier of channel '" + channelName + "' threw a NotFound exception", e);
+            } catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
+                logger.log(AcsLogLevel.ERROR, "Binding proxy supplier of channel '" + channelName + "' threw a CannotProceed exception", e);
+            } catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
+                logger.log(AcsLogLevel.ERROR, "Binding proxy supplier of channel '" + channelName + "' threw a InvalidName exception", e);
+            } catch (org.omg.CosNaming.NamingContextPackage.AlreadyBound e) {
+                // Retry, the name is already taken
+            }
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex1) {
+                // too bad
+            }
+            --retries;
+        } while(retries > 0);
+
+        return false;
+    }
+
+    private boolean shouldReconnectDueToNotRegisteredProxy() {
+        if(registeredProxyName.isEmpty()) {
+            return false;
+        }
+
+        NamingContext namingService = helper.getNamingService();
+        if(null == namingService) {
+            return false;
+        }
+
+        try {
+			NameComponent[] t_Name = { new NameComponent(registeredProxyName, NC_KIND_NCSUPPORT.value) };
+			org.omg.CORBA.Object notifyFactoryObj = namingService.resolve(t_Name);
+        } catch (org.omg.CosNaming.NamingContextPackage.NotFound ex) {
+            return true; // We have to reconnect to the channel when the proxy is not found in the Naming Service 
+        } catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
+        } catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
+        }
+
+        return false;
+
+    }
 }
