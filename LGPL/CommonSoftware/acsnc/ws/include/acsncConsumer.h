@@ -547,6 +547,20 @@ class Consumer :
     ACE_Thread_Mutex checkerThMutex_m;
     int eventReceptionTimeout_m;
     int connectionCheckerFreq_m;
+
+
+    /**
+     * Unbind the proxy from the Naming Service
+     */
+    bool removeProxyFromNS();
+     /**
+     * Sets the proxy supplier timestamp by registering it to the Naming Service
+     * @return true when the proxy supplier could be registered to the Naming Service
+     */
+    bool setConsumerTimestamp();
+    bool shouldReconnectDueToNotRegisteredProxy();
+   
+    std::string registeredProxySupplierName_m;
     ///////////////////////////////////////////////////////////////////////////////////////
 };
  }; 
