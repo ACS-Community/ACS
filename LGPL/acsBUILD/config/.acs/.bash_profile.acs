@@ -732,7 +732,11 @@ fi
 # Maven stuff
 if [ X"$M2_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-      M2_HOME=$ALMASW_INSTDIR/maven
+	UbuntVer=`lsb_release -d | awk '{print $2}'`
+	if  [  "$UbuntVer" != "Ubuntu" ]
+	then
+      		M2_HOME=$ALMASW_INSTDIR/maven
+	fi
 fi
 
 # RTOS
@@ -1437,6 +1441,7 @@ export OSYSTEM
 export PATH_SEP
 export ACS_TMP
 export CYGWIN_VER
+
 if [ -f $PYTHON_ROOT/bin/activate ]; then
      source $PYTHON_ROOT/bin/activate
 fi
