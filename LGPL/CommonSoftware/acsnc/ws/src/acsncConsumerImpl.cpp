@@ -611,7 +611,7 @@ void Consumer::addSubscription(const char* type_name)
  * Due to ICT-599 this code have been commented. Suppliers don't need to get notified 
  * This method is used to communicate to the suppliers the subscription changes but in fact
  * ACS suppliers do not do anything with subscription changes (Look at acsncSupplier::subscription_change).
- *
+ */ //Reverted due to ICT-7771 and new comments in ICT-599
 	ACS_TRACE("Consumer::addSubscription");
 
 	CosNotification::EventTypeSeq added(1);
@@ -674,7 +674,6 @@ void Consumer::addSubscription(const char* type_name)
 		aspEx.log(LM_DEBUG);
 		throw aspEx;
 	}
-*/    
 }//addSubscription
 //-----------------------------------------------------------------------------
 void Consumer::removeSubscription(const char* type_name)
@@ -683,7 +682,7 @@ void Consumer::removeSubscription(const char* type_name)
  * Due to ICT-599 this code have been commented. Suppliers don't need to get notified 
  * This method is used to communicate to the suppliers the subscription changes but in fact
  * ACS suppliers do not do anything with subscription changes (Look at acsncSupplier::subscription_change).
- *
+ */ //Reverted due to ICT-7771 and new comments in ICT-599
     ACS_TRACE("Consumer::removeSubscription");
     
     
@@ -733,7 +732,6 @@ void Consumer::removeSubscription(const char* type_name)
     	aspEx.log(LM_DEBUG);
     	throw aspEx;
     }
-*/
 }//removeSubscription
 //-----------------------------------------------------------------------------
 int Consumer::addFilter(const char* type_name,
