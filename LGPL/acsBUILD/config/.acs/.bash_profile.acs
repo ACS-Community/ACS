@@ -716,12 +716,12 @@ fi
 # Ant and JacORB stuff
 if [ X"$ANT_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   if [ "$DISTRO" = "DEBIAN" ]
-   then
-      ANT_HOME=/usr/share/ant
-   else
-      ANT_HOME=$ALMASW_INSTDIR/ant
-   fi
+  	if [ "$DISTRO" = "DEBIAN" ]
+   	then
+      		ANT_HOME=/usr/share/ant
+   	else
+     		ANT_HOME=$ALMASW_INSTDIR/ant
+  	fi
 fi
 
 if [ X"$JACORB_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
