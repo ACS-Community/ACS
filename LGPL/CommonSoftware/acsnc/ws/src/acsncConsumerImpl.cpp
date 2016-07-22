@@ -199,9 +199,6 @@ Consumer::disconnect()
 
     callback_m->disconnect();
 
-    // Remove the proxy registered in the Naming Service
-    removeProxyFromNS();
-
     if(reference_m.in()!=0)
 	{  
 	//suspend the connection first
@@ -326,17 +323,6 @@ Consumer::shouldReconnect()
         return false;
     }
 
-    if(shouldReconnectDueToNotRegisteredProxy())
-    {
-        return true;
-
-    // Could be that the naming context was null or the registered name was empty or some kind of problem with the corba call
-    // so we still could check the connection by calling a proxy's method. Doing this could not always work
-    // because the restart of the NC reinitializes object IDs so it could happen that the current proxy shares
-    // the same ID as another proxy owned by a consumer that already reconnected. In this case the call won't fail.        
-    } else {
-
-/*****************************************************************************************
     // Reconnect when the consumer has a timestamp older than the one registered in the Naming Service
     time_t channelTimestamp;
     if(true == getChannelTimestamp(channelTimestamp))
@@ -351,7 +337,6 @@ Consumer::shouldReconnect()
     // Timestamp is not registered into the Naming Service, we will check the connection by calling
     // a proxy's method
     } else {
-******************************************************************************************/
         try {
             if(proxySupplier_m->_non_existent()) {
                 return true;
@@ -904,16 +889,6 @@ Consumer::createConsumer()
 	throw err.getCORBAProblemEx();
 	}
     
-    // Register the consumer to the Naming Service in order to know when to reconnect to the channel
-    if(false == setConsumerTimestamp())
-    {
-        // The consumer couldn't be registered to the Naming Service
-        ACS_SHORT_LOG((LM_ERROR, "Consumer::createConsumer failed for the '%s' channel because the proxy supplier couldn't be registered to the Naming Service", 
-                    channelName_mp));
-        CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Consumer::createConsumer");
-        throw err.getCORBAProblemEx();
-    }
-
     //now the developer must call consumerReady() to receive events.
 }
 
@@ -1008,105 +983,6 @@ Consumer::getFilterLanguage()
     //return a constant defined in acsnc.idl to be portable in the other 
     //programming languages supported by ACS.
     return acsnc::FILTER_LANGUAGE_NAME;
-}
-//-----------------------------------------------------------------------------
-bool Consumer::removeProxyFromNS()
-{
-    if (CORBA::is_nil(namingContext_m.in()) == true || registeredProxySupplierName_m.empty()) 
-    {
-        return false;
-    }
-
-    try 
-    {
-        CosNaming::Name name(1);
-        name.length(1);
-        name[0].id = CORBA::string_dup(registeredProxySupplierName_m.c_str());
-        name[0].kind = acscommon::NC_KIND_NCSUPPORT; 
-        namingContext_m->unbind(name);
-        registeredProxySupplierName_m = "";
-        return true;
-    } catch(CosNaming::NamingContext::NotFound &ex) {
-        return true;
-    } catch(CosNaming::NamingContext::CannotProceed &ex) {
-    } catch(CosNaming::NamingContext::InvalidName &ex) {
-    }
-    return false;
-}
-//-----------------------------------------------------------------------------
-bool Consumer::setConsumerTimestamp()
-{
-    if (CORBA::is_nil(namingContext_m.in()) == true || CORBA::is_nil(proxySupplier_m.in()) == true) 
-    {
-        return false;
-    }
-
-    time_t timer;
-    CosNaming::Name nameTimestamp(1);
-    nameTimestamp.length(1);
-	ACE_OS::srand((unsigned int)ACE_OS::gettimeofday().msec());
-
-    nameTimestamp[0].kind = acscommon::NC_KIND_NCSUPPORT; 
-
-    std::string name;
-    int32_t retries = 30;
-    do {
-        time(&timer);
-
-        std::ostringstream oss;
-        oss << "Consumer-" << channelAndDomainName_m << "-" << timestamp2str(timer) << "-" << ACE_OS::rand();
-        name = oss.str();
-        nameTimestamp[0].id = CORBA::string_dup(name.c_str());
-
-        try 
-        {
-            namingContext_m->bind(nameTimestamp, proxySupplier_m.in());
-            registeredProxySupplierName_m = name;
-            return true;
-        } catch(CosNaming::NamingContext::NotFound &ex) {
-            ACS_SHORT_LOG((LM_ERROR, "Consumer::setConsumerTimestamp binding the proxy supplier of the channel '%s' thrown a NotFound exception",
-                        registeredProxySupplierName_m.c_str()));
-        } catch(CosNaming::NamingContext::CannotProceed &ex) {
-            ACS_SHORT_LOG((LM_ERROR, "Consumer::setConsumerTimestamp binding the proxy supplier of the channel '%s' thrown a CannotProceed exception",
-                        registeredProxySupplierName_m.c_str()));
-        } catch(CosNaming::NamingContext::InvalidName &ex) {
-            ACS_SHORT_LOG((LM_ERROR, "Consumer::setConsumerTimestamp binding the proxy supplier of the channel '%s' throw a InvalidName exception",
-                        registeredProxySupplierName_m.c_str()));
-        } catch(CosNaming::NamingContext::AlreadyBound &ex) {
-            // Retry, the name is already taken
-        }
-        --retries;
-        sleep(2);
-    } while(retries > 0);
-
-    return false;
-}
-//-----------------------------------------------------------------------------
-bool Consumer::shouldReconnectDueToNotRegisteredProxy()
-{
-    if(registeredProxySupplierName_m.empty())
-    {
-        return false;
-    }
-
-    if(true == CORBA::is_nil(namingContext_m.in()))
-    {
-        return false;
-    }
-
-    try {
-        CosNaming::Name name(1);
-        name.length(1);
-        name[0].kind = acscommon::NC_KIND_NCSUPPORT; 
-        name[0].id = CORBA::string_dup(registeredProxySupplierName_m.c_str());
-        namingContext_m->resolve(name);
-    } catch(CosNaming::NamingContext::NotFound &ex) {
-        return true; // We need to reconnect when the entry is not found in the NS
-    } catch(CosNaming::NamingContext::CannotProceed &ex) {
-    } catch(CosNaming::NamingContext::InvalidName &ex) {
-    }
-
-    return false;
 }
 //-----------------------------------------------------------------------------
  }; 
