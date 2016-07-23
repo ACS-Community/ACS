@@ -90,7 +90,7 @@ laserSourceAcsSpecific_OBJECTS   = 	CERNASIMessage \
 									AcsAlarmPublisher \
 									AlarmSupplier
 laserSourceAcsSpecific_LIBS = basenc ACSJMSMessageEntityStubs acsnc acsAlSysSource errTypeAlarmService acsutil
-laserSourceAcsSpecific_LDFLAGS = --export-dynamic -dl -fpic
+laserSourceAcsSpecific_LDFLAGS = -rdynamic -dl -fpic
 
 #
 # Scripts (public and local)
