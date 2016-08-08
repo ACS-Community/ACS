@@ -267,10 +267,10 @@ install_doc:
 
 install_config:
 	@echo " . . . installing user account configuration files $(PRJTOP)/config"
-	-@tar -cf - --exclude=".svn" -C ../config .acs  | gtar -xf - -C $(PRJTOP)/config; \
+	-@tar -cf - --exclude=".svn" -C ../config .acs  | tar -xf - -C $(PRJTOP)/config; \
 	         chmod -R ug+rw $(PRJTOP)/config/.acs;
 	@echo " . . . copying rc.d configuration files for DHCP in $(PRJTOP)/config"
-	-@tar -cf - --exclude=".svn" -C ../config rc.d  | gtar -xf - -C $(PRJTOP)/config; \
+	-@tar -cf - --exclude=".svn" -C ../config rc.d  | tar -xf - -C $(PRJTOP)/config; \
 	         chmod -R ug+rw $(PRJTOP)/config/rc.d;
 
 install_cdb:

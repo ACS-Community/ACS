@@ -89,7 +89,7 @@ db :
 preparePatch:
 	mv doxygen.patch doxygen.patch.old
 	rm -rf tmp_unpack; mkdir -p tmp_unpack
-	cd tmp_unpack; gtar -xzf ../doxygen-$(DOX_VER).src.tar.gz; mv doxygen-$(DOX_VER) doxygen-$(DOX_VER).orig
+	cd tmp_unpack; tar -xzf ../doxygen-$(DOX_VER).src.tar.gz; mv doxygen-$(DOX_VER) doxygen-$(DOX_VER).orig
 	cd doxygen-$(DOX_VER);
 	LC_ALL=C TZ=UTC0 diff -Naur tmp_unpack/doxygen-$(DOX_VER).orig doxygen-$(DOX_VER)  > doxygen.patch; true
 	rm -rf tmp_unpack
