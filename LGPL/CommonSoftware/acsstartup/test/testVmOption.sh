@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 getChildProc() {
 	name=$1

@@ -26,9 +26,13 @@ ifeq ($(os),Linux)
   ifeq ($(majorRelNo),6)
     GMP =
   endif
+  ubuntuDist:= $(basename $(shell (lsb_release -d | awk '{print $2}')))
+  ifneq (,$(findstring Ubuntu,$(ubuntuDist)))
+   GMP =
+  endif
 endif
 
-MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt FITS astyle swig xercesc xercesj castor $(GMP) gui xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache
+MODULES_TOOLS = tat expat loki extjars antlr hibernate extpy cppunit getopt FITS astyle swig xercesc xercesj castor $(GMP) gui xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache
 
 MODULES_ACS = jacsutil xmljbind xmlpybind acserridl acsidlcommon acsutilpy acsutil acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task acstime acsnc acsncdds acsdaemon acslog acstestcompcpp acsexmpl jlogEngine acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities jcont jcontnc nsStatisticsService jacsalarmtest jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssim bulkDataNT bulkData containerTests acscourse ACSLaser acsGUIs
 ######## end Modules ###########################
@@ -61,9 +65,6 @@ endif
 HAS_BENCHMARK = $(shell if [ -d Benchmark ]; then echo "TRUE"; else echo "FALSE"; fi)
 ifeq ($(HAS_BENCHMARK),TRUE)
    MODULES_BENCHMARK = util analyzer
-   ifeq ($(os),Linux)
-	MODULES_BENCHMARK += valgrind
-   endif
 endif
 
 #
@@ -259,7 +260,7 @@ prepare:
 	@cd $(MODULE_PREFIX); $(SHELL) acsBUILD/src/acsBUILDPrepareKit.sh >> ../build.log 2>& 1
 	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Kit/acs/src/ all install clean >> build.log 2>& 1 || echo "### ==> FAILED! " | tee -a build.log
 	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Kit/acstempl/src/ all install clean >> build.log 2>& 1 || echo "### ==> FAILED! " | tee -a build.log
-	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Tools/doxygen/src/ all install clean >> build.log 2>& 1 || echo "### ==> Doxygen FAILED! " | tee -a build.log
+#	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Tools/doxygen/src/ all install clean >> build.log 2>& 1 || echo "### ==> Doxygen FAILED! " | tee -a build.log
 
 #
 # Update of all core components

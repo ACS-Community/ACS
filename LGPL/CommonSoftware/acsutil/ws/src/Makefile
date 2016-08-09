@@ -72,13 +72,13 @@ LIBRARIES       = acsutil
 LIBRARIES_L     =
 
 acsutil_OBJECTS	= acsutilWildcard acsutilFindFile acsutilLL acsutilTempFile acsutilPortsImpl acsutilAnyAide acsutilTimeStamp acsutilORBHelper
-acsutil_LIBS    = acscommonStubs
+acsutil_LIBS    = acscommonStubs TAO_DynamicAny
 
 #
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = acsutilTATPrologue acsutilTATEpilogue acsutilTATTestRunner acsutilProfiler acsutilDiffTrap acsutilRedo \
-		  acsutilBlock acsutilAwaitContainerStart ipython
+		  acsutilBlock acsutilAwaitContainerStart
 SCRIPTS_L       = 
 
 #
