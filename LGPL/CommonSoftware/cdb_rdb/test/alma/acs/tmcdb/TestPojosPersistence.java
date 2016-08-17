@@ -129,6 +129,7 @@ public class TestPojosPersistence extends TestCase {
 				fail("Duplicated PK allowed!"); // Should fail, TMCDB already contains a "TMCDB" record
 			} catch(HibernateUtilException e) {
 				hibernateUtil.rollbackTransaction();
+				hibernateUtil.getSession().clear();
 			}
 
 			Configuration config = new Configuration();
