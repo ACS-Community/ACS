@@ -39,6 +39,20 @@
 namespace AcsBulkdata
 {
 
+struct statisticsStruct {
+	double startSendDuration;
+	DDS::DataWriterProtocolStatus startSendDwps;
+	DDS::DataWriterCacheStatus startSendDwcs;
+
+	double stopSendDuration;
+	DDS::DataWriterProtocolStatus stopSendDwps;
+	DDS::DataWriterCacheStatus stopSendDwcs;
+
+	std::vector<double> sendDataDuration;
+	std::vector<DDS::DataWriterProtocolStatus> sendDataDwps;
+	std::vector<DDS::DataWriterCacheStatus> sendDataDwcs;
+} ;
+
 class BulkDataNTSenderStream;
 
 class BulkDataNTSenderFlow : public BulkDataNTFlow
@@ -118,6 +132,8 @@ public:
 	 * @param print: if true log the statistics
 	 */
 	void getStatistics(bool log);
+	void getDelayedStatistics(bool log, int flowMethod);
+	void statisticsLogs();
 
 protected:
 
@@ -166,6 +182,9 @@ protected:
 	void operator=(const BulkDataNTSenderFlow&);
 	/// ALMA C++ coding standards state copy constructors should be disabled.
 	BulkDataNTSenderFlow(const BulkDataNTSenderFlow&);
+
+	statisticsStruct delayedStatistics;
+
 };//class BulkDataSenderFlow
 
 };
