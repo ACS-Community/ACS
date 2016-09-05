@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimeter Array
 # Copyright (c) ESO - European Southern Observatory, 2011

@@ -76,7 +76,7 @@ install : clean_install install_all
 
 unpack :
 	@echo ". . . unpacking the tar file . . . "
-	@gtar -xzf xerces-c-$(XERCES_VER).tar.gz
+	@tar -xzf xerces-c-$(XERCES_VER).tar.gz
 
 configure : unpack
 	@echo ". . . running configure . . . "

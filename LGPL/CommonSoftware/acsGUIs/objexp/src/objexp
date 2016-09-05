@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 . acsstartupAcsPorts
 #
 # We pass down also any other command line parameter, assumed to be given as 

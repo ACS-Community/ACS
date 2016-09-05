@@ -72,7 +72,7 @@ unpack :
           then \
             echo ". . . unpacking the tar files . . . "; \
             rm -rf last_patched; \
-            gtar -xzf cppunit-$(CPPUNIT_TAR).tar.gz; \
+            tar -xzf cppunit-$(CPPUNIT_TAR).tar.gz; \
           fi
 
 doxyfile : unpack
@@ -89,7 +89,7 @@ last_patched: unpack cppunit-gcc-3_4_3.patch
 preparePatch:
 	mv cppunit-gcc-3_4_3.patch cppunit-gcc-3_4_3.patch.old
 	rm -rf tmp_unpack; mkdir -p tmp_unpack
-	cd tmp_unpack; gtar -xzf ../cppunit-$(CPPUNIT_VER).tar.gz; mv cppunit-$(CPPUNIT_VER) cppunit-$(CPPUNIT_VER).orig
+	cd tmp_unpack; tar -xzf ../cppunit-$(CPPUNIT_VER).tar.gz; mv cppunit-$(CPPUNIT_VER) cppunit-$(CPPUNIT_VER).orig
 	LC_ALL=C TZ=UTC0 diff -Naur tmp_unpack/cppunit-$(CPPUNIT_VER).orig cppunit-$(CPPUNIT_VER)  >cppunit-gcc-3_4_3.patch; true
 	rm -rf tmp_unpack
 	@echo " . . . patch file prepared"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 : ${JACORB_HOME:="C:\cygwin\alma\ACS-9.0\JacORB"}
 export JACORB_HOME

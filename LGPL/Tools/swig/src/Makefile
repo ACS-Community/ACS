@@ -189,7 +189,7 @@ LIBS = -lstdc++
 
 SWIG: swig-1.3.31.tar.gz
 	@echo "== Building swig"
-	@gtar -zxvf swig-1.3.31.tar.gz
+	@tar -zxvf swig-1.3.31.tar.gz
 	@cd swig-1.3.31; ./configure --prefix=$(INSTALL_ROOT); $(MAKE) $(MAKE_PARS); $(MAKE) $(MAKE_PARS) install
 
 #

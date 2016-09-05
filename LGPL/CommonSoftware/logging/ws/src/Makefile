@@ -71,12 +71,15 @@ loggingService_OBJECTS = loggingService loggingACSLogFactory_i \
                          loggingACSStructuredPushSupplierXml loggingACSLog_i \
                          loggingHelper  loggingAcsLogServiceImpl
 
-loggingService_LIBS = logging logging_idlStubs TAO_CosNotification_Serv
-#loggingService_LDFLAGS= -ggdb
+loggingService_LIBS = logging logging_idlStubs acsutil TAO_CosNotification_Serv baselogging TAO_CosNaming TAO_DsLogAdmin TAO_DsLogAdmin_Skel \
+			ACE TAO TAO_PortableServer TAO_CosNotification_Skel TAO_CosNotification TAO_AnyTypeCode loki TAO_DsLogAdmin_Serv \
+			TAO_IORTable
+loggingService_LDFLAGS= -Wl,--no-as-needed
 
 loggingClient_OBJECTS = loggingClient loggingHelper 
-loggingClient_LIBS = logging TAO_CosNotification_Serv
-#loggingClient_LDFLAGS= -ggdb
+loggingClient_LIBS = logging TAO_CosNotification_Serv logging_idlStubs acsutil baselogging TAO_CosNotification_Skel TAO_CosNotification TAO_PortableServer \
+			TAO_AnyTypeCode TAO ACE loki TAO_CosNaming
+loggingClient_LDFLAGS= -Wl,--no-as-needed
 
 # <brief description of xxxxx program>
 
@@ -142,7 +145,7 @@ logging_OBJECTS 	=	logging loggingLoggable loggingXMLElement loggingXMLParser \
 						loggingACSRemoteAppender loggingACSHierarchyMaintainer \
 						loggingLog4cpp loggingStopWatch
 						
-logging_LIBS    =	logging_idlStubs acsutil acscommonStubs baselogging log4cpp pthread rt
+logging_LIBS    =	logging_idlStubs acsutil acscommonStubs baselogging log4cpp pthread rt TAO_CosNaming
 logging_LDFLAGS =	-gdb
 logging_CFLAGS  = -DLOGGING_BUILD_DLL
 

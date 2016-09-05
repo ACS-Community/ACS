@@ -193,7 +193,7 @@ CSOURCENAMES = \
 #
 # INCLUDE STANDARDS
 # -----------------
-SHELL = /bin/sh 
+SHELL = /bin/bash 
 MAKEDIRTMP := $(shell searchFile include/acsMakefile)
 ifneq ($(MAKEDIRTMP),\#error\#)
    MAKEDIR := $(MAKEDIRTMP)/include
@@ -267,18 +267,18 @@ install_doc:
 
 install_config:
 	@echo " . . . installing user account configuration files $(PRJTOP)/config"
-	-@gtar -cf - --exclude=".svn" -C ../config .acs  | gtar -xf - -C $(PRJTOP)/config; \
+	-@tar -cf - --exclude=".svn" -C ../config .acs  | tar -xf - -C $(PRJTOP)/config; \
 	         chmod -R ug+rw $(PRJTOP)/config/.acs;
 	@echo " . . . copying rc.d configuration files for DHCP in $(PRJTOP)/config"
-	-@gtar -cf - --exclude=".svn" -C ../config rc.d  | gtar -xf - -C $(PRJTOP)/config; \
+	-@tar -cf - --exclude=".svn" -C ../config rc.d  | tar -xf - -C $(PRJTOP)/config; \
 	         chmod -R ug+rw $(PRJTOP)/config/rc.d;
 
 install_cdb:
 	@echo " . . . copying default CDB in $(ACSDATA)/config"
-	-@gtar -cf - --exclude=".svn" -C ../config defaultCDB  | gtar -xf - -C $(ACSDATA)/config; \
+	-@tar -cf - --exclude=".svn" -C ../config defaultCDB  | tar -xf - -C $(ACSDATA)/config; \
 	         chmod -R ug+rw $(ACSDATA)/config/defaultCDB;
 	@echo " . . . copying demo CDB in $(ACSDATA)/config"
-	-@gtar -cf - --exclude=".svn" -C ../config demoCDB  | gtar -xf - -C $(ACSDATA)/config; \
+	-@tar -cf - --exclude=".svn" -C ../config demoCDB  | tar -xf - -C $(ACSDATA)/config; \
 	         chmod -R ug+rw $(ACSDATA)/config/demoCDB;
 
 install_svc_conf:

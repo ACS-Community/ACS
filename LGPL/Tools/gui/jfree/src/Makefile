@@ -71,8 +71,8 @@ install :
 unpack : unpacked
 unpacked:
 	@echo ". . . unpacking the tar files . . . "
-	@gtar -xzf jcommon-$(JCOMMON_VER).tar.gz
-	@gtar -xzf jfreechart-$(JFREECHART_VER).tar.gz
+	@tar -xzf jcommon-$(JCOMMON_VER).tar.gz
+	@tar -xzf jfreechart-$(JFREECHART_VER).tar.gz
 	@touch unpacked
 
 # build the jcommon jar jar file.
@@ -80,7 +80,7 @@ unpacked:
 #  in jcommon-1.0.10/ant/build.properties. It is used for the javac task in the build.xml file
 #  and would result in a compile error under JDK 1.6.
 #  An alternative would be to remove the "build.target" property by patching the ANT files, or to declare the source as 1.2.
-JDK_VERSION=$(shell java -version 2>&1 | grep 'java version' | cut -d\" -f2 | cut -d. -f1,2)
+JDK_VERSION=$(shell java -version 2>&1 | head -n 1 | cut -d\" -f2 | cut -d. -f1,2)
 jcommon_jar : unpack 
 	@echo ". . . building jcommon . . . "
 	@rm -rf jcommon-$(JCOMMON_VER)/lib

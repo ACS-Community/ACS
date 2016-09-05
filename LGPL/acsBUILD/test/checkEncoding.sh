@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 LIST=$INTROOT:$INTLIST:$ACSROOT
 CDB_LIST=$PWD/../config/

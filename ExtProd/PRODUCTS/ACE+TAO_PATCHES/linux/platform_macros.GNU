@@ -1,5 +1,4 @@
 # -*- Makefile -*-
-# $Id: platform_linux.GNU 97130 2013-05-13 17:36:26Z mesnier_p $
 
 include $(ACE_ROOT)/include/makeinclude/platform_linux_common.GNU
 
