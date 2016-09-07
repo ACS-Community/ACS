@@ -47,6 +47,14 @@ os_discovery
 setup_colors
 
 
+if ! (! lsb_loc="$(type -p "lsb_release")" || [ -z "$lsb_loc" ])
+then
+	UBDIST=`lsb_release -d | awk '{print $2}'`
+
+else	
+	UBDIST="Other"
+fi
+
 #
 # No INTROOT please!
 #
@@ -188,16 +196,31 @@ if [ "$OS" = "$CYGWIN_VER" ]; then
 else
   bash --login ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
 fi
-echo -n "buildMaven"
-./buildMaven && echo_success || echo_failure
-echo -n "buildAnt"
-./buildAnt && echo_success || echo_failure
+
+#Dont Maven on ubuntu
+if  [  "$UBDIST" != "Ubuntu" ]
+then
+	echo -n "buildMaven"
+	./buildMaven && echo_success || echo_failure
+fi
+
+if  [  "$UBDIST" != "Ubuntu" ]
+then
+	echo -n "buildAnt"
+	./buildAnt && echo_success || echo_failure
+fi
+
 echo  -n "buildJacORB" 
 ./buildJacORB && echo_success || echo_failure
 echo -n "buildPython"
 ./buildPython && echo_success || echo_failure
-echo -n "buildPyModules"
-./buildPyModules && echo_success || echo_failure
+
+
+if  [  "$UBDIST" != "Ubuntu" ]
+then
+	echo -n "buildPyModules"
+	./buildPyModules && echo_success || echo_failure
+fi
 echo -n "buildOmniORB"
 ./buildOmniORB && echo_success || echo_failure
 #TODO remove mico build and also the mico files from cvs,
@@ -206,8 +229,12 @@ echo -n "buildMico"
 ./buildMico && echo_success || echo_failure
 echo -n "buildEclipse"
 ./buildEclipse && echo_success || echo_failure
-echo -n "buildBoost"
-./buildBoost && echo_success || echo_failure
+
+if  [  "$UBDIST" != "Ubuntu" ]
+then
+	echo -n "buildBoost"
+	./buildBoost && echo_success || echo_failure
+fi
 #Install Cygwin Java Wrappers
 if [ "$OS" = "$CYGWIN_VER" ]; then
   echo "Install Cygwin Wrappers"

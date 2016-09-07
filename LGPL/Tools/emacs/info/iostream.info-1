@@ -1325,7 +1325,7 @@ pipe with some other program).
      Creates a `procbuf' in a "closed" state.
 
  - Method: procbuf* procbuf::open (const char *COMMAND, int MODE)
-     Uses the shell (`/bin/sh') to run a program specified by COMMAND.
+     Uses the shell (`/bin/bash') to run a program specified by COMMAND.
 
      If MODE is `ios::in', standard output from the program is sent to
      a pipe; you can read from the pipe by reading from the `procbuf'.

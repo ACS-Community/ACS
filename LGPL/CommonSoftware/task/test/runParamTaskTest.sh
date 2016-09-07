@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if [ "`uname`" = "Linux" ]; then enable -n echo; fi
 
 #DWF-added to discover the place this test fails during SE's nightly build/test. 

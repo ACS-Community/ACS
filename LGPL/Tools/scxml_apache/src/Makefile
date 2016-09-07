@@ -84,7 +84,7 @@ LOCAL_JARS_CLASSPATH = $(abspath ../lib/commons-el-1.0.jar):$(abspath ../lib/jsp
 unpack:
 	@if [ ! -d $(SCXML_DIR) ]; then \
 	      echo " . . . unpack original distribution";\
-	      gtar -xzf $(SCXML_TARBALL); \
+	      tar -xzf $(SCXML_TARBALL); \
 	fi
 
 
@@ -93,7 +93,7 @@ unpack:
 buildScxml :
 	@echo ". . . building apache scxml . . . "
 
-	cd $(SCXML_DIR); CLASSPATH=$(LOCAL_JARS_CLASSPATH):$(REMOTE_JARS_CLASSPATH); ant -Dbuild.sysclasspath=only jar
+	cd $(SCXML_DIR); mvn package
 	
 	cp -r --preserve=timestamps $(SCXML_DIR)/src/main/java $(SCXML_DIR)/target; cd $(SCXML_DIR)/target; mv java src
 	cd $(SCXML_DIR)/target; jar uf $(SCXML_JAR) src

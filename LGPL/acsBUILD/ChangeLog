@@ -507,7 +507,7 @@ Thu Feb 28 18:19:46 2002 <gchiozzi@te13.hq.eso.org>  acsBUILD version: 1.50
 Wed Feb 27 17:38:49 2002  ALMA Project c/o Robert Karban  <almamgr@te4.hq.eso.org>
 
 	* src/*
-	Replaced everywhere /bin/sh with /bin/ksh
+	Replaced everywhere /bin/bash with /bin/ksh
 
 Tue Feb 26 22:16:34 2002  ALMA Project c/o Robert Karban  <almamgr@te4.hq.eso.org>
 

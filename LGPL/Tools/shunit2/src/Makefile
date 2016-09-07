@@ -64,7 +64,7 @@ unpack:
 	@ if [ ! -d shunit2-$(SHUNIT_VER) ]; \
           then \
             echo ". . . unpacking the tar files . . . "; \
-            gtar -xzf shunit2-$(SHUNIT_VER).tgz; \
+            tar -xzf shunit2-$(SHUNIT_VER).tgz; \
           fi
 
 build:

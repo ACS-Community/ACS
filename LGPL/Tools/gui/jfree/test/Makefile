@@ -79,11 +79,11 @@ install : install_all
 unpack : unpacked
 unpacked:
 	@echo ". . . unpacking jcommon junit sources . . . "
-	@gtar -xvzf ../src/jcommon-$(JCOMMON_VER).tar.gz `gtar -tzf../src/jcommon-$(JCOMMON_VER).tar.gz | grep "source/.*/junit/..*"`
+	@tar -xvzf ../src/jcommon-$(JCOMMON_VER).tar.gz `tar -tzf../src/jcommon-$(JCOMMON_VER).tar.gz | grep "source/.*/junit/..*"`
 	@cp -r jcommon-$(JCOMMON_VER)/source/org .
 	@rm -rf jcommon-$(JCOMMON_VER)
 	@echo ". . . unpacking jfreechart junit sources . . . "
-	@gtar -xvzf ../src/jfreechart-$(JFREECHART_VER).tar.gz `gtar -tzf../src/jfreechart-$(JFREECHART_VER).tar.gz | grep "tests/.*/junit/..*"`
+	@tar -xvzf ../src/jfreechart-$(JFREECHART_VER).tar.gz `tar -tzf../src/jfreechart-$(JFREECHART_VER).tar.gz | grep "tests/.*/junit/..*"`
 	@cp -r jfreechart-$(JFREECHART_VER)/tests/org .
 	@rm -rf jfreechart-$(JFREECHART_VER)
 	@touch unpacked

@@ -211,6 +211,7 @@ os_discovery ()
 		'SunOS' )	# Much easier, uname command is enough
 				check_solaris;;
 	esac
+	ARCH=`uname -m`
 }
 
 check_solaris ()
@@ -226,7 +227,7 @@ check_linux ()
 	OS='LINUX'
 	# Standard release files for different distributions
 	RH=/etc/redhat-release
-	DB=/etc/debian-version
+	DB=/etc/debian_version
 	SL=/etc/slackware-version
 	SU=/etc/SuSE-release
 	GT=/etc/gentoo-release
@@ -558,11 +559,20 @@ fi
 #   that you have a totally wrong JDK installed and don't notice this immediately.
 #   Please check the ACS documentation, or acsConfigReport output, 
 #   to ensure that you have a supported JDK installed.
-if [ X"$JAVA_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+if [ -z "$JAVA_HOME" ] || [ -z "$ACS_RETAIN" ]
 then
     if [ "$OSYSTEM" = "$CYGWIN_VER" ]
     then
       	JAVA_HOME=/Java
+    elif [ "$DISTRO" = "DEBIAN" ]
+    then
+        if [ "$ARCH" = "x86_64" ]
+        then
+            JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
+        elif [ "$ARCH" = "i686" ]
+        then
+            JAVA_HOME="/usr/lib/jvm/java-8-openjdk-i386"
+        fi
     else
       	JAVA_HOME=/usr/java/default
     fi
@@ -706,7 +716,12 @@ fi
 # Ant and JacORB stuff
 if [ X"$ANT_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   ANT_HOME=$ALMASW_INSTDIR/ant
+  	if [ "$DISTRO" = "DEBIAN" ]
+   	then
+      		ANT_HOME=/usr/share/ant
+   	else
+     		ANT_HOME=$ALMASW_INSTDIR/ant
+  	fi
 fi
 
 if [ X"$JACORB_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
@@ -717,7 +732,17 @@ fi
 # Maven stuff
 if [ X"$M2_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   M2_HOME=$ALMASW_INSTDIR/maven
+	if ! (! lsb_loc="$(type -p "lsb_release")" || [ -z "$lsb_loc" ])
+	then
+		#Checking distribution
+		Dist=`lsb_release -d | awk '{print $2}'`
+		if  [  "$Dist" != "Ubuntu" ]
+		then
+      			M2_HOME=$ALMASW_INSTDIR/maven
+		fi
+	else
+		M2_HOME=$ALMASW_INSTDIR/maven
+	fi
 fi
 
 # RTOS
@@ -1422,6 +1447,7 @@ export OSYSTEM
 export PATH_SEP
 export ACS_TMP
 export CYGWIN_VER
+
 if [ -f $PYTHON_ROOT/bin/activate ]; then
      source $PYTHON_ROOT/bin/activate
 fi

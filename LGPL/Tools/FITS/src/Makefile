@@ -212,9 +212,9 @@ else
 endif
 
 org:
-	@gtar xvzf jfits-0.93.tgz >/dev/null
+	@tar xvzf jfits-0.93.tgz >/dev/null
 	@chmod u+w org/eso/fits/*.java
-	@gtar xvzf pyfits-1.3.tar.gz >/dev/null
+	@tar xvzf pyfits-1.3.tar.gz >/dev/null
 	@cd pyfits-1.3; python setup.py install --home="$(INSTALLPATH)" --install-purelib="$(INSTALLPATH)/lib/python/site-packages"
 
 

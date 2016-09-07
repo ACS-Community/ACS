@@ -21,10 +21,10 @@ Exercises:
 	echo ==== Updating Exercises
 	cd Exercises; \
 	  rm -rf carcontrol dttemp10 dttemp12 dttemp13; \
-	  gtar -xzf carcontrol.tar.gz; \
-	  gtar -xzf dttemp10.tar.gz; \
-	  gtar -xzf dttemp12.tar.gz; \
-	  gtar -xzf dttemp13.tar.gz;
+	  tar -xzf carcontrol.tar.gz; \
+	  tar -xzf dttemp10.tar.gz; \
+	  tar -xzf dttemp12.tar.gz; \
+	  tar -xzf dttemp13.tar.gz;
 	chmod -R ugo+r Exercises
 
 all: acscourse Exercises

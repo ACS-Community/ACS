@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # "@(#) $Id: tat9,v 1.76 2003/01/09 17:51:30 vltsccm Exp $"
 #
@@ -32,7 +32,7 @@ fi
 # 
 
 touch  RtapScheduler
-echo "#!/bin/sh" >>  RtapScheduler
+echo "#!/bin/bash" >>  RtapScheduler
 echo "exit 3" >>  RtapScheduler
 chmod u+x  RtapScheduler
 # to be sure that my RtapScheduler will be executed
