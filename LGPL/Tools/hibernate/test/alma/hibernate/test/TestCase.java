@@ -221,7 +221,7 @@ public abstract class TestCase extends junit.framework.TestCase {
 	}
 
 	public Session openSession( Interceptor interceptor ) throws HibernateException {
-		session = getSessions().openSession(interceptor);
+		session = getSessions().withOptions().interceptor(interceptor).openSession();
 		return session;
 	}
 

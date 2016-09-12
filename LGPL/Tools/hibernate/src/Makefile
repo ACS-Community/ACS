@@ -41,11 +41,13 @@
 #    ../lib/openorb-1.3.0.jar ../lib/openorb_tools-1.3.0.jar
 # are part of the openORB distribution, but shall NOT be installed,
 # because they would collide with JacORB
-INSTALL_FILES = ../lib/hibernate3.jar \
-	../lib/hibernate-tools-3.6.0.Final.jar \
-	../lib/hibernate-jpa-2.0-api-1.0.1.Final.jar \
+INSTALL_FILES = ../lib/hibernate-core-4.3.11.Final.jar \
+	../lib/hibernate-tools-4.3.1.Final.jar \
+	../lib/hibernate-jpa-2.1-api-1.0.0.Final.jar \
+	../lib/hibernate-commons-annotations-4.0.5.Final.jar \
 	../lib/dom4j-1.6.1.jar \
-	../lib/freemarker-2.3.23.jar
+	../lib/freemarker-2.3.23.jar \
+	../lib/jboss-logging-3.1.3.GA.jar \
 
 #
 #>>>>> END OF standard rules
