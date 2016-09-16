@@ -130,5 +130,11 @@ PROLOGUE nctestTATPrologue
 
 # Test sending complicated structures to NC from python
 27 pySupplierStruct "acsutilTATTestRunner pyStructureEventTest"
+
+###################################################################
+####BUGS ##################################################
+###################################################################
+
+28 ICT-3870 "acsStartJava alma.nctest.clients.CompletionEventPublisherClient"
  
 EPILOGUE acsutilTATEpilogue
