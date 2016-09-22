@@ -59,8 +59,6 @@ then
   exit 1
 fi
 
-PYTHON_INTR=$PYTHON_ROOT/bin/python
-
 echo installing Python Modules
 
 echo $SEPARATOR
@@ -87,7 +85,7 @@ then
 fi
 
 #
-# Python - Python-2.6.5
+# Python - Python-2.7.10
 #
 # Notes: See README for help
 #
@@ -95,57 +93,14 @@ cd ../PRODUCTS
 
 PY_VERSION=2.7
 
-if [ ! -e ../PRODUCTS/setuptools-17.0.tar.gz ]
-then
-  echo Error: setuptools sources are missing
-else
-  echo "== Building setuptools"
-  tar -zxf setuptools-17.0.tar.gz
-  pushd setuptools-17.0
-  $PYTHON_INTR setup.py install
-  popd
-fi
+wget https://bootstrap.pypa.io/get-pip.py -O ../PRODUCTS/get-pip.py
+python get-pip.py
 
-if [ ! -e ../PRODUCTS/gnuplot-py-1.8.tar.gz ]
-then
-  echo Error: GnuPlot Py sources are missing
-else
-  echo "== Building GnuPlot Py"
-  tar -zxf gnuplot-py-1.8.tar.gz
-  pushd gnuplot-py-1.8
-  $PYTHON_INTR setup.py install
-  popd
-fi
-
-if [ ! -e ../PRODUCTS/pexpect-2.3.tar.gz ]
-then
-  echo Error: pexpect sources are missing
-else
-  echo "== Building pexpect"
-  tar -zxf pexpect-2.3.tar.gz
-  pushd pexpect-2.3
-  $PYTHON_INTR setup.py install 
-  popd
-fi
-
-if [ ! -e ../PRODUCTS/mock-0.6.0.zip ]
-then
-  echo Error: Python Mock sources are missing
-else
-  echo "== Installing Python Mock Objects"
-  unzip -oj mock-0.6.0.zip mock-0.6.0/mock.py mock-0.6.0/testcase.py mock-0.6.0/testutils.py -d $PYTHON_ROOT/lib/python$PY_VERSION/site-packages/
-fi
-
-if [ ! -e ../PRODUCTS/nose-0.11.3.tar.gz ]
-then
-  echo Error: nose sources are missing
-else
-  echo "== Installing nose"
-  tar -zxf nose-0.11.3.tar.gz
-  pushd nose-0.11.3
-  $PYTHON_INTR setup.py install 
-  popd
-fi
+pip install -r acs.req
+pip install ../PRODUCTS/gnuplot-py-1.8.tar.gz
+pip install ../PRODUCTS/matplotlib-1.2.0.tar.gz
+pip install ../PRODUCTS/Numeric-24.2.tar.gz
+pip install ../PRODUCTS/pychecker-0.8.17.tar.gz 
 
 cd $CWD
 echo Python Module installation done!
