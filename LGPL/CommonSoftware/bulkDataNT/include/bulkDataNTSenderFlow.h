@@ -34,21 +34,21 @@
 #include "bulkDataNTSenderStream.h"
 #include "bulkDataNTSenderFlowCallback.h"
 #include "bulkDataNTWriterListener.h"
-
+#include <ACE.h>
 
 namespace AcsBulkdata
 {
 
 struct statisticsStruct {
-	double startSendDuration;
+	ACE_UINT64 startSendDuration;
 	DDS::DataWriterProtocolStatus startSendDwps;
 	DDS::DataWriterCacheStatus startSendDwcs;
 
-	double stopSendDuration;
+	ACE_UINT64 stopSendDuration;
 	DDS::DataWriterProtocolStatus stopSendDwps;
 	DDS::DataWriterCacheStatus stopSendDwcs;
 
-	std::vector<double> sendDataDuration;
+	std::vector<ACE_UINT64> sendDataDuration;
 	std::vector<DDS::DataWriterProtocolStatus> sendDataDwps;
 	std::vector<DDS::DataWriterCacheStatus> sendDataDwcs;
 } ;
