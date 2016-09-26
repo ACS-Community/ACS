@@ -126,13 +126,20 @@ module ACSErr {
 	/**
 	 *  container for pair(s) name-value
 	 */
-	NameValueSeq data;
+	ACSErr::NameValueSeq data;
 
     	/**
 	 * previos error(s) (error stack)
 	 */
-	ErrorLinkedList previousError;
+	ACSErr::ErrorLinkedList previousError;
     };
+
+    /**
+     * Redefiny the type for the sequence to use in the Completion
+     * This is a workaround for fixing ICT-3870
+     * that seems a bug in JacOrb (still under investigation)
+     */	
+    typedef sequence<ErrorTrace> ErrorTraceSeq;
 
     struct Completion {
      
@@ -154,7 +161,7 @@ module ACSErr {
 	/**
 	 * previos error(s) (error trace)
 	 */
-	ErrorLinkedList  previousError;
+	ACSErr::ErrorTraceSeq  previousError;
     };
 
     /** 
