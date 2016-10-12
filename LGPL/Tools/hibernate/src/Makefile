@@ -45,6 +45,8 @@ INSTALL_FILES = ../lib/hibernate-core-4.3.11.Final.jar \
 	../lib/hibernate-tools-4.3.1.Final.jar \
 	../lib/hibernate-jpa-2.1-api-1.0.0.Final.jar \
 	../lib/hibernate-commons-annotations-4.0.5.Final.jar \
+	../lib/hibernate-c3p0-4.3.11.Final.jar \
+	../lib/hibernate-ehcache-4.3.11.Final.jar \
 	../lib/dom4j-1.6.1.jar \
 	../lib/freemarker-2.3.23.jar \
 	../lib/jboss-logging-3.1.3.GA.jar \
