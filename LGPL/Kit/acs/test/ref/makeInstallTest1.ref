@@ -1,3 +1,1 @@
-1 - .....includes:
-1 - ==> fileDoesNotExist missing
-1 - make: *** [install_include_fileDoesNotExist] Error 1
+1 - ../include/acsMakefile:xxxx: *** The installation root-directory 'undefined' does not exist - check your INTROOT/INTLIST/ACSROOT settings.  Stop.
