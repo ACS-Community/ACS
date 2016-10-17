@@ -49,7 +49,7 @@
 #
 #-------------------------------------------------------------------------
 
-1 SOURCE acsSaveEnv.tcl \
+1 SOURCE acsRestoreEnv.tcl \
   acsSaveEnv /bin/true
 
 2 acsReplaceTest "acsReplaceTest"
