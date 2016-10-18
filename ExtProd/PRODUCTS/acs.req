@@ -33,6 +33,5 @@ suds==0.4
 traceback2==1.4.0
 Twisted==10.1.0
 unittest2==1.0.1
-lxml==2.2.6
 gcovr
 pexpect
