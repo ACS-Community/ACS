@@ -21,6 +21,7 @@ pyephem==3.7.5.1
 pylint==1.4.3
 pyOpenSSL==0.10
 pysnmp==4.1.13a
+pysqlite==2.6.0
 python-ldap==2.3.13
 pythoscope==0.4.3
 pytz==2015.2
