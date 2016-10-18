@@ -101,7 +101,6 @@ pip install ../PRODUCTS/gnuplot-py-1.8.tar.gz
 pip install ../PRODUCTS/matplotlib-1.2.0.tar.gz
 pip install ../PRODUCTS/Numeric-24.2.tar.gz
 pip install ../PRODUCTS/pychecker-0.8.17.tar.gz 
-pip install ../PRODUCTS/ScientificPython-2.8.tar.gz 
 
 cd $CWD
 echo Python Module installation done!
