@@ -96,6 +96,7 @@ PY_VERSION=2.7
 wget https://bootstrap.pypa.io/get-pip.py -O ../PRODUCTS/get-pip.py --no-check-certificate
 python get-pip.py
 
+pip install -r acs.req.0
 pip install -r acs.req
 pip install ../PRODUCTS/gnuplot-py-1.8.tar.gz
 pip install ../PRODUCTS/matplotlib-1.2.0.tar.gz
