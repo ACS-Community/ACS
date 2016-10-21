@@ -147,9 +147,9 @@ HIBERNATE_LOGGER_PROPERTY="-DACS.log.minlevel.namedloggers='hibernateSQL@CDB-RDB
 # Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "hibernateCdbjDAL.gclog". 
 export JVM_GC_LOG_NAME=hibernateCdbjDAL
 
-# See http://jira.alma.cl/browse/COMP-8638 about heap size issues. 
-# For now (ACS 11) we play it safe and configure a huge max heap.
-MAX_HEAP_SIZE=1575m
+# See http://jira.alma.cl/browse/COMP-8638 and http://ictjira.alma.cl/browse/ICT-3605 about heap size issues. 
+# For now (ACS COMMON-DEC2016) we play it safe and configure a huge max heap.
+MAX_HEAP_SIZE=4096m
 
 acsStartJava \
   -endorsed \
