@@ -55,3 +55,4 @@ Logger jacorb@.* created with custom log levels local=Info, remote=Info
 Created the thread responsible for checking the status of the Notify Channel
 Destroyed the thread responsible for checking the status of the Notify Channel
 alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx \[ Event='suspend' State='EnvironmentCreated::Connected::Suspended' \]
+alma\.nctest\.clients\.CompletionEventPublisherClient

@@ -32,6 +32,7 @@ import java.sql.SQLException;
 import org.hibernate.HibernateException;
 import org.hibernate.type.StringClobType;
 import org.hibernate.usertype.UserType;
+import org.hibernate.engine.spi.SessionImplementor;
 
 import com.mchange.v2.c3p0.impl.C3P0ResultSetPeeker;
 
@@ -68,7 +69,7 @@ public class HibernateXmlType extends StringClobType implements UserType, Serial
 	 * @see org.hibernate.type.StringClobType#nullSafeGet(java.sql.ResultSet, java.lang.String[], java.lang.Object)
 	 */
 	@Override
-	public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
+	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor si, Object owner) throws HibernateException, SQLException {
 
 		if( rs.getClass().getName().startsWith(COM_MCHANGE_V2_C3P0) )
 			rs = C3P0ResultSetPeeker.getInnerFrom(rs);
@@ -89,7 +90,7 @@ public class HibernateXmlType extends StringClobType implements UserType, Serial
 
 		} else {
 			// If not Oracle (i.e. HSQLDB) use the hibernate StringClobType impl of nullSafeGet()
-			return super.nullSafeGet(rs, names, owner);
+			return super.nullSafeGet(rs, names, si, owner);
 		}
 		
 	}
@@ -98,7 +99,7 @@ public class HibernateXmlType extends StringClobType implements UserType, Serial
 	 * @see org.hibernate.type.StringClobType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)
 	 */
 	@Override
-	public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor si) throws HibernateException, SQLException {
 		
 		JdbcNativeExtractor extractor = new JdbcNativeExtractor();
     	Connection connection = extractor.getNativeConnection(st.getConnection());
@@ -123,7 +124,7 @@ public class HibernateXmlType extends StringClobType implements UserType, Serial
 
         } else {
 			// If not Oracle (i.e. HSQLDB) use the hibernate StringClobType impl of nullSafeSet()
-        	super.nullSafeSet(st, value, index);
+        	super.nullSafeSet(st, value, index, si);
         }
 	}
 

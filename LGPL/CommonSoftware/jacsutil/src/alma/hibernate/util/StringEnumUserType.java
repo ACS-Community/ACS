@@ -33,9 +33,11 @@ import java.util.Properties;
 
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.type.StringType;
 import org.hibernate.usertype.EnhancedUserType;
 import org.hibernate.usertype.ParameterizedType;
-import org.hibernate.util.ReflectHelper;
+import org.hibernate.internal.util.ReflectHelper;
+import org.hibernate.engine.spi.SessionImplementor;
 
 /**
  * Custom mapping type for string-backed enumerations.
@@ -73,7 +75,7 @@ public class StringEnumUserType implements EnhancedUserType, ParameterizedType {
     }
 
     public int[] sqlTypes() {
-        return new int[] { Hibernate.STRING.sqlType() };
+        return new int[] { StringType.INSTANCE.sqlType() };
     }
 
     public boolean isMutable() {
@@ -127,7 +129,8 @@ public class StringEnumUserType implements EnhancedUserType, ParameterizedType {
         return value.toString();
     }
 
-    public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
+    @Override
+    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor si, Object owner)
             throws HibernateException, SQLException {
         String name = rs.getString(names[0]);
         try {
@@ -138,10 +141,11 @@ public class StringEnumUserType implements EnhancedUserType, ParameterizedType {
 		}
     }
 
-    public void nullSafeSet(PreparedStatement st, Object value, int index)
+    @Override
+    public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor si)
             throws HibernateException, SQLException {
         if (value == null) {
-            st.setNull(index, Hibernate.STRING.sqlType());
+            st.setNull(index, StringType.INSTANCE.sqlType());
         } else {
             st.setString(index, value.toString()); // Enum.toString() must be overriden by enumClass
         }

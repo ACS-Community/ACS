@@ -75,6 +75,7 @@ static char *rcsId="@(#) $Id: docSplitIntoSingleComments.c,v 1.32 2008/06/09 06:
 /* 
  * System Headers 
  */
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 

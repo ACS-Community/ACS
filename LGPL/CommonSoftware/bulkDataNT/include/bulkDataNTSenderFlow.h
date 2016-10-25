@@ -34,10 +34,24 @@
 #include "bulkDataNTSenderStream.h"
 #include "bulkDataNTSenderFlowCallback.h"
 #include "bulkDataNTWriterListener.h"
-
+#include <ACE.h>
 
 namespace AcsBulkdata
 {
+
+struct statisticsStruct {
+	ACE_UINT64 startSendDuration;
+	DDS::DataWriterProtocolStatus startSendDwps;
+	DDS::DataWriterCacheStatus startSendDwcs;
+
+	ACE_UINT64 stopSendDuration;
+	DDS::DataWriterProtocolStatus stopSendDwps;
+	DDS::DataWriterCacheStatus stopSendDwcs;
+
+	std::vector<ACE_UINT64> sendDataDuration;
+	std::vector<DDS::DataWriterProtocolStatus> sendDataDwps;
+	std::vector<DDS::DataWriterCacheStatus> sendDataDwcs;
+} ;
 
 class BulkDataNTSenderStream;
 
@@ -118,6 +132,8 @@ public:
 	 * @param print: if true log the statistics
 	 */
 	void getStatistics(bool log);
+	void getDelayedStatistics(bool log, int flowMethod);
+	void statisticsLogs();
 
 protected:
 
@@ -166,6 +182,9 @@ protected:
 	void operator=(const BulkDataNTSenderFlow&);
 	/// ALMA C++ coding standards state copy constructors should be disabled.
 	BulkDataNTSenderFlow(const BulkDataNTSenderFlow&);
+
+	statisticsStruct delayedStatistics;
+
 };//class BulkDataSenderFlow
 
 };
