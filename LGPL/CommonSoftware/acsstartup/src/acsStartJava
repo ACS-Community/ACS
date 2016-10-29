@@ -465,6 +465,9 @@ fi
 #
 JAVA_OPTIONS="$JAVA_OPTIONS -Dorg.apache.commons.logging.LogFactory=alma.acs.logging.adapters.CommonsLoggingFactory"
 
+#
+# Set up slf4j for hibernate4. See ICT-7709.
+JAVA_OPTIONS="$JAVA_OPTIONS -Dorg.jboss.logging.provider=slf4j"
 
 #
 # Add jacorb.properties to the CLASSPATH

@@ -26,6 +26,7 @@
 #include <iostream>
 #include <ace/Get_Opt.h>
 #include <ace/Tokenizer_T.h>
+#include <unistd.h>
 
 using namespace AcsBulkdata;
 using namespace std;
@@ -233,6 +234,10 @@ int main(int argc, char *argv[])
 			std::cout << "press ENTER to send data (start/data/stop) to connected receivers ..." << std::endl;
 	 		getchar();
 		}
+		else
+		{
+			usleep(10000000);
+		}
     		sendData=true;
 
     		throughputSums.resize(numOfCreatedFlows);
@@ -317,6 +322,7 @@ int main(int argc, char *argv[])
     					ACS_SHORT_LOG((LM_INFO, "Going to send stop to flow: '%s' to %d receiver(s)",
     											tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
     					flows[i]->stopSend();
+    					flows[i]->statisticsLogs();
     				}//for
 				ACS_SHORT_LOG((LM_INFO, "\033[0;34m Outer loop [%d/%d]: Average transfer rate for all the flow(s): %f MBytes/sec \033[0m",
     			    					n,nbSeq,sumThrouhgput/(loop*numOfCreatedFlows)));

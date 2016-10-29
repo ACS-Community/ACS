@@ -87,6 +87,7 @@ static char *rcsId="@(#) $Id: docSetCommentNumber.c,v 1.32 2008/06/09 06:52:09 b
 /* 
  * System Headers 
  */
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>             /* required by rename*/

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.sql.Connection;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Interceptor;
@@ -233,7 +234,7 @@ public class HibernateUtil {
                 //System.err.println("Opening new Session for this thread.");
                 if (getInterceptor() != null) {
                     //System.err.println("Using interceptor: " + getInterceptor().getClass());
-                    s = getSessionFactory().openSession(getInterceptor());
+                    s = getSessionFactory().withOptions().interceptor(getInterceptor()).openSession();
                 } else {
                     //System.err.println("Without interceptor");
                     s = getSessionFactory().openSession();
@@ -330,7 +331,8 @@ public class HibernateUtil {
 	public void reconnect(Session session)
     throws HibernateUtilException {
         try {
-            session.reconnect();
+            Connection c = session.disconnect();
+            session.reconnect(c);
             threadSession.set(session);
         } catch (HibernateException ex) {
             throw new HibernateUtilException(ex);
