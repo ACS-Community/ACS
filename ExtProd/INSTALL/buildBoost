@@ -33,18 +33,23 @@ then
 fi
 mkdir $INSTDIR
 
+
 #
 # Unpack the tar file
 # put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/Eclipse
 #
-VERSION=1_41_0
+NUM_CPU=`grep -c processor  /proc/cpuinfo`
+VERSION=1_60_0
 echo "unpacking the archives for Boost "$VERSION
 SRCFILE=$CURR_DIR/../PRODUCTS/boost_$VERSION.tar.bz2
+wget -r -c -O $SRCFILE "http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.60.0%2Fboost_1_60_0.tar.bz2%2Fdownload&ts=1479130893&use_mirror=kent"
 cd $CURR_DIR/../PRODUCTS
 tar jxf $SRCFILE
 cd boost_$VERSION
 ./bootstrap.sh
-./bjam --prefix=$INSTDIR -a install
+echo "Compiling boost with the following options: ./b2 -d+2 -q  --without-container -j$NUM_CPU"
+./b2 -d+2 -q --without-container -j$NUM_CPU
+./b2 -d+2 -q --prefix=$INSTDIR --without-container -j$NUM_CPU install
 echo "done"
 echo ""
 
