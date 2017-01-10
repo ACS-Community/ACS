@@ -394,10 +394,10 @@ Supplier::populateHeader(const CORBA::Any &any)
 void
 Supplier::populateHeader(CosNotification::StructuredEvent &event)
 {
-    event.header.fixed_header.event_type.domain_name = getChannelDomain();
-    event.header.fixed_header.event_type.type_name = typeName_mp;//CORBA::string_dup(typeName_mp);
+    event.header.fixed_header.event_type.domain_name = CORBA::string_dup(getChannelDomain());
+    event.header.fixed_header.event_type.type_name = CORBA::string_dup(typeName_mp);
 
-    event.header.fixed_header.event_name = "";
+    event.header.fixed_header.event_name = CORBA::string_dup("");
 
     // if Names has a filterable data entry, then add it here
     event.header.variable_header.length(0);    // put nothing here

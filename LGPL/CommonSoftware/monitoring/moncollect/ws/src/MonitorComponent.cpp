@@ -46,8 +46,8 @@ MonitorComponent::MonitorComponent(ACS::CharacteristicComponent_ptr comp, maci::
 	compDesc_m = component_m->descriptor();
 	numOfProp_m = compDesc_m->properties.length();
 
-	CORBA::String_var compName = comp->name();
-	monitorDataBlock_m.componentName = compName.in(); //CORBA::string_dup(comp->name());
+	//CORBA::String_var compName = comp->name();
+	monitorDataBlock_m.componentName = CORBA::string_dup(comp->name());
 	monitorDataBlock_m.startTime = monitorDataBlock_m.stopTime = 0;
   }//MonitorComponent
 
