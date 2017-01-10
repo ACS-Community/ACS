@@ -1,0 +1,73 @@
+#!/bin/bash 
+#
+# Script to automatically install Ant
+#
+# who       when       what
+# --------  ---------  ----------------------------------------------
+# psivera   24/04/2003 created
+# sturolla  09/09/2005 ported to Bourne Shell and OS checks is done by an external subroutine
+# hsommer   08/07/2007 Update to ANT 1.7 for ACS 7.0
+#
+
+# Load functions
+. standardUtilities
+#
+# Fetch operating system and release version
+#
+os_discovery
+
+# Some default values
+#
+
+Install_swig()
+{
+    if [ -z "$ALMASW_INSTDIR" ]
+    then
+        echo "ALMASW_INSTDIR is not set, cannot continue.\n"
+        exit 1
+    fi
+
+    if [ ! -d $ALMASW_INSTDIR/swig ]
+    then
+        mkdir -p $ALMASW_INSTDIR/swig
+        RET=$?
+        if [ $RET -ne 0 ]
+        then
+            echo "Failed to create $ALMASW_INSTDIR/swig, cannot continue..."
+            exit 1
+        fi
+    fi
+    
+    SWIG_VERSION=1.3.31
+    echo "Now installing swig $SWIG_VERSION... \c"
+    tar xzf ../PRODUCTS/swig-$SWIG_VERSION.tar.gz --directory $ALMASW_INSTDIR/swig
+    echo "done.\n"
+
+}
+
+
+
+######################################################################
+#                                                                    #
+# Execution starts here!                                             #
+#                                                                    #
+######################################################################
+
+LOG=buildSwig.log
+#
+exec > $LOG 2>&1
+
+date
+
+CURR_DIR=`pwd`
+
+#
+# It build and install the archive
+#
+Install_swig
+
+#
+cd $CURR_DIR
+
+echo swig installation done!
+date
