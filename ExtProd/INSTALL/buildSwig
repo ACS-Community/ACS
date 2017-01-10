@@ -18,18 +18,29 @@ os_discovery
 
 # Some default values
 #
+CURR_DIR=pwd
+INSTDIR=$ALMASW_INSTDIR/swig
+SWIG_VERSION=1.3.31
+SRCFILE=CURR_DIR/../PRODUCTS/swig-SWIG_VERSION.tar.gz
 
 Install_swig()
 {
-    if [ -z "$ALMASW_INSTDIR" ]
+    if [ -z "$INSTDIR" ]
     then
-        echo "ALMASW_INSTDIR is not set, cannot continue.\n"
+        echo "INSTDIR is not set, cannot continue.\n"
         exit 1
     fi
 
-    if [ ! -d $ALMASW_INSTDIR/swig ]
+    if [ -d $INSTDIR ]
     then
-        mkdir -p $ALMASW_INSTDIR/swig
+      echo $INSTDIR directory exists already.Cleaning it up.
+      rm -rf $INSTDIR
+    fi
+    mkdir $INSTDIR
+
+    if [ ! -d $INSTDIR ]
+    then
+        mkdir -p $INSTDIR
         RET=$?
         if [ $RET -ne 0 ]
         then
@@ -38,10 +49,16 @@ Install_swig()
         fi
     fi
     
-    SWIG_VERSION=1.3.31
-    echo "Now installing swig $SWIG_VERSION... \c"
-    tar xzf ../PRODUCTS/swig-$SWIG_VERSION.tar.gz --directory $ALMASW_INSTDIR/swig
+    echo "unpacking swig $SWIG_VERSION... \c"
+    cd $CURR_DIR/../PRODUCTS/
+    tar xzf swig-$SWIG_VERSION.tar.gz
+    cd swig-$SWIG_VERSION
+    ./configure --prefix=$INSTDIR LIBS=-lstdc++
+    make 
+    make install
+   
     echo "done.\n"
+
 
 }
 
