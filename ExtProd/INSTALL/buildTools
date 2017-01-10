@@ -208,6 +208,8 @@ echo -n "buildEclipse"
 ./buildEclipse && echo_success || echo_failure
 echo -n "buildswig"
 ./buildSwig && echo_success || echo_failure
+echo -n "buildBoost"
+./buildBoost && echo_success || echo_failure
 #Install Cygwin Java Wrappers
 if [ "$OS" = "$CYGWIN_VER" ]; then
   echo "Install Cygwin Wrappers"
