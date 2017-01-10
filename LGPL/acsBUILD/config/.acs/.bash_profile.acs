@@ -157,7 +157,7 @@ then
 fi
 if [ X"$ALMASW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   ALMASW_RELEASE=COMMON-DEC2016
+   ALMASW_RELEASE=ACS-DEC2016
 fi
 
 # Combined absolute path where ACS software and tools are installed.
