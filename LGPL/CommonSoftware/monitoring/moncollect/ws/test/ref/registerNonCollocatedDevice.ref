@@ -1,4 +1,5 @@
-1 - Test EH(registerNonCollocatedMonitoredDevice): RegisteringDeviceProblem
+1 - Test Case 1: Register non collocated device non registrable
+1 - --------------------------------------------
 1 - ErrorTrace (TimeStamp=XXXX,
 1 -             Line=XXXX,
 1 -             Routine=<module>,
@@ -59,7 +60,12 @@
 1 -                             Severity=Error,
 1 -                             Data: Name=javaex.class, Value=alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx; )
 1 - 
-1 - Test EH(registerNonCollocatedMonitoredDevice): DeviceAlreadyRegistered
+1 -  TEST SUCCESS: FAKE_DEVICE not registered
+1 - Test Case 2: Register non collocated device with success
+1 - --------------------------------------------
+1 -  TEST SUCCESS: TEST_NONCOLLOCATED_PS_1 Monitored Device registered
+1 - Test Case 3: Register non collocated device already registered
+1 - --------------------------------------------
 1 - ErrorTrace (TimeStamp=XXXX,
 1 -             Line=XXXX,
 1 -             Routine=<module>,
@@ -96,3 +102,61 @@
 1 -                     Severity=Error,
 1 -                     Data: Name=Device, Value=TEST_NONCOLLOCATED_PS_1; )
 1 - 
+1 -  TEST SUCCESS: TEST_NONCOLLOCATED_PS_1 not registered
+1 - Test Case 4: Unregister device non registered
+1 - --------------------------------------------
+1 - ErrorTrace (TimeStamp=XXXX,
+1 -             Line=XXXX,
+1 -             Routine=<module>,
+1 -             Host=xxxxxxxxx
+1 -             Process=xxxxxxxxx,
+1 -             Thread=MainThread,
+1 -             Type=60200,
+1 -             Code=2,
+1 -             ShortDescrip=Device has not been registered.,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=XXXX,
+1 -                 Line=XXXX,
+1 -                 Routine=MonitorCollectorImpl::deregisterMonitoredDevice,
+1 -                 Host=xxxxxxxxx
+1 -                 Process=monColTestCont,
+1 -                 Thread=ORBTask,
+1 -                 Type=60200,
+1 -                 Code=2,
+1 -                 ShortDescrip=Device has not been registered.,
+1 -                 Severity=Error,
+1 -                 Data: Name=Device, Value=FAKE_DEVICE; )
+1 - 
+1 -  TEST SUCCESS: FAKE_DEVICE not unregistered
+1 - Test Case 5: Unregister device with success
+1 - --------------------------------------------
+1 -  TEST SUCCESS: TEST_NONCOLLOCATED_PS_1 unregistered
+1 - Test Case 6: Unregister device already unregistered
+1 - --------------------------------------------
+1 - ErrorTrace (TimeStamp=XXXX,
+1 -             Line=XXXX,
+1 -             Routine=<module>,
+1 -             Host=xxxxxxxxx
+1 -             Process=xxxxxxxxx,
+1 -             Thread=MainThread,
+1 -             Type=60200,
+1 -             Code=2,
+1 -             ShortDescrip=Device has not been registered.,
+1 -             Severity=Error,
+1 -             Data: )
+1 - 
+1 -     ErrorTrace (TimeStamp=XXXX,
+1 -                 Line=XXXX,
+1 -                 Routine=MonitorCollectorImpl::deregisterMonitoredDevice,
+1 -                 Host=xxxxxxxxx
+1 -                 Process=monColTestCont,
+1 -                 Thread=ORBTask,
+1 -                 Type=60200,
+1 -                 Code=2,
+1 -                 ShortDescrip=Device has not been registered.,
+1 -                 Severity=Error,
+1 -                 Data: Name=Device, Value=TEST_NONCOLLOCATED_PS_1; )
+1 - 
+1 -  TEST SUCCESS: TEST_NONCOLLOCATED_PS_1 not unregistered

@@ -82,7 +82,7 @@ testMacros_OBJECTS	= testMacros
 testMacros_LIBS		= logging
 
 testLoggingProxy_OBJECTS= testLoggingProxy
-testLoggingProxy_LIBS	= logging 
+testLoggingProxy_LIBS	= logging
 
 testAnyLog_OBJECTS = testAnyLog
 testAnyLog_LIBS   = logging

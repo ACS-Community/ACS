@@ -489,6 +489,20 @@ public:
 
     void loadLoggerConfiguration(const std::string& loggerName);
 
+    /**
+     * ACSLogStatistics methods
+     */
+    virtual Logging::ACSLogStatistics::logStatsInformationSeq* get_statistics_logger_configuration();
+    /*
+    * @throw maciErrType::LoggerDoesNotExistEx
+    */
+    virtual Logging::ACSLogStatistics::LogStatsInformation* get_statistics_logger_configuration_byname(const char* logger_name);
+
+    /*
+    * @throw maciErrType::LoggerDoesNotExistEx
+    */
+    virtual void set_statistics_logger_configuration_byname(const char* logger_name, const Logging::ACSLogStatistics::LogStatsInformation& statsInformation);
+
   protected:
     /**
      * Returns an ACS Logger created for this container.

@@ -15,7 +15,7 @@ s/Host=[0-9,a-z,A-Z,_,.,-]*,/Host=xxxx,/g
 s/Process=PID: [0-9]*/Process=PID: xxx/g
 s/RTContext: ([-0-9,a-z,A-Z,_]*, [-0-9,a-z,A-Z,_]*, [-0-9,a-z,A-Z,_]*, [0-9,a-z,A-Z,-,_]*,/RTContext: (xxx, xxx, xxx, xxx/g
 s/Thread=ID: [0-9]*/Thread=ID: xxx/g
-s/instance at 0x[0-9,a-z,A-Z]*/instance at 0xXXXX/g
+s/object at 0x[0-9,a-z,A-Z]*/object at 0xXXXX/g
 s/Process=[0-9]*/Process=xxx/g
 s/The current time is:  [0-9]*$/The current time is:  xxx/g
 s/Thread=omniORB-\+\([0-9]\)\+/Thread=omniORB--XXXXXXX/g 

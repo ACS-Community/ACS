@@ -1,1 +1,1 @@
-../../ws/src/../test/acscomponentTestServer.cpp
+../../ws/test/acscomponentTestServer.cpp

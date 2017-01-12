@@ -3,7 +3,6 @@
 <#if property.equals(clazz.identifierProperty)>
  ${pojo.generateAnnIdGenerator()}
 <#if pojo.hasMetaAttribute("oracle-sequence") >
-    @${pojo.importType("javax.persistence.GeneratedValue")}(generator="generator")
     @${pojo.importType("org.hibernate.annotations.GenericGenerator")}(name="generator", strategy="native",
        parameters = {@${pojo.importType("org.hibernate.annotations.Parameter")}(name="sequence", value="${pojo.getMetaAsString("oracle-sequence")}")}
 	)
@@ -28,7 +27,7 @@ ${pojo.generateAnnColumnAnnotation(property).replaceFirst("=\"", "=\"`").replace
 </#if>
 <#assign name = pojo.getPropertyName(property)?lower_case>
 <#if pojo.getMetaAsString("enum-types")?contains(name+"|")>
-    @${pojo.importType("org.hibernate.annotations.Type")}(type="${name}")
+	@${pojo.importType("org.hibernate.annotations.Type")}(type="${pojo.getJavaTypeName(property, jdk5)}")
 </#if>
 </#if>
 </#if>

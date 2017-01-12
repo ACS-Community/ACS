@@ -134,6 +134,7 @@ IDL_FILES = logging_idl
 IDL_TAO_FLAGS = 
 USER_IDL = -I$(ACE_ROOT)/TAO
 logging_idlStubs_LIBS = TAO_DsLogAdmin TAO_DsLogAdmin_Serv TAO_DsLogAdmin_Skel
+
 #
 # Jarfiles and their directories
 #

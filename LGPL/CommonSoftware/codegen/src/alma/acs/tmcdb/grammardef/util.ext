@@ -3,6 +3,12 @@ import tmcdbTables;
 TMCDBModel getModel(Table this):
 	(TMCDBModel)this.eContainer;
 
+List[EnumDef] getEnums(Enumerations this):
+	this.enums;
+	
+List[Column] getColumnsWithEnumsInTable(Table this):
+	this.columns.select(c | c.type == null );
+
 List[Table] allTables(TMCDBModel this):
 	this.tables;
 

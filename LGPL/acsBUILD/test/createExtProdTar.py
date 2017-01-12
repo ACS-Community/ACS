@@ -24,6 +24,7 @@
 #
 import os
 import sys
+import fnmatch
 from datetime import datetime
 from subprocess import call
 
@@ -71,6 +72,30 @@ def getAcsExtProdSrcFolder():
     temp=acsRoot.replace("ACSSW", "")
     temp=temp.replace("/", "",1)
     return temp
+
+def removeTempFiles(pattern):
+    """
+    Remove temporary files generated during the building to save 
+    disk space and time generating the tar.
+        
+    @param pattern: all the files in $ACSROOT
+        whose name matches with the pattern will be deleted
+    """
+    if os.environ.has_key('ACSROOT'):
+        acsRoot=os.environ['ACSROOT']
+    else:
+        raise Exception("ACSROOT not defined!")
+    print "Removing useless files from",acsRoot,"..."
+    totFiles=totRemoved=0
+    for root, dirs, files in os.walk(acsRoot):
+        for file in files:
+            totFiles=totFiles+1
+            if fnmatch.fnmatch(os.path.join(root, file), pattern):
+                totRemoved=totRemoved+1
+                os.remove(os.path.join(root, file))
+                
+    print "Checked",totFiles,"and removed",totRemoved
+    
 
 def getDate():
     '''
@@ -125,14 +150,20 @@ if __name__=="__main__":
     # Go to root /
     os.chdir("/")
     print "Moved into",os.getcwd()
-      
+    
+    # Remove object files from ACSROOT
+    #
+    # This is commeted out because we can exclude such files with a param of tar
+    #removeTempFiles("*.o")
     
     # build the command to pass to call
-    
+  
     cmd=[]
     cmd.append("tar")
     cmd.append("cpzf")
     cmd.append(tarNameFullPath)
+    cmd.append("--exclude")
+    cmd.append("*.o")
     for pkg in acsExtProdPackages:
         cmd.append(srcFolder+pkg)
     print "Running tar....",

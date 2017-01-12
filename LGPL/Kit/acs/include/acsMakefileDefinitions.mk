@@ -289,8 +289,8 @@ endif #end $(strip $(XML_IDL))
         tmpFile=/tmp/acsMakeJavaStubs$(strip $1)_$(UNIQUE_NUMBER)_$(USER_NAME); \
         if [ "$$$${FILES}" != "" ] ; then \
           echo $$$${FILES} > $$$${tmpFile}; \
-          $(JAVAC) $(javaCompilerOptions) $(JAVA_EDIRS) -d $$(TMPSRC) @$$$${tmpFile} ; \
-          $(RM) $$$${tmpFile}; \
+          $(JAVAC) $(javaCompilerOptions) $(JAVA_EDIRS) -d $$(TMPSRC) @$$$${tmpFile} || { $(RM) $$$${tmpFile} && exit 3 ; } ; \
+          $(RM) $$$${tmpFile} ; \
         else \
           echo "== WARNING, no Java source files generated for $1"; \
         fi
@@ -612,7 +612,7 @@ ifdef ACSROOT
 else
 	$(AT) CLASSPATH=`acsMakeJavaClasspath`:$(INSTALL_ROOT_LAST)/lib/endorsed/xercesImpl.jar;  export CLASSPATH; java -DACS.schemaconfigfiles="" $(CASTOR)  ../idl/$1.xml $$(TMPSRC) $(MK_IDL_PATH)	
 endif #ACSROOT
-	$(AT) CLASSPATH=`acsMakeJavaClasspath`; export CLASSPATH; FILES=`find $$(TMPSRC) -name \*.java`; export FILES;  if [ "$$$${FILES}" != "" ] ; then $(JAVAC) $(javaCompilerOptions) $(JAVA_EDIRS) -d $$(TMPSRC) $$$${FILES}; fi;
+	$(AT) CLASSPATH=`acsMakeJavaClasspath`; export CLASSPATH; FILES=`find $$(TMPSRC) -name \*.java`; export FILES;  if [ "$$$${FILES}" != "" ] ; then $(JAVAC) $(javaCompilerOptions) $(JAVA_EDIRS) -d $$(TMPSRC) $$$${FILES} || exit -13 ; fi;
 ifeq ($(strip $(DEBUG)),on)
 	$(call createJar,$1, $1, $$(TMPSRC),on)
 else
@@ -1467,81 +1467,6 @@ clean_tcl_lib_$1:
 .PHONY: clean_dist_tcl_lib_$1
 clean_dist_tcl_lib_$1: clean_tcl_lib_$1;
 
-
-endef
-#############################################################
-#############################################################
-errors_begin:
-	-@echo ""; echo "..ERROR files:"
-
-install_errors: errors_begin $(subst ../ERRORS,$(ERRORS),$(wildcard ../ERRORS/*_ERRORS) $(wildcard ../ERRORS/*ERRORS.IDX)) $(subst ../include,$(INCLUDE),$(wildcard ../include/*Errors.h)) $(subst ../ERRORS,$(ERRORS),$(wildcard ../ERRORS/HELP/*))
-
-############################################################
-
-$(ERRORS)/%: ../ERRORS/%
-	$(AT)cp ../ERRORS/$*  $(ERRORS)/$*
-	$(AT)chmod $(P644) $(ERRORS)/$*
-
-$(INCLUDE)/%Errors.h: ../include/%Errors.h
-	$(AT)cp ../include/$*Errors.h $(INCLUDE)/$*Errors.h
-	$(AT)chmod $(P644) $(INCLUDE)/$*Errors.h
-
-$(ERRORS)/HELP/%: ../ERRORS/HELP/%
-	$(AT)mkdir -p $(ERRORS)/HELP
-	$(AT)cp ../ERRORS/HELP/$*  $(ERRORS)/HELP/$*
-
-
-##########################################################################
-##########################################################################
-install_alarms: alarms_begin $(subst ../ALARMS,$(ALARMS),$(wildcard ../ALARMS/HELP/*))
-
-alarms_begin:
-	@echo "" &&  echo "..ALARM files:"
-
-$(ALARMS)/HELP/%: ../ALARMS/HELP/%
-	$(AT)cp ../ALARMS/HELP/$*  $(ALARMS)/HELP/$*
-	$(AT)chmod $(P644) $(ALARMS)/HELP/$*
-
-##########################################################################
-##########################################################################
-install_logs: logs_begin $(subst ../LOGS,$(LOGS),$(wildcard ../LOGS/*_LOGS))
-
-
-logs_begin:
-	-@echo ""; echo "....LOG files:"
-
-$(LOGS)/%_LOGS: ../LOGS/%_LOGS
-	$(AT)cp ../LOGS/$*_LOGS  $(LOGS)/$*_LOGS; \
-              chmod $(P644) $(LOGS)/$*_LOGS
-
-
-.PHONY: install_standardfiles
-install_standardfiles: install_alarms install_logs install_errors
-
-##########################################################################
-##########################################################################
-# acsMakePanelDependencies
-
-# write on output the rule to build the script.
-define acsMakePanelDependencies
-.PHONY: do_panel_$1
-do_panel_$1: ../bin/$1;
-
-.PHONY: clean_panel_$1
-clean_panel_$1:
-	$(AT)$(RM) ../bin/$1
-
-../bin/$1: $1.pan Makefile
-	$(AT)echo "== Making panel: ../bin/$1"
-	$(AT)cp $1.pan ../bin/$1;
-	$(AT)chmod $(P755) ../bin/$1
-
-install_panel_$1: $(BIN)/$1
-
-$(BIN)/$1: ../bin/$1
-	-$(AT)echo "\t$1"
-	$(AT)cp ../bin/$1 $(BIN)/$1
-	$(AT)chmod $(P755) $(BIN)/$1
 
 endef
 

@@ -106,7 +106,7 @@ class AcsTestLogChecker(object):
 		if len(m) > 0:
 			self.l("OK - Pattern '%s' found" % (pattern))
 		else:
-			self.l("FAIL - Pattern '%s' not found" % (pattern, len(m)))
+			self.l("FAIL - Pattern '%s' not found" % (pattern))
 		return len(m)
 	
 def get_pattern_debug_stats_channel(channel_name):

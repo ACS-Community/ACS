@@ -32,28 +32,142 @@ import MonitorErrImpl
 import MonitorErr
 import time
 
+# definition of in-test exceptions
+class noDataException (Exception) : pass
+class notNulDataException (Exception) : pass
+
 # Make an instance of the PySimpleClient
 simpleClient = PySimpleClient()
 
 mc = simpleClient.getComponent(argv[1])
 
+# Test preparation
 try:
     tc =   simpleClient.getComponent('MC_TEST_COMPONENT')
     psns =[propertySerailNumber('doubleSeqProp', ['12124']),propertySerailNumber('doubleProp', ['3432535'])]    
     mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_COMPONENT', psns)
-    tc.reset();
-    mc.startMonitoring('MC_TEST_COMPONENT')    
-    time.sleep(22)
-    mc.stopMonitoring('MC_TEST_COMPONENT')
+    print "Test preparation with SUCCESS"
 except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
-    ex.Print();   
+    ex.Print();
+    print "Test preparation FAIL"
+    
+# Test Case 1: Start component monitoring
+try:
+    # Reset any values
+    tc.reset();
+    # Verify that no monitor values exist
+    data = mc.getMonitorData()
+    # Calculate if data is present
+    for d in data:
+        for blob in d.monitorBlobs:
+            alreadyStoredData=0
+            for blobData in any.from_any(blob.blobDataSeq):
+                alreadyStoredData+=1
+    if alreadyStoredData != 0:
+        print "TEST FAIL: Data present before start monitor"
+        raise notNulDataException
+    # Start monitor and wait some time to generate data
+    mc.startMonitoring('MC_TEST_COMPONENT')
+    time.sleep(10)
+    # Verify if monitor data have been generated
+    data = mc.getMonitorData()
+    # Calculate if data is present
+    for d in data:
+        for blob in d.monitorBlobs:
+            alreadyStoredData=0
+            for blobData in any.from_any(blob.blobDataSeq):
+                alreadyStoredData+=1
+    if alreadyStoredData == 0:
+        print "TEST FAIL: No monitor data is found (first attempt)"
+        raise noDataException
+    
+except noDataException:
+    pass
+except notNulDataException:
+    pass
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+    ex.Print();
 
-data = mc.getMonitorData()
-
+# Print out recovered data
+print "RESULTS FROM TEST CASE1: Start component monitoring", len(data);
 print "Number of Devices:", len(data);
 for d in data:
     print d.componentName, d.deviceSerialNumber 
+    for blob in d.monitorBlobs:
+        print "\t", blob.propertyName, blob.propertySerialNumber
+        i=0
+        for blobData in any.from_any(blob.blobDataSeq):
+            if i<20:
+                print "\t\t", blobData
+                i+=1
+
+# Test Case 2: Data retrieval does not stop component monitoring
+try:
+    # Verify that retrieving data has not stopped the monitor
+    time.sleep(10)
+    data = mc.getMonitorData()
+    # Calculate if data is present
+    for d in data:
+        for blob in d.monitorBlobs:
+            alreadyStoredData=0
+            for blobData in any.from_any(blob.blobDataSeq):
+                alreadyStoredData+=1
+    if alreadyStoredData == 0:
+        print "TEST FAIL: No monitor data is found (second attempt)"
+        raise noDataException
+    
+except noDataException:
+    pass
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+    ex.Print();
+
+# Print out recovered data
+print "RESULTS FROM TEST CASE2: Data retrieval does not stop component monitoring", len(data);
+print "Number of Devices:", len(data);
+for d in data:
+    print d.componentName, d.deviceSerialNumber
+    for blob in d.monitorBlobs:
+        print "\t", blob.propertyName, blob.propertySerialNumber
+        i=0
+        for blobData in any.from_any(blob.blobDataSeq):
+            if i<20:
+                print "\t\t", blobData
+                i+=1
+
+# Test Case 3: Stop component monitoring
+try:
+    # Stop monitoring
+    mc.stopMonitoring('MC_TEST_COMPONENT')
+    # get rid of old data retrieved
+    data = mc.getMonitorData()
+    
+    # Wait some time to later calculate if stop worked
+    time.sleep(2)
+    data = mc.getMonitorData()
+    # Calculate if data is present
+    for d in data:
+        for blob in d.monitorBlobs:
+            alreadyStoredData=0
+            for blobData in any.from_any(blob.blobDataSeq):
+                alreadyStoredData+=1
+    if alreadyStoredData != 0:
+        print "TEST FAIL: Monitor data is found"
+        raise notNulDataException
+    
+except notNulDataException:
+    pass
+except MonitorErr.RegisteringDeviceProblemEx, _ex:
+    ex = MonitorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
+    ex.Print();
+
+# Print out recovered data
+print "RESULTS FROM TEST CASE2: Stop component monitoring", len(data);
+print "Number of Devices:", len(data);
+for d in data:
+    print d.componentName, d.deviceSerialNumber
     for blob in d.monitorBlobs:
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0

@@ -1,0 +1,193 @@
+1 - Starting Container...
+2 - 
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+2 -  usage: /----/bin/maciContainerLogStatsConfiguration <container name> {set,get,list} <loggerName> [-c {Enable / Disable / Default}] [-n <Element name>] [-p <Calculation period>] [-g <Granularity>] 
+1 - Bootstrap ORB parms: maciContainer Container01
+2 - 	 [OPTIONAL][used only with SET command] -c allows configure the statistics status for the logger.
+1 - 
+2 - 		Default sets all logger statistics to default unless explicitly stated 
+1 - ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+2 - 	 [OPTIONAL][used only with SET command] -n allows configuration of the statistics logger module name
+1 - 
+2 - 	 [OPTIONAL][used only with SET command] -p allows configuration of statistics calculation period (in seconds). Should be > 0 
+1 - Resolving reference: 'corbaloc::---:----/Manager'
+2 - 	 [OPTIONAL][used only with SET command] -g allows configuration of statistics granularity (in seconds). Should be > 0 
+1 - Manager reference narrowed.
+1 - 
+1 - 
+1 - 
+1 - Manager hostname generated using localhost address: '---'
+1 - 
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] Resolving manager...
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [Container01-GL - ] Using ACS alarm system
+1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::MethodRequestThreadPool] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' activated.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' initialized successfuly
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the InterfaceRepository.
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Manager.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Centralized Logger.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Logging into the Manager...
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Set Naming Context to Logger.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl:::authenticate] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Logged into the Manager.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [Container01 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmSourceThread - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [Container01 - ContainerImpl::run] Container running...
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::run] 
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+3 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+3 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+3 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+3 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+3 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+3 - ----------T--:--:--.--- [GlobalLogger - ] Container: Container01
+3 - ----------T--:--:--.--- [GlobalLogger - ] 	Logger information:
+3 - ----------T--:--:--.--- [GlobalLogger - ] 		[StatisticsIdentification].[LoggerName] | [Statistics status] | [Calculation period] | [Granularity]
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::get_statistics_logger_configuration] 
+3 - ----------T--:--:--.--- [GlobalLogger - ] 		Undefined.Container01 | statsDisabled | 600 | 1
+3 - ----------T--:--:--.--- [GlobalLogger - ] 		Undefined.Container01-GL | statsDisabled | 600 | 1
+3 - ----------T--:--:--.--- [GlobalLogger - ] 		Undefined.Container01-Static | statsDisabled | 600 | 1
+3 - ----------T--:--:--.--- [GlobalLogger - ] 		Undefined.maci::LibraryManager | statsDisabled | 600 | 1
+3 - ----------T--:--:--.--- [GlobalLogger - ] 		Undefined.Container-MethodRequestThreadPool | statsDisabled | 600 | 1
+3 - ----------T--:--:--.--- [GlobalLogger - ] 		Undefined.AlarmSourceThread | statsDisabled | 600 | 1
+3 - ----------T--:--:--.--- [GlobalLogger - ] 		Undefined.Container01 | statsDisabled | 600 | 1
+3 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+3 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+4 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+4 - ----------T--:--:--.--- [GlobalLogger - ] Container: Container01
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::get_statistics_logger_configuration_byname] 
+4 - ----------T--:--:--.--- [GlobalLogger - ] 	Logger information 'Container01':
+4 - ----------T--:--:--.--- [GlobalLogger - ] 		StatisticsIdentification      : Undefined
+4 - ----------T--:--:--.--- [GlobalLogger - ] 		LoggerName                    : Container01
+4 - ----------T--:--:--.--- [GlobalLogger - ] 		Statistics status             : statsDisabled
+4 - ----------T--:--:--.--- [GlobalLogger - ] 		Calculation Period            : 600
+4 - ----------T--:--:--.--- [GlobalLogger - ] 		Statistics Granularity        : 1
+4 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+4 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+5 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+5 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+5 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+5 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+5 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+5 - ----------T--:--:--.--- [GlobalLogger - ] Container: Container01
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::get_statistics_logger_configuration_byname] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::get_statistics_logger_configuration_byname] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::set_statistics_logger_configuration_byname] 
+5 - ----------T--:--:--.--- [GlobalLogger - ] 	Logger statistics configuration 'Container01':
+5 - ----------T--:--:--.--- [GlobalLogger - ] 		StatisticsIdentification      : testName
+5 - ----------T--:--:--.--- [GlobalLogger - ] 		LoggerName                    : Container01
+5 - ----------T--:--:--.--- [GlobalLogger - ] 		Statistics status             : statsEnabled
+5 - ----------T--:--:--.--- [GlobalLogger - ] 		Calculation Period            : 700
+5 - ----------T--:--:--.--- [GlobalLogger - ] 		Statistics Granularity        : 2
+5 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+5 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+6 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+6 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+6 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+6 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+6 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+6 - ----------T--:--:--.--- [GlobalLogger - ] Container: Container01
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::get_statistics_logger_configuration_byname] 
+6 - ----------T--:--:--.--- [GlobalLogger - ] 	Logger information 'Container01':
+6 - ----------T--:--:--.--- [GlobalLogger - ] 		StatisticsIdentification      : testName
+6 - ----------T--:--:--.--- [GlobalLogger - ] 		LoggerName                    : Container01
+6 - ----------T--:--:--.--- [GlobalLogger - ] 		Statistics status             : statsEnabled
+6 - ----------T--:--:--.--- [GlobalLogger - ] 		Calculation Period            : 700
+6 - ----------T--:--:--.--- [GlobalLogger - ] 		Statistics Granularity        : 2
+6 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+6 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+7 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+7 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+7 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+7 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+7 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+7 - ----------T--:--:--.--- [GlobalLogger - ] Container: Container01
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::get_statistics_logger_configuration_byname] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::set_statistics_logger_configuration_byname] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::get_statistics_logger_configuration_byname] 
+7 - ----------T--:--:--.--- [GlobalLogger - ] 	Logger statistics configuration 'Container01':
+7 - ----------T--:--:--.--- [GlobalLogger - ] 		StatisticsIdentification      : testName
+7 - ----------T--:--:--.--- [GlobalLogger - ] 		LoggerName                    : Container01
+7 - ----------T--:--:--.--- [GlobalLogger - ] 		Statistics status             : statsDisabled
+7 - ----------T--:--:--.--- [GlobalLogger - ] 		Calculation Period            : 600
+7 - ----------T--:--:--.--- [GlobalLogger - ] 		Statistics Granularity        : 1
+7 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+7 - ----------T--:--:--.--- [GlobalLogger - ] Done all.
+8 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+8 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
+8 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+8 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
+8 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+8 - ----------T--:--:--.--- [GlobalLogger - ] Container: Container01
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::get_statistics_logger_configuration_byname] 
+8 - ----------T--:--:--.--- [GlobalLogger - ] 	Logger information 'Container01':
+8 - ----------T--:--:--.--- [GlobalLogger - ] 		StatisticsIdentification      : testName
+8 - ----------T--:--:--.--- [GlobalLogger - ] 		LoggerName                    : Container01
+8 - ----------T--:--:--.--- [GlobalLogger - ] 		Statistics status             : statsDisabled
+8 - ----------T--:--:--.--- [GlobalLogger - ] 		Calculation Period            : 600
+8 - ----------T--:--:--.--- [GlobalLogger - ] 		Statistics Granularity        : 1
+8 - ----------T--:--:--.--- [GlobalLogger - ] 	... done.
+8 - ----------T--:--:--.--- [GlobalLogger - ] Done all.

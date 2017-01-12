@@ -26,7 +26,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-#USER_LIB = 
+USER_LIB = -lbaci 
 
 #
 # MODULE CODE DESCRIPTION:
@@ -65,7 +65,7 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       =
+LIBRARIES       = 
 LIBRARIES_L     = MCtestComponent MCtestPropertiesComponent MCtestAlarmsComponent MCmockBlobber MCmockController
 
 #
@@ -101,8 +101,8 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = mcTestRegisterDevice mcTestRegisterDeviceWithMultipleSerial  mcTestDeviceWithSeqAndMultipleSerial \
-                  mcTestRegisterNonCollocatedDevice \
+PY_SCRIPTS_L       = mcTestRegisterDevice mcTestRegisterDeviceWithMultipleSerial  mcTestRegisterNonCollocatedDeviceWithMultipleSerial \
+                  mcTestDeviceWithSeqAndMultipleSerial mcTestRegisterNonCollocatedDevice \
 						mcTestComponent mcTestCyclicBuffer mcTestPropertiesComponent mcTestDynEnable mcTestDynSuppress mcTestDynInterval \
                   mcTestDynSupEn mcTestAlarmsComponent mcTestArchiveDelta mcTestArchiveDeltaPercent #mcTestManualPublish mcTestManualPublishOnSuppressed
 PY_MODULES         =
@@ -137,6 +137,7 @@ CDB_SCHEMAS = MCtestAlarmsComponent
 # IDL Files and flags
 # 
 IDL_FILES = MCtestComponent
+MCtestComponentStubs_LIBS = baciStubs
 IDL_TAO_FLAGS =
 USER_IDL =
 #

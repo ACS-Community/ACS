@@ -36,6 +36,9 @@ DDS::DomainParticipantFactory *BulkDataNTStream::factory_m=0;
 unsigned int BulkDataNTStream::globalParticipantRefCount_m = 0;
 DDS::DomainParticipant* BulkDataNTStream::globalParticipant_m=0;
 
+ACE_Recursive_Thread_Mutex BulkDataNTStream::globalPartMutex_m;
+ACE_Recursive_Thread_Mutex BulkDataNTStream::DDSFactoryMutex_m;
+
 BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &cfg) :
 	    streamName_m(name), configuration_m(cfg), participant_m(0)
 {

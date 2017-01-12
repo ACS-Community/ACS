@@ -34,7 +34,8 @@
 #include "acsutilTimeStamp.h"
 #include <list>
 #include <string>
-#include <stdint.h>
+#include <Basic_Types.h>  // instead #include <stdint.h>
+
 
 namespace Logging 
 {
@@ -117,6 +118,13 @@ namespace Logging
 
     	// Setter for lastPeriodNumberOfMessages
 		void setLastPeriodNumberOfLogErrors(uint32_t value);
+
+    	// Statistics calculation getters
+    	float getMessageStatistics();
+		float getErrorStatistics();
+		float getMessageIncrement();
+		float getErrorIncrement();
+		float getActualStatisticsPeriod();
 
         // Default constructor
 		loggingStatistics();

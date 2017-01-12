@@ -105,7 +105,59 @@ def _createMethodImplementation(obj_ref, meth_name):
     return
 
 #------------------------------------------------------------------------------
-class DynamicImplementation:
+def _get_idl_POA_class(ir):
+    classname =  ir.split(':')[1].split('/').pop()  #get interface name
+    real_mod = ir.split(':')[1].split('/')[1] + "__POA"  #"IDL:alma/acspytest/PyTest:1.0" becomes "acspytest__POA"
+    real_mod = __import__(real_mod, globals(), locals(), [classname]) #get module
+    real_class = real_mod.__dict__.get(classname) #get class
+    if real_class is None:
+        reload(real_mod)
+        real_class = real_mod.__dict__.get(classname) #get class
+    return real_class
+
+#------------------------------------------------------------------------------
+class DynamicImplementationMeta(type):
+    def __new__(meta, name, bases, dct):
+        cls = super(DynamicImplementationMeta, meta).__new__(meta, name, bases, dct)
+        cls._specializations = {}
+        return cls
+
+    def _get_specialization(cls, ir):
+        if cls is ADynImpl:
+            bases = (_get_idl_POA_class(ir),)
+            dct = cls.__dict__.copy()
+            name = '{}_{}'.format(cls.__name__, ir)
+            specialization = type(name, bases, dct)
+            cls._specializations[ir] = specialization
+        else:
+            if ir not in cls._specializations:
+                bases =  (_get_idl_POA_class(ir),) + cls.__bases__
+                dct = cls.__dict__.copy()
+                name = '{}_{}'.format(cls.__name__, ir)
+                #for base in bases:
+                specialization = type(name, bases, dct)
+                cls._specializations[ir] = specialization
+        return cls._specializations[ir]
+
+    def __call__(cls, ir, *args, **kwargs):
+        cls2 = cls._get_specialization(ir)
+        if cls2 != None:
+            if cls is DynamicImplementation:
+                instance = cls2.__new__(cls2) # type.__call__(cls2, ir, *args, **kwargs)
+                instance.__init__(ir)
+                return instance
+            else:
+                return type.__call__(cls2, *args, **kwargs)
+        return type.__call__(cls, *args, **kwargs)
+
+#------------------------------------------------------------------------------
+class ADynImpl(object):
+    __metaclass__ = DynamicImplementationMeta
+    
+
+#------------------------------------------------------------------------------
+class DynamicImplementation(ADynImpl):
+
     '''
     A complete implementation of the OMG-defined DynamicImplementation class.
     '''
@@ -148,7 +200,8 @@ class DynamicImplementation:
         #copy it's class locally thereby converting DynamicImplementation
         #into the POA object!
         self.__dict__ = _mergeClasses(self.__dict__, self.__real_class)
-        
+       
+	"""
         temp_list = list(self.__class__.__bases__)
         try:
             #OK for subclasses...
@@ -157,6 +210,7 @@ class DynamicImplementation:
             #should really never be the case...
             temp_list.insert(0, self.__real_class)
         self.__class__.__bases__ = tuple(temp_list)
+	"""
         
         #now that all the underlying infrastructure is in place, we can finally use
         #CORBA introspection to start adding methods!

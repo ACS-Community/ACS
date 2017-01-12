@@ -37,7 +37,6 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.hibernate.LockMode;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.jdbc.Work;
 
 import alma.acs.logging.level.AcsLogLevelDefinition;
@@ -79,7 +78,8 @@ public class TestSnmpTables extends TestCase {
     	
     	
     	hibernateUtil = HibernateUtil.getInstance(logger);
-    	AnnotationConfiguration ac = new AnnotationConfiguration();
+    	org.hibernate.cfg.Configuration ac = new org.hibernate.cfg.
+    			Configuration();
     	ac.configure("test-hibernate.cfg.xml");
     	hibernateUtil.setConfiguration(ac);
     	hibernateUtil.getSessionFactory().openSession();                

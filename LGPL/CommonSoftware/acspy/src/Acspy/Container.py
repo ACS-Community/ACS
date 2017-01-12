@@ -219,7 +219,7 @@ class AsyncComponentActivator(Thread):
         except:
             self.logger.logError("Deactivation of component failed descOut.id_tag = "+str(descOut.id_tag)+" for '"+self.componentName+"'");
 #------------------------------------------------------------------------------
-class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClient):
+class Container(BaseClient, maci__POA.Container, Logging__POA.LoggingConfigurable):
     '''
     The Python implementation of a MACI Container.
 
@@ -462,12 +462,18 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             try:
                 temp[PYCLASS] = temp[EXE].split('.').pop() #get class name
                 temp[PYCLASS] = temp[COMPMODULE].__dict__.get(temp[PYCLASS]) #get class
-                temp[PYREF] = instance(temp[PYCLASS]) #create Python object
+                try: # First try if it's a Simulator
+		    temp[PYREF] = temp[PYCLASS].__call__(temp[TYPE]) #create Python object
+                except TypeError, e: # When TypeError is thrown, this means that is not a Simulator, let's try like a normal component 
+		    temp[PYREF] = temp[PYCLASS].__new__(temp[PYCLASS]) #create Python object
             except Exception, e:
                 temp[PYCLASS] = temp[COMPMODULE].__dict__.get(temp[PYCLASS]) #get class
-                temp[PYREF] = instance(temp[PYCLASS]) #create Python object
+                try: # First try if it's a Simulator
+		    temp[PYREF] = temp[PYCLASS].__call__(temp[TYPE]) #create Python object
+                except TypeError, e: # When TypeError is thrown, this means that is not a Simulator, let's try like a normal component
+		    temp[PYREF] = temp[PYCLASS].__new__(temp[PYCLASS]) #create Python object
 
-        except (TypeError, ImportError), e:
+        except (TypeError, ImportError, AttributeError), e:
             e2 = CannotActivateComponentExImpl(exception=e)
             if isinstance(e,TypeError):
                 e2.setDetailedReason("Verify that the name of implementation class matches the module name *%s*" % temp[EXE].split('.').pop())
@@ -492,7 +498,13 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
         #instance(...) does not call the constructor!
         try:
             start = time()
-            temp[PYREF].__init__()
+            try:
+                if temp[PYREF].__init__.func_code.co_argcount == 2: # First try if it's a Simulator
+                    temp[PYREF].__init__(temp[TYPE])
+                else: # It's not the Simulator
+                    temp[PYREF].__init__() 
+            except AttributeError: # Could be that func_code is not defined so in this case an exception will be thrown
+                temp[PYREF].__init__()
             interval = time() - start
 
             log = LOG_CompAct_Instance_OK()
@@ -1412,3 +1424,79 @@ class Container(maci__POA.Container, Logging__POA.LoggingConfigurable, BaseClien
             # Terminate the container
             self.logger.logError("Manager not available: bailing out!")
             self.shutdown(ACTIVATOR_EXIT<<8)
+            
+    #-- ACSLoggingStatistics Interface ------------------------------------------------------
+    def get_statistics_logger_configuration(self):
+        '''
+        Gets the names and status of all statistics modules of all loggers, to allow configuring them individually.
+        If the logger statistics module has never been configured yet, then it will provide "Undefined"
+        as elementName 
+        '''
+        # exit structure
+        statsInfoList = []
+        
+        # Retrieve logger names
+        for loggerName in self.get_logger_names():            
+            # Retrieve logger
+            retrievedLogger = Log.getLogger(loggerName)
+            
+            # Store relevant information
+            statsInfoList.append ( Logging.ACSLogStatistics.LogStatsInformation(
+                                                            retrievedLogger.stats.getStatisticsIdentification(),
+                                                            loggerName,
+                                                            retrievedLogger.stats.getDisableStatistics(),
+                                                            retrievedLogger.stats.getStatisticsCalculationPeriod(),
+                                                            retrievedLogger.stats.getStatisticsGranularity() ) )
+        # Return info
+        return statsInfoList
+        
+    
+    def get_statistics_logger_configuration_byname(self, logger_name):
+        '''
+        Gets the names and status of statistics module of requested logger.
+        If the logger statistics module has never been configured yet, then it will provide "Undefined"
+        as elementName 
+        Throws LoggerDoesNotExistEx if a the logger is not found
+        '''
+        
+        # Verification if logger does exist
+        if Log.doesLoggerExist(logger_name) is False:
+            # Raise exception
+            inexistantLoggerEx = Logging.LoggerDoesNotExistEx(logger_name)
+            raise inexistantLoggerEx
+        
+        # Retrieve logger
+        retrievedLogger = Log.getLogger(logger_name)
+        
+        # Store relevant information
+        statsInfo = Logging.ACSLogStatistics.LogStatsInformation(
+                                            retrievedLogger.stats.getStatisticsIdentification(),
+                                            logger_name,
+                                            retrievedLogger.stats.getDisableStatistics(),
+                                            retrievedLogger.stats.getStatisticsCalculationPeriod(),
+                                            retrievedLogger.stats.getStatisticsGranularity() )
+        # Return info
+        return statsInfo
+    
+    def set_statistics_logger_configuration_byname(self, logger_name, statsInformation):
+        '''
+        Sets logger statistics configuration for a particular named logger.
+        Throws LoggerDoesNotExistEx if a the logger is not found 
+        '''
+        
+        # Verification if logger does exist
+        if Log.doesLoggerExist(logger_name) is False:
+            # Raise exception
+            inexistantLoggerEx = Logging.LoggerDoesNotExistEx(logger_name)
+            raise inexistantLoggerEx
+        
+        # Retrieve logger
+        retrievedLogger = Log.getLogger(logger_name)
+                  
+        # Configure the logger
+        retrievedLogger.stats.configureStatistics(statsInformation.statsId,
+                statsInformation.statsStatus,
+                statsInformation.statsPeriodConfiguration,
+                statsInformation.statsGranularityConfiguration)
+            
+        return

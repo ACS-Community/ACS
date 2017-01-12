@@ -8,8 +8,11 @@
 	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
 	<xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
 	<xs:complexType name="MCtestAlarmsComponent">
+		<xs:complexContent>
+    	<xs:extension base="baci:CharacteristicComponent">
 		<xs:sequence>
 			<xs:element name="doubleROProp"     type="baci:ROdouble" />
+	
 			<xs:element name="floatROProp"     type="baci:ROfloat" />
 			<xs:element name="longROProp"       type="baci:ROlong" />
 			<xs:element name="uLongROProp"      type="baci:ROuLong" />
@@ -22,8 +25,10 @@
 			<xs:element name="uLongSeqROProp"   type="baci:ROuLongSeq" />
 			<xs:element name="booleanSeqROProp" type="baci:RObooleanSeq" />
 			<xs:element name="EnumTestROProp"   type="baci:ROEnum" />
-			
+
 		</xs:sequence>
+	    </xs:extension>
+        </xs:complexContent>
 	</xs:complexType>
 	<xs:element name="MCtestAlarmsComponent" type="MCtestAlarmsComponent"/>
 </xs:schema>

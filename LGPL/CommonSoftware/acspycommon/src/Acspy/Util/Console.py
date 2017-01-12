@@ -51,7 +51,7 @@ import sys, string, traceback, types, __builtin__
 REVISION = "$Revision: 1.1.1.1 $"
 VERSION = REVISION.split()[1]
 # ------------------------------------------------------------------------------
-class OutputPipe:
+class OutputPipe(object):
     '''
     A substitute file object for redirecting output to a function.
     '''
@@ -332,7 +332,7 @@ class Console(Frame):
                 obj = None
                 keys = []
         else:
-            class Lookup:
+            class Lookup(object):
                 def __init__(self, dicts):
                     self.dicts = dicts
 

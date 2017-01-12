@@ -142,11 +142,10 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 		// Check all CHECK constraints for this table
 		for (int i = 0; i < inheritanceTranslators.length; i++) {
 			String tableName = tableIdentifier.getName().toLowerCase();
-
 			Map<String, String> typesForTable = inheritanceTranslators[i].getEnumTypesForTable(tableName);
-			if( typesForTable == null || typesForTable.size() == 0) {
+			if( typesForTable == null || typesForTable.size() == 0)
 				continue;
-			} else {
+			else {
 				MetaAttribute mattr2 = new MetaAttribute(HAS_ENUM_TYPES);
 				mattr2.addValue("true");
 				map.put(HAS_ENUM_TYPES, mattr2);
@@ -164,6 +163,26 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 				}
 				mattr2.addValue(sb.toString());
 				map.put(ENUM_TYPES, mattr2);
+			}
+		}
+		
+		// Check whether table is "Identifiable"
+		for (int i = 0; i < inheritanceTranslators.length; i++) {
+			String tableName = tableIdentifier.getName().toLowerCase();
+			if (inheritanceTranslators[i].isIdentifiable(tableName)) {
+				MetaAttribute mattr3 = new MetaAttribute(MetaAttributeConstants.IMPLEMENTS);
+				mattr3.addValue("alma.tmcdb.history.Identifiable");
+				map.put("implements",mattr3);
+			}
+		}
+		
+		// Check whether table is "Backloggable"
+		for (int i = 0; i < inheritanceTranslators.length; i++) {
+			String tableName = tableIdentifier.getName().toLowerCase();
+			if (inheritanceTranslators[i].isBackloggable(tableName)) {
+				MetaAttribute mattr4 = new MetaAttribute(MetaAttributeConstants.IMPLEMENTS);
+				mattr4.addValue("alma.tmcdb.history.Backloggable");
+				map.put("implements",mattr4);
 			}
 		}
 
@@ -192,7 +211,7 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 			}
 
 		}
-
+		
 		return map;
 	}
 

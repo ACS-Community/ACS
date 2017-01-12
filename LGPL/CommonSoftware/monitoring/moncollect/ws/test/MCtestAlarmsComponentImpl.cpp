@@ -371,19 +371,37 @@ ROEnumTest_ptr MCtestAlarmsComponentImpl::EnumTestROProp()
 
 void MCtestAlarmsComponentImpl::reset()
 {
+	m_doubleROVal = 1.0;
 	m_doubleROProp_p->getDevIO()->write(m_doubleROVal, m_time1);
+	m_floatROVal = 1.0;
 	m_floatROProp_p->getDevIO()->write(m_floatROVal, m_time2);
+	m_longROVal = 1;
 	m_longROProp_p->getDevIO()->write(m_longROVal, m_time3);
+	m_uLongROVal = 1;
 	m_uLongROProp_p->getDevIO()->write(m_uLongROVal, m_time4);
+	m_longLongROVal = 1;
 	m_longLongROProp_p->getDevIO()->write(m_longLongROVal, m_time5);
+	m_uLongLongROVal = 1;
 	m_uLongLongROProp_p->getDevIO()->write(m_uLongLongROVal, m_time6);
+	m_booleanROVal = true;
 	m_booleanROProp_p->getDevIO()->write(m_booleanROVal, m_time7);
+	for(unsigned int i=0;i<m_doubleSeqROVal.length();i++)
+			m_doubleSeqROVal[i]=1.0;
 	m_doubleSeqROProp_p->getDevIO()->write(m_doubleSeqROVal, m_time8);
+	for(unsigned int i=0;i<m_floatSeqROVal.length();i++)
+			m_floatSeqROVal[i]=1.0;
 	m_floatSeqROProp_p->getDevIO()->write(m_floatSeqROVal, m_time9);
+	for(unsigned int i=0;i<m_longSeqROVal.length();i++)
+			m_longSeqROVal[i]=1;
 	m_longSeqROProp_p->getDevIO()->write(m_longSeqROVal, m_time10);
+	for(unsigned int i=0;i<m_uLongSeqROVal.length();i++)
+			m_uLongSeqROVal[i]=1;
 	m_uLongSeqROProp_p->getDevIO()->write(m_uLongSeqROVal, m_time11);
+	for(unsigned int i=0;i<m_booleanSeqROVal.length();i++)
+			m_booleanSeqROVal[i]=true;
 	m_booleanSeqROProp_p->getDevIO()->write(m_booleanSeqROVal, m_time12);
-	m_EnumTestROProp_p->getDevIO()->write(m_EnumTestROVal, m_time12);
+	m_EnumTestROVal = 1;
+	m_EnumTestROProp_p->getDevIO()->write(m_EnumTestROVal, m_time13);
 }
 
 void MCtestAlarmsComponentImpl::increase()
@@ -441,7 +459,7 @@ void MCtestAlarmsComponentImpl::decrease()
 		m_booleanSeqROVal[i] = false;
 	m_booleanSeqROProp_p->getDevIO()->write(m_booleanSeqROVal, m_time12);
 	m_EnumTestROVal = m_EnumTestROVal - 1;
-	m_EnumTestROProp_p->getDevIO()->write(m_EnumTestROVal, m_time3);
+	m_EnumTestROProp_p->getDevIO()->write(m_EnumTestROVal, m_time13);
 }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/

@@ -70,7 +70,6 @@ ACE_TSS<LoggingTSSStorage> * LoggingProxy::tss = 0;
 char LoggingProxy::m_process[256];
 ACE_Recursive_Thread_Mutex LoggingProxy::classMutex;
 
-
 void
 LoggingProxy::log(ACE_Log_Record &log_record)
 {

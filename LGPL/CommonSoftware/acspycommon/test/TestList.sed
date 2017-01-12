@@ -26,4 +26,7 @@ s/file=.*acspy/file='acspy/g
 s/file=.*ACSSW/file='acspy/g
 s/lineNum=[0-9]*/lineNum=XXXX/g
 s/TimeMillis=[0-9]\+/TimeMillis=nnn/g
-s/during last [.,0-9]* seconds = [.,0-9]*/during last X seconds = X/g
+s/LastPeriodDuration=[.,0-9]*/LastPeriodDuration=X/g
+s/MessageStatistics=[.,0-9]*/MessageStatistics=X/g
+s/ErrorMessageStatistics=[.,0-9]*/ErrorMessageStatistics=X/g
+s/-nan%/ nan%/g

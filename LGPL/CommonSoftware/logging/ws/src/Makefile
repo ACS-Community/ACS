@@ -124,7 +124,14 @@ LIBRARIES_L     =
 
 baselogging_OBJECTS =	loggingBaseLog loggingStatistics loggingHandler loggingLogger \
                         loggingLogTrace loggingGetLogger loggingGenericLogger \
-                        loggingStdoutHandler
+                        loggingStdoutHandler \
+                        loggingLoggingProxy loggingLocalFile loggingXMLElement \
+                        loggingRemoteSyslog loggingLocalSyslog loggingACSLogger loggingLogSvcHandler  \
+						loggingLogThrottle \
+						loggingACSLoggingEvent loggingXmlLayout \
+						loggingStdoutlayout loggingACSCategory \
+						loggingACSRemoteAppender loggingACSHierarchyMaintainer \
+						loggingLog4cpp loggingStopWatch loggingLogLevelDefinition loggingXMLParser
 ##
 ## @todo
 ## -lTAO_PortableServer and acsutil commented out because it makes the container crash on exit
@@ -132,7 +139,7 @@ baselogging_OBJECTS =	loggingBaseLog loggingStatistics loggingHandler loggingLog
 ##
 ##baselogging_LDFLAGS =   -lTAO_PortableServer
 ##baselogging_LIBS =    loki acsutil
-baselogging_LIBS =    acsutil loki
+baselogging_LIBS =    acsutil loki log4cpp logging_idlStubs
 baselogging_LDFLAGS = -ggdb
 baselogging_CFLAGS  = -DLOGGINGBASE_BUILD_DLL
 logging_OBJECTS 	=	logging loggingLoggable loggingXMLElement loggingXMLParser \
@@ -198,6 +205,8 @@ CSOURCENAMES = \
 # IDL FILES
 #
 IDL_FILES =
+
+
 
 #
 #>>>>> END OF standard rules

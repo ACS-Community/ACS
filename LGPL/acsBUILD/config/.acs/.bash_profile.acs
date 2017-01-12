@@ -157,7 +157,7 @@ then
 fi
 if [ X"$ALMASW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   ALMASW_RELEASE=ACS-2015.4
+   ALMASW_RELEASE=ACS-2015.6
 fi
 
 # Combined absolute path where ACS software and tools are installed.
@@ -451,12 +451,27 @@ fi
 
 if [ X"$ACS_WIND_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
+	# Select default VxWorks version
+	# ACS_WIND_HOME=WindRiver-3.7 := vxworks 6.7
+	# other, e.g. ../WindRiverGPP69 := vxworks 6.9
+	#          or    WindRiverGPP69 := vxworks 6.9
+
 	ACS_WIND_HOME=WindRiver-3.7
 fi
 
 if [ X"$ACS_WIND_PLATFORM" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-	ACS_WIND_PLATFORM=vxworks-6.7
+	# Even though a single $WIND_HOME could host multiple Workbench and VxWorks versions,
+	# this feature is not used. Derive version from home folder name.
+	# Even though the home folder name is only an ESO convention,
+	# vx6.9 is the last one to support PPC604, and the only older version used
+	# in Apex is vx6.7 with folder name WindRiver-3.7
+
+	if [ `basename $ACS_WIND_HOME` = WindRiver-3.7 ] ; then
+		ACS_WIND_PLATFORM=vxworks-6.7
+	else
+		ACS_WIND_PLATFORM=vxworks-6.9
+	fi
 fi
 
 if [ X"$WRSD_LICENSE_FILE" = X ] || [ X"$ACS_RETAIN" = X ]
@@ -802,6 +817,111 @@ fi
 
 # PATH common settings
 
+# Helmut Tischer 2015-07-13:
+#
+# Wind River VxWorks settings
+#
+# The Wind River installation is optional.
+# Only if it is found, set the environment for this to allow APEX builds.
+#
+# Values are based on the install location. This above is specified with
+# $ACS_WIND_HOME and $ACS_WIND_PLATFORM
+#
+# The Wind River environment points to conflicting versions for make and tclsh in PATH and LD_LIBRARY_PATH.
+# Assuming precomputed shortcut ACSMAKE=`which make`/bin .
+# Therefore $ACSMAKE and $TCLTK_ROOT/bin must be prepended after setting the Wind River env.
+# However the prepended $ACSMAKE typically also contains conflicting versions of $TCLTK_ROOT, $PYTHON_ROOT, $JAVA_HOME.
+# Therefore prepending $ACSMAKE must done before prepending $TCLTK_ROOT, $PYTHON_ROOT, $JAVA_HOME.
+# Therefore relocate Wind River environment setting to the very beginning of "PATH common settings"
+#
+# The Wind River script wrenv.sh knows the complete list of consistent values.
+# Inside shell scripts e.g.: eval `wrenv.sh -p vxworks-6.7 -o print_env -f sh`
+# In interactive shell simply, by a sub shell, e.g.: wrenv.sh -p vxworks-6.7
+# This adds prefixes to the variables PATH, LD_LIBRARY_PATH, MANPATH, therefore do this after resetting the recursion above.
+#
+# About tcl package search path:
+# Packages are automatically only found, if they are installed nearby libtcl*.so
+# Other and only other locations must be specified with TCLLIBPATH.
+# Some tcl or workbench versions need TCLLIBPATH whitespace delimited, others by ':'.
+# PATH and LD_LIBRARY_PATH must be consistent to TCLLIBPATH.
+# Native libraries called by tcl based vxworks kernel configurator are only
+# compatible to the tcl version in $WIND_FOUNDATION_PATH/$WIND_HOST_TYPE/lib/tcl8.5
+# Additional VxWorks specific packages in $WIND_BASE/host/resource/tcl
+# Order is important, because some Workbench versions are containing multiple conflicting versions of the same package.
+# Effectively for command line vxprj a wrapper make script must temporarily restore the VxWorks tcl version,
+# and for workbench kernel configuration a install.properties/package.properties file has to restore
+# the VxWorks tcl version specifically for kernel configuration projects.
+# Alternatively acs must also use the VxWorks tcl version.
+# Instead of multiple TCLLIBPATH entries, all libs have to be symlinked together into one folder.
+# Test e.g. with tclsh commands 'package require Wind', 'package require OsConfig'
+
+if [ -d $ALMASW_INSTDIR/$ACS_WIND_HOME ]
+then
+    ACS_WIND_HOME_ABS=`cd $ALMASW_INSTDIR/$ACS_WIND_HOME; pwd`
+
+    export WRSD_LICENSE_FILE
+    export PATH LD_LIBRARY_PATH MANPATH TCLTK_ROOT
+
+    # acs requires a newer make as it is part of Wind River up to 6.9.x.y
+    # Store path of original make to prepend it later before the Wind River make
+    #ACS_MAKE=$(dirname $(which make))
+
+    # Some ESO patched Wind River installation might expect $GNU_ROOT to try overriding make and
+    # $TCLTK_ROOT to merge tcl libraries of acs and Wind River.
+    # We cannot rely on this being present or not, and also tcl versions might still be incompatible.
+    # So set to a temporary useless value. Will be restored later down.
+    ACS_GNU_ROOT=$GNU_ROOT
+    export GNU_ROOT=$ACS_WIND_HOME_ABS/null
+    ACS_TCLTK_ROOT=$TCLTK_ROOT
+    export TCLTK_ROOT=$ACS_WIND_HOME_ABS/null
+
+    # set environment for Wind River Tools
+    eval `$ACS_WIND_HOME_ABS/wrenv.sh -p $ACS_WIND_PLATFORM -o print_env -f sh`
+
+    # revert temporary to acs value.
+    GNU_ROOT=$ACS_GNU_ROOT
+    unset ACS_GNU_ROOT
+    TCLTK_ROOT=$ACS_TCLTK_ROOT
+    unset ACS_TCLTK_ROOT
+
+    # Wind River replaces the tclsh /bin and /lib path.
+    # To keep finding the alma tcl consistent libs, prepend it again.
+    # This must be done before $ACS_MAKE, for the case that $ACS_MAKE contains another tclsh copy, e.g. when pointing to /usr/bin.
+    # Make sure that original make tool is still used.
+
+    # $GNU_ROOT/bin and others are prepended later.
+    # If one of those is identical to $ACS_MAKE, prepending $ACS_MAKE is not needed here.
+    # If $TCLTK_ROOT/... is prepended later, it is not needed here.
+    #PATH=$TCLTK_ROOT/bin:$ACS_MAKE:$PATH
+    #LD_LIBRARY_PATH=$TCLTK_ROOT/lib:$LD_LIBRARY_PATH
+
+    # If acs tclsh is used, VxWorks kernel configuration will not work, neither from console nor Workbench.
+    # For this cases need to restore the Wind River tclsh, e.g. by a wrapper makefile to call vxprj.
+
+    # Todo:
+    # Only if default CPU is not set in acsMakefile or wanted CPU is different, an override is needed here.
+    # Only if VLTSW tat tests should run, ACC_HOST is needed.
+    # All other following settings are overridden in acsMakefile or obsolete since vxWorks 5.3.
+    # VX_HOST_TYPE=x86-linux or VX_HOST_TYPE=i386 value is wrong. If functionality needed, use $WIND_HOST_TYPE instead.
+
+    # ACS specific settings based on Wind River tools.
+    export ACC_HOST=$HOSTNAME
+    CPU=${CPU:-PPC604}
+    case $CPU in
+            MC68040) VX_CPU_FAMILY=68k ;;
+            PPC604)  VX_CPU_FAMILY=ppc ;;
+            *)       VX_CPU_FAMILY="unknown_CPU_type_$CPU" ;;
+    esac
+     VX_HOST_TYPE=$WIND_HOST_TYPE
+     VXROOT=$WIND_BASE/target
+     VX_VW_BASE=$WIND_BASE/target
+     VX_HSP_BASE=$VXROOT
+     VX_BSP_BASE=$VXROOT
+    export ACC_HOST CPU VX_CPU_FAMILY
+    export VX_HOST_TYPE VXROOT VX_VW_BASE VX_HSP_BASE VX_BSP_BASE
+
+fi
+
 # the PATH which comes with the operating system is preserved.
 # Very often it contains /usr/local/bin:/usr/bin
 # If you have problem with this order and you want to have /usr/bin
@@ -1000,263 +1120,8 @@ fi
 #
 # Wind River VxWorks settings
 #
-# The Wind River installation is optional.
-# Only if it is found, set the environment for this to allow APEX builds.
-#
-# Values are based on the install location. This above is specified with
-# $ACS_WIND_HOME and $ACS_WIND_PLATFORM
-#
-# The Wind River script wrenv.sh knows the complete list of consistent values.
-# Inside shell scripts e.g.: eval `wrenv.sh -p vxworks-6.7 -o print_env -f sh`
-# In interactive shell simply, by a sub shell, e.g.: wrenv.sh -p vxworks-6.7
-#
-# Note: This adds prefixes to the variables PATH, LD_LIBRARY_PATH, MANPATH.
-#   Therefore do these settings after resetting the recursion above
-#   to prevent loosing these settings, or adding them multiple times.
-#
-# Since the path variables are extended by an an invoced application, make sure
-# that the variables are exported to it. Even though an earlier export picks up
-# later value changes, not sure whether all are already exported.
-# Because of the tcl hack (see below), TCLTK_ROOT is also used by wrenv.sh
-# and thus needs to be exported.
-# GNU_ROOT was needed in wrenv.sh before, but no longer. No need to export.
-# WRSD_LICENSE_FILE is not needed in wrenv.sh but during runtime. export also.
-#
-# About tcl package search path:
-#
-# Packages are automatically only found, if they are installed nearby libtcl*.so
-# Other locations must be specified with TCLLIBPATH.
-# Some tcl versions need TCLLIBPATH whitespace delimited, others optionally ':'
-# Attention! Packages installed in tcl must not be specified in TCLLIBPATH!
-#
-# The found libtcl*.so location determines the automatically found packages,
-# so LD_LIBRARY_PATH must be consistent with TCLLIBPATH.
-# PATH must match to use a consistent tcl executable and libraries.
-#
-# Wind River Workbench provides its own tcl installation with special packets
-# in $WIND_FOUNDATION_PATH/$WIND_HOST_TYPE/lib/tcl8.5
-# Additional VxWorks specific packages in $WIND_BASE/host/resource/tcl
-# If both are mentioned in TCLLIBPATH (Wind River tcl installation not used),
-# then $WIND_BASE ... must come first!
-# Order is important, because some Workbench versions are containing two
-# different implementations of package osconfig with same name and version nr.
-# tcl files and 'package provide' in other folders are not relevant, because
-# they get loaded explicitely when needed. See eg. shell script windsh
-# loading its own tcl environment for windsh.tcl
-#
-# An ACS specific tcl installation with packages is in $TCLTK_ROOT/lib/tcl8.4
-# More packages are in $TCLTK_ROOT/lib. Only on running this installation,
-# both folders are searched automatically/ 
-#
-# For the core tcl installation, Workbench ia superset of ACS, but
-# ACS has additional libraries and executables and tcl packages in the search path.
-# So keep the $TCLTK_ROOT portion in PATH and LD_LIBRARY_PATH.
-#
-# Wind River Workbench 3.6 and newer is containing tcl 8.5, ACS tcl 8.4
-# Additional libraries are not always compatible to tcl 8.5, in particular
-# blt is incompatible (3rd party unmaintained library which is hardcoded to
-# the tcl version specific native C interface).
-# "Normal" tcl scripts are considered non critical for tcl upgrades.
-# ACS and most likely APEX are no longer using tcl GUI related code.
-# (Note: But CCS/VLT did require very many additional packages!)
-#
-# Nevertheless so far set up search pathes for tcl 8.4 to keep ACS untouched,
-# and test Workbench and VxWorks kernel build/configuration management scripts.
-# For this $TCLTK_ROOT based path must come first, and TCLLIBPATH mentioning
-# both Wind River packet locations.
-# Unfortunately on setting the Wind River packages of tcl8.5 in TCLLIBPATH,
-# the tcl8.5 builtin packages of the same folder are also found before the
-# corresponding builtin packages of the actually running tcl8.4
-# This can be seen e.g. on 'package require tcltest'.
-# Therefore create a new folder far from the search path, and put in
-# links to the Wind River packages in the Workbench tcl installation, but not to the
-# tcl8.5 builtin packages, and refer to this new folder in TCLLIBPATH.
-# clock.tcl, msgs/, tzdata/ are not needed because this is a 8.5 specific expanded
-# version of the 8.4 builtin clock command.
-#
-# If TCLLIBPATH for 8.4 is whitespace delimited, packages are found from commandline
-# But Workbench loads tcl scripts explicitely and for this evaluates TCLLIBPATH
-# also, and expects a ":" as path delimiter.
-# Then on creating a VxWorks Image Project, no BSPs are shown and the Error Log
-# Window shows a missing PrjUtils.tcl
-# On colon delimited TCLLIBPATH, Workbench can load PrjUtils.tcl, but then later on
-# there is a error from within the tcl script, because dere a whitespace delimited
-# TCLLIBPATH is needed to call each other.
-# So effectively, the TCLLIBPATH must consist of only one entry.
-# Therefore to the new tcl package folder, add also links to packages and tcl files
-# from the VxWorks tcl package folder.
-# Note: There are some more tcl fiels and duplicated packages in other folders
-# outside the search path, but they are called explicitely when needed and need
-# not being covered here.
-#
-# Do not add the links to the workbench tcl packages directly into the VxWorks
-# tcl packages folder, because this would make it impossible to run an
-# instance with the original behaviour at the same time.
-# Disadvantage: hardcoded package version numbers in the links.
-#
-# mkdir $(WIND_HOME)/tcl_merged
-# cd $(WIND_HOME)/tcl_merged
-# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/dde
-# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/platform
-# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/reg
-# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/tclxml3.0
-# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/Wind
-# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/wrreader
-# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/Wtx
-# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/tm.tcl
-# ln -s ../vxworks-6.7/host/resource/tcl/OsConfig
-# ln -s ../vxworks-6.7/host/resource/tcl/cmpScriptHttp.tcl
-# ln -s ../vxworks-6.7/host/resource/tcl/gdb.tcl
-# ln -s ../vxworks-6.7/host/resource/tcl/init.tcl
-# ln -s ../vxworks-6.7/host/resource/tcl/shelbrws.tcl
-# ln -s ../vxworks-6.7/host/resource/tcl/VxWorksErrnoTbl.tcl
-# ln -s ../vxworks-6.7/host/resource/tcl/wtxcore.tcl
-# ln -s ../vxworks-6.7/host/resource/tcl/wtxinit.tcl
-#
-# Note that wrenv.sh does not append to TCLLIBPATH, but replaces it completely.
-#
-# For the shell only, it would be sufficient to insert $TCLTK_ROOT before
-# wrenv and overwrite TCLLIBPATH after wrenv.
-# But then still, workbench would load its own environment with different
-# setting and dependent behaviour. This could result e.g. in some ACS scripts
-# being unusable from within Workbench.
-# Therefore tcl environment fix is directly done in Workbench configuration.
-# This also has the advantage, that .bash_profile.acs can left unchanged,
-# e.g. on moving ACS from tcl 8.4 to 8.5
-# Also duplicate path entries are removed by wrenv "addpath" command,see below.
-# Attention! The tcl fix might get lost after Workbench/VxWorks update.
-# Therefore reapply after update!
-# Please note the steps down in Wind River setup.log to make it obvious.
-# Also the fix is based on TCLTK_ROOT, so export before running wrenv!
-#
-# Steps to adjust wrenv created environment for ACS tcl:
-# - $(WIND_HOME)/vxworks-6.7/package.properties
-# -- remove line TCLLIBPATH (moved to workbench-3.1/package.properties)
-#   This makes sure that PATH/LD_LIBRARY_PATH/TCLLIBPATH stay consistent,
-#   even if e.g. for Host native development only the Workbench environment
-#   is loaded, but not the VxWorks environment.
-# -- change TCLLIBPATH line to
-# - $(WIND_HOME)/workbench-3.1/package.properties:
-# -- append lines
-# workbench31.eval.44=addpath PATH $(TCLTK_ROOT)$/bin
-# workbench31.eval.45=addpath LD_LIBRARY_PATH $(TCLTK_ROOT)$/lib
-# workbench31.eval.46=export TCLLIBPATH=$(WIND_HOME)$/tcl_merged
-# Note:
-#   eval.xx numbers must be bigger as the numbers at original
-#     addpath...$(WIND_FOUNDATION_PATH) use for these PATH variables.
-#   Every eval.xx number must be unique.
-#   If needed on other Wind River installations, adjust numbers and order.
-#   No quoting of values even when whitespace delimiter are embedded
-#   Don't use variables set by other packages, because they might not be loaded.
-#   Try to avoid hardcoded version numbers to other packets.
-# - run:
-# cd $(WIND_HOME); setup/postinstall.sh
-# Attention! Required to propagate changes to install.properties and wrenv
-# - in $(WIND_HOME)/setup.log make a note about the changes to not
-#   forgetting about reapplying in case of an update.
-#
-# Steps to adjust search path of: make, expect, coverage
-# cd $(WIND_HOME)
-# ln -s /usr/bin/make make
-# ln -s ../Python/bin/coverage coverage_py
-# ln -s workbench-3.1/analysis/host/bin/x86-linux2/coverage coverage_wr
-# ln -s coverage_py coverage
-# utilities-1.0/package.properties: 
-# - remove line
-# utilities10.eval.04=addpath PATH $(GNU_ROOT)$/bin
-# - run: cd $(WIND_HOME); setup/postinstall.sh
-# - make a note in $(WIND_HOME)/setup.log
-#
-# For Alma, by GNU_ROOT, make is in /usr/bin
-# Pulling /usr/bin before Wind River pathes and other Alma pathes
-# would also invoke in particular /usr/bin/python and /usr/bin/java
-# instead of the dedicated versions in the Alma release.
-# Instead of pulling other Alma folders also to the front,
-# no longer pull $(GNU_ROOT) to the front, but dedicate another
-# folder in the front. For conflicting executables, this should
-# contain a symbolic path to the correct version.
-# The only executable names which are in ALMA as well as Wind River path are:
-# make, expect, coverage
-# expect is already the correct version (in turn of reordering tcl)
-# For make the Alma version is newer
-# The two versions of coverage have completely different meanings:
-# Preprocessor for Python or C/C++
-# Create symbolic links with name postfix for unique identification, make
-# ALMA python version the default
-# correspinding analysis for LD_LIBRARY_PATH
-# Only common libs between ALMA and WIND are libtcl8.4.so, libtk8.4.so
-# TCLLIBPATH fix above takes care about this.
-# ALMA some contains duplicate libraries between ACSSW and CCSLite or
-# ACSSW and /usr. Therefore keep other ALMA relative search path order.
-#
-# Note to two make versions in $PATH::
-# 'make -v', Wind River is 3.8, ACS is 3.81
-# For added features see
-# http://www.cmcrossroads.com/ask-mr-make/6789-whats-new-in-gnu-make-381
-# acsMakefile was using the "else ifeq ()" syntax. This is reverted now.
-# Other than that no make 3.81 requirement known.
-#
-# Verification:
-# - New values are propagated to $(WIND_HOME)/install.properties
-# - Run '$(WIND_HOME)/wrenv.sh -p vxworks-6.7' to start a sub shell
-# - Check the following environment variable value with path order:
-# TCLLIBPATH=.../vxworks-6.7/host/resource/tcl .../tcl_added
-# LD_LIBRARY_PATH=.../ACS-x.y/tcltk/lib:...:.../workbench-3.1/foundation/x86-linux2/lib:...
-# PATH=.../ACS-x.y/tcltk/bin:...:.../workbench-3.1/foundation/x86-linux2/bin:...
-# - Start Workbench, create a project of type "user defined" based on VxWorks
-# - in the makefile insert the rule
-# printenv:
-#	env | sort
-# - In Project navigator on the new project RightClick->NewTarget-> "printenv"
-# - In Project navigator a new "printenv" appears. RightClick->build target
-# - In the Build log window, verify in particular the above
-#   environment variables to be identical
-# - Create a VxWorks Image project, based on some BSP
-# - in the project navigator, open the kernel configurator of this project, modify,
-#   e.g. add entire C++ support
-# - rebuild the VxWorks image project
-# - On the shell, to prove that all packages in the right version are present:
-# (Sybtcl and pkginBuild are present only in CCS/vlt,
-#  in ACS/alma these two may fail)
-# > tclsh
-# % package require tcltest
-# 2.2.9
-# % package require Wind
-# 1.2
-# % package require OsConfig
-# 1.0
-# % cmpProfileAdd
-# wrong # args: should be "cmpProfileAdd hProj profile"
-# % package require Sybtcl
-# 2.5
-# % exit
-# > pkginBuild
-# pkginBuild ... help screen
-
-if [ -d $ALMASW_INSTDIR/$ACS_WIND_HOME ]
-then
-
-    export WRSD_LICENSE_FILE
-    export PATH LD_LIBRARY_PATH MANPATH TCLTK_ROOT
-    eval `$ALMASW_INSTDIR/$ACS_WIND_HOME/wrenv.sh -p $ACS_WIND_PLATFORM -o print_env -f sh`
-
-    # ACS specific settings based on Wind River tools.
-    export ACC_HOST=$HOSTNAME
-    CPU=${CPU:-PPC604}
-    case $CPU in
-            MC68040) VX_CPU_FAMILY=68k ;;
-            PPC604)  VX_CPU_FAMILY=ppc ;;
-            *)       VX_CPU_FAMILY="unknown_CPU_type_$CPU" ;;
-    esac
-     VX_HOST_TYPE=x86-linux
-     VXROOT=$WIND_BASE/target
-     VX_VW_BASE=$WIND_BASE/target
-     VX_HSP_BASE=$VXROOT
-     VX_BSP_BASE=$VXROOT
-    export ACC_HOST CPU VX_CPU_FAMILY
-    export VX_HOST_TYPE VXROOT VX_VW_BASE VX_HSP_BASE VX_BSP_BASE
-
-fi
+# 2015-07-13 relocated to beginning of "PATH common settings"
+# to avoid make/tcl/python/java version conflicts on adding vxworks-6.9 compatibility.
 
 # PATH depending on INTROOT settings
 
@@ -1363,7 +1228,7 @@ fi
 
 # We only add jar files to the CLASSPATH which cannot be picked up by the AcsSystemClassloader that the acsStartJava script enables.
 # 
-CLASSPATH=$JACORB_HOME/lib/jacorb-3.6.jar$PATH_SEP$JACORB_HOME/lib/jacorb-services-3.6.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
+CLASSPATH=$JACORB_HOME/lib/jacorb-3.6.1.jar$PATH_SEP$JACORB_HOME/lib/jacorb-services-3.6.1.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
 
 #
 # Now that PATH and LD_LIBRARY_PATH are properly set, I first need

@@ -43,7 +43,8 @@ namespace Logging {
     		lastPeriodNumberOfMessages(INITIAL_NUMBER_MESSAGES),
     		lastPeriodNumberOfLogErrors(INITIAL_NUMBER_ERRORS)
 	{
-
+		// Construct the identification string of the statistics
+		statisticsIdentification = "Undefined";
 	}
 
     // Statistics module methods
@@ -291,5 +292,32 @@ namespace Logging {
 	loggingStatistics::setLastPeriodNumberOfLogErrors(uint32_t value)
 	{
 		lastPeriodNumberOfLogErrors = value;
+	};
+
+	// Statistics calculation getters
+	float
+	loggingStatistics::getMessageStatistics()
+	{
+		return messageStatistics;
+	};
+	float
+	loggingStatistics::getErrorStatistics()
+	{
+		return errorStatistics;
+	};
+	float
+	loggingStatistics::getMessageIncrement()
+	{
+		return messageIncrement;
+	};
+	float
+	loggingStatistics::getErrorIncrement()
+	{
+		return errorIncrement;
+	};
+	float
+	loggingStatistics::getActualStatisticsPeriod()
+	{
+		return actualStatisticsPeriod;
 	};
 };

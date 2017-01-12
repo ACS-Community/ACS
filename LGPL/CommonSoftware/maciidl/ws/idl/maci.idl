@@ -514,7 +514,7 @@ module maci {
 	    of the container implicitly if it has not yet done so. 
 
 	*/
-	interface Container : Client, ::Logging::LoggingConfigurable{
+	interface Container : Client, ::Logging::LoggingConfigurable, ::Logging::ACSLogStatistics {
 
         /**
          * Return a handle that was given to the Container at login into the Manager.

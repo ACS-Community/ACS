@@ -898,6 +898,24 @@ public class ClientLogManager implements LogConfigSubscriber
         return getAcsLogger(componentName, LoggerOwnerType.ComponentLogger);
 	}
     
+    /**
+	 * Gets a logger object from any type.
+	 * 
+	 * @param loggerName  name of the logger whose retrieval is wanted
+	 * @return AcsLogger if logger is found, null otherwise
+	 */
+	public AcsLogger getLoggerByName(String loggerName) {
+		AcsLoggerInfo loggerInfo = null;
+		try {
+			loggerInfo = loggers.get(loggerName);
+			
+			return loggerInfo.logger;
+			
+		} catch (Exception ex) {
+			return null;
+		}
+		
+	}
 
     /**
      * Gets a logger for an application (which is not an ACS component itself), e.g. a GUI application using the ACS ComponentClient. 

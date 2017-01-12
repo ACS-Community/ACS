@@ -65,6 +65,7 @@ from Acspy.Common.ACSHandler import ACSLogRecord
 from Acspy.Common.ACSHandler import makeACSLogRecord
 from Acspy.Common.TimeHelper import TimeUtil
 from Acspy.Common.loggingStatistics import LoggingStatistics
+from Acspy.Common.LogThrottleAlarmerBase import LogThrottleAlarmerBase
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
 #--GLOBALS---------------------------------------------------------------------
@@ -396,21 +397,6 @@ def isFlushRunning():
         return FLUSHTHREAD.isAlive()
     except:
         return False
-#------------------------------------------------------------------------------
-class LogThrottleAlarmerBase:
-    '''
-    Abstract base class for the LogThrottle to raise/clear alarms
-    '''
-    __metaclass__ = abc.ABCMeta
-    
-    @abc.abstractmethod
-    def sendThrottleAlarm(self, active):
-        '''
-        Send/Clear the alarm for the LogThrottle
-        
-        Raise the alarm if active=True and clear otherwise
-        '''
-        return
 #------------------------------------------------------------------------------
 class Logger(logging.Logger):
     '''
@@ -880,14 +866,21 @@ class Logger(logging.Logger):
                     # Reset statistics
                     self.stats.resetStatistics()
     
-                    # Retrieve statistics logs
-                    retrievedStatisticsLogs = self.stats.retrieveStatisticsLogs(self.loggerName)
-
                     # Print statistics logs
-                    for statsMsg in retrievedStatisticsLogs:
-                        statsMsg = self.__formatMessage(statsMsg)
-                        self.acsLog(LEVELS[ACSLog.ACS_LOG_INFO], statsMsg)
-           
+                    statsMsg = 'LOGGING STATISTICS FOR: ' + self.stats.getStatisticsIdentification()  + '.' + self.loggerName
+                    statsData=[ACSLog.NVPair("StatisticsIdentification",self.stats.getStatisticsIdentification())]
+                    statsData.append(ACSLog.NVPair("LoggerId", self.loggerName))
+                    statsData.append(ACSLog.NVPair("LastPeriodDuration",self.stats.getActualStatisticsPeriod()))
+                    statsData.append(ACSLog.NVPair("LastPeriodNumberOfMessages",self.stats.getLastPeriodNumberOfMessages()))
+                    statsData.append(ACSLog.NVPair("StatisticsGranularity",self.stats.getStatisticsGranularity()))
+                    statsData.append(ACSLog.NVPair("MessageStatistics",self.stats.getMessageStatistics()))
+                    statsData.append(ACSLog.NVPair("MessageIncrement",self.stats.getMessageIncrement()))
+                    statsData.append(ACSLog.NVPair("LastPeriodNumberOfErrorMessages",self.stats.getLastPeriodNumberOfLogErrors()))
+                    statsData.append(ACSLog.NVPair("ErrorMessageStatistics",self.stats.getErrorStatistics()))
+                    statsData.append(ACSLog.NVPair("ErrorMessageIncrement",self.stats.getErrorIncrement()))                    
+                    
+                    self.acsLog(LEVELS[ACSLog.ACS_LOG_INFO], statsMsg, extra = { 'data' : statsData})
+                                        
         except:
             if self.stats.getDisableStatistics() == False:
                 # Increment number of messages logged (only if log has succeded)
@@ -902,13 +895,20 @@ class Logger(logging.Logger):
                     # Reset statistics
                     self.stats.resetStatistics()
     
-                    # Retrieve statistics logs
-                    retrievedStatisticsLogs = self.stats.retrieveStatisticsLogs(self.loggerName)
-
                     # Print statistics logs
-                    for statsMsg in retrievedStatisticsLogs:
-                        statsMsg = self.__formatMessage(statsMsg)
-                        self.acsLog(LEVELS[ACSLog.ACS_LOG_INFO], statsMsg)
+                    statsMsg = 'LOGGING STATISTICS FOR: ' + self.stats.getStatisticsIdentification()  + '.' + self.loggerName
+                    statsData=[ACSLog.NVPair("StatisticsIdentification",self.stats.getStatisticsIdentification())]
+                    statsData.append(ACSLog.NVPair("LoggerId", self.loggerName))
+                    statsData.append(ACSLog.NVPair("LastPeriodDuration",self.stats.getActualStatisticsPeriod()))
+                    statsData.append(ACSLog.NVPair("LastPeriodNumberOfMessages",self.stats.getLastPeriodNumberOfMessages()))
+                    statsData.append(ACSLog.NVPair("StatisticsGranularity",self.stats.getStatisticsGranularity()))
+                    statsData.append(ACSLog.NVPair("MessageStatistics",self.stats.getMessageStatistics()))
+                    statsData.append(ACSLog.NVPair("MessageIncrement",self.stats.getMessageIncrement()))
+                    statsData.append(ACSLog.NVPair("LastPeriodNumberOfErrorMessages",self.stats.getLastPeriodNumberOfLogErrors()))
+                    statsData.append(ACSLog.NVPair("ErrorMessageStatistics",self.stats.getErrorStatistics()))
+                    statsData.append(ACSLog.NVPair("ErrorMessageIncrement",self.stats.getErrorIncrement()))                    
+                    
+                    self.acsLog(LEVELS[ACSLog.ACS_LOG_INFO], statsMsg, extra = { 'data' : statsData})
             
     #----------------------------------------------------------------------------
     def closeLogger(self):
@@ -930,13 +930,20 @@ class Logger(logging.Logger):
             # Reset statistics
             self.stats.resetStatistics()
     
-            # Retrieve statistics logs
-            retrievedStatisticsLogs = self.stats.retrieveStatisticsLogs(self.loggerName)
-    
             # Print statistics logs
-            for statsMsg in retrievedStatisticsLogs:
-                statsMsg = self.__formatMessage(statsMsg)
-                self.acsLog(LEVELS[ACSLog.ACS_LOG_INFO], statsMsg)
+            statsMsg = 'LOGGING STATISTICS FOR: ' + self.stats.getStatisticsIdentification()  + '.' + self.loggerName
+            statsData=[ACSLog.NVPair("StatisticsIdentification",self.stats.getStatisticsIdentification())]
+            statsData.append(ACSLog.NVPair("LoggerId", self.loggerName))
+            statsData.append(ACSLog.NVPair("LastPeriodDuration", self.stats.getActualStatisticsPeriod()))
+            statsData.append(ACSLog.NVPair("LastPeriodNumberOfMessages", self.stats.getLastPeriodNumberOfMessages()))
+            statsData.append(ACSLog.NVPair("StatisticsGranularity", self.stats.getStatisticsGranularity()))
+            statsData.append(ACSLog.NVPair("MessageStatistics", self.stats.getMessageStatistics()))
+            statsData.append(ACSLog.NVPair("MessageIncrement", self.stats.getMessageIncrement()))
+            statsData.append(ACSLog.NVPair("LastPeriodNumberOfErrorMessages", self.stats.getLastPeriodNumberOfLogErrors()))
+            statsData.append(ACSLog.NVPair("ErrorMessageStatistics", self.stats.getErrorStatistics()))
+            statsData.append(ACSLog.NVPair("ErrorMessageIncrement", self.stats.getErrorIncrement()))
+            
+            self.acsLog(LEVELS[ACSLog.ACS_LOG_INFO], statsMsg, extra = { 'data' : statsData})
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 # The Python logging module contains code to manage a hierarchy of loggers.

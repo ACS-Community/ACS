@@ -1,0 +1,882 @@
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/imr/ServerStartupDaemonImpl.java JacORB/core/src/main/java/org/jacorb/imr/ServerStartupDaemonImpl.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/imr/ServerStartupDaemonImpl.java	2015-02-26 09:27:34.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/imr/ServerStartupDaemonImpl.java	2015-02-26 09:11:56.000000000 +0000
+@@ -243,5 +243,11 @@ public class ServerStartupDaemonImpl
+         {
+             return new OutputForwarder( selector );
+         }
++
++        // acs hack BEGIN
++        public void threadPoolSizeChanged(int idle_threads, int threads, int max_threads)
++        {
++        }
++        // acs hack END
+     }
+ } // ServerStartupDaemonImpl
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/orb/AcsORBProfiler.java JacORB/core/src/main/java/org/jacorb/orb/AcsORBProfiler.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/orb/AcsORBProfiler.java	1970-01-01 00:00:00.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/orb/AcsORBProfiler.java	2015-02-26 09:05:03.000000000 +0000
+@@ -0,0 +1,104 @@
++// acs hack BEGIN
++package org.jacorb.orb.acs;
++
++import org.jacorb.poa.RequestProcessor;
++
++
++/**
++ * ACS callback interface hacked into JacORB code, to allow advanced profiling and error reporting.
++ * An implementing object must be injected via the ORB's {@link AcsProfilingORB} interface.
++ * <p>
++ * The purpose of using this interface is to abstract the ACS changes in JacORB code,
++ * so that in the future we could implement similar changes in a different Java ORB.
++ * However we do not yet follow this idea completely, as it would require us to define this interface
++ * outside of JacORB code, and in a package like "acs.corba" to be neutral of JacORB.
++ * This is too cumbersome to implement in the ACS/ExtProd/ structure so that we accept 
++ * the small porting effort to move this file and change package names when we use a different Java ORB for profiling.
++ */
++public interface AcsORBProfiler
++{
++	/**
++	 * Notification when a request could not be delivered to the request queue.
++	 * 
++	 * @param messageSize  size of the undelivered GIOP message
++	 * @param poaName  Simple name of the target POA (that typically owns the request queue) 
++	 *           if the POA could be identified; 
++	 *           otherwise null
++	 * @param operation  name of the target operation, or null if not known (may happen very early in the message processing)
++	 * @param causedByQueueFull  true means that the failure was caused by a full request queue; 
++	 *           otherwise it was caused by some other failure (e.g. received a request with a non-jacorb object key) 
++	 *           which does then not exclude that the queue was also full.
++	 */
++	public void undeliveredRequest(int messageSize, String poaName, String operation, boolean causedByQueueFull);
++	
++	/**
++	 * Notification about an incoming request being added to or removed from a request queue.
++	 * More than this event in itself, the interesting aspect is how full the queue gets.
++	 * As the queue is constantly being drained by the request handler threads from the thread pool,
++	 * there will always be some fluctuations in the queue length, but considerable queue sizes 
++	 * are only expected in the case where all worker threads are busy.
++	 * <p>
++	 * This design of getting notified about request queue changes, as opposed to getting a reference to the queue, 
++	 * helps in avoiding memory leaks as the profiler cannot hold on to objects associated with a POA when the POA should be unloaded.
++	 * The disadvantage is that the profiler would need to store a map of POA names and their associated request queue lengths
++	 * in order to serve an external API that offers inquiries at any time.
++	 * 
++	 * @param requestId  The ORB's request ID
++	 * @param poaName  Simple name of the POA that owns the queue, 
++	 *                 or {@code null} if an ORB-wide queue is used or the POA name is not available.
++	 * @param queueSize  current size of the request queue
++	 * @param maxQueueLength  configured maximum request queue length, to be used for computing percentages
++	 */
++	public void requestQueueSizeChanged(int requestId, String poaName, int queueSize, int maxQueueLength);
++	
++	/**
++	 * Notification about a thread being added to or removed from the pool of request processor threads.
++	 * More than this event in itself, the interesting aspect is how full the pool gets.
++	 * <p>
++	 * This design of getting notified about thread pool changes, as opposed to getting a reference to the thread pools, 
++	 * helps in avoiding memory leaks as the profiler cannot hold on to objects associated with a POA when the POA should be unloaded.
++	 * The disadvantage is that the profiler would need to store a map of POA names and their associated thread pool information
++	 * in order to serve an external API that offers inquiries at any time.
++	 * 
++	 * @param poaName  Simple name of the POA that owns the thread pool, 
++	 *                 or {@code null} if an ORB-wide thread pool is used or if the poa name is not available (which is currently the case with JacORB)
++	 * @param idleThreads  number of idle threads, ready to serve requests
++	 * @param totalThreads  number of threads (idle or busy)
++	 * @param maxThreads  configured maximum thread size, to be used for computing percentages
++	 * @see org.jacorb.poa.RPPoolManagerListener#processorAddedToPool(RequestProcessor, int, int)
++	 * @see org.jacorb.poa.RPPoolManagerListener#processorRemovedFromPool(RequestProcessor, int, int)
++	 */
++	public void threadPoolSizeChanged(String poaName, int idleThreads, int totalThreads, int maxThreads);
++
++
++        /**
++         * Notification about a thread being added to or removed from the connection pool.
++         * More than this event in itself, the interesting aspect is how full the pool gets.
++         *
++         * @param idleThreads  number of idle threads, ready to process messages
++         * @param totalThreads  number of threads (idle or busy)
++         * @param maxThreads  configured maximum thread size, to be used for computing percentages
++         */
++        public void connectionThreadPoolSizeChanged(int idleThreads, int totalThreads, int maxThreads); 
++	
++	/**
++	 * Called when a Corba request is about to be run.
++	 * @param requestId  The ORB's request ID
++	 * @param poaName  Simple name of the POA, or {@code null} if not known.
++	 * @param operation
++	 * @see #requestFinished(int, String, String)
++	 */
++	public void requestStarted(int requestId, String poaName, String operation);
++	
++	/**
++	 * This method is called when a request has finished (success or error).
++	 * It will be called only from the same thread as {@link #requestStarted(int, String, String)}.
++	 * 
++	 * @param requestId  The ORB's request ID
++	 * @param poaName  Simple name of the POA, or {@code null} if not known.
++	 * @param operation
++	 */
++	public void requestFinished(int requestId, String poaName, String operation);
++
++}
++//acs hack END
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/orb/AcsProfilingORB.java JacORB/core/src/main/java/org/jacorb/orb/AcsProfilingORB.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/orb/AcsProfilingORB.java	1970-01-01 00:00:00.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/orb/AcsProfilingORB.java	2015-02-26 09:04:56.000000000 +0000
+@@ -0,0 +1,35 @@
++// acs hack BEGIN
++package org.jacorb.orb.acs;
++
++import org.jacorb.orb.ORB;
++import org.jacorb.orb.giop.StatisticsProvider;
++import org.jacorb.poa.POA;
++
++/**
++ * ACS patches the JacORB ORB 
++ * to enable profiling beyond the features of 
++ * <ul>
++ *   <li>{@link POA#_addPOAEventListener(org.jacorb.poa.EventListener)}, because ACS offers notification also for rejected requests
++ *       that never make it into the RequestQueue,
++ *   <li> {@link StatisticsProvider}, because low-level notification happens for GIOP messages, not message fragments.
++ * <p>
++ * By patching {@link ORB} to implement this interface, the ACS application can test 
++ * {@code ORB instanceof AcsProfilingORB} and thus easily hook up its implementation of 
++ * {@link AcsORBProfiler}.
++ * <p>
++ * The purpose of using this interface is to abstract the ACS changes in JacORB code,
++ * so that in the future we could implement similar changes in a different Java ORB.
++ * However we do not yet follow this idea completely, as it would require us to define this interface
++ * outside of JacORB code, and in a package like "acs.corba" to be neutral of JacORB.
++ * This is too cumbersome to implement in the ACS/ExtProd/ structure so that we accept 
++ * the small porting effort to move this file and change package names when we use a different Java ORB for profiling.
++ */
++public interface AcsProfilingORB
++{
++	/**
++	 * Registers the {@link AcsORBProfiler} to be used by the ORB and other ORB-related classes.
++	 * @param profiler
++	 */
++	public void registerAcsORBProfiler(AcsORBProfiler profiler);
++}
++//acs hack END
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/orb/Delegate.java JacORB/core/src/main/java/org/jacorb/orb/Delegate.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/orb/Delegate.java	2015-02-26 09:27:35.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/orb/Delegate.java	2015-02-26 09:08:49.000000000 +0000
+@@ -2550,9 +2550,10 @@ public String repository_id (org.omg.COR
+      */
+ 
+     @Override
++    @SuppressWarnings("rawtypes")
+     public ServantObject servant_preinvoke( org.omg.CORBA.Object self,
+                                             String operation,
+-                                            @SuppressWarnings("rawtypes") Class expectedType )
++                                            Class expectedType )
+     {
+         InterceptorManager manager = null;
+         ServerInterceptorIterator interceptorIterator = null;
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/orb/giop/MessageReceptorPool.java JacORB/core/src/main/java/org/jacorb/orb/giop/MessageReceptorPool.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/orb/giop/MessageReceptorPool.java	2015-02-26 09:27:37.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/orb/giop/MessageReceptorPool.java	2015-02-26 09:01:21.000000000 +0000
+@@ -75,6 +75,20 @@ public class MessageReceptorPool
+                                 {
+                                     return new MessageReceptor(configuration);
+                                 }
++                                // acs hack BEGIN
++                                public void threadPoolSizeChanged(int idle_threads, int threads, int max_threads)
++                                {
++                                    if (configuration.getORB().getAcsORBProfiler() != null) {
++                                        try {
++                                            configuration.getORB().getAcsORBProfiler().connectionThreadPoolSizeChanged(idle_threads, threads, max_threads);
++                                        }
++                                        catch (Throwable thr) {
++                                            // profiling problems must not disturb the program flow
++                                            thr.printStackTrace();
++                                        }
++                                    }
++                                }
++                                // acs hack END
+                             },
+                             maxConnectionThreads,
+                             maxIdleThreads ); //max idle threads
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/orb/giop/ServerRequestListener.java JacORB/core/src/main/java/org/jacorb/orb/giop/ServerRequestListener.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/orb/giop/ServerRequestListener.java	2015-02-26 09:27:37.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/orb/giop/ServerRequestListener.java	2015-02-26 09:00:09.000000000 +0000
+@@ -43,6 +43,9 @@ import org.omg.GIOP.ReplyStatusType_1_2;
+ import org.omg.IOP.TAG_CODE_SETS;
+ import org.omg.PortableGroup.TagGroupTaggedComponent;
+ import org.slf4j.Logger;
++//acs hack BEGIN
++import org.jacorb.orb.acs.AcsORBProfiler;
++//acs hack END
+ 
+ /**
+  * @author Nicolas Noffke
+@@ -54,6 +57,9 @@ public class ServerRequestListener
+     private final POA rootPOA;
+ 
+     /** the configuration object  */
++    //acs hack BEGIN
++    private Configuration configuration = null;
++    //acs hack END
+     private Logger logger = null;
+ 
+     private boolean require_ssl = false;
+@@ -69,6 +75,9 @@ public class ServerRequestListener
+     public void configure(Configuration configuration)
+         throws ConfigurationException
+     {
++        //acs hack BEGIN
++        this.configuration = configuration;
++        //acs hack END
+         logger =
+             configuration.getLogger("org.jacorb.giop.server.listener");
+ 
+@@ -176,6 +185,18 @@ public class ServerRequestListener
+         }
+         catch( org.jacorb.poa.except.POAInternalError pie )
+         {
++            // acs hack BEGIN
++                // not sure if we can extract the operation from the bytes here... better wait and see how often this happens.
++                if (configuration.getORB().getAcsORBProfiler() != null) {
++                    try {
++                        configuration.getORB().getAcsORBProfiler().undeliveredRequest(request.length, null, null, false);
++                    }
++                    catch (Throwable thr) {
++                        // profiling problems must not disturb the program flow
++                        thr.printStackTrace();
++                    }
++                }
++            // acs hack END
+             logger.warn("Received a request with a non-jacorb object key" );
+ 
+             if( inputStream.isLocateRequest() )
+@@ -382,12 +403,46 @@ public class ServerRequestListener
+                 }
+             }
+ 
+-            if( tmp_poa == null )
+-            {
+-                throw new org.omg.CORBA.INTERNAL("Request POA null!");
+-            }
+-            /* hand over to the POA */
+-            tmp_poa._invoke( request );
++            // acs hack BEGIN
++                // ACS needs to intercept the exceptions from that original jacorb if-else code
++                try {
++                    if( tmp_poa == null )
++                    {
++                        throw new org.omg.CORBA.INTERNAL("Request POA null!");
++                    }
++                    else
++                    {
++                        /* hand over to the POA */
++                        tmp_poa._invoke( request );
++                    }
++                } catch (RuntimeException thr) {
++                    AcsORBProfiler acsProfiler = configuration.getORB().getAcsORBProfiler();
++                    if (acsProfiler != null) {
++                        String poaName = (tmp_poa == null ? null : tmp_poa.the_name());
++
++                        // TODO: check if this gives the correct message size.
++                        int messageSize = request.get_in().available();
++
++                        try {
++                            // instead of the ugly next line we could patch also class POA and catch ResourceLimitReachedException there,
++                            // before it gets turned into the TRANSIENT.
++                            if (thr instanceof org.omg.CORBA.TRANSIENT && thr.getMessage().equals("resource limit reached") ) {
++                                // ResourceLimitReachedException
++                                acsProfiler.undeliveredRequest(messageSize, poaName, request.operation(), true);
++                            }
++                            else {
++                                // some other exception, not from ResourceLimitReachedException
++                                acsProfiler.undeliveredRequest(messageSize, poaName, request.operation(), false);
++                            }
++                        }
++                        catch (Throwable thr2) {
++                            // profiling problems must not disturb the program flow
++                            thr2.printStackTrace();
++                        }
++                    }
++                    throw thr;
++                }
++            // acs hack END
+         }
+         catch( org.omg.PortableServer.POAPackage.WrongAdapter e )
+         {
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/orb/ORB.java JacORB/core/src/main/java/org/jacorb/orb/ORB.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/orb/ORB.java	2015-02-26 09:27:37.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/orb/ORB.java	2015-02-26 09:03:54.000000000 +0000
+@@ -44,6 +44,10 @@ import org.jacorb.orb.giop.TransportMana
+ import org.jacorb.orb.iiop.IIOPAddress;
+ import org.jacorb.orb.iiop.IIOPProfile;
+ import org.jacorb.orb.policies.PolicyManager;
++// acs hack BEGIN
++import org.jacorb.orb.acs.AcsORBProfiler;
++import org.jacorb.orb.acs.AcsProfilingORB;
++// acs hack END
+ import org.jacorb.orb.portableInterceptor.CodecFactoryImpl;
+ import org.jacorb.orb.portableInterceptor.IORInfoImpl;
+ import org.jacorb.orb.portableInterceptor.InterceptorManager;
+@@ -125,6 +129,9 @@ import org.slf4j.Logger;
+ public final class ORB
+     extends ORBSingleton
+     implements org.jacorb.poa.POAListener, Configurable
++    // acs hack BEGIN
++        , AcsProfilingORB
++    // acs hack END
+ {
+     private static final String nullIORString =
+         "IOR:00000000000000010000000000000000";
+@@ -159,6 +166,11 @@ public final class ORB
+     private boolean hasServerInterceptors = false;
+     private final org.omg.PortableInterceptor.Current piCurrent = new PICurrent();
+ 
++    // acs hack BEGIN
++           /** ACS patch for profiling */
++           private volatile AcsORBProfiler acsProfiler;
++    // acs hack END
++
+     /** reference caching */
+     private Map<String, ObjectImpl> knownReferences = null;
+ 
+@@ -3166,4 +3178,29 @@ public final class ORB
+     {
+         return giopMinorVersion;
+     }
++
++    // acs hack BEGIN
++           /**
++            * ACS applications can register an AcsORBProfiler here.
++            * <p>
++            * Note that you must call {@link #getRootPOA()} before calling this method, see {@link #getBasicAdapter()}.
++            * @see org.jacorb.orb.acs.AcsProfilingORB#registerAcsORBProfiler(org.jacorb.orb.acs.AcsORBProfiler)
++            */
++           @Override
++           public void registerAcsORBProfiler(AcsORBProfiler profiler) {
++                   this.acsProfiler = profiler;
++           }
++
++           /**
++            * Returns the user-supplied AcsORBProfiler, or {@code null} if no profiler object has been registered.
++            * <p>
++            * JacORB classes that are patched to support profiling for ACS will call this method
++            * and check / retrieve the AcsORBProfiler callback object.
++            * This ORB will be found via the {@link org.jacorb.config.Configuration} per-ORB singleton
++            * that gets passed to most JacORB classes.
++            */
++           public AcsORBProfiler getAcsORBProfiler() {
++                   return acsProfiler;
++           }
++    // acs hack END
+ }
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/poa/RequestProcessor.java JacORB/core/src/main/java/org/jacorb/poa/RequestProcessor.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/poa/RequestProcessor.java	2015-02-26 09:27:32.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/poa/RequestProcessor.java	2015-02-26 08:41:04.000000000 +0000
+@@ -53,6 +53,9 @@ import org.omg.PortableServer.ServantLoc
+ import org.omg.PortableServer.ServantLocatorPackage.CookieHolder;
+ import org.omg.PortableServer.ServantManager;
+ import org.slf4j.Logger;
++//acs hack BEGIN
++import org.jacorb.orb.acs.AcsORBProfiler;
++//acs hack END
+ 
+ /**
+  * This thread performs the request processing, the actual method invocation and
+@@ -144,6 +147,11 @@ public class RequestProcessor
+      * synchronized, though.
+      */
+     private boolean checkReplyEndTime = false;
++    // acs hack BEGIN
++    /** the configuration object for this processor */
++    private org.jacorb.config.Configuration configuration = null;
++    // acs hack END
++
+     /**
+      * By default the servant code will be run in the currently executing class
+      * loader. This allows the servant to be run its thread context class loader
+@@ -163,6 +171,10 @@ public class RequestProcessor
+     public void configure(Configuration configuration)
+             throws ConfigurationException
+     {
++        // acs hack BEGIN
++        this.configuration = configuration;
++        // acs hack END
++
+         checkReplyEndTime = configuration.getAttributeAsBoolean
+                 (
+                         "jacorb.poa.check_reply_end_time", false
+@@ -874,6 +886,19 @@ public class RequestProcessor
+                         " starts with request processing");
+             }
+ 
++            // acs hack BEGIN
++            AcsORBProfiler acsProfiler = configuration.getORB().getAcsORBProfiler();
++            if (acsProfiler != null) {
++                try {
++                    acsProfiler.requestStarted(request.requestId(), getPOA().the_name(), request.operation());
++                }
++                catch (Throwable thr) {
++                    // profiling problems must not disturb the program flow
++                    thr.printStackTrace();
++                }
++            }
++            // acs hack END
++
+             if (request.syncScope() == org.omg.Messaging.SYNC_WITH_SERVER.value)
+             {
+                 controller.returnResult(request);
+@@ -885,6 +910,18 @@ public class RequestProcessor
+                 controller.returnResult(request);
+             }
+ 
++            // acs hack BEGIN
++            if (acsProfiler != null) {
++                try {
++                    acsProfiler.requestFinished(request.requestId(), getPOA().the_name(), request.operation());
++                }
++                catch (Throwable thr) {
++                    // profiling problems must not disturb the program flow
++                    thr.printStackTrace();
++                }
++            }
++            // acs hack END
++
+             // return the request to the request controller
+             if (logger.isDebugEnabled())
+             {
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/poa/RequestQueue.java JacORB/core/src/main/java/org/jacorb/poa/RequestQueue.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/poa/RequestQueue.java	2015-02-26 09:27:32.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/poa/RequestQueue.java	2015-02-26 08:34:31.000000000 +0000
+@@ -31,6 +31,9 @@ import org.jacorb.poa.except.ResourceLim
+ import org.jacorb.poa.util.StringPair;
+ import org.omg.CORBA.BAD_INV_ORDER;
+ import org.slf4j.Logger;
++//acs hack BEGIN
++import org.jacorb.orb.acs.AcsORBProfiler;
++//acs hack END
+ 
+ /**
+  * This class manages a queue of ServerRequest objects.
+@@ -53,6 +56,18 @@ public class RequestQueue
+ 
+     private final LinkedList queue = new LinkedList();
+ 
++    //Begin ACS hack for profiler
++    private String poaName;
++
++    public RequestQueue(String poaName) {
++        this.poaName = poaName;
++    }
++
++    //ACS -- above constructor would have suppressed default, so we need it here
++    public RequestQueue() {
++    }
++    //End ACS hack for profiler
++
+     public synchronized void configure(Configuration myConfiguration)
+         throws ConfigurationException
+     {
+@@ -151,6 +166,19 @@ public class RequestQueue
+         {
+             queueListener.requestAddedToQueue(request, queue.size());
+         }
++
++        // acs hack BEGIN
++        AcsORBProfiler acsProfiler = configuration.getORB().getAcsORBProfiler();
++        if (acsProfiler != null) {
++            try {
++                acsProfiler.requestQueueSizeChanged(request.requestId(), poaName, queue.size(), queueMax);
++            }
++            catch (Throwable thr) {
++                // profiling problems must not disturb the program flow
++                thr.printStackTrace();
++            }
++        }
++        // acs hack END
+     }
+ 
+     /**
+@@ -211,6 +239,18 @@ public class RequestQueue
+                     {
+                         queueListener.requestRemovedFromQueue(result, queue.size());
+                     }
++                    // acs hack BEGIN
++                    AcsORBProfiler acsProfiler = configuration.getORB().getAcsORBProfiler();
++                    if (acsProfiler != null) {
++                        try {
++                            acsProfiler.requestQueueSizeChanged(result.requestId(), poaName, queue.size(), queueMax);
++                        }
++                        catch (Throwable thr) {
++                            // profiling problems must not disturb the program flow
++                            thr.printStackTrace();
++                        }
++                    }
++                    // acs hack END
+                     return result;
+                 }
+             }
+@@ -265,6 +305,19 @@ public class RequestQueue
+             {
+                 queueListener.requestRemovedFromQueue(result, queue.size());
+             }
++            // acs hack BEGIN
++            AcsORBProfiler acsProfiler = configuration.getORB().getAcsORBProfiler();
++            if (acsProfiler != null) {
++                try {
++                    acsProfiler.requestQueueSizeChanged(result.requestId(), poaName, queue.size(), queueMax);
++                }
++                catch (Throwable thr) {
++                    // profiling problems must not disturb the program flow
++                    thr.printStackTrace();
++                }
++            }
++            //acs hack END
++
+             return result;
+         }
+         return null;
+@@ -288,6 +341,18 @@ public class RequestQueue
+             {
+                 queueListener.requestRemovedFromQueue(result, queue.size());
+             }
++            // acs hack BEGIN
++            AcsORBProfiler acsProfiler = configuration.getORB().getAcsORBProfiler();
++            if (acsProfiler != null) {
++                try {
++                    acsProfiler.requestQueueSizeChanged(result.requestId(), poaName, queue.size(), queueMax);
++                }
++                catch (Throwable thr) {
++                    // profiling problems must not disturb the program flow
++                    thr.printStackTrace();
++                }
++            }
++            //acs hack END
+             return result;
+         }
+         return null;
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/poa/RPPoolManager.java JacORB/core/src/main/java/org/jacorb/poa/RPPoolManager.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/poa/RPPoolManager.java	2015-02-26 09:27:32.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/poa/RPPoolManager.java	2015-02-26 08:44:55.000000000 +0000
+@@ -24,6 +24,9 @@ import java.util.HashSet;
+ import java.util.LinkedList;
+ import org.jacorb.config.Configuration;
+ import org.jacorb.config.ConfigurationException;
++//acs hack BEGIN
++import org.jacorb.orb.acs.AcsORBProfiler;
++//acs hack END
+ import org.jacorb.poa.except.POAInternalError;
+ import org.slf4j.Logger;
+ 
+@@ -274,6 +277,25 @@ public abstract class RPPoolManager
+         {
+             pmListener.processorRemovedFromPool(requestProcessor, pool.size(), numberOfProcessors);
+         }
++        // acs hack BEGIN
++        AcsORBProfiler acsProfiler = configuration.getORB().getAcsORBProfiler();
++        if (acsProfiler != null) {
++            String poaName = null;
++            try {
++                poaName = current.get_POA().the_name();
++            }
++            catch (Throwable thr) { // NoContext, POAInternalError
++                // just leave poaName null
++            }
++            try {
++                acsProfiler.threadPoolSizeChanged(poaName, getPoolCount(), getPoolSize(), max_pool_size);
++            }
++            catch (Throwable thr) {
++                // profiling problems must not disturb the program flow
++                thr.printStackTrace();
++            }
++        }
++        //acs hack END
+ 
+         return requestProcessor;
+     }
+@@ -314,6 +336,25 @@ public abstract class RPPoolManager
+         {
+             pmListener.processorAddedToPool(rp, pool.size(), numberOfProcessors);
+         }
++        // acs hack BEGIN
++        AcsORBProfiler acsProfiler = configuration.getORB().getAcsORBProfiler();
++        if (acsProfiler != null) {
++            String poaName = null;
++            try {
++                poaName = current.get_POA().the_name();
++            }
++            catch (Throwable thr) { // NoContext, POAInternalError
++                // just leave poaName null
++            }
++            try {
++                acsProfiler.threadPoolSizeChanged(poaName, getPoolCount(), numberOfProcessors, max_pool_size);
++            }
++            catch (Throwable thr) {
++                // profiling problems must not disturb the program flow
++                thr.printStackTrace();
++            }
++        }
++        //acs hack END
+ 
+         // notify whoever is waiting for the release of active processors
+         notifyAll();
+diff -rupN jacorb-3.6.1/core/src/main/java/org/jacorb/util/threadpool/ConsumerFactory.java JacORB/core/src/main/java/org/jacorb/util/threadpool/ConsumerFactory.java
+--- jacorb-3.6.1/core/src/main/java/org/jacorb/util/threadpool/ConsumerFactory.java	2015-02-26 09:27:34.000000000 +0000
++++ JacORB/core/src/main/java/org/jacorb/util/threadpool/ConsumerFactory.java	2015-02-26 08:30:42.000000000 +0000
+@@ -31,4 +31,9 @@ package org.jacorb.util.threadpool;
+ public interface ConsumerFactory  
+ {
+     public Consumer create();
++
++    // acs hack BEGIN
++    public void threadPoolSizeChanged(int idle_threads, int threads, int max_threads);
++    // acs hack END
++
+ } // ConsumerFactory
+diff -rupN jacorb-3.6.1/idl-compiler/src/main/java/org/jacorb/idl/NameTable.java JacORB/idl-compiler/src/main/java/org/jacorb/idl/NameTable.java
+--- jacorb-3.6.1/idl-compiler/src/main/java/org/jacorb/idl/NameTable.java	2015-02-26 09:27:24.000000000 +0000
++++ JacORB/idl-compiler/src/main/java/org/jacorb/idl/NameTable.java	2015-02-26 09:24:27.000000000 +0000
+@@ -36,6 +36,9 @@ public class NameTable
+ {
+     private static final Hashtable/*<String, IDLTypes>*/ names = new Hashtable/*<String, IDLTypes>*/( 10000 );
+ 
++    // msekoran
++    private static Hashtable toFullNameMap = new Hashtable( 10000 );
++
+     private static final Map shadows = new Hashtable();
+ 
+     private static final Map ancestors = new Hashtable();
+@@ -53,6 +56,9 @@ public class NameTable
+     public static void init()
+     {
+         names.clear();
++        // msekoran
++        toFullNameMap.clear();
++
+         operationSources.clear();
+         shadows.clear();
+         ancestors.clear();
+@@ -208,12 +214,53 @@ public class NameTable
+ 
+         names.put( name, kind );
+ 
++        // msekoran - start
++            if ( kind != IDLTypes.OPERATION &&
++                 kind != IDLTypes.ARGUMENT &&
++                 kind != IDLTypes.DECLARATOR &&
++                 !name.startsWith("<") )
++            {
++                String partitalName = name;
++                int pos = partitalName.indexOf( '.' );
++
++                while ( pos > 0 )
++                {
++                    partitalName = partitalName.substring( pos+1 );
++
++                    names.put( partitalName, kind );
++                    toFullNameMap.put( partitalName, name );
++
++                    // block identifiers that only differ in case
++                    names.put( partitalName.toUpperCase(), IDLTypes.DUMMY );
++
++                    //System.out.println("\tadded: "+partitalName);
++                    pos = partitalName.indexOf( '.' , pos+1 );
++                }
++            }
++
++        // msekoran - end
++
+         if( kind == IDLTypes.OPERATION )
+         {
+             operationSources.put( name, name.substring( 0, name.lastIndexOf( "." ) ) );
+         }
+     }
+ 
++    // msekoran - start
++    public static String mapToFullName( String name )
++    {
++        String fullName = (String)toFullNameMap.get( name );
++        if (fullName != null)
++        {
++            //System.out.println(name + " - > " + fullName);
++            return fullName;
++        }
++        else
++            return name;
++    }
++
++    // msekoran - end
++
+     private static void defineInheritedOperation( String name,
+                                                   String inheritedFrom )
+             throws NameAlreadyDefined
+diff -rupN jacorb-3.6.1/idl-compiler/src/main/java/org/jacorb/idl/parser.cup JacORB/idl-compiler/src/main/java/org/jacorb/idl/parser.cup
+--- jacorb-3.6.1/idl-compiler/src/main/java/org/jacorb/idl/parser.cup	2015-02-26 09:27:24.000000000 +0000
++++ JacORB/idl-compiler/src/main/java/org/jacorb/idl/parser.cup	2015-02-26 09:15:41.000000000 +0000
+@@ -33,6 +33,7 @@ import java.util.Enumeration;
+ import java.util.Hashtable;
+ import java.util.Stack;
+ import java.util.Vector;
++import java.util.StringTokenizer;
+ import java.util.jar.Manifest;
+ import java.util.logging.ConsoleHandler;
+ import java.util.logging.Level;
+@@ -51,6 +52,28 @@ import java.util.logging.Logger;
+ 
+ action code
+ {:
++    // msekoran
++	  public static void managePackage(org.jacorb.idl.parser parser, IdlSymbol symbol)
++	  {
++	      if ( parser.auto_prefix )
++	      {
++	  	  str_token token = symbol.get_token();
++	  	  if ( token!=null && token.pragma_prefix.length() > 0 )
++	  	  {
++	  		final String delimiter = ".";
++	
++	  		// it is a shame StringTokenizer does not support reverse order,
++	  		// then we could use StringBuffer instead of String,
++	  		// but pragmas are short
++	  		StringTokenizer stringTokenizer = new StringTokenizer( token.pragma_prefix, delimiter);
++	  		String reversedPragma = stringTokenizer.nextToken();
++	  		while (stringTokenizer.hasMoreTokens())
++	  		    reversedPragma = stringTokenizer.nextToken() + delimiter + reversedPragma;
++	  		// prefix package name
++	  		symbol.setPackage(reversedPragma);
++	  	  }
++	    }
++	  }
+ :};
+ 
+ 
+@@ -75,6 +98,8 @@ parser code
+     public static String out_dir = ".";
+     static String package_prefix = null;
+ 
++    // msekoran
++    public static boolean auto_prefix = false;
+     static boolean parse_only = false;
+ 
+     /** used for internal checking that name conversion
+@@ -155,6 +180,9 @@ parser code
+         InterfaceBody.clearParseThreads ();
+ 
+         out_dir = ".";
++        // msekoran
++        auto_prefix = false;
++
+         package_prefix = null;
+ 
+         parse_only = false;
+@@ -300,6 +328,12 @@ parser code
+                     generate_stubs = false;
+                     continue;
+                 }
++                // msekoran
++                if( argv[i].equals("-auto_prefix"))
++                {
++                    auto_prefix = true;
++                    continue;
++                }
+                 if( argv[i].equals("-ami_callback"))
+                 {
+                     generate_ami_callback = true;
+@@ -622,7 +656,7 @@ parser code
+             System.out.print( argv[i] + " " );
+         System.out.println(" : " + msg);
+ 
+-        System.out.println("Usage: idl [-h|-help][-v|-version][-Dsymbol[=value]][-Idir][-U<symbol>][-W debug_level ][-all][-forceOverwrite][-ami_callback][-ami_polling][-backend classname][-d <Output Dir>][-unchecked_narrow][-i2jpackage x:y][-i2jpackagefile <filename>][-cldc10][-ir][-nofinal][-noskel][-nostub][-notimestamps][-diistub][-sloppy_forward][-sloppy_names][-sloppy_identifiers][-permissive_rmic][-genEnhanced][-syntax][-in inputfile][-generate_helper (portable|jacorb|deprecated)][-cacheplugin classname] <filelist>");
++        System.out.println("Usage: idl [-h|-help][-v|-version][-Dsymbol[=value]][-Idir][-U<symbol>][-W debug_level ][-all][-forceOverwrite][-ami_callback][-ami_polling][-backend classname][-d <Output Dir>][-unchecked_narrow][-i2jpackage x:y][-i2jpackagefile <filename>][-cldc10][-ir][-nofinal][-noskel][-nostub][-notimestamps][-diistub][-sloppy_forward][-sloppy_names][-sloppy_identifiers][-permissive_rmic][-genEnhanced][-syntax][-in inputfile][-generate_helper (portable|jacorb|deprecated)][-cacheplugin classname] [-auto_prefix] <filelist>");
+     }
+ 
+ 
+@@ -680,6 +714,9 @@ parser code
+         System.out.println("\t-sloppy_names\tless strict checking of module name scoping");
+         System.out.println("\t-sloppy_identifiers\tAllow certain illegal identifiers.");
+         System.out.println("\t-permissive_rmic\ttolerate dubious IDL generated by JDK's rmic, includes -sloppy_names.");
++        // msekoran
++        System.out.println("\t-auto_prefix\t\tuse pragma prefix for Java package names");
++
+         System.out.println("\t-genEnhanced\tGenerate toString and equals on stubs. Only supported on Struct currently.");
+         System.out.println("\t-generate_helper (portable[default]|jacorb|deprecated). Controls the controls the compatibilty level of the generated helper code.");
+         System.out.println("\t-cacheplugin classname\tset plugin for cache code generation");
+@@ -1249,6 +1286,8 @@ module ::=
+                 RESULT.set_token(i);
+                 RESULT.setPackage(i.str_val );
+                 RESULT.set_included( parser.include_state );
++	        // msekoran and jschwarz
++	        managePackage((org.jacorb.idl.parser)CUP$parser, RESULT);
+ 
+                 d.setEnclosingSymbol(RESULT);
+                 parser.closeScope( (Scope)RESULT );
+diff -rupN jacorb-3.6.1/idl-compiler/src/main/java/org/jacorb/idl/ScopedName.java JacORB/idl-compiler/src/main/java/org/jacorb/idl/ScopedName.java
+--- jacorb-3.6.1/idl-compiler/src/main/java/org/jacorb/idl/ScopedName.java	2015-02-26 09:27:24.000000000 +0000
++++ JacORB/idl-compiler/src/main/java/org/jacorb/idl/ScopedName.java	2015-02-26 09:20:03.000000000 +0000
+@@ -360,7 +360,9 @@ public class ScopedName
+         if( (global || result.indexOf('.') > -1 )
+                 && NameTable.isDefined(result) )
+         {
+-            String unmappedResult = unMap( result );
++            // msekoran
++            //String unmappedResult = unMap( result );
++            String unmappedResult = unMap( NameTable.mapToFullName( result ) );
+ 
+             if( parser.logger.isLoggable(Level.FINEST) )
+                 parser.logger.log(Level.FINEST, "resolve, found " + result +
+@@ -495,6 +497,12 @@ public class ScopedName
+         {
+             if( sub > packageScopes.length )
+             {
++                // msekoran
++                if( NameTable.isDefined( "org.omg." + name ) )
++                {
++                    return unMap( "org.omg." + result ) + bracketSuffix;
++                }
++
+                 parser.fatal_error( "Undefined name: " + scopeOfOrigin + "." + name, token );
+                 return "/* unresolved name */";
+             }
+@@ -512,7 +520,12 @@ public class ScopedName
+             }
+             buf.append( name );
+         }
+-        String res = unMap( prefix + buf.toString() ) + bracketSuffix;
++
++        // msekoran
++        //String res = unMap( prefix + buf.toString() ) + bracketSuffix;
++        String res = NameTable.mapToFullName( prefix + buf.toString() );
++        res = unMap( res ) + bracketSuffix;
++
+         if( parser.logger.isLoggable(Level.ALL) )
+             parser.logger.log(Level.ALL, "ScopedName.resolve (at end) returns: " + res);
+         return res;
+diff -rupN jacorb-3.6.1/idl-compiler/src/main/java/org/jacorb/idl/StructType.java JacORB/idl-compiler/src/main/java/org/jacorb/idl/StructType.java
+--- jacorb-3.6.1/idl-compiler/src/main/java/org/jacorb/idl/StructType.java	2015-02-26 09:27:24.000000000 +0000
++++ JacORB/idl-compiler/src/main/java/org/jacorb/idl/StructType.java	2015-02-26 09:16:51.000000000 +0000
+@@ -816,6 +816,12 @@ public class StructType
+             return;
+         }
+ 
++        // no code generation for forward declarations
++        if (forwardDecl)
++        {
++            return;
++        }
++
+         // only generate code once
+ 
+         if (!written)
+diff -rupN jacorb-3.6.1/omgapi/pom.xml JacORB/omgapi/pom.xml
+--- jacorb-3.6.1/omgapi/pom.xml	2015-02-26 09:27:24.000000000 +0000
++++ JacORB/omgapi/pom.xml	2015-02-26 09:16:51.000000000 +0000
+@@ -83,6 +83,9 @@
+                                         <include>ATLAS.idl</include>
+                                         <include>TimeBase.idl</include>
+                                         <include>CosNaming.idl</include>
++                                        <include>CosProperty.idl</include>
++                                       <include>DsLogAdmin.idl</include>
++                                       <include>AVStreams.idl</include>
+                                     </includes>
+                                     <additionalArguments>
+                                         <additionalArgument>-ir</additionalArgument>

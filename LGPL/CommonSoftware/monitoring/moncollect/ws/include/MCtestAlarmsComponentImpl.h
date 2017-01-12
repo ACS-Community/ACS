@@ -31,20 +31,20 @@
 
 #include "MCtestComponentS.h"
 #include "MCtestDevIO.h"
-#include <baciCharacteristicComponentImpl.h>
-#include <baciROdouble.h>
-#include <baciROfloat.h>
-#include <baciROlong.h>
-#include <baciROuLong.h>
-#include <baciROlongLong.h>
-#include <baciROuLongLong.h>
-#include <baciROboolean.h>
-#include <baciROdoubleSeq.h>
-#include <baciROfloatSeq.h>
-#include <baciROlongSeq.h>
-#include <baciROuLongSeq.h>
-#include <baciRObooleanSeq.h>
-#include <enumpropROImpl.h>
+#include "baciCharacteristicComponentImpl.h"
+#include "baciROdouble.h"
+#include "baciROfloat.h"
+#include "baciROlong.h"
+#include "baciROuLong.h"
+#include "baciROlongLong.h"
+#include "baciROuLongLong.h"
+#include "baciROboolean.h"
+#include "baciROdoubleSeq.h"
+#include "baciROfloatSeq.h"
+#include "baciROlongSeq.h"
+#include "baciROuLongSeq.h"
+#include "baciRObooleanSeq.h"
+#include "enumpropROImpl.h"
 
 namespace TMCDB
 {

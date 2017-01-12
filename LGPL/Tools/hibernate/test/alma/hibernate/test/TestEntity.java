@@ -12,13 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.MapKeyColumn;
 
-import org.hibernate.annotations.MapKey;
-
-/**
- * @author msekoranja
- *
- */
 /**
  * @author msekoranja
  *
@@ -45,7 +40,7 @@ public class TestEntity {
 	 */
 	
 	@OneToMany(mappedBy="parentId",fetch=FetchType.EAGER)
-	@MapKey(columns={@Column(name="name")})
+	@MapKeyColumn(name="name")
 	public Map<String, SubEntity> getMAP_() {
 		return MAP_;
 	}

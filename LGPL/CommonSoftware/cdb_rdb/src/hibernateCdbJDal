@@ -149,7 +149,7 @@ export JVM_GC_LOG_NAME=hibernateCdbjDAL
 
 # See http://jira.alma.cl/browse/COMP-8638 about heap size issues. 
 # For now (ACS 11) we play it safe and configure a huge max heap.
-MAX_HEAP_SIZE=1536m
+MAX_HEAP_SIZE=1575m
 
 acsStartJava \
   -endorsed \

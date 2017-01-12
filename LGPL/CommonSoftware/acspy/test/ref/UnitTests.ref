@@ -26,10 +26,7 @@
 1 -     temp[PYCLASS] = temp[TYPE].split(':')[1].split('/').pop() #get class name
 1 - IndexError: list index out of range
 1 - ok
-1 -   File "Container.py", line xxx, in activate_component
-1 -     temp[PYREF].__init__()
-1 - AttributeError: MockClass instance has no attribute '__init__'
-1 - ok
+1 - test_constructor_fault (test_Acspy_Container.TestActivateComponent) ... ok
 1 -   File "Container.py", line xxx, in activate_component
 1 -     temp[POA].activate_object_with_id(temp[NAME], temp[PYREF])
 1 -   File "mock.py", line xxx, in __call__
@@ -120,20 +117,34 @@
 1 -     execfile(temp_package)
 1 - IOError: [Errno 2] No such file or directory: 'bin/package1'
 1 - ok
+1 - test_configureComponentLogger (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Defined logger is configured to the CDB values. ... ok
+1 - test_configureComponentLogger_centralEnv (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Partially-defined (local) logger is configured to the CDB values and not CENTRAL environment value. ... ok
+1 - test_configureComponentLogger_localEnv (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Partially-defined (local) logger is configured to the CDB values and not STDOUT environment value. ... ok
+1 - test_configureComponentLogger_partialCentral (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Partially-defined (local) logger is configured to the CDB values. ... ok
+1 - test_configureComponentLogger_partialLocal (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Partially-defined (local) logger is configured to the CDB values. ... ok
+1 - test_configureComponentLogger_unknown (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Unknown logger is configured to the CDB values. ... ok
 1 - test_get_logLevels_defined (test_Acspy_Container.TestLoggingConfigurableInterface) ... ok
+1 - test_get_logLevels_nocdb (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Container log levels are correct when no CDB info present ... ok
+1 - test_get_logLevels_undefined (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Exception is thrown when log levels are requested for undefined logger ... ok
+1 - test_refresh_logging_config (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Container log levels are set correctly to CDB values. ... ok
+1 - test_refresh_logging_config_nocdb_or_env (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Container log levels are reset correctly when no CDB info or environment vars are present ... ok
+1 - test_refresh_logging_config_nocdb_withcentral (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Container log levels are reset correctly when no CDB info and ACS_LOG_CENTRAL is present ... ok
+1 - test_refresh_logging_config_nocdb_withlocal (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Container log levels are reset correctly when no CDB info and ACS_LOG_STDOUT is present ... ok
+1 - test_set_logLevels (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Log levels for a named logger are set correctly ... ok
+1 - test_set_logLevels_unknown (test_Acspy_Container.TestLoggingConfigurableInterface)
 1 - Exception is thrown when attempt to set log levels on an undefined logger ... ok
 1 - test_component_not_exist (test_Acspy_Container.TestOffShootActivation) ... ok
 1 -   File "Container.py", line xxx, in activateOffShoot
@@ -163,21 +174,37 @@
 1 - test_configAdminProps_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_configQofS_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_configQofS_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_createNotificationChannel (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC createNotificationChannel configures event channel correctly ... ok
+1 - test_createNotificationChannel_createFailedBadAdmin (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create channel (Bad Admin) ... ok
+1 - test_createNotificationChannel_createFailedBadQoS (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create channel (Bad QoS) ... ok
+1 - test_createNotificationChannel_createFailedDuplicate (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create duplicate channel ... ok
+1 - test_createNotificationChannel_createFailedMappingProblem (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create mapping for channel ... ok
+1 - test_createNotificationChannel_missingFactory (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC createNotificationChannel throws correct exception when no EventChannelFactory defined ... ok
+1 - test_createNotificationChannel_registerFailedCP (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Cannot Proceed) ... ok
+1 - test_createNotificationChannel_registerFailedIN (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Invalid Name) ... ok
+1 - test_createNotificationChannel_registerFailedNF (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Not Found) ... ok
+1 - test_createNotificationChannel_wrongFactoryType (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC createNotificationChannel throws correct exception when wrong type returned for EventChannelFactory ... ok
+1 - test_destroyNotificationChannel (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC destroyNotificationChannel returns the expected value when successful ... ok
+1 - test_destroyNotificationChannel_deregisterFailedCP (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(CannotProceed) ... ok
+1 - test_destroyNotificationChannel_deregisterFailedIN (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(InvalidName) ... ok
+1 - test_destroyNotificationChannel_deregisterFailedNF (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(NotFound) ... ok
+1 - test_getChannelDomain (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC channel domain is correct ... ok
+1 - test_getChannelKind (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC channel kind is correct ... ok
 1 - test_getNotificationFactoryNameForChannel_channelFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_getNotificationFactoryNameForChannel_channelNotFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
@@ -185,15 +212,20 @@
 1 - test_getNotificationFactoryNameForChannel_domainFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_getNotificationFactoryNameForChannel_domainNotFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_getNotificationFactoryNameForChannel_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryName_default (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC getNotificationFactoryName returns default ... ok
+1 - test_getNotificationFactoryName_given (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC getNotificationFactoryName returns non-default ... ok
 1 - test_initCORBA (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_initCORBA_nameTreeEx (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_initCORBA_noChannel (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_initCORBA_noChannelDuplicate (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_initCORBA_noNamingService (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_object_initialization_default (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC default initialization ... ok
+1 - test_object_initialization_domain (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC initialization with domain ... ok
+1 - test_object_initialization_no_domain (test_Acspy_Nc_CommonNC.TestCommonNC)
 1 - CommonNC initialization with default domain ... ok
 1 - test_disconnect_ok (test_Acspy_Nc_ReconnectionCallback.TestReconnectionCallback) ... ok
 1 - test_init_no_factory (test_Acspy_Nc_ReconnectionCallback.TestReconnectionCallback) ... ok

@@ -36,7 +36,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0.5"/>
+		alarm_timer_trig="0"/>
 	
 	<longROProp
 		default_timer_trig="1.0"
@@ -50,61 +50,63 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0.5"/>
+		alarm_timer_trig="0"/>
 		
 	<uLongROProp
-	default_timer_trig="1.0"
-	description="uLongROProp"
-	units="deg"
-	graph_min="0"
-	graph_max="360"
-	archive_min_int="0"
-	archive_max_int="1"
-	alarm_high_on="4"
-	alarm_high_off="3"
-	alarm_low_on="0"
-	alarm_low_off="1"
-	alarm_timer_trig="0.5"/>
+		default_timer_trig="1.0"
+		description="uLongROProp"
+		units="deg"
+		graph_min="0"
+		graph_max="360"
+		archive_min_int="0"
+		archive_max_int="1"
+		alarm_high_on="4"
+		alarm_high_off="3"
+		alarm_low_on="0"
+		alarm_low_off="1"
+		alarm_timer_trig="0"/>
 
-<longLongROProp
-	default_timer_trig="1.0"
-	description="longLongROProp"
-	units="deg"
-	graph_min="0"
-	graph_max="360"
-	archive_min_int="0"
-	archive_max_int="1"
-	alarm_high_on="4"
-	alarm_high_off="3"
-	alarm_low_on="0"
-	alarm_low_off="1"
-	alarm_timer_trig="0.5"/>
+	<longLongROProp
+		default_timer_trig="1.0"
+		description="longLongROProp"
+		units="deg"
+		graph_min="0"
+		graph_max="360"
+		archive_min_int="0"
+		archive_max_int="1"
+		alarm_high_on="4"
+		alarm_high_off="3"
+		alarm_low_on="0"
+		alarm_low_off="1"
+		alarm_timer_trig="0"/>
 	
-<uLongLongROProp
-	default_timer_trig="1.0"
-	description="uLongLongROProp"
-	units="deg"
-	graph_min="0"
-	graph_max="360"
-	archive_min_int="0"
-	archive_max_int="1"
-	alarm_high_on="4"
-	alarm_high_off="3"
-	alarm_low_on="0"
-	alarm_low_off="1"
-	alarm_timer_trig="0.5"/>
+	<uLongLongROProp
+		default_timer_trig="1.0"
+		description="uLongLongROProp"
+		units="deg"
+		graph_min="0"
+		graph_max="360"
+		archive_min_int="0"
+		archive_max_int="1"
+		alarm_high_on="4"
+		alarm_high_off="3"
+		alarm_low_on="0"
+		alarm_low_off="1"
+		alarm_timer_trig="0"/>
+	
+	<booleanROProp
+		default_timer_trig="1.0"
+		description="booleanROProp"
+		units="deg"
+		graph_min="0"
+		graph_max="1"
+		archive_min_int="0"
+		archive_max_int="1"
+		alarm_timer_trig="0"/>
 
-<booleanROProp
-	default_timer_trig="1.0"
-	description="booleanROProp"
-	units="deg"
-	graph_min="0"
-	graph_max="1"
-	archive_min_int="0"
-	archive_max_int="1"
-	alarm_timer_trig="0.5"/>
-	
-<doubleSeqROProp
+	<!-- Alarm monitoring on sequences is generating segmentation fault, for this reason they are disabled by setting alarm_timer_trig="0" -->
+
+	<doubleSeqROProp
 		default_timer_trig="1.0"
 		description="doubleSeqROProp"
 		units="deg"
@@ -116,23 +118,23 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0.5"/>
-	
-<floatSeqROProp
-	default_timer_trig="1.0"
-	description="floatSeqROProp"
-	units="deg"
-	graph_min="0"
-	graph_max="360"
-	archive_min_int="0"
-	archive_max_int="1"
-	alarm_high_on="4"
-	alarm_high_off="3"
-	alarm_low_on="0"
-	alarm_low_off="1"
-	alarm_timer_trig="0"/>
-	
-<longSeqROProp
+		alarm_timer_trig="0"/>
+	 
+	<floatSeqROProp
+		default_timer_trig="1.0"
+		description="floatSeqROProp"
+		units="deg"
+		graph_min="0"
+		graph_max="360"
+		archive_min_int="0"
+		archive_max_int="1"
+		alarm_high_on="4"
+		alarm_high_off="3"
+		alarm_low_on="0"
+		alarm_low_off="1"
+		alarm_timer_trig="0"/>
+		
+	<longSeqROProp
 		default_timer_trig="1.0"
 		description="longSeqROProp"
 		units="deg"
@@ -145,48 +147,39 @@
 		alarm_low_on="0"
 		alarm_low_off="1"
 		alarm_timer_trig="0"/>
+		
+	<uLongSeqROProp
+		default_timer_trig="1.0"
+		description="uLongSeqROProp"
+		units="deg"
+		graph_min="0"
+		graph_max="360"
+		archive_min_int="0"
+		archive_max_int="1"
+		alarm_high_on="4"
+		alarm_high_off="3"
+		alarm_low_on="0"
+		alarm_low_off="1"
+		alarm_timer_trig="0"/>
 	
-<uLongSeqROProp
-	default_timer_trig="1.0"
-	description="uLongSeqROProp"
-	units="deg"
-	graph_min="0"
-	graph_max="360"
-	archive_min_int="0"
-	archive_max_int="1"
-	alarm_high_on="4"
-	alarm_high_off="3"
-	alarm_low_on="0"
-	alarm_low_off="1"
-	alarm_timer_trig="0"/>
+	<booleanSeqROProp
+		default_timer_trig="1.0"
+		description="booleanSeqROProp"
+		units="deg"
+		graph_min="0"
+		graph_max="1"
+		archive_min_int="0"
+		archive_max_int="1"
+		alarm_timer_trig="0"/>
 
-<booleanSeqROProp
-	default_timer_trig="1.0"
-	description="booleanSeqROProp"
-	units="deg"
-	graph_min="0"
-	graph_max="1"
-	archive_min_int="0"
-	archive_max_int="1"
-	alarm_timer_trig="0"/>
+	<EnumTestROProp
+		default_timer_trig="1.0"
+		description="EnumTestROProp"  
+		units="deg"
+		archive_min_int="0"
+		archive_max_int="1"
+		alarm_on="1"
+		alarm_off="0"
+		alarm_timer_trig="0"/>
 
-<EnumTestROProp
-	default_timer_trig="1.0"
-	description="EnumTestROProp"  
-	units="deg"
-	archive_min_int="0"
-	archive_max_int="1"
-	alarm_on="1"
-	alarm_off="0"
-	alarm_timer_trig="0"/>
-			
-	<!-- Alarm monitoring on sequences is generating segmentation fault, for this reason they are disabled by setting alarm_timer_trig="0" -->
-	<!-- 
-	
-	
-	<longSeqROProp    default_timer_trig="1.0" description="longSeqROProp"    units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="1" alarm_high_on="4" alarm_high_off="3" alarm_low_on="0" alarm_low_off="1" alarm_timer_trig="0"/>
-	
-	
-	
-	-->
 </MCtestAlarmsComponent>

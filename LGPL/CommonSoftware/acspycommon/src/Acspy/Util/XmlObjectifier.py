@@ -144,7 +144,7 @@ f.close()
 import xml.dom.minidom as minidom
 from traceback import print_exc
 
-class _XmlObject:
+class _XmlObject(object):
     '''
     This class definition is used for the additional "elementName_obj"
     objects in the hierarchy that allow to access child nodes via the __call__

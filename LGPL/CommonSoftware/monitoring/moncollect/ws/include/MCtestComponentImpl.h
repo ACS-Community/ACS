@@ -31,12 +31,12 @@
 
 #include "MCtestComponentS.h"
 #include "MCtestDevIO.h"
-#include <baciCharacteristicComponentImpl.h>
-#include <baciROdoubleSeq.h>
-#include <baciROdouble.h>
-#include <baciRWlongSeq.h>
-#include <baciRWlong.h>
-#include <baciROpattern.h>
+#include "baciCharacteristicComponentImpl.h"
+#include "baciROdoubleSeq.h"
+#include "baciROdouble.h"
+#include "baciRWlongSeq.h"
+#include "baciRWlong.h"
+#include "baciROpattern.h"
 
 namespace TMCDB
 {

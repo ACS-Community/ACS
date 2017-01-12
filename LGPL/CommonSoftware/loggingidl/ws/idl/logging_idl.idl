@@ -169,7 +169,6 @@ Header,
 
 module Logging
 {
-
     /** 
         Convenience typedef for sequences of strings. 
     */
@@ -323,6 +322,56 @@ module Logging
 	interface ACSLogFactory : DsLogAdmin::BasicLogFactory
 	{
 	};
+	
+	interface ACSLogStatistics
+	{
+	
+	    /*
+		 * Struct that represents the logging statistics information.
+		 */
+		struct LogStatsInformation
+		{
+			/** Statistics Identifier */
+			string statsId;
+			/** Logger Name */
+			string loggerName;
+			/** Statistics Status*/
+			boolean statsStatus;
+			/** Statistics period configuration*/
+			unsigned long statsPeriodConfiguration;
+			/** Statistics granularity configuration*/
+			unsigned long statsGranularityConfiguration;
+			
+		};
+		/** Convenience typedef for sequences of LogStatsInformation. */
+		/*typedef sequence <LogStatsInformation> logStatsInformationSeq;*/
+		typedef sequence <LogStatsInformation> logStatsInformationSeq;
+		
+		/** 
+         * Gets the names and status of all statistics modules of all loggers, to allow configuring them individually.
+         * If the logger statistics module has never been configured yet, then it will provide "Undefined"
+         * as elementName 
+         */
+		ACSLogStatistics::logStatsInformationSeq get_statistics_logger_configuration();
+		
+		/** 
+         * Gets the names and status of statistics module of requested logger.
+         * If the logger statistics module has never been configured yet, then it will provide "Undefined"
+         * as elementName 
+         * Throws LoggerDoesNotExistEx if a the logger is not found
+         */
+		ACSLogStatistics::LogStatsInformation get_statistics_logger_configuration_byname(in string logger_name)
+		    raises (LoggerDoesNotExistEx);
+		
+        /**
+         * Sets logger statistics configuration for a particular named logger.
+         * Throws LoggerDoesNotExistEx if a the logger is not found 
+         */
+        void set_statistics_logger_configuration_byname(in string logger_name, in ACSLogStatistics::LogStatsInformation statsInformation)
+            raises (LoggerDoesNotExistEx);
+		
+	};
+	
 };
 
 

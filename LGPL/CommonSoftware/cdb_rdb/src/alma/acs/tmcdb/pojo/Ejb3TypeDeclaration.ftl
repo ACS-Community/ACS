@@ -32,7 +32,8 @@
 <#if pojo.getMetaAsBool("has-enum-types", false)>
   <#list pojo.getMetaAsString("enum-types")?split(",") as pair>
   <#assign pairContent = pair?split('|')>
-@${pojo.importType("org.hibernate.annotations.TypeDef")}(name="${pairContent?first}", typeClass=${pojo.importType("alma.hibernate.util.StringEnumUserType")}.class,
+  <#assign typeDefName = pairContent?last?split('.')?last>
+@${pojo.importType("org.hibernate.annotations.TypeDef")}(name="${typeDefName}", typeClass=${pojo.importType("alma.hibernate.util.StringEnumUserType")}.class,
    parameters={ @${pojo.importType("org.hibernate.annotations.Parameter")}(name="enumClassName", value="${pairContent?last}") })<#if pair_has_next>,</#if>
   </#list>
 </#if>

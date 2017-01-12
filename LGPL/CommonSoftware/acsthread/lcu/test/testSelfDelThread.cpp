@@ -1,1 +1,1 @@
-../../ws/src/../test/testSelfDelThread.cpp
+../../ws/test/testSelfDelThread.cpp

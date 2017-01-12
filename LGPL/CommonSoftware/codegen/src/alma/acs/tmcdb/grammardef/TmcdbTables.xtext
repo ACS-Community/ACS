@@ -7,6 +7,7 @@ TMCDBModel:
 	(note=Note)?
 	(includes+=Include)*
 	(modelName=ModelName)
+	(enumerations=Enumerations)?
 	(tables+=Table)+;
 
 Header:
@@ -28,17 +29,24 @@ Include:
 
 ModelName:
 	"MODELNAME" name=ID;
+	
+Enumerations:
+	"ENUMERATIONS"
+		(enums+=EnumDef)*
+	"ENDENUMERATIONS";
+
+EnumDef:
+	(name=ID type=Type "IN" possibleValues=PossibleValues specifier=Specifier);
 
 Table:
-	'TABLE' name=ID (isChild?='EXTENDS' superTable=[Table])?
+	'TABLE' name=ID (isChild?='EXTENDS' superTable=[Table])? (isIdentifiable?='IDENTIFIABLE')? (isBackloggable?='BACKLOGGABLE')?
 		(columns+=Column)*
 		(key=Key)?
 		(constraints+=Constraint)*
 	'ENDTABLE';
 
 Column:
-	name=ID type=Type specifier=Specifier;
-
+	(name=ID ((type=Type specifier=Specifier)|enumDef=[EnumDef]));
 Key:
 	"KEY" columns+=[Column] ( (isGenerated?="GENERATED" (isGeneratedFrom?="FROM" (pieces+=[Column])+)?) | (columns+=[Column])* );
 
