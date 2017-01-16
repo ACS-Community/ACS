@@ -48,7 +48,7 @@ endef
 # because it is already built in the prepare phase.
 #
 
-MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt astyle swig xercesc xercesj castor xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache
+MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt astyle xercesc xercesj castor xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache
 
 
 

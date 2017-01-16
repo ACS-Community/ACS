@@ -662,6 +662,14 @@ then
 fi
 OMNIORB_CONFIG=$OMNI_ROOT/config
 
+##################
+# Python stuff
+##################
+if [ X"$SWIG_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   SWIG_ROOT=$ALMASW_INSTDIR/swig
+fi
+
 # Path where IDL files are searched at run time, for
 # example by the Interface Repository.
 
@@ -919,7 +927,7 @@ then
 elif [ "$OSYSTEM" = "Linux" ]
 then
    # So it is linux
-   PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$M2_HOME/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$PATH
+   PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$M2_HOME/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$SWIG_ROOT/bin:$PATH
    
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
