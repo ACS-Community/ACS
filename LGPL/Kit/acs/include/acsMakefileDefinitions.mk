@@ -1270,13 +1270,16 @@ define acsMakePythonPackageDependencies
 do_python_package_$1: ../lib/python/site-packages/$1;
 
 $1_python_source_files:= $(if $1,$(shell find $1  -type f ! -path '*/CVS/*' ! -path '*/.svn/*'))
-$1_python_install_files:= $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f  -name \*.py -o -name \*.def | sed -n 's/\(.*\).py$$/\1.py\n\1.pyc/p; /\.py/!p' |sort -t\. -k 2 |tr '\n' ' ' ) )
+# ICT-5703: use precedence rules of find properly
+$1_python_install_files:= $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f \( -name \*.py -o -name \*.def \) | sed -n 's/\(.*\).py$$/\1.py\n\1.pyc/p; /\.py/!p' |sort -t\. -k 2 |tr '\n' ' ' ) )
 
 LIB_SCAPE := $(LIB)/python/site-packages/
-$1_python_install_files_path := $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f  -name \*.py -o -name \*.def | sed -n 's/$(1)/$$(LIB_SCAPE)$(1)/p' | sed -n 's/\(.*\).py$$/\1.py\n\1.pyc/p; /\.py/!p' |sort -t\. -k 2 |tr '\n' ' ' ) )
+# ICT-5703: use precedence rules of find properly
+$1_python_install_files_path := $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f \( -name \*.py -o -name \*.def \) | sed -n 's/$(1)/$$(LIB_SCAPE)$(1)/p' | sed -n 's/\(.*\).py$$/\1.py\n\1.pyc/p; /\.py/!p' |sort -t\. -k 2 |tr '\n' ' ' ) )
 
 LOCAL_LIB_SCAPE := ../lib/python/site-packages/
-$1_python_install_files_path_req := $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f  -name \*.py -o -name \*.def | sed -n 's/$(1)/$$(LOCAL_LIB_SCAPE)$(1)/p' | sort -t\. -k 2 |tr '\n' ' ' ) )
+# ICT-5703: use precedence rules of find properly
+$1_python_install_files_path_req := $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f \( -name \*.py -o -name \*.def \) | sed -n 's/$(1)/$$(LOCAL_LIB_SCAPE)$(1)/p' | sort -t\. -k 2 |tr '\n' ' ' ) )
 
 ../lib/python/site-packages/$1: OUTPUT=../lib/python/site-packages/$1
 ../lib/python/site-packages/$1: $$($1_python_source_files) Makefile

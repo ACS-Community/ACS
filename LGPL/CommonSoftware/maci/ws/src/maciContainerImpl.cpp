@@ -201,11 +201,12 @@ public:
 				// retry in case of COMM_FAILURE or TIMEOUT
 				if (tryNo < tries &&
 					(ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/COMM_FAILURE:1.0") ||
-					 ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/TIMEOUT:1.0"))
+					 ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/TIMEOUT:1.0") ||
+					 ACE_OS::strstr(_ex._info().c_str(), "IDL:omg.org/CORBA/TRANSIENT:1.0"))
 				)
 				{
 					ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ActivationMethod::call",
-							(LM_WARNING, "Call to maci::CBComponentInfo::done for component %s with descOut.id_tag = %d failed, retrying...", name_.c_str(), descOut_.id_tag));
+							(LM_WARNING, "Call to maci::CBComponentInfo::done for component %s with descOut.id_tag = %d failed with %s, retrying...", name_.c_str(), descOut_.id_tag, _ex._rep_id()));
 
 					// sleep for a second
 					ACE_OS::sleep(1);
@@ -214,7 +215,7 @@ public:
 				}
 
 				ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ActivationMethod::call",
-						(LM_WARNING, "Call to maci::CBComponentInfo::done for component %s with descOut.id_tag = %d failed, deactivating the component.", name_.c_str(), descOut_.id_tag));
+						(LM_WARNING, "Call to maci::CBComponentInfo::done for component %s with descOut.id_tag = %d failed with %s, deactivating the component.", name_.c_str(), descOut_.id_tag, _ex._rep_id()));
 
 				try
 				{

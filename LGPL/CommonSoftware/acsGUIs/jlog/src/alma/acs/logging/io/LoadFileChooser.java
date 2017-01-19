@@ -18,19 +18,17 @@
 */
 package alma.acs.logging.io;
 
-import javax.swing.JFileChooser;
-import javax.swing.JComponent;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
-
 import com.cosylab.logging.LoggingClient;
-
-import java.io.File;
 
 /**
  * A FileChooser customized to show hidden files
@@ -61,10 +59,7 @@ public class LoadFileChooser extends LogsFileChooser implements ActionListener {
 	 * @param client The <code>LoggingClient</code> invoking this file chooser
 	 */
 	public LoadFileChooser(File currentDir,String title, String[] extensions, LoggingClient client) {
-		super(title, currentDir,true);
-		if (client==null) {
-			throw new IllegalArgumentException("Invalid null LoggingClient!");
-		}
+		super(title, currentDir,true, client.getLogFrame());
 		
 		loggingClient=client;
 		setModal(true);

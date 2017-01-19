@@ -8,11 +8,9 @@ import junit.framework.TestCase;
 
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
-import org.omg.DsLogAdmin.LogOperations;
 
 import si.ijs.maci.Manager;
 import si.ijs.maci._ManagerStub;
-
 import alma.Logging.AcsLogServiceOperations;
 import alma.Logging.XmlLogRecord;
 import alma.acs.concurrent.DaemonThreadFactory;
@@ -116,7 +114,7 @@ public class RemoteLoggingTest extends TestCase
 				initRemoteLoggingThread.join(10000);
 				
 				// wait a bit more for the mock log dispatcher to print out its xml log record
-				Thread.sleep(1000);
+				Thread.sleep(1500);
 			}
 		}
 	}

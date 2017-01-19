@@ -29,11 +29,11 @@ import java.util.logging.Logger;
 
 public class ServiceParameters {
 
-	public static final int DEFAULT_FREQUENCY = 600000;
-	public static final int DEFAULT_TH_OLDEST_EVENT = 1000;
-	public static final int DEFAULT_TH_QUEUE_SIZE = 1000;
+	public static final int DEFAULT_FREQUENCY = 10; // 10min
+	public static final int DEFAULT_TH_OLDEST_EVENT = 1000; 
+	public static final int DEFAULT_TH_QUEUE_SIZE = 1000; 
 	
-	public static final int MIN_ALLOWED_FREQUENCY = 50; // Minimum allowed frequency in ms
+	public static final int MIN_ALLOWED_FREQUENCY = 1000; // Minimum allowed frequency in ms
 	
 	public static final int MIN_2_MS = 60000; 
 	
@@ -62,8 +62,8 @@ public class ServiceParameters {
 		String str = "> " + toolName + " options\n\n";
 		str += "\tOptions can be:\n";
 		str += "\t\t" + ServiceParameters.ARG_ADD + "\tService and channels to look at. Format is: serviceName:channelName1,channelName2\n";
-		str += "\t\t" + ServiceParameters.ARG_FREQUENCY + "\tFrequency in milliseconds at witch statistics will be get. Default value is " 
-				+ String.valueOf(ServiceParameters.DEFAULT_FREQUENCY) + "\n";
+		str += "\t\t" + ServiceParameters.ARG_FREQUENCY + "\tFrequency in minutes at witch statistics will be get. Default value is " 
+				+ String.valueOf(ServiceParameters.DEFAULT_FREQUENCY) + "min\n";
 		str += "\t\t" + ServiceParameters.ARG_TH_OLDEST_EVENT + "\tThershold used to log the oldest event timestamp. When QueueElementCount is greater than this threshold the oldest event timestamp will be logged. Default value is " 
 				+ String.valueOf(ServiceParameters.DEFAULT_TH_OLDEST_EVENT) + "\n";
 		str += "\t\t" + ServiceParameters.ARG_TH_QUEUE_SIZE + "\tThreshold used to log the queue size. Default value is " + ServiceParameters.DEFAULT_TH_QUEUE_SIZE + "\n";
@@ -184,7 +184,7 @@ public class ServiceParameters {
 	}
 	
 	void log(Logger logger) {
-		logger.info("Frequency: " + String.valueOf(frequency) + "ms");
+		logger.info("Log frequency: " + String.valueOf(frequency) + "ms");
 		logger.info("OldestEvent threshold: " + String.valueOf(thOldestEvent));
 		logger.info("QueueSize threshold: " + String.valueOf(thQueueSize));
 		if(this.selectedServicesChannels.size() == 0) {

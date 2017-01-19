@@ -34,7 +34,6 @@
 # jar files to be installed
 #----------------------------
 INSTALL_FILES =  ../lib/AbsoluteLayout.jar \
-		 ../lib/concurrent.jar \
                  ../lib/boot.jar \
                  ../lib/core.jar \
                  ../lib/core-windows.jar \

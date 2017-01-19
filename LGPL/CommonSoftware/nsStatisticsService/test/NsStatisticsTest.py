@@ -61,7 +61,7 @@ class AcsTestLogChecker(object):
 	def read_log_file(self):
 		# Create path of tmp log file
 		tmp_log = "/tmp/%s_test%s.%d"%(self.user_name,self.pid,self.num_proc)
-		
+
 		str = ""
 		try:
 			f = open(tmp_log, 'r')
@@ -117,40 +117,49 @@ def get_pattern_debug_stats_channel(channel_name):
 	str += "(\s+Supplier admin names.+)\n"
 	str += "(\s+Consumer admin names.+)"
 	"""
-	str =  "DEBUG\ \[nsStatistics\]\s+DEBUG STATISTICS OF NOTIFICATION CHANNEL " + channel_name
+	str =  "DEBUG\ \[nsStatistics\]\s+STATISTICS OF NOTIFICATION CHANNEL " + channel_name
 	str += "\s+\[\s+"
 	str += "("
 	str += "Num suppliers\=\'\d+\'\s+|"
 	str += "Num consumers\=\'\d+\'\s+|"
-	str += "Num admin suppliers\=\'\d+\'\s+|"
-	str += "Num admin consumers\=\'\d+\'\s+|"
-	str += "Supplier names\=\'[^\']*\'\s+|"
-	str += "Consumer names\=\'[^\']*\'\s+|"
-	str += "Supplier admin names\=\'[^\']*\'\s+|"
-	str += "Consumer admin names\=\'[^\']*\'\s+"
-	str += "){8}"
+	str += "Num slowest consumers\=\'\d+\'\s+|"
+	str += "Num suppliers admin\=\'\d+\'\s+|"
+	str += "Num consumers admin\=\'\d+\'\s+|"
+	str += "Current consumers=\'.*\'\s+|"
+	str += "Current suppliers=\'.*\'\s+|"
+	str += "Current slowest consumers=\'.*\'\s+|"
+	str += "Current consumers admin=\'.*\'\s+|"
+	str += "Current suppliers admin=\'.*\'\s+|"
+	str += "All consumers=\'.*\'\s+|"
+	str += "All suppliers=\'.*\'\s+|"
+	str += "All slowest consumers=\'.*\'\s+|"
+	str += "All consumers admin=\'.*\'\s+|"
+	str += "All suppliers admin=\'.*\'\s+|"
+	str += "){5,15}"
 	str += "\]"
 	
 	return str	
 	
 def get_pattern_stats_channel(channel_name,tqs=False,toe=False):
-	"""
-	str =  "INFO\ \[nsStatistics\]\s+STATISTICS OF NOTIFICATION CHANNEL " + channel_name + "\n"
-	str += "(\s+There are \d+ suppliers\, \d+ consumers)\n"
-	str += "(\s+Number of events in queues\:(\s\d+\,?)*)"
-	"""
 	str =  "INFO\ \[nsStatistics\]\s+STATISTICS OF NOTIFICATION CHANNEL " + channel_name
 	str += "\s+\[\s+"
 	str += "("
-	str += 	"Num suppliers\=\'\d+\'\s+|"
-	str += 	"Num consumers\=\'\d+\'\s+|"
-	str += 	"Num events in queues=\'(\d+(\,\s)?)*\'\s+|"
+	str += "Num consumers=\'MIN=\d+, MAX=\d+, AVG=\d+(\.\d+)?\'\s+|"
+	str += "Avg events in queues=\'(\d+(\.\d+)?,\s)*\'\s+|"
+	str += "Max events in queues=\'(\d+,\s)*\'\s+|"
+	str += "Num suppliers=\'MIN=\d+, MAX=\d+, AVG=\d+(\.\d+)?\'\s+|"
+	#str += 	"Num suppliers\=\'\w+\'\s+|"
+	#str += 	"Num consumers\=\'\w+\'\s+|"
+	#str += 	"Num events in queues=\'(\d+(\,\s)?)*\'\s+|"
 	if tqs:
-		str += 	"Size of queues \[bytes\]=\'(\d+(\,\s)?)*\'\s+|"
+		str += 	"Max size of queues \[bytes\]=\'.*\'\s+|"
+		str += 	"Avg size of queues \[bytes\]=\'.*\'\s+|"
 	if toe:
 		str += 	"Oldest event=\'\d+\'\s+|"
-	str +=	"Slowest consumers=\'.*\'\s+"
-	str += "){3,6}"
+	str +=	"Current slowest consumers=\'.*\'\s+|"
+	str +=	"All slowest consumers=\'.*\'\s+"
+	str += "){4,6}"
+	str += "\]"
 	
 	return str
 	
@@ -174,8 +183,10 @@ def get_pattern_stats_factory(factory_name):
 	"""
 	str =  "INFO\ \[nsStatistics\]\s+STATISTICS OF NOTIFICATION FACTORY " + factory_name
 	str += "\s+\[\s+"
-	str += "Active event channels\=\'.*\'\s+"
+	str += "("
+	str += "Active event channels\=\'.*\'\s+|"
 	str += "Num active event channels\=\'\d+\'\s+"
+	str += "){1,2}"
 	str += "\]"
 	return str
 
@@ -187,30 +198,31 @@ def get_pattern_warn_freq():
 def test_case1():
 	min_stats = 1
 	max_stats = 2
-	test = AcsTestLogChecker(0,"Test1")
+	test = AcsTestLogChecker(2,"Test1")
 	
 	test.check_pattern_not_exists(get_pattern_warn_freq())
 
 	# Check factories
 	n = test.check_pattern_n_times_in_range(get_pattern_stats_factory("Alarm"), min_stats, max_stats)
-	test.check_pattern_n_times_in_range(get_pattern_stats_factory("Archive"), n - 1, n + 1)
-	test.check_pattern_n_times_in_range(get_pattern_stats_factory("Logging"), n - 1, n + 1)
-	test.check_pattern_n_times_in_range(get_pattern_stats_factory("DefaultNotifyService"), n - 1, n + 1)			
+	min_val = 1 if n == 1 else (n - 1)
+	test.check_pattern_n_times_in_range(get_pattern_stats_factory("Archive"), min_val, n + 1)
+	test.check_pattern_n_times_in_range(get_pattern_stats_factory("Logging"), min_val, n + 1)
+	test.check_pattern_n_times_in_range(get_pattern_stats_factory("DefaultNotifyService"), min_val, n + 1)			
 			
 	# Check channels	
-	test.check_pattern_n_times_in_range(get_pattern_stats_channel("LoggingChannel"), n - 1, n)
-	test.check_pattern_n_times_in_range(get_pattern_debug_stats_channel("LoggingChannel"), n - 1, n)
-	test.check_pattern_n_times_in_range(get_pattern_stats_channel("ArchivingChannel"), n - 1, n)
-	test.check_pattern_n_times_in_range(get_pattern_debug_stats_channel("ArchivingChannel"), n - 1, n)
-	test.check_pattern_exists_at_least(get_pattern_stats_channel("testNsStatsChannel1"), min_stats/2)
-	test.check_pattern_exists_at_least(get_pattern_debug_stats_channel("testNsStatsChannel1"), min_stats/2)
+	test.check_pattern_n_times_in_range(get_pattern_stats_channel("Logging#LoggingChannel"), min_val, n)
+	test.check_pattern_n_times_in_range(get_pattern_debug_stats_channel("Logging#LoggingChannel"), min_val, n)
+	test.check_pattern_n_times_in_range(get_pattern_stats_channel("Archive#ArchivingChannel"), min_val, n)
+	test.check_pattern_n_times_in_range(get_pattern_debug_stats_channel("Archive#ArchivingChannel"), min_val, n)
+	test.check_pattern_exists_at_least(get_pattern_stats_channel("DefaultNotifyService#testNsStatsChannel1", True, True), min_val) # min_stats/2)
+	test.check_pattern_exists_at_least(get_pattern_debug_stats_channel("DefaultNotifyService#testNsStatsChannel1"), min_val) # min_stats/2)
 	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION CHANNEL Alarm")
 		
 	
 def test_case2():
 	min_stats = 3
 	max_stats = 15
-	test = AcsTestLogChecker(0,"Test2")
+	test = AcsTestLogChecker(2,"Test2")
 
 	test.check_pattern_exists(get_pattern_warn_freq())	
 	
@@ -221,20 +233,20 @@ def test_case2():
 	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION FACTORY Logging")
 	
 	# Check channels
-	test.check_pattern_not_exists("\tSTATISTICS OF NOTIFICATION CHANNEL LoggingChannel")
-	test.check_pattern_not_exists("DEBUG STATISTICS OF NOTIFICATION CHANNEL LoggingChannel")
-	test.check_pattern_not_exists("\tSTATISTICS OF NOTIFICATION CHANNEL ArchivingChannel")
-	test.check_pattern_not_exists("DEBUG STATISTICS OF NOTIFICATION CHANNEL ArchivingChannel")
-	test.check_pattern_exists_at_least(get_pattern_stats_channel("testNsStatsChannel1"), min_stats/2)
-	test.check_pattern_exists_at_least(get_pattern_debug_stats_channel("testNsStatsChannel1"), min_stats/2)
-	test.check_pattern_exists_at_least(get_pattern_stats_channel("testNsStatsChannel2"), min_stats/2)
-	test.check_pattern_exists_at_least(get_pattern_debug_stats_channel("testNsStatsChannel2"), min_stats/2)
+	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION CHANNEL Logging#LoggingChannel")
+	test.check_pattern_not_exists("DEBUG [nsStatistics] STATISTICS OF NOTIFICATION CHANNEL Logging#LoggingChannel")
+	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION CHANNEL Archive#ArchivingChannel")
+	test.check_pattern_not_exists("DEBUG [nsStatistics] STATISTICS OF NOTIFICATION CHANNEL Archive#ArchivingChannel")
+	test.check_pattern_exists_at_least(get_pattern_stats_channel("DefaultNotifyService#testNsStatsChannel1", True, True), min_stats/2)
+	test.check_pattern_exists_at_least(get_pattern_debug_stats_channel("DefaultNotifyService#testNsStatsChannel1"), min_stats/2)
+	test.check_pattern_exists_at_least(get_pattern_stats_channel("DefaultNotifyService#testNsStatsChannel2", True, True), min_stats/2)
+	test.check_pattern_exists_at_least(get_pattern_debug_stats_channel("DefaultNotifyService#testNsStatsChannel2"), min_stats/2)
 	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION CHANNEL Alarm")	
 
 def test_case3():	
-	min_stats = 4
+	min_stats = 3
 	max_stats = 25
-	test = AcsTestLogChecker(0,"Test3")
+	test = AcsTestLogChecker(2,"Test3")
 	
 	test.check_pattern_exists(get_pattern_warn_freq())
 	
@@ -245,14 +257,14 @@ def test_case3():
 	n = test.check_pattern_n_times_in_range(get_pattern_stats_factory("DefaultNotifyService"), min_stats, max_stats)
 
 	# Check channels
-	test.check_pattern_not_exists("\tSTATISTICS OF NOTIFICATION CHANNEL LoggingChannel")
-	test.check_pattern_not_exists("DEBUG STATISTICS OF NOTIFICATION CHANNEL LoggingChannel")
-	test.check_pattern_not_exists("\tSTATISTICS OF NOTIFICATION CHANNEL ArchivingChannel")
-	test.check_pattern_not_exists("DEBUG STATISTICS OF NOTIFICATION CHANNEL ArchivingChannel")
-	test.check_pattern_not_exists("\tSTATISTICS OF NOTIFICATION CHANNEL testNsStatsChannel1")
-	test.check_pattern_not_exists("DEBUG STATISTICS OF NOTIFICATION CHANNEL testNsStatsChannel1")
-	test.check_pattern_exists_at_least(get_pattern_stats_channel("testNsStatsChannel2"), min_stats/2)
-	test.check_pattern_exists_at_least(get_pattern_debug_stats_channel("testNsStatsChannel2"), min_stats/2)	
+	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION CHANNEL Logging#LoggingChannel")
+	test.check_pattern_not_exists("DEBUG [nsStatistics] STATISTICS OF NOTIFICATION CHANNEL Logging#LoggingChannel")
+	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION CHANNEL Archive#ArchivingChannel")
+	test.check_pattern_not_exists("DEBUG [nsStatistics] STATISTICS OF NOTIFICATION CHANNEL Archive#ArchivingChannel")
+	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION CHANNEL DefaultNotifyService#testNsStatsChannel1")
+	test.check_pattern_not_exists("DEBUG [nsStatistics] STATISTICS OF NOTIFICATION CHANNEL DefaultNotifyService#testNsStatsChannel1")
+	test.check_pattern_exists_at_least(get_pattern_stats_channel("DefaultNotifyService#testNsStatsChannel2",True,True), min_stats/2)
+	test.check_pattern_exists_at_least(get_pattern_debug_stats_channel("DefaultNotifyService#testNsStatsChannel2"), min_stats/2)	
 	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION CHANNEL Alarm")	
 	
 def test_case4():

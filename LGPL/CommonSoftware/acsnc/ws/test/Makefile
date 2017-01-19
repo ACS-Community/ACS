@@ -39,7 +39,7 @@ testChannelCreation_OBJECTS =	testChannelCreation
 testChannelCreation_LIBS    =	acsnc maciClient acsncHelperTest
 
 
-SCRIPTS_L       = acsncTATRunTest.sh
+SCRIPTS_L       = acsncTATRunTest.sh acsncNslist.sh acsncExecDelChannelsNS.sh acsncCreateNamedNotifyS.sh
 
 PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent
 
@@ -54,6 +54,7 @@ LIBRARIES       = acsncConsumerCompImpl acsncSupplierCompImpl acsncRTSupplierCom
 		acsncArchiveConsumerCompImpl \
 		testCDBProps  \
 		acsncConsumerILCompImpl acsncSupplierILCompImpl \
+		acsncConsumerNamedChCompImpl acsncSupplierNamedChCompImpl \
         acsncHelperTest
 LIBRARIES_L     = 
 
@@ -70,6 +71,9 @@ acsncConsumerCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
 acsncConsumerILCompImpl_OBJECTS = acsncConsumerILCompImpl
 acsncConsumerILCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
 
+acsncConsumerNamedChCompImpl_OBJECTS = acsncConsumerNamedChCompImpl
+acsncConsumerNamedChCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
+
 acsncArchiveConsumerCompImpl_OBJECTS = acsncArchiveConsumerCompImpl
 acsncArchiveConsumerCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
 
@@ -78,6 +82,9 @@ acsncSupplierCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
 
 acsncSupplierILCompImpl_OBJECTS = acsncSupplierILCompImpl
 acsncSupplierILCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
+
+acsncSupplierNamedChCompImpl_OBJECTS = acsncSupplierNamedChCompImpl
+acsncSupplierNamedChCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
 
 acsncRTSupplierCompImpl_OBJECTS = acsncRTSupplierCompImpl
 acsncRTSupplierCompImpl_LIBS    = EventComponentStubs acsnc acscomponent

@@ -24,13 +24,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import alma.acs.gui.util.threadsupport.EDTExecutor;
-import alma.acsplugins.alarmsystem.gui.table.AlarmCounter;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import cern.laser.client.data.Alarm;
@@ -107,7 +107,7 @@ public class CounterWidget implements ActionListener {
 	private final AlarmGUIType alarmType;
 	
 	// The counter to read the number shown by the widget
-	private final AlarmCounter counter;
+	private final AtomicInteger counter;
 	
 	// The table model to remove inactive alarms
 	private AlarmTableModel alarmModel;
@@ -116,7 +116,7 @@ public class CounterWidget implements ActionListener {
 	private JPopupMenu statusLinePM = new JPopupMenu();
 	private JMenuItem popupMI; 
 	
-	public CounterWidget(AlarmGUIType type, AlarmCounter alarmCounter, AlarmTableModel model) {
+	public CounterWidget(AlarmGUIType type, AtomicInteger alarmCounter, AlarmTableModel model) {
 		if (type==null) {
 			throw new IllegalArgumentException("The type can't be null");
 		}
@@ -170,7 +170,7 @@ public class CounterWidget implements ActionListener {
 	 * Update the value shown in the widget
 	 */
 	public void update() {
-		widget.setText(Integer.valueOf(counter.getCount()).toString());
+		widget.setText(Integer.valueOf(counter.get()).toString());
 	}
 
 	@Override

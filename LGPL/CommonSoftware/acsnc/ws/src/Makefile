@@ -34,8 +34,12 @@ DEBUG=on
 
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = 
-EXECUTABLES_L   = 
+EXECUTABLES     = acsncDelChannelsInNameS
+EXECUTABLES_L   =
+
+acsncDelChannelsInNameS_OBJECTS = acsncDelChannelsInNameS
+acsncDelChannelsInNameS_LIBS = acsutil logging
+
 
 # Includes (.h) files (public only)
 # ---------------------------------

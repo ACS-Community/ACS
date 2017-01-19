@@ -66,7 +66,7 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/jta-1.1.jar \
 	../lib/junit-dep-4.10.jar \
 	../lib/log4j-1.2.15.jar \
-	../lib/mockito-core-1.10.19.jar \
+	../lib/mockito-core-1.9.5.jar \
 	../lib/objenesis-1.2.jar \
 	../lib/prevayler-1.02.001.jar \
 	../lib/saxpath.jar \

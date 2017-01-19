@@ -59,13 +59,14 @@ import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.ToolTipManager;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
-import alma.acs.util.IsoDateFormat;
 import alma.acs.gui.util.threadsupport.EDTExecutor;
+import alma.acs.util.IsoDateFormat;
 import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 import alma.acsplugins.alarmsystem.gui.reduced.ReducedChainDlg;
 import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
@@ -75,7 +76,6 @@ import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.viewcoordination.ViewCoordinator;
 import alma.acsplugins.alarmsystem.gui.viewcoordination.ViewCoordinator.AlarmSelectionListener;
 import alma.alarmsystem.clients.AlarmCategoryClient;
-import alma.alarmsystem.clients.CategoryClient;
 import cern.laser.client.data.Alarm;
 
 /**
@@ -84,7 +84,7 @@ import cern.laser.client.data.Alarm;
  *
  */
 public class AlarmTable extends JTable implements ActionListener {
-	
+
 	/**
 	 * The mouse adapter receiving mouse events generated
 	 * over the table of the alarms

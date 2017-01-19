@@ -59,9 +59,9 @@ try:
     # Verify that no monitor values exist
     data = mc.getMonitorData()
     # Calculate if data is present
+    alreadyStoredData=0
     for d in data:
         for blob in d.monitorBlobs:
-            alreadyStoredData=0
             for blobData in any.from_any(blob.blobDataSeq):
                 alreadyStoredData+=1
     if alreadyStoredData != 0:
@@ -73,9 +73,9 @@ try:
     # Verify if monitor data have been generated
     data = mc.getMonitorData()
     # Calculate if data is present
+    alreadyStoredData=0
     for d in data:
         for blob in d.monitorBlobs:
-            alreadyStoredData=0
             for blobData in any.from_any(blob.blobDataSeq):
                 alreadyStoredData+=1
     if alreadyStoredData == 0:
@@ -91,7 +91,7 @@ except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex.Print();
 
 # Print out recovered data
-print "RESULTS FROM TEST CASE1: Start component monitoring", len(data);
+print "RESULTS FROM TEST CASE1: Start component monitoring"
 print "Number of Devices:", len(data);
 for d in data:
     print d.componentName, d.deviceSerialNumber 
@@ -109,9 +109,9 @@ try:
     time.sleep(10)
     data = mc.getMonitorData()
     # Calculate if data is present
+    alreadyStoredData=0
     for d in data:
         for blob in d.monitorBlobs:
-            alreadyStoredData=0
             for blobData in any.from_any(blob.blobDataSeq):
                 alreadyStoredData+=1
     if alreadyStoredData == 0:
@@ -125,7 +125,7 @@ except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex.Print();
 
 # Print out recovered data
-print "RESULTS FROM TEST CASE2: Data retrieval does not stop component monitoring", len(data);
+print "RESULTS FROM TEST CASE2: Data retrieval does not stop component monitoring"
 print "Number of Devices:", len(data);
 for d in data:
     print d.componentName, d.deviceSerialNumber
@@ -148,9 +148,9 @@ try:
     time.sleep(2)
     data = mc.getMonitorData()
     # Calculate if data is present
+    alreadyStoredData=0
     for d in data:
         for blob in d.monitorBlobs:
-            alreadyStoredData=0
             for blobData in any.from_any(blob.blobDataSeq):
                 alreadyStoredData+=1
     if alreadyStoredData != 0:
@@ -164,7 +164,7 @@ except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex.Print();
 
 # Print out recovered data
-print "RESULTS FROM TEST CASE2: Stop component monitoring", len(data);
+print "RESULTS FROM TEST CASE2: Stop component monitoring"
 print "Number of Devices:", len(data);
 for d in data:
     print d.componentName, d.deviceSerialNumber

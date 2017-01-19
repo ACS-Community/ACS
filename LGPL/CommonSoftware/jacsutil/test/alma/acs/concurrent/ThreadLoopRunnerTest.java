@@ -10,7 +10,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
-
 import alma.acs.concurrent.ThreadLoopRunner.ScheduleDelayMode;
 import alma.acs.testsupport.LogRecordCollectingLogger;
 import alma.acs.testsupport.TestLogger;
@@ -97,7 +96,7 @@ public class ThreadLoopRunnerTest extends TestCase
 				if (delayMode == ScheduleDelayMode.FIXED_DELAY) {
 					expectedDurationMillis += (expectedInvocationsPerCycle - 1) * actionWaitMillis;
 				}
-				int timeoutMillis = expectedDurationMillis + allowedThreadJitterMillis+100;
+				int timeoutMillis = expectedDurationMillis + allowedThreadJitterMillis+1000;
 				boolean awaitRet = sync.await(timeoutMillis, TimeUnit.MILLISECONDS);
 				int actualDuration = (int) sw.getLapTimeMillis();
 				int actualInvocations = myAction.getCount();

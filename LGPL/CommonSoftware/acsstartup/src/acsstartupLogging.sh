@@ -192,7 +192,7 @@ export ACS_LOG_FORCED
 
 #------------------------------------------------------------------------------------
 #--Function which logs a message of DEBUG priority. This means the log message is 
-#--sent to standard out IFF $ACS_LOG_STDOUT is less than DEBUG priority.
+#--sent to standard out IFF $ACS_LOG_STDOUT is less or equal to DEBUG priority.
 #--In any event, the message will be sent to disk (see getLogFile). 
 #--
 #--The only arguement to this funciton is the message itself. 
@@ -203,7 +203,7 @@ TS=`getTimeStamp`
 PROGRAM_NAME=$1
 shift
 
-if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
+if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -le $ACS_DEBUG_PRIORITY ]
 then
 	echo "$TS DEBUG [$PROGRAM_NAME] $@"
 fi
@@ -215,7 +215,7 @@ export ACS_LOG_DEBUG
 
 #-----------------------------------------------------------------------------------
 #--Function which logs a message of INFO priority. This means the log message is 
-#--sent to standard out IFF $ACS_LOG_STDOUT is less than INFO priority.
+#--sent to standard out IFF $ACS_LOG_STDOUT is less or equal to INFO priority.
 #--In any event, the message will be sent to disk (see getLogFile). 
 #--
 #--The only arguement to this funciton is the message itself. 
@@ -226,7 +226,7 @@ TS=`getTimeStamp`
 PROGRAM_NAME=$1
 shift
 
-if [ "X$ACS_LOG_STDOUT" = "X" ] || [ $ACS_LOG_STDOUT -lt $ACS_INFO_PRIORITY ]
+if [ "X$ACS_LOG_STDOUT" = "X" ] || [ $ACS_LOG_STDOUT -le $ACS_INFO_PRIORITY ]
 then
 	echo "$TS INFO [$PROGRAM_NAME] $@"
 fi
@@ -238,7 +238,7 @@ export ACS_LOG_INFO
 
 #------------------------------------------------------------------------------------
 #--Function which logs a message of ERROR priority. This means the log message is 
-#--sent to standard out IFF $ACS_LOG_STDOUT is less than ERROR priority.
+#--sent to standard out IFF $ACS_LOG_STDOUT is less or equal to ERROR priority.
 #--In any event, the message will be sent to disk (see getLogFile). 
 #--
 #--The only arguement to this funciton is the message itself. 
@@ -249,7 +249,7 @@ TS=`getTimeStamp`
 PROGRAM_NAME=$1
 shift
 
-if [ "X$ACS_LOG_STDOUT" = "X" ] || [ $ACS_LOG_STDOUT -lt $ACS_ERROR_PRIORITY ]
+if [ "X$ACS_LOG_STDOUT" = "X" ] || [ $ACS_LOG_STDOUT -le $ACS_ERROR_PRIORITY ]
 then
 	echo "$TS ERROR [$PROGRAM_NAME] $@" >&2
 fi

@@ -10,6 +10,8 @@
 3 - |   Endpoint: a.b.c.d:p
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TESTNotifyEventChannelFactory Notify Service
+2 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 2 - ReBound ID: MC_TESTNotifyEventChannelFactory
 4 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+4 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
 6 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service

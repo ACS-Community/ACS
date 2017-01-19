@@ -28,19 +28,13 @@ SOURCE nsStatisticsServiceTATEnvironment
 PROLOGUE acsutilTATPrologue -l
 
 # Check frequency 
-1	Test1	"acsutilTATTestRunner nsStatistics -f 1" "@SLEEP 5" "acsutilTATTestRunner TSupplier.py 100 30 1" "acsutilTATTestRunner TConsumer.py 30 1" "@SLEEP 60" "acsutilTATTestRunner stopNsStats" "@SLEEP 2" "acsutilTATTestRunner NsStatisticsTest.py 1"
+1	Test1	 "acsutilTATTestRunner TSupplier.py 10000 70 1" "acsutilTATTestRunner TConsumer.py 70 1" "@SLEEP 5" "acsutilTATTestRunner nsStatistics -f 1" "@SLEEP 80" "acsutilTATTestRunner stopNsStats" "@SLEEP 4" "acsutilTATTestRunner NsStatisticsTest.py 1"
 
 # Check selected service by creating a couple of channels in DefaultNotifyService
-2	Test2	"acsutilTATTestRunner nsStatistics -f 1000 -ms -add \"DefaultNotifyService\"" "@SLEEP 5" "acsutilTATTestRunner TSupplier.py 100 10 1 2" "acsutilTATTestRunner TConsumer.py 10 1 2" "@SLEEP 10" "acsutilTATTestRunner stopNsStats" "@SLEEP 2" "acsutilTATTestRunner NsStatisticsTest.py 2"
+2	Test2	"acsutilTATTestRunner TSupplier.py 10000 40 1 2" "acsutilTATTestRunner TConsumer.py 40 1 2" "@SLEEP 5" "acsutilTATTestRunner nsStatistics -f 5000 -ms -add \"DefaultNotifyService\""  "@SLEEP 40" "acsutilTATTestRunner stopNsStats" "@SLEEP 4" "acsutilTATTestRunner NsStatisticsTest.py 2"
 
 # Check selected service and channel by creating a couple of channels in DefaultNotifyService
-3	Test3	"acsutilTATTestRunner nsStatistics -f 500 -ms -add \"DefaultNotifyService:testNsStatsChannel2\"" "@SLEEP 5" "acsutilTATTestRunner TSupplier.py 100 10 1 2" "acsutilTATTestRunner TConsumer.py 10 1 2" "@SLEEP 10" "acsutilTATTestRunner stopNsStats" "@SLEEP 2" "acsutilTATTestRunner NsStatisticsTest.py 3"
-
-# Check threshold oldest event
-4	Test4	"acsutilTATTestRunner nsStatistics -f 500 -ms -toe 0" "@SLEEP 5" "acsutilTATTestRunner TSupplier.py 100 10 1 2" "acsutilTATTestRunner TConsumer.py 10 1 2" "@SLEEP 5" "acsutilTATTestRunner stopNsStats" "@SLEEP 10" "acsutilTATTestRunner NsStatisticsTest.py 4"
-
-# Check threshold queue size 
-5	Test5	"acsutilTATTestRunner nsStatistics -f 500 -ms -tqs 0" "@SLEEP 5" "acsutilTATTestRunner TSupplier.py 100 10 1 2" "acsutilTATTestRunner TConsumer.py 10 1 2" "@SLEEP 5" "acsutilTATTestRunner stopNsStats" "@SLEEP 10" "acsutilTATTestRunner NsStatisticsTest.py 5"
+3	Test3	"acsutilTATTestRunner TSupplier.py 10000 40 1 2" "acsutilTATTestRunner TConsumer.py 40 1 2" "@SLEEP 5" "acsutilTATTestRunner nsStatistics -f 5000 -ms -add \"DefaultNotifyService:testNsStatsChannel2\"" "@SLEEP 40" "acsutilTATTestRunner stopNsStats" "@SLEEP 4" "acsutilTATTestRunner NsStatisticsTest.py 3"
 
 EPILOGUE acsutilTATEpilogue
 

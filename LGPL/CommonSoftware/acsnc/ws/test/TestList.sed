@@ -41,3 +41,8 @@ s/via environment: '[a-z,A-Z,0-9,-]*'/via environment: 'xxx'/g
 s/event: [0-9].[0-9]* seconds./event: x.yz seconds./g
 s/creation_thread_[0-9]/creation_thread_XX/g
 s/creation_with_domain_thread_[0-9]/creation_with_domain_thread_XX/g
+
+s/Endpoint: [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/Endpoint: X.X.X.X:PPPP/g
+s/[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/X.X.X.X:PPPP/g
+s/Manager hostname obtained via command line: '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*'/Manager hostname obtained via command line: 'X.X.X.X'/g
+s/endpoint [0-9]*.[0-9]*.[0-9]*.[0-9]*/endpoint X.X.X.X/g

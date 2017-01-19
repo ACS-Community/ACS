@@ -378,11 +378,23 @@ MessageWidgetListener
 			if (e.getSource() == menuBar.getConnectMenuItem()) {
 				connect(menuBar.getConnectMenuItem().getText().compareTo("Connect")==0);
             } else if (e.getSource() == menuBar.getLoadMenuItem()) {
-				getLCModel1().loadFromFile(null);
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						getLCModel1().loadFromFile(null);	
+					}
+				});
             } else if (e.getSource() == menuBar.getLoadURLMenuItem()) {
-            	getLCModel1().loadFromURL();
+            	SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						getLCModel1().loadFromURL();	
+					}
+				});
             } else if (e.getSource() == menuBar.getSaveFileMenuItem()) {
-            	getLCModel1().saveFile();
+            	SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						getLCModel1().saveFile();	
+					}
+				});
             } else if (e.getSource() == menuBar.getLoadDBMenuItem()) {
             	if (archive.getDBStatus()==DBState.DATABASE_OK) {
             		if (databaseDlg==null) {
@@ -1906,6 +1918,17 @@ MessageWidgetListener
 		return errorDialog;
 	}
 	
+	/**
+	 * Return {@link #logFrame}.
+	 * 
+	 * 
+	 * @return The logFrame 
+	 * 		   (it is <code>null</code> if jlog runs inside the OMC)
+	 */
+	public LogFrame getLogFrame() {
+		return logFrame;
+	}
+
 	/**
 	 * Add a new error stack to the error browser dialog
 	 * 

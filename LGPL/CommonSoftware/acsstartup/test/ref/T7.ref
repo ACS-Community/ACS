@@ -11,12 +11,24 @@
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine the naming service's process ID.
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine  notification service's process ID.
+1 - CORBA exception: system exception, ID 'something'
+1 - OMG minor code (2), described as 'something', completed = NO
+1 - 
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine Logging notification service's process ID.
+1 - CORBA exception: system exception, ID 'something'
+1 - OMG minor code (2), described as 'something', completed = NO
+1 - 
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine Archive notification service's process ID.
+1 - CORBA exception: system exception, ID 'something'
+1 - OMG minor code (2), described as 'something', completed = NO
+1 - 
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine Alarm notification service's process ID.
+1 - CORBA exception: system exception, ID 'something'
+1 - OMG minor code (2), described as 'something', completed = NO
+1 - 
 1 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service
 1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine the logging service's process ID.
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository

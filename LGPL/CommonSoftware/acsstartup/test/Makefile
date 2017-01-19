@@ -66,7 +66,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = acsstartupCreateChannels acsstartupNotifyServices
 SCRIPTS_L       = acsstartupTATPrologue acsstartupTATEpilogue \
 	acsstartupSetEnv \
 	testAcsInstance.sh testPids.sh \
@@ -74,7 +74,7 @@ SCRIPTS_L       = acsstartupTATPrologue acsstartupTATEpilogue \
 	alarmService alarmServiceShutdown maciManagerJ cdbjDAL loggingService acsLogSvc ACSStartContainerPy maciContainer  \
 	maciManagerShutdown maciContainerShutdown acsStartJavaContainer \
 	testContainerPort.sh acsstartupTestLoadIFR.sh heapDumpOnOutOfMemoryErrorTest \
-	testVmOption.sh acsstartupTest_nslist
+	testVmOption.sh acsstartupTest_nslist acsstartupCatNotifyServicePorts 
 #
 # TCL scripts (public and local)
 # ------------------------------
@@ -84,7 +84,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         =
+PY_SCRIPTS         = acsstartupCreateChannels.py
 PY_SCRIPTS_L       = tcpBlocker acsstartupTestLoadIFR testContainerPortLock
 
 PY_MODULES         =

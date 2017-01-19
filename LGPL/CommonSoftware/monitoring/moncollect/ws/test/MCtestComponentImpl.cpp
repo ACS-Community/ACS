@@ -190,9 +190,12 @@ ACS::ROpattern_ptr MCtestComponentImpl::patternProp ()
 
 void MCtestComponentImpl::reset()
 {
-	m_doubleProp_p->getDevIO()->write(m_doubleVal, m_time2);
-
 	m_doubleSeqProp_p->getDevIO()->write(m_doubleSeqVal, m_time1);
+	m_doubleProp_p->getDevIO()->write(m_doubleVal, m_time2);
+	m_longProp_p->getDevIO()->write(m_longVal, m_time3);
+	m_longSeqProp_p->getDevIO()->write(m_longSeqVal, m_time4);
+	m_patternProp_p->getDevIO()->write(m_patternVal, m_time5);
+
 }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/

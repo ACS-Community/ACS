@@ -29,9 +29,8 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import alma.acsplugins.alarmsystem.gui.CernSysPanel;
-
 import alma.acs.gui.util.threadsupport.EDTExecutor;
+import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 
 /**
  * The widget showing the status of the connection with an icon and
@@ -200,7 +199,7 @@ public class ConnectionWidget extends JLabel implements ActionListener {
 			Thread t = new Reconnect();
 			t.setName("Reconnect");
 			t.setDaemon(true);
-			t.run();
+			t.start();
 		}
 		
 	}

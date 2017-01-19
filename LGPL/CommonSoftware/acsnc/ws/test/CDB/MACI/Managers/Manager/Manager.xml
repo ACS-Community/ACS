@@ -20,6 +20,9 @@
 	<cdb:_ string="CDB"/>
 	<cdb:_ string="ACSLogSvc"/>
 	<cdb:_ string="PDB"/>
+	<cdb:_ string="LoggingNotifyEventChannelFactory"/>
+	<cdb:_ string="MC_LoggingNotifyEventChannelFactory"/>
+	<cdb:_ string="LoggingChannel@LOGGING.channels"/>
   </ServiceComponents>
 
   <LoggingConfig

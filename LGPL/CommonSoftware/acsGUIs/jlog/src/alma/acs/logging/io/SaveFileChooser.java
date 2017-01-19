@@ -34,6 +34,8 @@ import javax.swing.JSlider;
 
 import alma.acs.logging.engine.io.IOHelper;
 
+import com.cosylab.logging.LoggingClient;
+
 /**
  * The file chooser for saving, supporting compression
  * 
@@ -64,9 +66,10 @@ public class SaveFileChooser extends LogsFileChooser implements ActionListener {
 	 * 
 	 * @param title The title of the dialog
 	 * @param currentDirectoryPath The path of the current folder
+	 * @param client The {@link LoggingClient} invoking this file chooser
 	 */
-	public SaveFileChooser(String title, File currentDir) {
-		super(title,currentDir,false);
+	public SaveFileChooser(String title, File currentDir, LoggingClient client) {
+		super(title,currentDir,false,client.getLogFrame());
 		initialize(currentDir);
 		setTitle(title);
 		setModal(true);

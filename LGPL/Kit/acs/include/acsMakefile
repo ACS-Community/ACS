@@ -201,9 +201,10 @@
 #                   "development d/m/y-H:M" otherwise
 #
 #   PRJTOP    prefix directory for "install" operations
-#             RULE: set to either INTROOT(/vw) or ACSROOT(/vw), if defined,
-#                   left undefined otherwise.
-#   INSTALL_ROOT  set to either INTROOT or ACSROOTif
+#             Rule: set to either INTROOT(/vw), the first directory in INTLIST
+#             (eventually with /vw appended) or ACSROOT(/vw) - if any of these
+#             variables is defined; left undefined otherwise.
+#   INSTALL_ROOT  set to either INTROOT, the first directory of INTLIST, or ACSROOT
 #   INCLUDE   target directory for installing .h files    $(PRJTOP)/include
 #   BINDIR    binary directory: bin for WSs, bin/$CPU for LCUs
 #   BIN       target directory for installing bin files   $(PRJTOP)/$(BINDIR)
@@ -519,7 +520,8 @@ PWD = $(shell pwd)
 os     = $(shell uname)
 osrev  = $(shell uname -r)
 ifdef LINUX_HOME
-kernel_install_subfold := $(shell egrep --regexp="define[[:space:]]+UTS_RELEASE" $(LINUX_HOME)/include/linux/* | cut --delimiter="\"" --fields=2)
+    # ICT-5964: do not treat directories as text files when grep-ing for a pattern
+    kernel_install_subfold := $(shell egrep --directories=skip --regexp="define[[:space:]]+UTS_RELEASE" $(LINUX_HOME)/include/linux/* | cut --delimiter="\"" --fields=2)
 endif
 
 mustBuild = $(if $(MAKE_ONLY),$(if $(findstring $(1),$(MAKE_ONLY)),true,false),true)
@@ -1289,7 +1291,11 @@ I_PATH := -I. $(I_PATH)
 #  the way the variable is used is also different see ld(1) on both systems
 #
 
+# ICT-5840: ensure that the installation directory really exists, i.e. that
+# at least one of INTROOT/INTLIST/ACSROOT is defined and points to an existing
+# directory.
 ifdef PRJTOP
+    $(if $(wildcard $(PRJTOP)),,$(error The installation root-directory '$(PRJTOP)' does not exist - check your INTROOT/INTLIST/ACSROOT settings))
     # for VxWorks, binaries and libraries are organized according
     # to supported CPU types
     #
@@ -1297,6 +1303,8 @@ ifdef PRJTOP
     LIB     = $(PRJTOP)/$(LIBDIR)
     INCLUDE = $(PRJTOP)/include
     MAN     = $(PRJTOP)/man
+else
+    $(error INTROOT, INTLIST and ACSROOT are all undefined - cannot determine an installation root-directory) 
 endif
 
 #  
@@ -1596,10 +1604,12 @@ clean_dist: clean  $(CLEAN_DIST_TARGET) clean_tat_session
 
 
 .PHONY : clean_all
+# ICT-5703: execute find as intended (i.e. not only using the last pattern in the list),
+# and look only for particular files (exclude directories named "core")
 clean_all: $(CLEAN_TARGET)
 	-@$(ECHO) "Cleaning up .\c"
 	-@$(ECHO) " .\c"
-	-$(AT)find .. -name \#\* -o -name core -o -name \*\.gdb_history -print | $(XARGS) -i $(RM) {}
+	-$(AT)find .. -type f \( -name \#\* -o -name core -o -name \*\.gdb_history \) -print | $(XARGS) -i $(RM) {}
 ifneq ($(strip $(MANSECTIONS)),)
 	-$(AT)  for i in $(MANSECTIONS) ; \
 		do \
@@ -1659,20 +1669,36 @@ clean_tat_session:
 
 CLEAN_DIST_TARGET += clean_dist_all
 .PHONY : clean_dist_all
+# ICT-5630: do not remove directories that contain only symlinks
+#    (Note: "ls -A <dir>" is about 15x faster than "find <dir> ( -type f -o -type l )"
+#     and still 20% faster than "find <dir> -empty")" ...)
+# ICT-5703: execute find as intended (i.e. not only using the last pattern in the list)
 clean_dist_all:
 	-@$(ECHO) " .\c"
-	-$(AT)find .. -name \*\.o -o -name \*\~ -o  -name \.\*\~ -o -name \*\.$(SHLIB_EXT) -o -name \*\.sl -print | $(XARGS) -i $(RM) {}    $(OUTPUT)
+	-$(AT)if [ "$(SHLIB_EXT)" == "" ]; then \
+	    find .. -name \*\.o -o -name \*\~ -o -name \.\*\~ | $(XARGS) -i $(RM) {}    $(OUTPUT) ; \
+	else \
+	    find .. -name \*\.o -o -name \*\~ -o -name \.\*\~ -o -name \*\.$(SHLIB_EXT) | $(XARGS) -i $(RM) {}    $(OUTPUT); \
+	fi
 	$(AT)echo "Cleaning empty directories..."
-	$(AT)for dir in $(foreach dir, $(CREATE_DIRS), $(dir)); \
+ifneq ($(strip $(MANSECTIONS)),)
+	$(AT) for i in $(MANSECTIONS) l ; \
 	do \
-		if [ -d ../$${dir} ];  then \
-		alpha=`find ../$${dir} -type f ! -path '*/CVS/*' ! -path '*/.svn/*'` ;\
-		if [ "$${alpha}" ==  "" ]; then \
-		$(RM) ../$${dir} ;\
+	    if [ -d ../man/man$${i} ]; then \
+	        if [ "`/bin/ls -A ../man/man$${i}`" == "" ]; then \
+	            $(RM) ../man/man$${i} ;\
+	        fi; \
+	    fi; \
+	done
+endif
+	$(AT)for dir in $(foreach dir, $(CREATE_DIRS) man, $(dir)); \
+	do \
+	    if [ -d ../$${dir} ];  then \
+	        if [ "`/bin/ls -A ../$${dir}`" == "" ]; then \
+	            $(RM) ../$${dir} ;\
 		fi; \
-	fi; \
-	done	
-
+	    fi; \
+	done
 
 
 # define PHONY all names used as targets
@@ -1702,8 +1728,11 @@ includes_begin:
 install_include_%:	
 # COMP-498: Need to find subdir-location of include file
 # COMP-6627: cleaner exclusion of CVS/ and .svn/ administrative subdirectories.
+# ICT-5703: use precedence rules of find properly (note that the previous implementation also produced 
+#   the same result, but just by "coincidence", due to the presence of the -printf action. The current
+#   implementation is more logical/readable and will also work without such additional action).
 # The shell code here below to determine how many hits is much faster than piping tFile into "wc -w" !
-	$(AT)tFile=`(cd ../include; find . \( -type d -name CVS -prune -o -name .svn -prune \) -o -name $* -printf "%p ")` ; \
+	$(AT)tFile=`(cd ../include; find . \( ! \( -type d -name CVS -prune -o -name .svn -prune \) \) -name $* -printf "%p ")` ; \
 	nrHits=0; for x in $${tFile}; do (( ++nrHits )); done; \
 	if [ $${nrHits} -eq 1 ]; then \
 		tDir=`dirname $${tFile}` ;\

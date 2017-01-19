@@ -194,7 +194,7 @@ clean : clean_all
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
-	@rm -f sed.scan
+	@$(RM) sed.scan
 	@echo " . . . clean_dist done"
 
 man   : do_man 

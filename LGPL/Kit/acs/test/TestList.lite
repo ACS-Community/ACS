@@ -19,26 +19,72 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-1 acsReplaceTest    "acsReplaceTest"
+#******************************************************************************
 
+#-----------------------------------------------------------------------------
+#
+# WARNING!  WARNING!  WARNING!  WARNING!  WARNING!  WARNING!  WARNING!  WARNING! 
+# =============================================================================
+#
+# Several of the tests below use tat's "SOURCE" option, which effectively
+# executes some TCL-code WITHIN TAT'S NAMESPACE, before the actual test is
+# run. This allows of course to set e.g. environment variable that this
+# test-program will subsequently see, and this is something many tests
+# need. However, after the test-program finishes there is no way to unset
+# such variables within tat (via e.g. a second SOURCE option), i.e. the
+# following test will end up with a potentially messed up set of environment
+# variables, and should in principle rather than assume any default settings
+# ensure that it sets the environment vars as needed.
+#
+# In our case, several of the tests need particular settings for INTROOT,
+# INLIST and ACSROOT, to test acsMakefile's behaviour - and it is not always
+# easy to undo these settings (and creation of corresponding directories). 
+# To deal with this, test #1 will actually back-up the original settings of 
+# the environment variables, and all subsequent tests will start off 
+# restoring these settings (by source-ing the "acsRestoreEnv.tcl" script). 
+# So if you want to execute particular tests only, you have to include always
+# test#1 as first test - or you may be in for a few surprises/failures that 
+# are not so obvious ...
+# 
+#
+#-------------------------------------------------------------------------
+
+1 SOURCE acsSaveEnv.tcl \
+  acsSaveEnv /bin/true
+
+2 acsReplaceTest "acsReplaceTest"
+
+#-----------------------------------------------------------------------------
+# The next tests mess up INTROOT, INTLIST and ACSROOT (inside tat), such that they would
+# affect the behaviour of "make". 
+# So make sure to reset these vars whenever a next test starts
+#-----------------------------------------------------------------------------
 # normal case: just INTROOT, INTLIST, ACSROOT
-2 SOURCE acsSearchPath1.tcl acsSearchPath1 acsSearchPath
+3 SOURCE acsSearchPath1.tcl acsSearchPath1 acsSearchPath
+
 # extend with subdirs and prepend-path, and set MODPATH to 1
-3 SOURCE acsSearchPath2.tcl acsSearchPath2 "acsSearchPath -p /first:/second -a /last lib1 lib2"
+4 SOURCE acsSearchPath2.tcl acsSearchPath2 "acsSearchPath -p /first:/second -a /last lib1 lib2"
+
 # excess slashes and colons should get removed, but trailing colons in INTROOT/ACSROOT remain problematic
-4 SOURCE acsSearchPath3.tcl acsSearchPath3 "acsSearchPath -p /first/::/second: -a /last//: lib1 lib2"
+5 SOURCE acsSearchPath3.tcl acsSearchPath3 "acsSearchPath -p /first/::/second: -a /last//: lib1 lib2"
+
 # blank subdirs should simply be skipped
-5 SOURCE acsSearchPath4.tcl acsSearchPath4 "acsSearchPath \" \"   \" \""
+6 SOURCE acsSearchPath4.tcl acsSearchPath4 "acsSearchPath \" \"   \" \""
+
 # completely empty env vars should give blank search path
-6 SOURCE acsSearchPath5.tcl acsSearchPath5 "acsSearchPath"
+7 SOURCE acsSearchPath5.tcl acsSearchPath5 "acsSearchPath"
+
 # env vars with non-existing dirs should give blank search path if clean-up is requested
-7 SOURCE acsSearchPath6.tcl acsSearchPath6 "acsSearchPath -c lib"
+8 SOURCE acsSearchPath6.tcl acsSearchPath6 "acsSearchPath -c lib" 
 
-11 makeInstallTest1 "/usr/bin/make -f MakefileInstallTest install INCLUDES=fileDoesNotExist"
 
-12 PROLOGUE "tclsh acsMakeInstall2.tcl" \
+11 SOURCE acsRestoreEnv.tcl \
+   makeInstallTest1 "/usr/bin/make -f MakefileInstallTest install INCLUDES=fileDoesNotExist"
+
+12 SOURCE acsRestoreEnv.tcl \
+   PROLOGUE "tclsh acsMakeInstall2.tcl" \
    makeInstallTest2 "/usr/bin/make -f MakefileInstallTest install INCLUDES=duplicateFile" \
-   EPILOGUE "rm -Rf ../include/subdir1 ../include/subdir2 ../include/duplicateFile"
+   EPILOGUE "rm -Rf ../include/subdir1 ../include/subdir2 ../include/duplicateFile ../include/CVS"
 
 # Ensure that python compilation errors get properly reported (ICT-1643)
 # To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
@@ -55,5 +101,41 @@
    EPILOGUE "rm -Rf ../lib/python/site-packages/AcsPyTestPkg2 myIntroot"
 
 # Check that manpages can be made and cleaned (see also ICT-3851 and ICT_3853)
-20 PROLOGUE "rm -Rf ../man/man2 ../man/mann/makeMann.n ../man/manl/makeManl.l" \
-   makeMan "/usr/bin/make -f MakefileMan man clean MAKE_FROMTAT=1"
+20 SOURCE acsRestoreEnv.tcl \
+   PROLOGUE "rm -Rf ../man/man2 ../man/mann/makeMann.n ../man/manl/makeManl.l" \
+   makeMan "/usr/bin/make -f MakefileMan man clean MAKE_FROMTAT=1" \
+   EPILOGUE "rm -Rf object"
+
+# Check that the clean_dist target does not remove dirs containing only symlinks (ICT-5630).
+# Note that after running this test, the content of ../bin/ will be gone!
+# To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
+# "make clean" with the MAKE_FROMTAT variable set
+21 SOURCE acsMakeCleanDist1.tcl \
+   makeCleanDist1 "/usr/bin/make -f Makefile clean_dist MAKE_FROMTAT=1" "@SLEEP 2" "/bin/ls ../idl" \
+   EPILOGUE "rm -Rf ../idl core"
+
+# Check that the clean/clean_dist targets removes core etc (ICT-5703).
+# Note that after running this test, the content of ../bin/ will be gone!
+# To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
+# "make clean" with the MAKE_FROMTAT variable set
+22 SOURCE acsRestoreEnv.tcl \
+   PROLOGUE "touch core removeMe~" \
+   makeCleanDist2 "/usr/bin/make -f Makefile clean_dist MAKE_FROMTAT=1" "@SLEEP 1" "/bin/ls core removeMe~"
+
+# Check that the clean_dist target does not remove *directories* named core (ICT-5703).
+# Note that after running this test, the content of ../bin/ will be gone!
+# To avoid that the tatlogs/ subdir gets deleted in the middle of this tat-test, execute the
+# "make clean" with the MAKE_FROMTAT variable set
+23 SOURCE acsRestoreEnv.tcl \
+   PROLOGUE "mkdir core" \
+   makeCleanDist3 "/usr/bin/make -f Makefile clean MAKE_FROMTAT=1" "@SLEEP 1" "/bin/ls -l core" \
+   EPILOGUE "rm -Rf core"
+
+# Check that if INTROOT points to a non-existing dir, the error msg is meaningful (ICT-5840)
+30 SOURCE acsRestoreEnv.tcl \
+   acsMakeBadIntroot "/usr/bin/make -f MakefileInstallTest INTROOT=/a/b/c/d/nonExistingIntroot"
+
+# Check that if INTROOT, INTLIST and ACSROOT are all undefined, the error msg is meaningful (ICT-5840)
+31 SOURCE acsRestoreEnv.tcl \
+   acsMakeNoInstallRoot "/usr/bin/make -f MakefileInstallTest INTROOT= INTLIST= ACSROOT= "
+

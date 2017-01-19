@@ -10,7 +10,11 @@ set HOST [eval exec "hostname -s"]
 
 set env(ACS_STARTUP_TIMEOUT_MULTIPLIER) 2
 set env(ACS_LOG_STDOUT) 4
+set ACS_TMP $env(PWD)/tmp/$HOST
 set env(ACS_TMP) $env(PWD)/tmp/$HOST
 set env(PYTHONPATH) $env(PWD)/../src:$env(PYTHONPATH)
+
+
+
 #
 # ___oOo___

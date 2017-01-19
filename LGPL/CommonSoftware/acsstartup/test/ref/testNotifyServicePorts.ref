@@ -1,0 +1,194 @@
+32 - All ports are taken!
+33 - All ports are taken!
+34 - All ports are taken!
+65 - All ports are taken!
+66 - All ports are taken!
+67 - All ports are taken!
+69 - TEST 3620 a.b.c.d
+69 - TEST 3621 a.b.c.d
+69 - TEST 3622 a.b.c.d
+69 - TEST 3623 a.b.c.d
+69 - TEST 3624 a.b.c.d
+69 - TEST 3625 a.b.c.d
+69 - TEST 3626 a.b.c.d
+69 - TEST 3627 a.b.c.d
+69 - TEST 3628 a.b.c.d
+69 - TEST 3629 a.b.c.d
+69 - TEST 3630 a.b.c.d
+69 - TEST 3631 a.b.c.d
+69 - TEST 3632 a.b.c.d
+69 - TEST 3633 a.b.c.d
+69 - TEST 3634 a.b.c.d
+69 - TEST 3635 a.b.c.d
+69 - TEST 3636 a.b.c.d
+69 - TEST 3637 a.b.c.d
+69 - TEST 3638 a.b.c.d
+69 - TEST 3639 a.b.c.d
+69 - TEST 3640 a.b.c.d
+69 - TEST 3641 a.b.c.d
+69 - TEST 3642 a.b.c.d
+69 - TEST 3643 a.b.c.d
+69 - TEST 3644 a.b.c.d
+69 - TEST 3645 a.b.c.d
+69 - TEST 3646 a.b.c.d
+69 - TEST 3647 a.b.c.d
+69 - TEST 3648 a.b.c.d
+69 - TEST 3649 a.b.c.d
+1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST01 Notify Service
+2 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+2 - ReBound ID: MC_TEST01NotifyEventChannelFactory
+3 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST02 Notify Service
+3 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+3 - ReBound ID: MC_TEST02NotifyEventChannelFactory
+4 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST03 Notify Service
+4 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+4 - ReBound ID: MC_TEST03NotifyEventChannelFactory
+5 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST04 Notify Service
+5 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+5 - ReBound ID: MC_TEST04NotifyEventChannelFactory
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST05 Notify Service
+6 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+6 - ReBound ID: MC_TEST05NotifyEventChannelFactory
+7 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST06 Notify Service
+7 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+7 - ReBound ID: MC_TEST06NotifyEventChannelFactory
+8 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST07 Notify Service
+8 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+8 - ReBound ID: MC_TEST07NotifyEventChannelFactory
+9 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST08 Notify Service
+9 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+9 - ReBound ID: MC_TEST08NotifyEventChannelFactory
+10 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST09 Notify Service
+10 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+10 - ReBound ID: MC_TEST09NotifyEventChannelFactory
+11 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST10 Notify Service
+11 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+11 - ReBound ID: MC_TEST10NotifyEventChannelFactory
+12 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST11 Notify Service
+12 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+12 - ReBound ID: MC_TEST11NotifyEventChannelFactory
+13 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST12 Notify Service
+13 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+13 - ReBound ID: MC_TEST12NotifyEventChannelFactory
+14 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST13 Notify Service
+14 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+14 - ReBound ID: MC_TEST13NotifyEventChannelFactory
+15 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST14 Notify Service
+15 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+15 - ReBound ID: MC_TEST14NotifyEventChannelFactory
+16 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST15 Notify Service
+16 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+16 - ReBound ID: MC_TEST15NotifyEventChannelFactory
+17 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST16 Notify Service
+17 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+17 - ReBound ID: MC_TEST16NotifyEventChannelFactory
+18 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST17 Notify Service
+18 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+18 - ReBound ID: MC_TEST17NotifyEventChannelFactory
+19 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST18 Notify Service
+19 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+19 - ReBound ID: MC_TEST18NotifyEventChannelFactory
+20 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST19 Notify Service
+20 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+20 - ReBound ID: MC_TEST19NotifyEventChannelFactory
+21 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST20 Notify Service
+21 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+21 - ReBound ID: MC_TEST20NotifyEventChannelFactory
+22 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST21 Notify Service
+22 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+22 - ReBound ID: MC_TEST21NotifyEventChannelFactory
+23 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST22 Notify Service
+23 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+23 - ReBound ID: MC_TEST22NotifyEventChannelFactory
+24 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST23 Notify Service
+24 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+24 - ReBound ID: MC_TEST23NotifyEventChannelFactory
+25 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST24 Notify Service
+25 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+25 - ReBound ID: MC_TEST24NotifyEventChannelFactory
+26 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST25 Notify Service
+26 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+26 - ReBound ID: MC_TEST25NotifyEventChannelFactory
+27 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST26 Notify Service
+27 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+27 - ReBound ID: MC_TEST26NotifyEventChannelFactory
+28 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST27 Notify Service
+28 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+28 - ReBound ID: MC_TEST27NotifyEventChannelFactory
+29 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST28 Notify Service
+29 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+29 - ReBound ID: MC_TEST28NotifyEventChannelFactory
+30 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST29 Notify Service
+30 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+30 - ReBound ID: MC_TEST29NotifyEventChannelFactory
+31 - ----------T--:--:--.--- INFO [acsNotifyService] Starting TEST30 Notify Service
+31 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+31 - ReBound ID: MC_TEST30NotifyEventChannelFactory
+32 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+33 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+34 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+35 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+35 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+36 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+36 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+37 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+37 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+38 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+38 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+39 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+39 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+40 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+40 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+41 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+41 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+42 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+42 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+43 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+43 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+44 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+44 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+45 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+45 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+46 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+46 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+47 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+47 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+48 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+48 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+49 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+49 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+50 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+50 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+51 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+51 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+52 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+52 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+53 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+53 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+54 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+54 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+55 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+55 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+56 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+56 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+57 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+57 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+58 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+58 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+59 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+59 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+60 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+60 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+61 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+61 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+62 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+62 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+63 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+63 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+64 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA TEST Notification Service
+64 - Name Service without channel entries in the endpoint a.b.c.d:xxxx
+65 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+66 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+67 - ----------T--:--:--.--- ERROR [acsNotifyService] Notify event channel 'something' port cannot be set!
+68 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service

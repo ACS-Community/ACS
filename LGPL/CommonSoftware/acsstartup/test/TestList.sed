@@ -39,3 +39,9 @@ s/Locking instance [0-9] with lock file .*/Locking instance N with lock file ..a
 s/Freeing instance [0-9] removing lock file .*/Freeing instance N removing lock file ..acsInstanceN.lock/g
 s/org.jacorb.naming.NameServer .*/org.jacorb.naming.NameServer.../g
 s/Starting Java application: org.jacorb.naming.NameServer .*/Starting Java application: org.jacorb.naming.NameServer.../g
+
+s/TEST[0-9]* \([0-9]*\) [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/TEST \1 a.b.c.d/g
+s/Stopping the CORBA TEST[0-9]* Notification Service/Stopping the CORBA TEST Notification Service/g
+s/Name Service without channel entries in the endpoint [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/Name Service without channel entries in the endpoint a.b.c.d:xxxx/g
+s/([0-9]*|[0-9]*) EXCEPTION/EXCEPTION/g
+s/\[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\] deleted in the Naming Service/[a.b.c.d:xxxx] deleted in the Naming Service/g

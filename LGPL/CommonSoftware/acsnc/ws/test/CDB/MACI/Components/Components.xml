@@ -11,6 +11,10 @@
 
 <_ Name="IL_CON1"		Code="acsncConsumerILCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
 
+<_ Name="NamedCh_SUP1"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+
+<_ Name="NamedCh_CON1"		Code="acsncConsumerNamedChCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+
       <_ Name="RTSUP1"		Code="acsncRTSupplierCompImpl"    Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
       <_ Name="CON1"		Code="acsncConsumerCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
       <_ Name="ARCHIVECON1"     Code="acsncArchiveConsumerCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"	Container="bilboContainer" ImplLang="cpp" />

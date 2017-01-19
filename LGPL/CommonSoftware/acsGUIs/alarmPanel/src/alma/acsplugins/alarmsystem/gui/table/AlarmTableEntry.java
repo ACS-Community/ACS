@@ -40,7 +40,7 @@ import cern.laser.client.data.Triplet;
  * @author acaproni
  *
  */
-public class AlarmTableEntry implements Alarm {
+public class AlarmTableEntry implements Alarm, Cloneable {
 	
 	/**
 	 * The property set by baci to define the priority

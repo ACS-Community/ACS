@@ -149,7 +149,6 @@ ACS_LOG_INFO "$COMMAND" "Stopping the ORB Services and CDB using 'ACS_INSTANCE=$
 
 acsAlarmService -k $PARAMS
 acsConfigurationDatabase -k $PARAMS
-acsNamingService -k $PARAMS
 acsNotifyService -k $PARAMS
 acsNotifyService -k -n Logging $PARAMS
 acsNotifyService -k -n Archive $PARAMS
@@ -157,6 +156,7 @@ acsNotifyService -k -n Alarm $PARAMS
 acsLoggingService -k $PARAMS
 acsInterfaceRepository -k $PARAMS
 acsACSLogService -k $PARAMS
+acsNamingService -k $PARAMS
 
 ########################################################################
 #FINAL CLEANUP----------------------------------------------------------

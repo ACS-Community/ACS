@@ -10,10 +10,9 @@ package cern.laser.util.buffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
-
-import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
 
 /**
  * A buffer class which uses an Unbounded linked list implementation with the
@@ -34,7 +33,7 @@ public class LinkedQueueSynchroBuffer {
   //	private final Latch enabled = new Latch();
 
   /** The buffer. */
-  private LinkedQueue buffer = new LinkedQueue();
+  private LinkedBlockingQueue buffer = new LinkedBlockingQueue();
 
   /** The thread to run to delivery to the listener. */
   private Thread postman = new Thread(new Postman());
