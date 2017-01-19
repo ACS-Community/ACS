@@ -262,6 +262,32 @@ namespace Logging
 		if (configureLoggerFunction_m)
 			(*configureLoggerFunction_m)(loggerName);
 	}
+
+        class Logger_ptr{
+                public:
+                        Logger_ptr(){globalLogger_m=(Logger *)0;anonymousLogger_m=(Logger *)0;staticLogger_m=(Logger *)0;}
+                        ~Logger_ptr(){globalLogger_m=(Logger *)0;anonymousLogger_m=(Logger *)0;staticLogger_m=(Logger *)0;}
+                        /**
+                         * Global logger. By changing this (via the the setGlobalLogger),
+                         * one can completely alter the way logs are handled throughout the system.
+                         */
+                        LoggerSmartPtr globalLogger_m;
+                        /**
+                         * Anonymous logger. To be used in situations where the logger's name is
+                         * irrelevant.
+                         */
+                        LoggerSmartPtr anonymousLogger_m;
+                        
+                        /**
+                          * Static logger. To be used in static methods.
+                          */
+                        LoggerSmartPtr staticLogger_m;
+                        
+                        /**
+                         * List of all child loggers.
+                         */
+                        LoggerList loggers_m;
+        };
 	
       protected:
 	//----------------------------------------------------
@@ -304,31 +330,6 @@ namespace Logging
 	 */
 	std::list<Handler::HandlerSmartPtr> handlers_m;
 
-        class Logger_ptr{
-                public:
-                        Logger_ptr(){globalLogger_m=(Logger *)0;anonymousLogger_m=(Logger *)0;staticLogger_m=(Logger *)0;}
-                        ~Logger_ptr(){globalLogger_m=(Logger *)0;anonymousLogger_m=(Logger *)0;staticLogger_m=(Logger *)0;}
-                        /**
-                         * Global logger. By changing this (via the the setGlobalLogger),
-                         * one can completely alter the way logs are handled throughout the system.
-                         */
-                        LoggerSmartPtr globalLogger_m;
-                        /**
-                         * Anonymous logger. To be used in situations where the logger's name is
-                         * irrelevant.
-                         */
-                        LoggerSmartPtr anonymousLogger_m;
-                        
-                        /**
-                          * Static logger. To be used in static methods.
-                          */
-                        LoggerSmartPtr staticLogger_m;
-                        
-                        /**
-                         * List of all child loggers.
-                         */
-                        LoggerList loggers_m;
-        };
 
 	/**
 	 * mutex which guards the loggers lost making this class completely
