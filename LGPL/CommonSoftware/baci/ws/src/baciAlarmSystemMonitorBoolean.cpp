@@ -44,7 +44,7 @@ void AlarmSystemMonitorBoolean::updateAlarm(bool enable)
 		alarmRaised_m = ALARM_RAISED;
 	} else if(enable == DISABLE) {
 		sendAlarm(1, false);
-		alarmRaised_m = ALARM_NOT_RAISED;
+		alarmRaised_m = static_cast<int32_t>(ALARM_NOT_RAISED);
 	}
 }
 
@@ -57,10 +57,10 @@ void AlarmSystemMonitorBoolean::check(BACIValue &val,
 
     CORBA::Boolean value = val.getValue(static_cast<CORBA::Boolean*>(0));
 
-    if(alarmRaised_m != ALARM_NOT_RAISED && value != property_mp->alarm_on())
+    if(alarmRaised_m != static_cast<int32_t>(ALARM_NOT_RAISED) && value != property_mp->alarm_on())
     {
     	updateAlarm(DISABLE);
-    } else if(alarmRaised_m == ALARM_NOT_RAISED && value == property_mp->alarm_on()) {
+    } else if(alarmRaised_m == static_cast<int32_t>(ALARM_NOT_RAISED) && value == property_mp->alarm_on()) {
     	updateAlarm(ENABLE);
     }
 }
