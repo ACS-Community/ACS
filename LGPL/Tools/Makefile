@@ -51,6 +51,7 @@ endef
 MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt astyle xercesc xercesj castor xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache
 
 
+VXWORKS_RTOS = $(shell if [ $(WIND_BASE) ] ; then echo "YES"; else echo "NO"; fi)
 
 SUBSYSTEM = "Tools"
 
