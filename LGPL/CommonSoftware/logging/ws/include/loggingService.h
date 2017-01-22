@@ -34,6 +34,7 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+#include <string>
 #include <acsutil.h>
 #include <orbsvcs/CosNamingC.h>
 #include <orbsvcs/DsLogAdminC.h>
@@ -50,6 +51,13 @@
 class LoggingService
 {   
   public:
+
+    //--Constants----------------------------------------------
+    /**
+     * Command line parameters
+     */
+    static const std::string CLP_NO_AUTORECONNECT;
+
     
     //--Initialization and termination methods-----------------
     /**
@@ -80,6 +88,19 @@ class LoggingService
      */
     void 
     startup (int argc, char *argv[]);
+
+    /**
+     * Reinitializes the connection to the Notify Channel
+     */
+    void
+    reinit();
+
+    /** 
+     * Autoreconnect to the Notify Channel when the supplier cannot 
+     * publish an event and one of these exceptions has been thrown: 
+     * OBJECT_NOT_EXIST, BAD_OPERATION 
+     */
+    bool autoreconnect() const;
 
     /**
      * run the Telecom Log Service.
@@ -129,6 +150,9 @@ class LoggingService
      */
     void 
     create_suppliers(); 
+
+    void
+    reinit_suppliers();
 
     /**
      * Create the Basic Log Factory
@@ -197,6 +221,16 @@ class LoggingService
 
     /** A naming context. */
   CosNaming::NamingContext_var m_naming_context;
+
+    /** Mutex used in reinit */
+    ACE_SYNCH_MUTEX m_mutexReinit;
+
+    /** 
+     * Autoreconnect to the Notify Channel when the supplier cannot 
+     * publish an event and one of these exceptions has been thrown: 
+     * OBJECT_NOT_EXIST, BAD_OPERATION 
+     */
+    bool m_autoreconnect;
 };
 #endif /* loggingService_H */
 

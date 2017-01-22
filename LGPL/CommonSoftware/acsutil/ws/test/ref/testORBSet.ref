@@ -1,0 +1,9 @@
+1 - ORB can be set to NULL
+1 - ORB is not set
+1 - ORB can be set to orb because ORB in ORBHelper is still NULL
+1 - ORB cannot be set to orb because ORB in ORBHelper has already been set
+1 - ORB is set
+1 - Returned ORB from ORBHelper is equal to orb
+1 - ORB cannot be set to NULL because has already been set
+1 - ORB cannot be set to orb because has already been set
+1 - ORB is set

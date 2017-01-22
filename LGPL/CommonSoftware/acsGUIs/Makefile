@@ -142,25 +142,25 @@ clean_test_log:
 #
 
 update:
-	@$(ECHO) "############ (Re-)build ACS GUIs         #################"| tee -a build.log
+	@$(ECHO) "  ############ (Re-)build ACS GUIs         #################"| tee -a build.log
 	@for member in  $(foreach name, $(MODULES_ACSGUIS), $(name) ) ; do \
 		    if [ ! -d $${member} ]; then \
-                         echo "\t######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
+                         echo "  ######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
                     fi;\
 		    if [ -f $${member}/src/Makefile ]; then \
-		         $(ECHO) "\t############ $${member} MAIN" | tee -a build.log;\
+		         $(ECHO) "  ############ $${member} MAIN" | tee -a build.log;\
                          $(call makeItAux,$${member}/src,clean,build.log,$${member}/src/NORM-BUILD-OUTPUT) \
                          $(call makeIt,$${member}/src,all,build.log,$${member}/src/NORM-BUILD-OUTPUT) \
                          $(call makeItAux,$${member}/src,install,build.log,$${member}/src/NORM-BUILD-OUTPUT) \
                     elif [ -f $${member}/ws/src/Makefile ]; then \
-		         $(ECHO) "\t############ $${member} WS" | tee -a build.log;\
+		         $(ECHO) "  ############ $${member} WS" | tee -a build.log;\
                          $(call makeItAux,$${member}/ws/src,clean,build.log,$${member}/ws/src/NORM-BUILD-OUTPUT) \
                          $(call makeIt,$${member}/ws/src,all,build.log,$${member}/ws/src/NORM-BUILD-OUTPUT) \
                          $(call makeItAux,$${member}/ws/src,install,build.log,$${member}/ws/src/NORM-BUILD-OUTPUT) \
 		    fi;\
 		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 			if [ -f $${member}/lcu/src/Makefile ]; then \
-			 $(ECHO) "\t############ $${member} LCU" | tee -a build.log;\
+			 $(ECHO) "  ############ $${member} LCU" | tee -a build.log;\
                          $(call makeItAux,$${member}/lcu/src,clean,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
                          $(call makeIt,$${member}/lcu/src,all,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
                          $(call makeItAux,$${member}/lcu/src,install,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
@@ -168,7 +168,7 @@ update:
 		    fi;\
 		done;\
          true;
-	@$(ECHO) "############ DONE (Re-)build ACS GUIs    #################"| tee -a build.log
+	@$(ECHO) "  ############ DONE (Re-)build ACS GUIs    #################"| tee -a build.log
 
 ## GCH 2003-09-03
 # Changed test strategy because of problems in the interaction between make test and tat
@@ -205,17 +205,17 @@ update:
 
 define update-clean-one-module
 		    if [ ! -d $${member} ]; then \
-                         echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
+                         echo "  ######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
                     fi;\
 		    if [ -f $${member}/src/Makefile ]; then \
-		         $(ECHO) "\t############ $${member} MAIN" | tee -a build.log;\
+		         $(ECHO) "  ############ $${member} MAIN" | tee -a build.log;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ clean >> build.log 2>& 1;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ man >> build.log 2>& 1 || echo "### ==> FAILED man ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ install >> build.log 2>& 1 || echo "### ==> FAILED install ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/src/ clean >> build.log 2>& 1 || echo "### ==> FAILED clean ! " | tee -a build.log; \
 		    elif [ -f $${member}/ws/src/Makefile ]; then \
-		         $(ECHO) "\t############ $${member} WS" | tee -a build.log;\
+		         $(ECHO) "  ############ $${member} WS" | tee -a build.log;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ clean >> build.log 2>& 1;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/ws/src/ man >> build.log 2>& 1 || echo "### ==> FAILED man ! " | tee -a build.log; \
@@ -224,7 +224,7 @@ define update-clean-one-module
 		    fi;\
 		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 			if [ -f $${member}/lcu/src/Makefile ]; then \
-			 $(ECHO) "\t############ $${member} LCU" | tee -a build.log;\
+			 $(ECHO) "  ############ $${member} LCU" | tee -a build.log;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/lcu/src/ clean >> build.log 2>& 1;\
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/lcu/src/ all >> build.log 2>& 1 || echo "### ==> FAILED all ! " | tee -a build.log; \
                          $(MAKE) $(MAKE_FLAGS) -C $${member}/lcu/src/ man >> build.log 2>& 1 || echo "### ==> FAILED man ! " | tee -a build.log; \
@@ -241,12 +241,12 @@ endef
 #   that is the LAST module fails the whole Make does not fail
 #
 update_clean:
-	@$(ECHO) "############ (Re-)build ACS GUIs          #################"| tee -a build.log
+	@$(ECHO) "  ############ (Re-)build ACS GUIs          #################"| tee -a build.log
 	@for member in  $(foreach name, $(MODULES_ACSGUIS), $(name) ) ; do \
                    $(update-clean-one-module);\
 		done;\
          true;
-	@$(ECHO) "############ DONE (Re-)build ACS GUIs     #################"| tee -a build.log
+	@$(ECHO) "  ############ DONE (Re-)build ACS GUIs     #################"| tee -a build.log
 
 #
 # Test target

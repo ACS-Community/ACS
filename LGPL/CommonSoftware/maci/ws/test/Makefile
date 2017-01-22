@@ -40,7 +40,10 @@ EXECUTABLES_L     = $(PROG) maciTestClient maciTestLogConfigClient maciTestRegis
 			maciContainerServicesClient maciLifeCycleClient \
 			maciTestSimpleClient maciTestComponentSmartPtr \
 			maciTestSimpleClientMulti maciTestSimpleClientContainerServices \
-			dlopenTest
+			dlopenTest \
+			maciTestSimpleClient2Instances \
+			maciTestCompSimpleClientClient \
+			maciTestSimpleClientSubclass2Instances
 
 $(PROG)_OBJECTS            = $(PROG)
 $(PROG)_LDFLAGS            =
@@ -75,17 +78,27 @@ maciTestRegistrar_OBJECTS 	= maciTestRegistrar
 dlopenTest_OBJECTS = dlopenTest
 dlopenTest_LIBS = C++ dl
 
+maciTestSimpleClient2Instances_OBJECTS =  maciTestSimpleClient2Instances
+maciTestSimpleClient2Instances_LIBS = maciClient maciTestStubs
+
+maciTestCompSimpleClientClient_OBJECTS = maciTestCompSimpleClientClient
+maciTestCompSimpleClientClient_LIBS = maciClient maciTestStubs
+
+maciTestSimpleClientSubclass2Instances_OBJECTS = maciTestSimpleClientSubclass2Instances
+maciTestSimpleClientSubclass2Instances_LIBS = maciClient maciTestStubs
+
 #
 # Includes (.h) files (public and local)
 # ---------------------------------
 INCLUDES        = 
-INCLUDES_L      = maciTestClassImpl.h maciTestLogConfigImpl.h maciHeartbeatController.h maciBlockingComponentListener.h maciContainerServicesTestClassImpl.h 
+INCLUDES_L      = maciTestClassImpl.h maciTestLogConfigImpl.h maciHeartbeatController.h maciBlockingComponentListener.h maciContainerServicesTestClassImpl.h \
+		  maciTestCompSimpleClientImpl.h  
 
 #
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       = maciTestClass maciTestLogConfig maciBlockingComponentListener maciTestUtils maciContainerServicesTestClass \
-				  maciDynComp 
+				  maciDynComp maciTestCompSimpleClient 
 LIBRARIES_L     = 
 
 maciBlockingComponentListener_OBJECTS = maciBlockingComponentListener
@@ -101,6 +114,8 @@ maciContainerServicesTestClass_OBJECTS = maciContainerServicesTestClassImpl
 maciContainerServicesTestClass_LIBS = maciTestStubs maci acsContainerServices maciBlockingComponentListener 
 maciDynComp_OBJECTS = maciDynCompImpl
 maciDynComp_LIBS = maciTestStubs acscomponent archiveevents
+maciTestCompSimpleClient_OBJECTS = maciTestCompSimpleClientImpl
+maciTestCompSimpleClient_LIBS = maciTestStubs acscomponent maciClient
 
 #
 # Scripts (public and local)

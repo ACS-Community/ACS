@@ -576,6 +576,9 @@ private:
   /// This is the pointer to the first simple client instance created by the process
   static maci::SimpleClient * m_simpleClientInstance;
 
+  /// Store the number of times a Simple Client has been created
+  static int32_t m_simpleClientCreatedCounter;
+
   /// threads' standard start-up hook
   maci::SimpleClientThreadHook m_simpleClientThreadHook;
 

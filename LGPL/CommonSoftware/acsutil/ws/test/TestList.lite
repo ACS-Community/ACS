@@ -120,6 +120,8 @@ SOURCE   acsutilTATEnvironment
 						"/bin/cat /tmp/testacsutilBlock13_$::env(USER)_$::env(ACS_INSTANCE).out" \
 						"/bin/bash -c \"/bin/rm -f /tmp/testacsutilBlock13_$::env(USER)_$::env(ACS_INSTANCE).*\""
 
+# Test ORBHelper::set and ORBHelper::isORBSet
+20 testORBSet "testORBSet"
 
 # EPILOGUE acsutilTATEpilogue
 

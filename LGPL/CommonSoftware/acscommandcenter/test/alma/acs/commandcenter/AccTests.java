@@ -25,8 +25,8 @@ public class AccTests {
 		TestSuite ret = new TestSuite("Test for " + AccTests.class.getPackage().getName());
 
 		ret.addTest(alma.acs.commandcenter.app._Tests.suite());
-		ret.addTest(alma.acs.commandcenter.engine._Tests.suite());
 		ret.addTest(alma.acs.commandcenter.meta._Tests.suite());
+		ret.addTest(alma.acs.commandcenter.engine._Tests.suite());
 		ret.addTest(alma.acs.commandcenter.util._Tests.suite());
 		
 		return ret;

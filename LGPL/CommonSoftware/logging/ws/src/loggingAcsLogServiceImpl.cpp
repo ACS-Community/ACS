@@ -98,6 +98,7 @@ AcsLogServiceImpl::LogRecordBatch::~LogRecordBatch()
    sendRecords();
    waitCond_.signal();
    buffer_->length(0);
+   shutdown_ = true;
 }
 
 void AcsLogServiceImpl::LogRecordBatch::

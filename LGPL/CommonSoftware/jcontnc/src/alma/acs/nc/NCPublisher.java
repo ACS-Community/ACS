@@ -105,7 +105,7 @@ import alma.acsncErrType.wrappers.AcsJPublishEventFailureEx;
 public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublisher<T>, ReconnectableParticipant {
 
 	/** Provides code shared among suppliers and consumers. */
-	protected final Helper helper;
+	protected Helper helper;
 
 	/** The event channel has exactly one name registered in the naming service. */
 	protected final String channelName;
@@ -173,7 +173,12 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	protected final Object eventQueueSync = new Object();
 	
 	/** Whether sending of events should be logged */
-	private final boolean isTraceEventsEnabled;
+	private boolean isTraceEventsEnabled;
+
+	/**
+	 * Whether autoreconnecting to the channel should be done when publishing events throw exception OBJECT_NOT_EXIST
+	 */
+	private boolean autoreconnect;
 
 	/**
 	 * Creates a new instance of NCPublisher. Make sure you call
@@ -238,16 +243,35 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		this.channelName = channelName;
 		this.channelNotifyServiceDomainName = channelNotifyServiceDomainName;
 		this.services = services;
+		this.autoreconnect = false;
 		logger = services.getLogger();
 
 		anyAide = new AnyAide(this.services);
+
+        helper = null;
+		init(namingService);
+	}
+
+
+	/**
+	 * Initializes NCPublisher
+	 * @param namingService Naming service
+	 * @throws AcsJException
+	 *             There are literally dozens of CORBA exceptions that could be
+	 *             thrown by the NCPublisher class. Instead, these are
+	 *             converted into an ACS Error System exception for the
+	 *             developer's convenience.
+	 */
+	protected synchronized void init(NamingContext namingService) throws AcsJException  {
+
 		helper = new Helper(channelName, channelNotifyServiceDomainName, this.services, namingService);
 		isTraceEventsEnabled = helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
 
 		// get the channel
 		// @TODO: handle Corba TIMEOUT 
 		channel = helper.getNotificationChannel(getNotificationFactoryName());
-		
+
+
 		// Corba NC spec about adminId: a unique identifier assigned by the target EventChannel instance that is unique among all 
 		// SupplierAdmin instances currently associated with the channel.
 		// We are currently not using it, but it could be logged to help with NC debugging.
@@ -275,7 +299,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			ex2.setNarrowType(specialSupplierAdminId);
 			throw ex2;
 		}
-		
+
 		int proxyCreationAttempts = 0;
 		while( proxyConsumer == null) {
 			String randomizedClientName = Helper.createRandomizedClientName(services.getName());
@@ -337,10 +361,9 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			// @TODO destroy supplierAdmin and proxyConsumer
 			throw new AcsJCORBAProblemEx(e);
 		}
-		
+
 		reconnectCallback = new AcsNcReconnectionCallback(this, logger);
 		reconnectCallback.registerForReconnect(services, helper.getNotifyFactory());
-
 	}
 
 	/**
@@ -402,6 +425,16 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	}
 
 	/**
+	 * This method sets the attribute autoreconnect which is used to determine if
+	 * a reconnection to the channel must be done when the exception OBJECT_NOT_EXIST
+	 * is thrown during the publication of an event.
+	 * @param autoreconnect Whether autoreconneting to the channel should be done
+	 */
+	public void setAutoreconnect(boolean autoreconnect) {
+		this.autoreconnect = autoreconnect;
+	}
+
+	/**
 	 * This method gets called by the CORBA framework to notify us that the subscriber 
 	 * situation has changed. See 2.6.3 of Notification Service, v1.1
 	 * <p>
@@ -440,6 +473,24 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 	}
 
 	/**
+	 * Method which queue an event that couldn't be published
+	 * 
+	 * @param se A complete structured event
+	 * @param customData  The user-supplied event data, needed for eventProcessingHandler notification.
+	 */
+    protected void queueUnpublishedEvent(StructuredEvent se, T customData) {
+        synchronized (eventQueueSync) {
+            if (eventQueue != null) {
+                CircularQueue<T>.Data dropped = eventQueue.push(se, customData);
+                eventProcessingHandler.eventStoredInQueue(customData);
+                if (dropped != null) {
+                    eventProcessingHandler.eventDropped(dropped.userData);
+                }
+            }
+        }
+    }
+
+	/**
 	 * Method which publishes an entire CORBA StructuredEvent without making any
 	 * modifications to it.
 	 * 
@@ -468,15 +519,64 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		} catch (org.omg.CORBA.TRANSIENT ex) {
 			// the Notify Service is down...
 			// @TODO: Shouldn't we do the same also for some of the other SystemExceptions caught below?
-			synchronized (eventQueueSync) {
-				if (eventQueue != null) {
-					CircularQueue<T>.Data dropped = eventQueue.push(se, customData);
-					eventProcessingHandler.eventStoredInQueue(customData);
-					if (dropped != null) {
-						eventProcessingHandler.eventDropped(dropped.userData);
-					}
-				}
-			}
+            queueUnpublishedEvent(se, customData);
+
+            // Throw the exception caught
+            //throw ex;
+            // Throw an exception
+            String reason = "Failed to publish event on channel '" + channelName + "': org.omg.CORBA.TRANSIENT was thrown.";
+            AcsJCORBAProblemEx jex = new AcsJCORBAProblemEx();
+            jex.setInfo(reason);
+            throw jex;
+
+		} catch (org.omg.CORBA.OBJECT_NOT_EXIST ex) {
+			if(true == autoreconnect) {
+                boolean reconnected = false;
+
+				// Disconnect
+				try {
+					disconnect();
+				} catch(Throwable thr) {}
+
+				// Reconnect to the channel
+				try {				
+					init(helper.getNamingService());
+                    reconnected = true;
+				} catch(Throwable thr) {}
+
+                if(reconnected) {
+                    // Try to publish the event again
+                    try {
+                        // Publish directly the given event (see CORBA NC spec 3.3.7.1)
+                        proxyConsumer.push_structured_event(se);
+
+                        // Log successful sending of event (if event tracing is enabled)
+                        if (isTraceEventsEnabled) {
+                            // TODO: use type-safe log
+                            logger.log(Level.INFO, "Channel:" + channelName + ", Event Type:" + customData.getClass().getSimpleName());
+                        }
+                        
+                        // Notify user (if handler is registered) 
+                        synchronized (eventQueueSync) {
+                            if (eventQueue != null) {
+                                eventProcessingHandler.eventSent(customData);
+                            }
+                        }
+                    } catch(Throwable thr) {
+                        queueUnpublishedEvent(se, customData);
+                    }
+                } else {
+                    queueUnpublishedEvent(se, customData);
+                }
+
+			} else {
+                // Throw an exception
+                String reason = "Failed to publish event on channel '" + channelName + "': org.omg.CORBA.OBJECT_NOT_EXIST was thrown.";
+                AcsJCORBAProblemEx jex = new AcsJCORBAProblemEx();
+                jex.setInfo(reason);
+                throw jex;
+            }
+
 		} catch (org.omg.CosEventComm.Disconnected e) {
 			// declared CORBA ex
 			String reason = "Failed to publish event on channel '" + channelName + "': org.omg.CosEventComm.Disconnected was thrown.";
@@ -591,7 +691,14 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			}
 		}
 
-		publishCORBAEvent(event, customStruct);
+        try {
+		    publishCORBAEvent(event, customStruct);
+        } catch(AcsJCORBAProblemEx ex) {
+            String info = ex.getInfo();
+            if(false == info.contains("org.omg.CORBA.TRANSIENT")) {
+                throw ex;
+            }
+        }
 	}
 
 	@Override

@@ -1,0 +1,50 @@
+1 - Starting Container...
+2 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+4 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+2 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+4 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+2 - Using reactive client control.
+4 - Using reactive client control.
+2 - Using 1 threads for each Supplier.
+4 - Using 1 threads for each Supplier.
+1 - Resolving reference: 'corbaloc::---:----/Manager'
+2 - Using 1 threads for each Consumer.
+4 - Using 1 threads for each Consumer.
+1 - Manager reference narrowed.
+2 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+4 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
+1 - Configuration information for container 'bilboContainer' not available.
+1 - Starting as dynamic container.
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Helper::resolveNotificationFactory() error occured for the 'NamedCh' channel!, unknown error on resolveNotificationFactory
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Helper::resolveNotificationFactory() error occured for the 'NamedCh' channel!, unknown error on resolveNotificationFactory
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Start sending events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP2 - ] Start sending events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP3 - ] Start sending events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP5 - ] Start sending events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP4 - ] Start sending events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] X events cannot be sent via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] 2 changes while sending via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent X events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP5 - ] X events cannot be sent via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP5 - ] Sent X events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP5 - ] 2 changes while sending via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP2 - ] X events cannot be sent via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP2 - ] 1 changes while sending via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP2 - ] Sent X events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP4 - ] Sent X events via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP4 - ] X events cannot be sent via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP4 - ] 1 changes while sending via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP3 - ] X events cannot be sent via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP3 - ] 2 changes while sending via SimpleSupplier.
+1 - ----------T--:--:--.--- [NamedCh_SUP3 - ] Sent X events via SimpleSupplier.

@@ -36,6 +36,8 @@
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/CosNotifyCommC.h>
 
+class LoggingService;
+
 /**
  * NOTE: This class contains quite a bit of duplicated code that could be reduced if it inherited
  * from the basencSupplier class - however, due to build order dependency issues, this is not possible.
@@ -76,7 +78,12 @@ class ACSStructuredPushSupplier : public POA_CosNotifyComm::StructuredPushSuppli
     // = StructuredPushSupplier method
     virtual void disconnect_structured_push_supplier ();
 
+    void set_logging_service(LoggingService *service);
+
   protected:
+
+    void update_num_lost_logs(const CosNotification::StructuredEvent& event);
+
     // = Data members
     CosNotifyChannelAdmin::StructuredProxyPushConsumer_var proxy_consumer_;
     // The proxy that we are connected to.
@@ -87,7 +94,13 @@ class ACSStructuredPushSupplier : public POA_CosNotifyComm::StructuredPushSuppli
     // = Protected Methods
     virtual ~ACSStructuredPushSupplier ();
     // Destructor
-    
+
+    // Logging service used to reinitialize the connection to the Notify Channel when 
+    // publishing an event throws an exception [OBJECT_NOT_EXIST, BAD_OPERATION]
+    LoggingService *m_service;
+
+    // Number of lost logs
+    int32_t m_numLostLogs;
 };
 
 #endif

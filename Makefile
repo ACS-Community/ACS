@@ -14,12 +14,13 @@ os     = $(shell uname)
 
 MODULE_PREFIX = LGPL
 #!#MODULES_KIT = vlt doc acs acstempl
-MODULES_KIT = doc acs acstempl
+MODULES_KIT = doc acs acstempl acsutilpy
+
+MODULES_TOOLS = Tools
 #
 # I skip doxygen, that should be after compat and before tat,
 # because it is already built in the prepare phase.
 #
-GMP = gmp
 
 ifeq ($(os),Linux)
   majorRelNo :=  $(basename $(shell cat /etc/redhat-release | awk '{print $$(NF-1)}'))
@@ -32,9 +33,7 @@ ifeq ($(os),Linux)
   endif
 endif
 
-MODULES_TOOLS = tat expat loki extjars antlr hibernate extpy cppunit getopt FITS astyle swig xercesc xercesj castor $(GMP) gui xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache
-
-MODULES_ACS = jacsutil xmljbind xmlpybind acserridl acsidlcommon acsutilpy acsutil acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task acstime acsnc acsncdds acsdaemon acslog acstestcompcpp acsexmpl jlogEngine acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities jcont jcontnc nsStatisticsService jacsalarmtest jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssim bulkDataNT bulkData containerTests acscourse ACSLaser acsGUIs
+MODULES_ACS = jacsutil xmljbind xmlpybind acserridl acsidlcommon acsutil acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task acstime acsnc acsdaemon acslog acstestcompcpp acsexmpl jlogEngine acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities jcont jcontnc nsStatisticsService jacsalarmtest jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssim bulkDataNT bulkData containerTests acscourse ACSLaser acsGUIs
 ######## end Modules ###########################
 
 ###############################################
@@ -45,7 +44,7 @@ define makeIt
 endef
 
 define makeItAux
-   (( make $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
+   (( $(MAKE) $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
 endef
 
 # SCM tag definition
@@ -95,7 +94,7 @@ ifeq ($(VXWORKS_RTOS) $(HAS_VW),YES TRUE)
 endif
 
 MODULES =  $(foreach kit, $(MODULES_KIT), $(MODULE_PREFIX)/Kit/$(kit)) \
-           $(foreach tools, $(MODULES_TOOLS), $(MODULE_PREFIX)/Tools/$(tools)) \
+           $(MODULE_PREFIX)/Tools \
            $(foreach acs, $(MODULES_ACS), $(MODULE_PREFIX)/CommonSoftware/$(acs)) \
 	   $(foreach bm, $(MODULES_BENCHMARK), Benchmark/$(bm)) \
            $(foreach nolgpl, $(MODULES_NO-LGPL), $(MODULE_PREFIX_NO-LGPL)/$(nolgpl)) \
@@ -180,7 +179,7 @@ endef
 # Per each module it executes:
 #    make clean all install
 #
-build: 	scm-tag clean_log checkModuleTree prepare update
+build: 	svn-tag clean_log checkModuleTree prepare update
 	@$(ECHO) "... done"
 
 #
@@ -189,7 +188,7 @@ build: 	scm-tag clean_log checkModuleTree prepare update
 # Per each module it executes:
 #    make clean all man install clean
 #
-build_clean:   	scm-tag clean_log checkModuleTree prepare update_clean
+build_clean:   	svn-tag clean_log checkModuleTree prepare update_clean
 	@$(ECHO) "... done"
 
 #
@@ -202,7 +201,7 @@ build_clean:   	scm-tag clean_log checkModuleTree prepare update_clean
 # This is useful to discover circular dependencies between
 # modules.
 #
-build_clean_test:   	scm-tag clean_log checkModuleTree prepare update_clean_test
+build_clean_test:   	svn-tag clean_log checkModuleTree prepare update_clean_test
 	@$(ECHO) "... done"
 
 #
@@ -211,7 +210,7 @@ build_clean_test:   	scm-tag clean_log checkModuleTree prepare update_clean_test
 # Per each module it executes:
 #    make clean all man install clean
 #
-rebuild:	scm-tag clean_log update
+rebuild:	svn-tag clean_log update
 	@$(ECHO) "... done"
 
 clean_log:
@@ -260,7 +259,7 @@ prepare:
 	@cd $(MODULE_PREFIX); $(SHELL) acsBUILD/src/acsBUILDPrepareKit.sh >> ../build.log 2>& 1
 	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Kit/acs/src/ all install clean >> build.log 2>& 1 || echo "### ==> FAILED! " | tee -a build.log
 	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Kit/acstempl/src/ all install clean >> build.log 2>& 1 || echo "### ==> FAILED! " | tee -a build.log
-#	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Tools/doxygen/src/ all install clean >> build.log 2>& 1 || echo "### ==> Doxygen FAILED! " | tee -a build.log
+	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Tools/doxygen/src/ all install clean >> build.log 2>& 1 || echo "### ==> Doxygen FAILED! " | tee -a build.log
 
 #
 # Update of all core components
@@ -271,7 +270,7 @@ prepare:
 #   that if the LAST module fails the whole Make does not fail
 #
 
-update:	scm-tag checkModuleTree
+update:	svn-tag checkModuleTree
 	@$(ECHO) "############ (Re-)build ACS Software         #################"| tee -a build.log
 	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
 		    if [ ! -d $${member} ]; then \
@@ -289,7 +288,7 @@ update:	scm-tag checkModuleTree
 			 $(call makeItAux,$${member}/ws/src,install,build.log,$${member}/ws/src/NORM-BUILD-OUTPUT) \
 		    elif [ -f $${member}/Makefile ]; then \
 		         $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
-			 $(call makeItAux,$${member},-s $@,build.log,$${member}/NORM-BUILD-OUTPUT) \
+		         $(MAKE) $(MAKE_FLAGS) -C $${member}/ -s $@  2>&1 || echo "### ==> FAILED all ! " | (tee -a build.log | tee $${member}/NORM-BUILD-OUTPUT) \
 		    fi;\
 		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
 			if [ -f $${member}/lcu/src/Makefile ]; then \
@@ -471,78 +470,82 @@ show_modules:
 	@$(ECHO) ${MODULES}
 
 ################################################################
-# SCM targets.
+# SVN targets.
 # 
 # The following targets and expressions are helpers for SVN
 # operations on the ACS tree.
 ################################################################
 
 #
-# This expression extracts the SCM tag for the ACS/Makefile file
+# This expression extracts the SVN tag for the ACS/Makefile file
 # (if exists).
 # This does not warranty that all files have the same tag,
 # but it is at least an indication.
 #
-# This target puts the SCM tag for the ACS/Makefile file
+SVN_URL = $(shell svn info '$(PWD)/Makefile'|grep URL)
+SVN_TAG = $(shell echo $(SVN_URL)|awk 'BEGIN { FS = "/" } ; { print toupper($$(NF-2)) }')
+
+#
+#
+# This target puts the SVN tag for the ACS/Makefile file
 # (if exists) into a file, so that it can be used
 # to mark an installation.
 #
-scm-tag:
-	@ $(ECHO) "Evaluating current SCM tag"; \
-	if [ X$(SCM_TAG) != X ]; then \
-		$(ECHO) "SCM tag is $(SCM_TAG)"; \
-		$(ECHO) $(SCM_TAG) > ACS_TAG ; \
-	else \
-		if [ -f ACS_TAG ]; then \
-			$(ECHO) "ACS tag file already exist: "; \
-			cat ACS_TAG; $(ECHO) ""; \
-		else \
-			$(ECHO) "No SCM tag available"; \
-		fi; \
-	fi
+svn-tag:
+	@ $(ECHO) "Evaluating current ACS TAG from $(SVN_URL)"; \
+	if [ X$(SVN_TAG) != X ]; then \
+               $(ECHO) "SVN tag is: $(SVN_TAG)"; \
+               $(ECHO) $(SVN_TAG) > ACS_TAG ; \
+            else \
+              if [ -f ACS_TAG ]; then\
+                $(ECHO) "ACS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
+              else \
+                $(ECHO) "No SVN tag available"; \
+              fi; \
+          fi
 
 #
-# This target gets from SCM the correct 
+# This target gets from SVN the correct 
 # ACS_VERSION and ACS_PATCH_LEVEL files.
 #
 # I ported the cvs-get-version to work with SVN,
 # but believe that it will not be needed anymore because of
 # the diffrences between CVS and SVN.
 #
-scm-get-version:
-	@ $(ECHO) "Extracting from SCM version files"; \
-          if [ X$(SCM_TAG) != X ]; then \
-             $(ECHO) "SCM tag is: $(SCM_TAG)"; \
+svn-get-version:
+	@ $(ECHO) "Extracting from SVN version files"; \
+          if [ X$(SVN_TAG) != X ]; then \
+             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
           else \
-             $(ECHO) "No SCM tag available"; \
+             $(ECHO) "No SVN tag available"; \
           fi; \
 	  svn update --quiet ACS_PATCH_LEVEL ACS_VERSION
 
 #
-# This target gets from SCM all files needed for an LGPL distribution 
+# This target gets from SVN all files needed for an LGPL distribution 
 #
 LGPL_FILES=README README-new-release LGPL
-scm-get-lgpl: scm-tag scm-get-version
-	@ $(ECHO) "Extracting from SCM LGPL files"; \
-          if [ X$(SCM_TAG) != X ]; then \
-             $(ECHO) "SCM tag is: $(SCM_TAG)"; \
+svn-get-lgpl: svn-tag svn-get-version
+	@ $(ECHO) "Extracting from SVN LGPL files"; \
+          if [ X$(SVN_TAG) != X ]; then \
+             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
           else \
-             $(ECHO) "No SCM tag available"; \
+             $(ECHO) "No SVN tag available"; \
           fi; \
 	  svn update --quiet $(LGPL_FILES)
 
 #
-# This target gets from SCM a complete ACS code distribution 
+# This target gets from SVN a complete ACS code distribution 
 #
 NO-LGPL_FILES=Benchmark NO-LGPL
-scm-get-no-lgpl: scm-tag scm-get-version scm-get-lgpl scm-get-no-lgpl-extract 
+svn-get-no-lgpl: svn-tag svn-get-version svn-get-lgpl svn-get-no-lgpl-extract 
 
-scm-get-no-lgpl-extract: 
-	@  $(ECHO) "Extracting from SCM NO-LGPL files"; \
-          if [ X$(SCM_TAG) != X ]; then \
-             $(ECHO) "SCM tag is: $(SCM_TAG)"; \
+svn-get-no-lgpl-extract: 
+	@  $(ECHO) "Extracting from SVN NO-LGPL files"; \
+          if [ X$(SVN_TAG) != X ]; then \
+             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
           else \
-             $(ECHO) "No SCM tag available"; \
+             $(ECHO) "No SVN tag available"; \
           fi; \
 	  svn update --quiet $(NO-LGPL_FILES)
 

@@ -1,0 +1,10 @@
+1 - TestList or TestList.lite does not exist!
+1 - TestList.notExisting does not exist!
+1 - 
+1 - Error: No test specified in TestList
+1 - -s: invalid option.
+1 - Error: usage: tat [-v] [-t] [-nc] [-g] [-order] [-noorder] [-run] [log] [-r num] [-w secs]  [test nums] [makeEnv] [cleanEnv] [all] [ALL]
+1 - -s: invalid option.
+1 - Error: usage: tat [-v] [-t] [-nc] [-g] [-order] [-noorder] [-run] [log] [-r num] [-w secs]  [test nums] [makeEnv] [cleanEnv] [all] [ALL]
+1 - Could not find program 33
+1 - Error: you are executing a test without having a reference file; this is not allowed

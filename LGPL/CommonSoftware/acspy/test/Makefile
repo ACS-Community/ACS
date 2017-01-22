@@ -50,15 +50,17 @@ PY_SCRIPTS_L =	test_Acspy_Nc_CommonNC \
 		acspyTestCompReload \
 		acspyTestLoggingConsumer \
 		acspyTestSupplier \
+		acspyTestSupplierCallback \
 		acspyTestConsumer \
 		acspyTestQoSTimeout \
-		 acspyTestContainerActivationMap.py
+		acspyTestContainerActivationMap.py \
+		acspyTestSupplierReconn
 
 PY_PACKAGES = acspytestImpl acspyTestQoSImpl
 
 PY_PACKAGES_L = 
 
-SCRIPTS_L = acspyTATPrologue
+SCRIPTS_L = acspyTATPrologue acspyExecNotifyService.sh
 
 
 #

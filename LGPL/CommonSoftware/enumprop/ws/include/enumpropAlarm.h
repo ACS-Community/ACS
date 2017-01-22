@@ -118,6 +118,9 @@ private:
 
   /// last alarm state
   int alarmRaised_m;
+
+  // mutex for thread-safe
+  ACE_Recursive_Thread_Mutex templateMutex;
 };
 
 #include "enumpropAlarm.i"

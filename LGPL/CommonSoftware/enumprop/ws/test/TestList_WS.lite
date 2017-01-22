@@ -30,20 +30,20 @@
 SOURCE   enumpropTATEnvironment
 PROLOGUE cdbTATPrologue
 
-1 enumTestENABLED	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 ENABLED"
+1 enumTestENABLED	 "startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 ENABLED"
 
-2 enumTestON         	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 ON" 
+2 enumTestON         "startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 ON" 
 
-3 enumTestDISABLED 	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 DISABLED" 
+3 enumTestDISABLED 	 "startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 DISABLED" 
 
-4 enumRWTestENABLED	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testRWClient EPTESTDEVICE1 ENABLED"
+4 enumRWTestENABLED	 "startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testRWClient EPTESTDEVICE1 ENABLED"
  
-5 enumRWTestON		"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testRWClient EPTESTDEVICE1 ON"
+5 enumRWTestON		 "startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testRWClient EPTESTDEVICE1 ON"
 
-6 enumRWTestDISABLED	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testRWClient EPTESTDEVICE1 DISABLED"
+6 enumRWTestDISABLED "startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testRWClient EPTESTDEVICE1 DISABLED"
 
 7 enumOnChangeTest   "startEnumpropTestServer" "@SLEEP 20" "onchangeMonitorTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 DISABLED noshutdown" "@SLEEP 10" "testClient EPTESTDEVICE1 ENABLED"
 
-8 enumSetFFFMTest   "startEnumpropTestServer" "@SLEEP 20" "alarmTestSetFFFM EPTESTDEVICE1"
+8 enumSetFFFMTest    "startEnumpropTestServer" "@SLEEP 20" "alarmTestSetFFFM EPTESTDEVICE1"
 
 EPILOGUE cdbTATEpilogue

@@ -8,6 +8,7 @@
 # who       when      what
 # --------  --------  ----------------------------------------------
 PROLOGUE acsdaemonTATPrologue
+SOURCE acsdaemonTATEnvironment
 1 daemontest            "test.sh"
 2 daemontest80          "loglevel.sh 0 acsservicesdaemon -u" "@SLEEP 3" "loglevel.sh 0 acsServices80Test" "@SLEEP 120" "loglevel.sh 0 acsservicesdaemonStop"
 3 testAcsDaemonUtil "testAcsDaemonUtil"

@@ -51,4 +51,25 @@ PROLOGUE acsutilTATPrologue -l
 
 10 testAnyAide "acsutilTATTestRunner runAnyAideTest.sh"
 
+# Check the reconnection of a publisher when autoreconnection is ON and its Notify Service is restarted.
+11 testPublisherAutoreconnectNSRestarted "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleSupplierReconnClient 30 5 AUTORECONNECT NS_RESTARTED" "@SLEEP 5" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 3" "@SLEEP 25"
+
+# Check the reconnection of a publisher when autoreconnection is ON and its Notify Service is stopped.
+12 testPublisherAutoreconnectNSStopped "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleSupplierReconnClient 13 5 AUTORECONNECT NS_STOPPED" "@SLEEP 5" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory STOP" "@SLEEP 50"
+
+# Check the reconnection of a publisher when autoreconnection is OFF and its Notify Service is restarted.
+13 testPublisherNoAutoreconnectNSRestarted "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleSupplierReconnClient 30 5 NO_AUTORECONNECT NS_RESTARTED" "@SLEEP 5" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 3" "@SLEEP 25"
+
+# Check the reconnection of a publisher when autoreconnection is OFF and its Notify Service is stopped.
+14 testPublisherNoAutoreconnectNSStopped "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleSupplierReconnClient 13 5 NO_AUTORECONNECT NS_STOPPED" "@SLEEP 5" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory STOP" "@SLEEP 50"
+
+
 EPILOGUE acsutilTATEpilogue

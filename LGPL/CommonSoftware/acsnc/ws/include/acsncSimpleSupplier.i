@@ -46,6 +46,11 @@ SimpleSupplier::publishData(T data, EventProcessingCallback<T> *evProcCallback)
       if(evProcCallback != NULL)
          evProcCallback->eventStoredInQueue(data);
    }
+   catch(CORBA::OBJECT_NOT_EXIST &ex)
+   {
+      if(evProcCallback != NULL)
+         evProcCallback->eventStoredInQueue(data);
+   }
    catch(EventDroppedException &ex)
    {
       if(evProcCallback != NULL){

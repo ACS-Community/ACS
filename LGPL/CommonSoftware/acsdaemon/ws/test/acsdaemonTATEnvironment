@@ -1,0 +1,2 @@
+set ACS_CDB $env(ACSDATA)/config/defaultCDB
+set env(ACS_CDB) $ACS_CDB

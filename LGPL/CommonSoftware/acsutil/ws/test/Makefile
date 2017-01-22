@@ -55,7 +55,7 @@
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = 
-EXECUTABLES_L   = testLLU testTmp testFindFile testPorts testAnyAide testTimeStamp
+EXECUTABLES_L   = testLLU testTmp testFindFile testPorts testAnyAide testTimeStamp testORBSet
 
 #
 # <brief description of xxxxx program>
@@ -71,6 +71,8 @@ testAnyAide_OBJECTS = testAnyAide
 testAnyAide_LIBS    = baciStubs acscommonStubs acscomponentStubs acserrStubs acsutil
 testTimeStamp_OBJECTS = testTimeStamp
 testTimeStamp_LIBS = acsutil
+testORBSet_OBJECTS = testORBSet
+testORBSet_LIBS = acsutil
 
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =

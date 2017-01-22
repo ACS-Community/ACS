@@ -50,7 +50,7 @@ public class SimpleSupplierConsumerClient implements Callback<EventDescription> 
 	 */
 	private AcsEventPublisher<IDLEntity> m_publisher;
 	
-	private AcsEventSubscriber<EventDescription> m_subscriber;
+	//private AcsEventSubscriber<EventDescription> m_subscriber;
 	
 	private ComponentClient m_client;
 
@@ -66,8 +66,8 @@ public class SimpleSupplierConsumerClient implements Callback<EventDescription> 
 			try {
 				m_client = new ComponentClient(m_logger, System.getProperty("ACS.manager"), "SimpleSupplierConsumerClient");
 
-				m_subscriber = m_client.getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, EventDescription.class);
-				m_subscriber.addSubscription(this);
+				//m_subscriber = m_client.getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME, EventDescription.class);
+				//m_subscriber.addSubscription(this);
 				m_publisher = m_client.getContainerServices().createNotificationChannelPublisher(CHANNEL_NAME, IDLEntity.class);
 			} catch (AcsJContainerServicesEx e) {
 				// Silently ignore the errors
@@ -105,17 +105,24 @@ public class SimpleSupplierConsumerClient implements Callback<EventDescription> 
 		ed.timestamp = new Date().getTime();
 
 		// subscriber is always listening
-		m_subscriber.startReceivingEvents();
+		//m_subscriber.startReceivingEvents();
 
 		for(int i=0; i!=m_times; i++) {
 
-			m_logger.info( "Current number of filters in the proxySupplier: " + ((NCSubscriber)m_subscriber).proxySupplier.get_all_filters().length);
+			//m_logger.info( "Current number of filters in the proxySupplier: " + ((NCSubscriber)m_subscriber).proxySupplier.get_all_filters().length);
 
+                        try {
 			// publish events of 2 different types
 			for(int j=0; j!=m_nEvents; j++) {
 				m_publisher.publishEvent(event1);
+				m_logger.info("Published event 1");
 				m_publisher.publishEvent(event2);
+				m_logger.info("Published event 2");
 				m_publisher.publishEvent(ed);
+				m_logger.info("Published event ed");
+			}
+			} catch(Exception e) {
+                            	m_logger.info("It was impossible to publish the event because an exception was thrown");
 			}
 
 			// Sleep and get events
@@ -123,18 +130,18 @@ public class SimpleSupplierConsumerClient implements Callback<EventDescription> 
 				Thread.sleep(m_interval * 1000);
 			} catch (InterruptedException e) { }
 
-			try {
+			/*try {
 				m_subscriber.startReceivingEvents();
 			} catch(AcsJIllegalStateEventEx e) {
 				m_logger.info("AcsJIllegalStateEventEx thrown, perfect :D");
-			}
+			}*/
 		}
 
 	}
 
 	public void disconnectAndReport() throws Exception {
 		m_publisher.disconnect();
-		m_subscriber.disconnect();
+		//m_subscriber.disconnect();
 		m_client.tearDown();
 		m_logger.info("Received " + received + " events");
 	}

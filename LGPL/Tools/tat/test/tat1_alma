@@ -1,0 +1,51 @@
+#! /bin/bash
+#
+#  tat1 - invalid arguments
+#
+#
+
+rm -f TestList.sed
+rm -f TestList.grep
+cp TestList.grep.tat1 TestList.grep
+
+# no TestList file(s)
+rm -f TestList
+
+mv TestList.lite TestList.lite.save
+tat 
+mv TestList.lite.save TestList.lite
+
+tat -f TestList.notExisting
+
+# no test in TestList 
+
+touch TestList.empty
+echo # >> TestList.emtpy
+tat -f TestList.empty
+rm -f TestList.empty
+
+# invalid command lines ...
+
+tat -s xxtest1
+tat -s xxtest1 xxtest2
+
+# TestList referring to non-existing program ...
+
+rm -f TestList.wrong
+echo -99 66 33 xxtest1 a >>TestList.wrong
+echo 94ab xxtest2 a b >>TestList.wrong
+echo xxtest a b c >>TestList.wrong
+
+tat -f TestList.wrong
+rm -f TestList.wrong
+
+# no reference file
+rm -f TestList.noRef
+rm -f tat1.1
+echo tat1.1 >> TestList.noRef
+echo "echo tat1.1" >> tat1.1
+tat -f TestList.noRef
+rm -f TestList.noRef
+
+# Final clean-up
+rm -f TestList.grep

@@ -101,64 +101,41 @@ class SetterThread : public ACS::Thread
 
     virtual void run()
 	{
-	    		try
-		    {
-	    			for(unsigned int i=0; i<3; i++)
-	    			{
+    	try
+		{
+    		// Just to stabilize
+    		dev_m->off();
+			ACE_OS::sleep(2);
 
-	    				ACS_SHORT_LOG((LM_INFO, "==> Going to changing value to ENABLE (1) to trigger an alarm."));
-	    				dev_m->enable ();
-	    				ACE_OS::sleep(2);
+			// Activate the alarm
+			ACS_SHORT_LOG((LM_INFO, "==> Going to changing value to ENABLE (1) to trigger an alarm."));
+			dev_m->enable();
+			ACE_OS::sleep(4);
 
+			// Test changeAlarmFFFM with activated alarm
+			ACS_SHORT_LOG((LM_INFO, "==> Going to test changing of FF and FM if we have an alarm."));
+			dev_m->changeAlarmFFFM("UserDefinedFF", "UserDefinedFM");
+			ACE_OS::sleep(2);
 
-	    				ACS_SHORT_LOG((LM_INFO, "==> Going to test changing of FF and FM if we have an alarm."));
-	    				// first heaving an alarm
-	    				dev_m->changeAlarmFFFM("UserDefinedFF", "UserDefinedFM");
+			// Deactivate the alarm
+			ACS_SHORT_LOG((LM_INFO, "==> Going to changing value to DIAGNOSE (2) to deactivate the alarm."));
+			dev_m->diagnose();
+			ACE_OS::sleep(2);
 
-	    				dev_m->disable ();
-	    				ACE_OS::sleep(2);
+			// Test changeAlarmFFFM with deactivated alarm
+			ACS_SHORT_LOG((LM_INFO, "==> Going to test changing of FF and FM if we do not have an alarm."));
+			dev_m->changeAlarmFFFM("UserDefinedFF2", "UserDefinedFM2");
 
-	    				dev_m->diagnose ();
-	    				ACE_OS::sleep(2);
-	    				// here we should not have an alarm anymore
-	    				ACS_SHORT_LOG((LM_INFO, "==> Going to test changing of FF and FM if we do not have an alarm."));
-
-	    				dev_m->shutdown ();
-	    				ACE_OS::sleep(2);
-	    			}//for
-		    }
+			ACE_OS::sleep(4);
+	    }
 		catch(...)
-		    {
+	    {
 		    ACS_SHORT_LOG((LM_ERROR,"Error!"));
-		    }
+	    }
 
-		/*
-			    	ACS_SHORT_LOG((LM_INFO, "==> Going to test changing of FF and FM if we have a previous alarm."));
-	    	// first heaving an alarm
-	    	comp_m->changeAlarmFFFM("UserDefinedFF", "UserDefinedFM");
-
-	    	// reset all alarms
-	    	ACS_SHORT_LOG((LM_INFO, "==> Going to test changing of FF and FM if we do not have a previous alarm."));
-	    	ACS_SHORT_LOG((LM_INFO, "==> First we reset all alarms an wait that are actaully cleared."));
-	    	ACS_SHORT_LOG((LM_INFO, "%s: Setting rwPattern to %d", getName().c_str(), 2));
-			rwPattern_m->set_sync(2);
-			ACE_OS::sleep(2); //we have to wait that alarm is actually cleaned
-			ACS_SHORT_LOG((LM_INFO, "==> After resting alarms  we set new FF FM"));
-			comp_m->changeAlarmFFFM("AnotherUserDefinedFF", "AnotherUserDefinedFM");
-
-			ACS_SHORT_LOG((LM_INFO, "==>  Generate an alarm after we have changed FF, FM."));
-	    	ACS_SHORT_LOG((LM_INFO, "%s: Setting rwPattern to %d", getName().c_str(), 1));
-			rwPattern_m->set_sync(1);
-
-	    	setStopped();
-	    	ACS_SHORT_LOG((LM_INFO, "%s: Stopped thread", getName().c_str()));
-	    */
 	}
 
   private:
-
-    int count;
-    int numValues;
 
     ENUMPROP_TEST::enumpropTestDevice_var dev_m;
 };//SetterThread
@@ -192,7 +169,7 @@ int main(int argc, char* argv[])
 			 m_argv);
 	BACI_CORBA::InitCORBA(m_argc, m_argv);
 
-	LoggingProxy EP_log (0, 0, 31, 0);
+	LoggingProxy EP_log (0, 0, 31, 0, 0, 1);
 	LoggingProxy::init (&EP_log);
 
 	/**
@@ -220,13 +197,13 @@ int main(int argc, char* argv[])
 	    }
 	ACS_SHORT_LOG((LM_DEBUG, "Device narrowed."));
 
+	//dev->off();
+
 	// Get current stat
 	ENUMPROP_TEST::ROStates_var currentState = dev->currentState();
-	
 
 	//   get states description	
 	ACS::stringSeq_var description = currentState->statesDescription( );
-	
 
 	AlarmCBpattern alarmCB (currentState.in());
         ACS::Alarmpattern_var alarmCBObj = alarmCB._this();
@@ -241,7 +218,7 @@ int main(int argc, char* argv[])
 	setterThread.resume();
 
 	ACS_SHORT_LOG((LM_DEBUG, "(main thread) Going in main loop sleep..."));
-	ACE_Time_Value tv(30);
+	ACE_Time_Value tv(20);
 	BACI_CORBA::getORB()->run(tv);
 
 	ACS_SHORT_LOG((LM_DEBUG, "(main thread) Exit ... "));
@@ -253,6 +230,11 @@ int main(int argc, char* argv[])
 	dev->serverShutdown();
 
 	ACS_SHORT_LOG((LM_INFO, "Exiting ...."));
+
+	/*EP_log.flush();
+    LoggingProxy::done();
+    delete &EP_log;*/
+
 	BACI_CORBA::DoneCORBA();
 	}
     catch( CORBA::Exception &ex )

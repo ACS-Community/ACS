@@ -23,6 +23,7 @@
 
 #include "loggingStatistics.h"
 #include <sstream>
+#include <iostream>
 
 namespace Logging {
     //-----------------------------------------------------------------------------------
@@ -131,6 +132,7 @@ namespace Logging {
 				           (float(100) / float(getLastPeriodNumberOfMessages()) );
 	    errorIncrement= (float(getAccumulatedNumberOfLogErrors()) - float(getLastPeriodNumberOfLogErrors()) ) *
 		                (float(100) / float(getLastPeriodNumberOfLogErrors()) );
+
     }
 
     void

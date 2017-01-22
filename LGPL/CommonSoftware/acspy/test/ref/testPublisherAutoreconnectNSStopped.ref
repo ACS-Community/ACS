@@ -1,0 +1,57 @@
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
+1 - ----------T--:--:--.--- DEBUG [acsNotifyService] Removing channels entries in the Naming Service of the NotifyEventChannelFactory Notification Service [X.X.X.X:YYYY] which has been stopped
+1 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
+1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
+1 - ----------T--:--:--.--- DEBUG [acsstartupNotifyServiceStart] Deleting channels entries in the Name Service of the  Notify Service [X.X.X.X:YYYY]
+1 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
+1 - Using reactive client control.
+1 - Using 1 threads for each Supplier.
+1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
+1 - ReBound ID: MC_NotifyEventChannelFactory
+2 - ----------T--:--:--.--- test_reconn-Supplier initCORBA - Created new channel.
+2 - ===  Sending 20 events
+2 - ===  Published events at iteration 0
+2 - ===  Published events at iteration 1
+2 - ===  Published events at iteration 2
+3 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
+2 - ===  Published events at iteration 3
+3 - ----------T--:--:--.--- Stopping Notify Service 'NotifyEventChannelFactory'
+3 - ----------T--:--:--.--- DEBUG [acsNotifyService] Removing channels entries in the Naming Service of the NotifyEventChannelFactory Notification Service [X.X.X.X:YYYY] which has been stopped
+3 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
+2 - ===  Published events at iteration 4
+2 - ===  Published events at iteration 5
+3 - ----------T--:--:--.--- Stopped Notify Service 'NotifyEventChannelFactory'
+2 - ===  Published events at iteration 6
+2 - ===  Published events at iteration 7
+2 - ===  Published events at iteration 8
+2 - ===  Published events at iteration 9
+2 - ===  Published events at iteration 10
+2 - ===  Published events at iteration 11
+2 - ===  Published events at iteration 12
+2 - ===  Published events at iteration 13
+2 - ===  Published events at iteration 14
+2 - ===  Published events at iteration 15
+2 - ===  Published events at iteration 16
+2 - ===  Published events at iteration 17
+2 - ===  Published events at iteration 18
+2 - ----------T--:--:--.--- test_reconn-Supplier disconnect - CORBA.TRANSIENT(omniORB.TRANSIENT_ConnectFailed, CORBA.COMPLETED_NO)
+2 - ----------T--:--:--.--- test_reconn-Supplier disconnect - CORBA.TRANSIENT(omniORB.TRANSIENT_ConnectFailed, CORBA.COMPLETED_NO)
+2 -   File "Supplier.py", line xxx, in disconnect
+2 -   File "Supplier.py", line xxx, in disconnect
+2 -     self.sppc.disconnect_structured_push_consumer()
+2 -   File "CosNotifyComm_idl.py", line xxx, in disconnect_structured_push_consumer
+2 -     self.callback.disconnect()
+2 -   File "ReconnectionCallback.py", line xxx, in disconnect
+2 -     return self._obj.invoke("disconnect_structured_push_consumer", _0_CosNotifyComm.StructuredPushConsumer._d_disconnect_structured_push_consumer, args)
+2 -     registry.unregister_callback(self.callback_id)
+2 - TRANSIENT: CORBA.TRANSIENT(omniORB.TRANSIENT_ConnectFailed, CORBA.COMPLETED_NO)
+2 -   File "NotifyExt_idl.py", line xxx, in unregister_callback
+2 -     return self._obj.invoke("unregister_callback", _0_NotifyExt.ReconnectionRegistry._d_unregister_callback, args)
+2 - TRANSIENT: CORBA.TRANSIENT(omniORB.TRANSIENT_ConnectFailed, CORBA.COMPLETED_NO)
+2 - ===  Published events at iteration 19
+2 - ===  X: Y exceptions caught
+2 - ===  X: X events dropped
+2 - ===  X: Y events sent
+2 - ===  X: Transitions: [Y, Z, ...]

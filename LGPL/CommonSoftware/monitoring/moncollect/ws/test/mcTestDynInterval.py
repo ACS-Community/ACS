@@ -77,7 +77,7 @@ try:
         raise notNulDataException
     # Start monitor and wait some time to generate data
     mc.startMonitoring(cname)
-    time.sleep(10)
+    time.sleep(15)
     # Stop monitoring
     mc.stopMonitoring(cname)
     # Verify if monitor data has been generated
@@ -133,7 +133,7 @@ try:
     mc.set_archiving_interval(cname,'doubleSeqProp',20000000)
     # Start monitor and wait some time to generate data
     mc.startMonitoring(cname)
-    time.sleep(10)
+    time.sleep(15)
     # Stop monitoring
     mc.stopMonitoring(cname)
     # Verify if monitor data has been generated
@@ -165,7 +165,7 @@ for d in data:
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
-            if not "-" in str(blobData) and i<10:
+            if not "-" in str(blobData) and i<5:
                 print "\t\t", blobData
                 i+=1
 
