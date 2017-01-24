@@ -173,12 +173,12 @@ for i in $CONTAINER_PID_FILES; do
 		#Get the executale container PID based on listen port
 		CONTAINER_PORT=$(grep $@ $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/USED_CONTAINER_PORTS | awk '{print $2}')
 		if [ -z $CONTAINER_PORT ]; then
-			ACS_LOG_INFO "$0" "Container $@ is already down. Nothing to do"
+			ACS_LOG_INFO "$0" "Container $1 is already down. Nothing to do"
 		
 		else
 			CONTAINER_PID=$(netstat -putan 2> /dev/null | grep $CONTAINER_PORT | grep 'LISTEN' | awk '{print $7}' | cut -d '/' -f1)
 			ACS_LOG_INFO "$0" "Trying to kill container $@ with PID $CONTAINER_PID"
-			gcore -o $HOME/core.`echo $@| tr / _` $CONTAINER_PID &> /dev/null
+			gcore -o $HOME/core.`echo $1| tr / _` $CONTAINER_PID &> /dev/null
 			ACS_LOG_INFO "$0" "PID $CONTAINER_PID Core dumped."
 			kill -9 $CONTAINER_PID
 			ACS_LOG_INFO "$0" "Process PID $CONTAINER_PID killed."
