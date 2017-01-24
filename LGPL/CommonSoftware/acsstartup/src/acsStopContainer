@@ -39,12 +39,13 @@ THIS=`basename $0`
 CL_BASEPORT=
 CL_MANAGERREF=
 CL_HELP=
+CL_KILL=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,baseport:,timeout:,managerReference:
-SHORTOPTS=hb:t:m:
+LONGOPTS=help,baseport:,timeout:,managerReference:,terminate
+SHORTOPTS=khb:t:m:
 
 #
 # Usage info. Be nice and keep this up-to-date!
@@ -57,6 +58,7 @@ function printUsage {
    echo "   -b | -baseport INSTANCE      the acs instance (0-9) you want to use"
    echo "   -m | -managerReference MGR   the corbaloc of your favorite manager"
    echo "   -t | -timeout MULTIPLIER     the maximum timeout can be increased by specifying an integer value greater than 1"
+   echo "   -k | -terminate              kills the process instead of gracefully stop it"
    echo "   -h | -help                   prints this help and exits"
 }
 #
@@ -84,6 +86,8 @@ do
 	-t)                 ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
 	--managerReference) CL_MANAGERREF=$2 ; shift ;;
 	-m)                 CL_MANAGERREF=$2 ; shift ;;
+	--terminate)	    CL_KILL=true ;;
+	-k) 		    CL_KILL=true ;;
 	--help)             CL_HELP=true ;; 
 	-h)                 CL_HELP=true ;; 
 	--) break ;;
@@ -155,24 +159,42 @@ MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
 CONTAINER_PID_FILE=`getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/`echo $1 | sed s/"\/"/:/g`_PID
 CONTAINER_PID_FILES=`ls $CONTAINER_PID_FILE 2> /dev/null| tr '\n' ' '`
 
-#try maciContainerShutdown command. 15 seconds should be more than
-#sufficient for this oneway command to run
-acsutilBlock -t $(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER )) -k maciContainerShutdown $@
+if [ -z $CL_KILL ]; then
+	#try maciContainerShutdown command. 15 seconds should be more than
+	#sufficient for this oneway command to run
+	acsutilBlock -t $(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER )) -k maciContainerShutdown $@
+fi
 
 for i in $CONTAINER_PID_FILES; do
     if [ -e $i ]; then
-        #get the PID
-        ACS_CONTAINER_PID=`cat $i`
-        #remove the file containing the PID
-        rm $i
-
-        #block until the container really goes away 
-        #or it times out. in the event of a timeout, let
-        #acsutilBlock kill the container
-        acsutilBlock -p $ACS_CONTAINER_PID -t $MAX_TIMEOUT -k
-        if [ "$?" = "6" ]; then
-        	ACS_LOG_INFO "acsStopContainer" "After $MAX_TIMEOUT s container($1)'s PID ($ACS_CONTAINER_PID) was still around, so it was tried to kill it."
-        fi
+       	#get the PID
+       	ACS_CONTAINER_PID=`cat $i`
+	if [ $CL_KILL ]; then
+		#Get the executale container PID based on listen port
+		CONTAINER_PORT=$(grep $@ $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/USED_CONTAINER_PORTS | awk '{print $2}')
+		if [ -z $CONTAINER_PORT ]; then
+			ACS_LOG_INFO "$0" "Container $@ is already down. Nothing to do"
+		
+		else
+			CONTAINER_PID=$(netstat -putan 2> /dev/null | grep $CONTAINER_PORT | grep 'LISTEN' | awk '{print $7}' | cut -d '/' -f1)
+			ACS_LOG_INFO "$0" "Trying to kill container $@ with PID $CONTAINER_PID"
+			gcore -o $HOME/core.`echo $@| tr / _` $CONTAINER_PID &> /dev/null
+			ACS_LOG_INFO "$0" "PID $CONTAINER_PID Core dumped."
+			kill -9 $CONTAINER_PID
+			ACS_LOG_INFO "$0" "Process PID $CONTAINER_PID killed."
+		fi
+	fi
+       	#remove the file containing the PID
+       	rm -f $i
+	if [ -z $CL_KILL ]; then
+       		#block until the container really goes away 
+       		#or it times out. in the event of a timeout, let
+       		#acsutilBlock kill the container
+       		acsutilBlock -p $ACS_CONTAINER_PID -t $MAX_TIMEOUT -k
+	fi
+       	if [ "$?" = "6" ]; then
+       		ACS_LOG_INFO "acsStopContainer" "After $MAX_TIMEOUT s container($1)'s PID ($ACS_CONTAINER_PID) was still around, so it was tried to kill it."
+	fi
     fi
 done
 # we can skip sanity check
