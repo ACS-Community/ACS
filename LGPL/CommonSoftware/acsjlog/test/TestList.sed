@@ -8,4 +8,5 @@ s/LastPeriodDuration"><!\[CDATA\[[.,0-9]*\]\]/LastPeriodDuration"><!\[CDATA\[X\]
 s/MessageStatistics"><!\[CDATA\[[.,0-9]*\]\]/MessageStatistics"><!\[CDATA\[X\]\]/g
 s/ErrorMessageStatistics"><!\[CDATA\[[.,0-9]*\]\]/ErrorMessageStatistics"><!\[CDATA\[X\]\]/g
 s/-nan%/ nan%/g
+s/\.java:[0-9]*)/\.java:XXX)/g
 
