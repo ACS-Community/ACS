@@ -22,9 +22,9 @@
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration integer -> org.hibernate.type.IntegerType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration int -> org.hibernate.type.IntegerType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.lang.Integer -> org.hibernate.type.IntegerType@xxxxxxx
+1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration long -> org.hibernate.type.LongType@xxxxxxx
+1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration long -> org.hibernate.type.LongType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.lang.Long -> org.hibernate.type.LongType@xxxxxxx
-1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration long -> org.hibernate.type.LongType@xxxxxxx
-1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration long -> org.hibernate.type.LongType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration float -> org.hibernate.type.FloatType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration float -> org.hibernate.type.FloatType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.lang.Float -> org.hibernate.type.FloatType@xxxxxxx
@@ -35,23 +35,23 @@
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.math.BigDecimal -> org.hibernate.type.BigDecimalType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration big_integer -> org.hibernate.type.BigIntegerType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.math.BigInteger -> org.hibernate.type.BigIntegerType@xxxxxxx
-1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration string -> org.hibernate.type.StringType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.lang.String -> org.hibernate.type.StringType@xxxxxxx
+1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration string -> org.hibernate.type.StringType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration nstring -> org.hibernate.type.StringNVarcharType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration ncharacter -> org.hibernate.type.CharacterNCharType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.net.URL -> org.hibernate.type.UrlType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration url -> org.hibernate.type.UrlType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration date -> org.hibernate.type.DateType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.sql.Date -> org.hibernate.type.DateType@xxxxxxx
-1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.sql.Time -> org.hibernate.type.TimeType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration time -> org.hibernate.type.TimeType@xxxxxxx
+1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.sql.Time -> org.hibernate.type.TimeType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration timestamp -> org.hibernate.type.TimestampType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.sql.Timestamp -> org.hibernate.type.TimestampType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.util.Date -> org.hibernate.type.TimestampType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration dbtimestamp -> org.hibernate.type.DbTimestampType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration calendar -> org.hibernate.type.CalendarType@xxxxxxx
-1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.util.Calendar -> org.hibernate.type.CalendarType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration calendar_date -> org.hibernate.type.CalendarDateType@xxxxxxx
+1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.util.Calendar -> org.hibernate.type.CalendarType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.util.GregorianCalendar -> org.hibernate.type.CalendarType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration locale -> org.hibernate.type.LocaleType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.util.Locale -> org.hibernate.type.LocaleType@xxxxxxx
@@ -85,14 +85,14 @@
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration materialized_blob -> org.hibernate.type.MaterializedBlobType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration clob -> org.hibernate.type.ClobType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.sql.Clob -> org.hibernate.type.ClobType@xxxxxxx
-1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration nclob -> org.hibernate.type.NClobType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.sql.NClob -> org.hibernate.type.NClobType@xxxxxxx
+1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration nclob -> org.hibernate.type.NClobType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration materialized_clob -> org.hibernate.type.MaterializedClobType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration materialized_nclob -> org.hibernate.type.MaterializedNClobType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration serializable -> org.hibernate.type.SerializableType@xxxxxxx
+1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration imm_date -> org.hibernate.type.AdaptedImmutableType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration java.lang.Object -> org.hibernate.type.ObjectType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration object -> org.hibernate.type.ObjectType@xxxxxxx
-1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration imm_date -> org.hibernate.type.AdaptedImmutableType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration imm_dbtimestamp -> org.hibernate.type.AdaptedImmutableType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration imm_time -> org.hibernate.type.AdaptedImmutableType@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernateSQL] Adding type registration imm_timestamp -> org.hibernate.type.AdaptedImmutableType@xxxxxxx
@@ -106,8 +106,8 @@
 1 - ----------T--:--:--.--- INFO [hibernate] HHH000021: Bytecode provider name : javassist
 1 - ----------T--:--:--.--- FINE [hibernate] Registering IdentifierGenerator strategy [uuid2] -> [org.hibernate.id.UUIDGenerator]
 1 - ----------T--:--:--.--- FINE [hibernate] Registering IdentifierGenerator strategy [guid] -> [org.hibernate.id.GUIDGenerator]
-1 - ----------T--:--:--.--- FINE [hibernate] Registering IdentifierGenerator strategy [uuid] -> [org.hibernate.id.UUIDHexGenerator]
 1 - ----------T--:--:--.--- FINE [hibernate] Registering IdentifierGenerator strategy [uuid.hex] -> [org.hibernate.id.UUIDHexGenerator]
+1 - ----------T--:--:--.--- FINE [hibernate] Registering IdentifierGenerator strategy [uuid] -> [org.hibernate.id.UUIDHexGenerator]
 1 - ----------T--:--:--.--- FINE [hibernate] Registering IdentifierGenerator strategy [hilo] -> [org.hibernate.id.TableHiLoGenerator]
 1 - ----------T--:--:--.--- FINE [hibernate] Registering IdentifierGenerator strategy [assigned] -> [org.hibernate.id.Assigned]
 1 - ----------T--:--:--.--- FINE [hibernate] Registering IdentifierGenerator strategy [identity] -> [org.hibernate.id.IdentityGenerator]
@@ -124,8 +124,8 @@
 1 - ----------T--:--:--.--- FINE [hibernate] Adding Integrator [org.hibernate.cache.internal.CollectionCacheInvalidator].
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Cache71] -> [org.hibernate.dialect.Cache71Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [CUBRID] -> [org.hibernate.dialect.CUBRIDDialect]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [DB2390] -> [org.hibernate.dialect.DB2390Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [DB2] -> [org.hibernate.dialect.DB2Dialect]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [DB2390] -> [org.hibernate.dialect.DB2390Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [DB2400] -> [org.hibernate.dialect.DB2400Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [DerbyTenFive] -> [org.hibernate.dialect.DerbyTenFiveDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [DerbyTenSix] -> [org.hibernate.dialect.DerbyTenSixDialect]
@@ -135,20 +135,20 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [H2] -> [org.hibernate.dialect.H2Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [HSQL] -> [org.hibernate.dialect.HSQLDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Informix] -> [org.hibernate.dialect.InformixDialect]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Ingres9] -> [org.hibernate.dialect.Ingres9Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Ingres] -> [org.hibernate.dialect.IngresDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Ingres10] -> [org.hibernate.dialect.Ingres10Dialect]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Ingres9] -> [org.hibernate.dialect.Ingres9Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Interbase] -> [org.hibernate.dialect.InterbaseDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [JDataStore] -> [org.hibernate.dialect.JDataStoreDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Mckoi] -> [org.hibernate.dialect.MckoiDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [MimerSQL] -> [org.hibernate.dialect.MimerSQLDialect]
-1 - ----------T--:--:--.--- FINE [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [MySQL5InnoDB] -> [org.hibernate.dialect.MySQL5InnoDBDialect] (replacing [org.hibernate.dialect.MySQL5InnoDBDialect])
-1 - ----------T--:--:--.--- FINE [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [MySQL5] -> [org.hibernate.dialect.MySQL5Dialect] (replacing [org.hibernate.dialect.MySQL5Dialect])
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [MySQL5InnoDB] -> [org.hibernate.dialect.MySQL5InnoDBDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [MySQL5] -> [org.hibernate.dialect.MySQL5Dialect]
+1 - ----------T--:--:--.--- FINE [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [MySQL5InnoDB] -> [org.hibernate.dialect.MySQL5InnoDBDialect] (replacing [org.hibernate.dialect.MySQL5InnoDBDialect])
+1 - ----------T--:--:--.--- FINE [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [MySQL5] -> [org.hibernate.dialect.MySQL5Dialect] (replacing [org.hibernate.dialect.MySQL5Dialect])
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Oracle8i] -> [org.hibernate.dialect.Oracle8iDialect]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Oracle9i] -> [org.hibernate.dialect.Oracle9iDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Oracle10g] -> [org.hibernate.dialect.Oracle10gDialect]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Oracle9i] -> [org.hibernate.dialect.Oracle9iDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Pointbase] -> [org.hibernate.dialect.PointbaseDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [PostgresPlus] -> [org.hibernate.dialect.PostgresPlusDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [PostgreSQL81] -> [org.hibernate.dialect.PostgreSQL81Dialect]
@@ -161,44 +161,44 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [SQLServer2008] -> [org.hibernate.dialect.SQLServer2008Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Sybase11] -> [org.hibernate.dialect.Sybase11Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [SybaseAnywhere] -> [org.hibernate.dialect.SybaseAnywhereDialect]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [SybaseASE15] -> [org.hibernate.dialect.SybaseASE15Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [SybaseASE157] -> [org.hibernate.dialect.SybaseASE157Dialect]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [SybaseASE15] -> [org.hibernate.dialect.SybaseASE15Dialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [Teradata] -> [org.hibernate.dialect.TeradataDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.dialect.Dialect] : [TimesTen] -> [org.hibernate.dialect.TimesTenDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [Borland] -> [org.hibernate.engine.transaction.jta.platform.internal.BorlandEnterpriseServerJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.BorlandEnterpriseServerJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.BorlandEnterpriseServerJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [Bitronix] -> [org.hibernate.engine.transaction.jta.platform.internal.BitronixJtaPlatform]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.BitronixJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.BitronixJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [JBossAS] -> [org.hibernate.engine.transaction.jta.platform.internal.JBossAppServerJtaPlatform]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.BitronixJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.BitronixJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.JBossAppServerJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [JBossTS] -> [org.hibernate.engine.transaction.jta.platform.internal.JBossStandAloneJtaPlatform]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.JBossStandAloneJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [JOnAS] -> [org.hibernate.engine.transaction.jta.platform.internal.JOnASJtaPlatform]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.JOnASJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.JOnASJtaPlatform]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.JBossStandAloneJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [JOTM] -> [org.hibernate.engine.transaction.jta.platform.internal.JOTMJtaPlatform]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [JRun4] -> [org.hibernate.engine.transaction.jta.platform.internal.JRun4JtaPlatform]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.JOnASJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.JOnASJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.JOTMJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.JOTMJtaPlatform]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.JRun4JtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.JRun4JtaPlatform]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [JRun4] -> [org.hibernate.engine.transaction.jta.platform.internal.JRun4JtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [OC4J] -> [org.hibernate.engine.transaction.jta.platform.internal.OC4JJtaPlatform]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.JRun4JtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.JRun4JtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.OC4JJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.OC4JJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.OrionJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.OrionJtaPlatform]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [Orion] -> [org.hibernate.engine.transaction.jta.platform.internal.OrionJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.ResinJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.ResinJtaPlatform]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [Orion] -> [org.hibernate.engine.transaction.jta.platform.internal.OrionJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [Resin] -> [org.hibernate.engine.transaction.jta.platform.internal.ResinJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.SunOneJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.SunOneJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [SunOne] -> [org.hibernate.engine.transaction.jta.platform.internal.SunOneJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [Weblogic] -> [org.hibernate.engine.transaction.jta.platform.internal.WeblogicJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.WeblogicJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.WeblogicJtaPlatform]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [WebSphere] -> [org.hibernate.engine.transaction.jta.platform.internal.WebSphereJtaPlatform]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.WebSphereExtendedJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.WebSphereExtendedJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.WebSphereJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.WebSphereJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [WebSphereExtended] -> [org.hibernate.engine.transaction.jta.platform.internal.WebSphereExtendedJtaPlatform]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [WebSphere] -> [org.hibernate.engine.transaction.jta.platform.internal.WebSphereJtaPlatform]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform] : [org.hibernate.service.jta.platform.internal.WebSphereExtendedJtaPlatform] -> [org.hibernate.engine.transaction.jta.platform.internal.WebSphereExtendedJtaPlatform]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.spi.TransactionFactory] : [jdbc] -> [org.hibernate.engine.transaction.internal.jdbc.JdbcTransactionFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.spi.TransactionFactory] : [org.hibernate.transaction.JDBCTransactionFactory] -> [org.hibernate.engine.transaction.internal.jdbc.JdbcTransactionFactory]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.spi.TransactionFactory] : [jta] -> [org.hibernate.engine.transaction.internal.jta.JtaTransactionFactory]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.spi.TransactionFactory] : [org.hibernate.transaction.JTATransactionFactory] -> [org.hibernate.engine.transaction.internal.jta.JtaTransactionFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.spi.TransactionFactory] : [cmt] -> [org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.spi.TransactionFactory] : [jta] -> [org.hibernate.engine.transaction.internal.jta.JtaTransactionFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.spi.TransactionFactory] : [org.hibernate.transaction.CMTTransactionFactory] -> [org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.transaction.spi.TransactionFactory] : [org.hibernate.transaction.JTATransactionFactory] -> [org.hibernate.engine.transaction.internal.jta.JtaTransactionFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.hql.spi.MultiTableBulkIdStrategy] : [persistent] -> [org.hibernate.hql.spi.PersistentTableBulkIdStrategy]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.event.spi.EntityCopyObserver] : [disallow] -> [org.hibernate.event.internal.EntityCopyNotAllowedObserver]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.hql.spi.MultiTableBulkIdStrategy] : [temporary] -> [org.hibernate.hql.spi.TemporaryTableBulkIdStrategy]
@@ -209,41 +209,41 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.jdbc.connections.spi.ConnectionProvider] : [org.hibernate.connection.C3P0ConnectionProvider] -> [org.hibernate.c3p0.internal.C3P0ConnectionProvider]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.engine.jdbc.connections.spi.ConnectionProvider] : [org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider] -> [org.hibernate.c3p0.internal.C3P0ConnectionProvider]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.cache.spi.RegionFactory] : [ehcache] -> [org.hibernate.cache.ehcache.EhCacheRegionFactory]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.cache.spi.RegionFactory] : [org.hibernate.cache.ehcache.EhCacheRegionFactory] -> [org.hibernate.cache.ehcache.EhCacheRegionFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.cache.spi.RegionFactory] : [EhCacheRegionFactory] -> [org.hibernate.cache.ehcache.EhCacheRegionFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.cache.spi.RegionFactory] : [ehcache-singleton] -> [org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.cache.spi.RegionFactory] : [org.hibernate.cache.ehcache.EhCacheRegionFactory] -> [org.hibernate.cache.ehcache.EhCacheRegionFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.cache.spi.RegionFactory] : [org.hibernate.cache.EhCacheRegionFactory] -> [org.hibernate.cache.ehcache.EhCacheRegionFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.cache.spi.RegionFactory] : [org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory] -> [org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.cache.spi.RegionFactory] : [SingletonEhCacheRegionFactory] -> [org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.cache.spi.RegionFactory] : [org.hibernate.cache.SingletonEhCacheRegionFactory] -> [org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering named strategy selector [org.hibernate.cache.spi.RegionFactory] : [SingletonEhCacheRegionFactory] -> [org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory]
 1 - ----------T--:--:--.--- FINE [hibernate] Overriding existing service binding [org.hibernate.secure.spi.JaccService]
 1 - ----------T--:--:--.--- FINE [hibernate] Preparing to build session factory with filters : {}
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.engine.jdbc.spi.JdbcServices]
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.engine.jdbc.connections.spi.ConnectionProvider]
 1 - ----------T--:--:--.--- WARNING [hibernate] HHH000402: Using Hibernate built-in connection pool (not for production use!)
-1 - ----------T--:--:--.--- INFO [hibernate] HHH000401: using driver [org.hsqldb.jdbc.JDBCDriver] at URL [jdbc:hsqldb:mem:test]
 1 - ----------T--:--:--.--- INFO [hibernate] HHH000006: Autocommit mode: false
 1 - ----------T--:--:--.--- INFO [hibernate] HHH000046: Connection properties: {user=sa, password=}
-1 - ----------T--:--:--.--- FINE [hibernate] Initializing Connection pool with 1 Connections
+1 - ----------T--:--:--.--- INFO [hibernate] HHH000401: using driver [org.hsqldb.jdbc.JDBCDriver] at URL [jdbc:hsqldb:mem:test]
 1 - ----------T--:--:--.--- INFO [hibernate] HHH000115: Hibernate connection pool size: 20 (min=1)
+1 - ----------T--:--:--.--- FINE [hibernate] Initializing Connection pool with 1 Connections
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.engine.jdbc.dialect.spi.DialectFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.engine.jdbc.dialect.spi.DialectResolver]
 1 - ----------T--:--:--.--- FINE [hibernate] Database ->
 1 - ----------T--:--:--.--- FINE [hibernate] Driver ->
 1 - ----------T--:--:--.--- FINE [hibernate] JDBC version : 4.0
 1 -        name : HSQL Database Engine
-1 -        name : HSQL Database Engine Driver
 1 - ----------T--:--:--.--- FINE [hibernate] Unexpected error trying to gauge level of JDBC REF_CURSOR support : null
-1 -     version : 2.3.3
+1 -        name : HSQL Database Engine Driver
 1 -     version : 2.3.3
 1 -       major : 2
+1 -     version : 2.3.3
 1 -       major : 2
 1 -       minor : 3
 1 -       minor : 3
 1 - ----------T--:--:--.--- INFO [hibernate] HHH000400: Using dialect: org.hibernate.dialect.HSQLDialect
 1 - ----------T--:--:--.--- FINEST [hibernate] Starting secondPassCompile() processing
-1 - ----------T--:--:--.--- FINE [hibernate] Processing hbm.xml files
 1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
+1 - ----------T--:--:--.--- FINE [hibernate] Processing hbm.xml files
 1 - ----------T--:--:--.--- FINE [hibernate] Binding entity from annotated class: alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column: Ejb3DiscriminatorColumn{logicalColumnName'DTYPE', discriminatorTypeName='string'}
 1 - ----------T--:--:--.--- FINE [hibernate] No value specified for 'javax.persistence.sharedCache.mode'; using UNSPECIFIED
@@ -256,10 +256,10 @@
 1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for id
 1 - ----------T--:--:--.--- FINE [hibernate] Building property id
 1 - ----------T--:--:--.--- FINEST [hibernate] Cascading id with null
-1 - ----------T--:--:--.--- FINEST [hibernate] Bind @Id on id
+1 - ----------T--:--:--.--- FINEST [hibernate] Bind @xxxxxxxId on id
 1 - ----------T--:--:--.--- FINEST [hibernate] Processing annotations of alma.hibernate.test.TestEntity.MAP_
-1 - ----------T--:--:--.--- FINE [hibernate] Binding column: Ejb3JoinColumn{logicalColumnName='null', referencedColumn='null', mappedBy='parentId'}
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column: Ejb3Column{table=org.hibernate.mapping.Table(test_entity_table), mappingColumn=MAP_, insertable=true, updatable=true, unique=false}
+1 - ----------T--:--:--.--- FINE [hibernate] Binding column: Ejb3JoinColumn{logicalColumnName='null', referencedColumn='null', mappedBy='parentId'}
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column: Ejb3Column{table=org.hibernate.mapping.Table(test_entity_table), mappingColumn=null, insertable=true, updatable=true, unique=false}
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column: Ejb3Column{table=org.hibernate.mapping.Table(test_entity_table), mappingColumn=element, insertable=true, updatable=true, unique=false}
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column: Ejb3Column{table=org.hibernate.mapping.Table(test_entity_table), mappingColumn=name, insertable=true, updatable=true, unique=false}
@@ -280,39 +280,39 @@
 1 - ----------T--:--:--.--- FINE [hibernate] Building property subId
 1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for subId
 1 - ----------T--:--:--.--- FINE [hibernate] MetadataSourceProcessor property subId with lazy=false
+1 - ----------T--:--:--.--- FINEST [hibernate] Bind @xxxxxxxId on subId
 1 - ----------T--:--:--.--- FINEST [hibernate] Cascading subId with null
 1 - ----------T--:--:--.--- FINE [hibernate] Attempting to locate auto-apply AttributeConverter for property [alma.hibernate.test.SubEntity:name]
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column: Ejb3Column{table=org.hibernate.mapping.Table(sub_entity_table), mappingColumn=name, insertable=true, updatable=true, unique=false}
 1 - ----------T--:--:--.--- FINE [hibernate] Building property name
 1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for name
 1 - ----------T--:--:--.--- FINE [hibernate] MetadataSourceProcessor property name with lazy=false
-1 - ----------T--:--:--.--- FINEST [hibernate] Bind @Id on subId
+1 - ----------T--:--:--.--- FINEST [hibernate] Cascading name with null
 1 - ----------T--:--:--.--- FINEST [hibernate] Processing annotations of alma.hibernate.test.SubEntity.name
 1 - ----------T--:--:--.--- FINE [hibernate] Attempting to locate auto-apply AttributeConverter for property [alma.hibernate.test.SubEntity:parentId]
 1 - ----------T--:--:--.--- FINE [hibernate] Binding column: Ejb3Column{table=org.hibernate.mapping.Table(sub_entity_table), mappingColumn=parentId, insertable=true, updatable=true, unique=false}
 1 - ----------T--:--:--.--- FINE [hibernate] Building property parentId
 1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for parentId
 1 - ----------T--:--:--.--- FINE [hibernate] MetadataSourceProcessor property parentId with lazy=false
-1 - ----------T--:--:--.--- FINEST [hibernate] Cascading name with null
-1 - ----------T--:--:--.--- FINEST [hibernate] Cascading parentId with null
 1 - ----------T--:--:--.--- FINEST [hibernate] Processing annotations of alma.hibernate.test.SubEntity.parentId
 1 - ----------T--:--:--.--- FINE [hibernate] Starting fillSimpleValue for id
-1 - ----------T--:--:--.--- FINE [hibernate] Starting fillSimpleValue for name
 1 - ----------T--:--:--.--- FINE [hibernate] Starting fillSimpleValue for subId
+1 - ----------T--:--:--.--- FINEST [hibernate] Cascading parentId with null
 1 - ----------T--:--:--.--- FINE [hibernate] Processing fk mappings (*ToOne and JoinedSubclass)
+1 - ----------T--:--:--.--- FINE [hibernate] Starting fillSimpleValue for name
 1 - ----------T--:--:--.--- FINE [hibernate] Starting fillSimpleValue for parentId
-1 - ----------T--:--:--.--- FINE [hibernate] Processing collection mappings
 1 - ----------T--:--:--.--- FINE [hibernate] Processing extends queue
 1 - ----------T--:--:--.--- FINE [hibernate] Processing extends queue
 1 - ----------T--:--:--.--- FINE [hibernate] Binding a OneToMany: alma.hibernate.test.TestEntity.MAP_ through a foreign key
+1 - ----------T--:--:--.--- FINE [hibernate] Processing collection mappings
 1 - ----------T--:--:--.--- FINE [hibernate] Second pass for collection: alma.hibernate.test.TestEntity.MAP_
 1 - ----------T--:--:--.--- FINE [hibernate] Mapping collection: alma.hibernate.test.TestEntity.MAP_ -> sub_entity_table
 1 - ----------T--:--:--.--- FINE [hibernate] Retrieving property alma.hibernate.test.SubEntity.parentId
 1 - ----------T--:--:--.--- FINE [hibernate] Attempting to locate auto-apply AttributeConverter for collection key [alma.hibernate.test.TestEntity.MAP_]
 1 - ----------T--:--:--.--- FINE [hibernate] building SimpleValue for null
 1 - ----------T--:--:--.--- FINE [hibernate] Starting fillSimpleValue for null
-1 - ----------T--:--:--.--- FINE [hibernate] Creating tables' unique integer identifiers
 1 - ----------T--:--:--.--- FINE [hibernate] Mapped collection key: parentId, index: name, one-to-many: alma.hibernate.test.SubEntity
+1 - ----------T--:--:--.--- FINE [hibernate] Creating tables' unique integer identifiers
 1 - ----------T--:--:--.--- FINE [hibernate] Processing association property references
 1 - ----------T--:--:--.--- FINE [hibernate] Processing foreign key constraints
 1 - ----------T--:--:--.--- FINE [hibernate] Processing native query and ResultSetMapping mappings
@@ -341,30 +341,30 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] Interpreting BatchFetchStyle from setting : null
 1 - ----------T--:--:--.--- FINE [hibernate] Default null ordering: none
 1 - ----------T--:--:--.--- FINE [hibernate] Query translator: org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory
+1 - ----------T--:--:--.--- INFO [hibernate] HHH000397: Using ASTQueryTranslatorFactory
 1 - ----------T--:--:--.--- FINE [hibernate] JPA-QL strict compliance: disabled
+1 - ----------T--:--:--.--- FINE [hibernate] Query cache: disabled
 1 - ----------T--:--:--.--- FINE [hibernate] Query language substitutions: {}
 1 - ----------T--:--:--.--- FINE [hibernate] Second-level cache: enabled
-1 - ----------T--:--:--.--- INFO [hibernate] HHH000397: Using ASTQueryTranslatorFactory
-1 - ----------T--:--:--.--- FINE [hibernate] Query cache: disabled
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.cache.spi.RegionFactory]
 1 - ----------T--:--:--.--- FINE [hibernate] Cache region factory : org.hibernate.cache.internal.NoCachingRegionFactory
-1 - ----------T--:--:--.--- FINE [hibernate] Optimize cache for minimal puts: disabled
-1 - ----------T--:--:--.--- FINE [hibernate] Allow initialization of lazy state outside session : : disabled
 1 - ----------T--:--:--.--- FINE [hibernate] Automatic eviction of collection cache: disabled
-1 - ----------T--:--:--.--- FINE [hibernate] Check Nullability in Core (should be disabled when Bean Validation is on): enabled
-1 - ----------T--:--:--.--- FINE [hibernate] Default entity-mode: pojo
 1 - ----------T--:--:--.--- FINE [hibernate] Deleted entity synthetic identifier rollback: disabled
-1 - ----------T--:--:--.--- FINE [hibernate] Named query checking : enabled
+1 - ----------T--:--:--.--- FINE [hibernate] Optimize cache for minimal puts: disabled
 1 - ----------T--:--:--.--- FINE [hibernate] Second-level cache direct-reference entries: disabled
 1 - ----------T--:--:--.--- FINE [hibernate] Statistics: disabled
 1 - ----------T--:--:--.--- FINE [hibernate] Structured second-level cache entries: disabled
+1 - ----------T--:--:--.--- FINE [hibernate] Allow initialization of lazy state outside session : : disabled
+1 - ----------T--:--:--.--- FINE [hibernate] Check Nullability in Core (should be disabled when Bean Validation is on): enabled
+1 - ----------T--:--:--.--- FINE [hibernate] Default entity-mode: pojo
 1 - ----------T--:--:--.--- FINE [hibernate] JTA Track by Thread: enabled
+1 - ----------T--:--:--.--- FINE [hibernate] Named query checking : enabled
 1 - ----------T--:--:--.--- FINE [hibernate] Building session factory
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.service.spi.SessionFactoryServiceRegistryFactory]
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.engine.spi.CacheImplementor]
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] Scoping types to session factory org.hibernate.internal.SessionFactoryImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINE [hibernate] Instantiating session factory with properties: XXXXXXXX
 1 - ----------T--:--:--.--- FINE [hibernate] Session factory constructed with filter configurations : {}
+1 - ----------T--:--:--.--- FINE [hibernate] Instantiating session factory with properties: XXXXXXXX
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.engine.query.spi.NativeQueryInterpreter]
 1 - ----------T--:--:--.--- FINE [hibernate] Skipping JACC integration as it was not enabled
 1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
@@ -375,10 +375,10 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] Skipping duplicate registration of path [parentId], existing type = [org.hibernate.type.IntegerType@xxxxxxx], incoming type = [org.hibernate.type.IntegerType@xxxxxxx]
 1 - ----------T--:--:--.--- FINEST [hibernate] Skipping duplicate registration of path [id], existing type = [org.hibernate.type.IntegerType@xxxxxxx], incoming type = [org.hibernate.type.IntegerType@xxxxxxx]
 1 - ----------T--:--:--.--- FINEST [hibernate] Skipping duplicate registration of path [MAP_], existing type = [org.hibernate.type.MapType(alma.hibernate.test.TestEntity.MAP_)], incoming type = [org.hibernate.type.MapType(alma.hibernate.test.TestEntity.MAP_)]
-1 - ----------T--:--:--.--- FINE [hibernate]  Row delete: update sub_entity_table set parentId=null, name=null where parentId=? and subId=?
 1 - ----------T--:--:--.--- FINE [hibernate]  Row insert: update sub_entity_table set parentId=?, name=? where subId=?
-1 - ----------T--:--:--.--- FINE [hibernate]  Row update: update sub_entity_table set name=? where subId=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static SQL for collection: alma.hibernate.test.TestEntity.MAP_
+1 - ----------T--:--:--.--- FINE [hibernate]  Row delete: update sub_entity_table set parentId=null, name=null where parentId=? and subId=?
+1 - ----------T--:--:--.--- FINE [hibernate]  Row update: update sub_entity_table set name=? where subId=?
 1 - ----------T--:--:--.--- FINE [hibernate]  One-shot delete: update sub_entity_table set parentId=null, name=null where parentId=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static SQL for entity: alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINE [hibernate]  Version select: select subId from sub_entity_table where subId =?
@@ -391,12 +391,12 @@
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
@@ -405,39 +405,42 @@
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
 1 -     - Returns
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [NONE]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
 1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
 1 -     - QuerySpaces
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 -           - SQL table alias mapping - subentity0_
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
 1 -           - alias suffix - 0_
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [READ]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 -           - suffixed key columns - {subId1_0_0_}
 1 - 
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
 1 -     - Returns
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
+1 -     - QuerySpaces
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
+1 -           - SQL table alias mapping - subentity0_
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
@@ -445,180 +448,181 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
-1 -     - QuerySpaces
+1 -           - alias suffix - 0_
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [UPGRADE]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=? for update
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
-1 -     - Returns
-1 -           - SQL table alias mapping - subentity0_
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
+1 -           - suffixed key columns - {subId1_0_0_}
+1 - 
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
-1 -           - alias suffix - 0_
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
+1 -     - Returns
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [UPGRADE_NOWAIT]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=? for update
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
-1 -     - QuerySpaces
-1 -           - suffixed key columns - {subId1_0_0_}
-1 - 
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
-1 -     - Returns
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
-1 -           - SQL table alias mapping - subentity0_
-1 -           - alias suffix - 0_
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
 1 -     - QuerySpaces
+1 -     - Returns
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
+1 -     - QuerySpaces
+1 -           - SQL table alias mapping - subentity0_
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
-1 -           - suffixed key columns - {subId1_0_0_}
-1 - 
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [UPGRADE_SKIPLOCKED]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=? for update
+1 -           - alias suffix - 0_
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
 1 -     - Returns
 1 -           - SQL table alias mapping - subentity0_
-1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
-1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 -           - suffixed key columns - {subId1_0_0_}
+1 - 
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
 1 -           - alias suffix - 0_
 1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 -     - QuerySpaces
+1 -           - suffixed key columns - {subId1_0_0_}
+1 - 
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [FORCE]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=? for update
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
-1 -     - QuerySpaces
-1 -           - suffixed key columns - {subId1_0_0_}
-1 - 
+1 -     - Returns
+1 -           - SQL table alias mapping - subentity0_
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
-1 -     - Returns
+1 -           - alias suffix - 0_
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [PESSIMISTIC_READ]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=? for update
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
-1 -           - SQL table alias mapping - subentity0_
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
+1 -     - QuerySpaces
+1 -           - suffixed key columns - {subId1_0_0_}
+1 - 
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
-1 -           - alias suffix - 0_
-1 -     - QuerySpaces
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
 1 -     - Returns
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
-1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
 1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
-1 -           - suffixed key columns - {subId1_0_0_}
-1 - 
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 -           - SQL table alias mapping - subentity0_
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [PESSIMISTIC_WRITE]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=? for update
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
-1 -     - QuerySpaces
-1 -           - SQL table alias mapping - subentity0_
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
 1 -           - alias suffix - 0_
+1 -     - QuerySpaces
 1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
 1 -     - Returns
+1 -           - suffixed key columns - {subId1_0_0_}
+1 - 
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
+1 -           - SQL table alias mapping - subentity0_
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
+1 -           - alias suffix - 0_
+1 -     - QuerySpaces
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
+1 -           - suffixed key columns - {subId1_0_0_}
+1 - 
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
+1 -           - SQL table alias mapping - subentity0_
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [PESSIMISTIC_FORCE_INCREMENT]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=? for update
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
-1 -           - SQL table alias mapping - subentity0_
-1 -           - suffixed key columns - {subId1_0_0_}
-1 - 
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={subId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
 1 -           - alias suffix - 0_
-1 -     - QuerySpaces
 1 -     - Returns
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
-1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
 1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
 1 -           - suffixed key columns - {subId1_0_0_}
 1 - 
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [OPTIMISTIC]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
@@ -626,9 +630,8 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.SubEntity
 1 -     - QuerySpaces
-1 -     - Returns
-1 -           - SQL table alias mapping - subentity0_
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
@@ -636,23 +639,20 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
-1 -           - alias suffix - 0_
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
-1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
-1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [OPTIMISTIC_FORCE_INCREMENT]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
-1 -     - QuerySpaces
-1 -           - SQL table alias mapping - subentity0_
-1 -           - suffixed key columns - {subId1_0_0_}
-1 - 
-1 -           - alias suffix - 0_
 1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
 1 -     - Returns
 1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
 1 -           - SQL table alias mapping - subentity0_
+1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.SubEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.SubEntity [OPTIMISTIC_FORCE_INCREMENT]: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
+1 -           - alias suffix - 0_
+1 -     - QuerySpaces
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
+1 -     - Returns
 1 -           - suffixed key columns - {subId1_0_0_}
 1 - 
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.SubEntity)
+1 -           - SQL table alias mapping - subentity0_
 1 -           - alias suffix - 0_
 1 -     - QuerySpaces
 1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.SubEntity)
@@ -662,19 +662,19 @@
 1 -           - alias suffix - 0_
 1 -           - suffixed key columns - {subId1_0_0_}
 1 - 
+1 - ----------T--:--:--.--- FINE [hibernate]  Snapshot select: select testentity_.id from test_entity_table testentity_ where testentity_.id=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for action ACTION_MERGE on entity alma.hibernate.test.SubEntity: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for action ACTION_REFRESH on entity alma.hibernate.test.SubEntity: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
+1 - ----------T--:--:--.--- FINE [hibernate] Static SQL for entity: alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINE [hibernate]  Version select: select id from test_entity_table where id =?
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate]  Delete 0: delete from test_entity_table where id=?
 1 - ----------T--:--:--.--- FINE [hibernate]  Identity insert: insert into test_entity_table (id) values (default)
 1 - ----------T--:--:--.--- FINE [hibernate]  Insert 0: insert into test_entity_table (id) values (?)
-1 - ----------T--:--:--.--- FINE [hibernate]  Snapshot select: select testentity_.id from test_entity_table testentity_ where testentity_.id=?
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for action ACTION_REFRESH on entity alma.hibernate.test.SubEntity: select subentity0_.subId as subId1_0_0_, subentity0_.name as name2_0_0_, subentity0_.parentId as parentId3_0_0_ from sub_entity_table subentity0_ where subentity0_.subId=?
-1 - ----------T--:--:--.--- FINE [hibernate] Static SQL for entity: alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINE [hibernate]  Update 0: null
-1 - ----------T--:--:--.--- FINE [hibernate]  Version select: select id from test_entity_table where id =?
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
@@ -685,433 +685,429 @@
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting index for collection :  MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finished collection index graph : alma.hibernate.test.TestEntity.MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting collection index graph : alma.hibernate.test.TestEntity.MAP_
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_.name
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@495fac5f
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting collection element graph : alma.hibernate.test.TestEntity.MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] >>>> Starting entity identifier : alma.hibernate.test.SubEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] >>>> Starting attribute Attribute(name=name, type=string [non-identifier])
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_.name
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_.parentId
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finished collection element graph : alma.hibernate.test.TestEntity.MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] <<<< Finishing up attribute : Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] <<<< Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@495fac5f
+1 - ----------T--:--:--.--- FINEST [hibernate] >>>> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >>>> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finished collection element graph : alma.hibernate.test.TestEntity.MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped collection reference from stack : org.hibernate.loader.plan.build.internal.returns.CollectionAttributeFetchImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [NONE]: select testentity0_.id as id1_1_0_, map_1_.parentId as parentId3_1_1_, map_1_.subId as subId1_0_1_, map_1_.name as name2_1_, map_1_.subId as subId1_0_2_, map_1_.name as name2_0_2_, map_1_.parentId as parentId3_0_2_ from test_entity_table testentity0_ left outer join sub_entity_table map_1_ on testentity0_.id=map_1_.parentId where testentity0_.id=?
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
-1 -     - Returns
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing collection reference to stack : org.hibernate.loader.plan.build.internal.returns.CollectionAttributeFetchImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={parentId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting collection index graph : alma.hibernate.test.TestEntity.MAP_
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
+1 -     - Returns
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting index for collection :  MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finished collection index graph : alma.hibernate.test.TestEntity.MAP_
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@4b6690c0
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting collection element graph : alma.hibernate.test.TestEntity.MAP_
-1 - ----------T--:--:--.--- FINEST [hibernate] >>>> Starting entity identifier : alma.hibernate.test.SubEntity
-1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing collection reference to stack : org.hibernate.loader.plan.build.internal.returns.CollectionAttributeFetchImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={parentId}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting collection index graph : alma.hibernate.test.TestEntity.MAP_
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_.name
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_.parentId
 1 - ----------T--:--:--.--- FINEST [hibernate] <<<< Finishing up attribute : Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] <<<< Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >>>> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate] >>>> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
-1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting collection element graph : alma.hibernate.test.TestEntity.MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate] >>>> Starting entity identifier : alma.hibernate.test.SubEntity
+1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finished collection element graph : alma.hibernate.test.TestEntity.MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped collection reference from stack : org.hibernate.loader.plan.build.internal.returns.CollectionAttributeFetchImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@4b6690c0
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 -     - QuerySpaces
+1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
+1 -     - QuerySpaces
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [READ]: select testentity0_.id as id1_1_0_, map_1_.parentId as parentId3_1_1_, map_1_.subId as subId1_0_1_, map_1_.name as name2_1_, map_1_.subId as subId1_0_2_, map_1_.name as name2_0_2_, map_1_.parentId as parentId3_0_2_ from test_entity_table testentity0_ left outer join sub_entity_table map_1_ on testentity0_.id=map_1_.parentId where testentity0_.id=?
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
-1 -     - Returns
-1 -           - SQL table alias mapping - testentity0_
-1 -           - alias suffix - 0_
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
-1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
-1 -           - suffixed key columns - {id1_1_0_}
-1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
-1 -           - JOIN (JoinDefinedByMetadata(MAP_)) : <gen:0> -> <gen:1>
-1 -              - CollectionQuerySpaceImpl(uid=<gen:1>, collection=alma.hibernate.test.TestEntity.MAP_)
-1 -     - QuerySpaces
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
-1 -                 - SQL table alias mapping - map_1_
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
-1 -                 - alias suffix - 1_
-1 -           - SQL table alias mapping - testentity0_
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
+1 -     - Returns
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 -           - alias suffix - 0_
-1 -                 - suffixed key columns - {parentId3_1_1_}
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
+1 -           - SQL table alias mapping - testentity0_
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [UPGRADE]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
-1 -                 - entity-element alias suffix - 2_
-1 -           - suffixed key columns - {id1_1_0_}
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 -                 - 2_entity-element suffixed key columns - subId1_0_2_
-1 -           - JOIN (JoinDefinedByMetadata(MAP_)) : <gen:0> -> <gen:1>
-1 -     - Returns
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
-1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [UPGRADE_NOWAIT]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
-1 -              - CollectionQuerySpaceImpl(uid=<gen:1>, collection=alma.hibernate.test.TestEntity.MAP_)
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
-1 -                 - JOIN (JoinDefinedByMetadata(elements)) : <gen:1> -> <gen:2>
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
+1 -           - alias suffix - 0_
 1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
-1 -                    - EntityQuerySpaceImpl(uid=<gen:2>, entity=alma.hibernate.test.SubEntity)
 1 -     - Returns
-1 -                 - SQL table alias mapping - map_1_
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
-1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
-1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [UPGRADE_SKIPLOCKED]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
-1 -                 - alias suffix - 1_
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
 1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
 1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
-1 -                       - SQL table alias mapping - map_1_
+1 -           - suffixed key columns - {id1_1_0_}
+1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
+1 -           - JOIN (JoinDefinedByMetadata(MAP_)) : <gen:0> -> <gen:1>
+1 -     - QuerySpaces
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [UPGRADE_NOWAIT]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
-1 -                       - alias suffix - 2_
+1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
+1 -              - CollectionQuerySpaceImpl(uid=<gen:1>, collection=alma.hibernate.test.TestEntity.MAP_)
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
+1 -     - Returns
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
+1 -     - QuerySpaces
+1 -                 - SQL table alias mapping - map_1_
+1 -           - SQL table alias mapping - testentity0_
+1 -           - alias suffix - 0_
+1 -                 - alias suffix - 1_
 1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [UPGRADE_SKIPLOCKED]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
+1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
+1 -           - SQL table alias mapping - testentity0_
+1 -           - suffixed key columns - {id1_1_0_}
+1 -                 - suffixed key columns - {parentId3_1_1_}
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 -           - alias suffix - 0_
+1 -                 - entity-element alias suffix - 2_
+1 -           - JOIN (JoinDefinedByMetadata(MAP_)) : <gen:0> -> <gen:1>
 1 -     - QuerySpaces
 1 -     - Returns
-1 -                 - suffixed key columns - {parentId3_1_1_}
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
-1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
-1 -                 - entity-element alias suffix - 2_
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
-1 -                       - suffixed key columns - {subId1_0_2_}
-1 - 
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [FORCE]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
+1 -                 - 2_entity-element suffixed key columns - subId1_0_2_
+1 -              - CollectionQuerySpaceImpl(uid=<gen:1>, collection=alma.hibernate.test.TestEntity.MAP_)
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
+1 -           - suffixed key columns - {id1_1_0_}
+1 - 
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
+1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
+1 -                 - JOIN (JoinDefinedByMetadata(elements)) : <gen:1> -> <gen:2>
+1 -     - Returns
+1 -                 - SQL table alias mapping - map_1_
+1 -           - SQL table alias mapping - testentity0_
+1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [PESSIMISTIC_READ]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
+1 -           - alias suffix - 0_
+1 -                 - alias suffix - 1_
+1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
+1 -                    - EntityQuerySpaceImpl(uid=<gen:2>, entity=alma.hibernate.test.SubEntity)
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
+1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
+1 -     - QuerySpaces
+1 -     - Returns
+1 -                       - SQL table alias mapping - map_1_
+1 -           - suffixed key columns - {id1_1_0_}
+1 -                 - suffixed key columns - {parentId3_1_1_}
+1 - 
+1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
+1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [PESSIMISTIC_WRITE]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 -                       - alias suffix - 2_
+1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
+1 -                 - entity-element alias suffix - 2_
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
 1 -                 - 2_entity-element suffixed key columns - subId1_0_2_
 1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
 1 -     - QuerySpaces
-1 -           - SQL table alias mapping - testentity0_
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
-1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 -           - alias suffix - 0_
-1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
-1 -                 - JOIN (JoinDefinedByMetadata(elements)) : <gen:1> -> <gen:2>
 1 -     - Returns
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [PESSIMISTIC_READ]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
-1 -                    - EntityQuerySpaceImpl(uid=<gen:2>, entity=alma.hibernate.test.SubEntity)
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
-1 -     - QuerySpaces
 1 -           - SQL table alias mapping - testentity0_
-1 -           - suffixed key columns - {id1_1_0_}
-1 - 
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
-1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 -           - alias suffix - 0_
-1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
-1 -     - Returns
-1 -                       - SQL table alias mapping - map_1_
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [PESSIMISTIC_WRITE]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
-1 -                       - alias suffix - 2_
-1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
-1 -           - SQL table alias mapping - testentity0_
-1 -           - suffixed key columns - {id1_1_0_}
-1 - 
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 -           - alias suffix - 0_
-1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
-1 -     - QuerySpaces
-1 -     - Returns
 1 -                       - suffixed key columns - {subId1_0_2_}
 1 - 
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
+1 -           - alias suffix - 0_
+1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
+1 -                 - JOIN (JoinDefinedByMetadata(elements)) : <gen:1> -> <gen:2>
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
+1 -                    - EntityQuerySpaceImpl(uid=<gen:2>, entity=alma.hibernate.test.SubEntity)
+1 -     - QuerySpaces
+1 -           - SQL table alias mapping - testentity0_
+1 -           - suffixed key columns - {id1_1_0_}
+1 - 
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [PESSIMISTIC_FORCE_INCREMENT]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=? for update
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
-1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
-1 -           - suffixed key columns - {id1_1_0_}
-1 - 
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
-1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
-1 -     - QuerySpaces
-1 -     - Returns
-1 -           - SQL table alias mapping - testentity0_
-1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
-1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
-1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [OPTIMISTIC]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=?
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
 1 -           - alias suffix - 0_
 1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
 1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
-1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
+1 -                       - SQL table alias mapping - map_1_
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
-1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
+1 -                       - alias suffix - 2_
 1 -     - QuerySpaces
 1 -     - Returns
 1 -           - SQL table alias mapping - testentity0_
 1 -           - suffixed key columns - {id1_1_0_}
 1 - 
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
+1 -           - alias suffix - 0_
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
+1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
+1 -                       - suffixed key columns - {subId1_0_2_}
+1 - 
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
 1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
-1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [OPTIMISTIC_FORCE_INCREMENT]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=?
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
 1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
+1 -           - SQL table alias mapping - testentity0_
+1 -           - suffixed key columns - {id1_1_0_}
+1 - 
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [OPTIMISTIC]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=?
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : MAP_
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] .. Registering AssociationKey : AssociationKey(table=test_entity_table, columns={id}) -> org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root entity : alma.hibernate.test.TestEntity
 1 -           - alias suffix - 0_
 1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
+1 -     - Returns
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:2> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root entity : alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=MAP_, type=java.util.Map(alma.hibernate.test.TestEntity.MAP_) [non-identifier,association])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.EntityReturnImpl@xxxxxxx
 1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
+1 -     - QuerySpaces
+1 -           - suffixed key columns - {id1_1_0_}
+1 - 
+1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(entity=alma.hibernate.test.TestEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for action ACTION_MERGE on entity alma.hibernate.test.TestEntity: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=?
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for action ACTION_REFRESH on entity alma.hibernate.test.TestEntity: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=?
+1 - ----------T--:--:--.--- FINE [hibernate] Static select for entity alma.hibernate.test.TestEntity [OPTIMISTIC_FORCE_INCREMENT]: select testentity0_.id as id1_1_0_ from test_entity_table testentity0_ where testentity0_.id=?
 1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
-1 -     - QuerySpaces
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
+1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
 1 -     - Returns
 1 -           - SQL table alias mapping - testentity0_
-1 -           - suffixed key columns - {id1_1_0_}
-1 - 
 1 -           - alias suffix - 0_
-1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
 1 -        - EntityReturnImpl(entity=alma.hibernate.test.TestEntity, querySpaceUid=<gen:0>, path=alma.hibernate.test.TestEntity)
+1 -     - QuerySpaces
 1 -           - CollectionAttributeFetchImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:1>, path=alma.hibernate.test.TestEntity.MAP_)
-1 -     - QuerySpaces
-1 -           - SQL table alias mapping - testentity0_
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
 1 -           - suffixed key columns - {id1_1_0_}
 1 - 
-1 -           - alias suffix - 0_
 1 -              - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:2>, path=alma.hibernate.test.TestEntity.MAP_.<elements>)
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
-1 -     - QuerySpaces
 1 -           - SQL table alias mapping - testentity0_
-1 -           - suffixed key columns - {id1_1_0_}
-1 - 
-1 -           - alias suffix - 0_
-1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:0> -> org.hibernate.loader.plan.build.internal.spaces.CollectionQuerySpaceImpl@xxxxxxx]
 1 - ----------T--:--:--.--- FINE [hibernate] Adding QuerySpace : uid = <gen:1> -> org.hibernate.loader.plan.build.internal.spaces.EntityQuerySpaceImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing collection reference to stack : org.hibernate.loader.plan.build.internal.returns.CollectionReturnImpl@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting root collection : alma.hibernate.test.TestEntity.MAP_
-1 -           - SQL table alias mapping - testentity0_
-1 -           - suffixed key columns - {id1_1_0_}
-1 - 
+1 -           - alias suffix - 0_
+1 -     - QuerySpaces
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
 1 - ----------T--:--:--.--- FINE [hibernate] Visiting index for collection :  
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished collection index graph : alma.hibernate.test.TestEntity.MAP_
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing collection reference to stack : org.hibernate.loader.plan.build.internal.returns.CollectionReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@77b14724
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
+1 - ----------T--:--:--.--- FINEST [hibernate] Pushing fetch source to stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate]  Registering AssociationKey : AssociationKey(table=sub_entity_table, columns={parentId}) -> null
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting collection element graph : alma.hibernate.test.TestEntity.MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate]  Starting collection index graph : alma.hibernate.test.TestEntity.MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting entity identifier : alma.hibernate.test.SubEntity
-1 -           - alias suffix - 0_
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : name
-1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
-1 - ----------T--:--:--.--- FINEST [hibernate]  Finished collection element graph : alma.hibernate.test.TestEntity.MAP_
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=name, type=string [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped collection reference from stack : org.hibernate.loader.plan.build.internal.returns.CollectionReturnImpl@xxxxxxx
-1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@77b14724
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=name, type=string [non-identifier])
-1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
+1 -        - EntityQuerySpaceImpl(uid=<gen:0>, entity=alma.hibernate.test.TestEntity)
 1 -           - suffixed key columns - {id1_1_0_}
 1 - 
 1 - ----------T--:--:--.--- FINE [hibernate] Building LoadPlan...
+1 - ----------T--:--:--.--- FINE [hibernate] Visiting attribute path : parentId
+1 - ----------T--:--:--.--- FINEST [hibernate]  Finished collection element graph : alma.hibernate.test.TestEntity.MAP_
 1 - ----------T--:--:--.--- FINEST [hibernate]  Finished root collection : alma.hibernate.test.TestEntity.MAP_
-1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(collection=alma.hibernate.test.TestEntity.MAP_)
+1 - ----------T--:--:--.--- FINEST [hibernate] << Finishing up attribute : Attribute(name=parentId, type=integer [non-identifier])
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped collection reference from stack : org.hibernate.loader.plan.build.internal.returns.CollectionReturnImpl@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] Popped fetch owner from stack : org.hibernate.loader.plan.build.internal.returns.CollectionFetchableElementEntityGraph@xxxxxxx
+1 - ----------T--:--:--.--- FINEST [hibernate] >> Starting attribute Attribute(name=parentId, type=integer [non-identifier])
+1 -           - SQL table alias mapping - testentity0_
 1 - ----------T--:--:--.--- FINE [hibernate] processing queryspace <gen:0>
+1 -           - alias suffix - 0_
+1 - ----------T--:--:--.--- FINE [hibernate] LoadPlan(collection=alma.hibernate.test.TestEntity.MAP_)
 1 - ----------T--:--:--.--- FINE [hibernate] Static select for collection alma.hibernate.test.TestEntity.MAP_: select map_0_.parentId as parentId3_1_0_, map_0_.subId as subId1_0_0_, map_0_.name as name2_0_, map_0_.subId as subId1_0_1_, map_0_.name as name2_0_1_, map_0_.parentId as parentId3_0_1_ from sub_entity_table map_0_ where map_0_.parentId=?
+1 -           - suffixed key columns - {id1_1_0_}
+1 - 
 1 -     - Returns
 1 -        - CollectionReturnImpl(collection=alma.hibernate.test.TestEntity.MAP_, querySpaceUid=<gen:0>, path=[alma.hibernate.test.TestEntity.MAP_])
-1 -           - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:1>, path=[alma.hibernate.test.TestEntity.MAP_].<elements>)
-1 - ----------T--:--:--.--- FINE [hibernate] Initializing SessionFactoryRegistry : org.hibernate.internal.SessionFactoryRegistry@7f36662c
+1 - ----------T--:--:--.--- FINE [hibernate] Initializing SessionFactoryRegistry : org.hibernate.internal.SessionFactoryRegistry@xxxxxxx
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.engine.jndi.spi.JndiService]
+1 -           - (collection element) CollectionFetchableElementEntityGraph(entity=alma.hibernate.test.SubEntity, querySpaceUid=<gen:1>, path=[alma.hibernate.test.TestEntity.MAP_].<elements>)
 1 -     - QuerySpaces
-1 - ----------T--:--:--.--- FINE [hibernate] Registering SessionFactory: UUID_here
-1 -        - CollectionQuerySpaceImpl(uid=<gen:0>, collection=alma.hibernate.test.TestEntity.MAP_)
 1 - ----------T--:--:--.--- FINE [hibernate] Instantiated session factory
 1 - ----------T--:--:--.--- FINE [hibernate] Not binding SessionFactory to JNDI, no JNDI name configured
+1 - ----------T--:--:--.--- FINE [hibernate] Registering SessionFactory: UUID_here
+1 -        - CollectionQuerySpaceImpl(uid=<gen:0>, collection=alma.hibernate.test.TestEntity.MAP_)
 1 -           - SQL table alias mapping - map_0_
 1 -           - alias suffix - 0_
 1 -           - suffixed key columns - {parentId3_1_0_}
+1 - ----------T--:--:--.--- FINE [hibernate] Creating tables' unique integer identifiers
+1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
+1 - ----------T--:--:--.--- FINE [hibernate] Processing association property references
+1 - ----------T--:--:--.--- FINE [hibernate] Processing collection mappings
+1 - ----------T--:--:--.--- FINE [hibernate] Processing extends queue
+1 - ----------T--:--:--.--- FINE [hibernate] Processing extends queue
+1 - ----------T--:--:--.--- FINE [hibernate] Processing fk mappings (*ToOne and JoinedSubclass)
+1 - ----------T--:--:--.--- FINE [hibernate] Processing foreign key constraints
+1 - ----------T--:--:--.--- FINE [hibernate] Processing hbm.xml files
+1 - ----------T--:--:--.--- FINE [hibernate] Processing native query and ResultSetMapping mappings
+1 - ----------T--:--:--.--- FINEST [hibernate] Starting secondPassCompile() processing
 1 -           - entity-element alias suffix - 1_
 1 -           - 1_entity-element suffixed key columns - subId1_0_1_
 1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
-1 - ----------T--:--:--.--- FINE [hibernate] Processing extends queue
-1 - ----------T--:--:--.--- FINE [hibernate] Processing fk mappings (*ToOne and JoinedSubclass)
 1 - ----------T--:--:--.--- FINE [hibernate] Processing hbm.xml files
+1 - ----------T--:--:--.--- FINE [hibernate] Resolving reference to class: alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
+1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Starting secondPassCompile() processing
 1 - ----------T--:--:--.--- FINE [hibernate] Creating tables' unique integer identifiers
 1 - ----------T--:--:--.--- FINE [hibernate] Processing association property references
 1 - ----------T--:--:--.--- FINE [hibernate] Processing collection mappings
 1 - ----------T--:--:--.--- FINE [hibernate] Processing extends queue
+1 - ----------T--:--:--.--- FINE [hibernate] Processing extends queue
+1 - ----------T--:--:--.--- FINE [hibernate] Processing fk mappings (*ToOne and JoinedSubclass)
 1 - ----------T--:--:--.--- FINE [hibernate] Processing foreign key constraints
 1 - ----------T--:--:--.--- FINE [hibernate] Processing native query and ResultSetMapping mappings
 1 - ----------T--:--:--.--- FINE [hibernate] Resolving reference to class: alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
 1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
 1 -           - JOIN (JoinDefinedByMetadata(elements)) : <gen:0> -> <gen:1>
-1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
-1 - ----------T--:--:--.--- FINE [hibernate] Processing association property references
-1 - ----------T--:--:--.--- FINE [hibernate] Processing collection mappings
-1 - ----------T--:--:--.--- FINE [hibernate] Processing extends queue
-1 - ----------T--:--:--.--- FINE [hibernate] Processing extends queue
-1 - ----------T--:--:--.--- FINE [hibernate] Processing fk mappings (*ToOne and JoinedSubclass)
-1 - ----------T--:--:--.--- FINE [hibernate] Processing hbm.xml files
-1 - ----------T--:--:--.--- FINE [hibernate] Processing native query and ResultSetMapping mappings
-1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
-1 - ----------T--:--:--.--- FINEST [hibernate] Starting secondPassCompile() processing
-1 -              - EntityQuerySpaceImpl(uid=<gen:1>, entity=alma.hibernate.test.SubEntity)
-1 - ----------T--:--:--.--- FINE [hibernate] Creating tables' unique integer identifiers
-1 - ----------T--:--:--.--- FINE [hibernate] Processing foreign key constraints
-1 - ----------T--:--:--.--- FINE [hibernate] Resolving reference to class: alma.hibernate.test.TestEntity
 1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
 1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
-1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
-1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
-1 -                 - SQL table alias mapping - map_0_
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.tool.hbm2ddl.ImportSqlCommandExtractor]
-1 - ----------T--:--:--.--- INFO [hibernate] HHH000227: Running hbm2ddl schema export
-1 -                 - alias suffix - 1_
+1 -              - EntityQuerySpaceImpl(uid=<gen:1>, entity=alma.hibernate.test.SubEntity)
 1 - ----------T--:--:--.--- FINE [hibernate] Import file not found: /import.sql
+1 - ----------T--:--:--.--- INFO [hibernate] HHH000227: Running hbm2ddl schema export
+1 -                 - SQL table alias mapping - map_0_
+1 -                 - alias suffix - 1_
+1 - ----------T--:--:--.--- FINE [hibernateSQL] alter table sub_entity_table drop constraint FK_kpfb10h7nrwjnmer8cjv9r159
 1 -                 - suffixed key columns - {subId1_0_1_}
 1 - 
-1 - ----------T--:--:--.--- FINE [hibernateSQL] alter table sub_entity_table drop constraint FK_kpfb10h7nrwjnmer8cjv9r159
 1 - ----------T--:--:--.--- SEVERE [hibernate] HHH000389: Unsuccessful: alter table sub_entity_table drop constraint FK_kpfb10h7nrwjnmer8cjv9r159
 1 - Hibernate: alter table sub_entity_table drop constraint FK_kpfb10h7nrwjnmer8cjv9r159
-1 - ----------T--:--:--.--- FINE [hibernateSQL] drop table sub_entity_table if exists
-1 - ----------T--:--:--.--- SEVERE [hibernate] user lacks privilege or object not found: PUBLIC.SUB_ENTITY_TABLE
 1 - ----------T--:--:--.--- FINE [hibernateSQL] create table sub_entity_table (subId integer generated by default as identity (start with 1), name varchar(255), parentId integer, primary key (subId))
-1 - ----------T--:--:--.--- FINE [hibernateSQL] create table test_entity_table (id integer generated by default as identity (start with 1), primary key (id))
+1 - ----------T--:--:--.--- FINE [hibernateSQL] drop table sub_entity_table if exists
 1 - ----------T--:--:--.--- FINE [hibernateSQL] drop table test_entity_table if exists
-1 - Hibernate: drop table sub_entity_table if exists
-1 - ----------T--:--:--.--- FINE [hibernate] Processing hbm.xml files
+1 - ----------T--:--:--.--- SEVERE [hibernate] user lacks privilege or object not found: PUBLIC.SUB_ENTITY_TABLE
 1 - ----------T--:--:--.--- FINE [hibernateSQL] alter table sub_entity_table add constraint FK_kpfb10h7nrwjnmer8cjv9r159 foreign key (parentId) references test_entity_table
-1 - ----------T--:--:--.--- FINEST [hibernate] Starting secondPassCompile() processing
-1 - ----------T--:--:--.--- INFO [hibernate] HHH000230: Schema export complete
+1 - ----------T--:--:--.--- FINE [hibernateSQL] create table test_entity_table (id integer generated by default as identity (start with 1), primary key (id))
 1 - failed to flush logging queue because remote logging service has not been made available.
 1 - Hibernate: create table sub_entity_table (subId integer generated by default as identity (start with 1), name varchar(255), parentId integer, primary key (subId))
-1 - Hibernate: create table test_entity_table (id integer generated by default as identity (start with 1), primary key (id))
+1 - Hibernate: drop table sub_entity_table if exists
 1 - Hibernate: drop table test_entity_table if exists
 1 - ----------T--:--:--.--- FINE [hibernate] Creating tables' unique integer identifiers
 1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
@@ -1121,12 +1117,14 @@
 1 - ----------T--:--:--.--- FINE [hibernate] Processing extends queue
 1 - ----------T--:--:--.--- FINE [hibernate] Processing fk mappings (*ToOne and JoinedSubclass)
 1 - ----------T--:--:--.--- FINE [hibernate] Processing foreign key constraints
+1 - ----------T--:--:--.--- FINE [hibernate] Processing hbm.xml files
 1 - ----------T--:--:--.--- FINE [hibernate] Processing native query and ResultSetMapping mappings
 1 - ----------T--:--:--.--- FINE [hibernate] Resolving reference to class: alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
-1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
+1 - ----------T--:--:--.--- FINEST [hibernate] Starting secondPassCompile() processing
+1 - ----------T--:--:--.--- INFO [hibernate] HHH000230: Schema export complete
 1 - failed to flush logging queue because remote logging service has not been made available.
 1 - Hibernate: alter table sub_entity_table add constraint FK_kpfb10h7nrwjnmer8cjv9r159 foreign key (parentId) references test_entity_table
+1 - Hibernate: create table test_entity_table (id integer generated by default as identity (start with 1), primary key (id))
 1 - ----------T--:--:--.--- FINE [hibernate] Creating tables' unique integer identifiers
 1 - ----------T--:--:--.--- FINE [hibernate] Process annotated classes
 1 - ----------T--:--:--.--- FINE [hibernate] Processing association property references
@@ -1138,6 +1136,8 @@
 1 - ----------T--:--:--.--- FINE [hibernate] Processing hbm.xml files
 1 - ----------T--:--:--.--- FINE [hibernate] Processing native query and ResultSetMapping mappings
 1 - ----------T--:--:--.--- FINE [hibernate] Resolving reference to class: alma.hibernate.test.TestEntity
+1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
+1 - ----------T--:--:--.--- FINE [hibernate] Setting dialect [org.hibernate.dialect.HSQLDialect]
 1 - ----------T--:--:--.--- FINEST [hibernate] Starting secondPassCompile() processing
 1 - ----------T--:--:--.--- FINE [hibernate] Checking 0 named HQL queries
 1 - ----------T--:--:--.--- FINE [hibernate] Checking 0 named SQL queries
@@ -1149,61 +1149,61 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.stat.spi.StatisticsImplementor]
 1 - ----------T--:--:--.--- FINE [hibernate] Statistics initialized [enabled=false]
 1 - ----------T--:--:--.--- FINEST [hibernate] Opening Hibernate Session.  tenant=null, owner=null
-1 - ----------T--:--:--.--- FINEST [hibernate] Opened session at timestamp: xxxxxxxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernate] begin
+1 - ----------T--:--:--.--- FINE [hibernate] Obtaining JDBC connection
+1 - ----------T--:--:--.--- FINEST [hibernate] Opened session at timestamp: xxxxxxxxxxxx
 1 - ----------T--:--:--.--- FINE [hibernate] initial autocommit status: false
 1 - ----------T--:--:--.--- FINE [hibernate] Obtained JDBC connection
-1 - ----------T--:--:--.--- FINE [hibernate] Obtaining JDBC connection
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.event.service.spi.EventListenerRegistry]
-1 - ----------T--:--:--.--- FINEST [hibernate] Saving transient instance
 1 - ----------T--:--:--.--- FINEST [hibernate] Transient instance of: alma.hibernate.test.SubEntity
+1 - ----------T--:--:--.--- FINEST [hibernate] Saving transient instance
 1 - ----------T--:--:--.--- FINEST [hibernate] Saving [alma.hibernate.test.SubEntity#<null>]
 1 - ----------T--:--:--.--- FINEST [hibernate] Adding an EntityIdentityInsertAction for [alma.hibernate.test.SubEntity] object
-1 - ----------T--:--:--.--- FINEST [hibernate] Executing inserts before finding non-nullable transient entities for early insert: [EntityIdentityInsertAction[alma.hibernate.test.SubEntity#<null>]]
 1 - ----------T--:--:--.--- FINEST [hibernate] Adding insert with no non-nullable, transient entities: [EntityIdentityInsertAction[alma.hibernate.test.SubEntity#<null>]]
-1 - ----------T--:--:--.--- FINE [hibernate] Executing identity-insert immediately
 1 - ----------T--:--:--.--- FINEST [hibernate] Executing insertions before resolved early-insert
+1 - ----------T--:--:--.--- FINEST [hibernate] Executing inserts before finding non-nullable transient entities for early insert: [EntityIdentityInsertAction[alma.hibernate.test.SubEntity#<null>]]
+1 - ----------T--:--:--.--- FINE [hibernate] Executing identity-insert immediately
 1 - ----------T--:--:--.--- FINEST [hibernate] Inserting entity: alma.hibernate.test.SubEntity (native id)
 1 - ----------T--:--:--.--- FINE [hibernateSQL] insert into sub_entity_table (subId, name, parentId) values (default, ?, ?)
 1 - Hibernate: insert into sub_entity_table (subId, name, parentId) values (default, ?, ?)
 1 - ----------T--:--:--.--- FINEST [hibernate] Dehydrating entity: [alma.hibernate.test.SubEntity#<null>]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering statement [org.hsqldb.jdbc.JDBCPreparedStatement@788fcafb[sql=[insert into sub_entity_table (subId, name, parentId) values (default, ?, ?)], parameters=[[null], [null]]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[insert into sub_entity_table (subId, name, parentId) values (default, ?, ?)], parameters=[[null], [null]]]]
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] binding parameter [1] as [VARCHAR] - [frodo]
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] binding parameter [2] as [INTEGER] - [null]
 1 - ----------T--:--:--.--- FINE [hibernate] Natively generated identity: 1
-1 - ----------T--:--:--.--- FINEST [hibernate] Closing result set [org.hsqldb.jdbc.JDBCResultSet@xxxxxxx]
 1 - ----------T--:--:--.--- FINEST [hibernate] Releasing result set [org.hsqldb.jdbc.JDBCResultSet@xxxxxxx]
-1 - ----------T--:--:--.--- FINEST [hibernate] Closing prepared statement [org.hsqldb.jdbc.JDBCPreparedStatement@788fcafb[sql=[insert into sub_entity_table (subId, name, parentId) values (default, ?, ?)], parameters=[[frodo], [null]]]]
-1 - ----------T--:--:--.--- FINEST [hibernate] Releasing statement [org.hsqldb.jdbc.JDBCPreparedStatement@788fcafb[sql=[insert into sub_entity_table (subId, name, parentId) values (default, ?, ?)], parameters=[[frodo], [null]]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Closing prepared statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[insert into sub_entity_table (subId, name, parentId) values (default, ?, ?)], parameters=[[frodo], [null]]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Closing result set [org.hsqldb.jdbc.JDBCResultSet@xxxxxxx]
+1 - ----------T--:--:--.--- FINEST [hibernate] Releasing statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[insert into sub_entity_table (subId, name, parentId) values (default, ?, ?)], parameters=[[frodo], [null]]]]
 1 - ----------T--:--:--.--- FINEST [hibernate] Starting after statement execution processing [ON_CLOSE]
-1 - ----------T--:--:--.--- FINEST [hibernate] No unresolved entity inserts that depended on [[alma.hibernate.test.SubEntity#1]]
 1 - ----------T--:--:--.--- FINEST [hibernate] No entity insert actions have non-nullable, transient entity dependencies.
+1 - ----------T--:--:--.--- FINEST [hibernate] No unresolved entity inserts that depended on [[alma.hibernate.test.SubEntity#1]]
 1 - ----------T--:--:--.--- FINEST [hibernate] Saving [alma.hibernate.test.TestEntity#<null>]
 1 - ----------T--:--:--.--- FINEST [hibernate] Saving transient instance
 1 - ----------T--:--:--.--- FINEST [hibernate] Transient instance of: alma.hibernate.test.TestEntity
-1 - ----------T--:--:--.--- FINEST [hibernate] Wrapped collection in role: alma.hibernate.test.TestEntity.MAP_
-1 - ----------T--:--:--.--- FINE [hibernate] Executing identity-insert immediately
-1 - ----------T--:--:--.--- FINE [hibernateSQL] insert into test_entity_table (id) values (default)
 1 - ----------T--:--:--.--- FINEST [hibernate] Adding an EntityIdentityInsertAction for [alma.hibernate.test.TestEntity] object
 1 - ----------T--:--:--.--- FINEST [hibernate] Adding insert with no non-nullable, transient entities: [EntityIdentityInsertAction[alma.hibernate.test.TestEntity#<null>]]
 1 - ----------T--:--:--.--- FINEST [hibernate] Executing insertions before resolved early-insert
 1 - ----------T--:--:--.--- FINEST [hibernate] Executing inserts before finding non-nullable transient entities for early insert: [EntityIdentityInsertAction[alma.hibernate.test.TestEntity#<null>]]
-1 - ----------T--:--:--.--- FINEST [hibernate] Inserting entity: alma.hibernate.test.TestEntity (native id)
-1 - ----------T--:--:--.--- FINE [hibernate] Natively generated identity: 1
-1 - ----------T--:--:--.--- FINEST [hibernate] Closing result set [org.hsqldb.jdbc.JDBCResultSet@xxxxxxx]
+1 - ----------T--:--:--.--- FINEST [hibernate] Wrapped collection in role: alma.hibernate.test.TestEntity.MAP_
+1 - ----------T--:--:--.--- FINE [hibernate] Executing identity-insert immediately
+1 - ----------T--:--:--.--- FINE [hibernateSQL] insert into test_entity_table (id) values (default)
 1 - ----------T--:--:--.--- FINEST [hibernate] Dehydrating entity: [alma.hibernate.test.TestEntity#<null>]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering statement [org.hsqldb.jdbc.JDBCPreparedStatement@60d1a32f[sql=[insert into test_entity_table (id) values (default)]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Inserting entity: alma.hibernate.test.TestEntity (native id)
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[insert into test_entity_table (id) values (default)]]]
+1 - ----------T--:--:--.--- FINE [hibernate] Natively generated identity: 1
+1 - ----------T--:--:--.--- FINEST [hibernate] Closing prepared statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[insert into test_entity_table (id) values (default)]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Closing result set [org.hsqldb.jdbc.JDBCResultSet@xxxxxxx]
 1 - ----------T--:--:--.--- FINEST [hibernate] Releasing result set [org.hsqldb.jdbc.JDBCResultSet@xxxxxxx]
-1 - ----------T--:--:--.--- FINEST [hibernate] Releasing statement [org.hsqldb.jdbc.JDBCPreparedStatement@60d1a32f[sql=[insert into test_entity_table (id) values (default)]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Releasing statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[insert into test_entity_table (id) values (default)]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Starting after statement execution processing [ON_CLOSE]
 1 - Hibernate: insert into test_entity_table (id) values (default)
 1 - ----------T--:--:--.--- FINE [hibernate] committing
-1 - ----------T--:--:--.--- FINEST [hibernate] Closing prepared statement [org.hsqldb.jdbc.JDBCPreparedStatement@60d1a32f[sql=[insert into test_entity_table (id) values (default)]]]
-1 - ----------T--:--:--.--- FINEST [hibernate] No entity insert actions have non-nullable, transient entity dependencies.
-1 - ----------T--:--:--.--- FINEST [hibernate] No unresolved entity inserts that depended on [[alma.hibernate.test.TestEntity#1]]
-1 - ----------T--:--:--.--- FINEST [hibernate] Starting after statement execution processing [ON_CLOSE]
 1 - ----------T--:--:--.--- FINE [hibernate] Processing flush-time cascades
 1 - ----------T--:--:--.--- FINEST [hibernate] Automatically flushing session
 1 - ----------T--:--:--.--- FINEST [hibernate] Flushing session
+1 - ----------T--:--:--.--- FINEST [hibernate] No entity insert actions have non-nullable, transient entity dependencies.
+1 - ----------T--:--:--.--- FINEST [hibernate] No unresolved entity inserts that depended on [[alma.hibernate.test.TestEntity#1]]
 1 - ----------T--:--:--.--- FINE [hibernate] Dirty checking collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Flushing entities and processing referenced collections
 1 - ----------T--:--:--.--- FINE [hibernate] Collection found: [alma.hibernate.test.TestEntity.MAP_#1], was: [<unreferenced>] (initialized)
@@ -1211,53 +1211,53 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] Scheduling collection removes/(re)creates/updates
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 insertions, 0 updates, 0 deletions to 2 objects
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 1 (re)creations, 0 updates, 0 removals to 1 collections
-1 - ----------T--:--:--.--- FINE [hibernate] Listing entities:
 1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.SubEntity{subId=1, name=frodo, parentId=null}
+1 - ----------T--:--:--.--- FINE [hibernate] Listing entities:
 1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.TestEntity{MAP_=[alma.hibernate.test.SubEntity#1], id=1}
 1 - ----------T--:--:--.--- FINEST [hibernate] Executing flush
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.engine.jdbc.batch.spi.BatchBuilder]
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing service [role=org.hibernate.jmx.spi.JmxService]
 1 - ----------T--:--:--.--- FINEST [hibernate] Building batch [size=1]
 1 - ----------T--:--:--.--- FINE [hibernateSQL] update sub_entity_table set name=? where subId=?
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering statement [org.hsqldb.jdbc.JDBCPreparedStatement@62ea3440[sql=[update sub_entity_table set name=? where subId=?], parameters=[[null], [null]]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[update sub_entity_table set name=? where subId=?], parameters=[[null], [null]]]]
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] binding parameter [1] as [VARCHAR] - [frodo]
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] binding parameter [2] as [INTEGER] - [1]
 1 - Hibernate: update sub_entity_table set name=? where subId=?
-1 - ----------T--:--:--.--- FINEST [hibernate] Closing prepared statement [org.hsqldb.jdbc.JDBCPreparedStatement@62ea3440[sql=[update sub_entity_table set name=? where subId=?], parameters=[[frodo], [1]]]]
-1 - ----------T--:--:--.--- FINEST [hibernate] Releasing statement [org.hsqldb.jdbc.JDBCPreparedStatement@62ea3440[sql=[update sub_entity_table set name=? where subId=?], parameters=[[frodo], [1]]]]
-1 - ----------T--:--:--.--- FINEST [hibernate] Starting after statement execution processing [ON_CLOSE]
-1 - ----------T--:--:--.--- FINEST [hibernate] Starting after statement execution processing [ON_CLOSE]
-1 - ----------T--:--:--.--- FINEST [hibernate] before transaction completion
+1 - ----------T--:--:--.--- FINEST [hibernate] Closing prepared statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[update sub_entity_table set name=? where subId=?], parameters=[[frodo], [1]]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Releasing statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[update sub_entity_table set name=? where subId=?], parameters=[[frodo], [1]]]]
 1 - ----------T--:--:--.--- FINEST [hibernate] Post flush
+1 - ----------T--:--:--.--- FINEST [hibernate] Starting after statement execution processing [ON_CLOSE]
+1 - ----------T--:--:--.--- FINEST [hibernate] Starting after statement execution processing [ON_CLOSE]
 1 - ----------T--:--:--.--- FINE [hibernate] begin
 1 - ----------T--:--:--.--- FINE [hibernate] committed JDBC Connection
+1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
+1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
+1 - ----------T--:--:--.--- FINEST [hibernate] before transaction completion
 1 - ----------T--:--:--.--- FINE [hibernate] initial autocommit status: false
-1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
-1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
-1 - ----------T--:--:--.--- FINE [hibernate] Dirty checking collections
 1 - ----------T--:--:--.--- FINE [hibernate] Processing flush-time cascades
 1 - ----------T--:--:--.--- FINEST [hibernate] Flushing session
+1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.SubEntity{subId=1, name=frodo, parentId=null}
 1 - ----------T--:--:--.--- FINE [hibernate] Collection found: [alma.hibernate.test.TestEntity.MAP_#1], was: [alma.hibernate.test.TestEntity.MAP_#1] (initialized)
+1 - ----------T--:--:--.--- FINE [hibernate] Dirty checking collections
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 insertions, 0 updates, 0 deletions to 2 objects
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 (re)creations, 0 updates, 0 removals to 1 collections
 1 - ----------T--:--:--.--- FINE [hibernate] Listing entities:
 1 - ----------T--:--:--.--- FINEST [hibernate] Flushing entities and processing referenced collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Processing unreferenced collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Scheduling collection removes/(re)creates/updates
-1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.SubEntity{subId=1, name=frodo, parentId=null}
 1 - ----------T--:--:--.--- FINE [hibernate] alma.hibernate.test.TestEntity{MAP_=[alma.hibernate.test.SubEntity#1], id=1}
 1 - ----------T--:--:--.--- FINEST [hibernate] Don't need to execute flush
 1 - ----------T--:--:--.--- FINE [hibernateSQL] select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering last query statement [org.hsqldb.jdbc.JDBCPreparedStatement@4c37b5b[sql=[select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId]]]
-1 - ----------T--:--:--.--- FINEST [hibernate] Registering statement [org.hsqldb.jdbc.JDBCPreparedStatement@4c37b5b[sql=[select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId]]]
-1 - Hibernate: select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId
 1 - ----------T--:--:--.--- FINEST [hibernate] Bound [1] parameters total
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering last query statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Registering statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId]]]
+1 - Hibernate: select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId
 1 - ----------T--:--:--.--- FINE [hibernate] Result set row: 0
 1 - ----------T--:--:--.--- FINEST [hibernate] Processing result set
 1 - ----------T--:--:--.--- FINEST [hibernate] Registering result set [org.hsqldb.jdbc.JDBCResultSet@xxxxxxx]
-1 - ----------T--:--:--.--- FINE [hibernate] Result row: null, EntityKey[alma.hibernate.test.TestEntity#1]
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] extracted value ([id1_1_1_] : [INTEGER]) - [1]
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] extracted value ([subId1_0_0_] : [INTEGER]) - [null]
+1 - ----------T--:--:--.--- FINE [hibernate] Result row: null, EntityKey[alma.hibernate.test.TestEntity#1]
 1 - ----------T--:--:--.--- FINE [hibernate] Result set contains (possibly empty) collection: [alma.hibernate.test.TestEntity.MAP_#1]
 1 - ----------T--:--:--.--- FINEST [hibernateSQL] extracted value ([parentId3_1_3_] : [INTEGER]) - [null]
 1 - ----------T--:--:--.--- FINEST [hibernate] Constructing collection load context for result set [org.hsqldb.jdbc.JDBCResultSet@xxxxxxx]
@@ -1265,14 +1265,14 @@
 1 - ----------T--:--:--.--- FINEST [hibernate] Done processing result set (1 rows)
 1 - ----------T--:--:--.--- FINEST [hibernate] Starting attempt to find loading collection [[alma.hibernate.test.TestEntity.MAP_#1]]
 1 - ----------T--:--:--.--- FINE [hibernate] No collections were found in result set for role: alma.hibernate.test.TestEntity.MAP_
-1 - ----------T--:--:--.--- FINEST [hibernate] Closing prepared statement [org.hsqldb.jdbc.JDBCPreparedStatement@4c37b5b[sql=[select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId]]]
 1 - ----------T--:--:--.--- FINEST [hibernate] Closing result set [org.hsqldb.jdbc.JDBCResultSet@xxxxxxx]
-1 - ----------T--:--:--.--- FINEST [hibernate] Releasing statement [org.hsqldb.jdbc.JDBCPreparedStatement@4c37b5b[sql=[select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId]]]
+1 - ----------T--:--:--.--- FINEST [hibernate] Releasing statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId]]]
 1 - ----------T--:--:--.--- FINEST [hibernate] Total objects hydrated: 0
 1 - ----------T--:--:--.--- FINE [hibernate] committing
 1 - ----------T--:--:--.--- FINE [hibernate] Dirty checking collections
 1 - ----------T--:--:--.--- FINE [hibernate] Processing flush-time cascades
 1 - ----------T--:--:--.--- FINEST [hibernate] Automatically flushing session
+1 - ----------T--:--:--.--- FINEST [hibernate] Closing prepared statement [org.hsqldb.jdbc.JDBCPreparedStatement@xxxxxxx[sql=[select this_.id as id1_1_1_, map_2_.parentId as parentId3_1_3_, map_2_.subId as subId1_0_3_, map_2_.name as name2_3_, map_2_.subId as subId1_0_0_, map_2_.name as name2_0_0_, map_2_.parentId as parentId3_0_0_ from test_entity_table this_ left outer join sub_entity_table map_2_ on this_.id=map_2_.parentId]]]
 1 - ----------T--:--:--.--- FINEST [hibernate] Flushing entities and processing referenced collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Flushing session
 1 - ----------T--:--:--.--- FINEST [hibernate] Initializing non-lazy collections
@@ -1283,21 +1283,21 @@
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 insertions, 0 updates, 0 deletions to 2 objects
 1 - ----------T--:--:--.--- FINE [hibernate] Flushed: 0 (re)creations, 0 updates, 0 removals to 1 collections
 1 - ----------T--:--:--.--- FINE [hibernate] Listing entities:
+1 - ----------T--:--:--.--- FINEST [hibernate] Executing flush
 1 - ----------T--:--:--.--- FINEST [hibernate] Processing unreferenced collections
 1 - ----------T--:--:--.--- FINEST [hibernate] Scheduling collection removes/(re)creates/updates
 1 - ----------T--:--:--.--- FINE [hibernate] committed JDBC Connection
+1 - ----------T--:--:--.--- FINE [hibernate] HHH000420: Closing un-released batch
+1 - ----------T--:--:--.--- FINE [hibernate] Releasing JDBC connection
 1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
 1 - ----------T--:--:--.--- FINEST [hibernate] after transaction completion
 1 - ----------T--:--:--.--- FINEST [hibernate] before transaction completion
 1 - ----------T--:--:--.--- FINEST [hibernate] Closing JDBC container [org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl@xxxxxxx]
+1 - ----------T--:--:--.--- FINEST [hibernate] Closing logical connection
 1 - ----------T--:--:--.--- FINEST [hibernate] Closing session
-1 - ----------T--:--:--.--- FINEST [hibernate] Executing flush
 1 - ----------T--:--:--.--- FINEST [hibernate] Post flush
 1 - ----------T--:--:--.--- FINEST [hibernate] Starting after statement execution processing [ON_CLOSE]
-1 - ----------T--:--:--.--- FINE [hibernate] HHH000420: Closing un-released batch
 1 - ----------T--:--:--.--- FINE [hibernate] Released JDBC connection
-1 - ----------T--:--:--.--- FINE [hibernate] Releasing JDBC connection
-1 - ----------T--:--:--.--- FINEST [hibernate] Closing logical connection
 1 - ----------T--:--:--.--- FINEST [hibernate] Logical connection closed
 1 - 
 1 - Time: xxx
