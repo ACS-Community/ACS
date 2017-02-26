@@ -140,6 +140,17 @@ class ACSContainerHandlerImpl : public POA_acsdaemon::ContainerDaemon {
             ::acsdaemonErrType::FailedToStopContainerEx,
     	::ACSErrTypeCommon::BadParameterEx
           );
+    
+    virtual void kill_container (
+            const char * container_name,
+            ::CORBA::Short instance_number,
+            const char * flags
+          )
+          throw(
+            CORBA::SystemException,
+            ::acsdaemonErrType::FailedToStopContainerEx,
+    	::ACSErrTypeCommon::BadParameterEx
+          );
 
     virtual void shutdown ()
       throw(

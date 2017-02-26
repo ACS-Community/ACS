@@ -4,6 +4,7 @@
 1 - <timestamp> FINER [alma.acs.logging] Changed processName='null' to 'TestLogLevelsCompTest#testGetLevels' and updated logger names.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> FINER [TestLogLevelsCompTest#testGetLevels] Orb profiling was not selected (see property 'alma.acs.orb.profiler.class').
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] will retrieve remote component 'TESTLOG6' using ACS Manager#get_component with client handle <ID>
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] component TESTLOG6 retrieved successfully.
@@ -22,6 +23,7 @@
 1 - <timestamp> FINER [alma.acs.logging] Changed processName='null' to 'TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels' and updated logger names.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> FINER [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Orb profiling was not selected (see property 'alma.acs.orb.profiler.class').
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG6' using ACS Manager#get_component with client handle <ID>
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component TESTLOG6 retrieved successfully.
@@ -150,8 +152,8 @@
 1 - Got 0 records from logger TESTLOG6
 1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to release component TESTLOG6
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully delivered a component release request for curl=TESTLOG6
 1 - <timestamp> DEBUG [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] componentReleased: 
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully delivered a component release request for curl=TESTLOG6
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
