@@ -12,7 +12,7 @@
 3 - Creating Log...
 3 - Log registered with the naming service as: Log
 3 - ACS Centralized Logger is initialized.
-3 - argv[0]=<loggingService>
+3 - argv[0]=../bin/loggingService
 3 - Resolving Notify Service...
 3 - 
 3 - multicast discovery of LoggingNotifyEventChannelFactory failed.

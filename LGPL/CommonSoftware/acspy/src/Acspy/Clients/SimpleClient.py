@@ -125,7 +125,7 @@ class PySimpleClient(BaseClient, ContainerServices):
             
         hostName = "UNKNOWN_HOST"
         try:
-            hostName = socket.gethostname().split('.')[0]
+            hostName = socket.gethostname()
         except:
             print_exc()
             print "Error getting the host name!"

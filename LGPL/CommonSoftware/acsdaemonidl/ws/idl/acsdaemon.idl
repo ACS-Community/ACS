@@ -133,13 +133,7 @@ module acsdaemon
 			in string flags) 
 				raises (acsdaemonErrType::FailedToStopContainerEx, ACSErrTypeCommon::BadParameterEx);
 				
-	/**
-	 * Kills a container, usually used when container is unresponsive
-	 */				
-	void kill_container(in string container_name, 
-			in short instance_number, 
-			in string flags) 
-				raises (acsdaemonErrType::FailedToStopContainerEx, ACSErrTypeCommon::BadParameterEx);
+				
 				
 	/** 
 	 * Shuts down the daemon.

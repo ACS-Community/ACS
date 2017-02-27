@@ -1,5 +1,4 @@
 2 - Max timeout exceeded!
 3 - DUMMY
-2 - /alma/ACS-XXXX/ACSSW/bin/../bin/acsutilBlock: line XX:PID Killed                  ( $CL_CMD > $CL_FILE 2>&1 )
 3 - DUMMY
 3 - ../bin/testacsutilBlock: line XX:PID Killed                  sleep 1

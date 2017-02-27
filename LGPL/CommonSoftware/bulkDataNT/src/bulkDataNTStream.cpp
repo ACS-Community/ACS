@@ -194,26 +194,6 @@ DDS::DomainParticipant* BulkDataNTStream::createDDSParticipant()
 	int domainID=0; //TBD: where to get domain ID
 	DDS::DomainParticipant* domainParticipant;
 
-	// In test environments where multiple developers are operating on the same subnet simultaneously,
-	// it is important to ensure that DDS communications do not interfere with one another.
-	// The mechanism by which DDS provides this isolation is through Domains.
-	// See : https://community.rti.com/glossary/domain
-	//       And while not for our exact version of DDS; still useful:
-	//       https://community.rti.com/static/documentation/connext-dds/5.2.0/doc/manuals/connext_dds/html_files/RTI_ConnextDDS_CoreLibraries_UsersManual/Content/UsersManual/ChoosingDomainID.htm
-	// A similar mechanism to isolate ACS instances is available via the $ACS_INSTANCE environment variable
-	// I (Kris) propose that we incorporate the $ACS_INSTANCE into the domainID to provide consistent isolation between developers.
-	char *acsInstance = std::getenv("ACS_INSTANCE");
-	if (acsInstance)
-	{
-		domainID = (int)strtol(acsInstance, NULL, 10);
-		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Found ACS_INSTANCE %s, using it as DDS domainID : %d",
-		                                           acsInstance, domainID));
-	}
-	else
-	{
-		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "No ACS_INSTANCE was found, DDS domainID = %d", domainID)); 
-	}
-
 	if (factory_m==NULL)
 	{
 		NullPointerExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);

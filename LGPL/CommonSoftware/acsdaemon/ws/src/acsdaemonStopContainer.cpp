@@ -29,24 +29,22 @@ static struct option long_options[] = {
         {"instance",    required_argument, 0, 'i'},
         {"host",        required_argument, 0, 'H'},
         {"daemon",      required_argument, 0, 'd'},
-        {"terminate",   no_argument,       0, 'k'},
-        {"additional",  required_argument, 0, 'a'},
-        {"synchronous", no_argument,       0, 's'},
+        {"additional",   required_argument, 0, 'a'},
+		{"synchronous", no_argument,       0, 's'},
         {0, 0, 0, '\0'}};
 
 void 
 usage(const char *argv)
 {
-    ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -c CONTAINER [-d DAEMONREF] [-H HOST] [-k] [-a more options]", argv);
+    ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -t TYPE -c CONTAINER [-d DAEMONREF] [-H HOST] [-a more options]", argv);
     ACE_OS::printf ("\t   -h, --help         show this help message\n");
     ACE_OS::printf ("\t   -c, --container     container name\n");
     ACE_OS::printf ("\t   -i, --instance     ACS instance to use\n");
     ACE_OS::printf ("\t   -H, --host         Host where to stop the container\n");
     ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
-    ACE_OS::printf ("\t   -k, --terminate    Request to kill the container instead of stop it. This is usually needed when there are unresponsive containers");
     ACE_OS::printf ("\t   -a, --additional    passthrough options for stopContaner. Put options between \"\"\n");
-    ACE_OS::printf ("\t   -s, --synchronous  Send the command to stop the container synchronously\n");
-    ACE_OS::printf ("\t                      The script will exit only when the container will have been fully stopped or if an error occurred\n");
+	ACE_OS::printf ("\t   -s, --synchronous  Send the command to stop the container synchronously\n");
+	ACE_OS::printf ("\t                      The script will exit only when the container will have been fully stopped or if an error occurred\n");
 }
 
 
@@ -58,12 +56,11 @@ main (int argc, char *argv[])
     ACE_CString hostName;
     ACE_CString containerName;
     ACE_CString additional;
-    int sync_flag = 0;
-    bool kill = false;
+	int sync_flag = 0;
     for(;;)
         {
         int option_index = 0;
-        c = getopt_long (argc, argv, "hc:i:d:H:a:sk",
+        c = getopt_long (argc, argv, "hc:i:d:H:a:s",
                          long_options, &option_index); 
         if (c==-1) break;
         switch(c)
@@ -88,9 +85,6 @@ main (int argc, char *argv[])
                     break;
                 case 's':
                     sync_flag = 1;
-                    break;
-                case 'k':
-                    kill = true;
                     break;
             }
         }
@@ -169,24 +163,16 @@ main (int argc, char *argv[])
 		}
 
 
-        if (kill) 
-        {
-		    ACS_SHORT_LOG((LM_INFO, "Calling kill_container(%s, %d, %s).", containerName.c_str(), instance, additional.c_str()));
-		    daemon->kill_container(containerName.c_str(), instance, additional.c_str());
-		    ACS_SHORT_LOG((LM_INFO, "Container kill message issued."));
-        } 
-        else {    
-		    ACS_SHORT_LOG((LM_INFO, "Calling stop_container(%s, %d, %s).", containerName.c_str(), instance, additional.c_str()));
-		    if (sync_flag)
-		    {
-		    	daemon->stop_container_sync(containerName.c_str(), instance, additional.c_str());
-		    }
-		    else
-		    {
-		    	daemon->stop_container(containerName.c_str(), instance, additional.c_str());
-		    }		
-		    ACS_SHORT_LOG((LM_INFO, "Container stop message issued."));
-        }
+		ACS_SHORT_LOG((LM_INFO, "Calling stop_container(%s, %d, %s).", containerName.c_str(), instance, additional.c_str()));
+		if (sync_flag)
+		{
+			daemon->stop_container_sync(containerName.c_str(), instance, additional.c_str());
+		}
+		else
+		{
+			daemon->stop_container(containerName.c_str(), instance, additional.c_str());
+		}		
+		ACS_SHORT_LOG((LM_INFO, "Container stop message issued."));
 
 	}
 	catch (ACSErrTypeCommon::BadParameterEx &ex)

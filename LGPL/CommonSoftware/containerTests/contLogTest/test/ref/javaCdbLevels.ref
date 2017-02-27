@@ -4,7 +4,6 @@
 1 - <timestamp> FINER [alma.acs.logging] Changed processName='null' to 'TestLogLevelsCompTest#testGetLevels' and updated logger names.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINER [TestLogLevelsCompTest#testGetLevels] Orb profiling was not selected (see property 'alma.acs.orb.profiler.class').
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] will retrieve remote component 'TESTLOG2' using ACS Manager#get_component with client handle <ID>
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] component TESTLOG2 retrieved successfully.
@@ -23,7 +22,6 @@
 1 - <timestamp> FINER [alma.acs.logging] Changed processName='null' to 'TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels' and updated logger names.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINER [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Orb profiling was not selected (see property 'alma.acs.orb.profiler.class').
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG2' using ACS Manager#get_component with client handle <ID>
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component TESTLOG2 retrieved successfully.

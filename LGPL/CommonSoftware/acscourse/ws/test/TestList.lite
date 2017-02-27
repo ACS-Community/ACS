@@ -27,4 +27,4 @@
 # --------  --------  ----------------------------------------------
 # 
 # This is all need to run.
-0 allTests "allTests"
+allTests

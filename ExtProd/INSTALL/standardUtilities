@@ -83,7 +83,7 @@ echo_failure() {
   [ "$BOOTUP" = "color" ] && $MOVE_TO_COL
   echo -n "["
   [ "$BOOTUP" = "color" ] && $SETCOLOR_FAILURE
-  echo -n $"==> FAILED"
+  echo -n $"FAILED"
   [ "$BOOTUP" = "color" ] && $SETCOLOR_NORMAL
   echo -n "]"
   echo -ne "\r\n"

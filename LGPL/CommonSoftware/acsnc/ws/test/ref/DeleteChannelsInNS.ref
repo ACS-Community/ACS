@@ -15,7 +15,7 @@
 8 - Channel singleChannel4@ALARMSYSTEM[X.X.X.X:PPPP] deleted in the Naming Service
 9 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
 10 - + MC_NamedChNotifyEventChannelFactory: Object Reference
-4 - + singleChannel4@ALARMSYSTEM-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
+4 - + MC_NamedChNotifyEventChannelFactory: Object Reference
 5 - Channel singleChannel2@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
 6 - Channel LoggingChannel@LOGGING-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
 7 - Channel ArchivingChannel@ARCHIVING-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
@@ -30,12 +30,12 @@
 5 - Channel blarIL@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
 10 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
 1 - Manager reference narrowed.
-4 - + MC_NamedChNotifyEventChannelFactory: Object Reference
+4 - + ArchivingChannel@ARCHIVING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 5 - Channel blar@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
 10 - |   Protocol: IIOP
 1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
 4 - |   Protocol: IIOP
-5 - Channel blarIL@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
+5 - Channel singleChannel1@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
 10 - |   Endpoint: X.X.X.X:PPPP
 1 - Configuration information for container 'bilboContainer' not available.
 4 - |   Endpoint: X.X.X.X:PPPP
@@ -43,14 +43,14 @@
 10 - + AcsAlarmService: Object Reference
 1 - Starting as dynamic container.
 4 - + NamedCh@DEFAULTDOMAIN (Kind: channels): Object Reference
-5 - Channel singleChannel1@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
+5 - Channel singleChannel2@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
 10 - |   Protocol: IIOP
 4 - |   Protocol: IIOP
-5 - Channel singleChannel2@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
+5 - Channel singleChannel3@domainName1-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
 10 - |   Endpoint: X.X.X.X:PPPP
 1 - ContainerStatusMsg: Startup begins
 4 - |   Endpoint: X.X.X.X:PPPP
-5 - Channel singleChannel3@domainName1-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
+5 - Channel blarIL@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
 10 - + CDB: Object Reference
 1 - ContainerStatusMsg: ORB initialization begins
 4 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
@@ -66,19 +66,19 @@
 10 - |   Endpoint: X.X.X.X:PPPP
 4 - |   Endpoint: X.X.X.X:PPPP
 10 - + ACSLogSvc: Object Reference
-4 - + blarIL@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
+4 - + singleChannel4@ALARMSYSTEM-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 10 - |   Protocol: IIOP
 4 - |   Protocol: IIOP
 10 - |   Endpoint: X.X.X.X:PPPP
 4 - |   Endpoint: X.X.X.X:PPPP
 10 - + AlarmNotifyEventChannelFactory: Object Reference
-4 - + singleChannel3@domainName1 (Kind: channels): Object Reference
+4 - + singleChannel1@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 10 - |   Protocol: IIOP
 4 - |   Protocol: IIOP
 10 - |   Endpoint: X.X.X.X:PPPP
 4 - |   Endpoint: X.X.X.X:PPPP
 10 - + InterfaceRepository: Object Reference
-4 - + blar@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
+4 - + singleChannel3@domainName1 (Kind: channels): Object Reference
 10 - |   Protocol: IIOP
 4 - |   Protocol: IIOP
 10 - |   Endpoint: X.X.X.X:PPPP
@@ -120,27 +120,24 @@
 10 - |   Endpoint: X.X.X.X:PPPP
 4 - |   Endpoint: X.X.X.X:PPPP
 10 - + LogFactory: Object Reference
-4 - + AlarmNotifyEventChannelFactory: Object Reference
+4 - + blar@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 10 - |   Protocol: IIOP
 4 - |   Protocol: IIOP
 10 - |   Endpoint: X.X.X.X:PPPP
 4 - |   Endpoint: X.X.X.X:PPPP
 10 - + Log: Object Reference
-4 - + InterfaceRepository: Object Reference
+4 - + AlarmNotifyEventChannelFactory: Object Reference
 10 - |   Protocol: IIOP
 4 - |   Protocol: IIOP
 10 - |   Endpoint: X.X.X.X:PPPP
 4 - |   Endpoint: X.X.X.X:PPPP
 10 - + ArchiveNotifyEventChannelFactory: Object Reference
-4 - + singleChannel1@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
+4 - + InterfaceRepository: Object Reference
 10 - |   Protocol: IIOP
 4 - |   Protocol: IIOP
 10 - |   Endpoint: X.X.X.X:PPPP
 4 - |   Endpoint: X.X.X.X:PPPP
 4 - + singleChannel2@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
-4 - |   Protocol: IIOP
-4 - |   Endpoint: X.X.X.X:PPPP
-4 - + singleChannel3@domainName1-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 4 - |   Protocol: IIOP
 4 - |   Endpoint: X.X.X.X:PPPP
 4 - + MC_AlarmNotifyEventChannelFactory: Object Reference
@@ -161,10 +158,7 @@
 4 - + Manager: Object Reference
 4 - |   Protocol: IIOP
 4 - |   Endpoint: X.X.X.X:PPPP
-4 - + ArchivingChannel@ARCHIVING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
-4 - |   Protocol: IIOP
-4 - |   Endpoint: X.X.X.X:PPPP
-4 - + NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
+4 - + LoggingChannel@LOGGING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 4 - |   Protocol: IIOP
 4 - |   Endpoint: X.X.X.X:PPPP
 4 - + LoggingChannel@LOGGING (Kind: channels): Object Reference
@@ -176,16 +170,22 @@
 4 - + LogFactory: Object Reference
 4 - |   Protocol: IIOP
 4 - |   Endpoint: X.X.X.X:PPPP
+4 - + singleChannel3@domainName1-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
 4 - + Log: Object Reference
+4 - |   Protocol: IIOP
+4 - |   Endpoint: X.X.X.X:PPPP
+4 - + NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 4 - |   Protocol: IIOP
 4 - |   Endpoint: X.X.X.X:PPPP
 4 - + ArchiveNotifyEventChannelFactory: Object Reference
 4 - |   Protocol: IIOP
 4 - |   Endpoint: X.X.X.X:PPPP
-4 - + LoggingChannel@LOGGING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
+4 - + singleChannel4@ALARMSYSTEM (Kind: channels): Object Reference
 4 - |   Protocol: IIOP
 4 - |   Endpoint: X.X.X.X:PPPP
-4 - + singleChannel4@ALARMSYSTEM (Kind: channels): Object Reference
+4 - + blarIL@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 4 - |   Protocol: IIOP
 4 - |   Endpoint: X.X.X.X:PPPP
 4 - + blar@DEFAULTDOMAIN (Kind: channels): Object Reference
@@ -197,13 +197,13 @@
 1 - ContainerStatusMsg: Automatic component loading begins
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
-2 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
 2 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine NamedCh notification service's process ID.
 2 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 2 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 2 - Using reactive client control.
 2 - Using 1 threads for each Supplier.
 2 - Using 1 threads for each Consumer.
+2 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
 2 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
 2 - ReBound ID: MC_NamedChNotifyEventChannelFactory
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
@@ -212,8 +212,8 @@
 1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [NamedCh_SUP1 - ] Sent an event via SimpleSupplier.

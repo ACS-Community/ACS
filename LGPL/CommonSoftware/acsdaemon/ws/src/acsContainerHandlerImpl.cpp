@@ -354,57 +354,6 @@ void ACSContainerHandlerImpl::stop_container_sync (
     }
 }//stop_container_sync
 
-void ACSContainerHandlerImpl::kill_container (
-    const char * container_name,
-    ::CORBA::Short instance_number,
-    const char * flags
-    )
-    throw(
-			CORBA::SystemException,
-			::acsdaemonErrType::FailedToStopContainerEx,
-			::ACSErrTypeCommon::BadParameterEx
-			)
-{
-    if (container_name == 0 ||
-	*container_name == 0)
-	{
-	::ACSErrTypeCommon::BadParameterExImpl ex(__FILE__, __LINE__,
-						  "::ACSContainerDaemonImpl::stop_container");
-	ex.setParameter("container_name");
-	throw ex.getBadParameterEx();
-	}
-
-    const char * cmdln = (flags ? flags : "");
-
-    //get the directory name to store the container stdout
-    std::string containerName(container_name);
-    std::string logDirectory=m_daemonUtils.getLogDirectoryForContainer(containerName);
-
-    // execute: "acsStopContainer -b <instance> <name> <args>"
-    // TODO checks for ';', '&', '|' chars, they can run any other command!
-    char command[1000];
-    snprintf(
-    		command,
-    		1000,
-    		"acsStopContainer -k -b %d %s %s &> %sacsStopContainer_%s_%s&",
-    		instance_number,
-    		container_name,
-    		cmdln,
-    		logDirectory.c_str(),
-    		m_daemonUtils.getSimpleContainerName(containerName).c_str(),
-    		m_daemonUtils.getTimestamp().c_str());
-
-    ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
-
-    int result = ACE_OS::system(command);
-
-    if (result < 0)
-	{
-	throw ::acsdaemonErrType::FailedToStopContainerExImpl(
-	    __FILE__, __LINE__,
-	    __PRETTY_FUNCTION__).getFailedToStopContainerEx();
-	}
-}
 
 
 void

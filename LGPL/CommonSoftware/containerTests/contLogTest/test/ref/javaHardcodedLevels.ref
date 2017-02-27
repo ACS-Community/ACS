@@ -4,7 +4,6 @@
 1 - <timestamp> FINER [alma.acs.logging] Changed processName='null' to 'TestLogLevelsCompTest#testGetLevels' and updated logger names.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINER [TestLogLevelsCompTest#testGetLevels] Orb profiling was not selected (see property 'alma.acs.orb.profiler.class').
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] will retrieve remote component 'TESTLOG2' using ACS Manager#get_component with client handle <ID>
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] component TESTLOG2 retrieved successfully.
@@ -23,7 +22,6 @@
 1 - <timestamp> FINER [alma.acs.logging] Changed processName='null' to 'TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels' and updated logger names.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINER [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Orb profiling was not selected (see property 'alma.acs.orb.profiler.class').
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG2' using ACS Manager#get_component with client handle <ID>
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component TESTLOG2 retrieved successfully.
@@ -38,8 +36,8 @@
 1 - (level=1) dummy log message for core level 1/TRACE
 1 - (level=2) dummy log message for core level 2/DELOUSE
 1 - (level=3) dummy log message for core level 3/DEBUG
-1 - (level=5) dummy log message for core level 5/NOTICE
 1 - (level=4) dummy log message for core level 4/INFO
+1 - (level=5) dummy log message for core level 5/NOTICE
 1 - (level=6) dummy log message for core level 6/WARNING
 1 - (level=8) dummy log message for core level 8/ERROR
 1 - (level=9) dummy log message for core level 9/CRITICAL

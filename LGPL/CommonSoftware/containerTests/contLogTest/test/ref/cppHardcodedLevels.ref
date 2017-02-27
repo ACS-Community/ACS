@@ -4,26 +4,22 @@
 1 - <timestamp> FINER [alma.acs.logging] Changed processName='null' to 'TestLogLevelsCompTest#testGetLevels' and updated logger names.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINER [TestLogLevelsCompTest#testGetLevels] Orb profiling was not selected (see property 'alma.acs.orb.profiler.class').
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] will retrieve remote component 'TESTLOG4' using ACS Manager#get_component with client handle <ID>
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] component TESTLOG4 retrieved successfully.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
 1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] authenticate called: id=XXX; question=Identify yourself
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] Manager login done, handle <ID> obtained.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method and LoggingConfigurable: 2, 2, 99, 99, 99
+1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method (hardcoded remote, local, effective): 2, 2, 2, 2, 2
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] about to release component TESTLOG4
-1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully delivered a component release request for curl=TESTLOG4
-1 - <timestamp> DEBUG [TestLogLevelsCompTest#testGetLevels] componentReleased: 
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] about to log out from manager...
+1 - <timestamp> INFO [TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG4
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] about to log out from manager...
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] logged out from manager.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testGetLevels] logged out from manager.
-1 - .<timestamp> DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
-1 - <timestamp> FINER [alma.acs.logging] Changed processName='null' to 'TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels' and updated logger names.
+1 - .<timestamp> DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
-1 - <timestamp> FINER [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Orb profiling was not selected (see property 'alma.acs.orb.profiler.class').
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] will retrieve remote component 'TESTLOG4' using ACS Manager#get_component with client handle <ID>
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component TESTLOG4 retrieved successfully.
@@ -31,7 +27,7 @@
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] authenticate called: id=XXX; question=Identify yourself
 1 - <timestamp> FINE [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Manager login done, handle <ID> obtained.
 1 - <timestamp> FINER [alma.acs.logging] Changed processName='TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels' to 'jlogEngine' and updated logger names.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 1
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 1 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 11 records from logger TESTLOG4
@@ -47,7 +43,7 @@
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 2
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 2 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 10 records from logger TESTLOG4
@@ -62,7 +58,7 @@
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 3
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 3 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 9 records from logger TESTLOG4
@@ -76,7 +72,7 @@
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 4
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 4 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 8 records from logger TESTLOG4
@@ -89,7 +85,7 @@
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 5
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 5 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 7 records from logger TESTLOG4
@@ -101,7 +97,7 @@
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 6
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 6 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 6 records from logger TESTLOG4
@@ -112,7 +108,7 @@
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 8
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 8 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 5 records from logger TESTLOG4
@@ -122,7 +118,7 @@
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 9
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 9 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 4 records from logger TESTLOG4
@@ -131,7 +127,7 @@
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 10
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 10 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 3 records from logger TESTLOG4
@@ -139,14 +135,14 @@
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 11
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 11 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 2 records from logger TESTLOG4
 1 - (level=11) dummy log message for core level 11/Emergency
 1 - (level=11) ===last log message===
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Sending a log with level OFF did not throw exception.
-1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG4 (running in container bilboContainer) to 99
+1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container bilboContainer to 99 to be used by component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG4
 1 - <timestamp> INFO [TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 0 records from logger TESTLOG4

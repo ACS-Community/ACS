@@ -21,4 +21,3 @@ s/[(0-9][0-9|)]* EXCEPTION/(<ID>) EXCEPTION/g
 s/Time: [0-9.]*/Time: <seconds>/g
 s/id=[0-9.]*/id=XXX/g
 s/_JAVA activated and initialized in [0-9]* ms/_JAVA activated and initialized in <N> ms/g
-s/Suspiciously slow NC disconnect in [0-9]* ms/Suspiciously slow NC disconnect in <N> ms/g
