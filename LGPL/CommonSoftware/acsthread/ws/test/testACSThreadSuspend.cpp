@@ -109,7 +109,8 @@ int main(int argc, char *argv[])
      * Waits a couple of iterations
      */
     sleep(12);
-
+    tm.terminateAll();
+    sleep(5);
     /*
      * done
      */ 

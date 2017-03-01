@@ -91,6 +91,8 @@ cd ../PRODUCTS
 rm -rf Python-2.7.10
 tar zxf Python-2.7.10.tar.gz
 
+PATCH_LOC=`pwd`
+
 cd Python-2.7.10
 
 
@@ -217,6 +219,9 @@ fi
 #./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared 
 make
 make install
+
+cd $PYTHON_ROOT
+patch -p1 < $PATCH_LOC/python-threading.patch
 
 cd $CWD
 echo Python installation done!
