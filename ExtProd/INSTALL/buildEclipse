@@ -59,17 +59,17 @@ fi
 # Unpack the tar file
 # put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/Eclipse
 #
-VERSION=3.6.1
-echo "unpacking the archives for Eclipse "$VERSION
-SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-$ARCH_VERSION.tar.gz
-cd $SDKDIR
-tar zxf $SDKFILE
-echo "$SDKFILE installed."
-DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip
-unzip -oq $DELTAPACKFILE
-echo "$DELTAPACKFILE installed."
-echo "done with v.$VERSION"
-echo ""
+#VERSION=3.6.1
+#echo "unpacking the archives for Eclipse "$VERSION
+#SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-$ARCH_VERSION.tar.gz
+#cd $SDKDIR
+#tar zxf $SDKFILE
+#echo "$SDKFILE installed."
+#DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip
+#unzip -oq $DELTAPACKFILE
+#echo "$DELTAPACKFILE installed."
+#echo "done with v.$VERSION"
+#echo ""
 
 
 #

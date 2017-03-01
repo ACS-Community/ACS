@@ -1,26 +1,30 @@
-ExampleTestCase::example : assertion
-ExampleTestCase::anotherExample : assertion
-ExampleTestCase::testAdd : assertion
-ExampleTestCase::testEqualscppunitExampleTestFailures.cpp:64:Assertion
-Test name: ExampleTestCase::example
+
+
+!!!FAILURES!!!
+Test Results:
+Run:  4   Failures: 4   Errors: 0
+
+
+1) test: ExampleTestCase::example (F) line: 61 cppunitExampleTestFailures.cpp
 double equality assertion failed
 - Expected: 1
 - Actual  : 1.1
 - Delta   : 0.05
 
-Test name: ExampleTestCase::anotherExample
+
+2) test: ExampleTestCase::anotherExample (F) line: 71 cppunitExampleTestFailures.cpp
 assertion failed
 - Expression: 1 == 2
 
-Test name: ExampleTestCase::testAdd
+
+3) test: ExampleTestCase::testAdd (F) line: 85 cppunitExampleTestFailures.cpp
 assertion failed
 - Expression: result == 6.0
 
-Test name: ExampleTestCase::testEquals
+
+4) test: ExampleTestCase::testEquals (F) line: 104 cppunitExampleTestFailures.cpp
 equality assertion failed
 - Expected: 12
 - Actual  : 13
 
-Failures !!!
-Run: 4   Failure total: 4   Failures: 4   Errors: 0
- : assertion
+

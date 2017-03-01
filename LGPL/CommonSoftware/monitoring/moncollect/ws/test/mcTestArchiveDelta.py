@@ -113,17 +113,59 @@ print " - longProp:      20"
 print " - longSeqProp:   10"
 print " - patternProp:   4"
 
+MIN_NUM_VALUES=9
+SEQ_SIZE=25
+def check_data(blob, step, min_size):
+    global SEQ_SIZE
+    value, old_value, wrong_step = None, None, False
+    size = 0
+    for blobData in any.from_any(blob.blobDataSeq):
+        if type(blobData['value']) == list:
+            value = blobData['value'][0]
+            seq_size = len(blobData['value'])
+            if seq_size != SEQ_SIZE:
+                print "Error! We expected a sequence of ", seq_size," values but the sequence was:  ", blobData['value']
+        else:
+            value = blobData['value']
+        if value == old_value:
+            print "Error! Current and previous values are the same!: ", value, " = ", old_value
+        elif value != None and old_value != None:
+            if (old_value + step) != value:
+                print "Error! Wrong value. Current=", value, ", Previous=", old_value, ", Step=", step
+                wrong_step = True
+        old_value = value
+        size += 1
+    if wrong_step == False:
+        print "Great! All values match the incremental pattern"
+    if size < min_size:
+        print "Error! We expected at least %d values but there was %d" % (min_size,size)
+
+step = 1
 print "Number of Devices:", len(data);
 for d in data:
     print d.componentName, d.deviceSerialNumber 
     for blob in d.monitorBlobs:
-        print "\t", blob.propertyName, blob.propertySerialNumber
+        print "\t", blob.propertyName, ":::", blob.propertySerialNumber
+        if blob.propertyName.find("doubleSeqProp") >= 0:
+            step = 2
+        elif blob.propertyName.find("doubleProp") >= 0:
+            step = 2
+        elif blob.propertyName.find("longSeqProp") >= 0:
+            step = 10
+        elif blob.propertyName.find("longProp") >= 0:
+            step = 20
+        elif blob.propertyName.find("patternProp") >= 0:
+            step = 4
+
+        check_data(blob, step, MIN_NUM_VALUES)
+
+        """ 
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
             if not "-" in str(blobData) and i<10:
                 print "\t\t", blobData
                 i+=1
-
+        """
 mc.deregisterMonitoredDevice(cname)
 
 #cleanly disconnect

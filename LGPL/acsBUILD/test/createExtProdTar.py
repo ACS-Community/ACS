@@ -32,7 +32,6 @@ from subprocess import call
 acsExtProdPackages = (
                       "ant",
                       "maven",
-                      "DDS",
                       "Eclipse",
                       "Eclipse4",
                       "JacORB",

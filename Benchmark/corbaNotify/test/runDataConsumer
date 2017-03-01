@@ -1,0 +1,9 @@
+#!/bin/bash
+# $1: Maximum allowed delay in seconds (e.g. 1.5). 0 means not applicable
+# Capture all output from this script to a file. TAT otherwise loses the prologue output.
+#LOGFILE=$ACS_TMP/runDataConsumer.out
+#exec > $LOGFILE 2>&1
+
+NS_PORT=`acsstartupNotifyPort NamedCh`
+
+pDataConsumer -c $ACS_TMP/channel_id_pData -r "corbaloc:iiop:$HOST:$NS_PORT/NamedChNotifyEventChannelFactory" -d $1

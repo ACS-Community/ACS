@@ -846,9 +846,14 @@ $(if $5, \
 
 do_lib_$2: $($2_lib_prereq)
 
-clean_lib_$2: $($2_clean_prereq)
+clean_lib_$2: $($2_clean_prereq) clean_gcov_lib_$2
 	$(AT)$(RM) $($2_depList) $($2_expObjList)
 	$(AT) if [ -f $2-restart-da.mk ]; then $(RM) $2-restart-da.mk; fi
+
+.PHONY: clean_gcov_lib_$2
+clean_gcov_lib_$2:
+	$(AT)$(RM) $(wildcard $(patsubst %.o,%.gc*,$($2_expObjList)))
+
 
 clean_dist_lib_$2: clean_lib_$2;
 
@@ -868,9 +873,13 @@ $(CURDIR)/../lib/lib$2.$(SHLIB_EXT): $$(xyz_$2_OBJ) $$($2_lList)
 	@echo "== Making library: ../lib/lib$2.$(SHLIB_EXT)" 
 	-$(AT)$(RM) ../lib/lib$2.$(SHLIB_EXT)
 ifeq ($(platform),Cygwin)
-	$(AT)$(CXX) -shared -fPIC $$($2_sharedLibName) -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc $(L_PATH) -Wl,--whole-archive $$(xyz_$2_OBJ) -Wl,--no-whole-archive $(sort $($2_libraryList)) $4 -o ../lib/lib$2.$(SHLIB_EXT)
+	$(AT)$(CXX) $(LDFLAGS_GCOV) -shared -fPIC $$($2_sharedLibName) -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc $(L_PATH) -Wl,--whole-archive $$(xyz_$2_OBJ) -Wl,--no-whole-archive $(sort $($2_libraryList)) $4 -o ../lib/lib$2.$(SHLIB_EXT)
 else
+<<<<<<< HEAD
 	$(AT)$(CXX) -shared -fPIC $$($2_sharedLibName) -Wl,--copy-dt-needed-entries $(L_PATH) $4 -o ../lib/lib$2.$(SHLIB_EXT) $$(xyz_$2_OBJ) $($2_libraryList)
+=======
+	$(AT)$(CXX) $(LDFLAGS_GCOV) -shared -fPIC $$($2_sharedLibName) $(L_PATH) $($2_libraryList) $4 -o ../lib/lib$2.$(SHLIB_EXT) $$(xyz_$2_OBJ)
+>>>>>>> alma-acs/master
 endif
 	$(AT) if [ "$$$$MAKE_NOSYMBOL_CHECK" == "" ]; then acsMakeCheckUnresolvedSymbols -w ../lib/lib$2.$(SHLIB_EXT); fi 
 	$(AT) chmod a-w+x ../lib/lib$2.$(SHLIB_EXT)
@@ -1024,8 +1033,12 @@ endif
 endif
 
 .PHONY: clean_exe_$2
-clean_exe_$2: 
+clean_exe_$2: clean_gcov_exe_$2
 	$(AT)$(RM) ../bin/$2 $($2_exe_objList) $($2_exe_depList)
+
+.PHONY: clean_gcov_exe_$2
+clean_gcov_exe_$2:
+	$(AT)$(RM) $(wildcard $(patsubst %.o,%.gc*,$($2_exe_objList)))
 
 .PHONY: clean_dist_exe_$2
 clean_dist_exe_$2: clean_exe_$2;

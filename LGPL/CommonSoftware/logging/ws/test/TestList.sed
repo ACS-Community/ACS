@@ -14,9 +14,11 @@ s/LastPeriodDuration="[.,0-9]*"/LastPeriodDuration="X"/g
 s/MessageStatistics="[.,0-9]*"/MessageStatistics="X"/g
 s/ErrorMessageStatistics="[.,0-9]*"/ErrorMessageStatistics="X"/g
 s/-nan%/ nan%/g
+s/"-nan"/"nan"/g
 s|/.*/logging/ws/test/tmp|\<logging/ws/test\>/tmp|g
 s/Routine="" Host=".*"/Routine="" Host="<host>"/g
 /acs_tmp/!{s|Log file created = .*/tmp/[^\/]*/ACS|Log file created = tmp/<host>/ACS|}
 /acs_tmp/!{s|Log file created = .*/tmp/[^\/]*/acs|Log file created = tmp/<host>/acs|}
 s/[0-9][0-9]*.[0-9][0-9]*.[0-9][0-9]*.[0-9][0-9]*:[0-9]*/X.X.X.X:YYYY/g
 s/[0-9]* logs have been lost/X logs have been lost/g
+s/argv\[0\]=.*\/loggingService/argv\[0\]=<loggingService>/g

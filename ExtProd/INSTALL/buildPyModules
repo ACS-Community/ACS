@@ -55,9 +55,52 @@ date
 
 echo "Installing for $DISTRO $REL"
 
-source $PYTHON_ROOT/bin/activate
-pip install -r ../PRODUCTS/acs.req
+echo installing Python Modules
 
+echo $SEPARATOR
+if [ ${OS} = "LINUX" ] 
+then
+	echo "Installing on $DISTRO $OS version $REL"
+else
+	echo "Installing on $OS version $REL"
+fi
+
+if [     ${DISTRO}-${REL} != "SOLARIS-5.8"       \
+     -a  ${DISTRO}-${REL} != "RHLX-7.2"           \
+     -a  ${DISTRO}-${REL} != "RHLX-7.3"           \
+     -a  ${DISTRO}-${REL} != "RHLX-9"           \
+     -a  ${DISTRO}-${REL} != "RHEL-4"           \
+     -a  ${DISTRO}-${REL} != "RHEL-5"           \
+     -a  ${DISTRO}-${REL} != "RHEL-5.3"           \
+     -a  ${DISTRO}-${REL} != "SL-4.1"           \
+     -a  ${DISTRO}-${REL} != "SL-5.3"           \
+   ]
+then
+    echo "OS not supported. Proceeding as for Linux RH 9"
+    echo ""
+fi
+
+#
+# Python - Python-2.7.10
+#
+# Notes: See README for help
+#
+cd ../PRODUCTS
+
+PY_VERSION=2.7
+
+wget https://bootstrap.pypa.io/get-pip.py -O ../PRODUCTS/get-pip.py --no-check-certificate
+python get-pip.py
+
+pip install -r acs.req.0
+pip install -r acs.req
+pip install ../PRODUCTS/gnuplot-py-1.8.tar.gz
+pip install ../PRODUCTS/matplotlib-1.2.0.tar.gz
+pip install ../PRODUCTS/Numeric-24.2.tar.gz
+pip install ../PRODUCTS/pychecker-0.8.17.tar.gz 
+pip install ../PRODUCTS/numarray-1.3.3.tar.gz
+
+cd $CWD
 echo Python Module installation done!
 date
 

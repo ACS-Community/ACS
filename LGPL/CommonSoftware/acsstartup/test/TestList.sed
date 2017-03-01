@@ -45,3 +45,4 @@ s/Stopping the CORBA TEST[0-9]* Notification Service/Stopping the CORBA TEST Not
 s/Name Service without channel entries in the endpoint [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/Name Service without channel entries in the endpoint a.b.c.d:xxxx/g
 s/([0-9]*|[0-9]*) EXCEPTION/EXCEPTION/g
 s/\[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\] deleted in the Naming Service/[a.b.c.d:xxxx] deleted in the Naming Service/g
+s/-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]_[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/-YYYY-MM-DD_HH:MM:SS/g

@@ -52,7 +52,7 @@ void CorbaNotifyUtils::delORBOptions(int &orbArgc,ACE_TCHAR*** orbArgv)
 {
 	for(int i = 0;i < orbArgc;++i)
 	{
-		delete (*orbArgv)[i];
+		delete [] (*orbArgv)[i];
 	}
 	delete [] *orbArgv;
 	*orbArgv = NULL;

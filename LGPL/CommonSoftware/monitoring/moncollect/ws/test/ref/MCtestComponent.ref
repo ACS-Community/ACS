@@ -4,52 +4,52 @@
 1 - MC_TEST_COMPONENT 
 1 - 	MC_TEST_COMPONENT:doubleSeqProp ['12124']
 1 - 		Great! All values are consecutive
-1 - 		Great! Collected at least 9 values: XX
-1 - 		Great! Collected at most 20 values: XX
+1 - 		Great! Collected at least YY values: XX
+1 - 		Great! Collected at most YY values: XX
 1 - 	MC_TEST_COMPONENT:doubleProp ['3432535']
 1 - 		Great! All values are consecutive
-1 - 		Great! Collected at least 9 values: XX
-1 - 		Great! Collected at most 20 values: XX
+1 - 		Great! Collected at least YY values: XX
+1 - 		Great! Collected at most YY values: XX
 1 - 	MC_TEST_COMPONENT:longProp []
 1 - 		Great! All values are consecutive
-1 - 		Great! Collected at least 9 values: XX
-1 - 		Great! Collected at most 20 values: XX
+1 - 		Great! Collected at least YY values: XX
+1 - 		Great! Collected at most YY values: XX
 1 - 	MC_TEST_COMPONENT:longSeqProp []
 1 - 		Great! All values are consecutive
-1 - 		Great! Collected at least 9 values: XX
-1 - 		Great! Collected at most 20 values: XX
+1 - 		Great! Collected at least YY values: XX
+1 - 		Great! Collected at most YY values: XX
 1 - 	MC_TEST_COMPONENT:patternProp []
 1 - 		Great! All values are consecutive
-1 - 		Great! Collected at least 9 values: XX
-1 - 		Great! Collected at most 20 values: XX
+1 - 		Great! Collected at least YY values: XX
+1 - 		Great! Collected at most YY values: XX
 1 - RESULTS FROM TEST CASE2: Data retrieval does not stop component monitoring
 1 - Number of Devices: 1
 1 - MC_TEST_COMPONENT 
 1 - 	MC_TEST_COMPONENT:doubleSeqProp ['12124']
 1 - 		Great! First blob has the expected value:  XX
 1 - 		Great! All values are consecutive
-1 - 		Great! Collected at least 9 values: XX
-1 - 		Great! Collected at most 20 values: XX
+1 - 		Great! Collected at least YY values: XX
+1 - 		Great! Collected at most YY values: XX
 1 - 	MC_TEST_COMPONENT:doubleProp ['3432535']
 1 - 		Great! First blob has the expected value:  XX
 1 - 		Great! All values are consecutive
-1 - 		Great! Collected at least 9 values: XX
-1 - 		Great! Collected at most 20 values: XX
+1 - 		Great! Collected at least YY values: XX
+1 - 		Great! Collected at most YY values: XX
 1 - 	MC_TEST_COMPONENT:longProp []
 1 - 		Great! First blob has the expected value:  XX
 1 - 		Great! All values are consecutive
-1 - 		Great! Collected at least 9 values: XX
-1 - 		Great! Collected at most 20 values: XX
+1 - 		Great! Collected at least YY values: XX
+1 - 		Great! Collected at most YY values: XX
 1 - 	MC_TEST_COMPONENT:longSeqProp []
 1 - 		Great! First blob has the expected value:  XX
 1 - 		Great! All values are consecutive
-1 - 		Great! Collected at least 9 values: XX
-1 - 		Great! Collected at most 20 values: XX
+1 - 		Great! Collected at least YY values: XX
+1 - 		Great! Collected at most YY values: XX
 1 - 	MC_TEST_COMPONENT:patternProp []
 1 - 		Great! First blob has the expected value:  XX
 1 - 		Great! All values are consecutive
-1 - 		Great! Collected at least 9 values: XX
-1 - 		Great! Collected at most 20 values: XX
+1 - 		Great! Collected at least YY values: XX
+1 - 		Great! Collected at most YY values: XX
 1 - RESULTS FROM TEST CASE2: Stop component monitoring
 1 - Number of Devices: 1
 1 - MC_TEST_COMPONENT 

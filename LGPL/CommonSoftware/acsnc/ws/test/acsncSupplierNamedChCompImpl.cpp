@@ -273,7 +273,7 @@ SupplierCompImpl::sendEvents(short numEvents)
 void 
 SupplierCompImpl::testReconn1(CORBA::Boolean autoreconnect,CORBA::Boolean ncRestarted)
 {
-    int32_t numSec = 20;
+    int32_t numSec = 30;
     int32_t sleepVal = 1;
     int32_t numEvents = 1000; // Number of events per second;
     int32_t numExceptions = 0;

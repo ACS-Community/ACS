@@ -26,3 +26,5 @@ s/HB: [0-9]* ([0-9]*) ACKs: [0-9]* ([0-9]*) NACKs: [0-9]* ([0-9]*)/HB: XX (YY) A
 s/AvgProcessTimeoutSec="[0-9,.]*"/AvgProcessTimeoutSec="X.YZ"/g
 s/Throughput="[0-9,.]*"/Throughput="X.YZ"/g
 s/waiting for ACKs: [0-9]*/waiting for ACKs: XY/g
+s/Found ACS_INSTANCE [0-9]/Found ACS_INSTANCE X/g
+s/using it as DDS domainID : [0-9]/using it as DDS domainID : X/g

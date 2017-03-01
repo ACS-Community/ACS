@@ -23,26 +23,32 @@
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + ArchivingChannel@ARCHIVING (Kind: channels): Object Reference
+3 - + ArchivingChannel@ARCHIVING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 5 - + NAMED_CH_2@MY_DOMAIN_2 (Kind: channels): Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + LoggingNotifyEventChannelFactory: Object Reference
+3 - + ArchivingChannel@ARCHIVING (Kind: channels): Object Reference
 5 - + NAMED_CH_1@MY_DOMAIN_1 (Kind: channels): Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + AlarmNotifyEventChannelFactory: Object Reference
+3 - + LoggingNotifyEventChannelFactory: Object Reference
 5 - + MC_ArchiveNotifyEventChannelFactory: Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
-3 - + MC_AlarmNotifyEventChannelFactory: Object Reference
+3 - + AlarmNotifyEventChannelFactory: Object Reference
 5 - + ARCHIVE_CH_1@ARCHIVING (Kind: channels): Object Reference
+3 - |   Protocol: IIOP
+5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
+5 - |   Endpoint: a.b.c.d:p
+3 - + MC_AlarmNotifyEventChannelFactory: Object Reference
+5 - + ArchivingChannel@ARCHIVING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
@@ -83,8 +89,11 @@
 5 - |   Protocol: IIOP
 3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
+3 - + LoggingChannel@LOGGING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 5 - + NamedChNotifyEventChannelFactory: Object Reference
+3 - |   Protocol: IIOP
 5 - |   Protocol: IIOP
+3 - |   Endpoint: a.b.c.d:p
 5 - |   Endpoint: a.b.c.d:p
 5 - + LoggingChannel@LOGGING (Kind: channels): Object Reference
 5 - |   Protocol: IIOP
@@ -102,6 +111,9 @@
 5 - |   Protocol: IIOP
 5 - |   Endpoint: a.b.c.d:p
 5 - + CH_2@OTHER_DOMAIN (Kind: channels): Object Reference
+5 - |   Protocol: IIOP
+5 - |   Endpoint: a.b.c.d:p
+5 - + LoggingChannel@LOGGING-YYYY-MM-DD_HH:MM:SS (Kind: NCSupport): Object Reference
 5 - |   Protocol: IIOP
 5 - |   Endpoint: a.b.c.d:p
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
@@ -123,9 +135,11 @@
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
 6 - Channel LoggingChannel@LOGGING[a.b.c.d:xxxx] deleted in the Naming Service
 6 - Channel LOGGING_CH_1@LOGGING[a.b.c.d:xxxx] deleted in the Naming Service
+6 - Channel LoggingChannel@LOGGING-YYYY-MM-DD_HH:MM:SS[a.b.c.d:xxxx] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
 6 - Channel ARCHIVE_CH_1@ARCHIVING[a.b.c.d:xxxx] deleted in the Naming Service
 6 - Channel ArchivingChannel@ARCHIVING[a.b.c.d:xxxx] deleted in the Naming Service
+6 - Channel ArchivingChannel@ARCHIVING-YYYY-MM-DD_HH:MM:SS[a.b.c.d:xxxx] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
 6 - Channel ALARM_CH_1@ALARM[a.b.c.d:xxxx] deleted in the Naming Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NamedCh Notification Service

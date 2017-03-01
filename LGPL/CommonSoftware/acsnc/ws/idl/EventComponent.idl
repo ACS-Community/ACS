@@ -37,6 +37,20 @@ module demo
         void testReconn1(in boolean autoreconnect,in boolean ncRestarted);
     };
 
+    interface SupComp : ACS::ACSComponent
+    {
+        void execTest(in string channelName,in boolean autoreconnect,in long numSec,
+                        in long numEvents,in long sleepVal);
+    };
+
+    interface ConComp : ACS::ACSComponent
+    {
+        void execTest(in string channelName,in boolean autoreconnect);
+        void execTestResumeSuspend(in string channelName);
+        void checkCounterGreaterThan(in long value);
+        void checkCounterLowerThan(in long value);
+    };
+
     /**
      *
      */

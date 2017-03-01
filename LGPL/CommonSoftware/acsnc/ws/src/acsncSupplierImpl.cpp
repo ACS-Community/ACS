@@ -31,6 +31,10 @@
 using namespace ACSErrTypeCommon;
 
 namespace nc {
+
+    
+const uint32_t Supplier::SLEEP_TIME_BEFORE_SENDING_BUFFERED_EVENTS = 12;
+
 //-----------------------------------------------------------------------------
 Supplier::Supplier(const char* channelName, 
 	            acscomponent::ACSComponentImpl* component,
@@ -44,7 +48,7 @@ Supplier::Supplier(const char* channelName,
     count_m(0),
     guardbl(10000000,50),
     antennaName(""),
-    autoreconnect_m(false)
+    autoreconnect_m(true)
 {
     ACS_TRACE("Supplier::Supplier");
     init(static_cast<CORBA::ORB_ptr>(0));
@@ -62,7 +66,7 @@ Supplier::Supplier(const char* channelName,
     typeName_mp(0),
     count_m(0),
     guardbl(10000000,50),
-    autoreconnect_m(false)
+    autoreconnect_m(true)
 {
     ACS_TRACE("Supplier::Supplier");
     init(orb_mp);
@@ -81,7 +85,7 @@ Supplier::Supplier(const char* channelName,
     typeName_mp(0),
     count_m(0),
     guardbl(10000000,50),
-    autoreconnect_m(false)
+    autoreconnect_m(true)
 {
     ACS_TRACE("Supplier::Supplier");
 
@@ -223,6 +227,7 @@ Supplier::disconnect()
 void
 Supplier::publishEvent(const CORBA::Any &eventData)
 {
+    ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_publishMutex);
     populateHeader(eventData);
     publishEvent(event_m);
 }
@@ -230,6 +235,7 @@ Supplier::publishEvent(const CORBA::Any &eventData)
 void
 Supplier::publishEvent(const CosNotification::StructuredEvent &event)
 {
+    ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_publishMutex);
     //First a sanity check.
     if(CORBA::is_nil(proxyConsumer_m.in()) == true)
 	{
@@ -277,6 +283,7 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
 
             // Try to send buffered events
             try {
+                sleep(SLEEP_TIME_BEFORE_SENDING_BUFFERED_EVENTS); // Wait some time to allow consumers to reconnect
                 while( (tmp = eventBuff.front()) != NULL) {
                     proxyConsumer_m->push_structured_event(*tmp);
                     eventBuff.pop();
@@ -387,10 +394,10 @@ Supplier::populateHeader(const CORBA::Any &any)
 void
 Supplier::populateHeader(CosNotification::StructuredEvent &event)
 {
-    event.header.fixed_header.event_type.domain_name = getChannelDomain();
-    event.header.fixed_header.event_type.type_name = typeName_mp;//CORBA::string_dup(typeName_mp);
+    event.header.fixed_header.event_type.domain_name = CORBA::string_dup(getChannelDomain());
+    event.header.fixed_header.event_type.type_name = CORBA::string_dup(typeName_mp);
 
-    event.header.fixed_header.event_name = "";
+    event.header.fixed_header.event_name = CORBA::string_dup("");
 
     // if Names has a filterable data entry, then add it here
     event.header.variable_header.length(0);    // put nothing here
@@ -512,26 +519,25 @@ Supplier::createSupplier()
 	CosNotifyChannelAdmin::ProxyConsumer_var proxyconsumer = 0;
 	if( isAdminExt ) {
 
-		char *name = 0;
+        CORBA::String_var name;
 		if( component_mp != 0 )
 		{
-			CORBA::String_var tempName = component_mp->name();
-			name = const_cast<char*>(tempName.in());
+			name = component_mp->name();
 		}
 		else
 			name = "Unknown";
 
-		std::string proxyName(createRandomizedClientName(name));
+		std::string proxyName(createRandomizedClientName(name.in()));
 		NotifyMonitoringExt::SupplierAdmin_var supplierAdminExt = NotifyMonitoringExt::SupplierAdmin::_narrow(SupplierAdmin_m);
 
 		while( proxyconsumer == 0 ) {
 			try {
 				proxyconsumer = supplierAdminExt->obtain_named_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxyConsumerID, proxyName.c_str());
-	    		//ACS_SHORT_LOG((LM_INFO,"Consumer::createConsumer Got named proxy supplier '%s' with proxyID %d", proxyName.c_str(), proxyconsumerID));
+	    		//ACS_SHORT_LOG((LM_INFO,"Consumer::createConsumer Got named proxy supplier '%s' with proxyID %d", proxyName.c_str(), proxyConsumerID));
 			} catch (NotifyMonitoringExt::NameAlreadyUsed &ex) {
 				// If the original name is already in use, append "-<tries>" and try again
 				// until we find a free name
-				proxyName = createRandomizedClientName(name);
+				proxyName = createRandomizedClientName(name.in());
 			} catch (...) {
 				// If any unexpected problem appears, try the unnamed version
 				proxyconsumer = SupplierAdmin_m->obtain_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxyConsumerID);
@@ -634,6 +640,16 @@ void Supplier::setAntennaName(std::string antennaName) {
 void Supplier::setAutoreconnect(bool autoreconnect)
 {
     autoreconnect_m = autoreconnect;
+}
+
+bool Supplier::increaseEventBufferSize(unsigned int bufferSize)
+{
+    return eventBuff.setMaxSize(bufferSize);
+}
+
+unsigned int Supplier::getEventBufferSize() const
+{
+    return eventBuff.getMaxSize();
 }
 
 //-----------------------------------------------------------------------------

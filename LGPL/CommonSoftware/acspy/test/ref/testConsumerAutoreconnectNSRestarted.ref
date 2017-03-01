@@ -1,0 +1,166 @@
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine  notification service's process ID.
+1 - ----------T--:--:--.--- DEBUG [acsNotifyService] Removing channels entries in the Naming Service of the NotifyEventChannelFactory Notification Service [X.X.X.X:YYYY] which has been stopped
+1 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
+1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
+1 - ----------T--:--:--.--- DEBUG [acsstartupNotifyServiceStart] Deleting channels entries in the Name Service of the  Notify Service [X.X.X.X:YYYY]
+1 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
+1 - Using reactive client control.
+1 - Using 1 threads for each Supplier.
+1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
+1 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
+1 - ReBound ID: MC_NotifyEventChannelFactory
+2 - ----------T--:--:--.--- test_reconn-Consumer initCORBA - Created new channel.
+2 - ----------T--:--:--.--- test_reconn-Consumer addSubscription - EventDescription
+2 - ----------T--:--:--.--- test_reconn-Consumer addSubscription - EventDescription
+2 - ----------T--:--:--.--- test_reconn-Consumer addSubscription - EventDescription
+2 - ----------T--:--:--.--- test_reconn-Consumer addSubscription - EventDescription
+2 - ----------T--:--:--.--- test_reconn-Consumer addSubscription - EventDescription
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
+2 - ----------T--:--:--.--- ==========================  Creating 5 consumers
+2 - ----------T--:--:--.--- ==========================  Restart the Notify Service and wait some time to allow consumers reconnecting again
+2 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
+2 - ----------T--:--:--.--- DEBUG [acsNotifyService] Removing channels entries in the Naming Service of the NotifyEventChannelFactory Notification Service [X.X.X.X:YYYY] which has been stopped
+2 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
+2 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
+2 - ----------T--:--:--.--- DEBUG [acsstartupNotifyServiceStart] Deleting channels entries in the Name Service of the  Notify Service [X.X.X.X:YYYY]
+2 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
+2 - Using reactive client control.
+2 - Using 1 threads for each Supplier.
+2 - Using 1 threads for each Consumer.
+2 - ----------T--:--:--.--- test_reconn-Consumer initCORBA - Created new channel.
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
+2 - ReBound ID: MC_NotifyEventChannelFactory
+2 - ----------T--:--:--.--- ==========================  At this point the Notify Service should have been restarted and all consumers reconnected
+2 - ----------T--:--:--.--- ==========================  Create a supplier and send 20 events
+2 - ----------T--:--:--.--- ==========================  Successfully sent 20 events
+2 - ----------T--:--:--.--- ==========================  Events sent. Wait 5 seconds
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
+2 - ----------T--:--:--.--- DEBUG [acsNotifyService] Removing channels entries in the Naming Service of the NotifyEventChannelFactory Notification Service [X.X.X.X:YYYY] which has been stopped
+2 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
+2 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
+2 - ----------T--:--:--.--- DEBUG [acsstartupNotifyServiceStart] Deleting channels entries in the Name Service of the  Notify Service [X.X.X.X:YYYY]
+2 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
+2 - Using reactive client control.
+2 - Using 1 threads for each Supplier.
+2 - Using 1 threads for each Consumer.
+2 - ----------T--:--:--.--- ==========================  Great! Received 100 events
+2 - ----------T--:--:--.--- ==========================  Suspend consumers
+2 - ----------T--:--:--.--- ==========================  Restat the Notify Service and wait 15 sec while consumers are suspended
+2 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
+2 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
+2 - ReBound ID: MC_NotifyEventChannelFactory
+2 - ----------T--:--:--.--- ==========================  At this point the Notify Service should have been restarted and no consumers reconnected
+2 - ----------T--:--:--.--- ==========================  Resume consumers. All consumers should reconnect after 10 sec
+2 - ----------T--:--:--.--- test_reconn-Consumer initCORBA - Created new channel.
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- ==========================  At this point all consumers should be reconnected
+2 - ----------T--:--:--.--- ==========================  Send 20 events
+2 - ----------T--:--:--.--- ==========================  Successfully sent 20 events
+2 - ----------T--:--:--.--- ==========================  Events sent. Wait 5 seconds
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
+2 - ----------T--:--:--.--- ==========================  Great! Received 100 events
+2 - ----------T--:--:--.--- ==========================  Disabling auto reconnection of consumers
+2 - ----------T--:--:--.--- ==========================  Disabled auto reconnection of consumers
+2 - ----------T--:--:--.--- ==========================  Restarting the Notify Service and send 20 events
+2 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
+2 - ----------T--:--:--.--- DEBUG [acsNotifyService] Removing channels entries in the Naming Service of the NotifyEventChannelFactory Notification Service [X.X.X.X:YYYY] which has been stopped
+2 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
+2 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
+2 - ----------T--:--:--.--- DEBUG [acsstartupNotifyServiceStart] Deleting channels entries in the Name Service of the  Notify Service [X.X.X.X:YYYY]
+2 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
+2 - Using reactive client control.
+2 - Using 1 threads for each Supplier.
+2 - Using 1 threads for each Consumer.
+2 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
+2 - ReBound ID: MC_NotifyEventChannelFactory
+2 - ----------T--:--:--.--- test_reconn-Supplier initCORBA - Created new channel.
+2 - ----------T--:--:--.--- ==========================  Successfully sent 20 events
+2 - ----------T--:--:--.--- ==========================  Great! Received 0 events
+2 - ----------T--:--:--.--- ==========================  Enabling auto reconnection of consumers and wait to allow them to reconnect
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
+2 - ----------T--:--:--.--- DEBUG [acsNotifyService] Removing channels entries in the Naming Service of the NotifyEventChannelFactory Notification Service [X.X.X.X:YYYY] which has been stopped
+2 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
+2 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
+2 - ----------T--:--:--.--- DEBUG [acsstartupNotifyServiceStart] Deleting channels entries in the Name Service of the  Notify Service [X.X.X.X:YYYY]
+2 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
+2 - Using reactive client control.
+2 - Using 1 threads for each Supplier.
+2 - Using 1 threads for each Consumer.
+2 - ----------T--:--:--.--- ==========================  Enabled auto reconnection of consumers and all of them should be connected again
+2 - ----------T--:--:--.--- ==========================  Suspend and resume some times the consumers
+2 - ----------T--:--:--.--- ==========================  Restarting the Notify Service while consumers are suspended
+2 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
+2 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
+2 - ReBound ID: MC_NotifyEventChannelFactory
+2 - ----------T--:--:--.--- test_reconn-Supplier initCORBA - Created new channel.
+2 - ----------T--:--:--.--- ==========================  At this point the Notify Service should have been restarted
+2 - ----------T--:--:--.--- ==========================  Send 20 events after the Notify Service has been restarted and the consumers are suspended
+2 - ----------T--:--:--.--- ==========================  Successfully sent 20 events
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- ==========================  Great! Received 0 events
+2 - ----------T--:--:--.--- ==========================  Resuming the consumers and expect to reconnect to the channel
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- ==========================  At this point all consumers should have been reconnected to the channel
+2 - ----------T--:--:--.--- ==========================  Send 20 events. All consumers are already resumed
+2 - ----------T--:--:--.--- ==========================  Successfully sent 20 events
+2 - ----------T--:--:--.--- ==========================  Great! Received 100 events
+2 - ----------T--:--:--.--- ==========================  Stopping the Notify Service and wait 15 sec
+2 - ----------T--:--:--.--- Stopping Notify Service 'NotifyEventChannelFactory'
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
+2 - ----------T--:--:--.--- DEBUG [acsNotifyService] Removing channels entries in the Naming Service of the NotifyEventChannelFactory Notification Service [X.X.X.X:YYYY] which has been stopped
+2 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
+2 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+2 - ----------T--:--:--.--- test_reconn-Consumer __check_connection_and_reconnect_if_needed - Consumer couldn't reconnect to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer __check_connection_and_reconnect_if_needed - Consumer couldn't reconnect to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer __check_connection_and_reconnect_if_needed - Consumer couldn't reconnect to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer __check_connection_and_reconnect_if_needed - Consumer couldn't reconnect to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer __check_connection_and_reconnect_if_needed - Consumer couldn't reconnect to the channel 'test_reconn'
+2 - ----------T--:--:--.--- Stopped Notify Service 'NotifyEventChannelFactory'
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
+2 - ----------T--:--:--.--- DEBUG [acsstartupNotifyServiceStart] Deleting channels entries in the Name Service of the  Notify Service [X.X.X.X:YYYY]
+2 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
+2 - Using reactive client control.
+2 - Using 1 threads for each Supplier.
+2 - Using 1 threads for each Consumer.
+2 - ----------T--:--:--.--- test_reconn-Consumer initCORBA - Created new channel.
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- ==========================  Waited 15 sec with the Notify Service stopped
+2 - ----------T--:--:--.--- ==========================  Starting the Notify Service and wait 15 sec
+2 - ----------T--:--:--.--- Starting Notify Service 'NotifyEventChannelFactory'
+2 - ----------T--:--:--.--- test_reconn-Consumer reinitConnection - Consumer reconnected to the channel 'test_reconn'
+2 - ----------T--:--:--.--- Started Notify Service 'NotifyEventChannelFactory'
+2 - ReBound ID: MC_NotifyEventChannelFactory
+2 - ----------T--:--:--.--- ==========================  At this point the consumers should be connected again
+2 - ----------T--:--:--.--- ==========================  Send 20 events
+2 - ----------T--:--:--.--- ==========================  Successfully sent 20 events
+2 - ----------T--:--:--.--- ==========================  Great! Received 100 events
+2 - ----------T--:--:--.--- ==========================  Disconnect consumers except the first one
+2 - ----------T--:--:--.--- ==========================  Resume and suspend many times the first consumer
+2 - ----------T--:--:--.--- ==========================  Finished Resuming and suspending the first consumer
+2 - ----------T--:--:--.--- ==========================  Disconnect the first consumer

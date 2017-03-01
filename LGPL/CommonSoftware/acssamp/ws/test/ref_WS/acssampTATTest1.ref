@@ -7,15 +7,15 @@
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::getManager] Resolving manager...
-1 - ----------T--:--:--.--- [Container - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Container 'Container' activated.
+1 - ----------T--:--:--.--- [Container - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Container 'Container' initialized successfuly
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Manager...
-1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Logging into the Manager...
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::init] Set Naming Context to Logger.
@@ -42,9 +42,9 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libacsexmplLampImpl.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplLampImpl'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libacsexmplLampImpl.so'.
-1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::activate_component] Component 'LAMP1' activated.
 1 - ----------T--:--:--.--- [Container-Static - ] CDBProperties::getCDBAdminProps
 1 - ----------T--:--:--.--- [Container-GL - ] CORBA object  LAMP1_brightness_1000000_10000000 activated
@@ -56,9 +56,9 @@
 2 - ----------T--:--:--.--- 
 2 - ----------T--:--:--.--- Specify -m 1 when starting Naming_Service,
 2 - multicast discovery of NameService failed.
+2 - or see http://www.theaceorb.com/faq/#115
 2 - 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveNameService] NameService reference generated using localhost address: 'corbaloc::---:----/NameService'
-2 - or see http://www.theaceorb.com/faq/#115
 2 - for using NameService without multicast.
 2 - 
 2 - 
@@ -67,15 +67,15 @@
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component SAMP1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component SAMP1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'SAMP1' etherealized.
-1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'SAMP1' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacssamp.so'.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'SAMP1' deactivated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] SAMP1 released
 2 - Shutting down Container
 2 - All done!
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container-GL - ] Switched state of component LAMP1: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'LAMP1' deactivated.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::etherealizeComponent] Component 'LAMP1' etherealized.
+1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::deactivate_component] Component 'LAMP1' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libacsexmplLampImpl.so'.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::logout] Logging out from the Manager.
 1 - ----------T--:--:--.--- [Container - maci::ContainerImpl::logout] Logged out from the Manager.

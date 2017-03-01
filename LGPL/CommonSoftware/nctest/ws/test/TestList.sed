@@ -8,4 +8,6 @@ s/corbaloc::[0-9,a-z,A-Z,.,_,-]*:[0-9]*\//corbaloc::---:---\//g
 s/Manager hostname generated using localhost address: '[0-9,a-z,A-Z,.,_,-]*'/Manager hostname generated using localhost address: 'xxx'/g
 s/handle '[0-9]*'/handle 'xxx'/g
 s/[-,0-9,a-z,A-Z,.,_,/]*\/acsexmplClientFridgeNC/acsexmplClientFridgeNC/g
-s/ initialized by \w*@\S*/ initialized by user@host/g
+s/: initialized by \w*@\S*/ initialized by user@host/g
+s/Using endorsed jar files in.*/Using endorsed jar files in.../g
+s/ChannelName='ICT3870NC'.*/ChannelName='ICT3870NC' ChannelId=.../g

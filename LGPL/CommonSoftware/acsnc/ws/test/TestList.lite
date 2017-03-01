@@ -69,32 +69,71 @@ PROLOGUE acsutilTATPrologue
               "acsutilTATTestRunner acsncKillNamedNotifyS.sh NamedCh" 
 
 # Supplier with autoreconnect ON and Notify Channel is restarted
-8 SupplierAutoreconnectNCRestart "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
-                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
-                "acsutilTATTestRunner acsncTestSupReconn 1" "@SLEEP 8" \
-                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 30" \
-		        "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
+#8 SupplierAutoreconnectNCRestart "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+#                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+#                "acsutilTATTestRunner acsncTestSupReconn 1" "@SLEEP 8" \
+#                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 60" \
+#		        "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
+#
+## Supplier with autoreconnect OFF and Notify Channel is restarted
+#9 SupplierNoAutoreconnectNCRestart "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+#                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+#                "acsutilTATTestRunner acsncTestSupReconn 2" "@SLEEP 10" \
+#                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 30" \
+#		        "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
+#
+## Supplier with autoreconnect ON and Notify Channel stopped
+#10 SupplierAutoreconnectNCStopped "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+#                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+#                "acsutilTATTestRunner acsncTestSupReconn 3" "@SLEEP 8" \
+#                "acsutilTATTestRunner acsncKillNamedNotifyS.sh NamedCh" "@SLEEP 60" \
+#		        "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
+#
+## Supplier with autoreconnect OFF and Notify Channel stopped
+#11 SupplierNoAutoreconnectNCStopped "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+#                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+#                "acsutilTATTestRunner acsncTestSupReconn 4" "@SLEEP 10" \
+#                "acsutilTATTestRunner acsncKillNamedNotifyS.sh NamedCh" "@SLEEP 30" \
+#		        "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
+#
+## Supplier and consumer with autoreconnect ON and Notify Channel restarted
+#12 SupConAutoreconnectNCRestart "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+#                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+#                "acsutilTATTestRunner acsncRunConComp 1 CON_COMP_1 NamedCh autoreconnect 40 0 2000" "@SLEEP 2" \
+#                "acsutilTATTestRunner acsncRunSupComp SUP_COMP_1 NamedCh autoreconnect 30 100 1" "@SLEEP 10" \
+#                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 34" \
+#                "acsutilTATTestRunner acsStopContainer bilboContainer"
+#
+## Supplier with autoreconnect ON, consumer with autoreconnect OFF and Notify Channel restarted
+#13 SupRecConNoRecNCRestart "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+#                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+#                "acsutilTATTestRunner acsncRunConComp 1 CON_COMP_1 NamedCh no-autoreconnect 40 2000 0" "@SLEEP 2" \
+#                "acsutilTATTestRunner acsncRunSupComp SUP_COMP_1 NamedCh autoreconnect 30 100 1" "@SLEEP 10" \
+#                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 34" \
+#                "acsutilTATTestRunner acsStopContainer bilboContainer"
+#
+## Supplier and consumer with autoreconnect ON and Notify Channel restarted while consumer is suspended
+#14 SOURCE acsncTATDecreaseLogLevel SupConAutoreconnectNCRestartSusp "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+#                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+#                "acsutilTATTestRunner acsncRunConComp 2 CON_COMP_1 NamedCh" "@SLEEP 2" \
+#                "acsutilTATTestRunner acsncRunSupComp SUP_COMP_1 NamedCh autoreconnect 30 100 1" "@SLEEP 8" \
+#                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 30" \
+#                "acsutilTATTestRunner acsStopContainer bilboContainer"
+#
+#
+## Supplier and consumer with autoreconnect ON and Notify Channel restarted
+#15 SOURCE acsncTATIncreaseLogLevel SupMConAutoreconnectNCRestart "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+#                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 20" \
+#                "acsutilTATTestRunner acsncRunMConComp NamedCh autoreconnect 45 0 2000 6" "@SLEEP 12" \
+#                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 50" \
+#                "acsutilTATTestRunner acsStopContainer bilboContainer"
 
-# Supplier with autoreconnect OFF and Notify Channel is restarted
-9 SupplierNoAutoreconnectNCRestart "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+# Supplier publishing events from 6 different threads
+16 MultiThreadSupplier "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
                 "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
-                "acsutilTATTestRunner acsncTestSupReconn 2" "@SLEEP 7" \
-                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 30" \
-		        "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
+                "acsutilTATTestRunner acsncTestMThSup" "@SLEEP 25" \
+                "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
 
-# Supplier with autoreconnect ON and Notify Channel stopped
-10 SupplierAutoreconnectNCStopped "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
-                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
-                "acsutilTATTestRunner acsncTestSupReconn 3" "@SLEEP 7" \
-                "acsutilTATTestRunner acsncKillNamedNotifyS.sh NamedCh" "@SLEEP 30" \
-		        "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
-
-# Supplier with autoreconnect OFF and Notify Channel stopped
-11 SupplierNoAutoreconnectNCStopped "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
-                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
-                "acsutilTATTestRunner acsncTestSupReconn 4" "@SLEEP 7" \
-                "acsutilTATTestRunner acsncKillNamedNotifyS.sh NamedCh" "@SLEEP 30" \
-		        "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
 
 
 EPILOGUE acsutilTATEpilogue

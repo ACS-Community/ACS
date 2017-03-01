@@ -326,6 +326,28 @@ class Consumer :
     
     void setAntennaName(std::string antennaName);
 
+    /**
+     * This method is used to set the autoreconnect attribute. This is a boolean to 
+     * reconnect to the channel when the publication of an event throws an 
+     * OBJECT_NOT_EXIST exception. That is, the Notify Service doesn't exist.
+     * This could happen when the Notify Service restarts.
+     * @see autoreconnect_m
+     */
+    void setAutoreconnect(bool autoreconnect);
+
+    /**
+     * Time to wait in seconds after the last received event to consider that the consumer is not receiving events.
+     * @return Returns false when the timeout passed is 0 or negative. Otherwise returns true.
+     */
+    bool setEventReceptionTimeout(int eventReceptionTimeout); 
+
+    /**
+     * Frequency in seconds at which the connection status will be checked
+     * @return Returns false when the value given is 0 or negative. Otherwise returns true.
+     */
+    bool setConnectionCheckerFreq(int connectionCheckerFreq);
+
+
   protected:
     /**
      * Utility method.
@@ -415,6 +437,14 @@ class Consumer :
     Profiler *profiler_mp;
 
     std::string antennaName;
+
+    /**
+     * This is a boolean to reconnect to the channel when the publication of an event 
+     * throws an OBJECT_NOT_EXIST exception. That is, the Notify Service doesn't exist.
+     * This could happen when the Notify Service restarts.
+     */
+    bool autoreconnect_m;
+
   private:
 
     /**
@@ -428,6 +458,41 @@ class Consumer :
     */
     void
     init(CORBA::ORB_ptr orb);
+
+    /**
+     * Method that reinitializes the connection to the channel 
+     */
+    void reinit();
+
+    /**
+     * Method that decides when it needs to reconnect to the channel
+     */
+    bool shouldReconnect();
+
+    /**
+     * Entry point of the thread responsible for checking the connection to the channel and
+     * reconnect to it if needed.
+     */
+    static void* ncChecker(void* arg);
+
+    /**
+     * Main loop of the thread responsible for checking the connection to the channel. It calls
+     * reinit method when shouldReconnect returns true.
+     */
+    void checkNotifyChannel();
+
+    /**
+     * Creates the thread responsible for checking the connection to the channel. This method is called
+     * in consumerReady and resume. Therefore, the thread have to run when the consumer it's supposed
+     * to receive events.
+     */
+    void createCheckerThread();
+
+    /**
+     * Destroys the thread responsible for checking the connection to the channel. This method is called
+     * when the consumer is suspended or disconnected.
+     */
+    void destroyCheckerThread();
 
     /**
      * ORB used by this consumer.
@@ -473,6 +538,15 @@ class Consumer :
 
     CosNotifyChannelAdmin::AdminID adminid;
     CosNotifyChannelAdmin::ProxyID proxySupplierID;
+
+    static const bool DEFAULT_AUTORECONNECT;
+    static const int DEFAULT_EVENT_RECEPTION_TIMEOUT;
+    static const int DEFAULT_CONNECTION_CHECKER_FREQ;
+    bool stopNCCheckerThread;
+    pthread_t ncCheckerThread;
+    ACE_Thread_Mutex checkerThMutex_m;
+    int eventReceptionTimeout_m;
+    int connectionCheckerFreq_m;
     ///////////////////////////////////////////////////////////////////////////////////////
 };
  }; 

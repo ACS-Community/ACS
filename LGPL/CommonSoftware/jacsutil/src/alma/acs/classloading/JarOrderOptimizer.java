@@ -21,7 +21,16 @@
  */
 package alma.acs.classloading;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.zip.InflaterOutputStream;
 
 /**
  * Helps sort a list of jar files so that more important jar files appear first.
@@ -47,66 +57,11 @@ public class JarOrderOptimizer implements Comparator<File>
 	private boolean verbose = false;
 
 	public static final String PROPERTY_APPLICATION_TOPJARS = "acs.system.classpath.appltopjars";
-
+	
 	/**
-	 * Hardcoded list of jar files that are sufficient to start an ACS container or other basic ACS software.
-	 * The class loader will sort these jar files toward the beginning of the classpath (in the given order),
-	 * and will append jar files from the optional property <code>acs.system.classpath.appltopjars</code>.
+	 * The name of the file in the alma.acs.classloading package with the list of top jars
 	 */
-	public static final String[] orderedAcsJarNames = {
-		"jcont.jar",
-		"JavaContainerError.jar",
-		"jACSUtil.jar",
-		"jacsutil2.jar",
-		"logging_idl.jar",
-		"acsjlog.jar",
-		"repeatGuard.jar",
-		"maci.jar",
-		"maciErrType.jar",
-		"maciSchemaBindings.jar", 
-		"castor.jar",
-		// "jacorb-omgapi-3.6.jar" separate under $JACORB_HOME/endorsed/
-		"jacorb-3.6.1.jar",
-		"jacorb-services-3.6.1.jar",
-		"slf4j-api-1.7.6.jar",
-		"slf4j-acs.jar",
-		"acscomponent.jar",
-		"acsCallbacksSupport.jar",
-		"jbaci.jar",
-		"cdbSchemaBindings.jar",
-		
-		"jManager.jar",
-		"jmanagerErrType.jar",
-		"prevayler-1.02.001.jar",
-		"CDB.jar",
-		
-		"cdbDAL.jar",
-		"cdbErrType.jar",
-		"archive_xmlstore_if.jar",
-		"xmlentity.jar",
-		"systementities.jar",
-		"acserr.jar",
-		"acserrj.jar",
-		"acscommon.jar",
-		"ACSErrTypeCommon.jar",
-		"acsnc.jar",
-		"baci.jar",
-//		"xercesImpl.jar", currently separate, location defined by -Djava.endorsed.dirs=...
-		"xmljbind.jar",
-		"junit-dep-4.10.jar",
-		"oe.jar",
-		"acscommandcenter.jar",
-		"AcsCommandCenterEntities.jar",
-		"lcEngine.jar",
-		"lc.jar", // cosylab logging client
-		"jdom.jar",
-		"acsASsources.jar",
-		"acsErrTypeAlarmSourceFactory.jar",
-		"xalan.jar",
-		"xalan_serializer.jar",
-		"commons-logging-1.1.1.jar",
-		"acsContainerServices.jar"
-	};
+	public static final String ACS_TOP_JARS_FILENAME = "AcsTopJars.txt";
 	
 	/**
 	 * key = (String) jarname, value = (Integer) position.
@@ -115,12 +70,10 @@ public class JarOrderOptimizer implements Comparator<File>
 	
 	JarOrderOptimizer(boolean verbose) {
 		this.verbose = verbose;
-		// use a map for more efficient lookup of jarfile names 
-		topJarMap = new HashMap<String, Integer>();
-		int i = 0;
-		for (i = 0; i < orderedAcsJarNames.length; i++) {
-			topJarMap.put(orderedAcsJarNames[i], i);
-		}
+		
+		topJarMap = readJarsFromFile();
+		int i = topJarMap.size();
+		
 		String applJarPath = System.getProperty(PROPERTY_APPLICATION_TOPJARS);
 		if (applJarPath != null) {
 			String[] applJarNames = parseJarNames(applJarPath);
@@ -138,6 +91,42 @@ public class JarOrderOptimizer implements Comparator<File>
 //			}
 //			System.out.println();
 //		}
+	}
+	
+	/**
+	 * Get the list of files from {@value #ACS_TOP_JARS_FILENAME} file.
+	 */
+	private HashMap<String, Integer> readJarsFromFile() {
+		HashMap<String, Integer> ret = new HashMap<String, Integer>();
+		InputStream stream = getClass().getResourceAsStream("AcsTopJars.txt");
+		Reader reader = new InputStreamReader(stream);
+		try {
+		    BufferedReader br = new BufferedReader(reader);
+		    String line;
+		    int key = 0;
+		    while((line = br.readLine()) != null){
+		        // Remove comment
+		        int pos = line.indexOf('#');
+		        if (pos>=0) {
+		        	line = line.substring(0,pos).trim();
+		        }
+		        // Minimal check of the validity of the jar name
+		        //
+		        // The error will show up in the test and let us know that something is wrong in the
+		        // list of jars of the file
+		        if (line.endsWith(".jar")) {
+		        	ret.put(line, key++);
+		        } else if (!line.isEmpty()) {
+		        	System.err.println("\nWrong format of ACS top jar ["+line+"]: jar discarded!\nCheck content of "+ACS_TOP_JARS_FILENAME+"\n");
+		        }
+	        	
+	        }
+		    br.close();
+		    reader.close();
+		} catch (Throwable t) {
+			t.printStackTrace(System.err);
+		}
+		return ret;
 	}
 	
 	public int compare(File f1, File f2)

@@ -145,6 +145,8 @@ ACS::Subscription_ptr RObooleanSeq::new_subscription_Alarm (
 		throw CORBA::NO_RESOURCES();
 	}
 
+    monitorEventDispatcher_mp->subscribe(eventStrategy_p);
+
 	ACS::Subscription_var subscription =
 			ACS::Subscription::_narrow(eventStrategy_p->getCORBAReference());
 

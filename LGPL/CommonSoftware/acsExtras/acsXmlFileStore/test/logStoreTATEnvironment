@@ -1,0 +1,15 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: logStoreTATEnvironment,v 1.2 2010/10/19 12:34:41 hmeuss Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+
+set ACS_TMP $env(PWD)/tmp
+set env(ACS_TMP) $ACS_TMP
+set env(ACS_LOG_STDOUT) 4
+#
+# ___oOo___
+

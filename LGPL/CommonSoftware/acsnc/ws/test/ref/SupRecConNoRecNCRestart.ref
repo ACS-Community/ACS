@@ -1,0 +1,40 @@
+2 - Starting Container...
+2 - Retrieving CDB reference from Manager using bootstrap ORB
+2 - Resolving reference: 'corbaloc::---:----/Manager'
+2 - Manager reference narrowed.
+2 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
+2 - Configuration information for container 'bilboContainer' not available.
+2 - Starting as dynamic container.
+2 - ContainerStatusMsg: Startup begins
+2 - ContainerStatusMsg: ORB initialization begins
+2 - ContainerStatusMsg: ORB initialization ends
+1 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
+1 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
+1 - Channel NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
+1 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+1 - Using reactive client control.
+1 - Using 1 threads for each Supplier.
+1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
+1 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+2 - ContainerStatusMsg: Manager access initialization begins
+2 - ContainerStatusMsg: Manager access initialization ends
+2 - ContainerStatusMsg: Startup ends
+2 - ContainerStatusMsg: Automatic component loading begins
+2 - ContainerStatusMsg: Automatic component loading ends
+2 - ContainerStatusMsg: Ready
+2 - ----------T--:--:--.--- [SUP_COMP_1 - ] Start sending 3000 events via SimpleSupplier.
+5 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
+5 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
+5 - Channel NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
+5 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+5 - Using reactive client control.
+5 - Using 1 threads for each Supplier.
+5 - Using 1 threads for each Consumer.
+5 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
+5 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+2 - ----------T--:--:--.--- [SUP_COMP_1 - ] Finished sending 3000 events via SimpleSupplier.
+2 - ----------T--:--:--.--- [CON_COMP_1 - ] :: Great! count is lower than 2000 [XXX]
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed for the 'NamedCh' channel!
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed to destroy consumer admin for the 'NamedCh' channel!
+2 - /----/libbaci.so

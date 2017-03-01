@@ -269,7 +269,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 				// but only if the user selected at least one row
 				if (getSelectedRowCount()>0) {
 					String textUnderMouse = getCellStringContent(row, col); 
-					popupMenu.show(LogEntryTable.this,e.getX(),e.getY(),row,textUnderMouse);
+					popupMenu.show(LogEntryTable.this,e.getX(),e.getY(),row,col,textUnderMouse);
 				}
 			}
 			loggingClient.getToolBar().setZoomable(getSelectedRowCount()>1 && loggingClient.getZoomManager().isAvailable());

@@ -34,6 +34,7 @@ namespace nc {
 template <class T> void
 SimpleSupplier::publishData(T data, EventProcessingCallback<T> *evProcCallback)
 {
+    ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_publishMutex);
 	try
 	{
 		any_m <<= data;

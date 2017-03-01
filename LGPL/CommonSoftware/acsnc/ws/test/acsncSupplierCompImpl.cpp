@@ -73,6 +73,13 @@ SupplierCompImpl::testReconn1(CORBA::Boolean autoreconnect,CORBA::Boolean ncRest
 {
 	// Implemented in csncSupplierNamedChCompImpl.cpp
 }
+
+void SupplierCompImpl::sendEventsTh(void *arg)
+{
+    // Implemented in acsncMThSupplierCompImpl.cpp
+}
+
+
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(SupplierCompImpl)

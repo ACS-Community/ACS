@@ -1,0 +1,13 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: acsncTATIncreaseLogLevel,v 1.6 2008/11/13 01:57:44 cparedes Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+
+set env(ACS_LOG_STDOUT) 4 
+
+#
+# ___oOo___

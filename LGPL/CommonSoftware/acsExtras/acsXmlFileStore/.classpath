@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="CDB/|ref/" kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar" sourcepath="/ACSROOT/lib/acscomponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar" sourcepath="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/xmlentity.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jdom.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ArchiveIdentifierError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeJavaNative.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jacsutil2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/archive_xmlstore_if.jar" sourcepath="/ACSROOT/lib/archive_xmlstore_if.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar" sourcepath="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar" sourcepath="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsAlarmClients.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/alarmsysteminterface.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

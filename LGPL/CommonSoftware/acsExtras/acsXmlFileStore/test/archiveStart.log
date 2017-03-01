@@ -1,0 +1,4 @@
+ --noDirectory --endorsed -- alma.archive.manager.ArchiveMasterClient
+2016-05-18T11:32:59.362 INFO [acsStartJava] Starting Java application: alma.archive.manager.ArchiveMasterClient
+2016-05-18T11:32:59.374 INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/diska/home/almadev/introot/lib/endorsed:/alma/ACS-2016.6/ACSSW/lib/endorsed:/alma/ACS-2016.6/JacORB/lib/endorsed:
+Error: Could not find or load main class alma.archive.manager.ArchiveMasterClient

@@ -41,6 +41,8 @@
 #include <orbsvcs/CosNotifyChannelAdminS.h>
 #include <orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExtC.h>
 #include "corbaNotifyTest_ifC.h"
+#include "TimevalUtils.h"
+#include "QoSProps.h"
 
 static const std::string DT_CONSUMER = "CONSUMER";
 static const std::string DT_SUPPLIER = "SUPPLIER";
@@ -51,8 +53,10 @@ static const CosNotifyChannelAdmin::ChannelID DEFAULT_CHANNEL_ID = -1;
 static const std::string DEFAULT_IOR_NS = "";
 static const double DEFAULT_MAX_DELAY_SEC = 0;
 static const std::string DEFAULT_DELAY_TYPE = DT_SUPP_CON;
-static const int32_t DEFAULT_INTERVAL = 0;
+static const int32_t DEFAULT_INTERVAL = 1;
+static const int32_t DEFAULT_SLEEP_TIME_RECV_EVENT = 0;
 
+class ConsumerTimer;
 
 struct ConsumerParams {
 	CosNotifyChannelAdmin::ChannelID channelID;
@@ -61,9 +65,12 @@ struct ConsumerParams {
 	std::string delayType;
 	int32_t interval;
 	std::string ORBOptions;
+	uint32_t sleepTimeRecvEvent;
+    TimevalUtils::TimeoutMS timeout;
+    QoSProps *qosProps;
 };
 
-class Consumer : public POA_CosNotifyComm::PushConsumer
+class Consumer : public POA_CosNotifyComm::StructuredPushConsumer
 {
 public:
 	Consumer(void);
@@ -71,8 +78,8 @@ public:
 
 	bool run (int argc, ACE_TCHAR* argv[],const ConsumerParams &params);
 
-	virtual void push (const CORBA::Any &event);
-	virtual void disconnect_push_consumer (void);
+    virtual void push_structured_event (const CosNotification::StructuredEvent &event);
+	virtual void disconnect_structured_push_consumer (void);
 	virtual void offer_change(const CosNotification::EventTypeSeq&, const CosNotification::EventTypeSeq&);
 
 	uint64_t getNumEventsReceived() const;
@@ -80,9 +87,9 @@ public:
 protected:
 	bool init_ORB(int argc, ACE_TCHAR* argv[]);
 	bool getNotificationChannel(const std::string &iorNS,
-			CosNotifyChannelAdmin::ChannelID channelID,
+			CosNotifyChannelAdmin::ChannelID &channelID,
 			CosNotifyChannelAdmin::EventChannel_var &channel,
-			std::string &errMsg);
+			std::string &errMsg,const ConsumerParams &params);
 
 	CORBA::ORB_ptr m_orb;
 	timeval m_tLastEvent;
@@ -90,6 +97,8 @@ protected:
 	ACS::Time m_lastEventTimestamp;
 	std::string m_delayType;
 	uint64_t m_numEventsReceived;
+    ConsumerTimer *m_timer;
+	uint32_t m_sleepTimeRecvEvent;
 };
 
 #endif /*!PDATACONSUMER_H*/

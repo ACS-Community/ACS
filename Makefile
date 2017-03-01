@@ -22,18 +22,7 @@ MODULES_TOOLS = Tools
 # because it is already built in the prepare phase.
 #
 
-ifeq ($(os),Linux)
-  majorRelNo :=  $(basename $(shell cat /etc/redhat-release | awk '{print $$(NF-1)}'))
-  ifeq ($(majorRelNo),6)
-    GMP =
-  endif
-  ubuntuDist:= $(basename $(shell (lsb_release -d | awk '{print $2}')))
-  ifneq (,$(findstring Ubuntu,$(ubuntuDist)))
-   GMP =
-  endif
-endif
-
-MODULES_ACS = jacsutil xmljbind xmlpybind acserridl acsidlcommon acsutil acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task acstime acsnc acsdaemon acslog acstestcompcpp acsexmpl jlogEngine acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities jcont jcontnc nsStatisticsService jacsalarmtest jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssim bulkDataNT bulkData containerTests acscourse ACSLaser acsGUIs
+MODULES_ACS = jacsutil xmljbind xmlpybind acserridl acsidlcommon acsutil acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task acstime acsnc acsdaemon acslog acstestcompcpp acsexmpl jlogEngine acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities jcont jcontnc nsStatisticsService jacsalarmtest jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssim bulkDataNT bulkData containerTests acscourse ACSLaser acsGUIs acsExtras
 ######## end Modules ###########################
 
 ###############################################

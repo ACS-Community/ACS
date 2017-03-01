@@ -240,10 +240,11 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			throw ex;
 		}
 
+        this.eventQueue = new CircularQueue<T>(); 
 		this.channelName = channelName;
 		this.channelNotifyServiceDomainName = channelNotifyServiceDomainName;
 		this.services = services;
-		this.autoreconnect = false;
+		this.autoreconnect = true;
 		logger = services.getLogger();
 
 		anyAide = new AnyAide(this.services);
@@ -482,9 +483,11 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
         synchronized (eventQueueSync) {
             if (eventQueue != null) {
                 CircularQueue<T>.Data dropped = eventQueue.push(se, customData);
-                eventProcessingHandler.eventStoredInQueue(customData);
-                if (dropped != null) {
-                    eventProcessingHandler.eventDropped(dropped.userData);
+                if(eventProcessingHandler != null) {
+                    eventProcessingHandler.eventStoredInQueue(customData);
+                    if (dropped != null) {
+                        eventProcessingHandler.eventDropped(dropped.userData);
+                    }
                 }
             }
         }
@@ -512,7 +515,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 			
 			// Notify user (if handler is registered) 
 			synchronized (eventQueueSync) {
-				if (eventQueue != null) {
+				if (eventProcessingHandler != null) {
 					eventProcessingHandler.eventSent(customData);
 				}
 			}
@@ -545,6 +548,10 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 				} catch(Throwable thr) {}
 
                 if(reconnected) {
+                    try {
+                        Thread.sleep(12000); // Wait 12 seconds to ensure consumers can reconnect to the channel before publishing events again
+                    } catch(InterruptedException exi) {}
+
                     // Try to publish the event again
                     try {
                         // Publish directly the given event (see CORBA NC spec 3.3.7.1)
@@ -558,7 +565,7 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
                         
                         // Notify user (if handler is registered) 
                         synchronized (eventQueueSync) {
-                            if (eventQueue != null) {
+                            if (eventProcessingHandler != null) {
                                 eventProcessingHandler.eventSent(customData);
                             }
                         }
@@ -730,11 +737,27 @@ public class NCPublisher<T> extends OSPushSupplierPOA implements AcsEventPublish
 		synchronized (eventQueueSync) {
 			// allow user also to update the handler
 			eventProcessingHandler = handler;
-			// queue can be created only once of course
-			if (eventQueue == null) {
-				eventQueue = new CircularQueue<T>(queueSize);
-			}
+            eventQueue.setMaxSize(queueSize);
 		}
 	}
+
+    @Override
+    public boolean increaseEventBufferSize(int bufferSize) {
+        synchronized (eventQueueSync) {
+            return eventQueue.setMaxSize(bufferSize);
+        }
+    }
+
+    @Override
+    public int getEventBufferSize() {
+        return eventQueue.getMaxSize();
+    }
+
+    @Override
+    public void setEventProcessingHandler(EventProcessingHandler<T> handler) {
+        synchronized (eventQueueSync) {
+            eventProcessingHandler = handler;
+        }
+    }
 
 }

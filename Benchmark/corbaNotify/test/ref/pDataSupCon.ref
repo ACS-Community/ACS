@@ -1,0 +1,8 @@
+1 -  --:--:--.--- Event channel factory loaded!
+2 - Max delay: 5000 ms
+1 -  --:--:--.--- Creating a channel ...
+2 - Waiting for events in channel 2 ...
+1 -  --:--:--.--- Channel created: 2
+2 -  --:--:--.--- Number of events received: X [Y]
+1 -  --:--:--.--- Sequence to be sent has been initialized with 100 items
+1 -  --:--:--.--- Number of events sent: 8 [8]

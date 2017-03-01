@@ -67,12 +67,13 @@
 static char *rcsId="@(#) $Id: docDoDbTree.c,v 1.32 2008/06/09 06:52:09 bjeram Exp $";
 /* static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId); */
 
-
+#include <stdlib.h>
 #include <stdio.h>
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <string.h>
 
 #define MAX_PATH 255
 
