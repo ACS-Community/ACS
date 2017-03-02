@@ -48,7 +48,8 @@ endef
 # because it is already built in the prepare phase.
 #
 
-MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt astyle xercesc xercesj castor xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache
+# emacs expat loki antlr hibernate extpy cppunit astyle castor shunit2 log4cpp in RPMs
+MODULES_TOOLS = tat extjars getopt xercesc xercesj xsddoc extidl vtd-xml oAW scxml_apache
 
 
 VXWORKS_RTOS = $(shell if [ $(WIND_BASE) ] ; then echo "YES"; else echo "NO"; fi)
