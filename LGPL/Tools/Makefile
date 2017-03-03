@@ -49,7 +49,9 @@ endef
 #
 
 # emacs expat loki antlr hibernate extpy cppunit astyle castor shunit2 log4cpp in RPMs
-MODULES_TOOLS = tat extjars getopt xercesc xercesj xsddoc extidl vtd-xml oAW scxml_apache
+# getopt is only for SunOS according to its own Makefile
+# apache xercec-c and xerces-j2 in repos
+MODULES_TOOLS = tat extjars xsddoc extidl vtd-xml oAW scxml_apache
 
 
 VXWORKS_RTOS = $(shell if [ $(WIND_BASE) ] ; then echo "YES"; else echo "NO"; fi)
