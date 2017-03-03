@@ -202,7 +202,7 @@ checkModuleTree:
 # - doxygen
 prepare:	
 	@$(ECHO) "############ Prepare installation areas      #################" | tee -a build.log
-	@cd $(MODULE_PREFIX); $(SHELL) acsBUILD/src/acsBUILDPrepareKit.sh >> ../build.log 2>& 1
+#	@cd $(MODULE_PREFIX); $(SHELL) acsBUILD/src/acsBUILDPrepareKit.sh >> ../build.log 2>& 1
 	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Kit/acs/src/ all install clean >> build.log 2>& 1 || echo "### ==> FAILED! " | tee -a build.log
 	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Kit/acstempl/src/ all install clean >> build.log 2>& 1 || echo "### ==> FAILED! " | tee -a build.log
 #	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Tools/doxygen/src/ all install clean >> build.log 2>& 1 || echo "### ==> Doxygen FAILED! " | tee -a build.log
@@ -216,7 +216,7 @@ prepare:
 #   that if the LAST module fails the whole Make does not fail
 #
 
-update:	svn-tag checkModuleTree
+update:	checkModuleTree
 	@$(ECHO) "############ (Re-)build ACS Software         #################"| tee -a build.log
 	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
 		    if [ ! -d $${member} ]; then \
@@ -235,14 +235,6 @@ update:	svn-tag checkModuleTree
 		    elif [ -f $${member}/Makefile ]; then \
 		         $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
 		         $(MAKE) $(MAKE_FLAGS) -C $${member}/ -s $@  2>&1 || echo "### ==> FAILED all ! " | (tee -a build.log | tee $${member}/NORM-BUILD-OUTPUT) \
-		    fi;\
-		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
-			if [ -f $${member}/lcu/src/Makefile ]; then \
-			 $(ECHO) "############ $${member} LCU" | tee -a build.log;\
-                         $(call makeItAux,$${member}/lcu/src,clean,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
-			 $(call makeIt,$${member}/lcu/src,all,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
-			 $(call makeItAux,$${member}/lcu/src,install,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
-			fi;\
 		    fi;\
 		done;\
          true;
