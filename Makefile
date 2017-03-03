@@ -36,15 +36,6 @@ define makeItAux
    (( $(MAKE) $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
 endef
 
-# SCM tag definition
-
-ifneq ( ,$(wildcard .svn))
-	SVN_URL = "$(shell svn info '$(PWD)/Makefile' | grep URL);"
-	SCM_TAG = "$(shell $(SVN_URL) | awk 'BEGIN { FS = "/" } ; { print toupper($$(NF-2)) }')"
-else
-	SCM_TAG = "$(shell git describe --tags --always HEAD)"
-endif
-
 ###############################################
 
 #
@@ -55,38 +46,10 @@ ifeq ($(HAS_BENCHMARK),TRUE)
    MODULES_BENCHMARK = util analyzer
 endif
 
-#
-# Try to build NO-LGPL modules only if they are part of the distribution 
-#
-MODULE_PREFIX_NO-LGPL = NO-LGPL
-HAS_NO-LGPL = $(shell if [ -d NO-LGPL ]; then echo "TRUE"; else echo "FALSE"; fi)
-
-ifeq ($(HAS_NO-LGPL),TRUE)
-  MODULES_NO-LGPL = fftw 
-endif
-
-# RTOS related things are build only if they are part of distribution and RTAI_HOME is defined
-HAS_RTOS = $(shell if [ "X$(RTAI_HOME)" != X -a -d NO-LGPL/rtos ] ; then echo "TRUE"; else echo "FALSE"; fi)
-MODULE_PREFIX_RTOS = $(MODULE_PREFIX_NO-LGPL)/rtos
-ifeq ($(HAS_RTOS),TRUE)
-    MODULES_RTOS =  $(MODULE_PREFIX_NO-LGPL)/rtos
-endif
-
-
-VXWORKS_RTOS = $(shell if [ $(WIND_BASE) ] ; then echo "YES"; else echo "NO"; fi)
-
-HAS_VW = $(shell if [ -d NO-LGPL/vw ] ; then echo "TRUE"; else echo "FALSE"; fi)
-MODULE_PREFIX_VW = $(MODULE_PREFIX_NO-LGPL)/vw
-ifeq ($(VXWORKS_RTOS) $(HAS_VW),YES TRUE)
-    MODULES_VW = lcuboot accdb
-    ACCDB_CONFIG = accdb_config
-endif
-
 MODULES =  $(foreach kit, $(MODULES_KIT), $(MODULE_PREFIX)/Kit/$(kit)) \
            $(MODULE_PREFIX)/Tools \
            $(foreach acs, $(MODULES_ACS), $(MODULE_PREFIX)/CommonSoftware/$(acs)) \
 	   $(foreach bm, $(MODULES_BENCHMARK), Benchmark/$(bm)) \
-           $(foreach nolgpl, $(MODULES_NO-LGPL), $(MODULE_PREFIX_NO-LGPL)/$(nolgpl)) \
 	   $(MODULES_RTOS) \
 	   $(addprefix $(MODULE_PREFIX_VW)/, $(MODULES_VW)) \
            $(MODULE_PREFIX)/acsBUILD
@@ -118,7 +81,6 @@ endif
 #
 
 startupDir = $(shell pwd)
-
 
 #
 #
@@ -154,11 +116,6 @@ define canned
 		    elif [ -f $${member}/Makefile ]; then \
 			$(MAKE) $(MAKE_FLAGS) -C $${member}/ $@ | tee -a build.log;\
 		    fi;\
-		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
-			if [ -f $${member}/lcu/src/Makefile ]; then \
-			$(MAKE) $(MAKE_FLAGS) -C $${member}/lcu/src/ $@ || break ;\
-			fi;\
-		    fi;\
 		done
 endef
 
@@ -168,7 +125,7 @@ endef
 # Per each module it executes:
 #    make clean all install
 #
-build: 	svn-tag clean_log checkModuleTree prepare update
+build: 	clean_log checkModuleTree prepare update
 	@$(ECHO) "... done"
 
 #
@@ -248,7 +205,7 @@ prepare:
 	@cd $(MODULE_PREFIX); $(SHELL) acsBUILD/src/acsBUILDPrepareKit.sh >> ../build.log 2>& 1
 	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Kit/acs/src/ all install clean >> build.log 2>& 1 || echo "### ==> FAILED! " | tee -a build.log
 	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Kit/acstempl/src/ all install clean >> build.log 2>& 1 || echo "### ==> FAILED! " | tee -a build.log
-	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Tools/doxygen/src/ all install clean >> build.log 2>& 1 || echo "### ==> Doxygen FAILED! " | tee -a build.log
+#	@$(MAKE) $(MAKE_FLAGS) -C $(MODULE_PREFIX)/Tools/doxygen/src/ all install clean >> build.log 2>& 1 || echo "### ==> Doxygen FAILED! " | tee -a build.log
 
 #
 # Update of all core components
@@ -458,58 +415,6 @@ show_modules:
 	@$(ECHO) "Modules in build list are:" 
 	@$(ECHO) ${MODULES}
 
-################################################################
-# SVN targets.
-# 
-# The following targets and expressions are helpers for SVN
-# operations on the ACS tree.
-################################################################
-
-#
-# This expression extracts the SVN tag for the ACS/Makefile file
-# (if exists).
-# This does not warranty that all files have the same tag,
-# but it is at least an indication.
-#
-SVN_URL = $(shell svn info '$(PWD)/Makefile'|grep URL)
-SVN_TAG = $(shell echo $(SVN_URL)|awk 'BEGIN { FS = "/" } ; { print toupper($$(NF-2)) }')
-
-#
-#
-# This target puts the SVN tag for the ACS/Makefile file
-# (if exists) into a file, so that it can be used
-# to mark an installation.
-#
-svn-tag:
-	@ $(ECHO) "Evaluating current ACS TAG from $(SVN_URL)"; \
-	if [ X$(SVN_TAG) != X ]; then \
-               $(ECHO) "SVN tag is: $(SVN_TAG)"; \
-               $(ECHO) $(SVN_TAG) > ACS_TAG ; \
-            else \
-              if [ -f ACS_TAG ]; then\
-                $(ECHO) "ACS tag file already exist: "; cat ACS_TAG; $(ECHO) ""; \
-              else \
-                $(ECHO) "No SVN tag available"; \
-              fi; \
-          fi
-
-#
-# This target gets from SVN the correct 
-# ACS_VERSION and ACS_PATCH_LEVEL files.
-#
-# I ported the cvs-get-version to work with SVN,
-# but believe that it will not be needed anymore because of
-# the diffrences between CVS and SVN.
-#
-svn-get-version:
-	@ $(ECHO) "Extracting from SVN version files"; \
-          if [ X$(SVN_TAG) != X ]; then \
-             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
-          else \
-             $(ECHO) "No SVN tag available"; \
-          fi; \
-	  svn update --quiet ACS_PATCH_LEVEL ACS_VERSION
-
 #
 # This target gets from SVN all files needed for an LGPL distribution 
 #
@@ -522,21 +427,6 @@ svn-get-lgpl: svn-tag svn-get-version
              $(ECHO) "No SVN tag available"; \
           fi; \
 	  svn update --quiet $(LGPL_FILES)
-
-#
-# This target gets from SVN a complete ACS code distribution 
-#
-NO-LGPL_FILES=Benchmark NO-LGPL
-svn-get-no-lgpl: svn-tag svn-get-version svn-get-lgpl svn-get-no-lgpl-extract 
-
-svn-get-no-lgpl-extract: 
-	@  $(ECHO) "Extracting from SVN NO-LGPL files"; \
-          if [ X$(SVN_TAG) != X ]; then \
-             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
-          else \
-             $(ECHO) "No SVN tag available"; \
-          fi; \
-	  svn update --quiet $(NO-LGPL_FILES)
 
 #
 # Standard targets
