@@ -14,9 +14,9 @@ os     = $(shell uname)
 
 MODULE_PREFIX = LGPL
 #!#MODULES_KIT = vlt doc acs acstempl
-MODULES_KIT = doc acs acstempl acsutilpy
+MODULES_KIT = # doc acs acstempl acsutilpy
 
-MODULES_TOOLS = Tools
+MODULES_TOOLS = # Tools
 #
 # I skip doxygen, that should be after compat and before tat,
 # because it is already built in the prepare phase.
