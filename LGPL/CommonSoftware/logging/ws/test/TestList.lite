@@ -13,9 +13,10 @@ SOURCE loggingTATEnvironment
 11 testIsInitThread     "testIsInitThread"
 12 testMultiThreads     "testMultiThreads \"| grep -v `date +%Y`\""
 13 testLoggerStats      "testLoggerStats"
+14 testLoggerStatistics  "testLoggerStatistics.sh"
 
 # Supplier with autoreconnect ON and Notify Channel is restarted
-14 SupplierAutoreconnectNCRestart "acsNamingService -k -s -w" "@SLEEP 10" \
+15 SupplierAutoreconnectNCRestart "acsNamingService -k -s -w" "@SLEEP 10" \
                 "acsNotifyService -k -s -n Logging" "@SLEEP 10" \
                 "loggingService" "@SLEEP 15" \
                 "testGenLogs" "@SLEEP 3" \
@@ -23,8 +24,8 @@ SOURCE loggingTATEnvironment
                 "acsNotifyService -k -n Logging" "@SLEEP 5" \
                 "acsNotifyService -s -n Logging" "@SLEEP 15"
 
-# Supplier with autoreconnect OFF and Notify Channel is restarted
-15 SupplierNoAutoreconnectNCRestart "acsNamingService -k -s -w" "@SLEEP 10" \
+## Supplier with autoreconnect OFF and Notify Channel is restarted
+16 SupplierNoAutoreconnectNCRestart "acsNamingService -k -s -w" "@SLEEP 10" \
                 "acsNotifyService -k -s -n Logging" "@SLEEP 10" \
                 "loggingService --no-autoreconnect" "@SLEEP 15" \
                 "testGenLogs" "@SLEEP 3" \
@@ -34,7 +35,7 @@ SOURCE loggingTATEnvironment
 
 # Binary logs
 # Supplier with autoreconnect ON and Notify Channel is restarted
-16 SOURCE loggingTATLogBin SupplierAutoreconnectNCRestartBin "acsNamingService -k -s -w" "@SLEEP 10" \
+17 SOURCE loggingTATLogBin SupplierAutoreconnectNCRestartBin "acsNamingService -k -s -w" "@SLEEP 10" \
                 "acsNotifyService -k -s -n Logging" "@SLEEP 10" \
                 "loggingService" "@SLEEP 15" \
                 "testGenLogs" "@SLEEP 3" \
@@ -44,13 +45,10 @@ SOURCE loggingTATEnvironment
 
 # Binary logs
 # Supplier with autoreconnect OFF and Notify Channel is restarted
-17 SOURCE loggingTATLogBin SupplierNoAutoreconnectNCRestartBin "acsNamingService -k -s -w" "@SLEEP 10" \
+18 SOURCE loggingTATLogBin SupplierNoAutoreconnectNCRestartBin "acsNamingService -k -s -w" "@SLEEP 10" \
                 "acsNotifyService -k -s -n Logging" "@SLEEP 10" \
                 "loggingService --no-autoreconnect" "@SLEEP 15" \
                 "testGenLogs" "@SLEEP 3" \
                 "testLoggingSubscriber" "@SLEEP 10" \
                 "acsNotifyService -k -n Logging" "@SLEEP 5" \
                 "acsNotifyService -s -n Logging" "@SLEEP 15"
-
-
-

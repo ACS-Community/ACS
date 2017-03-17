@@ -83,6 +83,12 @@ public class AcsLoggerStatistics {
 		lastPeriodNumberOfMessages = INITIAL_NUMBER_MESSAGES;
 		lastPeriodNumberOfLogErrors = INITIAL_NUMBER_ERRORS;
 		statisticsIdentification = "Undefined";
+               
+                // set by default logging statistics with a suitable config if host is an STE
+                if(System.getenv("LOCATION") != null){
+                    disableStatistics = false;
+                    statisticsGranularity = 3;
+                }
 	}
 
 	/**

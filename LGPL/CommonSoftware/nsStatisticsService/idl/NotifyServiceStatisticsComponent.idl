@@ -1,0 +1,15 @@
+#ifndef _NS_STATISTICS_COMPONENT_IDL_
+#define _NS_STATISTICS_COMPONENT_IDL_
+
+#include <acscomponent.idl>
+
+#pragma prefix "alma"
+
+module statistics {
+	interface NotifyServiceStatisticsComponent: ACS::ACSComponent {
+		void start();
+		void stop();
+	};
+};
+
+#endif
