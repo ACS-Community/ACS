@@ -127,10 +127,11 @@ nsStatisticsService_DIRS=alma/acs/nsstatistics \
                          alma/acs/service
                          
 NotifyServiceStatisticsComponentImpl_DIRS=alma/acs/statistics
+NotifyServiceStatisticsComponentImpl_JLIBS=nsStatisticsService
 
 jjj_EXTRAS=
 # For expressing dependencies between jarfiles (parallel builds)
-jjj_JLIBS= 
+jjj_JLIBS=
 #
 # java sources in Jarfile on/off
 DEBUG=on
