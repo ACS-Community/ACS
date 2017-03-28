@@ -11,3 +11,8 @@ omniORB-4.2.1-2.tar.bz2 https://ufpr.dl.sourceforge.net/project/omniorb/omniORB/
 omniORBpy-4.2.1-2.tar.bz2 https://ufpr.dl.sourceforge.net/project/omniorb/omniORBpy/omniORBpy-4.2.1/omniORBpy-4.2.1-2.tar.bz2
 apache-maven-3.2.5-bin.tar.gz http://mirrors.advancedhosters.com/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
 OpenDDS-3.5.1.tar.gz http://download.ociweb.com/OpenDDS/previous-releases/OpenDDS-3.5.1.tar.gz
+gnuplot-py-1.8.tar.gz http://prdownloads.sourceforge.net/gnuplot-py/gnuplot-py-1.8.tar.gz?download
+matplotlib-1.2.0.tar.gz https://pypi.python.org/packages/75/f7/6bd207f4e2495a02d9cfb99f4a518e349ec8d2b785bb93e1bb231e93738a/matplotlib-1.2.0.tar.gz#md5=c52e2c5a09eca910d8d166dcbd2d01ec
+Numeric-24.2.tar.gz https://sourceforge.net/projects/numpy/files/Old%20Numeric/24.2/Numeric-24.2.tar.gz/download?use_mirror=netcologne&download=
+pychecker-0.8.17.tar.gz https://downloads.sourceforge.net/project/pychecker/pychecker/0.8.17/pychecker-0.8.17.tar.gz?r=&ts=1490724876&use_mirror=ayera
+numarray-1.3.3.tar.gz https://downloads.sourceforge.net/project/numpy/OldFiles/1.3.3/numarray-1.3.3.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fnumpy%2Ffiles%2FOldFiles%2F1.3.3%2F&ts=1490724902&use_mirror=ayera
