@@ -83,10 +83,10 @@ public:
 	template<class T>
 	T* getCallback() { return dynamic_cast<T*>(callback_m); }
 
-	/// Enables calling user's CB (cbStart, cbReceiver, cbStop)
+	/// Enables calling user's CB (cbStart, cbReceiver, cbStop, cbReset)
 	void enableCallingCB();
 
-	/// Disables calling user's CB (cbStart, cbReceiver, cbStop)
+	/// Disables calling user's CB (cbStart, cbReceiver, cbStop, cbReset)
 	void disableCallingCB();
 
 	void dumpStatistics();

@@ -51,6 +51,10 @@ struct statisticsStruct {
 	std::vector<ACE_UINT64> sendDataDuration;
 	std::vector<DDS::DataWriterProtocolStatus> sendDataDwps;
 	std::vector<DDS::DataWriterCacheStatus> sendDataDwcs;
+
+	ACE_UINT64 resetSendDuration;
+	DDS::DataWriterProtocolStatus resetSendDwps;
+	DDS::DataWriterCacheStatus resetSendDwcs;
 } ;
 
 class BulkDataNTSenderStream;
@@ -115,10 +119,16 @@ public:
 	void sendData(const unsigned char *buffer, size_t len);
 
 	/**
-	 * Method to send "stop"
+	 * Method to send "STOP"
 	 * @exception #StopSendErrorExImpl
 	 */
 	void stopSend();
+
+	/**
+	 * Method to send "RESET"
+	 * @exception #ResetSendErrorExImpl
+	 */
+	void resetSend();
 
 	void dumpStatistics(ACE_Log_Priority level=LM_DEBUG);
 	/**
@@ -163,8 +173,8 @@ protected:
 	// should it go to upper class Publisher ?
 	/**
 	 * Common method to send frame(s) to the topic. The method it is used internally by:
-	 * #startSend, #sendData and #stopSend
-	 * @param dataType data frame type (START/DATA/STOP)
+	 * #startSend, #sendData, #stopSend and #resetSend
+	 * @param dataType data frame type (START/DATA/STOP/RESET)
 	 * @param param   - data
 	 * @param len length of data
 	 * @param restFrameCount how many frames do we have still sent

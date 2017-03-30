@@ -110,6 +110,25 @@ module bulkdata
 	*/
 	void stopSend()
 	    raises (ACSBulkDataError::AVStopSendErrorEx);
+
+	/** 
+	 *  Calls the Receiver handle_reset() method.
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void resetSend()
+	    raises (ACSBulkDataError::AVResetSendErrorEx);
+
+	/** 
+	 *  Resets the sender streams and flows.
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void resetSender();
 	};
   
 };

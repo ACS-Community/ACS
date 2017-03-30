@@ -188,6 +188,8 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
    	*/
     void fwdData2UserCB(CORBA::Boolean enable);
 
+    void resetReceiver();
+
   protected:
 
     /**
@@ -218,7 +220,6 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
     AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createReceiverStream(const char *stream_name, const char *stream_cfg);
 
     AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createDefaultReceiverStream(const char *stream_cfg);
-
 };
 
 #include "bulkDataNTReceiverImpl.i"

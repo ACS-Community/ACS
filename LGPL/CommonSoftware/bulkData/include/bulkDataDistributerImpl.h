@@ -195,6 +195,16 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
     */
     virtual void stopSend();
 
+    /** 
+     *  Calls the Receiver handle_reset() method.
+     *  @throw ACSBulkDataError::AVResetSendErrorEx
+     *  @return void
+     *  @htmlonly
+     <br><hr>
+     @endhtmlonly
+    */
+    virtual void resetSend();
+
 /************************ Receiver part ********************/
 
     /**
@@ -296,6 +306,9 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
     {
     	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributerImpl<>::fwdData2UserCB not implemnted!"));
     }
+
+    void resetReceiver();
+    void resetSender();
 
   private:
 

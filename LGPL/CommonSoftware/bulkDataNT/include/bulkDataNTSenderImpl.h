@@ -152,7 +152,17 @@ class BulkDataNTSenderImpl : public baci::CharacteristicComponentImpl,
     */
     virtual void stopSend() =0;
 
+    /** 
+     *  Calls the Receiver handle_reset() method.
+     *  @throw ACSBulkDataError::AVResetSendErrorEx
+     *  @return void
+     *  @htmlonly
+     <br><hr>
+     @endhtmlonly
+    */
+    virtual void resetSend() =0;
 
+    void resetSender();
 
   protected:
 
@@ -191,7 +201,6 @@ class BulkDataNTSenderImpl : public baci::CharacteristicComponentImpl,
 
     // Close a stream, given an iterator of the stream map
     void closeStream(StreamMap::iterator &it);
-
 };
 /*
 typedef BulkDataSenderImpl<> BulkDataSenderDefaultImpl;

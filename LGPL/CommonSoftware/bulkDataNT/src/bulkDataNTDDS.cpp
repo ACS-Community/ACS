@@ -31,7 +31,7 @@ using namespace std;
 using namespace ACSErrTypeCommon;
 using namespace ACS_DDS_Errors;
 
-const char* AcsBulkdata::dataType2String[]={"BD_PARAM", "BD_DATA", "BD_STOP" };
+const char* AcsBulkdata::dataType2String[]={"BD_PARAM", "BD_DATA", "BD_STOP", "BD_RESET" };
 
 BulkDataNTDDS::BulkDataNTDDS(DDS::DomainParticipant* participant, const DDSConfiguration &ddsCfg) :
 	participant_m(participant),
