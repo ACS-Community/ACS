@@ -78,7 +78,7 @@ public class BACIDispatchActionTest extends TestCase {
 	class DispatchAction
 	{
 		public DispatchAction(
-				int type,
+				CallbackDispatcher.CallbackType type,
 				Object value,
 				Callback callback,
 				Completion completion,
@@ -100,7 +100,7 @@ public class BACIDispatchActionTest extends TestCase {
 					completion == da.completion && callback == da.callback);
 		}
 
-		public int type;
+		public CallbackDispatcher.CallbackType type;
 		public Object value;	
 		public CBDescOut desc;
 		public Completion completion;
@@ -122,7 +122,7 @@ public class BACIDispatchActionTest extends TestCase {
 		 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACS.Callback, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 		 */
 		public boolean dispatchCallback(
-			int type,
+			CallbackDispatcher.CallbackType type,
 			Object value,
 			Callback callback,
 			Completion completion,
@@ -130,8 +130,8 @@ public class BACIDispatchActionTest extends TestCase {
 				
 			responseQueue.add(new DispatchAction(type, value, callback, completion, desc));
 			
-			if ((type != CallbackDispatcher.WORKING_TYPE &&
-				type != CallbackDispatcher.DONE_TYPE) ||
+			if ((type != CallbackDispatcher.CallbackType.WORKING_TYPE &&
+				type != CallbackDispatcher.CallbackType.DONE_TYPE) ||
 				callback == null ||
 				completion == null ||
 				desc == null)
@@ -159,7 +159,7 @@ public class BACIDispatchActionTest extends TestCase {
 		 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACS.Callback, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 		 */
 		public synchronized boolean dispatchCallback(
-			int type,
+			CallbackDispatcher.CallbackType type,
 			Object value,
 			Callback callback,
 			Completion completion,
@@ -185,7 +185,7 @@ public class BACIDispatchActionTest extends TestCase {
 		 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACS.Callback, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 		 */
 		public synchronized boolean dispatchCallback(
-			int type,
+			CallbackDispatcher.CallbackType type,
 			Object value,
 			Callback callback,
 			Completion completion,
@@ -213,7 +213,7 @@ public class BACIDispatchActionTest extends TestCase {
 		 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACS.Callback, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 		 */
 		public synchronized boolean dispatchCallback(
-			int type,
+			CallbackDispatcher.CallbackType type,
 			Object value,
 			Callback callback,
 			Completion completion,
@@ -235,7 +235,7 @@ public class BACIDispatchActionTest extends TestCase {
 		 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACS.Callback, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 		 */
 		public synchronized boolean dispatchCallback(
-			int type,
+			CallbackDispatcher.CallbackType type,
 			Object value,
 			Callback callback,
 			Completion completion,
@@ -300,7 +300,7 @@ public class BACIDispatchActionTest extends TestCase {
 		 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACS.Callback, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 		 */
 		public synchronized boolean dispatchCallback(
-			int type,
+			CallbackDispatcher.CallbackType type,
 			Object value,
 			Callback callback,
 			Completion completion,
@@ -527,7 +527,7 @@ public class BACIDispatchActionTest extends TestCase {
 		Callback callback,
 		DispatchAction response) {
 		// check reponse type
-		assertEquals(CallbackDispatcher.DONE_TYPE, response.type);
+		assertEquals(CallbackDispatcher.CallbackType.DONE_TYPE, response.type);
 		
 		// check value (compare pointers)
 		assertTrue(value == response.value);

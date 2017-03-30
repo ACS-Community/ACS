@@ -196,12 +196,12 @@ public class RWbooleanImpl
 	/**
 	 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 	 */
-	public boolean dispatchCallback(int type,Object value,Callback callback,Completion completion,CBDescOut desc) {
+	public boolean dispatchCallback(CallbackDispatcher.CallbackType type,Object value,Callback callback,Completion completion,CBDescOut desc) {
 		try
 		{	
-			if (type == CallbackDispatcher.DONE_TYPE)
+			if (type == CallbackDispatcher.CallbackType.DONE_TYPE)
 				((CBboolean)callback).done(((Boolean)value).booleanValue(), completion, desc);
-			else if (type == CallbackDispatcher.WORKING_TYPE)
+			else if (type == CallbackDispatcher.CallbackType.WORKING_TYPE)
 				((CBboolean)callback).working(((Boolean)value).booleanValue(), completion, desc);
 			else 
 				return false;
@@ -239,7 +239,7 @@ public class RWbooleanImpl
 	}
 	
 	public boolean noDelta(Object value) {
-		throw new NO_IMPLEMENT();
+		return ((Boolean)value) == false;
 	}
 	
 	public boolean lessThanDelta(Object value1, Object value2, Object delta) {
