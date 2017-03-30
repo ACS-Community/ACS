@@ -25,6 +25,7 @@
 
 package com.cosylab.cdb.jdal;
 
+import java.io.Serializable;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,6 +36,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -57,6 +62,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -241,6 +247,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	private AtomicBoolean shutdown = new AtomicBoolean(false);
 	private AtomicLong lastSaveTime = new AtomicLong(0);
 	private AtomicBoolean saveRequest = new AtomicBoolean(false);
+	protected Object persistentCacheLock = new Object();
+	private ReentrantReadWriteLock swapCacheLock = new ReentrantReadWriteLock(true);
 	
 	/**
 	 * ctor that takes all command line args given to OracleServer
@@ -332,7 +340,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		}
 		
 		startRecoverySaver();
-		load();
+		load(false);
 	}
 	
 	/**
@@ -491,11 +499,11 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			}
 		}
 		
-		load();
+		load(true);
 		m_logger.info("Successfully reloaded all data.");
 	}
 	
-	private void load()
+	private void load(boolean reload)
 	{
 		// HSO TODO: If this is a re-don't, we need to wait until any other IDL methods have finished,
 		// which entered because loadInProgress was false ?
@@ -509,7 +517,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			config = resolveConfig(mainSession, configName);
 			configId = config.getConfigurationId();
 
-			initializeRootNode();
+			initializeRootNode(reload);
 		
 			// we do not close session (needed by WDAL)
 		} catch (Throwable th) {
@@ -1748,7 +1756,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		return almaRoot;
 	}
 	
-	private static class ComponentDAOImplSaver extends DAOImpl implements XMLSaver
+	private static class ComponentDAOImplSaver extends DAOImpl implements XMLSaver, Serializable
 	{
 		private alma.TMCDB.maci.Component component;
 		public ComponentDAOImplSaver(alma.TMCDB.maci.Component component, XMLTreeNode rootNode, POA poa, Logger logger, boolean silent) {
@@ -1974,16 +1982,55 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			return null;
 	}
 
-	protected synchronized void initializeRootNode()
+	protected boolean readPersistentCache() {
+		synchronized (persistentCacheLock) {
+			String cacheFile = System.getenv("ACS_TMP") + "/CDBRDB.cache";
+			File f = new File(cacheFile);
+			if (!f.exists())
+				return false;
+			m_logger.info("Loading configuration from the persistent cache...");
+			try {
+				FileInputStream fis = new FileInputStream(cacheFile);
+				java.io.ObjectInputStream ois = new java.io.ObjectInputStream(fis);
+				Map<String, Object> rootMap = (Map<String, Object>) ois.readObject();
+				ois.close();
+				rootNode = rootMap;
+				m_logger.info("Configuration loaded from cache.");
+			} catch (Throwable t) {
+				m_logger.info("Failed to read data in '" + cacheFile + "' file.");
+				t.printStackTrace();
+				return false;
+			}
+			return true;
+		}
+	}
+
+	protected void writePersistentCache() {
+		synchronized (persistentCacheLock) {
+			m_logger.info("Writing configuration to the persistent cache...");
+			String cacheFile = System.getenv("ACS_TMP") + "/CDBRDB.cache";
+			try {
+				FileOutputStream fos = new FileOutputStream(cacheFile);
+				java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(fos);
+				oos.writeObject(rootNode);
+				oos.close();
+				m_logger.info("Data stored in '" + cacheFile + "' file.");
+			} catch (Throwable t) {
+				m_logger.info("Failed to store data in '" + cacheFile + "' file.");
+				t.printStackTrace();
+			}
+		}
+	}
+
+	protected synchronized void initializeRootNode(boolean reload)
 	{
+		if (!reload && readPersistentCache()) {
+			return;
+		}
 		m_logger.info("Loading configuration from the database...");
 
 		Map<String, Object> rootMap = new RootMap<String, Object>();
-		rootNode = rootMap;
 
-		// useful in case of reload (when rootNode was not null)
-		System.gc();
-		
 		try
 		{
 			Session session = hibernateUtil.getSession();
@@ -2055,6 +2102,16 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			}
 
 			m_logger.info("Configuration loaded.");
+			new Thread(()->writePersistentCache()).start();
+
+			//Swap the cache with the new loaded data
+			try {
+				swapCacheLock.writeLock().lock();
+				rootNode = rootMap;
+				System.gc();
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 		}
 		catch (Throwable th)
 		{
@@ -2454,8 +2511,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	 * @see com.cosylab.CDB.DALOperations#get_DAO_Servant(java.lang.String)
 	 */
 	public DAO get_DAO_Servant(String curl) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx {
-		checkAccess();
-		
+		try {
+			swapCacheLock.readLock().lock();
 		// remove trailing slashes, to have unique curl (used for key)
 		if (curl.length() > 0 && curl.charAt(0) == '/')
 			curl = curl.substring(1);
@@ -2522,6 +2579,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			}
 			
 		}
+		} finally {
+			swapCacheLock.readLock().unlock();
+		}
 	}
 
 
@@ -2529,8 +2589,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	 * @see com.cosylab.CDB.DALOperations#get_DAO(java.lang.String)
 	 */
 	public String get_DAO(String curl) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx {
-		checkAccess();
-
+		try {
+			swapCacheLock.readLock().lock();
 		// remove trailing slashes, to have unique curl (used for key)
 		if (curl.length() > 0 && curl.charAt(0) == '/')
 			curl = curl.substring(1);
@@ -2582,6 +2642,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			xmlErr.setErrorString(info);
 			m_logger.log(AcsLogLevel.NOTICE, info);
 			throw xmlErr.toCDBXMLErrorEx();
+		}
+		} finally {
+			swapCacheLock.readLock().unlock();
 		}
 	}
 
@@ -2646,10 +2709,14 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	 * @see com.cosylab.CDB.DALOperations#list_nodes(java.lang.String)
 	 */
 	public String list_nodes(String curl) {
-		checkAccess();
+		try {
+			swapCacheLock.readLock().lock();
 		String ret = listNodes(curl, false);
 		m_logger.finest("list_nodes(=" + curl + ") returning " + ret);
 		return ret;
+		} finally {
+			swapCacheLock.readLock().unlock();
+		}
 	}
 
 	
@@ -2657,10 +2724,14 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	 * @see com.cosylab.CDB.DALOperations#list_daos(java.lang.String)
 	 */
 	public String list_daos(String name) {
-		checkAccess();
+		try {
+			swapCacheLock.readLock().lock();
 		String ret = listNodes(name, true);
 		m_logger.finest("list_daos(=" + name + ") returning " + ret);
 		return ret;
+		} finally {
+			swapCacheLock.readLock().unlock();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -2674,24 +2745,32 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	 * @see com.cosylab.CDB.WDALOperations#add_node(java.lang.String, java.lang.String)
 	 */
 	public void add_node(String curl, String xml) throws CDBExceptionEx, CDBXMLErrorEx, CDBRecordAlreadyExistsEx {
-		checkAccess();
+		try {
+			swapCacheLock.readLock().lock();
 		throw new NO_IMPLEMENT();
+		} finally {
+			swapCacheLock.readLock().unlock();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDALOperations#remove_node(java.lang.String)
 	 */
 	public void remove_node(String curl) throws CDBRecordIsReadOnlyEx, CDBRecordDoesNotExistEx {
-		checkAccess();
+		try {
+			swapCacheLock.readLock().lock();
 		throw new NO_IMPLEMENT();
+		} finally {
+			swapCacheLock.readLock().unlock();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDALOperations#get_WDAO_Servant(java.lang.String)
 	 */
 	public WDAO get_WDAO_Servant(String curl) throws CDBRecordIsReadOnlyEx, CDBXMLErrorEx, CDBRecordDoesNotExistEx {
-		checkAccess();
-		
+		try {
+			swapCacheLock.readLock().lock();
 		// remove trailing slashes, to have unique curl (used for key)
 		if (curl.length() > 0 && curl.charAt(0) == '/')
 			curl = curl.substring(1);
@@ -2755,13 +2834,17 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			}
 			
 		}
+		} finally {
+			swapCacheLock.readLock().unlock();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDALOperations#set_DAO(java.lang.String, java.lang.String)
 	 */
 	public void set_DAO(String curl, String xml) throws CDBFieldDoesNotExistEx, CDBRecordIsReadOnlyEx, CDBExceptionEx, CDBXMLErrorEx, CDBRecordDoesNotExistEx {
-		checkAccess();
+		try {
+			swapCacheLock.readLock().lock();
 
 		m_logger.log(AcsLogLevel.INFO, "set_DAO: " + curl);
 
@@ -2827,6 +2910,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			throw e.toCDBFieldDoesNotExistEx();
 		}catch(AcsJCDBXMLErrorEx e){
 			throw e.toCDBXMLErrorEx();
+		}
+		} finally {
+			swapCacheLock.readLock().unlock();
 		}
 	}
 	
@@ -3505,13 +3591,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		System.out.println("loadMACI");
 		m_logger.info("clear_cache(curl): MACI1");
 		if(curl.matches("MACI")) {
-			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
-			if(reload) {
-				rootMap.put("MACI", (Object) null);
-				System.gc();
-			}
 			m_logger.info("clear_cache(curl): MACI2a");
-			rootMap.put("MACI", new RootMap<String, Object>());
 			m_logger.info("clear_cache(curl): MACI3a");
 			loadComponents("Components", false);
 			m_logger.info("clear_cache(curl): MACI4a");
@@ -3522,6 +3602,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			loadManagers("Managers", false);
 			m_logger.info("clear_cache(curl): MACI6a");
 			//loadAcsServices("AcsServices", false);
+			if(reload) {
+				System.gc();
+			}
 		} else {
 			String c = curl.replaceFirst("MACI/","");
 			if(c.startsWith("Components")){
@@ -3546,12 +3629,17 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		m_logger.info("clear_cache(curl): Components1");
 		if(curl.matches("Components")) {
 			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			m_logger.info("clear_cache(curl): Components2a");
+			Map<String, Object> components = getComponentsTableMap();
+			try {
+				swapCacheLock.writeLock().lock();
+				((Map<String, Object>)rootMap.get("MACI")).put("Components", components);
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 			if(reload) {
-				((Map<String, Object>)rootMap.get("MACI")).put("Components", null);
 				System.gc();
 			}
-			m_logger.info("clear_cache(curl): Components2a");
-			((Map<String, Object>)rootMap.get("MACI")).put("Components", getComponentsTableMap());
 			m_logger.info("clear_cache(curl): Components3a");
 		} else {
 			String c = curl.replaceFirst("Components/","");
@@ -3564,12 +3652,17 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		m_logger.info("clear_cache(curl): Containers1");
 		if(curl.matches("Containers")) {
 			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			m_logger.info("clear_cache(curl): Containers2a");
+			Map<String, Object> containers = getContainersTableMap();
+			try {
+				swapCacheLock.writeLock().lock();
+				((Map<String, Object>)rootMap.get("MACI")).put("Containers", containers);
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 			if(reload) {
-				((Map<String, Object>)rootMap.get("MACI")).put("Containers", null);
 				System.gc();
 			}
-			m_logger.info("clear_cache(curl): Containers2a");
-			((Map<String, Object>)rootMap.get("MACI")).put("Containers", getContainersTableMap());
 			m_logger.info("clear_cache(curl): Containers3a");
 		} else {
 			String c = curl.replaceFirst("Containers/","");
@@ -3582,12 +3675,17 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		m_logger.info("clear_cache(curl): Managers1");
 		if(curl.matches("Managers")) {
 			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			m_logger.info("clear_cache(curl): Managers2a");
+			Map<String, Object> managers = getManagersTableMap();
+			try {
+				swapCacheLock.writeLock().lock();
+				((Map<String, Object>)rootMap.get("MACI")).put("Managers", managers);
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 			if(reload) {
-				((Map<String, Object>)rootMap.get("MACI")).put("Managers", null);
 				System.gc();
 			}
-			m_logger.info("clear_cache(curl): Managers2a");
-			((Map<String, Object>)rootMap.get("MACI")).put("Managers", getManagersTableMap());
 			m_logger.info("clear_cache(curl): Managers3a");
 		} else {
 			String c = curl.replaceFirst("Managers/","");
@@ -3605,12 +3703,17 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		m_logger.info("clear_cache(curl): Channels1");
 		if(curl.matches("Channels")) {
 			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			m_logger.info("clear_cache(curl): Channels2a");
+			Object channels = getChannelsTableMap();
+			try {
+				swapCacheLock.writeLock().lock();
+				((Map<String, Object>)rootMap.get("MACI")).put("Channels", channels);
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 			if(reload) {
-				((Map<String, Object>)rootMap.get("MACI")).put("Channels", null);
 				System.gc();
 			}
-			m_logger.info("clear_cache(curl): Channels2a");
-			((Map<String, Object>)rootMap.get("MACI")).put("Channels", getChannelsTableMap());
 			m_logger.info("clear_cache(curl): Channels3a");
 		} else {
 			String c = curl.replaceFirst("Channels/","");
@@ -3666,12 +3769,17 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		m_logger.info("clear_cache(curl): TREE1");
 		if(curl.matches(new String(COMPONENT_TREE_NAME))) {
 			Map<String, Object> rootMap = (Map<String, Object>) rootNode;
+			m_logger.info("clear_cache(curl): TREE2a");
+			Map<String, Object> alma = getAlmaBranch();
+			try {
+				swapCacheLock.writeLock().lock();
+				rootMap.put(COMPONENT_TREE_NAME, alma);
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 			if(reload) {
-				rootMap.put(COMPONENT_TREE_NAME, null);
 				System.gc();
 			}
-			m_logger.info("clear_cache(curl): TREE2a");
-			rootMap.put(COMPONENT_TREE_NAME, getAlmaBranch());
 		} else {
 			String c = curl.replaceFirst(new String(COMPONENT_TREE_NAME+"/"),"");
 			updateAlmaBranch(c);
@@ -3722,8 +3830,23 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		if(forceInMemory) {
 			return Restrictions.sqlRestriction("REGEXP_MATCHES("+columnName+", ?)", re, org.hibernate.type.StringType.INSTANCE); //HSQLDB
 		} else {
-			//return Restrictions.sqlRestriction(columnName+" rlike ?", re, org.hibernate.Hibernate.STRING); //MySQL
+			//return Restrictions.sqlRestriction(columnName+" rlike ?", re, org.hibernate.type.StringType.INSTANCE); //MySQL
 			return Restrictions.sqlRestriction("REGEXP_LIKE("+columnName+", ?)", re, org.hibernate.type.StringType.INSTANCE); //Oracle
+		}
+	}
+
+	protected Object deepCopy(Object original) {
+		try {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream out = new ObjectOutputStream(bos);
+			out.writeObject(original);
+			ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+			ObjectInputStream in = new ObjectInputStream(bis);
+			Object copied = in.readObject();
+			return copied;
+		} catch (Throwable th) {
+			th.printStackTrace();
+			return null;
 		}
 	}
 
@@ -3733,7 +3856,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		final String keyField = "Name";
 		final Class type = alma.TMCDB.maci.Component.class;
 		Map<String, Object> rootMap = (Map<String, Object>) rootNode;
-		Map<String, Object> map = (Map<String, Object>)((Map<String, Object>) rootMap.get("MACI")).get("Components");
+		Map<String, Object> map = (Map<String, Object>)deepCopy(((Map<String, Object>) rootMap.get("MACI")).get("Components"));
 		m_logger.info("clear_cache(curl): ComponentsTable2");
 		try
 		{
@@ -3901,7 +4024,12 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				m_logger.info("clear_cache(curl): ComponentsTable11");
 			}
 			m_logger.info("clear_cache(curl): ComponentsTable12");
-
+			try {
+				swapCacheLock.writeLock().lock();
+				((Map<String, Object>)rootMap.get("MACI")).put("Components", map);
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 		}
 		catch (Throwable th)
 		{
@@ -3916,7 +4044,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		final String keyField = "Name";
 		final Class type = alma.TMCDB.maci.Container.class;
 		Map<String, Object> rootMap = (Map<String, Object>) rootNode;
-		Map<String, Object> map = (Map<String, Object>)((Map<String, Object>) rootMap.get("MACI")).get("Containers");
+		Map<String, Object> map = (Map<String, Object>)deepCopy(((Map<String, Object>) rootMap.get("MACI")).get("Containers"));
 		m_logger.info("clear_cache(curl): ContainersTable2");
 		try
 		{
@@ -4084,6 +4212,12 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				m_logger.info("clear_cache(curl): ContainersTable10");
 			}
 			m_logger.info("clear_cache(curl): ContainersTable11");
+			try {
+				swapCacheLock.writeLock().lock();
+				((Map<String, Object>)rootMap.get("MACI")).put("Containers", map);
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 		}
 		catch (Throwable th)
 		{
@@ -4095,7 +4229,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	protected void updateManagersTableMap(String curl) {
 		m_logger.info("clear_cache(curl): ManagersTable1");
 		Map<String, Object> rootMap = (Map<String, Object>) rootNode;
-		Map<String, Object> managersMap = (Map<String, Object>) rootMap.get("Managers");
+		Map<String, Object> managersMap = (Map<String, Object>)deepCopy(rootMap.get("Managers"));
 		m_logger.info("clear_cache(curl): ManagersTable2");
 		try
 		{
@@ -4123,6 +4257,12 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					manager.setServiceComponents(currentServices + "," + additionalServices);
 				m_logger.info("clear_cache(curl): ManagersTable7");
 			}
+			try {
+				swapCacheLock.writeLock().lock();
+				((Map<String, Object>)rootMap.get("MACI")).put("Managers", managersMap);
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 		}
 		catch (Throwable th)
 		{
@@ -4137,7 +4277,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		final String keyField = "Name";
 		final Class type = alma.TMCDB.maci.EventChannel.class;
 		Map<String, Object> rootMap = (Map<String, Object>) rootNode;
-		Channels channels = (Channels)((Map<String, Object>) rootMap.get("MACI")).get("Channels");
+		Channels channels = (Channels)deepCopy(((Map<String, Object>) rootMap.get("MACI")).get("Channels"));
 		m_logger.info("clear_cache(curl): ChannelsTable2");
 		try
 		{
@@ -4292,6 +4432,12 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				m_logger.info("clear_cache(curl): ChannelsTable10");
 			}
 			m_logger.info("clear_cache(curl): ChannelsTable11");
+			try {
+				swapCacheLock.writeLock().lock();
+				((Map<String, Object>)rootMap.get("MACI")).put("Channels", channels);
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 		}
 		catch (Throwable th)
 		{
@@ -4304,7 +4450,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	{
 		m_logger.info("clear_cache(curl): AlmaBranch1");
 		Map<String, Object> rootMap = (Map<String, Object>) rootNode;
-		final Map<String, Object> almaRoot = (Map<String, Object>) rootMap.get(COMPONENT_TREE_NAME);
+		final Map<String, Object> almaRoot = (Map<String, Object>) deepCopy(rootMap.get(COMPONENT_TREE_NAME));
 
 		m_logger.info("clear_cache(curl): AlmaBranch2");
 		try
@@ -4455,6 +4601,12 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				m_logger.info("clear_cache(curl): AlmaBranch9");
 			}
 			m_logger.info("clear_cache(curl): AlmaBranch10");
+			try {
+				swapCacheLock.writeLock().lock();
+				rootMap.put(COMPONENT_TREE_NAME, almaRoot);
+			} finally {
+				swapCacheLock.writeLock().unlock();
+			}
 			
 		}
 		catch (Throwable th)
