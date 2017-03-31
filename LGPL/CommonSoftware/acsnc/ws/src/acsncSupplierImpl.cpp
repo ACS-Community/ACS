@@ -35,6 +35,7 @@ namespace nc
 
     
 const uint32_t Supplier::SLEEP_TIME_BEFORE_SENDING_BUFFERED_EVENTS = 12;
+const uint32_t Supplier::SYSTEM_EXCEPTION_TOLERANCE = 3;
 
 //-----------------------------------------------------------------------------
 Supplier::Supplier(const char* channelName, 
@@ -49,7 +50,8 @@ Supplier::Supplier(const char* channelName,
     count_m(0),
     guardbl(10000000,50),
     antennaName(""),
-    autoreconnect_m(true)
+    autoreconnect_m(true),
+    consecutiveSystemExceptions(0)
 {
     ACS_TRACE("Supplier::Supplier");
     init(static_cast<CORBA::ORB_ptr>(0));
@@ -67,7 +69,8 @@ Supplier::Supplier(const char* channelName,
     typeName_mp(0),
     count_m(0),
     guardbl(10000000,50),
-    autoreconnect_m(true)
+    autoreconnect_m(true),
+    consecutiveSystemExceptions(0)
 {
     ACS_TRACE("Supplier::Supplier");
     init(orb_mp);
@@ -86,7 +89,8 @@ Supplier::Supplier(const char* channelName,
     typeName_mp(0),
     count_m(0),
     guardbl(10000000,50),
-    autoreconnect_m(true)
+    autoreconnect_m(true),
+    consecutiveSystemExceptions(0)
 {
     ACS_TRACE("Supplier::Supplier");
 
@@ -166,6 +170,9 @@ Supplier::reinit()
     } else {
         callback_m->init(orb, notifyFactory_m);
     }
+    
+    // reset the counter of failed attemps of reconnection
+    consecutiveSystemExceptions = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -380,16 +387,32 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
         }
         catch(...) 
         {
-            ACSErrTypeCommon::CORBAProblemExImpl cex(__FILE__, __LINE__, "nc::SimpleSupplier::publishEvent");
-            cex.setMinor(ex.minor());
-            cex.setCompletionStatus(ex.completed());
-            cex.setInfo(ex._info().c_str());
+            // increase the counter of failed reconnection attempts due a SystemException
+            consecutiveSystemExceptions++;
 
-            acsncErrType::PublishEventFailureExImpl ex(cex, __FILE__, __LINE__, "nc::Supplier::publishEvent");
-            ex.setChannelName(channelName_mp);
-            ex.log(LM_DEBUG);
-            
-            throw ex;
+            ACS_SHORT_LOG((LM_DEBUG, "Increasing number of consecutiveSystemExceptions (now = %d, treshold = 3", consecutiveSystemExceptions));
+
+            // A CORBA::SystemException can occurr if the NS get stuck for a while, so this exception will re-throw a CORBA::Transient
+            // if the ocurrence is below a treshold.
+            if(consecutiveSystemExceptions < SYSTEM_EXCEPTION_TOLERANCE)
+            {
+                throw CORBA::TRANSIENT();
+            } 
+            else 
+            {
+                ACSErrTypeCommon::CORBAProblemExImpl cex(__FILE__, __LINE__, "nc::SimpleSupplier::publishEvent");
+                cex.setMinor(ex.minor());
+                cex.setCompletionStatus(ex.completed());
+                cex.setInfo(ex._info().c_str());
+
+                acsncErrType::PublishEventFailureExImpl publishEx(cex, __FILE__, __LINE__, "nc::Supplier::publishEvent");
+                publishEx.setChannelName(channelName_mp);
+                publishEx.log(LM_DEBUG);
+
+                ACS_SHORT_LOG((LM_ERROR, "Could not publish event (maybe the Notify Service is stuck). Suggested to restart the Notify Service"));
+
+                throw publishEx;
+            }
         }
     }
     catch(std::exception &ex)
@@ -729,7 +752,7 @@ Supplier::setEventType(const char* typeName)
 }
 //-----------------------------------------------------------------------------
 void Supplier::retrySendEvent(const CosNotification::StructuredEvent &event){
-    ACS_SHORT_LOG((LM_DEBUG, "Supplier reconnecting to Notification Channel"));
+    ACS_SHORT_LOG((LM_WARNING, "push_structured_event failed. Supplier will try to reconnect to NS and trying again"));
   
     // Try to reconnect to the channel
     int maxAttemps = 3;
@@ -747,13 +770,26 @@ void Supplier::retrySendEvent(const CosNotification::StructuredEvent &event){
 
             if(maxAttemps == 0) 
             {
-                ACS_SHORT_LOG((LM_DEBUG,"Storing current event in Supplier buffer"));
-                eventBuff.push(event); 
+                // check if the counter of consecutive system exceptions has trespassed treshold.
+                // If so, prioritise the CORBA::SystemException instead of a possible EventDroppedException
+                if(consecutiveSystemExceptions > SYSTEM_EXCEPTION_TOLERANCE) 
+                {
+                    // Rethrow the OBJECT_NOT_EXIST exception.
+                    // SimpleSupplier will catch the exception and pass the event to
+                    // the callback object                
+                    throw; 
+                }
+                else
+                {
+                    // try to save the event in buffer 
+                    ACS_SHORT_LOG((LM_DEBUG, "Storing current event in Supplier buffer"));
+                    eventBuff.push(event); 
 
-                // Rethrow the OBJECT_NOT_EXIST exception.
-                // SimpleSupplier will catch the exception and pass the event to
-                // the callback object                
-                throw; 
+                    // Rethrow the OBJECT_NOT_EXIST exception.
+                    // SimpleSupplier will catch the exception and pass the event to
+                    // the callback object                
+                    throw; 
+                } 
             } 
             else 
             {
@@ -766,6 +802,9 @@ void Supplier::retrySendEvent(const CosNotification::StructuredEvent &event){
 
     // The Supplier was reconnected to NC. Now it's time to try to send buffered events
     ACS_SHORT_LOG((LM_DEBUG, "Supplier was reconnected to NC. Publishing buffered events"));
+
+    // reset the counter of failed attemps of reconnection due a possible SystemException
+    consecutiveSystemExceptions = 0;
 
     CosNotification::StructuredEvent *tmp;
   
@@ -784,7 +823,6 @@ void Supplier::retrySendEvent(const CosNotification::StructuredEvent &event){
     } catch(...) {
         // One buffered event couldn't be published. Nothing to do, it
         // will try to publish them again in subsequent publications
-        
         ACS_SHORT_LOG((LM_WARNING,"Couldn't publish a buffered event. Will try to publish them again before next publication"));
 
         throw;

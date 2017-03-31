@@ -374,6 +374,9 @@ class Supplier :
   private:
     
     static const uint32_t SLEEP_TIME_BEFORE_SENDING_BUFFERED_EVENTS;
+    static const uint32_t SYSTEM_EXCEPTION_TOLERANCE;
+
+    unsigned short consecutiveSystemExceptions;
 
     /**
      * ALMA C++ coding standards state assignment operators should be disabled.

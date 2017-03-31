@@ -39,9 +39,9 @@ testChannelCreation_OBJECTS =	testChannelCreation
 testChannelCreation_LIBS    =	acsnc maciClient acsncHelperTest
 
 
-SCRIPTS_L       = acsncTATRunTest.sh acsncNslist.sh acsncExecDelChannelsNS.sh acsncCreateNamedNotifyS.sh acsncKillNamedNotifyS.sh
+SCRIPTS_L       = acsncTATRunTest.sh acsncNslist.sh acsncExecDelChannelsNS.sh acsncCreateNamedNotifyS.sh acsncKillNamedNotifyS.sh acsncProcessSignal.sh
 
-PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent acsncTestSupReconn acsncRunConComp acsncRunSupComp acsncRunMConComp acsncTestMThSup
+PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent acsncTestSupReconn acsncRunConComp acsncRunSupComp acsncRunMConComp acsncTestMThSup acsncSupplyEventsWithStats
 
 # Includes (.h) files (public and local)
 # ---------------------------------
