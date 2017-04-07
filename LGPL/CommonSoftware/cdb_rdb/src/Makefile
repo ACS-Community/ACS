@@ -99,6 +99,7 @@ clean : clean_all
 	@echo "== Deleting generated code"
 	@rm -rf ../config/TMCDB_swconfigcore
 	@rm -rf ../config/TMCDB_swconfigext
+	@rm -rf ../alma/acs/tmcdb/generated
 	@rm -rf tmcdb
 	@rm -rf gen
 	@rm -f .done_generating_sql
