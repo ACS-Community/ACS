@@ -85,6 +85,11 @@ endif
 #
 # TARGETS
 # -------
+gen:
+	acsStartJava -endorsed org.exolab.castor.builder.SourceGenerator \
+            -i ../config/CDB/schemas/LRU.xsd  -package alma.tmcdb.generated.lrutype
+
+
 all:	.done_generating_sql ../lib/TMCDBswconfigStrategy.jar .done_generating_classes ../lib/$(POJOS_JAR) do_all
 	@echo " . . . 'all' done" 
 
