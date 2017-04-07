@@ -21,7 +21,7 @@
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = hibernateCdbJDal
+SCRIPTS         = hibernateCdbJDal MonitoringSyncTool
 SCRIPTS_L       =
 
 
@@ -50,11 +50,13 @@ CDB_SCHEMAS = ControlDevice
 #
 # Jarfiles and their directories
 #
-JARFILES=cdb_rdb
+JARFILES=cdb_rdb AcsTmcdbUtils
 cdb_rdb_DIRS=com alma/TMCDB alma/acs/tmcdb/logic
 cdb_rdb_EXTRAS=alma/TMCDB/maci/hibernate-mappings-maci.hbm.xml \
                alma/TMCDB/baci/hibernate-mappings-baci.hbm.xml \
                acsOnly-cdb_rdb-hibernate.cfg.xml
+
+AcsTmcdbUtils_DIRS=alma/acs/tmcdb/generated /alma/acs/tmcdb/utils
 
 cdb_rdb_JLIBS=TMCDBswconfigStrategy cdbrdb-pojos
 #
@@ -90,7 +92,7 @@ gen:
             -i ../config/CDB/schemas/LRU.xsd  -package alma.acs.tmcdb.generated.lrutype
 
 
-all:	.done_generating_sql ../lib/TMCDBswconfigStrategy.jar .done_generating_classes ../lib/$(POJOS_JAR) do_all
+all:	gen .done_generating_sql ../lib/TMCDBswconfigStrategy.jar .done_generating_classes ../lib/$(POJOS_JAR) do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
