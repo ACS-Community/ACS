@@ -28,6 +28,7 @@ package alma.acs.tmcdb.utils;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,8 +64,8 @@ import alma.acs.tmcdb.HWConfiguration;
 import alma.acs.tmcdb.LRUType;
 import alma.acs.tmcdb.MonitorPoint;
 import alma.acs.tmcdb.MonitorPointDatatype;
-import alma.archive.database.helpers.wrappers.DbConfigException;
-import alma.archive.database.helpers.wrappers.TmcdbDbConfig;
+//import alma.archive.database.helpers.wrappers.DbConfigException;
+//import alma.archive.database.helpers.wrappers.TmcdbDbConfig;
 import alma.acs.tmcdb.generated.lrutype.BaciPropertyT;
 import alma.acs.tmcdb.generated.lrutype.LruType;
 import alma.acs.tmcdb.generated.lrutype.MonitorPointT;
@@ -216,7 +217,7 @@ public class MonitoringSyncTool {
      */
     public void synchronizeProperties()
 //        throws XMLException, IOException, TmcdbException, DbConfigException {
-    	throws XMLException, IOException, Exception, DbConfigException {
+    	throws XMLException, IOException, Exception, Exception {
         String confName;
         if (configuration == null) {
             confName = System.getenv(TMCDB_CONFIGURATION_NAME);
@@ -229,13 +230,25 @@ public class MonitoringSyncTool {
         }
         logger.info("using configuration " + confName);
         
-        TmcdbDbConfig dbconf = null;
-        try {
-            dbconf = new TmcdbDbConfig(logger);
+//        TmcdbDbConfig dbconf = null;
+//        try {
+//            dbconf = new TmcdbDbConfig(logger);
+//        } catch (Exception ex) { 
+//            logger.warning("Cannot create TmcdbDbConfig"); 
+//            ex.printStackTrace();
+//        }
+        Object dbconf = null;
+        try{
+	    	Class<?> TmcdbDbConfigC = Class.forName("alma.archive.database.helpers.wrappers.TmcdbDbConfig");
+	    	Constructor TmcdbConfigConstr = TmcdbDbConfigC.getConstructor(Logger.class);
+	    	dbconf = TmcdbConfigConstr.newInstance(logger);
+        }catch (ClassNotFoundException ex){
+    		ex.printStackTrace();
         } catch (Exception ex) { 
-            logger.warning("Cannot create TmcdbDbConfig"); 
-            ex.printStackTrace();
-        }
+          logger.warning("Cannot create TmcdbDbConfig"); 
+          ex.printStackTrace();
+      }
+        
         /*
          *  this blocks used 
          * /ICD/SharedCode/TMCDB/Persistence/src/alma/tmcdb/utils/HibernateUtil.java
@@ -1142,8 +1155,6 @@ public class MonitoringSyncTool {
         } catch (XMLException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
-            ex.printStackTrace();
-        }  catch (DbConfigException ex) {
             ex.printStackTrace();
         }catch (Exception ex) {
             ex.printStackTrace();

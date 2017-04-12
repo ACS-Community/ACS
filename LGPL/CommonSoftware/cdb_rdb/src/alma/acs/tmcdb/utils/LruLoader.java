@@ -227,14 +227,25 @@ public class LruLoader {
     	Logger logger = Logger.getLogger("alma.tmcdb.utils.LruLoader");
     	
         String[] hwConfFiles = findTmcdbHwConfigFiles();
-        
-        TmcdbDbConfig dbconf = null;
-        try {
-            dbconf = new TmcdbDbConfig(logger);
+        // Need reflection here
+//        TmcdbDbConfig dbconf = null;
+//        try {
+//            dbconf = new TmcdbDbConfig(logger);
+//        } catch (Exception ex) { 
+//            logger.warning("Cannot create TmcdbDbConfig"); 
+//            ex.printStackTrace();
+//        }
+        Object dbconf = null;
+        try{
+	    	Class<?> TmcdbDbConfigC = Class.forName("alma.archive.database.helpers.wrappers.TmcdbDbConfig");
+	    	Constructor TmcdbConfigConstr = TmcdbDbConfigC.getConstructor(Logger.class);
+	    	dbconf = TmcdbConfigConstr.newInstance(logger);
+        }catch (ClassNotFoundException ex){
+    		ex.printStackTrace();
         } catch (Exception ex) { 
-            logger.warning("Cannot create TmcdbDbConfig"); 
-            ex.printStackTrace();
-        }
+          logger.warning("Cannot create TmcdbDbConfig"); 
+          ex.printStackTrace();
+      }
         HibernateUtil.createConfigurationFromDbConfig(dbconf);
         Session session = HibernateUtil.getSessionFactory().openSession();
         
@@ -287,11 +298,23 @@ public class LruLoader {
     	throws  XMLException, Exception {
 
     	Logger logger = Logger.getLogger("alma.tmcdb.utils.LruLoader");
-
-        TmcdbDbConfig dbconf = null;
-        try {
-            dbconf = new TmcdbDbConfig(logger);
-        } catch (Exception ex) { }
+    	// need reflection here as well
+//        TmcdbDbConfig dbconf = null;
+//        try {
+//            dbconf = new TmcdbDbConfig(logger);
+//        } catch (Exception ex) { }
+        Object dbconf = null;
+        try{
+	    	Class<?> TmcdbDbConfigC = Class.forName("alma.archive.database.helpers.wrappers.TmcdbDbConfig");
+	    	Constructor TmcdbConfigConstr = TmcdbDbConfigC.getConstructor(Logger.class);
+	    	dbconf = TmcdbConfigConstr.newInstance(logger);
+        }catch (ClassNotFoundException ex){
+    		ex.printStackTrace();
+        } catch (Exception ex) { 
+          logger.warning("Cannot create TmcdbDbConfig"); 
+          ex.printStackTrace();
+      }
+    	
         HibernateUtil.createConfigurationFromDbConfig(dbconf);
         Session session;
         session = HibernateUtil.getSessionFactory().openSession();
@@ -326,8 +349,6 @@ public class LruLoader {
                     FileReader fr = new FileReader(args[i]);
                     loadOneHwConfigFile(fr, false);
                 } catch (FileNotFoundException ex) {
-                    ex.printStackTrace();
-                } catch (DbConfigException ex) {
                     ex.printStackTrace();
                 } catch (XMLException ex) {
 					ex.printStackTrace();
