@@ -58,7 +58,9 @@ cdb_rdb_EXTRAS=alma/TMCDB/maci/hibernate-mappings-maci.hbm.xml \
 
 AcsTmcdbUtils_DIRS=alma/acs/tmcdb/generated alma/acs/tmcdb/utils
 
-cdb_rdb_JLIBS=TMCDBswconfigStrategy cdbrdb-pojos
+cdb_rdb_JLIBS=TMCDBswconfigStrategy cdbrdb-pojos 
+
+
 #
 # java sources in Jarfile on/off
 DEBUG=on
@@ -68,7 +70,7 @@ DEBUG=on
 # other files to be installed
 #----------------------------
 POJOS_JAR = cdbrdb-pojos.jar
-INSTALL_FILES = ../lib/$(POJOS_JAR) ../lib/TMCDBswconfigStrategy.jar
+INSTALL_FILES = ../lib/$(POJOS_JAR) ../lib/TMCDBswconfigStrategy.jar ../lib/commons-cli-1.2.jar
 
 
 #

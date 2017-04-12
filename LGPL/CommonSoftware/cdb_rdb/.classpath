@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="lib" path="/home/almamgr/INTROOT/lib/cdbrdb-pojos.jar"/>
+	<classpathentry kind="lib" path="/home/almamgr/INTROOT/lib/cdb_rdb.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-current/ACSSW/lib/archive_database.jar"/>
+	<classpathentry kind="var" path="INTROOT"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry excluding=".cvsignore|.done_generating_classes|.done_generating_sql|Makefile|gen/" kind="src" path="src"/>
 	<classpathentry excluding=".cvsignore|CDB/|Makefile|ref/|tmcdb/" kind="src" path="test"/>
@@ -9,7 +13,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/hsqldb.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/hibernate3.jar" sourcepath="/ACSROOT"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate-core-4.3.11.Final.jar" sourcepath="/ACSROOT"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsalarmSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/slf4j-api-1.7.6.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSError.jar"/>
@@ -19,7 +23,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/javassist-3.4.GA.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/javassist-3.18.1-GA.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jta-1.1.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
@@ -39,15 +43,17 @@
 	<classpathentry kind="var" path="ACSROOT/lib/slf4j-acs.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jacsutil2.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/commons-math-2.1.jar"/>
-	<classpathentry kind="lib" path="lib/cdb_rdb.jar"/>
-	<classpathentry kind="lib" path="lib/cdbrdb-pojos.jar"/>
-	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb-3.6.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/hibernate-tools-3.6.0.CR1.jar"/>
-	<classpathentry kind="var" path="JACORB_HOME/lib/endorsed/jacorb-omgapi-3.6.jar"/>
-	<classpathentry kind="var" path="INTROOT"/>
-	<classpathentry kind="var" path="INTROOT/lib/acscodegen.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/tmcdbGenerator.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/tmcdbGrammar.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate-jpa-2.1-api-1.0.0.Final.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate-tools-4.3.1.Final.jar"/>
+	<classpathentry kind="lib" path="/home/almamgr/INTROOT/lib/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-current/ACSSW/lib/TMCDBpojos.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-current/JacORB/lib/antlr-2.7.2.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-current/JacORB/lib/idl.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-current/JacORB/lib/jacorb-3.6.1.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-current/JacORB/lib/jacorb-services-3.6.1.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-current/JacORB/lib/picocontainer-1.2.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-current/JacORB/lib/slf4j-api-1.7.6.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-current/JacORB/lib/slf4j-jdk14-1.7.6.jar"/>
+	<classpathentry kind="lib" path="/alma/ACS-current/JacORB/lib/wrapper-3.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

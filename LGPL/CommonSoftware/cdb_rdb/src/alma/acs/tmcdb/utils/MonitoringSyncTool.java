@@ -23,7 +23,7 @@
  *
  * "@(#) $Id: AssemblyDataLoader.java,v 1.18 2011/03/04 21:21:29 sharring Exp $"
  */
-package alma.tmcdb.utils;
+package alma.acs.tmcdb.utils;
 
 
 import java.io.FileReader;
@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -51,7 +52,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import alma.acs.tmcdb.Assembly;
+import alma.acs.tmcdb.Assembly; 
 import alma.acs.tmcdb.AssemblyType;
 import alma.acs.tmcdb.BACIPropArchMech;
 import alma.acs.tmcdb.BACIProperty;
@@ -64,16 +65,18 @@ import alma.acs.tmcdb.MonitorPoint;
 import alma.acs.tmcdb.MonitorPointDatatype;
 import alma.archive.database.helpers.wrappers.DbConfigException;
 import alma.archive.database.helpers.wrappers.TmcdbDbConfig;
-import alma.tmcdb.generated.lrutype.BaciPropertyT;
-import alma.tmcdb.generated.lrutype.LruType;
-import alma.tmcdb.generated.lrutype.MonitorPointT;
+import alma.acs.tmcdb.generated.lrutype.BaciPropertyT;
+import alma.acs.tmcdb.generated.lrutype.LruType;
+import alma.acs.tmcdb.generated.lrutype.MonitorPointT;
 
 public class MonitoringSyncTool {
 
     private static final String TMCDB_CONFIGURATION_NAME = "TMCDB_CONFIGURATION_NAME";
 
-    private static Logger logger =
-    	TmcdbLoggerFactory.getLogger(MonitoringSyncTool.class.getName());
+//    private static Logger logger =
+//    	TmcdbLoggerFactory.getLogger(MonitoringSyncTool.class.getName());
+    
+    private static final Logger logger = Logger.getLogger(MonitoringSyncTool.class.getName());
         
     private class AttChange {
         
@@ -208,16 +211,17 @@ public class MonitoringSyncTool {
      * 
      * @throws XMLException
      * @throws IOException
-     * @throws TmcdbException
+     * @throws Exception
      * @throws DbConfigException
      */
     public void synchronizeProperties()
-        throws XMLException, IOException, TmcdbException, DbConfigException {
+//        throws XMLException, IOException, TmcdbException, DbConfigException {
+    	throws XMLException, IOException, Exception, DbConfigException {
         String confName;
         if (configuration == null) {
             confName = System.getenv(TMCDB_CONFIGURATION_NAME);
             if (confName == null) {
-                TmcdbException ex = new TmcdbException("Null TMCDB_CONFIGURATION_NAME environment variable");
+                Exception ex = new Exception("Null TMCDB_CONFIGURATION_NAME environment variable");
                 throw ex;
             }
         } else {
@@ -232,6 +236,12 @@ public class MonitoringSyncTool {
             logger.warning("Cannot create TmcdbDbConfig"); 
             ex.printStackTrace();
         }
+        /*
+         *  this blocks used 
+         * /ICD/SharedCode/TMCDB/Persistence/src/alma/tmcdb/utils/HibernateUtil.java
+         * we have to refactor it.
+         */
+        
         HibernateUtil.createAcsConfigurationFromDbConfig(dbconf);
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
@@ -239,7 +249,7 @@ public class MonitoringSyncTool {
         Configuration configuration = getSwConfiguration(confName, session);
         
         // Parse all the TMCDBXXXAdd.xml files.
-        String[] hwConfFiles = LruLoader.findTmcdbHwConfigFiles();
+    String[] hwConfFiles = LruLoader.findTmcdbHwConfigFiles();
         Map<String, LruType> lruTypes = new HashMap<String, LruType>();
         for (String hwConfFile : hwConfFiles) {
             logger.info("parsing " + hwConfFile);
@@ -263,8 +273,8 @@ public class MonitoringSyncTool {
             query.setParameter("idl", componentType, StringType.INSTANCE);
             List<ComponentType> compTypes = query.list();            
             if ( compTypes.size() == 0 ) {
-                TmcdbException ex =
-                    new TmcdbException(String.format("component type '%s' not found", componentType));
+                Exception ex =
+                    new Exception(String.format("component type '%s' not found", componentType));
                 throw ex;
             }
             components = new ArrayList<Component>();
@@ -505,13 +515,13 @@ public class MonitoringSyncTool {
      * @throws TmcdbException If the Configuration is not found in the DB.
      */
     private Configuration getSwConfiguration(String confName,
-            Session session) throws TmcdbException {
+            Session session) throws Exception {
         String qstr = "FROM Configuration WHERE configurationname = '"
                 + confName + "'";
         Configuration configuration = (Configuration) session.createQuery(qstr)
                 .uniqueResult();
         if (configuration == null) {
-            throw new TmcdbException("Configuration not found in TMCDB: "
+            throw new Exception("Configuration not found in TMCDB: "
                     + confName);
         }
         return configuration;
@@ -1014,6 +1024,8 @@ public class MonitoringSyncTool {
         return retVal;
     }
     
+
+    
     public static void main(String[] args) {
         Options options = new Options();
         Option helpOpt= new Option("h", "help", false, "print this message");
@@ -1131,9 +1143,9 @@ public class MonitoringSyncTool {
             ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
-        } catch (TmcdbException ex) {
+        }  catch (DbConfigException ex) {
             ex.printStackTrace();
-        } catch (DbConfigException ex) {
+        }catch (Exception ex) {
             ex.printStackTrace();
         }
     }
