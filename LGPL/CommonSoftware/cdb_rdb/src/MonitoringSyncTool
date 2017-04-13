@@ -1,4 +1,4 @@
 #!/bin/bash
 
-acsStartJava -endorsed alma.tmcdb.utils.MonitoringSyncTool $@
+acsStartJava -endorsed alma.acs.tmcdb.utils.MonitoringSyncTool $@
 
