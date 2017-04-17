@@ -59,33 +59,25 @@ typedef CB##T T##CB;
  \
  typedef Alarm##T T##Alarm;
 
-#define PENUM(T)  interface P##T: ACS::TypelessProperty, ACS::TimerTriggerSupport { \
+#define PENUM(T)  interface P##T: ACS::TypelessProperty {\
     T get_sync(out ACSErr::Completion c);\
     void get_async(in ACS::CBpattern cb, in ACS::CBDescIn desc);\
     long get_history(in long n_last_values, out T##Seq vs, out ACS::TimeSeq ts);\
     ACS::Monitorpattern create_monitor(in ACS::CBpattern cb, in ACS::CBDescIn desc);\
     ACS::Monitor create_postponed_monitor (in ACS::Time start_time, in ACS::CBpattern cb, in ACS::CBDescIn desc);\
+    readonly attribute ACS::TimeInterval default_timer_trigger;\
+    readonly attribute ACS::TimeInterval min_timer_trigger;\
     readonly attribute T default_value;\
     readonly attribute ACS::stringSeq statesDescription;\
     readonly attribute ACS::ConditionSeq condition;\
     readonly attribute T##Seq allStates;\
   }
 /*
-get_async and create_monitor and create_postponed_monitor should have CB##T instead CBpattern (problem due to add to baci new type is very difficult)
+get_async and create_monitor and create_postponed_monitor shoudl have CB##T instead CBpattern (problem due to add to baci new type is very difficulte)
 Should we rename states to enum(s) or similar ?
 allStates - all substates supported by device (do wee need?)
 default_value - default_states(?)
 */
-
-/*
- * @todo Why does create_monitor() method return Monitorpatter? It would be sufficient to return
- *       Monitor as the value trigger may not make sense for the enum values except when the
- *       client wants to receive a notification every time the monitored enum value is changed.
- */
-/*
- * @todo Do we have a code generator which generates a template implementation of enum property?
- *       Or, is it better to define a kind of base class for enum property?
- */
 
 #define ROENUM(T) interface RO##T: P##T{\
     ACS::Subscription new_subscription_AlarmEnum(in ACS::Alarmpattern cb, in ACS::CBDescIn desc);\
