@@ -29,6 +29,8 @@ package alma.acs.tmcdb.utils;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +53,7 @@ import org.exolab.castor.xml.XMLException;
 import org.hibernate.type.StringType;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import alma.acs.tmcdb.Assembly; 
@@ -217,7 +220,7 @@ public class MonitoringSyncTool {
      */
     public void synchronizeProperties()
 //        throws XMLException, IOException, TmcdbException, DbConfigException {
-    	throws XMLException, IOException, Exception, Exception {
+    	throws XMLException, IOException, Exception {
         String confName;
         if (configuration == null) {
             confName = System.getenv(TMCDB_CONFIGURATION_NAME);
@@ -239,9 +242,316 @@ public class MonitoringSyncTool {
 //        }
         Object dbconf = null;
         try{
-	    	Class<?> TmcdbDbConfigC = Class.forName("alma.archive.database.helpers.wrappers.TmcdbDbConfig");
-	    	Constructor TmcdbConfigConstr = TmcdbDbConfigC.getConstructor(Logger.class);
+	    	Class<?> TmcdbDbConfigC = Class.forName(
+	    			"alma.archive.database.helpers.wrappers.TmcdbDbConfig");
+	    	Constructor<?> TmcdbConfigConstr = TmcdbDbConfigC.getConstructor(Logger.class);
 	    	dbconf = TmcdbConfigConstr.newInstance(logger);
+	    	
+	    	//Let's reflect this as well
+//	        HibernateUtil.createAcsConfigurationFromDbConfig(dbconf);
+//	        Session session = HibernateUtil.getSessionFactory().openSession();
+//	        Transaction tx = session.beginTransaction();
+	        Class<?> HibernateUtilTmdbPersistenceC = Class.forName("alma.tmcdb.utils.HibernateUtil");
+	    	Method createAcsConfigurationFromDbConfig = null ;
+	    	Method getSessionFactory = null ;
+	    	try{
+	    		createAcsConfigurationFromDbConfig = 
+	    				HibernateUtilTmdbPersistenceC.getMethod(
+	    						"createAcsConfigurationFromDbConfig", dbconf.getClass());
+	    		getSessionFactory = HibernateUtilTmdbPersistenceC.getMethod(
+	    				"getSessionFactory");
+	    		
+	    	}catch (SecurityException ex){
+    			ex.printStackTrace();
+    		}catch (NoSuchMethodException ex){
+    			ex.printStackTrace();
+    		}
+	    	//lets invoke the methods
+	    	try {
+	    		createAcsConfigurationFromDbConfig.invoke(null,dbconf);
+	    		SessionFactory sessionF = (SessionFactory)getSessionFactory.invoke(null);
+	    		Session session = sessionF.openSession();
+	    		Transaction tx = session.beginTransaction();
+	            
+	    		//this was moved to this block, as it depends on the previous reflection
+	    		Configuration configuration = getSwConfiguration(confName, session);
+	    		
+	    		// Parse all the TMCDBXXXAdd.xml files.
+				String[] hwConfFiles = LruLoader.findTmcdbHwConfigFiles();
+				    Map<String, LruType> lruTypes = new HashMap<String, LruType>();
+				    for (String hwConfFile : hwConfFiles) {
+				        logger.info("parsing " + hwConfFile);
+				        LruType xmllru = LruType.unmarshalLruType(new FileReader(hwConfFile));
+				        lruTypes.put(xmllru.getName(), xmllru);
+				    }
+				    String qstr;
+			        List<Component> components = null;
+			        if ( (component == null) && (componentType == null) ) {
+			            // Update all Components under the Configuration.
+			            qstr = "FROM Component WHERE configuration = :conf";
+			            Query query = session.createQuery(qstr);
+			            // let's replace the HibernateUtil
+//			            query.setParameter("conf", configuration, HibernateUtil.getSessionFactory().getTypeHelper().entity(Component.class));;
+			            query.setParameter("conf", configuration, sessionF.getTypeHelper().entity(Component.class));
+			            components = query.list();
+			        } else if ( (component == null) && (componentType != null) ) {
+			            // Update all Components which have the given ComponentType and
+			            // Configuration.
+			            qstr = "FROM ComponentType WHERE IDL LIKE :idl";
+			            Query query = session.createQuery(qstr);
+			            query.setParameter("idl", componentType, StringType.INSTANCE);
+			            List<ComponentType> compTypes = query.list();            
+			            if ( compTypes.size() == 0 ) {
+			                Exception ex =
+			                    new Exception(String.format("component type '%s' not found", componentType));
+			                throw ex;
+			            }
+			            components = new ArrayList<Component>();
+			            for (ComponentType compType : compTypes) {
+			                qstr = "FROM Component WHERE componentType = :type AND configuration = :conf";
+			                query = session.createQuery(qstr);
+			                // let's replace the HibernateUtil
+//              			query.setParameter("type", compType, HibernateUtil.getSessionFactory().getTypeHelper().entity(ComponentType.class));
+			                query.setParameter("conf", configuration, sessionF.getTypeHelper().entity(Component.class));
+			                components.addAll(query.list());
+			            }
+			        } else {
+			            // Update only the given Component.
+			            int idx = component.lastIndexOf('/');
+			            String compname = component.substring(idx+1);
+			            String path = component.substring(0, idx);
+			            qstr = "FROM Component WHERE configuration = :conf AND componentName = :name AND path = :path";
+			            Query query = session.createQuery(qstr);
+			         // let's replace the HibernateUtil
+//			            query.setParameter("conf", configuration, HibernateUtil.getSessionFactory().getTypeHelper().entity(Component.class));
+			            query.setParameter("conf", configuration, sessionF.getTypeHelper().entity(Component.class));
+			            query.setParameter("name", compname, StringType.INSTANCE);
+			            query.setParameter("path", path, StringType.INSTANCE);
+			            components = query.list();
+			            if (components.size() == 0) {
+			                logger.severe("component not found. componentName: " + compname + "; path: " + path);
+			            }
+			        }
+				    
+			        
+			        String baciQueryStr = "FROM BACIProperty WHERE component = :comp";
+			        Query baciQuery = session.createQuery(baciQueryStr);
+			        for (Component comp : components) {
+			            logger.info("===============================================================================");
+			            logger.info("synchronizing component " + comp.getPath() + "/" + comp.getComponentName());
+			                        
+//			            baciQuery.setParameter("comp", comp, HibernateUtil.getSessionFactory().getTypeHelper().entity(BACIProperty.class));
+			            baciQuery.setParameter("comp", comp, sessionF.getTypeHelper().entity(BACIProperty.class));
+			            List<BACIProperty> properties = baciQuery.list();
+			            
+			            String allMonPntQyStr = "FROM MonitorPoint WHERE BACIProperty IN (:props)";
+			            Query allMonPntQy = session.createQuery(allMonPntQyStr);
+//			            allMonPntQy.setParameterList("props", properties, HibernateUtil.getSessionFactory().getTypeHelper().entity(BACIProperty.class));
+			            allMonPntQy.setParameterList("props", properties, sessionF.getTypeHelper().entity(BACIProperty.class));
+			            List<MonitorPoint> allMonPnts = allMonPntQy.list(); // List with all MP from the configuration
+			            
+			            logger.info("# of properties found for this component: " + properties.size());
+			            
+			            String type = getLruTypeFromComponentIDL(comp.getComponentType().getIDL());
+			            logger.fine("using LRU type: " + type);
+			            LruType lruType = lruTypes.get(type);
+			            if (lruType != null) {
+			                // A list to collect all properties in the XML file that have a corresponding
+			                // property in the database. At the end of processing, if a property in the XML
+			                // file is not in this list, it means that it was added.
+			                List<String> xmlFoundBaciProperties = new ArrayList<String>();
+			                for (BACIProperty prop : properties) {
+			                    logger.info("-------------------------------------------------------------------------------");
+			                    logger.info("synchronizing property " + prop.getPropertyName());
+			                    BaciPropertyT xmlBaciProperty = null;
+			                    for (BaciPropertyT xmlbp : getXmlBaciProperties(lruType, lruTypes)) {
+			                        if (xmlbp.getPropertyname().equals(prop.getPropertyName())) {
+			                            xmlBaciProperty = xmlbp;
+			                            xmlFoundBaciProperties.add(xmlbp.getPropertyname());
+			                            break;
+			                        }
+			                    }
+			                    if (xmlBaciProperty != null) {
+			                        BACIProperty newBaciProperty = toBACIProperty(xmlBaciProperty, comp);
+			                        AttChange[] bpdiffs = updateBACIProperty(prop, newBaciProperty);
+			                        if ( bpdiffs.length > 0 ) {
+			                            // The BACIProperty from the database exists in the XML, but
+			                            // one or more attributes are different. We update the database in this case.
+			                            logger.warning("updating property " + prop.getPropertyName());
+			                            for (AttChange diff : bpdiffs) {
+			                                logger.warning("  " + diff.getDescription());
+			                            }
+			                            if (commit) {
+			                                session.saveOrUpdate(prop);
+			                            }
+			                        }
+			                        
+			                        {
+			                            // Now check the underlying MonitorPoints
+			                        	ArrayList<MonitorPoint> monPnts = new ArrayList<MonitorPoint>();
+			                            for (MonitorPoint mp : allMonPnts) {
+			                            	if( mp.getBACIProperty() == prop )
+			                            		monPnts.add(mp);
+			                            }
+			                            logger.info("# of monitor points found under this property: " + monPnts.size());
+			                            // List of MonitorPoints from the XML file that have been found after iterating
+			                            // over the MonitorPoints in the database. This list is used to detect the MonitorPoints
+			                            // that are present in the XML file but not in the database, and therefore should
+			                            // be added in the database.
+			                            List<String> xmlFoundMonitorPoints = new ArrayList<String>();
+			                            for (MonitorPoint mp : monPnts) {
+			                                logger.fine("synchronizing monitor point " + mp.getMonitorPointName());
+			                                MonitorPointT xmlMonitorPoint = null;
+			                                for (MonitorPointT xmlmp : xmlBaciProperty.getMonitorPoint()) {
+			                                    if (xmlmp.getMonitorpointname().equals(mp.getMonitorPointName())) {
+			                                        xmlMonitorPoint = xmlmp;
+			                                        xmlFoundMonitorPoints.add(xmlmp.getMonitorpointname());
+			                                        break;
+			                                    }
+			                                }
+			                                if (xmlMonitorPoint != null) {
+			                                    // A corresponding MonitorPointT in the XML was found, maybe the
+			                                    // database MonitorPoint needs to be updated.
+			                                    AttChange[] mpdiffs = updateMonitorPoint(mp,
+			                                            toMonitorPointNoIndex(xmlMonitorPoint, prop, mp.getAssembly()));
+			                                    if ( mpdiffs.length > 0 ) {
+			                                        logger.warning("monitor point " + mp.getMonitorPointName() +
+			                                                " will be updated in the database");
+			                                        for (AttChange diff : mpdiffs) {
+			                                            logger.warning("  " + diff.getDescription());
+			                                        }
+			                                        if (commit) {
+			                                            session.saveOrUpdate(mp);
+			                                        }
+			                                    }
+			                                } else {
+			                                    // No MonitorPointT from the XML was found. This means the
+			                                    // MonitorPoint in the database should be deleted. If there are MonitorData
+			                                    // records pointing to this MonitorPoint, the transaction will fail.
+			                                    logger.warning("monitor point " + mp.getMonitorPointName() +
+			                                            " will be deleted in the database");
+			                                    if (commit) {
+			                                        session.delete(mp);
+			                                    }
+			                                }
+			                            }
+
+			                            // Actually, new MonitorPoints should not be added by the tool. They should be added
+			                            // during the Assembly dynamic discovery, currently by the Blobber,
+			                            // in the future by Control.
+			                            int index = 0;
+			                            for (MonitorPointT xmlmp : xmlBaciProperty.getMonitorPoint()) {
+			                                if (!xmlFoundMonitorPoints.contains(xmlmp.getMonitorpointname())) {
+			                                    if (addMp) {
+			                                        // If addMp option is set, add all the missing MonitorPoints
+			                                        // in the database for all the Assemblies of the requried type.
+			                                        List<Assembly> assemblies = new ArrayList<Assembly>();
+			                                        for (HWConfiguration hwConf : getHwConfigurations(configuration, session)) {
+			                                            assemblies.addAll(getAssembliesFromLruType(session,
+			                                                    getLruTypeFromComponentIDL(comp.getComponentType().getIDL()), hwConf));
+			                                            
+			                                        }
+			                                        for (Assembly assembly : assemblies) {
+			                                            MonitorPoint mp = toMonitorPoint(xmlmp, prop, assembly, index++);
+			                                            logger.warning("monitor point " + xmlmp.getMonitorpointname() +
+			                                                    " will be added in the database for Assembly " + assembly.getSerialNumber());
+			                                            if (commit) {
+			                                                session.save(mp);
+			                                            }
+			                                        }                                            
+			                                    } else {
+			                                        // The MonitorPoint was added in the XML, but it's not in the database.
+			                                        logger.fine("monitor point " + xmlmp.getMonitorpointname() +
+			                                                " is not in the database. The record should be added by the Blobber");
+			                                    }
+			                                    
+			                                }
+			                            }
+
+			                        }
+			                        
+			                    } else {
+			                        // Delete the MonitorPoint records for the BACIProperty. If there are
+			                        // records in the MonitorData associated with the MonitorPoint, then the
+			                        // deletion will fail. In this case the Configuration should be cloned
+			                        // and the tool run again.
+			                        ArrayList<MonitorPoint> monPnts = new ArrayList<MonitorPoint>();
+			                        for (MonitorPoint mp : allMonPnts) {
+			                        	if( mp.getBACIProperty() == prop )
+			                        		monPnts.add(mp);
+			                        }
+			                        for (MonitorPoint mon : monPnts) {
+			                            if (commit) {
+			                                session.delete(mon);
+			                            }
+			                        }
+			                        // The BACIProperty is in the database but not in the XML, so
+			                        // it must have been deleted from the spreadsheet.
+
+			                        logger.warning("property will be deleted: " + prop.getPropertyName());
+			                        if (commit) {
+			                            session.delete(prop);
+			                        }
+			                    }
+			                }
+			                for (BaciPropertyT xmlbp : getXmlBaciProperties(lruType, lruTypes)) {
+			                    if (!xmlFoundBaciProperties.contains(xmlbp.getPropertyname())) {
+			                        // This property was added in the XML, so it should be added in the
+			                        // database.
+			                        BACIProperty newBp = toBACIProperty(xmlbp, comp);
+			                        logger.warning("property will be added: " + xmlbp.getPropertyname());
+			                        if (commit) {
+			                            session.save(newBp);
+			                        }
+			                        
+			                        // The monitor points would be added by the Blobber or the upcoming
+			                        // Control dynamic discovery unless the addMp option is specified.
+			                        int index = 0;
+			                        if (addMp) {
+			                            for (MonitorPointT xmlmp : xmlbp.getMonitorPoint()) {
+			                                // If addMp option is set, add all the missing MonitorPoints
+			                                // in the database for all the Assemblies of the requried type.
+			                                List<Assembly> assemblies = new ArrayList<Assembly>();
+			                                for (HWConfiguration hwConf : getHwConfigurations(configuration, session)) {
+			                                    assemblies.addAll(getAssembliesFromLruType(session,
+			                                            getLruTypeFromComponentIDL(comp.getComponentType().getIDL()), hwConf));
+			                                    
+			                                }
+			                                for (Assembly assembly : assemblies) {
+			                                    MonitorPoint mp = toMonitorPoint(xmlmp, newBp, assembly, index++);
+			                                    logger.warning("monitor point " + xmlmp.getMonitorpointname() +
+			                                            " will be added in the database for Assembly " + assembly.getSerialNumber());
+			                                    if (commit) {
+			                                        session.save(mp);
+			                                    }
+			                                }                                    
+			                            }
+			                        }
+			                    }
+			                }
+			            } else {
+			                logger.info("no XML file was found for this type: " + type);
+			            }
+			            
+			        }
+			        if (commit) {
+			            tx.commit();
+			        } else {
+			            tx.rollback();
+			        }
+			        session.close();
+				    
+				    
+			//ends method invocation	    
+	    	} catch (IllegalArgumentException e) {
+	    		e.printStackTrace();
+	    	} catch (IllegalAccessException e) {
+	    		e.printStackTrace();
+    	  	}catch (InvocationTargetException e) {
+    	  		e.printStackTrace();
+    	  	}
+	    	
+	    	
         }catch (ClassNotFoundException ex){
     		ex.printStackTrace();
         } catch (Exception ex) { 
@@ -255,268 +565,16 @@ public class MonitoringSyncTool {
          * we have to refactor it.
          */
         
-        HibernateUtil.createAcsConfigurationFromDbConfig(dbconf);
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = session.beginTransaction();
+
+        
+
                 
-        Configuration configuration = getSwConfiguration(confName, session);
+
         
-        // Parse all the TMCDBXXXAdd.xml files.
-    String[] hwConfFiles = LruLoader.findTmcdbHwConfigFiles();
-        Map<String, LruType> lruTypes = new HashMap<String, LruType>();
-        for (String hwConfFile : hwConfFiles) {
-            logger.info("parsing " + hwConfFile);
-            LruType xmllru = LruType.unmarshalLruType(new FileReader(hwConfFile));
-            lruTypes.put(xmllru.getName(), xmllru);
-        }
+ 
         
-        String qstr;
-        List<Component> components = null;
-        if ( (component == null) && (componentType == null) ) {
-            // Update all Components under the Configuration.
-            qstr = "FROM Component WHERE configuration = :conf";
-            Query query = session.createQuery(qstr);
-            query.setParameter("conf", configuration, HibernateUtil.getSessionFactory().getTypeHelper().entity(Component.class));
-            components = query.list();
-        } else if ( (component == null) && (componentType != null) ) {
-            // Update all Components which have the given ComponentType and
-            // Configuration.
-            qstr = "FROM ComponentType WHERE IDL LIKE :idl";
-            Query query = session.createQuery(qstr);
-            query.setParameter("idl", componentType, StringType.INSTANCE);
-            List<ComponentType> compTypes = query.list();            
-            if ( compTypes.size() == 0 ) {
-                Exception ex =
-                    new Exception(String.format("component type '%s' not found", componentType));
-                throw ex;
-            }
-            components = new ArrayList<Component>();
-            for (ComponentType compType : compTypes) {
-                qstr = "FROM Component WHERE componentType = :type AND configuration = :conf";
-                query = session.createQuery(qstr);
-                query.setParameter("type", compType, HibernateUtil.getSessionFactory().getTypeHelper().entity(ComponentType.class));
-                query.setParameter("conf", configuration, HibernateUtil.getSessionFactory().getTypeHelper().entity(Component.class));
-                components.addAll(query.list());
-            }
-        } else {
-            // Update only the given Component.
-            int idx = component.lastIndexOf('/');
-            String compname = component.substring(idx+1);
-            String path = component.substring(0, idx);
-            qstr = "FROM Component WHERE configuration = :conf AND componentName = :name AND path = :path";
-            Query query = session.createQuery(qstr);
-            query.setParameter("conf", configuration, HibernateUtil.getSessionFactory().getTypeHelper().entity(Component.class));
-            query.setParameter("name", compname, StringType.INSTANCE);
-            query.setParameter("path", path, StringType.INSTANCE);
-            components = query.list();
-            if (components.size() == 0) {
-                logger.severe("component not found. componentName: " + compname + "; path: " + path);
-            }
-        }
-        String baciQueryStr = "FROM BACIProperty WHERE component = :comp";
-        Query baciQuery = session.createQuery(baciQueryStr);
-        for (Component comp : components) {
-            logger.info("===============================================================================");
-            logger.info("synchronizing component " + comp.getPath() + "/" + comp.getComponentName());
-                        
-            baciQuery.setParameter("comp", comp, HibernateUtil.getSessionFactory().getTypeHelper().entity(BACIProperty.class));
-            List<BACIProperty> properties = baciQuery.list();
-            
-            String allMonPntQyStr = "FROM MonitorPoint WHERE BACIProperty IN (:props)";
-            Query allMonPntQy = session.createQuery(allMonPntQyStr);
-            allMonPntQy.setParameterList("props", properties, HibernateUtil.getSessionFactory().getTypeHelper().entity(BACIProperty.class));
-            List<MonitorPoint> allMonPnts = allMonPntQy.list(); // List with all MP from the configuration
-            
-            logger.info("# of properties found for this component: " + properties.size());
-            
-            String type = getLruTypeFromComponentIDL(comp.getComponentType().getIDL());
-            logger.fine("using LRU type: " + type);
-            LruType lruType = lruTypes.get(type);
-            if (lruType != null) {
-                // A list to collect all properties in the XML file that have a corresponding
-                // property in the database. At the end of processing, if a property in the XML
-                // file is not in this list, it means that it was added.
-                List<String> xmlFoundBaciProperties = new ArrayList<String>();
-                for (BACIProperty prop : properties) {
-                    logger.info("-------------------------------------------------------------------------------");
-                    logger.info("synchronizing property " + prop.getPropertyName());
-                    BaciPropertyT xmlBaciProperty = null;
-                    for (BaciPropertyT xmlbp : getXmlBaciProperties(lruType, lruTypes)) {
-                        if (xmlbp.getPropertyname().equals(prop.getPropertyName())) {
-                            xmlBaciProperty = xmlbp;
-                            xmlFoundBaciProperties.add(xmlbp.getPropertyname());
-                            break;
-                        }
-                    }
-                    if (xmlBaciProperty != null) {
-                        BACIProperty newBaciProperty = toBACIProperty(xmlBaciProperty, comp);
-                        AttChange[] bpdiffs = updateBACIProperty(prop, newBaciProperty);
-                        if ( bpdiffs.length > 0 ) {
-                            // The BACIProperty from the database exists in the XML, but
-                            // one or more attributes are different. We update the database in this case.
-                            logger.warning("updating property " + prop.getPropertyName());
-                            for (AttChange diff : bpdiffs) {
-                                logger.warning("  " + diff.getDescription());
-                            }
-                            if (commit) {
-                                session.saveOrUpdate(prop);
-                            }
-                        }
-                        
-                        {
-                            // Now check the underlying MonitorPoints
-                        	ArrayList<MonitorPoint> monPnts = new ArrayList<MonitorPoint>();
-                            for (MonitorPoint mp : allMonPnts) {
-                            	if( mp.getBACIProperty() == prop )
-                            		monPnts.add(mp);
-                            }
-                            logger.info("# of monitor points found under this property: " + monPnts.size());
-                            // List of MonitorPoints from the XML file that have been found after iterating
-                            // over the MonitorPoints in the database. This list is used to detect the MonitorPoints
-                            // that are present in the XML file but not in the database, and therefore should
-                            // be added in the database.
-                            List<String> xmlFoundMonitorPoints = new ArrayList<String>();
-                            for (MonitorPoint mp : monPnts) {
-                                logger.fine("synchronizing monitor point " + mp.getMonitorPointName());
-                                MonitorPointT xmlMonitorPoint = null;
-                                for (MonitorPointT xmlmp : xmlBaciProperty.getMonitorPoint()) {
-                                    if (xmlmp.getMonitorpointname().equals(mp.getMonitorPointName())) {
-                                        xmlMonitorPoint = xmlmp;
-                                        xmlFoundMonitorPoints.add(xmlmp.getMonitorpointname());
-                                        break;
-                                    }
-                                }
-                                if (xmlMonitorPoint != null) {
-                                    // A corresponding MonitorPointT in the XML was found, maybe the
-                                    // database MonitorPoint needs to be updated.
-                                    AttChange[] mpdiffs = updateMonitorPoint(mp,
-                                            toMonitorPointNoIndex(xmlMonitorPoint, prop, mp.getAssembly()));
-                                    if ( mpdiffs.length > 0 ) {
-                                        logger.warning("monitor point " + mp.getMonitorPointName() +
-                                                " will be updated in the database");
-                                        for (AttChange diff : mpdiffs) {
-                                            logger.warning("  " + diff.getDescription());
-                                        }
-                                        if (commit) {
-                                            session.saveOrUpdate(mp);
-                                        }
-                                    }
-                                } else {
-                                    // No MonitorPointT from the XML was found. This means the
-                                    // MonitorPoint in the database should be deleted. If there are MonitorData
-                                    // records pointing to this MonitorPoint, the transaction will fail.
-                                    logger.warning("monitor point " + mp.getMonitorPointName() +
-                                            " will be deleted in the database");
-                                    if (commit) {
-                                        session.delete(mp);
-                                    }
-                                }
-                            }
-
-                            // Actually, new MonitorPoints should not be added by the tool. They should be added
-                            // during the Assembly dynamic discovery, currently by the Blobber,
-                            // in the future by Control.
-                            int index = 0;
-                            for (MonitorPointT xmlmp : xmlBaciProperty.getMonitorPoint()) {
-                                if (!xmlFoundMonitorPoints.contains(xmlmp.getMonitorpointname())) {
-                                    if (addMp) {
-                                        // If addMp option is set, add all the missing MonitorPoints
-                                        // in the database for all the Assemblies of the requried type.
-                                        List<Assembly> assemblies = new ArrayList<Assembly>();
-                                        for (HWConfiguration hwConf : getHwConfigurations(configuration, session)) {
-                                            assemblies.addAll(getAssembliesFromLruType(session,
-                                                    getLruTypeFromComponentIDL(comp.getComponentType().getIDL()), hwConf));
-                                            
-                                        }
-                                        for (Assembly assembly : assemblies) {
-                                            MonitorPoint mp = toMonitorPoint(xmlmp, prop, assembly, index++);
-                                            logger.warning("monitor point " + xmlmp.getMonitorpointname() +
-                                                    " will be added in the database for Assembly " + assembly.getSerialNumber());
-                                            if (commit) {
-                                                session.save(mp);
-                                            }
-                                        }                                            
-                                    } else {
-                                        // The MonitorPoint was added in the XML, but it's not in the database.
-                                        logger.fine("monitor point " + xmlmp.getMonitorpointname() +
-                                                " is not in the database. The record should be added by the Blobber");
-                                    }
-                                    
-                                }
-                            }
-
-                        }
-                        
-                    } else {
-                        // Delete the MonitorPoint records for the BACIProperty. If there are
-                        // records in the MonitorData associated with the MonitorPoint, then the
-                        // deletion will fail. In this case the Configuration should be cloned
-                        // and the tool run again.
-                        ArrayList<MonitorPoint> monPnts = new ArrayList<MonitorPoint>();
-                        for (MonitorPoint mp : allMonPnts) {
-                        	if( mp.getBACIProperty() == prop )
-                        		monPnts.add(mp);
-                        }
-                        for (MonitorPoint mon : monPnts) {
-                            if (commit) {
-                                session.delete(mon);
-                            }
-                        }
-                        // The BACIProperty is in the database but not in the XML, so
-                        // it must have been deleted from the spreadsheet.
-
-                        logger.warning("property will be deleted: " + prop.getPropertyName());
-                        if (commit) {
-                            session.delete(prop);
-                        }
-                    }
-                }
-                for (BaciPropertyT xmlbp : getXmlBaciProperties(lruType, lruTypes)) {
-                    if (!xmlFoundBaciProperties.contains(xmlbp.getPropertyname())) {
-                        // This property was added in the XML, so it should be added in the
-                        // database.
-                        BACIProperty newBp = toBACIProperty(xmlbp, comp);
-                        logger.warning("property will be added: " + xmlbp.getPropertyname());
-                        if (commit) {
-                            session.save(newBp);
-                        }
-                        
-                        // The monitor points would be added by the Blobber or the upcoming
-                        // Control dynamic discovery unless the addMp option is specified.
-                        int index = 0;
-                        if (addMp) {
-                            for (MonitorPointT xmlmp : xmlbp.getMonitorPoint()) {
-                                // If addMp option is set, add all the missing MonitorPoints
-                                // in the database for all the Assemblies of the requried type.
-                                List<Assembly> assemblies = new ArrayList<Assembly>();
-                                for (HWConfiguration hwConf : getHwConfigurations(configuration, session)) {
-                                    assemblies.addAll(getAssembliesFromLruType(session,
-                                            getLruTypeFromComponentIDL(comp.getComponentType().getIDL()), hwConf));
-                                    
-                                }
-                                for (Assembly assembly : assemblies) {
-                                    MonitorPoint mp = toMonitorPoint(xmlmp, newBp, assembly, index++);
-                                    logger.warning("monitor point " + xmlmp.getMonitorpointname() +
-                                            " will be added in the database for Assembly " + assembly.getSerialNumber());
-                                    if (commit) {
-                                        session.save(mp);
-                                    }
-                                }                                    
-                            }
-                        }
-                    }
-                }
-            } else {
-                logger.info("no XML file was found for this type: " + type);
-            }
-            
-        }
-        if (commit) {
-            tx.commit();
-        } else {
-            tx.rollback();
-        }
-        session.close();
+        
+        
     }
 
     /**
@@ -1138,6 +1196,7 @@ public class MonitoringSyncTool {
             } else {
                 logger.setLevel(Level.WARNING);
             }
+            logger.info("Level set to " + logger.getLevel());
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (IOException e) {
