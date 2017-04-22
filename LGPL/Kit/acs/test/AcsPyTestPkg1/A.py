@@ -30,7 +30,7 @@ class A:
         '''
         Contains a syntax error
         '''
-        skdfksdllk = $$$$
+        #skdfksdllk = $$$$
         return
     #--------------------------------------------------------------------------
     def test2(self, param):
