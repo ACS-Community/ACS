@@ -554,8 +554,8 @@ if tmp_os == 'Linux':
 #!#      tmp_PATH='$VLTROOT/bin:'+tmp_PATH
 
 #!#   if ((tmp_acsroot != '') and (tmp_vltroot != tmp_acsroot)):
-   if ((tmp_acsroot != '') and (tmp_acsroot != tmp_intlistPath)):
-      tmp_PATH='$ACSROOT/bin:'+tmp_PATH
+    if ((tmp_acsroot != '') and (tmp_acsroot != tmp_intlistPath)):
+        tmp_PATH='$ACSROOT/bin:'+tmp_PATH
 else:
     tmp_PATH='IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED'
 
