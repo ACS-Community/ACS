@@ -10,6 +10,7 @@ import alma.ACS.Callback;
 import alma.ACS.MonitorlongLongPOATie;
 import alma.ACS.MonitoruLongLong;
 import alma.ACS.MonitoruLongLongHelper;
+import alma.ACS.MonitoruLongLongPOATie;
 import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.ROuLongLongOperations;
 import alma.ACS.Subscription;
@@ -136,8 +137,8 @@ public class ROuLongLongImpl
 	public MonitoruLongLong create_postponed_monitor(long start_time,
 			CBuLongLong cb, CBDescIn desc) {
 		// create monitor and its servant
-		MonitorlongLongImpl monitorImpl = new MonitorlongLongImpl(this, cb, desc, start_time);
-		MonitorlongLongPOATie monitorTie = new MonitorlongLongPOATie(monitorImpl);
+		MonitoruLongLongImpl monitorImpl = new MonitoruLongLongImpl(this, cb, desc, start_time);
+		MonitoruLongLongPOATie monitorTie = new MonitoruLongLongPOATie(monitorImpl);
 
 		// register and activate		
 		return MonitoruLongLongHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
@@ -217,13 +218,13 @@ public class ROuLongLongImpl
 	/**
 	 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 	 */
-	public boolean dispatchCallback(int type, Object value, Callback callback,
+	public boolean dispatchCallback(CallbackDispatcher.CallbackType type, Object value, Callback callback,
 			Completion completion, CBDescOut desc) {
 		try
 		{	
-			if (type == CallbackDispatcher.DONE_TYPE)
+			if (type == CallbackDispatcher.CallbackType.DONE_TYPE)
 				((CBuLongLong)callback).done(((Long)value).longValue(), completion, desc);
-			else if (type == CallbackDispatcher.WORKING_TYPE)
+			else if (type == CallbackDispatcher.CallbackType.WORKING_TYPE)
 				((CBuLongLong)callback).working(((Long)value).longValue(), completion, desc);
 			else 
 				return false;

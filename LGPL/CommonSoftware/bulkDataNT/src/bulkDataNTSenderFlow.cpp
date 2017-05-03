@@ -139,8 +139,24 @@ BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 		} catch (StopSendErrorExImpl &ssEx) {
 			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Error in flow %s while trying to force a stopSend",flowName_m.c_str()));
 			ssEx.log();
+			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "BulkDataNTSenderFlow %s trying to force a resetSend",flowName_m.c_str()));
+			try {
+				this->resetSend();
+			} catch (ResetSendErrorExImpl &rsEx) {
+				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Error in flow %s while trying to force a resetSend",flowName_m.c_str()));
+			} catch (...) {
+				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Generic error in flow %s while trying to force a resetSend",flowName_m.c_str()));
+			}
 		} catch (...) {
 			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Generic error in flow %s while trying to force a stopSend",flowName_m.c_str()));
+			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "BulkDataNTSenderFlow %s trying to force a resetSend",flowName_m.c_str()));
+			try {
+				this->resetSend();
+			} catch (ResetSendErrorExImpl &rsEx) {
+				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Error in flow %s while trying to force a resetSend",flowName_m.c_str()));
+			} catch (...) {
+				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Generic error in flow %s while trying to force a resetSend",flowName_m.c_str()));
+			}
 		}
 	}
 
@@ -428,6 +444,40 @@ void BulkDataNTSenderFlow::stopSend()
         (t1 - t0).to_usec(this->delayedStatistics.stopSendDuration);
 }//stopSend
 
+void BulkDataNTSenderFlow::resetSend()
+{
+	// Clean statistics
+	//getStatistics(false);
+	//getStatistics(true);
+	
+	ACE_Time_Value t0 = ACE_OS::gettimeofday();
+	
+	getDelayedStatistics(true, 3);
+
+	// Check the number of receivers
+	int receivers = getNumberOfReceivers();
+	if (receivers==0) {
+		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_ERROR, "resetSend invoked without connected listeners in Sender Flow: %s @ Stream: %s", flowName_m.c_str(), senderStream_m->getName().c_str()));
+	} else {
+		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "resetSend will send data to %d connected listeners in Sender Flow: %s @ Stream: %s", receivers, flowName_m.c_str(), senderStream_m->getName().c_str()));
+	}
+
+	try
+	{
+		writeFrame(ACSBulkData::BD_RESET);
+		if (DDSConfiguration::debugLevel>0) getStatistics(true);
+		currentState_m = StopState;
+	}catch(const ACSErr::ACSbaseExImpl &ex)
+	{
+		ResetSendErrorExImpl rsEx(ex, __FILE__, __LINE__, __FUNCTION__);
+		rsEx.setSenderName(senderStream_m->getName().c_str()); rsEx.setFlowName(flowName_m.c_str());
+		throw rsEx;
+	}
+
+	ACE_Time_Value t1 = ACE_OS::gettimeofday();
+        (t1 - t0).to_usec(this->delayedStatistics.resetSendDuration);
+}//resetSend
+
 void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param, size_t len, unsigned int restFrameCount, bool waitForACKs)
 {
 	DDS::ReturnCode_t ret;
@@ -546,9 +596,13 @@ void BulkDataNTSenderFlow::getDelayedStatistics(bool log, int flowMethod)
 			this->delayedStatistics.sendDataDwps.push_back(dwps);
 			this->delayedStatistics.sendDataDwcs.push_back(dwcs);
 		}
-		else if(flowMethod == 1){
+		else if(flowMethod == 2){
 			ddsDataWriter_m->get_datawriter_protocol_status(this->delayedStatistics.stopSendDwps);
 			ddsDataWriter_m->get_datawriter_cache_status(this->delayedStatistics.stopSendDwcs);
+		}
+		else if(flowMethod == 3){
+			ddsDataWriter_m->get_datawriter_protocol_status(this->delayedStatistics.resetSendDwps);
+			ddsDataWriter_m->get_datawriter_cache_status(this->delayedStatistics.resetSendDwcs);
 		}
 	}
 }//void dumpStatistics()
@@ -612,6 +666,23 @@ void BulkDataNTSenderFlow::statisticsLogs()
 	// STOP SEND CACHE STATUS
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
 		(LM_DEBUG, "STOP SEND: DataWriter cache Status: sample count in queue: %lld (highest peak since lifetime %lld)", this->delayedStatistics.stopSendDwcs.sample_count, this->delayedStatistics.stopSendDwcs.sample_count_peak));
+
+	// RESET SEND DURATION
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "RESET SEND duration: %jd usecs", (intmax_t)this->delayedStatistics.resetSendDuration));
+	
+	// RESET SEND PROTOCOL STATUS
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+	(LM_DEBUG, "RESET SEND: DataWriter protocol status for flow: %s [# samples: %lld (bytes %lld); # HBs count: %lld (bytes %lld) # ACKs: %lld (bytes %lld) # NACK counts: %lld (bytes %lld) # rejected: %lld]",
+				flowName_m.c_str(),
+				this->delayedStatistics.resetSendDwps.pushed_sample_count_change, this->delayedStatistics.resetSendDwps.pushed_sample_bytes_change,
+				this->delayedStatistics.resetSendDwps.sent_heartbeat_count_change, this->delayedStatistics.resetSendDwps.sent_heartbeat_bytes_change,
+				this->delayedStatistics.resetSendDwps.received_ack_count_change, this->delayedStatistics.resetSendDwps.received_ack_bytes_change,
+				this->delayedStatistics.resetSendDwps.received_nack_count_change, this->delayedStatistics.resetSendDwps.received_nack_bytes_change,
+				this->delayedStatistics.resetSendDwps.rejected_sample_count_change));
+
+	// RESET SEND CACHE STATUS
+	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+		(LM_DEBUG, "RESET SEND: DataWriter cache Status: sample count in queue: %lld (highest peak since lifetime %lld)", this->delayedStatistics.resetSendDwcs.sample_count, this->delayedStatistics.resetSendDwcs.sample_count_peak));
 }//void dumpStatistics()
 
 

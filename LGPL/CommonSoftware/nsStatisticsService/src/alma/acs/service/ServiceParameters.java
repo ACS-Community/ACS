@@ -74,7 +74,7 @@ public class ServiceParameters {
 	}
 	
 	
-	boolean read(String toolName,String[] args,List<String> errors) {
+	public boolean read(String toolName,String[] args,List<String> errors) {
 		boolean ret = true;
 		boolean inMillis = false;
 		for(int i = 0;i < args.length;++i) {

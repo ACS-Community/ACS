@@ -113,6 +113,11 @@ public:
 		return 0;
 	}
 
+	int cbReset() {
+		std::cout << "cbReset[ " << sn << "#" << fn << " ]" << std::endl;
+		return 0;
+	}
+
 	void setStoreData(bool shouldStoreData) {
 		storeData = shouldStoreData;
 	}

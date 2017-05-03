@@ -29,7 +29,7 @@ import alma.acs.exceptions.AcsJException;
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
  * @version $id$
  */
-public interface DataAccess {
+public interface DataAccess<T> {
 	
 	/**
 	 * Value change listener interface.
@@ -43,7 +43,7 @@ public interface DataAccess {
 		 * @param oldValue	old value.
 		 * @param newValue	new value.
 		 */
-		public void valueChanged(DataAccess source, Object oldValue, Object newValue);
+		public void valueChanged(DataAccess<?> source, Object oldValue, Object newValue);
 	}
 
 	/**
@@ -53,6 +53,10 @@ public interface DataAccess {
 	 */
 	public class OnChangeNotSupportedException extends Exception
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5730877305929234318L;
 		/**
 		 * Recommended pool time in ms.
 		 */
@@ -102,7 +106,7 @@ public interface DataAccess {
 	 * @throws	ACS exception if case of failure.
 	 * @see alma.ACS.jbaci.CompletionUtil#generateNoErrorCompletion()
 	 */
-	public Object get(CompletionHolder completionHolder) throws AcsJException;
+	public T get(CompletionHolder completionHolder) throws AcsJException;
 	
 	
 	/**
@@ -120,6 +124,6 @@ public interface DataAccess {
 	 * 						Use <code>alma.ACS.jbaci.CompletionUtil</code> class to generate no-error completion.
 	 * @throws	ACS exception if case of failure.
 	 */
-	public void set(Object value, CompletionHolder completion) throws AcsJException;
+	public void set(T value, CompletionHolder completion) throws AcsJException;
 	
 }

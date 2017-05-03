@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AlarmTestServer xmlns="urn:schemas-cosylab-com:AlarmTestServer:1.0"
+             xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+	      xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <doubleProp default_timer_trig="1.0" min_timer_trig="0.001"
+  	min_delta_trig="0.01526" default_value="-2.0" graph_min="0.0"
+  	graph_max="1000.0" min_step="0.01526"
+  	description="RO double property" format="%9.4f" units="a.u."
+  	resolution="65535" alarm_high_off="0.7" alarm_high_on="0.8"
+  	alarm_low_off="-0.7" alarm_low_on="-0.8" alarm_timer_trig="0.1" />
+
+</AlarmTestServer>

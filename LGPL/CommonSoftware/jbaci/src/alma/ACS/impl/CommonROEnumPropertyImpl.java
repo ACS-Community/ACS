@@ -172,14 +172,14 @@ public class CommonROEnumPropertyImpl extends ROCommonPropertyImpl {
 	/* (non-Javadoc)
 	 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACS.Callback, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 	 */
-	public boolean dispatchCallback(int type, Object value, Callback callback,
+	public boolean dispatchCallback(CallbackDispatcher.CallbackType type, Object value, Callback callback,
 			Completion completion, CBDescOut desc) {
 		// NOTE: CBpattern is being used for enums
 		try
 		{	
-			if (type == CallbackDispatcher.DONE_TYPE)
+			if (type == CallbackDispatcher.CallbackType.DONE_TYPE)
 				((CBpattern)callback).done(value(value), completion, desc);
-			else if (type == CallbackDispatcher.WORKING_TYPE)
+			else if (type == CallbackDispatcher.CallbackType.WORKING_TYPE)
 				((CBpattern)callback).working(value(value), completion, desc);
 			else 
 				return false;
@@ -319,7 +319,7 @@ public class CommonROEnumPropertyImpl extends ROCommonPropertyImpl {
 		
 		return Proxy.newProxyInstance(
 			propertyImpl.getClass().getClassLoader(),
-			new Class[] { operationsIF, Destroyable.class }, 
+			new Class[] { operationsIF, Destroyable.class, PropertyIF.class, PropertyReferenceHolder.class}, 
 			new ROEnumProxy(propertyImpl));
 	}
 	

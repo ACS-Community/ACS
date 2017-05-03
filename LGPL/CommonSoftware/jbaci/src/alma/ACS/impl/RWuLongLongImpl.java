@@ -1,5 +1,7 @@
 package alma.ACS.impl;
 
+import java.math.BigInteger;
+
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBuLongLong;
@@ -80,7 +82,15 @@ public class RWuLongLongImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 			throws NoSuchCharacteristic {
-		return new Long(characteristicModelImpl.getLong(name));
+		try {
+			return new Long(characteristicModelImpl.getString(name));
+		} catch (NumberFormatException ex) {
+			BigInteger value = new BigInteger(characteristicModelImpl.getString(name));
+			if (value.signum() > 0)
+				return Long.MAX_VALUE;
+			else
+				return Long.MIN_VALUE;
+		}
 
 	}
 
@@ -221,13 +231,13 @@ public class RWuLongLongImpl
 	/**
 	 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 	 */
-	public boolean dispatchCallback(int type, Object value, Callback callback,
+	public boolean dispatchCallback(CallbackDispatcher.CallbackType type, Object value, Callback callback,
 			Completion completion, CBDescOut desc) {
 		try
 		{	
-			if (type == CallbackDispatcher.DONE_TYPE)
+			if (type == CallbackDispatcher.CallbackType.DONE_TYPE)
 				((CBuLongLong)callback).done(((Long)value).longValue(), completion, desc);
-			else if (type == CallbackDispatcher.WORKING_TYPE)
+			else if (type == CallbackDispatcher.CallbackType.WORKING_TYPE)
 				((CBuLongLong)callback).working(((Long)value).longValue(), completion, desc);
 			else 
 				return false;

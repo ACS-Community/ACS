@@ -315,6 +315,22 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                   }//if (cbReceiveNumCalls_m>0)
                   break;
                 }//case ACSBulkData::BD_STOP
+              case ACSBulkData::BD_RESET:
+                {
+                  if (DDSConfiguration::debugLevel>0)
+                  {
+                     ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,(LM_DEBUG, "sendReset has been received for: %s", topicName_m.c_str()));
+                  }
+                  if (enableCB_m) { BDNT_LISTENER_USER_ERR( callback_mp->cbReset() ) }
+                  //Clean all parameters
+                  currentState_m = StopState;
+            	  dataLength_m = 0;
+            	  frameCounter_m = 0;
+                  totalFrames_m = 0;
+                  nextFrame_m = 0;
+                  conseqErrorCount_m=0;
+                  break;
+                }//case ACSBulkData::BD_RESET
               default:
                 conseqErrorCount_m++;
                 UnknownDataTypeCompletion udt(__FILE__, __LINE__, __FUNCTION__);

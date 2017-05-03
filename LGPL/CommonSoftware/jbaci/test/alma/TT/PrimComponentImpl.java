@@ -90,6 +90,7 @@ public class PrimComponentImpl extends CharacteristicComponentImpl
 	protected RWboolean booleanRW;
 
 	
+	
 	/**
 	 * @see alma.acs.component.ComponentLifecycle#initialize(alma.acs.container.ContainerServices)
 	 */

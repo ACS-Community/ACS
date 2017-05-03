@@ -21,17 +21,29 @@
 
 package alma.ACS.impl;
 
+import org.omg.CORBA.Context;
+import org.omg.CORBA.ContextList;
+import org.omg.CORBA.DomainManager;
+import org.omg.CORBA.ExceptionList;
 import org.omg.CORBA.NO_RESOURCES;
+import org.omg.CORBA.NVList;
+import org.omg.CORBA.NamedValue;
+import org.omg.CORBA.Policy;
+import org.omg.CORBA.Request;
+import org.omg.CORBA.SetOverrideType;
+
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
 import alma.ACS.CBpattern;
+import alma.ACS.CBvoid;
 import alma.ACS.Callback;
 import alma.ACS.Condition;
 import alma.ACS.Monitorpattern;
 import alma.ACS.MonitorpatternHelper;
 import alma.ACS.MonitorpatternPOATie;
 import alma.ACS.NoSuchCharacteristic;
-import alma.ACS.PpatternOperations;
+import alma.ACS.RWpatternOperations;
+import alma.ACS.RWpattern;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.patternSeqHolder;
 import alma.ACS.jbaci.CallbackDispatcher;
@@ -50,8 +62,8 @@ import alma.acs.exceptions.AcsJException;
  * @version $id$f
  */
 public class RWpatternImpl
-	extends RWCommonComparablePropertyImpl
-	implements PpatternOperations {
+	extends CommonPropertyImpl
+	implements RWpatternOperations {
 
 	/**
 	 * @param propertyType
@@ -63,7 +75,7 @@ public class RWpatternImpl
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent);
+		super(long.class, name, parentComponent);
 	}
 
 	/**
@@ -78,7 +90,7 @@ public class RWpatternImpl
 		CharacteristicComponentImpl parentComponent,
 		DataAccess dataAccess)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent, dataAccess);
+		super(long.class, name, parentComponent, dataAccess);
 	}
 
 	/**
@@ -86,18 +98,18 @@ public class RWpatternImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 		throws NoSuchCharacteristic {
-		return new Integer(characteristicModelImpl.getInteger(name));
+		return new Long(characteristicModelImpl.getLong(name));
 	}
 
 	/**
-	 * @see alma.ACS.PpatternOperations#default_value()
+	 * @see alma.ACS.RWPatternOperations#default_value()
 	 */
 	public long default_value() {
 		return ((Long)defaultValue).longValue();
 	}
 
 	/**
-	 * @see alma.ACS.PpatternOperations#bitDescription()
+	 * @see alma.ACS.RWPatternOperations#bitDescription()
 	*/ 
 	public String[] bitDescription() {
 		try
@@ -111,11 +123,13 @@ public class RWpatternImpl
 	}
 
 	/**
-	 * @see alma.ACS.PpatternOperations#whenSet()
+	 * @see alma.ACS.RWPatternOperations#whenSet()
 	 */
 	public Condition[] whenSet() {
 		try
 		{
+			// TODO check the definition of this method, and check if int[] is
+			//      the right type for "whenSet".
 			int[] values = characteristicModelImpl.getIntegerSeq("whenSet");
 			Condition[] conditions = new Condition[values.length];
 			for (int i = 0; i < conditions.length; i++)
@@ -129,11 +143,13 @@ public class RWpatternImpl
 	}
 
 	/**
-	 * @see alma.ACS.PpatternOperations#whenCleared()
+	 * @see alma.ACS.RWPatternOperations#whenCleared()
 	 */
 	public Condition[] whenCleared() {
 		try
 		{
+			// TODO check the definition of this method, and check if int[] is
+			//      the right type for "whenCleared".
 			int[] values = characteristicModelImpl.getIntegerSeq("whenCleared");
 			Condition[] conditions = new Condition[values.length];
 			for (int i = 0; i < conditions.length; i++)
@@ -169,7 +185,7 @@ public class RWpatternImpl
 	}
 
 	/**
-	 * @see alma.ACS.PpatternOperations#get_sync(alma.ACSErr.CompletionHolder)
+	 * @see alma.ACS.RWPatternOperations#get_sync(alma.ACSErr.CompletionHolder)
 	 */
 	public long get_sync(CompletionHolder completionHolder) {
 		try
@@ -187,14 +203,14 @@ public class RWpatternImpl
 	}
 
 	/**
-	 * @see alma.ACS.PpatternOperations#get_async(alma.ACS.CBpattern, alma.ACS.CBDescIn)
+	 * @see alma.ACS.RWPatternOperations#get_async(alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
 	public void get_async(CBpattern callback, CBDescIn descIn) {
 		getAsync(callback, descIn);
 	}
 
 	/**
-	 * @see alma.ACS.PpatternOperations#get_history(int, alma.ACS.patternSeqHolder, alma.ACS.TimeSeqHolder)
+	 * @see alma.ACS.RWPatternOperations#get_history(int, alma.ACS.patternSeqHolder, alma.ACS.TimeSeqHolder)
 	 */
 	public int get_history(
 		int arg0,
@@ -205,14 +221,14 @@ public class RWpatternImpl
 	}
 
 	/**
-	 * @see alma.ACS.PpatternOperations#create_monitor(alma.ACS.CBpattern, alma.ACS.CBDescIn)
+	 * @see alma.ACS.RWPatternOperations#create_monitor(alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
 	public Monitorpattern create_monitor(CBpattern callback, CBDescIn descIn) {
 		return create_postponed_monitor(0, callback, descIn);
 	}
 
 	/**
-	 * @see alma.ACS.PpatternOperations#create_postponed_monitor(long, alma.ACS.CBpattern, alma.ACS.CBDescIn)
+	 * @see alma.ACS.RWPatternOperations#create_postponed_monitor(long, alma.ACS.CBpattern, alma.ACS.CBDescIn)
 	 */
 	public Monitorpattern create_postponed_monitor(
 		long startTime,
@@ -232,17 +248,17 @@ public class RWpatternImpl
 	 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACS.Callback, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 	 */
 	public boolean dispatchCallback(
-		int type,
+		CallbackDispatcher.CallbackType type,
 		Object value,
 		Callback callback,
 		Completion completion,
 		CBDescOut desc) {
 		try
 		{	
-			if (type == CallbackDispatcher.DONE_TYPE)
-				((CBpattern)callback).done(((Integer)value).intValue(), completion, desc);
-			else if (type == CallbackDispatcher.WORKING_TYPE)
-				((CBpattern)callback).working(((Integer)value).intValue(), completion, desc);
+			if (type == CallbackDispatcher.CallbackType.DONE_TYPE)
+				((CBpattern)callback).done(((Long)value).longValue(), completion, desc);
+			else if (type == CallbackDispatcher.CallbackType.WORKING_TYPE)
+				((CBpattern)callback).working(((Long)value).longValue(), completion, desc);
 			else 
 				return false;
 			
@@ -258,24 +274,50 @@ public class RWpatternImpl
 	 * @see alma.ACS.CommonComparablePropertyImpl#lessThanDelta(java.lang.Object, java.lang.Object, java.lang.Object)
 	 */
 	public boolean lessThanDelta(Object value1, Object value2, Object delta) {
-		return Math.abs(((Integer)value1).intValue()-((Integer)value2).intValue()) < ((Integer)delta).intValue();
+		// TODO Evaluate if this method is required for this type.
+		//      It does not make sense to perform arismetic for pattern type.
+		//      Moreover, the equivalent method is commented out in ROpatternImpl.java.
+		return Math.abs(((Long)value1).longValue()-((Long)value2).longValue()) < ((Long)delta).longValue();
 	}
 
 	/**
 	 * @see alma.ACS.CommonComparablePropertyImpl#noDelta(java.lang.Object)
 	 */
 	public boolean noDelta(Object value) {
-		return ((Integer)value).intValue() == 0;
+		// TODO Evaluate if this method is required for this type.
+		//      It does not make sense to perform arismetic for pattern type.
+		//      Moreover, the equivalent method is commented out in ROpatternImpl.java.
+		return ((Long)value).longValue() == 0;
 	}
 
 	/*
 	 * @see alma.ACS.CommonComparablePropertyImpl#sum(java.lang.Object, java.lang.Object, boolean)
 	 */
 	public Object sum(Object value1, Object value2, boolean substract) {
-		double val2 = ((Integer)value2).intValue();
+		// TODO Evaluate if this method is required for this type.
+		//      It does not make sense to perform arismetic for pattern type.
+		//      Moreover, the equivalent method is commented out in ROpatternImpl.java.
+		long val2 = ((Long)value2).longValue();
 		if (substract)
 			val2 = -val2;
-		return new Double(((Integer)value1).intValue() + val2);
+		return new Long(((Long)value1).longValue() + val2);
+	}
+
+	@Override
+	public Completion set_sync(long value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void set_async(long value, CBvoid cb, CBDescIn desc) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void set_nonblocking(long value) {
+		setNonblocking(value);
 	}
 }
 

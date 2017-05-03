@@ -62,6 +62,11 @@ public:
 		return 0;
 	}
 
+	int cbReset()
+	{
+		std::cout << "cbReset" << std::endl;
+		return 0;
+	}
 };
 
 

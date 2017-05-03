@@ -1,0 +1,17 @@
+#ifndef _ALARM_TEST_SERVER_
+#define _ALARM_TEST_SERVER_
+
+#include <acscommon.idl>
+#include <baci.idl>
+
+#pragma prefix "alma"
+
+module jbaci
+{
+  interface AlarmTestServer : ACS::CharacteristicComponent
+  {
+    readonly attribute ACS::ROdouble doubleProp;
+  };
+};
+
+#endif

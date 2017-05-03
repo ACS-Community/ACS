@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Example Configuration Database Entry for a AmsSeq
+   -
+   - Author: Klemen Zagar
+   -
+   - History:
+   -   2002-09-06  KZ  Created
+  -->
+<AmsSeq xmlns="urn:schemas-cosylab-com:AmsSeq:1.0"
+	xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+        xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <RWdoubleSeqPM default_timer_trig="1.0"
+		 description="readwritePM"
+		 units="deg"
+		 graph_min="0" graph_max="360" min_value="0"
+		 max_value="360" 
+               archive_min_int="5.0"
+               archive_max_int="10.0" />
+
+  <ROdoubleSeqPM default_timer_trig="1.0"
+		 description="readonlyPM"
+		 units="deg" 
+                 graph_min="0" graph_max="360" 
+               archive_min_int="5.0"
+               archive_max_int="10.0" />
+</AmsSeq>
+

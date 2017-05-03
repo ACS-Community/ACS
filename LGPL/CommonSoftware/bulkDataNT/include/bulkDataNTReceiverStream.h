@@ -184,10 +184,10 @@ public:
 	 */
 	unsigned int getFlowNumber();
 
-	/// Enables calling user's CB (cbStart, cbReceiver, cbStop) for All flows
+	/// Enables calling user's CB (cbStart, cbReceiver, cbStop, cbReset) for All flows
 	void enableCallingCBforAllFlows();
 
-	/// Disables calling user's CB (cbStart, cbReceiver, cbStop) for All Flows
+	/// Disables calling user's CB (cbStart, cbReceiver, cbStop, cbReset) for All Flows
 	void disableCallingCBforAllFlows();
 
 

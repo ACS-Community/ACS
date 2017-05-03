@@ -81,6 +81,12 @@ bool CircularQueue::setMaxSize(unsigned int size)
     return false;
 }
 
+bool CircularQueue::setMaxSizeUnsafe(unsigned int size)
+{
+    max_size = size;
+    return true;
+}
+
 unsigned int CircularQueue::getMaxSize() const
 {
     return max_size;

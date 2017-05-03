@@ -36,6 +36,7 @@ is to be noted
 4) each logger cames by default with its statistics module
 '''
 
+import os
 import time
 
 class LoggingStatistics(object):
@@ -71,6 +72,11 @@ class LoggingStatistics(object):
         self._statisticsGranularity = self.CONST_DEFAULT_STATISTICS_GRANULARITY
         self._lastPeriodNumberOfMessages = self.CONST_INITIAL_NUMBER_MESSAGES
         self._lastPeriodNumberOfLogErrors = self.CONST_INITIAL_NUMBER_ERRORS
+
+        # set by default logging statistics with a suitable config if host is an STE
+        if os.environ.get('LOCATION'):
+            self._disableStatistics = False
+            self._statisticsGranularity = 3
         
         # Identification string of the statistics. Composed by component name + logger name
         self._statisticsIdentification = 'Undefined'

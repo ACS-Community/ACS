@@ -127,6 +127,23 @@ int main(int argc, char *argv[])
 
 //	getchar();
 	sleep(2);
+	ACS_SHORT_LOG((LM_INFO,"Let's now reset the sender and receivers  (so we destroy all streams/flows)...."));
+
+	sender->resetSender();
+	receiver1->resetReceiver();
+	receiver2->resetReceiver();
+
+	sleep(4);
+	ACS_SHORT_LOG((LM_INFO,".... and and the end let's send data"));
+	//start_time = ACE_OS::gettimeofday(); // for performances test
+	sender->resetSend();
+	sender->startSend();
+
+	sender->paceData();
+
+	sender->stopSend();
+
+	sleep(2);
 
 	sender->disconnect();
 	sleep(1);

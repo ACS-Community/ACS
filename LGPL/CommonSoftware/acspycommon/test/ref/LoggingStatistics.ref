@@ -1,0 +1,38 @@
+1 - => Test With LOCATION env var
+1 - ============= Statistics tests ============
+1 - ----------T--:--:--.--- StatisticsTest Main - Message not included in statistics 1
+1 - ----------T--:--:--.--- StatisticsTest Main - Message not included in statistics 2
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. First batch: 1
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. First batch: 2
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. First batch: 3
+1 - ----------T--:--:--.--- StatisticsTest Main - Message not included in statistics 3
+1 - ----------T--:--:--.--- StatisticsTest LOGGING STATISTICS FOR: AcspyTestLogging.StatisticsTest [ StatisticsIdentification=AcspyTestLogging LoggerId=StatisticsTest LastPeriodDuration=X LastPeriodNumberOfMessages=4 StatisticsGranularity=1 MessageStatistics=X MessageIncrement=33 LastPeriodNumberOfErrorMessages=0 ErrorMessageStatistics=XX ErrorMessageIncrement=0 ]
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 1
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 2
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 3
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 4
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 5
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Third batch: 1
+1 - ----------T--:--:--.--- StatisticsTest LOGGING STATISTICS FOR: AcspyTestLogging.StatisticsTest [ StatisticsIdentification=AcspyTestLogging LoggerId=StatisticsTest LastPeriodDuration=X LastPeriodNumberOfMessages=2 StatisticsGranularity=1 MessageStatistics=X MessageIncrement=-64 LastPeriodNumberOfErrorMessages=0 ErrorMessageStatistics=XX ErrorMessageIncrement=0 ]
+1 - ----------T--:--:--.--- StatisticsTest LOGGING STATISTICS FOR: AcspyTestLogging.StatisticsTest [ StatisticsIdentification=AcspyTestLogging LoggerId=StatisticsTest LastPeriodDuration=X LastPeriodNumberOfMessages=6 StatisticsGranularity=1 MessageStatistics=X MessageIncrement=50 LastPeriodNumberOfErrorMessages=0 ErrorMessageStatistics=XX ErrorMessageIncrement=0 ]
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Third batch: 2
+1 - == The end __oOo__
+1 - => Test without LOCATION env var
+1 - ============= Statistics tests ============
+1 - ----------T--:--:--.--- StatisticsTest Main - Message not included in statistics 1
+1 - ----------T--:--:--.--- StatisticsTest Main - Message not included in statistics 2
+1 - ----------T--:--:--.--- StatisticsTest Main - Message not included in statistics 3
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. First batch: 1
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. First batch: 2
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. First batch: 3
+1 - ----------T--:--:--.--- StatisticsTest LOGGING STATISTICS FOR: AcspyTestLogging.StatisticsTest [ StatisticsIdentification=AcspyTestLogging LoggerId=StatisticsTest LastPeriodDuration=X LastPeriodNumberOfMessages=4 StatisticsGranularity=1 MessageStatistics=X MessageIncrement=0 LastPeriodNumberOfErrorMessages=0 ErrorMessageStatistics=XX ErrorMessageIncrement=0 ]
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 1
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 2
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 3
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 4
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Second batch: 5
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Third batch: 1
+1 - ----------T--:--:--.--- StatisticsTest LOGGING STATISTICS FOR: AcspyTestLogging.StatisticsTest [ StatisticsIdentification=AcspyTestLogging LoggerId=StatisticsTest LastPeriodDuration=X LastPeriodNumberOfMessages=2 StatisticsGranularity=1 MessageStatistics=X MessageIncrement=-64 LastPeriodNumberOfErrorMessages=0 ErrorMessageStatistics=XX ErrorMessageIncrement=0 ]
+1 - ----------T--:--:--.--- StatisticsTest LOGGING STATISTICS FOR: AcspyTestLogging.StatisticsTest [ StatisticsIdentification=AcspyTestLogging LoggerId=StatisticsTest LastPeriodDuration=X LastPeriodNumberOfMessages=6 StatisticsGranularity=1 MessageStatistics=X MessageIncrement=50 LastPeriodNumberOfErrorMessages=0 ErrorMessageStatistics=XX ErrorMessageIncrement=0 ]
+1 - ----------T--:--:--.--- StatisticsTest Main - Message included in statistics. Third batch: 2
+1 - == The end __oOo__
