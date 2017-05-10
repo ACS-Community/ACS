@@ -97,6 +97,8 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         self.sppc = None
         #number of events sent so far
         self.count = 0
+        #Autoreconnect to the channel when publishing an event throws an OBJECT_NOT_EXIST exception
+        self.autoreconnect = False
 
         #Handle all of the CORBA stuff now
         CommonNC.initCORBA(self)
@@ -167,7 +169,11 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
             self.logger.logWarning(str(e))
             print_exc()
 
-        self.callback.disconnect()
+        try:
+            self.callback.disconnect()
+        except Exception, e:
+            self.logger.logWarning(str(e))
+            print_exc()
         self.callback = None
         self.evtChan = None
         self.supplierAdmin = None  
@@ -216,6 +222,20 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         self.logger.logTrace('')
         return
     #------------------------------------------------------------------------------
+    def set_autoreconnect(self, autoreconnect):
+        '''
+        Set autoreconnection on/off in case the Supplier is not able to publish
+        events because of an OBJECT_NOT_EXIST exception. This exception is thrown
+        when the Notify Service restarts.
+
+        Params: Nothing
+
+        Returns: Nothing
+
+        Raises: Nothing
+        '''
+        self.autoreconnect = autoreconnect
+    #------------------------------------------------------------------------------
     def publishEvent (self,
                       simple_data=None,
                       event_callback=None,
@@ -263,6 +283,15 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
                 try:
                     self.sppc.push_structured_event(se)
                     return
+                except CORBA.OBJECT_NOT_EXIST, e:
+                    if self.autoreconnect:
+                        # Recreate the channel
+	                CommonNC.initCORBA(self)
+                        self.initCORBA()
+                    raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
+                                                              self.channelName),
+                                                    NameValue("exception",
+                                                              str(e))])
                 except Exception, e:
                     print_exc()
                     raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
@@ -365,6 +394,38 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
             #Notify Service is down
             if event_callback != None:
                 event_callback.eventDropped(simple_data)
+
+        except CORBA.OBJECT_NOT_EXIST, e:
+            #Notify Service is down
+            if self.autoreconnect:
+                # Recreate the channel
+                channel_recreated = False
+                try:
+                    CommonNC.initCORBA(self)
+                    self.initCORBA()
+                    channel_recreated = True
+                except Exception, e:
+                    channel_recreated = False
+
+                if channel_recreated:
+                    # Try to publish again the event
+                    try:
+                        self.sppc.push_structured_event(se)
+                        if event_callback != None:
+                            event_callback.eventSent(simple_data)
+                    # Event cannot be sent
+                    except Exception, e:
+                        if event_callback != None:
+                            event_callback.eventDropped(simple_data)
+                # Channel cannot be recreated
+                else:
+                    if event_callback != None:
+                        event_callback.eventDropped(simple_data)
+            else:
+                raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
+                                                      self.channelName),
+                                            NameValue("exception",
+                                                      str(e))])
 
         except Exception, e:
             print_exc()

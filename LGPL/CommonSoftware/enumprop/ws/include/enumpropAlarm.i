@@ -97,27 +97,28 @@ void AlarmenumpropEventStrategy<T, ROT, AlarmT>::check(BACIValue &val,
   ACS::pattern value = val.patternValue();
  
   try
-      {
+  {
+      ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, templateMutex);
       if ( property_mp->checkAlarm(T(value)) && !alarmRaised_m )
-	  {	  
-//TBD:: here should be alarm raised, but it has to be added to codes
-	  ACSErrTypeAlarm::ACSErrAlarmHighCompletion comp;
-	  callback_mp->alarm_raised(T(value), comp, desc);
-	  alarmRaised_m = true;
-	  }
-      if (!property_mp->checkAlarm(T(value)) && alarmRaised_m )
-	  {
-	  ACSErrTypeAlarm::ACSErrAlarmClearedCompletion comp;
-	  callback_mp->alarm_cleared(T(value), comp, desc);
-	  alarmRaised_m = false;
-	  }
-      succeeded();
+      {	  
+        //TBD:: here should be alarm raised, but it has to be added to codes
+        ACSErrTypeAlarm::ACSErrAlarmHighCompletion comp;
+        callback_mp->alarm_raised(T(value), comp, desc);
+        alarmRaised_m = true;
       }
-  catch(...)
+      if (!property_mp->checkAlarm(T(value)) && alarmRaised_m )
       {
+        ACSErrTypeAlarm::ACSErrAlarmClearedCompletion comp;
+        callback_mp->alarm_cleared(T(value), comp, desc);
+        alarmRaised_m = false;
+      }
+      succeeded();
+  }
+  catch(...)
+  {
       if (failed()) 
-	  destroy();
-	}
+      destroy();
+  }
 }//check
   
 /* ------------------- [ Recoverable interface ] --------------------*/

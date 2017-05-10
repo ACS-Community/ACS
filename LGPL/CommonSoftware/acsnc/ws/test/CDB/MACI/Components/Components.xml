@@ -12,6 +12,26 @@
 <_ Name="IL_CON1"		Code="acsncConsumerILCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
 
 <_ Name="NamedCh_SUP1"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP2"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP3"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP4"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP5"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP6"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP7"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP8"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP9"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP10"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP11"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP12"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP13"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP14"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP15"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP16"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP17"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP18"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP19"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP20"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
+<_ Name="NamedCh_SUP21"		Code="acsncSupplierNamedChCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
 
 <_ Name="NamedCh_CON1"		Code="acsncConsumerNamedChCompImpl"  	  Type="IDL:alma/demo/ConsumerComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
 

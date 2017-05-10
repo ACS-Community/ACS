@@ -78,7 +78,7 @@ try:
         raise notNulDataException
     # Start monitor and wait some time to generate data
     mc.startMonitoring(cname)
-    time.sleep(10)
+    time.sleep(15)
     # Stop monitoring
     mc.stopMonitoring(cname)
     # Verify if monitor data has been generated
@@ -118,7 +118,7 @@ for d in data:
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
-            if i<20:
+            if not "-" in str(blobData) and i<15:
                 print "\t\t", blobData
                 i+=1
 

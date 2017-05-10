@@ -43,10 +43,11 @@ void algo(char *name){
          printf("\nFail at logout %s\n",name);
         }
     printf("\nabout to destroy %s\n",name);
-    if(client->destroy()==0){
+    /*if(client->destroy()==0){
 
          printf("\nFail at destroy %s\n",name);
-    }
+    }*/
+    delete client;
 printf("\nending %s\n",name);
 
 }

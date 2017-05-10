@@ -67,6 +67,8 @@ class RTSupplierCompImpl: public virtual acscomponent::ACSComponentImpl,
     /* --------------------- [ CORBA interface ] ----------------------*/
     virtual void 
     sendEvents(short numEvents);
+    virtual void
+    testReconn1(CORBA::Boolean autoreconnect,CORBA::Boolean ncRestarted);
     
   private:
     nc::RTSupplier *m_testSupplier_p;

@@ -86,6 +86,10 @@ interface TestOffShoot : ACS::OffShoot {
 
 };
 
+interface MaciTestCompSimpleClient : ACS::ACSComponent {
+	void createSimpleClient();
+};
+
 };
 
 #endif

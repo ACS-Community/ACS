@@ -26,6 +26,7 @@ void baci::AlarmSystemMonitorEnumProp<T, TPROP>::check(BACIValue &val,
   std::string ts;
   ACS::pattern value = val.patternValue();
 
+  ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, templateMutex);
   if ( this->property_mp->checkAlarm(T(value)) && !this->alarmRaised_m )
       {
       ostr << value << std::ends;

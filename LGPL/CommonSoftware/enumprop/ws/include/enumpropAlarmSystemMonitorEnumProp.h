@@ -67,6 +67,9 @@ class AlarmSystemMonitorEnumProp : public AlarmSystemMonitor<TPROP>
      */
     AlarmSystemMonitorEnumProp(const AlarmSystemMonitorEnumProp&);
     
+    /// mutex for thread-safe
+	ACE_Recursive_Thread_Mutex templateMutex;
+
 };//class AlarmSystemMonitorEnumProp
 
 };//baci

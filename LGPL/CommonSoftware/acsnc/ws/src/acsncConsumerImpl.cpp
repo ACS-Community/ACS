@@ -169,23 +169,35 @@ Consumer::disconnect()
 		{
 		proxySupplier->disconnect_structured_push_supplier();
 		}
-	    if(CORBA::is_nil(consumerAdmin_m.in()) == false)
-		{
-		consumerAdmin_m->destroy();
-		consumerAdmin_m=CosNotifyChannelAdmin::ConsumerAdmin::_nil();
-		}
-	    BACI_CORBA::DestroyTransientCORBAObject(reference_m.in());
-	    if(reference_m.in()!=0)
-		{
-		reference_m=0;
-		//delete this;
-		}
 	    }
 	catch(...)
 	    {
 	    ACS_SHORT_LOG((LM_ERROR,"Consumer::disconnect failed for the '%s' channel!",
 			   channelName_mp));
 	    }
+
+        try {
+            if(CORBA::is_nil(consumerAdmin_m.in()) == false)
+            {
+                consumerAdmin_m->destroy();
+                consumerAdmin_m=CosNotifyChannelAdmin::ConsumerAdmin::_nil();
+            }
+        } catch(...) {
+            ACS_SHORT_LOG((LM_ERROR,"Consumer::disconnect failed to destroy consumer admin for the '%s' channel!",
+			   channelName_mp));
+        }
+
+        try {
+            BACI_CORBA::DestroyTransientCORBAObject(reference_m.in());
+            if(reference_m.in()!=0)
+            {
+                reference_m=0;
+                //delete this;
+            }
+        } catch(...) {
+            ACS_SHORT_LOG((LM_ERROR,"Consumer::disconnect failed to destroy the reference for the '%s' channel!",
+			   channelName_mp));
+        }
 	}
 
     if (profiler_mp!=0)

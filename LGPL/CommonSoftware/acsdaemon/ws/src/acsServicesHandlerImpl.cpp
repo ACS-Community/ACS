@@ -573,19 +573,19 @@ char * ACSServicesHandlerImpl::status_acs (
 {
     int result;
     char *acsStatus=0;
-    char command[100];
+    char command[1000];
     std::string logFile=m_daemonUtils.getLogDirectory();
     logFile+="acsStatus_";
     logFile += m_daemonUtils.getTimestamp();
 
-    snprintf(command, 100, "acsStatus -b %d &> %s", instance_number, logFile.c_str());
+    snprintf(command, 1000, "acsStatus -b %d &> %s", instance_number, logFile.c_str());
 
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command));
 
     result = ACE_OS::system(command);
     if (result < 0)
 	{
-	snprintf(command, 100, "rm -rf %s", logFile.c_str());
+	snprintf(command, 1000, "rm -rf %s", logFile.c_str());
 	ACE_OS::system(command);
 	throw ::acsdaemonErrType::FailedToGetAcsStatusExImpl(
 	    __FILE__, __LINE__, 
@@ -603,12 +603,12 @@ char * ACSServicesHandlerImpl::status_acs (
 	outFile.read (acsStatus, outFileSize);
 	outFile.close();
 	acsStatus[outFileSize]=0;
-	snprintf(command, 100, "rm -rf %s", logFile.c_str());
+	snprintf(command, 1000, "rm -rf %s", logFile.c_str());
 	ACE_OS::system(command);
 	}
     else
 	{
-	snprintf(command, 100, "rm -rf %s", logFile.c_str());
+	snprintf(command, 1000, "rm -rf %s", logFile.c_str());
 	ACE_OS::system(command);
 	throw ::acsdaemonErrType::FailedToGetAcsStatusExImpl(
 	    __FILE__, __LINE__, 

@@ -108,16 +108,22 @@ ORBHelper::getORB()
     return orb_mp; 
 }
 //-----------------------------------------------------------------------------
-void
+bool
 ORBHelper::setORB(CORBA::ORB_ptr orb_p)
 {
     //if it's been set before we just ignore the call
     if(orb_mp != 0)
 	{
-	return;
+	return false;
 	}
     orb_mp = orb_p;
-
+    return true;
+}
+//-----------------------------------------------------------------------------
+bool
+ORBHelper::isORBSet()
+{
+	return orb_mp != 0;
 }
 //-----------------------------------------------------------------------------
 ORBHelper::~ORBHelper()

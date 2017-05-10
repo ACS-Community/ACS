@@ -43,7 +43,8 @@ Supplier::Supplier(const char* channelName,
     typeName_mp(0),
     count_m(0),
     guardbl(10000000,50),
-    antennaName("")
+    antennaName(""),
+    autoreconnect_m(false)
 {
     ACS_TRACE("Supplier::Supplier");
     init(static_cast<CORBA::ORB_ptr>(0));
@@ -60,7 +61,8 @@ Supplier::Supplier(const char* channelName,
     component_mp(component),
     typeName_mp(0),
     count_m(0),
-    guardbl(10000000,50)
+    guardbl(10000000,50),
+    autoreconnect_m(false)
 {
     ACS_TRACE("Supplier::Supplier");
     init(orb_mp);
@@ -78,7 +80,8 @@ Supplier::Supplier(const char* channelName,
     component_mp(component),
     typeName_mp(0),
     count_m(0),
-    guardbl(10000000,50)
+    guardbl(10000000,50),
+    autoreconnect_m(false)
 {
     ACS_TRACE("Supplier::Supplier");
 
@@ -122,10 +125,50 @@ Supplier::init(CORBA::ORB_ptr orb)
         callback_m->init(orb, notifyFactory_m);
 }
 //-----------------------------------------------------------------------------
+void
+Supplier::reinit()
+{
+    CORBA::ORB_ptr orb = orbHelper_mp != NULL ? orbHelper_mp->getORB() : NULL;
+
+    // Resolve the naming service using the orb
+    resolveNamingService(orb);
+
+    // If a notification channel already exists, then use it, otherwise
+    // Create the NC
+    if(!resolveInternalNotificationChannel())
+        ACS_SHORT_LOG((LM_ERROR,"Supplier::reinit NC '%s' couldn't be created nor resolved", channelName_mp));  
+
+    //Finally we can create the supplier admin, consumer proxy, etc.
+    createSupplier();
+    
+    resolveNotificationFactory();
+
+    // Disconnect callback object
+    try {
+        callback_m->disconnect();
+    } catch(...) {
+        ACS_SHORT_LOG((LM_ERROR, "Supplier::reinit Callback object thrown an exception on disconnecting it"));
+    }
+
+    // Initialize callback object
+    if (orbHelper_mp !=0 )
+    {
+        callback_m->init(orbHelper_mp->getORB(), notifyFactory_m);
+    } else {
+        callback_m->init(orb, notifyFactory_m);
+    }
+}
+
+//-----------------------------------------------------------------------------
 Supplier::~Supplier()
 {
     ACS_TRACE("Supplier::~Supplier");
     disconnect();
+    if(eventBuff.size() > 0)
+    {
+        ACS_SHORT_LOG((LM_WARNING,"Supplier of NC '%s' will lost %d events", 
+                       channelName_mp,eventBuff.size()));
+    }
 }
 //-----------------------------------------------------------------------------
 // TAO Developer's Guide p. 595
@@ -156,18 +199,25 @@ Supplier::disconnect()
 		    SupplierAdmin_m->destroy();
 		    SupplierAdmin_m=CosNotifyChannelAdmin::SupplierAdmin::_nil();
 		}
-	    BACI_CORBA::DestroyTransientCORBAObject(reference_m.in());
-	    if(reference_m.in()!=0)
-		{
-		reference_m=0;
-		//delete this;
-		}
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR, "Supplier::disconnect failed for the '%s' channel!",
 		       channelName_mp));
 	}
+
+    try
+    {
+	    BACI_CORBA::DestroyTransientCORBAObject(reference_m.in());
+	    if(reference_m.in()!=0)
+		{
+		reference_m=0;
+		//delete this;
+		}
+    } catch(...) {
+        ACS_SHORT_LOG((LM_ERROR, "Supplier::disconnect failed to destroy the reference for the '%s' channel!",
+		       channelName_mp));
+    }
 }
 //-----------------------------------------------------------------------------
 void
@@ -200,6 +250,69 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
     	// Invoke a method on consumer proxy
     	proxyConsumer_m->push_structured_event(event);
     }
+    catch(CORBA::OBJECT_NOT_EXIST &ex)
+    {
+        /**
+         * Probably the Notify Service is restarting.
+         * When autoreconnect_m is set, it will try to reconnect to the channel.
+         * Otherwise will throw an exception.
+         */
+
+        if(true == autoreconnect_m)
+        {
+            // Try to reconnect to the channel
+            try {
+                reinit();
+
+            // Couldn't reconnect to the channel. The event will be appended
+            } catch(...) {
+                //ACS_SHORT_LOG((LM_ERROR,"Couldn't reconnect to the channel"));
+                eventBuff.push(event); // Append the event to the circular buffer
+
+                // Rethrow the OBJECT_NOT_EXIST exception.
+                // SimpleSupplier will catch the exception and pass the event to
+                // the callback object    
+                throw ex; 
+            }
+
+            // Try to send buffered events
+            try {
+                while( (tmp = eventBuff.front()) != NULL) {
+                    proxyConsumer_m->push_structured_event(*tmp);
+                    eventBuff.pop();
+                    delete tmp;
+                } 
+            // One buffered event couldn't be published. Nothing to do, it
+            // will try to publish them again in subsequent publications
+            } catch(...) {
+                //ACS_SHORT_LOG((LM_ERROR,"Couldn't publish buffered events"));
+            }
+
+            // Try to send the current event
+            try {
+                proxyConsumer_m->push_structured_event(event);
+            // Couldn't be published, we add the event to the circular buffer and
+            // throw the OBJECT_NOT_EXIST exception. SimpleSupplier will catch it
+            // and pass the event to the callback object.
+            } catch(...) {
+                //ACS_SHORT_LOG((LM_ERROR,"Couldn't publish current event again"));
+                eventBuff.push(event);
+                throw ex;
+            }
+
+        // autoreconnect_m is false
+        } else {
+            ACSErrTypeCommon::CORBAProblemExImpl cex(__FILE__, __LINE__, "nc::SimpleSupplier::publishEvent");
+    	    cex.setMinor(ex.minor());
+    	    cex.setCompletionStatus(ex.completed());
+    	    cex.setInfo(ex._info().c_str());
+
+            acsncErrType::PublishEventFailureExImpl ex(cex, __FILE__, __LINE__, "nc::Supplier::publishEvent");
+            ex.setChannelName(channelName_mp);
+            ex.log(LM_DEBUG);
+            throw ex;
+       }
+    } 
     catch(CORBA::TRANSIENT &ex)
     {
        /* Probably the Notify Service is down.
@@ -453,11 +566,14 @@ Supplier::createSupplier()
 	    }
 
 	//activate ourself as a CORBA object
-	reference_m = BACI_CORBA::ActivateTransientCORBAObject<CosNotifyComm::StructuredPushSupplier>(this);
-	if (reference_m.in()==0)
-	    {
-	    reference_m = this->_this();
-	    }
+    if(reference_m == 0)
+    {
+        reference_m = BACI_CORBA::ActivateTransientCORBAObject<CosNotifyComm::StructuredPushSupplier>(this);
+        if (reference_m.in()==0)
+            {
+            reference_m = this->_this();
+            }
+    }
 
 	//sanity check
 	if(CORBA::is_nil(reference_m.in()) == true)
@@ -513,6 +629,11 @@ void Supplier::setAntennaName(std::string antennaName) {
         event_m.filterable_data[1].name = CORBA::string_dup("antenna_name");
         event_m.filterable_data[1].value <<= antennaName.c_str();
     }
+}
+
+void Supplier::setAutoreconnect(bool autoreconnect)
+{
+    autoreconnect_m = autoreconnect;
 }
 
 //-----------------------------------------------------------------------------

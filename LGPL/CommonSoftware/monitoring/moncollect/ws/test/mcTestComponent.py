@@ -32,6 +32,75 @@ import MonitorErrImpl
 import MonitorErr
 import time
 
+def get_id_comp_attr(blob):
+    return str((blob.propertyName, blob.propertySerialNumber))
+
+MIN_BLOBS=9
+MAX_BLOBS=20
+# Check the following:
+#  - Arrays have arr_length values
+#  - All array values are equal
+#  - Blob data values are consecutive
+#  - There are at least MIN_BLOBS blobs
+#  - There are at most MAX_BLOBS blobs
+#  - When first_value is not None, the first blob must have this value
+def check_data(blob, arr_length, first_value):
+    global MIN_BLOBS, MAX_BLOBS
+    print "\t", blob.propertyName, blob.propertySerialNumber
+
+    last_values = []
+
+    values = []
+    for blobData in any.from_any(blob.blobDataSeq):
+        if type(blobData['value']) == list:
+            if len(blobData['value']) != arr_length:
+                print "Error! Expected array of %d values but was of size %d" % (arr_length, len(blobData['value']))
+            if len(blobData['value']) > 0:
+                value = blobData['value'][0]
+                all_equal = True
+                for val in blobData['value']:
+                    if value != val:
+                        all_equal = False
+                if not all_equal:
+                    print "\t\tError! Not all values are equal: ", blobData['value']
+            else:
+                value = None
+        else:
+            value = blobData['value']
+        values.append(value)
+
+    if len(values) > 0:
+        consecutive = True
+        n = values[0]
+        if first_value != None:
+            if first_value != n:
+                print "\t\tError! We expected that the first blob had a value of: ", first_value, " but was ", n
+            else:
+                print "\t\tGreat! First blob has the expected value: ", first_value
+        for v in values:
+            if n != v:
+                print "\t\t", n, " != ", v
+                consecutive = False
+            n += 1
+        if not consecutive:
+            print "\t\tError! Values are not consecutive: ", values
+        else:
+            print "\t\tGreat! All values are consecutive"
+        if len(values) >= MIN_BLOBS:
+            print "\t\tGreat! Collected at least %d values: %d" % (MIN_BLOBS,len(values))
+        else:
+            print "\t\tError! Collected less than %d values: %d" % (MIN_BLOBS,len(values))
+
+        if len(values) <= MAX_BLOBS:
+            print "\t\tGreat! Collected at most %d values: %d" % (MAX_BLOBS,len(values))
+        else:
+            print "\t\tError! Collected more than %d values: %d" % (MAX_BLOBS,len(values))
+        
+        return values[-1]
+    else:
+        print "\t\tNo values"
+        return None
+
 # definition of in-test exceptions
 class noDataException (Exception) : pass
 class notNulDataException (Exception) : pass
@@ -91,17 +160,23 @@ except MonitorErr.RegisteringDeviceProblemEx, _ex:
     ex.Print();
 
 # Print out recovered data
+last_values = {}
 print "RESULTS FROM TEST CASE1: Start component monitoring"
 print "Number of Devices:", len(data);
 for d in data:
-    print d.componentName, d.deviceSerialNumber 
+    print d.componentName, d.deviceSerialNumber
     for blob in d.monitorBlobs:
+        id_comp_attr = get_id_comp_attr(blob)
+        last_value = check_data(blob, 25, None)
+        last_values[id_comp_attr] = last_value
+        """
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
             if i<20:
                 print "\t\t", blobData
                 i+=1
+        """
 
 # Test Case 2: Data retrieval does not stop component monitoring
 try:
@@ -130,12 +205,17 @@ print "Number of Devices:", len(data);
 for d in data:
     print d.componentName, d.deviceSerialNumber
     for blob in d.monitorBlobs:
+        id_comp_attr = get_id_comp_attr(blob) 
+        last_value = check_data(blob, 25, last_values[id_comp_attr]+1)
+        last_values[id_comp_attr] = last_value
+        """
         print "\t", blob.propertyName, blob.propertySerialNumber
         i=0
         for blobData in any.from_any(blob.blobDataSeq):
             if i<20:
                 print "\t\t", blobData
                 i+=1
+        """
 
 # Test Case 3: Stop component monitoring
 try:

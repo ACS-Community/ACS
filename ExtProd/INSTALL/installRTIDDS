@@ -106,7 +106,7 @@ cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/RTI
 echo "Please give the passphrase (will not bee seen on the screen) for $HOST_TAR & $TARGET_TAR: "
 read -sp ">" PASS
 
-gpg -d --passphrase $PASS $DDS_DIR/$HOST_TAR | tar xvz
+gpg -d --batch --passphrase $PASS $DDS_DIR/$HOST_TAR | tar xvz
 if [ $? != 0 ]
 then
     cd $TMP_DIR
@@ -114,7 +114,7 @@ then
     exit 4
 fi
 
-gpg -d --passphrase $PASS $DDS_DIR/$TARGET_TAR | tar xvz
+gpg -d --batch --passphrase $PASS $DDS_DIR/$TARGET_TAR | tar xvz
 if [ $? != 0 ]
 then
     cd $TMP_DIR

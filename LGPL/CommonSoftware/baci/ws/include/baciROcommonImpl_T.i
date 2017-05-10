@@ -118,7 +118,7 @@ void baci::ROcommonImpl<ACS_RO_TL>::enable_alarm_system()
 template<ACS_RO_C> 
 void baci::ROcommonImpl<ACS_RO_TL>::disable_alarm_system()
 {
-
+    ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, templateMutex);
 	if(alarmSystemEnabled_m) {
 		if(alarmSystemMonitor_mp->isAlarmRaised())
 			throw baciErrTypeProperty::DisableAlarmsErrorExImpl (__FILE__, __LINE__, "baci::ROcommonImpl&lt;&gt;::disable_alarm_system");

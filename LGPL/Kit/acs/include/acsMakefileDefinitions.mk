@@ -1489,8 +1489,18 @@ xyz_$1_SRC = $(addsuffix .c,$2)
 
 rtai_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2))),,$1-objs := $(addsuffix .o,$2))
 
+# ICT-2680: kernel module must be re-built if Makefile was changed.
+# I.e. declare dependency on Makefile and clean-up Kbuild environment (otherwise
+# the kernel module components will not be re-compiled, as Kbuild doesn't know 
+# about a dependency on Makefile)
 #.NOTPARALLEL:../rtai/$(kernel_install_subfold)/$1.ko
-../rtai/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1
+CPU := $(shell uname -p)
+../rtai/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1 Makefile
+ifeq ($(CPU),x86_64)
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
+else
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
+endif
 	@$(ECHO) "== Making RTAI Module: $1" 
 # here we have to generate the hineous Kbuild file
 	$(AT)lockfile -s 2 -r 10 Kbuild.lock || echo "WARNING, ignoring lock Kbuild.lock"
@@ -1501,17 +1511,29 @@ rtai_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2)
 	$(AT)$(ECHO) "EXTRA_CFLAGS := $(EXTRA_CFLAGS)" >> Kbuild
 	$(AT)$(ECHO) "KBUILD_EXTRA_SYMBOLS=\"$(RTAI_HOME)/modules/Module.symvers\"" >> Kbuild
 ifdef MAKE_VERBOSE
+ifeq ($(CPU),x86_64)
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=2 modules
+else
 	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=2 modules
+endif
+else
+ifeq ($(CPU),x86_64)
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=0 modules
 else
 	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=0 modules
+endif
 endif
 	$(AT)$(RM) Kbuild.lock
 	$(AT)mv $1.ko ../rtai/$(kernel_install_subfold)
 
 # LKM Support binaries
 .PHONY: clean_rtai_$1
-clean_rtai_$1:
+clean_rtai_$1i:
+ifeq ($(CPU),x86_64)
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
+else
 	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
+endif
 	$(AT)$(RM) ../rtai/$(kernel_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
 
 #../bin/installLKM-$1: 
@@ -1587,9 +1609,14 @@ xyz_$1_SRC = $(addsuffix .c,$2)
 
 kernel_module_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2))),,$1-objs := $(addsuffix .o,$2))
 
+# ICT-2680: kernel module must be re-built if Makefile was changed.
+# I.e. declare dependency on Makefile and clean-up Kbuild environment (otherwise
+# the kernel module components will not be re-compiled, as Kbuild doesn't know 
+# about a dependency on Makefile)
 #.NOTPARALLEL:../kernel/$(kernel_install_subfold)/$1.ko
-../kernel/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1
+../kernel/$(kernel_install_subfold)/$1.ko: $$(xyz_$1_SRC) ../bin/installLKM-$1 Makefile
 	@$(ECHO) "== Making KERNEL Module: $1" 
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCKERNEL) M=$(PWD) clean ; fi
 # here we have to generate the hineous Kbuild file
 	$(AT)lockfile -s 2 -r 10 Kbuild.lock || echo "WARNING, ignoring lock Kbuild.lock"
 	$(AT)$(ECHO) "obj-m += $1.o" > Kbuild
@@ -1598,18 +1625,20 @@ kernel_module_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(w
 	$(AT)$(ECHO) "USR_INC := $(USR_INC)"   >> Kbuild
 	$(AT)$(ECHO) "EXTRA_CFLAGS := $(EXTRA_CFLAGS)" >> Kbuild
 	$(AT)$(ECHO) "KBUILD_EXTRA_SYMBOLS=\"$(LINUX_HOME)/modules/Module.symvers\"" >> Kbuild
+# ICT-2680: remove "ARCH=i386" from list of compilation flags for plain linux kernel modules
 ifdef MAKE_VERBOSE
-	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) V=2 modules
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) M=$(PWD) V=2 modules
 else
-	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) V=0 modules
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCKERNEL) M=$(PWD) V=0 modules
 endif
 	$(AT)$(RM) Kbuild.lock
 	$(AT)mv $1.ko ../kernel/$(kernel_install_subfold)
 
 # LKM Support binaries
 .PHONY: clean_kernel_module_$1
+# ICT-2680: remove "ARCH=i386" from list of compilation flags for plain linux kernel modules
 clean_kernel_module_$1:
-	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCKERNEL) ARCH=i386 M=$(PWD) clean ; fi
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCKERNEL) M=$(PWD) clean ; fi
 	$(AT)$(RM) ../kernel/$(kernel_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
 
 #The following works on an STE

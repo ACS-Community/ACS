@@ -58,7 +58,7 @@
 EXECUTABLES     = 	
 EXECUTABLES_L   = 	testLogger testLoggerStats testNoLogging testMacros \
 			loggingXMLParserTest testGenericLogger testLoggable testLoggingProxy \
-            testAnyLog testAUD_ARR testLog4cpp testIsInitThread testMultiThreads
+            testAnyLog testAUD_ARR testLog4cpp testIsInitThread testMultiThreads testLoggingSubscriber testGenLogs
 
 loggingXMLParserTest_OBJECTS = loggingXMLParserTest
 loggingXMLParserTest_LIBS = logging
@@ -98,6 +98,12 @@ testIsInitThread_LIBS	= logging
 
 testMultiThreads_OBJECTS= testMultiThreads
 testMultiThreads_LIBS	= logging
+
+testLoggingSubscriber_OBJECTS=testLoggingSubscriber ../src/loggingHelper
+testLoggingSubscriber_LIBS=logging acsThread TAO_CosNotification_Serv
+
+testGenLogs_OBJECTS=testGenLogs ../src/loggingHelper
+testGenLogs_LIBS=logging
 
 #
 # <brief description of xxxxx program>

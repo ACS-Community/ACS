@@ -28,7 +28,8 @@ PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
 PY_EXT_DOC_L	   = pexpect-doc
-PY_DISUTIL	   = PyXML-0.8.4 Pmw Numeric-24.2 numarray-1.3.3 python-ldap-2.0.1
+#PY_DISUTIL	   = PyXML-0.8.4 Pmw Numeric-24.2 numarray-1.3.3 python-ldap-2.0.1
+PY_DISUTIL	   = PyXML-0.8.4 Pmw 
 
 PYXML: PyXML-0.8.4.tar.gz
 	@echo "== Building PYXML"
@@ -79,7 +80,8 @@ PY_DOC :
 
 
 #PY_DISUTIL_BUILD : PYXML NUMERIC NUMARRAY LDAP PYXML
-PY_DISUTIL_BUILD : PYXB PYXML LXML NUMERIC SUDS
+#PY_DISUTIL_BUILD : PYXB PYXML LXML NUMERIC SUDS
+PY_DISUTIL_BUILD : PYXB PYXML
 	echo "== Building/Installing external Python modules now..."
 
 #
@@ -112,7 +114,8 @@ clean : clean_all
 	$(RM) *~ ../*~
 	$(RM) ../doc/doc ../doc/api ../doc/idl
 	$(foreach file, $(PY_DISUTIL), $(RM) $(file))
-	@rm -rf numarray-1.3.3  Pmw PyXML-0.8.4 PyXB-1.1.2 lxml-2.2.6 suds-0.4
+	#@rm -rf numarray-1.3.3  Pmw PyXML-0.8.4 PyXB-1.1.2 lxml-2.2.6 suds-0.4
+	@rm -rf Pmw PyXML-0.8.4 PyXB-1.1.2 
 	@echo " . . . clean done"
 
 clean_dist : clean clean_dist_all 

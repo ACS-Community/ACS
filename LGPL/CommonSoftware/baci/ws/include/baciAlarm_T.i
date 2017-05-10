@@ -465,8 +465,9 @@ void baci::AlarmEventStrategyDisc<T, TPROP, TALARM>::check(BACIValue &val,
   ACE_UNUSED_ARG(c);
   T value = val.getValue(static_cast<T*>(0));
 
-// copied from Alarmpattern.cpp
- if ((this->alarmRaised_m!=0) &&    // we have an alarm (0 indicates no alarm)
+  ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, templateMutex);
+  // copied from Alarmpattern.cpp
+  if ((this->alarmRaised_m!=0) &&    // we have an alarm (0 indicates no alarm)
       (value<=1))              // "On" or "Off"
     {
       
@@ -599,6 +600,7 @@ void baci::AlarmEventStrategyContSeq<T, TPROP, TALARM>::check(BACIValue &val,
     ACE_UNUSED_ARG(c);
     T valueSeq = val.getValue(static_cast<T*>(0));
     
+    ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, templateMutex);
     if (alarmsRaisedLength_m!=static_cast<int>(valueSeq.length()))
 	{
 	if (alarmsRaised_mp !=0)
@@ -700,6 +702,7 @@ void baci::AlarmEventStrategyDiscSeq<T, TPROP, TALARM>::check(BACIValue &val,
     ACE_UNUSED_ARG(c);
     T valueSeq = val.getValue(static_cast<T*>(0));
 
+  ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, templateMutex);
   if (alarmsRaisedLength_m!=static_cast<int>(valueSeq.length()))
     {
       if (alarmsRaised_mp != 0)

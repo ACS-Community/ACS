@@ -67,6 +67,12 @@ SupplierCompImpl::sendEvents(short numEvents)
 	ACE_OS::sleep(1);
 	}
 }
+
+void 
+SupplierCompImpl::testReconn1(CORBA::Boolean autoreconnect,CORBA::Boolean ncRestarted)
+{
+	// Implemented in csncSupplierNamedChCompImpl.cpp
+}
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(SupplierCompImpl)

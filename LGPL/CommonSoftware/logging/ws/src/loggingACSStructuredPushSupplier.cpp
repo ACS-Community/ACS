@@ -26,11 +26,14 @@
 
 
 #include "loggingACSStructuredPushSupplier.h"
+#include "loggingACEMACROS.h"
 #include <iostream>
+#include <loggingService.h>
 
 /*****************************************************************/
 
 ACSStructuredPushSupplier::ACSStructuredPushSupplier (void)
+: m_service(NULL), m_numLostLogs(0)
 {
 }
 
@@ -79,6 +82,26 @@ ACSStructuredPushSupplier::subscription_change (const CosNotification::EventType
   //No-Op.
 }
 
+
+void 
+ACSStructuredPushSupplier::set_logging_service(LoggingService *service)
+{
+    m_service = service;
+}
+
+void 
+ACSStructuredPushSupplier::update_num_lost_logs(const CosNotification::StructuredEvent& event)
+{
+	const char * xmlLog;
+    Logging::XmlLogRecordSeq *xmlSeq;
+	if(event.remainder_of_body >>= xmlLog)
+    {
+        ++m_numLostLogs;
+    } else if(event.remainder_of_body >>= xmlSeq) {
+        m_numLostLogs += xmlSeq->length();
+    }
+}
+
 void
 ACSStructuredPushSupplier::send_event (const CosNotification::StructuredEvent& event
 				       )
@@ -86,11 +109,18 @@ ACSStructuredPushSupplier::send_event (const CosNotification::StructuredEvent& e
   ACE_ASSERT (!CORBA::is_nil (this->proxy_consumer_.in ()));
 
   try
-      {
-      proxy_consumer_->push_structured_event (event);
-      }
+    {
+        proxy_consumer_->push_structured_event (event);
+        if(m_numLostLogs > 0)
+        {
+            // Create new log with the number of logs lost
+            ACS_SHORT_LOG((LM_INFO, "%d logs have been lost", m_numLostLogs));
+            m_numLostLogs = 0;
+        }
+    }
   catch(CORBA::COMM_FAILURE ex)
 	{
+    update_num_lost_logs(event);
 	const char * xmlLog;
 	event.remainder_of_body >>= xmlLog;
 	
@@ -101,6 +131,7 @@ ACSStructuredPushSupplier::send_event (const CosNotification::StructuredEvent& e
 	}
     catch(CORBA::TRANSIENT ex)
 	{
+    update_num_lost_logs(event);
 	const char * xmlLog;
 	event.remainder_of_body >>= xmlLog;
 	
@@ -109,8 +140,47 @@ ACSStructuredPushSupplier::send_event (const CosNotification::StructuredEvent& e
 	std::cerr << xmlLog;
 	std::cerr << "'!" << std::endl;
 	}
+    catch(CORBA::OBJECT_NOT_EXIST ex)
+    {
+    update_num_lost_logs(event);
+	const char * xmlLog;
+	event.remainder_of_body >>= xmlLog;
+
+	std::cerr << "ERROR (CORBA::OBJECT_NOT_EXIST): ";
+	std::cerr << "failed to send a logging event  - '";
+	std::cerr << xmlLog; 
+	std::cerr << "'!" << std::endl;
+    if(m_service != NULL && true == m_service->autoreconnect())
+    {
+        try {
+            m_service->reinit();
+            proxy_consumer_->push_structured_event (event);
+            --m_numLostLogs;
+        } catch(...) {}
+    }
+    }
+    catch(CORBA::BAD_OPERATION ex) 
+    {  
+    update_num_lost_logs(event);
+	const char * xmlLog;
+	event.remainder_of_body >>= xmlLog;
+
+	std::cerr << "ERROR (CORBA::BAD_OPERATION): ";
+	std::cerr << "failed to send a logging event  - '";
+	std::cerr << xmlLog; 
+	std::cerr << "'!" << std::endl;
+    if(m_service != NULL && true == m_service->autoreconnect())
+    {
+        try {
+            m_service->reinit();
+            proxy_consumer_->push_structured_event (event);
+            --m_numLostLogs;
+        } catch(...) {}
+    }
+    }
     catch(...)
 	{
+    update_num_lost_logs(event);
 	const char * xmlLog;
 	event.remainder_of_body >>= xmlLog;
 

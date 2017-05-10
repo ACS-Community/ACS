@@ -1,0 +1,51 @@
+3 - ACS Centralized Logger starting.
+3 - Starting up the ACS Centralized Logger...
+3 - Resolving Naming Service...
+3 - Resolving Notify Service...
+3 - 
+3 - multicast discovery of LoggingNotifyEventChannelFactory failed.
+3 - Creating Event Channels...
+3 - Creating Supplier Admins...
+3 - Creating Suppliers...
+3 - Creating Log Factory...
+3 - Log Factory registered with the naming service as: LogFactory
+3 - Creating Log...
+3 - Log registered with the naming service as: Log
+3 - ACS Centralized Logger is initialized.
+3 - argv[0]=../bin/loggingService
+3 - Resolving Notify Service...
+3 - 
+3 - multicast discovery of LoggingNotifyEventChannelFactory failed.
+3 - Creating Event Channels...
+3 - Creating Supplier Admins...
+3 - Creating Suppliers...
+3 - X logs have been lost
+1 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
+1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
+2 - ----------T--:--:--.--- DEBUG [acsNotifyService] Removing channels entries in the Naming Service of the Logging Notification Service [X.X.X.X:YYYY] which has been stopped
+2 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
+2 - ----------T--:--:--.--- DEBUG [acsstartupNotifyServiceStart] Deleting channels entries in the Name Service of the Logging Notify Service [X.X.X.X:YYYY]
+2 - Using reactive client control.
+2 - Using 1 threads for each Supplier.
+2 - Using 1 threads for each Consumer.
+2 - ReBound ID: MC_LoggingNotifyEventChannelFactory
+5 - ----------T--:--:--.--- [GlobalLogger - ] Naming Service has been acquired
+5 - ----------T--:--:--.--- [GlobalLogger - ] Channel has been acquired: LoggingChannel@LOGGING
+5 - ----------T--:--:--.--- [GlobalLogger - ] Consumer Admin has been acquired
+5 - ----------T--:--:--.--- [GlobalLogger - ] Structured Push Supplier has been acquired
+5 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::add] 
+5 - ----------T--:--:--.--- [GlobalLogger - ] Consumer connected to the proxy supplier
+5 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
+5 - ----------T--:--:--.--- [GlobalLogger - ] Logs received in the consumer
+6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
+6 - ----------T--:--:--.--- DEBUG [acsNotifyService] Removing channels entries in the Naming Service of the Logging Notification Service [X.X.X.X:YYYY] which has been stopped
+5 - ----------T--:--:--.--- [Checker - ] Consumer disconnected
+7 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
+7 - ----------T--:--:--.--- DEBUG [acsstartupNotifyServiceStart] Deleting channels entries in the Name Service of the Logging Notify Service [X.X.X.X:YYYY]
+7 - Using reactive client control.
+7 - Using 1 threads for each Supplier.
+7 - Using 1 threads for each Consumer.
+7 - ReBound ID: MC_LoggingNotifyEventChannelFactory
+5 - ----------T--:--:--.--- [Checker - ] Consumer reconnected!
+5 - ----------T--:--:--.--- [GlobalLogger - ] Logs received again in the consumer

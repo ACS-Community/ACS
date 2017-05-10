@@ -43,11 +43,18 @@
 #include <acscommonC.h>
 
 #define LOG_NAME "Log"
+
+/**
+ * Constants initialization
+ */
+const std::string LoggingService::CLP_NO_AUTORECONNECT = "--no-autoreconnect";
+
 /*****************************************************************/
 LoggingService::LoggingService (void)
   : m_basic_log_factory_name (acscommon::LOG_FACTORY_NAME),
     m_basic_log_name (LOG_NAME),
-    m_isInitialized(false)
+    m_isInitialized(false),
+    m_autoreconnect(true)
 {
   // No-Op.
   m_ifgop = CosNotifyChannelAdmin::OR_OP;
@@ -145,6 +152,14 @@ LoggingService::startup (int argc, char *argv[]
   ACS_SHORT_LOG ((LM_INFO,
               "Starting up the ACS Centralized Logger..."));
 
+  for(int32_t i = 0;i < argc;++i)
+  {
+    if(std::string(argv[i]) == LoggingService::CLP_NO_AUTORECONNECT)
+    {
+      m_autoreconnect = false;
+    }
+  }
+
   // Tnitalize the ORB.
   init_ORB (argc, argv);
 
@@ -200,6 +215,31 @@ LoggingService::startup (int argc, char *argv[]
 
   ACS_SHORT_LOG ((LM_INFO, "ACS Centralized Logger is initialized."));
 
+}
+
+void
+LoggingService::reinit()
+{
+  m_mutexReinit.acquire();
+  ACS_SHORT_LOG ((LM_INFO, "Resolving Notify Service..."));
+  resolve_notify_factory ();
+
+  ACS_SHORT_LOG ((LM_INFO, "Creating Event Channels..."));
+  create_EC ();
+
+  ACS_SHORT_LOG ((LM_INFO, "Creating Supplier Admins..."));
+  create_supplieradmin ();
+
+  ACS_SHORT_LOG ((LM_INFO, "Creating Suppliers..."));
+  reinit_suppliers ();
+  m_mutexReinit.release();
+}
+
+
+bool
+LoggingService::autoreconnect() const
+{
+    return m_autoreconnect;
 }
 
 void
@@ -549,8 +589,15 @@ LoggingService::create_suppliers ()
 
     ACE_ASSERT (m_logging_supplier);
 
+    m_logging_supplier->set_logging_service(this);
   m_logging_supplier->connect (this->m_logging_supplier_admin.in ()
 			       );
+}
+
+void
+LoggingService::reinit_suppliers()
+{
+  m_logging_supplier->connect(this->m_logging_supplier_admin.in ());
 }
 
 /*****************************************************************/

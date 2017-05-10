@@ -15,7 +15,7 @@
 1 - # Running the test suite with /bin/bash
 1 - #
 1 - shell name: bash
-1 - shell version: 3.2.25(1)-release
+1 - shell version: xx.yy.zz
 1 - 
 1 - --- Executing the 'asserts' test suite ---
 1 - testAssertEquals

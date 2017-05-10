@@ -71,14 +71,17 @@ void ReconnectionCallback::init( CORBA::ORB_ptr orb_mp,
 void ReconnectionCallback::disconnect()
 {
    if (id_is_valid_){
-      NotifyExt::ReconnectionRegistry_var registry =
-         NotifyExt::ReconnectionRegistry::_narrow(ecf_);
-      registry->unregister_callback(callback_id_);
-      if (!::CORBA::is_nil(root_poa_))
-         root_poa_->deactivate_object(callback_obj_id_);
-      else
-        services_->deactivateOffShoot(this);
-      id_is_valid_ = false;
+        try {
+            NotifyExt::ReconnectionRegistry_var registry =
+                NotifyExt::ReconnectionRegistry::_narrow(ecf_);
+            registry->unregister_callback(callback_id_);
+        } catch(CORBA::SystemException &ex) {}
+         
+        if (!::CORBA::is_nil(root_poa_))
+            root_poa_->deactivate_object(callback_obj_id_);
+        else
+            services_->deactivateOffShoot(this);
+        id_is_valid_ = false;
    }
 }
 

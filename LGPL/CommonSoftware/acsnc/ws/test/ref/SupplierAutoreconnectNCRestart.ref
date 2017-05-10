@@ -1,0 +1,75 @@
+2 - Starting Container...
+2 - Retrieving CDB reference from Manager using bootstrap ORB
+2 - Resolving reference: 'corbaloc::---:----/Manager'
+2 - Manager reference narrowed.
+2 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
+2 - Configuration information for container 'bilboContainer' not available.
+2 - Starting as dynamic container.
+2 - ContainerStatusMsg: Startup begins
+2 - ContainerStatusMsg: ORB initialization begins
+2 - ContainerStatusMsg: ORB initialization ends
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine NamedCh notification service's process ID.
+1 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+1 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+1 - Using reactive client control.
+1 - Using 1 threads for each Supplier.
+1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
+1 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
+1 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+2 - ContainerStatusMsg: Manager access initialization begins
+2 - ContainerStatusMsg: Manager access initialization ends
+2 - ContainerStatusMsg: Startup ends
+2 - ContainerStatusMsg: Automatic component loading begins
+2 - ContainerStatusMsg: Automatic component loading ends
+2 - ContainerStatusMsg: Ready
+3 - ----------T--:--:--.--- None test1 - Calling supplier.testReconn1(True,True)
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Start sending 20000 events via SimpleSupplier.
+2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 0
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 1
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 2
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 3
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 4
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 5
+4 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
+4 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
+4 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+4 - Using reactive client control.
+4 - Using 1 threads for each Supplier.
+4 - Using 1 threads for each Consumer.
+4 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
+4 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 6
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 7
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 8
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 9
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 10
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 11
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 12
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 13
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 14
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 15
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 16
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 17
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 18
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Finished sending 20000 events via SimpleSupplier.
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 19
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Autoreconnect: yes
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  NC: restarted
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events dropped: XXX
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events queued: XXX
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events sent: XXX
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of transitions: Y
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Transitions in: YYY
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of exceptions caught: ZZZ
+3 - ----------T--:--:--.--- None test1 - Waiting 10 seconds ...
+3 - ----------T--:--:--.--- None test1 - Releasing component NamedCh_SUP1
+3 - ----------T--:--:--.--- None test1 - Releasing component NamedCh_CON1
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed for the 'NamedCh' channel!
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed to destroy consumer admin for the 'NamedCh' channel!
+2 - /----/libbaci.so

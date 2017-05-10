@@ -198,6 +198,15 @@ class Supplier :
 
     void setAntennaName(std::string antennaName);
 
+    /**
+     * This method is used to set the autoreconnect attribute. This is a boolean to 
+     * reconnect to the channel when the publication of an event throws an 
+     * OBJECT_NOT_EXIST exception. That is, the Notify Service doesn't exist.
+     * This could happen when the Notify Service restarts.
+     * @see autoreconnect_m
+     */
+    void setAutoreconnect(bool autoreconnect);
+
   protected:
     /**
      * Destructor is protected.
@@ -286,6 +295,8 @@ class Supplier :
 	;
 
 
+    void
+    reinit();
     
     /** 
      *  Supplier Admin object is responsible for creating & managing proxy consumers
@@ -329,6 +340,13 @@ class Supplier :
     CosNotification::StructuredEvent event_m;
     
     std::string antennaName;
+
+    /**
+     * This is a boolean to reconnect to the channel when the publication of an event 
+     * throws an OBJECT_NOT_EXIST exception. That is, the Notify Service doesn't exist.
+     * This could happen when the Notify Service restarts.
+     */
+    bool autoreconnect_m;
 
   private:
     

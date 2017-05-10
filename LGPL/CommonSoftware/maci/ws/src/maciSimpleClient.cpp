@@ -73,6 +73,7 @@ LoggingProxy* SimpleClient::m_logger=0;
 ACE_CString SimpleClient::m_processName("");
 // Init the SimpleClient instance;
 SimpleClient * SimpleClient::m_simpleClientInstance = 0;
+int32_t SimpleClient::m_simpleClientCreatedCounter = 0;
 
 SimpleClient::SimpleClient ():
     m_handle(0),
@@ -91,21 +92,43 @@ SimpleClient::SimpleClient ():
   m_poaRoot = m_poaPersistent = PortableServer::POA::_nil();
 
   BACIThread::setInitializers(SimpleClient::initThread, SimpleClient::doneThread);
-  if(m_simpleClientInstance == 0) 
+
+  // When this is the first time SimpleClient is instantiated, we have to check that ORB 
+  // is not set yet. If it's set we consider that this SimpleClient is running in a component so
+  // an exception is thrown (ICT-730)
+  if(0 == m_simpleClientCreatedCounter)
+  {
+    if(true == ORBHelper::isORBSet())
+    {
+      ACSErrTypeCommon::CouldntCreateObjectExImpl ex(__FILE__, __LINE__,"maci::SimpleClient::SimpleClient"); 
+      ex.addData("reason","There's already an ORB set");
+      throw ex;
+    }
+  }
+
+  // When a SimpleClient instance already exists then it's not possible to instantiate it again so in this
+  // case an exception is thrown (ICT-730)
+  if(0 == m_simpleClientInstance) 
   {
   	m_simpleClientInstance = this;
+  } else {
+    ACSErrTypeCommon::CouldntCreateObjectExImpl ex(__FILE__, __LINE__,"maci::SimpleClient::SimpleClient"); 
+    ex.addData("reason","It's not allowed to have more than one SimpleClient instance running at the same time");
+    throw ex;
   } 
-  //else
-  //{
-  	// TODO (?) Throw an exception??
-  //}
+
+  // Increase the counter that stores the number of times Simple Client has been created (ICT-730)
+  ++m_simpleClientCreatedCounter;
+
 }
 
 SimpleClient::~SimpleClient ()
 {
-  if (m_loggedin)
-  	logout();
-  destroy();
+  try {
+    if (m_loggedin)
+      logout();
+    destroy();
+  } catch(...) {}
   if(m_simpleClientInstance == this) 
   {
     m_simpleClientInstance = 0;
@@ -193,6 +216,7 @@ SimpleClient::initCORBA(int argc, char * argv[])
     {
 	return 0;
     }
+
 
 
     try

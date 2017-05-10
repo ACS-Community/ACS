@@ -5,8 +5,7 @@ using namespace ddsnc;
 
 void DDSPublisher::initialize()
 {
-        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::initialize", (LM_INFO,
-                                  ""));
+        ACS_TRACE("DDSPublisher::initialize");
 	createParticipant();
 	if (CORBA::is_nil (participant.in()))
 	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::initialize", (LM_ERROR,
@@ -89,8 +88,7 @@ void DDSPublisher::initializeDataWriter()
 
 int DDSPublisher::createPublisher()
 {
-        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::createPublisher", (LM_INFO,
-               	                  ""));
+        ACS_TRACE("DDSPublisher::createPublisher");
 	if(partitionName==NULL){
 		pub =  participant->create_publisher(PUBLISHER_QOS_DEFAULT,
 				DDS::PublisherListener::_nil(),
