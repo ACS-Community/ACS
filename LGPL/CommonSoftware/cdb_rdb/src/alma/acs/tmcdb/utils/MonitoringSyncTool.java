@@ -608,7 +608,36 @@ public class MonitoringSyncTool {
     private List<HWConfiguration> getHwConfigurations(Configuration conf, Session session) {
         String qstr = "FROM HWConfiguration where configuration = :conf";
         Query query = session.createQuery(qstr);
-        query.setParameter("conf", conf, HibernateUtil.getSessionFactory().getTypeHelper().entity(Configuration.class));
+        //Hibernate via reflection
+        Class<?> HibernateUtilTmdbPersistenceC = null;
+        try{
+        	HibernateUtilTmdbPersistenceC = Class.forName("alma.tmcdb.utils.HibernateUtil");
+        }catch (ClassNotFoundException ex){
+    		ex.printStackTrace();
+        }
+        Method getSessionFactory = null ;
+        try{
+    		getSessionFactory = HibernateUtilTmdbPersistenceC.getMethod(
+    				"getSessionFactory");
+    		
+    	}catch (SecurityException ex){
+			ex.printStackTrace();
+		}catch (NoSuchMethodException ex){
+			ex.printStackTrace();
+		}
+        try {
+    		SessionFactory sessionF = (SessionFactory)getSessionFactory.invoke(null);
+    		query.setParameter("conf", conf, sessionF.getTypeHelper().entity(Configuration.class));
+  
+		//ends method invocation	    
+    	} catch (IllegalArgumentException e) {
+    		e.printStackTrace();
+    	} catch (IllegalAccessException e) {
+    		e.printStackTrace();
+	  	}catch (InvocationTargetException e) {
+	  		e.printStackTrace();
+	  	}
+        
         return query.list();
     }
     

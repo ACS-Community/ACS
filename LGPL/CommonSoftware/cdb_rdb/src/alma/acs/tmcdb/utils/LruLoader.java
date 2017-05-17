@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 
 import org.exolab.castor.xml.XMLException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import alma.acs.tmcdb.AssemblyType;
@@ -246,21 +247,53 @@ public class LruLoader {
           logger.warning("Cannot create TmcdbDbConfig"); 
           ex.printStackTrace();
       }
-        HibernateUtil.createConfigurationFromDbConfig(dbconf);
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        //HibernateUtil by reflection
+        Class<?> HibernateUtilTmdbPersistenceC = Class.forName("alma.tmcdb.utils.HibernateUtil");
+    	Method createConfigurationFromDbConfig = null ;
+    	Method getSessionFactory = null ;
+    	try{
+    		createConfigurationFromDbConfig = 
+    				HibernateUtilTmdbPersistenceC.getMethod(
+    						"createConfigurationFromDbConfig", dbconf.getClass());
+    		getSessionFactory = HibernateUtilTmdbPersistenceC.getMethod(
+    				"getSessionFactory");
+    		
+    	}catch (SecurityException ex){
+			ex.printStackTrace();
+		}catch (NoSuchMethodException ex){
+			ex.printStackTrace();
+		}
         
-        Transaction tx = session.beginTransaction();
-        for (String file : hwConfFiles) {
-            if (!shouldBeIgnored(file)) {
-            	try {
-            		loadLruType(session, new FileReader(file), addMissingComponentType);
-            	} catch (Exception e) {
-            		e.printStackTrace();
-            	}
+//        HibernateUtil.createConfigurationFromDbConfig(dbconf);
+//        Session session = HibernateUtil.getSessionFactory().openSession();
+        //invoke the methods
+    	try {
+    		createConfigurationFromDbConfig.invoke(null,dbconf);
+    		SessionFactory sessionF = (SessionFactory)getSessionFactory.invoke(null);
+    		Session session = sessionF.openSession();
+    		Transaction tx = session.beginTransaction();
+            for (String file : hwConfFiles) {
+                if (!shouldBeIgnored(file)) {
+                	try {
+                		loadLruType(session, new FileReader(file), addMissingComponentType);
+                	} catch (Exception e) {
+                		e.printStackTrace();
+                	}
+                }
             }
-        }
-        tx.commit();
-        session.close();
+            tx.commit();
+            session.close();
+    		
+			//ends method invocation	    
+    	} catch (IllegalArgumentException e) {
+    		e.printStackTrace();
+    	} catch (IllegalAccessException e) {
+    		e.printStackTrace();
+	  	}catch (InvocationTargetException e) {
+	  		e.printStackTrace();
+	  	}
+    	
+        
     }
 
 	private static boolean shouldBeIgnored(String file) {
@@ -315,14 +348,42 @@ public class LruLoader {
           ex.printStackTrace();
       }
     	
-        HibernateUtil.createConfigurationFromDbConfig(dbconf);
-        Session session;
-        session = HibernateUtil.getSessionFactory().openSession();
-        
-        Transaction tx = session.beginTransaction();
-        loadLruType(session, in, addMissingComponentType);
-        tx.commit();
-        session.close();        
+//        HibernateUtil.createConfigurationFromDbConfig(dbconf);
+//        Session session;
+//        session = HibernateUtil.getSessionFactory().openSession();
+        //HibernateUtil by reflection
+        Class<?> HibernateUtilTmdbPersistenceC = Class.forName("alma.tmcdb.utils.HibernateUtil");
+    	Method createConfigurationFromDbConfig = null ;
+    	Method getSessionFactory = null ;
+    	try{
+    		createConfigurationFromDbConfig = 
+    				HibernateUtilTmdbPersistenceC.getMethod(
+    						"createConfigurationFromDbConfig", dbconf.getClass());
+    		getSessionFactory = HibernateUtilTmdbPersistenceC.getMethod(
+    				"getSessionFactory");
+    		
+    	}catch (SecurityException ex){
+			ex.printStackTrace();
+		}catch (NoSuchMethodException ex){
+			ex.printStackTrace();
+		}
+    	try {
+    		createConfigurationFromDbConfig.invoke(null,dbconf);
+    		SessionFactory sessionF = (SessionFactory)getSessionFactory.invoke(null);
+    		Session session = sessionF.openSession();
+    		Transaction tx = session.beginTransaction();
+
+	        loadLruType(session, in, addMissingComponentType);
+	        tx.commit();
+	        session.close();   
+		//ends method invocation	    
+    	} catch (IllegalArgumentException e) {
+    		e.printStackTrace();
+    	} catch (IllegalAccessException e) {
+    		e.printStackTrace();
+	  	}catch (InvocationTargetException e) {
+	  		e.printStackTrace();
+	  	}
     }
     
 	/**
