@@ -59,7 +59,7 @@
 		<echo>basedir         = ${basedir}</echo>
 		<echo>eclipseLocation = ${eclipseLocation}</echo>
 		<echo>buildDirectory  = ${buildDirectory}</echo>
-		<java classname="org.eclipse.equinox.launcher.Main" fork="true" failonerror="true" maxmemory="512m" timeout="60000">
+		<java classname="org.eclipse.equinox.launcher.Main" fork="true" failonerror="true" maxmemory="512m" >
 			<arg value="-application" />
 			<arg value="org.eclipse.ant.core.antRunner" />
 			<arg value="-buildfile" />

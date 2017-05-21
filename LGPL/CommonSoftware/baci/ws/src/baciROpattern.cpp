@@ -147,6 +147,8 @@ namespace baci {
 	if (eventStrategy_p==0)
 	    throw CORBA::NO_RESOURCES();
 
+    monitorEventDispatcher_mp->subscribe(eventStrategy_p);
+
 	ACS::Subscription_var subscription = 
 	    ACS::Subscription::_narrow(eventStrategy_p->getCORBAReference());
 

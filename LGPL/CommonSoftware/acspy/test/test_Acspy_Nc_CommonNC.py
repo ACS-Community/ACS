@@ -32,6 +32,8 @@ import CORBA
 import CosNaming
 import CosNotification
 import NotifyMonitoringExt
+import time
+import datetime
 
 #--ACS Imports-----------------------------------------------------------------
 import acscommon
@@ -433,10 +435,13 @@ class TestCommonNC(unittest.TestCase):
     @mock.patch_object(Acspy.Nc.CommonNC, 'NameTree', mockNameTree)
     def test_initCORBA(self):
         """CommonNc initCORBA initializes object correctly"""
+        def mockGetChannelTimestamp():
+            return datetime.datetime.fromtimestamp(time.time())
         global mocknameTree
         co = mock.Mock(spec=CORBA.Object)
         co._narrow.return_value = mock.Mock(spec=NotifyMonitoringExt.EventChannel)
         mocknameTree.getObject.return_value = co
+        self.nc.getChannelTimestamp = mockGetChannelTimestamp
         self.nc.initCORBA()
         self.assertEqual(False, self.nc.nt is None)
         self.assertEqual(mocknameTree, self.nc.nt)

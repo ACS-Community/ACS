@@ -36,3 +36,4 @@ s/===  [0-9]*: [0-9]* exceptions caught/===  X: Y exceptions caught/g
 s/===  [0-9]*: [0-9]* events dropped/===  X: X events dropped/g
 s/===  [0-9]*: [0-9]* events sent/===  X: Y events sent/g
 s/===  [0-9]*: Transitions: \[[0-9, ]*\]/===  X: Transitions: [Y, Z, ...]/g
+s/-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]_[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\]/-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY]/g

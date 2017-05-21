@@ -1,49 +1,56 @@
 2 -  -- alma.acs.nc.SimpleSupplierReconnClient 30 5 AUTORECONNECT NS_RESTARTED
-1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 1 - Channel pink-floyd@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 1 - Channel bob-dylan@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 1 - Channel blarIL@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 1 - Channel cdb_channel@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 1 - Channel blar@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
+1 - Channel testChannelForConcurrentRetrieval@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+1 - Channel singleChannel@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+1 - Channel testChannelForConcurrentCreation@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+1 - Channel pink-floyd@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+1 - Channel blarIL@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+1 - Channel cdb_channel@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+1 - Channel bob-dylan@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+1 - Channel blar@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
 1 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
 1 - Using reactive client control.
 1 - Using 1 threads for each Supplier.
 1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 1 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
 1 - ReBound ID: MC_NotifyEventChannelFactory
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] component 'SimpleSupplierReconnClient' requested AdvancedContainerServices
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='test_reconn' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
-2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Autoreconnection: ON
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] NS action: NS_RESTARTED
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Autoreconnection: ON
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Start publishing 30 events
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 0
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 1
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 2
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 3
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 4
-3 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 3 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
+3 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 5
+3 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 6
-2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 7
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
 3 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
 3 - Using reactive client control.
 3 - Using 1 threads for each Supplier.
 3 - Using 1 threads for each Consumer.
 2 - ----------T--:--:--.--- WARNING [SimpleSupplierReconnClient] Failed to cleanly disconnect NCPublisher for channel 'test_reconn': could not disconnect push consumer
-2 - org.omg.CORBA.OBJECT_NOT_EXIST: Server-side Exception: null
 2 - ----------T--:--:--.--- WARNING [SimpleSupplierReconnClient] Failed to cleanly disconnect NCPublisher for channel 'test_reconn': could not destroy supplier admin
-2 - org.omg.CORBA.OBJECT_NOT_EXIST: Server-side Exception: null
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='test_reconn' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 7
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 8
-2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 9
-2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 10
 3 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
 3 - ReBound ID: MC_NotifyEventChannelFactory
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 9
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 10
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 11
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 12
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 13
@@ -62,10 +69,11 @@
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 26
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 27
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 28
-2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 29
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of events dropped: X
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of events queued: X
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of events sent: X
-2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of events dropped: X
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 29
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Exceptions found: XXXX
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of exceptions: X
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Transitions: X,Y,
 2 - Test finished

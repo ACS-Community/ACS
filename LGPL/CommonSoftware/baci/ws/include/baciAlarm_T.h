@@ -223,17 +223,13 @@ template<class T, class TPROP, class TALARM>
 class baci_EXPORT AlarmEventStrategyDisc : public AlarmEventStrategy<T, TPROP, TALARM>
 {
   public:
-    AlarmEventStrategyDisc(TPROP * property, EventDispatcher * eventDispatcher) :
-	AlarmEventStrategy<T, TPROP, TALARM>(property, eventDispatcher)
-	{};
+    AlarmEventStrategyDisc(TPROP * property, EventDispatcher * eventDispatcher);
     
     AlarmEventStrategyDisc(Callback_ptr callback_p,
 			   const CBDescIn& descIn,
 			   const ACS::TimeInterval& interval,
 			   TPROP * property,
-			   EventDispatcher * eventDispatcher) :
-	AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher)
-	{};
+			   EventDispatcher * eventDispatcher);
     
     virtual void check(BACIValue &value,
 		       const ACSErr::Completion & c,
@@ -261,17 +257,13 @@ template<class T, class TPROP, class TALARM>
 class baci_EXPORT AlarmEventStrategyCont : public AlarmEventStrategy<T, TPROP, TALARM>
 {
   public:
-    AlarmEventStrategyCont(TPROP * property, EventDispatcher * eventDispatcher) :
-	AlarmEventStrategy<T, TPROP, TALARM>(property, eventDispatcher)
-	{};
+    AlarmEventStrategyCont(TPROP * property, EventDispatcher * eventDispatcher);
     
     AlarmEventStrategyCont(Callback_ptr callback_p,
 			   const CBDescIn& descIn,
 			   const ACS::TimeInterval& interval,
 			   TPROP * property,
-			   EventDispatcher * eventDispatcher) :
-	AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher)
-	{};
+			   EventDispatcher * eventDispatcher);
     
     virtual void check(BACIValue &value,
 		       const ACSErr::Completion & c,
@@ -297,17 +289,13 @@ template<class T, class TPROP, class TALARM>
 class baci_EXPORT AlarmEventStrategyContSeq : public AlarmEventStrategy<T, TPROP, TALARM>
 {
   public:
-    AlarmEventStrategyContSeq(TPROP * property, EventDispatcher * eventDispatcher) :
-	AlarmEventStrategy<T, TPROP, TALARM>(property, eventDispatcher)
-	{};
+    AlarmEventStrategyContSeq(TPROP * property, EventDispatcher * eventDispatcher);
     
     AlarmEventStrategyContSeq(Callback_ptr callback_p,
 			      const CBDescIn& descIn,
 			      const ACS::TimeInterval& interval,
 			      TPROP * property,
-			      EventDispatcher * eventDispatcher) :
-	AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher)
-	{};
+			      EventDispatcher * eventDispatcher);
     
     virtual void check(BACIValue &value,
 		       const ACSErr::Completion & c,
@@ -339,17 +327,13 @@ template<class T, class TPROP, class TALARM>
 class baci_EXPORT AlarmEventStrategyDiscSeq : public AlarmEventStrategy<T, TPROP, TALARM>
 {
   public:
-    AlarmEventStrategyDiscSeq(TPROP * property, EventDispatcher * eventDispatcher) :
-	AlarmEventStrategy<T, TPROP, TALARM>(property, eventDispatcher)
-	{};
+    AlarmEventStrategyDiscSeq(TPROP * property, EventDispatcher * eventDispatcher);
     
     AlarmEventStrategyDiscSeq(Callback_ptr callback_p,
 			      const CBDescIn& descIn,
 			      const ACS::TimeInterval& interval,
 			      TPROP * property,
-			      EventDispatcher * eventDispatcher) :
-	AlarmEventStrategy<T, TPROP, TALARM>(callback_p, descIn, interval, property, eventDispatcher)
-	{};
+			      EventDispatcher * eventDispatcher);
     
     virtual void check(BACIValue &value,
 		       const ACSErr::Completion & c,

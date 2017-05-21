@@ -55,3 +55,9 @@ s/===  Number of events queued: [0-9]*/===  Number of events queued: XXX/g
 s/===  Number of transitions: [0-9]/===  Number of transitions: Y/g
 s/===  Transitions in: [0-9,]*/===  Transitions in: YYY/g
 s/===  Number of exceptions caught: [0-9]*/===  Number of exceptions caught: ZZZ/g
+
+s/count is greater than 2000 \[[0-9]*\]/count is greater than 2000 [XXX]/g
+s/count is lower than 2000 \[[0-9]*\]/count is lower than 2000 [XXX]/g
+
+s/initialized by [a-z,A-Z,0-9,-]*@[a-z,A-Z,0-9,-]* disconnect - Disconnect called for client/initialized by alma@alma disconnect - Disconnect called for client/g
+s/-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]_[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/-YYYY-MM-DD_HH:MM:SS/g

@@ -83,14 +83,16 @@ AcsLogServiceImpl::LogRecordBatch::LogRecordBatch():
    size_(0),
    waitCond_(mutex_),
    shutdown_(false),
-   nBuff(0)
+   nBuff(0),
+   logRecordBatchTh_(0)
 {
    buffer[0].length(BATCH_LEN * 2);
    buffer[1].length(BATCH_LEN * 2);
    buffer[2].length(BATCH_LEN * 2);
    buffer_ = &buffer[0];
    ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(
-               AcsLogServiceImpl::LogRecordBatch::worker), this);
+               AcsLogServiceImpl::LogRecordBatch::worker), this, 
+               THR_NEW_LWP | THR_JOINABLE, &logRecordBatchTh_);
 }
 
 AcsLogServiceImpl::LogRecordBatch::~LogRecordBatch()
@@ -99,6 +101,10 @@ AcsLogServiceImpl::LogRecordBatch::~LogRecordBatch()
    waitCond_.signal();
    buffer_->length(0);
    shutdown_ = true;
+   if(0 != logRecordBatchTh_)
+   {
+       ACE_Thread::join(logRecordBatchTh_);
+   }
 }
 
 void AcsLogServiceImpl::LogRecordBatch::

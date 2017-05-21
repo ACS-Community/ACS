@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Date;
 
 import org.apache.commons.scxml.ErrorReporter;
 import org.apache.commons.scxml.EventDispatcher;
@@ -64,6 +65,7 @@ import gov.sandia.NotifyMonitoringExt.NameMapError;
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJStateMachineActionEx;
@@ -93,6 +95,8 @@ import alma.acsnc.OSPushConsumerHelper;
 import alma.acsnc.OSPushConsumerOperations;
 import alma.acsnc.OSPushConsumerPOA;
 import alma.acsnc.OSPushConsumerPOATie;
+import alma.acscommon.NC_KIND;
+import org.omg.CosNaming.NameComponent;
 
 /**
  * NCSubscriber is the Java implementation of the Notification Channel subscriber,
@@ -204,6 +208,11 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 */
 	private final boolean isTraceNCEventsEnabled;
 
+    /**
+     * Number of events received
+     */
+    private volatile long numEventsReceived = 0;
+
 	/**
 	 * Maps event names to the maximum amount of time allowed for receiver
 	 * methods to complete. Time is given in floating point seconds.
@@ -235,7 +244,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 	 */
 	private volatile NoEventReceiverListener noEventReceiverListener;
 
-	
+
 	/**
 	 * Creates a new instance of NCSubscriber.
 	 * Normally an ACS class such as container services will act as the factory for NCSubscriber objects, 
@@ -414,6 +423,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			throw new AcsJStateMachineActionEx(ex);
 		}
 
+        // Create the thread responsible for checking the connection and reconnect
+        createConCheckerThread();
+
 		LOG_NC_SubscriptionConnect_OK.log(logger, channelName, getNotificationFactoryName());
 	}
 
@@ -426,6 +438,9 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		// } catch () {
 		//
 		// }
+
+        // Stop the thread responsible for checking the connection and reconnect
+        stopConCheckerThread();
 
 		/*
 		 * TODO: (rtobar) Maybe this code can be written more nicely, but always taking care that, if not in an illegal
@@ -477,6 +492,8 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			Collection<TriggerEvent> derivedEvents) throws AcsJStateMachineActionEx {
 
 		super.suspendAction(evtDispatcher, errRep, scInstance, derivedEvents);
+        // Stop the thread responsible for checking the connection and wait until the thread ended 
+        stopConCheckerThread();
 		try {
 			// See OMG NC spec 3.4.13.2. Server will continue to queue events.
 			proxySupplier.suspend_connection();
@@ -494,11 +511,38 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 
 		try {
 			proxySupplier.resume_connection();
+            // Create the thread responsible for checking the connection
+            createConCheckerThread();
+            
 		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyActive ex) {
 			throw new AcsJStateMachineActionEx(ex);
 		} catch (org.omg.CosNotifyChannelAdmin.NotConnected ex) {
 			throw new AcsJStateMachineActionEx(ex);
-		}
+		} catch(Throwable ex) {
+            if(autoreconnect) {
+                int nRetries = 0;
+                boolean connected = false;
+                while(!connected && nRetries < MAX_RECONNECT_ATTEMPTS) {
+                    try {
+                        reconnect();
+                        connected = true;
+                    } catch(Throwable exr) {
+                        try {
+                            Thread.sleep(1000); // Wait 1 second
+                        } catch(InterruptedException exi) {}
+                    }
+                    ++nRetries;
+                }
+                if(connected) {
+                    createConCheckerThread();
+                } else {
+                    logger.log(AcsLogLevel.ERROR, "Consumer couldn't reconnect after " + String.valueOf(nRetries) + " attempts to the channel " + channelName);
+                    throw new AcsJStateMachineActionEx(ex);
+                }
+            } else {
+                throw new AcsJStateMachineActionEx(ex);
+            }
+        }
 		super.resumeAction(evtDispatcher, errRep, scInstance, derivedEvents);
 	}
 
@@ -650,7 +694,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		// @TODO (HSO): Why use a static lock here? This gives a false sense of safety in single-program unit tests,
 		// while in real life we can have concurrent admin creation requests from different processes.
 		synchronized(NCSubscriber.class) {
-
+            
 			// Check if we can reuse an already existing consumer admin
 			for (int adminId : channel.get_all_consumeradmins()) {
 				try {
@@ -900,6 +944,7 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 			throws Disconnected {
 		
 		boolean shouldProcessEvent = true;
+        numEventsReceived++;
 		
 		try {
 			shouldProcessEvent = push_structured_event_called(structuredEvent);
@@ -1127,5 +1172,313 @@ public class NCSubscriber<T extends IDLEntity> extends AcsEventSubscriberImplBas
 		}
 		
 	}
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    //////////////////////////// AUTORECONNECTION /////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    /**
+     * Constant that defines the default auto reconnect value.
+     */
+    static final boolean DEFAULT_AUTORECONNECT = false;
+
+    /**
+     * Maximum number of retries to reconnect when resuming the connection threw an exception
+     */
+    static final int MAX_RECONNECT_ATTEMPTS = 5;
+
+    /**
+     * Auto reconnect attribute. When it's true it tries to reconnect to the channel when the connection is lost.
+     */
+    protected boolean autoreconnect = DEFAULT_AUTORECONNECT;
+
+    /**
+     * Boolean attribute used to stop the thread responsible for checking the connection to the channel 
+     */
+    private volatile boolean terminateConChecker = false;
+
+    /**
+     * Thread responsible for checking the connection to the channel
+     */
+    private ConnectionChecker conCheckerThread = null;
+
+    /**
+     * Frequency in seconds at which the connection status will be checked when the subscriber 
+     * doesn't receive any event. Default value is 2 seconds.
+     */
+    private int connectionCheckerFreq = 2;
+
+    /**
+     * Time to wait in seconds after receiving the last event to consider that the consumer is 
+     * not receiving events. Default value is 2 seconds.
+     */
+    private int eventReceptionTimeout = 2;
+
+    /**
+     * Method that checks if the connection to the Notification Channel is still alive. In order
+     * to check it, it gets the last timestamp registered in the Naming Service. If the timestamp
+     * cannot be retrieved it calls the _non_existent method of the proxy supplier.
+     */
+    private boolean shouldReconnect() {
+        // Don't reconnect when the proxy doesn't exist or autoreconnect is disabled
+        if (proxySupplier == null || false == autoreconnect) {
+            return false;
+        }
+
+        // Reconnect when the consumer has a timestamp older than the one registered in the Naming Service
+        Date nsChannelTimestamp = helper.getChannelTimestamp();
+        Date lastChannelTimestamp = helper.getLastRegisteredChannelTimestamp();
+        if(0 != nsChannelTimestamp.getTime()) {
+            // The timestamp registered in the naming service is newer than the one stored by this
+            // consumer therefore the Notify Service restarted
+            if(nsChannelTimestamp.after(lastChannelTimestamp)) {
+                return true;
+
+            // The timestamp registered in the naming service is older or equal to the consumer's one. Therefore
+            // the Notify Service has not been restarted 
+            } else {
+                return false;
+            }
+
+        // Timestamp not registered into the Naming Service, we will check the connection by calling a proxy's method            
+        } else {
+            try {
+                if(proxySupplier._non_existent()) {
+                    return true;
+                }
+
+                // No exception thrown, the connection is still alive
+                return false;
+
+            // The call throw an exception, we should reinitialize the connection    
+            } catch(org.omg.CORBA.OBJECT_NOT_EXIST ex) {
+            } catch(org.omg.CORBA.BAD_OPERATION ex) {
+            } catch(org.omg.CORBA.TRANSIENT ex) {
+            } catch(Exception ex) {}
+            return true;
+        }
+        //return false;
+    }    
+
+    /**
+     * Thread responsible for checking the connection to the Notification Channel. It reconnects to the
+     * channel if the connection has been lost. It only checks the connection status when it doesn't
+     * receive events. 
+     */
+    private class ConnectionChecker extends Thread {
+        public ConnectionChecker() {
+            super("ConnectionChecker");
+        }
+
+        public void run() {
+            
+            int currentSec = 0;
+            long prevNumEvents = numEventsReceived;
+            boolean reinitFailed = false;
+            boolean eventsReceived = true;
+            int waitingTime = eventReceptionTimeout;
+
+            while (!terminateConChecker) {
+                
+                // If we are reciving events we have to wait eventReceptionTimeout seconds
+                if(eventsReceived) {
+                    waitingTime = eventReceptionTimeout;
+
+                // If we don't receive events we have to wait connectionCheckerFreq seconds
+                } else {
+                    waitingTime = connectionCheckerFreq;
+                }
+
+                // Wait but every second we also check if new events have been received. If this is
+                // the case, we restart the waiting period
+                while (currentSec < waitingTime) {
+                    try {
+                        Thread.sleep(1000);
+                        currentSec++;
+
+                        // If while we are waiting we receive an event, the waiting time is reset
+                        if(prevNumEvents != numEventsReceived) {
+                            waitingTime = eventReceptionTimeout;
+                            currentSec = 0;
+                            prevNumEvents = numEventsReceived;
+                        }
+
+                        if (terminateConChecker) {
+                            logger.log(AcsLogLevel.DEBUG, "Finishing consumer thread responsible for checking the connection to the channel '" 
+                                    + channelName + "'");
+                            return;
+                        }
+                    } catch (InterruptedException ie) {
+                        continue;
+                    }
+                }
+
+                currentSec = 0;
+
+                // No events have been received for the last waiting period so it's
+                // time to check if the consumer should reconnect to the channel
+                if(prevNumEvents == numEventsReceived) {
+                    eventsReceived = false;
+                    if(shouldReconnect()) {
+                        if(false == reinitFailed) {
+                            logger.log(AcsLogLevel.INFO, "Consumer is reinitializing the connection to the channel '" + channelName + "'");
+                        }
+                        try {
+                            reconnect();                    
+                            reinitFailed = false;
+                        } catch(Throwable e) {
+                            // This should not happen because it gets blocked trying to reconnect up to 20 times
+                            if(false == reinitFailed) {
+                                reinitFailed = true;
+                                logger.log(AcsLogLevel.ERROR, "Consumer couldn't reconnect to the channel '" + channelName + "'", e); 
+                            }
+                        }
+                    }
+                } else {
+                    eventsReceived = true;
+                }
+
+                // Update the number of events received so far
+                prevNumEvents = numEventsReceived;
+            }
+            
+            logger.log(AcsLogLevel.DEBUG, "Finishing consumer thread responsible for checking the connection to the channel '" + channelName + "'");
+        }
+    }
+
+    /**
+     * Reconnect to the Notification Channel
+     */
+    private void reconnect() throws AcsJException {
+
+        Date oldChannelTimestamp = helper.getLastRegisteredChannelTimestamp();
+
+        try {
+            channel = helper.getNotificationChannel(getNotificationFactoryName()); // get the channel
+            sharedConsumerAdmin = getSharedAdmin(); // get the admin object
+            proxySupplier = createProxySupplier(); // get the proxy Supplier
+            // Just check if our shared consumer admin is handling more proxies than it should, and log it
+            // (11) goes for the dummy proxy that we're using the transition between old and new NC classes
+            int currentProxies = sharedConsumerAdmin.push_suppliers().length - 1;
+            if( currentProxies > PROXIES_PER_ADMIN ) {
+                LOG_NC_ConsumerAdmin_Overloaded.log(logger, sharedConsumerAdmin.MyID(),
+                        currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName == null ? "none" : channelNotifyServiceDomainName);
+            }
+            // The user might create this object, and later call startReceivingEvents(), without attaching any receiver.
+            // If so, it's useless to get all the events, so we start with an all-exclusive filter in the server
+            // TODO should all events be discarded?
+            //discardAllEvents();
+
+            try {
+                // Clean up callback for reconnection requests
+                channelReconnectionCallback.disconnect();
+            } catch(org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
+                // this is OK, because someone else has already destroyed the remote resources
+            }
+            channelReconnectionCallback = null;
+
+            try {
+                // Register callback for reconnection requests
+                channelReconnectionCallback = new AcsNcReconnectionCallback(NCSubscriber.this, logger);
+                channelReconnectionCallback.registerForReconnect(services, helper.getNotifyFactory()); // if the factory is null, the reconnection callback is not registered
+
+                proxySupplier.connect_structured_push_consumer(org.omg.CosNotifyComm.StructuredPushConsumerHelper.narrow(corbaRef));
+            } catch (AcsJContainerServicesEx ex) {
+                AcsJException e = new AcsJGenericErrorEx(ex);
+                throw e;
+            } catch (org.omg.CosEventChannelAdmin.AlreadyConnected ex) {
+                AcsJException e = new AcsJGenericErrorEx(ex);
+                throw e;
+            } catch (org.omg.CosEventChannelAdmin.TypeError ex) {
+                AcsJException e = new AcsJGenericErrorEx(ex);
+                throw e;
+            } catch (AcsJIllegalArgumentEx ex) {
+                AcsJException e = new AcsJGenericErrorEx(ex);
+                throw e;
+            }
+
+            /* We only have to resume the connection when it has been suspended
+            try {
+                proxySupplier.resume_connection();
+            } catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyActive ex) {
+            } catch (Exception ex) {
+                AcsJException e = new AcsJGenericErrorEx(ex);
+                throw e;
+            }*/
+
+        // In case any exception occurs, ensure the channel timestamp has not changed            
+        } catch(Throwable e) {
+            helper.setLastRegisteredChannelTimestamp(oldChannelTimestamp);
+            throw e;
+        }
+ 
+        logger.log(Level.INFO, "Consumer reconnected to the channel '" + channelName + "'");
+    }
+
+	/**
+	 * This method sets the attribute autoreconnect which is used to determine if
+	 * a reconnection to the channel must be done when the worker thread that checks
+     * the connection detects that's been lost.
+	 * @param autoreconnect Whether autoreconneting to the channel should be done
+	 */
+	public void setAutoreconnect(boolean autoreconnect) {
+		this.autoreconnect = autoreconnect;
+	}
+
+    /**
+     * Time to wait in seconds after the last received event to consider that the consumer is not receiving events.
+     * @return Returns false when the timeout passed is 0 or negative. Otherwise returns true.
+     */
+    public boolean setEventReceptionTimeout(int eventReceptionTimeout) {
+        if(eventReceptionTimeout <= 0) {
+            return false;
+        }
+        this.eventReceptionTimeout = eventReceptionTimeout;
+        return true;
+    }
+
+    /**
+     * Frequency in seconds at which the connection status will be checked
+     * @return Returns false when the value given is 0 or negative. Otherwise returns true.
+     */
+    public boolean setConnectionCheckerFreq(int connectionCheckerFreq) {
+        if(connectionCheckerFreq <= 0) {
+            return false;
+        }
+        this.connectionCheckerFreq = connectionCheckerFreq;
+        return true;
+    }
+
+    /**
+     * Creates the thread responsible for checking the connection to the Notification Channel.
+     */
+    private synchronized void createConCheckerThread() {
+        if(conCheckerThread == null || !conCheckerThread.isAlive()) {
+            terminateConChecker = false;
+            conCheckerThread = new ConnectionChecker();
+            conCheckerThread.setName("ConsumerCheckConNC");
+            conCheckerThread.setDaemon(true);
+            conCheckerThread.start();
+        }
+    }
+
+    /**
+     * Stops the thread responsible for checking the connection to the Notification Channel. It
+     * waits the end of the thread.
+     */
+    private synchronized void stopConCheckerThread() {
+        terminateConChecker = true;
+        if(conCheckerThread != null) {
+            conCheckerThread.interrupt();
+            while(conCheckerThread.isAlive()) {
+                try {
+                    Thread.sleep(250);
+                } catch(InterruptedException e) {
+                    continue;
+                }
+            }
+            conCheckerThread = null;
+        }
+    }
 
 }

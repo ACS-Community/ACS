@@ -7,5 +7,7 @@
 1 - OK (5)
 1 - Name Service without channel entries in the endpoint XX.XX.XX.XX:PP
 1 - Channel LoggingChannel@LOGGING[XZ.XX.XX.XX:PP] deleted in the Naming Service
+1 - Channel LoggingChannel@LOGGING-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
 1 - Channel ArchivingChannel@ARCHIVING[XZ.XX.XX.XX:PP] deleted in the Naming Service
+1 - Channel ArchivingChannel@ARCHIVING-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
 1 - Name Service without channel entries in the endpoint XX.XX.XX.XX:PP

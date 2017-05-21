@@ -10,6 +10,7 @@ import java.util.Iterator;
 import org.omg.CORBA.portable.IDLEntity;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ADMINTEST1.OnOffStates;
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.ADMINTEST2.statusBlockEvent2;
@@ -69,6 +70,7 @@ public class SimpleSupplierReconnClient implements Callback<EventDescription> {
         public int m_nEventsStored;
         public int m_nEventsDropped;
         public int m_nExceptions;
+        public List<Throwable> m_exceptions;
         protected boolean m_sent;
 
         public CallbackObject() {
@@ -82,6 +84,7 @@ public class SimpleSupplierReconnClient implements Callback<EventDescription> {
             this.m_nEventsStored = 0;
             this.m_nEventsDropped = 0;
             this.m_nExceptions = 0;
+            this.m_exceptions = new ArrayList<Throwable>();
             this.m_sent = true;
         }
 
@@ -112,15 +115,31 @@ public class SimpleSupplierReconnClient implements Callback<EventDescription> {
             }
         }
 
-        public void exceptionThrown() {
+        public void exceptionThrown(Throwable ex) {
             this.m_currentEvent++;
             this.m_nExceptions++;
+            this.m_exceptions.add(ex);
             if(true == this.m_sent) {
                 this.m_transitions.add(this.m_currentEvent);
                 this.m_sent = false;
             }
         }
 
+        public String exceptionsFound() {
+            String str = "";
+            Iterator<Throwable> it = m_cbObj.m_exceptions.iterator();
+            while(it.hasNext()) {
+                Throwable ex = (Throwable)it.next();
+                if(ex instanceof AcsJCORBAProblemEx) {
+                    str += ex.getClass().getName() +"(" + ((AcsJCORBAProblemEx)ex).getInfo()  + "),";
+                } else if(ex instanceof AcsJException) {
+                    str += ex.getClass().getName() +"(" + ((AcsJException)ex).getShortDescription()  + "),";
+                } else {
+                    str += ex.getClass().getName() +"(" + ex.getMessage()  + "),";
+                }
+            } 
+            return str;
+        }
     }
 
 	private CallbackObject m_cbObj;
@@ -181,7 +200,7 @@ public class SimpleSupplierReconnClient implements Callback<EventDescription> {
 				} catch (InterruptedException e) { }
 
 			} catch(Throwable e) {
-                m_cbObj.exceptionThrown();
+                m_cbObj.exceptionThrown(e);
 			}
             m_logger.info("Published events at iteration " + String.valueOf(j));
 		}
@@ -196,12 +215,13 @@ public class SimpleSupplierReconnClient implements Callback<EventDescription> {
         m_logger.info("===   Number of events queued: " + String.valueOf(m_cbObj.m_nEventsStored));
         m_logger.info("===   Number of events dropped: " + String.valueOf(m_cbObj.m_nEventsDropped));
         m_logger.info("===   Number of exceptions: " + String.valueOf(m_cbObj.m_nExceptions));
+        m_logger.info("===   Exceptions found: " + m_cbObj.exceptionsFound());
         m_logger.info("===   Transitions: " + transitions);
 
 
         if(m_autoreconnect) {
             if(m_nsAction.equals(NS_RESTARTED)) {
-                if(m_cbObj.m_transitions.size() != 2) {
+                if(m_cbObj.m_transitions.size() != 2 && m_cbObj.m_transitions.size() != 0) {
                     m_logger.info("===   Wrong number of transitions: " 
                         + String.valueOf(m_cbObj.m_transitions.size()) + ". We expected 0 or 2");
                 }
@@ -231,7 +251,7 @@ public class SimpleSupplierReconnClient implements Callback<EventDescription> {
 	}
 
 	public void disconnectAndReport() throws Exception {
-		m_publisher.disconnect();
+        m_publisher.disconnect();
 		m_client.tearDown();
 	}
 

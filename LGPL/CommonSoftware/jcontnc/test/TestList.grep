@@ -17,3 +17,8 @@ object is activated
 object is deactivated
 servant is etherealized
 Logger jacorb@.* created with custom log levels local=Info, remote=Info
+:::\[TestSubscriberReconn\]
+seems to be getting created. Will wait and try again in 2 seconds
+gov.sandia.NotifyMonitoringExt.NameAlreadyUsed:
+Consumer couldn't reconnect to the channel 'test_reconn'
+org.omg.CORBA.OBJECT_NOT_EXIST: Server-side Exception: null

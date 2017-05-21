@@ -11,5 +11,7 @@ s/ime=[0-9]*L/ime=XXXX/g
 s/'time': [0-9]*L/'time': ------------------L/g
 
 s/Great! First blob has the expected value:  [0-9][\.,0-9]*/Great! First blob has the expected value:  XX/g
-s/Great! Collected at least 9 values: [0-9][0-9]*/Great! Collected at least 9 values: XX/g
-s/Great! Collected at most 20 values: [0-9][0-9]*/Great! Collected at most 20 values: XX/g
+s/Great! Collected at least [0-9][0-9]* values: [0-9][0-9]*/Great! Collected at least YY values: XX/g
+s/Great! Collected at most [0-9][0-9]* values: [0-9][0-9]*/Great! Collected at most YY values: XX/g
+s/Great! First blob is greater than:  [0-9][\.,0-9]*/Great! First blob is greater than:  XX/g
+s/Great! First blob is lower than:  [0-9][\.,0-9]*/Great! First blob is lower than:  XX/g

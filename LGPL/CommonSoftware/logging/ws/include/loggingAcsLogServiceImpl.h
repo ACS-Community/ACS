@@ -85,6 +85,8 @@ class AcsLogServiceImpl: public ACSLog_i,
             ::Logging::XmlLogRecordSeq *tmpBuffer;
             /** Internal usage*/
             unsigned int tmpSize;
+            /** thread id */
+            ACE_thread_t logRecordBatchTh_;
 
             /** Send the records through the Notification Channel*/
             void sendRecords(::Logging::XmlLogRecordSeq *reclist);

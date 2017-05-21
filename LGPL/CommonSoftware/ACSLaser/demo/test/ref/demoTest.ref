@@ -32,4 +32,5 @@
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: ACTIVE
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: TERMINATE
 1 - ----------T--:--:--.--- INFO [DemoTest] client 'TestSendLaserSources' has successfully delivered a component release request for curl=ALARM_SOURCE_MOUNTCPP
+1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] Finishing consumer thread responsible for checking the connection to the channel 'CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES'
 1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] AlarmSourceFactory closed

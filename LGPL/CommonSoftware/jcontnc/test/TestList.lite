@@ -71,5 +71,57 @@ PROLOGUE acsutilTATPrologue -l
    "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleSupplierReconnClient 13 5 NO_AUTORECONNECT NS_STOPPED" "@SLEEP 5" \
    "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory STOP" "@SLEEP 50"
 
+# Test 1 autoreconnect of consumers
+15 test1ConsumerAutoreconnect "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 1" "@SLEEP 12" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 3" "@SLEEP 20" \
+   "acsutilTATTestRunner jcontncEcho.sh END_TEST_1_CONSUMER_AUTORECONNECT"
+
+# Test 2 autoreconnect of consumers
+16 test2ConsumerAutoreconnect "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 2" "@SLEEP 9" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 3" "@SLEEP 25" \
+   "acsutilTATTestRunner jcontncEcho.sh END_TEST_2_CONSUMER_AUTORECONNECT"
+
+# Test 3 autoreconnect of consumers
+17 test3ConsumerAutoreconnect "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 3" "@SLEEP 5" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 3" "@SLEEP 25" \
+   "acsutilTATTestRunner jcontncEcho.sh END_TEST_3_CONSUMER_AUTORECONNECT"
+
+# Test 4 autoreconnect of consumers
+18 test4ConsumerAutoreconnect "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 4" "@SLEEP 17" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 3" "@SLEEP 25" \
+   "acsutilTATTestRunner jcontncEcho.sh END_TEST_4_CONSUMER_AUTORECONNECT"
+
+# Test 5 autoreconnect of consumers
+19 test5ConsumerAutoreconnect "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 5" "@SLEEP 10" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 3" "@SLEEP 25" \
+   "acsutilTATTestRunner jcontncEcho.sh END_TEST_5_CONSUMER_AUTORECONNECT"
+
+# Test 6 autoreconnect of consumers
+20 test6ConsumerAutoreconnect "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 6" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 6" "@SLEEP 15" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 3" "@SLEEP 50" \
+   "acsutilTATTestRunner jcontncEcho.sh END_TEST_6_CONSUMER_AUTORECONNECT"
+
+# Test 7 autoreconnect of consumers
+21 test7ConsumerAutoreconnect "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 7" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 7" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 7" "@SLEEP 15" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 1" "@SLEEP 10" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 4" "@SLEEP 75" \
+   "acsutilTATTestRunner jcontncEcho.sh END_TEST_7_CONSUMER_AUTORECONNECT"
+   
+# Test 8 autoreconnect of consumers
+22 test8ConsumerAutoreconnect "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 0" "@SLEEP 4" \
+   "acsutilTATTestRunner acsStartJava alma.acs.nc.SimpleConsumerReconnClient 8" "@SLEEP 20" \
+   "acsutilTATTestRunner jcontncExecNotifyService.sh NotifyEventChannelFactory RESTART 4" "@SLEEP 55" \
+   "acsutilTATTestRunner jcontncEcho.sh END_TEST_8_CONSUMER_AUTORECONNECT"
+
 
 EPILOGUE acsutilTATEpilogue

@@ -49,6 +49,7 @@ Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
     notifyFactory_m(0),
     notifyFactoryOld_m(0),
     channelID_m(0),
+    channelTimestamp_m(0),
     okToLog_m(false)
 {
     ACS_TRACE("Helper::Helper");
@@ -300,6 +301,30 @@ void Helper::createNotificationChannel() {
         }
         //really bind the reference here
         namingContext_m->rebind(name, notifyChannel_m.in());
+
+        // Create an entry into the Naming Service to set the timestamp to allow subscribers to reconnect (ICT-4730)
+        // It could throw a CORBA exception because of the rebind call.
+        int32_t maxNumAttempts = 10;
+        int32_t nAttempts = maxNumAttempts;
+        bool timestampCreated = setChannelTimestamp();
+        while(false == timestampCreated && nAttempts > 0)
+        {
+            sleep(2);
+            --nAttempts;
+            timestampCreated = setChannelTimestamp();
+        }
+
+        // Timestamp couldn't be registered to the Naming Service after 10 attempts. This should not happen but ... 
+        // log an error and throw an exception
+        if(false == timestampCreated)
+        {
+            ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() Failed to register the timestamp of the channel '%s' into the Naming Service after %d attempts. Subscribers will not be able to reconnect",
+                        channelName_mp, maxNumAttempts));
+
+            CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
+            throw err.getCORBAProblemEx();
+        }
+
     } catch (NotifyMonitoringExt::NameAlreadyUsed e) {
         ACS_SHORT_LOG(
                 (LM_TRACE, "Helper::createNotificationChannel() failed for the '%s' channel, the name is already used!", channelName_mp));
@@ -351,6 +376,152 @@ Helper::getAdminProps()
 {
     ACS_TRACE("Helper::getAdminProps");
     return nc::CDBProperties::getCDBAdminProps(channelName_mp);
+}
+//-----------------------------------------------------------------------------
+std::string Helper::timestamp2str(time_t timer)
+{
+    struct tm * ptm;
+    ptm = gmtime (&timer);
+    std::ostringstream oss;
+    oss << (ptm->tm_year + 1900) << "-";
+    if(ptm->tm_mon + 1 < 10) oss << "0";
+    oss << (ptm->tm_mon + 1) << "-";
+    if(ptm->tm_mday < 10) oss << "0";
+    oss << ptm->tm_mday << "_";
+    if(ptm->tm_hour < 10) oss << "0";
+    oss << ptm->tm_hour << ":";
+    if(ptm->tm_min < 10) oss << "0";
+    oss << ptm->tm_min << ":";
+    if(ptm->tm_sec < 10) oss << "0";
+    oss << ptm->tm_sec;
+    return oss.str();
+}
+//-----------------------------------------------------------------------------
+bool Helper::setChannelTimestamp()
+{
+    time_t timer;
+    time(&timer);
+    //struct tm * ptm;
+    //ptm = gmtime (&timer);
+    CosNaming::Name nameTimestamp(1);
+    nameTimestamp.length(1);
+    std::ostringstream oss;
+    oss << channelAndDomainName_m << "-" << timestamp2str(timer);
+    /*
+    oss << channelAndDomainName_m << "-" << (ptm->tm_year + 1900) << "-";
+    if(ptm->tm_mon + 1 < 10) oss << "0";
+    oss << (ptm->tm_mon + 1) << "-";
+    if(ptm->tm_mday < 10) oss << "0";
+    oss << ptm->tm_mday << "_";
+    if(ptm->tm_hour < 10) oss << "0";
+    oss << ptm->tm_hour << ":";
+    if(ptm->tm_min < 10) oss << "0";
+    oss << ptm->tm_min << ":";
+    if(ptm->tm_sec < 10) oss << "0";
+    oss << ptm->tm_sec;*/
+    std::string id = oss.str();
+    nameTimestamp[0].id = CORBA::string_dup(id.c_str());
+    nameTimestamp[0].kind = acscommon::NC_KIND_NCSUPPORT; 
+
+    try 
+    {
+        namingContext_m->rebind(nameTimestamp, notifyChannel_m.in());
+        channelTimestamp_m = timer;
+        return true;
+    } catch(CosNaming::NamingContext::NotFound &ex) {
+        ACS_SHORT_LOG((LM_ERROR, "Helper::setChannelTimestamp rebind the channel '%s' thrown a NotFound exception",
+                    id.c_str()));
+    } catch(CosNaming::NamingContext::CannotProceed &ex) {
+        ACS_SHORT_LOG((LM_ERROR, "Helper::setChannelTimestamp rebind the channel '%s' thrown a CannotProceed exception",
+                    id.c_str()));
+    } catch(CosNaming::NamingContext::InvalidName &ex) {
+        ACS_SHORT_LOG((LM_ERROR, "Helper::setChannelTimestamp rebind the channel '%s' throw a InvalidName exception",
+                    id.c_str()));
+    }
+
+    return false;
+}
+//-----------------------------------------------------------------------------
+bool Helper::getChannelTimestamp(time_t &timestamp)
+{
+    ACS_TRACE("Helper::getChannelTimestamp");
+
+    bool found = false;
+	CosNaming::BindingIterator_var it;
+	CosNaming::BindingList_var bl;
+
+    try {
+        namingContext_m->list(100, bl.out(), it.out());
+        found = getChannelTimestamp(timestamp, bl.in());
+
+        if(!CORBA::is_nil(it.in()) && false == found)
+        {
+            CORBA::Boolean more;
+
+            do
+            {
+                more = it->next_n(100, bl.out());
+                found = getChannelTimestamp(timestamp, bl.in());
+            } while(more && false == found);
+
+            it->destroy();
+        }
+    } catch(CORBA::Exception &ex) {
+        return false;
+    }
+
+    return found;        
+}
+//-----------------------------------------------------------------------------
+bool Helper::getChannelTimestamp(time_t &timestamp,const CosNaming::BindingList &bl)
+{
+    for (CORBA::ULong i = 0;i < bl.length();++i)
+	{
+        std::string id(bl[i].binding_name[0].id);
+        std::string kind(bl[i].binding_name[0].kind);
+
+        if(kind == acscommon::NC_KIND_NCSUPPORT) 
+        {
+            if(id.compare(0,channelAndDomainName_m.size(),channelAndDomainName_m) == 0)
+            {
+                std::string sts = id.substr(channelAndDomainName_m.size()+1, 
+                        id.size() - channelAndDomainName_m.size() - 1);
+                struct tm tm;
+                strptime(sts.c_str(), "%Y-%m-%d_%H:%M:%S", &tm);
+                timestamp = mktime(&tm);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+//-----------------------------------------------------------------------------
+void Helper::initChannelTimestamp()
+{
+    int nAttempts = 10;
+    time_t timestamp;
+    bool ttFound = getChannelTimestamp(timestamp);
+    while(false == ttFound && nAttempts > 0) 
+    {
+        ttFound = getChannelTimestamp(timestamp);
+        --nAttempts;
+        sleep(2);
+    }
+
+    // Timestamp cannot be retrieved from the Naming Service, we set the current time
+    if(false == ttFound)
+    {
+        time_t timer;
+        time(&timer);
+        channelTimestamp_m = timer;
+        std::string strTimer = timestamp2str(timer);
+        ACS_SHORT_LOG((LM_WARNING, "Timestamp of NC '%s' couldn't be retrieved from the Naming Service. Initialized to: %s", 
+                    channelName_mp, strTimer.c_str()));
+
+    // Timestamp retrieved from the Naming Service
+    } else {
+        channelTimestamp_m = timestamp;
+    }
 }
 
 bool Helper::resolveInternalNotificationChannel(){
@@ -462,6 +633,18 @@ Helper::resolveNotifyChannel()
 	throw err.getCORBAProblemEx();
 	return false;
 	}
+
+    // The channel has been found so we get the channel timestamp located into the Naming Service or 
+    // set it to the current time
+    initChannelTimestamp();
+    // The channel exists therfore we will get the creation timestamp. In the case that we cannot get
+    // the timestamp we consider the notify channel as not resolved
+    /*if(false == getChannelTimestamp(channelTimestamp_m))
+    {
+        ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotifyChannel creation timestamp not found for the channel '%s'", 
+                    channelName_mp));
+        return false;
+    }*/
 
     //All went OK, so return true.
     return true;

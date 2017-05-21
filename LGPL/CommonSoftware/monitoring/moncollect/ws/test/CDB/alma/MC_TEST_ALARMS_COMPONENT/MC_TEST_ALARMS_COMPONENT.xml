@@ -36,7 +36,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 	
 	<longROProp
 		default_timer_trig="1.0"
@@ -50,7 +50,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 		
 	<uLongROProp
 		default_timer_trig="1.0"
@@ -64,7 +64,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 
 	<longLongROProp
 		default_timer_trig="1.0"
@@ -78,7 +78,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 	
 	<uLongLongROProp
 		default_timer_trig="1.0"
@@ -92,7 +92,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 	
 	<booleanROProp
 		default_timer_trig="1.0"
@@ -102,7 +102,7 @@
 		graph_max="1"
 		archive_min_int="0"
 		archive_max_int="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 
 	<!-- Alarm monitoring on sequences is generating segmentation fault, for this reason they are disabled by setting alarm_timer_trig="0" -->
 
@@ -118,7 +118,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 	 
 	<floatSeqROProp
 		default_timer_trig="1.0"
@@ -132,7 +132,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 		
 	<longSeqROProp
 		default_timer_trig="1.0"
@@ -146,7 +146,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 		
 	<uLongSeqROProp
 		default_timer_trig="1.0"
@@ -160,7 +160,7 @@
 		alarm_high_off="3"
 		alarm_low_on="0"
 		alarm_low_off="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 	
 	<booleanSeqROProp
 		default_timer_trig="1.0"
@@ -170,7 +170,7 @@
 		graph_max="1"
 		archive_min_int="0"
 		archive_max_int="1"
-		alarm_timer_trig="0"/>
+		alarm_timer_trig="0.1"/>
 
 	<EnumTestROProp
 		default_timer_trig="1.0"

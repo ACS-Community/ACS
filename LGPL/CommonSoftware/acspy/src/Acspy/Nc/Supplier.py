@@ -97,8 +97,6 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         self.sppc = None
         #number of events sent so far
         self.count = 0
-        #Autoreconnect to the channel when publishing an event throws an OBJECT_NOT_EXIST exception
-        self.autoreconnect = False
 
         #Handle all of the CORBA stuff now
         CommonNC.initCORBA(self)
@@ -221,20 +219,6 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         
         self.logger.logTrace('')
         return
-    #------------------------------------------------------------------------------
-    def set_autoreconnect(self, autoreconnect):
-        '''
-        Set autoreconnection on/off in case the Supplier is not able to publish
-        events because of an OBJECT_NOT_EXIST exception. This exception is thrown
-        when the Notify Service restarts.
-
-        Params: Nothing
-
-        Returns: Nothing
-
-        Raises: Nothing
-        '''
-        self.autoreconnect = autoreconnect
     #------------------------------------------------------------------------------
     def publishEvent (self,
                       simple_data=None,
@@ -395,7 +379,7 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
             if event_callback != None:
                 event_callback.eventDropped(simple_data)
 
-        except CORBA.OBJECT_NOT_EXIST, e:
+        except (CORBA.OBJECT_NOT_EXIST, CORBA.BAD_OPERATION) as e:
             #Notify Service is down
             if self.autoreconnect:
                 # Recreate the channel

@@ -13,3 +13,12 @@ s/===   Number of events sent: [0-9]*/===   Number of events sent: X/g
 s/===   Number of exceptions: [0-9]*/===   Number of exceptions: X/g
 s/===   Transitions: [0-9,]*/===   Transitions: X,Y,/g
 s/couldn't reconnect to [0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*/couldn't reconnect to X.X.X.X:YYYY/g
+s/-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]_[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\[[0-9]*.[0-9]*.[0-9]*.[0-9]*:[0-9]*\]/-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY]/g
+s/SimpleConsumerReconnClient-[-,0-9]*/SimpleConsumerReconnClient-XXXXX/g
+s/Exceptions found: .*/Exceptions found: XXXX/g
+s/Time first event received: .*/Time first event received: XXX/g
+s/Time last event received: .*/Time last event received: XXX/g
+
+
+# Always at the end!
+s/[2,3,4] - ----------T--:--:--.--- INFO \[SimpleConsumerReconnClient-XXXXX\] Successfully created/X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully created/g

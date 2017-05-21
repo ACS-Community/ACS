@@ -529,6 +529,7 @@ clean_rtais: clean_rtai_final
 clean_rtai_final:
 	$(AT)$(RM) Kbuild ../rtai/$(kernel_install_subfold)
 	$(foreach rm,$(RTAI_MODULES_LIST),$(AT)$(RM) ../bin/installLKM-$(rm))
+
 endif
 # some target needs to be assigned this task
 #	-$(AT)$(RM) ../rtai/$(kernel_install_subfold)

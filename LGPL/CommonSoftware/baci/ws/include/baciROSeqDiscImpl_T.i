@@ -85,6 +85,8 @@ ACS::Subscription_ptr ROSeqDiscImpl<ACS_RO_TL>::new_subscription_Alarm (TAlarm *
   if (!eventStrategy)
 	  ACE_THROW_RETURN(CORBA::NO_RESOURCES(), ACS::Subscription::_nil());
 
+  monitorEventDispatcher_mp->subscribe(eventStrategy);
+
   ACS::Subscription_var subscription = 
     ACS::Subscription::_narrow(eventStrategy->getCORBAReference());
   ACE_CHECK_RETURN(ACS::Subscription::_nil());

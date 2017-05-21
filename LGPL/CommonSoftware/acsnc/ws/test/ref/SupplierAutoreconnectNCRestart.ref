@@ -38,6 +38,7 @@
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 5
 4 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
 4 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
+4 - Channel NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
 4 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
 4 - Using reactive client control.
 4 - Using 1 threads for each Supplier.
@@ -68,8 +69,8 @@
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Transitions in: YYY
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of exceptions caught: ZZZ
 3 - ----------T--:--:--.--- None test1 - Waiting 10 seconds ...
-3 - ----------T--:--:--.--- None test1 - Releasing component NamedCh_SUP1
-3 - ----------T--:--:--.--- None test1 - Releasing component NamedCh_CON1
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed for the 'NamedCh' channel!
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed to destroy consumer admin for the 'NamedCh' channel!
 2 - /----/libbaci.so
+3 - ----------T--:--:--.--- None test1 - Releasing component NamedCh_SUP1
+3 - ----------T--:--:--.--- None test1 - Releasing component NamedCh_CON1

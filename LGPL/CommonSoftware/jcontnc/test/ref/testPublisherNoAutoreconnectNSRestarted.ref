@@ -20,10 +20,11 @@
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 2
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 3
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 4
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 5
 3 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 3 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
-2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 5
+3 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 6
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 7
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
@@ -52,16 +53,15 @@
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 26
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 27
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 28
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 29
+2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Exceptions found: XXXX
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of events dropped: X
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of events queued: X
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of events sent: X
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Number of exceptions: X
-2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] Published events at iteration 29
 2 - ----------T--:--:--.--- INFO [SimpleSupplierReconnClient] ===   Transitions: X,Y,
 2 - ----------T--:--:--.--- WARNING [SimpleSupplierReconnClient] Failed to cleanly disconnect NCPublisher for channel 'test_reconn': could not disconnect push consumer
-2 - org.omg.CORBA.OBJECT_NOT_EXIST: Server-side Exception: null
 2 - ----------T--:--:--.--- WARNING [SimpleSupplierReconnClient] Failed to cleanly disconnect NCPublisher for channel 'test_reconn': could not destroy supplier admin
-2 - org.omg.CORBA.OBJECT_NOT_EXIST: Server-side Exception: null
 2 - Test finished
 3 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
 3 - ReBound ID: MC_NotifyEventChannelFactory

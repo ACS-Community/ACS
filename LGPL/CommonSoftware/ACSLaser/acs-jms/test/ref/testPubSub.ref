@@ -15,6 +15,7 @@
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] intercepted a call to 'alma.acsjms.test.PubSubTest/alma.acsnc.OSPushConsumer#push_structured_event'.
 1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] returning from alma.acsjms.test.PubSubTest/alma.acsnc.OSPushConsumer#push_structured_event after xxx ms.
+1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] Finishing consumer thread responsible for checking the connection to the channel 'TOPIC.TEST'
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] AlarmSourceFactory closed
 1 - 
 1 - 

@@ -274,7 +274,7 @@ then
 
   # This is TAO Interface Repository
   PERSISTENCE_FILE=$ACS_TMP/ifr_cache.$ACS_INSTANCE
-  if [ -e $PERSISTENCE_FILE ]
+  if [ -e $PERSISTENCE_FILE -a "$CL_LOADIFR" = "true" ]
   then
       #We check for idl files time and compare it with persistence file time
       IDL_FILES=

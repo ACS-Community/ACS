@@ -1110,6 +1110,15 @@ module acscommon
     const string NC_KIND = "channels";
 
     /**
+     * NC_KIND_NCSUPPORT stands for naming context kind for Notify Channels support.
+     * When we register a channel to the Naming Service, we also register it 
+     * using a different name that includes the timestamp of the creation of 
+     * the channel. This second registration is performed by using the kind 
+     * NC_KIND_NCSUPPORT in order to distinguish it from the primary registration.
+     */
+    const string NC_KIND_NCSUPPORT = "NCSupport";
+
+    /**
      *  Type field of logging events.
      */
     const string LOGGING_TYPE = "";
