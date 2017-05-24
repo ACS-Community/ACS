@@ -47,6 +47,14 @@ endef
 # I skip doxygen, that should be after compat and before tat,
 # because it is already built in the prepare phase.
 #
+GMP = gmp
+
+ifeq ($(os),Linux)
+  majorRelNo :=  $(basename $(shell cat /etc/redhat-release | awk '{print $$(NF-1)}'))
+  ifeq ($(majorRelNo),6)
+    GMP =
+  endif
+endif
 
 MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate extpy cppunit getopt astyle xercesc xercesj castor xsddoc extidl vtd-xml oAW shunit2 log4cpp scxml_apache
 
