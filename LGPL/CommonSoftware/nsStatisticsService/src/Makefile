@@ -112,30 +112,20 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES := NotifyServiceStatisticsComponent 
+IDL_FILES =
 TAO_IDLFLAGS =
 USER_IDL =
-
-NotifyServiceStatisticsComponentStubs_LIBS=acscomponentStubs
-
 #
 # Jarfiles and their directories
 #
-
-JARFILES: = nsStatisticsService NotifyServiceStatisticsComponentImpl 
-
-nsStatisticsService_DIRS := alma/acs/nsstatistics \
-                         alma/acs/service
-
-NotifyServiceStatisticsComponentImpl_DIRS := alma/acs/statistics
-NotifyServiceStatisticsComponent_JLIBS := NotifyServiceStatisticsComponent
-
+JARFILES=nsStatisticsService 
+nsStatisticsService_DIRS=alma/acs
 jjj_EXTRAS=
 # For expressing dependencies between jarfiles (parallel builds)
 jjj_JLIBS= 
 #
 # java sources in Jarfile on/off
-DEBUG=on
+DEBUG= 
 #
 # ACS XmlIdl generation on/off
 #

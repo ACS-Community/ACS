@@ -47,6 +47,14 @@ endef
 # I skip doxygen, that should be after compat and before tat,
 # because it is already built in the prepare phase.
 #
+GMP = gmp
+
+ifeq ($(os),Linux)
+  majorRelNo :=  $(basename $(shell cat /etc/redhat-release | awk '{print $$(NF-1)}'))
+  ifeq ($(majorRelNo),6)
+    GMP =
+  endif
+endif
 
 # emacs expat loki antlr hibernate extpy cppunit astyle castor shunit2 log4cpp in RPMs
 # getopt is only for SunOS according to its own Makefile

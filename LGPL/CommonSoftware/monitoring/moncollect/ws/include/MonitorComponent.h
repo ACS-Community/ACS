@@ -79,7 +79,7 @@ public:
 
 	void fillSeq();
 
-	MonitorDataBlock& getMonitorDataBlock() { return monitorDataBlock_m; }
+	MonitorDataBlock getMonitorDataBlock() { return monitorDataBlock_m; }
 
 	void setDeviceSerialNumber(serialNumberType sn);
 
