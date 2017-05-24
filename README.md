@@ -2,7 +2,7 @@
 
 The master branch is used to build a RPM.
 The "merges" branch merges the updates from ACS Community master branch and ALMA ACS's master branch, which then
-are merged to this project master branch.
+are merged/cherry-picked to this project master branch.
 
 ## Git Structure
 
