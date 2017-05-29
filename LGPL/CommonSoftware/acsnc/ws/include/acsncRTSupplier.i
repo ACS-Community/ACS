@@ -49,7 +49,7 @@ RTSupplier::publishData(T data, EventProcessingCallback *evProcCallback)
         else{
 	        char buf[100];
 	        ACSErrTypeCommon::CORBAProblemExImpl ex(__FILE__, __LINE__, "RTSupplier<>::publishData");
-            sprintf(buf, "RTSupplier sueue size exceed 10000 (%d)", unpublishedEvents_m.size());
+            sprintf(buf, "RTSupplier sueue size exceed 10000 (%zd)", unpublishedEvents_m.size());
 	        ex.setInfo(buf);
 	        throw ex.getCORBAProblemEx();
         }

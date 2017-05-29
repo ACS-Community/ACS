@@ -26,10 +26,20 @@
 
 #include <stdint.h>
 #include <sys/time.h>
+#include <string>
 
 class TimevalUtils {
 public:
 	static const int32_t SEC_2_MSEC = 1e+3;
+    static const std::string STR_TIMEOUT_ORB;
+    static const std::string STR_TIMEOUT_THREAD;
+    static const std::string STR_TIMEOUT_PROXY;
+
+    struct TimeoutMS {
+        uint32_t orb;
+        uint32_t thread;
+        uint32_t proxy;
+    };
 
 	TimevalUtils();
 	virtual ~TimevalUtils();
@@ -39,6 +49,7 @@ public:
 	static uint64_t timeval_2_ms(const timeval &t);
 	static int64_t diff_timeval(const timeval &end,const timeval &start);
 	static void ms_2_timeval(uint64_t t,timeval &tv);
+    static void fillTimeout(TimeoutMS &timeout,const std::string &config);
 
 };
 

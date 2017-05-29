@@ -78,9 +78,7 @@
 #include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestResultCollector.h>
-#include <cppunit/TestRunner.h>
+#include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <logging.h>
@@ -89,9 +87,6 @@
 #include <Properties.h>
 
 #include <string>
-
-static char *rcsId="@(#) $Id: PropertyTest.cpp,v 1.2 2009/10/06 16:45:33 acaproni Exp $"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 class PropertyTestCase : public CPPUNIT_NS::TestFixture
 {
@@ -164,32 +159,9 @@ int main(int argc, char *argv[])
 {
 	Logging::Logger::setGlobalLogger(new Logging::GenericLogger("PropertyTestLogger"));
 
-	// Create the event manager and test controller
-	CPPUNIT_NS::TestResult controller;
-
-	// Add a listener that colllects test result
-	CPPUNIT_NS::TestResultCollector result;
-	controller.addListener( &result );
-
-	// Add a listener that print dots as test run.
-	CPPUNIT_NS::BriefTestProgressListener progress;
-	controller.addListener( &progress );
-
-	// Add the top suite to the test runner
-	CPPUNIT_NS::TestRunner runner;
-	runner.addTest( CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest() );
-	runner.run( controller );
-
-	// Print test in a compiler compatible format.
-	CPPUNIT_NS::CompilerOutputter outputter( &result, std::cerr );
-	outputter.write();
-
-	if (result.wasSuccessful()) {
-		std::cout<<"No errors in test"<<std::endl;
-	} else {
-		std::cout<<"The test reported errors"<<std::endl;
-	}
-	return result.wasSuccessful() ? 0 : 1;
+	CppUnit::TextTestRunner runner;
+	runner.addTest( PropertyTestCase::suite() );
+	runner.run("",false,true,false);
 }
 
 

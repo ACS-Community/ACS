@@ -15,12 +15,12 @@ Test Results:
 Run:  5   Failures: 2   Errors: 0
 
 
-1) test: BoardGameTest<BoardGame>::testResetShouldFail (F) line: 45 BoardGameTest.h
+1) test: BoardGameTestI9BoardGameE::testResetShouldFail (F) line: 45 BoardGameTest.h
 assertion failed
 - Expression: !this->m_game->reset()
 
 
-2) test: ChessTest<Chess>::testResetShouldFail (F) line: 45 BoardGameTest.h
+2) test: ChessTestI5ChessE::testResetShouldFail (F) line: 45 BoardGameTest.h
 assertion failed
 - Expression: !this->m_game->reset()
 

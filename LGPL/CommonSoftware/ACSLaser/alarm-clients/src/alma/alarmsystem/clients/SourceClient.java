@@ -168,7 +168,11 @@ public class SourceClient implements AcsEventSubscriber.Callback<ACSJMSMessageEn
 		}
 		synchronized(listeners) {
 			for (SourceListener listener: listeners) {
-				listener.sourceXMLMsgReceived(msg);
+				try {
+					listener.sourceXMLMsgReceived(msg);
+				} catch (Throwable t) {
+					logger.log(AcsLogLevel.ERROR, "Exception dispatching ASI XML message: check listener code", t);
+				}
 			}
 		}
 	}
@@ -185,7 +189,11 @@ public class SourceClient implements AcsEventSubscriber.Callback<ACSJMSMessageEn
 		}
 		synchronized(listeners) {
 			for (SourceListener listener: listeners) {
-				listener.faultStateReceived(faultState);
+				try {
+					listener.faultStateReceived(faultState);
+				} catch (Throwable t) {
+					logger.log(AcsLogLevel.ERROR, "Exception dispatching a FS: check listener code", t);
+				}
 			}
 		}
 	}

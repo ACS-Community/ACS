@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:LogStoreClass:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:LogStoreClass:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  
+  <xs:complexType name="LogStoreClass">
+	<xs:attribute name="logFileDir" type="xs:string" use="required" />
+	<xs:attribute name="ngasDir" type="xs:string" use="optional" default="/tmp/NGAS"/>
+	<xs:attribute name="maxNumberLogFiles" type="xs:integer" use="optional" default="20"/>
+	<xs:attribute name="MaxLogFileSize" type="xs:integer" use="optional" default="100000000"/>
+
+        <xs:attribute name="archiveLogFilesInNGAS" type="xs:string" use="optional" default="false"/>
+        <xs:attribute name="ngasCommand" type="xs:string" use="optional" default=" "/>
+
+	<xs:attribute name="Archive_level" type="xs:integer" use="optional" default="0"/>
+	<xs:attribute name="logsPerSecond" type="xs:integer" use="optional" default="0"/>
+
+        <xs:attribute name="logsPerInterval" type="xs:integer" use="optional" default="30000"/>
+        <xs:attribute name="logIntervalSize" type="xs:integer" use="optional" default="10000"/>
+        <xs:attribute name="logPeakToleranceInterval" type="xs:integer" use="optional" default="0"/>
+  </xs:complexType>
+  
+  <xs:element name="LogStoreClass" type="LogStoreClass"/>
+
+
+</xs:schema>

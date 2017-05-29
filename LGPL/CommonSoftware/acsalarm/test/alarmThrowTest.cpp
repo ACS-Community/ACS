@@ -31,7 +31,7 @@ $
 #include <cppunit/TestCase.h>
 #include <cppunit/TestResult.h>
 #include <cppunit/TestCaller.h>
-#include <cppunit/ui/text/TestRunner.h>
+#include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <ACSAlarmSystemInterfaceFactory.h>
@@ -86,16 +86,7 @@ public:
 
 int main( int argc, char **argv)
 {
-
-  //maci::SimpleClient m_client;
-  //m_client.init(argc,argv);
-  //m_client.login();
-  //ACSAlarmSystemInterfaceFactory::init(ACSAlarmSystemInterfaceFactory::getManager());
-  CppUnit::TextUi::TestRunner runner;
-  runner.addTest( AlarmThrowTest::suite() );
-  runner.run();
-  //m_client.logout();
-  //m_client.disconnect();
-
-  return 0;
+	CppUnit::TextTestRunner runner;
+	runner.addTest( AlarmThrowTest::suite() );
+	runner.run("",false,true,false);
 }

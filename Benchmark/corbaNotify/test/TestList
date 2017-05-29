@@ -25,5 +25,6 @@ SOURCE corbaNotifyTatEnvironment
 PROLOGUE corbaNotifyTATPrologue
 
 1 localPubSubTest "acsStartJava org.junit.runner.JUnitCore acs.benchmark.nc.client.LocalPubSubTest"
+2 pDataSupCon "runDataSupplier 100 8000" "@SLEEP 5" "runDataConsumer 5" "@SLEEP 70" "killDataSupCon"
 
 EPILOGUE corbaNotifyTATEpilogue

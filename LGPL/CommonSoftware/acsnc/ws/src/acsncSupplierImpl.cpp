@@ -31,6 +31,10 @@
 using namespace ACSErrTypeCommon;
 
 namespace nc {
+
+    
+const uint32_t Supplier::SLEEP_TIME_BEFORE_SENDING_BUFFERED_EVENTS = 12;
+
 //-----------------------------------------------------------------------------
 Supplier::Supplier(const char* channelName, 
 	            acscomponent::ACSComponentImpl* component,
@@ -223,6 +227,7 @@ Supplier::disconnect()
 void
 Supplier::publishEvent(const CORBA::Any &eventData)
 {
+    ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_publishMutex);
     populateHeader(eventData);
     publishEvent(event_m);
 }
@@ -230,6 +235,7 @@ Supplier::publishEvent(const CORBA::Any &eventData)
 void
 Supplier::publishEvent(const CosNotification::StructuredEvent &event)
 {
+    ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_publishMutex);
     //First a sanity check.
     if(CORBA::is_nil(proxyConsumer_m.in()) == true)
 	{
@@ -277,6 +283,7 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
 
             // Try to send buffered events
             try {
+                sleep(SLEEP_TIME_BEFORE_SENDING_BUFFERED_EVENTS); // Wait some time to allow consumers to reconnect
                 while( (tmp = eventBuff.front()) != NULL) {
                     proxyConsumer_m->push_structured_event(*tmp);
                     eventBuff.pop();
@@ -633,6 +640,16 @@ void Supplier::setAntennaName(std::string antennaName) {
 void Supplier::setAutoreconnect(bool autoreconnect)
 {
     autoreconnect_m = autoreconnect;
+}
+
+bool Supplier::increaseEventBufferSize(unsigned int bufferSize)
+{
+    return eventBuff.setMaxSize(bufferSize);
+}
+
+unsigned int Supplier::getEventBufferSize() const
+{
+    return eventBuff.getMaxSize();
 }
 
 //-----------------------------------------------------------------------------

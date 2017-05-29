@@ -5,7 +5,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] Manager hostname generated using localhost address: 'xxx'
 1 - ----------T--:--:--.--- [GlobalLogger - ] ORBHelper::runORB the ORB is now running!
 1 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::initThread] Thread name: 'runOrbThread'
-1 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addSubscription subscribing to 'temperatureDataBlockEvent' events for the 'fridge' channel!
 1 - created a consumer
 2 - ----------T--:--:--.--- FridgeNCSupplier Main - Creating an instance of Supplier
 2 - ----------T--:--:--.--- FridgeNCSupplier Main - Ready to send NC events...

@@ -85,6 +85,7 @@ module benchmark
         double    subrefCmdTilt; // Commanded tilt of the subreflector
         boolean   subrefRotationCmdValid; // true if a command was sent to rotate the subreflector
     };
+    typedef sequence<MountStatusData> MountStatusDataSeq;
 
     /** 
      *  Small struct, to check how much the struct size affects throughput, and to use as an additional event type. 

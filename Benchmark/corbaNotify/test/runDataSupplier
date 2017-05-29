@@ -1,0 +1,16 @@
+#!/bin/bash
+# $1: Length of the sequence of type MountStatusData that will be sent
+# $2: Interval time in milliseconds between consecutive deliveries
+# Capture all output from this script to a file. TAT otherwise loses the prologue output.
+#LOGFILE=$ACS_TMP/runDataSupplier.out
+#exec > $LOGFILE 2>&1
+
+NS_PORT=`acsstartupNotifyPort NamedCh`
+
+#echo $NS_PORT > $ACS_TMP/port_NamedCh
+
+#acsNamingService -s -w
+#sleep 2
+#acsNotifyService -s -w -n NamedCh
+#sleep 2
+pDataSupplier -r "corbaloc:iiop:$HOST:$NS_PORT/NamedChNotifyEventChannelFactory" -l $1 -f $ACS_TMP/channel_id_pData -i $2

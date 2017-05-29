@@ -40,7 +40,7 @@ namespace nc{
       private:
          std::deque<CosNotification::StructuredEvent> queue;
          unsigned int length;
-         const unsigned int max_size;
+         unsigned int max_size;
 
      public:
          /**
@@ -86,6 +86,8 @@ namespace nc{
           */
          CosNotification::StructuredEvent *front();
 
+         bool setMaxSize(unsigned int size);
+         unsigned int getMaxSize() const;
          unsigned int size() { return queue.size(); }
    };
 

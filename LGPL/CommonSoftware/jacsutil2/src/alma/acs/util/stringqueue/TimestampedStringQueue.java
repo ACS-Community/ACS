@@ -97,16 +97,16 @@ public class TimestampedStringQueue extends Thread {
 	 * otherwise it is not find.
 	 * <P>
 	 * The queue dues not assume any format for the strings it contains so it can't 
-	 * for example parse it to look for a XML TGA because the string can or cannot
+	 * for example parse it to look for a XML TAG because the string can or cannot
 	 * be XML. 
 	 * This choice implies that all the strings follow the same pattern.
 	 * <P>
 	 * In the case of logs, they all have the same pattern:
 	 * &lt;LEVEL Timestamp="...."....&gt;
-	 * In this example tstampIdentifier must be set to <code>Timestamp="</code>.
+	 * In this example tstampIdentifier must be set to "<code>Timestamp="</code>".
 	 * <P>
 	 * To improve performances, the queue looks for this string in the push (case insensitive)
-	 * and assume that he timestamp starts from the next character in the string.
+	 * and assume that the timestamp starts from the next character in the string.
 	 * A better solution could be to use a regular expression but it would be less performant. 
 	 */
 	private final String tstampIdentifier;
@@ -258,18 +258,23 @@ public class TimestampedStringQueue extends Thread {
 			throw new IllegalArgumentException("The item to delete can't be null");
 		}
 		itemToDel.close();
+		File f = null;
 		try {
-			File f = itemToDel.getFile();
+			f = itemToDel.getFile();
 		} catch (FileNotFoundException fnfe) {
 			System.err.println("Error deleting "+itemToDel.fileName+" (key "+itemToDel.key+")");
 			System.err.println("Will try to notify the QueueFileHandler anyhow...");
 			fnfe.printStackTrace(System.err);
 		}
-		try {
-			fileHandler.fileProcessed(itemToDel.getFile(),itemToDel.minDate(), itemToDel.maxDate());
-		} catch (Throwable t) {
-			System.err.println("Error calling fileProcessed in the QueueFileHandler: "+t.getMessage());
-			t.printStackTrace(System.err);
+		if (f!=null) {
+			try {
+				fileHandler.fileProcessed(f, itemToDel.minDate(), itemToDel.maxDate());
+			} catch (Throwable t) {
+				System.err.println("Error calling fileProcessed in the QueueFileHandler: " + t.getMessage());
+				t.printStackTrace(System.err);
+			} 
+		} else {
+			System.err.println("Got a NULL file pointer trying to process "+itemToDel.fileName);
 		}
 	}
 	
@@ -440,17 +445,30 @@ public class TimestampedStringQueue extends Thread {
 	public void close(boolean sync) {
 		closed.set(true);
 		interrupt();
-		if (inCacheFile!=null) {
-			inCacheFile.close();
+		synchronized(this) {
+			if (inCacheFile!=null) {
+				inCacheFile.close();
+			}
 		}
-		if (outCacheFile!=null) {
-			outCacheFile.close();
+		synchronized(this) {	
+			if (outCacheFile!=null) {
+				outCacheFile.close();
+			}
 		}
-		while (sync && isAlive()) {
-			try {
-				Thread.sleep(250);
-			} catch (InterruptedException ie) {}
+		
+		if (sync) {
+			boolean terminated = false;
+			while (!terminated) {
+				try {
+					join();
+					terminated = true;
+				} catch (InterruptedException ie) {
+					System.out.println("Interrupted");
+					continue;
+				}
+			}
 		}
+		
 		// Release all the files still in the queue
 		synchronized (files) {
 			if (!files.isEmpty()) {

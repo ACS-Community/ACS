@@ -13,3 +13,6 @@ echo "ACS services are running, xml logs get captured."
 
 acsNotifyService -s -w -n RealtimeNc
 echo "RealtimeNc notify service is running, where NC 'CONTROL_REALTIME' should be hosted."
+
+acsNotifyService -s -w -n NamedCh
+echo "NamedCh notify service is running, where NC 'NamedCh' should be hosted."

@@ -72,7 +72,7 @@ PROLOGUE acsutilTATPrologue
 8 SupplierAutoreconnectNCRestart "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
                 "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
                 "acsutilTATTestRunner acsncTestSupReconn 1" "@SLEEP 8" \
-                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 30" \
+                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 60" \
 		        "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
 
 # Supplier with autoreconnect OFF and Notify Channel is restarted
@@ -85,8 +85,8 @@ PROLOGUE acsutilTATPrologue
 # Supplier with autoreconnect ON and Notify Channel stopped
 10 SupplierAutoreconnectNCStopped "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
                 "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
-                "acsutilTATTestRunner acsncTestSupReconn 3" "@SLEEP 7" \
-                "acsutilTATTestRunner acsncKillNamedNotifyS.sh NamedCh" "@SLEEP 30" \
+                "acsutilTATTestRunner acsncTestSupReconn 3" "@SLEEP 8" \
+                "acsutilTATTestRunner acsncKillNamedNotifyS.sh NamedCh" "@SLEEP 60" \
 		        "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
 
 # Supplier with autoreconnect OFF and Notify Channel stopped
@@ -127,6 +127,12 @@ PROLOGUE acsutilTATPrologue
                 "acsutilTATTestRunner acsncRunMConComp NamedCh autoreconnect 45 0 2000 6" "@SLEEP 12" \
                 "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 50" \
                 "acsutilTATTestRunner acsStopContainer bilboContainer"
+
+# Supplier publishing events from 6 different threads
+16 MultiThreadSupplier "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+                "acsutilTATTestRunner acsncTestMThSup" "@SLEEP 25" \
+                "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
 
 
 

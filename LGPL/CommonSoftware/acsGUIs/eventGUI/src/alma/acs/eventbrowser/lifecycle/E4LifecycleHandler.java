@@ -35,7 +35,7 @@ import alma.acs.nsstatistics.EventModel;
  * <p>
  * Annotations:
  * <ul>
- *   <li><code>PostContextCreate</code> Is called after the Application’s IEclipseContext is created, can be used to add objects, services, etc. to the context. 
+ *   <li><code>PostContextCreate</code> Is called after the Applications IEclipseContext is created, can be used to add objects, services, etc. to the context. 
  *       This context is created for the MApplication class.
  *   <li> <code>ProcessAdditions</code> Is called directly before the model is passed to the renderer, can be used to add additional elements to the model.
  *   <li> <code>PostStartup</code> Is called right before the  is fired.

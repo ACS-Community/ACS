@@ -256,9 +256,9 @@ int main(int argc, char *argv[])
     LoggingProxy::init (m_logger);
     ACS_SHORT_LOG((LM_INFO, "Logging proxy successfully created."));
 
-	CppUnit::TextUi::TestRunner runner;
+    CppUnit::TextTestRunner runner;
 	runner.addTest( AlarmSourcesTestCase::suite() );
-	runner.run();
+	runner.run("",false,true,false);
 
 	ACS_SHORT_LOG((LM_INFO, "Flushing logs."));
 	m_logger->flush();

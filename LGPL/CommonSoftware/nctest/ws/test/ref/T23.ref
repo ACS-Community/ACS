@@ -5,9 +5,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Helper::resolveNameService wrong constructor - attempting recovery for the 'fridge' channel!
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::getManagerHostname] Manager hostname generated using localhost address: 'xxx'
 1 - ----------T--:--:--.--- [GlobalLogger - ] ORBHelper::runORB the ORB is now running!
-1 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::initThread] Thread name: 'runOrbThread'
-1 - ----------T--:--:--.--- [GlobalLogger - ] Consumer::addSubscription subscribing to 'temperatureDataBlockEvent' events for the 'fridge' channel!
 1 - created a consumer
+1 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::initThread] Thread name: 'runOrbThread'
 1 - ----------T--:--:--.--- [GlobalLogger - ] The C++ temperature difference is ---
 2 - ----------T--:--:--.--- Python Client initialized by user@host Main - Creating FridgeConsumer
 2 - ----------T--:--:--.--- fridge-Consumer addSubscription - temperatureDataBlockEvent

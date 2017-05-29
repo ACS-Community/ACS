@@ -21,6 +21,7 @@
 package alma.test.benchmark.components;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -36,6 +37,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import si.ijs.maci.AdministratorOperations;
 import si.ijs.maci.ComponentSpec;
 
 import acs.benchmark.util.ConcurrentComponentAccessUtil;
@@ -47,6 +49,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.maci.containerconfig.types.ContainerImplLangType;
 import alma.testManager.MountOperations;
+
 
 /**
  * Start components in containers in parallel.
@@ -114,6 +117,11 @@ public class StressStartComponents extends ComponentClientTestCase {
 	private AcsLogger logger;
 	
 	/**
+	 * To be notified by the manager of activation/deactivation of components
+	 */
+	private ComponentsLoadingAdminOperations adminOperations;
+	
+	/**
 	 * The names of the containers successfully started in order to 
 	 * shutdown in case of failures.
 	 */
@@ -166,17 +174,22 @@ public class StressStartComponents extends ComponentClientTestCase {
 		super.setUp();
 		contSvcs=super.getContainerServices();
 		assertNotNull(contSvcs);
+		logger=contSvcs.getLogger();
+		assertNotNull(logger);
+		adminOperations = new ComponentsLoadingAdminOperations(logger);
+		contSvcs.getAdvancedContainerServices().connectManagerAdmin(adminOperations, true);
 		componentAccessUtil=new ConcurrentComponentAccessUtil(getContainerServices());
 		assertNotNull(componentAccessUtil);
 		containerUtil = new ContainerUtil(contSvcs);
 		assertNotNull(containerUtil);
 		containerUtil.loginToManager();
-		logger=contSvcs.getLogger();
 		componentAccessUtil.start();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
+		contSvcs.getAdvancedContainerServices().disconnectManagerAdmin(adminOperations);
+		System.out.println(adminOperations);
 		componentAccessUtil.stop();
 		containerUtil.logoutFromManager();
 		super.tearDown();
@@ -270,6 +283,9 @@ public class StressStartComponents extends ComponentClientTestCase {
 		ContainerData[] containers = new ContainerData[startedContainers.size()];
 		startedContainers.toArray(containers);
 		
+		// The names of the components to start and stop
+		Vector<String> componentNames = new Vector<String>(totComponentsToStart);
+		
 		// Start the components
 		Vector<Future<MountOperations>> tasks = new Vector<Future<MountOperations>>();
 		int c=0; // to cycle through containers in the array
@@ -286,7 +302,9 @@ public class StressStartComponents extends ComponentClientTestCase {
 					"mount", 
 					contName);
 			tasks.add(componentAccessUtil.getDynamicComponentConcurrent(spec, MountOperations.class));
+			componentNames.addElement(name);
 		}
+		assertEquals("The size of the names and the components to start does not match!",totComponentsToStart, componentNames.size());
 		
 		// wait for the termination of all the tasks
 		int n=1;
@@ -321,10 +339,16 @@ public class StressStartComponents extends ComponentClientTestCase {
 			Thread.sleep(1000);
 		} catch (InterruptedException ie) {}
 		
+		assertEquals("Num of requested components mismatch",totComponentsToStart, adminOperations.getNumOfRequestedComps());
+		assertEquals("Num of activated component mismatch",totComponentsToStart, adminOperations.getNumOfActivatedComps());
+		
 		logger.info("Releasing components");
 		// release all the components in parallel
 		long startTime=System.currentTimeMillis();
-		componentAccessUtil.releaseAllComponents(true);
+		
+		// Randomly sort the collection to randomly relase components
+		Collections.shuffle(componentNames);
+		componentAccessUtil.releaseComponents(componentNames,true);
 		long endTime=System.currentTimeMillis();
 		logTime("Components released in ", endTime-startTime);
 		// The unloading of the components took around 1m 150s in te91
@@ -333,10 +357,37 @@ public class StressStartComponents extends ComponentClientTestCase {
 		if (endTime-startTime>120*1000) {
 			logTime(AcsLogLevel.WARNING, "It seems that the unload time of the components was too slow (expected<2min): ",endTime-startTime);
 		}
+
+		// Wait for th ennotification of componentes releases deactivations before shutting down
+		// the containers
 		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException ie) {}
+		startTime=System.currentTimeMillis();
+		while (adminOperations.getNumOfDeactivatedComps()!=totComponentsToStart && System.currentTimeMillis()<startTime+120000) {
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {
+				continue;
+			}
+		}
+		if (adminOperations.getNumOfDeactivatedComps()!=totComponentsToStart) {
+			logger.log(AcsLogLevel.ERROR,"Deactivated "+adminOperations.getNumOfDeactivatedComps()+" instead of "+totComponentsToStart);
+		} else {
+			logger.log(AcsLogLevel.INFO,"All components deactivated");
+		}
+		
+		startTime=System.currentTimeMillis();
+		while (adminOperations.getNumOfReleasedComps()!=totComponentsToStart && System.currentTimeMillis()<startTime+120000) {
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {
+				continue;
+			}
+		}
+		if (adminOperations.getNumOfReleasedComps()!=totComponentsToStart) {
+			logger.log(AcsLogLevel.ERROR,"Released "+adminOperations.getNumOfReleasedComps()+" instead of "+totComponentsToStart);
+		} else {
+			logger.log(AcsLogLevel.INFO,"All components released");
+		}
 		
 		logger.info("Stopping containers");
 		// Stop containers
@@ -345,7 +396,6 @@ public class StressStartComponents extends ComponentClientTestCase {
 		endTime=System.currentTimeMillis();
 		logTime("Containers stopped in ", endTime-startTime);
 		
+		
 	}
-	
-
 }

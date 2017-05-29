@@ -1,6 +1,5 @@
 2 -  -- alma.acs.nc.SimpleConsumerReconnClient 8
 4 - ::::  END_TEST_8_CONSUMER_AUTORECONNECT
-1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 1 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 1 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
@@ -9,6 +8,7 @@
 1 - Using reactive client control.
 1 - Using 1 threads for each Supplier.
 1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 1 - ----------T--:--:--.--- Restarted Notify Service 'NotifyEventChannelFactory'
 1 - ReBound ID: MC_NotifyEventChannelFactory
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] === Test8
@@ -19,10 +19,10 @@ X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Created 5 extra subscribers
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Suspend subscribers
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  From this point we expect the Notify Service to restart
-3 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA NotifyEventChannelFactory Notification Service
 3 - Channel test_reconn@DEFAULTDOMAIN[X.X.X.X:YYYY] deleted in the Naming Service
 3 - Channel test_reconn@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:YYYY] deleted in the Naming Service
+3 - ----------T--:--:--.--- Restarting Notify Service 'NotifyEventChannelFactory'
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Starting NotifyEventChannelFactory Notify Service
 3 - Name Service without channel entries in the endpoint X.X.X.X:YYYY
 3 - Using reactive client control.
@@ -40,7 +40,7 @@ X - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Successfully
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Consumer reconnected to the channel 'test_reconn'
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Creating the publisher and start sending events
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] Start publishing 20 events
-2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Waiting 20 sec to receive events comming from other processes
+2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Waiting 35 sec to receive events comming from other processes
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Disconnect subscribers and publisher
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Subscribers and publisher have been disconnected!
 2 - ----------T--:--:--.--- INFO [SimpleConsumerReconnClient-XXXXX] =========================  Tear down the client

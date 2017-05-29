@@ -113,5 +113,25 @@ public class CircularQueue<T> {
 		{}
 		return ret;
 	}
+
+    /**
+     * Set the capacity of the queue. It only changes the capacity when the 
+     * given size is greater than the current one.
+     * @return true when the capacity of the queue has been changed. Otherwise returns false.
+     */
+    public boolean setMaxSize(int size) {
+        if(size > queue.capacity()) {
+            queue.ensureCapacity(size+1);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return the current capacity of the queue
+     */
+    public int getMaxSize() {
+        return queue.capacity();
+    }
 	
 }

@@ -97,8 +97,29 @@ public interface AcsEventPublisher<T> {
 	 * @param queueSize Number of events that this queue should store.
 	 *        The choice is a tradeoff between memory use and data loss.
 	 * @param handler  The handler that should be notified by the publisher.
+     * @deprecated use {@link #increaseEventBufferSize} and {@link #setEventProcessingHandler} instead
 	 */
+    @Deprecated
 	public void enableEventQueue(int queueSize, EventProcessingHandler<T> handler);
+
+    /**
+     * Increase the event buffer size
+     * @param bufferSize new event buffer size
+     * @return true when the event buffer size has been changed, otherwise return false
+     */
+    public boolean increaseEventBufferSize(int bufferSize);
+
+    /**
+     * @return current event buffer size
+     */
+    public int getEventBufferSize(); 
+
+    /**
+     * Sets the event processing handler
+     *
+     * @param handler event processing handler
+     */
+    public void setEventProcessingHandler(EventProcessingHandler<T> handler);
 	
 }
 

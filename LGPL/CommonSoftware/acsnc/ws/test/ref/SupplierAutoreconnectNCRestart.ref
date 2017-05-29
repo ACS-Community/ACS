@@ -24,7 +24,7 @@
 2 - ContainerStatusMsg: Automatic component loading ends
 2 - ContainerStatusMsg: Ready
 3 - ----------T--:--:--.--- None test1 - Calling supplier.testReconn1(True,True)
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Start sending 20000 events via SimpleSupplier.
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Start sending 30000 events via SimpleSupplier.
 2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 2 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
@@ -43,9 +43,9 @@
 4 - Using reactive client control.
 4 - Using 1 threads for each Supplier.
 4 - Using 1 threads for each Consumer.
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 6
 4 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
 4 - ReBound ID: MC_NamedChNotifyEventChannelFactory
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 6
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 7
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 8
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 9
@@ -58,19 +58,27 @@
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 16
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 17
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 18
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Finished sending 20000 events via SimpleSupplier.
 2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 19
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 20
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 21
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 22
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 23
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 24
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 25
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 26
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 27
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 28
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Finished sending 30000 events via SimpleSupplier.
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Published events at iteration 29
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Autoreconnect: yes
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  NC: restarted
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events dropped: XXX
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events queued: XXX
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of events sent: XXX
+2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of exceptions caught: ZZZ
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of transitions: Y
 2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Transitions in: YYY
-2 - ----------T--:--:--.--- [NamedCh_SUP1 - ] ===  Number of exceptions caught: ZZZ
-3 - ----------T--:--:--.--- None test1 - Waiting 10 seconds ...
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed for the 'NamedCh' channel!
-2 - ----------T--:--:--.--- [bilboContainer-GL - ] Consumer::disconnect failed to destroy consumer admin for the 'NamedCh' channel!
 2 - /----/libbaci.so
+3 - ----------T--:--:--.--- None test1 - Waiting 20 seconds ...
 3 - ----------T--:--:--.--- None test1 - Releasing component NamedCh_SUP1
 3 - ----------T--:--:--.--- None test1 - Releasing component NamedCh_CON1

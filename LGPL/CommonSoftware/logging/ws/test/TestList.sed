@@ -14,6 +14,7 @@ s/LastPeriodDuration="[.,0-9]*"/LastPeriodDuration="X"/g
 s/MessageStatistics="[.,0-9]*"/MessageStatistics="X"/g
 s/ErrorMessageStatistics="[.,0-9]*"/ErrorMessageStatistics="X"/g
 s/-nan%/ nan%/g
+s/"-nan"/"nan"/g
 s|/.*/logging/ws/test/tmp|\<logging/ws/test\>/tmp|g
 s/Routine="" Host=".*"/Routine="" Host="<host>"/g
 /acs_tmp/!{s|Log file created = .*/tmp/[^\/]*/ACS|Log file created = tmp/<host>/ACS|}

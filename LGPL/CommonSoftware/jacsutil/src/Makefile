@@ -42,7 +42,7 @@ DEBUG = on
 
 JARFILES = jACSUtil
 jACSUtil_DIRS = com alma
-jACSUtil_EXTRAS = alma/acs/jhelpgen/content/*.gif
+jACSUtil_EXTRAS = alma/acs/jhelpgen/content/*.gif alma/acs/classloading/*.txt
 
 #
 # Scripts (public and local)
