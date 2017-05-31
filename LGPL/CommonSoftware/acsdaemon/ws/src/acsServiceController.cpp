@@ -203,7 +203,7 @@ void ServiceController::restart() {
 							(LM_ERROR, "Failed to resolve reference '%s'.", addr_str.str().c_str()));
 					return;
 				}
-				acsdaemon::LoggingServiceImp_var imp = acsdaemon::ImpBase::_narrow(obj.in());
+				acsdaemon::LoggingServiceImp_var imp = acsdaemon::LoggingServiceImp::_narrow(obj.in());
 				if (CORBA::is_nil(imp.in())) {
 					ACS_SHORT_LOG(
 							(LM_ERROR, "Failed to narrow reference '%s'.", addr_str.str().c_str()));
