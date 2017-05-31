@@ -55,7 +55,7 @@ INSTALL_FILES = ../lib/activation.jar \
 	../lib/hsqldb.jar \
 	../lib/jakarta-oro-2.0.5.jar \
 	../lib/jakarta-regexp-1.2.jar \
-	../lib/javassist-3.4.GA.jar \
+	../lib/javassist-3.18.1-GA.jar \
 	../lib/jaxen-1.1.3.jar \
 	../lib/jdom.jar \
 	../lib/jta-1.1.jar \

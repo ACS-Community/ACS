@@ -1,0 +1,5 @@
+1 - ----------T--:--:--.--- INFO [CompletionEventPublisherClient] Initializing the supplier
+1 - ----------T--:--:--.--- INFO [CompletionEventPublisherClient] component 'CompletionEventPublisherClient' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- INFO [CompletionEventPublisherClient_2] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='ICT3870NC' ChannelId=...
+1 - ----------T--:--:--.--- INFO [CompletionEventPublisherClient] Going to publish an event
+1 - ----------T--:--:--.--- INFO [CompletionEventPublisherClient] Event successfull published.

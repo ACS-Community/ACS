@@ -3720,10 +3720,10 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 
 	protected Criterion getRegularExpressionRestriction(String columnName, String re) {
 		if(forceInMemory) {
-			return Restrictions.sqlRestriction("REGEXP_MATCHES("+columnName+", ?)", re, org.hibernate.Hibernate.STRING); //HSQLDB
+			return Restrictions.sqlRestriction("REGEXP_MATCHES("+columnName+", ?)", re, org.hibernate.type.StringType.INSTANCE); //HSQLDB
 		} else {
 			//return Restrictions.sqlRestriction(columnName+" rlike ?", re, org.hibernate.Hibernate.STRING); //MySQL
-			return Restrictions.sqlRestriction("REGEXP_LIKE("+columnName+", ?)", re, org.hibernate.Hibernate.STRING); //Oracle
+			return Restrictions.sqlRestriction("REGEXP_LIKE("+columnName+", ?)", re, org.hibernate.type.StringType.INSTANCE); //Oracle
 		}
 	}
 

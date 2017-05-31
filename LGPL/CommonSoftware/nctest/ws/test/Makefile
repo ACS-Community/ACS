@@ -113,7 +113,7 @@ PANELS_L =
 # 
 # IDL Files and flags
 # 
-IDL_FILES_L = nctestSpr2005067 separateTypedef testStructs DataCaptureExample
+IDL_FILES_L = nctestSpr2005067 separateTypedef testStructs DataCaptureExample ICT-3870
 IDL_TAO_FLAGS =
 USER_IDL =
 nctestSpr2005067Stubs_LIBS = baciStubs

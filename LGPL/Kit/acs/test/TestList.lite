@@ -49,7 +49,7 @@
 #
 #-------------------------------------------------------------------------
 
-1 SOURCE acsSaveEnv.tcl \
+1 SOURCE acsRestoreEnv.tcl \
   acsSaveEnv /bin/true
 
 2 acsReplaceTest "acsReplaceTest"
@@ -57,7 +57,8 @@
 #-----------------------------------------------------------------------------
 # The next tests mess up INTROOT, INTLIST and ACSROOT (inside tat), such that they would
 # affect the behaviour of "make". 
-# So make sure to reset these vars whenever a next test starts
+# So make sure to reset these vars whenever a next test starts. This is done by sourcing
+# the acsRestoreEnv.tcl (in the next tests within acsSearchPathX.tcl).
 #-----------------------------------------------------------------------------
 # normal case: just INTROOT, INTLIST, ACSROOT
 3 SOURCE acsSearchPath1.tcl acsSearchPath1 acsSearchPath

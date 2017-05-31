@@ -633,7 +633,7 @@ else
         #              Problems with ACE/TAO
         # CXX           = c++ -ansi
         CCDEP         = gcc -MM -MG
-        CC            = gcc
+        CC            = gcc -std=gnu99 -fextended-identifiers
         CXX           = g++
         LD            = g++
         NOSHARED_ON   = -Xlinker -Bstatic 
