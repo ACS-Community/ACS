@@ -190,10 +190,14 @@ void ServiceController::restart() {
         if (ACSServiceController * c = dynamic_cast<ACSServiceController*>(this)) {
         	if (c->desc->getACSService() == NOTIFICATION_SERVICE &&
         			std::string(c->desc->getName()).compare("LoggingNotifyEventChannelFactory") == 0) {
-        		std::ostringstream addr_str("corbaloc::");
+        		std::ostringstream addr_str;
+        		addr_str << "corbaloc";
         		addr_str << c->desc->getHost() << ":" << acsServices[LOGGING_SERVICE].impport << "/";
-        		addr_str << acsServices[LOGGING_SERVICE].impname;
+        		addr_str << acsServices[LOGGING_SERVICE].imptype;
 
+        		ACS_SHORT_LOG((LM_INFO, "Getting reference of %s using address: %s",
+        				acsServices[LOGGING_SERVICE].imptype,
+        				addr_str.str().c_str()));
         		int argc = 1;
         		char *argv[] = {"some_daemon"};
         		CORBA::ORB_var orb = CORBA::ORB_init (argc,argv,"TAO");
