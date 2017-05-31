@@ -128,12 +128,29 @@ PROLOGUE acsutilTATPrologue
 #                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 50" \
 #                "acsutilTATTestRunner acsStopContainer bilboContainer"
 
-# Supplier publishing events from 6 different threads
-16 MultiThreadSupplier "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+## Supplier publishing events from 6 different threads
+#16 MultiThreadSupplier "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+#                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+#                "acsutilTATTestRunner acsncTestMThSup" "@SLEEP 25" \
+#                "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8" \
+#                "acsutilTATTestRunner acsncKillNamedNotifyS.sh NamedCh" 
+
+# Supplier PublishEvent reliability Test 1: (NotifyService force-killed handling)
+17 SupplierReliability1 "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
                 "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
-                "acsutilTATTestRunner acsncTestMThSup" "@SLEEP 25" \
-                "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8"
+                "acsutilTATTestRunner acsncSupplyEventsWithStats 30" "@SLEEP 10" \
+                "acsutilTATTestRunner acsncProcessSignal.sh 9 NamedCh" "@SLEEP 15" \
+                "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 100" \
+                "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8" \
+                "acsutilTATTestRunner acsncKillNamedNotifyS.sh NamedCh" 
 
-
+# Supplier PublishEvent reliability Test 2: (NotifyService stuck handling)
+18  SupplierReliability2 "acsutilTATTestRunner acsncCreateNamedNotifyS.sh NamedCh" "@SLEEP 3" \
+                "acsutilTATTestRunner acsStartContainer -cpp bilboContainer" "@SLEEP 15" \
+                "acsutilTATTestRunner acsncSupplyEventsWithStats 50" "@SLEEP 15" \
+                "acsutilTATTestRunner acsncProcessSignal.sh 19 NamedCh" "@SLEEP 100" \
+                "acsutilTATTestRunner acsncProcessSignal.sh 18 NamedCh" "@SLEEP 100" \
+                "acsutilTATTestRunner acsStopContainer bilboContainer" "@SLEEP 8" \
+                "acsutilTATTestRunner acsncKillNamedNotifyS.sh NamedCh" 
 
 EPILOGUE acsutilTATEpilogue

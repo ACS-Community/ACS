@@ -66,6 +66,12 @@ void bdNTSenderImplTest::stopSend()
     getSenderStream("DefaultStream")->getFlow("Flow1")->stopSend();
 }
 
+void bdNTSenderImplTest::resetSend() {
+    ACS_TRACE("bdNTSenderImplTest::resetSend");
+    getSenderStream("DefaultStream")->getFlow("Flow0")->resetSend();
+    getSenderStream("DefaultStream")->getFlow("Flow1")->resetSend();
+}
+
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(bdNTSenderImplTest)

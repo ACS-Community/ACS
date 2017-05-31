@@ -63,7 +63,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = stopNsStats
+SCRIPTS         = stopNsStats startNsStatisticsContainer.sh
 SCRIPTS_L       =
 
 #

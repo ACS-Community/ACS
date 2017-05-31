@@ -66,7 +66,7 @@ public class ROpatternImpl
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent);
+		super(long.class, name, parentComponent);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class ROpatternImpl
 		CharacteristicComponentImpl parentComponent,
 		DataAccess dataAccess)
 		throws PropertyInitializationFailed {
-		super(int.class, name, parentComponent, dataAccess);
+		super(long.class, name, parentComponent, dataAccess);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class ROpatternImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 		throws NoSuchCharacteristic {
-		return new Integer(characteristicModelImpl.getInteger(name));
+		return new Long(characteristicModelImpl.getLong(name));
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class ROpatternImpl
 	 * @see alma.ACS.PpatternOperations#default_value()
 	 */
 	public long default_value() {
-		return ((Integer)defaultValue).intValue();
+		return ((Long)defaultValue).longValue();
 	}
 
 	/**
@@ -129,6 +129,8 @@ public class ROpatternImpl
 	public Condition[] whenSet() {
 		try
 		{
+			// TODO check the definition of this method, and check if int[] is
+			//      the right type for "whenSet".
 			int[] values = characteristicModelImpl.getIntegerSeq("whenSet");
 			Condition[] conditions = new Condition[values.length];
 			for (int i = 0; i < conditions.length; i++)
@@ -147,6 +149,8 @@ public class ROpatternImpl
 	public Condition[] whenCleared() {
 		try
 		{
+			// TODO check the definition of this method, and check if int[] is
+			//      the right type for "whenSet".
 			int[] values = characteristicModelImpl.getIntegerSeq("whenCleared");
 			Condition[] conditions = new Condition[values.length];
 			for (int i = 0; i < conditions.length; i++)
@@ -245,17 +249,17 @@ public class ROpatternImpl
 	 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACS.Callback, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 	 */
 	public boolean dispatchCallback(
-		int type,
+		CallbackDispatcher.CallbackType type,
 		Object value,
 		Callback callback,
 		Completion completion,
 		CBDescOut desc) {
 		try
 		{	
-			if (type == CallbackDispatcher.DONE_TYPE)
-				((CBpattern)callback).done(((Integer)value).intValue(), completion, desc);
-			else if (type == CallbackDispatcher.WORKING_TYPE)
-				((CBpattern)callback).working(((Integer)value).intValue(), completion, desc);
+			if (type == CallbackDispatcher.CallbackType.DONE_TYPE)
+				((CBpattern)callback).done(((Long)value).longValue(), completion, desc);
+			else if (type == CallbackDispatcher.CallbackType.WORKING_TYPE)
+				((CBpattern)callback).working(((Long)value).longValue(), completion, desc);
 			else 
 				return false;
 			
@@ -271,24 +275,24 @@ public class ROpatternImpl
 	 * @see alma.ACS.CommonComparablePropertyImpl#lessThanDelta(java.lang.Object, java.lang.Object, java.lang.Object)
 	 *//*
 	public boolean lessThanDelta(Object value1, Object value2, Object delta) {
-		return Math.abs(((Integer)value1).intValue()-((Integer)value2).intValue()) < ((Integer)delta).intValue();
+		return Math.abs(((Long)value1).longValue()-((Long)value2).longValue()) < ((Long)delta).longValue();
 	}
 
 	/**
 	 * @see alma.ACS.CommonComparablePropertyImpl#noDelta(java.lang.Object)
 	 *//*
 	public boolean noDelta(Object value) {
-		return ((Integer)value).intValue() == 0;
+		return ((Long)value).longValue() == 0;
 	}
 
 	/**
 	 * @see alma.ACS.CommonComparablePropertyImpl#sum(java.lang.Object, java.lang.Object, boolean)
 	 *//*
 	public Object sum(Object value1, Object value2, boolean substract) {
-		double val2 = ((Integer)value2).intValue();
+		long val2 = ((Long)value2).longValue();
 		if (substract)
 			val2 = -val2;
-		return new Double(((Integer)value1).intValue() + val2);
+		return new Long(((Long)value1).longValue() + val2);
 	}
 */
 	

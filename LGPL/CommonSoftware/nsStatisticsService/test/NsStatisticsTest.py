@@ -26,15 +26,19 @@
 import getpass
 import re
 import sys
+import os
 
 class AcsTestLogChecker(object):
 
 	REL_PATH_FILE_PID="./tmp/pid_test"
 
-	def __init__(self, num_proc, prefix):
-		self.pid = self.read_pid()
+	def __init__(self, num_proc, prefix, customLog=False):
 		self.num_proc = int(num_proc)
 		self.prefix = prefix
+
+		if customLog: return
+
+		self.pid = self.read_pid()
 		self.user_name = getpass.getuser() # User name of the user executing the test
 		self.log_file = self.read_log_file() 
 		
@@ -69,6 +73,20 @@ class AcsTestLogChecker(object):
 			f.close()
 		except:
 			self.l("Unexpected error reading file %s: %s" % (tmp_log,sys.exc_info()[0]))
+			raise
+			
+		return str	
+
+	def read_custom_log_file(self, path):
+		# Create path of tmp log file
+
+		str = ""
+		try:
+			f = open(path, 'r')
+			str = f.read()
+			f.close()
+		except:
+			self.l("Unexpected error reading file %s: %s" % (path, sys.exc_info()[0]))
 			raise
 			
 		return str	
@@ -312,6 +330,31 @@ def test_case5():
 	test.check_pattern_exists_at_least(get_pattern_debug_stats_channel("testNsStatsChannel1"), min_stats/2)
 	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION CHANNEL Alarm")
 	
+def test_case6():
+	min_stats = 1
+	max_stats = 2
+	test = AcsTestLogChecker(6, "Test6", True)
+
+	test.log_file = test.read_custom_log_file(os.path.join(os.environ.get("ACS_TMP"), "NsStatisticsComponentTest_frodoContainer.log"))
+
+	test.check_pattern_not_exists(get_pattern_warn_freq())
+
+	# Check factories
+	n = test.check_pattern_n_times_in_range(get_pattern_stats_factory("Alarm"), min_stats, max_stats)
+	min_val = 1 if n == 1 else (n - 1)
+	test.check_pattern_n_times_in_range(get_pattern_stats_factory("Archive"), min_val, n + 1)
+	test.check_pattern_n_times_in_range(get_pattern_stats_factory("Logging"), min_val, n + 1)
+	test.check_pattern_n_times_in_range(get_pattern_stats_factory("DefaultNotifyService"), min_val, n + 1)			
+			
+	# Check channels	
+	test.check_pattern_n_times_in_range(get_pattern_stats_channel("Logging#LoggingChannel"), min_val, n)
+	test.check_pattern_n_times_in_range(get_pattern_debug_stats_channel("Logging#LoggingChannel"), min_val, n)
+	test.check_pattern_n_times_in_range(get_pattern_stats_channel("Archive#ArchivingChannel"), min_val, n)
+	test.check_pattern_n_times_in_range(get_pattern_debug_stats_channel("Archive#ArchivingChannel"), min_val, n)
+	test.check_pattern_exists_at_least(get_pattern_stats_channel("DefaultNotifyService#testNsStatsChannel1", True, True), min_val) # min_stats/2)
+	test.check_pattern_exists_at_least(get_pattern_debug_stats_channel("DefaultNotifyService#testNsStatsChannel1"), min_val) # min_stats/2)
+	test.check_pattern_not_exists("STATISTICS OF NOTIFICATION CHANNEL Alarm")
+
 	
 def main(argv):
 	test_case = int(argv[0])
@@ -325,6 +368,8 @@ def main(argv):
 		test_case4()
 	elif test_case == 5:
 		test_case5()	
+	elif test_case == 6:
+		test_case6()	
 	else:
 		raise BaseException("Unknown test case")
 

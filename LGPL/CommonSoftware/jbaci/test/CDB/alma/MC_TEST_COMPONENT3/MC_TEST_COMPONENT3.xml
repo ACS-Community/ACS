@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!--
+   - History:
+   -   Wed May 06 09:02:21 UTC 2009 modified by jDAL
+   -   Wed May 06 09:05:40 UTC 2009 modified by jDAL
+-->
+<MCtestComponent xmlns="urn:schemas-cosylab-com:MCtestComponent:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<doubleProp default_timer_trig="1.0" description="double Prop" units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="0" archive_delta="2" />
+	<doubleSeqProp default_timer_trig="1.0" description="double Seq Prop" units="deg" graph_min="0" graph_max="360" archive_min_int="0" archive_max_int="0" archive_delta="2" />
+   
+   <longProp default_timer_trig="1.0" description="long Prop" units="deg" graph_min="0" graph_max="360"
+      min_value="0" max_value="1000"
+      archive_min_int="0" archive_max_int="0" archive_delta="20" />
+   <longSeqProp default_timer_trig="1.0" description="long Seq Prop" units="deg" graph_min="0" graph_max="360"
+      min_value="0"  max_value="1000"
+      archive_min_int="0" archive_max_int="0" archive_delta="10" />
+   
+   <patternProp default_timer_trig="1.0" description="pattern Prop" units="bits" archive_min_int="0" archive_max_int="0" archive_delta="4" />
+</MCtestComponent>

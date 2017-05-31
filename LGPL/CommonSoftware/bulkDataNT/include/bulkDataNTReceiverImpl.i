@@ -41,7 +41,8 @@ template<class TCallback>
 BulkDataNTReceiverImpl<TCallback>::~BulkDataNTReceiverImpl()
 {
 	ACS_TRACE("BulkDataNTReceiverImpl<>::~BulkDataNTReceiverImpl");
-	delete parser_m;
+   if (parser_m)
+	   delete parser_m;
 }//~BulkDataNTReceiverImpl
 
 
@@ -57,7 +58,7 @@ void BulkDataNTReceiverImpl<TCallback>::initialize()
 	if(CORBA::is_nil(dal_p))
 	{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::initialize error getting DAL reference"));
-		ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+		ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::initialize");
 		throw err.getAVOpenReceiverErrorEx();
 	}
 
@@ -68,7 +69,7 @@ void BulkDataNTReceiverImpl<TCallback>::initialize()
 	if(CORBA::is_nil(dao_p))
 	{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::initialize error getting DAO reference"));
-		ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+		ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::initialize");
 		throw err.getAVOpenReceiverErrorEx();
 	}
 
@@ -131,18 +132,18 @@ void BulkDataNTReceiverImpl<TCallback>::initialize()
 		}
 		catch(ACSErr::ACSbaseExImpl &ex)
 		{
-			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::initialize");
 			err.log(LM_DEBUG);
 			throw err.getAVOpenReceiverErrorEx();
 		}
 		catch(...)
 		{
-			ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
-			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::initialize");
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::initialize");
 			throw err.getAVOpenReceiverErrorEx();
 		}
 	} // if (useNewConfigMechanism)
-}//cleanUp
+}//initialize
 
 template<class TCallback>
 bool BulkDataNTReceiverImpl<TCallback>::usesOldConfigurationMechanism() {
@@ -507,3 +508,9 @@ void BulkDataNTReceiverImpl<TCallback>::fwdData2UserCB(CORBA::Boolean enable)
 		fwdData2UserCBenabled_m=false;
 	}//if-else
 }//fwdData2UserCB
+
+template<class TCallback>
+void BulkDataNTReceiverImpl<TCallback>::resetReceiver() {
+	closeReceiver();
+	openReceiver();
+}

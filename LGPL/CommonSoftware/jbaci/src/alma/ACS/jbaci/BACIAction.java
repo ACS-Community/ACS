@@ -191,12 +191,12 @@ public abstract class BACIAction implements PrioritizedRunnable {
 			if (callbackDispatcher == null)
 			{
 				return CBvoidCallbackDispatcher.getInstance().dispatchCallback(
-														   CallbackDispatcher.DONE_TYPE,
+														   CallbackDispatcher.CallbackType.DONE_TYPE,
 														   null, callback,
 														   completion, descOut);
 			}
 			else
-				return callbackDispatcher.dispatchCallback(CallbackDispatcher.DONE_TYPE,
+				return callbackDispatcher.dispatchCallback(CallbackDispatcher.CallbackType.DONE_TYPE,
 														   returnValue, callback,
 														   completion, descOut);
 		}

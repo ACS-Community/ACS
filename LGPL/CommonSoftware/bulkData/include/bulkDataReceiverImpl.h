@@ -173,6 +173,8 @@ class BulkDataReceiverImpl : public baci::CharacteristicComponentImpl,
    	*/
     void fwdData2UserCB(CORBA::Boolean enable);
 
+    void resetReceiver();
+
   protected: 
 
     
