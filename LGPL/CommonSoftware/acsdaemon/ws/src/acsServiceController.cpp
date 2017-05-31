@@ -189,7 +189,7 @@ void ServiceController::restart() {
         //restart loggingService, otherwise remote logger get stuck
         if (ACSServiceController * c = dynamic_cast<ACSServiceController*>(this)) {
         	if (c->desc->getACSService() == NOTIFICATION_SERVICE &&
-        			std::string(c->desc->getName()).compare("notification_service") == 0) {
+        			std::string(c->desc->getName()).compare("LoggingNotifyEventChannelFactory") == 0) {
         		std::ostringstream addr_str("corbaloc::");
         		addr_str << c->desc->getHost() << ":" << acsServices[LOGGING_SERVICE].impport << "/";
         		addr_str << acsServices[LOGGING_SERVICE].impname;
