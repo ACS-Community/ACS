@@ -32,6 +32,7 @@
 #include <maciC.h>
 #include <Properties.h>
 #include <faultStateConstants.h>
+#include <acsutilPorts.h>
 
 #include "acsdaemonErrType.h"
 
@@ -185,6 +186,42 @@ void ServiceController::restart() {
         ACS_SHORT_LOG((LM_WARNING, "Restarting %s.", getServiceName().c_str()));
         stopreq = NULL;
         context->getRequestProcessor()->process(startreq = createControlledServiceRequest(START_SERVICE)); // enqueue service startup request
+        //restart loggingService, otherwise remote logger get stuck
+        if (ACSServiceController * c = dynamic_cast<ACSServiceController*>(this)) {
+        	if (c->desc->getACSService() == NOTIFICATION_SERVICE &&
+        			std::string(c->desc->getName()).compare("notification_service") == 0) {
+        		std::ostringstream addr_str("corbaloc::");
+        		addr_str << c->desc->getHost() << ":" << acsServices[LOGGING_SERVICE].impport << "/";
+        		addr_str << acsServices[LOGGING_SERVICE].impname;
+
+        		int argc = 1;
+        		char *argv[] = {"some_daemon"};
+        		CORBA::ORB_var orb = CORBA::ORB_init (argc,argv,"TAO");
+        		CORBA::Object_var obj = orb->string_to_object(addr_str.str().c_str());
+        		if (CORBA::is_nil(obj.in())){
+					ACS_SHORT_LOG(
+							(LM_ERROR, "Failed to resolve reference '%s'.", addr_str.str().c_str()));
+					return;
+				}
+				acsdaemon::LoggingServiceImp_var imp = acsdaemon::ImpBase::_narrow(obj.in());
+				if (CORBA::is_nil(imp.in())) {
+					ACS_SHORT_LOG(
+							(LM_ERROR, "Failed to narrow reference '%s'.", addr_str.str().c_str()));
+					return;
+				}
+				ACS_SHORT_LOG((LM_INFO, "Calling stop_logging_service"));
+				imp->stop_logging_service("Log",
+						acsdaemon::DaemonCallback::_nil(),
+						c->desc->getInstanceNumber());
+				ACS_SHORT_LOG((LM_INFO, "Calling stop_logging_service completed"));
+				sleep(5);
+				ACS_SHORT_LOG((LM_INFO, "Calling start_logging_service"));
+				imp->start_logging_service("Log",
+						acsdaemon::DaemonCallback::_nil(),
+						c->desc->getInstanceNumber());
+				ACS_SHORT_LOG((LM_INFO, "Calling start_logging_service completed"));
+        	}
+        }
     }
     m_mutex->release();
 }
