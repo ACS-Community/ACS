@@ -50,7 +50,7 @@ CDB_SCHEMAS = ControlDevice
 #
 # Jarfiles and their directories
 #
-JARFILES=cdb_rdb #AcsTmcdbUtils
+JARFILES=cdb_rdb AcsTmcdbUtils
 cdb_rdb_DIRS=com alma/TMCDB alma/acs/tmcdb/logic
 cdb_rdb_EXTRAS=alma/TMCDB/maci/hibernate-mappings-maci.hbm.xml \
                alma/TMCDB/baci/hibernate-mappings-baci.hbm.xml \
@@ -173,6 +173,7 @@ install : install_all
 ../lib/$(POJOS_JAR): .done_generating_classes
 	@echo "=="
 	@echo "== Compiling generated domain classes"
+	@cp alma/acs/tmcdb/helper/*.java gen/alma/acs/tmcdb
 	@cd gen;\
 	    CLASSPATH="$(shell acsMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; \
 	    jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; 
