@@ -26,9 +26,8 @@ package alma.TMCDB.maci;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.io.Serializable;
 
-public class NotificationServiceMapping implements Serializable {
+public class NotificationServiceMapping {
 
     @SuppressWarnings("unused")
 	private int NotificationServiceMappingId;

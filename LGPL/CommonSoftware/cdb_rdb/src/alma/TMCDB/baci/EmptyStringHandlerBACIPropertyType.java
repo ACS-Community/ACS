@@ -24,13 +24,12 @@
 package alma.TMCDB.baci;
 
 import org.w3c.dom.Element;
-import java.io.Serializable;
 
 /**
  * @author msekoranja
  *
  */
-public class EmptyStringHandlerBACIPropertyType implements BACIPropertyTypeIF, Serializable {
+public class EmptyStringHandlerBACIPropertyType implements BACIPropertyTypeIF {
 
 	protected BACIPropertyTypeIF delegate;
 	

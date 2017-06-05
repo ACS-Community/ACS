@@ -23,13 +23,11 @@
  */
 package com.cosylab.cdb.jdal.hibernate;
 
-import java.io.Serializable;
-
 /**
  * Plain XML element with value.
  * @author msekoranja
  */
-public class ElementValue implements ElementValueFeature, Serializable {
+public class ElementValue implements ElementValueFeature {
 
 	/**
 	 * Element value;

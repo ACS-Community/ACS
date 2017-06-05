@@ -24,9 +24,8 @@
  */
 package alma.TMCDB.maci;
 
-import java.io.Serializable;
 
-public class ChannelMapping implements Serializable {
+public class ChannelMapping {
 
     @SuppressWarnings("unused")
 	private int ChannelMappingId;

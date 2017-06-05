@@ -50,7 +50,7 @@ CDB_SCHEMAS = ControlDevice
 #
 # Jarfiles and their directories
 #
-JARFILES=cdb_rdb #AcsTmcdbUtils
+JARFILES=cdb_rdb AcsTmcdbUtils
 cdb_rdb_DIRS=com alma/TMCDB alma/acs/tmcdb/logic
 cdb_rdb_EXTRAS=alma/TMCDB/maci/hibernate-mappings-maci.hbm.xml \
                alma/TMCDB/baci/hibernate-mappings-baci.hbm.xml \
