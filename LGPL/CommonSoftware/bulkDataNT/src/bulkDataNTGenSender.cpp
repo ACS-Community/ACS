@@ -28,6 +28,7 @@
 #include <ace/Tokenizer_T.h>
 #include <unistd.h>
 #include <maciSimpleClient.h>
+#include <pthread.h>
 
 using namespace AcsBulkdata;
 using namespace std;
@@ -50,6 +51,14 @@ void print_usage(char *argv[]) {
 	exit(1);
 }
 
+void* tr_sc(void *param){
+    SimpleClient *myclient = static_cast<SimpleClient*>(param);
+    cout << "\033[33mThread to run client\033[0m" << endl;
+    myclient->run();
+//    cout << "\033[33m myclient running \033[0m" << endl;
+    return NULL;
+}
+
 int main(int argc, char *argv[])
 {
 	char c;
@@ -60,7 +69,7 @@ int main(int argc, char *argv[])
 	bool cdpProtocolCompatible = false;
 	double send_time, sendTimeout=5.0, ACKtimeout=2.0;
 	ACE_Time_Value start_time, elapsed_time;
-	char *streamName = "DefaultStream";
+	const char *streamName = "DefaultStream";
 	char *inputFilename = 0;
 	std::string param="defaultParameter";
 	unsigned int dataSize=65000;
@@ -177,6 +186,10 @@ int main(int argc, char *argv[])
     client = new SimpleClient();
     client->init(1,argv);
     client->login();
+    pthread_t t1;
+    if (pthread_create(&t1, NULL, tr_sc, (void *) client) != 0){
+        ACS_SHORT_LOG((LM_INFO, "client->run(), getting events"));
+    }
 
     ACS_SHORT_LOG((LM_INFO, "Is new bulk data enabled (ENABLE_BULKDATA_NT) %d", isBulkDataNTEnabled()));
 
@@ -397,6 +410,8 @@ int main(int argc, char *argv[])
 
     }//while(recreate)
     m_logger.flush();
+    client->getORB()->shutdown(true);
+    pthread_join(t1, NULL);
     client->logout();
     delete client;
 };//main

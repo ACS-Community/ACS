@@ -224,15 +224,14 @@ void BulkDataNTSenderFlow::errorPropagationHandler(bulkdata::errorStatusBlock ev
 {
     AUTO_TRACE(__PRETTY_FUNCTION__);
     BulkDataNTSenderFlow &myself = *static_cast<BulkDataNTSenderFlow*>(handlerParam);
-    ACS_SHORT_LOG((LM_INFO, "this.flowName_m      ->%s<-", myself.flowName_m.c_str()));
-    ACS_SHORT_LOG((LM_INFO, "event.flow:      ->%s<-", event.flow.in()));
-    ACS_SHORT_LOG((LM_INFO, "event.status:    ->%d<-", event.status));
-    ACS_SHORT_LOG((LM_INFO, "event.timestamp: ->%s<-", getStringifiedUTC(event.timestamp).c_str() ));
+    ACS_SHORT_LOG((LM_DEBUG, "this.flowName_m      ->%s<-", myself.flowName_m.c_str()));
+    ACS_SHORT_LOG((LM_DEBUG, "event.flow:          ->%s<-", event.flow.in()));
+    ACS_SHORT_LOG((LM_DEBUG, "event.status:        ->%d<-", event.status));
+    ACS_SHORT_LOG((LM_DEBUG, "event.timestamp:     ->%s<-", getStringifiedUTC(event.timestamp).c_str() ));
+    ACS_SHORT_LOG((LM_DEBUG, "this.flowName_m      ->%s<- ? event.flow ->%s<-", myself.flowName_m.c_str(), event.flow.in()));
 
-    ACS_SHORT_LOG((LM_INFO, "this.flowName_m ->%s<- ? event.flow ->%s<-", myself.flowName_m.c_str(), event.flow.in()));
-
-    if (strcmp(event.flow.in(), myself.flowName_m.c_str()) != 0){
-        ACS_SHORT_LOG((LM_INFO, "This is the same flow ! this.flowName_m ->%s<- ==  event.flow ->%s<-", myself.flowName_m.c_str(), event.flow.in()));
+    if (strcmp(event.flow.in(), myself.flowName_m.c_str()) == 0){
+        ACS_SHORT_LOG((LM_INFO, "Event received with the same flow ! this.flowName_m ->%s<- ==  event.flow ->%s<-", myself.flowName_m.c_str(), event.flow.in()));
 
         if (event.status == bulkdata::OK){
             ACS_SHORT_LOG((LM_INFO, "I got an event ... but evething is cool"));
@@ -240,12 +239,12 @@ void BulkDataNTSenderFlow::errorPropagationHandler(bulkdata::errorStatusBlock ev
         }
 
         if (event.status == bulkdata::BAD_SENDER){
-            ACS_SHORT_LOG((LM_ERROR, "I got a BAD_SENDER"));
+            ACS_SHORT_LOG((LM_ERROR, "I got a BAD_SENDER event ..."));
             myself.sts_m = bulkdata::BAD_SENDER;
         }
 
         if (event.status == bulkdata::BAD_RECEIVER){
-            ACS_SHORT_LOG((LM_ERROR, "I got a BAD_RECEIVER"));
+            ACS_SHORT_LOG((LM_ERROR, "I got a BAD_RECEIVER event ..."));
             myself.sts_m = bulkdata::BAD_RECEIVER;
         }
     } 
@@ -314,11 +313,12 @@ void BulkDataNTSenderFlow::startSend(const unsigned char *param, size_t len)
     
     //XXX
     if (sts_m != bulkdata::OK){
+        sts_m = bulkdata::OK;
         SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
         swco.setSenderName(senderStream_m->getName().c_str()); 
         swco.setFlowName(flowName_m.c_str());
         swco.setCommand("bulkdata::BAD_RECEIVER");
-        swco.setState("I'm bad");
+        swco.setState("Receiver in bad state");
         throw swco;
     }
 
@@ -346,6 +346,16 @@ void BulkDataNTSenderFlow::startSend(const unsigned char *param, size_t len)
 
 	ACE_Time_Value t1 = ACE_OS::gettimeofday();
 	(t1 - t0).to_usec(this->delayedStatistics.startSendDuration);
+    //XXX
+    if (sts_m != bulkdata::OK){
+        sts_m = bulkdata::OK;
+        SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+        swco.setSenderName(senderStream_m->getName().c_str()); 
+        swco.setFlowName(flowName_m.c_str());
+        swco.setCommand("bulkdata::BAD_RECEIVER");
+        swco.setState("Receiver in bad state");
+        throw swco;
+    }
 
 }//startSend
 
@@ -357,6 +367,15 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	getDelayedStatistics(true, 1);
 
 	ACE_Time_Value t0 = ACE_OS::gettimeofday();
+    if (sts_m != bulkdata::OK){
+        sts_m = bulkdata::OK;
+        SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+        swco.setSenderName(senderStream_m->getName().c_str()); 
+        swco.setFlowName(flowName_m.c_str());
+        swco.setCommand("bulkdata::BAD_RECEIVER");
+        swco.setState("Receiver in bad state");
+        throw swco;
+    }
 
 	// Check the number of receivers
 	int receivers = getNumberOfReceivers();
@@ -459,6 +478,16 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
         (t1 - t0).to_usec(t);
 
 	this->delayedStatistics.sendDataDuration.push_back(t);
+    //XXX
+    if (sts_m != bulkdata::OK){
+        sts_m = bulkdata::OK;
+        SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+        swco.setSenderName(senderStream_m->getName().c_str()); 
+        swco.setFlowName(flowName_m.c_str());
+        swco.setCommand("bulkdata::BAD_RECEIVER");
+        swco.setState("Receiver in bad state");
+        throw swco;
+    }
 
 }//sendData
 
@@ -471,6 +500,17 @@ void BulkDataNTSenderFlow::stopSend()
 	ACE_Time_Value t0 = ACE_OS::gettimeofday();
 	
 	getDelayedStatistics(true, 2);
+
+    //XXX
+    if (sts_m != bulkdata::OK){
+        sts_m = bulkdata::OK;
+        SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+        swco.setSenderName(senderStream_m->getName().c_str()); 
+        swco.setFlowName(flowName_m.c_str());
+        swco.setCommand("bulkdata::BAD_RECEIVER");
+        swco.setState("Receiver in bad state");
+        throw swco;
+    }
 
 	// Check the number of receivers
 	int receivers = getNumberOfReceivers();
@@ -505,6 +545,16 @@ void BulkDataNTSenderFlow::stopSend()
 
 	ACE_Time_Value t1 = ACE_OS::gettimeofday();
         (t1 - t0).to_usec(this->delayedStatistics.stopSendDuration);
+    //XXX
+    if (sts_m != bulkdata::OK){
+        sts_m = bulkdata::OK;
+        SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+        swco.setSenderName(senderStream_m->getName().c_str()); 
+        swco.setFlowName(flowName_m.c_str());
+        swco.setCommand("bulkdata::BAD_RECEIVER");
+        swco.setState("Receiver in bad state");
+        throw swco;
+    }
 }//stopSend
 
 void BulkDataNTSenderFlow::resetSend()
@@ -512,6 +562,16 @@ void BulkDataNTSenderFlow::resetSend()
 	// Clean statistics
 	//getStatistics(false);
 	//getStatistics(true);
+    //XXX
+    if (sts_m != bulkdata::OK){
+        sts_m = bulkdata::OK;
+        SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+        swco.setSenderName(senderStream_m->getName().c_str()); 
+        swco.setFlowName(flowName_m.c_str());
+        swco.setCommand("bulkdata::BAD_RECEIVER");
+        swco.setState("Receiver in bad state");
+        throw swco;
+    }
 	
 	ACE_Time_Value t0 = ACE_OS::gettimeofday();
 	
@@ -525,6 +585,15 @@ void BulkDataNTSenderFlow::resetSend()
 		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "resetSend will send data to %d connected listeners in Sender Flow: %s @ Stream: %s", receivers, flowName_m.c_str(), senderStream_m->getName().c_str()));
 	}
 
+    //XXX
+    if (sts_m != bulkdata::OK){
+        SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+        swco.setSenderName(senderStream_m->getName().c_str()); 
+        swco.setFlowName(flowName_m.c_str());
+        swco.setCommand("bulkdata::BAD_RECEIVER");
+        swco.setState("Receiver in bad state");
+        throw swco;
+    }
 	try
 	{
 		writeFrame(ACSBulkData::BD_RESET);
@@ -539,6 +608,16 @@ void BulkDataNTSenderFlow::resetSend()
 
 	ACE_Time_Value t1 = ACE_OS::gettimeofday();
         (t1 - t0).to_usec(this->delayedStatistics.resetSendDuration);
+    //XXX
+    if (sts_m != bulkdata::OK){
+        sts_m = bulkdata::OK;
+        SenderWrongCmdOrderExImpl swco(__FILE__, __LINE__, __FUNCTION__);
+        swco.setSenderName(senderStream_m->getName().c_str()); 
+        swco.setFlowName(flowName_m.c_str());
+        swco.setCommand("bulkdata::BAD_RECEIVER");
+        swco.setState("Receiver in bad state");
+        throw swco;
+    }
 }//resetSend
 
 void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param, size_t len, unsigned int restFrameCount, bool waitForACKs)

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from Acspy.Clients.SimpleClient import PySimpleClient
+from Acspy.Common.Err import ACSError
 from Acspy.Common import TimeHelper
 from Acspy.Nc.Supplier import Supplier
 from time import sleep, time
