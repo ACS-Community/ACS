@@ -28,8 +28,10 @@
 #include <iosfwd>
 #include <ace/Get_Opt.h>
 #include <ace/Tokenizer_T.h>
+#include <maciSimpleClient.h>
 
 using namespace std;
+using namespace maci;
 
 class  TestCB:  public BulkDataNTCallback
 {
@@ -113,6 +115,11 @@ public:
 		return 0;
 	}
 
+	int cbReset() {
+		std::cout << "cbReset[ " << sn << "#" << fn << " ]" << std::endl;
+		return 0;
+	}
+
 	void setStoreData(bool shouldStoreData) {
 		storeData = shouldStoreData;
 	}
@@ -151,6 +158,10 @@ void print_usage(char *argv[]) {
 int main(int argc, char *argv[])
 {
 
+    SimpleClient *client;
+    client = new SimpleClient();
+    client->init(1,argv);
+    client->login();
 	char c;
 	ReceiverStreamConfiguration streamCfg;
 	ReceiverFlowConfiguration flowCfg;
@@ -298,5 +309,7 @@ int main(int argc, char *argv[])
 		}
 		delete callbacks[i];
 	 }
+    client->logout();
+    delete client;
 
 }

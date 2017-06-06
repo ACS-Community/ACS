@@ -1,0 +1,97 @@
+2 - Starting Container...
+4 - Sending signal code: 19  to process id: NamedCh
+5 - Sending signal code: 18  to process id: NamedCh
+2 - Retrieving CDB reference from Manager using bootstrap ORB
+2 - Resolving reference: 'corbaloc::---:----/Manager'
+2 - Manager reference narrowed.
+2 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
+2 - Configuration information for container 'bilboContainer' not available.
+2 - Starting as dynamic container.
+2 - ContainerStatusMsg: Startup begins
+2 - ContainerStatusMsg: ORB initialization begins
+2 - ContainerStatusMsg: ORB initialization ends
+1 - ----------T--:--:--.--- ERROR [acsstartupPids] Unable to determine NamedCh notification service's process ID.
+1 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+1 - Name Service without channel entries in the endpoint X.X.X.X.X.X:PPPP
+1 - Using reactive client control.
+1 - Using 1 threads for each Supplier.
+1 - Using 1 threads for each Consumer.
+1 - ----------T--:--:--.--- Restarting Notify Service 'NamedCh'
+1 - ----------T--:--:--.--- Restarted Notify Service 'NamedCh'
+1 - ReBound ID: MC_NamedChNotifyEventChannelFactory
+2 - ContainerStatusMsg: Manager access initialization begins
+2 - ContainerStatusMsg: Manager access initialization ends
+2 - ContainerStatusMsg: Startup ends
+2 - ContainerStatusMsg: Automatic component loading begins
+2 - ContainerStatusMsg: Automatic component loading ends
+2 - ContainerStatusMsg: Ready
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] push_structured_event failed. Supplier will try to reconnect to NS and trying again
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Helper::resolveNotifyChannel CORBA System exception caught for the 'NamedCh' channel! logName="LOG_NC_ChannelCreated_ATTEMPT"
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Supplier couldn't reconnect to the channel
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Helper::resolveNotifyChannel CORBA System exception caught for the 'NamedCh' channel! logName="LOG_NC_ChannelCreated_ATTEMPT"
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Supplier couldn't reconnect to the channel
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Helper::resolveNotifyChannel CORBA System exception caught for the 'NamedCh' channel! logName="LOG_NC_ChannelCreated_ATTEMPT"
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Supplier couldn't reconnect to the channel
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] push_structured_event failed. Supplier will try to reconnect to NS and trying again
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Helper::resolveNotifyChannel CORBA System exception caught for the 'NamedCh' channel! logName="LOG_NC_ChannelCreated_ATTEMPT"
+2 - ----------T--:--:--.--- [bilboContainer-GL - ] Supplier couldn't reconnect to the channel
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] Sent an event via SimpleSupplier.
+2 - ----------T--:--:--.--- [NC_Reliability - ] ===  Number of events dropped: XXX
+2 - ----------T--:--:--.--- [NC_Reliability - ] ===  Number of events sent: XXX
+2 - ----------T--:--:--.--- [NC_Reliability - ] ===  total events sent: 50
+2 - ----------T--:--:--.--- [NC_Reliability - ] ===  Number of events queued: XXX
+2 - ----------T--:--:--.--- [NC_Reliability - ] ===  Number of transitions: Y
+2 - /----/libbaci.so
+7 - ----------T--:--:--.--- Stopping Notify Service 'NamedCh'
+7 - Channel NamedCh@DEFAULTDOMAIN[X.X.X.X:PPPP] deleted in the Naming Service
+7 - Channel NamedCh@DEFAULTDOMAIN-YYYY-MM-DD_HH:MM:SS[X.X.X.X:PPPP] deleted in the Naming Service
+7 - ----------T--:--:--.--- Stopped Notify Service 'NamedCh'

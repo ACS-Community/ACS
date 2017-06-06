@@ -17,6 +17,7 @@
 	<ErrorCode name="AVStartSendError" shortDescription="Sender startSend error" description="Sender startSend error"/>
 	<ErrorCode name="AVPaceDataError" shortDescription="Sender paceData error" description="Sender paceData error"/>
 	<ErrorCode name="AVStopSendError" shortDescription="Sender stopSend error" description="Sender stopSend error"/>
+	<ErrorCode name="AVResetSendError" shortDescription="Sender resetSend error" description="Sender resetSend error"/>
 
 	<ErrorCode name="AVOpenReceiverError" shortDescription="Receiver openReceiver error" description="Receiver openReceiver error"/>
 	<ErrorCode name="AVReceiverConfigError" shortDescription="Receiver getReceiverConfig error" description="Receiver getReceiverConfig error"/>

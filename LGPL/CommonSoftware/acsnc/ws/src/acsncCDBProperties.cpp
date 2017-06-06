@@ -44,21 +44,19 @@ namespace nc {
 	if ((maci::ContainerImpl::getContainer() != 0) && 
 	    (maci::ContainerImpl::getContainer()->getContainerCORBAProxy() != maci::Container::_nil()))
 	    {
-	    retVal = maci::ContainerImpl::getContainer()->getService<CDB::DAL>("CDB", 
-									 0, 
-									 true);
+	    retVal = maci::ContainerImpl::getContainer()->getService<CDB::DAL>("CDB", 0, true);
 	    }
 	else
 	    {
 			if (maci::SimpleClient::getInstance() != 0)
 			{
-				retVal = maci::SimpleClient::getInstance()->getContainerServices()->getCDB();
+//				retVal = maci::SimpleClient::getInstance()->getContainerServices()->getCDB();
+				retVal = maci::SimpleClient::getInstance()->getComponent<CDB::DAL>("CDB", 0, true);
 			}
 			else
 			{		
 		    	ACS_STATIC_SHORT_LOG((LM_ERROR,
-						 "CDBProperties::getCDB",
-						 "Container and SimpleClient refs null."));
+						 "CDBProperties::getCDB Container and SimpleClient refs null."));
 			}
 		}
 	return retVal._retn();
@@ -76,9 +74,7 @@ namespace nc {
 	//sanity check
 	if(cdbRef.in()==0)
 	    {
-	    ACS_STATIC_SHORT_LOG((LM_ERROR,
-				  "CDBProperties::cdbChannelConfigExists",
-				  "CDB ref null."));
+	    ACS_STATIC_SHORT_LOG((LM_ERROR, "CDBProperties::cdbChannelConfigExists CDB ref null."));
 	    return false;
 	    }
 	
@@ -103,9 +99,7 @@ namespace nc {
 	//exist
 	catch(...)
 	    {
-	    ACS_STATIC_SHORT_LOG((LM_INFO,
-				  "CDBProperties::cdbChannelConfigExists",
-				  "No CDB entry found for '%s' channel. OK.",
+	    ACS_STATIC_SHORT_LOG((LM_INFO, "CDBProperties::cdbChannelConfigExists No CDB entry found for '%s' channel. OK.",
 				  cdbChannelName.c_str()));
 	    return false;
 	    }
@@ -120,9 +114,7 @@ namespace nc {
 	//sanity check
 	if (cdbChannelConfigExists(channelName)==false)
 	    {
-	    ACS_STATIC_SHORT_LOG((LM_INFO,
-				  "CDBProperties::getCDBAdminProps",
-				  "Channel does not exist."));
+	    ACS_STATIC_SHORT_LOG((LM_INFO,"CDBProperties::getCDBAdminProps Channel does not exist."));
 	    return retVal;
 	    }
 	

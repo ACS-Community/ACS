@@ -40,4 +40,5 @@ public:
 
     virtual void stopSend();
 
+    virtual void resetSend();
 };

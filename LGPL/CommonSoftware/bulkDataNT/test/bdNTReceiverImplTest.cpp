@@ -52,6 +52,12 @@ public:
 		return 0;
 	}
 
+	int cbReset()
+	{
+		//std::cout << "=>cbReset[" << recvName_m << "/" << flowName_m << "]" << std::endl;
+		ACS_SHORT_LOG((LM_INFO, "=>cbReset[%s/%s]", recvName_m.c_str(), flowName_m.c_str()));
+		return 0;
+	}
 };
 
 
