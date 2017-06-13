@@ -875,7 +875,7 @@ $(CURDIR)/../lib/lib$2.$(SHLIB_EXT): $$(xyz_$2_OBJ) $$($2_lList)
 ifeq ($(platform),Cygwin)
 	$(AT)$(CXX) $(LDFLAGS_GCOV) -shared -fPIC $$($2_sharedLibName) -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc $(L_PATH) -Wl,--whole-archive $$(xyz_$2_OBJ) -Wl,--no-whole-archive $(sort $($2_libraryList)) $4 -o ../lib/lib$2.$(SHLIB_EXT)
 else
-	$(AT)$(CXX) $(LDFLAGS_GCOV) -shared -fPIC $$($2_sharedLibName) -Wl,--copy-dt-needed-entries $(L_PATH) $($2_libraryList) $4 -o ../lib/lib$2.$(SHLIB_EXT) $$(xyz_$2_OBJ)
+	$(AT)$(CXX) $(LDFLAGS_GCOV) -shared -fPIC $$($2_sharedLibName) -Wl,--copy-dt-needed-entries $(L_PATH) $4 -o ../lib/lib$2.$(SHLIB_EXT) $$(xyz_$2_OBJ) $($2_libraryList) 
 endif
 	$(AT) if [ "$$$$MAKE_NOSYMBOL_CHECK" == "" ]; then acsMakeCheckUnresolvedSymbols -w ../lib/lib$2.$(SHLIB_EXT); fi 
 	$(AT) chmod a-w+x ../lib/lib$2.$(SHLIB_EXT)
