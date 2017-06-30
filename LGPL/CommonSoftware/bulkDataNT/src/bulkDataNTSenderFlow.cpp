@@ -131,7 +131,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
   setThrottling(senderFlowCfg_m.getThrottling());
 
   //XXX 
-  nc::SimpleConsumer<bulkdata::errorStatusBlock> *errorStatusConsumer_p = 0;
+  errorStatusConsumer_p = 0;
   errorStatusConsumer_p = new nc::SimpleConsumer<bulkdata::errorStatusBlock>(bulkdata::CHANNELNAME_ERR_PROP,"");
   errorStatusConsumer_p->addSubscription<bulkdata::errorStatusBlock>(errorPropagationHandler, this);
   errorStatusConsumer_p->consumerReady();
@@ -212,11 +212,11 @@ BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Sender Flow: %s @ stream: %s has been destroyed.", flowName_m.c_str(), streamName.c_str()));
 
     
-    //if (errorStatusConsumer_p !=0){
-    //    errorStatusConsumer_p->disconnect();
-    //    errorStatusConsumer_p = 0;
-    //    ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "errorStatusConsumer_p has been destroyed."));
-    //}
+        if (errorStatusConsumer_p !=0){
+            errorStatusConsumer_p->disconnect();
+            errorStatusConsumer_p = 0;
+            ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "errorStatusConsumer_p has been destroyed."));
+        }
 }
 
 //XXX

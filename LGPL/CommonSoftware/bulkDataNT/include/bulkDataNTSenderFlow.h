@@ -36,6 +36,7 @@
 #include "bulkDataNTWriterListener.h"
 #include <ACE.h>
 #include <bulkDataC.h>
+#include <acsncSimpleConsumer.h>
 
 namespace AcsBulkdata
 {
@@ -152,6 +153,7 @@ protected:
 	typedef enum {StartState, DataRcvState, StopState, IgnoreDataState } SenderFlowStates;
 	SenderFlowStates currentState_m; /// current state of Sender Flow
 	static const char* state2String[]; /// strings name of states
+	nc::SimpleConsumer<bulkdata::errorStatusBlock> *errorStatusConsumer_p;
 
 	AcsBulkdata::BulkDataNTSenderStream *senderStream_m; /// pointer to the sender
 
