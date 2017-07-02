@@ -59,6 +59,18 @@ module bulkdata
     AVStreams::StreamEndPoint_A streamendpoint_A;
   };
 
+  enum  errStatus { OK, BAD_SENDER, BAD_RECEIVER};
+
+  struct errorStatusBlock
+  {
+      string flow;
+      errStatus status;
+      ACS::Time timestamp;
+//      ACSErr::Completion ex;
+//      ACSErr::ACSErrType ex;
+  };
+
+  const string CHANNELNAME_ERR_PROP = "BD_ERR_PROP";
 };
 
 #endif

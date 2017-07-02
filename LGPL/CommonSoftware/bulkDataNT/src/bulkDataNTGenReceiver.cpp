@@ -28,8 +28,19 @@
 #include <iosfwd>
 #include <ace/Get_Opt.h>
 #include <ace/Tokenizer_T.h>
+#include <maciSimpleClient.h>
 
 using namespace std;
+using namespace maci;
+
+
+void* tr_sc(void *param){
+    SimpleClient *myclient = static_cast<SimpleClient*>(param);
+    cout << "\033[33mThread to run client\033[0m" << endl;
+    myclient->run();
+//    cout << "\033[33m myclient running \033[0m" << endl;
+    return NULL;
+}
 
 class  TestCB:  public BulkDataNTCallback
 {
@@ -156,6 +167,14 @@ void print_usage(char *argv[]) {
 int main(int argc, char *argv[])
 {
 
+    SimpleClient *client;
+    client = new SimpleClient();
+    client->init(1,argv);
+    client->login();
+    pthread_t t1;
+    if (pthread_create(&t1, NULL, tr_sc, (void *) client) != 0){
+        ACS_SHORT_LOG((LM_INFO, "client->run(), getting events"));
+    }
 	char c;
 	ReceiverStreamConfiguration streamCfg;
 	ReceiverFlowConfiguration flowCfg;
@@ -303,5 +322,9 @@ int main(int argc, char *argv[])
 		}
 		delete callbacks[i];
 	 }
+    client->getORB()->shutdown(true);
+    pthread_join(t1, NULL);
+    client->logout();
+//    delete client;
 
 }

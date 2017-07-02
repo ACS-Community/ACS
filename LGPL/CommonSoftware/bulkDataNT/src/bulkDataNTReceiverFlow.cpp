@@ -27,13 +27,16 @@
 #include <iostream>
 #include "bulkDataNTReceiverStream.h"
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
-
-
+#include <acsncSimpleConsumer.h>
+#include <acsncS.h>
+#include <acsncSimpleSupplier.h>
+#include <bulkDataC.h>
 static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.28 2013/02/07 13:34:04 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
 using namespace std;
+
 
 BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *receiverStream,
     const char* flowName,
@@ -43,7 +46,8 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
     BulkDataNTFlow(flowName),
     receiverStream_m(receiverStream),
     callback_m(cb), releaseCB_m(releaseCB),
-    rcvCfg_m(rcvCfg)
+    rcvCfg_m(rcvCfg),
+    errorStatusSupplier_p(0)
 {
   AUTO_TRACE(__PRETTY_FUNCTION__);
   std::string streamName, topicName;
@@ -72,6 +76,21 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
 
   ddsDataReader_m= ddsSubscriber_m->createDDSReader(ddsTopic_m, dataReaderListener_m);
   ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Receiver Flow: %s @ Stream: %s has been created.", flowName_m.c_str(), streamName.c_str()));
+
+  //XXX Receiver should warn if something fails. errorStatusSupplier_p will be used
+  errorStatusSupplier_p = new nc::SimpleSupplier(bulkdata::CHANNELNAME_ERR_PROP, NULL);
+  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "errorStatusSupplier_p created"));
+  bulkdata::errorStatusBlock err_sts;
+  err_sts.status = bulkdata::OK;
+  err_sts.timestamp = ::getTimeStamp();
+  err_sts.flow = flowName;
+
+  if(errorStatusSupplier_p)
+  {
+      ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Trying to send OK via NC"));
+      errorStatusSupplier_p->publishData<bulkdata::errorStatusBlock>(err_sts);
+      ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "OK sended sucesfully"));
+  }
 }//BulkDataNTReceiverFlow
 
 
@@ -104,7 +123,17 @@ BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()
 	if (releaseCB_m) delete callback_m;
 
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_INFO, "Receiver Flow: %s @ stream: %s has been destroyed.", flowName_m.c_str(), streamName.c_str()));
+
+  //XXX
+  if (errorStatusSupplier_p != 0)
+  {
+      //errorStatusSupplier_p->disconnect();
+      errorStatusSupplier_p=0;
+      ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "errorStatusSupplier_p deleted"));
+  }
+
 }//~BulkDataNTReceiverFlow
+
 
 void BulkDataNTReceiverFlow::setReceiverName(char* recvName)
 {
@@ -120,14 +149,31 @@ void BulkDataNTReceiverFlow::setReceiverName(char* recvName)
 void AcsBulkdata::BulkDataNTReceiverFlow::enableCallingCB()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-	dataReaderListener_m->enableCallingCB();
+    try{
+        dataReaderListener_m->enableCallingCB();
+    }catch(...){
+        bulkdata::errorStatusBlock err_sts;
+        err_sts.status = bulkdata::BAD_RECEIVER;
+        err_sts.timestamp = ::getTimeStamp();
+        err_sts.flow =  callback_m->getFlowName();
+        errorStatusSupplier_p->publishData<bulkdata::errorStatusBlock>(err_sts);
+    }
 }
 
 
 void AcsBulkdata::BulkDataNTReceiverFlow::disableCallingCB()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-	dataReaderListener_m->disableCallingCB();
+    try{
+        dataReaderListener_m->disableCallingCB();
+    }catch(...){
+        bulkdata::errorStatusBlock err_sts;
+        err_sts.status = bulkdata::BAD_RECEIVER;
+        err_sts.timestamp = ::getTimeStamp();
+        err_sts.flow = callback_m->getFlowName();
+        errorStatusSupplier_p->publishData<bulkdata::errorStatusBlock>(err_sts);
+    }
+
 }
 
 void AcsBulkdata::BulkDataNTReceiverFlow::dumpStatistics()

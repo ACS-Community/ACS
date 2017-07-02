@@ -21,7 +21,7 @@
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = hibernateCdbJDal
+SCRIPTS         = hibernateCdbJDal MonitoringSyncTool
 SCRIPTS_L       =
 
 
@@ -50,13 +50,17 @@ CDB_SCHEMAS = ControlDevice
 #
 # Jarfiles and their directories
 #
-JARFILES=cdb_rdb
+JARFILES=cdb_rdb AcsTmcdbUtils
 cdb_rdb_DIRS=com alma/TMCDB alma/acs/tmcdb/logic
 cdb_rdb_EXTRAS=alma/TMCDB/maci/hibernate-mappings-maci.hbm.xml \
                alma/TMCDB/baci/hibernate-mappings-baci.hbm.xml \
                acsOnly-cdb_rdb-hibernate.cfg.xml
 
-cdb_rdb_JLIBS=TMCDBswconfigStrategy cdbrdb-pojos
+AcsTmcdbUtils_DIRS := alma/acs/tmcdb/generated/lrutype alma/acs/tmcdb/utils
+
+cdb_rdb_JLIBS := TMCDBswconfigStrategy cdbrdb-pojos 
+AcsTmcdbUtils_JLIBS := cdb_rdb
+
 #
 # java sources in Jarfile on/off
 DEBUG=on
@@ -66,7 +70,7 @@ DEBUG=on
 # other files to be installed
 #----------------------------
 POJOS_JAR = cdbrdb-pojos.jar
-INSTALL_FILES = ../lib/$(POJOS_JAR) ../lib/TMCDBswconfigStrategy.jar
+INSTALL_FILES = ../lib/$(POJOS_JAR) ../lib/TMCDBswconfigStrategy.jar ../lib/commons-cli-1.2.jar
 
 
 #
@@ -85,13 +89,19 @@ endif
 #
 # TARGETS
 # -------
-all:	.done_generating_sql ../lib/TMCDBswconfigStrategy.jar .done_generating_classes ../lib/$(POJOS_JAR) do_all
+gen:
+	acsStartJava -endorsed org.exolab.castor.builder.SourceGenerator \
+            -i ../config/CDB/schemas/LRU.xsd  -package alma.acs.tmcdb.generated.lrutype
+
+
+all:	gen .done_generating_sql ../lib/TMCDBswconfigStrategy.jar .done_generating_classes ../lib/$(POJOS_JAR) do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
 	@echo "== Deleting generated code"
 	@rm -rf ../config/TMCDB_swconfigcore
 	@rm -rf ../config/TMCDB_swconfigext
+	@rm -rf alma/acs/tmcdb/generated
 	@rm -rf tmcdb
 	@rm -rf gen
 	@rm -f .done_generating_sql
@@ -163,6 +173,7 @@ install : install_all
 ../lib/$(POJOS_JAR): .done_generating_classes
 	@echo "=="
 	@echo "== Compiling generated domain classes"
+	@cp alma/acs/tmcdb/helper/*.java gen/alma/acs/tmcdb
 	@cd gen;\
 	    CLASSPATH="$(shell acsMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; \
 	    jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; 
