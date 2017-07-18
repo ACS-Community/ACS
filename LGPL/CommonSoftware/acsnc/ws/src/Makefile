@@ -27,7 +27,7 @@
 # Makefile for acsnc/ws/src
 
 # user definable C-compilation flags
-USER_CFLAGS =
+USER_CFLAGS =  -g -O0
 USER_LIB    =
 
 DEBUG=on

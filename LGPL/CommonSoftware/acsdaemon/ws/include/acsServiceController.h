@@ -32,6 +32,7 @@
 #include <acsThreadManager.h>
 #include <map>
 #include <string>
+#include <list>
 #include <AcsAlarmSystemC.h>
 #include <acsdaemonC.h>
 
@@ -83,6 +84,7 @@ class ServiceController {
     virtual acsdaemon::ServiceState getActualState() = 0;
     virtual void fireAlarm(acsdaemon::ServiceState state) = 0;
   public:
+    std::list<ACSServiceType> dependencies;
     virtual ACE_CString getServiceName() = 0;
     ServiceController(ACSDaemonContext *icontext, bool iautorestart);
     virtual ~ServiceController();

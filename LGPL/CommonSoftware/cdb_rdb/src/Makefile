@@ -56,10 +56,10 @@ cdb_rdb_EXTRAS=alma/TMCDB/maci/hibernate-mappings-maci.hbm.xml \
                alma/TMCDB/baci/hibernate-mappings-baci.hbm.xml \
                acsOnly-cdb_rdb-hibernate.cfg.xml
 
-AcsTmcdbUtils_DIRS=alma/acs/tmcdb/generated/lrutype alma/acs/tmcdb/utils
+AcsTmcdbUtils_DIRS := alma/acs/tmcdb/generated/lrutype alma/acs/tmcdb/utils
 
-cdb_rdb_JLIBS=TMCDBswconfigStrategy cdbrdb-pojos 
-
+cdb_rdb_JLIBS := TMCDBswconfigStrategy cdbrdb-pojos 
+AcsTmcdbUtils_JLIBS := cdb_rdb
 
 #
 # java sources in Jarfile on/off
@@ -173,6 +173,7 @@ install : install_all
 ../lib/$(POJOS_JAR): .done_generating_classes
 	@echo "=="
 	@echo "== Compiling generated domain classes"
+	@cp alma/acs/tmcdb/helper/*.java gen/alma/acs/tmcdb
 	@cd gen;\
 	    CLASSPATH="$(shell acsMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; \
 	    jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; 

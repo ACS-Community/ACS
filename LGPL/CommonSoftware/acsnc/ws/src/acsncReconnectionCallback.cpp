@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <maciContainerImpl.h>
+#include <maciSimpleClient.h>
 #include <acsContainerServices.h>
 
 #include "acsncReconnectionCallback.h"
@@ -16,6 +17,12 @@ ReconnectionCallback::ReconnectionCallback(nc::Helper *sub):
 {
    if (::maci::ContainerImpl::getContainer() != NULL)
       services_ = ::maci::ContainerImpl::getContainer()->getContainerServices();
+   else {
+      if (maci::SimpleClient::getInstance() != 0)
+         services_ = ::maci::SimpleClient::getInstance()->getContainerServices();
+      else
+         ACS_STATIC_SHORT_LOG((LM_ERROR, "ReconnectionCallback::ReconnectionCallback Container and SimpleClient refs null."));
+   }
 }
 
 bool ReconnectionCallback::is_alive()

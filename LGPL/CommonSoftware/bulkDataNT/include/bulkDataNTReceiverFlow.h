@@ -33,7 +33,13 @@
 #include "bulkDataNTStream.h"
 #include "bulkDataNTCallback.h"
 #include "bulkDataNTReaderListener.h"
+#include <acsncS.h>
 
+
+// Forward declarations for classes that this component uses
+namespace nc {
+    class SimpleSupplier;
+}
 
 namespace AcsBulkdata
 {
@@ -90,6 +96,8 @@ public:
 	void disableCallingCB();
 
 	void dumpStatistics();
+    
+//    static void myHandlerFunction(acsnc::EventDescription event);
 
 protected:
 	AcsBulkdata::BulkDataNTReceiverStreamBase *receiverStream_m;
@@ -108,6 +116,7 @@ protected:
 	void operator=(const BulkDataNTReceiverFlow&);
 	/// ALMA C++ coding standards state copy constructors should be disabled.
 	BulkDataNTReceiverFlow(const BulkDataNTReceiverFlow&);
+    nc::SimpleSupplier* errorStatusSupplier_p;
 };//class BulkDataSenderFlow
 
 };
