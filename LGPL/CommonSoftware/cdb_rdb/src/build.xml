@@ -17,12 +17,15 @@
 	<path location="${env.ACSROOT}/lib/jACSUtil.jar" />
 	<path location="${env.ACSROOT}/lib/acserrj.jar" />
 	<path location="${env.ACSROOT}/lib/hsqldb.jar" />
-	<path location="${env.ACSROOT}/lib/hibernate-tools-3.6.0.Final.jar" />
-	<path location="${env.ACSROOT}/lib/hibernate3.jar" />
+	<path location="${env.ACSROOT}/lib/hibernate-tools-4.3.1.Final.jar" />
+	<path location="${env.ACSROOT}/lib/hibernate-core-4.3.11.Final.jar" />
+	<path location="${env.ACSROOT}/lib/hibernate-commons-annotations-4.0.5.Final.jar" />
+	<path location="${env.ACSROOT}/lib/jboss-logging-3.1.3.GA.jar" />
+	<path location="${env.ACSROOT}/lib/jboss-transaction-api_1.1_spec-1.0.1.Final.jar" />
 	<path location="${env.ACSROOT}/lib/freemarker-2.3.23.jar" />
 	<path location="${env.ACSROOT}/lib/tmcdbGenerator.jar" />
 	<path location="${env.JACORB_HOME}/lib/endorsed/jacorb-omgapi-3.6.1.jar" />
-	<path location="${env.ACSROOT}/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar" />
+	<path location="${env.ACSROOT}/lib/hibernate-jpa-2.1-api-1.0.0.Final.jar" />
 	<path location="../lib/TMCDBswconfigStrategy.jar" />
 </path>
 

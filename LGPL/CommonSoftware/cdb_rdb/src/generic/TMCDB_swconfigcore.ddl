@@ -337,6 +337,8 @@ TABLE Component
      MinLogLevelLocal        TINYINT                 NOT NULL
      XMLDoc                  XMLCLOB                 NULL
      URN                     LONGVARCHAR (512)       NULL
+     ActionThreadStackSize                     INTEGER       NULL
+     MonitoringThreadStackSize                     INTEGER       NULL
      KEY ComponentId GENERATED FROM Path ComponentName ConfigurationId
      CONSTRAINT ComponentIDL FOREIGN KEY (ComponentTypeId) REFERENCES ComponentType 
      CONSTRAINT ComponentContainer FOREIGN KEY (ContainerId) REFERENCES Container 
