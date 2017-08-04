@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="lru-type">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="fullname" type="xs:string"/>
+                <xs:element name="icd" type="xs:string"/>
+                <xs:element name="icd-date" type="xs:long"/>
+                <xs:element name="description" type="xs:string"/>
+                <xs:element name="notes" type="xs:string"/>
+                <xs:element name="assembly-type" type="assembly-type-t"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="assembly-type-t">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="dev-name" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="default-role">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="node"/>
+                        <xs:element name="base-address"/>
+                        <xs:element name="channel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="baci-property" type="baci-property-t" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="baci-property-t">
+        <xs:sequence>
+            <xs:element name="propertyname" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="format" type="xs:string"/>
+            <xs:element name="units" type="xs:string"/>
+            <xs:element name="resolution" type="xs:string"/>
+            <xs:element name="archive-priority" type="xs:string"/>
+            <xs:element name="archive-min-int" type="xs:string"/>
+            <xs:element name="archive-max-int" type="xs:string"/>
+            <xs:element name="default-timer-trig" type="xs:string"/>
+            <xs:element name="min-timer-trig" type="xs:string"/>
+            <xs:element name="initialize-devio" type="xs:string"/>
+            <xs:element name="min-delta-trig" type="xs:string"/>
+            <xs:element name="default-value" type="xs:string"/>
+            <xs:element name="graph-min" type="xs:string"/>
+            <xs:element name="graph-max" type="xs:string"/>
+            <xs:element name="min-step" type="xs:string"/>
+            <xs:element name="archive-delta" type="xs:string"/>
+            <xs:element name="alarm-high-on" type="xs:string"/>
+            <xs:element name="alarm-low-on" type="xs:string"/>
+            <xs:element name="alarm-high-off" type="xs:string"/>
+            <xs:element name="alarm-low-off" type="xs:string"/>
+            <xs:element name="alarm-timer-trig" type="xs:string"/>
+            <xs:element name="min-value" type="xs:string"/>            
+            <xs:element name="max-value" type="xs:string"/>            
+            <xs:element name="bitdescription" type="xs:string"/>            
+            <xs:element name="whenset" type="xs:string"/>            
+            <xs:element name="whencleared" type="xs:string"/>            
+            <xs:element name="statedescription" type="xs:string"/>            
+            <xs:element name="condition" type="xs:string"/>            
+            <xs:element name="alarm-on" type="xs:string"/>            
+            <xs:element name="alarm-off" type="xs:string"/>            
+            <xs:element name="data" type="xs:string"/>            
+            <xs:element name="alarm-fault-family" type="xs:string"/>            
+            <xs:element name="alarm-fault-member" type="xs:string"/>            
+            <xs:element name="alarm-level" type="xs:string"/>            
+            <xs:element name="archive-suppress" type="xs:string"/>
+            <xs:element name="archive-mechanism" type="xs:string"/>            
+            <xs:element name="monitor-point" type="monitor-point-t" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="monitor-point-t">
+        <xs:sequence>
+            <xs:element name="monitorpointname" type="xs:string"/>
+            <xs:element name="datatype" type="xs:string"/>
+            <xs:element name="rca" type="xs:string"/>
+            <xs:element name="terelated" type="xs:string"/>
+            <xs:element name="rawdatatype" type="xs:string"/>
+            <xs:element name="worlddatatype" type="xs:string"/>
+            <xs:element name="units" type="xs:string"/>
+            <xs:element name="scale" type="xs:string"/>
+            <xs:element name="offset" type="xs:string"/>
+            <xs:element name="minrange" type="xs:string"/>
+            <xs:element name="maxrange" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

@@ -55,10 +55,14 @@
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = 	
+EXECUTABLES     =
 EXECUTABLES_L   = 	testLogger testLoggerStats testNoLogging testMacros \
 			loggingXMLParserTest testGenericLogger testLoggable testLoggingProxy \
-            testAnyLog testAUD_ARR testLog4cpp testIsInitThread testMultiThreads testLoggingSubscriber testGenLogs
+            testAnyLog testAUD_ARR testLog4cpp testIsInitThread testMultiThreads testLoggingSubscriber testGenLogs testLoggerStatistics
+
+testLoggerStatistics_OBJECTS = testLoggerStatistics
+testLoggerStatistics_LDFLAGS =
+testLoggerStatistics_LIBS = C++ dl cppunit logging
 
 loggingXMLParserTest_OBJECTS = loggingXMLParserTest
 loggingXMLParserTest_LIBS = logging
@@ -134,7 +138,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       =  testACS_LOG_STDOUT testLocalCache
+SCRIPTS_L       =  testACS_LOG_STDOUT testLocalCache testLoggerStatistics.sh
 
 #
 # TCL scripts (public and local)

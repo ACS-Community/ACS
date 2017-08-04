@@ -32,9 +32,9 @@ module ACSBulkData {
 	const unsigned long FRAME_MAX_LEN = 64000;
 	
 	const DataType BD_PARAM=0; //start
-	const DataType BD_DATA=1;  // data
+	const DataType BD_DATA=1;  //data
 	const DataType BD_STOP=2;  //stop
-	
+	const DataType BD_RESET=3; //reset
 
 	struct BulkDataNTFrame{
 	// data type: parameter or real data

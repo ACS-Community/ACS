@@ -24,6 +24,7 @@
  */
 package alma.TMCDB.baci;
 
+import java.io.Serializable;
 import org.w3c.dom.Element;
 
 import com.cosylab.cdb.jdal.hibernate.ExtraDataFeatureUtil;
@@ -33,9 +34,9 @@ import com.cosylab.cdb.jdal.hibernate.ExtraDataFeatureUtil;
  * Component w/ amb:Address
  */
 @SuppressWarnings("serial")
-public class AmbDevice extends ComponentData {
+public class AmbDevice extends ComponentData implements Serializable {
 
-    public static class AmbAddress {
+    public static class AmbAddress implements Serializable {
     	// TODO any missing properties?
     	private int NodeNumber;
     	private int BaseAddress;
@@ -80,7 +81,7 @@ public class AmbDevice extends ComponentData {
     	
     }
 
-    public static class EthernetAddress {
+    public static class EthernetAddress implements Serializable {
     	private String hostname;
     	private int port;
     	private String macAddress;

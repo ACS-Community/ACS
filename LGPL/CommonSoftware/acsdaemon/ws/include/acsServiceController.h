@@ -137,6 +137,7 @@ class ImpController : public ServiceController {
 };
 
 class ACSServiceController : public ServiceController {
+	friend class ServiceController;
   private:
     ACSServiceRequestDescription *desc;
     ACE_CString corbaloc;

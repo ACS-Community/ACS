@@ -22,3 +22,4 @@
 1 junitNoACS junitNoACS
 2 testRemoteLogging testRemoteLogging
 3 AcsLoggerTest AcsLoggerTest
+4 AcsLoggerStatisticsTest AcsLoggerStatisticsTest

@@ -29,7 +29,7 @@ import java.util.Iterator;
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
  * @version $id$
  */
-public abstract class DataAccessSupport implements DataAccess {
+public abstract class DataAccessSupport<T> implements DataAccess<T> {
 
 	/**
 	 * List of registered listeners.

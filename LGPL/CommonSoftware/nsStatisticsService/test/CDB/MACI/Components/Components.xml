@@ -145,5 +145,10 @@
          Code="acsexmplErrorComponentImpl.ErrorComponent" 
          Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0"
          Container="aragornContainer" ImplLang="py" />
+     <_ Name="NotifyServiceStatistics" 
+         Autostart="true" KeepAliveTime="-1"
+         Code="alma.acs.statistics.NotifyServiceStatisticsComponentHelper" 
+         Type="IDL:alma/statistics/NotifyServiceStatisticsComponent:1.0" 
+         Container="frodoContainer"  ImplLang="java" />
 </Components>
 

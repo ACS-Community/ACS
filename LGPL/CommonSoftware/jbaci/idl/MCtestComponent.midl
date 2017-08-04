@@ -1,0 +1,90 @@
+#ifndef _MC_TESTCOMPONENT_
+#define _MC_TESTCOMPONENT_
+
+#include <acscommon.idl>
+#include <baci.idl>
+#include <enumpropMACRO.idl>
+
+#pragma prefix "alma"
+
+
+module TMCDB
+{
+
+
+ interface MCtestComponent : ACS::CharacteristicComponent
+    {
+	readonly attribute ACS::ROdoubleSeq doubleSeqProp;
+	readonly attribute ACS::ROdouble doubleProp;
+	
+	readonly attribute ACS::RWlongSeq longSeqProp;
+	readonly attribute ACS::RWlong longProp;
+	
+	readonly attribute ACS::ROpattern patternProp;
+	
+	/// resets devio values and time
+	void reset();
+    };//interface MCTestComponent
+
+	enum EnumTest {STATE1, STATE2, STATE3};
+	ACS_ENUM(EnumTest);
+
+	interface MCtestPropertiesComponent : ACS::CharacteristicComponent
+	{
+		readonly attribute ACS::ROdouble     doubleROProp;
+		readonly attribute ACS::ROfloat      floatROProp;
+		readonly attribute ACS::ROlong       longROProp;
+		readonly attribute ACS::ROuLong      uLongROProp;
+		readonly attribute ACS::ROpattern    patternROProp;
+		readonly attribute ACS::ROstring     stringROProp;
+		readonly attribute ACS::ROlongLong   longLongROProp;
+		readonly attribute ACS::ROuLongLong  uLongLongROProp;
+		readonly attribute ACS::ROboolean    booleanROProp;
+		readonly attribute ACS::ROdoubleSeq  doubleSeqROProp;
+		readonly attribute ACS::ROfloatSeq   floatSeqROProp;
+		readonly attribute ACS::ROlongSeq    longSeqROProp;
+		readonly attribute ACS::ROuLongSeq   uLongSeqROProp;
+		readonly attribute ACS::RObooleanSeq booleanSeqROProp;
+		readonly attribute ROEnumTest        EnumTestROProp;
+
+		readonly attribute ACS::RWdouble     doubleRWProp;
+		readonly attribute ACS::RWfloat      floatRWProp;
+		readonly attribute ACS::RWlong       longRWProp;
+		readonly attribute ACS::RWuLong      uLongRWProp;
+		readonly attribute ACS::RWpattern    patternRWProp;
+		readonly attribute ACS::RWstring     stringRWProp;
+		readonly attribute ACS::RWlongLong   longLongRWProp;
+		readonly attribute ACS::RWuLongLong  uLongLongRWProp;
+		readonly attribute ACS::RWboolean    booleanRWProp;
+		readonly attribute ACS::RWdoubleSeq  doubleSeqRWProp;
+		readonly attribute ACS::RWfloatSeq   floatSeqRWProp;
+		readonly attribute ACS::RWlongSeq    longSeqRWProp;
+		readonly attribute ACS::RWuLongSeq   uLongSeqRWProp;
+		readonly attribute ACS::RWbooleanSeq booleanSeqRWProp;
+		readonly attribute RWEnumTest        EnumTestRWProp;
+	};
+
+	interface MCtestAlarmsComponent : ACS::CharacteristicComponent
+	{
+		readonly attribute ACS::ROdouble     doubleROProp;
+		readonly attribute ACS::ROfloat      floatROProp;
+		readonly attribute ACS::ROlong       longROProp;
+		readonly attribute ACS::ROuLong      uLongROProp;
+		readonly attribute ACS::ROlongLong   longLongROProp;
+		readonly attribute ACS::ROuLongLong  uLongLongROProp;
+		readonly attribute ACS::ROboolean    booleanROProp;
+		readonly attribute ACS::ROdoubleSeq  doubleSeqROProp;
+		readonly attribute ACS::ROfloatSeq   floatSeqROProp;
+		readonly attribute ACS::ROlongSeq    longSeqROProp;
+		readonly attribute ACS::ROuLongSeq   uLongSeqROProp;
+		readonly attribute ACS::RObooleanSeq booleanSeqROProp;
+		readonly attribute ROEnumTest        EnumTestROProp;
+		/// resets devio values and time
+		void reset();
+		void increase();
+		void decrease();
+	};
+
+};//module  TMCDB
+
+#endif

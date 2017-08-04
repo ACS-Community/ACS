@@ -120,6 +120,8 @@
     <property name="Control" column="IsControl" access="field" />
 
     <property name="KeepAliveTime" column="KeepAliveTime" />
+    <property name="ActionThreadStackSize" column="ActionThreadStackSize" />
+    <property name="MonitoringThreadStackSize" column="MonitoringThreadStackSize" />
 
     <component name="ComponentLogger" class="ComponentLogger"> 
 	    <property name="minLogLevel" column="MinLogLevel" />

@@ -114,10 +114,12 @@ public:
 
 	virtual int cbStop() = 0;
 
+	virtual int cbReset() = 0;
+
 	/*********************  methods that can/should be  implemented by the user */
 
 	/**
-	 * This method is called when an error happens in the flow's callback (cbStart/cbReceive/cbStop),
+	 * This method is called when an error happens in the flow's callback (cbStart/cbReceive/cbStop/cbReset),
 	 * and can be overridden by an user. The default implementation just logs the error completion.
 	 * @param error - at the moment possible completion errors are:
 	 * #WrongFrameOrderCompletion

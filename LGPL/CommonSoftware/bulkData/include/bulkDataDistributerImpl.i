@@ -337,6 +337,11 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::stopSend()
     ACS_TRACE("BulkDataDistributerImpl<>::stopSend");
 }
 
+template<class TReceiverCallback, class TSenderCallback>
+void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::resetSend()
+{
+    ACS_TRACE("BulkDataDistributerImpl<>::resetSend");
+}
 
 template<class TReceiverCallback, class TSenderCallback>
 void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::openReceiver()
@@ -643,4 +648,14 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::subscribeNotif
 	err.log(LM_DEBUG);
 	throw err.getAVNotificationMechanismErrorEx();
 	}
+}
+
+template<class TReceiverCallback, class TSenderCallback>
+void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::resetReceiver()
+{
+}
+
+template<class TReceiverCallback, class TSenderCallback>
+void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::resetSender()
+{
 }

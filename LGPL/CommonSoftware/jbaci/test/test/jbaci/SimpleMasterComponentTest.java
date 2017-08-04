@@ -35,6 +35,9 @@ import alma.ACSErr.CompletionHolder;
 import alma.acs.util.ACSPorts;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
+import alma.maciErrType.CannotDeactivateComponentEx;
+import alma.maciErrType.ComponentDeactivationFailedEx;
+import alma.maciErrType.ComponentDeactivationUncleanEx;
 import alma.maciErrType.NoPermissionEx;
 
 /**
@@ -400,7 +403,7 @@ public class SimpleMasterComponentTest implements Runnable
 				// release now
 				try {
 					manager.release_component(clientInfo.h, COMPONENT_NAME);
-				} catch (NoPermissionEx ex) {
+				} catch (NoPermissionEx | CannotDeactivateComponentEx | ComponentDeactivationUncleanEx | ComponentDeactivationFailedEx ex) {
 					ex.printStackTrace();
 				}
 
