@@ -140,6 +140,16 @@ class BulkDataSenderImpl : public baci::CharacteristicComponentImpl,
     */
     virtual void stopSend() =0;
 
+    /** 
+     *  Calls the Receiver handle_reset() method.
+     *  @throw ACSBulkDataError::AVResetSendErrorEx
+     *  @return void
+     *  @htmlonly
+     <br><hr>
+     @endhtmlonly
+    */
+    virtual void resetSend() {}
+    virtual void resetSender() {}
 
 
   protected:

@@ -57,6 +57,9 @@ public class Component extends ComponentNode implements ExtraDataFeature {
     private boolean Autostart;
     private boolean Default;
 
+    private int ActionThreadStackSize;
+    private int MonitoringThreadStackSize;
+
     private ComponentLogger ComponentLogger;
 
     // hierarchical support
@@ -125,6 +128,10 @@ public class Component extends ComponentNode implements ExtraDataFeature {
         s += "\tKeepAliveTime: " + KeepAliveTime + newline;
 
         s += "\tComponentLogger: " + ComponentLogger + newline;
+
+        s += "\tActionThreadStackSize: " + ActionThreadStackSize + newline;
+
+        s += "\tMonitoringThreadStackSize: " + MonitoringThreadStackSize + newline;
 
     	return s;
     }
@@ -249,6 +256,34 @@ public class Component extends ComponentNode implements ExtraDataFeature {
 	 */
 	public void setImplLang(String implLang) {
 		ImplLang = implLang;
+	}
+
+	/**
+	 * @return the ActionThreadStackSize
+	 */
+	public Integer getActionThreadStackSize() {
+		return ActionThreadStackSize;
+	}
+
+	/**
+	 * @param actionThreadStackSize the ActionThreadStackSize to set
+	 */
+	public void setActionThreadStackSize(int actionThreadStackSize) {
+		ActionThreadStackSize = actionThreadStackSize;
+	}
+
+	/**
+	 * @return the MonitoringThreadStackSize
+	 */
+	public Integer getMonitoringThreadStackSize() {
+		return MonitoringThreadStackSize;
+	}
+
+	/**
+	 * @param monitoringThreadStackSize the MonitoringThreadStackSize to set
+	 */
+	public void setMonitoringThreadStackSize(int monitoringThreadStackSize) {
+		MonitoringThreadStackSize = monitoringThreadStackSize;
 	}
 
 }

@@ -28,19 +28,12 @@ import alma.ACSErr.Completion;
 /**
  * Interface defining generic method to dispatch a callback.
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
+ * @author <a href="mailto:takashi.nakamotoATnao.ac.jp">Takashi Nakamoto</a>
  * @version $id$
  */
 public interface CallbackDispatcher {
 	
-	/**
-	 * 'done' callback type constant.
-	 */
-	public static final int DONE_TYPE = 0;
-
-	/**
-	 * 'working' callback type constant.
-	 */
-	public static final int WORKING_TYPE = 1;
+	public enum CallbackType {DONE_TYPE, WORKING_TYPE, ALARM_RAISED_TYPE, ALARM_CLEARED_TYPE };
 	
 	/**
 	 * Dispatches a callback.
@@ -51,7 +44,7 @@ public interface CallbackDispatcher {
 	 * @param desc		callback out-descriptor.
 	 * @return	<code>true</code> if callback was successfully delivered, <code>false</code> on failure. 
 	 */
-	public boolean dispatchCallback(int type, Object value,
+	public boolean dispatchCallback(CallbackType type, Object value,
 							Callback callback, Completion completion, CBDescOut desc);
 
 }

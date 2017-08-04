@@ -39,7 +39,8 @@ BulkDataNTSenderImpl::BulkDataNTSenderImpl(const ACE_CString& name,maci::Contain
 BulkDataNTSenderImpl::~BulkDataNTSenderImpl()
 {
 	ACS_TRACE("BulkDataNTSenderImpl::~BulkDataNTSenderImpl");
-	delete parser_m;
+	if (parser_m)
+		delete parser_m;
 }
 
 void BulkDataNTSenderImpl::initialize()
@@ -302,4 +303,9 @@ AcsBulkdata::BulkDataNTSenderStream* BulkDataNTSenderImpl::getSenderStream(const
 	StreamNotExistExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 	ex.setStreamName(streamName);
 	throw ex;
+}
+
+void BulkDataNTSenderImpl::resetSender() {
+	disconnect();
+	openSenders();
 }

@@ -169,6 +169,14 @@ class BulkDataSendRecvImpl : public virtual baci::CharacteristicComponentImpl,
     */
     virtual void stopSend();
 
+    /*
+     * @throw ACSBulkDataError::AVResetSendErrorEx
+     */
+    virtual void resetSend() {}
+
+    virtual void resetSender() {}
+    virtual void resetReceiver() {}
+
     /*************************** Receiver part **********************/
 
     /**

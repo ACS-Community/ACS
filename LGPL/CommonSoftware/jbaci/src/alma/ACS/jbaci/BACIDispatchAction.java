@@ -60,7 +60,7 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 		 * @param type	type of callback (working/done).
 		 * @param completion	completion.
 		 */
-		public DispatchRequest(int type, Completion completion)
+		public DispatchRequest(CallbackDispatcher.CallbackType type, Completion completion)
 		{
 			this(type, completion, null);
 		}
@@ -71,7 +71,7 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 		 * @param completion	completion.
 		 * @param value			value.
 		 */
-		public DispatchRequest(int type, Completion completion, Object value)
+		public DispatchRequest(CallbackDispatcher.CallbackType type, Completion completion, Object value)
 		{
 			this.type = type;
 			this.completion = completion;
@@ -90,10 +90,8 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 
 		/**
 		 * Callback type.
-		 * @see CallbackDispatcher#DONE_TYPE
-		 * @see CallbackDispatcher#WORKING_TYPE
 		 */
-		public int type;
+		public CallbackDispatcher.CallbackType type;
 	}
 
 	/**
@@ -217,7 +215,7 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 	 */
 	public void dispatchWorkingRequest(Completion completion)
 	{
-		dispatchRequest(CallbackDispatcher.WORKING_TYPE, completion, null);
+		dispatchRequest(CallbackDispatcher.CallbackType.WORKING_TYPE, completion, null);
 	}
 
 	/**
@@ -226,7 +224,7 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 	 */
 	public void dispatchWorkingRequest(Completion completion, Object value)
 	{
-		dispatchRequest(CallbackDispatcher.WORKING_TYPE, completion, value);
+		dispatchRequest(CallbackDispatcher.CallbackType.WORKING_TYPE, completion, value);
 	}
 
 	/**
@@ -235,7 +233,7 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 	 */
 	public void dispatchDoneRequest(Completion completion)
 	{
-		dispatchRequest(CallbackDispatcher.DONE_TYPE, completion, null);
+		dispatchRequest(CallbackDispatcher.CallbackType.DONE_TYPE, completion, null);
 	}
 
 	/**
@@ -245,13 +243,51 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 	 */
 	public void dispatchDoneRequest(Completion completion, Object value)
 	{
-		dispatchRequest(CallbackDispatcher.DONE_TYPE, completion, value);
+		dispatchRequest(CallbackDispatcher.CallbackType.DONE_TYPE, completion, value);
+	}
+
+	/**
+	 * Added alarm_raised callback request to dispatch queue.
+	 * @param completion	completion.
+	 */
+	public void dispatchAlarmRaisedRequest(Completion completion)
+	{
+		dispatchRequest(CallbackDispatcher.CallbackType.ALARM_RAISED_TYPE, completion, null);
+	}
+
+	/**
+	 * Added alarm_raised callback request to dispatch queue.
+	 * @param completion	completion.
+	 * @param value			value.
+	 */
+	public void dispatchAlarmRaisedRequest(Completion completion, Object value)
+	{
+		dispatchRequest(CallbackDispatcher.CallbackType.ALARM_RAISED_TYPE, completion, value);
+	}
+	
+	/**
+	 * Added alarm_cleared callback request to dispatch queue.
+	 * @param completion	completion.
+	 */
+	public void dispatchAlarmClearedRequest(Completion completion)
+	{
+		dispatchRequest(CallbackDispatcher.CallbackType.ALARM_CLEARED_TYPE, completion, null);
+	}
+
+	/**
+	 * Added alarm_cleared callback request to dispatch queue.
+	 * @param completion	completion.
+	 * @param value			value.
+	 */
+	public void dispatchAlarmClearedRequest(Completion completion, Object value)
+	{
+		dispatchRequest(CallbackDispatcher.CallbackType.ALARM_CLEARED_TYPE, completion, value);
 	}
 
 	/**
 	 * Added request to dispatch queue.
 	 */
-	public void dispatchRequest(int type, Completion completion, Object value)
+	public void dispatchRequest(CallbackDispatcher.CallbackType type, Completion completion, Object value)
 	{
 		dispatchRequest(new DispatchRequest(type, completion, value));
 	}

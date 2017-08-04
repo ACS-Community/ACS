@@ -83,7 +83,7 @@ public class RWlongLongImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 		throws NoSuchCharacteristic {
-		return new Long(characteristicModelImpl.getLong(name));
+		return new Long(characteristicModelImpl.getString(name));
 	}
 
 	/**
@@ -200,16 +200,16 @@ public class RWlongLongImpl
 	 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 	 */
 	public boolean dispatchCallback(
-		int type,
+		CallbackDispatcher.CallbackType type,
 		Object value,
 		Callback callback,
 		Completion completion,
 		CBDescOut desc) {
 		try
 		{	
-			if (type == CallbackDispatcher.DONE_TYPE)
+			if (type == CallbackDispatcher.CallbackType.DONE_TYPE)
 				((CBlongLong)callback).done(((Long)value).longValue(), completion, desc);
-			else if (type == CallbackDispatcher.WORKING_TYPE)
+			else if (type == CallbackDispatcher.CallbackType.WORKING_TYPE)
 				((CBlongLong)callback).working(((Long)value).longValue(), completion, desc);
 			else 
 				return false;

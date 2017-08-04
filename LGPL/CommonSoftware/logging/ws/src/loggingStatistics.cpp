@@ -27,11 +27,12 @@
 
 namespace Logging {
     //-----------------------------------------------------------------------------------
-    const uint32_t loggingStatistics::INITIAL_NUMBER_MESSAGES       = 0;
-    const uint32_t loggingStatistics::INITIAL_NUMBER_ERRORS         = 0;
-    const uint32_t loggingStatistics::DEFAULT_STATISTICS_PERIOD     = 60 * 10; // 10 minutes
-    const uint32_t loggingStatistics::DEFAULT_STATISTICS_GRANULARITY= 1;       // 1 second
-    const bool loggingStatistics::DEFAULT_STATISTICS_STATE              = true;    // disabled
+
+    const uint32_t loggingStatistics::INITIAL_NUMBER_MESSAGES        = 0;
+    const uint32_t loggingStatistics::INITIAL_NUMBER_ERRORS          = 0;
+    const uint32_t loggingStatistics::DEFAULT_STATISTICS_PERIOD      = 60 * 10; // 10 minutes
+    const uint32_t loggingStatistics::DEFAULT_STATISTICS_GRANULARITY = 1;       // 1 second
+    const bool     loggingStatistics::DEFAULT_STATISTICS_STATE       = true;    // disabled
 
     // Constructor
     loggingStatistics::loggingStatistics() :
@@ -46,6 +47,12 @@ namespace Logging {
 	{
 		// Construct the identification string of the statistics
 		statisticsIdentification = "Undefined";
+
+                // set by default logging statistics with a suitable config if host is an STE
+                if(std::getenv("LOCATION")) {
+                   disableStatistics     = false;
+                   statisticsGranularity = 3;
+                }
 	}
 
     // Statistics module methods

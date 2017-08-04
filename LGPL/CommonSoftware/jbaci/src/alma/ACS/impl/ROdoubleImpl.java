@@ -21,7 +21,10 @@
 
 package alma.ACS.impl;
 
+import java.util.logging.Level;
+
 import org.omg.CORBA.NO_IMPLEMENT;
+import org.omg.CORBA.NO_RESOURCES;
 
 import alma.ACS.Alarmdouble;
 import alma.ACS.CBDescIn;
@@ -34,6 +37,8 @@ import alma.ACS.MonitordoublePOATie;
 import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.ROdoubleOperations;
 import alma.ACS.Subscription;
+import alma.ACS.SubscriptionHelper;
+import alma.ACS.SubscriptionPOATie;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.doubleSeqHolder;
 import alma.ACS.jbaci.CallbackDispatcher;
@@ -48,6 +53,7 @@ import alma.acs.exceptions.AcsJException;
 /**
  * Implementation of <code>alma.ACS.ROdouble</code>.
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
+ * @author <a href="mailto:takashi.nakamotoATnao.ac.jp">Takashi Nakamoto</a>
  * @version $id$
  */
 public class ROdoubleImpl
@@ -120,11 +126,21 @@ public class ROdoubleImpl
 	 * @see alma.ACS.ROdoubleOperations#new_subscription_Alarm(alma.ACS.Alarmdouble, alma.ACS.CBDescIn)
 	 */
 	public Subscription new_subscription_Alarm(
-		Alarmdouble arg0,
-		CBDescIn arg1) {
-		// TODO NO_IMPLEMENT
+		Alarmdouble callback,
+		CBDescIn descIn) {
 		
-		throw new NO_IMPLEMENT();
+		AlarmdoubleSubscriptionImpl subscriptionImpl = new AlarmdoubleSubscriptionImpl(this, callback, descIn);
+		SubscriptionPOATie subscriptionTie = new SubscriptionPOATie(subscriptionImpl);
+		Subscription subscription;
+		
+		try { 
+			subscription = SubscriptionHelper.narrow(parentComponent.getComponentContainerServices().activateOffShoot(subscriptionTie));
+		} catch (Throwable th) {
+			getLogger().log(Level.WARNING, "jBaci::ROdoubleImpl::new_subscription_Alarm - Cannot activate Off Shoot.");
+			throw new NO_RESOURCES(th.getMessage());
+		}		
+	
+		return SubscriptionHelper.narrow(subscription);
 	}
 
 	/**
@@ -145,7 +161,7 @@ public class ROdoubleImpl
 		// create monitor and its servant
 		MonitordoubleImpl monitorImpl = new MonitordoubleImpl(this, callback, descIn, startTime);
 		MonitordoublePOATie monitorTie = new MonitordoublePOATie(monitorImpl);
-
+		
 		// register and activate		
 		return MonitordoubleHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
 	
@@ -251,24 +267,62 @@ public class ROdoubleImpl
 	 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 	 */
 	public boolean dispatchCallback(
-		int type,
+		CallbackType type,
 		Object value,
 		Callback callback,
 		Completion completion,
 		CBDescOut desc) {
+		
+		getLogger().fine("ROdoubleImpl::dispatchCallback() is called.");
+		
+		// Type check
+		if (!(value instanceof Double)) {
+			getLogger().log(Level.WARNING, "Wrong value type " + value.getClass().getName() + " was passed to DOdoubleImpl::dispatchCallback(). Double was expected.");
+			return false;
+		}
+		
+		switch (type) {
+			case DONE_TYPE:
+			case WORKING_TYPE:
+				if (!(callback instanceof CBdouble)) {
+					getLogger().log(Level.WARNING, "Wrong callback type " + callback.getClass().getName() + " is passed to DOdoubleImpl::dispatchCallback(). CBdouble was expected.");
+					return false;
+				}
+				break;
+			case ALARM_RAISED_TYPE:
+			case ALARM_CLEARED_TYPE:
+				if (!(callback instanceof Alarmdouble)) {
+					getLogger().log(Level.WARNING, "Wrong callback type " + callback.getClass().getName() + " is passed to DOdoubleImpl::dispatchCallback(). Alarmdouble was expected.");
+					return false;
+				}
+				break;
+		}
+		
 		try
-		{	
-			if (type == CallbackDispatcher.DONE_TYPE)
+		{
+			switch(type) {
+			case DONE_TYPE:
 				((CBdouble)callback).done(((Double)value).doubleValue(), completion, desc);
-			else if (type == CallbackDispatcher.WORKING_TYPE)
+				break;
+			case WORKING_TYPE:
 				((CBdouble)callback).working(((Double)value).doubleValue(), completion, desc);
-			else 
+				break;
+			case ALARM_RAISED_TYPE:
+				((Alarmdouble)callback).alarm_raised(((Double)value).doubleValue(), completion, desc);
+				break;
+			case ALARM_CLEARED_TYPE:
+				((Alarmdouble)callback).alarm_cleared(((Double)value).doubleValue(), completion, desc);
+				break;
+			default:
+				getLogger().log(Level.WARNING, "Unknown dispatch type " + type + " is passed to DOdoubleImpl::dispatchCallback().");
 				return false;
+			}
 				
 			return true;
 		}
 		catch (Throwable th)
 		{
+			getLogger().log(Level.SEVERE, "Unexpected exception happened in DOdoubleImpl::dispatchCallback().", th);
 			return false;
 		}
 	}

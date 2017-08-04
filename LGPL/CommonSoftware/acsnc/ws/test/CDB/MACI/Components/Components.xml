@@ -51,4 +51,6 @@
                              Type="IDL:alma/PS/PowerSupply:1.0"
                              Container="archiveContainer" ImplLang="cpp" />
       <_ Name="CDB_PROPS"    Code="testCDBProps"  	  Type="IDL:alma/demo/ConsumerComp:1.0"	Container="bilboContainer" ImplLang="cpp" />
+
+<_ Name="NC_Reliability"		Code="acsncSupplierReliabilityCompImpl"      Type="IDL:alma/demo/SupplierComp:1.0"			Container="bilboContainer" ImplLang="cpp" />
 </Components>

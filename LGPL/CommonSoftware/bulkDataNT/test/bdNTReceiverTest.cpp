@@ -65,6 +65,12 @@ public:
 		return 0;
 	}
 
+	int cbReset()
+	{
+		std::cout << "cbReset " << getFlowName()<<"@" << getStreamName();
+		return 0;
+	}
+
 	static unsigned long cbDealy;
 };
 
