@@ -539,6 +539,69 @@ CompletionImpl::CompletionImpl(ACSErr::Completion_var& c) :
 	m_errorTraceHelper.setErrorTrace(previousError[0], previousError.length());
 }
 
+CompletionImpl::CompletionImpl (ACSErr::ACSErrType t, ACSErr::ErrorCode c) :
+    CompletionInit(t, c, false)
+    /*,
+      m_errorTraceHelper(previousError[0], previousError.length())
+      */
+{
+}
+
+CompletionImpl::CompletionImpl (ACSErr::ACSErrType t, ACSErr::ErrorCode c,
+        const char* file, int line, const char* routine, const char* sd,
+        ACSErr::Severity severity) : 
+    CompletionInit(t, c),
+    m_errorTraceHelper(t, c, file, line, routine, sd, severity, previousError[0])
+{}
+
+// adding previous (remote or local) with reference 
+CompletionImpl::CompletionImpl (const ACSErr::Completion &pc, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
+        const char* file, int line, const char* routine, const char* sd,
+        ACSErr::Severity severity) :
+    CompletionInit(t, c)
+    {
+        if (pc.previousError.length() == 0)
+            m_errorTraceHelper = ErrorTraceHelper(t, c, file, line, routine, sd, severity, previousError[0]);
+        else
+            m_errorTraceHelper = ErrorTraceHelper(pc.previousError[0], t, c, file, line, routine, sd, severity, previousError[0]);
+
+    }
+// adding previous remote completion as pointer
+CompletionImpl::CompletionImpl (ACSErr::Completion *pc, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
+        const char* file, int line, const char* routine, const char* sd,
+        ACSErr::Severity severity) :
+    CompletionInit(t, c)
+    {
+        if (pc->previousError.length() == 0)
+            m_errorTraceHelper = ErrorTraceHelper(t, c, file, line, routine, sd, severity, previousError[0]);
+        else
+            m_errorTraceHelper = ErrorTraceHelper(pc->previousError[0], t, c, file, line, routine, sd, severity, previousError[0]);
+        delete pc;
+    }
+
+// adding previous completion as pointer
+CompletionImpl::CompletionImpl (CompletionImpl *pc, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
+        const char* file, int line, const char* routine, const char* sd,
+        ACSErr::Severity severity) :
+    CompletionInit(t, c)
+    {
+        if (pc->previousError.length() == 0)
+            m_errorTraceHelper = ErrorTraceHelper(t, c, file, line, routine, sd, severity, previousError[0]);
+        else
+            m_errorTraceHelper = ErrorTraceHelper(pc->previousError[0], t, c, file, line, routine, sd, severity, previousError[0]);
+        delete pc;
+    }
+
+// adding error trace
+CompletionImpl::CompletionImpl (const ACSErr::ErrorTrace &et, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
+        const char* file, int line, const char* routine, const char* sd,
+        ACSErr::Severity severity) :
+    CompletionInit(t, c),
+    m_errorTraceHelper(et, t, c, file, line, routine, sd, severity, previousError[0])
+{}
+
+
+
 void CompletionImpl::log(ACE_Log_Priority priorty)
 {
     if (!isErrorFree())
