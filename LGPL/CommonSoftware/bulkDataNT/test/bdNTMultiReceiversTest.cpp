@@ -27,6 +27,7 @@
 #include <iostream>
 #include <ace/Get_Opt.h>
 #include <ace/Tokenizer_T.h>
+#include <maciSimpleClient.h>
 
 using namespace std;
 
@@ -69,11 +70,28 @@ public:
 	}
 };
 
+//Thread to receive events and avoid stuck
+void* tr_sc(void *param){
+    maci::SimpleClient *myclient = static_cast<maci::SimpleClient*>(param);
+    cout << "Thread to run client" << endl;
+    myclient->run();
+    return NULL;
+}
+
+
 
 int main(int argc, char *argv[])
 {
 	int numOfIter=32;
 	ReceiverFlowConfiguration cfg; //just
+
+	maci::SimpleClient *client = new maci::SimpleClient();
+	client->init(argc, argv);
+	client->login();
+	pthread_t t1;
+	if (pthread_create(&t1, NULL, tr_sc, (void *) client) != 0){
+		cout << "client->run(), getting events" << std::endl;
+	}
 
 	LoggingProxy m_logger(0, 0, 31, 0);
 	LoggingProxy::init (&m_logger);
@@ -106,5 +124,9 @@ int main(int argc, char *argv[])
 	    delete receiverStreams[i];
 	  }
 
+
+	client->getORB()->shutdown(true);
+	pthread_join(t1, NULL);
+	client->logout();
 
 }

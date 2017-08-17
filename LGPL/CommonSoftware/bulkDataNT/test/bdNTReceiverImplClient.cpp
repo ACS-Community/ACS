@@ -26,9 +26,18 @@
 #include <maciSimpleClient.h>
 #include <bulkDataReceiverC.h>
 #include <ace/OS_NS_unistd.h>
+#include <maciSimpleClient.h>
 
 using namespace maci;
 using namespace std;
+
+//Thread to receive events and avoid stuck
+void* tr_sc(void *param){
+    maci::SimpleClient *myclient = static_cast<maci::SimpleClient*>(param);
+    cout << "Thread to run client" << endl;
+    myclient->run();
+    return NULL;
+}
 
 int main(int argc, char *argv[]) {
 
@@ -38,6 +47,10 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 	client.login();
+	pthread_t t1;
+	if (pthread_create(&t1, NULL, tr_sc, (void *) &client) != 0){
+		cout << "client->run(), getting events" << std::endl;
+	}
 
 	try {
 
@@ -84,6 +97,8 @@ int main(int argc, char *argv[]) {
 		cerr << "Cannot get component '" << ex.getCURL() << "'. Reason: " << ex.getReason() << endl;
 	} catch(...) {
 		cerr << "Unexpected exception while running test code" << endl;
-		client.logout();
 	}
+	client.getORB()->shutdown(true);
+	pthread_join(t1, NULL);
+	client.logout();
 }
