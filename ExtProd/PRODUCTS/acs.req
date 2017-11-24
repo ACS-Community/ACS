@@ -36,3 +36,4 @@ suds==0.4
 Twisted==10.1.0
 gcovr
 pexpect
+requests==2.13.0
