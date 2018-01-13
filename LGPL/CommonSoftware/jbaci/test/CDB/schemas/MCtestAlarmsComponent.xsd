@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:MCtestAlarmsComponent:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:MCtestAlarmsComponent:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+	<xs:complexType name="MCtestAlarmsComponent">
+		<xs:sequence>
+			<xs:element name="doubleROProp"     type="baci:ROdouble" />
+			<xs:element name="floatROProp"     type="baci:ROfloat" />
+			<xs:element name="longROProp"       type="baci:ROlong" />
+			<xs:element name="uLongROProp"      type="baci:ROuLong" />
+			<xs:element name="longLongROProp"   type="baci:ROlongLong" />
+			<xs:element name="uLongLongROProp"  type="baci:ROuLongLong" />
+			<xs:element name="booleanROProp"    type="baci:ROboolean" />
+			<xs:element name="doubleSeqROProp"  type="baci:ROdoubleSeq" />
+			<xs:element name="floatSeqROProp"   type="baci:ROfloatSeq" />
+			<xs:element name="longSeqROProp"    type="baci:ROlongSeq" />
+			<xs:element name="uLongSeqROProp"   type="baci:ROuLongSeq" />
+			<xs:element name="booleanSeqROProp" type="baci:RObooleanSeq" />
+			<xs:element name="EnumTestROProp"   type="baci:ROEnum" />
+			
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="MCtestAlarmsComponent" type="MCtestAlarmsComponent"/>
+</xs:schema>
+

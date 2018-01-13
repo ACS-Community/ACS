@@ -39,7 +39,7 @@ static void creation_worker (void* param)
     myCache[2] = new char[1000];
     snprintf(myCache[0],1000,"Worker_%s",myself->getName().c_str());
     snprintf(myCache[1],20,"-ORBInitRef");
-    snprintf(myCache[2],1000,"NameService=corbaloc::%s:3001",hostname);
+    snprintf(myCache[2],1000,"NameService=corbaloc::%s:3001/NameService",hostname);
     helper = new nc::HelperTest(channelName1.c_str(), 3, myCache );  
     try{
         helper->createNotificationChannel();

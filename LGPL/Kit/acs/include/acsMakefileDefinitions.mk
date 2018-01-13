@@ -348,7 +348,7 @@ $1_IDL_Python: ../lib/python/site-packages/$1_idl.py ;
 ../lib/python/site-packages/$1_idl.py: $(CURDIR)/../idl/$1.idl $($1_IDLprereq)
 	$(AT)lockfile -s 2 -r 10 ../lib/python/site-packages/.make-OmniOrb.lock || echo "WARNING, ignoring lock ../lib/python/site-packages/.make-OmniOrb.lock"
 	- @echo "== IDL Compiling for OmniOrb (Python): $1"
-	$(AT) $(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C../lib/python/site-packages $$<
+	$(AT) $(OMNI_IDL)  -I$(OMNI_ROOT) $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C../lib/python/site-packages $$<
 	-$(AT)$(RM) ../lib/python/site-packages/.make-OmniOrb.lock
 
 .PHONY: clean_IDL_$1_Python
@@ -364,7 +364,7 @@ clean_IDL_$1_Python:
 .PHONY: install_IDL_$1_Python
 install_IDL_$1_Python: $(CURDIR)/../idl/$1.idl
 	$(AT)lockfile -s 2 -r 10 $(LIB)/python/site-packages/.make-OmniOrb.lock || echo "WARNING, ignoring lock $(LIB)/python/site-packages/.make-OmniOrb.lock"
-	$(AT)$(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C$(LIB)/python/site-packages $$< > /dev/null 2>&1
+	$(AT)$(OMNI_IDL)  -I$(OMNI_ROOT) $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C$(LIB)/python/site-packages $$< > /dev/null 2>&1
 	-$(AT)$(RM) $(LIB)/python/site-packages/.make-OmniOrb.lock
 
 .PHONY: install_IDL_$1_Java

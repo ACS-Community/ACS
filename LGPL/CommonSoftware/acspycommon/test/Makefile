@@ -44,6 +44,7 @@ PY_SCRIPTS_L =	acspyTestUnitTimeHelper \
 		acspyTestCDB \
 		acspyTestError \
 		acspyTestLogging \
+		acspyTestLoggingStatistics \
 		acspyTestNameTree \
 		acspyTestTimehelper \
 		acspyTestEpochHelper \
@@ -53,7 +54,7 @@ PY_PACKAGES =
 
 PY_PACKAGES_L = 
 
-SCRIPTS_L = acspycommonTATPrologue
+SCRIPTS_L = acspycommonTATPrologue acspyTestLoggingStatistics.sh
 
 
 #

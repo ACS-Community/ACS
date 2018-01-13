@@ -51,7 +51,7 @@ acsjlogTest_DIRS =  alma org/slf4j
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = junitNoACS testRemoteLogging AcsLoggerTest testAnyLog
+SCRIPTS_L       = junitNoACS testRemoteLogging AcsLoggerTest testAnyLog AcsLoggerStatisticsTest
 
 #>>>>> END OF standard rules
 

@@ -7,7 +7,12 @@ eclipse-SDK-3.6.1-linux-gtk-x86_64.tar.gz http://archive.eclipse.org/eclipse/dow
 eclipse-SDK-4.2.2-linux-gtk-x86_64.tar.gz http://www.eclipse.org/downloads/download.php?file=/eclipse/downloads/drops4/R-4.2.2-201302041200/eclipse-SDK-4.2.2-linux-gtk-x86_64.tar.gz
 jacorb-3.6.1-source.zip http://www.jacorb.org/releases/3.6.1/jacorb-3.6.1-source.zip
 mico-2.3.13.tar.gz http://downloads.sourceforge.net/project/mico/mico%202.3.13/mico-2.3.13.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmico%2F&ts=1405541822&use_mirror=ufpr
-omniORB-4.2.1-2.tar.bz2 https://downloads.sourceforge.net/project/omniorb/omniORB/omniORB-4.2.1/omniORB-4.2.1-2.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fomniorb%2Ffiles%2FomniORB%2FomniORB-4.2.1%2F&ts=1496017029&use_mirror=razaoinfo
-omniORBpy-4.2.1-2.tar.bz2 https://downloads.sourceforge.net/project/omniorb/omniORBpy/omniORBpy-4.2.1/omniORBpy-4.2.1-2.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fomniorb%2Ffiles%2FomniORBpy%2FomniORBpy-4.2.1%2F&ts=1496017150&use_mirror=razaoinfo
+omniORB-4.2.1-2.tar.bz2 https://ufpr.dl.sourceforge.net/project/omniorb/omniORB/omniORB-4.2.1/omniORB-4.2.1-2.tar.bz2
+omniORBpy-4.2.1-2.tar.bz2 https://ufpr.dl.sourceforge.net/project/omniorb/omniORBpy/omniORBpy-4.2.1/omniORBpy-4.2.1-2.tar.bz2
 apache-maven-3.2.5-bin.tar.gz http://mirrors.advancedhosters.com/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
 OpenDDS-3.5.1.tar.gz http://download.ociweb.com/OpenDDS/previous-releases/OpenDDS-3.5.1.tar.gz
+gnuplot-py-1.8.tar.gz http://prdownloads.sourceforge.net/gnuplot-py/gnuplot-py-1.8.tar.gz?download
+matplotlib-1.2.0.tar.gz https://pypi.python.org/packages/75/f7/6bd207f4e2495a02d9cfb99f4a518e349ec8d2b785bb93e1bb231e93738a/matplotlib-1.2.0.tar.gz#md5=c52e2c5a09eca910d8d166dcbd2d01ec
+Numeric-24.2.tar.gz https://sourceforge.net/projects/numpy/files/Old%20Numeric/24.2/Numeric-24.2.tar.gz/download?use_mirror=netcologne&download=
+pychecker-0.8.17.tar.gz https://downloads.sourceforge.net/project/pychecker/pychecker/0.8.17/pychecker-0.8.17.tar.gz?r=&ts=1490724876&use_mirror=ayera
+numarray-1.3.3.tar.gz https://downloads.sourceforge.net/project/numpy/OldFiles/1.3.3/numarray-1.3.3.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fnumpy%2Ffiles%2FOldFiles%2F1.3.3%2F&ts=1490724902&use_mirror=ayera

@@ -100,6 +100,7 @@ public abstract class RWCommonComparablePropertyImpl extends CommonComparablePro
 		}
 		catch (Throwable t)
 		{
+			t.printStackTrace();
 			throw new PropertyInitializationFailed("Failed to read all property characteristics.", t);
 		}
 	}

@@ -22,3 +22,9 @@ object is activated
 FINER: Logging configuration has been initialized, but not from CDB settings.
 Using endorsed jar files in
 com.cosylab.cdb.DALRead main
+File=
+Shutdown called for client
+Disconnect called for client
+Python Client
+-1
+-2

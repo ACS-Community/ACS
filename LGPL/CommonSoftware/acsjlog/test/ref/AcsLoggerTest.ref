@@ -7,102 +7,102 @@
 1 - ------------ testAudienceLog --------------
 1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testAudienceLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="Operator"><![CDATA[Log with audience]]></Warning>
 1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testAudienceLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="Operator"><![CDATA[Log exception with audience]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
-1 - 	at alma.acs.logging.AcsLoggerTest.testAudienceLog(AcsLoggerTest.java:34)
+1 - 	at alma.acs.logging.AcsLoggerTest.testAudienceLog(AcsLoggerTest.java:XXX)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-1 - 	at java.lang.reflect.Method.invoke(Method.java:497)
-1 - 	at junit.framework.TestCase.runTest(TestCase.java:168)
-1 - 	at junit.framework.TestCase.runBare(TestCase.java:134)
-1 - 	at junit.framework.TestResult$1.protect(TestResult.java:110)
-1 - 	at junit.framework.TestResult.runProtected(TestResult.java:128)
-1 - 	at junit.framework.TestResult.run(TestResult.java:113)
-1 - 	at junit.framework.TestCase.run(TestCase.java:124)
-1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:243)
-1 - 	at junit.framework.TestSuite.run(TestSuite.java:238)
-1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
-1 - 	at junit.textui.TestRunner.start(TestRunner.java:180)
-1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:61)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:XXX)
+1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:XXX)
+1 - 	at java.lang.reflect.Method.invoke(Method.java:XXX)
+1 - 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
+1 - 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
+1 - 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
+1 - 	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
+1 - 	at junit.framework.TestResult.run(TestResult.java:XXX)
+1 - 	at junit.framework.TestCase.run(TestCase.java:XXX)
+1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
+1 - 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
+1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:XXX)
+1 - 	at junit.textui.TestRunner.start(TestRunner.java:XXX)
+1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:XXX)
 1 - ]]></Data></Warning>
 1 - 
 1 - ------------ testAntennaContextLog --------------
 1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testAntennaContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="Operator" Array="Array01" Antenna="Antenna01"><![CDATA[Log with audience, array and antenna]]></Warning>
 1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testAntennaContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Array="Array01" Antenna="Antenna01"><![CDATA[Log with array and antenna]]></Warning>
 1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testAntennaContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="Operator" Array="Array01" Antenna="Antenna01"><![CDATA[Log exception with audience, array and antenna]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
-1 - 	at alma.acs.logging.AcsLoggerTest.testAntennaContextLog(AcsLoggerTest.java:43)
+1 - 	at alma.acs.logging.AcsLoggerTest.testAntennaContextLog(AcsLoggerTest.java:XXX)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-1 - 	at java.lang.reflect.Method.invoke(Method.java:497)
-1 - 	at junit.framework.TestCase.runTest(TestCase.java:168)
-1 - 	at junit.framework.TestCase.runBare(TestCase.java:134)
-1 - 	at junit.framework.TestResult$1.protect(TestResult.java:110)
-1 - 	at junit.framework.TestResult.runProtected(TestResult.java:128)
-1 - 	at junit.framework.TestResult.run(TestResult.java:113)
-1 - 	at junit.framework.TestCase.run(TestCase.java:124)
-1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:243)
-1 - 	at junit.framework.TestSuite.run(TestSuite.java:238)
-1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
-1 - 	at junit.textui.TestRunner.start(TestRunner.java:180)
-1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:61)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:XXX)
+1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:XXX)
+1 - 	at java.lang.reflect.Method.invoke(Method.java:XXX)
+1 - 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
+1 - 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
+1 - 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
+1 - 	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
+1 - 	at junit.framework.TestResult.run(TestResult.java:XXX)
+1 - 	at junit.framework.TestCase.run(TestCase.java:XXX)
+1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
+1 - 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
+1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:XXX)
+1 - 	at junit.textui.TestRunner.start(TestRunner.java:XXX)
+1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:XXX)
 1 - ]]></Data></Warning>
 1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testAntennaContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Array="Array01" Antenna="Antenna01"><![CDATA[Log exception with array and antenna]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
-1 - 	at alma.acs.logging.AcsLoggerTest.testAntennaContextLog(AcsLoggerTest.java:47)
+1 - 	at alma.acs.logging.AcsLoggerTest.testAntennaContextLog(AcsLoggerTest.java:XXX)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-1 - 	at java.lang.reflect.Method.invoke(Method.java:497)
-1 - 	at junit.framework.TestCase.runTest(TestCase.java:168)
-1 - 	at junit.framework.TestCase.runBare(TestCase.java:134)
-1 - 	at junit.framework.TestResult$1.protect(TestResult.java:110)
-1 - 	at junit.framework.TestResult.runProtected(TestResult.java:128)
-1 - 	at junit.framework.TestResult.run(TestResult.java:113)
-1 - 	at junit.framework.TestCase.run(TestCase.java:124)
-1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:243)
-1 - 	at junit.framework.TestSuite.run(TestSuite.java:238)
-1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
-1 - 	at junit.textui.TestRunner.start(TestRunner.java:180)
-1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:61)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:XXX)
+1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:XXX)
+1 - 	at java.lang.reflect.Method.invoke(Method.java:XXX)
+1 - 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
+1 - 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
+1 - 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
+1 - 	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
+1 - 	at junit.framework.TestResult.run(TestResult.java:XXX)
+1 - 	at junit.framework.TestCase.run(TestCase.java:XXX)
+1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
+1 - 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
+1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:XXX)
+1 - 	at junit.textui.TestRunner.start(TestRunner.java:XXX)
+1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:XXX)
 1 - ]]></Data></Warning>
 1 - 
 1 - ------------ testArrayContextLog --------------
 1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testArrayContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="Operator" Array="Array01"><![CDATA[Log with audience and array]]></Warning>
 1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testArrayContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Array="Array01"><![CDATA[Log with array]]></Warning>
 1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testArrayContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Audience="Operator" Array="Array01"><![CDATA[Log exception with audience and array]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
-1 - 	at alma.acs.logging.AcsLoggerTest.testArrayContextLog(AcsLoggerTest.java:54)
+1 - 	at alma.acs.logging.AcsLoggerTest.testArrayContextLog(AcsLoggerTest.java:XXX)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-1 - 	at java.lang.reflect.Method.invoke(Method.java:497)
-1 - 	at junit.framework.TestCase.runTest(TestCase.java:168)
-1 - 	at junit.framework.TestCase.runBare(TestCase.java:134)
-1 - 	at junit.framework.TestResult$1.protect(TestResult.java:110)
-1 - 	at junit.framework.TestResult.runProtected(TestResult.java:128)
-1 - 	at junit.framework.TestResult.run(TestResult.java:113)
-1 - 	at junit.framework.TestCase.run(TestCase.java:124)
-1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:243)
-1 - 	at junit.framework.TestSuite.run(TestSuite.java:238)
-1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
-1 - 	at junit.textui.TestRunner.start(TestRunner.java:180)
-1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:61)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:XXX)
+1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:XXX)
+1 - 	at java.lang.reflect.Method.invoke(Method.java:XXX)
+1 - 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
+1 - 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
+1 - 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
+1 - 	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
+1 - 	at junit.framework.TestResult.run(TestResult.java:XXX)
+1 - 	at junit.framework.TestCase.run(TestCase.java:XXX)
+1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
+1 - 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
+1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:XXX)
+1 - 	at junit.textui.TestRunner.start(TestRunner.java:XXX)
+1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:XXX)
 1 - ]]></Data></Warning>
 1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testArrayContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx" Array="Array01"><![CDATA[Log exception with array]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
-1 - 	at alma.acs.logging.AcsLoggerTest.testArrayContextLog(AcsLoggerTest.java:58)
+1 - 	at alma.acs.logging.AcsLoggerTest.testArrayContextLog(AcsLoggerTest.java:XXX)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-1 - 	at java.lang.reflect.Method.invoke(Method.java:497)
-1 - 	at junit.framework.TestCase.runTest(TestCase.java:168)
-1 - 	at junit.framework.TestCase.runBare(TestCase.java:134)
-1 - 	at junit.framework.TestResult$1.protect(TestResult.java:110)
-1 - 	at junit.framework.TestResult.runProtected(TestResult.java:128)
-1 - 	at junit.framework.TestResult.run(TestResult.java:113)
-1 - 	at junit.framework.TestCase.run(TestCase.java:124)
-1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:243)
-1 - 	at junit.framework.TestSuite.run(TestSuite.java:238)
-1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
-1 - 	at junit.textui.TestRunner.start(TestRunner.java:180)
-1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:61)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:XXX)
+1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:XXX)
+1 - 	at java.lang.reflect.Method.invoke(Method.java:XXX)
+1 - 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
+1 - 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
+1 - 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
+1 - 	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
+1 - 	at junit.framework.TestResult.run(TestResult.java:XXX)
+1 - 	at junit.framework.TestCase.run(TestCase.java:XXX)
+1 - 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
+1 - 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
+1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:XXX)
+1 - 	at junit.textui.TestRunner.start(TestRunner.java:XXX)
+1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:XXX)
 1 - ]]></Data></Warning>
 1 - 
 1 - ------------ testWrapJdkLogger --------------
@@ -117,36 +117,6 @@
 1 - <Info TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testAudienceLoggers" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx" Audience="Operator"><![CDATA[Testing OperatorLogger class]]></Info>
 1 - <Info TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testAudienceLoggers" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx" Audience="SciLog"><![CDATA[Testing ScienceLogger class]]></Info>
 1 - 
-1 - ------------ testLoggerStatistics --------------
-1 - <Trace TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message TRACE]]></Trace>
-1 - <Delouse TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message DELOUSE]]></Delouse>
-1 - <Debug TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message DEBUG]]></Debug>
-1 - <Info TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message INFO]]></Info>
-1 - <Notice TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message NOTICE]]></Notice>
-1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[Message WARNING]]></Warning>
-1 - <Error TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[Message ERROR]]></Error>
-1 - <Critical TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[Message CRITICAL]]></Critical>
-1 - <Alert TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[Message ALERT]]></Alert>
-1 - <Emergency TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[Message EMERGENCY]]></Emergency>
-1 - <Trace TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message TRACE]]></Trace>
-1 - <Delouse TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message DELOUSE]]></Delouse>
-1 - <Debug TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message DEBUG]]></Debug>
-1 - <Info TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message INFO]]></Info>
-1 - <Notice TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message NOTICE]]></Notice>
-1 - <Warning TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[Message WARNING]]></Warning>
-1 - <Error TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[Message ERROR]]></Error>
-1 - <Critical TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[Message CRITICAL]]></Critical>
-1 - <Alert TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[Message ALERT]]></Alert>
-1 - <Emergency TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="xxx"><![CDATA[Message EMERGENCY]]></Emergency>
-1 - <Trace TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message TRACE 2]]></Trace>
-1 - <Info TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[LOGGING STATISTICS FOR: AcsLoggerTest.alma.acs.logging.AcsLoggerTest]]><Data Name="LoggerId"><![CDATA[alma.acs.logging.AcsLoggerTest]]></Data><Data Name="LastPeriodDuration"><![CDATA[X]]></Data><Data Name="MessageStatistics"><![CDATA[X]]></Data><Data Name="StatisticsIdentification"><![CDATA[AcsLoggerTest]]></Data><Data Name="ErrorMessageIncrement"><![CDATA[X]]></Data><Data Name="StatisticsGranularity"><![CDATA[1]]></Data><Data Name="MessageIncrement"><![CDATA[X]]></Data><Data Name="ErrorMessageStatistics"><![CDATA[X]]></Data><Data Name="LastPeriodNumberOfErrorMessages"><![CDATA[0]]></Data><Data Name="LastPeriodNumberOfMessages"><![CDATA[11]]></Data></Info>
-1 - <Trace TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message TRACE 3]]></Trace>
-1 - <Info TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[LOGGING STATISTICS FOR: AcsLoggerTest.alma.acs.logging.AcsLoggerTest]]><Data Name="LoggerId"><![CDATA[alma.acs.logging.AcsLoggerTest]]></Data><Data Name="LastPeriodDuration"><![CDATA[X]]></Data><Data Name="MessageStatistics"><![CDATA[X]]></Data><Data Name="StatisticsIdentification"><![CDATA[AcsLoggerTest]]></Data><Data Name="ErrorMessageIncrement"><![CDATA[X]]></Data><Data Name="StatisticsGranularity"><![CDATA[1]]></Data><Data Name="MessageIncrement"><![CDATA[-81.818184]]></Data><Data Name="ErrorMessageStatistics"><![CDATA[X]]></Data><Data Name="LastPeriodNumberOfErrorMessages"><![CDATA[0]]></Data><Data Name="LastPeriodNumberOfMessages"><![CDATA[2]]></Data></Info>
-1 - <Trace TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message TRACE 4]]></Trace>
-1 - <Trace TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message TRACE 5]]></Trace>
-1 - <Trace TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[Message TRACE 6]]></Trace>
-1 - <Info TimeStamp="xxx" File="AcsLoggerTest.java"  Line="xxx" Routine="testLoggerStatistics" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="xxx"><![CDATA[LOGGING STATISTICS FOR: AcsLoggerTest.alma.acs.logging.AcsLoggerTest]]><Data Name="LoggerId"><![CDATA[alma.acs.logging.AcsLoggerTest]]></Data><Data Name="LastPeriodDuration"><![CDATA[X]]></Data><Data Name="MessageStatistics"><![CDATA[X]]></Data><Data Name="StatisticsIdentification"><![CDATA[AcsLoggerTest]]></Data><Data Name="ErrorMessageIncrement"><![CDATA[X]]></Data><Data Name="StatisticsGranularity"><![CDATA[1]]></Data><Data Name="MessageIncrement"><![CDATA[100.0]]></Data><Data Name="ErrorMessageStatistics"><![CDATA[X]]></Data><Data Name="LastPeriodNumberOfErrorMessages"><![CDATA[0]]></Data><Data Name="LastPeriodNumberOfMessages"><![CDATA[4]]></Data></Info>
 1 - 
-1 - 
-1 - OK (8 tests)
+1 - OK (7 tests)
 1 - 

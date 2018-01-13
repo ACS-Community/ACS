@@ -487,7 +487,7 @@ bool Helper::getChannelTimestamp(time_t &timestamp,const CosNaming::BindingList 
                 std::string sts = id.substr(channelAndDomainName_m.size()+1, 
                         id.size() - channelAndDomainName_m.size() - 1);
                 struct tm tm;
-                strptime(sts.c_str(), "%Y-%m-%d_%H:%M:%S", &tm);
+                ACE_OS::strptime(sts.c_str(), "%Y-%m-%d_%H:%M:%S", &tm);
                 timestamp = mktime(&tm);
                 return true;
             }

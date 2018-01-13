@@ -87,6 +87,7 @@ namespace nc{
          CosNotification::StructuredEvent *front();
 
          bool setMaxSize(unsigned int size);
+         bool setMaxSizeUnsafe(unsigned int size);
          unsigned int getMaxSize() const;
          unsigned int size() { return queue.size(); }
    };

@@ -21,8 +21,7 @@
 
 package alma.ACS.impl;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -118,7 +117,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 		}
 
 		// create properties list
-		properties = new HashMap<PropertyOperations, Servant>();
+		properties = new LinkedHashMap<PropertyOperations, Servant>();
 	}
 
 	/**
@@ -317,9 +316,8 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 			{
 				int i = 0;
 				propertyDescriptors = new PropertyDesc[properties.size()];
-				Iterator<PropertyOperations> iter = properties.keySet().iterator();
-				while (iter.hasNext())
-					propertyDescriptors[i++] = ((PropertyImpl)iter.next()).getPropertyDescriptor(); 
+				for (PropertyOperations prop: properties.keySet())
+					propertyDescriptors[i++] = ((PropertyIF)prop).getPropertyDescriptor(); 
 			}
 						
 			// TODO CORBA reference to this component to be set

@@ -24,8 +24,9 @@
  */
 package alma.TMCDB.maci;
 
+import java.io.Serializable;
 
-public class DomainsMapping {
+public class DomainsMapping implements Serializable {
 
     @SuppressWarnings("unused")
 	private int DomainsMappingId;

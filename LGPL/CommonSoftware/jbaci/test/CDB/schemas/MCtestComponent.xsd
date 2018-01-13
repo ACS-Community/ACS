@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema 
+  targetNamespace="urn:schemas-cosylab-com:MCtestComponent:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:schemas-cosylab-com:MCtestComponent:1.0"
+  xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+
+  <xs:complexType name="MCtestComponent">
+    <xs:sequence>
+
+      <xs:element name="doubleProp" type="baci:ROdouble" />
+      <xs:element name="doubleSeqProp" type="baci:ROdoubleSeq" />
+      
+      <xs:element name="longProp" type="baci:RWlong" />
+      <xs:element name="longSeqProp" type="baci:RWlongSeq" />
+      
+      <xs:element name="patternProp" type="baci:ROpattern"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="MCtestComponent" type="MCtestComponent"/>
+</xs:schema>
+

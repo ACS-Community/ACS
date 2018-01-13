@@ -52,6 +52,7 @@ endif
 # TARGETS
 # -------
 all:
+	make -C ../src
 
 clean:
 	@rm -rf tatlogs

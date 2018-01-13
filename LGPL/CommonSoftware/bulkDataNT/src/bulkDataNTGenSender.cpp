@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
 {
 	char c;
 	bool sendData=true;
+	bool resetReceiver=false;
 	bool recreate=true;
 	bool waitForKey=true;
 	bool cdpProtocolCompatible = false;
@@ -279,6 +280,11 @@ int main(int argc, char *argv[])
 				std::cout << "Outer Loop: " << n << " of " << nbSeq << std::endl;
 				for(unsigned int i=0; i<numOfCreatedFlows; i++)
     				{
+    					if(resetReceiver)
+    					{
+    						ACS_SHORT_LOG((LM_INFO, "Going to send reset to flow: '%s' to %d receiver(s)", tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
+        					flows[i]->resetSend();
+    					}
     					if(cdpProtocolCompatible)
     					{
         					ACS_SHORT_LOG((LM_INFO, "Going to send parameter (= dataSize*nb_loops): '%d' to flow: '%s' to %d receiver(s)", totalDataSize, tmpFlowNames[i].c_str(), flows[i]->getNumberOfReceivers()));
@@ -338,7 +344,7 @@ int main(int argc, char *argv[])
     			break;
   			}
 
-    			std::cout << "press 'r' for re-send data, 'c' for re-create stream+flow(s), and any other key for exit + ENTER" << std::endl;
+    			std::cout << "press 'r' for re-send data, 's' for sending a BD_RESET and then re-send data, 'c' for re-create stream+flow(s), and any other key for exit + ENTER" << std::endl;
     			int c=getchar();
     			switch(c)
     			{
@@ -346,12 +352,21 @@ int main(int argc, char *argv[])
     			{
     				getchar();
     				sendData=true;
+				resetReceiver=false;
+    				break;
+    			}
+    			case 's':
+    			{
+    				getchar();
+    				sendData=true;
+				resetReceiver=true;
     				break;
     			}
     			case 'c':
     			{
     				getchar();
     				sendData=false;
+				resetReceiver=false;
     				recreate=true;
     				break;
     			}

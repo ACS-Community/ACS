@@ -619,7 +619,7 @@ then
     then
         JAVA_OPTIONS_MEMORY="-client"
     else
-        JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled"
+        JAVA_OPTIONS_MEMORY="-server -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70"
     fi
 
     # Options for JVM heap size and thread stack size

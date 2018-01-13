@@ -257,6 +257,57 @@ public:
 		return 0;
 	}
 
+	int cbReset()
+	{
+		cout << "cbReset[ " << sn << "#" << fn << " ]" << endl;
+		//MY_SHORT_LOG_VARS();
+
+		// silently reject any other activity until next successful start
+		if ( m_isError )
+		{
+			return 1;
+		}
+
+		// for testing purposes the user could have set the callback to drop
+		// any data received from nodes, otherwise pass data to user
+		if ( m_userFunctionControl )
+		{
+			// TODO
+			cout << "Passing buffer to the sending Thread" << endl;
+			if(m_senderThread_p == NULL)
+			{
+				cerr << "cbReset(): m_senderThread_p == NULL" << endl;
+			}
+			if(!m_senderThread_p->addDataEvent(m_buffer,m_size))
+			{
+				cerr << "failed to queue data (stream/flow="
+						<< getStreamName() << "/"
+						<< getFlowName() << "/"
+						<< ")" << endl;
+				// there is no much else to do here, if we cannot pass the data
+				// to the user then the data is pretty much lost. The buffer
+				// is freed now.
+				//m_mh_p->free(m_buffer);
+				free(m_buffer);
+				// buffer freed then buffer reset
+				m_buffer = NULL;
+				return 1;
+			}
+		}
+		else
+		{
+			//ACS_SHORT_LOG((LM_DEBUG, "on sub-array index %d dropped %d [bytes]", subArrayIdx, m_size));
+			cout << sn << "#" << fn << " dropped " << m_size << " [bytes]"<< endl;
+			//m_mh_p->free(m_buffer);
+			free(m_buffer);
+		}
+
+		// record that we do not own the buffer any more
+		m_buffer = NULL;
+		//MY_SHORT_TIMED_LOG("cbReset");
+		return 0;
+	}
+
 	static long cbDelay;
 	static bool cbReceivePrint;
 private:
