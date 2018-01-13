@@ -201,16 +201,16 @@ public class RWdoubleImpl
 	 * @see alma.ACS.jbaci.CallbackDispatcher#dispatchCallback(int, java.lang.Object, alma.ACSErr.Completion, alma.ACS.CBDescOut)
 	 */
 	public boolean dispatchCallback(
-		int type,
+		CallbackDispatcher.CallbackType type,
 		Object value,
 		Callback callback,
 		Completion completion,
 		CBDescOut desc) {
 		try
 		{	
-			if (type == CallbackDispatcher.DONE_TYPE)
+			if (type == CallbackDispatcher.CallbackType.DONE_TYPE)
 				((CBdouble)callback).done(((Double)value).doubleValue(), completion, desc);
-			else if (type == CallbackDispatcher.WORKING_TYPE)
+			else if (type == CallbackDispatcher.CallbackType.WORKING_TYPE)
 				((CBdouble)callback).working(((Double)value).doubleValue(), completion, desc);
 			else 
 				return false;

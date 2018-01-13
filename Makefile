@@ -14,15 +14,15 @@ os     = $(shell uname)
 
 MODULE_PREFIX = LGPL
 #!#MODULES_KIT = vlt doc acs acstempl
-MODULES_KIT = doc acs acstempl acsutilpy
+MODULES_KIT =  # doc acs acstempl acsutilpy
 
-MODULES_TOOLS = Tools
+MODULES_TOOLS =  #Tools
 #
 # I skip doxygen, that should be after compat and before tat,
 # because it is already built in the prepare phase.
 #
 
-MODULES_ACS = jacsutil xmljbind xmlpybind acserridl acsidlcommon acsutil acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task acstime acsnc acsdaemon acslog acstestcompcpp acsexmpl jlogEngine acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities jcont jcontnc nsStatisticsService jacsalarmtest jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssim bulkDataNT bulkData containerTests acscourse ACSLaser acsGUIs acsExtras
+MODULES_ACS = jacsutil # xmljbind xmlpybind acserridl acsidlcommon acsutil acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl baciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes jacsutil2 cdb cdbChecker codegen cdb_rdb acsalarmidl acsalarm acsContainerServices acscomponent recovery basenc archiveevents parameter baci enumprop acscallbacks acsdaemonidl jacsalarm jmanager maci task acstime acsnc acsdaemon acslog acstestcompcpp acsexmpl jlogEngine acspycommon acsalarmpy acspy comphelpgen XmlIdl define acstestentities jcont jcontnc nsStatisticsService jacsalarmtest jcontexmpl jbaci monitoring acssamp mastercomp acspyexmpl nctest acscommandcenter acssim bulkDataNT bulkData containerTests acscourse ACSLaser acsGUIs acsExtras
 ######## end Modules ###########################
 
 ###############################################
@@ -36,15 +36,6 @@ define makeItAux
    (( make $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
 endef
 
-# SCM tag definition
-
-ifneq ( ,$(wildcard .svn))
-	SVN_URL = "$(shell svn info '$(PWD)/Makefile' | grep URL);"
-	SCM_TAG = "$(shell $(SVN_URL) | awk 'BEGIN { FS = "/" } ; { print toupper($$(NF-2)) }')"
-else
-	SCM_TAG = "$(shell git describe --tags --always HEAD)"
-endif
-
 ###############################################
 
 #
@@ -52,41 +43,13 @@ endif
 #
 HAS_BENCHMARK = $(shell if [ -d Benchmark ]; then echo "TRUE"; else echo "FALSE"; fi)
 ifeq ($(HAS_BENCHMARK),TRUE)
-   MODULES_BENCHMARK = util analyzer
-endif
-
-#
-# Try to build NO-LGPL modules only if they are part of the distribution 
-#
-MODULE_PREFIX_NO-LGPL = NO-LGPL
-HAS_NO-LGPL = $(shell if [ -d NO-LGPL ]; then echo "TRUE"; else echo "FALSE"; fi)
-
-ifeq ($(HAS_NO-LGPL),TRUE)
-  MODULES_NO-LGPL = fftw 
-endif
-
-# RTOS related things are build only if they are part of distribution and RTAI_HOME is defined
-HAS_RTOS = $(shell if [ "X$(RTAI_HOME)" != X -a -d NO-LGPL/rtos ] ; then echo "TRUE"; else echo "FALSE"; fi)
-MODULE_PREFIX_RTOS = $(MODULE_PREFIX_NO-LGPL)/rtos
-ifeq ($(HAS_RTOS),TRUE)
-    MODULES_RTOS =  $(MODULE_PREFIX_NO-LGPL)/rtos
-endif
-
-
-VXWORKS_RTOS = $(shell if [ $(WIND_BASE) ] ; then echo "YES"; else echo "NO"; fi)
-
-HAS_VW = $(shell if [ -d NO-LGPL/vw ] ; then echo "TRUE"; else echo "FALSE"; fi)
-MODULE_PREFIX_VW = $(MODULE_PREFIX_NO-LGPL)/vw
-ifeq ($(VXWORKS_RTOS) $(HAS_VW),YES TRUE)
-    MODULES_VW = lcuboot accdb
-    ACCDB_CONFIG = accdb_config
+   MODULES_BENCHMARK = # util analyzer
 endif
 
 MODULES =  $(foreach kit, $(MODULES_KIT), $(MODULE_PREFIX)/Kit/$(kit)) \
            $(MODULE_PREFIX)/Tools \
            $(foreach acs, $(MODULES_ACS), $(MODULE_PREFIX)/CommonSoftware/$(acs)) \
 	   $(foreach bm, $(MODULES_BENCHMARK), Benchmark/$(bm)) \
-           $(foreach nolgpl, $(MODULES_NO-LGPL), $(MODULE_PREFIX_NO-LGPL)/$(nolgpl)) \
 	   $(MODULES_RTOS) \
 	   $(addprefix $(MODULE_PREFIX_VW)/, $(MODULES_VW)) \
            $(MODULE_PREFIX)/acsBUILD
@@ -118,7 +81,6 @@ endif
 #
 
 startupDir = $(shell pwd)
-
 
 #
 #
@@ -154,11 +116,6 @@ define canned
 		    elif [ -f $${member}/Makefile ]; then \
 			$(MAKE) $(MAKE_FLAGS) -C $${member}/ $@ | tee -a build.log;\
 		    fi;\
-		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
-			if [ -f $${member}/lcu/src/Makefile ]; then \
-			$(MAKE) $(MAKE_FLAGS) -C $${member}/lcu/src/ $@ || break ;\
-			fi;\
-		    fi;\
 		done
 endef
 
@@ -168,7 +125,7 @@ endef
 # Per each module it executes:
 #    make clean all install
 #
-build: 	scm-tag clean_log checkModuleTree prepare update
+build: 	clean_log checkModuleTree prepare update
 	@$(ECHO) "... done"
 
 #
@@ -177,7 +134,7 @@ build: 	scm-tag clean_log checkModuleTree prepare update
 # Per each module it executes:
 #    make clean all man install clean
 #
-build_clean:   	scm-tag clean_log checkModuleTree prepare update_clean
+build_clean:   	svn-tag clean_log checkModuleTree prepare update_clean
 	@$(ECHO) "... done"
 
 #
@@ -190,7 +147,7 @@ build_clean:   	scm-tag clean_log checkModuleTree prepare update_clean
 # This is useful to discover circular dependencies between
 # modules.
 #
-build_clean_test:   	scm-tag clean_log checkModuleTree prepare update_clean_test
+build_clean_test:   	svn-tag clean_log checkModuleTree prepare update_clean_test
 	@$(ECHO) "... done"
 
 #
@@ -199,7 +156,7 @@ build_clean_test:   	scm-tag clean_log checkModuleTree prepare update_clean_test
 # Per each module it executes:
 #    make clean all man install clean
 #
-rebuild:	scm-tag clean_log update
+rebuild:	svn-tag clean_log update
 	@$(ECHO) "... done"
 
 clean_log:
@@ -259,7 +216,7 @@ prepare:
 #   that if the LAST module fails the whole Make does not fail
 #
 
-update:	scm-tag checkModuleTree
+update:	checkModuleTree
 	@$(ECHO) "############ (Re-)build ACS Software         #################"| tee -a build.log
 	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
 		    if [ ! -d $${member} ]; then \
@@ -278,14 +235,6 @@ update:	scm-tag checkModuleTree
 		    elif [ -f $${member}/Makefile ]; then \
 		         $(ECHO) "############ $${member} MAIN" | tee -a build.log;\
 			 $(call makeItAux,$${member},-s $@,build.log,$${member}/NORM-BUILD-OUTPUT) \
-		    fi;\
-		    if [ "$(VXWORKS_RTOS)" == "YES" ]; then \
-			if [ -f $${member}/lcu/src/Makefile ]; then \
-			 $(ECHO) "############ $${member} LCU" | tee -a build.log;\
-                         $(call makeItAux,$${member}/lcu/src,clean,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
-			 $(call makeIt,$${member}/lcu/src,all,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
-			 $(call makeItAux,$${member}/lcu/src,install,build.log,$${member}/lcu/src/NORM-BUILD-OUTPUT) \
-			fi;\
 		    fi;\
 		done;\
          true;
@@ -458,81 +407,18 @@ show_modules:
 	@$(ECHO) "Modules in build list are:" 
 	@$(ECHO) ${MODULES}
 
-################################################################
-# SCM targets.
-# 
-# The following targets and expressions are helpers for SVN
-# operations on the ACS tree.
-################################################################
-
 #
-# This expression extracts the SCM tag for the ACS/Makefile file
-# (if exists).
-# This does not warranty that all files have the same tag,
-# but it is at least an indication.
-#
-# This target puts the SCM tag for the ACS/Makefile file
-# (if exists) into a file, so that it can be used
-# to mark an installation.
-#
-scm-tag:
-	@ $(ECHO) "Evaluating current SCM tag"; \
-	if [ X$(SCM_TAG) != X ]; then \
-		$(ECHO) "SCM tag is $(SCM_TAG)"; \
-		$(ECHO) $(SCM_TAG) > ACS_TAG ; \
-	else \
-		if [ -f ACS_TAG ]; then \
-			$(ECHO) "ACS tag file already exist: "; \
-			cat ACS_TAG; $(ECHO) ""; \
-		else \
-			$(ECHO) "No SCM tag available"; \
-		fi; \
-	fi
-
-#
-# This target gets from SCM the correct 
-# ACS_VERSION and ACS_PATCH_LEVEL files.
-#
-# I ported the cvs-get-version to work with SVN,
-# but believe that it will not be needed anymore because of
-# the diffrences between CVS and SVN.
-#
-scm-get-version:
-	@ $(ECHO) "Extracting from SCM version files"; \
-          if [ X$(SCM_TAG) != X ]; then \
-             $(ECHO) "SCM tag is: $(SCM_TAG)"; \
-          else \
-             $(ECHO) "No SCM tag available"; \
-          fi; \
-	  svn update --quiet ACS_PATCH_LEVEL ACS_VERSION
-
-#
-# This target gets from SCM all files needed for an LGPL distribution 
+# This target gets from SVN all files needed for an LGPL distribution 
 #
 LGPL_FILES=README README-new-release LGPL
-scm-get-lgpl: scm-tag scm-get-version
-	@ $(ECHO) "Extracting from SCM LGPL files"; \
-          if [ X$(SCM_TAG) != X ]; then \
-             $(ECHO) "SCM tag is: $(SCM_TAG)"; \
+svn-get-lgpl: svn-tag svn-get-version
+	@ $(ECHO) "Extracting from SVN LGPL files"; \
+          if [ X$(SVN_TAG) != X ]; then \
+             $(ECHO) "SVN tag is: $(SVN_TAG)"; \
           else \
-             $(ECHO) "No SCM tag available"; \
+             $(ECHO) "No SVN tag available"; \
           fi; \
 	  svn update --quiet $(LGPL_FILES)
-
-#
-# This target gets from SCM a complete ACS code distribution 
-#
-NO-LGPL_FILES=Benchmark NO-LGPL
-scm-get-no-lgpl: scm-tag scm-get-version scm-get-lgpl scm-get-no-lgpl-extract 
-
-scm-get-no-lgpl-extract: 
-	@  $(ECHO) "Extracting from SCM NO-LGPL files"; \
-          if [ X$(SCM_TAG) != X ]; then \
-             $(ECHO) "SCM tag is: $(SCM_TAG)"; \
-          else \
-             $(ECHO) "No SCM tag available"; \
-          fi; \
-	  svn update --quiet $(NO-LGPL_FILES)
 
 #
 # Standard targets

@@ -635,7 +635,7 @@ else
         CCDEP         = gcc -MM -MG
         CC            = gcc -std=gnu99 -fextended-identifiers
         CXX           = g++
-        LD            = g++
+        LD            = g++ -Wl,--copy-dt-needed-entries
         NOSHARED_ON   = -Xlinker -Bstatic 
         NOSHARED_OFF  = -Xlinker -Bdynamic
         SHLIB_EXT     = so
@@ -1807,7 +1807,7 @@ vpath  %.jar  $(LIB_PATH_LIST)
 #   acsMakeLibraryDependencies) just give a message. (see remark below for more).
 #
 %.a:
-	@echo "ERROR: ----> $@  does not exist."; exit 1
+	@echo "ERROR: ----> $@  does not exist."; #exit 1  
 
 
 #

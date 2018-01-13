@@ -57,7 +57,7 @@ endif
 
 
 # user definable C-compilation flags
-USER_CFLAGS = -DRTI_UNIX -DRTI_LINUX 
+USER_CFLAGS = -DRTI_UNIX -DRTI_LINUX -g -O0
 
 #
 # additional include and library search paths
@@ -113,35 +113,35 @@ LIBRARIES_L     =
 bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream bulkDataNTConfiguration bulkDataNTConfigurationParser \
 						bulkDataNT bulkDataNTSupport bulkDataNTPlugin bulkDataNTDDSLoggable bulkDataNTLibMgmt
  
-bulkDataNT_LIBS = ACSErrTypeCommon ACS_BD_Errors ACS_DDS_Errors xerces-c  nddscpp nddsc nddscore
+bulkDataNT_LIBS = ACSErrTypeCommon ACS_BD_Errors ACS_DDS_Errors xerces-c  nddscpp nddsc nddscore acsnc
 
 bulkDataNTSender_OBJECTS    = bulkDataNTSenderStream bulkDataNTSenderFlow bulkDataNTDDSPublisher \
 							  bulkDataNTWriterListener bulkDataNTSenderFlowCallback
-bulkDataNTSender_LIBS = bulkDataNT bulkDataSenderStubs baci
+bulkDataNTSender_LIBS = bulkDataNT bulkDataSenderStubs baci acsnc
 
 bulkDataNTSenderImpl_OBJECTS = bulkDataNTSenderImpl
-bulkDataNTSenderImpl_LIBS = bulkDataNTSender
+bulkDataNTSenderImpl_LIBS = bulkDataNTSender acsnc
 
 bulkDataNTThreadUtils_OBJECTS = bulkDataNTPosixHelper bulkDataNTThreadSyncGuard
 bulkDataNTThreadUtils_LIBS = pthread ACE logging acsThread acstime
 
 bulkDataNTEx_OBJECTS = bulkDataNTGenEx
 bulkDataNTEx_LD_FLAGS = 
-bulkDataNTEx_LIBS = 
+bulkDataNTEx_LIBS = acsnc 
 
 bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber \
 							   bulkDataNTReaderListener bulkDataNTCallback
-bulkDataNTReceiver_LIBS = bulkDataNT RepeatGuard
+bulkDataNTReceiver_LIBS = bulkDataNT RepeatGuard bulkDataStubs
 
 
 bulkDataNTGenSender_OBJECTS = bulkDataNTGenSender
-bulkDataNTGenSender_LIBS= bulkDataNTSender
+bulkDataNTGenSender_LIBS= bulkDataNTSender acsnc bulkDataStubs
 
 bulkDataNTGenReceiver_OBJECTS = bulkDataNTGenReceiver
 bulkDataNTGenReceiver_LIBS= bulkDataNTReceiver 
 
 bulkDataNTGenReceiverSender_OBJECTS = bulkDataNTGenReceiverSender bulkDataNTArrayThread bulkDataNTGenStreamerThread
-bulkDataNTGenReceiverSender_LIBS= bulkDataNTSender bulkDataNTReceiver bulkDataNTThreadUtils bulkDataNTEx
+bulkDataNTGenReceiverSender_LIBS= bulkDataNTSender bulkDataNTReceiver bulkDataNTThreadUtils bulkDataNTEx acsnc
 
 ddsPubTest_OBJECTS=ddsPublisher 
 ddsPubTest_LIBS=nddscpp nddsc nddscore pthread ACSErrTypeCommon

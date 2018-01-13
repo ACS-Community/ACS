@@ -36,6 +36,9 @@ PROLOGUE acsutilTATPrologue -l
 # Check selected service and channel by creating a couple of channels in DefaultNotifyService
 3	Test3	"acsutilTATTestRunner TSupplier.py 10000 40 1 2" "acsutilTATTestRunner TConsumer.py 40 1 2" "@SLEEP 5" "acsutilTATTestRunner nsStatistics -f 5000 -ms -add \"DefaultNotifyService:testNsStatsChannel2\"" "@SLEEP 40" "acsutilTATTestRunner stopNsStats" "@SLEEP 4" "acsutilTATTestRunner NsStatisticsTest.py 3"
 
+# Test NotifyServiceStatistics Component
+6	Test6	"acsutilTATTestRunner TSupplier.py 10000 70 1" "acsutilTATTestRunner TConsumer.py 70 1" "@SLEEP 5" "acsutilTATTestRunner startNsStatisticsContainer.sh" "@SLEEP 80" "acsutilTATTestRunner acsStopContainer frodoContainer" "@SLEEP 10" "acsutilTATTestRunner NsStatisticsTest.py 6"
+
 EPILOGUE acsutilTATEpilogue
 
 #

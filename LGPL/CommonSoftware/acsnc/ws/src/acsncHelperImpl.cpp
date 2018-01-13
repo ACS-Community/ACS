@@ -32,6 +32,7 @@
 #include <acscommonC.h>
 #include <AcsNCTraceLog.h>
 #include "acsncCDBProperties.h"
+#include <maciSimpleClient.h>
 //-----------------------------------------------------------------------------
  using namespace baci;
  using namespace maci;
@@ -69,6 +70,7 @@ Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
     //this is common to both suppliers and consumers, but what does it really
     //do?
     ifgop_m = CosNotifyChannelAdmin::AND_OP;
+	ACS_SHORT_LOG((LM_ERROR,"Helper::Helper(channelName_mp =%s, acsNCDomainName_mp = %s) ", channelName_mp,acsNCDomainName_mp));
 
     //if this doesn't work
     if((BACI_CORBA::getInstance()==0) && (BACI_CORBA::InitCORBA(0, 0) == false))
@@ -134,6 +136,9 @@ Helper::resolveNamingService(CORBA::ORB_ptr orb_mp)
 	    //DWF - Ideally there would be a SimpleClient singleton that we would try next (this would
 	    // be especially useful in Consumers), but instead we will just create our own ORB
 	    // and hope this is running on the same host as the Naming Service =(
+	    else if (maci::SimpleClient::getInstance() != 0) {
+		namingContext_m = maci::SimpleClient::getInstance()->getComponent<CosNaming::NamingContext>(acscommon::NAMING_SERVICE_NAME, 0, true);
+            }
 	    else    //This is basically just a fail-safe mechanism.
 		{
 		ACS_SHORT_LOG((LM_INFO,
@@ -487,7 +492,7 @@ bool Helper::getChannelTimestamp(time_t &timestamp,const CosNaming::BindingList 
                 std::string sts = id.substr(channelAndDomainName_m.size()+1, 
                         id.size() - channelAndDomainName_m.size() - 1);
                 struct tm tm;
-                strptime(sts.c_str(), "%Y-%m-%d_%H:%M:%S", &tm);
+                ACE_OS::strptime(sts.c_str(), "%Y-%m-%d_%H:%M:%S", &tm);
                 timestamp = mktime(&tm);
                 return true;
             }
@@ -567,7 +572,7 @@ Helper::resolveNotifyChannel()
 {
     //commented out as per Rodrigo Amestica's request.
     //should be uncommented once a couple of ACS logging system SPRs get completed.
-    //ACS_TRACE("Helper::resolveNotifyChannel");
+    ACS_TRACE("Helper::resolveNotifyChannel");
 
     CosNaming::Name name(1);
     name.length(1);

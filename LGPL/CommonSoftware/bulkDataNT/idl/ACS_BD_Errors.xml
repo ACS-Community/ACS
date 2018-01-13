@@ -92,6 +92,11 @@
         <Member name="FlowName" type="string" description="Flow name" />        
     </ErrorCode>
 
+    <ErrorCode name="ResetSendError" shortDescription="resetSend error" description="Error in calling resetSend">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />        
+    </ErrorCode>
+
     <ErrorCode name="StartSendError" shortDescription="startSend error" description="Error in calling startSend">
         <Member name="SenderName" type="string" description="Sender name" />
         <Member name="FlowName" type="string" description="Flow name" />        

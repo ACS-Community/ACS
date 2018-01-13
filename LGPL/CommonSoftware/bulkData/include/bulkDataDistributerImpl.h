@@ -195,6 +195,12 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
     */
     virtual void stopSend();
 
+    virtual void resetReceiver();
+
+    virtual void resetSend();
+    
+    virtual void resetSender();
+
 /************************ Receiver part ********************/
 
     /**

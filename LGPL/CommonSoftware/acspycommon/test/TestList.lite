@@ -49,5 +49,7 @@ PROLOGUE acspycommonTATPrologue
 
 9   DurationHelper      "acsutilTATTestRunner acspyTestDurationHelper"
 
+10  LoggingStatistics   "acsutilTATTestRunner acspyTestLoggingStatistics.sh"
+
 #-------------------------------------------------------------------
 EPILOGUE acsutilTATEpilogue

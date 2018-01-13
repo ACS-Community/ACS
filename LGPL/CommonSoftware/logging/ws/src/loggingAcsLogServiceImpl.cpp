@@ -151,11 +151,13 @@ add(const ::Logging::XmlLogRecordSeq *reclist)
       (*buffer_)[size_] = (*reclist)[i];
    if(size_ > BATCH_LEN){
       waitCond_.signal();
+      batchMutex_.release();
 		while (size_ > 100 * BATCH_LEN)
 		{
 			usleep(1);
 			/*if the size of the batch is huge, wait for flush*/
 		}
+        return;
    }
    batchMutex_.release();
 }

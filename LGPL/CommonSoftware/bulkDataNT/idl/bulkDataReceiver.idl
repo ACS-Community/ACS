@@ -186,6 +186,14 @@ module bulkdata
 	*/
 	void fwdData2UserCB(in boolean enable);
 
+	/** 
+	 *  Resets the receiver streams and flows.
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void resetReceiver();
 	};
 
     /** @interface BulkDataReceiverDistr

@@ -39,14 +39,14 @@ testChannelCreation_OBJECTS =	testChannelCreation
 testChannelCreation_LIBS    =	acsnc maciClient acsncHelperTest
 
 
-SCRIPTS_L       = acsncTATRunTest.sh acsncNslist.sh acsncExecDelChannelsNS.sh acsncCreateNamedNotifyS.sh acsncKillNamedNotifyS.sh
+SCRIPTS_L       = acsncTATRunTest.sh acsncNslist.sh acsncExecDelChannelsNS.sh acsncCreateNamedNotifyS.sh acsncKillNamedNotifyS.sh acsncProcessSignal.sh
 
-PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent acsncTestSupReconn acsncRunConComp acsncRunSupComp acsncRunMConComp acsncTestMThSup
+PY_SCRIPTS_L =	acsncTestConSup acsncTestSimpleComponent acsncTestSupReconn acsncRunConComp acsncRunSupComp acsncRunMConComp acsncTestMThSup acsncSupplyEventsWithStats
 
 # Includes (.h) files (public and local)
 # ---------------------------------
 INCLUDES        = 
-INCLUDES_L      = acsncConsumerCompImpl.h acsncSupplierCompImpl.h acsncConCompImpl.h acsncSupCompImpl.h
+INCLUDES_L      = acsncConsumerCompImpl.h acsncSupplierCompImpl.h acsncConCompImpl.h acsncSupCompImpl.h  
 
 # Libraries (public and local)
 # ----------------------------
@@ -55,7 +55,7 @@ LIBRARIES       = acsncConsumerCompImpl acsncSupplierCompImpl acsncRTSupplierCom
 		testCDBProps  \
 		acsncConsumerILCompImpl acsncSupplierILCompImpl \
 		acsncConsumerNamedChCompImpl acsncSupplierNamedChCompImpl \
-        acsncHelperTest acsncConCompImpl acsncSupCompImpl 
+                acsncHelperTest acsncConCompImpl acsncSupCompImpl acsncSupplierReliabilityCompImpl 
 LIBRARIES_L     = 
 
 acsncSupCompImpl_OBJECTS = acsncSupCompImpl
@@ -91,6 +91,9 @@ acsncSupplierILCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
 
 acsncSupplierNamedChCompImpl_OBJECTS = acsncSupplierNamedChCompImpl
 acsncSupplierNamedChCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
+
+acsncSupplierReliabilityCompImpl_OBJECTS = acsncSupplierReliabilityCompImpl
+acsncSupplierReliabilityCompImpl_LIBS    = EventComponentStubs acsnc acscomponent
 
 acsncRTSupplierCompImpl_OBJECTS = acsncRTSupplierCompImpl
 acsncRTSupplierCompImpl_LIBS    = EventComponentStubs acsnc acscomponent

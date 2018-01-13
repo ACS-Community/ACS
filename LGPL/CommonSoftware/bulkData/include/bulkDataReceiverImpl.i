@@ -273,5 +273,7 @@ void BulkDataReceiverImpl<TCallback>::fwdData2UserCB(CORBA::Boolean enable)
 	}
 }//fwdData2UserCB
 
-
-
+template<class TCallback>
+void BulkDataReceiverImpl<TCallback>::resetReceiver()
+{
+}

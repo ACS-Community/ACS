@@ -40,7 +40,7 @@ public:
 	int cbReceive(unsigned char* userParam_p, unsigned  int size)
 	{
 		//std::cout << "=>cbReceive[" << recvName_m << "/" << flowName_m << "]: got " << size << " :";
-		ACS_SHORT_LOG((LM_INFO, "=>cbStart[%s/%s]: got %d.", recvName_m.c_str(), flowName_m.c_str(), size));
+		ACS_SHORT_LOG((LM_INFO, "=>cbReceive[%s/%s]: got %d.", recvName_m.c_str(), flowName_m.c_str(), size));
 
 		 return 0;
 	}
@@ -52,6 +52,12 @@ public:
 		return 0;
 	}
 
+	int cbReset()
+	{
+		//std::cout << "=>cbReset[" << recvName_m << "/" << flowName_m << "]" << std::endl;
+		ACS_SHORT_LOG((LM_INFO, "=>cbReset[%s/%s]", recvName_m.c_str(), flowName_m.c_str()));
+		return 0;
+	}
 };
 
 

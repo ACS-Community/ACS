@@ -141,8 +141,7 @@ class Supplier :
        @endhtmlonly
      */
     void 
-    publishEvent(const CosNotification::StructuredEvent &event)
-	;
+    publishEvent(const CosNotification::StructuredEvent &event);
 
     /**
      * Call this to publish a CORBA Any and implicitly have the structured event
@@ -158,8 +157,7 @@ class Supplier :
        @endhtmlonly
      */
     virtual void 
-    publishEvent(const CORBA::Any &eventData)
-	;
+    publishEvent(const CORBA::Any &eventData);
 
     /**
      * <b>Do not under any circumstances invoke this method from your code!</b>
@@ -216,6 +214,12 @@ class Supplier :
      * Return the event buffer size
      */
     unsigned int getEventBufferSize() const;
+
+    /**
+     * set the event buffer size used to store events that couldn't be published
+     * (should not be used unless you have a good reason for it. prefer: increaseEventBufferSize)
+     */
+    bool setEventBufferSize(unsigned int bufferSize);
 
   protected:
     /**
@@ -307,7 +311,11 @@ class Supplier :
 
     void
     reinit();
-    
+
+
+    void
+    retrySendEvent(const CosNotification::StructuredEvent &event);
+
     /** 
      *  Supplier Admin object is responsible for creating & managing proxy consumers
      *  w/ a common set of QoS property settings & filter objects. 
@@ -366,6 +374,9 @@ class Supplier :
   private:
     
     static const uint32_t SLEEP_TIME_BEFORE_SENDING_BUFFERED_EVENTS;
+    static const uint32_t SYSTEM_EXCEPTION_TOLERANCE;
+
+    unsigned short consecutiveSystemExceptions;
 
     /**
      * ALMA C++ coding standards state assignment operators should be disabled.

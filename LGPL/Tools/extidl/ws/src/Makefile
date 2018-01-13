@@ -11,7 +11,7 @@
 #
 
 
-export USER_IDL = -I$(ACE_ROOT)/TAO/orbsvcs -I$(ACE_ROOT)/TAO/
+export USER_IDL = -I/usr/include/orbsvcs -I/usr/include/
 
 #
 # INCLUDE STANDARDS
@@ -62,15 +62,15 @@ install :
 # to be able to compile pidl files for Java we have to create links!
 do_copy :
 	@mkdir -p ../idl
-	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/NotifyExt.idl ../idl
-	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Notify/MonitorControl/NotificationServiceMC.idl ../idl
-	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl ../idl
-	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/DsLogAdmin.idl ../idl
-	@cp -f $(ACE_ROOT)/TAO/tao/TimeBase.pidl ../idl
-	@cp -f $(ACE_ROOT)/TAO/tao/StringSeq.pidl ../idl
-	@cp -f $(ACE_ROOT)/TAO/tao/Monitor/Monitor.pidl ../idl
+	@cp -f /usr/include/orbsvcs/NotifyExt.idl ../idl
+	@cp -f /usr/include/orbsvcs/Notify/MonitorControl/NotificationServiceMC.idl ../idl
+	@cp -f /usr/include/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl ../idl
+	@cp -f /usr/include/orbsvcs/DsLogAdmin.idl ../idl
+	@cp -f /usr/include/tao/TimeBase.pidl ../idl
+	@cp -f /usr/include/tao/StringSeq.pidl ../idl
+	@cp -f /usr/include/tao/Monitor/Monitor.pidl ../idl
 	@ln -fs ../idl/Monitor.pidl ../idl/Monitor.idl
-	@cp -f $(ACE_ROOT)/TAO/tao/Monitor/Monitor_Types.pidl ../idl
+	@cp -f /usr/include/tao/Monitor/Monitor_Types.pidl ../idl
 	@ln -fs ../idl/Monitor_Types.pidl ../idl/Monitor_Types.idl
 
 do_remove :

@@ -480,50 +480,31 @@ class CompletionImpl : public CompletionInit
 // default constructor
     CompletionImpl();
 
-    CompletionImpl (ACSErr::ACSErrType t, ACSErr::ErrorCode c) :
-	CompletionInit(t, c, false)/*,
-	m_errorTraceHelper(previousError[0], previousError.length())
-*/
-	{
-	}
+    CompletionImpl (ACSErr::ACSErrType t, ACSErr::ErrorCode c);
 
     CompletionImpl (ACSErr::ACSErrType t, ACSErr::ErrorCode c,
 		      const char* file, int line, const char* routine, const char* sd,
-		      ACSErr::Severity severity) : 
-	CompletionInit(t, c),
-	m_errorTraceHelper(t, c, file, line, routine, sd, severity, previousError[0])
-	{}
+		      ACSErr::Severity severity);
 
 // adding previous (remote or local) with reference 
     CompletionImpl (const ACSErr::Completion &pc, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
 		      const char* file, int line, const char* routine, const char* sd,
-		      ACSErr::Severity severity) :
-	CompletionInit(t, c),
-	m_errorTraceHelper(pc.previousError[0], t, c, file, line, routine, sd, severity, previousError[0])
-	{}
+		      ACSErr::Severity severity);
+
 // adding previous remote completion as pointer
     CompletionImpl (ACSErr::Completion *pc, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
 		      const char* file, int line, const char* routine, const char* sd,
-		      ACSErr::Severity severity) :
-	CompletionInit(t, c),
-	m_errorTraceHelper(pc->previousError[0], t, c, file, line, routine, sd, severity, previousError[0])
-	{ delete pc; }
+		      ACSErr::Severity severity);
 
 // adding previous completion as pointer
     CompletionImpl (CompletionImpl *pc, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
 		      const char* file, int line, const char* routine, const char* sd,
-		      ACSErr::Severity severity) :
-	CompletionInit(t, c),
-	m_errorTraceHelper(pc->previousError[0], t, c, file, line, routine, sd, severity, previousError[0])
-	{ delete pc; }
+		      ACSErr::Severity severity);
 
 // adding error trace
     CompletionImpl (const ACSErr::ErrorTrace &et, ACSErr::ACSErrType t, ACSErr::ErrorCode c,
 		      const char* file, int line, const char* routine, const char* sd,
-		      ACSErr::Severity severity) :
-	CompletionInit(t, c),
-	m_errorTraceHelper(et, t, c, file, line, routine, sd, severity, previousError[0])
-	{}
+		      ACSErr::Severity severity);
 
 //wrapping remote (CORBA) Completion
     /**

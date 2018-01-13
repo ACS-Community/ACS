@@ -50,10 +50,10 @@ public:
   //destructor
   virtual ~BulkDataNTReaderListener (void);
 
-  /// Enables calling user's CB (cbStart, cbReceiver, cbStop)
+  /// Enables calling user's CB (cbStart, cbReceiver, cbStop, cbReset)
   void enableCallingCB();
 
-  /// Disables calling user's CB (cbStart, cbReceiver, cbStop)
+  /// Disables calling user's CB (cbStart, cbReceiver, cbStop, cbReset)
   void disableCallingCB();
 
   // implementation of methods from #DDS::DataReaderListener

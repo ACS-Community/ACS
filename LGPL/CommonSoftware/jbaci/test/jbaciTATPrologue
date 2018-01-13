@@ -29,13 +29,19 @@
 echo " ****************** jbaciTATPrologue ************* "
 ACS_CDB=$PWD
 
-echo " Staring ORB Services and Manager"
-acsutilTATPrologue -l
+# delete old tmp folder and create a new one
+rm -rf tmp
+mkdir tmp
 
-echo " Starting C++ Container"
+echo " Staring ORB Services and Manager"
+acsutilTATPrologue -l -noloadifr
+
+echo " Starting C++ Containers"
 acsutilAwaitContainerStart -cpp Container01
+acsutilAwaitContainerStart -cpp monColTestCont
+acsutilAwaitContainerStart -cpp separateTestCont
 
 echo " Starting Java Container"
 export JAVA_OPTIONS="-Dacs.container.fakeUIDsForTesting=true"
 acsutilAwaitContainerStart -java frodoContainer
-
+acsutilAwaitContainerStart -java monColTestContJava
