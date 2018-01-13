@@ -54,8 +54,12 @@ ifeq ($(os),Linux)
   ifeq ($(majorRelNo),6)
     GMP =
   endif
+  #Added for Centos 7, maybe is better to 
+  #use another method or simply remove GMP
+  ifeq ($(majorRelNo),7)
+    GMP =
+  endif
 endif
-
 # emacs expat loki antlr hibernate extpy cppunit astyle castor shunit2 log4cpp in RPMs
 # getopt is only for SunOS according to its own Makefile
 # apache xercec-c and xerces-j2 in repos
