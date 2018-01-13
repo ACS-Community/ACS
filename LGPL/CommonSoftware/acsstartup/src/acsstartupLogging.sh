@@ -16,11 +16,11 @@ local OUTPUT_PATH
 if [ "X$ACS_TMP" != "X" ] && [ -w $ACS_TMP ]
 then
     OUTPUT_PATH=$ACS_TMP
-    if [ ! -e $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
+    if [ ! -e "$OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE" ]
     then
-        if ! mkdir $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE 2> /dev/null
+        if ! mkdir "$OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE" 2> /dev/null
         then
-            if [ ! -d $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
+            if [ ! -d "$OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE" ]
             then
                 echo "Cannot create $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE (getLogPath function)"
                 exit $EC_CANNOTCREATE
@@ -32,11 +32,11 @@ then
         fi
     fi
 
-    if [ -d $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ] && [ -w $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
+    if [ -d "$OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE" ] && [ -w "$OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE" ]
     then
         OUTPUT_PATH=$OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE
     fi
-elif [ "$ACSDATA/tmp" != "/tmp" ] && [ -w $ACSDATA/tmp ]
+elif [ "$ACSDATA/tmp" != "/tmp" ] && [ -w "$ACSDATA/tmp" ]
 then
     #give it an OK default value
 
@@ -103,18 +103,18 @@ local OUTPUT_FILE
 OUTPUT_FILE=`getLogPath`/.`basename $0`.$$.log
 
 #create the file if it does not already exist.
-if [ ! -e $OUTPUT_FILE ]
+if [ ! -e "$OUTPUT_FILE" ]
 then
 	touch $OUTPUT_FILE
 	chmod 774 $OUTPUT_FILE 2> /dev/null
 
-elif [ ! -w $OUTPUT_FILE ]
+elif [ ! -w "$OUTPUT_FILE" ]
 then
 	echo "SEVERE ERROR - cannot log anything with no write permissions on $OUTPUT_FILE!"
 	exit $EC_CANNOTUSE
 fi
 
-echo $OUTPUT_FILE
+echo "$OUTPUT_FILE"
 }
 
 export getLogFile
@@ -142,7 +142,7 @@ local OUTPUT_FILE
 OUTPUT_FILE=`getLogFile`
 
 #write out the message
-echo $@ >> "$OUTPUT_FILE"
+echo "$@" >> "$OUTPUT_FILE"
 
 return $EC_OK
 }

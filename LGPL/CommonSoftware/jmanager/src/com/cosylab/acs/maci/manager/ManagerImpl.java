@@ -7713,27 +7713,29 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					try
 					{
 						container.deactivate_component(componentInfo.getHandle());
-					    deactivationTime = System.currentTimeMillis();
+						deactivationTime = System.currentTimeMillis();
 					}
 					catch (AcsJException aex)
 					{
+						deactivationTime = System.currentTimeMillis();
 						logger.log(Level.SEVERE, aex.getMessage(), aex);
 						throw aex;
 					}
 					catch (Throwable ex)
 					{
+						deactivationTime = System.currentTimeMillis();
 						RemoteException re = new RemoteException("Failed to deactivate component '"+componentInfo.getName()+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") on container '"+containerInfo.getName()+"'.", ex);
 						logger.log(Level.SEVERE, re.getMessage(), re);
 						throw ex;
+					} finally {
+						//ICT-7989 We consider the component deactivated upon failure. So, this goes into finally clause.
+						// notify administrators about deactivation, but not if failed
+						if (deactivationTime != 0)
+							notifyComponentDeactivated(componentInfo.getHandle(), deactivationTime);
+
+						// shutdown container if required (and necessary)
+						conditionalShutdownContainer(containerInfo);
 					}
-
-					// notify administrators about deactivation, but not if failed
-					if (deactivationTime != 0)
-						notifyComponentDeactivated(componentInfo.getHandle(), deactivationTime);
-
-					// shutdown container if required (and necessary)
-					conditionalShutdownContainer(containerInfo);
-
 				}
 
 			}
@@ -7750,42 +7752,42 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					componentsLock.unlock();
 				}
 			}
+
+			//ICT-7989 We consider the component deactivated upon failure. Moved following code into finally clause.
+			// log info
+			logger.log(Level.INFO,"Component '"+componentInfo.getName()+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") deactivated.");
+			
+			// release all subcomponents (just like client logoff)
+			// component should have already done this by itself, but take care of clean cleanup
+			// what about that: if subcomponent becomes unavailable, does component also becomes?!
+			// no, it is notified and it handles situation by its own way (e.g. changes component state).
+			// Just like it already handles activation (manager does not care for dependecy trees).
+			int [] subcomponents = null;
+			// no not hold the lock
+			synchronized (componentInfo.getComponents())
+			{
+				if (componentInfo.getComponents().size() > 0) {
+					IntArray toCleanupList = new IntArray();
+
+					IntArray comps = componentInfo.getComponents();
+					for (int i = 0; i < comps.size(); i++)
+						if (components.isAllocated(comps.get(i) & HANDLE_MASK))
+							toCleanupList.add(comps.get(i));
+
+					if (toCleanupList.size() > 0)
+						subcomponents = toCleanupList.toArray();
+				}
+
+				//subcomponents = componentInfo.getComponents().toArray();
+			}
+
+			if (subcomponents != null && subcomponents.length > 0)
+				new ReleaseComponentTask(componentInfo.getHandle(), subcomponents).run();
+
+			// make unavailable (deactivation was forced)
+			if (owners > 0)
+				makeUnavailable(componentInfo);
 		}
-
-		// log info
-		logger.log(Level.INFO,"Component '"+componentInfo.getName()+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") deactivated.");
-		
-		// release all subcomponents (just like client logoff)
-		// component should have already done this by itself, but take care of clean cleanup
-		// what about that: if subcomponent becomes unavailable, does component also becomes?!
-		// no, it is notified and it handles situation by its own way (e.g. changes component state).
-		// Just like it already handles activation (manager does not care for dependecy trees).
-		int [] subcomponents = null;
-		// no not hold the lock
-		synchronized (componentInfo.getComponents())
-		{
-		    if (componentInfo.getComponents().size() > 0) {
-		        IntArray toCleanupList = new IntArray();
-
-		        IntArray comps = componentInfo.getComponents();
-		        for (int i = 0; i < comps.size(); i++)
-		            if (components.isAllocated(comps.get(i) & HANDLE_MASK))
-		                toCleanupList.add(comps.get(i));
-
-		        if (toCleanupList.size() > 0)
-		            subcomponents = toCleanupList.toArray();
-		    }
-
-	        //subcomponents = componentInfo.getComponents().toArray();
-		}
-
-		if (subcomponents != null && subcomponents.length > 0)
-		    new ReleaseComponentTask(componentInfo.getHandle(), subcomponents).run();
-
-		// make unavailable (deactivation was forced)
-		if (owners > 0)
-			makeUnavailable(componentInfo);
-
 	}
 
 	/**

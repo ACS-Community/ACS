@@ -50,6 +50,7 @@ INSTALL_FILES = ../lib/hibernate-core-4.3.11.Final.jar \
 	../lib/dom4j-1.6.1.jar \
 	../lib/freemarker-2.3.23.jar \
 	../lib/jboss-logging-3.1.3.GA.jar \
+	../lib/jboss-transaction-api_1.1_spec-1.0.1.Final.jar \
 
 #
 #>>>>> END OF standard rules

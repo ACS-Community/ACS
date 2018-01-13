@@ -191,7 +191,7 @@ void ServiceController::restart() {
         	if (c->desc->getACSService() == NOTIFICATION_SERVICE &&
         			std::string(c->desc->getName()).compare("LoggingNotifyEventChannelFactory") == 0) {
         		std::ostringstream addr_str;
-        		addr_str << "corbaloc";
+        		addr_str << "corbaloc::";
         		addr_str << c->desc->getHost() << ":" << acsServices[LOGGING_SERVICE].impport << "/";
         		addr_str << acsServices[LOGGING_SERVICE].imptype;
 

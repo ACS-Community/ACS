@@ -35,6 +35,8 @@
 #include "bulkDataNTSenderFlowCallback.h"
 #include "bulkDataNTWriterListener.h"
 #include <ACE.h>
+#include <bulkDataC.h>
+#include <acsncSimpleConsumer.h>
 
 namespace AcsBulkdata
 {
@@ -144,12 +146,14 @@ public:
 	void getStatistics(bool log);
 	void getDelayedStatistics(bool log, int flowMethod);
 	void statisticsLogs();
+    static void errorPropagationHandler(bulkdata::errorStatusBlock event, void* handlerParam);
 
 protected:
 
 	typedef enum {StartState, DataRcvState, StopState, IgnoreDataState } SenderFlowStates;
 	SenderFlowStates currentState_m; /// current state of Sender Flow
 	static const char* state2String[]; /// strings name of states
+	nc::SimpleConsumer<bulkdata::errorStatusBlock> *errorStatusConsumer_p;
 
 	AcsBulkdata::BulkDataNTSenderStream *senderStream_m; /// pointer to the sender
 
@@ -168,6 +172,8 @@ protected:
 
 	double throttling_m;
 	double throttlingMinFrameTime_m; /// min time that should elapsed for sending one frame (640000 bytes)
+    int sts_m;
+
 	void setThrottling(double throttling); /// setter from throttling parameter (in MB/sec)
 
 	// should it go to upper class Publisher ?
